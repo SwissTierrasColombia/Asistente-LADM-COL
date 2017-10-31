@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="Asistente-LADM_COL">
+    <file>images/icon.png</file>
+  </qresource>
+</RCC>
