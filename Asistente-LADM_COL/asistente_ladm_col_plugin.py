@@ -18,8 +18,9 @@
 """
 from qgis.PyQt.QtCore import QObject
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtWidgets import QAction, QMenu
 
+from .gui.generate_point_spa_uni_cadaster_wizard import GeneratePointsSpatialUnitCadasterWizard
 #import resources_rc
 
 class AsistenteLADMCOLPlugin(QObject):
@@ -29,16 +30,51 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface = iface
 
     def initGui(self):
+        # Set Menus
         icon = QIcon(":/Asistente-LADM_COL/images/icon.png")
-        self._action = QAction(icon, self.tr("Asistente LADM_COL"), self.iface.mainWindow())
+        self._menu = QMenu("LAD&M_COL", self.iface.mainWindow().menuBar())
+        actions = self.iface.mainWindow().menuBar().actions()
+        last_action = actions[-1]
+        self.iface.mainWindow().menuBar().insertMenu(last_action, self._menu)
 
-        self.iface.addPluginToDatabaseMenu(self.tr("Asistente LADM_COL"), self._action)
+        self._cadaster_menu = QMenu(self.tr("Cadaster"), self._menu)
+        self._spatial_unit_cadaster_menu = QMenu(self.tr("Spatial Unit"), self._cadaster_menu)
+        self._point_spatial_unit_cadaster_action = QAction(self.tr("Add Points"), self._spatial_unit_cadaster_menu)
+        self._boundary_spatial_unit_cadaster_action = QAction(self.tr("Define Boundaries"), self._spatial_unit_cadaster_menu)
+        self._spatial_unit_cadaster_menu.addActions([self._point_spatial_unit_cadaster_action,
+                                                     self._boundary_spatial_unit_cadaster_action])
+
+        self._party_cadaster_menu = QMenu(self.tr("Party"), self._cadaster_menu)
+
+        self._rrr_cadaster_menu = QMenu(self.tr("RRR"), self._cadaster_menu)
+        self._right_rrr_cadaster_action = QAction(self.tr("Right"), self._rrr_cadaster_menu)
+        self._restriction_rrr_cadaster_action = QAction(self.tr("Restriction"), self._rrr_cadaster_menu)
+        self._responsibility_rrr_cadaster_action = QAction(self.tr("Responsibility"), self._rrr_cadaster_menu)
+        self._rrr_cadaster_menu.addActions([self._right_rrr_cadaster_action,
+                                            self._restriction_rrr_cadaster_action,
+                                            self._responsibility_rrr_cadaster_action])
+
+        self._source_cadaster_menu = QMenu(self.tr("Source"), self._cadaster_menu)
+
+        self._cadaster_menu.addMenu(self._spatial_unit_cadaster_menu)
+        self._cadaster_menu.addMenu(self._party_cadaster_menu)
+        self._cadaster_menu.addMenu(self._rrr_cadaster_menu)
+        self._cadaster_menu.addMenu(self._source_cadaster_menu)
+
+        self._menu.addMenu(self._cadaster_menu)
+        self._menu.addSeparator()
+        self._help_action = QAction(icon, self.tr("Help"), self.iface.mainWindow())
+        self._about_action = QAction(icon, self.tr("About"), self.iface.mainWindow())
+        self._menu.addAction(self._help_action)
+        self._menu.addAction(self._about_action)
+
+        # Set connections
+        self._point_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_point_sp_un_cad)
 
     def unload(self):
-        self.iface.removePluginDatabaseMenu(self.tr("Asistente LADM_COL"), self._action)
-        del self._action
-
-    def run(self):
-        # TODO
+        #self.iface.removePluginDatabaseMenu(self.tr("Asistente LADM_COL"), self._action)
         pass
 
+    def show_wiz_point_sp_un_cad(self):
+        wiz = GeneratePointsSpatialUnitCadasterWizard(self.iface)
+        wiz.exec_()
