@@ -20,7 +20,7 @@ from qgis.PyQt.QtCore import QObject
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QMenu
 
-from .gui.generate_point_spa_uni_cadaster_wizard import GeneratePointsSpatialUnitCadasterWizard
+from .gui.point_spa_uni_cadaster_wizard import PointsSpatialUnitCadasterWizard
 #import resources_rc
 
 class AsistenteLADMCOLPlugin(QObject):
@@ -76,5 +76,5 @@ class AsistenteLADMCOLPlugin(QObject):
         pass
 
     def show_wiz_point_sp_un_cad(self):
-        wiz = GeneratePointsSpatialUnitCadasterWizard(self.iface)
+        wiz = PointsSpatialUnitCadasterWizard(self.iface)
         wiz.exec_()

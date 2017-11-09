@@ -16,6 +16,9 @@
   <property name="windowTitle">
    <string>Add Points</string>
   </property>
+  <property name="options">
+   <set>QWizard::HaveHelpButton</set>
+  </property>
   <widget class="QWizardPage" name="wizardPage1">
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
@@ -86,7 +89,7 @@
     <property name="title">
      <string>Data Source</string>
     </property>
-    <widget class="QLineEdit" name="lineEdit">
+    <widget class="QLineEdit" name="txt_file_path">
      <property name="geometry">
       <rect>
        <x>70</x>
@@ -96,7 +99,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="btn_browse_file">
      <property name="geometry">
       <rect>
        <x>320</x>
@@ -109,7 +112,7 @@
       <string>...</string>
      </property>
     </widget>
-    <widget class="QComboBox" name="comboBox">
+    <widget class="QComboBox" name="cbo_data_source_type">
      <property name="geometry">
       <rect>
        <x>70</x>
@@ -178,7 +181,7 @@
       <string>Latitude</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_2">
+    <widget class="QLineEdit" name="txt_delimiter">
      <property name="geometry">
       <rect>
        <x>170</x>
@@ -187,8 +190,14 @@
        <height>27</height>
       </rect>
      </property>
+     <property name="text">
+      <string>;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
     </widget>
-    <widget class="QComboBox" name="comboBox_2">
+    <widget class="QComboBox" name="cbo_longitude">
      <property name="geometry">
       <rect>
        <x>170</x>
@@ -198,7 +207,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QComboBox" name="comboBox_3">
+    <widget class="QComboBox" name="cbo_latitude">
      <property name="geometry">
       <rect>
        <x>170</x>
