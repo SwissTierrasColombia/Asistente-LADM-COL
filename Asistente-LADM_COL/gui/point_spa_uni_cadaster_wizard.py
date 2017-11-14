@@ -20,9 +20,7 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
             make_file_selector(self.txt_file_path,
                                file_filter=self.tr('CSV Comma Separated Value (*.csv)')))
         self.txt_file_path.textChanged.connect(self.fill_long_lat_combos)
-        self.button(QWizard.FinishButton).hide()
-        self.button(QWizard.CommitButton).show()
-        self.button(QWizard.CommitButton).clicked.connect(self.copy_csv_points_to_db)
+        self.button(QWizard.FinishButton).clicked.connect(self.copy_csv_points_to_db)
 
     def copy_csv_points_to_db(self):
         csv_path = self.txt_file_path.text().strip()
@@ -37,34 +35,19 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
         if not csv_layer.isValid():
             print("CSV layer not valid!")
+        csv_layer.selectAll()
 
         uri = 'dbname=\'test3\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'t_id\' srid=3116 type=Point checkPrimaryKeyUnicity=\'1\' table="ladm_col_02"."puntolindero" (localizacion_original) sql='
-        # options = dict()
-        # options['update'] = True
-        # options['addlist'] = True
-        # _writer = QgsVectorLayerExporter.exportLayer(csv_layer,
-        #                                              uri,
-        #                                              "postgres",
-        #                                              QgsCoordinateReferenceSystem(3116, QgsCoordinateReferenceSystem.EpsgCrsId),
-        #                                              False,
-        #                                              options)
 
-        target_point_layer = QgsVectorLayer(uri, "target", "postgres")
-        QgsProject.instance().addMapLayers([csv_layer, target_point_layer])
-        self.iface.setActiveLayer(csv_layer)
-        self.iface.actionCopyFeatures().trigger() # Copy!
-        self.iface.setActiveLayer(target_point_layer)
+        target_point_layer = QgsVectorLayer(uri, "Punto Lindero", "postgres")
+
+
+        self.iface.copyFeatures(csv_layer)
         target_point_layer.startEditing()
-        res = self.iface.actionPasteFeatures().trigger() # Paste
+        self.iface.pasteFeatures(target_point_layer)
         target_point_layer.commitChanges()
-
-        # After a while figuring out how to append to a PostGIS table with current
-        # QGIS master, no option has been found. I'll see if I can propose something
-        # upstream that makes that easier in this plugin
-        
-        # RollBack if num features in target layer is different from CSV layer
-
-        # Progress QgsMessageBar
+        QgsProject.instance().addMapLayer(target_point_layer)
+        self.iface.zoomFull
 
     def fill_long_lat_combos(self, text):
         csv_path = self.txt_file_path.text().strip()
