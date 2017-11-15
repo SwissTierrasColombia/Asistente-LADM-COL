@@ -21,6 +21,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QMenu
 
 from .gui.point_spa_uni_cadaster_wizard import PointsSpatialUnitCadasterWizard
+from .gui.define_boundaries_cadaster_wizard import DefineBoundariesCadasterWizard
 #import resources_rc
 
 class AsistenteLADMCOLPlugin(QObject):
@@ -70,6 +71,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # Set connections
         self._point_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_point_sp_un_cad)
+        self._boundary_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_boundaries_cad)
 
     def unload(self):
         #self.iface.removePluginDatabaseMenu(self.tr("Asistente LADM_COL"), self._action)
@@ -77,4 +79,8 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_wiz_point_sp_un_cad(self):
         wiz = PointsSpatialUnitCadasterWizard(self.iface)
+        wiz.exec_()
+
+    def show_wiz_boundaries_cad(self):
+        wiz = DefineBoundariesCadasterWizard(self.iface)
         wiz.exec_()
