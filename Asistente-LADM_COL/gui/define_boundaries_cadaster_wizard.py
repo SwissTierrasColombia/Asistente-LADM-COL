@@ -38,11 +38,18 @@ class DefineBoundariesCadasterWizard(QWizard, WIZARD_UI):
     def prepare_boundary_creation(self):
         # Load layers
         uri = 'dbname=\'test3\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'t_id\' srid=3116 type=LineString checkPrimaryKeyUnicity=\'1\' table="ladm_col_02"."lindero" (geometria) sql='
-        self._boundary_layer = QgsVectorLayer(uri, "Lindero", "postgres")
-        QgsProject.instance().addMapLayer(self._boundary_layer)
+
+        self._boundary_layer = qgis_utils.get_layer('lindero')
+        if self._boundary_layer is None:
+            self._boundary_layer = QgsVectorLayer(uri, "Lindero", "postgres")
+            QgsProject.instance().addMapLayer(self._boundary_layer)
+
+        # Disable transactions groups
+        QgsProject.instance().setAutoTransaction(False)
 
         # Configure automatic field longitud
         qgis_utils.configureAutomaticField(self._boundary_layer, LENGTH_FIELD_BOUNDARY_TABLE, "$length")
+        qgis_utils.configureAutomaticField(self._boundary_layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
 
         # Configure Snapping
         snapping = QgsProject.instance().snappingConfig()

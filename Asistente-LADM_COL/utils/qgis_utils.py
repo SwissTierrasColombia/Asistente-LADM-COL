@@ -52,7 +52,7 @@ def configureAutomaticField(layer, field, expression):
 
 def get_layer(layer_name):
     for k,layer in QgsProject.instance().mapLayers().items():
-        if layer.name().lower() == 'lindero':
+        if layer.name().lower() == layer_name.lower():
             return layer
     return None
 

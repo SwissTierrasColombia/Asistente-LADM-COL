@@ -1,7 +1,7 @@
-
 BOUNDARY_POINT_TABLE = "puntolindero"
-SURVEY_POINT_TABLE = "puntolevantamiento"
-CONTROL_POINT_TABLE = "puntocontrol"
 BOUNDARY_TABLE = "lindero"
+CONTROL_POINT_TABLE = "puntocontrol"
 LENGTH_FIELD_BOUNDARY_TABLE = "longitud"
+SURVEY_POINT_TABLE = "puntolevantamiento"
 TERRAIN_TABLE = "terreno"
+VIDA_UTIL_FIELD_BOUNDARY_TABLE = "comienzo_vida_util_version"
