@@ -19,8 +19,9 @@
 import os
 
 from qgis.core import QgsProject, QgsVectorLayer
-from qgis.PyQt.QtCore import QSettings
-from qgis.PyQt.QtWidgets import QDialog
+from qgis.gui import QgsMessageBar
+from qgis.PyQt.QtCore import Qt, QSettings
+from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
 
 from ..utils.qt_utils import make_file_selector
 from ..utils import get_ui_class
@@ -47,6 +48,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         # Trigger some default behaviours
         self.restore_settings()
+
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.setLayout(QGridLayout())
+        #self.tabWidget.currentWidget().layout().setContentsMargins(0, 0, 0, 0)
+        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
     def accepted(self):
         print("Accepted!")
@@ -92,8 +99,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
             db = PGConnector(uri, self.txt_pg_schema.text().strip())
         elif self.cbo_db_source.currentData() == 'gpkg':
             db = GPKGConnector(uri)
-        db.test_connection()
+        res, msg = db.test_connection()
+        self.show_message(msg, QgsMessageBar.INFO if res else QgsMessageBar.WARNING)
         print("Test connection!")
+
+    def show_message(self, message, level):
+        self.bar.pushMessage(message, level, 10)
 
     def get_connection_uri(self):
         uri = []
