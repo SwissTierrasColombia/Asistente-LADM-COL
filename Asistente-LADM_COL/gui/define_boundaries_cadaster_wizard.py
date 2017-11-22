@@ -22,26 +22,35 @@ from qgis.PyQt.QtCore import Qt, QPoint
 from qgis.PyQt.QtWidgets import QAction, QWizard, QToolBar
 
 from ..utils import qgis_utils, get_ui_class
-from ..config.table_mapping_config import LENGTH_FIELD_BOUNDARY_TABLE
+from ..config.table_mapping_config import (
+    BOUNDARY_TABLE,
+    LENGTH_FIELD_BOUNDARY_TABLE,
+    VIDA_UTIL_FIELD_BOUNDARY_TABLE
+)
 
 WIZARD_UI = get_ui_class('wiz_define_boundaries_cadaster.ui')
 
 class DefineBoundariesCadasterWizard(QWizard, WIZARD_UI):
-    def __init__(self, iface, parent=None):
+    def __init__(self, iface, db, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
         self._boundary_layer = None
+        self._db = db
 
         self.button(QWizard.FinishButton).clicked.connect(self.prepare_boundary_creation)
 
     def prepare_boundary_creation(self):
         # Load layers
-        uri = 'dbname=\'test3\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'t_id\' srid=3116 type=LineString checkPrimaryKeyUnicity=\'1\' table="ladm_col_02"."lindero" (geometria) sql='
+        self._db.get_description()
+        res, uri = self._db.get_uri_for_layer(BOUNDARY_TABLE)
+        if not res:
+            print(uri)
+            return
 
-        self._boundary_layer = qgis_utils.get_layer('lindero')
+        self._boundary_layer = qgis_utils.get_layer(BOUNDARY_TABLE)
         if self._boundary_layer is None:
-            self._boundary_layer = QgsVectorLayer(uri, "Lindero", "postgres")
+            self._boundary_layer = QgsVectorLayer(uri, BOUNDARY_TABLE.capitalize(), self._db.provider)
             QgsProject.instance().addMapLayer(self._boundary_layer)
 
         # Disable transactions groups

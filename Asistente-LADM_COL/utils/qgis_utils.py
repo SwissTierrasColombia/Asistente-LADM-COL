@@ -17,7 +17,7 @@
  ***************************************************************************/
 """
 from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
-                       QgsWkbTypes, QgsFeature)
+                       QgsWkbTypes, QgsFeature, QgsDataSourceUri)
 
 def extractAsSingleSegments(geom):
     """
@@ -47,13 +47,18 @@ def getPolylineAsSingleSegments(polyline):
 
 def configureAutomaticField(layer, field, expression):
     index = layer.fields().indexFromName(field)
-    default_value = QgsDefaultValue("$length", True)
+    default_value = QgsDefaultValue(expression, True)
     layer.setDefaultValueDefinition(index, default_value)
 
 def get_layer(layer_name):
     for k,layer in QgsProject.instance().mapLayers().items():
-        if layer.name().lower() == layer_name.lower():
-            return layer
+        if layer.dataProvider().name() == 'postgres':
+            if QgsDataSourceUri(layer.source()).table() == layer_name.lower():
+                return layer
+        else:
+            if '|layername=' in layer.source(): # GeoPackage layers
+                if layer.source().split()[-1] == layer_name.lower():
+                    return layer
     return None
 
 def explode_boundaries(self):

@@ -22,16 +22,17 @@ from qgis.core import QgsProject, QgsVectorLayer
 from qgis.PyQt.QtWidgets import QWizard
 
 from ..utils.qt_utils import make_file_selector
-from ..utils import get_ui_class
-from ..config.table_mapping_config import *
+from ..utils import qgis_utils, get_ui_class
+from ..config.table_mapping_config import BOUNDARY_POINT_TABLE
 
 WIZARD_UI = get_ui_class('wiz_add_points_cadaster.ui')
 
 class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
-    def __init__(self, iface, parent=None):
+    def __init__(self, iface, db, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
+        self._db = db
 
         # Set connections
         self.btn_browse_file.clicked.connect(
@@ -55,17 +56,22 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
             print("CSV layer not valid!")
         csv_layer.selectAll()
 
-        uri = 'dbname=\'test3\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'t_id\' srid=3116 type=Point checkPrimaryKeyUnicity=\'1\' table="ladm_col_02"."puntolindero" (localizacion_original) sql='
+        res, uri = self._db.get_uri_for_layer(BOUNDARY_POINT_TABLE)
+        if not res:
+            print(uri)
+            return
 
-        target_point_layer = QgsVectorLayer(uri, "Punto Lindero", "postgres")
-
+        target_point_layer = qgis_utils.get_layer(BOUNDARY_POINT_TABLE)
+        if target_point_layer is None:
+            target_point_layer = QgsVectorLayer(uri, BOUNDARY_POINT_TABLE.capitalize(), self._db.provider)
+            QgsProject.instance().addMapLayer(target_point_layer)
 
         self.iface.copyFeatures(csv_layer)
         target_point_layer.startEditing()
         self.iface.pasteFeatures(target_point_layer)
         target_point_layer.commitChanges()
         QgsProject.instance().addMapLayer(target_point_layer)
-        self.iface.zoomFull
+        self.iface.zoomFull()
 
     def fill_long_lat_combos(self, text):
         csv_path = self.txt_file_path.text().strip()

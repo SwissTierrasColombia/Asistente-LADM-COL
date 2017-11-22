@@ -36,6 +36,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
+        self._db = None
 
         self.cbo_db_source.clear()
         self.cbo_db_source.addItem(self.tr('PostgreSQL / PostGIS'), 'pg')
@@ -55,21 +56,52 @@ class SettingsDialog(QDialog, DIALOG_UI):
         #self.tabWidget.currentWidget().layout().setContentsMargins(0, 0, 0, 0)
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
+    def get_db_connection(self):
+        if self._db is not None:
+            print("Returning existing db connection...")
+            return self._db
+        else:
+            print("Getting new db connection...")
+            dict_conn = self.read_connection_parameters()
+            uri = self.get_connection_uri(dict_conn)
+            if self.cbo_db_source.currentData() == 'pg':
+                conn = PGConnector(uri, dict_conn['schema'])
+            else:
+                conn = GPKGConnector(uri)
+            return conn
+
     def accepted(self):
         print("Accepted!")
+        self._db = self.get_db_connection()
         self.save_settings()
+
+    def read_connection_parameters(self):
+        """
+        Convenient function to read connection parameters and apply default
+        values if needed.
+        """
+        dict_conn = dict()
+        dict_conn['host'] = self.txt_pg_host.text().strip() or 'localhost'
+        dict_conn['port'] = self.txt_pg_port.text().strip() or 5432
+        dict_conn['database'] = self.txt_pg_database.text().strip()
+        dict_conn['schema'] = self.txt_pg_schema.text().strip() or 'public'
+        dict_conn['user'] = self.txt_pg_user.text().strip()
+        dict_conn['password'] = self.txt_pg_password.text().strip()
+        dict_conn['dbfile'] = self.txt_gpkg_file.text().strip()
+        return dict_conn
 
     def save_settings(self):
         # Save QSettings
+        dict_conn = self.read_connection_parameters()
         settings = QSettings()
         settings.setValue('Asistente-LADM_COL/db_connection_source', self.cbo_db_source.currentData())
-        settings.setValue('Asistente-LADM_COL/pg/host', self.txt_pg_host.text().strip())
-        settings.setValue('Asistente-LADM_COL/pg/port', self.txt_pg_port.text().strip())
-        settings.setValue('Asistente-LADM_COL/pg/database', self.txt_pg_database.text().strip())
-        settings.setValue('Asistente-LADM_COL/pg/schema', self.txt_pg_schema.text().strip())
-        settings.setValue('Asistente-LADM_COL/pg/user', self.txt_pg_user.text().strip())
-        settings.setValue('Asistente-LADM_COL/pg/password', self.txt_pg_password.text().strip())
-        settings.setValue('Asistente-LADM_COL/gpkg/dbfile', self.txt_gpkg_file.text().strip())
+        settings.setValue('Asistente-LADM_COL/pg/host', dict_conn['host'])
+        settings.setValue('Asistente-LADM_COL/pg/port', dict_conn['port'])
+        settings.setValue('Asistente-LADM_COL/pg/database', dict_conn['database'])
+        settings.setValue('Asistente-LADM_COL/pg/schema', dict_conn['schema'])
+        settings.setValue('Asistente-LADM_COL/pg/user', dict_conn['user'])
+        settings.setValue('Asistente-LADM_COL/pg/password', dict_conn['password'])
+        settings.setValue('Asistente-LADM_COL/gpkg/dbfile', dict_conn['dbfile'])
 
     def restore_settings(self):
         # Restore QSettings
@@ -86,6 +118,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_gpkg_file.setText(settings.value('Asistente-LADM_COL/gpkg/dbfile'))
 
     def db_source_changed(self):
+        self._db = None
         if self.cbo_db_source.currentData() == 'pg':
             self.gpkg_config.setVisible(False)
             self.pg_config.setVisible(True)
@@ -94,28 +127,24 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.gpkg_config.setVisible(True)
 
     def test_connection(self):
-        uri = self.get_connection_uri()
-        if self.cbo_db_source.currentData() == 'pg':
-            db = PGConnector(uri, self.txt_pg_schema.text().strip())
-        elif self.cbo_db_source.currentData() == 'gpkg':
-            db = GPKGConnector(uri)
-        res, msg = db.test_connection()
+        res, msg = self.get_db_connection().test_connection()
         self.show_message(msg, QgsMessageBar.INFO if res else QgsMessageBar.WARNING)
         print("Test connection!")
 
     def show_message(self, message, level):
         self.bar.pushMessage(message, level, 10)
 
-    def get_connection_uri(self):
+    def get_connection_uri(self, dict_conn):
         uri = []
         if self.cbo_db_source.currentData() == 'pg':
-            uri += ['dbname={}'.format(self.txt_pg_database.text().strip())]
-            uri += ['user={}'.format(self.txt_pg_user.text().strip())]
-            if self.txt_pg_password.text().strip():
-                uri += ['password={}'.format(self.txt_pg_password.text().strip())]
-            uri += ['host={}'.format(self.txt_pg_host.text().strip())]
-            if self.txt_pg_port.text().strip():
-                uri += ['port={}'.format(self.txt_pg_port.text().strip())]
+            uri += ['host={}'.format(dict_conn['host'])]
+            uri += ['port={}'.format(dict_conn['port'])]
+            if dict_conn['database']:
+                uri += ['dbname={}'.format(dict_conn['database'])]
+            if dict_conn['user']:
+                uri += ['user={}'.format(dict_conn['user'])]
+            if dict_conn['password']:
+                uri += ['password={}'.format(dict_conn['password'])]
         elif self.cbo_db_source.currentData() == 'gpkg':
-            uri = [self.txt_gpkg_file.text().strip()]
+            uri = [dict_conn['dbfile']]
         return ' '.join(uri)

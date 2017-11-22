@@ -38,6 +38,7 @@ class AsistenteLADMCOLPlugin(QObject):
         actions = self.iface.mainWindow().menuBar().actions()
         last_action = actions[-1]
         self.iface.mainWindow().menuBar().insertMenu(last_action, self._menu)
+        self._settings_dialog = None
 
         self._cadaster_menu = QMenu(self.tr("Cadaster"), self._menu)
         self._spatial_unit_cadaster_menu = QMenu(self.tr("Spatial Unit"), self._cadaster_menu)
@@ -93,13 +94,19 @@ class AsistenteLADMCOLPlugin(QObject):
         del self._define_boundary_toolbar
 
     def show_wiz_point_sp_un_cad(self):
-        wiz = PointsSpatialUnitCadasterWizard(self.iface)
+        wiz = PointsSpatialUnitCadasterWizard(self.iface, self.get_db_connection())
         wiz.exec_()
 
     def show_wiz_boundaries_cad(self):
-        wiz = DefineBoundariesCadasterWizard(self.iface)
+        wiz = DefineBoundariesCadasterWizard(self.iface, self.get_db_connection())
         wiz.exec_()
 
     def show_settings(self):
-        dlg = SettingsDialog(self.iface)
-        dlg.exec_()
+        if self._settings_dialog is None:
+            self._settings_dialog = SettingsDialog(self.iface)
+        self._settings_dialog.exec_()
+
+    def get_db_connection(self):
+        if self._settings_dialog is None:
+            self._settings_dialog = SettingsDialog(self.iface)
+        return self._settings_dialog.get_db_connection()
