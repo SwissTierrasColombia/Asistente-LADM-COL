@@ -17,7 +17,7 @@
  ***************************************************************************/
 """
 from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
-                       QgsWkbTypes, QgsFeature, QgsDataSourceUri)
+                       QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri)
 
 def extractAsSingleSegments(geom):
     """
@@ -77,8 +77,7 @@ def explode_boundaries(self):
     # Create features based on segment geometries
     exploded_features = list()
     for segment in segments:
-        feature = QgsFeature(layer.fields())
-        feature.setGeometry(segment)
+        feature = QgsVectorLayerUtils().createFeature(layer, segment)
         exploded_features.append(feature)
 
     layer.addFeatures(exploded_features)
@@ -101,6 +100,5 @@ def merge_boundaries(self):
     if QgsWkbTypes.isMultiType(layer.wkbType()) and not unionGeom.isMultipart():
         unionGeom.convertToMultiType()
 
-    feature = QgsFeature(layer.fields())
-    feature.setGeometry(unionGeom)
+    feature = QgsVectorLayerUtils().createFeature(layer, unionGeom)
     layer.addFeature(feature)
