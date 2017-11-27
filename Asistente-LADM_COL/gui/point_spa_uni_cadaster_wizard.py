@@ -66,9 +66,9 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
             target_point_layer = QgsVectorLayer(uri, BOUNDARY_POINT_TABLE.capitalize(), self._db.provider)
             QgsProject.instance().addMapLayer(target_point_layer)
 
-        self.iface.copyFeatures(csv_layer)
+        self.iface.copySelectionToClipboard(csv_layer)
         target_point_layer.startEditing()
-        self.iface.pasteFeatures(target_point_layer)
+        self.iface.pasteFromClipboard(target_point_layer)
         target_point_layer.commitChanges()
         QgsProject.instance().addMapLayer(target_point_layer)
         self.iface.zoomFull()
