@@ -136,11 +136,9 @@ def fill_topology_table_pointbfs(db):
     print("puntoccl found:", bfs_layer is not None)
     bfs_features = bfs_layer.getFeatures()
 
-    # TODO Get unique pairs id_boundary-id_boundary_point
-    # Validate
-    #for lindero, punto_lindero in intersect_pairs:
-    #    if not pair_exists():
-    #        add_feature()
+    # Get unique pairs id_boundary-id_boundary_point
+    existing_pairs = [(bfs_feature[CCL_TABLE_BOUNDARY_FIELD], bfs_feature[CCL_TABLE_BOUNDARY_POINT_FIELD]) for bfs_feature in bfs_features]
+    existing_pairs = set(existing_pairs)
 
     boundary_layer = get_layer(db, BOUNDARY_TABLE)
     boundary_point_layer = get_layer(db, BOUNDARY_POINT_TABLE)
@@ -150,15 +148,21 @@ def fill_topology_table_pointbfs(db):
         bfs_layer.startEditing()
         features = list()
         for id_pair in id_pairs:
-            # Create feature
-            feature = QgsVectorLayerUtils().createFeature(bfs_layer)
-            feature.setAttribute(CCL_TABLE_BOUNDARY_FIELD, id_pair[0])
-            feature.setAttribute(CCL_TABLE_BOUNDARY_POINT_FIELD, id_pair[1])
-            features.append(feature)
-            print(id_pair)
+            if not id_pair in existing_pairs: # Avoid duplicated pairs in the DB
+                # Create feature
+                feature = QgsVectorLayerUtils().createFeature(bfs_layer)
+                feature.setAttribute(CCL_TABLE_BOUNDARY_FIELD, id_pair[0])
+                feature.setAttribute(CCL_TABLE_BOUNDARY_POINT_FIELD, id_pair[1])
+                features.append(feature)
+                print(id_pair)
         bfs_layer.addFeatures(features)
         bfs_layer.commitChanges()
-        print("{} records were saved into {}!".format(len(id_pairs), POINT_BOUNDARY_FACE_STRING_TABLE))
+        print("{} out of {} records were saved into {}! {} records already existed in the database.".format(
+            len(features),
+            len(id_pairs),
+            POINT_BOUNDARY_FACE_STRING_TABLE,
+            len(id_pairs) - len(features)
+        ))
     else:
         print("No pairs id_boundary-id_boundary_point found.")
 
