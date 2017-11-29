@@ -18,7 +18,7 @@
 """
 import os
 
-from qgis.core import QgsProject, QgsVectorLayer
+from qgis.core import QgsProject, QgsVectorLayer, QgsSpatialIndex
 from qgis.PyQt.QtWidgets import QWizard
 
 from ..utils.qt_utils import make_file_selector
@@ -54,6 +54,18 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
         if not csv_layer.isValid():
             print("CSV layer not valid!")
+
+        # Validate non-overlapping points
+        index = QgsSpatialIndex(csv_layer.getFeatures())
+        for feature in csv_layer.getFeatures():
+            res = index.intersects(feature.geometry().boundingBox())
+            if len(res) > 1:
+                print("There are overlapping points, we cannot import them into the DB! See selected points.")
+                QgsProject.instance().addMapLayer(csv_layer)
+                csv_layer.selectByIds(res)
+                self.iface.mapCanvas().zoomToSelected()
+                return
+
         csv_layer.selectAll()
 
         target_point_layer = qgis_utils.get_layer(self._db, BOUNDARY_POINT_TABLE, True)
