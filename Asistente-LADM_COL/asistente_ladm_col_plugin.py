@@ -24,6 +24,8 @@ from .gui.point_spa_uni_cadaster_wizard import PointsSpatialUnitCadasterWizard
 from .gui.define_boundaries_cadaster_wizard import DefineBoundariesCadasterWizard
 from .gui.settings_dialog import SettingsDialog
 from .utils import qgis_utils
+
+from functools import partial
 #import resources_rc
 
 class AsistenteLADMCOLPlugin(QObject):
@@ -83,9 +85,13 @@ class AsistenteLADMCOLPlugin(QObject):
         self._boundary_explode_action.triggered.connect(qgis_utils.explode_boundaries)
         self._boundary_merge_action = QAction("Merge...", self.iface.mainWindow())
         self._boundary_merge_action.triggered.connect(qgis_utils.merge_boundaries)
+        self._fill_point_BFS_action = QAction("Fill Point BFS", self.iface.mainWindow())
+        self._fill_point_BFS_action.triggered.connect(partial(qgis_utils.fill_topology_table_pointbfs, self.get_db_connection()))
         self._define_boundary_toolbar = self.iface.addToolBar("Define Boundaries")
         self._define_boundary_toolbar.setObjectName("DefineBoundaries")
-        self._define_boundary_toolbar.addActions([self._boundary_explode_action, self._boundary_merge_action])
+        self._define_boundary_toolbar.addActions([self._boundary_explode_action,
+                                                  self._boundary_merge_action,
+                                                  self._fill_point_BFS_action])
         self._define_boundary_toolbar.setVisible(False)
 
     def unload(self):

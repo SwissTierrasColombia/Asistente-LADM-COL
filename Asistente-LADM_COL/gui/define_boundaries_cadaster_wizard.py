@@ -42,16 +42,10 @@ class DefineBoundariesCadasterWizard(QWizard, WIZARD_UI):
 
     def prepare_boundary_creation(self):
         # Load layers
-        self._db.get_description()
-        res, uri = self._db.get_uri_for_layer(BOUNDARY_TABLE)
-        if not res:
-            print(uri)
-            return
-
-        self._boundary_layer = qgis_utils.get_layer(BOUNDARY_TABLE)
+        self._boundary_layer = qgis_utils.get_layer(self._db, BOUNDARY_TABLE, True)
         if self._boundary_layer is None:
-            self._boundary_layer = QgsVectorLayer(uri, BOUNDARY_TABLE.capitalize(), self._db.provider)
-            QgsProject.instance().addMapLayer(self._boundary_layer)
+            print("Boundary layer couldn't be found...")
+            return
 
         # Disable transactions groups
         QgsProject.instance().setAutoTransaction(False)

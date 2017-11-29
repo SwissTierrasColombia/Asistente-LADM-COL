@@ -56,15 +56,10 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
             print("CSV layer not valid!")
         csv_layer.selectAll()
 
-        res, uri = self._db.get_uri_for_layer(BOUNDARY_POINT_TABLE)
-        if not res:
-            print(uri)
-            return
-
-        target_point_layer = qgis_utils.get_layer(BOUNDARY_POINT_TABLE)
+        target_point_layer = qgis_utils.get_layer(self._db, BOUNDARY_POINT_TABLE, True)
         if target_point_layer is None:
-            target_point_layer = QgsVectorLayer(uri, BOUNDARY_POINT_TABLE.capitalize(), self._db.provider)
-            QgsProject.instance().addMapLayer(target_point_layer)
+            print("Boundary point layer couldn't be found...")
+            return
 
         self.iface.copySelectionToClipboard(csv_layer)
         target_point_layer.startEditing()
