@@ -25,7 +25,7 @@ from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton
 from .gui.point_spa_uni_cadaster_wizard import PointsSpatialUnitCadasterWizard
 from .gui.define_boundaries_cadaster_wizard import DefineBoundariesCadasterWizard
 from .gui.settings_dialog import SettingsDialog
-from .utils import qgis_utils
+from .utils.qgis_utils import QGISUtils
 
 from functools import partial, wraps
 #import resources_rc
@@ -43,6 +43,7 @@ class AsistenteLADMCOLPlugin(QObject):
         last_action = actions[-1]
         self.iface.mainWindow().menuBar().insertMenu(last_action, self._menu)
         self._settings_dialog = None
+        self.qgis_utils = QGISUtils()
 
         self._cadaster_menu = QMenu(self.tr("Cadaster"), self._menu)
         self._spatial_unit_cadaster_menu = QMenu(self.tr("Spatial Unit"), self._cadaster_menu)
@@ -81,14 +82,16 @@ class AsistenteLADMCOLPlugin(QObject):
         self._point_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_point_sp_un_cad)
         self._boundary_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_boundaries_cad)
         self._settings_action.triggered.connect(self.show_settings)
+        self.qgis_utils.message_emitted.connect(self.show_message)
+        self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
 
         # Toolbar for Define Boundaries
         self._boundary_explode_action = QAction("Explode...", self.iface.mainWindow())
-        self._boundary_explode_action.triggered.connect(partial(qgis_utils.explode_boundaries, self.get_db_connection()))
+        self._boundary_explode_action.triggered.connect(partial(self.qgis_utils.explode_boundaries, self.get_db_connection()))
         self._boundary_merge_action = QAction("Merge...", self.iface.mainWindow())
-        self._boundary_merge_action.triggered.connect(partial(qgis_utils.merge_boundaries, self.get_db_connection()))
+        self._boundary_merge_action.triggered.connect(partial(self.qgis_utils.merge_boundaries, self.get_db_connection()))
         self._fill_point_BFS_action = QAction("Fill Point BFS", self.iface.mainWindow())
-        self._fill_point_BFS_action.triggered.connect(partial(qgis_utils.fill_topology_table_pointbfs, self.get_db_connection()))
+        self._fill_point_BFS_action.triggered.connect(partial(self.qgis_utils.fill_topology_table_pointbfs, self.get_db_connection()))
         self._define_boundary_toolbar = self.iface.addToolBar("Define Boundaries")
         self._define_boundary_toolbar.setObjectName("DefineBoundaries")
         self._define_boundary_toolbar.addActions([self._boundary_explode_action,
@@ -96,8 +99,13 @@ class AsistenteLADMCOLPlugin(QObject):
                                                   self._fill_point_BFS_action])
         self._define_boundary_toolbar.setVisible(False)
 
+    def refresh_map(self):
+        self.iface.mapCanvas().refresh()
+
+    def show_message(self, msg, level):
+        self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level)
+
     def unload(self):
-        #self.iface.removePluginDatabaseMenu(self.tr("Asistente LADM_COL"), self._action)
         self.iface.mainWindow().removeToolBar(self._define_boundary_toolbar)
         del self._define_boundary_toolbar
 
@@ -133,10 +141,10 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_db_connection_required
     def show_wiz_point_sp_un_cad(self):
-        wiz = PointsSpatialUnitCadasterWizard(self.iface, self.get_db_connection())
+        wiz = PointsSpatialUnitCadasterWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     @_db_connection_required
     def show_wiz_boundaries_cad(self):
-        wiz = DefineBoundariesCadasterWizard(self.iface, self.get_db_connection())
+        wiz = DefineBoundariesCadasterWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()

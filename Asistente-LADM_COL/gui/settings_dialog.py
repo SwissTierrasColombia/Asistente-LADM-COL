@@ -72,6 +72,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def accepted(self):
         print("Accepted!")
+        self._db = None # Reset db connection
         self._db = self.get_db_connection()
         self.save_settings()
 

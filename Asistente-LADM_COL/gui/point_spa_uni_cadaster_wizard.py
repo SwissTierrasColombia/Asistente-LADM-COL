@@ -22,17 +22,18 @@ from qgis.core import QgsProject, QgsVectorLayer, QgsSpatialIndex
 from qgis.PyQt.QtWidgets import QWizard
 
 from ..utils.qt_utils import make_file_selector
-from ..utils import qgis_utils, get_ui_class
+from ..utils import get_ui_class
 from ..config.table_mapping_config import BOUNDARY_POINT_TABLE
 
 WIZARD_UI = get_ui_class('wiz_add_points_cadaster.ui')
 
 class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
-    def __init__(self, iface, db, parent=None):
+    def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
         self._db = db
+        self.qgis_utils = qgis_utils
 
         # Set connections
         self.btn_browse_file.clicked.connect(
@@ -68,7 +69,7 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
 
         csv_layer.selectAll()
 
-        target_point_layer = qgis_utils.get_layer(self._db, BOUNDARY_POINT_TABLE, True)
+        target_point_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_POINT_TABLE, True)
         if target_point_layer is None:
             print("Boundary point layer couldn't be found...")
             return

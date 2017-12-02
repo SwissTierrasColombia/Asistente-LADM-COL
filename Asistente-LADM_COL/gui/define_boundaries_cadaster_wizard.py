@@ -21,7 +21,7 @@ from qgis.core import (QgsProject, QgsVectorLayer, QgsEditFormConfig,
 from qgis.PyQt.QtCore import Qt, QPoint
 from qgis.PyQt.QtWidgets import QAction, QWizard, QToolBar
 
-from ..utils import qgis_utils, get_ui_class
+from ..utils import get_ui_class
 from ..config.table_mapping_config import (
     BOUNDARY_TABLE,
     LENGTH_FIELD_BOUNDARY_TABLE,
@@ -31,18 +31,19 @@ from ..config.table_mapping_config import (
 WIZARD_UI = get_ui_class('wiz_define_boundaries_cadaster.ui')
 
 class DefineBoundariesCadasterWizard(QWizard, WIZARD_UI):
-    def __init__(self, iface, db, parent=None):
+    def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
         self._boundary_layer = None
         self._db = db
+        self.qgis_utils = qgis_utils
 
         self.button(QWizard.FinishButton).clicked.connect(self.prepare_boundary_creation)
 
     def prepare_boundary_creation(self):
         # Load layers
-        self._boundary_layer = qgis_utils.get_layer(self._db, BOUNDARY_TABLE, True)
+        self._boundary_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_TABLE, True)
         if self._boundary_layer is None:
             print("Boundary layer couldn't be found...")
             return
@@ -51,8 +52,8 @@ class DefineBoundariesCadasterWizard(QWizard, WIZARD_UI):
         QgsProject.instance().setAutoTransaction(False)
 
         # Configure automatic field longitud
-        qgis_utils.configureAutomaticField(self._boundary_layer, LENGTH_FIELD_BOUNDARY_TABLE, "$length")
-        qgis_utils.configureAutomaticField(self._boundary_layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
+        self.qgis_utils.configureAutomaticField(self._boundary_layer, LENGTH_FIELD_BOUNDARY_TABLE, "$length")
+        self.qgis_utils.configureAutomaticField(self._boundary_layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
 
         # Configure Snapping
         snapping = QgsProject.instance().snappingConfig()
