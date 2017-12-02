@@ -59,7 +59,7 @@ def configureAutomaticField(layer, field, expression):
 
 def get_layer(db, layer_name, load=False):
     # If layer is in LayerTree, return it
-    layer = get_layer_from_layer_tree(layer_name)
+    layer = get_layer_from_layer_tree(layer_name, db.schema)
     if layer is not None:
         return layer
 
@@ -77,10 +77,11 @@ def get_layer(db, layer_name, load=False):
 
     return None
 
-def get_layer_from_layer_tree(layer_name):
+def get_layer_from_layer_tree(layer_name, schema=None):
     for k,layer in QgsProject.instance().mapLayers().items():
         if layer.dataProvider().name() == 'postgres':
-            if QgsDataSourceUri(layer.source()).table() == layer_name.lower():
+            if QgsDataSourceUri(layer.source()).table() == layer_name.lower() and \
+                QgsDataSourceUri(layer.source()).schema() == schema:
                 return layer
         else:
             if '|layername=' in layer.source(): # GeoPackage layers
@@ -88,9 +89,9 @@ def get_layer_from_layer_tree(layer_name):
                     return layer
     return None
 
-def explode_boundaries(self):
+def explode_boundaries(db):
     print("EXPLODE!!!")
-    layer = get_layer_from_layer_tree(BOUNDARY_TABLE)
+    layer = get_layer_from_layer_tree(BOUNDARY_TABLE, db.schema)
     if len(layer.selectedFeatures()) == 0:
         return None
 
@@ -109,9 +110,9 @@ def explode_boundaries(self):
 
     layer.addFeatures(exploded_features)
 
-def merge_boundaries(self):
+def merge_boundaries(db):
     print("MERGE!!!")
-    layer = get_layer_from_layer_tree(BOUNDARY_TABLE)
+    layer = get_layer_from_layer_tree(BOUNDARY_TABLE, db.schema)
     if len(layer.selectedFeatures()) < 2:
         return None
 

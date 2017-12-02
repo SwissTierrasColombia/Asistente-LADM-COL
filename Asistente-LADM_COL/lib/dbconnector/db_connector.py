@@ -25,6 +25,7 @@ class DBConnector(QObject):
         self.mode = ''
         self.provider = '' # QGIS provider name. e.g., postgres
         self.uri = uri
+        self.schema = schema
         self.conn = None
 
     def test_connection(self):
