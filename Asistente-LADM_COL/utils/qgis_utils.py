@@ -158,9 +158,11 @@ class QGISUtils(QObject):
         self.map_refresh_requested.emit()
 
     def fill_topology_table_pointbfs(self, db):
-        print(db.get_description())
         bfs_layer = self.get_layer(db, POINT_BOUNDARY_FACE_STRING_TABLE, True)
-        print("puntoccl found:", bfs_layer is not None)
+        if bfs_featureslayer is None:
+            self.message_emitted.emit(self.tr("Table {} not found in the DB!".format(POINT_BOUNDARY_FACE_STRING_TABLE)), QgsMessageBar.WARNING)
+            return
+
         bfs_features = bfs_layer.getFeatures()
 
         # Get unique pairs id_boundary-id_boundary_point
@@ -184,14 +186,15 @@ class QGISUtils(QObject):
                     print(id_pair)
             bfs_layer.addFeatures(features)
             bfs_layer.commitChanges()
-            print("{} out of {} records were saved into {}! {} records already existed in the database.".format(
+            self.message_emitted.emit(self.tr("{} out of {} records were saved into {}! {} out of {} records already existed in the database.".format(
                 len(features),
                 len(id_pairs),
                 POINT_BOUNDARY_FACE_STRING_TABLE,
-                len(id_pairs) - len(features)
-            ))
+                len(id_pairs) - len(features),
+                len(id_pairs)
+            )), QgsMessageBar.INFO)
         else:
-            print("No pairs id_boundary-id_boundary_point found.")
+            self.message_emitted.emit(self.tr("No pairs id_boundary-id_boundary_point found."), QgsMessageBar.INFO)
 
     def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer):
         lines = boundary_layer.getSelectedFeatures()
