@@ -51,13 +51,6 @@ class PGConnector(DBConnector):
         pass
 
     def get_uri_for_layer(self, layer_name):
-        #uri = 'dbname=\'test3\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'t_id\' srid=3116 type=Point checkPrimaryKeyUnicity=\'1\' table="ladm_col_02"."puntolindero" (localizacion_original) sql='
-        #if self._tables_info is None:
-        #    res, cur = self.get_tables_info()
-        #    if not res:
-        #        return (res, cur)
-        #    self._tables_info = cur
-
         res, cur = self.get_tables_info()
         if not res:
             return (res, cur)

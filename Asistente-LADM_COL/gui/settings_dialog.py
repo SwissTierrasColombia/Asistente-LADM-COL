@@ -65,10 +65,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
             dict_conn = self.read_connection_parameters()
             uri = self.get_connection_uri(dict_conn)
             if self.cbo_db_source.currentData() == 'pg':
-                conn = PGConnector(uri, dict_conn['schema'])
+                db = PGConnector(uri, dict_conn['schema'])
             else:
-                conn = GPKGConnector(uri)
-            return conn
+                db = GPKGConnector(uri)
+            return db
 
     def accepted(self):
         print("Accepted!")

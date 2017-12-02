@@ -16,16 +16,18 @@
  *                                                                         *
  ***************************************************************************/
 """
+from qgis.core import QgsMessageLog
+from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import QObject
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QMenu
+from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton
 
 from .gui.point_spa_uni_cadaster_wizard import PointsSpatialUnitCadasterWizard
 from .gui.define_boundaries_cadaster_wizard import DefineBoundariesCadasterWizard
 from .gui.settings_dialog import SettingsDialog
 from .utils import qgis_utils
 
-from functools import partial
+from functools import partial, wraps
 #import resources_rc
 
 class AsistenteLADMCOLPlugin(QObject):
@@ -99,14 +101,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.mainWindow().removeToolBar(self._define_boundary_toolbar)
         del self._define_boundary_toolbar
 
-    def show_wiz_point_sp_un_cad(self):
-        wiz = PointsSpatialUnitCadasterWizard(self.iface, self.get_db_connection())
-        wiz.exec_()
-
-    def show_wiz_boundaries_cad(self):
-        wiz = DefineBoundariesCadasterWizard(self.iface, self.get_db_connection())
-        wiz.exec_()
-
     def show_settings(self):
         if self._settings_dialog is None:
             self._settings_dialog = SettingsDialog(self.iface)
@@ -116,3 +110,33 @@ class AsistenteLADMCOLPlugin(QObject):
         if self._settings_dialog is None:
             self._settings_dialog = SettingsDialog(self.iface)
         return self._settings_dialog.get_db_connection()
+
+    def _db_connection_required(func_to_decorate):
+        @wraps(func_to_decorate)
+        def decorated_function(inst, *args, **kwargs):
+            # Check if current connection is valid and disable access if not
+            db = inst.get_db_connection()
+            res, msg = db.test_connection()
+            if res:
+                func_to_decorate(inst)
+            else:
+                widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
+                             inst.tr("You need to set a valid connection to your DB first. Click the button to go to Settings."))
+                button = QPushButton(widget)
+                button.setText(inst.tr("Settings"))
+                button.pressed.connect(inst.show_settings)
+                widget.layout().addWidget(button)
+                inst.iface.messageBar().pushWidget(widget, QgsMessageBar.WARNING, 15)
+                QgsMessageLog.logMessage(inst.tr("A dialog couldn't be open, connection to DB was not valid."), "Asistente LADM_COL")
+
+        return decorated_function
+
+    @_db_connection_required
+    def show_wiz_point_sp_un_cad(self):
+        wiz = PointsSpatialUnitCadasterWizard(self.iface, self.get_db_connection())
+        wiz.exec_()
+
+    @_db_connection_required
+    def show_wiz_boundaries_cad(self):
+        wiz = DefineBoundariesCadasterWizard(self.iface, self.get_db_connection())
+        wiz.exec_()
