@@ -115,6 +115,8 @@ class QGISUtils(QObject):
         for f in layer.selectedFeatures():
             segments.extend(self.extractAsSingleSegments(f.geometry()))
 
+        layer.startEditing() # Safe, even if layer is already on editing state
+
         # Remove the selected lines, we'll add exploded segments in a while
         layer.deleteFeatures([sf.id() for sf in layer.selectedFeatures()])
 
@@ -143,6 +145,8 @@ class QGISUtils(QObject):
         for f in layer.selectedFeatures()[1:]:
             if not f.geometry().isNull():
                 unionGeom = unionGeom.combine(f.geometry())
+
+        layer.startEditing() # Safe, even if layer is already on editing state
 
         # Remove the selected lines, we'll add exploded segments in a while
         layer.deleteFeatures([sf.id() for sf in layer.selectedFeatures()])
