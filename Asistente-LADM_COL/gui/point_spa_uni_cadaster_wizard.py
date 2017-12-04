@@ -19,6 +19,7 @@
 import os
 
 from qgis.core import QgsProject, QgsVectorLayer, QgsSpatialIndex
+from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtWidgets import QWizard
 
 from ..utils.qt_utils import make_file_selector
@@ -54,14 +55,18 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
            )
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
         if not csv_layer.isValid():
-            print("CSV layer not valid!")
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                self.tr("CSV layer not valid!"),
+                QgsMessageBar.WARNING)
 
         # Validate non-overlapping points
         index = QgsSpatialIndex(csv_layer.getFeatures())
         for feature in csv_layer.getFeatures():
             res = index.intersects(feature.geometry().boundingBox())
             if len(res) > 1:
-                print("There are overlapping points, we cannot import them into the DB! See selected points.")
+                self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                    self.tr("There are overlapping points, we cannot import them into the DB! See selected points."),
+                    QgsMessageBar.WARNING)
                 QgsProject.instance().addMapLayer(csv_layer)
                 csv_layer.selectByIds(res)
                 self.iface.mapCanvas().zoomToSelected()
@@ -71,7 +76,9 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
 
         target_point_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_POINT_TABLE, True)
         if target_point_layer is None:
-            print("Boundary point layer couldn't be found...")
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                self.tr("Boundary point layer couldn't be found in the DB..."),
+                QgsMessageBar.WARNING)
             return
 
         self.iface.copySelectionToClipboard(csv_layer)
@@ -89,6 +96,22 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
             fields = self.get_fields_from_csv_file(csv_path)
             self.cbo_longitude.addItems(fields)
             self.cbo_latitude.addItems(fields)
+
+            # Heuristics to suggest values for x and y
+            lowercase_fields = [field for field in fields]
+            x_potential_names = ['x', 'lon', 'long', 'longitud', 'longitude', 'este', 'east', 'oeste', 'west']
+            y_potential_names = ['y', 'lat', 'latitud', 'latitude', 'norte', 'north']
+            for x_potential_name in x_potential_names:
+                if x_potential_name in lowercase_fields:
+                    self.cbo_longitude.setCurrentText(x_potential_name)
+                    break
+            for y_potential_name in y_potential_names:
+                if y_potential_name in lowercase_fields:
+                    self.cbo_latitude.setCurrentText(y_potential_name)
+                    break
+
+
+
 
     def get_fields_from_csv_file(self, csv_path):
         errorReading = False
