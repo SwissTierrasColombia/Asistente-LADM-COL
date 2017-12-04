@@ -46,7 +46,6 @@ class QGISUtils(QObject):
         # Layer is not loaded, create it and load it if 'load' is True
         res, uri = db.get_uri_for_layer(layer_name)
         if not res:
-            print("uri",uri)
             return None
 
         layer = QgsVectorLayer(uri, layer_name.capitalize(), db.provider)
@@ -104,7 +103,7 @@ class QGISUtils(QObject):
         layer = self.get_layer_from_layer_tree(BOUNDARY_TABLE, db.schema)
 
         if layer is None:
-            self.message_emitted.emit(self.tr("First load the layer {}!".format(BOUNDARY_TABLE)), QgsMessageBar.WARNING)
+            self.message_emitted.emit(self.tr("First load the layer {} into QGIS!".format(BOUNDARY_TABLE)), QgsMessageBar.WARNING)
             return
 
         num_boundaries = len(layer.selectedFeatures())
@@ -205,7 +204,6 @@ class QGISUtils(QObject):
             bbox = line.geometry().boundingBox()
             bbox.scale(1.001)
             candidates_ids = index.intersects(bbox)
-            #print(candidates_ids)
             candidates_features = boundary_point_layer.getFeatures(candidates_ids)
             for candidate_feature in candidates_features:
                 #if line.geometry().intersects(candidate_feature.geometry()):

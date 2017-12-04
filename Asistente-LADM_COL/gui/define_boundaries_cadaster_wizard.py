@@ -18,6 +18,7 @@
 """
 from qgis.core import (QgsProject, QgsVectorLayer, QgsEditFormConfig,
                        QgsSnappingConfig, QgsTolerance, QgsFeature)
+from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QPoint
 from qgis.PyQt.QtWidgets import QAction, QWizard, QToolBar
 
@@ -45,7 +46,9 @@ class DefineBoundariesCadasterWizard(QWizard, WIZARD_UI):
         # Load layers
         self._boundary_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_TABLE, True)
         if self._boundary_layer is None:
-            print("Boundary layer couldn't be found...")
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                self.tr("Boundary layer couldn't be found..."),
+                QgsMessageBar.WARNING)
             return
 
         # Disable transactions groups
@@ -75,3 +78,7 @@ class DefineBoundariesCadasterWizard(QWizard, WIZARD_UI):
 
         boundary_toolbar = self.iface.mainWindow().findChild(QToolBar, 'DefineBoundaries')
         boundary_toolbar.setVisible(True)
+
+        self.iface.messageBar().pushMessage("Asistente LADM_COL",
+            self.tr("You can now start capturing boundaries clicking on the map..."),
+            QgsMessageBar.INFO)

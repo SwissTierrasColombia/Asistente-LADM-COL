@@ -110,9 +110,6 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
                     self.cbo_latitude.setCurrentText(y_potential_name)
                     break
 
-
-
-
     def get_fields_from_csv_file(self, csv_path):
         errorReading = False
         try:
@@ -126,4 +123,8 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
         else:
             return line.split(self.txt_delimiter.text().strip())
 
+        if errorReading:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                self.tr("It was not possible to read field names from the CSV. Check the file and try again."),
+                QgsMessageBar.WARNING)
         return []
