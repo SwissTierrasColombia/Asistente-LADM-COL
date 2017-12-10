@@ -73,6 +73,7 @@ class DefineBoundariesCadasterWizard(QWizard, WIZARD_UI):
         self._boundary_layer.setEditFormConfig(form_config)
 
         # Enable edition mode
+        self.iface.layerTreeView().setCurrentLayer(self._boundary_layer)
         self._boundary_layer.startEditing()
         self.iface.actionAddFeature().trigger()
 
