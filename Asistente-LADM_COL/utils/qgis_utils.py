@@ -22,11 +22,14 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import QObject, pyqtSignal
 
-from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
+from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
+                                           BFS_TABLE_BOUNDARY_POINT_FIELD,
+                                           BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
-                                           CCL_TABLE_BOUNDARY_FIELD,
-                                           CCL_TABLE_BOUNDARY_POINT_FIELD,
                                            ID_FIELD,
+                                           MOREBFS_TABLE_LAND_FIELD,
+                                           MOREBFS_TABLE_BOUNDARY_FIELD,
+                                           MORE_BOUNDARY_FACE_STRING_TABLE,
                                            POINT_BOUNDARY_FACE_STRING_TABLE)
 
 class QGISUtils(QObject):
@@ -37,14 +40,14 @@ class QGISUtils(QObject):
     def __init__(self):
         QObject.__init__(self)
 
-    def get_layer(self, db, layer_name, load=False):
+    def get_layer(self, db, layer_name, geometry_type=None, load=False):
         # If layer is in LayerTree, return it
-        layer = self.get_layer_from_layer_tree(layer_name, db.schema)
+        layer = self.get_layer_from_layer_tree(layer_name, db.schema, geometry_type)
         if layer is not None:
             return layer
 
         # Layer is not loaded, create it and load it if 'load' is True
-        res, uri = db.get_uri_for_layer(layer_name)
+        res, uri = db.get_uri_for_layer(layer_name, geometry_type)
         if not res:
             return None
 
@@ -56,16 +59,24 @@ class QGISUtils(QObject):
 
         return None
 
-    def get_layer_from_layer_tree(self, layer_name, schema=None):
+    def get_layer_from_layer_tree(self, layer_name, schema=None, geometry_type=None):
         for k,layer in QgsProject.instance().mapLayers().items():
             if layer.dataProvider().name() == 'postgres':
                 if QgsDataSourceUri(layer.source()).table() == layer_name.lower() and \
                     QgsDataSourceUri(layer.source()).schema() == schema:
-                    return layer
+                    if geometry_type is not None:
+                        if layer.geometryType() == geometry_type:
+                            return layer
+                    else:
+                        return layer
             else:
                 if '|layername=' in layer.source(): # GeoPackage layers
                     if layer.source().split()[-1] == layer_name.lower():
-                        return layer
+                        if geometry_type is not None:
+                            if layer.geometryType() == geometry_type:
+                                return layer
+                        else:
+                            return layer
         return None
 
     def configureAutomaticField(self, layer, field, expression):
@@ -162,14 +173,14 @@ class QGISUtils(QObject):
 
     def fill_topology_table_pointbfs(self, db):
         bfs_layer = self.get_layer(db, POINT_BOUNDARY_FACE_STRING_TABLE, True)
-        if bfs_featureslayer is None:
+        if bfs_layer is None:
             self.message_emitted.emit(self.tr("Table {} not found in the DB!".format(POINT_BOUNDARY_FACE_STRING_TABLE)), QgsMessageBar.WARNING)
             return
 
         bfs_features = bfs_layer.getFeatures()
 
         # Get unique pairs id_boundary-id_boundary_point
-        existing_pairs = [(bfs_feature[CCL_TABLE_BOUNDARY_FIELD], bfs_feature[CCL_TABLE_BOUNDARY_POINT_FIELD]) for bfs_feature in bfs_features]
+        existing_pairs = [(bfs_feature[BFS_TABLE_BOUNDARY_FIELD], bfs_feature[BFS_TABLE_BOUNDARY_POINT_FIELD]) for bfs_feature in bfs_features]
         existing_pairs = set(existing_pairs)
 
         boundary_layer = self.get_layer(db, BOUNDARY_TABLE)
@@ -183,10 +194,9 @@ class QGISUtils(QObject):
                 if not id_pair in existing_pairs: # Avoid duplicated pairs in the DB
                     # Create feature
                     feature = QgsVectorLayerUtils().createFeature(bfs_layer)
-                    feature.setAttribute(CCL_TABLE_BOUNDARY_FIELD, id_pair[0])
-                    feature.setAttribute(CCL_TABLE_BOUNDARY_POINT_FIELD, id_pair[1])
+                    feature.setAttribute(BFS_TABLE_BOUNDARY_FIELD, id_pair[0])
+                    feature.setAttribute(BFS_TABLE_BOUNDARY_POINT_FIELD, id_pair[1])
                     features.append(feature)
-                    print(id_pair)
             bfs_layer.addFeatures(features)
             bfs_layer.commitChanges()
             self.message_emitted.emit(self.tr("{} out of {} records were saved into {}! {} out of {} records already existed in the database.".format(

@@ -24,6 +24,7 @@ from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton
 
 from .gui.point_spa_uni_cadaster_wizard import PointsSpatialUnitCadasterWizard
 from .gui.define_boundaries_cadaster_wizard import DefineBoundariesCadasterWizard
+from .gui.create_land_cadaster_wizard import CreateLandCadasterWizard
 from .gui.settings_dialog import SettingsDialog
 from .utils.qgis_utils import QGISUtils
 
@@ -49,8 +50,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self._spatial_unit_cadaster_menu = QMenu(self.tr("Spatial Unit"), self._cadaster_menu)
         self._point_spatial_unit_cadaster_action = QAction(self.tr("Add Points"), self._spatial_unit_cadaster_menu)
         self._boundary_spatial_unit_cadaster_action = QAction(self.tr("Define Boundaries"), self._spatial_unit_cadaster_menu)
+        self._land_spatial_unit_cadaster_action = QAction(self.tr("Create land"), self._spatial_unit_cadaster_menu)
         self._spatial_unit_cadaster_menu.addActions([self._point_spatial_unit_cadaster_action,
-                                                     self._boundary_spatial_unit_cadaster_action])
+                                                     self._boundary_spatial_unit_cadaster_action,
+                                                     self._land_spatial_unit_cadaster_action])
 
         self._party_cadaster_menu = QMenu(self.tr("Party"), self._cadaster_menu)
 
@@ -81,6 +84,7 @@ class AsistenteLADMCOLPlugin(QObject):
         # Set connections
         self._point_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_point_sp_un_cad)
         self._boundary_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_boundaries_cad)
+        self._land_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_land_cad)
         self._settings_action.triggered.connect(self.show_settings)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
@@ -92,6 +96,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._boundary_merge_action.triggered.connect(partial(self.qgis_utils.merge_boundaries, self.get_db_connection()))
         self._fill_point_BFS_action = QAction("Fill Point BFS", self.iface.mainWindow())
         self._fill_point_BFS_action.triggered.connect(partial(self.qgis_utils.fill_topology_table_pointbfs, self.get_db_connection()))
+        #self._fill_more_BFS_action = QAction("Fill More BFS", self.iface.mainWindow())
+        #self._fill_more_BFS_action.triggered.connect(partial(self.qgis_utils.fill_topology_table_morebfs, self.get_db_connection()))
         self._define_boundary_toolbar = self.iface.addToolBar("Define Boundaries")
         self._define_boundary_toolbar.setObjectName("DefineBoundaries")
         self._define_boundary_toolbar.addActions([self._boundary_explode_action,
@@ -147,4 +153,9 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_wiz_boundaries_cad(self):
         wiz = DefineBoundariesCadasterWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_db_connection_required
+    def show_wiz_land_cad(self):
+        wiz = CreateLandCadasterWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()

@@ -74,7 +74,7 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
 
         csv_layer.selectAll()
 
-        target_point_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_POINT_TABLE, True)
+        target_point_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_POINT_TABLE, load=True)
         if target_point_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 self.tr("Boundary point layer couldn't be found in the DB..."),

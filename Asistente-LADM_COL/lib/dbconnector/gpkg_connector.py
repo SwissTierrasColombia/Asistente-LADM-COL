@@ -45,7 +45,7 @@ class GPKGConnector(DBConnector):
     def validate_db(self):
         pass
 
-    def get_uri_for_layer(self, layer_name):
+    def get_uri_for_layer(self, layer_name, geometry_type=None):
         return (True, '{uri}|layername={table}'.format(
                 uri=self.uri,
                 table=layer_name.lower()

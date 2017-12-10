@@ -19,6 +19,7 @@
 import psycopg2
 import psycopg2.extras
 
+from qgis.core import QgsWkbTypes
 from .db_connector import DBConnector
 
 class PGConnector(DBConnector):
@@ -50,23 +51,36 @@ class PGConnector(DBConnector):
     def validate_db(self):
         pass
 
-    def get_uri_for_layer(self, layer_name):
+    def get_uri_for_layer(self, layer_name, geometry_type=None):
         res, cur = self.get_tables_info()
         if not res:
             return (res, cur)
+        data_source_uri = ''
 
         for record in cur:
             if record['schemaname'] == self.schema and record['tablename'] == layer_name.lower():
                 if record['geometry_column']:
-                    data_source_uri = '{uri} key={primary_key} estimatedmetadata=true srid={srid} type={type} table="{schema}"."{table}" ({geometry_column})'.format(
-                        uri=self.uri,
-                        primary_key=record['primary_key'],
-                        srid=record['srid'],
-                        type=record['type'],
-                        schema=record['schemaname'],
-                        table=record['tablename'],
-                        geometry_column=record['geometry_column']
-                    )
+                    if geometry_type is not None:
+                        if QgsWkbTypes.geometryType(QgsWkbTypes.parseType(record['type'])) == geometry_type:
+                            data_source_uri = '{uri} key={primary_key} estimatedmetadata=true srid={srid} type={type} table="{schema}"."{table}" ({geometry_column})'.format(
+                                uri=self.uri,
+                                primary_key=record['primary_key'],
+                                srid=record['srid'],
+                                type=record['type'],
+                                schema=record['schemaname'],
+                                table=record['tablename'],
+                                geometry_column=record['geometry_column']
+                            )
+                    else:
+                        data_source_uri = '{uri} key={primary_key} estimatedmetadata=true srid={srid} type={type} table="{schema}"."{table}" ({geometry_column})'.format(
+                            uri=self.uri,
+                            primary_key=record['primary_key'],
+                            srid=record['srid'],
+                            type=record['type'],
+                            schema=record['schemaname'],
+                            table=record['tablename'],
+                            geometry_column=record['geometry_column']
+                        )
                 else:
                     data_source_uri = '{uri} key={primary_key} table="{schema}"."{table}"'.format(
                         uri=self.uri,
@@ -74,7 +88,8 @@ class PGConnector(DBConnector):
                         schema=record['schemaname'],
                         table=record['tablename']
                     )
-                return (True, data_source_uri)
+        if data_source_uri:
+            return (True, data_source_uri)
         return (False, self.tr("Layer '{}' was not found in the database (schema: {}).").format(layer_name, self.schema))
 
     def get_tables_info(self):

@@ -44,7 +44,7 @@ class DefineBoundariesCadasterWizard(QWizard, WIZARD_UI):
 
     def prepare_boundary_creation(self):
         # Load layers
-        self._boundary_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_TABLE, True)
+        self._boundary_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_TABLE, load=True)
         if self._boundary_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 self.tr("Boundary layer couldn't be found..."),

@@ -34,7 +34,7 @@ class DBConnector(QObject):
     def validate_db(self):
         pass
 
-    def get_uri_for_layer(self, layer_name):
+    def get_uri_for_layer(self, layer_name, geometry_type=None):
         pass
 
     def get_description(self):
