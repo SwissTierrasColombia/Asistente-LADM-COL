@@ -96,13 +96,14 @@ class AsistenteLADMCOLPlugin(QObject):
         self._boundary_merge_action.triggered.connect(partial(self.qgis_utils.merge_boundaries, self.get_db_connection()))
         self._fill_point_BFS_action = QAction("Fill Point BFS", self.iface.mainWindow())
         self._fill_point_BFS_action.triggered.connect(partial(self.qgis_utils.fill_topology_table_pointbfs, self.get_db_connection()))
-        #self._fill_more_BFS_action = QAction("Fill More BFS", self.iface.mainWindow())
-        #self._fill_more_BFS_action.triggered.connect(partial(self.qgis_utils.fill_topology_table_morebfs, self.get_db_connection()))
+        self._fill_more_BFS_action = QAction("Fill More BFS", self.iface.mainWindow())
+        self._fill_more_BFS_action.triggered.connect(partial(self.qgis_utils.fill_topology_table_morebfs, self.get_db_connection()))
         self._define_boundary_toolbar = self.iface.addToolBar("Define Boundaries")
         self._define_boundary_toolbar.setObjectName("DefineBoundaries")
         self._define_boundary_toolbar.addActions([self._boundary_explode_action,
                                                   self._boundary_merge_action,
-                                                  self._fill_point_BFS_action])
+                                                  self._fill_point_BFS_action,
+                                                  self._fill_more_BFS_action])
         self._define_boundary_toolbar.setVisible(False)
 
     def refresh_map(self):

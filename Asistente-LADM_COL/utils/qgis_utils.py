@@ -27,6 +27,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
                                            ID_FIELD,
+                                           LAND_TABLE,
                                            MOREBFS_TABLE_LAND_FIELD,
                                            MOREBFS_TABLE_BOUNDARY_FIELD,
                                            MORE_BOUNDARY_FACE_STRING_TABLE,
@@ -172,7 +173,7 @@ class QGISUtils(QObject):
         self.map_refresh_requested.emit()
 
     def fill_topology_table_pointbfs(self, db):
-        bfs_layer = self.get_layer(db, POINT_BOUNDARY_FACE_STRING_TABLE, True)
+        bfs_layer = self.get_layer(db, POINT_BOUNDARY_FACE_STRING_TABLE, load=True)
         if bfs_layer is None:
             self.message_emitted.emit(self.tr("Table {} not found in the DB!".format(POINT_BOUNDARY_FACE_STRING_TABLE)), QgsMessageBar.WARNING)
             return
@@ -227,4 +228,60 @@ class QGISUtils(QObject):
                     if abs(line_vertex.x() - candidate_point.x()) < 0.001 \
                        and abs(line_vertex.y() - candidate_point.y()) < 0.001:
                         intersect_pairs.append((line[ID_FIELD], candidate_feature[ID_FIELD]))
+        return intersect_pairs
+
+    def fill_topology_table_morebfs(self, db):
+        more_bfs_layer = self.get_layer(db, MORE_BOUNDARY_FACE_STRING_TABLE, load=True)
+        if more_bfs_layer is None:
+            self.message_emitted.emit(self.tr("Table {} not found in the DB!".format(MORE_BOUNDARY_FACE_STRING_TABLE)), QgsMessageBar.WARNING)
+            return
+
+        more_bfs_features = more_bfs_layer.getFeatures()
+
+        # Get unique pairs id_boundary-id_land
+        existing_pairs = [(more_bfs_feature[MOREBFS_TABLE_LAND_FIELD], more_bfs_feature[MOREBFS_TABLE_BOUNDARY_FIELD]) for more_bfs_feature in more_bfs_features]
+        existing_pairs = set(existing_pairs)
+
+        boundary_layer = self.get_layer(db, BOUNDARY_TABLE)
+        land_layer = self.get_layer(db, LAND_TABLE)
+        id_pairs = self.get_pair_boundary_land(boundary_layer, land_layer)
+
+        if id_pairs:
+            more_bfs_layer.startEditing()
+            features = list()
+            for id_pair in id_pairs:
+                if not id_pair in existing_pairs: # Avoid duplicated pairs in the DB
+                    # Create feature
+                    feature = QgsVectorLayerUtils().createFeature(more_bfs_layer)
+                    feature.setAttribute(MOREBFS_TABLE_LAND_FIELD, id_pair[0])
+                    feature.setAttribute(MOREBFS_TABLE_BOUNDARY_FIELD, id_pair[1])
+                    features.append(feature)
+            more_bfs_layer.addFeatures(features)
+            more_bfs_layer.commitChanges()
+            self.message_emitted.emit(self.tr("{} out of {} records were saved into {}! {} out of {} records already existed in the database.".format(
+                len(features),
+                len(id_pairs),
+                MORE_BOUNDARY_FACE_STRING_TABLE,
+                len(id_pairs) - len(features),
+                len(id_pairs)
+            )), QgsMessageBar.INFO)
+        else:
+            self.message_emitted.emit(self.tr("No pairs id_boundary-id_land found."), QgsMessageBar.INFO)
+
+    def get_pair_boundary_land(self, boundary_layer, land_layer):
+        lines = boundary_layer.getFeatures()
+        polygons = land_layer.getSelectedFeatures()
+        index = QgsSpatialIndex(boundary_layer)
+        intersect_pairs = list()
+        for polygon in polygons:
+            bbox = polygon.geometry().boundingBox()
+            bbox.scale(1.001)
+            candidates_ids = index.intersects(bbox)
+            candidates_features = boundary_layer.getFeatures(candidates_ids)
+            for candidate_feature in candidates_features:
+                polygon_geom = polygon.geometry()
+                candidate_geometry = candidate_feature.geometry()
+                if polygon_geom.intersects(candidate_geometry):
+                    if polygon_geom.intersection(candidate_geometry).type() != QgsWkbTypes.PointGeometry:
+                        intersect_pairs.append((polygon['t_id'], candidate_feature['t_id']))
         return intersect_pairs
