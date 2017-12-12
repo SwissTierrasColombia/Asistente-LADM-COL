@@ -20,48 +20,79 @@
    <set>QWizard::HaveHelpButton</set>
   </property>
   <widget class="QWizardPage" name="wizardPage1">
-   <widget class="QGroupBox" name="groupBox">
-    <property name="geometry">
-     <rect>
-      <x>9</x>
-      <y>9</y>
-      <width>361</width>
-      <height>221</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>How would you like to define boundaries?</string>
-    </property>
-    <widget class="QRadioButton" name="radioButton">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>80</y>
-       <width>231</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Digitalization</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButton_2">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>130</y>
-       <width>211</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>From lists of ordered points</string>
-     </property>
-    </widget>
-   </widget>
+   <property name="title">
+    <string/>
+   </property>
+   <property name="subTitle">
+    <string>How would you like to define boundaries?</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="1">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <widget class="QRadioButton" name="radioButton">
+      <property name="toolTip">
+       <string>Digitalize lines on the map canvas using QGIS tools</string>
+      </property>
+      <property name="text">
+       <string>Digitalization</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <spacer name="verticalSpacer_3">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="0" colspan="2">
+     <widget class="QRadioButton" name="radioButton_2">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="toolTip">
+       <string>Use lists of ordered points defining boundaries</string>
+      </property>
+      <property name="text">
+       <string>From lists of ordered points</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>
