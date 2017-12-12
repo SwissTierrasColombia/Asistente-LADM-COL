@@ -32,9 +32,9 @@
     <property name="title">
      <string>How would you like to create lands?</string>
     </property>
-    <widget class="QRadioButton" name="radioButton">
+    <widget class="QRadioButton" name="rad_land_from_boundaries">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -51,10 +51,10 @@
       <bool>true</bool>
      </property>
      <property name="checked">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
-    <widget class="QRadioButton" name="radioButton_2">
+    <widget class="QRadioButton" name="rad_land_from_refactored">
      <property name="geometry">
       <rect>
        <x>70</x>
@@ -67,7 +67,7 @@
       <string>From a refactored layer</string>
      </property>
      <property name="checked">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
    </widget>

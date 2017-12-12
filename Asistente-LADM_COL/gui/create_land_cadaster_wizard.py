@@ -41,7 +41,13 @@ class CreateLandCadasterWizard(QWizard, WIZARD_UI):
 
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PolygonLayer)
 
-        self.button(QWizard.FinishButton).clicked.connect(self.create_land)
+        self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
+
+    def finished_dialog(self):
+        if self.rad_land_from_boundaries.isChecked():
+            self.qgis_utils.polygonize_boundaries(self._db)
+        else:
+            self.create_land()
 
     def create_land(self):
         # Load layers

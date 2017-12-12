@@ -285,3 +285,34 @@ class QGISUtils(QObject):
                     if polygon_geom.intersection(candidate_geometry).type() == QgsWkbTypes.LineGeometry:
                         intersect_pairs.append((polygon[ID_FIELD], candidate_feature[ID_FIELD]))
         return intersect_pairs
+
+    def polygonize_boundaries(self, db):
+        boundaries = self.get_layer(db, BOUNDARY_TABLE)
+        if boundaries is None:
+            self.message_emitted.emit(self.tr("Layer {} not found in the DB!".format(BOUNDARY_TABLE)), QgsMessageBar.WARNING)
+            return
+        selected_boundaries = boundaries.selectedFeatures()
+        if not selected_boundaries:
+            self.message_emitted.emit(self.tr("Please first select boundaries!"), QgsMessageBar.WARNING)
+            return
+
+        lands = self.get_layer(db, LAND_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
+        if lands is None:
+            self.message_emitted.emit(self.tr("Layer {} not found in the DB!".format(LAND_TABLE)), QgsMessageBar.WARNING)
+            return
+
+        boundary_geometries = [f.geometry() for f in selected_boundaries]
+        collection = QgsGeometry().polygonize(boundary_geometries)
+        features = list()
+        for polygon in collection.asGeometryCollection():
+            feature = QgsVectorLayerUtils().createFeature(lands, polygon)
+            features.append(feature)
+
+        if features:
+            lands.startEditing()
+            lands.addFeatures(features)
+            self.map_refresh_requested.emit()
+            self.message_emitted.emit(self.tr("{} new land(s) has(have) been created!".format(len(features))), QgsMessageBar.INFO)
+        else:
+            self.message_emitted.emit(self.tr("No land could be created. Make sure selected boundaries are closed!"), QgsMessageBar.WARNING)
+            return
