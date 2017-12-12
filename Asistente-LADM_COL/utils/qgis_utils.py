@@ -163,7 +163,7 @@ class QGISUtils(QObject):
         # Remove the selected lines, we'll add exploded segments in a while
         layer.deleteFeatures([sf.id() for sf in layer.selectedFeatures()])
 
-        # Convert to mulipart geometry if needed
+        # Convert to multipart geometry if needed
         if QgsWkbTypes.isMultiType(layer.wkbType()) and not unionGeom.isMultipart():
             unionGeom.convertToMultiType()
 
@@ -282,6 +282,6 @@ class QGISUtils(QObject):
                 polygon_geom = polygon.geometry()
                 candidate_geometry = candidate_feature.geometry()
                 if polygon_geom.intersects(candidate_geometry):
-                    if polygon_geom.intersection(candidate_geometry).type() != QgsWkbTypes.PointGeometry:
-                        intersect_pairs.append((polygon['t_id'], candidate_feature['t_id']))
+                    if polygon_geom.intersection(candidate_geometry).type() == QgsWkbTypes.LineGeometry:
+                        intersect_pairs.append((polygon[ID_FIELD], candidate_feature[ID_FIELD]))
         return intersect_pairs
