@@ -18,9 +18,9 @@
 """
 from qgis.core import QgsMessageLog
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import QObject
+from qgis.PyQt.QtCore import QObject, Qt
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton
+from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton, QMessageBox
 
 from .gui.point_spa_uni_cadaster_wizard import PointsSpatialUnitCadasterWizard
 from .gui.define_boundaries_cadaster_wizard import DefineBoundariesCadasterWizard
@@ -86,6 +86,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._boundary_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_boundaries_cad)
         self._land_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_land_cad)
         self._settings_action.triggered.connect(self.show_settings)
+        self._about_action.triggered.connect(self.show_about_dialog)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
 
@@ -160,3 +161,13 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_wiz_land_cad(self):
         wiz = CreateLandCadasterWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
+
+    def show_about_dialog(self):
+        self.msg = QMessageBox()
+        #self.msg.setIcon(QMessageBox.Information)
+        self.msg.setTextFormat(Qt.RichText)
+        self.msg.setWindowTitle(self.tr('About'))
+        description = self.tr("""<html><head/><body><p align="center"><span style=" font-size:14pt; font-weight:600;">Asistente LADM_COL</span></p><p align="center">Plugin de <a href="http://qgis.org"><span style=" text-decoration: underline; color:#0000ff;">QGIS</span></a> que ayuda a capturar y mantener datos conformes con <a href="https://github.com/AgenciaImplementacion/LADM_COL"><span style=" text-decoration: underline; color:#0000ff;">LADM_COL</span></a> y a generar archivos de intercambio de <a href="http://www.interlis.ch/index_e.htm"><span style=" text-decoration: underline; color:#0000ff;">INTERLIS</span></a> (.XTF).</p><p align="center">Licencia: <a href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE"><span style=" text-decoration: underline; color:#0000ff;">GNU General Public License v3.0</span></a></p><p align="center">Un proyecto de:<br/><a href="https://www.proadmintierra.info/"><span style=" text-decoration: underline; color:#0000ff;">Agencia de Implementación</span></a> (<a href="http://bsf-swissphoto.com/"><span style=" text-decoration: underline; color:#0000ff;">BSF-Swissphoto AG</span></a> - <a href="http://www.incige.com/"><span style=" text-decoration: underline; color:#0000ff;">INCIGE S.A.S</span></a>)</p><p align="center"><br/></p></body></html>""")
+        self.msg.setText(description)
+        self.msg.setStandardButtons(QMessageBox.Ok)
+        msg_box = self.msg.exec_()
