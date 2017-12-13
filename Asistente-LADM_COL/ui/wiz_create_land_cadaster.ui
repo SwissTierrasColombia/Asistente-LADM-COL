@@ -97,7 +97,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWizardPage" name="wizardPage">
+  <widget class="QWizardPage" name="wizardPage2">
    <property name="subTitle">
     <string>Select the refactored land layer </string>
    </property>

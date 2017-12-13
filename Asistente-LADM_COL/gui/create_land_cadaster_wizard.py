@@ -41,7 +41,15 @@ class CreateLandCadasterWizard(QWizard, WIZARD_UI):
 
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PolygonLayer)
 
+        self.rad_land_from_boundaries.toggled.connect(self.adjust_pages)
+        self.rad_land_from_boundaries.toggled.emit(True)
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
+
+    def adjust_pages(self):
+        if self.rad_land_from_boundaries.isChecked():
+            self.wizardPage1.setFinalPage(True)
+        else:
+            self.wizardPage1.setFinalPage(False)
 
     def finished_dialog(self):
         if self.rad_land_from_boundaries.isChecked():
