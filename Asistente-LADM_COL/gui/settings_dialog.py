@@ -128,6 +128,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.gpkg_config.setVisible(True)
 
     def test_connection(self):
+        self._db = None # Reset db connection
         res, msg = self.get_db_connection().test_connection()
         self.show_message(msg, QgsMessageBar.INFO if res else QgsMessageBar.WARNING)
         print("Test connection!")
