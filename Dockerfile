@@ -8,5 +8,3 @@ MAINTAINER Agencia Implementacion <agenciadeimplementacion@incige.com>
 ENV LANG=C.UTF-8
 
 WORKDIR /
-
-CMD ["sh", "/usr/src/scripts/run-docker-tests.sh"]

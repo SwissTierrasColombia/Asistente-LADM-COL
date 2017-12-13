@@ -12,3 +12,6 @@ services:
       - ${TRAVIS_BUILD_DIR}:/usr/src
     links:
       - postgres
+    depends_on:
+      - "postgres"
+    command: ["/usr/src/scripts/run-docker-tests.sh"]
