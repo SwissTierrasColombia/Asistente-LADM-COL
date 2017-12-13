@@ -1,0 +1,42 @@
+language: python
+python:
+  - 3.5
+
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y install docker-ce
+
+install:
+  - pip install -r requirements.txt
+  - docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION} .
+
+jobs:
+  include:
+    - stage: test
+      env:
+        QGIS_TEST_VERSION="latest"
+      script: docker-compose run qgis
+
+    - stage: test
+      env:
+        QGIS_TEST_VERSION="2.99-alpha"
+      script: docker-compose run qgis
+
+    - stage: deploy
+      if: tag IS present
+      install:
+        - pip install -r requirements.txt
+      script: echo 'si se necesita hacer deploy'
+
+env:
+  global:
+    - OSGEO_USERNAME=agenciadeimplementacion
+    # Inject OSGEO_PASSWORD matching the OSGEO_USERNAME
+    # Generate with the following command for proper special characters support
+    #     travis encrypt OSGEO_PASSWORD=\''Your super secret password!'\'
+    - secure: ""
+    # OAUTH_TOKEN <- personal access token for github to deploy on "releases"
+    # https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
+    - secure: ""
