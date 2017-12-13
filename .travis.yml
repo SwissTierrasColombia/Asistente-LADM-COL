@@ -10,7 +10,7 @@ before_install:
 
 install:
   - pip install -r requirements.txt
-  - docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION}  .docker
+  - docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION}
 
 jobs:
   include:
@@ -18,7 +18,7 @@ jobs:
       env:
         QGIS_TEST_VERSION="latest"
       script: docker-compose run qgis /usr/src/scripts/run-docker-tests.sh
-      
+
     - stage: test
       env:
         QGIS_TEST_VERSION="2.99-alpha"
