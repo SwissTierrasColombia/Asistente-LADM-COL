@@ -24,7 +24,7 @@ from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton, QMessageBox
 
 from .gui.point_spa_uni_cadaster_wizard import PointsSpatialUnitCadasterWizard
 from .gui.define_boundaries_cadaster_wizard import DefineBoundariesCadasterWizard
-from .gui.create_land_cadaster_wizard import CreateLandCadasterWizard
+from .gui.create_plot_cadaster_wizard import CreatePlotCadasterWizard
 from .gui.settings_dialog import SettingsDialog
 from .utils.qgis_utils import QGISUtils
 
@@ -50,10 +50,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self._spatial_unit_cadaster_menu = QMenu(self.tr("Spatial Unit"), self._cadaster_menu)
         self._point_spatial_unit_cadaster_action = QAction(self.tr("Add Points"), self._spatial_unit_cadaster_menu)
         self._boundary_spatial_unit_cadaster_action = QAction(self.tr("Define Boundaries"), self._spatial_unit_cadaster_menu)
-        self._land_spatial_unit_cadaster_action = QAction(self.tr("Create land"), self._spatial_unit_cadaster_menu)
+        self._plot_spatial_unit_cadaster_action = QAction(self.tr("Create plot"), self._spatial_unit_cadaster_menu)
         self._spatial_unit_cadaster_menu.addActions([self._point_spatial_unit_cadaster_action,
                                                      self._boundary_spatial_unit_cadaster_action,
-                                                     self._land_spatial_unit_cadaster_action])
+                                                     self._plot_spatial_unit_cadaster_action])
 
         self._party_cadaster_menu = QMenu(self.tr("Party"), self._cadaster_menu)
 
@@ -84,7 +84,7 @@ class AsistenteLADMCOLPlugin(QObject):
         # Set connections
         self._point_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_point_sp_un_cad)
         self._boundary_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_boundaries_cad)
-        self._land_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_land_cad)
+        self._plot_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_plot_cad)
         self._settings_action.triggered.connect(self.show_settings)
         self._about_action.triggered.connect(self.show_about_dialog)
         self.qgis_utils.message_emitted.connect(self.show_message)
@@ -171,8 +171,8 @@ class AsistenteLADMCOLPlugin(QObject):
         wiz.exec_()
 
     @_db_connection_required
-    def show_wiz_land_cad(self):
-        wiz = CreateLandCadasterWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+    def show_wiz_plot_cad(self):
+        wiz = CreatePlotCadasterWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     def show_about_dialog(self):

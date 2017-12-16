@@ -24,45 +24,45 @@ from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
 from ..config.table_mapping_config import (
-    LAND_TABLE,
+    PLOT_TABLE,
     VIDA_UTIL_FIELD_BOUNDARY_TABLE
 )
 
-WIZARD_UI = get_ui_class('wiz_create_land_cadaster.ui')
+WIZARD_UI = get_ui_class('wiz_create_plot_cadaster.ui')
 
-class CreateLandCadasterWizard(QWizard, WIZARD_UI):
+class CreatePlotCadasterWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
-        self._land_layer = None
+        self._plot_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
 
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PolygonLayer)
 
-        self.rad_land_from_boundaries.toggled.connect(self.adjust_pages)
-        self.rad_land_from_boundaries.toggled.emit(True)
+        self.rad_plot_from_boundaries.toggled.connect(self.adjust_pages)
+        self.rad_plot_from_boundaries.toggled.emit(True)
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
 
     def adjust_pages(self):
-        if self.rad_land_from_boundaries.isChecked():
+        if self.rad_plot_from_boundaries.isChecked():
             self.wizardPage1.setFinalPage(True)
         else:
             self.wizardPage1.setFinalPage(False)
 
     def finished_dialog(self):
-        if self.rad_land_from_boundaries.isChecked():
+        if self.rad_plot_from_boundaries.isChecked():
             self.qgis_utils.polygonize_boundaries(self._db)
         else:
-            self.create_land()
+            self.create_plot()
 
-    def create_land(self):
+    def create_plot(self):
         # Load layers
-        self._land_layer = self.qgis_utils.get_layer(self._db, LAND_TABLE, QgsWkbTypes.PolygonGeometry, True)
-        if self._land_layer is None:
+        self._plot_layer = self.qgis_utils.get_layer(self._db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, True)
+        if self._plot_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                self.tr("Land layer couldn't be found..."),
+                self.tr("Plot layer couldn't be found..."),
                 QgsMessageBar.WARNING)
             return
 
@@ -78,13 +78,13 @@ class CreateLandCadasterWizard(QWizard, WIZARD_UI):
         for f in refactored_features:
             attrs_list = f.attributes()
             attrs = {i:j for i,j in enumerate(attrs_list) if j != None and i!=0} # Exclude NULLs and t_id
-            new_feature = QgsVectorLayerUtils().createFeature(self._land_layer, f.geometry(), attrs)
+            new_feature = QgsVectorLayerUtils().createFeature(self._plot_layer, f.geometry(), attrs)
             features.append(new_feature)
 
-        self._land_layer.startEditing()
-        self._land_layer.addFeatures(features)
-        self._land_layer.commitChanges()
+        self._plot_layer.startEditing()
+        self._plot_layer.addFeatures(features)
+        self._plot_layer.commitChanges()
 
         self.iface.messageBar().pushMessage("Asistente LADM_COL",
-            self.tr("{} new land(s) has(have) been created!".format(len(features))),
+            self.tr("{} new plot(s) has(have) been created!".format(len(features))),
             QgsMessageBar.INFO)

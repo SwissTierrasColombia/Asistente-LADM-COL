@@ -27,8 +27,8 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
                                            ID_FIELD,
-                                           LAND_TABLE,
-                                           MOREBFS_TABLE_LAND_FIELD,
+                                           PLOT_TABLE,
+                                           MOREBFS_TABLE_PLOT_FIELD,
                                            MOREBFS_TABLE_BOUNDARY_FIELD,
                                            MORE_BOUNDARY_FACE_STRING_TABLE,
                                            POINT_BOUNDARY_FACE_STRING_TABLE)
@@ -247,13 +247,13 @@ class QGISUtils(QObject):
 
         more_bfs_features = more_bfs_layer.getFeatures()
 
-        # Get unique pairs id_boundary-id_land
-        existing_pairs = [(more_bfs_feature[MOREBFS_TABLE_LAND_FIELD], more_bfs_feature[MOREBFS_TABLE_BOUNDARY_FIELD]) for more_bfs_feature in more_bfs_features]
+        # Get unique pairs id_boundary-id_plot
+        existing_pairs = [(more_bfs_feature[MOREBFS_TABLE_PLOT_FIELD], more_bfs_feature[MOREBFS_TABLE_BOUNDARY_FIELD]) for more_bfs_feature in more_bfs_features]
         existing_pairs = set(existing_pairs)
 
         boundary_layer = self.get_layer(db, BOUNDARY_TABLE)
-        land_layer = self.get_layer(db, LAND_TABLE)
-        id_pairs = self.get_pair_boundary_land(boundary_layer, land_layer)
+        plot_layer = self.get_layer(db, PLOT_TABLE)
+        id_pairs = self.get_pair_boundary_plot(boundary_layer, plot_layer)
 
         if id_pairs:
             more_bfs_layer.startEditing()
@@ -262,7 +262,7 @@ class QGISUtils(QObject):
                 if not id_pair in existing_pairs: # Avoid duplicated pairs in the DB
                     # Create feature
                     feature = QgsVectorLayerUtils().createFeature(more_bfs_layer)
-                    feature.setAttribute(MOREBFS_TABLE_LAND_FIELD, id_pair[0])
+                    feature.setAttribute(MOREBFS_TABLE_PLOT_FIELD, id_pair[0])
                     feature.setAttribute(MOREBFS_TABLE_BOUNDARY_FIELD, id_pair[1])
                     features.append(feature)
             more_bfs_layer.addFeatures(features)
@@ -275,11 +275,11 @@ class QGISUtils(QObject):
                 len(id_pairs)
             )), QgsMessageBar.INFO)
         else:
-            self.message_emitted.emit(self.tr("No pairs id_boundary-id_land found."), QgsMessageBar.INFO)
+            self.message_emitted.emit(self.tr("No pairs id_boundary-id_plot found."), QgsMessageBar.INFO)
 
-    def get_pair_boundary_land(self, boundary_layer, land_layer):
+    def get_pair_boundary_plot(self, boundary_layer, plot_layer):
         lines = boundary_layer.getFeatures()
-        polygons = land_layer.getSelectedFeatures()
+        polygons = plot_layer.getSelectedFeatures()
         index = QgsSpatialIndex(boundary_layer)
         intersect_pairs = list()
         for polygon in polygons:
@@ -305,23 +305,23 @@ class QGISUtils(QObject):
             self.message_emitted.emit(self.tr("Please first select boundaries!"), QgsMessageBar.WARNING)
             return
 
-        lands = self.get_layer(db, LAND_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
-        if lands is None:
-            self.message_emitted.emit(self.tr("Layer {} not found in the DB!".format(LAND_TABLE)), QgsMessageBar.WARNING)
+        plots = self.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
+        if plots is None:
+            self.message_emitted.emit(self.tr("Layer {} not found in the DB!".format(PLOT_TABLE)), QgsMessageBar.WARNING)
             return
 
         boundary_geometries = [f.geometry() for f in selected_boundaries]
         collection = QgsGeometry().polygonize(boundary_geometries)
         features = list()
         for polygon in collection.asGeometryCollection():
-            feature = QgsVectorLayerUtils().createFeature(lands, polygon)
+            feature = QgsVectorLayerUtils().createFeature(plots, polygon)
             features.append(feature)
 
         if features:
-            lands.startEditing()
-            lands.addFeatures(features)
+            plots.startEditing()
+            plots.addFeatures(features)
             self.map_refresh_requested.emit()
-            self.message_emitted.emit(self.tr("{} new land(s) has(have) been created!".format(len(features))), QgsMessageBar.INFO)
+            self.message_emitted.emit(self.tr("{} new plot(s) has(have) been created!".format(len(features))), QgsMessageBar.INFO)
         else:
-            self.message_emitted.emit(self.tr("No land could be created. Make sure selected boundaries are closed!"), QgsMessageBar.WARNING)
+            self.message_emitted.emit(self.tr("No plot could be created. Make sure selected boundaries are closed!"), QgsMessageBar.WARNING)
             return

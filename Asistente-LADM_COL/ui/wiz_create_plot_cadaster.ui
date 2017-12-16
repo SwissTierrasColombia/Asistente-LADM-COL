@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>wiz_land</class>
- <widget class="QWizard" name="wiz_land">
+ <class>wiz_plot</class>
+ <widget class="QWizard" name="wiz_plot">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -14,23 +14,23 @@
    <cursorShape>ArrowCursor</cursorShape>
   </property>
   <property name="windowTitle">
-   <string>Create lands</string>
+   <string>Create plots</string>
   </property>
   <property name="options">
    <set>QWizard::HaveHelpButton</set>
   </property>
   <widget class="QWizardPage" name="wizardPage1">
    <property name="subTitle">
-    <string>How would you like to create lands?</string>
+    <string>How would you like to create plots?</string>
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="2" column="0" rowspan="2">
-     <widget class="QRadioButton" name="rad_land_from_boundaries">
+     <widget class="QRadioButton" name="rad_plot_from_boundaries">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="toolTip">
-       <string>Generate land polygons from selected boundaries</string>
+       <string>Generate plot polygons from selected boundaries</string>
       </property>
       <property name="text">
        <string>Selecting existing boundaries</string>
@@ -44,7 +44,7 @@
      </widget>
     </item>
     <item row="5" column="0">
-     <widget class="QRadioButton" name="rad_land_from_refactored">
+     <widget class="QRadioButton" name="rad_plot_from_refactored">
       <property name="toolTip">
        <string>Use an input layer (probably the output of Refactor Fields algorithm in QGIS Processing) to copy features from</string>
       </property>
@@ -99,7 +99,7 @@
   </widget>
   <widget class="QWizardPage" name="wizardPage2">
    <property name="subTitle">
-    <string>Select the refactored land layer </string>
+    <string>Select the refactored plot layer </string>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
