@@ -36,6 +36,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
 class QGISUtils(QObject):
 
     message_emitted = pyqtSignal(str, int) # Message, level
+    message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, callback, level
     map_refresh_requested = pyqtSignal()
 
     def __init__(self):
@@ -115,7 +116,11 @@ class QGISUtils(QObject):
         layer = self.get_layer_from_layer_tree(BOUNDARY_TABLE, db.schema)
 
         if layer is None:
-            self.message_emitted.emit(self.tr("First load the layer {} into QGIS!".format(BOUNDARY_TABLE)), QgsMessageBar.WARNING)
+            self.message_with_button_load_layer_emitted.emit(
+                self.tr("First load the layer {} into QGIS!".format(BOUNDARY_TABLE)),
+                self.tr("Load layer {} now".format(BOUNDARY_TABLE)),
+                [BOUNDARY_TABLE],
+                QgsMessageBar.WARNING)
             return
 
         num_boundaries = len(layer.selectedFeatures())
@@ -145,11 +150,15 @@ class QGISUtils(QObject):
     def merge_boundaries(self, db):
         layer = self.get_layer_from_layer_tree(BOUNDARY_TABLE, db.schema)
         if layer is None:
-            self.message_emitted.emit(self.tr("First load the layer {}!".format(BOUNDARY_TABLE)), QgsMessageBar.WARNING)
+            self.message_with_button_load_layer_emitted.emit(
+                self.tr("First load the layer {} into QGIS!".format(BOUNDARY_TABLE)),
+                self.tr("Load layer {} now".format(BOUNDARY_TABLE)),
+                [BOUNDARY_TABLE],
+                QgsMessageBar.WARNING)
             return
 
         if len(layer.selectedFeatures()) < 2:
-            self.message_emitted.emit(self.tr("Select at least 2 boundaries!"), QgsMessageBar.WARNING)
+            self.message_emitted.emit(self.tr("First select at least 2 boundaries!"), QgsMessageBar.WARNING)
             return
 
         num_boundaries = len(layer.selectedFeatures())

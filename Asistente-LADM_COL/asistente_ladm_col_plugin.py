@@ -88,6 +88,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._settings_action.triggered.connect(self.show_settings)
         self._about_action.triggered.connect(self.show_about_dialog)
         self.qgis_utils.message_emitted.connect(self.show_message)
+        self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
 
         # Toolbar for Define Boundaries
@@ -112,6 +113,18 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_message(self, msg, level):
         self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level)
+
+    def show_message_to_load_layer(self, msg, button_text, layer_list, level):
+        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        button = QPushButton(widget)
+        button.setText(button_text)
+        button.pressed.connect(partial(self.load_layers, layer_list))
+        widget.layout().addWidget(button)
+        self.iface.messageBar().pushWidget(widget, level, 15)
+
+    def load_layers(self, layer_list):
+        for layer in layer_list:
+            self.qgis_utils.get_layer(self.get_db_connection(), layer, load=True)
 
     def unload(self):
         self.iface.mainWindow().removeToolBar(self._define_boundary_toolbar)
