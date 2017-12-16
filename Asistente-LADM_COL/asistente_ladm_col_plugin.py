@@ -16,9 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os
+
 from qgis.core import QgsMessageLog
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import QObject, Qt
+from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
+                              QLocale, QSettings)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton, QMessageBox
 
@@ -35,6 +38,8 @@ class AsistenteLADMCOLPlugin(QObject):
     def __init__(self, iface):
         QObject.__init__(self)
         self.iface = iface
+        self.plugin_dir = os.path.dirname(__file__)
+        self.installTranslator()
 
     def initGui(self):
         # Set Menus
@@ -196,3 +201,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.msg.setText(description)
         self.msg.setStandardButtons(QMessageBox.Ok)
         msg_box = self.msg.exec_()
+
+    def installTranslator(self):
+        qgis_locale = QLocale(QSettings().value('locale/userLocale'))
+        locale_path = os.path.join(self.plugin_dir, 'i18n')
+        self.translator = QTranslator()
+        self.translator.load(qgis_locale, 'Asistente-LADM_COL', '_', locale_path)
+        QCoreApplication.installTranslator(self.translator)
