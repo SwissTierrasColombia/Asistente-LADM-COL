@@ -93,13 +93,13 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # Toolbar for Define Boundaries
         self._boundary_explode_action = QAction("Explode...", self.iface.mainWindow())
-        self._boundary_explode_action.triggered.connect(partial(self.qgis_utils.explode_boundaries, self.get_db_connection()))
+        self._boundary_explode_action.triggered.connect(self.call_explode_boundaries)
         self._boundary_merge_action = QAction("Merge...", self.iface.mainWindow())
-        self._boundary_merge_action.triggered.connect(partial(self.qgis_utils.merge_boundaries, self.get_db_connection()))
+        self._boundary_merge_action.triggered.connect(self.call_merge_boundaries)
         self._fill_point_BFS_action = QAction("Fill Point BFS", self.iface.mainWindow())
-        self._fill_point_BFS_action.triggered.connect(partial(self.qgis_utils.fill_topology_table_pointbfs, self.get_db_connection()))
+        self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
         self._fill_more_BFS_action = QAction("Fill More BFS", self.iface.mainWindow())
-        self._fill_more_BFS_action.triggered.connect(partial(self.qgis_utils.fill_topology_table_morebfs, self.get_db_connection()))
+        self._fill_more_BFS_action.triggered.connect(self.call_fill_topology_table_morebfs)
         self._define_boundary_toolbar = self.iface.addToolBar("Define Boundaries")
         self._define_boundary_toolbar.setObjectName("DefineBoundaries")
         self._define_boundary_toolbar.addActions([self._boundary_explode_action,
@@ -125,6 +125,18 @@ class AsistenteLADMCOLPlugin(QObject):
     def load_layers(self, layer_list):
         for layer in layer_list:
             self.qgis_utils.get_layer(self.get_db_connection(), layer, load=True)
+
+    def call_explode_boundaries(self):
+        self.qgis_utils.explode_boundaries(self.get_db_connection())
+
+    def call_merge_boundaries(self):
+        self.qgis_utils.merge_boundaries(self.get_db_connection())
+
+    def call_fill_topology_table_pointbfs(self):
+        self.qgis_utils.fill_topology_table_pointbfs(self.get_db_connection())
+
+    def call_fill_topology_table_morebfs(self):
+        self.qgis_utils.fill_topology_table_morebfs(self.get_db_connection())
 
     def unload(self):
         self.iface.mainWindow().removeToolBar(self._define_boundary_toolbar)

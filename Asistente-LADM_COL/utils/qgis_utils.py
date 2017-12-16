@@ -181,7 +181,22 @@ class QGISUtils(QObject):
         self.message_emitted.emit(self.tr("{} features were merged!".format(num_boundaries)), QgsMessageBar.INFO)
         self.map_refresh_requested.emit()
 
-    def fill_topology_table_pointbfs(self, db):
+    def fill_topology_table_pointbfs(self, db, use_selection=True):
+        boundary_layer = self.get_layer(db, BOUNDARY_TABLE)
+        if boundary_layer is None:
+            self.message_emitted.emit(self.tr("Table {} not found in the DB!".format(BOUNDARY_TABLE)), QgsMessageBar.WARNING)
+            return
+        if use_selection and boundary_layer.selectedFeatureCount() == 0:
+            if self.get_layer_from_layer_tree(BOUNDARY_TABLE, schema=db.schema) is None:
+                self.message_with_button_load_layer_emitted.emit(
+                    self.tr("First load the layer {} into QGIS and select at least one boundary!".format(BOUNDARY_TABLE)),
+                    self.tr("Load layer {} now".format(BOUNDARY_TABLE)),
+                    [BOUNDARY_TABLE],
+                    QgsMessageBar.WARNING)
+            else:
+                self.message_emitted.emit(self.tr("First select at least one boundary!"), QgsMessageBar.WARNING)
+            return
+
         bfs_layer = self.get_layer(db, POINT_BOUNDARY_FACE_STRING_TABLE, load=True)
         if bfs_layer is None:
             self.message_emitted.emit(self.tr("Table {} not found in the DB!".format(POINT_BOUNDARY_FACE_STRING_TABLE)), QgsMessageBar.WARNING)
@@ -193,7 +208,6 @@ class QGISUtils(QObject):
         existing_pairs = [(bfs_feature[BFS_TABLE_BOUNDARY_FIELD], bfs_feature[BFS_TABLE_BOUNDARY_POINT_FIELD]) for bfs_feature in bfs_features]
         existing_pairs = set(existing_pairs)
 
-        boundary_layer = self.get_layer(db, BOUNDARY_TABLE)
         boundary_point_layer = self.get_layer(db, BOUNDARY_POINT_TABLE)
         id_pairs = self.get_pair_boundary_boundary_point(boundary_layer, boundary_point_layer)
 
@@ -219,8 +233,8 @@ class QGISUtils(QObject):
         else:
             self.message_emitted.emit(self.tr("No pairs id_boundary-id_boundary_point found."), QgsMessageBar.INFO)
 
-    def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer):
-        lines = boundary_layer.getSelectedFeatures()
+    def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer, use_selection=True):
+        lines = boundary_layer.getSelectedFeatures() if use_selection else boundary_layer.getFeatures()
         points = boundary_point_layer.getFeatures()
         index = QgsSpatialIndex(boundary_point_layer)
         intersect_pairs = list()
@@ -239,7 +253,22 @@ class QGISUtils(QObject):
                         intersect_pairs.append((line[ID_FIELD], candidate_feature[ID_FIELD]))
         return intersect_pairs
 
-    def fill_topology_table_morebfs(self, db):
+    def fill_topology_table_morebfs(self, db, use_selection=True):
+        plot_layer = self.get_layer(db, PLOT_TABLE)
+        if plot_layer is None:
+            self.message_emitted.emit(self.tr("Table {} not found in the DB!".format(PLOT_TABLE)), QgsMessageBar.WARNING)
+            return
+        if use_selection and plot_layer.selectedFeatureCount() == 0:
+            if self.get_layer_from_layer_tree(PLOT_TABLE, schema=db.schema) is None:
+                self.message_with_button_load_layer_emitted.emit(
+                    self.tr("First load the layer {} into QGIS and select at least one plot!".format(PLOT_TABLE)),
+                    self.tr("Load layer {} now".format(PLOT_TABLE)),
+                    [PLOT_TABLE],
+                    QgsMessageBar.WARNING)
+            else:
+                self.message_emitted.emit(self.tr("First select at least one plot!"), QgsMessageBar.WARNING)
+            return
+
         more_bfs_layer = self.get_layer(db, MORE_BOUNDARY_FACE_STRING_TABLE, load=True)
         if more_bfs_layer is None:
             self.message_emitted.emit(self.tr("Table {} not found in the DB!".format(MORE_BOUNDARY_FACE_STRING_TABLE)), QgsMessageBar.WARNING)
@@ -252,7 +281,6 @@ class QGISUtils(QObject):
         existing_pairs = set(existing_pairs)
 
         boundary_layer = self.get_layer(db, BOUNDARY_TABLE)
-        plot_layer = self.get_layer(db, PLOT_TABLE)
         id_pairs = self.get_pair_boundary_plot(boundary_layer, plot_layer)
 
         if id_pairs:
@@ -277,9 +305,9 @@ class QGISUtils(QObject):
         else:
             self.message_emitted.emit(self.tr("No pairs id_boundary-id_plot found."), QgsMessageBar.INFO)
 
-    def get_pair_boundary_plot(self, boundary_layer, plot_layer):
+    def get_pair_boundary_plot(self, boundary_layer, plot_layer, use_selection=True):
         lines = boundary_layer.getFeatures()
-        polygons = plot_layer.getSelectedFeatures()
+        polygons = plot_layer.getSelectedFeatures() if use_selection else plot_layer.getFeatures()
         index = QgsSpatialIndex(boundary_layer)
         intersect_pairs = list()
         for polygon in polygons:
@@ -302,7 +330,7 @@ class QGISUtils(QObject):
             return
         selected_boundaries = boundaries.selectedFeatures()
         if not selected_boundaries:
-            self.message_emitted.emit(self.tr("Please first select boundaries!"), QgsMessageBar.WARNING)
+            self.message_emitted.emit(self.tr("First select boundaries!"), QgsMessageBar.WARNING)
             return
 
         plots = self.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
