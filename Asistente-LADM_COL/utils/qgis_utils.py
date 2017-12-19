@@ -209,7 +209,7 @@ class QGISUtils(QObject):
         existing_pairs = set(existing_pairs)
 
         boundary_point_layer = self.get_layer(db, BOUNDARY_POINT_TABLE)
-        id_pairs = self.get_pair_boundary_boundary_point(boundary_layer, boundary_point_layer)
+        id_pairs = self.get_pair_boundary_boundary_point(boundary_layer, boundary_point_layer, use_selection)
 
         if id_pairs:
             bfs_layer.startEditing()
@@ -281,7 +281,7 @@ class QGISUtils(QObject):
         existing_pairs = set(existing_pairs)
 
         boundary_layer = self.get_layer(db, BOUNDARY_TABLE)
-        id_pairs = self.get_pair_boundary_plot(boundary_layer, plot_layer)
+        id_pairs = self.get_pair_boundary_plot(boundary_layer, plot_layer, use_selection)
 
         if id_pairs:
             more_bfs_layer.startEditing()

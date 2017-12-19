@@ -148,13 +148,16 @@ class AsistenteLADMCOLPlugin(QObject):
         del self._define_boundary_toolbar
 
     def show_settings(self):
-        if self._settings_dialog is None:
-            self._settings_dialog = SettingsDialog(self.iface)
+        self._settings_dialog = self.get_settings_dialog()
         self._settings_dialog.exec_()
 
-    def get_db_connection(self):
+    def get_settings_dialog(self):
         if self._settings_dialog is None:
             self._settings_dialog = SettingsDialog(self.iface)
+        return self._settings_dialog
+
+    def get_db_connection(self):
+        self._settings_dialog = self.get_settings_dialog()
         return self._settings_dialog.get_db_connection()
 
     def _db_connection_required(func_to_decorate):
