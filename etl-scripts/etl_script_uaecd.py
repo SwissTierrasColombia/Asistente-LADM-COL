@@ -118,9 +118,46 @@ def llenar_construccion():
     #output_uri = 'dbname=\'{output_db_name}\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'t_id\' srid=3116 type=MultiPolygon checkPrimaryKeyUnicity=\'1\' table="{output_db_schema}"."construccion" (poligono_creado) sql='.format(output_db_name=OUTPUT_DB_NAME, output_db_schema=OUTPUT_DB_SCHEMA)
     db = asistente_ladm_col.get_db_connection()
     output_uri = db.get_uri_for_layer('construccion')[1]
-    #input_construccion = QgsVectorLayer(input_uri, "r_construccion", "ogr")
     output_construccion = QgsVectorLayer(output_uri, "construccion", "postgres")
     refactor_and_copy_paste(params_refactor_construccion, input_uri, output_construccion)
+
+def llenar_unidad_construccion():
+    params_refactor_unidad_construccion = { 'INPUT' : '{input_db_path}|layername=Und_Cons'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'avaluo_unidad_construccion', 'type': 2, 'length': -1, 'precision': 0, 'expression': '"AV_Und_CONS"'}, {'name': 'numero_pisos', 'type': 2, 'length': -1, 'precision': 0, 'expression': '"CONELEVACI"'}, {'name': 'tipo_construccion', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo_construccion"'}, {'name': 'area_construida', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"Area_UND_CONS"'}, {'name': 'area_privada_construida', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"area_privada_construida"'}, {'name': 'construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"Cod_CONS"'}, {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo"'}, {'name': 'dimension', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"dimension"'}, {'name': 'etiqueta', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"etiqueta"'}, {'name': 'relacion_superficie', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"relacion_superficie"'}, {'name': 'su_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'UAECD_UnidadConstruccion'"}, {'name': 'su_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"Cod_CONS"'}, {'name': 'nivel', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"nivel"'}, {'name': 'uej2_la_unidadespacial', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_unidadespacial"'}, {'name': 'uej2_servidumbrepaso', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_servidumbrepaso"'}, {'name': 'uej2_terreno', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_terreno"'}, {'name': 'uej2_la_espaciojuridicoredservicios', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicoredservicios"'}, {'name': 'uej2_la_espaciojuridicounidadedificacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicounidadedificacion"'}, {'name': 'uej2_construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_construccion"'}, {'name': 'uej2_unidadconstruccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}, {'name': 'punto_referencia', 'type': 10, 'length': -1, 'precision': -1, 'expression': '"punto_referencia"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_unidadconstruccion" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
+
+    processing.run("qgis:refactorfields", params_refactor_unidad_construccion)
+    input_uri = '{refactored_db_path}|layername=R_unidadconstruccion'.format(refactored_db_path=REFACTORED_DB_PATH)
+    input_layer = QgsVectorLayer(input_uri, "r_input_layer", "ogr")
+
+    db = asistente_ladm_col.get_db_connection()
+    output_uri = db.get_uri_for_layer('construccion')[1]
+    layer_construccion = QgsVectorLayer(output_uri, "construccion", "postgres")
+
+    output_uri = db.get_uri_for_layer('unidadconstruccion')[1]
+    output_unidad_construccion = QgsVectorLayer(output_uri, "unidad_construccion", "postgres")
+
+    # Llenar relacion unidad_construccion - construccion en capa refactored
+    features_unidad_construccion = [f for f in input_layer.getFeatures()]
+    attrMap = {}
+    idx_construccion = input_layer.fields().indexFromName('construccion')
+    for f in features_unidad_construccion:
+        it_construccion = layer_construccion.getFeatures('"su_local_id"=\'{}\''.format(f['su_local_id']))
+        f_construccion = QgsFeature()
+        it_construccion.nextFeature(f_construccion)
+        if f_construccion.isValid():
+            attrs = {idx_construccion : f_construccion['t_id']}
+            attrMap[f.id()] = attrs
+        else:
+            print("Construccion not found:",f['su_local_id'])
+
+    input_layer.dataProvider().changeAttributeValues(attrMap)
+    input_layer.reload()
+
+    # Finalmente, copiar refactored en capa unidad construccion
+    input_layer.selectAll()
+    iface.copySelectionToClipboard(input_layer)
+    output_unidad_construccion.startEditing()
+    iface.pasteFromClipboard(output_unidad_construccion)
+    output_unidad_construccion.commitChanges()
 
 
 def llenar_interesado_natural():
@@ -247,8 +284,9 @@ llenar_terreno()
 llenar_tablas_de_topologia()
 llenar_predio()
 llenar_construccion()
+llenar_unidad_construccion()
 llenar_interesado_natural()
-llenar_interesado_juridico()
+#llenar_interesado_juridico()
 llenar_col_derecho()
 llenar_fuente_administrativa()
 llenar_rrr_fuente()
