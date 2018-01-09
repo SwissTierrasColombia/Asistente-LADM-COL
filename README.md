@@ -5,3 +5,9 @@ Licencia: [GNU General Public License v3.0](https://github.com/AgenciaImplementa
 
 
 Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
+
+## Pruebas automatizadas al software
+
+- Linux: https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL
+- Windows: http://portal.proadmintierra.info:18000/
+  
