@@ -20,6 +20,7 @@ import os
 
 from qgis.core import QgsProject, QgsVectorLayer, QgsSpatialIndex
 from qgis.gui import QgsMessageBar
+from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtWidgets import QWizard
 
 from ..utils.qt_utils import make_file_selector
@@ -42,6 +43,10 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
                                file_filter=self.tr('CSV Comma Separated Value (*.csv)')))
         self.txt_file_path.textChanged.connect(self.fill_long_lat_combos)
         self.txt_delimiter.textChanged.connect(self.fill_long_lat_combos)
+
+
+        self.restore_settings()
+
         self.txt_file_path.textChanged.emit(self.txt_file_path.text())
 
         self.button(QWizard.FinishButton).clicked.connect(self.copy_csv_points_to_db)
@@ -54,6 +59,8 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
                 self.tr("No CSV file given or file doesn't exist."),
                 QgsMessageBar.WARNING)
             return
+
+        self.save_settings()
 
         # Create QGIS vector layer
         uri = "file:///{}?delimiter={}&xField={}&yField={}&crs=EPSG:3116".format(
@@ -150,3 +157,12 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
                 self.tr("It was not possible to read field names from the CSV. Check the file and try again."),
                 QgsMessageBar.WARNING)
         return []
+
+    def save_settings(self):
+        settings = QSettings()
+        settings.setValue('Asistente-LADM_COL/add_points_csv_file', self.txt_file_path.text().strip())
+
+    def restore_settings(self):
+        settings = QSettings()
+        self.txt_file_path.setText(settings.value('Asistente-LADM_COL/add_points_csv_file'))
+
