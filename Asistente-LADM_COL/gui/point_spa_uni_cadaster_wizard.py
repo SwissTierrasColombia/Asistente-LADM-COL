@@ -41,10 +41,19 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
             make_file_selector(self.txt_file_path,
                                file_filter=self.tr('CSV Comma Separated Value (*.csv)')))
         self.txt_file_path.textChanged.connect(self.fill_long_lat_combos)
+        self.txt_delimiter.textChanged.connect(self.fill_long_lat_combos)
+        self.txt_file_path.textChanged.emit(self.txt_file_path.text())
+
         self.button(QWizard.FinishButton).clicked.connect(self.copy_csv_points_to_db)
 
     def copy_csv_points_to_db(self):
         csv_path = self.txt_file_path.text().strip()
+
+        if not csv_path or not os.path.exists(csv_path):
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                self.tr("No CSV file given or file doesn't exist."),
+                QgsMessageBar.WARNING)
+            return
 
         # Create QGIS vector layer
         uri = "file:///{}?delimiter={}&xField={}&yField={}&crs=EPSG:3116".format(
@@ -93,7 +102,13 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
         self.cbo_longitude.clear()
         self.cbo_latitude.clear()
         if os.path.exists(csv_path):
+            self.button(QWizard.FinishButton).setEnabled(True)
+
             fields = self.get_fields_from_csv_file(csv_path)
+            if not fields:
+                self.button(QWizard.FinishButton).setEnabled(False)
+                return
+
             self.cbo_longitude.addItems(fields)
             self.cbo_latitude.addItems(fields)
 
@@ -110,7 +125,14 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
                     self.cbo_latitude.setCurrentText(y_potential_name)
                     break
 
+        else:
+            self.button(QWizard.FinishButton).setEnabled(False)
+
+
     def get_fields_from_csv_file(self, csv_path):
+        if not self.txt_delimiter.text().strip():
+            return []
+
         errorReading = False
         try:
             reader  = open(csv_path, "r")
