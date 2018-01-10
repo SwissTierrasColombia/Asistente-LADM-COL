@@ -20,6 +20,8 @@ import psycopg2
 import psycopg2.extras
 
 from qgis.core import QgsWkbTypes
+from qgis.PyQt.QtCore import QCoreApplication
+
 from .db_connector import DBConnector
 
 class PGConnector(DBConnector):
@@ -37,9 +39,9 @@ class PGConnector(DBConnector):
             self.conn = psycopg2.connect(self.uri)
             print("Connection was set!", self.conn)
         except Exception as e:
-            return (False,
-                    self.tr("There was an error connecting to the database: {}".format(e)))
-        return (True, self.tr("Connection to PostGIS successful!"))
+            return (False, QCoreApplication.translate("PGConnector",
+                    "There was an error connecting to the database: {}").format(e))
+        return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS successful!"))
 
         # TODO does the schema exist?
 
@@ -90,7 +92,7 @@ class PGConnector(DBConnector):
                     )
         if data_source_uri:
             return (True, data_source_uri)
-        return (False, self.tr("Layer '{}' was not found in the database (schema: {}).").format(layer_name, self.schema))
+        return (False, QCoreApplication.translate("PGConnector", "Layer '{}' was not found in the database (schema: {}).").format(layer_name, self.schema))
 
     def get_tables_info(self):
         if self.conn is None:

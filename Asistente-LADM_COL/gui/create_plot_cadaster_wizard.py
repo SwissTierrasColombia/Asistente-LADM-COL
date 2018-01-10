@@ -19,7 +19,7 @@
 from qgis.core import (QgsProject, QgsVectorLayer, QgsVectorLayerUtils,
                        QgsFeature, QgsMapLayerProxyModel, QgsWkbTypes)
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import Qt, QPoint
+from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
@@ -62,14 +62,16 @@ class CreatePlotCadasterWizard(QWizard, WIZARD_UI):
         self._plot_layer = self.qgis_utils.get_layer(self._db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, True)
         if self._plot_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                self.tr("Plot layer couldn't be found..."),
+                QCoreApplication.translate("CreatePlotCadasterWizard",
+                                           "Plot layer couldn't be found..."),
                 QgsMessageBar.WARNING)
             return
 
         refactored_layer = self.mMapLayerComboBox.currentLayer()
         if refactored_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                self.tr("Refactored layer couldn't be found..."),
+                QCoreApplication.translate("CreatePlotCadasterWizard",
+                                           "Refactored layer couldn't be found..."),
                 QgsMessageBar.WARNING)
             return
         refactored_features = [f for f in refactored_layer.getFeatures()]
@@ -86,5 +88,6 @@ class CreatePlotCadasterWizard(QWizard, WIZARD_UI):
         self._plot_layer.commitChanges()
 
         self.iface.messageBar().pushMessage("Asistente LADM_COL",
-            self.tr("{} new plot(s) has(have) been created!".format(len(features))),
+            QCoreApplication.translate("CreatePlotCadasterWizard",
+                                       "{} new plot(s) has(have) been created!").format(len(features)),
             QgsMessageBar.INFO)

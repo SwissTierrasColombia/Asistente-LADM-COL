@@ -19,7 +19,7 @@
 from qgis.core import (QgsProject, QgsVectorLayer, QgsEditFormConfig,
                        QgsSnappingConfig, QgsTolerance, QgsFeature)
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import Qt, QPoint
+from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QWizard, QToolBar
 
 from ..utils import get_ui_class
@@ -47,7 +47,8 @@ class DefineBoundariesCadasterWizard(QWizard, WIZARD_UI):
         self._boundary_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_TABLE, load=True)
         if self._boundary_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                self.tr("Boundary layer couldn't be found..."),
+                QCoreApplication.translate("DefineBoundariesCadasterWizard",
+                                           "Boundary layer couldn't be found..."),
                 QgsMessageBar.WARNING)
             return
 
@@ -81,5 +82,6 @@ class DefineBoundariesCadasterWizard(QWizard, WIZARD_UI):
         boundary_toolbar.setVisible(True)
 
         self.iface.messageBar().pushMessage("Asistente LADM_COL",
-            self.tr("You can now start capturing boundaries clicking on the map..."),
+            QCoreApplication.translate("DefineBoundariesCadasterWizard",
+                                       "You can now start capturing boundaries clicking on the map..."),
             QgsMessageBar.INFO)

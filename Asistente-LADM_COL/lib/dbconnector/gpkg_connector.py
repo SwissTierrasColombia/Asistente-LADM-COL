@@ -18,7 +18,10 @@
 """
 import os
 import sqlite3
+
 import qgis.utils
+from qgis.PyQt.QtCore import QCoreApplication
+
 from .db_connector import DBConnector
 
 class GPKGConnector(DBConnector):
@@ -35,9 +38,10 @@ class GPKGConnector(DBConnector):
                 raise Exception("GeoPackage file not found.")
             self.conn = qgis.utils.spatialite_connect(self.uri)
         except Exception as e:
-            return (False,
-                    self.tr("There was an error connecting to the database: {}".format(e)))
-        return (True, self.tr("Connection to GeoPackage successful!"))
+            return (False, QCoreApplication.translate("GPKGConnector",
+                    "There was an error connecting to the database: {}").format(e))
+        return (True, QCoreApplication.translate("GPKGConnector",
+                "Connection to GeoPackage successful!"))
 
     def save_connection(self):
         self.conn = qgis.utils.spatialite_connect(self.uri)

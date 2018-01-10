@@ -20,7 +20,7 @@ import os
 
 from qgis.core import QgsProject, QgsVectorLayer, QgsSpatialIndex
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings, QCoreApplication
 from qgis.PyQt.QtWidgets import QWizard
 
 from ..utils.qt_utils import make_file_selector
@@ -40,7 +40,7 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
         # Set connections
         self.btn_browse_file.clicked.connect(
             make_file_selector(self.txt_file_path,
-                               file_filter=self.tr('CSV Comma Separated Value (*.csv)')))
+                               file_filter=QCoreApplication.translate("PointsSpatialUnitCadasterWizard",'CSV Comma Separated Value (*.csv)')))
         self.txt_file_path.textChanged.connect(self.fill_long_lat_combos)
         self.txt_delimiter.textChanged.connect(self.fill_long_lat_combos)
 
@@ -56,7 +56,8 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
 
         if not csv_path or not os.path.exists(csv_path):
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                self.tr("No CSV file given or file doesn't exist."),
+                QCoreApplication.translate("PointsSpatialUnitCadasterWizard",
+                                           "No CSV file given or file doesn't exist."),
                 QgsMessageBar.WARNING)
             return
 
@@ -72,7 +73,8 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
         if not csv_layer.isValid():
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                self.tr("CSV layer not valid!"),
+                QCoreApplication.translate("PointsSpatialUnitCadasterWizard",
+                                           "CSV layer not valid!"),
                 QgsMessageBar.WARNING)
 
         # Validate non-overlapping points
@@ -81,7 +83,8 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
             res = index.intersects(feature.geometry().boundingBox())
             if len(res) > 1:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                    self.tr("There are overlapping points, we cannot import them into the DB! See selected points."),
+                    QCoreApplication.translate("PointsSpatialUnitCadasterWizard",
+                                               "There are overlapping points, we cannot import them into the DB! See selected points."),
                     QgsMessageBar.WARNING)
                 QgsProject.instance().addMapLayer(csv_layer)
                 csv_layer.selectByIds(res)
@@ -93,7 +96,8 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
         target_point_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_POINT_TABLE, load=True)
         if target_point_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                self.tr("Boundary point layer couldn't be found in the DB..."),
+                QCoreApplication.translate("PointsSpatialUnitCadasterWizard",
+                                           "Boundary point layer couldn't be found in the DB..."),
                 QgsMessageBar.WARNING)
             return
 
@@ -154,7 +158,8 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
 
         if errorReading:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                self.tr("It was not possible to read field names from the CSV. Check the file and try again."),
+                QCoreApplication.translate("PointsSpatialUnitCadasterWizard",
+                                           "It was not possible to read field names from the CSV. Check the file and try again."),
                 QgsMessageBar.WARNING)
         return []
 
@@ -165,4 +170,3 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
     def restore_settings(self):
         settings = QSettings()
         self.txt_file_path.setText(settings.value('Asistente-LADM_COL/add_points_csv_file'))
-

@@ -107,6 +107,37 @@
     </message>
 </context>
 <context>
+    <name>CreatePlotCadasterWizard</name>
+    <message>
+        <location filename="../gui/create_plot_cadaster_wizard.py" line="65"/>
+        <source>Plot layer couldn&apos;t be found...</source>
+        <translation>No se encontró la capa Terreno...</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_plot_cadaster_wizard.py" line="73"/>
+        <source>Refactored layer couldn&apos;t be found...</source>
+        <translation>No se encontró la capa reestructurada...</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_plot_cadaster_wizard.py" line="91"/>
+        <source>{} new plot(s) has(have) been created!</source>
+        <translation>¡{} nuevo(s) terreno(s) ha(n) sido creado(s)!</translation>
+    </message>
+</context>
+<context>
+    <name>DefineBoundariesCadasterWizard</name>
+    <message>
+        <location filename="../gui/define_boundaries_cadaster_wizard.py" line="50"/>
+        <source>Boundary layer couldn&apos;t be found...</source>
+        <translation>No se encontró la capa Lindero...</translation>
+    </message>
+    <message>
+        <location filename="../gui/define_boundaries_cadaster_wizard.py" line="85"/>
+        <source>You can now start capturing boundaries clicking on the map...</source>
+        <translation>Ahora puedes empezar a capturar linderos dando click sobre el mapa...</translation>
+    </message>
+</context>
+<context>
     <name>Dialog</name>
     <message>
         <location filename="../ui/settings_dialog.ui" line="20"/>
@@ -197,6 +228,163 @@
         <location filename="../ui/settings_dialog.ui" line="208"/>
         <source>...</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>GPKGConnector</name>
+    <message>
+        <location filename="../lib/dbconnector/gpkg_connector.py" line="41"/>
+        <source>There was an error connecting to the database: {}</source>
+        <translation>Hubo un error conectando a la base de datos: {}</translation>
+    </message>
+    <message>
+        <location filename="../lib/dbconnector/gpkg_connector.py" line="43"/>
+        <source>Connection to GeoPackage successful!</source>
+        <translation>¡Conexión exitosa a base de datos de GeoPackage!</translation>
+    </message>
+</context>
+<context>
+    <name>PGConnector</name>
+    <message>
+        <location filename="../lib/dbconnector/pg_connector.py" line="42"/>
+        <source>There was an error connecting to the database: {}</source>
+        <translation>Hubo un error conectando a la base de datos: {}</translation>
+    </message>
+    <message>
+        <location filename="../lib/dbconnector/pg_connector.py" line="44"/>
+        <source>Connection to PostGIS successful!</source>
+        <translation>¡Conexión exitosa a base de datos de PostGIS!</translation>
+    </message>
+    <message>
+        <location filename="../lib/dbconnector/pg_connector.py" line="95"/>
+        <source>Layer &apos;{}&apos; was not found in the database (schema: {}).</source>
+        <translation>No se encontró la capa &apos;{}&apos; en la base de datos (esquema: {}).</translation>
+    </message>
+</context>
+<context>
+    <name>PointsSpatialUnitCadasterWizard</name>
+    <message>
+        <location filename="../gui/point_spa_uni_cadaster_wizard.py" line="59"/>
+        <source>No CSV file given or file doesn&apos;t exist.</source>
+        <translation>No se especificó un archivo CSV o el archivo no existe.</translation>
+    </message>
+    <message>
+        <location filename="../gui/point_spa_uni_cadaster_wizard.py" line="76"/>
+        <source>CSV layer not valid!</source>
+        <translation>¡La capa CSV no es válida!</translation>
+    </message>
+    <message>
+        <location filename="../gui/point_spa_uni_cadaster_wizard.py" line="86"/>
+        <source>There are overlapping points, we cannot import them into the DB! See selected points.</source>
+        <translation>Hay puntos superpuestos, ¡no podemos importarlos a la base de datos! Revisa los puntos seleccionados en el mapa.</translation>
+    </message>
+    <message>
+        <location filename="../gui/point_spa_uni_cadaster_wizard.py" line="99"/>
+        <source>Boundary point layer couldn&apos;t be found in the DB...</source>
+        <translation>No se encontró la capa Punto Lindero en la base de datos...</translation>
+    </message>
+    <message>
+        <location filename="../gui/point_spa_uni_cadaster_wizard.py" line="161"/>
+        <source>It was not possible to read field names from the CSV. Check the file and try again.</source>
+        <translation>No se pudieron leer los nombres de los campos del archivo CSV. Revisa el archivo e intenta de nuevo.</translation>
+    </message>
+</context>
+<context>
+    <name>QGISUtils</name>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="120"/>
+        <location filename="../utils/qgis_utils.py" line="162"/>
+        <source>First load the layer {} into QGIS!</source>
+        <translation>¡Primero carga la capa {} a QGIS!</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="122"/>
+        <location filename="../utils/qgis_utils.py" line="164"/>
+        <location filename="../utils/qgis_utils.py" line="210"/>
+        <location filename="../utils/qgis_utils.py" line="294"/>
+        <source>Load layer {} now</source>
+        <translation>Cargar la capa {} ahora</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="153"/>
+        <source>{} feature(s) was/were exploded generating {} feature(s).</source>
+        <translation>{} objeto(s) espacial(es) fue(ron) partido(s) generando {} objeto(s) espacial(es).</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="171"/>
+        <source>First select at least 2 boundaries!</source>
+        <translation>¡Primero selecciona por lo menos 2 linderos!</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="193"/>
+        <source>{} features were merged!</source>
+        <translation>¡Se unieron {} objetos espaciales!</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="201"/>
+        <location filename="../utils/qgis_utils.py" line="222"/>
+        <location filename="../utils/qgis_utils.py" line="286"/>
+        <location filename="../utils/qgis_utils.py" line="306"/>
+        <source>Table {} not found in the DB!</source>
+        <translation>¡No se encontró la tabla {} en la base de datos!</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="208"/>
+        <source>First load the layer {} into QGIS and select at least one boundary!</source>
+        <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un lindero!</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="131"/>
+        <location filename="../utils/qgis_utils.py" line="215"/>
+        <source>First select at least one boundary!</source>
+        <translation>¡Primero selecciona por lo menos un lindero!</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="248"/>
+        <location filename="../utils/qgis_utils.py" line="332"/>
+        <source>{} out of {} records were saved into {}! {} out of {} records already existed in the database.</source>
+        <translation>¡{} de {} registros fueron guardados en {}! {} de {} registros ya existían en la base de datos.</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="259"/>
+        <source>No pairs id_boundary-id_boundary_point found.</source>
+        <translation>No se encontraron parejas id_lindero-id_punto_lindero.</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="292"/>
+        <source>First load the layer {} into QGIS and select at least one plot!</source>
+        <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un terreno!</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="299"/>
+        <source>First select at least one plot!</source>
+        <translation>¡Primero selecciona por lo menos un terreno!</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="342"/>
+        <source>No pairs id_boundary-id_plot found.</source>
+        <translation>No se encontraron parejas id_lindero-id_terreno.</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="367"/>
+        <location filename="../utils/qgis_utils.py" line="380"/>
+        <source>Layer {} not found in the DB!</source>
+        <translation>¡No se encontró la capa {} en la base de datos!</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="373"/>
+        <source>First select boundaries!</source>
+        <translation>¡Primero selecciona linderos!</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="396"/>
+        <source>{} new plot(s) has(have) been created!</source>
+        <translation>¡{} nuevo(s) terreno(s) ha(n) sido creado(s)!</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="400"/>
+        <source>No plot could be created. Make sure selected boundaries are closed!</source>
+        <translation>No se pudieron crear terrenos. ¡Asegúrate que los linderos seleccionados formen polígonos cerrados!</translation>
     </message>
 </context>
 <context>
