@@ -167,32 +167,32 @@
     <message>
         <location filename="../ui/wiz_define_boundaries_cadaster.ui" line="17"/>
         <source>Define Boundaries</source>
-        <translation type="unfinished">Definir linderos</translation>
+        <translation>Definir linderos</translation>
     </message>
     <message>
         <location filename="../ui/wiz_define_boundaries_cadaster.ui" line="27"/>
         <source>How would you like to define boundaries?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Cómo te gustaría definir linderos?</translation>
     </message>
     <message>
         <location filename="../ui/wiz_define_boundaries_cadaster.ui" line="46"/>
         <source>Digitalize lines on the map canvas using QGIS tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Digitalizar líneas sobre el mapa usando herramientas de QGIS</translation>
     </message>
     <message>
         <location filename="../ui/wiz_define_boundaries_cadaster.ui" line="49"/>
         <source>Digitalization</source>
-        <translation type="unfinished"></translation>
+        <translation>Digitalización</translation>
     </message>
     <message>
         <location filename="../ui/wiz_define_boundaries_cadaster.ui" line="75"/>
         <source>Use lists of ordered points defining boundaries</source>
-        <translation type="unfinished"></translation>
+        <translation>Usar listas ordenadas de puntos definiendo linderos</translation>
     </message>
     <message>
         <location filename="../ui/wiz_define_boundaries_cadaster.ui" line="78"/>
         <source>From lists of ordered points</source>
-        <translation type="unfinished"></translation>
+        <translation>Desde listas ordenadas de puntos</translation>
     </message>
 </context>
 <context>
@@ -200,42 +200,42 @@
     <message>
         <location filename="../ui/wiz_create_plot_cadaster.ui" line="17"/>
         <source>Create plots</source>
-        <translation type="unfinished">Crear terrenos</translation>
+        <translation>Crear terrenos</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_plot_cadaster.ui" line="24"/>
         <source>How would you like to create plots?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Cómo te gustaría crear terrenos?</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_plot_cadaster.ui" line="33"/>
         <source>Generate plot polygons from selected boundaries</source>
-        <translation type="unfinished"></translation>
+        <translation>Generar polígonos de terrenos desde linderos seleccionados en el mapa</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_plot_cadaster.ui" line="36"/>
         <source>Selecting existing boundaries</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionando linderos existentes</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_plot_cadaster.ui" line="49"/>
         <source>Use an input layer (probably the output of Refactor Fields algorithm in QGIS Processing) to copy features from</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa una capa de entrada (probablemente la salida del algoritmo Refactor Fields de QGIS Processing) para copiar sus objetos espaciales</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_plot_cadaster.ui" line="52"/>
         <source>From a refactored layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Desde una capa reestructurada</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_plot_cadaster.ui" line="102"/>
         <source>Select the refactored plot layer </source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar la capa de terrenos reestructurada</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_plot_cadaster.ui" line="123"/>
         <source>Copy features from</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiar objetos espaciales desde</translation>
     </message>
 </context>
 </TS>

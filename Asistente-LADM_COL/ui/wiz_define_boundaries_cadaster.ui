@@ -72,10 +72,10 @@
        <bool>false</bool>
       </property>
       <property name="toolTip">
-       <string>Use lists of ordered points defining boundaries</string>
+       <string>Use ordered lists of points defining boundaries</string>
       </property>
       <property name="text">
-       <string>From lists of ordered points</string>
+       <string>From ordered lists of points</string>
       </property>
      </widget>
     </item>

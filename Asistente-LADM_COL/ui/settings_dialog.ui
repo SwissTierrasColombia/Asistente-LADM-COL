@@ -121,7 +121,7 @@
           <item row="4" column="2">
            <widget class="QLineEdit" name="txt_pg_schema">
             <property name="placeholderText">
-             <string>[Leave empty to load all schemas in the database]</string>
+             <string></string>
             </property>
            </widget>
           </item>
