@@ -60,6 +60,10 @@ class AsistenteLADMCOLPlugin(QObject):
                                                      self._boundary_spatial_unit_cadaster_action,
                                                      self._plot_spatial_unit_cadaster_action])
 
+        self._baunit_cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "BA Unit"), self._cadaster_menu)
+        self._parcel_baunit_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Parcel"), self._baunit_cadaster_menu)
+        self._baunit_cadaster_menu.addActions([self._parcel_baunit_cadaster_action])
+
         self._party_cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"), self._cadaster_menu)
 
         self._rrr_cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "RRR"), self._cadaster_menu)
@@ -73,6 +77,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._source_cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._cadaster_menu)
 
         self._cadaster_menu.addMenu(self._spatial_unit_cadaster_menu)
+        self._cadaster_menu.addMenu(self._baunit_cadaster_menu)
         self._cadaster_menu.addMenu(self._party_cadaster_menu)
         self._cadaster_menu.addMenu(self._rrr_cadaster_menu)
         self._cadaster_menu.addMenu(self._source_cadaster_menu)

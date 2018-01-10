@@ -20,9 +20,9 @@
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="57"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="108"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="113"/>
         <source>Define Boundaries</source>
-        <translation>Definir linderos</translation>
+        <translation>Definir Linderos</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="58"/>
@@ -31,77 +31,87 @@
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="63"/>
+        <source>BA Unit</source>
+        <translation>Unidad Administrativa Básica</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="64"/>
+        <source>Parcel</source>
+        <translation>Predio</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="67"/>
         <source>Party</source>
         <translation>Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="65"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="69"/>
         <source>RRR</source>
         <translation>RRR</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="66"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="70"/>
         <source>Right</source>
         <translation>Derecho</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="67"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="71"/>
         <source>Restriction</source>
         <translation>Restricción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="68"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="72"/>
         <source>Responsibility</source>
         <translation>Responsabilidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="73"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="77"/>
         <source>Source</source>
         <translation>Fuente</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="82"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="175"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="87"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="180"/>
         <source>Settings</source>
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="83"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="88"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="84"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="89"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="100"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="105"/>
         <source>Explode...</source>
         <translation>Partir por segmento...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="102"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="107"/>
         <source>Merge...</source>
         <translation>Unir...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="104"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="109"/>
         <source>Fill Point BFS</source>
         <translation>Llenar PuntosCCL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="106"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="111"/>
         <source>Fill More BFS</source>
         <translation>Llenar MasCCL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="173"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="178"/>
         <source>You need to set a valid connection to your DB first. Click the button to go to Settings.</source>
         <translation>Primero debes definir una conexión válida. Click sobre el botón para ir a Configuración.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="179"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="184"/>
         <source>A dialog couldn&apos;t be open, connection to DB was not valid.</source>
         <translation>Un diálogo no pudo abrirse, la conexión a la base de datos no fue válida.</translation>
     </message>
