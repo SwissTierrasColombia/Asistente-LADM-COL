@@ -51,26 +51,26 @@ class AsistenteLADMCOLPlugin(QObject):
         self._settings_dialog = None
         self.qgis_utils = QGISUtils()
 
-        self._cadaster_menu = QMenu(self.tr("Cadaster"), self._menu)
-        self._spatial_unit_cadaster_menu = QMenu(self.tr("Spatial Unit"), self._cadaster_menu)
-        self._point_spatial_unit_cadaster_action = QAction(self.tr("Add Points"), self._spatial_unit_cadaster_menu)
-        self._boundary_spatial_unit_cadaster_action = QAction(self.tr("Define Boundaries"), self._spatial_unit_cadaster_menu)
-        self._plot_spatial_unit_cadaster_action = QAction(self.tr("Create plot"), self._spatial_unit_cadaster_menu)
+        self._cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadaster"), self._menu)
+        self._spatial_unit_cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Spatial Unit"), self._cadaster_menu)
+        self._point_spatial_unit_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Add Points"), self._spatial_unit_cadaster_menu)
+        self._boundary_spatial_unit_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Define Boundaries"), self._spatial_unit_cadaster_menu)
+        self._plot_spatial_unit_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create plot"), self._spatial_unit_cadaster_menu)
         self._spatial_unit_cadaster_menu.addActions([self._point_spatial_unit_cadaster_action,
                                                      self._boundary_spatial_unit_cadaster_action,
                                                      self._plot_spatial_unit_cadaster_action])
 
-        self._party_cadaster_menu = QMenu(self.tr("Party"), self._cadaster_menu)
+        self._party_cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"), self._cadaster_menu)
 
-        self._rrr_cadaster_menu = QMenu(self.tr("RRR"), self._cadaster_menu)
-        self._right_rrr_cadaster_action = QAction(self.tr("Right"), self._rrr_cadaster_menu)
-        self._restriction_rrr_cadaster_action = QAction(self.tr("Restriction"), self._rrr_cadaster_menu)
-        self._responsibility_rrr_cadaster_action = QAction(self.tr("Responsibility"), self._rrr_cadaster_menu)
+        self._rrr_cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "RRR"), self._cadaster_menu)
+        self._right_rrr_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Right"), self._rrr_cadaster_menu)
+        self._restriction_rrr_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Restriction"), self._rrr_cadaster_menu)
+        self._responsibility_rrr_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Responsibility"), self._rrr_cadaster_menu)
         self._rrr_cadaster_menu.addActions([self._right_rrr_cadaster_action,
                                             self._restriction_rrr_cadaster_action,
                                             self._responsibility_rrr_cadaster_action])
 
-        self._source_cadaster_menu = QMenu(self.tr("Source"), self._cadaster_menu)
+        self._source_cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._cadaster_menu)
 
         self._cadaster_menu.addMenu(self._spatial_unit_cadaster_menu)
         self._cadaster_menu.addMenu(self._party_cadaster_menu)
@@ -79,9 +79,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._menu.addMenu(self._cadaster_menu)
         self._menu.addSeparator()
-        self._settings_action = QAction(icon, self.tr("Settings"), self.iface.mainWindow())
-        self._help_action = QAction(icon, self.tr("Help"), self.iface.mainWindow())
-        self._about_action = QAction(icon, self.tr("About"), self.iface.mainWindow())
+        self._settings_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
+        self._help_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"), self.iface.mainWindow())
+        self._about_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"), self.iface.mainWindow())
         self._menu.addActions([self._settings_action,
                                self._help_action,
                                self._about_action])
@@ -97,15 +97,15 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
 
         # Toolbar for Define Boundaries
-        self._boundary_explode_action = QAction("Explode...", self.iface.mainWindow())
+        self._boundary_explode_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Explode..."), self.iface.mainWindow())
         self._boundary_explode_action.triggered.connect(self.call_explode_boundaries)
-        self._boundary_merge_action = QAction("Merge...", self.iface.mainWindow())
+        self._boundary_merge_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Merge..."), self.iface.mainWindow())
         self._boundary_merge_action.triggered.connect(self.call_merge_boundaries)
-        self._fill_point_BFS_action = QAction("Fill Point BFS", self.iface.mainWindow())
+        self._fill_point_BFS_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Point BFS"), self.iface.mainWindow())
         self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
-        self._fill_more_BFS_action = QAction("Fill More BFS", self.iface.mainWindow())
+        self._fill_more_BFS_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill More BFS"), self.iface.mainWindow())
         self._fill_more_BFS_action.triggered.connect(self.call_fill_topology_table_morebfs)
-        self._define_boundary_toolbar = self.iface.addToolBar("Define Boundaries")
+        self._define_boundary_toolbar = self.iface.addToolBar(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Define Boundaries"))
         self._define_boundary_toolbar.setObjectName("DefineBoundaries")
         self._define_boundary_toolbar.addActions([self._boundary_explode_action,
                                                   self._boundary_merge_action,
@@ -170,13 +170,13 @@ class AsistenteLADMCOLPlugin(QObject):
                 func_to_decorate(inst)
             else:
                 widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
-                             inst.tr("You need to set a valid connection to your DB first. Click the button to go to Settings."))
+                             QCoreApplication.translate("AsistenteLADMCOLPlugin", "You need to set a valid connection to your DB first. Click the button to go to Settings."))
                 button = QPushButton(widget)
-                button.setText(inst.tr("Settings"))
+                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
                 button.pressed.connect(inst.show_settings)
                 widget.layout().addWidget(button)
                 inst.iface.messageBar().pushWidget(widget, QgsMessageBar.WARNING, 15)
-                QgsMessageLog.logMessage(inst.tr("A dialog couldn't be open, connection to DB was not valid."), "Asistente LADM_COL")
+                QgsMessageLog.logMessage(QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog couldn't be open, connection to DB was not valid."), "Asistente LADM_COL")
 
         return decorated_function
 
@@ -199,8 +199,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.msg = QMessageBox()
         #self.msg.setIcon(QMessageBox.Information)
         self.msg.setTextFormat(Qt.RichText)
-        self.msg.setWindowTitle(self.tr('About'))
-        description = self.tr("""<html><head/><body><p align="center"><span style=" font-size:14pt; font-weight:600;">Asistente LADM_COL</span></p><p align="center">Plugin de <a href="http://qgis.org"><span style=" text-decoration: underline; color:#0000ff;">QGIS</span></a> que ayuda a capturar y mantener datos conformes con <a href="https://github.com/AgenciaImplementacion/LADM_COL"><span style=" text-decoration: underline; color:#0000ff;">LADM_COL</span></a> y a generar archivos de intercambio de <a href="http://www.interlis.ch/index_e.htm"><span style=" text-decoration: underline; color:#0000ff;">INTERLIS</span></a> (.XTF).</p><p align="center">Licencia: <a href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE"><span style=" text-decoration: underline; color:#0000ff;">GNU General Public License v3.0</span></a></p><p align="center">Un proyecto de:<br/><a href="https://www.proadmintierra.info/"><span style=" text-decoration: underline; color:#0000ff;">Agencia de Implementación</span></a> (<a href="http://bsf-swissphoto.com/"><span style=" text-decoration: underline; color:#0000ff;">BSF-Swissphoto AG</span></a> - <a href="http://www.incige.com/"><span style=" text-decoration: underline; color:#0000ff;">INCIGE S.A.S</span></a>)</p><p align="center"><br/></p></body></html>""")
+        self.msg.setWindowTitle(QCoreApplication.translate("AsistenteLADMCOLPlugin", 'About'))
+        description = QCoreApplication.translate("AsistenteLADMCOLPlugin", """<html><head/><body><p align="center"><span style=" font-size:14pt; font-weight:600;">Asistente LADM_COL</span></p><p align="center">Plugin de <a href="http://qgis.org"><span style=" text-decoration: underline; color:#0000ff;">QGIS</span></a> que ayuda a capturar y mantener datos conformes con <a href="https://github.com/AgenciaImplementacion/LADM_COL"><span style=" text-decoration: underline; color:#0000ff;">LADM_COL</span></a> y a generar archivos de intercambio de <a href="http://www.interlis.ch/index_e.htm"><span style=" text-decoration: underline; color:#0000ff;">INTERLIS</span></a> (.XTF).</p><p align="center">Licencia: <a href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE"><span style=" text-decoration: underline; color:#0000ff;">GNU General Public License v3.0</span></a></p><p align="center">Un proyecto de:<br/><a href="https://www.proadmintierra.info/"><span style=" text-decoration: underline; color:#0000ff;">Agencia de Implementación</span></a> (<a href="http://bsf-swissphoto.com/"><span style=" text-decoration: underline; color:#0000ff;">BSF-Swissphoto AG</span></a> - <a href="http://www.incige.com/"><span style=" text-decoration: underline; color:#0000ff;">INCIGE S.A.S</span></a>)</p><p align="center"><br/></p></body></html>""")
         self.msg.setText(description)
         self.msg.setStandardButtons(QMessageBox.Ok)
         msg_box = self.msg.exec_()

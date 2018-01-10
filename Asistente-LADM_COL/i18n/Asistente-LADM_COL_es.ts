@@ -2,6 +2,111 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="es_ES">
 <context>
+    <name>AsistenteLADMCOLPlugin</name>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="54"/>
+        <source>Cadaster</source>
+        <translation>Catastro</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="55"/>
+        <source>Spatial Unit</source>
+        <translation>Unidad Espacial</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="56"/>
+        <source>Add Points</source>
+        <translation>Agregar Puntos</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="57"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="108"/>
+        <source>Define Boundaries</source>
+        <translation>Definir linderos</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="58"/>
+        <source>Create plot</source>
+        <translation>Crear Terrenos</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="63"/>
+        <source>Party</source>
+        <translation>Interesado</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="65"/>
+        <source>RRR</source>
+        <translation>RRR</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="66"/>
+        <source>Right</source>
+        <translation>Derecho</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="67"/>
+        <source>Restriction</source>
+        <translation>Restricción</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="68"/>
+        <source>Responsibility</source>
+        <translation>Responsabilidad</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="73"/>
+        <source>Source</source>
+        <translation>Fuente</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="82"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="175"/>
+        <source>Settings</source>
+        <translation>Configuración</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="83"/>
+        <source>Help</source>
+        <translation>Ayuda</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="84"/>
+        <source>About</source>
+        <translation>Acerca de</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="100"/>
+        <source>Explode...</source>
+        <translation>Partir por segmento...</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="102"/>
+        <source>Merge...</source>
+        <translation>Unir...</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="104"/>
+        <source>Fill Point BFS</source>
+        <translation>Llenar PuntosCCL</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="106"/>
+        <source>Fill More BFS</source>
+        <translation>Llenar MasCCL</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="173"/>
+        <source>You need to set a valid connection to your DB first. Click the button to go to Settings.</source>
+        <translation>Primero debes definir una conexión válida. Click sobre el botón para ir a Configuración.</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="179"/>
+        <source>A dialog couldn&apos;t be open, connection to DB was not valid.</source>
+        <translation>Un diálogo no pudo abrirse, la conexión a la base de datos no fue válida.</translation>
+    </message>
+</context>
+<context>
     <name>Dialog</name>
     <message>
         <location filename="../ui/settings_dialog.ui" line="20"/>
@@ -56,12 +161,7 @@
     <message>
         <location filename="../ui/settings_dialog.ui" line="117"/>
         <source>[Leave empty to use system password]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/settings_dialog.ui" line="124"/>
-        <source>[Leave empty to load all schemas in the database]</source>
-        <translation type="unfinished"></translation>
+        <translation>[Deja vacío para usar la contraseña del sistema]</translation>
     </message>
     <message>
         <location filename="../ui/settings_dialog.ui" line="131"/>
@@ -86,7 +186,7 @@
     <message>
         <location filename="../ui/settings_dialog.ui" line="183"/>
         <source>Test Connection</source>
-        <translation>Probar Coneción</translation>
+        <translation>Probar Conexión</translation>
     </message>
     <message>
         <location filename="../ui/settings_dialog.ui" line="198"/>
@@ -186,13 +286,21 @@
     </message>
     <message>
         <location filename="../ui/wiz_define_boundaries_cadaster.ui" line="75"/>
-        <source>Use lists of ordered points defining boundaries</source>
+        <source>Use ordered lists of points defining boundaries</source>
         <translation>Usar listas ordenadas de puntos definiendo linderos</translation>
     </message>
     <message>
         <location filename="../ui/wiz_define_boundaries_cadaster.ui" line="78"/>
-        <source>From lists of ordered points</source>
+        <source>From ordered lists of points</source>
         <translation>Desde listas ordenadas de puntos</translation>
+    </message>
+    <message>
+        <source>Use lists of ordered points defining boundaries</source>
+        <translation type="obsolete">Usar listas ordenadas de puntos definiendo linderos</translation>
+    </message>
+    <message>
+        <source>From lists of ordered points</source>
+        <translation type="obsolete">Desde listas ordenadas de puntos</translation>
     </message>
 </context>
 <context>
