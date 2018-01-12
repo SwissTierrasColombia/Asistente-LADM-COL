@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# you can execute with $watch ./scripts/sync.sh
+
 # rationale: se busca la ruta del script para que no importe desde
 # donde se ejecuta el .sh
 MY_PATH="`dirname \"$0\"`"              # relative

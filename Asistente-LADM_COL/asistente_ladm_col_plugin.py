@@ -149,6 +149,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.fill_topology_table_morebfs(self.get_db_connection())
 
     def unload(self):
+        # remove the plugin menu item and icon
+        self._menu.deleteLater()
         self.iface.mainWindow().removeToolBar(self._define_boundary_toolbar)
         del self._define_boundary_toolbar
 
