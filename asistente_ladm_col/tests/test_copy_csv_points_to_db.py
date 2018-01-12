@@ -11,8 +11,8 @@ class TestExport(unittest.TestCase):
 
     def test_show_wiz_point_sp_un_cad(self):
         AsistenteLADMCOLPlugin
-        wiz = PointsSpatialUnitCadasterWizard(iface, self.get_db_connection(), self.qgis_utils)
-        wiz.copy_csv_points_to_db()
+        #wiz = PointsSpatialUnitCadasterWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        #wiz.copy_csv_points_to_db()
         self.assertEqual(1, 1)
 
 if __name__ == '__main__':
