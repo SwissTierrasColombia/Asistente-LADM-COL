@@ -1,4 +1,3 @@
-
 import nose2
 from qgis.testing import unittest
 

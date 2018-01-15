@@ -31,4 +31,8 @@ La versión actual (0.0.2) del Asistente LADM_COL permite:
 
 - Linux: https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL
 - Windows: http://portal.proadmintierra.info:18000/
-  
+
+Puedes ejecutar los tests en local ejecutando:
+```sh
+docker-compose run --rm qgis
+```
