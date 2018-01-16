@@ -46,8 +46,12 @@ class AsistenteLADMCOLPlugin(QObject):
         icon = QIcon(":/Asistente-LADM_COL/images/icon.png")
         self._menu = QMenu("LAD&M_COL", self.iface.mainWindow().menuBar())
         actions = self.iface.mainWindow().menuBar().actions()
-        last_action = actions[-1]
-        self.iface.mainWindow().menuBar().insertMenu(last_action, self._menu)
+        if len(actions) > 0:
+            last_action = actions[-1]
+            self.iface.mainWindow().menuBar().insertMenu(last_action, self._menu)
+        else:
+            self.iface.mainWindow().menuBar().addMenu(self._menu)
+
         self._settings_dialog = None
         self.qgis_utils = QGISUtils()
 

@@ -29,10 +29,17 @@ La versión actual (0.0.2) del Asistente LADM_COL permite:
 
 ## Pruebas automatizadas al software
 
+Esta se ejecutan automáticamente en cada commit realizado al repositorio y los resultados de estos están disponibles en:
+
 - Linux: https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL
 - Windows: http://portal.proadmintierra.info:18000/
 
-Puedes ejecutar los tests en local ejecutando:
+Para ejecutar las pruebas localmente se necesita tener instalado *docker* y *docker-compose*.
+- La versión de *docker* qué usamos puede ser descargada de su [sitio oficial](https://www.docker.com/community-edition#/download), para el desarrollo usamos Ubuntu/Linux_Mint de manera qué seguimos los pasos de
+[Install using the convenience script](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
+- La versión de *docker-compose* que usamos puede ser instalada usando los [binarios](https://github.com/docker/compose/releases/tag/1.18.0).
+
+El comando para ejecutar las pruebas es:
 ```sh
 docker-compose run --rm qgis
 ```

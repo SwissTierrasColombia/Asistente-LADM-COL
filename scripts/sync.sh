@@ -35,4 +35,4 @@ source $file
 cd "$MY_PATH"/..
 
 echo "Sincronizando $ASISTENTE_LADM_DIR"
-rsync -av Asistente-LADM_COL/ $ASISTENTE_LADM_DIR
+rsync -av asistente_ladm_col/ $ASISTENTE_LADM_DIR
