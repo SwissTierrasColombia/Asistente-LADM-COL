@@ -40,10 +40,8 @@ DB_PASSWORD = 'password_ladm_col'
 iface = get_iface()
 asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface)
 asistente_ladm_col_plugin.initGui()
-print('asistente_ladm_col_plugin')
-print(asistente_ladm_col_plugin)
 
-def dbconn():
+def get_dbconn():
     #global DB_HOSTNAME DB_PORT DB_NAME DB_SCHEMA DB_USER DB_USER DB_PASSWORD
     settings = asistente_ladm_col_plugin.get_settings_dialog()
     settings.txt_pg_host.setText(DB_HOSTNAME)
@@ -55,3 +53,7 @@ def dbconn():
     settings.accepted()
     db = asistente_ladm_col_plugin.get_db_connection()
     return db
+
+def get_iface():
+    global iface
+    return iface
