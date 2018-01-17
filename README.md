@@ -1,3 +1,4 @@
+[![Release](https://img.shields.io/github/release/AgenciaImplementacion/asistente-ladm_col.svg)](https://github.com/AgenciaImplementacion/asistente-ladm_col/releases)
 [![Build Status](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL.svg?branch=master)](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL)
 
 You can read the docs in [English](README_en.md).
@@ -39,9 +40,9 @@ Esta se ejecutan automáticamente en cada commit realizado al repositorio y los 
 - Windows: http://portal.proadmintierra.info:18000/
 
 Para ejecutar las pruebas localmente se necesita tener instalado *docker* y *docker-compose*.
-- La versión de *docker* qué usamos puede ser descargada de su [sitio oficial](https://www.docker.com/community-edition#/download), para el desarrollo usamos Ubuntu/Linux_Mint de manera qué seguimos los pasos de
-[Install using the convenience script](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
-- La versión de *docker-compose* que usamos puede ser instalada usando los [binarios](https://github.com/docker/compose/releases/tag/1.18.0).
+Se recomienda:
+- Descargar *docker* desde el [sitio oficial](https://www.docker.com/community-edition#/download). Por ejemplo, para Ubuntu/Linux_Mint pueden seguirse los pasos descritos en [Install using the convenience script](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
+- Instalar *docker-compose* usando los [binarios](https://github.com/docker/compose/releases/tag/1.18.0).
 
 El comando para ejecutar las pruebas es:
 ```sh
