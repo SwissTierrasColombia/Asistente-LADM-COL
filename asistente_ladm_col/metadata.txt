@@ -1,6 +1,6 @@
 [general]
 name=Asistente LADM_COL
-description=Asistente para administrar datos para el catastro multipropósito en Colombia
+description=Assistant to capture and manage data for Colombian multipurpose cadastre
 about=Plugin de QGIS que ayuda a capturar y mantener datos conformes con LADM_COL y a generar archivos de intercambio de INTERLIS (.XTF).
 version=0.0.2
 qgisMinimumVersion=2.99
@@ -8,7 +8,7 @@ qgisMaximumVersion=3.99
 category=Database
 author=BSF Swissphoto
 email=qgis@bsf-swissphoto.com
-tags=catastro,ladm,interlis,iso19152,registro,catastro-registro,qgis
+tags=catastro,ladm,ladm_col,interlis,iso19152,registro,catastro-registro,cadastre
 homepage=https://github.com/AgenciaImplementacion/Asistente-LADM_COL
 tracker=https://github.com/AgenciaImplementacion/Asistente-LADM_COL/issues
 repository=https://github.com/AgenciaImplementacion/Asistente-LADM_COL
