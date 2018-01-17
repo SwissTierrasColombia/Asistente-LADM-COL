@@ -1,3 +1,4 @@
+[![Release](https://img.shields.io/github/release/AgenciaImplementacion/asistente-ladm_col.svg)](https://github.com/AgenciaImplementacion/asistente-ladm_col/releases)
 [![Build Status](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL.svg?branch=master)](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL)
 
 # LADM_COL Assistant
@@ -35,10 +36,9 @@ Unit tests are automatically executed after every commit made to the repository.
 - Linux: https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL
 - Windows: http://portal.proadmintierra.info:18000/
 
-To run the tests locally you need to have *docker* and *docker-compose* installed.
-- The version of *docker* that we use can be downloaded from [official site](https://www.docker.com/community-edition#/download), for the development we use Ubuntu / Linux_Mint so we follow steps from
-[Install using the convenience script](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
-- The version of *docker-compose* that we use can be installed using the [binaries](https://github.com/docker/compose/releases/tag/1.18.0).
+To run the tests locally you need to have *docker* and *docker-compose* installed. We suggest to:
+- Download *docker* from the [official site](https://www.docker.com/community-edition#/download). For instance, for Ubuntu / Linux_Mint follow the steps in [Install using the convenience script](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
+- Install *docker-compose* using the [binaries](https://github.com/docker/compose/releases/tag/1.18.0).
 
 The command to execute unit tests is:
 `` `sh
