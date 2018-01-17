@@ -18,9 +18,31 @@ class TestExport(unittest.TestCase):
         self.iface = get_iface()
         self.qgis_utils = QGISUtils()
         self.db_connection = get_dbconn()
+        print(self.db_connection)
+        query = self.db_connection.execute("""select * from public.avaluopredio""")
+        query.next()
+        print('query', query.value(0))
+
         wiz = PointsSpatialUnitCadasterWizard(self.iface, self.db_connection, self.qgis_utils)
         a = wiz.copy_csv_points_to_db()
         self.assertEqual(a, None) # Isn't ok yet
+
+        #probarlo por fuera!!!
+
+        # target_point_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_POINT_TABLE, load=True)
+        # if target_point_layer is None:
+        #     self.iface.messageBar().pushMessage("Asistente LADM_COL",
+        #         QCoreApplication.translate("PointsSpatialUnitCadasterWizard",
+        #                                    "Boundary point layer couldn't be found in the DB..."),
+        #         QgsMessageBar.WARNING)
+        #     return
+        #
+        # self.iface.copySelectionToClipboard(csv_layer)
+        # target_point_layer.startEditing()
+        # self.iface.pasteFromClipboard(target_point_layer)
+        # target_point_layer.commitChanges()
+        # QgsProject.instance().addMapLayer(target_point_layer)
+        # self.iface.zoomFull()
 
     def tearDownClass():
         print('in this section the DB will be clear')

@@ -17,9 +17,9 @@
  ***************************************************************************/
 """
 
-__author__ = 'Matthias Kuhn'
-__date__ = 'January 2016'
-__copyright__ = '(C) 2016, Matthiasd Kuhn'
+__author__ = 'Germán Carrillo'
+__date__ = 'Enero 2017'
+__copyright__ = '(C) 2017, Germán Carrillo'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
@@ -56,4 +56,7 @@ def get_dbconn():
 
 def get_iface():
     global iface
+    def rewrite_method():
+        return "i'm rewrited"
+    iface.rewrite_method = rewrite_method
     return iface
