@@ -17,28 +17,20 @@ jobs:
   - stage: test
     env: QGIS_TEST_VERSION="2.99-alpha"
     script: docker-compose run qgis
-  - stage: artifact
-    script:
-      - pushd asistente_ladm_col; make clean; make all; popd
-      - zip -r Asistente-LADM_COL.zip asistente_ladm_col -x tests/\*
   - stage: deploy
     if: tag IS present
     install:
       - pip install -r requirements.txt
     script: echo 'si se necesita hacer deploy'
-<<<<<<< HEAD
-before_deploy:
-    script:
-      - pushd asistente_ladm_col; make clean; make all; popd
-      - zip -r Asistente-LADM_COL.zip asistente_ladm_col -x tests/\*
-=======
-
->>>>>>> 4995d961b249fdf3161a45ecb635dc4c9e82038a
 env:
   global:
   - OSGEO_USERNAME=agenciadeimplementacion
   - secure: ''
   - secure: ''
+before_deploy:
+    script:
+      - pushd asistente_ladm_col; make clean; make all; popd
+      - zip -r Asistente-LADM_COL.zip asistente_ladm_col -x tests/\*
 deploy:
   provider: releases
   api_key:
