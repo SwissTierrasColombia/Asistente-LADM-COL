@@ -16,6 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os
+
 from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri,
                        QgsSpatialIndex, QgsVectorLayer)
@@ -38,6 +40,8 @@ class QGISUtils(QObject):
     message_emitted = pyqtSignal(str, int) # Message, level
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, callback, level
     map_refresh_requested = pyqtSignal()
+    zoom_full_requested = pyqtSignal()
+    zoom_to_selected_requested = pyqtSignal()
 
     def __init__(self):
         QObject.__init__(self)
@@ -85,6 +89,80 @@ class QGISUtils(QObject):
         index = layer.fields().indexFromName(field)
         default_value = QgsDefaultValue(expression, True)
         layer.setDefaultValueDefinition(index, default_value)
+
+
+    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db):
+        if not csv_path or not os.path.exists(csv_path):
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "No CSV file given or file doesn't exist."),
+                QgsMessageBar.WARNING)
+            return False
+
+        # Create QGIS vector layer
+        uri = "file:///{}?delimiter={}&xField={}&yField={}&crs=EPSG:3116".format(
+              csv_path,
+              delimiter,
+              longitude,
+              latitude
+           )
+        csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
+        if not csv_layer.isValid():
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "CSV layer not valid!"),
+                QgsMessageBar.WARNING)
+            return False
+
+        overlapping = self.validate_non_overlapping_points(csv_layer)
+        if overlapping:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are overlapping points, we cannot import them into the DB! See selected points."),
+                QgsMessageBar.WARNING)
+            QgsProject.instance().addMapLayer(point_layer)
+            point_layer.selectByIds(res)
+            self.zoom_to_selected_requested.emit()
+            return False
+
+        #csv_layer.selectAll()
+
+        target_point_layer = self.get_layer(db, BOUNDARY_POINT_TABLE, load=True)
+        if target_point_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Boundary point layer couldn't be found in the DB..."),
+                QgsMessageBar.WARNING)
+            return False
+
+        # Copy and Paste
+        new_features = []
+        for in_feature in csv_layer.getFeatures():
+            attrs_list = in_feature.attributes()
+            #attrs = {i:j for i,j in enumerate(attrs_list) if j != None and i!=0} # Exclude NULLs and t_id
+            attrs = {i:j for i,j in enumerate(attrs_list)} # Exclude NULLs and t_id
+            new_feature = QgsVectorLayerUtils().createFeature(target_point_layer, in_feature.geometry(), attrs)
+            new_features.append(new_feature)
+
+        target_point_layer.dataProvider().addFeatures(new_features)
+
+        #self.iface.copySelectionToClipboard(csv_layer)
+        #target_point_layer.startEditing()
+        #self.iface.pasteFromClipboard(target_point_layer)
+        #target_point_layer.commitChanges()
+
+        QgsProject.instance().addMapLayer(target_point_layer)
+        self.zoom_full_requested.emit()
+        return True
+
+    def validate_non_overlapping_points(self, point_layer):
+        # Validate non-overlapping points
+        index = QgsSpatialIndex(point_layer.getFeatures())
+        for feature in point_layer.getFeatures():
+            res = index.intersects(feature.geometry().boundingBox())
+            if len(res) > 1:
+                return res
+        return []
 
     def extractAsSingleSegments(self, geom):
         """

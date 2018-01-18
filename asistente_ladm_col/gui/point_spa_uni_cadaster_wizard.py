@@ -63,50 +63,11 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
 
         self.save_settings()
 
-        # Create QGIS vector layer
-        uri = "file:///{}?delimiter={}&xField={}&yField={}&crs=EPSG:3116".format(
-              csv_path,
-              self.txt_delimiter.text(),
-              self.cbo_longitude.currentText(),
-              self.cbo_latitude.currentText()
-           )
-        csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
-        if not csv_layer.isValid():
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("PointsSpatialUnitCadasterWizard",
-                                           "CSV layer not valid!"),
-                QgsMessageBar.WARNING)
-
-        # Validate non-overlapping points
-        index = QgsSpatialIndex(csv_layer.getFeatures())
-        for feature in csv_layer.getFeatures():
-            res = index.intersects(feature.geometry().boundingBox())
-            if len(res) > 1:
-                self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                    QCoreApplication.translate("PointsSpatialUnitCadasterWizard",
-                                               "There are overlapping points, we cannot import them into the DB! See selected points."),
-                    QgsMessageBar.WARNING)
-                QgsProject.instance().addMapLayer(csv_layer)
-                csv_layer.selectByIds(res)
-                self.iface.mapCanvas().zoomToSelected()
-                return
-
-        csv_layer.selectAll()
-
-        target_point_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_POINT_TABLE, load=True)
-        if target_point_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("PointsSpatialUnitCadasterWizard",
-                                           "Boundary point layer couldn't be found in the DB..."),
-                QgsMessageBar.WARNING)
-            return
-
-        self.iface.copySelectionToClipboard(csv_layer)
-        target_point_layer.startEditing()
-        self.iface.pasteFromClipboard(target_point_layer)
-        target_point_layer.commitChanges()
-        QgsProject.instance().addMapLayer(target_point_layer)
-        self.iface.zoomFull()
+        res = self.qgis_utils.copy_csv_to_db(csv_path,
+                                    self.txt_delimiter.text(),
+                                    self.cbo_longitude.currentText(),
+                                    self.cbo_latitude.currentText(),
+                                    self._db)
 
     def fill_long_lat_combos(self, text):
         csv_path = self.txt_file_path.text().strip()
