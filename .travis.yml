@@ -24,9 +24,8 @@ env:
   - OSGEO_USERNAME=agenciadeimplementacion
   - secure: ''
 before_deploy:
-    script:
-      - pushd asistente_ladm_col; make clean; make all; popd
-      - zip -r Asistente-LADM_COL.zip asistente_ladm_col -x tests/\*
+  - pushd asistente_ladm_col; make clean; make all; popd
+  - zip -r Asistente-LADM_COL.zip asistente_ladm_col -x tests/\*
 deploy:
   provider: releases
   api_key:
