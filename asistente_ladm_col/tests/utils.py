@@ -61,6 +61,6 @@ def get_iface():
     iface.rewrite_method = rewrite_method
     return iface
 
-def test_path(path):
+def get_test_path(path):
     basepath = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(basepath, 'resources', path)

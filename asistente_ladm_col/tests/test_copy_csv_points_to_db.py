@@ -9,7 +9,7 @@ from qgis.testing import unittest, start_app
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.gui.point_spa_uni_cadaster_wizard import PointsSpatialUnitCadasterWizard
-from asistente_ladm_col.tests.utils import get_dbconn, get_iface, test_path
+from asistente_ladm_col.tests.utils import get_dbconn, get_iface, get_test_path
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
 class TestExport(unittest.TestCase):
@@ -21,15 +21,19 @@ class TestExport(unittest.TestCase):
         self.db_connection = get_dbconn()
         print('test_connection', self.db_connection.test_connection())
         print('Restoring ladm_col database...')
+        script_dir = 'restore_db.sh'
         if platform == "linux" or platform == "linux2" or platform == "darwin":
-            output = os.popen(test_path('restore_db.sh')).readlines()
+            script_dir = get_test_path('restore_db.sh')
         elif platform == "win32":
-            output = os.popen(test_path('restore_db.bat')).readlines()
+            script_dir = get_test_path('restore_db.bat')
         else:
             print('Please add the test script')
+
+        process = os.popen(script_dir)
+        output = process.readlines()
+        process.close()
         print('Done restoring ladm_col database.')
         print(output)
-
 
     def test_show_wiz_point_sp_un_cad(self):
         wiz = PointsSpatialUnitCadasterWizard(self.iface, self.db_connection, self.qgis_utils)
