@@ -1,12 +1,9 @@
+sudo: required
 language: python
 python:
   - 3.5
-before_install:
-  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu
-    $(lsb_release -cs) stable"
-  - sudo apt-get update
-  - sudo apt-get -y install docker-ce
+services:
+  - docker
 install:
   - docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION} .
 jobs:
@@ -17,7 +14,7 @@ jobs:
   - stage: test
     env: QGIS_TEST_VERSION="2.99-alpha"
     script: docker-compose run qgis
-  - stage: deploy
+  - stage: deploy_plugin
     if: tag IS present
     install:
       - pip install -r requirements.txt
@@ -25,7 +22,6 @@ jobs:
 env:
   global:
   - OSGEO_USERNAME=agenciadeimplementacion
-  - secure: ''
   - secure: ''
 before_deploy:
     script:
