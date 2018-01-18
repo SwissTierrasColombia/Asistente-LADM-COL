@@ -1,31 +1,46 @@
 import qgis
 import nose2
+import psycopg2
+import os
 
+from sys import platform
 from qgis.testing import unittest, start_app
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.gui.point_spa_uni_cadaster_wizard import PointsSpatialUnitCadasterWizard
-from asistente_ladm_col.tests.utils import get_dbconn, get_iface
+from asistente_ladm_col.tests.utils import get_dbconn, get_iface, test_path
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
 class TestExport(unittest.TestCase):
 
-    def setUpClass():
-        print('in this section the DB will be filled')
-
-    def test_show_wiz_point_sp_un_cad(self):
+    @classmethod
+    def setUpClass(self):
         self.iface = get_iface()
         self.qgis_utils = QGISUtils()
         self.db_connection = get_dbconn()
-        print(self.db_connection)
-        query = self.db_connection.execute("""select * from public.avaluopredio""")
-        query.next()
-        print('query', query.value(0))
+        print('test_connection', self.db_connection.test_connection())
+        print('Restoring ladm_col database...')
+        if platform == "linux" or platform == "linux2" or platform == "darwin":
+            output = os.popen(test_path('restore_db.sh')).readlines()
+        elif platform == "win32":
+            output = os.popen(test_path('restore_db.bat')).readlines()
+        else:
+            print('Please add the test script')
+        print('Done restoring ladm_col database.')
+        print(output)
 
+
+    def test_show_wiz_point_sp_un_cad(self):
         wiz = PointsSpatialUnitCadasterWizard(self.iface, self.db_connection, self.qgis_utils)
         a = wiz.copy_csv_points_to_db()
         self.assertEqual(a, None) # Isn't ok yet
+
+        # cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        # print('Restoring ladm_col database')
+        # query = cur.execute("""SELECT 1""")
+        # query.next()
+        # print('query', query.value(0))
 
         #probarlo por fuera!!!
 

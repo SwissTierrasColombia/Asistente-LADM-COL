@@ -31,12 +31,12 @@ from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 from qgis.testing.mocked import get_iface
 
 # PostgreSQL connection to schema with a LADM_COL model from ./etl_script_uaecd.py
-DB_HOSTNAME = 'localhost'
+DB_HOSTNAME = 'postgres'
 DB_PORT = '5432'
 DB_NAME = 'ladm_col'
 DB_SCHEMA = 'public'
 DB_USER = 'usuario_ladm_col'
-DB_PASSWORD = 'password_ladm_col'
+DB_PASSWORD = 'clave_ladm_col'
 iface = get_iface()
 asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface)
 asistente_ladm_col_plugin.initGui()
@@ -60,3 +60,7 @@ def get_iface():
         return "i'm rewrited"
     iface.rewrite_method = rewrite_method
     return iface
+
+def test_path(path):
+    basepath = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(basepath, 'resources', path)

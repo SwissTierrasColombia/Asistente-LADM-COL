@@ -1,15 +1,14 @@
 language: python
 python:
-- 3.5
+  - 3.5
 before_install:
-- curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-- sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu
-  $(lsb_release -cs) stable"
-- sudo apt-get update
-- sudo apt-get -y install docker-ce
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu
+    $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y install docker-ce
 install:
-- pip install -r requirements.txt
-- docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION} .
+  - docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION} .
 jobs:
   include:
   - stage: test
@@ -18,15 +17,16 @@ jobs:
   - stage: test
     env: QGIS_TEST_VERSION="2.99-alpha"
     script: docker-compose run qgis
+  - stage: artifact
+    script:
+      - pushd asistente_ladm_col; make clean; make all; popd
+      - zip -r Asistente-LADM_COL.zip asistente_ladm_col -x tests/\*
   - stage: deploy
     if: tag IS present
     install:
-    - pip install -r requirements.txt
+      - pip install -r requirements.txt
     script: echo 'si se necesita hacer deploy'
-  - stage: release
-    script:
-    - pushd asistente_ladm_col; make clean; make all; popd
-    - zip -r Asistente-LADM_COL.zip asistente_ladm_col -x tests/\*
+
 env:
   global:
   - OSGEO_USERNAME=agenciadeimplementacion
@@ -35,7 +35,7 @@ env:
 deploy:
   provider: releases
   api_key:
-    secure: T0k7yBuhPybeesQyXztsRE94QmzSljkx/Jpa3hPbQOniphOfw3nSG0mvqiE/ZOe4kRoem1pFRw0zdxoGYYy3f9cRa7sIr5T0xg46r2fSWBrXTOdIhojkEReFbLfY5sreV2sbRNij2ibAjPKZ1bTcNtQ+P2dy+OOLD6KlAXa65y+u/qZgLD9tnVVUF4N7aeKeL4U6RdhIO5t3FduPlKIMa7v4P+v1XWMH5FYAkrMG55uZlazT+8QY7J8wCPHb3kLhE3PkXQtjPHvROEED6JmoCLvnjPg5bORKsXg0VEfIRVfO5znvxmVOtpfoiLMHulFzms9i+2cmLDcEV0w4EkeqNsmMPsd5x1DIEMi+YGIj48g2u5WlwAB91NpStddBePH5EII4qRmG41p40S1X4TvpFag8IeNYwMPm4LXAah+lD96PxftC3iizR3O7mbIKUobj84mYRUQGhdR3gX2TtwGrab3rovcHcVk04bGgexX/ujxDTWw6BWTAOUkymybf6aM4Rkfwb4pol78PSMBmycFlv0nSKjRdx3CpFrRWkH5BBjyttiNNX/jfJNqFfXqFstTy8VO/VHxUrDD1CGcYU8tH8I946hyANJU42sHKVDy6Vdx44D89GAnnLqKU69ZKe6y9IRTgyw49lKWkHIGV4mmt2b5TbidLywL97OQXavn2p94=
+    secure:     T0k7yBuhPybeesQyXztsRE94QmzSljkx/Jpa3hPbQOniphOfw3nSG0mvqiE/ZOe4kRoem1pFRw0zdxoGYYy3f9cRa7sIr5T0xg46r2fSWBrXTOdIhojkEReFbLfY5sreV2sbRNij2ibAjPKZ1bTcNtQ+P2dy+OOLD6KlAXa65y+u/qZgLD9tnVVUF4N7aeKeL4U6RdhIO5t3FduPlKIMa7v4P+v1XWMH5FYAkrMG55uZlazT+8QY7J8wCPHb3kLhE3PkXQtjPHvROEED6JmoCLvnjPg5bORKsXg0VEfIRVfO5znvxmVOtpfoiLMHulFzms9i+2cmLDcEV0w4EkeqNsmMPsd5x1DIEMi+YGIj48g2u5WlwAB91NpStddBePH5EII4qRmG41p40S1X4TvpFag8IeNYwMPm4LXAah+lD96PxftC3iizR3O7mbIKUobj84mYRUQGhdR3gX2TtwGrab3rovcHcVk04bGgexX/ujxDTWw6BWTAOUkymybf6aM4Rkfwb4pol78PSMBmycFlv0nSKjRdx3CpFrRWkH5BBjyttiNNX/jfJNqFfXqFstTy8VO/VHxUrDD1CGcYU8tH8I946hyANJU42sHKVDy6Vdx44D89GAnnLqKU69ZKe6y9IRTgyw49lKWkHIGV4mmt2b5TbidLywL97OQXavn2p94=
   file: Asistente-LADM_COL.zip
   on:
     repo: AgenciaImplementacion/Asistente-LADM_COL
