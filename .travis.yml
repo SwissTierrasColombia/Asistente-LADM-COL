@@ -33,3 +33,4 @@ deploy:
   file: Asistente-LADM_COL.zip
   on:
     repo: AgenciaImplementacion/Asistente-LADM_COL
+    tags: true
