@@ -17,9 +17,9 @@
  ***************************************************************************/
 """
 
-__author__ = 'Matthias Kuhn'
-__date__ = 'January 2016'
-__copyright__ = '(C) 2016, Matthiasd Kuhn'
+__author__ = 'Germán Carrillo'
+__date__ = 'Enero 2017'
+__copyright__ = '(C) 2017, Germán Carrillo'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
@@ -31,12 +31,12 @@ from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 from qgis.testing.mocked import get_iface
 
 # PostgreSQL connection to schema with a LADM_COL model from ./etl_script_uaecd.py
-DB_HOSTNAME = 'localhost'
+DB_HOSTNAME = 'postgres'
 DB_PORT = '5432'
 DB_NAME = 'ladm_col'
-DB_SCHEMA = 'public'
+DB_SCHEMA = 'test_ladm_col'
 DB_USER = 'usuario_ladm_col'
-DB_PASSWORD = 'password_ladm_col'
+DB_PASSWORD = 'clave_ladm_col'
 iface = get_iface()
 asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface)
 asistente_ladm_col_plugin.initGui()
@@ -56,4 +56,11 @@ def get_dbconn():
 
 def get_iface():
     global iface
+    def rewrite_method():
+        return "i'm rewrited"
+    iface.rewrite_method = rewrite_method
     return iface
+
+def get_test_path(path):
+    basepath = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(basepath, 'resources', path)
