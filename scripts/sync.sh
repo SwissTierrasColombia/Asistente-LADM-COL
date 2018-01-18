@@ -3,8 +3,8 @@
 # you can execute with $ watch ./scripts/sync.sh
 
 # rationale: se busca la ruta del script para que no importe desde
-# link: https://stackoverflow.com/questions/630372/determine-the-path-of-the-executing-bash-script
 # donde se ejecuta el .sh
+# link: https://stackoverflow.com/questions/630372/determine-the-path-of-the-executing-bash-script
 MY_PATH="`dirname \"$0\"`"              # relative
 MY_PATH="`( cd \"$MY_PATH\" && pwd )`"  # absolutized and normalized
 if [ -z "$MY_PATH" ] ; then

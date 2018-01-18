@@ -1,15 +1,14 @@
 language: python
 python:
-- 3.5
+  - 3.5
 before_install:
-- curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-- sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu
-  $(lsb_release -cs) stable"
-- sudo apt-get update
-- sudo apt-get -y install docker-ce
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu
+    $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y install docker-ce
 install:
-- pip install -r requirements.txt
-- docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION} .
+  - docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION} .
 jobs:
   include:
   - stage: test
@@ -21,12 +20,12 @@ jobs:
   - stage: deploy
     if: tag IS present
     install:
-    - pip install -r requirements.txt
+      - pip install -r requirements.txt
     script: echo 'si se necesita hacer deploy'
-  - stage: release
+before_deploy:
     script:
-    - pushd asistente_ladm_col; make clean; make all; popd
-    - zip -r Asistente-LADM_COL.zip asistente_ladm_col -x tests/\*
+      - pushd asistente_ladm_col; make clean; make all; popd
+      - zip -r Asistente-LADM_COL.zip asistente_ladm_col -x tests/\*
 env:
   global:
   - OSGEO_USERNAME=agenciadeimplementacion
