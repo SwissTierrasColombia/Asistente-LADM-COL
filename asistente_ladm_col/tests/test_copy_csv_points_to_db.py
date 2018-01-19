@@ -9,17 +9,28 @@ from qgis.testing import unittest, start_app
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.gui.point_spa_uni_cadaster_wizard import PointsSpatialUnitCadasterWizard
-from asistente_ladm_col.tests.utils import get_dbconn, get_iface, get_test_path
+from asistente_ladm_col.tests.utils import get_dbconn, get_test_path
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
 class TestExport(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.iface = get_iface()
         self.qgis_utils = QGISUtils()
         self.db_connection = get_dbconn()
-        print('test_connection', self.db_connection.test_connection())
+        result = self.db_connection.test_connection()
+        print('test_connection', result)
+        if not result[1]:
+            print('The test connection is not working')
+            return
+
+        cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute("""SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'test_ladm_col';""")
+        result = cur.fetchone()
+        if len(result) > 0:
+            print('The schema test_ladm_col already exists')
+            return
+
         print('Restoring ladm_col database...')
         script_dir = 'restore_db.sh'
         if platform == "linux" or platform == "linux2" or platform == "darwin":
@@ -33,12 +44,31 @@ class TestExport(unittest.TestCase):
         output = process.readlines()
         process.close()
         print('Done restoring ladm_col database.')
-        print(output)
+        if len(output) > 0:
+            print('Warning:', output)
+
+    def drop_schema(self):
+        print('Clean ladm_col database...')
+        cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        query = cur.execute("""DROP SCHEMA test_ladm_col CASCADE;""")
+        self.db_connection.conn.commit()
+        cur.close()
+        self.db_connection.conn.close()
+        if query is not None:
+            print('The drop schema is not working')
 
     def test_show_wiz_point_sp_un_cad(self):
-        wiz = PointsSpatialUnitCadasterWizard(self.iface, self.db_connection, self.qgis_utils)
-        a = wiz.copy_csv_points_to_db()
-        self.assertEqual(a, None) # Isn't ok yet
+        csv_path = get_test_path('csv/puntos_fixed.csv')
+        txt_delimiter = ';'
+        cbo_longitude = 'x'
+        cbo_latitude = 'y'
+        res = self.qgis_utils.copy_csv_to_db(csv_path,
+                                    txt_delimiter,
+                                    cbo_longitude,
+                                    cbo_latitude,
+                                    self.db_connection)
+
+        self.assertEqual(res, True) # Isn't ok yet
 
         # cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         # print('Restoring ladm_col database')
@@ -46,25 +76,10 @@ class TestExport(unittest.TestCase):
         # query.next()
         # print('query', query.value(0))
 
-        #probarlo por fuera!!!
-
-        # target_point_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_POINT_TABLE, load=True)
-        # if target_point_layer is None:
-        #     self.iface.messageBar().pushMessage("Asistente LADM_COL",
-        #         QCoreApplication.translate("PointsSpatialUnitCadasterWizard",
-        #                                    "Boundary point layer couldn't be found in the DB..."),
-        #         QgsMessageBar.WARNING)
-        #     return
-        #
-        # self.iface.copySelectionToClipboard(csv_layer)
-        # target_point_layer.startEditing()
-        # self.iface.pasteFromClipboard(target_point_layer)
-        # target_point_layer.commitChanges()
-        # QgsProject.instance().addMapLayer(target_point_layer)
-        # self.iface.zoomFull()
-
     def tearDownClass():
-        print('in this section the DB will be clear')
+        print('In this section the DB will be clear?')
+        # self.drop_schema()
+
 
 if __name__ == '__main__':
     nose2.main()
