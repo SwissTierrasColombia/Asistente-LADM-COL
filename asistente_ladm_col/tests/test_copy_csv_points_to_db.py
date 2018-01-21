@@ -27,7 +27,7 @@ class TestExport(unittest.TestCase):
         cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute("""SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'test_ladm_col';""")
         result = cur.fetchone()
-        if len(result) > 0:
+        if result is not None and len(result) > 0:
             print('The schema test_ladm_col already exists')
             return
 
