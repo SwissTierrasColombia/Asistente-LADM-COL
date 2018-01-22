@@ -1,0 +1,8 @@
+t_id;acuerdo;definicion_punto;descripcion_punto;exactitud_vertical;exactitud_horizontal;confiabilidad;nombre_punto;posicion_interpolacion;monumentacion;puntotipo;p_espacio_de_nombres;p_local_id;ue_la_unidadespacial;ue_la_espaciojuridicoredservicios;ue_servidumbrepaso;ue_la_espaciojuridicounidadedificacion;ue_terreno;ue_unidadconstruccion;ue_construccion;comienzo_vida_util_version;fin_vida_util_version;x;y;z
+1;Acuerdo;Bien_Definido;Otros;1;1;;;Centro_Arco;;Catastro;-1;-1;;;;;;;;2017-04-22 14:16:41.221663';;963424.849;1077377.269;1410.624
+2;Acuerdo;Bien_Definido;Otros;1;1;;;Centro_Arco;;Catastro;-1;-1;;;;;;;;'2017-04-22 14:16:41.221664';;963449.62;1077377.269;1410.994
+3;Acuerdo;Bien_Definido;Otros;1;1;;;Centro_Arco;;Catastro;-1;-1;;;;;;;;'2017-04-22 14:16:41.221665';;963495.658;1077274.459;1410.624
+4;Acuerdo;Bien_Definido;Otros;1;1;;;Centro_Arco;;Catastro;-1;-1;;;;;;;;'2017-04-22 14:16:41.221666';;963496.321;1077377.269;1410.624
+5;Acuerdo;Bien_Definido;Otros;1;1;;;Centro_Arco;;Catastro;-1;-1;;;;;;;;'2017-04-22 14:16:41.221667';;963434.03;1077377.2;1410.6
+6;Acuerdo;Bien_Definido;Otros;1;1;;;Centro_Arco;;Catastro;-1;-1;;;;;;;;'2017-04-22 14:16:41.221668';;963434.03;1077377.2;1410.6
+7;Acuerdo;Bien_Definido;Otros;1;1;;;Centro_Arco;;Catastro;-1;-1;;;;;;;;'2017-04-22 14:16:41.221668';;963434.03;1077377;1410
