@@ -23,6 +23,7 @@ from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
+from ..utils.qt_utils import enable_next_wizard, disable_next_wizard
 from ..config.table_mapping_config import (
     PLOT_TABLE,
     VIDA_UTIL_FIELD_BOUNDARY_TABLE
@@ -47,8 +48,10 @@ class CreatePlotCadasterWizard(QWizard, WIZARD_UI):
 
     def adjust_pages(self):
         if self.rad_plot_from_boundaries.isChecked():
+            disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
         else:
+            enable_next_wizard(self)
             self.wizardPage1.setFinalPage(False)
 
     def finished_dialog(self):
