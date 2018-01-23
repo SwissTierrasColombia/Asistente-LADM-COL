@@ -23,7 +23,7 @@ from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-from ..utils.ui import enable_next_wizard, disable_next_wizard
+from ..utils.qt_utils import enable_next_wizard, disable_next_wizard
 from ..config.table_mapping_config import (
     PLOT_TABLE,
     VIDA_UTIL_FIELD_BOUNDARY_TABLE
