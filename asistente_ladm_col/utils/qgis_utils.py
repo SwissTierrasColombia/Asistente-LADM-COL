@@ -121,7 +121,7 @@ class QGISUtils(QObject):
                                            "There are overlapping points, we cannot import them into the DB! See selected points."),
                 QgsMessageBar.WARNING)
             QgsProject.instance().addMapLayer(csv_layer)
-            point_layer.selectByIds(overlapping)
+            csv_layer.selectByIds(overlapping)
             self.zoom_to_selected_requested.emit()
             return False
 
