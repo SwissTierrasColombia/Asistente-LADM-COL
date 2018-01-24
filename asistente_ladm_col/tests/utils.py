@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 import os
 import psycopg2
 
+from sys import platform
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 # get from https://github.com/qgis/QGIS/blob/master/tests/src/python/test_qgssymbolexpressionvariables.py
 from qgis.testing.mocked import get_iface
