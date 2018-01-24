@@ -22,7 +22,8 @@ import os.path
 import inspect
 from qgis.PyQt.QtWidgets import (
     QFileDialog,
-    QApplication
+    QApplication,
+    QWizard
 )
 from qgis.PyQt.QtCore import (
     QCoreApplication,
@@ -66,6 +67,18 @@ def selectFolder(line_edit_widget, title, parent):
 
 def make_folder_selector(widget, title=QCoreApplication.translate('Asistente-LADM_COL', 'Open Folder'), parent=None):
     return partial(selectFolder, line_edit_widget=widget, title=title, parent=parent)
+
+
+def disable_next_wizard(wizard, with_back=True):
+    button_list = [QWizard.HelpButton, QWizard.Stretch, QWizard.FinishButton, QWizard.CancelButton]
+    if with_back: button_list.insert(2, QWizard.BackButton)
+    wizard.setButtonLayout(button_list)
+
+
+def enable_next_wizard(wizard, with_back=True):
+    button_list = [QWizard.HelpButton, QWizard.Stretch, QWizard.NextButton, QWizard.FinishButton, QWizard.CancelButton]
+    if with_back: button_list.insert(2, QWizard.BackButton)
+    wizard.setButtonLayout(button_list)
 
 
 class NetworkError(RuntimeError):
