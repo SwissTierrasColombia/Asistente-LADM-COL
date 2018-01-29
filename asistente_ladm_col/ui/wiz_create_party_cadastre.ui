@@ -11,11 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Wizard</string>
+   <string>Create Party</string>
   </property>
   <widget class="QWizardPage" name="wizardPage1">
    <property name="subTitle">
-    <string>How would yo like to create party?</string>
+    <string>How would you like to create parties?</string>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
@@ -23,7 +23,10 @@
       <item>
        <widget class="QRadioButton" name="rad_party_create">
         <property name="text">
-         <string>Create party</string>
+         <string>Entering data manually using a form</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -42,28 +45,11 @@
       </item>
       <item>
        <widget class="QRadioButton" name="rad_party_from_list">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
-         <string>Create party from list</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="verticalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="rad_party_group">
-        <property name="text">
-         <string>Create group party</string>
+         <string>From another source (e.g., CSV file, QGIS table, etc.)</string>
         </property>
        </widget>
       </item>

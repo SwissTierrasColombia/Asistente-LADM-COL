@@ -28,8 +28,8 @@ from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton, QMessageBox
 from .gui.point_spa_uni_cadaster_wizard import PointsSpatialUnitCadasterWizard
 from .gui.define_boundaries_cadaster_wizard import DefineBoundariesCadasterWizard
 from .gui.create_plot_cadaster_wizard import CreatePlotCadasterWizard
-from .gui.create_parcel_cadaster_wizard import CreateParcelCadasterWizard
-from .gui.create_party_cadaster_wizard import CreatePartyCadasterWizard
+from .gui.create_parcel_cadastre_wizard import CreateParcelCadastreWizard
+from .gui.create_party_cadastre_wizard import CreatePartyCadastreWizard
 from .gui.settings_dialog import SettingsDialog
 from .utils.qgis_utils import QGISUtils
 
@@ -214,12 +214,12 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_db_connection_required
     def show_wiz_parcel_cad(self):
-        wiz = CreateParcelCadasterWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     @_db_connection_required
     def show_wiz_party_cad(self):
-        wiz = CreatePartyCadasterWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz = CreatePartyCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     def show_about_dialog(self):

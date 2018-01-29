@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Wizard</string>
+   <string>Create Parcel</string>
   </property>
   <widget class="QWizardPage" name="wizardPage1">
    <property name="subTitle">
@@ -23,7 +23,10 @@
       <item>
        <widget class="QRadioButton" name="rad_parcel_from_plot">
         <property name="text">
-         <string>Create Parcel based on an existing plot</string>
+         <string>Based on existing plot(s)</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -42,8 +45,14 @@
       </item>
       <item>
        <widget class="QRadioButton" name="rad_parcel_without_geometry">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
-         <string>Create parcel based without geometry</string>
+         <string>Without geometry</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -62,8 +71,11 @@
       </item>
       <item>
        <widget class="QRadioButton" name="rad_parcel_from_list">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
-         <string>Create parcels from list</string>
+         <string>From other sources (e.g., CSV files, QGIS table, etc.)</string>
         </property>
        </widget>
       </item>
