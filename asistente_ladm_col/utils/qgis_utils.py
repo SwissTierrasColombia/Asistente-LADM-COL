@@ -33,7 +33,8 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            MOREBFS_TABLE_PLOT_FIELD,
                                            MOREBFS_TABLE_BOUNDARY_FIELD,
                                            MORE_BOUNDARY_FACE_STRING_TABLE,
-                                           POINT_BOUNDARY_FACE_STRING_TABLE)
+                                           POINT_BOUNDARY_FACE_STRING_TABLE,
+                                           VIDA_UTIL_FIELD_BOUNDARY_TABLE)
 
 class QGISUtils(QObject):
 
@@ -120,8 +121,8 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "There are overlapping points, we cannot import them into the DB! See selected points."),
                 QgsMessageBar.WARNING)
-            QgsProject.instance().addMapLayer(point_layer)
-            point_layer.selectByIds(res)
+            QgsProject.instance().addMapLayer(csv_layer)
+            csv_layer.selectByIds(overlapping)
             self.zoom_to_selected_requested.emit()
             return False
 
@@ -462,6 +463,7 @@ class QGISUtils(QObject):
         boundary_geometries = [f.geometry() for f in selected_boundaries]
         collection = QgsGeometry().polygonize(boundary_geometries)
         features = list()
+        self.configureAutomaticField(plots, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
         for polygon in collection.asGeometryCollection():
             feature = QgsVectorLayerUtils().createFeature(plots, polygon)
             features.append(feature)

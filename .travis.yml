@@ -24,9 +24,13 @@ env:
   - OSGEO_USERNAME=agenciadeimplementacion
   - secure: ''
 before_deploy:
-  - pushd asistente_ladm_col; make clean; make all; popd
-  - zip -r Asistente-LADM_COL.zip asistente_ladm_col -x tests/\*
+  - git stash --all
+  - cp -r asistente_ladm_col Asistente-LADM_COL
+  - pushd Asistente-LADM_COL; make clean; make all; popd
+  - zip -r Asistente-LADM_COL.zip Asistente-LADM_COL -x Asistente-LADM_COL/tests/\* \*.pyc \*/__pycache__/\*
+  - rm -rf Asistente-LADM_COL
 deploy:
+  skip_cleanup: true
   provider: releases
   api_key:
     secure:     T0k7yBuhPybeesQyXztsRE94QmzSljkx/Jpa3hPbQOniphOfw3nSG0mvqiE/ZOe4kRoem1pFRw0zdxoGYYy3f9cRa7sIr5T0xg46r2fSWBrXTOdIhojkEReFbLfY5sreV2sbRNij2ibAjPKZ1bTcNtQ+P2dy+OOLD6KlAXa65y+u/qZgLD9tnVVUF4N7aeKeL4U6RdhIO5t3FduPlKIMa7v4P+v1XWMH5FYAkrMG55uZlazT+8QY7J8wCPHb3kLhE3PkXQtjPHvROEED6JmoCLvnjPg5bORKsXg0VEfIRVfO5znvxmVOtpfoiLMHulFzms9i+2cmLDcEV0w4EkeqNsmMPsd5x1DIEMi+YGIj48g2u5WlwAB91NpStddBePH5EII4qRmG41p40S1X4TvpFag8IeNYwMPm4LXAah+lD96PxftC3iizR3O7mbIKUobj84mYRUQGhdR3gX2TtwGrab3rovcHcVk04bGgexX/ujxDTWw6BWTAOUkymybf6aM4Rkfwb4pol78PSMBmycFlv0nSKjRdx3CpFrRWkH5BBjyttiNNX/jfJNqFfXqFstTy8VO/VHxUrDD1CGcYU8tH8I946hyANJU42sHKVDy6Vdx44D89GAnnLqKU69ZKe6y9IRTgyw49lKWkHIGV4mmt2b5TbidLywL97OQXavn2p94=

@@ -98,3 +98,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# Build
+/Asistente-LADM_COL
+/Asistente-LADM_COL.zip
