@@ -49,3 +49,14 @@ El comando para ejecutar las pruebas es:
 ```sh
 docker-compose run --rm qgis
 ```
+
+## Pasos para traducir al español
+
+ + En la consola, y desde la carpeta *Asistente-LADM_COL*, ejecutar
+`lupdate asistente_ladm_col/i18n/Asistente-LADM_COL.pro` (lo cual actualiza el archivo `asistente_ladm_col/i18n/Asistente-LADM_COL_es.ts`)
+ + Abrir el programa *Qt-Linguist* y cargar el archivo  `asistente_ladm_col/i18n/Asistente-LADM_COL_es.ts`
+ + Editar las cadenas de texto traducibles y guardar el archivo.
+ + Ir a la carpeta *asistente_ladm_col* y ejecutar:
+ `make` (esto ejecuta a su vez `lrelease`, el cual genera un archivo binario con extensión .qm)
+
+NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
