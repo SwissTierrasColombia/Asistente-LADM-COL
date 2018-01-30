@@ -28,6 +28,8 @@ from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton, QMessageBox
 from .gui.point_spa_uni_cadaster_wizard import PointsSpatialUnitCadasterWizard
 from .gui.define_boundaries_cadaster_wizard import DefineBoundariesCadasterWizard
 from .gui.create_plot_cadaster_wizard import CreatePlotCadasterWizard
+from .gui.create_parcel_cadastre_wizard import CreateParcelCadastreWizard
+from .gui.create_party_cadastre_wizard import CreatePartyCadastreWizard
 from .gui.settings_dialog import SettingsDialog
 from .utils.qgis_utils import QGISUtils
 
@@ -69,6 +71,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._baunit_cadaster_menu.addActions([self._parcel_baunit_cadaster_action])
 
         self._party_cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"), self._cadaster_menu)
+        self._party_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"), self._party_cadaster_menu)
+        self._party_cadaster_menu.addActions([self._party_cadaster_action])
 
         self._rrr_cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "RRR"), self._cadaster_menu)
         self._right_rrr_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Right"), self._rrr_cadaster_menu)
@@ -99,6 +103,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._point_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_point_sp_un_cad)
         self._boundary_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_boundaries_cad)
         self._plot_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_plot_cad)
+        self._parcel_baunit_cadaster_action.triggered.connect(self.show_wiz_parcel_cad)
+        self._party_cadaster_action.triggered.connect(self.show_wiz_party_cad)
         self._settings_action.triggered.connect(self.show_settings)
         self._about_action.triggered.connect(self.show_about_dialog)
         self.qgis_utils.message_emitted.connect(self.show_message)
@@ -204,6 +210,16 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_wiz_plot_cad(self):
         wiz = CreatePlotCadasterWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_db_connection_required
+    def show_wiz_parcel_cad(self):
+        wiz = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_db_connection_required
+    def show_wiz_party_cad(self):
+        wiz = CreatePartyCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     def show_about_dialog(self):
