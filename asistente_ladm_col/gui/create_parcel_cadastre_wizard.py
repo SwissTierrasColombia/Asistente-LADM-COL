@@ -16,16 +16,21 @@
  *                                                                         *
  ***************************************************************************/
 """
-#from qgis.core import (QgsProject, QgsVectorLayer, QgsVectorLayerUtils,
-                       #QgsFeature, QgsMapLayerProxyModel, QgsWkbTypes)
+from functools import partial
+
+from qgis.core import QgsEditFormConfig, QgsVectorLayerUtils
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-#from ..utils.qt_utils import enable_next_wizard, disable_next_wizard
 from ..config.table_mapping_config import (
+    ID_FIELD,
+    PARCEL_TABLE,
     PLOT_TABLE,
+    UEBAUNIT_TABLE,
+    UEBAUNIT_TABLE_PARCEL_FIELD,
+    UEBAUNIT_TABLE_PLOT_FIELD,
     VIDA_UTIL_FIELD_BOUNDARY_TABLE
 )
 
@@ -37,5 +42,108 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.setupUi(self)
         self.iface = iface
         self._plot_layer = None
+        self._parcel_layer = None
+        self._uebaunit_table = None
         self._db = db
         self.qgis_utils = qgis_utils
+
+        self.button(QWizard.FinishButton).clicked.connect(self.prepare_parcel_creation)
+
+    def prepare_parcel_creation(self):
+        # Load layers
+        self._plot_layer = self.qgis_utils.get_layer(self._db, PLOT_TABLE, load=True)
+        if self._plot_layer is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateParcelCadastreWizard",
+                                           "Plot layer couldn't be found..."),
+                QgsMessageBar.WARNING)
+            return
+
+        self._parcel_layer = self.qgis_utils.get_layer(self._db, PARCEL_TABLE, load=True)
+        if self._parcel_layer is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateParcelCadastreWizard",
+                                           "Parcel layer couldn't be found..."),
+                QgsMessageBar.WARNING)
+            return
+
+        self._uebaunit_table = self.qgis_utils.get_layer(self._db, UEBAUNIT_TABLE, load=True)
+        if self._uebaunit_table is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateParcelCadastreWizard",
+                                           "UEBAUNIT table couldn't be found..."),
+                QgsMessageBar.WARNING)
+            return
+
+        # Configure automatic fields
+        self.qgis_utils.configureAutomaticField(self._parcel_layer, "nupre", "123")
+        self.qgis_utils.configureAutomaticField(self._parcel_layer, "tipo", "Unidad_Derecho")
+        self.qgis_utils.configureAutomaticField(self._parcel_layer, "u_espacio_de_nombres", "la_palma_predio")
+        self.qgis_utils.configureAutomaticField(self._parcel_layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
+
+        # Don't suppress (i.e., show) feature form
+        form_config = self._parcel_layer.editFormConfig()
+        form_config.setSuppress(QgsEditFormConfig.SuppressOff)
+        self._parcel_layer.setEditFormConfig(form_config)
+
+        self.edit_parcel()
+
+    def edit_parcel(self):
+        if self._plot_layer.selectedFeatureCount() == 1:
+            # Open Form
+            self.iface.layerTreeView().setCurrentLayer(self._parcel_layer)
+            self._parcel_layer.startEditing()
+            self.iface.actionAddFeature().trigger()
+
+            plot_ids = [f['t_id'] for f in self._plot_layer.selectedFeatures()]
+
+            # Create connections to react when a feature is added to buffer and
+            # when it gets stored into the DB
+            self._parcel_layer.featureAdded.connect(self.call_parcel_commit)
+            self._parcel_layer.committedFeaturesAdded.connect(partial(self.finish_parcel, plot_ids))
+
+        elif self._plot_layer.selectedFeatureCount() == 0:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateParcelCadastreWizard",
+                                           "Please select a Plot"),
+                QgsMessageBar.WARNING)
+        else: # >1
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateParcelCadastreWizard",
+                                           "Please select only one Plot"),
+                QgsMessageBar.WARNING)
+
+    def call_parcel_commit(self, fid):
+        res = self._parcel_layer.commitChanges()
+        if res:
+            self._parcel_layer.featureAdded.disconnect(self.call_parcel_commit)
+            print("Parcel's featureAdded SIGNAL disconnected")
+
+    def finish_parcel(self, plot_ids, layerId, features):
+        if len(features) != 1:
+            print("We should have got only one predio... We cannot do anything with {} predios".format(len(features)))
+        else:
+            fid = features[0].id()
+            if not self._parcel_layer.getFeature(fid).isValid():
+                print("Feature not found in layer Predio...")
+            else:
+                parcel_id = self._parcel_layer.getFeature(fid)[ID_FIELD]
+
+                # Fill uebaunit table
+                new_features = []
+                for plot_id in plot_ids:
+                    new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
+                    new_feature.setAttribute(UEBAUNIT_TABLE_PLOT_FIELD, plot_id)
+                    new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
+                    print("Saving Plot-Parcel:", plot_id, parcel_id)
+                    new_features.append(new_feature)
+
+                self._uebaunit_table.dataProvider().addFeatures(new_features)
+
+                self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                    QCoreApplication.translate("CreateParcelCadastreWizard",
+                                               "The new parcel (t_id={}) was successfully created and associated with its corresponding Terreno (t_id={})!".format(parcel_id, plot_ids[0])),
+                    QgsMessageBar.INFO)
+
+        self._parcel_layer.committedFeaturesAdded.disconnect()
+        print("Parcel's committedFeaturesAdded SIGNAL disconnected")

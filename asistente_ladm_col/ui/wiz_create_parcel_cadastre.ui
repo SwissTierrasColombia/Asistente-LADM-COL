@@ -23,7 +23,7 @@
       <item>
        <widget class="QRadioButton" name="rad_parcel_from_plot">
         <property name="text">
-         <string>Based on existing plot(s)</string>
+         <string>Based on existing plot</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -96,7 +96,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWizardPage" name="wizardPage2"/>
  </widget>
  <resources/>
  <connections/>

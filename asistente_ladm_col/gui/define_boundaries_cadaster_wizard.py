@@ -68,7 +68,7 @@ class DefineBoundariesCadasterWizard(QWizard, WIZARD_UI):
         snapping.setTolerance(9)
         QgsProject.instance().setSnappingConfig(snapping)
 
-        # Suppress feature creation
+        # Suppress feature form
         form_config = self._boundary_layer.editFormConfig()
         form_config.setSuppress(QgsEditFormConfig.SuppressOn)
         self._boundary_layer.setEditFormConfig(form_config)
