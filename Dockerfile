@@ -14,6 +14,10 @@ MAINTAINER Agencia Implementacion <agenciadeimplementacion@incige.com>
 #  future \
 #  transifex-client
 
+
+RUN apt-get update && \
+    apt-get -y install iputils-ping dnsutils
+
 ENV LANG=C.UTF-8
 
 WORKDIR /

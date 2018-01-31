@@ -3,7 +3,7 @@ services:
   postgres:
     image: kartoza/postgis:10.0-2.4
     environment:
-      - ALLOW_IP_RANGE="0.0.0.0/0"
+      - ALLOW_IP_RANGE="172.0.0.0/8"
       - POSTGRES_USER="usuario_ladm_col"
       - POSTGRES_PASS="clave_ladm_col"
       - POSTGRES_DBNAME="ladm_col"
@@ -12,8 +12,6 @@ services:
     tty: true
     volumes:
       - ${TRAVIS_BUILD_DIR}:/usr/src
-    links:
-      - postgres
     depends_on:
-      - "postgres"
+      - postgres
     command: ["/usr/src/scripts/run-docker-tests.sh"]
