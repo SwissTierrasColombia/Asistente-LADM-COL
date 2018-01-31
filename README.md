@@ -16,10 +16,10 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual (0.0.2) del Asistente LADM_COL permite:
+La versión actual (0.0.3) del Asistente LADM_COL permite:
 
  - Capturar datos para el modelo LADM_COL v2.2.0.
- - Agregar puntos a la capa `Punto Lindero` desde archivo CSV.
+ - Agregar puntos a las capas `Punto Lindero` y `Punto Levantamiento` desde archivo CSV.
    - Validar para evitar insertar puntos superpuestos.
  - Definir `Linderos` digitalizando sobre el mapa.
    - Ayudas para la digitalización:
@@ -32,6 +32,7 @@ La versión actual (0.0.2) del Asistente LADM_COL permite:
  - Llenar automáticamente tablas de topología:
    - `PuntosCCL` (relaciona `Punto Lindero` y `Lindero`)
    - `MasCCL`    (relaciona `Lindero` y `Terreno`)
+ - Crear `Predios` a partir de `Terrrenos` existentes.
 
 ## Pruebas automatizadas al software
 

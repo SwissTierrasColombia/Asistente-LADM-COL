@@ -13,10 +13,10 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version (0.0.2) of the LADM_COL Assistant allows to:
+The current version (0.0.3) of the LADM_COL Assistant allows to:
 
  - Capture data for the LADM_COL v2.2.0 model.
- - Add points to the `Boundary Point` layer from CSV files.
+ - Add points to the `Boundary Point` and `Survey Point` layers from CSV files.
    - Validate and avoid insertion of overlapping points.
  - Define `Boundaries` by digitizing on the map.
    - Aids for digitization:
@@ -29,6 +29,7 @@ The current version (0.0.2) of the LADM_COL Assistant allows to:
  - Fill topology tables automatically:
    - `BFS Points` (relates `Boundary Points` to `Boundary`)
    - `More BFS` (relates `Boundaries` to `Plot`)
+ - Create `Parcels` from existing `Plots`.
 
 ## Testing
 
