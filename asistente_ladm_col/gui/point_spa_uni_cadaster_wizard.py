@@ -56,9 +56,9 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
 
     def adjust_page_subtitle(self):
         if self.rad_boundary_point.isChecked():
-            self.wizardPage2.setSubTitle("Configure Data Source for Boundary Points")
+            self.wizardPage2.setSubTitle(QCoreApplication.translate("PointsSpatialUnitCadasterWizard", "Configure Data Source for Boundary Points"))
         else:
-            self.wizardPage2.setSubTitle("Configure Data Source for Survey Points")
+            self.wizardPage2.setSubTitle(QCoreApplication.translate("PointsSpatialUnitCadasterWizard", "Configure Data Source for Survey Points"))
 
     def prepare_copy_csv_points_to_db(self):
         csv_path = self.txt_file_path.text().strip()

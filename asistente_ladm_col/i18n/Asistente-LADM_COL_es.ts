@@ -122,27 +122,27 @@
     <message>
         <location filename="../gui/create_parcel_cadastre_wizard.py" line="57"/>
         <source>Plot layer couldn&apos;t be found...</source>
-        <translation type="unfinished">No se encontró la capa Terreno...</translation>
+        <translation>No se encontró la capa Terreno...</translation>
     </message>
     <message>
         <location filename="../gui/create_parcel_cadastre_wizard.py" line="65"/>
         <source>Parcel layer couldn&apos;t be found...</source>
-        <translation type="unfinished"></translation>
+        <translation>No se encontró la capa Predio...</translation>
     </message>
     <message>
         <location filename="../gui/create_parcel_cadastre_wizard.py" line="73"/>
         <source>UEBAUNIT table couldn&apos;t be found...</source>
-        <translation type="unfinished"></translation>
+        <translation>No se encontró la tabla UEBAUNIT...</translation>
     </message>
     <message>
         <location filename="../gui/create_parcel_cadastre_wizard.py" line="107"/>
         <source>Please select a Plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor selecciona un terreno</translation>
     </message>
     <message>
         <location filename="../gui/create_parcel_cadastre_wizard.py" line="112"/>
         <source>Please select only one Plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor selecciona solo un terreno</translation>
     </message>
 </context>
 <context>
@@ -304,6 +304,16 @@
     <name>PointsSpatialUnitCadasterWizard</name>
     <message>
         <location filename="../gui/point_spa_uni_cadaster_wizard.py" line="59"/>
+        <source>Configure Data Source for Boundary Points</source>
+        <translation>Configurar fuente de datos para Punto Lindero</translation>
+    </message>
+    <message>
+        <location filename="../gui/point_spa_uni_cadaster_wizard.py" line="61"/>
+        <source>Configure Data Source for Survey Points</source>
+        <translation>Configurar fuente de datos para Punto Levantamiento</translation>
+    </message>
+    <message>
+        <location filename="../gui/point_spa_uni_cadaster_wizard.py" line="68"/>
         <source>No CSV file given or file doesn&apos;t exist.</source>
         <translation>No se especificó un archivo CSV o el archivo no existe.</translation>
     </message>
@@ -320,7 +330,7 @@
         <translation type="vanished">No se encontró la capa Punto Lindero en la base de datos...</translation>
     </message>
     <message>
-        <location filename="../gui/point_spa_uni_cadaster_wizard.py" line="122"/>
+        <location filename="../gui/point_spa_uni_cadaster_wizard.py" line="134"/>
         <source>It was not possible to read field names from the CSV. Check the file and try again.</source>
         <translation>No se pudieron leer los nombres de los campos del archivo CSV. Revisa el archivo e intenta de nuevo.</translation>
     </message>
@@ -328,117 +338,126 @@
 <context>
     <name>QGISUtils</name>
     <message>
-        <location filename="../utils/qgis_utils.py" line="199"/>
-        <location filename="../utils/qgis_utils.py" line="241"/>
+        <location filename="../utils/qgis_utils.py" line="207"/>
+        <location filename="../utils/qgis_utils.py" line="249"/>
         <source>First load the layer {} into QGIS!</source>
         <translation>¡Primero carga la capa {} a QGIS!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="201"/>
-        <location filename="../utils/qgis_utils.py" line="243"/>
-        <location filename="../utils/qgis_utils.py" line="289"/>
-        <location filename="../utils/qgis_utils.py" line="373"/>
+        <location filename="../utils/qgis_utils.py" line="209"/>
+        <location filename="../utils/qgis_utils.py" line="251"/>
+        <location filename="../utils/qgis_utils.py" line="297"/>
+        <location filename="../utils/qgis_utils.py" line="381"/>
         <source>Load layer {} now</source>
         <translation>Cargar la capa {} ahora</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="232"/>
+        <location filename="../utils/qgis_utils.py" line="240"/>
         <source>{} feature(s) was/were exploded generating {} feature(s).</source>
         <translation>{} objeto(s) espacial(es) fue(ron) partido(s) generando {} objeto(s) espacial(es).</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="250"/>
+        <location filename="../utils/qgis_utils.py" line="258"/>
         <source>First select at least 2 boundaries!</source>
         <translation>¡Primero selecciona por lo menos 2 linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="272"/>
+        <location filename="../utils/qgis_utils.py" line="280"/>
         <source>{} features were merged!</source>
         <translation>¡Se unieron {} objetos espaciales!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="280"/>
-        <location filename="../utils/qgis_utils.py" line="301"/>
-        <location filename="../utils/qgis_utils.py" line="365"/>
-        <location filename="../utils/qgis_utils.py" line="385"/>
+        <location filename="../utils/qgis_utils.py" line="288"/>
+        <location filename="../utils/qgis_utils.py" line="309"/>
+        <location filename="../utils/qgis_utils.py" line="373"/>
+        <location filename="../utils/qgis_utils.py" line="393"/>
         <source>Table {} not found in the DB!</source>
         <translation>¡No se encontró la tabla {} en la base de datos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="287"/>
+        <location filename="../utils/qgis_utils.py" line="295"/>
         <source>First load the layer {} into QGIS and select at least one boundary!</source>
         <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un lindero!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="210"/>
-        <location filename="../utils/qgis_utils.py" line="294"/>
+        <location filename="../utils/qgis_utils.py" line="218"/>
+        <location filename="../utils/qgis_utils.py" line="302"/>
         <source>First select at least one boundary!</source>
         <translation>¡Primero selecciona por lo menos un lindero!</translation>
     </message>
     <message>
         <location filename="../utils/qgis_utils.py" line="98"/>
         <source>No CSV file given or file doesn&apos;t exist.</source>
-        <translation type="unfinished">No se especificó un archivo CSV o el archivo no existe.</translation>
+        <translation>No se especificó un archivo CSV o el archivo no existe.</translation>
     </message>
     <message>
         <location filename="../utils/qgis_utils.py" line="113"/>
         <source>CSV layer not valid!</source>
-        <translation type="unfinished">¡La capa CSV no es válida!</translation>
+        <translation>¡La capa CSV no es válida!</translation>
     </message>
     <message>
         <location filename="../utils/qgis_utils.py" line="121"/>
         <source>There are overlapping points, we cannot import them into the DB! See selected points.</source>
-        <translation type="unfinished">Hay puntos superpuestos, ¡no podemos importarlos a la base de datos! Revisa los puntos seleccionados en el mapa.</translation>
+        <translation>Hay puntos superpuestos, ¡no podemos importarlos a la base de datos! Revisa los puntos seleccionados en el mapa.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="134"/>
         <source>Boundary point layer couldn&apos;t be found in the DB...</source>
-        <translation type="unfinished">No se encontró la capa Punto Lindero en la base de datos...</translation>
+        <translation type="obsolete">No se encontró la capa Punto Lindero en la base de datos...</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="327"/>
-        <location filename="../utils/qgis_utils.py" line="411"/>
+        <location filename="../utils/qgis_utils.py" line="132"/>
+        <source>The point layer &apos;{}&apos; couldn&apos;t be found in the DB...</source>
+        <translation>No se encontró la capa de puntos &apos;{}&apos; en la base de datos...</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="162"/>
+        <source>{} points were added succesfully to &apos;{}&apos;.</source>
+        <translation>Se agregaron {} puntos a &apos;{}&apos; satisfactoriamente.</translation>
+    </message>
+    <message>
+        <location filename="../utils/qgis_utils.py" line="335"/>
+        <location filename="../utils/qgis_utils.py" line="419"/>
         <source>{} out of {} records were saved into {}! {} out of {} records already existed in the database.</source>
         <translation>¡{} de {} registros fueron guardados en {}! {} de {} registros ya existían en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="338"/>
+        <location filename="../utils/qgis_utils.py" line="346"/>
         <source>No pairs id_boundary-id_boundary_point found.</source>
         <translation>No se encontraron parejas id_lindero-id_punto_lindero.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="371"/>
+        <location filename="../utils/qgis_utils.py" line="379"/>
         <source>First load the layer {} into QGIS and select at least one plot!</source>
         <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un terreno!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="378"/>
+        <location filename="../utils/qgis_utils.py" line="386"/>
         <source>First select at least one plot!</source>
         <translation>¡Primero selecciona por lo menos un terreno!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="421"/>
+        <location filename="../utils/qgis_utils.py" line="429"/>
         <source>No pairs id_boundary-id_plot found.</source>
         <translation>No se encontraron parejas id_lindero-id_terreno.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="446"/>
-        <location filename="../utils/qgis_utils.py" line="459"/>
+        <location filename="../utils/qgis_utils.py" line="454"/>
+        <location filename="../utils/qgis_utils.py" line="467"/>
         <source>Layer {} not found in the DB!</source>
         <translation>¡No se encontró la capa {} en la base de datos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="452"/>
+        <location filename="../utils/qgis_utils.py" line="460"/>
         <source>First select boundaries!</source>
         <translation>¡Primero selecciona linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="476"/>
+        <location filename="../utils/qgis_utils.py" line="484"/>
         <source>{} new plot(s) has(have) been created!</source>
         <translation>¡{} nuevo(s) terreno(s) ha(n) sido creado(s)!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="480"/>
+        <location filename="../utils/qgis_utils.py" line="488"/>
         <source>No plot could be created. Make sure selected boundaries are closed!</source>
         <translation>No se pudieron crear terrenos. ¡Asegúrate que los linderos seleccionados formen polígonos cerrados!</translation>
     </message>
@@ -552,27 +571,27 @@
     <message>
         <location filename="../ui/wiz_create_parcel_cadastre.ui" line="14"/>
         <source>Create Parcel</source>
-        <translation type="unfinished">Crear Predio</translation>
+        <translation>Crear Predio</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_parcel_cadastre.ui" line="18"/>
         <source>How would you like to create parcels?</source>
-        <translation type="unfinished">¿Cómo te gustaría crear predios?</translation>
+        <translation>¿Cómo te gustaría crear predios?</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_parcel_cadastre.ui" line="26"/>
         <source>Based on existing plot</source>
-        <translation type="unfinished">Con base en un terreno existente</translation>
+        <translation>Con base en un terreno existente</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_parcel_cadastre.ui" line="52"/>
         <source>Without geometry</source>
-        <translation type="unfinished">Sin geometría</translation>
+        <translation>Sin geometría</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_parcel_cadastre.ui" line="78"/>
         <source>From other sources (e.g., CSV files, QGIS table, etc.)</source>
-        <translation type="unfinished">Desde otras fuentes (por ejemplo, archivo CSV, tabla de QGIS, etc.)</translation>
+        <translation>Desde otras fuentes (por ejemplo, archivo CSV, tabla de QGIS, etc.)</translation>
     </message>
 </context>
 <context>
@@ -580,22 +599,22 @@
     <message>
         <location filename="../ui/wiz_create_party_cadastre.ui" line="14"/>
         <source>Create Party</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear Interesado</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_party_cadastre.ui" line="18"/>
         <source>How would you like to create parties?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Cómo te gustaría crear interesados?</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_party_cadastre.ui" line="26"/>
         <source>Entering data manually using a form</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_party_cadastre.ui" line="52"/>
         <source>From another source (e.g., CSV file, QGIS table, etc.)</source>
-        <translation type="unfinished"></translation>
+        <translation>Desde otra fuente (por ejemplo, archivo CSV, tabla de QGIS, etc.)</translation>
     </message>
 </context>
 <context>
