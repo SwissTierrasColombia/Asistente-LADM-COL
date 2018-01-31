@@ -25,7 +25,8 @@ from qgis.PyQt.QtWidgets import QWizard
 
 from ..utils.qt_utils import make_file_selector
 from ..utils import get_ui_class
-from ..config.table_mapping_config import BOUNDARY_POINT_TABLE
+from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
+                                           SURVEY_POINT_TABLE)
 
 WIZARD_UI = get_ui_class('wiz_add_points_cadaster.ui')
 
@@ -49,9 +50,17 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
 
         self.txt_file_path.textChanged.emit(self.txt_file_path.text())
 
-        self.button(QWizard.FinishButton).clicked.connect(self.copy_csv_points_to_db)
+        self.rad_boundary_point.toggled.connect(self.adjust_page_subtitle)
+        self.adjust_page_subtitle() # Initialize it
+        self.button(QWizard.FinishButton).clicked.connect(self.prepare_copy_csv_points_to_db)
 
-    def copy_csv_points_to_db(self):
+    def adjust_page_subtitle(self):
+        if self.rad_boundary_point.isChecked():
+            self.wizardPage2.setSubTitle("Configure Data Source for Boundary Points")
+        else:
+            self.wizardPage2.setSubTitle("Configure Data Source for Survey Points")
+
+    def prepare_copy_csv_points_to_db(self):
         csv_path = self.txt_file_path.text().strip()
 
         if not csv_path or not os.path.exists(csv_path):
@@ -63,11 +72,14 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
 
         self.save_settings()
 
+        target_layer = BOUNDARY_POINT_TABLE if self.rad_boundary_point.isChecked() else SURVEY_POINT_TABLE
+
         res = self.qgis_utils.copy_csv_to_db(csv_path,
                                     self.txt_delimiter.text(),
                                     self.cbo_longitude.currentText(),
                                     self.cbo_latitude.currentText(),
-                                    self._db)
+                                    self._db,
+                                    target_layer)
 
     def fill_long_lat_combos(self, text):
         csv_path = self.txt_file_path.text().strip()
@@ -126,8 +138,16 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
 
     def save_settings(self):
         settings = QSettings()
+        settings.setValue('Asistente-LADM_COL/add_points_type', 'boundary_point' if self.rad_boundary_point.isChecked() else 'survey_point')
         settings.setValue('Asistente-LADM_COL/add_points_csv_file', self.txt_file_path.text().strip())
+        settings.setValue('Asistente-LADM_COL/csv_file_delimiter', self.txt_delimiter.text().strip())
 
     def restore_settings(self):
         settings = QSettings()
+        point_type = settings.value('Asistente-LADM_COL/add_points_type') or 'boundary_point'
+        if point_type == 'boundary_point':
+            self.rad_boundary_point.setChecked(True)
+        else:
+            self.rad_survey_point.setChecked(True)
         self.txt_file_path.setText(settings.value('Asistente-LADM_COL/add_points_csv_file'))
+        self.txt_delimiter.setText(settings.value('Asistente-LADM_COL/csv_file_delimiter'))

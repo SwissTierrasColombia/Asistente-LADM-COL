@@ -92,7 +92,7 @@ class QGISUtils(QObject):
         layer.setDefaultValueDefinition(index, default_value)
 
 
-    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db):
+    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, target_layer_name):
         if not csv_path or not os.path.exists(csv_path):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -126,22 +126,26 @@ class QGISUtils(QObject):
             self.zoom_to_selected_requested.emit()
             return False
 
-        #csv_layer.selectAll()
-
-        target_point_layer = self.get_layer(db, BOUNDARY_POINT_TABLE, load=True)
+        target_point_layer = self.get_layer(db, target_layer_name, load=True)
         if target_point_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "Boundary point layer couldn't be found in the DB..."),
+                                           "The point layer '{}' couldn't be found in the DB...").format(target_layer_name),
                 QgsMessageBar.WARNING)
             return False
+
+        # Define a mapping between CSV and target layer
+        mapping = dict()
+        for target_idx in target_point_layer.fields().allAttributesList():
+            target_field = target_point_layer.fields().field(target_idx)
+            csv_idx = csv_layer.fields().indexOf(target_field.name())
+            if csv_idx != -1 and target_field.name() != ID_FIELD:
+                mapping[target_idx] = csv_idx
 
         # Copy and Paste
         new_features = []
         for in_feature in csv_layer.getFeatures():
-            attrs_list = in_feature.attributes()
-            #attrs = {i:j for i,j in enumerate(attrs_list) if j != None and i!=0} # Exclude NULLs and t_id
-            attrs = {i:j for i,j in enumerate(attrs_list)} # Exclude NULLs and t_id
+            attrs = {target_idx: in_feature[csv_idx] for target_idx, csv_idx in mapping.items()}
             new_feature = QgsVectorLayerUtils().createFeature(target_point_layer, in_feature.geometry(), attrs)
             new_features.append(new_feature)
 
@@ -154,6 +158,10 @@ class QGISUtils(QObject):
 
         QgsProject.instance().addMapLayer(target_point_layer)
         self.zoom_full_requested.emit()
+        self.message_emitted.emit(
+            QCoreApplication.translate("QGISUtils",
+                                       "{} points were added succesfully to '{}'.").format(len(new_features), target_layer_name),
+            QgsMessageBar.INFO)
         return True
 
     def validate_non_overlapping_points(self, point_layer):

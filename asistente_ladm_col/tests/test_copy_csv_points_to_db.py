@@ -9,6 +9,7 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import get_dbconn, get_test_path, restore_schema
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
+from asistente_ladm_col.config.table_mapping_config import BOUNDARY_POINT_TABLE
 
 class TestCopy(unittest.TestCase):
 
@@ -38,7 +39,8 @@ class TestCopy(unittest.TestCase):
                                     txt_delimiter,
                                     cbo_longitude,
                                     cbo_latitude,
-                                    self.db_connection)
+                                    self.db_connection,
+                                    BOUNDARY_POINT_TABLE)
         self.assertEqual(res, True)
 
     def validate_points_in_db(self):
@@ -91,7 +93,8 @@ class TestCopy(unittest.TestCase):
                                     txt_delimiter,
                                     cbo_longitude,
                                     cbo_latitude,
-                                    self.db_connection)
+                                    self.db_connection,
+                                    BOUNDARY_POINT_TABLE)
 
         self.assertEqual(res, False)
 
