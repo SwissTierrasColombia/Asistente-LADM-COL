@@ -25,9 +25,9 @@ from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton, QMessageBox
 
-from .gui.point_spa_uni_cadaster_wizard import PointsSpatialUnitCadasterWizard
-from .gui.define_boundaries_cadaster_wizard import DefineBoundariesCadasterWizard
-from .gui.create_plot_cadaster_wizard import CreatePlotCadasterWizard
+from .gui.point_spa_uni_cadastre_wizard import PointsSpatialUnitCadastreWizard
+from .gui.define_boundaries_cadastre_wizard import DefineBoundariesCadastreWizard
+from .gui.create_plot_cadastre_wizard import CreatePlotCadastreWizard
 from .gui.create_parcel_cadastre_wizard import CreateParcelCadastreWizard
 from .gui.create_party_cadastre_wizard import CreatePartyCadastreWizard
 from .gui.settings_dialog import SettingsDialog
@@ -57,40 +57,40 @@ class AsistenteLADMCOLPlugin(QObject):
         self._settings_dialog = None
         self.qgis_utils = QGISUtils()
 
-        self._cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadaster"), self._menu)
-        self._spatial_unit_cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Spatial Unit"), self._cadaster_menu)
-        self._point_spatial_unit_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Add Points"), self._spatial_unit_cadaster_menu)
-        self._boundary_spatial_unit_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Define Boundaries"), self._spatial_unit_cadaster_menu)
-        self._plot_spatial_unit_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create plot"), self._spatial_unit_cadaster_menu)
-        self._spatial_unit_cadaster_menu.addActions([self._point_spatial_unit_cadaster_action,
-                                                     self._boundary_spatial_unit_cadaster_action,
-                                                     self._plot_spatial_unit_cadaster_action])
+        self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
+        self._spatial_unit_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Spatial Unit"), self._cadastre_menu)
+        self._point_spatial_unit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Add Points"), self._spatial_unit_cadastre_menu)
+        self._boundary_spatial_unit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Define Boundaries"), self._spatial_unit_cadastre_menu)
+        self._plot_spatial_unit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create plot"), self._spatial_unit_cadastre_menu)
+        self._spatial_unit_cadastre_menu.addActions([self._point_spatial_unit_cadastre_action,
+                                                     self._boundary_spatial_unit_cadastre_action,
+                                                     self._plot_spatial_unit_cadastre_action])
 
-        self._baunit_cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "BA Unit"), self._cadaster_menu)
-        self._parcel_baunit_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Parcel"), self._baunit_cadaster_menu)
-        self._baunit_cadaster_menu.addActions([self._parcel_baunit_cadaster_action])
+        self._baunit_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "BA Unit"), self._cadastre_menu)
+        self._parcel_baunit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Parcel"), self._baunit_cadastre_menu)
+        self._baunit_cadastre_menu.addActions([self._parcel_baunit_cadastre_action])
 
-        self._party_cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"), self._cadaster_menu)
-        self._party_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"), self._party_cadaster_menu)
-        self._party_cadaster_menu.addActions([self._party_cadaster_action])
+        self._party_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"), self._cadastre_menu)
+        self._party_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"), self._party_cadastre_menu)
+        self._party_cadastre_menu.addActions([self._party_cadastre_action])
 
-        self._rrr_cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "RRR"), self._cadaster_menu)
-        self._right_rrr_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Right"), self._rrr_cadaster_menu)
-        self._restriction_rrr_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Restriction"), self._rrr_cadaster_menu)
-        self._responsibility_rrr_cadaster_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Responsibility"), self._rrr_cadaster_menu)
-        self._rrr_cadaster_menu.addActions([self._right_rrr_cadaster_action,
-                                            self._restriction_rrr_cadaster_action,
-                                            self._responsibility_rrr_cadaster_action])
+        self._rrr_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "RRR"), self._cadastre_menu)
+        self._right_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Right"), self._rrr_cadastre_menu)
+        self._restriction_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Restriction"), self._rrr_cadastre_menu)
+        self._responsibility_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Responsibility"), self._rrr_cadastre_menu)
+        self._rrr_cadastre_menu.addActions([self._right_rrr_cadastre_action,
+                                            self._restriction_rrr_cadastre_action,
+                                            self._responsibility_rrr_cadastre_action])
 
-        self._source_cadaster_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._cadaster_menu)
+        self._source_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._cadastre_menu)
 
-        self._cadaster_menu.addMenu(self._spatial_unit_cadaster_menu)
-        self._cadaster_menu.addMenu(self._baunit_cadaster_menu)
-        self._cadaster_menu.addMenu(self._party_cadaster_menu)
-        self._cadaster_menu.addMenu(self._rrr_cadaster_menu)
-        self._cadaster_menu.addMenu(self._source_cadaster_menu)
+        self._cadastre_menu.addMenu(self._spatial_unit_cadastre_menu)
+        self._cadastre_menu.addMenu(self._baunit_cadastre_menu)
+        self._cadastre_menu.addMenu(self._party_cadastre_menu)
+        self._cadastre_menu.addMenu(self._rrr_cadastre_menu)
+        self._cadastre_menu.addMenu(self._source_cadastre_menu)
 
-        self._menu.addMenu(self._cadaster_menu)
+        self._menu.addMenu(self._cadastre_menu)
         self._menu.addSeparator()
         self._settings_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
         self._help_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"), self.iface.mainWindow())
@@ -100,11 +100,11 @@ class AsistenteLADMCOLPlugin(QObject):
                                self._about_action])
 
         # Set connections
-        self._point_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_point_sp_un_cad)
-        self._boundary_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_boundaries_cad)
-        self._plot_spatial_unit_cadaster_action.triggered.connect(self.show_wiz_plot_cad)
-        self._parcel_baunit_cadaster_action.triggered.connect(self.show_wiz_parcel_cad)
-        self._party_cadaster_action.triggered.connect(self.show_wiz_party_cad)
+        self._point_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_point_sp_un_cad)
+        self._boundary_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_boundaries_cad)
+        self._plot_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_plot_cad)
+        self._parcel_baunit_cadastre_action.triggered.connect(self.show_wiz_parcel_cad)
+        self._party_cadastre_action.triggered.connect(self.show_wiz_party_cad)
         self._settings_action.triggered.connect(self.show_settings)
         self._about_action.triggered.connect(self.show_about_dialog)
         self.qgis_utils.message_emitted.connect(self.show_message)
@@ -199,17 +199,17 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_db_connection_required
     def show_wiz_point_sp_un_cad(self):
-        wiz = PointsSpatialUnitCadasterWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz = PointsSpatialUnitCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     @_db_connection_required
     def show_wiz_boundaries_cad(self):
-        wiz = DefineBoundariesCadasterWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz = DefineBoundariesCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     @_db_connection_required
     def show_wiz_plot_cad(self):
-        wiz = CreatePlotCadasterWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz = CreatePlotCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     @_db_connection_required

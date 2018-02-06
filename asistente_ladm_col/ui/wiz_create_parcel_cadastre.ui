@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>wiz_create_parcel_cadaster</class>
- <widget class="QWizard" name="wiz_create_parcel_cadaster">
+ <class>wiz_create_parcel_cadastre</class>
+ <widget class="QWizard" name="wiz_create_parcel_cadastre">
   <property name="geometry">
    <rect>
     <x>0</x>

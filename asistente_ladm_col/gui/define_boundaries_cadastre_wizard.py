@@ -29,9 +29,9 @@ from ..config.table_mapping_config import (
     VIDA_UTIL_FIELD_BOUNDARY_TABLE
 )
 
-WIZARD_UI = get_ui_class('wiz_define_boundaries_cadaster.ui')
+WIZARD_UI = get_ui_class('wiz_define_boundaries_cadastre.ui')
 
-class DefineBoundariesCadasterWizard(QWizard, WIZARD_UI):
+class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
@@ -47,7 +47,7 @@ class DefineBoundariesCadasterWizard(QWizard, WIZARD_UI):
         self._boundary_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_TABLE, load=True)
         if self._boundary_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("DefineBoundariesCadasterWizard",
+                QCoreApplication.translate("DefineBoundariesCadastreWizard",
                                            "Boundary layer couldn't be found..."),
                 QgsMessageBar.WARNING)
             return
@@ -82,6 +82,6 @@ class DefineBoundariesCadasterWizard(QWizard, WIZARD_UI):
         boundary_toolbar.setVisible(True)
 
         self.iface.messageBar().pushMessage("Asistente LADM_COL",
-            QCoreApplication.translate("DefineBoundariesCadasterWizard",
+            QCoreApplication.translate("DefineBoundariesCadastreWizard",
                                        "You can now start capturing boundaries clicking on the map..."),
             QgsMessageBar.INFO)

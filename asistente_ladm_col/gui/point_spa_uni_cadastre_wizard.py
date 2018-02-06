@@ -28,9 +28,9 @@ from ..utils import get_ui_class
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE)
 
-WIZARD_UI = get_ui_class('wiz_add_points_cadaster.ui')
+WIZARD_UI = get_ui_class('wiz_add_points_cadastre.ui')
 
-class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
+class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
@@ -41,7 +41,7 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
         # Set connections
         self.btn_browse_file.clicked.connect(
             make_file_selector(self.txt_file_path,
-                               file_filter=QCoreApplication.translate("PointsSpatialUnitCadasterWizard",'CSV Comma Separated Value (*.csv)')))
+                               file_filter=QCoreApplication.translate("PointsSpatialUnitCadastreWizard",'CSV Comma Separated Value (*.csv)')))
         self.txt_file_path.textChanged.connect(self.fill_long_lat_combos)
         self.txt_delimiter.textChanged.connect(self.fill_long_lat_combos)
 
@@ -56,16 +56,16 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
 
     def adjust_page_subtitle(self):
         if self.rad_boundary_point.isChecked():
-            self.wizardPage2.setSubTitle(QCoreApplication.translate("PointsSpatialUnitCadasterWizard", "Configure Data Source for Boundary Points"))
+            self.wizardPage2.setSubTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Configure Data Source for Boundary Points"))
         else:
-            self.wizardPage2.setSubTitle(QCoreApplication.translate("PointsSpatialUnitCadasterWizard", "Configure Data Source for Survey Points"))
+            self.wizardPage2.setSubTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Configure Data Source for Survey Points"))
 
     def prepare_copy_csv_points_to_db(self):
         csv_path = self.txt_file_path.text().strip()
 
         if not csv_path or not os.path.exists(csv_path):
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("PointsSpatialUnitCadasterWizard",
+                QCoreApplication.translate("PointsSpatialUnitCadastreWizard",
                                            "No CSV file given or file doesn't exist."),
                 QgsMessageBar.WARNING)
             return
@@ -131,7 +131,7 @@ class PointsSpatialUnitCadasterWizard(QWizard, WIZARD_UI):
 
         if errorReading:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("PointsSpatialUnitCadasterWizard",
+                QCoreApplication.translate("PointsSpatialUnitCadastreWizard",
                                            "It was not possible to read field names from the CSV. Check the file and try again."),
                 QgsMessageBar.WARNING)
         return []

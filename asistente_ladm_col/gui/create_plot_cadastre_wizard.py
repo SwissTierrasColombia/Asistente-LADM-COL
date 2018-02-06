@@ -29,9 +29,9 @@ from ..config.table_mapping_config import (
     VIDA_UTIL_FIELD_BOUNDARY_TABLE
 )
 
-WIZARD_UI = get_ui_class('wiz_create_plot_cadaster.ui')
+WIZARD_UI = get_ui_class('wiz_create_plot_cadastre.ui')
 
-class CreatePlotCadasterWizard(QWizard, WIZARD_UI):
+class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
@@ -65,7 +65,7 @@ class CreatePlotCadasterWizard(QWizard, WIZARD_UI):
         self._plot_layer = self.qgis_utils.get_layer(self._db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, True)
         if self._plot_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreatePlotCadasterWizard",
+                QCoreApplication.translate("CreatePlotCadastreWizard",
                                            "Plot layer couldn't be found..."),
                 QgsMessageBar.WARNING)
             return
@@ -73,7 +73,7 @@ class CreatePlotCadasterWizard(QWizard, WIZARD_UI):
         refactored_layer = self.mMapLayerComboBox.currentLayer()
         if refactored_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreatePlotCadasterWizard",
+                QCoreApplication.translate("CreatePlotCadastreWizard",
                                            "Refactored layer couldn't be found..."),
                 QgsMessageBar.WARNING)
             return
@@ -91,6 +91,6 @@ class CreatePlotCadasterWizard(QWizard, WIZARD_UI):
         self._plot_layer.commitChanges()
 
         self.iface.messageBar().pushMessage("Asistente LADM_COL",
-            QCoreApplication.translate("CreatePlotCadasterWizard",
+            QCoreApplication.translate("CreatePlotCadastreWizard",
                                        "{} new plot(s) has(have) been created!").format(len(features)),
             QgsMessageBar.INFO)

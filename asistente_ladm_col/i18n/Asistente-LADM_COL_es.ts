@@ -5,7 +5,7 @@
     <name>AsistenteLADMCOLPlugin</name>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="60"/>
-        <source>Cadaster</source>
+        <source>Cadastre</source>
         <translation>Catastro</translation>
     </message>
     <message>
@@ -146,32 +146,32 @@
     </message>
 </context>
 <context>
-    <name>CreatePlotCadasterWizard</name>
+    <name>CreatePlotCadastreWizard</name>
     <message>
-        <location filename="../gui/create_plot_cadaster_wizard.py" line="68"/>
+        <location filename="../gui/create_plot_cadastre_wizard.py" line="68"/>
         <source>Plot layer couldn&apos;t be found...</source>
         <translation>No se encontró la capa Terreno...</translation>
     </message>
     <message>
-        <location filename="../gui/create_plot_cadaster_wizard.py" line="76"/>
+        <location filename="../gui/create_plot_cadastre_wizard.py" line="76"/>
         <source>Refactored layer couldn&apos;t be found...</source>
         <translation>No se encontró la capa reestructurada...</translation>
     </message>
     <message>
-        <location filename="../gui/create_plot_cadaster_wizard.py" line="94"/>
+        <location filename="../gui/create_plot_cadastre_wizard.py" line="94"/>
         <source>{} new plot(s) has(have) been created!</source>
         <translation>¡{} nuevo(s) terreno(s) ha(n) sido creado(s)!</translation>
     </message>
 </context>
 <context>
-    <name>DefineBoundariesCadasterWizard</name>
+    <name>DefineBoundariesCadastreWizard</name>
     <message>
-        <location filename="../gui/define_boundaries_cadaster_wizard.py" line="50"/>
+        <location filename="../gui/define_boundaries_cadastre_wizard.py" line="50"/>
         <source>Boundary layer couldn&apos;t be found...</source>
         <translation>No se encontró la capa Lindero...</translation>
     </message>
     <message>
-        <location filename="../gui/define_boundaries_cadaster_wizard.py" line="85"/>
+        <location filename="../gui/define_boundaries_cadastre_wizard.py" line="85"/>
         <source>You can now start capturing boundaries clicking on the map...</source>
         <translation>Ahora puedes empezar a capturar linderos dando click sobre el mapa...</translation>
     </message>
@@ -301,19 +301,19 @@
     </message>
 </context>
 <context>
-    <name>PointsSpatialUnitCadasterWizard</name>
+    <name>PointsSpatialUnitCadastreWizard</name>
     <message>
-        <location filename="../gui/point_spa_uni_cadaster_wizard.py" line="59"/>
+        <location filename="../gui/point_spa_uni_cadastre_wizard.py" line="59"/>
         <source>Configure Data Source for Boundary Points</source>
         <translation>Configurar fuente de datos para Punto Lindero</translation>
     </message>
     <message>
-        <location filename="../gui/point_spa_uni_cadaster_wizard.py" line="61"/>
+        <location filename="../gui/point_spa_uni_cadastre_wizard.py" line="61"/>
         <source>Configure Data Source for Survey Points</source>
         <translation>Configurar fuente de datos para Punto Levantamiento</translation>
     </message>
     <message>
-        <location filename="../gui/point_spa_uni_cadaster_wizard.py" line="68"/>
+        <location filename="../gui/point_spa_uni_cadastre_wizard.py" line="68"/>
         <source>No CSV file given or file doesn&apos;t exist.</source>
         <translation>No se especificó un archivo CSV o el archivo no existe.</translation>
     </message>
@@ -330,7 +330,7 @@
         <translation type="vanished">No se encontró la capa Punto Lindero en la base de datos...</translation>
     </message>
     <message>
-        <location filename="../gui/point_spa_uni_cadaster_wizard.py" line="134"/>
+        <location filename="../gui/point_spa_uni_cadastre_wizard.py" line="134"/>
         <source>It was not possible to read field names from the CSV. Check the file and try again.</source>
         <translation>No se pudieron leer los nombres de los campos del archivo CSV. Revisa el archivo e intenta de nuevo.</translation>
     </message>
@@ -465,62 +465,62 @@
 <context>
     <name>wiz_add_points</name>
     <message>
-        <location filename="../ui/wiz_add_points_cadaster.ui" line="17"/>
+        <location filename="../ui/wiz_add_points_cadastre.ui" line="17"/>
         <source>Add Points</source>
         <translation>Agregar Puntos</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_add_points_cadaster.ui" line="24"/>
+        <location filename="../ui/wiz_add_points_cadastre.ui" line="24"/>
         <source>Type of points</source>
         <translation>Tipo de Puntos</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_add_points_cadaster.ui" line="30"/>
+        <location filename="../ui/wiz_add_points_cadastre.ui" line="30"/>
         <source>Boundary Point</source>
         <translation>Punto Lindero</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_add_points_cadaster.ui" line="82"/>
+        <location filename="../ui/wiz_add_points_cadastre.ui" line="82"/>
         <source>Survey Point</source>
         <translation>Punto Levantamiento</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_add_points_cadaster.ui" line="90"/>
+        <location filename="../ui/wiz_add_points_cadastre.ui" line="90"/>
         <source>Configure Data Source</source>
         <translation>Configurar Fuente de Datos</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_add_points_cadaster.ui" line="109"/>
+        <location filename="../ui/wiz_add_points_cadastre.ui" line="109"/>
         <source>CSV File</source>
         <translation>Archivo CSV</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_add_points_cadaster.ui" line="128"/>
+        <location filename="../ui/wiz_add_points_cadastre.ui" line="128"/>
         <source>Browse CSV files</source>
         <translation>Buscar archivos CSV</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_add_points_cadaster.ui" line="131"/>
+        <location filename="../ui/wiz_add_points_cadastre.ui" line="131"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/wiz_add_points_cadaster.ui" line="160"/>
+        <location filename="../ui/wiz_add_points_cadastre.ui" line="160"/>
         <source>Delimiter</source>
         <translation>Separador</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_add_points_cadaster.ui" line="167"/>
+        <location filename="../ui/wiz_add_points_cadastre.ui" line="167"/>
         <source>;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/wiz_add_points_cadaster.ui" line="177"/>
+        <location filename="../ui/wiz_add_points_cadastre.ui" line="177"/>
         <source>Longitude field</source>
         <translation>Campo Longitud</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_add_points_cadaster.ui" line="187"/>
+        <location filename="../ui/wiz_add_points_cadastre.ui" line="187"/>
         <source>Latitude field</source>
         <translation>Campo Latitud</translation>
     </message>
@@ -528,32 +528,32 @@
 <context>
     <name>wiz_boundary</name>
     <message>
-        <location filename="../ui/wiz_define_boundaries_cadaster.ui" line="17"/>
+        <location filename="../ui/wiz_define_boundaries_cadastre.ui" line="17"/>
         <source>Define Boundaries</source>
         <translation>Definir linderos</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_define_boundaries_cadaster.ui" line="27"/>
+        <location filename="../ui/wiz_define_boundaries_cadastre.ui" line="27"/>
         <source>How would you like to define boundaries?</source>
         <translation>¿Cómo te gustaría definir linderos?</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_define_boundaries_cadaster.ui" line="46"/>
+        <location filename="../ui/wiz_define_boundaries_cadastre.ui" line="46"/>
         <source>Digitalize lines on the map canvas using QGIS tools</source>
         <translation>Digitalizar líneas sobre el mapa usando herramientas de QGIS</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_define_boundaries_cadaster.ui" line="49"/>
+        <location filename="../ui/wiz_define_boundaries_cadastre.ui" line="49"/>
         <source>Digitalization</source>
         <translation>Digitalización</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_define_boundaries_cadaster.ui" line="75"/>
+        <location filename="../ui/wiz_define_boundaries_cadastre.ui" line="75"/>
         <source>Use ordered lists of points defining boundaries</source>
         <translation>Usar listas ordenadas de puntos definiendo linderos</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_define_boundaries_cadaster.ui" line="78"/>
+        <location filename="../ui/wiz_define_boundaries_cadastre.ui" line="78"/>
         <source>From ordered lists of points</source>
         <translation>Desde listas ordenadas de puntos</translation>
     </message>
@@ -567,7 +567,7 @@
     </message>
 </context>
 <context>
-    <name>wiz_create_parcel_cadaster</name>
+    <name>wiz_create_parcel_cadastre</name>
     <message>
         <location filename="../ui/wiz_create_parcel_cadastre.ui" line="14"/>
         <source>Create Parcel</source>
@@ -595,7 +595,7 @@
     </message>
 </context>
 <context>
-    <name>wiz_create_party_cadaster</name>
+    <name>wiz_create_party_cadastre</name>
     <message>
         <location filename="../ui/wiz_create_party_cadastre.ui" line="14"/>
         <source>Create Party</source>
@@ -620,42 +620,42 @@
 <context>
     <name>wiz_plot</name>
     <message>
-        <location filename="../ui/wiz_create_plot_cadaster.ui" line="17"/>
+        <location filename="../ui/wiz_create_plot_cadastre.ui" line="17"/>
         <source>Create plots</source>
         <translation>Crear terrenos</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_plot_cadaster.ui" line="24"/>
+        <location filename="../ui/wiz_create_plot_cadastre.ui" line="24"/>
         <source>How would you like to create plots?</source>
         <translation>¿Cómo te gustaría crear terrenos?</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_plot_cadaster.ui" line="33"/>
+        <location filename="../ui/wiz_create_plot_cadastre.ui" line="33"/>
         <source>Generate plot polygons from selected boundaries</source>
         <translation>Generar polígonos de terrenos desde linderos seleccionados en el mapa</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_plot_cadaster.ui" line="36"/>
+        <location filename="../ui/wiz_create_plot_cadastre.ui" line="36"/>
         <source>Selecting existing boundaries</source>
         <translation>Seleccionando linderos existentes</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_plot_cadaster.ui" line="49"/>
+        <location filename="../ui/wiz_create_plot_cadastre.ui" line="49"/>
         <source>Use an input layer (probably the output of Refactor Fields algorithm in QGIS Processing) to copy features from</source>
         <translation>Usa una capa de entrada (probablemente la salida del algoritmo Refactor Fields de QGIS Processing) para copiar sus objetos espaciales</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_plot_cadaster.ui" line="52"/>
+        <location filename="../ui/wiz_create_plot_cadastre.ui" line="52"/>
         <source>From a refactored layer</source>
         <translation>Desde una capa reestructurada</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_plot_cadaster.ui" line="102"/>
+        <location filename="../ui/wiz_create_plot_cadastre.ui" line="102"/>
         <source>Select the refactored plot layer </source>
         <translation>Seleccionar la capa de terrenos reestructurada</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_plot_cadaster.ui" line="123"/>
+        <location filename="../ui/wiz_create_plot_cadastre.ui" line="123"/>
         <source>Copy features from</source>
         <translation>Copiar objetos espaciales desde</translation>
     </message>
