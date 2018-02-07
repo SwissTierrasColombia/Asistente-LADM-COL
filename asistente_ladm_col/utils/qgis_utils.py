@@ -24,6 +24,7 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import QObject, pyqtSignal, QCoreApplication
 
+from .project_generator_utils import ProjectGeneratorUtils
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
@@ -46,25 +47,40 @@ class QGISUtils(QObject):
 
     def __init__(self):
         QObject.__init__(self)
+        self.project_generator_utils = ProjectGeneratorUtils()
 
-    def get_layer(self, db, layer_name, geometry_type=None, load=False):
+    # def get_layer(self, db, layer_name, geometry_type=None, load=False):
+    #     # If layer is in LayerTree, return it
+    #     layer = self.get_layer_from_layer_tree(layer_name, db.schema, geometry_type)
+    #     if layer is not None:
+    #         return layer
+    #
+    #     # Layer is not loaded, create it and load it if 'load' is True
+    #     res, uri = db.get_uri_for_layer(layer_name, geometry_type)
+    #     if not res:
+    #         return None
+    #
+    #     layer = QgsVectorLayer(uri, layer_name.capitalize(), db.provider)
+    #     if layer.isValid():
+    #         if load:
+    #             QgsProject.instance().addMapLayer(layer)
+    #         return layer
+    #
+    #     return None
+
+    def get_layer(self, db, layer_name, geometry_type=None, load=False, first_time=True):
         # If layer is in LayerTree, return it
         layer = self.get_layer_from_layer_tree(layer_name, db.schema, geometry_type)
         if layer is not None:
             return layer
 
-        # Layer is not loaded, create it and load it if 'load' is True
-        res, uri = db.get_uri_for_layer(layer_name, geometry_type)
-        if not res:
+        if not first_time:
             return None
 
-        layer = QgsVectorLayer(uri, layer_name.capitalize(), db.provider)
-        if layer.isValid():
-            if load:
-                QgsProject.instance().addMapLayer(layer)
-            return layer
+        self.project_generator_utils.load_layers([layer_name])
 
-        return None
+        self.get_layer(db, layer_name, geometry_type, load, False)
+
 
     def get_layer_from_layer_tree(self, layer_name, schema=None, geometry_type=None):
         for k,layer in QgsProject.instance().mapLayers().items():
