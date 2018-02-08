@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-"""
-
 import os
 
 from qgis.testing.mocked import get_iface
