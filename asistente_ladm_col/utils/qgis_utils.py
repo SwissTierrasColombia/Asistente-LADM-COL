@@ -373,6 +373,7 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils", "Table {} not found in the DB!").format(PLOT_TABLE),
                 QgsMessageBar.WARNING)
             return
+
         if use_selection and plot_layer.selectedFeatureCount() == 0:
             if self.get_layer_from_layer_tree(PLOT_TABLE, schema=db.schema) is None:
                 self.message_with_button_load_layer_emitted.emit(
@@ -401,12 +402,12 @@ class QGISUtils(QObject):
         existing_pairs = set(existing_pairs)
 
         boundary_layer = self.get_layer(db, BOUNDARY_TABLE)
-        id_pairs = self.get_pair_boundary_plot(boundary_layer, plot_layer, use_selection)
+        id_more_pairs, id_less_pairs = self.get_pair_boundary_plot(boundary_layer, plot_layer, use_selection)
 
-        if id_pairs:
+        if id_more_pairs:
             more_bfs_layer.startEditing()
             features = list()
-            for id_pair in id_pairs:
+            for id_pair in id_more_pairs:
                 if not id_pair in existing_pairs: # Avoid duplicated pairs in the DB
                     # Create feature
                     feature = QgsVectorLayerUtils().createFeature(more_bfs_layer)
@@ -418,10 +419,10 @@ class QGISUtils(QObject):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "{} out of {} records were saved into {}! {} out of {} records already existed in the database.").format(
                     len(features),
-                    len(id_pairs),
+                    len(id_more_pairs),
                     MORE_BOUNDARY_FACE_STRING_TABLE,
-                    len(id_pairs) - len(features),
-                    len(id_pairs)
+                    len(id_more_pairs) - len(features),
+                    len(id_more_pairs)
                 ),
                 QgsMessageBar.INFO)
         else:
@@ -433,19 +434,73 @@ class QGISUtils(QObject):
         lines = boundary_layer.getFeatures()
         polygons = plot_layer.getSelectedFeatures() if use_selection else plot_layer.getFeatures()
         index = QgsSpatialIndex(boundary_layer)
-        intersect_pairs = list()
+        intersect_more_pairs = list()
+        intersect_less_pairs = list()
+
         for polygon in polygons:
             bbox = polygon.geometry().boundingBox()
             bbox.scale(1.001)
             candidates_ids = index.intersects(bbox)
             candidates_features = boundary_layer.getFeatures(candidates_ids)
+
             for candidate_feature in candidates_features:
                 polygon_geom = polygon.geometry()
+                is_multipart = polygon_geom.isMultipart()
                 candidate_geometry = candidate_feature.geometry()
+
                 if polygon_geom.intersects(candidate_geometry):
-                    if polygon_geom.intersection(candidate_geometry).type() == QgsWkbTypes.LineGeometry:
-                        intersect_pairs.append((polygon[ID_FIELD], candidate_feature[ID_FIELD]))
-        return intersect_pairs
+                    # Does the current multipolygon have inner rings?
+                    has_inner_rings = False
+                    multi_polygon = None
+                    single_polygon = None
+
+                    if is_multipart:
+                        multi_polygon = polygon_geom.get()
+                        for part in range(multi_polygon.numGeometries()):
+                            if multi_polygon.ringCount(part) > 1:
+                                has_inner_rings = True
+                                break
+                    else:
+                        single_polygon = polygon_geom.get()
+                        if single_polygon.numInteriorRings() > 0:
+                            has_inner_rings = True
+
+                    # Now we'll test intersections against borders
+                    if has_inner_rings:
+                        # In this case we need to identify whether the
+                        # intersection is with outer rings (goes to MOREBFS
+                        # table) or with inner rings (goes to LESS table)
+                        multi_outer_rings = QgsMultiLineString()
+                        multi_inner_rings = QgsMultiLineString()
+
+                        if is_multipart and multi_polygon:
+                            for i in range(multi_polygon.numGeometries()):
+                                temp_polygon = multi_polygon.geometryN(i)
+                                multi_outer_rings.addGeometry(temp_polygon.exteriorRing().clone())
+                                for j in range(temp_polygon.numInteriorRings()):
+                                    multi_inner_rings.addGeometry(temp_polygon.interiorRing(j).clone())
+
+                        elif not is_multipart and single_polygon:
+                            multi_outer_rings.addGeometry(single_polygon.exteriorRing().clone())
+                            for j in range(single_polygon.numInteriorRings()):
+                                multi_inner_rings.addGeometry(single_polygon.interiorRing(j).clone())
+
+                        if QgsGeometry(multi_outer_rings).intersection(candidate_geometry).type() == QgsWkbTypes.LineGeometry:
+                            intersect_more_pairs.append((polygon[ID_FIELD], candidate_feature[ID_FIELD]))
+                        if QgsGeometry(multi_inner_rings).intersection(candidate_geometry).type() == QgsWkbTypes.LineGeometry:
+                            intersect_less_pairs.append((polygon[ID_FIELD], candidate_feature[ID_FIELD]))
+
+                    else:
+                        boundary = None
+                        if is_multipart and multi_polygon:
+                            boundary = multi_polygon.boundary()
+                        elif not is_multipart and single_polygon:
+                            boundary = single_polygon.boundary()
+
+                        if boundary and QgsGeometry(boundary).intersection(candidate_geometry).type() == QgsWkbTypes.LineGeometry:
+                            intersect_more_pairs.append((polygon[ID_FIELD], candidate_feature[ID_FIELD]))
+
+        return (intersect_more_pairs, intersect_less_pairs)
 
     def polygonize_boundaries(self, db):
         boundaries = self.get_layer(db, BOUNDARY_TABLE)
