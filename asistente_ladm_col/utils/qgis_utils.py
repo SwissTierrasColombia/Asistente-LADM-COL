@@ -20,7 +20,7 @@ import os
 
 from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri,
-                       QgsSpatialIndex, QgsVectorLayer)
+                       QgsSpatialIndex, QgsVectorLayer, QgsMultiLineString)
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import QObject, pyqtSignal, QCoreApplication
 
@@ -367,7 +367,7 @@ class QGISUtils(QObject):
         return intersect_pairs
 
     def fill_topology_table_morebfs(self, db, use_selection=True):
-        plot_layer = self.get_layer(db, PLOT_TABLE)
+        plot_layer = self.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry)
         if plot_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Table {} not found in the DB!").format(PLOT_TABLE),
@@ -375,7 +375,7 @@ class QGISUtils(QObject):
             return
 
         if use_selection and plot_layer.selectedFeatureCount() == 0:
-            if self.get_layer_from_layer_tree(PLOT_TABLE, schema=db.schema) is None:
+            if self.get_layer_from_layer_tree(PLOT_TABLE, schema=db.schema, geometry_type=QgsWkbTypes.PolygonGeometry) is None:
                 self.message_with_button_load_layer_emitted.emit(
                     QCoreApplication.translate("QGISUtils",
                                                "First load the layer {} into QGIS and select at least one plot!").format(PLOT_TABLE),
