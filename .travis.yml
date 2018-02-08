@@ -7,37 +7,32 @@ services:
 before_install:
   - docker --version
   - docker-compose -v
-install:
-  - docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION} .
-jobs:
-  include:
-  - stage: test
-    env: QGIS_TEST_VERSION="latest"
-    script: docker-compose run qgis
-  - stage: test
-    env: QGIS_TEST_VERSION="2.99-alpha"
-    script: docker-compose run qgis
-  - stage: deploy_plugin
-    if: tag IS present
-    install:
-      - echo pip install -r requirements.txt
-    script: echo 'si se necesita hacer deploy'
 env:
   global:
   - OSGEO_USERNAME=agenciadeimplementacion
+  - QGIS_TEST_VERSION=latest
   - secure: ''
+install:
+  - docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION} .
+script:
+  - docker-compose run qgis
+  - echo pip install -r requirements.txt
+  - echo 'si se necesita hacer deploy'
 before_deploy:
-  - git stash --all
   - cp -r asistente_ladm_col Asistente-LADM_COL
   - pushd Asistente-LADM_COL; make clean; make all; popd
-  - zip -r Asistente-LADM_COL.zip Asistente-LADM_COL -x Asistente-LADM_COL/tests/\* \*.pyc \*/__pycache__/\*
+  - zip -r asistente_ladm_col.zip Asistente-LADM_COL -x Asistente-LADM_COL/tests/\*
+    \*.pyc \*/__pycache__/\*
   - rm -rf Asistente-LADM_COL
 deploy:
   skip_cleanup: true
   provider: releases
   api_key:
-    secure:     T0k7yBuhPybeesQyXztsRE94QmzSljkx/Jpa3hPbQOniphOfw3nSG0mvqiE/ZOe4kRoem1pFRw0zdxoGYYy3f9cRa7sIr5T0xg46r2fSWBrXTOdIhojkEReFbLfY5sreV2sbRNij2ibAjPKZ1bTcNtQ+P2dy+OOLD6KlAXa65y+u/qZgLD9tnVVUF4N7aeKeL4U6RdhIO5t3FduPlKIMa7v4P+v1XWMH5FYAkrMG55uZlazT+8QY7J8wCPHb3kLhE3PkXQtjPHvROEED6JmoCLvnjPg5bORKsXg0VEfIRVfO5znvxmVOtpfoiLMHulFzms9i+2cmLDcEV0w4EkeqNsmMPsd5x1DIEMi+YGIj48g2u5WlwAB91NpStddBePH5EII4qRmG41p40S1X4TvpFag8IeNYwMPm4LXAah+lD96PxftC3iizR3O7mbIKUobj84mYRUQGhdR3gX2TtwGrab3rovcHcVk04bGgexX/ujxDTWw6BWTAOUkymybf6aM4Rkfwb4pol78PSMBmycFlv0nSKjRdx3CpFrRWkH5BBjyttiNNX/jfJNqFfXqFstTy8VO/VHxUrDD1CGcYU8tH8I946hyANJU42sHKVDy6Vdx44D89GAnnLqKU69ZKe6y9IRTgyw49lKWkHIGV4mmt2b5TbidLywL97OQXavn2p94=
-  file: Asistente-LADM_COL.zip
+    # link: https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
+    # link: https://github.com/travis-ci/travis.rb#installation
+    # travis setup releases --force
+    secure: eDXuR1hOL2puWUXrKfEfJ9ToYAFJMXhazJm/ai7B853LvXj13H7oCx0ns7y1sNbjpCadjliAaj1NXEfeS+tcv8tmEmtS3EjwwabDgirBdT13NbIPtdKZgBmFuXtK4SafIRJOdtPpQMlb+OuS0n9lQWNXRM52rbidEOr4/FY7UQWr/u380d5I4chtxwOsvowiAp74NszDhheA9azlJZ8M1LnmurAxIMSnA0nWrz1QMkgffDF6yk+hYsvLzalQ/omBaOhw4wUo2oo+gJSYERS1usK7pkCu9136X+O8ULT5A619EH36yJCdkOFJPMZiKCmfLwqUA0ubhPkEtYMVBp7haJh7Gw9/XAd9SZkDAGc94P483Va4RRF5OnnAQhIktmg4Rdevjg1hKTcwHBNaQuAHkF8q2SnpKdd7QxACRUovEm4AW3b7ZBnqr3VS7sU5x+MbI5jPgQbHAqQIVbx8/rxXQwphp5WD0mNGDMogw1zW94MMyBVyhY5N3xK60o4DKJ+c96ITnnNoLp62SRP1vQc6aKzeKC1DXlnLIvPGmOWaZ8supM30XLuyPq51m56MTdgBAis6xAzgm7dYb6Adv5mlfuq6M3/4Tq+Vrckb6YdHJUoVfDUYrTe/ohlQ8QulFO9YCLADwcQuZHyYaXU9F2rXa6PUjpW0WVsT6JjVvS0O/eo=
+  file: asistente_ladm_col.zip
   on:
     repo: AgenciaImplementacion/Asistente-LADM_COL
     tags: true
