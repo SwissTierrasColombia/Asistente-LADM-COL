@@ -18,9 +18,9 @@
 """
 import os
 
-from qgis.core import QgsMessageLog
+from qgis.core import QgsMessageLog, Qgis
 from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
-                              QLocale, QSettings, Qgis)
+                              QLocale, QSettings)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton, QMessageBox
 
