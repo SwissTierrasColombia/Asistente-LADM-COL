@@ -19,9 +19,8 @@
 import os
 
 from qgis.core import QgsMessageLog
-from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
-                              QLocale, QSettings)
+                              QLocale, QSettings, Qgis)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton, QMessageBox
 
@@ -192,7 +191,7 @@ class AsistenteLADMCOLPlugin(QObject):
                 button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
                 button.pressed.connect(inst.show_settings)
                 widget.layout().addWidget(button)
-                inst.iface.messageBar().pushWidget(widget, QgsMessageBar.WARNING, 15)
+                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
                 QgsMessageLog.logMessage(QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog couldn't be open, connection to DB was not valid."), "Asistente LADM_COL")
 
         return decorated_function

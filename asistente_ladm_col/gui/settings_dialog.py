@@ -18,7 +18,7 @@
 """
 import os
 
-from qgis.core import QgsProject, QgsVectorLayer
+from qgis.core import QgsProject, QgsVectorLayer, Qgis
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QSettings
 from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
@@ -130,7 +130,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def test_connection(self):
         self._db = None # Reset db connection
         res, msg = self.get_db_connection().test_connection()
-        self.show_message(msg, QgsMessageBar.INFO if res else QgsMessageBar.WARNING)
+        self.show_message(msg, Qgis.Info if res else Qgis.Warning)
         print("Test connection!")
 
     def show_message(self, message, level):

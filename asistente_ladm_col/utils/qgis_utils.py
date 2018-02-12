@@ -19,9 +19,8 @@
 import os
 
 from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
-                       QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri,
+                       QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri, Qgis,
                        QgsSpatialIndex, QgsVectorLayer, QgsMultiLineString)
-from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import QObject, pyqtSignal, QCoreApplication
 
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
@@ -100,7 +99,7 @@ class QGISUtils(QObject):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "No CSV file given or file doesn't exist."),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return False
 
         # Create QGIS vector layer
@@ -115,7 +114,7 @@ class QGISUtils(QObject):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "CSV layer not valid!"),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return False
 
         overlapping = self.validate_non_overlapping_points(csv_layer)
@@ -123,7 +122,7 @@ class QGISUtils(QObject):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "There are overlapping points, we cannot import them into the DB! See selected points."),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             QgsProject.instance().addMapLayer(csv_layer)
             csv_layer.selectByIds(overlapping)
             self.zoom_to_selected_requested.emit()
@@ -134,7 +133,7 @@ class QGISUtils(QObject):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "The point layer '{}' couldn't be found in the DB...").format(target_layer_name),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return False
 
         # Define a mapping between CSV and target layer
@@ -164,7 +163,7 @@ class QGISUtils(QObject):
         self.message_emitted.emit(
             QCoreApplication.translate("QGISUtils",
                                        "{} points were added succesfully to '{}'.").format(len(new_features), target_layer_name),
-            QgsMessageBar.INFO)
+            Qgis.Info)
         return True
 
     def validate_non_overlapping_points(self, point_layer):
@@ -212,7 +211,7 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "Load layer {} now").format(BOUNDARY_TABLE),
                 [BOUNDARY_TABLE],
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
 
         num_boundaries = len(layer.selectedFeatures())
@@ -220,7 +219,7 @@ class QGISUtils(QObject):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "First select at least one boundary!"),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
 
         segments = list()
@@ -242,7 +241,7 @@ class QGISUtils(QObject):
         self.message_emitted.emit(
             QCoreApplication.translate("QGISUtils",
                                        "{} feature(s) was/were exploded generating {} feature(s).").format(num_boundaries, len(exploded_features)),
-            QgsMessageBar.INFO)
+            Qgis.Info)
         self.map_refresh_requested.emit()
 
     def merge_boundaries(self, db):
@@ -253,13 +252,13 @@ class QGISUtils(QObject):
                                            "First load the layer {} into QGIS!").format(BOUNDARY_TABLE),
                 QCoreApplication.translate("QGISUtils", "Load layer {} now").format(BOUNDARY_TABLE),
                 [BOUNDARY_TABLE],
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
 
         if len(layer.selectedFeatures()) < 2:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "First select at least 2 boundaries!"),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
 
         num_boundaries = len(layer.selectedFeatures())
@@ -281,7 +280,7 @@ class QGISUtils(QObject):
         layer.addFeature(feature)
         self.message_emitted.emit(
             QCoreApplication.translate("QGISUtils", "{} features were merged!").format(num_boundaries),
-            QgsMessageBar.INFO)
+            Qgis.Info)
         self.map_refresh_requested.emit()
 
     def fill_topology_table_pointbfs(self, db, use_selection=True):
@@ -290,7 +289,7 @@ class QGISUtils(QObject):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "Table {} not found in the DB!").format(BOUNDARY_TABLE),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
         if use_selection and boundary_layer.selectedFeatureCount() == 0:
             if self.get_layer_from_layer_tree(BOUNDARY_TABLE, schema=db.schema) is None:
@@ -299,18 +298,18 @@ class QGISUtils(QObject):
                                                "First load the layer {} into QGIS and select at least one boundary!").format(BOUNDARY_TABLE),
                     QCoreApplication.translate("QGISUtils", "Load layer {} now").format(BOUNDARY_TABLE),
                     [BOUNDARY_TABLE],
-                    QgsMessageBar.WARNING)
+                    Qgis.Warning)
             else:
                 self.message_emitted.emit(
                     QCoreApplication.translate("QGISUtils", "First select at least one boundary!"),
-                    QgsMessageBar.WARNING)
+                    Qgis.Warning)
             return
 
         bfs_layer = self.get_layer(db, POINT_BOUNDARY_FACE_STRING_TABLE, load=True)
         if bfs_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Table {} not found in the DB!").format(POINT_BOUNDARY_FACE_STRING_TABLE),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
 
         bfs_features = bfs_layer.getFeatures()
@@ -343,11 +342,11 @@ class QGISUtils(QObject):
                     len(id_pairs) - len(features),
                     len(id_pairs)
                 ),
-                QgsMessageBar.INFO)
+                Qgis.Info)
         else:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_boundary_point found."),
-                QgsMessageBar.INFO)
+                Qgis.Info)
 
     def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer, use_selection=True):
         lines = boundary_layer.getSelectedFeatures() if use_selection else boundary_layer.getFeatures()
@@ -374,7 +373,7 @@ class QGISUtils(QObject):
         if plot_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Table {} not found in the DB!").format(PLOT_TABLE),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
 
         if use_selection and plot_layer.selectedFeatureCount() == 0:
@@ -384,25 +383,25 @@ class QGISUtils(QObject):
                                                "First load the layer {} into QGIS and select at least one plot!").format(PLOT_TABLE),
                     QCoreApplication.translate("QGISUtils", "Load layer {} now").format(PLOT_TABLE),
                     [PLOT_TABLE],
-                    QgsMessageBar.WARNING)
+                    Qgis.Warning)
             else:
                 self.message_emitted.emit(
                     QCoreApplication.translate("QGISUtils", "First select at least one plot!"),
-                    QgsMessageBar.WARNING)
+                    Qgis.Warning)
             return
 
         more_bfs_layer = self.get_layer(db, MORE_BOUNDARY_FACE_STRING_TABLE, load=True)
         if more_bfs_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Table {} not found in the DB!").format(MORE_BOUNDARY_FACE_STRING_TABLE),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
 
         less_layer = self.get_layer(db, LESS_TABLE, load=True)
         if less_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Table {} not found in the DB!").format(LESS_TABLE),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
 
         more_bfs_features = more_bfs_layer.getFeatures()
@@ -437,11 +436,11 @@ class QGISUtils(QObject):
                     len(id_more_pairs) - len(features),
                     len(id_more_pairs)
                 ),
-                QgsMessageBar.INFO)
+                Qgis.Info)
         else:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.".format(MORE_BOUNDARY_FACE_STRING_TABLE)),
-                QgsMessageBar.INFO)
+                Qgis.Info)
 
         if id_less_pairs:
             less_layer.startEditing()
@@ -463,11 +462,11 @@ class QGISUtils(QObject):
                     len(id_less_pairs) - len(features),
                     len(id_less_pairs)
                 ),
-                QgsMessageBar.INFO)
+                Qgis.Info)
         else:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.".format(MORE_BOUNDARY_FACE_STRING_TABLE)),
-                QgsMessageBar.INFO)
+                Qgis.Info)
 
     def get_pair_boundary_plot(self, boundary_layer, plot_layer, use_selection=True):
         lines = boundary_layer.getFeatures()
@@ -546,20 +545,20 @@ class QGISUtils(QObject):
         if boundaries is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Layer {} not found in the DB!").format(BOUNDARY_TABLE),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
         selected_boundaries = boundaries.selectedFeatures()
         if not selected_boundaries:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "First select boundaries!"),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
 
         plots = self.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
         if plots is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Layer {} not found in the DB!").format(PLOT_TABLE),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
 
         boundary_geometries = [f.geometry() for f in selected_boundaries]
@@ -576,9 +575,9 @@ class QGISUtils(QObject):
             self.map_refresh_requested.emit()
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "{} new plot(s) has(have) been created!").format(len(features)),
-                QgsMessageBar.INFO)
+                Qgis.Info)
         else:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "No plot could be created. Make sure selected boundaries are closed!"),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
