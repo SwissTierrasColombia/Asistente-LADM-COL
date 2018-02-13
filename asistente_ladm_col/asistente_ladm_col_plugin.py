@@ -143,8 +143,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, level, 15)
 
     def load_layers(self, layer_list):
-        for layer in layer_list:
-            self.qgis_utils.get_layer(self.get_db_connection(), layer, load=True)
+        self.qgis_utils.get_layers(self.get_db_connection(), layer_list, True)
 
     def call_explode_boundaries(self):
         self.qgis_utils.explode_boundaries(self.get_db_connection())
@@ -238,3 +237,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.translator = QTranslator()
         self.translator.load(qgis_locale, 'Asistente-LADM_COL', '_', locale_path)
         QCoreApplication.installTranslator(self.translator)
+
+    def testGetlayers(self, layers):
+        res = self.qgis_utils.get_layers(self.get_db_connection(), layers, True)
+        print(res)

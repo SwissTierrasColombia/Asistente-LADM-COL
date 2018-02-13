@@ -49,38 +49,52 @@ class QGISUtils(QObject):
         QObject.__init__(self)
         self.project_generator_utils = ProjectGeneratorUtils()
 
-    # def get_layer(self, db, layer_name, geometry_type=None, load=False):
-    #     # If layer is in LayerTree, return it
-    #     layer = self.get_layer_from_layer_tree(layer_name, db.schema, geometry_type)
-    #     if layer is not None:
-    #         return layer
-    #
-    #     # Layer is not loaded, create it and load it if 'load' is True
-    #     res, uri = db.get_uri_for_layer(layer_name, geometry_type)
-    #     if not res:
-    #         return None
-    #
-    #     layer = QgsVectorLayer(uri, layer_name.capitalize(), db.provider)
-    #     if layer.isValid():
-    #         if load:
-    #             QgsProject.instance().addMapLayer(layer)
-    #         return layer
-    #
-    #     return None
-
-    def get_layer(self, db, layer_name, geometry_type=None, load=False, first_time=True):
+    def get_layer(self, db, layer_name, geometry_type=None, load=False):
         # If layer is in LayerTree, return it
         layer = self.get_layer_from_layer_tree(layer_name, db.schema, geometry_type)
         if layer is not None:
             return layer
 
-        if not first_time:
+        # Layer is not loaded, create it and load it if 'load' is True
+        res, uri = db.get_uri_for_layer(layer_name, geometry_type)
+        if not res:
             return None
 
-        self.project_generator_utils.load_layers([layer_name])
+        layer = QgsVectorLayer(uri, layer_name.capitalize(), db.provider)
+        if layer.isValid():
+            if load:
+                QgsProject.instance().addMapLayer(layer)
+            return layer
 
-        self.get_layer(db, layer_name, geometry_type, load, False)
+        return None
 
+    def get_layers(self, db, layers, load=False):
+        # layers = {layer_id : {name: ABC, geometry: DEF}}
+        # layer_id should match layer_name most of the times, but if the same
+        # layer has multiple geometries, layer_id should contain the geometry
+        # type to make the layer_id unique
+
+        # Response is a dict like this:
+        # layers = {layer_id: layer_object} layer_object might be None
+        response_layers = dict()
+        for layer_id, layer_info in layers.items():
+            # If layer is in LayerTree, return it
+            layer_obj = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
+            response_layers[layer_id] = layer_obj
+
+        if load:
+            layers_to_load = [layers[layer_id]['name'] for layer_id, layer_obj in response_layers.items() if layer_obj is None]
+            if layers_to_load:
+                self.project_generator_utils.load_layers(layers_to_load, db)
+
+                # Once load_layers() is called, go through the layer tree to get
+                # newly added layers
+                missing_layers = {layer_id: {'name': layers[layer_id]['name'], 'geometry': layers[layer_id]['geometry']} for layer_id, layer_obj in response_layers.items() if layer_obj is None}
+                for layer_id, layer_info in missing_layers.items():
+                    # This should update None objects to newly added layer objects
+                    response_layers[layer_id] = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
+
+        return response_layers
 
     def get_layer_from_layer_tree(self, layer_name, schema=None, geometry_type=None):
         for k,layer in QgsProject.instance().mapLayers().items():

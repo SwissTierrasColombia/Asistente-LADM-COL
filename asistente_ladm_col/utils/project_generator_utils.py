@@ -3,9 +3,9 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2017-11-14
+        begin                : 2018-02-06
         git sha              : :%H$
-        copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
+        copyright            : (C) 2018 by Germán Carrillo (BSF Swissphoto)
         email                : gcarrillo@linuxmail.org
  ***************************************************************************/
 /***************************************************************************
@@ -24,12 +24,13 @@ class ProjectGeneratorUtils(QObject):
     def __init__(self):
         QObject.__init__(self)
 
-    def load_layers(self, layer_list):
+    def load_layers(self, layer_list, db):
         if 'projectgenerator' in qgis.utils.plugins:
-            pg = qgis.utils.plugins['projectgenerator']
-            generator = pg.get_generator()('ili2pg', 'dbname=test user=postgres password=postgres host=localhost', 'smart2', 'ladm_col_18')
+            pg = qgis.utils.plugins["projectgenerator"]
+            generator = pg.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
+                db.uri, "smart2", db.schema)
             layers = generator.layers(layer_list)
-            relations = generator.relations(layers)
+            relations = generator.relations(layers, layer_list)
             legend = generator.legend(layers)
             pg.create_project(layers, relations, legend)
         else:
