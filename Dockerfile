@@ -18,8 +18,7 @@ RUN apt-get update && \
     apt-get -y install \
     iputils-ping \
     dnsutils \
-    nmap \
-    pyqt5-dev-tools
+    nmap
 
 ENV LANG=C.UTF-8
 
