@@ -18,6 +18,7 @@
 """
 import os
 
+import qgis.utils
 from qgis.core import QgsMessageLog, Qgis
 from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
                               QLocale, QSettings)
@@ -166,6 +167,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self._settings_dialog = self.get_settings_dialog()
         self._settings_dialog.exec_()
 
+    def show_plugin_manager(self):
+        self.iface.actionManagePlugins().trigger()
+
     def get_settings_dialog(self):
         if self._settings_dialog is None:
             self._settings_dialog = SettingsDialog(self.iface)
@@ -195,26 +199,50 @@ class AsistenteLADMCOLPlugin(QObject):
 
         return decorated_function
 
+    def _project_generator_required(func_to_decorate):
+        @wraps(func_to_decorate)
+        def decorated_function(inst, *args, **kwargs):
+            # Check if current connection is valid and disable access if not
+            if 'projectgenerator' in qgis.utils.plugins:
+                func_to_decorate(inst)
+            else:
+                widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
+                             QCoreApplication.translate("AsistenteLADMCOLPlugin", "'Project Generator' plugin is required but couldn't be found. Click the button to show the Plugin Manager."))
+                button = QPushButton(widget)
+                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
+                button.pressed.connect(inst.show_plugin_manager)
+                widget.layout().addWidget(button)
+                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
+                QgsMessageLog.logMessage(QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog couldn't be open, Project Generator not found."), "Asistente LADM_COL")
+
+        return decorated_function
+
+
+    @_project_generator_required
     @_db_connection_required
     def show_wiz_point_sp_un_cad(self):
         wiz = PointsSpatialUnitCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
+    @_project_generator_required
     @_db_connection_required
     def show_wiz_boundaries_cad(self):
         wiz = DefineBoundariesCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
+    @_project_generator_required
     @_db_connection_required
     def show_wiz_plot_cad(self):
         wiz = CreatePlotCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
+    @_project_generator_required
     @_db_connection_required
     def show_wiz_parcel_cad(self):
         wiz = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
+    @_project_generator_required
     @_db_connection_required
     def show_wiz_party_cad(self):
         wiz = CreatePartyCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
