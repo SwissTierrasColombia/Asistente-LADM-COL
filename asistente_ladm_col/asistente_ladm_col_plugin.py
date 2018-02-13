@@ -107,6 +107,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._party_cadastre_action.triggered.connect(self.show_wiz_party_cad)
         self._settings_action.triggered.connect(self.show_settings)
         self._about_action.triggered.connect(self.show_about_dialog)
+        self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
@@ -130,6 +131,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def refresh_map(self):
         self.iface.mapCanvas().refresh()
+
+    def refresh_layer_symbology(self, layer_id):
+        self.iface.layerTreeView().refreshLayerSymbology(layer_id)
 
     def show_message(self, msg, level):
         self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level)

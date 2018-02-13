@@ -45,6 +45,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
 
 class QGISUtils(QObject):
 
+    layer_symbology_changed = pyqtSignal(str) # layer id
     message_emitted = pyqtSignal(str, int) # Message, level
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, callback, level
     map_refresh_requested = pyqtSignal()
@@ -99,6 +100,8 @@ class QGISUtils(QObject):
                 for layer_id, layer_info in missing_layers.items():
                     # This should update None objects to newly added layer objects
                     response_layers[layer_id] = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
+                    if response_layers[layer_id]:
+                        self.set_layer_style(response_layers[layer_id])
 
         return response_layers
 
@@ -629,7 +632,7 @@ class QGISUtils(QObject):
         elif layer.geometryType() == QgsWkbTypes.PointGeometry:
             symbol = QgsMarkerSymbol.createSimple(symbol_def)
         layer.renderer().setSymbol(symbol)
-        self.iface.layerTreeView().refreshLayerSymbology(layer.id())
+        self.layer_symbology_changed.emit(layer.id())
 
     def set_label(self, layer, label_def):
         if label_def is not None:
@@ -643,3 +646,4 @@ class QGISUtils(QObject):
             text_format.setBuffer(buffer)
             label_settings.setFormat(text_format)
             layer.setLabeling(QgsVectorLayerSimpleLabeling(label_settings))
+            layer.setLabelsEnabled(True)

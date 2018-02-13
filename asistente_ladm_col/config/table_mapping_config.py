@@ -1,4 +1,5 @@
-from qgis.core import (QgsWkbTypes)
+from qgis.core import QgsWkbTypes
+from qgis.PyQt.QtGui import QColor
 
 BFS_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 BFS_TABLE_BOUNDARY_POINT_FIELD = "punto_puntolindero"
