@@ -19,7 +19,7 @@
 set -e
 # rationale: Wait for postgres container to become available
 # link: https://cstan.io/?p=8620&lang=en
-dig +short postgres
+dig postgres
 nmap -p 5432 postgres
 ping -c 1 postgres
 printf "Wait a moment while loading the database."
