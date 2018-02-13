@@ -1,5 +1,5 @@
 ARG QGIS_TEST_VERSION=latest
-FROM  qgis/qgis:${QGIS_TEST_VERSION}
+FROM  agenciaimplementacion/qgis:${QGIS_TEST_VERSION}
 MAINTAINER Agencia Implementacion <agenciadeimplementacion@incige.com>
 
 #RUN apt-get update && \
@@ -14,9 +14,12 @@ MAINTAINER Agencia Implementacion <agenciadeimplementacion@incige.com>
 #  future \
 #  transifex-client
 
-
 RUN apt-get update && \
-    apt-get -y install iputils-ping dnsutils
+    apt-get -y install \
+    iputils-ping \
+    dnsutils \
+    nmap \
+    pyqt5-dev-tools
 
 ENV LANG=C.UTF-8
 
