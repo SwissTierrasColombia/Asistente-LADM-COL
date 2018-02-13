@@ -145,40 +145,6 @@ class AsistenteLADMCOLPlugin(QObject):
     def load_layers(self, layer_list):
         self.qgis_utils.get_layers(self.get_db_connection(), layer_list, True)
 
-    def call_explode_boundaries(self):
-        self.qgis_utils.explode_boundaries(self.get_db_connection())
-
-    def call_merge_boundaries(self):
-        self.qgis_utils.merge_boundaries(self.get_db_connection())
-
-    def call_fill_topology_table_pointbfs(self):
-        self.qgis_utils.fill_topology_table_pointbfs(self.get_db_connection())
-
-    def call_fill_topology_tables_morebfs_less(self):
-        self.qgis_utils.fill_topology_tables_morebfs_less(self.get_db_connection())
-
-    def unload(self):
-        # remove the plugin menu item and icon
-        self._menu.deleteLater()
-        self.iface.mainWindow().removeToolBar(self._define_boundary_toolbar)
-        del self._define_boundary_toolbar
-
-    def show_settings(self):
-        self._settings_dialog = self.get_settings_dialog()
-        self._settings_dialog.exec_()
-
-    def show_plugin_manager(self):
-        self.iface.actionManagePlugins().trigger()
-
-    def get_settings_dialog(self):
-        if self._settings_dialog is None:
-            self._settings_dialog = SettingsDialog(self.iface)
-        return self._settings_dialog
-
-    def get_db_connection(self):
-        self._settings_dialog = self.get_settings_dialog()
-        return self._settings_dialog.get_db_connection()
-
     def _db_connection_required(func_to_decorate):
         @wraps(func_to_decorate)
         def decorated_function(inst, *args, **kwargs):
@@ -217,6 +183,47 @@ class AsistenteLADMCOLPlugin(QObject):
 
         return decorated_function
 
+    @_project_generator_required
+    @_db_connection_required
+    def call_explode_boundaries(self):
+        self.qgis_utils.explode_boundaries(self.get_db_connection())
+
+    @_project_generator_required
+    @_db_connection_required
+    def call_merge_boundaries(self):
+        self.qgis_utils.merge_boundaries(self.get_db_connection())
+
+    @_project_generator_required
+    @_db_connection_required
+    def call_fill_topology_table_pointbfs(self):
+        self.qgis_utils.fill_topology_table_pointbfs(self.get_db_connection())
+
+    @_project_generator_required
+    @_db_connection_required
+    def call_fill_topology_tables_morebfs_less(self):
+        self.qgis_utils.fill_topology_tables_morebfs_less(self.get_db_connection())
+
+    def unload(self):
+        # remove the plugin menu item and icon
+        self._menu.deleteLater()
+        self.iface.mainWindow().removeToolBar(self._define_boundary_toolbar)
+        del self._define_boundary_toolbar
+
+    def show_settings(self):
+        self._settings_dialog = self.get_settings_dialog()
+        self._settings_dialog.exec_()
+
+    def show_plugin_manager(self):
+        self.iface.actionManagePlugins().trigger()
+
+    def get_settings_dialog(self):
+        if self._settings_dialog is None:
+            self._settings_dialog = SettingsDialog(self.iface)
+        return self._settings_dialog
+
+    def get_db_connection(self):
+        self._settings_dialog = self.get_settings_dialog()
+        return self._settings_dialog.get_db_connection()
 
     @_project_generator_required
     @_db_connection_required
