@@ -20,7 +20,10 @@ import os
 
 from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri, Qgis,
-                       QgsSpatialIndex, QgsVectorLayer, QgsMultiLineString)
+                       QgsSpatialIndex, QgsVectorLayer, QgsMultiLineString,
+					   QgsFillSymbol, QgsLineSymbol, QgsMarkerSymbol,
+					   QgsPalLayerSettings, QgsTextFormat, QgsTextBufferSettings,
+					   QgsVectorLayerSimpleLabeling)
 from qgis.PyQt.QtCore import QObject, pyqtSignal, QCoreApplication
 
 from .project_generator_utils import ProjectGeneratorUtils
@@ -29,6 +32,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
                                            ID_FIELD,
+                                           LAYERS_STYLE,
                                            LESS_TABLE,
                                            LESS_TABLE_BOUNDARY_FIELD,
                                            LESS_TABLE_PLOT_FIELD,
@@ -611,3 +615,31 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils", "No plot could be created. Make sure selected boundaries are closed!"),
                 Qgis.Warning)
             return
+
+    def set_layer_style(self, layer):
+        if layer.name() in LAYERS_STYLE:
+            self.set_symbology(layer, LAYERS_STYLE[layer.name()][layer.geometryType()]['symbology'])
+            self.set_label(layer, LAYERS_STYLE[layer.name()][layer.geometryType()]['label'])
+
+    def set_symbology(self, layer, symbol_def):
+        if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
+            symbol = QgsFillSymbol.createSimple(symbol_def)
+        elif layer.geometryType() == QgsWkbTypes.LineGeometry:
+            symbol = QgsLineSymbol.createSimple(symbol_def)
+        elif layer.geometryType() == QgsWkbTypes.PointGeometry:
+            symbol = QgsMarkerSymbol.createSimple(symbol_def)
+        layer.renderer().setSymbol(symbol)
+        self.iface.layerTreeView().refreshLayerSymbology(layer.id())
+
+    def set_label(self, layer, label_def):
+        if label_def is not None:
+            label_settings = QgsPalLayerSettings()
+            label_settings.fieldName = str(label_def['field_name'])
+            text_format = QgsTextFormat()
+            text_format.setSize(int(label_def['text_size']))
+            text_format.setColor(label_def['color'])
+            buffer = QgsTextBufferSettings()
+            buffer.setEnabled(True)
+            text_format.setBuffer(buffer)
+            label_settings.setFormat(text_format)
+            layer.setLabeling(QgsVectorLayerSimpleLabeling(label_settings))
