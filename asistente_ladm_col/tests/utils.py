@@ -5,8 +5,8 @@
                              --------------------
         begin                : 16/01/18
         git sha              : :%H$
-        copyright            : (C) 2017 by Germán Carrillo (BSF-Swissphoto)
-        email                : gcarrillo@linuxmail.org
+        copyright            : (C) 2018 by Jorge Useche (Incige SAS)
+        email                : naturalmentejorge@gmail.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -16,13 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-
-__author__ = 'Germán Carrillo'
-__date__ = 'Enero 2017'
-__copyright__ = '(C) 2017, Germán Carrillo'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
-
 
 import os
 import psycopg2

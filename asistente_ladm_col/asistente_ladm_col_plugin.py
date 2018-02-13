@@ -18,8 +18,7 @@
 """
 import os
 
-from qgis.core import QgsMessageLog
-from qgis.gui import QgsMessageBar
+from qgis.core import QgsMessageLog, Qgis
 from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
                               QLocale, QSettings)
 from qgis.PyQt.QtGui import QIcon
@@ -118,14 +117,14 @@ class AsistenteLADMCOLPlugin(QObject):
         self._boundary_merge_action.triggered.connect(self.call_merge_boundaries)
         self._fill_point_BFS_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Point BFS"), self.iface.mainWindow())
         self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
-        self._fill_more_BFS_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill More BFS"), self.iface.mainWindow())
-        self._fill_more_BFS_action.triggered.connect(self.call_fill_topology_table_morebfs)
+        self._fill_more_BFS_less_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill More BFS and Less"), self.iface.mainWindow())
+        self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
         self._define_boundary_toolbar = self.iface.addToolBar(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Define Boundaries"))
         self._define_boundary_toolbar.setObjectName("DefineBoundaries")
         self._define_boundary_toolbar.addActions([self._boundary_explode_action,
                                                   self._boundary_merge_action,
                                                   self._fill_point_BFS_action,
-                                                  self._fill_more_BFS_action])
+                                                  self._fill_more_BFS_less_action])
         self._define_boundary_toolbar.setVisible(False)
 
     def refresh_map(self):
@@ -154,8 +153,8 @@ class AsistenteLADMCOLPlugin(QObject):
     def call_fill_topology_table_pointbfs(self):
         self.qgis_utils.fill_topology_table_pointbfs(self.get_db_connection())
 
-    def call_fill_topology_table_morebfs(self):
-        self.qgis_utils.fill_topology_table_morebfs(self.get_db_connection())
+    def call_fill_topology_tables_morebfs_less(self):
+        self.qgis_utils.fill_topology_tables_morebfs_less(self.get_db_connection())
 
     def unload(self):
         # remove the plugin menu item and icon
@@ -191,7 +190,7 @@ class AsistenteLADMCOLPlugin(QObject):
                 button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
                 button.pressed.connect(inst.show_settings)
                 widget.layout().addWidget(button)
-                inst.iface.messageBar().pushWidget(widget, QgsMessageBar.WARNING, 15)
+                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
                 QgsMessageLog.logMessage(QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog couldn't be open, connection to DB was not valid."), "Asistente LADM_COL")
 
         return decorated_function

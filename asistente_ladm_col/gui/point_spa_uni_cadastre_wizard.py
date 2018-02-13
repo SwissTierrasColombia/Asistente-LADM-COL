@@ -18,8 +18,7 @@
 """
 import os
 
-from qgis.core import QgsProject, QgsVectorLayer, QgsSpatialIndex
-from qgis.gui import QgsMessageBar
+from qgis.core import QgsProject, QgsVectorLayer, QgsSpatialIndex, Qgis
 from qgis.PyQt.QtCore import QSettings, QCoreApplication
 from qgis.PyQt.QtWidgets import QWizard
 
@@ -67,7 +66,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("PointsSpatialUnitCadastreWizard",
                                            "No CSV file given or file doesn't exist."),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
 
         self.save_settings()
@@ -133,7 +132,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("PointsSpatialUnitCadastreWizard",
                                            "It was not possible to read field names from the CSV. Check the file and try again."),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
         return []
 
     def save_settings(self):

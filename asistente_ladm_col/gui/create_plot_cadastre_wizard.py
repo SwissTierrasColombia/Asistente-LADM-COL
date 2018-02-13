@@ -17,8 +17,7 @@
  ***************************************************************************/
 """
 from qgis.core import (QgsProject, QgsVectorLayer, QgsVectorLayerUtils,
-                       QgsFeature, QgsMapLayerProxyModel, QgsWkbTypes)
-from qgis.gui import QgsMessageBar
+                       QgsFeature, QgsMapLayerProxyModel, QgsWkbTypes, Qgis)
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
@@ -67,7 +66,7 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreatePlotCadastreWizard",
                                            "Plot layer couldn't be found..."),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
 
         refactored_layer = self.mMapLayerComboBox.currentLayer()
@@ -75,7 +74,7 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreatePlotCadastreWizard",
                                            "Refactored layer couldn't be found..."),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
         refactored_features = [f for f in refactored_layer.getFeatures()]
 
@@ -93,4 +92,4 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
         self.iface.messageBar().pushMessage("Asistente LADM_COL",
             QCoreApplication.translate("CreatePlotCadastreWizard",
                                        "{} new plot(s) has(have) been created!").format(len(features)),
-            QgsMessageBar.INFO)
+            Qgis.Info)

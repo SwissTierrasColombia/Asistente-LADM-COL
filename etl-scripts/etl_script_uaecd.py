@@ -6,8 +6,8 @@
                              --------------------
         begin                : 2017-12-18
         git sha              : :%H$
-        copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
-                               (C) 2017 by Jonathan Albarracín (UAECD)
+        copyright            : (C) 2017, 2018 by Germán Carrillo (BSF Swissphoto)
+                               (C) 2017, 2018 by Jonathan Albarracín (UAECD)
         email                : gcarrillo@linuxmail.org
                                jonyfido@gmail.com
  ***************************************************************************/
@@ -23,14 +23,14 @@ import os
 import qgis
 import processing
 
-INPUT_DB_PATH = '/docs/tr/ai/insumos/uaecd/Capas/terreno/GDB_Datos_Prueba.gpkg'
-REFACTORED_DB_PATH = '/docs/tr/ai/productos/uaecd/resultados_intermedios/refactored_02.gpkg'
+INPUT_DB_PATH = '/docs/tr/ai/insumos/uaecd/Capas_Sector_Piloto/GDB_Piloto.gpkg'
+REFACTORED_DB_PATH = '/docs/tr/ai/productos/uaecd/resultados_intermedios/refactored_02_08.gpkg'
 INPUT_PREDIO_INTERESADO_PATH = '/docs/tr/ai/insumos/uaecd/interesado_predio_full.ods'
 LAYER_PREDIO_INTERESADO = os.path.splitext(os.path.basename(INPUT_PREDIO_INTERESADO_PATH))[0]
 
 # PostgreSQL connection to schema with a LADM_COL model
-OUTPUT_DB_NAME = 'test3'
-OUTPUT_DB_SCHEMA = 'ladm_col_uaecd_manzana_02'
+OUTPUT_DB_NAME = 'test'
+OUTPUT_DB_SCHEMA = 'uaecd_ladm_col_03'
 OUTPUT_DB_USER = 'postgres'
 OUTPUT_DB_PASSWORD = 'postgres'
 
@@ -53,10 +53,8 @@ def refactor_and_copy_paste(params_refactor, input_uri, output_layer):
 def llenar_punto_lindero():
     params_refactor_punto_lindero = { 'FIELDS_MAPPING' : [{'length': -1, 'precision': 0, 'expression': '"t_id"', 'name': 't_id', 'type': 4}, {'length': 255, 'precision': -1, 'expression': "'Acuerdo'", 'name': 'acuerdo', 'type': 10}, {'length': 255, 'precision': -1, 'expression': "'Bien_Definido'", 'name': 'definicion_punto', 'type': 10}, {'length': 255, 'precision': -1, 'expression': '"descripcion_punto"', 'name': 'descripcion_punto', 'type': 10}, {'length': -1, 'precision': 0, 'expression': '"exactitud_vertical"', 'name': 'exactitud_vertical', 'type': 2}, {'length': -1, 'precision': 0, 'expression': '12', 'name': 'exactitud_horizontal', 'type': 2}, {'length': -1, 'precision': -1, 'expression': '"confiabilidad"', 'name': 'confiabilidad', 'type': 1}, {'length': 10, 'precision': -1, 'expression': '"nombre_punto"', 'name': 'nombre_punto', 'type': 10}, {'length': 255, 'precision': -1, 'expression': '"posicion_interpolacion"', 'name': 'posicion_interpolacion', 'type': 10}, {'length': 255, 'precision': -1, 'expression': "'Otros'", 'name': 'monumentacion', 'type': 10}, {'length': 255, 'precision': -1, 'expression': "'Catastro'", 'name': 'puntotipo', 'type': 10}, {'length': 255, 'precision': -1, 'expression': "'UAECD_Punto_Lindero'", 'name': 'p_espacio_de_nombres', 'type': 10}, {'length': 255, 'precision': -1, 'expression': '"fid"', 'name': 'p_local_id', 'type': 10}, {'length': -1, 'precision': 0, 'expression': '"ue_la_unidadespacial"', 'name': 'ue_la_unidadespacial', 'type': 4}, {'length': -1, 'precision': 0, 'expression': '"ue_terreno"', 'name': 'ue_terreno', 'type': 4}, {'length': -1, 'precision': 0, 'expression': '"ue_la_espaciojuridicoredservicios"', 'name': 'ue_la_espaciojuridicoredservicios', 'type': 4}, {'length': -1, 'precision': 0, 'expression': '"ue_la_espaciojuridicounidadedificacion"', 'name': 'ue_la_espaciojuridicounidadedificacion', 'type': 4}, {'length': -1, 'precision': 0, 'expression': '"ue_servidumbrepaso"', 'name': 'ue_servidumbrepaso', 'type': 4}, {'length': -1, 'precision': 0, 'expression': '"ue_unidadconstruccion"', 'name': 'ue_unidadconstruccion', 'type': 4}, {'length': -1, 'precision': 0, 'expression': '"ue_construccion"', 'name': 'ue_construccion', 'type': 4}, {'length': -1, 'precision': -1, 'expression': 'now()', 'name': 'comienzo_vida_util_version', 'type': 16}, {'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"', 'name': 'fin_vida_util_version', 'type': 16}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_punto_lindero" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH), 'INPUT' : '{input_db_path}|layername=Vertices_Lot'.format(input_db_path=INPUT_DB_PATH) }
     input_uri = '{refactored_db_path}|layername=R_punto_lindero'.format(refactored_db_path=REFACTORED_DB_PATH)
-    #output_uri = 'dbname=\'{output_db_name}\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'t_id\' srid=3116 type=Point checkPrimaryKeyUnicity=\'1\' table="{output_db_schema}"."puntolindero" (localizacion_original) sql='.format(output_db_name=OUTPUT_DB_NAME, output_db_schema=OUTPUT_DB_SCHEMA)
     db = asistente_ladm_col.get_db_connection()
     output_uri = db.get_uri_for_layer('puntolindero')[1]
-    #input_punto_lindero = QgsVectorLayer(input_uri, "r_punto_lindero", "ogr")
     output_punto_lindero = QgsVectorLayer(output_uri, "punto_lindero", "postgres")
     refactor_and_copy_paste(params_refactor_punto_lindero, input_uri, output_punto_lindero)
 
@@ -64,8 +62,6 @@ def llenar_lindero():
     # Lindero
     params_refactor_lindero = { 'INPUT' : '{input_db_path}|layername=PLot'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'longitud', 'type': 6, 'length': 6, 'precision': 1, 'expression': '"PELDISTANC"'}, {'name': 'localizacion_textual', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"localizacion_textual"'}, {'name': 'ccl_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'UAECD_Lindero'"}, {'name': 'ccl_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"fid"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_lindero" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
     input_uri = '{refactored_db_path}|layername=R_lindero'.format(refactored_db_path=REFACTORED_DB_PATH)
-    #output_uri = 'dbname=\'{output_db_name}\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'t_id\' srid=3116 type=LineString checkPrimaryKeyUnicity=\'1\' table="{output_db_schema}"."lindero" (geometria) sql='.format(output_db_name=OUTPUT_DB_NAME, output_db_schema=OUTPUT_DB_SCHEMA)
-    #input_lindero = QgsVectorLayer(input_uri, "r_lindero", "ogr")
     db = asistente_ladm_col.get_db_connection()
     output_uri = db.get_uri_for_layer('lindero')[1]
     output_lindero = QgsVectorLayer(output_uri, "lindero", "postgres")
@@ -73,49 +69,32 @@ def llenar_lindero():
 
 def llenar_terreno():
     # Terreno
-    params_refactor_terreno = { 'INPUT' : '{input_db_path}|layername=Lote'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'area_registral', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"AREA_TERRENO"'}, {'name': 'area_calculada', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"SHAPE_Area"'}, {'name': 'avaluo_terreno', 'type': 2, 'length': -1, 'precision': 0, 'expression': '"AV_TERRENO"'}, {'name': 'dimension', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"dimension"'}, {'name': 'etiqueta', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"etiqueta"'}, {'name': 'relacion_superficie', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"relacion_superficie"'}, {'name': 'su_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'UAECD_Terreno'"}, {'name': 'su_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"Cod_LOTE"'}, {'name': 'nivel', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"nivel"'}, {'name': 'uej2_la_unidadespacial', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_unidadespacial"'}, {'name': 'uej2_servidumbrepaso', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_servidumbrepaso"'}, {'name': 'uej2_terreno', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_terreno"'}, {'name': 'uej2_la_espaciojuridicoredservicios', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicoredservicios"'}, {'name': 'uej2_la_espaciojuridicounidadedificacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicounidadedificacion"'}, {'name': 'uej2_construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_construccion"'}, {'name': 'uej2_unidadconstruccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}, {'name': 'punto_referencia', 'type': 10, 'length': -1, 'precision': -1, 'expression': '"punto_referencia"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_terreno" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
+    params_refactor_terreno = { 'INPUT' : '{input_db_path}|layername=Lote_fixed'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'area_registral', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"AREA_TERRENO"'}, {'name': 'area_calculada', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"SHAPE_Area"'}, {'name': 'avaluo_terreno', 'type': 6, 'length': 13, 'precision': 1, 'expression': '"AV_TERRENO"'}, {'name': 'dimension', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"dimension"'}, {'name': 'etiqueta', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"etiqueta"'}, {'name': 'relacion_superficie', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"relacion_superficie"'}, {'name': 'su_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'UAECD_Terreno'"}, {'name': 'su_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"Cod_LOTE"'}, {'name': 'nivel', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"nivel"'}, {'name': 'uej2_la_unidadespacial', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_unidadespacial"'}, {'name': 'uej2_servidumbrepaso', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_servidumbrepaso"'}, {'name': 'uej2_terreno', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_terreno"'}, {'name': 'uej2_la_espaciojuridicoredservicios', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicoredservicios"'}, {'name': 'uej2_la_espaciojuridicounidadedificacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicounidadedificacion"'}, {'name': 'uej2_construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_construccion"'}, {'name': 'uej2_unidadconstruccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}, {'name': 'punto_referencia', 'type': 10, 'length': -1, 'precision': -1, 'expression': '"punto_referencia"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_terreno" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
     input_uri = '{refactored_db_path}|layername=R_terreno'.format(refactored_db_path=REFACTORED_DB_PATH)
-    #output_uri = 'dbname=\'{output_db_name}\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'t_id\' srid=3116 type=MultiPolygon checkPrimaryKeyUnicity=\'1\' table="{output_db_schema}"."terreno" (poligono_creado) sql='.format(output_db_name=OUTPUT_DB_NAME, output_db_schema=OUTPUT_DB_SCHEMA)
-    #input_terreno = QgsVectorLayer(input_uri, "r_terreno", "ogr")
     db = asistente_ladm_col.get_db_connection()
     output_uri = db.get_uri_for_layer('terreno')[1]
     output_terreno = QgsVectorLayer(output_uri, "terreno", "postgres")
     refactor_and_copy_paste(params_refactor_terreno, input_uri, output_terreno)
 
-
 def llenar_tablas_de_topologia():
-    # PuntoCCL, MasCCL
-    settings = asistente_ladm_col.get_settings_dialog()
-    settings.txt_pg_host.setText('localhost')
-    settings.txt_pg_port.setText('5432')
-    settings.txt_pg_database.setText(OUTPUT_DB_NAME)
-    settings.txt_pg_schema.setText(OUTPUT_DB_SCHEMA)
-    settings.txt_pg_user.setText(OUTPUT_DB_USER)
-    settings.txt_pg_password.setText(OUTPUT_DB_PASSWORD)
-    settings.accepted()
+    # PuntoCCL, MasCCL, Menos
     db = asistente_ladm_col.get_db_connection()
-
     asistente_ladm_col.qgis_utils.fill_topology_table_pointbfs(db, use_selection=False)
-    asistente_ladm_col.qgis_utils.fill_topology_table_morebfs(db, use_selection=False)
-
+    asistente_ladm_col.qgis_utils.fill_topology_tables_morebfs_less(db, use_selection=False)
 
 def llenar_predio():
     # Predio
-    params_refactor_predio = { 'INPUT' : '{input_db_path}|layername=Pred_Identificador'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'departamento', 'type': 10, 'length': 2, 'precision': -1, 'expression': "'11'"}, {'name': 'municipio', 'type': 10, 'length': 3, 'precision': -1, 'expression': "'001'"}, {'name': 'zona', 'type': 10, 'length': 2, 'precision': -1, 'expression': "'01'"}, {'name': 'nupre', 'type': 10, 'length': 20, 'precision': -1, 'expression': '"CHIP"'}, {'name': 'fmi', 'type': 10, 'length': 20, 'precision': -1, 'expression': '"MATRICULA"'}, {'name': 'numero_predial', 'type': 10, 'length': 30, 'precision': -1, 'expression': '"NUMERO_PREDIAL_NAL"'}, {'name': 'numero_predial_anterior', 'type': 10, 'length': 20, 'precision': -1, 'expression': '"numero_predial_anterior"'}, {'name': 'avaluo_predio', 'type': 2, 'length': -1, 'precision': 0, 'expression': '"VALOR_AVALUO"'}, {'name': 'nombre', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"DIRECCION_REAL"'}, {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'Unidad_Propiedad_Basica'"}, {'name': 'u_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'UAECD_Predio'"}, {'name': 'u_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"CHIP"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_predio" sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
+    params_refactor_predio = { 'INPUT' : '{input_db_path}|layername=Pred_Identificador'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'departamento', 'type': 10, 'length': 2, 'precision': -1, 'expression': "'11'"}, {'name': 'municipio', 'type': 10, 'length': 3, 'precision': -1, 'expression': "'001'"}, {'name': 'zona', 'type': 10, 'length': 2, 'precision': -1, 'expression': "'01'"}, {'name': 'nupre', 'type': 10, 'length': 20, 'precision': -1, 'expression': '"CHIP"'}, {'name': 'fmi', 'type': 10, 'length': 20, 'precision': -1, 'expression': '"MATRICULA"'}, {'name': 'numero_predial', 'type': 10, 'length': 30, 'precision': -1, 'expression': '"NUMERO_PREDIAL_NAL"'}, {'name': 'numero_predial_anterior', 'type': 10, 'length': 20, 'precision': -1, 'expression': '"numero_predial_anterior"'}, {'name': 'avaluo_predio', 'type': 6, 'length': 13, 'precision': 1, 'expression': '"VALOR_AVALUO"'}, {'name': 'nombre', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"DIRECCION_REAL"'}, {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'Unidad_Propiedad_Basica'"}, {'name': 'u_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"u_nombres"'}, {'name': 'u_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"CHIP"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_predio" sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
     input_uri = '{refactored_db_path}|layername=R_predio'.format(refactored_db_path=REFACTORED_DB_PATH)
-    #output_uri = 'dbname=\'{output_db_name}\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'t_id\' checkPrimaryKeyUnicity=\'1\' table="{output_db_schema}"."predio" sql='.format(output_db_name=OUTPUT_DB_NAME,     output_db_schema=OUTPUT_DB_SCHEMA)
     db = asistente_ladm_col.get_db_connection()
     output_uri = db.get_uri_for_layer('predio')[1]
-    #input_predio = QgsVectorLayer(input_uri, "r_predio", "ogr")
     output_predio = QgsVectorLayer(output_uri, "predio", "postgres")
     refactor_and_copy_paste(params_refactor_predio, input_uri, output_predio)
 
-
-def llenar_construccion():
+def llenar_construccion(layer_name):
     # Construccion
-    params_refactor_construccion = { 'INPUT' : '{input_db_path}|layername=Cons'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'avaluo_construccion', 'type': 2, 'length': -1, 'precision': 0, 'expression': '"AVTotal_CONSTRUC"'}, {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo"'}, {'name': 'dimension', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"dimension"'}, {'name': 'etiqueta', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"etiqueta"'}, {'name': 'relacion_superficie', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"relacion_superficie"'}, {'name': 'su_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'UAECD_Construccion'"}, {'name': 'su_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"Cod_LOTE"'}, {'name': 'nivel', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"nivel"'}, {'name': 'uej2_la_unidadespacial', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_unidadespacial"'}, {'name': 'uej2_servidumbrepaso', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_servidumbrepaso"'}, {'name': 'uej2_terreno', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_terreno"'}, {'name': 'uej2_la_espaciojuridicoredservicios', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicoredservicios"'}, {'name': 'uej2_la_espaciojuridicounidadedificacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicounidadedificacion"'}, {'name': 'uej2_construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_construccion"'}, {'name': 'uej2_unidadconstruccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}, {'name': 'punto_referencia', 'type': 10, 'length': -1, 'precision': -1, 'expression': '"punto_referencia"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_construccion" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
+    params_refactor_construccion = { 'INPUT' : '{input_db_path}|layername={input_layer_name}'.format(input_db_path=INPUT_DB_PATH, input_layer_name=layer_name), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'avaluo_construccion', 'type': 6, 'length': 13, 'precision': 1, 'expression': '"AVTotal_CONSTRUC"'}, {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo"'}, {'name': 'dimension', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"dimension"'}, {'name': 'etiqueta', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"etiqueta"'}, {'name': 'relacion_superficie', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"relacion_superficie"'}, {'name': 'su_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"u_nombres"'}, {'name': 'su_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"Cod_LOTE"'}, {'name': 'nivel', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"nivel"'}, {'name': 'uej2_la_unidadespacial', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_unidadespacial"'}, {'name': 'uej2_servidumbrepaso', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_servidumbrepaso"'}, {'name': 'uej2_terreno', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_terreno"'}, {'name': 'uej2_la_espaciojuridicoredservicios', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicoredservicios"'}, {'name': 'uej2_la_espaciojuridicounidadedificacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicounidadedificacion"'}, {'name': 'uej2_construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_construccion"'}, {'name': 'uej2_unidadconstruccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}, {'name': 'punto_referencia', 'type': 10, 'length': -1, 'precision': -1, 'expression': '"punto_referencia"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_construccion" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
     input_uri = '{refactored_db_path}|layername=R_construccion'.format(refactored_db_path=REFACTORED_DB_PATH)
-    #output_uri = 'dbname=\'{output_db_name}\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'t_id\' srid=3116 type=MultiPolygon checkPrimaryKeyUnicity=\'1\' table="{output_db_schema}"."construccion" (poligono_creado) sql='.format(output_db_name=OUTPUT_DB_NAME, output_db_schema=OUTPUT_DB_SCHEMA)
     db = asistente_ladm_col.get_db_connection()
     output_uri = db.get_uri_for_layer('construccion')[1]
     output_construccion = QgsVectorLayer(output_uri, "construccion", "postgres")
@@ -159,7 +138,6 @@ def llenar_unidad_construccion():
     iface.pasteFromClipboard(output_unidad_construccion)
     output_unidad_construccion.commitChanges()
 
-
 def llenar_interesado_natural():
     # Interesado Natural
     #input_layer_interesado = QgsVectorLayer('{input_db_path}|layername=Interesados'.format(input_db_path=INPUT_DB_PATH), 'interesado_natural', 'ogr')
@@ -175,7 +153,6 @@ def llenar_interesado_natural():
     output_interesado_natural = QgsVectorLayer(output_uri, "interesado_natural", "postgres")
     refactor_and_copy_paste(params_refactor_interesado_natural, input_uri_interesado_natural, output_interesado_natural)
 
-
 def llenar_interesado_juridico():
     # Interesado Juridico
     #input_layer_interesado.selectByExpression("\"TIPO_interesado\"='Persona_No_Natural'")
@@ -187,7 +164,6 @@ def llenar_interesado_juridico():
     output_uri = db.get_uri_for_layer('interesado_juridico')[1]
     output_interesado_juridico = QgsVectorLayer(output_uri, "interesado_juridico", "postgres")
     refactor_and_copy_paste(params_refactor_interesado_juridico, input_uri_interesado_juridico, output_interesado_juridico)
-
 
 def llenar_col_derecho():
     # Llenado de COL_DERECHO con ids
@@ -282,8 +258,10 @@ llenar_punto_lindero()
 llenar_lindero()
 llenar_terreno()
 llenar_tablas_de_topologia()
-llenar_predio()
-llenar_construccion()
+llenar_predio() # First fix the source layer (with 'Fix Geometries' algorithm)
+llenar_construccion('Construccion_NPH_Fixed') # First fix source layer geomtries
+llenar_construccion('Construccion_PH')
+llenar_construccion('Construccion_MJ')
 llenar_unidad_construccion()
 llenar_interesado_natural()
 #llenar_interesado_juridico()

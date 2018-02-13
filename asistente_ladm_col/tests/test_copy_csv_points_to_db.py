@@ -78,14 +78,14 @@ class TestCopy(unittest.TestCase):
         self.assertEqual(row[colnames['fin_vida_util_version']], None)
         self.assertEqual(row[colnames['localizacion_original']], '01010000202C0C0000B01E85ABFC642D41F2D24DE20A703041')
 
-    def test_copy_csv_overlaping_to_db(self):
+    def test_copy_csv_overlapping_to_db(self):
         self.clean_table()
-        self.upload_points_from_csv_overlaping()
-        self.validate_points_overlaping_in_db()
+        self.upload_points_from_csv_overlapping()
+        self.validate_points_overlapping_in_db()
         self.clean_table()
 
-    def upload_points_from_csv_overlaping(self):
-        csv_path = get_test_path('csv/puntos_overlaping.csv')
+    def upload_points_from_csv_overlapping(self):
+        csv_path = get_test_path('csv/puntos_overlapping.csv')
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
@@ -98,7 +98,7 @@ class TestCopy(unittest.TestCase):
 
         self.assertEqual(res, False)
 
-    def validate_points_overlaping_in_db(self):
+    def validate_points_overlapping_in_db(self):
         cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         print('Validating points')
         query = cur.execute("""SELECT * FROM test_ladm_col.puntolindero;""")

@@ -18,8 +18,7 @@
 """
 from functools import partial
 
-from qgis.core import QgsEditFormConfig, QgsVectorLayerUtils
-from qgis.gui import QgsMessageBar
+from qgis.core import QgsEditFormConfig, QgsVectorLayerUtils, Qgis
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
@@ -56,7 +55,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
                                            "Plot layer couldn't be found..."),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
 
         self._parcel_layer = self.qgis_utils.get_layer(self._db, PARCEL_TABLE, load=True)
@@ -64,7 +63,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
                                            "Parcel layer couldn't be found..."),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
 
         self._uebaunit_table = self.qgis_utils.get_layer(self._db, UEBAUNIT_TABLE, load=True)
@@ -72,7 +71,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
                                            "UEBAUNIT table couldn't be found..."),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
             return
 
         # Configure automatic fields
@@ -106,12 +105,12 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
                                            "Please select a Plot"),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
         else: # >1
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
                                            "Please select only one Plot"),
-                QgsMessageBar.WARNING)
+                Qgis.Warning)
 
     def call_parcel_commit(self, fid):
         res = self._parcel_layer.commitChanges()
@@ -143,7 +142,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreateParcelCadastreWizard",
                                                "The new parcel (t_id={}) was successfully created and associated with its corresponding Terreno (t_id={})!".format(parcel_id, plot_ids[0])),
-                    QgsMessageBar.INFO)
+                    Qgis.Info)
 
         self._parcel_layer.committedFeaturesAdded.disconnect()
         print("Parcel's committedFeaturesAdded SIGNAL disconnected")
