@@ -24,7 +24,7 @@ import qgis
 import processing
 
 INPUT_DB_PATH = '/docs/tr/ai/insumos/uaecd/Capas_Sector_Piloto/GDB_Piloto.gpkg'
-REFACTORED_DB_PATH = '/docs/tr/ai/productos/uaecd/resultados_intermedios/refactored_02_08.gpkg'
+REFACTORED_DB_PATH = '/docs/tr/ai/productos/uaecd/resultados_intermedios/refactored_02_14.gpkg'
 INPUT_PREDIO_INTERESADO_PATH = '/docs/tr/ai/insumos/uaecd/interesado_predio_full.ods'
 LAYER_PREDIO_INTERESADO = os.path.splitext(os.path.basename(INPUT_PREDIO_INTERESADO_PATH))[0]
 
@@ -69,7 +69,7 @@ def llenar_lindero():
 
 def llenar_terreno():
     # Terreno
-    params_refactor_terreno = { 'INPUT' : '{input_db_path}|layername=Lote_fixed'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'area_registral', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"AREA_TERRENO"'}, {'name': 'area_calculada', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"SHAPE_Area"'}, {'name': 'avaluo_terreno', 'type': 6, 'length': 13, 'precision': 1, 'expression': '"AV_TERRENO"'}, {'name': 'dimension', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"dimension"'}, {'name': 'etiqueta', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"etiqueta"'}, {'name': 'relacion_superficie', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"relacion_superficie"'}, {'name': 'su_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'UAECD_Terreno'"}, {'name': 'su_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"Cod_LOTE"'}, {'name': 'nivel', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"nivel"'}, {'name': 'uej2_la_unidadespacial', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_unidadespacial"'}, {'name': 'uej2_servidumbrepaso', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_servidumbrepaso"'}, {'name': 'uej2_terreno', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_terreno"'}, {'name': 'uej2_la_espaciojuridicoredservicios', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicoredservicios"'}, {'name': 'uej2_la_espaciojuridicounidadedificacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicounidadedificacion"'}, {'name': 'uej2_construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_construccion"'}, {'name': 'uej2_unidadconstruccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}, {'name': 'punto_referencia', 'type': 10, 'length': -1, 'precision': -1, 'expression': '"punto_referencia"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_terreno" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
+    params_refactor_terreno = { 'INPUT' : '{input_db_path}|layername=Lote_fixed'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'area_registral', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"AREA_TERRENO"'}, {'name': 'area_calculada', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"SHAPE_Area"'}, {'name': 'avaluo_terreno', 'type': 6, 'length': 13, 'precision': 1, 'expression': '"AV_TERRENO"'}, {'name': 'dimension', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"dimension"'}, {'name': 'etiqueta', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"etiqueta"'}, {'name': 'relacion_superficie', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"relacion_superficie"'}, {'name': 'su_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"u_nombres"'}, {'name': 'su_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"Cod_LOTE"'}, {'name': 'nivel', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"nivel"'}, {'name': 'uej2_la_unidadespacial', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_unidadespacial"'}, {'name': 'uej2_servidumbrepaso', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_servidumbrepaso"'}, {'name': 'uej2_terreno', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_terreno"'}, {'name': 'uej2_la_espaciojuridicoredservicios', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicoredservicios"'}, {'name': 'uej2_la_espaciojuridicounidadedificacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicounidadedificacion"'}, {'name': 'uej2_construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_construccion"'}, {'name': 'uej2_unidadconstruccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}, {'name': 'punto_referencia', 'type': 10, 'length': -1, 'precision': -1, 'expression': '"punto_referencia"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_terreno" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
     input_uri = '{refactored_db_path}|layername=R_terreno'.format(refactored_db_path=REFACTORED_DB_PATH)
     db = asistente_ladm_col.get_db_connection()
     output_uri = db.get_uri_for_layer('terreno')[1]
@@ -90,6 +90,45 @@ def llenar_predio():
     output_uri = db.get_uri_for_layer('predio')[1]
     output_predio = QgsVectorLayer(output_uri, "predio", "postgres")
     refactor_and_copy_paste(params_refactor_predio, input_uri, output_predio)
+
+def llenar_uebaunit():
+    # Relación Terreno-Predio (Necesita una tabla fuente de paso, en la UAECD tienen CHIP vs. COD LOTE)
+    db = asistente_ladm_col.get_db_connection()
+
+    # Predio: dict = {CHIP : t_id}
+    output_uri_predio = db.get_uri_for_layer('predio')[1]
+    layer_predio = QgsVectorLayer(output_uri_predio, "predio", "postgres")
+    it_predio = layer_predio.getFeatures()
+    dict_predio = {feat_predio['nupre']: feat_predio['t_id'] for feat_predio in it_predio}
+
+    # Terreno: dict = {COD_LOTE : t_id}
+    output_uri_terreno = db.get_uri_for_layer('terreno')[1]
+    layer_terreno = QgsVectorLayer(output_uri_terreno, "terreno", "postgres")
+    it_terreno = layer_terreno.getFeatures()
+    dict_terreno = {feat_terreno['su_local_id']: feat_terreno['t_id'] for feat_terreno in it_terreno}
+
+    # Get uebaunit
+    output_uri_uebaunit = db.get_uri_for_layer('uebaunit')[1]
+    table_uebaunit = QgsVectorLayer(output_uri_uebaunit, "uebeaunit", "postgres")
+    rows = list()
+
+    # Iterar tabla fuente de paso buscando CHIP y COD_LOTE en dicts Predio y Terreno
+    uri_association_table = '{}|layername={}'.format(INPUT_DB_PATH,'Pred_Identificador')
+    terreno_predio = QgsVectorLayer(uri_association_table, 'terreno_predio', 'ogr')
+    for f in terreno_predio.getFeatures():
+        cod_lote = f['Cod_LOTE']
+        chip = f['CHIP']
+        new_row = QgsVectorLayerUtils().createFeature(table_uebaunit)
+        if cod_lote in dict_terreno and chip in dict_predio:
+            new_row.setAttribute("ue_terreno", dict_terreno[cod_lote])
+            new_row.setAttribute("baunit_predio", dict_predio[chip])
+            rows.append(new_row)
+        else:
+            print("### NOT FOUND COD_LOTE-CHIP ###", cod_lote, chip)
+
+    # Llenar uebaunit
+    print(len(rows), "added to uebaunit!!!")
+    table_uebaunit.dataProvider().addFeatures(rows)
 
 def llenar_construccion(layer_name):
     # Construccion
@@ -256,15 +295,16 @@ def llenar_rrr_fuente():
 
 llenar_punto_lindero()
 llenar_lindero()
-llenar_terreno()
+llenar_terreno() # First fix the source layer (with 'Fix Geometries' algorithm)
 llenar_tablas_de_topologia()
-llenar_predio() # First fix the source layer (with 'Fix Geometries' algorithm)
+llenar_predio()
+llenar_uebaunit()
 llenar_construccion('Construccion_NPH_Fixed') # First fix source layer geomtries
 llenar_construccion('Construccion_PH')
 llenar_construccion('Construccion_MJ')
 llenar_unidad_construccion()
 llenar_interesado_natural()
-#llenar_interesado_juridico()
+llenar_interesado_juridico()
 llenar_col_derecho()
 llenar_fuente_administrativa()
 llenar_rrr_fuente()
