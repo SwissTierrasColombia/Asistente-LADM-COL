@@ -24,7 +24,7 @@ import qgis
 import processing
 
 INPUT_DB_PATH = '/docs/tr/ai/insumos/uaecd/Capas_Sector_Piloto/GDB_Piloto.gpkg'
-REFACTORED_DB_PATH = '/docs/tr/ai/productos/uaecd/resultados_intermedios/refactored_02_08.gpkg'
+REFACTORED_DB_PATH = '/docs/tr/ai/productos/uaecd/resultados_intermedios/refactored_02_14.gpkg'
 INPUT_PREDIO_INTERESADO_PATH = '/docs/tr/ai/insumos/uaecd/interesado_predio_full.ods'
 LAYER_PREDIO_INTERESADO = os.path.splitext(os.path.basename(INPUT_PREDIO_INTERESADO_PATH))[0]
 
@@ -69,7 +69,7 @@ def llenar_lindero():
 
 def llenar_terreno():
     # Terreno
-    params_refactor_terreno = { 'INPUT' : '{input_db_path}|layername=Lote_fixed'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'area_registral', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"AREA_TERRENO"'}, {'name': 'area_calculada', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"SHAPE_Area"'}, {'name': 'avaluo_terreno', 'type': 6, 'length': 13, 'precision': 1, 'expression': '"AV_TERRENO"'}, {'name': 'dimension', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"dimension"'}, {'name': 'etiqueta', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"etiqueta"'}, {'name': 'relacion_superficie', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"relacion_superficie"'}, {'name': 'su_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'UAECD_Terreno'"}, {'name': 'su_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"Cod_LOTE"'}, {'name': 'nivel', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"nivel"'}, {'name': 'uej2_la_unidadespacial', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_unidadespacial"'}, {'name': 'uej2_servidumbrepaso', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_servidumbrepaso"'}, {'name': 'uej2_terreno', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_terreno"'}, {'name': 'uej2_la_espaciojuridicoredservicios', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicoredservicios"'}, {'name': 'uej2_la_espaciojuridicounidadedificacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicounidadedificacion"'}, {'name': 'uej2_construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_construccion"'}, {'name': 'uej2_unidadconstruccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}, {'name': 'punto_referencia', 'type': 10, 'length': -1, 'precision': -1, 'expression': '"punto_referencia"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_terreno" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
+    params_refactor_terreno = { 'INPUT' : '{input_db_path}|layername=Lote_fixed'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'area_registral', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"AREA_TERRENO"'}, {'name': 'area_calculada', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"SHAPE_Area"'}, {'name': 'avaluo_terreno', 'type': 6, 'length': 13, 'precision': 1, 'expression': '"AV_TERRENO"'}, {'name': 'dimension', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"dimension"'}, {'name': 'etiqueta', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"etiqueta"'}, {'name': 'relacion_superficie', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"relacion_superficie"'}, {'name': 'su_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"u_nombres"'}, {'name': 'su_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"Cod_LOTE"'}, {'name': 'nivel', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"nivel"'}, {'name': 'uej2_la_unidadespacial', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_unidadespacial"'}, {'name': 'uej2_servidumbrepaso', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_servidumbrepaso"'}, {'name': 'uej2_terreno', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_terreno"'}, {'name': 'uej2_la_espaciojuridicoredservicios', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicoredservicios"'}, {'name': 'uej2_la_espaciojuridicounidadedificacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicounidadedificacion"'}, {'name': 'uej2_construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_construccion"'}, {'name': 'uej2_unidadconstruccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}, {'name': 'punto_referencia', 'type': 10, 'length': -1, 'precision': -1, 'expression': '"punto_referencia"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_terreno" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
     input_uri = '{refactored_db_path}|layername=R_terreno'.format(refactored_db_path=REFACTORED_DB_PATH)
     db = asistente_ladm_col.get_db_connection()
     output_uri = db.get_uri_for_layer('terreno')[1]
@@ -90,6 +90,45 @@ def llenar_predio():
     output_uri = db.get_uri_for_layer('predio')[1]
     output_predio = QgsVectorLayer(output_uri, "predio", "postgres")
     refactor_and_copy_paste(params_refactor_predio, input_uri, output_predio)
+
+def llenar_uebaunit():
+    # Relación Terreno-Predio (Necesita una tabla fuente de paso, en la UAECD tienen CHIP vs. COD LOTE)
+    db = asistente_ladm_col.get_db_connection()
+
+    # Predio: dict = {CHIP : t_id}
+    output_uri_predio = db.get_uri_for_layer('predio')[1]
+    layer_predio = QgsVectorLayer(output_uri_predio, "predio", "postgres")
+    it_predio = layer_predio.getFeatures()
+    dict_predio = {feat_predio['nupre']: feat_predio['t_id'] for feat_predio in it_predio}
+
+    # Terreno: dict = {COD_LOTE : t_id}
+    output_uri_terreno = db.get_uri_for_layer('terreno')[1]
+    layer_terreno = QgsVectorLayer(output_uri_terreno, "terreno", "postgres")
+    it_terreno = layer_terreno.getFeatures()
+    dict_terreno = {feat_terreno['su_local_id']: feat_terreno['t_id'] for feat_terreno in it_terreno}
+
+    # Get uebaunit
+    output_uri_uebaunit = db.get_uri_for_layer('uebaunit')[1]
+    table_uebaunit = QgsVectorLayer(output_uri_uebaunit, "uebeaunit", "postgres")
+    rows = list()
+
+    # Iterar tabla fuente de paso buscando CHIP y COD_LOTE en dicts Predio y Terreno
+    uri_association_table = '{}|layername={}'.format(INPUT_DB_PATH,'Pred_Identificador')
+    terreno_predio = QgsVectorLayer(uri_association_table, 'terreno_predio', 'ogr')
+    for f in terreno_predio.getFeatures():
+        cod_lote = f['Cod_LOTE']
+        chip = f['CHIP']
+        new_row = QgsVectorLayerUtils().createFeature(table_uebaunit)
+        if cod_lote in dict_terreno and chip in dict_predio:
+            new_row.setAttribute("ue_terreno", dict_terreno[cod_lote])
+            new_row.setAttribute("baunit_predio", dict_predio[chip])
+            rows.append(new_row)
+        else:
+            print("### NOT FOUND COD_LOTE-CHIP ###", cod_lote, chip)
+
+    # Llenar uebaunit
+    print(len(rows), "added to uebaunit!!!")
+    table_uebaunit.dataProvider().addFeatures(rows)
 
 def llenar_construccion(layer_name):
     # Construccion
@@ -140,81 +179,81 @@ def llenar_unidad_construccion():
 
 def llenar_interesado_natural():
     # Interesado Natural
-    #input_layer_interesado = QgsVectorLayer('{input_db_path}|layername=Interesados'.format(input_db_path=INPUT_DB_PATH), 'interesado_natural', 'ogr')
-    #QgsProject.instance().addMapLayer(input_layer_interesado)
-    #input_layer_interesado.selectByExpression("\"TIPO_interesado\"='Persona_Natural'")
-    #if input_layer_interesado.selectedFeatureCount() > 0 :
     params_refactor_interesado_natural = { 'INPUT' : '{input_db_path}|layername=Interesados'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'documento_identidad', 'type': 10, 'length': 10, 'precision': -1, 'expression': '"documento_identidad"'}, {'name': 'tipo_documento', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo_documento"'}, {'name': 'organo_emisor', 'type': 10, 'length': 20, 'precision': -1, 'expression': '"organo_emisor"'}, {'name': 'fecha_emision', 'type': 14, 'length': -1, 'precision': -1, 'expression': '"fecha_emision"'}, {'name': 'primer_apellido', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"primer_apellido"'}, {'name': 'primer_nombre', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"primer_nombre"'}, {'name': 'segundo_apellido', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"segundo_apellido"'}, {'name': 'segundo_nombre', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"segundo_nombre"'}, {'name': 'genero', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"genero"'}, {'name': 'nombre', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"nombre"'}, {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"TIPO_interesado"'}, {'name': 'p_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'UAECD_IntNatural'"}, {'name': 'p_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"OBJECTID"'}, {'name': 'agrupacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"agrupacion"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_interesado_natural" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
+
     input_uri_interesado_natural = '{refactored_db_path}|layername=R_interesado_natural'.format(refactored_db_path=REFACTORED_DB_PATH)
-    #output_uri = 'dbname=\'{output_db_name}\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'t_id\' checkPrimaryKeyUnicity=\'1\' table="{output_db_schema}"."interesado_natural" sql='.format(output_db_name=OUTPUT_DB_NAME, output_db_schema=OUTPUT_DB_SCHEMA)
     db = asistente_ladm_col.get_db_connection()
     output_uri = db.get_uri_for_layer('interesado_natural')[1]
-    #input_interesado_natural = QgsVectorLayer(input_uri, "r_interesado_natural", "ogr")
     output_interesado_natural = QgsVectorLayer(output_uri, "interesado_natural", "postgres")
     refactor_and_copy_paste(params_refactor_interesado_natural, input_uri_interesado_natural, output_interesado_natural)
 
 def llenar_interesado_juridico():
     # Interesado Juridico
-    #input_layer_interesado.selectByExpression("\"TIPO_interesado\"='Persona_No_Natural'")
-    params_refactor_interesado_juridico = { 'INPUT' : '{input_db_path}|layername=Interesados'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'numero_nit', 'type': 10, 'length': 20, 'precision': -1, 'expression': '"documento_identidad"'}, {'name': 'razon_social', 'type': 10, 'length': 100, 'precision': -1, 'expression': '"razon_social"'}, {'name': 'nombre', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"nombre"'}, {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo"'}, {'name': 'p_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'UAECD_IntJuridico'"}, {'name': 'p_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"OBJECTID"'}, {'name': 'agrupacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"agrupacion"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_Int_Juridico" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
+    params_refactor_interesado_juridico = { 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_interesado_juridico" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH), 'INPUT' : '{input_db_path}|layername=Interesado_Juridico'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'type': 4, 'precision': 0, 'name': 't_id', 'expression': '"t_id"', 'length': -1}, {'type': 10, 'precision': -1, 'name': 'numero_nit', 'expression': '"numero_nit"', 'length': 20}, {'type': 10, 'precision': -1, 'name': 'razon_social', 'expression': '"razon_social"', 'length': 100}, {'type': 10, 'precision': -1, 'name': 'nombre', 'expression': '"nombre"', 'length': 255}, {'type': 10, 'precision': -1, 'name': 'tipo', 'expression': '"TIPO"', 'length': 255}, {'type': 10, 'precision': -1, 'name': 'p_espacio_de_nombres', 'expression': "'UAECD_Interesado_Juridico'", 'length': 255}, {'type': 10, 'precision': -1, 'name': 'p_local_id', 'expression': '"OBJECTID"', 'length': 255}, {'type': 16, 'precision': -1, 'name': 'comienzo_vida_util_version', 'expression': 'now()', 'length': -1}, {'type': 16, 'precision': -1, 'name': 'fin_vida_util_version', 'expression': '"fin_vida_util_version"', 'length': -1}] }
+
     input_uri_interesado_juridico = '{refactored_db_path}|layername=R_interesado_juridico'.format(refactored_db_path=REFACTORED_DB_PATH)
-    #output_uri = 'dbname=\'{output_db_name}\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'t_id\' checkPrimaryKeyUnicity=\'1\' table="{output_db_schema}"."interesado_juridico" sql='.format(output_db_name=OUTPUT_DB_NAME, output_db_schema=OUTPUT_DB_SCHEMA)
-    #input_interesado_natural = QgsVectorLayer(input_uri, "r_interesado_natural", "ogr")
     db = asistente_ladm_col.get_db_connection()
     output_uri = db.get_uri_for_layer('interesado_juridico')[1]
     output_interesado_juridico = QgsVectorLayer(output_uri, "interesado_juridico", "postgres")
     refactor_and_copy_paste(params_refactor_interesado_juridico, input_uri_interesado_juridico, output_interesado_juridico)
 
-def llenar_col_derecho():
-    # Llenado de COL_DERECHO con ids
-    uri_association_table='{input_predio_interesado_path}|layername={layer_predio_interesado}'.format(input_predio_interesado_path=INPUT_PREDIO_INTERESADO_PATH, layer_predio_interesado=LAYER_PREDIO_INTERESADO) #'/docs/tr/ai/insumos/uaecd/Capas/terreno/GDB_Datos_Prueba.gpkg|layername=Interesados'
-    interesado_predio = QgsVectorLayer(uri_association_table, 'interesado_predio', 'ogr')
-    if interesado_predio.dataProvider().fields().indexFromName('t_id_interesado') == -1 and interesado_predio.dataProvider().fields().indexFromName('t_id_predio') == -1:
-        interesado_predio.dataProvider().addAttributes([QgsField('t_id_interesado', QVariant.Int),
-            QgsField('t_id_predio', QVariant.Int)])
-
-    interesado_predio.reload()
-    features_interesado_predio = [f for f in interesado_predio.getFeatures()]
-
-
-    #uri_association_table = '/docs/tr/ai/insumos/uaecd/interesado_predio.ods|layername=interesado_predio'
-    #interesado_predio = QgsVectorLayer(uri_association_table, 'interesado_predio', 'ogr')
-    #features_interesado_predio = [f for f in interesado_predio.getFeatures()]
-
+def llenar_col_derecho(tipo='interesado_natural'):
+    # Relación Interesado-Derecho (Necesita una tabla fuente de paso)
     db = asistente_ladm_col.get_db_connection()
+
+    # Predio: dict = {CHIP: t_id}
     output_uri_predio = db.get_uri_for_layer('predio')[1]
-    output_uri_interesado_natural = db.get_uri_for_layer('interesado_natural')[1]
-    output_predio = QgsVectorLayer(output_uri_predio, "predio", "postgres")
-    output_interesado_natural = QgsVectorLayer(output_uri_interesado_natural, "interesado_natural", "postgres")
+    layer_predio = QgsVectorLayer(output_uri_predio, "predio", "postgres")
+    it_predio = layer_predio.getFeatures()
+    dict_predio = {feat_predio['nupre']: feat_predio['t_id'] for feat_predio in it_predio}
 
-    attrMap = {}
-    idx_id_interesado = interesado_predio.fields().indexFromName('t_id_interesado')
-    idx_id_predio = interesado_predio.fields().indexFromName('t_id_predio')
-    for f in features_interesado_predio:
-        it_predio = output_predio.getFeatures('"nupre"=\'{}\''.format(f['chip']))
-        it_interesado_natural = output_interesado_natural.getFeatures('"documento_identidad" = {}'.format(f['documento_identidad']))
-        f_predio = QgsFeature()
-        it_predio.nextFeature(f_predio)
-        f_interesado_natural = QgsFeature()
-        it_interesado_natural.nextFeature(f_interesado_natural)
-        if f_predio.isValid() and f_interesado_natural.isValid():
-            attrs = {idx_id_predio : f_predio['t_id'], idx_id_interesado: f_interesado_natural['t_id']}
-            attrMap[f.id()] = attrs
+    # Interesado: dict = {numero_documento : t_id}
+    if tipo == 'interesado_juridico':
+        association_table_name = 'Maestra_Juridicos'
+        ladm_attribute = "interesado_interesado_juridico"
+        output_uri_interesado_juridico = db.get_uri_for_layer('interesado_juridico')[1]
+        table_interesado = QgsVectorLayer(output_uri_interesado_juridico, "Interesado Juridico", "postgres")
+        it_interesado = table_interesado.getFeatures()
+        dict_interesado = {feat_interesado['numero_nit']: feat_interesado['t_id'] for feat_interesado in it_interesado}
+    else:
+        association_table_name = 'Maestra_Naturales'
+        ladm_attribute = "interesado_interesado_natural"
+        output_uri_interesado_natural = db.get_uri_for_layer('interesado_natural')[1]
+        table_interesado = QgsVectorLayer(output_uri_interesado_natural, "Interesado Natural", "postgres")
+        it_interesado = table_interesado.getFeatures()
+        dict_interesado = {feat_interesado['documento_identidad']: feat_interesado['t_id'] for feat_interesado in it_interesado}
+
+    # Get col_derecho
+    output_uri_col_derecho = db.get_uri_for_layer('col_derecho')[1]
+    table_col_derecho = QgsVectorLayer(output_uri_col_derecho, "col_derecho", "postgres")
+    asistente_ladm_col.qgis_utils.configureAutomaticField(table_col_derecho, "comienzo_vida_util_version", "now()")
+    asistente_ladm_col.qgis_utils.configureAutomaticField(table_col_derecho, "r_espacio_de_nombres", "'UAECD_Col_Derecho'")
+    rows = list()
+
+    # Iterar tabla fuente de paso buscando CHIP y COD_LOTE en dicts Predio y Terreno
+    uri_association_table = '{}|layername={}'.format(INPUT_DB_PATH, association_table_name)
+    predio_interesado = QgsVectorLayer(uri_association_table, 'predio_interesado', 'ogr')
+    for f in predio_interesado.getFeatures():
+        numero_documento = str(int(f['documento_identidad']))
+        chip = f['chip']
+        col_derecho_tipo = f['Col_DerechoTipo']
+        r_local_id = f['OBJECTID'] # Had to do this because an automatic field with @row_number didn't work
+        new_row = QgsVectorLayerUtils().createFeature(table_col_derecho)
+        if numero_documento in dict_interesado and chip in dict_predio:
+            new_row.setAttribute(ladm_attribute, dict_interesado[numero_documento])
+            new_row.setAttribute("unidad_predio", dict_predio[chip])
+            new_row.setAttribute("tipo", col_derecho_tipo)
+            new_row.setAttribute("r_local_id", r_local_id)
+            rows.append(new_row)
         else:
-            print("Pair not found:",f['chip'],f['documento_identidad'])
+            print("### NOT FOUND NUM_DOCUMENTO-CHIP ###", numero_documento, chip)
 
-    interesado_predio.dataProvider().changeAttributeValues(attrMap)
-    interesado_predio.reload()
-
-    # Col_Derecho
-    params_refactor_col_derecho = { 'INPUT' : '{}'.format(INPUT_PREDIO_INTERESADO_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"Col_DerechoTipo"'}, {'name': 'codigo_registral_derecho', 'type': 10, 'length': 3, 'precision': -1, 'expression': '"codigo_registral_derecho"'}, {'name': 'descripcion', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"descripcion"'}, {'name': 'comprobacion_comparte', 'type': 1, 'length': -1, 'precision': -1, 'expression': '"comprobacion_comparte"'}, {'name': 'uso_efectivo', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"uso_efectivo"'}, {'name': 'r_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'UAECD_col_derecho'"}, {'name': 'r_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"local_id"'}, {'name': 'interesado_interesado_juridico', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"interesado_interesado_juridico"'}, {'name': 'interesado_la_agrupacion_interesados', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"interesado_la_agrupacion_interesados"'}, {'name': 'unidad_la_baunit', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"unidad_la_baunit"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}, {'precision': 0, 'name': 'unidad_predio', 'length': -1, 'type': 4, 'expression': '"t_id_predio"'}, {'precision': 0, 'name': 'interesado_interesado_natural', 'length': -1, 'type': 4, 'expression': '"t_id_interesado"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_col_derecho" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
-    #input_interesado_natural = QgsVectorLayer(input_uri, "r_interesado_natural", "ogr")
-    input_uri_col_derecho = '{refactored_db_path}|layername=R_col_derecho'.format(refactored_db_path=REFACTORED_DB_PATH)
-    #output_uri = 'dbname=\'{output_db_name}\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'t_id\' checkPrimaryKeyUnicity=\'1\' table="{output_db_schema}"."col_derecho" sql='.format(output_db_name=OUTPUT_DB_NAME, output_db_schema=OUTPUT_DB_SCHEMA)
-    db = asistente_ladm_col.get_db_connection()
-    output_uri = db.get_uri_for_layer('col_derecho')[1]
-    output_col_derecho = QgsVectorLayer(output_uri, "col_derecho", "postgres")
-    refactor_and_copy_paste(params_refactor_col_derecho, input_uri_col_derecho, output_col_derecho)
+    # Llenar col_derecho
+    res = table_col_derecho.dataProvider().addFeatures(rows)
+    if res[0]:
+        print(len(rows), "rows added to col_derecho!!!")
+    else:
+        print("There was an error adding {} rows to col_derecho...".format(len(rows)))
 
 
 def llenar_fuente_administrativa():
@@ -256,15 +295,17 @@ def llenar_rrr_fuente():
 
 llenar_punto_lindero()
 llenar_lindero()
-llenar_terreno()
+llenar_terreno() # First fix the source layer (with 'Fix Geometries' algorithm)
 llenar_tablas_de_topologia()
-llenar_predio() # First fix the source layer (with 'Fix Geometries' algorithm)
-llenar_construccion('Construccion_NPH_Fixed') # First fix source layer geomtries
+llenar_predio()
+llenar_uebaunit()
+llenar_construccion('Construccion_NPH_Fixed') # First fix source layer geometries
 llenar_construccion('Construccion_PH')
 llenar_construccion('Construccion_MJ')
 llenar_unidad_construccion()
 llenar_interesado_natural()
-#llenar_interesado_juridico()
-llenar_col_derecho()
+llenar_interesado_juridico()
+llenar_col_derecho('interesado_natural')
+llenar_col_derecho('interesado_juridico')
 llenar_fuente_administrativa()
 llenar_rrr_fuente()
