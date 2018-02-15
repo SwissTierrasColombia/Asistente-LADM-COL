@@ -9,8 +9,10 @@ from qgis.testing import unittest, start_app
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.gui.point_spa_uni_cadastre_wizard import PointsSpatialUnitCadastreWizard
-from asistente_ladm_col.tests.utils import get_dbconn, get_test_path
+from asistente_ladm_col.tests.utils import import_projectgenerator, get_dbconn, get_test_path
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
+
+import_projectgenerator()
 
 class TestDigitizing(unittest.TestCase):
 
