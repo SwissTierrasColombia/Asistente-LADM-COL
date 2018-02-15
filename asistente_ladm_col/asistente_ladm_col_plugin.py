@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
+import os.path
 
 import qgis.utils
 from qgis.core import QgsMessageLog, Qgis
@@ -25,6 +25,7 @@ from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton, QMessageBox
 
+from .config.table_mapping_config import PROJECT_GENERATOR_MIN_REQUIRED_VERSION
 from .gui.point_spa_uni_cadastre_wizard import PointsSpatialUnitCadastreWizard
 from .gui.define_boundaries_cadastre_wizard import DefineBoundariesCadastreWizard
 from .gui.create_plot_cadastre_wizard import CreatePlotCadastreWizard
@@ -184,12 +185,17 @@ class AsistenteLADMCOLPlugin(QObject):
     def _project_generator_required(func_to_decorate):
         @wraps(func_to_decorate)
         def decorated_function(inst, *args, **kwargs):
-            # Check if current connection is valid and disable access if not
-            if 'projectgenerator' in qgis.utils.plugins:
+            # Check if Project Generator is installed and active, disable access if not
+            plugin_found = 'projectgenerator' in qgis.utils.plugins
+            plugin_version_right = False
+            if plugin_found:
+                plugin_version_right = inst.is_plugin_version_valid()
+
+            if plugin_found and plugin_version_right:
                 func_to_decorate(inst)
             else:
                 widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
-                             QCoreApplication.translate("AsistenteLADMCOLPlugin", "'Project Generator' plugin is required but couldn't be found. Click the button to show the Plugin Manager."))
+                             QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'Project Generator' version {} (or higher) is required, but couldn't be found. Click the button to show the Plugin Manager.").format(PROJECT_GENERATOR_MIN_REQUIRED_VERSION))
                 button = QPushButton(widget)
                 button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
                 button.pressed.connect(inst.show_plugin_manager)
@@ -198,6 +204,42 @@ class AsistenteLADMCOLPlugin(QObject):
                 QgsMessageLog.logMessage(QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog couldn't be open, Project Generator not found."), "Asistente LADM_COL")
 
         return decorated_function
+
+    def get_plugin_version(self, plugin_dir):
+        file_path = os.path.join(plugin_dir, 'metadata.txt')
+        if os.path.isfile(file_path):
+            with open(file_path) as metadata:
+                for line in metadata:
+                    line_array = line.strip().split("=")
+                    if line_array[0] == 'version':
+                        return line_array[1]
+        return None
+
+    def is_plugin_version_valid(self):
+        current_version = self.get_plugin_version(qgis.utils.plugins['projectgenerator'].plugin_dir)
+        min_required_version = PROJECT_GENERATOR_MIN_REQUIRED_VERSION
+        if current_version is None:
+            return False
+
+        current_version_splitted = current_version.split(".")
+        if len(current_version_splitted) < 4: # We could need 4 places for custom Project Generator versions
+            current_version_splitted = current_version_splitted + ['0','0','0','0']
+            current_version_splitted = current_version_splitted[:4]
+
+        min_required_version_splitted = min_required_version.split(".")
+        if len(min_required_version_splitted) < 4:
+            min_required_version_splitted = min_required_version_splitted + ['0','0','0','0']
+            min_required_version_splitted = min_required_version_splitted[:4]
+
+        print(min_required_version_splitted, current_version_splitted)
+
+        for i in range(len(current_version_splitted)):
+            if int(current_version_splitted[i]) < int(min_required_version_splitted[i]):
+                return False
+            elif int(current_version_splitted[i]) > int(min_required_version_splitted[i]):
+                return True
+
+        return True
 
     @_project_generator_required
     @_db_connection_required
