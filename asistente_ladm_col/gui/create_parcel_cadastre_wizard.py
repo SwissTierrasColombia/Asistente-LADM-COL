@@ -25,6 +25,7 @@ from qgis.PyQt.QtWidgets import QAction, QWizard
 from ..utils import get_ui_class
 from ..config.table_mapping_config import (
     ID_FIELD,
+    LA_BAUNIT_TYPE_TABLE,
     PARCEL_TABLE,
     PLOT_TABLE,
     UEBAUNIT_TABLE,
@@ -50,7 +51,13 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
 
     def prepare_parcel_creation(self):
         # Load layers
-        self._plot_layer = self.qgis_utils.get_layer(self._db, PLOT_TABLE, load=True)
+        res_layers = self.qgis_utils.get_layers(self._db, {
+            PLOT_TABLE: {'name':PLOT_TABLE, 'geometry':None},
+            PARCEL_TABLE: {'name':PARCEL_TABLE, 'geometry':None},
+            LA_BAUNIT_TYPE_TABLE: {'name':LA_BAUNIT_TYPE_TABLE, 'geometry':None}, # Domain for Parcel
+            UEBAUNIT_TABLE: {'name':UEBAUNIT_TABLE, 'geometry':None}}, load=True)
+
+        self._plot_layer = res_layers[PLOT_TABLE]
         if self._plot_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
@@ -58,7 +65,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return
 
-        self._parcel_layer = self.qgis_utils.get_layer(self._db, PARCEL_TABLE, load=True)
+        self._parcel_layer = res_layers[PARCEL_TABLE]
         if self._parcel_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
@@ -66,7 +73,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return
 
-        self._uebaunit_table = self.qgis_utils.get_layer(self._db, UEBAUNIT_TABLE, load=True)
+        self._uebaunit_table = res_layers[UEBAUNIT_TABLE]
         if self._uebaunit_table is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
@@ -75,9 +82,6 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             return
 
         # Configure automatic fields
-        self.qgis_utils.configureAutomaticField(self._parcel_layer, "nupre", "123")
-        self.qgis_utils.configureAutomaticField(self._parcel_layer, "tipo", "Unidad_Derecho")
-        self.qgis_utils.configureAutomaticField(self._parcel_layer, "u_espacio_de_nombres", "la_palma_predio")
         self.qgis_utils.configureAutomaticField(self._parcel_layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
 
         # Don't suppress (i.e., show) feature form

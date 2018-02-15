@@ -47,7 +47,8 @@ class QGISUtils(QObject):
 
     layer_symbology_changed = pyqtSignal(str) # layer id
     message_emitted = pyqtSignal(str, int) # Message, level
-    message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, callback, level
+    message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
+    message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
     map_refresh_requested = pyqtSignal()
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
@@ -57,23 +58,9 @@ class QGISUtils(QObject):
         self.project_generator_utils = ProjectGeneratorUtils()
 
     def get_layer(self, db, layer_name, geometry_type=None, load=False):
-        # If layer is in LayerTree, return it
-        layer = self.get_layer_from_layer_tree(layer_name, db.schema, geometry_type)
-        if layer is not None:
-            return layer
-
-        # Layer is not loaded, create it and load it if 'load' is True
-        res, uri = db.get_uri_for_layer(layer_name, geometry_type)
-        if not res:
-            return None
-
-        layer = QgsVectorLayer(uri, layer_name.capitalize(), db.provider)
-        if layer.isValid():
-            if load:
-                QgsProject.instance().addMapLayer(layer)
-            return layer
-
-        return None
+        # Handy function to avoid sending a whole dict when all we need is a single table/layer
+        res_layer = self.get_layers(db, {layer_name: {'name': layer_name, 'geometry': geometry_type}}, load)
+        return res_layer[layer_name]
 
     def get_layers(self, db, layers, load=False):
         # layers = {layer_id : {name: ABC, geometry: DEF}}
@@ -247,7 +234,7 @@ class QGISUtils(QObject):
                                            "First load the layer {} into QGIS!").format(BOUNDARY_TABLE),
                 QCoreApplication.translate("QGISUtils",
                                            "Load layer {} now").format(BOUNDARY_TABLE),
-                [BOUNDARY_TABLE],
+                [BOUNDARY_TABLE, None],
                 Qgis.Warning)
             return
 
@@ -288,7 +275,7 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "First load the layer {} into QGIS!").format(BOUNDARY_TABLE),
                 QCoreApplication.translate("QGISUtils", "Load layer {} now").format(BOUNDARY_TABLE),
-                [BOUNDARY_TABLE],
+                [BOUNDARY_TABLE, None],
                 Qgis.Warning)
             return
 
@@ -321,7 +308,12 @@ class QGISUtils(QObject):
         self.map_refresh_requested.emit()
 
     def fill_topology_table_pointbfs(self, db, use_selection=True):
-        boundary_layer = self.get_layer(db, BOUNDARY_TABLE)
+        res_layers = self.get_layers(db, {
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry':None},
+            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry':None},
+            BOUNDARY_POINT_TABLE: {'name':BOUNDARY_POINT_TABLE, 'geometry':None}}, load=True)
+
+        boundary_layer = res_layers[BOUNDARY_TABLE]
         if boundary_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -334,7 +326,7 @@ class QGISUtils(QObject):
                     QCoreApplication.translate("QGISUtils",
                                                "First load the layer {} into QGIS and select at least one boundary!").format(BOUNDARY_TABLE),
                     QCoreApplication.translate("QGISUtils", "Load layer {} now").format(BOUNDARY_TABLE),
-                    [BOUNDARY_TABLE],
+                    [BOUNDARY_TABLE, None],
                     Qgis.Warning)
             else:
                 self.message_emitted.emit(
@@ -342,7 +334,7 @@ class QGISUtils(QObject):
                     Qgis.Warning)
             return
 
-        bfs_layer = self.get_layer(db, POINT_BOUNDARY_FACE_STRING_TABLE, load=True)
+        bfs_layer = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
         if bfs_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Table {} not found in the DB!").format(POINT_BOUNDARY_FACE_STRING_TABLE),
@@ -355,7 +347,7 @@ class QGISUtils(QObject):
         existing_pairs = [(bfs_feature[BFS_TABLE_BOUNDARY_FIELD], bfs_feature[BFS_TABLE_BOUNDARY_POINT_FIELD]) for bfs_feature in bfs_features]
         existing_pairs = set(existing_pairs)
 
-        boundary_point_layer = self.get_layer(db, BOUNDARY_POINT_TABLE)
+        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
         id_pairs = self.get_pair_boundary_boundary_point(boundary_layer, boundary_point_layer, use_selection)
 
         if id_pairs:
@@ -406,7 +398,13 @@ class QGISUtils(QObject):
         return intersect_pairs
 
     def fill_topology_tables_morebfs_less(self, db, use_selection=True):
-        plot_layer = self.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry)
+        res_layers = self.get_layers(db, {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            MORE_BOUNDARY_FACE_STRING_TABLE: {'name': MORE_BOUNDARY_FACE_STRING_TABLE, 'geometry':None},
+            LESS_TABLE: {'name': LESS_TABLE, 'geometry':None},
+            BOUNDARY_TABLE: {'name':BOUNDARY_TABLE, 'geometry':None}}, load=True)
+
+        plot_layer = res_layers[PLOT_TABLE]
         if plot_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Table {} not found in the DB!").format(PLOT_TABLE),
@@ -419,7 +417,7 @@ class QGISUtils(QObject):
                     QCoreApplication.translate("QGISUtils",
                                                "First load the layer {} into QGIS and select at least one plot!").format(PLOT_TABLE),
                     QCoreApplication.translate("QGISUtils", "Load layer {} now").format(PLOT_TABLE),
-                    [PLOT_TABLE],
+                    [PLOT_TABLE, None],
                     Qgis.Warning)
             else:
                 self.message_emitted.emit(
@@ -427,14 +425,14 @@ class QGISUtils(QObject):
                     Qgis.Warning)
             return
 
-        more_bfs_layer = self.get_layer(db, MORE_BOUNDARY_FACE_STRING_TABLE, load=True)
+        more_bfs_layer = res_layers[MORE_BOUNDARY_FACE_STRING_TABLE]
         if more_bfs_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Table {} not found in the DB!").format(MORE_BOUNDARY_FACE_STRING_TABLE),
                 Qgis.Warning)
             return
 
-        less_layer = self.get_layer(db, LESS_TABLE, load=True)
+        less_layer = res_layers[LESS_TABLE]
         if less_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Table {} not found in the DB!").format(LESS_TABLE),
@@ -450,7 +448,7 @@ class QGISUtils(QObject):
         existing_less_pairs = [(less_feature[LESS_TABLE_PLOT_FIELD], less_feature[LESS_TABLE_BOUNDARY_FIELD]) for less_feature in less_features]
         existing_less_pairs = set(existing_less_pairs)
 
-        boundary_layer = self.get_layer(db, BOUNDARY_TABLE)
+        boundary_layer = res_layers[BOUNDARY_TABLE]
         id_more_pairs, id_less_pairs = self.get_pair_boundary_plot(boundary_layer, plot_layer, use_selection)
 
         if id_more_pairs:
@@ -578,7 +576,11 @@ class QGISUtils(QObject):
         return (intersect_more_pairs, intersect_less_pairs)
 
     def polygonize_boundaries(self, db):
-        boundaries = self.get_layer(db, BOUNDARY_TABLE)
+        res_layers = self.get_layers(db, {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            BOUNDARY_TABLE: {'name':BOUNDARY_TABLE, 'geometry':None}}, load=True)
+
+        boundaries = res_layers[BOUNDARY_TABLE]
         if boundaries is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Layer {} not found in the DB!").format(BOUNDARY_TABLE),
@@ -591,7 +593,7 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return
 
-        plots = self.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
+        plots = res_layers[PLOT_TABLE]
         if plots is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Layer {} not found in the DB!").format(PLOT_TABLE),

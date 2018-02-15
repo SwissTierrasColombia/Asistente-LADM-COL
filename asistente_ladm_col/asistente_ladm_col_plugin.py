@@ -110,6 +110,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
+        self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
 
         # Toolbar for Define Boundaries
@@ -138,16 +139,27 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_message(self, msg, level):
         self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level)
 
-    def show_message_to_load_layer(self, msg, button_text, layer_list, level):
+    def show_message_to_load_layer(self, msg, button_text, layer, level):
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
-        button.pressed.connect(partial(self.load_layers, layer_list))
+        button.pressed.connect(partial(self.load_layer, layer))
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, level, 15)
 
-    def load_layers(self, layer_list):
-        self.qgis_utils.get_layers(self.get_db_connection(), layer_list, True)
+    def show_message_to_load_layers(self, msg, button_text, layers, level):
+        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        button = QPushButton(widget)
+        button.setText(button_text)
+        button.pressed.connect(partial(self.load_layers, layers))
+        widget.layout().addWidget(button)
+        self.iface.messageBar().pushWidget(widget, level, 15)
+
+    def load_layer(self, layer):
+        self.qgis_utils.get_layer(self.get_db_connection(), layer[0], layer[1], load=True)
+
+    def load_layers(self, layers):
+        self.qgis_utils.get_layers(self.get_db_connection(), layers, True)
 
     def _db_connection_required(func_to_decorate):
         @wraps(func_to_decorate)
