@@ -329,7 +329,3 @@ class AsistenteLADMCOLPlugin(QObject):
         self.translator = QTranslator()
         self.translator.load(qgis_locale, 'Asistente-LADM_COL', '_', locale_path)
         QCoreApplication.installTranslator(self.translator)
-
-    def testGetlayers(self, layers):
-        res = self.qgis_utils.get_layers(self.get_db_connection(), layers, True)
-        print(res)
