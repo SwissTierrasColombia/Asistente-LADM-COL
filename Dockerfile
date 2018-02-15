@@ -18,7 +18,13 @@ RUN apt-get update && \
     apt-get -y install \
     iputils-ping \
     dnsutils \
-    nmap
+    nmap \
+    wget \
+    unzip
+
+RUN wget https://github.com/AgenciaImplementacion/projectgenerator/releases/download/2.0.1.1/projectgenerator.zip -O /tmp/projectgenerator.zip
+RUN unzip /tmp/projectgenerator.zip -d /usr/share/qgis/python/plugins
+RUN rm -rf /tmp/projectgenerator.zip
 
 ENV LANG=C.UTF-8
 

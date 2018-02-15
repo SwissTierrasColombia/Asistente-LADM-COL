@@ -24,6 +24,7 @@ from sys import platform
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 # get from https://github.com/qgis/QGIS/blob/master/tests/src/python/test_qgssymbolexpressionvariables.py
 from qgis.testing.mocked import get_iface
+import qgis.utils
 
 # PostgreSQL connection to schema with a LADM_COL model from ./etl_script_uaecd.py
 DB_HOSTNAME = 'postgres'
@@ -93,3 +94,13 @@ def get_iface():
 def get_test_path(path):
     basepath = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(basepath, 'resources', path)
+
+def import_projectgenerator():
+    global iface
+    plugin_found = 'projectgenerator' in qgis.utils.plugins
+    if not plugin_found:
+        import sys
+        sys.path.append('/usr/share/qgis/python/plugins')
+        import projectgenerator
+        pg = projectgenerator.classFactory(iface)
+        qgis.utils.plugins['projectgenerator'] = pg
