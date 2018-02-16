@@ -32,6 +32,7 @@ La versión actual (0.0.4) del Asistente LADM_COL depende del plugin [Project Ge
  - Llenar automáticamente tablas de topología:
    - `PuntosCCL` (relaciona `Punto Lindero` y `Lindero`)
    - `MasCCL`    (relaciona `Lindero` y `Terreno`)
+   - `Menos`     (relaciona `Terreno` y sus anillos/huecos internos)
  - Crear `Predios` a partir de `Terrrenos` existentes.
  - Revisar segmentos de linderos muy largos (que superen una tolerancia dada).
  - Usar el plugin 'Project Generator' (una dependencia) para cargar capas con formularios y relaciones configuradas.
