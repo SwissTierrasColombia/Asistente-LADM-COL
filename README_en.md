@@ -13,9 +13,9 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version (0.0.3) of the LADM_COL Assistant allows to:
+The current version (0.0.4) of the LADM_COL Assistant depends on [Project Generator](https://github.com/opengisch/projectgenerator/) plugin [v2.0.1.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/2.0.1.1) and allows to:
 
- - Capture data for the LADM_COL v2.2.0 model.
+ - Capture data for the LADM_COL v2.2.1 model.
  - Add points to the `Boundary Point` and `Survey Point` layers from CSV files.
    - Validate and avoid insertion of overlapping points.
  - Define `Boundaries` by digitizing on the map.
@@ -30,6 +30,9 @@ The current version (0.0.3) of the LADM_COL Assistant allows to:
    - `BFS Points` (relates `Boundary Points` to `Boundary`)
    - `More BFS` (relates `Boundaries` to `Plot`)
  - Create `Parcels` from existing `Plots`.
+ - Check too long `Boundary` segments (exceeding a given tolerance).
+ - Use the 'Project Generator' plugin (a prerequisite) to load layers with configured forms and relations.
+ - Use configured styles for loaded layers.
 
 ## Testing
 

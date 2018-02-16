@@ -16,9 +16,9 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual (0.0.3) del Asistente LADM_COL permite:
+La versión actual (0.0.4) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) [v2.0.1.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/2.0.1.1) y permite:
 
- - Capturar datos para el modelo LADM_COL v2.2.0.
+ - Capturar datos para el modelo LADM_COL v2.2.1.
  - Agregar puntos a las capas `Punto Lindero` y `Punto Levantamiento` desde archivo CSV.
    - Validar para evitar insertar puntos superpuestos.
  - Definir `Linderos` digitalizando sobre el mapa.
@@ -33,6 +33,9 @@ La versión actual (0.0.3) del Asistente LADM_COL permite:
    - `PuntosCCL` (relaciona `Punto Lindero` y `Lindero`)
    - `MasCCL`    (relaciona `Lindero` y `Terreno`)
  - Crear `Predios` a partir de `Terrrenos` existentes.
+ - Revisar segmentos de linderos muy largos (que superen una tolerancia dada).
+ - Usar el plugin 'Project Generator' (una dependencia) para cargar capas con formularios y relaciones configuradas.
+ - Usar estilos preconfigurados para asignarlos a las capas cargadas.
 
 ## Pruebas automatizadas al software
 
