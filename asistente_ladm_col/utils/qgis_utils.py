@@ -629,7 +629,7 @@ class QGISUtils(QObject):
             return
 
     def check_too_long_segments(self, db):
-        tolerance = QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE) # meters
+        tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
         features = []
         boundary_layer = self.get_layer(db, BOUNDARY_TABLE, load=True)
         if boundary_layer is None:
@@ -667,7 +667,7 @@ class QGISUtils(QObject):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "A memory layer with {} boundary segments longer than {}m. has been added to the map!").format(added_layer.featureCount(), tolerance),
-                Qgis.Warning)
+                Qgis.Info)
         else:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
