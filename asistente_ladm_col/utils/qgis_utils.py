@@ -23,14 +23,20 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsSpatialIndex, QgsVectorLayer, QgsMultiLineString,
 					   QgsFillSymbol, QgsLineSymbol, QgsMarkerSymbol,
 					   QgsPalLayerSettings, QgsTextFormat, QgsTextBufferSettings,
-					   QgsVectorLayerSimpleLabeling)
-from qgis.PyQt.QtCore import QObject, pyqtSignal, QCoreApplication
+                       QgsVectorLayerSimpleLabeling, QgsField, QgsLineSymbol,
+                       QgsOuterGlowEffect, QgsDrawSourceEffect, QgsEffectStack,
+                       QgsInnerShadowEffect, QgsSimpleLineSymbolLayer)
+
+from qgis.PyQt.QtCore import (QObject, pyqtSignal, QCoreApplication, QVariant,
+                              QSettings)
 
 from .project_generator_utils import ProjectGeneratorUtils
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
+                                           DEFAULT_EPSG,
+                                           DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
                                            ID_FIELD,
                                            LAYERS_STYLE,
                                            LESS_TABLE,
@@ -127,11 +133,12 @@ class QGISUtils(QObject):
             return False
 
         # Create QGIS vector layer
-        uri = "file:///{}?delimiter={}&xField={}&yField={}&crs=EPSG:3116".format(
+        uri = "file:///{}?delimiter={}&xField={}&yField={}&crs=EPSG:{}".format(
               csv_path,
               delimiter,
               longitude,
-              latitude
+              latitude,
+              DEFAULT_EPSG
            )
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
         if not csv_layer.isValid():
@@ -621,6 +628,67 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return
 
+    def check_too_long_segments(self, db):
+        tolerance = QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE) # meters
+        features = []
+        boundary_layer = self.get_layer(db, BOUNDARY_TABLE, load=True)
+        if boundary_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in the DB!").format(BOUNDARY_TABLE),
+                Qgis.Warning)
+            return
+
+        error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG), "Boundary segments longer than {}m".format(tolerance), "memory")
+        pr = error_layer.dataProvider()
+        pr.addAttributes([QgsField("boundary_id", QVariant.Int),
+                          QgsField("distance", QVariant.Double)])
+        error_layer.updateFields()
+
+        for feature in boundary_layer.getFeatures():
+            lines = feature.geometry()
+            if lines.isMultipart():
+                for part in range(lines.constGet().numGeometries()):
+                    line = lines.constGet().geometryN(part)
+                    segments_info = self.get_too_long_segments_from_simple_line(line, tolerance)
+                    for segment_info in segments_info:
+                        new_feature = QgsVectorLayerUtils().createFeature(error_layer, segment_info[0], {0:feature.id(), 1:segment_info[1]})
+                        features.append(new_feature)
+            else:
+                segments_info = self.get_too_long_segments_from_simple_line(lines.constGet(), tolerance)
+                for segment_info in segments_info:
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, segment_info[0], {0:feature.id(), 1:segment_info[1]})
+                    features.append(new_feature)
+
+        error_layer.dataProvider().addFeatures(features)
+        if error_layer.featureCount() > 0:
+            added_layer = QgsProject.instance().addMapLayer(error_layer)
+            self.set_line_error_symbol(added_layer)
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "A memory layer with {} boundary segments longer than {}m. has been added to the map!").format(added_layer.featureCount(), tolerance),
+                Qgis.Warning)
+        else:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "All boundary segments are within the tolerance ({}m.)!").format(tolerance),
+                Qgis.Info)
+
+    def get_too_long_segments_from_simple_line(self, line, tolerance):
+        segments_info = list()
+        vertices = line.vertices()
+        vertex1 = None
+        if vertices.hasNext():
+            vertex1 = vertices.next()
+        while vertices.hasNext():
+            vertex2 = vertices.next()
+            distance = vertex1.distance(vertex2)
+            if distance > tolerance:
+                segment = QgsGeometry.fromPolyline([vertex1, vertex2])
+                segments_info.append([segment, distance])
+            vertex1 = vertex2
+        return segments_info
+
     def set_layer_style(self, layer):
         if layer.name() in LAYERS_STYLE:
             self.set_symbology(layer, LAYERS_STYLE[layer.name()][layer.geometryType()]['symbology'])
@@ -649,3 +717,26 @@ class QGISUtils(QObject):
             label_settings.setFormat(text_format)
             layer.setLabeling(QgsVectorLayerSimpleLabeling(label_settings))
             layer.setLabelsEnabled(True)
+
+    def set_line_error_symbol(self, layer):
+        outer_glow_effect_properties = {'blend_mode': '0', 'blur_level': '3', 'draw_mode': '2', 'color2': '0,255,0,255', 'discrete': '0', 'spread_unit_scale': '3x:0,0,0,0,0,0', 'color_type': '0', 'spread_unit': 'MM', 'spread': '2', 'color1': '0,0,255,255', 'rampType': 'gradient', 'single_color': '239,41,41,255', 'opacity': '0.5', 'enabled': '1'}
+        draw_source_effect_properties = {'blend_mode': '0', 'draw_mode': '2', 'enabled': '1', 'opacity': '1'}
+        inner_shadow_effect_properties = {'offset_angle': '135', 'blend_mode': '13', 'blur_level': '10', 'draw_mode': '2', 'color': '0,0,0,255', 'offset_distance': '2', 'offset_unit': 'MM', 'offset_unit_scale': '3x:0,0,0,0,0,0', 'opacity': '0.146', 'enabled': '1'}
+
+        outer_glow_effect = QgsOuterGlowEffect().create(outer_glow_effect_properties)
+        draw_source_effect = QgsDrawSourceEffect().create(draw_source_effect_properties)
+        inner_shadow_effect = QgsInnerShadowEffect().create(inner_shadow_effect_properties)
+
+        effect_stack = QgsEffectStack()
+        effect_stack.appendEffect(outer_glow_effect)
+        effect_stack.appendEffect(draw_source_effect)
+        effect_stack.appendEffect(inner_shadow_effect)
+
+        simple_line_symbol_layer_properties = {'draw_inside_polygon': '0', 'line_color': '227,26,28,255', 'customdash_map_unit_scale': '3x:0,0,0,0,0,0', 'joinstyle': 'round', 'width_map_unit_scale': '3x:0,0,0,0,0,0', 'customdash': '5;2', 'capstyle': 'round', 'offset': '0', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'customdash_unit': 'MM', 'use_custom_dash': '0', 'offset_unit': 'MM', 'line_width_unit': 'MM', 'line_width': '1.46', 'line_style': 'solid'}
+        simple_line_symbol_layer = QgsSimpleLineSymbolLayer().create(simple_line_symbol_layer_properties)
+        simple_line_symbol_layer.setPaintEffect(effect_stack)
+
+        line_symbol = QgsLineSymbol()
+        line_symbol.appendSymbolLayer(simple_line_symbol_layer)
+        layer.renderer().setSymbol(line_symbol)
+        self.layer_symbology_changed.emit(layer.id())

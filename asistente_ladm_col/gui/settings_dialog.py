@@ -23,11 +23,11 @@ from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QSettings
 from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
 
-from ..utils.qt_utils import make_file_selector
-from ..utils import get_ui_class
-from ..config.table_mapping_config import *
-from ..lib.dbconnector.pg_connector import PGConnector
+from ..config.table_mapping_config import DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
+from ..lib.dbconnector.pg_connector import PGConnector
+from ..utils import get_ui_class
+from ..utils.qt_utils import make_file_selector
 
 DIALOG_UI = get_ui_class('settings_dialog.ui')
 
@@ -104,6 +104,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/pg/password', dict_conn['password'])
         settings.setValue('Asistente-LADM_COL/gpkg/dbfile', dict_conn['dbfile'])
 
+        settings.setValue('Asistente-LADM_COL/quality/too_long_tolerance', int(self.txt_too_long_tolerance.text()) or DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)
+
     def restore_settings(self):
         # Restore QSettings
         settings = QSettings()
@@ -117,6 +119,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_pg_user.setText(settings.value('Asistente-LADM_COL/pg/user'))
         self.txt_pg_password.setText(settings.value('Asistente-LADM_COL/pg/password'))
         self.txt_gpkg_file.setText(settings.value('Asistente-LADM_COL/gpkg/dbfile'))
+
+        self.txt_too_long_tolerance.setText(str(settings.value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)))
 
     def db_source_changed(self):
         self._db = None
