@@ -24,14 +24,15 @@ from sys import platform
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 # get from https://github.com/qgis/QGIS/blob/master/tests/src/python/test_qgssymbolexpressionvariables.py
 from qgis.testing.mocked import get_iface
+import qgis.utils
 
 # PostgreSQL connection to schema with a LADM_COL model from ./etl_script_uaecd.py
-DB_HOSTNAME = 'postgres'
-DB_PORT = '5432'
-DB_NAME = 'ladm_col'
-DB_SCHEMA = 'test_ladm_col'
-DB_USER = 'usuario_ladm_col'
-DB_PASSWORD = 'clave_ladm_col'
+DB_HOSTNAME = "postgres"
+DB_PORT = "5432"
+DB_NAME = "ladm_col"
+DB_SCHEMA = "test_ladm_col"
+DB_USER = "usuario_ladm_col"
+DB_PASSWORD = "clave_ladm_col"
 iface = get_iface()
 asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface)
 asistente_ladm_col_plugin.initGui()
@@ -54,34 +55,34 @@ def restore_schema(db_connection):
     cur.execute("""SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'test_ladm_col';""")
     result = cur.fetchone()
     if result is not None and len(result) > 0:
-        print('The schema test_ladm_col already exists')
+        print("The schema test_ladm_col already exists")
         return
 
-    print('Restoring ladm_col database...')
-    script_dir = get_test_path('restore_db.sh')
+    print("Restoring ladm_col database...")
+    script_dir = get_test_path("restore_db.sh")
     if platform == "linux" or platform == "linux2" or platform == "darwin":
-        script_dir = get_test_path('restore_db.sh')
+        script_dir = get_test_path("restore_db.sh")
     elif platform == "win32":
-        script_dir = get_test_path('restore_db.bat')
+        script_dir = get_test_path("restore_db.bat")
     else:
-        print('Please add the test script')
+        print("Please add the test script")
 
     process = os.popen(script_dir)
     output = process.readlines()
     process.close()
-    print('Done restoring ladm_col database.')
+    print("Done restoring ladm_col database.")
     if len(output) > 0:
-        print('Warning:', output)
+        print("Warning:", output)
 
 def drop_schema(db_connection):
-    print('Clean ladm_col database...')
+    print("Clean ladm_col database...")
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     query = cur.execute("""DROP SCHEMA test_ladm_col CASCADE;""")
     db_connection.conn.commit()
     cur.close()
     db_connection.conn.close()
     if query is not None:
-        print('The drop schema is not working')
+        print("The drop schema is not working")
 
 def get_iface():
     global iface
@@ -92,4 +93,19 @@ def get_iface():
 
 def get_test_path(path):
     basepath = os.path.dirname(os.path.abspath(__file__))
-    return os.path.join(basepath, 'resources', path)
+    return os.path.join(basepath, "resources", path)
+
+def import_projectgenerator():
+    global iface
+    plugin_found = "projectgenerator" in qgis.utils.plugins
+    if not plugin_found:
+        import sys
+        if platform == "linux" or platform == "linux2" or platform == "darwin":
+            sys.path.append("/usr/share/qgis/python/plugins")
+        elif platform == "win32":
+            sys.path.append("C:\\Users\\aimplementacion\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins")
+        else:
+            print("Please add the correct projectgenerator path")
+        import projectgenerator
+        pg = projectgenerator.classFactory(iface)
+        qgis.utils.plugins["projectgenerator"] = pg
