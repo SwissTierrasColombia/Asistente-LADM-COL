@@ -29,6 +29,7 @@ The current version (0.0.4) of the LADM_COL Assistant depends on [Project Genera
  - Fill topology tables automatically:
    - `BFS Points` (relates `Boundary Points` to `Boundary`)
    - `More BFS` (relates `Boundaries` to `Plot`)
+   - `Less` (relates `Plots` to their inner rings)
  - Create `Parcels` from existing `Plots`.
  - Check too long `Boundary` segments (exceeding a given tolerance).
  - Use the 'Project Generator' plugin (a prerequisite) to load layers with configured forms and relations.
