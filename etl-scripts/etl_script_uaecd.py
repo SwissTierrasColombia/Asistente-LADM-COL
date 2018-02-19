@@ -25,8 +25,6 @@ import processing
 
 INPUT_DB_PATH = '/docs/tr/ai/insumos/uaecd/Capas_Sector_Piloto/GDB_Piloto.gpkg'
 REFACTORED_DB_PATH = '/docs/tr/ai/productos/uaecd/resultados_intermedios/refactored_02_14.gpkg'
-INPUT_PREDIO_INTERESADO_PATH = '/docs/tr/ai/insumos/uaecd/interesado_predio_full.ods'
-LAYER_PREDIO_INTERESADO = os.path.splitext(os.path.basename(INPUT_PREDIO_INTERESADO_PATH))[0]
 
 # PostgreSQL connection to schema with a LADM_COL model
 OUTPUT_DB_NAME = 'test'
@@ -179,7 +177,7 @@ def llenar_unidad_construccion():
 
 def llenar_interesado_natural():
     # Interesado Natural
-    params_refactor_interesado_natural = { 'INPUT' : '{input_db_path}|layername=Interesados'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'documento_identidad', 'type': 10, 'length': 10, 'precision': -1, 'expression': '"documento_identidad"'}, {'name': 'tipo_documento', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo_documento"'}, {'name': 'organo_emisor', 'type': 10, 'length': 20, 'precision': -1, 'expression': '"organo_emisor"'}, {'name': 'fecha_emision', 'type': 14, 'length': -1, 'precision': -1, 'expression': '"fecha_emision"'}, {'name': 'primer_apellido', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"primer_apellido"'}, {'name': 'primer_nombre', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"primer_nombre"'}, {'name': 'segundo_apellido', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"segundo_apellido"'}, {'name': 'segundo_nombre', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"segundo_nombre"'}, {'name': 'genero', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"genero"'}, {'name': 'nombre', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"nombre"'}, {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"TIPO_interesado"'}, {'name': 'p_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'UAECD_IntNatural'"}, {'name': 'p_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"OBJECTID"'}, {'name': 'agrupacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"agrupacion"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_interesado_natural" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
+    params_refactor_interesado_natural = { 'INPUT' : '{input_db_path}|layername=Interesado_Natural'.format(input_db_path=INPUT_DB_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'documento_identidad', 'type': 10, 'length': 10, 'precision': -1, 'expression': '"documento_identidad"'}, {'name': 'tipo_documento', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo_documento"'}, {'name': 'organo_emisor', 'type': 10, 'length': 20, 'precision': -1, 'expression': '"organo_emisor"'}, {'name': 'fecha_emision', 'type': 14, 'length': -1, 'precision': -1, 'expression': '"fecha_emision"'}, {'name': 'primer_apellido', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"primer_apellido"'}, {'name': 'primer_nombre', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"primer_nombre"'}, {'name': 'segundo_apellido', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"segundo_apellido"'}, {'name': 'segundo_nombre', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"segundo_nombre"'}, {'name': 'genero', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"genero"'}, {'name': 'nombre', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"nombre"'}, {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"TIPO_interesado"'}, {'name': 'p_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'UAECD_Interesado_Natural'"}, {'name': 'p_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"OBJECTID"'}, {'name': 'agrupacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"agrupacion"'}, {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'}, {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_interesado_natural" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
 
     input_uri_interesado_natural = '{refactored_db_path}|layername=R_interesado_natural'.format(refactored_db_path=REFACTORED_DB_PATH)
     db = asistente_ladm_col.get_db_connection()
@@ -227,7 +225,8 @@ def llenar_col_derecho(tipo='interesado_natural'):
     output_uri_col_derecho = db.get_uri_for_layer('col_derecho')[1]
     table_col_derecho = QgsVectorLayer(output_uri_col_derecho, "col_derecho", "postgres")
     asistente_ladm_col.qgis_utils.configureAutomaticField(table_col_derecho, "comienzo_vida_util_version", "now()")
-    asistente_ladm_col.qgis_utils.configureAutomaticField(table_col_derecho, "r_espacio_de_nombres", "'UAECD_Col_Derecho'")
+    espacio_de_nombres = 'UAECD_Col_Derecho_Natural' if tipo == 'interesado_natural' else 'UAECD_Col_Derecho_Juridico'
+    asistente_ladm_col.qgis_utils.configureAutomaticField(table_col_derecho, "r_espacio_de_nombres", "'{}'".format(espacio_de_nombres))
     rows = list()
 
     # Iterar tabla fuente de paso buscando CHIP y COD_LOTE en dicts Predio y Terreno
@@ -256,9 +255,18 @@ def llenar_col_derecho(tipo='interesado_natural'):
         print("There was an error adding {} rows to col_derecho...".format(len(rows)))
 
 
-def llenar_fuente_administrativa():
-    params_refactor_fuente_administrativa = { 'INPUT' : '{}'.format(INPUT_PREDIO_INTERESADO_PATH), 'FIELDS_MAPPING' : [{'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'}, {'name': 'texto', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"texto"'}, {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"Col_FuenteAdministrativa"'}, {'name': 'codigo_registral_transaccion', 'type': 10, 'length': 3, 'precision': -1, 'expression': '"codigo_registral_transaccion"'}, {'name': 'fecha_aceptacion', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fecha_aceptacion"'}, {'name': 'estado_disponibilidad', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'Disponible'"}, {'name': 'sello_inicio_validez', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"sello_inicio_validez"'}, {'name': 'tipo_principal', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo_principal"'}, {'name': 'fecha_grabacion', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fecha_grabacion"'}, {'name': 'fecha_entrega', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fecha_entrega"'}, {'name': 's_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': "'UAECD_col_fuente_admin'"}, {'name': 's_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"local_id"'}, {'name': 'oficialidad', 'type': 1, 'length': -1, 'precision': -1, 'expression': '"oficialidad"'}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_col_fte_adminis" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH) }
-    input_uri_col_fte_adminis = '{refactored_db_path}|layername=R_col_fte_adminis'.format(refactored_db_path=REFACTORED_DB_PATH)
+def llenar_fuente_administrativa(tipo='interesado_natural'):
+    # Hay dos tablas 'maestras', una para int Jurídicos, otra para Naturales
+    # Se usa el local_id para luego asociar la fuente al derecho
+    # Como ese local_id no es único para Jurídicos y Naturales, se usa la
+    # combinación con el namespace oara la identificación de cada registro
+    namespace = 'UAECD_fuente_administrativa_juridico' if tipo == 'interesado_juridico' else 'UAECD_fuente_administrativa_natural'
+    refactored_layer = 'R_col_fuente_administrativa_juridico' if tipo == 'interesado_juridico' else 'R_col_fuente_administrativa_natural'
+    layer_name = "Maestra_Juridicos" if tipo == 'interesado_juridico' else 'Maestra_Naturales'
+
+    params_refactor_fuente_administrativa = { 'FIELDS_MAPPING' : [{'name': 't_id', 'precision': 0, 'expression': '"t_id"', 'type': 4, 'length': -1}, {'name': 'texto', 'precision': -1, 'expression': '"texto"', 'type': 10, 'length': 255}, {'name': 'tipo', 'precision': -1, 'expression': '"Col_FuenteAdministrativa"', 'type': 10, 'length': 255}, {'name': 'codigo_registral_transaccion', 'precision': -1, 'expression': '"codigo_registral_transaccion"', 'type': 10, 'length': 3}, {'name': 'fecha_aceptacion', 'precision': -1, 'expression': '"fecha_aceptacion"', 'type': 16, 'length': -1}, {'name': 'estado_disponibilidad', 'precision': -1, 'expression': "'Disponible'", 'type': 10, 'length': 255}, {'name': 'sello_inicio_validez', 'precision': -1, 'expression': '"sello_inicio_validez"', 'type': 16, 'length': -1}, {'name': 'tipo_principal', 'precision': -1, 'expression': '"tipo_principal"', 'type': 10, 'length': 255}, {'name': 'fecha_grabacion', 'precision': -1, 'expression': '"fecha_grabacion"', 'type': 16, 'length': -1}, {'name': 'fecha_entrega', 'precision': -1, 'expression': '"fecha_entrega"', 'type': 16, 'length': -1}, {'name': 's_espacio_de_nombres', 'precision': -1, 'expression': "'{namespace}'".format(namespace=namespace), 'type': 10, 'length': 255}, {'name': 's_local_id', 'precision': -1, 'expression': '"OBJECTID"', 'type': 10, 'length': 255}, {'name': 'oficialidad', 'precision': -1, 'expression': '"oficialidad"', 'type': 1, 'length': -1}], 'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="{refactored_layer}" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH, refactored_layer=refactored_layer), 'INPUT' : '{input_db_path}|layername={layer_name}'.format(input_db_path=INPUT_DB_PATH, layer_name=layer_name) }
+
+    input_uri_col_fte_adminis = '{refactored_db_path}|layername={refactored_layer}'.format(refactored_db_path=REFACTORED_DB_PATH, refactored_layer=refactored_layer)
     db = asistente_ladm_col.get_db_connection()
     output_uri = db.get_uri_for_layer('col_fuenteadministrativa')[1]
     output_col_fte_adminis = QgsVectorLayer(output_uri, "col_fuenteadministrativa", "postgres")
@@ -276,8 +284,9 @@ def llenar_rrr_fuente():
     features_col_derecho = [f for f in output_col_derecho.getFeatures()]
     features = []
     for f in features_col_derecho:
-        # Match col_derecho and col_fuenteadministrativa by local_id
-        it_col_fuente_administrativa = output_col_fuente_administrativa.getFeatures('"s_local_id"=\'{}\''.format(f['r_local_id']))
+        # Match col_derecho and col_fuenteadministrativa by local_id - namespace
+        namespace = 'UAECD_fuente_administrativa_juridico' if f['r_espacio_de_nombres'] == 'UAECD_Col_Derecho_Juridico' else 'UAECD_fuente_administrativa_natural'
+        it_col_fuente_administrativa = output_col_fuente_administrativa.getFeatures('"s_local_id"=\'{}\' AND "s_espacio_de_nombres"=\'{}\''.format(f['r_local_id'], namespace))
         f_col_fuente_administrativa = QgsFeature()
         it_col_fuente_administrativa.nextFeature(f_col_fuente_administrativa)
         if f_col_fuente_administrativa.isValid():
@@ -286,11 +295,9 @@ def llenar_rrr_fuente():
             feature.setAttribute('rfuente', f_col_fuente_administrativa['t_id'])
             features.append(feature)
         else:
-            print("Col_derecho local id not found in fuente administrativa:",f['r_local_id'])
+            print("Col_derecho local id not found in fuente administrativa:", f['r_local_id'], f['r_espacio_de_nombres'])
 
-    output_rrr_fuente.startEditing()
-    output_rrr_fuente.addFeatures(features)
-    output_rrr_fuente.commitChanges()
+    output_rrr_fuente.dataProvider().addFeatures(features)
 
 
 llenar_punto_lindero()
@@ -307,5 +314,6 @@ llenar_interesado_natural()
 llenar_interesado_juridico()
 llenar_col_derecho('interesado_natural')
 llenar_col_derecho('interesado_juridico')
-llenar_fuente_administrativa()
+llenar_fuente_administrativa('interesado_juridico')
+llenar_fuente_administrativa('interesado_natural')
 llenar_rrr_fuente()
