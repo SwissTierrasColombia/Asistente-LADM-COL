@@ -18,7 +18,7 @@
 """
 from functools import partial
 
-from qgis.core import QgsEditFormConfig, QgsVectorLayerUtils, Qgis
+from qgis.core import QgsEditFormConfig, QgsVectorLayerUtils, Qgis, QgsWkbTypes
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
@@ -52,7 +52,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
     def prepare_parcel_creation(self):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, {
-            PLOT_TABLE: {'name':PLOT_TABLE, 'geometry':None},
+            PLOT_TABLE: {'name':PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             PARCEL_TABLE: {'name':PARCEL_TABLE, 'geometry':None},
             LA_BAUNIT_TYPE_TABLE: {'name':LA_BAUNIT_TYPE_TABLE, 'geometry':None}, # Domain for Parcel
             UEBAUNIT_TABLE: {'name':UEBAUNIT_TABLE, 'geometry':None}}, load=True)
