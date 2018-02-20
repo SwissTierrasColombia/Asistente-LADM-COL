@@ -21,11 +21,9 @@ script:
 before_deploy:
   - sudo apt-get -qq update
   - sudo apt-get install -y pyqt5-dev-tools qtchooser
-  - cp -r asistente_ladm_col Asistente-LADM_COL
-  - pushd Asistente-LADM_COL; make clean; make all; popd
-  - zip -r asistente_ladm_col.zip Asistente-LADM_COL -x Asistente-LADM_COL/tests/\*
+  - pushd asistente_ladm_col; make clean; make all; popd
+  - zip -r asistente_ladm_col.zip asistente_ladm_col -x asistente_ladm_col/tests/\*
     \*.pyc \*/__pycache__/\*
-  - rm -rf Asistente-LADM_COL
 deploy:
   skip_cleanup: true
   provider: releases
