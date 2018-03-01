@@ -31,6 +31,10 @@ from .gui.define_boundaries_cadastre_wizard import DefineBoundariesCadastreWizar
 from .gui.create_plot_cadastre_wizard import CreatePlotCadastreWizard
 from .gui.create_parcel_cadastre_wizard import CreateParcelCadastreWizard
 from .gui.create_party_cadastre_wizard import CreatePartyCadastreWizard
+from .gui.create_right_cadastre_wizard import CreateRightCadastreWizard
+from .gui.create_responsibility_cadastre_wizard import CreateResponsibilityCadastreWizard
+from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWizard
+from .gui.create_source_cadastre_wizard import CreateSourceCadastreWizard
 from .gui.settings_dialog import SettingsDialog
 from .utils.qgis_utils import QGISUtils
 
@@ -114,6 +118,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self._plot_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_plot_cad)
         self._parcel_baunit_cadastre_action.triggered.connect(self.show_wiz_parcel_cad)
         self._party_cadastre_action.triggered.connect(self.show_wiz_party_cad)
+        self._right_rrr_cadastre_action.triggered.connect(self.show_wiz_right_rrr_cad)
+        self._responsibility_rrr_cadastre_action.triggered.connect(self.show_wiz_responsibility_rrr_cad)
+        self._restriction_rrr_cadastre_action.triggered.connect(self.show_wiz_restriction_rrr_cad)
+        self._source_cadastre_action.triggered.connect(self.show_wiz_source_cad)
         self._too_long_boundary_cadastre_action.triggered.connect(self.check_too_long_segments)
         self._settings_action.triggered.connect(self.show_settings)
         self._about_action.triggered.connect(self.show_about_dialog)
@@ -320,6 +328,30 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_wiz_party_cad(self):
         wiz = CreatePartyCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_right_rrr_cad(self):
+        wiz = CreateRightCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_responsibility_rrr_cad(self):
+        wiz = CreateResponsibilityCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_restriction_rrr_cad(self):
+        wiz = CreateRestrictionCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_source_cad(self):
+        wiz = CreateSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     @_project_generator_required
