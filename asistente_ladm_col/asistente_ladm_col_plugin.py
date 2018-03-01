@@ -84,6 +84,8 @@ class AsistenteLADMCOLPlugin(QObject):
                                             self._responsibility_rrr_cadastre_action])
 
         self._source_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._cadastre_menu)
+        self._source_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._source_cadastre_menu)
+        self._source_cadastre_menu.addActions([self._source_cadastre_action])
 
         self._quality_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"), self._cadastre_menu)
         self._too_long_boundary_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check too long boundary segments"), self._quality_cadastre_menu)
