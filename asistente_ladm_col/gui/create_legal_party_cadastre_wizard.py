@@ -29,9 +29,9 @@ from ..config.table_mapping_config import (
     VIDA_UTIL_FIELD_BOUNDARY_TABLE
 )
 
-WIZARD_UI = get_ui_class('wiz_create_party_cadastre.ui')
+WIZARD_UI = get_ui_class('wiz_create_legal_party_cadastre.ui')
 
-class CreatePartyCadastreWizard(QWizard, WIZARD_UI):
+class CreateLegalPartyCadastreWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
