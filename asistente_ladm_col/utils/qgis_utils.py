@@ -25,7 +25,8 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
 					   QgsPalLayerSettings, QgsTextFormat, QgsTextBufferSettings,
                        QgsVectorLayerSimpleLabeling, QgsField, QgsLineSymbol,
                        QgsOuterGlowEffect, QgsDrawSourceEffect, QgsEffectStack,
-                       QgsInnerShadowEffect, QgsSimpleLineSymbolLayer)
+                       QgsInnerShadowEffect, QgsSimpleLineSymbolLayer,
+                       QgsMarkerSymbol, QgsSimpleMarkerSymbolLayer, QgsMapLayer)
 
 from qgis.PyQt.QtCore import (QObject, pyqtSignal, QCoreApplication, QVariant,
                               QSettings)
@@ -718,7 +719,40 @@ class QGISUtils(QObject):
             layer.setLabeling(QgsVectorLayerSimpleLabeling(label_settings))
             layer.setLabelsEnabled(True)
 
+    def set_point_error_symbol(self, layer):
+        if !(layer.isSpatial() and layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QgsWkbTypes.PointGeometry):
+            return None
+
+        draw_source_effect_properties = {'enabled': '1', 'opacity': '1', 'draw_mode': '2', 'blend_mode': '0'}
+        drop_shadow_effect_properties = {'enabled': '1', 'opacity': '1', 'draw_mode': '2', 'blend_mode': '0', 'offset_unit': 'MM', 'offset_angle': '135', 'offset_unit_scale': '3x:0,0,0,0,0,0', 'offset_distance': '2', 'blur_level': '10', 'color': '0,0,0,255'}
+
+        draw_source_effect_0 = QgsDrawSourceEffect().create(draw_source_effect_properties)
+        draw_source_effect_1 = draw_source_effect_0.clone()
+        drop_shadow_effect = QgsDropShadowEffect().create(drop_shadow_effect_properties)
+
+        effect_stack_0 = QgsEffectStack()
+        effect_stack_0.appendEffect(drop_shadow_effect)
+        effect_stack_0.appendEffect(draw_source_effect_0)
+        effect_stack_1 = QgsEffectStack()
+        effect_stack_1.appendEffect(draw_source_effect_1)
+
+        simple_point_symbol_layer_properties_0 = {'vertical_anchor_point': '1', 'outline_width_unit': 'MM', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width': '0.2', 'size': '3.4', 'angle': '0', 'joinstyle': 'bevel', 'outline_style': 'solid', 'scale_method': 'area', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'name': 'circle', 'horizontal_anchor_point': '1', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'color': '184,8,8,255', 'outline_color': '184,8,8,255', 'size_unit': 'MM', 'offset': '0,0'}
+        simple_point_symbol_layer_properties_1 = {'vertical_anchor_point': '1', 'outline_width_unit': 'MM', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width': '0.2', 'size': '2.4', 'angle': '34', 'joinstyle': 'bevel', 'outline_style': 'solid', 'scale_method': 'area', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'name': 'circle', 'horizontal_anchor_point': '1', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'color': '255,0,0,255', 'outline_color': '255,0,0,255', 'size_unit': 'MM', 'offset': '0,0'}
+        simple_point_symbol_layer_0 = QgsSimpleMarkerSymbolLayer().create(simple_point_symbol_layer_properties_0)
+        simple_point_symbol_layer_0.setPaintEffect(effect_stack_0)
+        simple_point_symbol_layer_1 = QgsSimpleMarkerSymbolLayer().create(simple_point_symbol_layer_properties_1)
+        simple_point_symbol_layer_1.setPaintEffect(effect_stack_1)
+
+        point_symbol = QgsMarkerSymbol()
+        point_symbol.appendSymbolLayer(simple_point_symbol_layer_0)
+        point_symbol.appendSymbolLayer(simple_point_symbol_layer_1)
+        layer.renderer().setSymbol(point_symbol)
+        self.layer_symbology_changed.emit(layer.id())
+
     def set_line_error_symbol(self, layer):
+        if !(layer.isSpatial() and layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QgsWkbTypes.LineGeometry):
+            return None
+
         outer_glow_effect_properties = {'blend_mode': '0', 'blur_level': '3', 'draw_mode': '2', 'color2': '0,255,0,255', 'discrete': '0', 'spread_unit_scale': '3x:0,0,0,0,0,0', 'color_type': '0', 'spread_unit': 'MM', 'spread': '2', 'color1': '0,0,255,255', 'rampType': 'gradient', 'single_color': '239,41,41,255', 'opacity': '0.5', 'enabled': '1'}
         draw_source_effect_properties = {'blend_mode': '0', 'draw_mode': '2', 'enabled': '1', 'opacity': '1'}
         inner_shadow_effect_properties = {'offset_angle': '135', 'blend_mode': '13', 'blur_level': '10', 'draw_mode': '2', 'color': '0,0,0,255', 'offset_distance': '2', 'offset_unit': 'MM', 'offset_unit_scale': '3x:0,0,0,0,0,0', 'opacity': '0.146', 'enabled': '1'}
