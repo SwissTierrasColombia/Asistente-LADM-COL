@@ -39,3 +39,5 @@ class CreateNaturalPartyCadastreWizard(QWizard, WIZARD_UI):
         self._plot_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
+    
+    
