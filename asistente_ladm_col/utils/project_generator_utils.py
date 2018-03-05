@@ -26,12 +26,12 @@ class ProjectGeneratorUtils(QObject):
 
     def load_layers(self, layer_list, db):
         if 'projectgenerator' in qgis.utils.plugins:
-            pg = qgis.utils.plugins["projectgenerator"]
-            generator = pg.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
+            projectgenerator = qgis.utils.plugins["projectgenerator"]
+            generator = projectgenerator.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
                 db.uri, "smart2", db.schema)
             layers = generator.layers(layer_list)
             relations = generator.relations(layers, layer_list)
             legend = generator.legend(layers)
-            pg.create_project(layers, relations, legend)
+            projectgenerator.create_project(layers, relations, legend)
         else:
             print("El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.")

@@ -16,7 +16,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual (0.0.4) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) [v2.0.1.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/2.0.1.1) y permite:
+La versión actual (0.0.5) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.0.0 y permite:
 
  - Capturar datos para el modelo LADM_COL v2.2.1.
  - Agregar puntos a las capas `Punto Lindero` y `Punto Levantamiento` desde archivo CSV.
