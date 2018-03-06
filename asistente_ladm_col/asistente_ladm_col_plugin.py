@@ -193,12 +193,9 @@ class AsistenteLADMCOLPlugin(QObject):
         @wraps(func_to_decorate)
         def decorated_function(inst, *args, **kwargs):
             # Check if Project Generator is installed and active, disable access if not
-            plugin_found = 'projectgenerator' in qgis.utils.plugins
-            plugin_version_right = False
-            if plugin_found:
-                plugin_version_right = inst.is_plugin_version_valid()
+            plugin_version_right = inst.is_plugin_version_valid()
 
-            if plugin_found and plugin_version_right:
+            if plugin_version_right:
                 func_to_decorate(inst)
             else:
                 widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
@@ -223,6 +220,9 @@ class AsistenteLADMCOLPlugin(QObject):
         return None
 
     def is_plugin_version_valid(self):
+        plugin_found = 'projectgenerator' in qgis.utils.plugins
+        if not plugin_found:
+            return False
         current_version = self.get_plugin_version(qgis.utils.plugins['projectgenerator'].plugin_dir)
         min_required_version = PROJECT_GENERATOR_MIN_REQUIRED_VERSION
         if current_version is None:
