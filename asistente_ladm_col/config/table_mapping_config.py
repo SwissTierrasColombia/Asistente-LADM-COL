@@ -9,6 +9,7 @@ CONSTRUCTION_TABLE = "construccion"
 CONTROL_POINT_TABLE = "puntocontrol"
 DEFAULT_EPSG = "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
+ERROR_LAYER_GROUP = "Validation errors"
 ID_FIELD = "t_id"
 PARCEL_TABLE = "predio"
 PLOT_TABLE = "terreno"

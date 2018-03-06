@@ -39,6 +39,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BOUNDARY_TABLE,
                                            DEFAULT_EPSG,
                                            DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+                                           ERROR_LAYER_GROUP,
                                            ID_FIELD,
                                            LAYERS_STYLE,
                                            LESS_TABLE,
@@ -664,7 +665,9 @@ class QGISUtils(QObject):
 
         error_layer.dataProvider().addFeatures(features)
         if error_layer.featureCount() > 0:
-            added_layer = QgsProject.instance().addMapLayer(error_layer)
+            group = self.get_error_layers_group()
+            added_layer = QgsProject.instance().addMapLayer(error_layer, False)
+            added_layer = group.addLayer(added_layer).layer()
             self.set_line_error_symbol(added_layer)
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -675,6 +678,15 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "All boundary segments are within the tolerance ({}m.)!").format(tolerance),
                 Qgis.Info)
+
+    def get_error_layers_group(self):
+        root = QgsProject.instance().layerTreeRoot()
+        group = root.findGroup(ERROR_LAYER_GROUP)
+        if group is None:
+            index = self.project_generator_utils.get_first_index_for_geometry_type(QgsWkbTypes.UnknownGeometry)
+            group = root.insertGroup(index if index is not None else -1, ERROR_LAYER_GROUP)
+
+        return group
 
     def get_too_long_segments_from_simple_line(self, line, tolerance):
         segments_info = list()
