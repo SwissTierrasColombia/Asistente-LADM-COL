@@ -26,7 +26,8 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsVectorLayerSimpleLabeling, QgsField, QgsLineSymbol,
                        QgsOuterGlowEffect, QgsDrawSourceEffect, QgsEffectStack,
                        QgsInnerShadowEffect, QgsSimpleLineSymbolLayer,
-                       QgsMarkerSymbol, QgsSimpleMarkerSymbolLayer, QgsMapLayer)
+                       QgsMarkerSymbol, QgsSimpleMarkerSymbolLayer, QgsMapLayer,
+                       QgsSingleSymbolRenderer)
 
 from qgis.PyQt.QtCore import (QObject, pyqtSignal, QCoreApplication, QVariant,
                               QSettings)
@@ -702,7 +703,7 @@ class QGISUtils(QObject):
             symbol = QgsLineSymbol.createSimple(symbol_def)
         elif layer.geometryType() == QgsWkbTypes.PointGeometry:
             symbol = QgsMarkerSymbol.createSimple(symbol_def)
-        layer.renderer().setSymbol(symbol)
+        layer.setRenderer(QgsSingleSymbolRenderer(symbol))
         self.layer_symbology_changed.emit(layer.id())
 
     def set_label(self, layer, label_def):
@@ -746,7 +747,7 @@ class QGISUtils(QObject):
         point_symbol = QgsMarkerSymbol()
         point_symbol.appendSymbolLayer(simple_point_symbol_layer_0)
         point_symbol.appendSymbolLayer(simple_point_symbol_layer_1)
-        layer.renderer().setSymbol(point_symbol)
+        layer.setRenderer(QgsSingleSymbolRenderer(point_symbol))
         self.layer_symbology_changed.emit(layer.id())
 
     def set_line_error_symbol(self, layer):
@@ -772,5 +773,5 @@ class QGISUtils(QObject):
 
         line_symbol = QgsLineSymbol()
         line_symbol.appendSymbolLayer(simple_line_symbol_layer)
-        layer.renderer().setSymbol(line_symbol)
+        layer.setRenderer(QgsSingleSymbolRenderer(line_symbol))
         self.layer_symbology_changed.emit(layer.id())
