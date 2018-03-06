@@ -20,6 +20,7 @@ class TestPlugin(unittest.TestCase):
 
     def test_plugin(self):
         global asistente_ladm_col
+        # la version de qgis no es la adecuada
         self.assertNotEqual(None, asistente_ladm_col.get_plugin_version(asistente_ladm_col.plugin_dir))
         #self.assertEqual(None, asistente_ladm_col.show_about_dialog())
         #self.assertEqual(None, asistente_ladm_col.installTranslator())
