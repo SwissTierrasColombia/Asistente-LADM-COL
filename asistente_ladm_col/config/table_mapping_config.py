@@ -1,6 +1,9 @@
 from qgis.core import QgsWkbTypes
 from qgis.PyQt.QtGui import QColor
 
+ADMINISTRATIVE_SOURCE_TABLE = "col_fuenteadministrativa"
+ADMINISTRATIVE_SOURCE_TYPE_TABLE = "col_fuenteadministrativatipo"
+AVAILABILITY_STATE_TABLE = "col_estadodisponibilidadtipo"
 BFS_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 BFS_TABLE_BOUNDARY_POINT_FIELD = "punto_puntolindero"
 BOUNDARY_POINT_TABLE = "puntolindero"
@@ -15,6 +18,8 @@ PARCEL_TABLE = "predio"
 PLOT_TABLE = "terreno"
 LA_BAUNIT_TYPE_TABLE = "la_baunittipo"
 LENGTH_FIELD_BOUNDARY_TABLE = "longitud"
+LEGAL_PARTY_TABLE = "interesado_juridico"
+LEGAL_PARTY_TYPE_TABLE = "col_interesadojuridicotipo"
 LESS_TABLE = "menos"
 LESS_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 LESS_TABLE_PLOT_FIELD = "eu_terreno"

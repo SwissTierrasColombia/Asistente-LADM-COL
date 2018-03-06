@@ -46,7 +46,6 @@ class CreateNaturalPartyCadastreWizard(QWizard, WIZARD_UI):
 
     def prepare_natural_party_creation(self):
         # Load layers
-        #self._natural_party_layer = self.qgis_utils.get_layer(self._db, NATURAL_PARTY_TABLE, load=True)
         res_layers = self.qgis_utils.get_layers(self._db, {
             NATURAL_PARTY_TABLE: {'name':NATURAL_PARTY_TABLE, 'geometry':None},
             PARTY_DOCUMENT_TYPE_TABLE: {'name':PARTY_DOCUMENT_TYPE_TABLE, 'geometry':None},
@@ -76,5 +75,3 @@ class CreateNaturalPartyCadastreWizard(QWizard, WIZARD_UI):
         self.iface.layerTreeView().setCurrentLayer(self._natural_party_layer)
         self._natural_party_layer.startEditing()
         self.iface.actionAddFeature().trigger()
-
-        #plot_ids = [f['t_id'] for f in self._natural_party_layer.selectedFeatures()]

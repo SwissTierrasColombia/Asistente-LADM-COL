@@ -15,7 +15,7 @@
   </property>
   <widget class="QWizardPage" name="wizardPage1">
    <property name="subTitle">
-    <string>How would you like to create sources?</string>
+    <string>How would you like to create administrative sources?</string>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>

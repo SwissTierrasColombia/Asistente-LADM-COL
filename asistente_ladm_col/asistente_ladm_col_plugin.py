@@ -35,7 +35,7 @@ from .gui.create_legal_party_cadastre_wizard import CreateLegalPartyCadastreWiza
 from .gui.create_right_cadastre_wizard import CreateRightCadastreWizard
 from .gui.create_responsibility_cadastre_wizard import CreateResponsibilityCadastreWizard
 from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWizard
-from .gui.create_source_cadastre_wizard import CreateSourceCadastreWizard
+from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.settings_dialog import SettingsDialog
 from .utils.qgis_utils import QGISUtils
 
@@ -91,8 +91,8 @@ class AsistenteLADMCOLPlugin(QObject):
                                             self._responsibility_rrr_cadastre_action])
 
         self._source_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._cadastre_menu)
-        self._source_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._source_cadastre_menu)
-        self._source_cadastre_menu.addActions([self._source_cadastre_action])
+        self._administrative_source_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Administrative Source"), self._source_cadastre_menu)
+        self._source_cadastre_menu.addActions([self._administrative_source_cadastre_action])
 
         self._quality_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"), self._cadastre_menu)
         self._too_long_boundary_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check too long boundary segments"), self._quality_cadastre_menu)
@@ -125,7 +125,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._right_rrr_cadastre_action.triggered.connect(self.show_wiz_right_rrr_cad)
         self._responsibility_rrr_cadastre_action.triggered.connect(self.show_wiz_responsibility_rrr_cad)
         self._restriction_rrr_cadastre_action.triggered.connect(self.show_wiz_restriction_rrr_cad)
-        self._source_cadastre_action.triggered.connect(self.show_wiz_source_cad)
+        self._administrative_source_cadastre_action.triggered.connect(self.show_wiz_administrative_source_cad)
         self._too_long_boundary_cadastre_action.triggered.connect(self.check_too_long_segments)
         self._settings_action.triggered.connect(self.show_settings)
         self._about_action.triggered.connect(self.show_about_dialog)
@@ -360,8 +360,8 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_project_generator_required
     @_db_connection_required
-    def show_wiz_source_cad(self):
-        wiz = CreateSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+    def show_wiz_administrative_source_cad(self):
+        wiz = CreateAdministrativeSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     @_project_generator_required
