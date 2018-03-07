@@ -96,7 +96,7 @@ class QGISUtils(QObject):
                 for layer_id, layer_info in missing_layers.items():
                     # This should update None objects to newly added layer objects
                     response_layers[layer_id] = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
-                    if response_layers[layer_id]:
+                    if response_layers[layer_id] is not None:
                         self.set_layer_style(response_layers[layer_id])
 
         return response_layers
