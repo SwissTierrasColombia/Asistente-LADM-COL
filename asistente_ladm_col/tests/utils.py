@@ -109,3 +109,9 @@ def import_projectgenerator():
         import projectgenerator
         pg = projectgenerator.classFactory(iface)
         qgis.utils.plugins["projectgenerator"] = pg
+
+def unload_projectgenerator():
+    global iface
+    plugin_found = "projectgenerator" in qgis.utils.plugins
+    if plugin_found:
+        del(qgis.utils.plugins["projectgenerator"])

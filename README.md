@@ -55,6 +55,13 @@ El comando para ejecutar las pruebas es:
 docker-compose run --rm qgis
 ```
 
+Importante ejecutar en el directorio raiz del repositorio!!!
+
+Si necesita recrear la imagen de docker puedes usar:
+```sh
+docker-compose build
+```
+
 ## Pasos para traducir al español
 
  + Si se han agregado archivos .py o .ui al código fuente, actualizar el archivo `asistente_ladm_col/i18n/Asistente-LADM_COL.pro`.
