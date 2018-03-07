@@ -17,6 +17,7 @@
  ***************************************************************************/
 """
 import qgis
+from qgis.core import QgsProject
 from qgis.PyQt.QtCore import QObject
 
 class ProjectGeneratorUtils(QObject):
@@ -35,3 +36,9 @@ class ProjectGeneratorUtils(QObject):
             projectgenerator.create_project(layers, relations, legend)
         else:
             print("El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.")
+
+    def get_first_index_for_geometry_type(self, geometry_type, group=QgsProject.instance().layerTreeRoot()):
+        if 'projectgenerator' in qgis.utils.plugins:
+            import projectgenerator
+            return projectgenerator.utils.qgis_utils.get_first_index_for_geometry_type(geometry_type, group)
+        return None
