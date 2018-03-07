@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>wiz_create_party_cadastre</class>
- <widget class="QWizard" name="wiz_create_party_cadastre">
+ <class>wiz_create_natural_party_cadastre</class>
+ <widget class="QWizard" name="wiz_create_natural_party_cadastre">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,11 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Create Party</string>
+   <string>Create Natural Party</string>
   </property>
   <widget class="QWizardPage" name="wizardPage1">
    <property name="subTitle">
-    <string>How would you like to create parties?</string>
+    <string>How would you like to create natural parties?</string>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
@@ -70,7 +70,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWizardPage" name="wizardPage2"/>
  </widget>
  <resources/>
  <connections/>
