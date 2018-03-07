@@ -3,10 +3,10 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2017-12-09
+        begin                : 2018-03-06
         git sha              : :%H$
-        copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
-        email                : gcarrillo@linuxmail.org
+        copyright            : (C) 2018 by Sergio Ramírez (Incige SAS)
+        email                : seralra96@gmail.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -47,10 +47,10 @@ class CreateNaturalPartyCadastreWizard(QWizard, WIZARD_UI):
     def prepare_natural_party_creation(self):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, {
-            NATURAL_PARTY_TABLE: {'name':NATURAL_PARTY_TABLE, 'geometry':None},
-            PARTY_DOCUMENT_TYPE_TABLE: {'name':PARTY_DOCUMENT_TYPE_TABLE, 'geometry':None},
-            PARTY_TYPE_TABLE: {'name':PARTY_TYPE_TABLE, 'geometry':None},
-            GENDER_TYPE_TABLE: {'name':GENDER_TYPE_TABLE, 'geometry':None}}, load=True)
+            NATURAL_PARTY_TABLE: {'name': NATURAL_PARTY_TABLE, 'geometry': None},
+            PARTY_DOCUMENT_TYPE_TABLE: {'name': PARTY_DOCUMENT_TYPE_TABLE, 'geometry': None},
+            PARTY_TYPE_TABLE: {'name': PARTY_TYPE_TABLE, 'geometry': None},
+            GENDER_TYPE_TABLE: {'name': GENDER_TYPE_TABLE, 'geometry': None}}, load=True)
 
         self._natural_party_layer = res_layers[NATURAL_PARTY_TABLE]
         if self._natural_party_layer is None:

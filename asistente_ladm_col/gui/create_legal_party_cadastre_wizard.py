@@ -3,10 +3,10 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2017-12-09
+        begin                : 2018-03-06
         git sha              : :%H$
-        copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
-        email                : gcarrillo@linuxmail.org
+        copyright            : (C) 2018 by Sergio Ramírez (Incige SAS)
+        email                : seralra96@gmail.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -45,8 +45,8 @@ class CreateLegalPartyCadastreWizard(QWizard, WIZARD_UI):
     def prepare_legal_party_creation(self):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, {
-            LEGAL_PARTY_TABLE: {'name':LEGAL_PARTY_TABLE, 'geometry':None},
-            LEGAL_PARTY_TYPE_TABLE: {'name':LEGAL_PARTY_TYPE_TABLE, 'geometry':None}}, load=True)
+            LEGAL_PARTY_TABLE: {'name': LEGAL_PARTY_TABLE, 'geometry': None},
+            LEGAL_PARTY_TYPE_TABLE: {'name': LEGAL_PARTY_TYPE_TABLE, 'geometry': None}}, load=True)
 
         self._legal_party_layer = res_layers[LEGAL_PARTY_TABLE]
         if self._legal_party_layer is None:

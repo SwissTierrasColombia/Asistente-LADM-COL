@@ -3,10 +3,10 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2017-12-09
+        begin                : 2018-03-06
         git sha              : :%H$
-        copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
-        email                : gcarrillo@linuxmail.org
+        copyright            : (C) 2018 by Sergio Ramírez (Incige SAS)
+        email                : seralra96@gmail.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -46,9 +46,9 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
     def prepare_administrative_source_creation(self):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, {
-            ADMINISTRATIVE_SOURCE_TABLE: {'name':ADMINISTRATIVE_SOURCE_TABLE, 'geometry':None},
-            ADMINISTRATIVE_SOURCE_TYPE_TABLE: {'name':ADMINISTRATIVE_SOURCE_TYPE_TABLE, 'geometry':None},
-            AVAILABILITY_STATE_TABLE: {'name':AVAILABILITY_STATE_TABLE, 'geometry':None}}, load=True)
+            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None},
+            ADMINISTRATIVE_SOURCE_TYPE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TYPE_TABLE, 'geometry': None},
+            AVAILABILITY_STATE_TABLE: {'name': AVAILABILITY_STATE_TABLE, 'geometry': None}}, load=True)
 
         self._administrative_source_layer = res_layers[ADMINISTRATIVE_SOURCE_TABLE]
         if self._administrative_source_layer is None:

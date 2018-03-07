@@ -3,10 +3,10 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2017-12-09
+        begin                : 2018-03-06
         git sha              : :%H$
-        copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
-        email                : gcarrillo@linuxmail.org
+        copyright            : (C) 2018 by Sergio Ramírez (Incige SAS)
+        email                : seralra96@gmail.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
