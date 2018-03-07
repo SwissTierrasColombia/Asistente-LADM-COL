@@ -22,7 +22,7 @@ RUN apt-get update && \
     wget \
     unzip
 
-RUN wget https://github.com/AgenciaImplementacion/projectgenerator/releases/download/2.0.1.1/projectgenerator.zip -O /tmp/projectgenerator.zip
+RUN wget https://github.com/opengisch/projectgenerator/releases/download/v3.0.0/projectgenerator-v3.0.0.zip -O /tmp/projectgenerator.zip
 RUN unzip /tmp/projectgenerator.zip -d /usr/share/qgis/python/plugins
 RUN rm -rf /tmp/projectgenerator.zip
 
