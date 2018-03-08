@@ -206,6 +206,23 @@ class QGISUtils(QObject):
                 return res
         return []
 
+    def get_overlapped_points(self, point_layer):
+        ret = []
+
+        set_point = set()
+
+        index = QgsSpatialIndex(point_layer.getFeatures())
+        for feature in point_layer.getFeatures():
+
+            if not feature.id() in set_point:
+                res = index.intersects(feature.geometry().boundingBox())
+
+                if len(res) > 1:
+                    set_point |= set(res)
+                    ret.append(res)
+
+        return ret
+
     def extractAsSingleSegments(self, geom):
         """
         Copied from:
@@ -628,6 +645,46 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return
 
+    def check_overlaps_boundary_points(self, db):
+        boundary_point_layer = self.get_layer(db, BOUNDARY_POINT_TABLE, load=True)
+        
+        features = []
+        
+        if boundary_point_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", 
+                                           "Table {} not found in DB!").format(BOUNDARY_POINT_TABLE),
+                Qgis.Warning)
+            return
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), "Overlapped boundary points", "memory")
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField("point_quantity", QVariant.Int)])
+        error_layer.updateFields()
+        
+        overlapping = self.get_overlapped_points(boundary_point_layer)
+
+        for items in overlapping:
+            feature = boundary_point_layer.getFeature(items[0])
+
+            point = feature.geometry()
+
+            new_feature = QgsVectorLayerUtils().createFeature(error_layer, point, {0: len(items)})
+            
+            features.append(new_feature)
+        
+        error_layer.dataProvider().addFeatures(features)
+        
+        if error_layer.featureCount() > 0:
+            added_layer = QgsProject.instance().addMapLayer(error_layer)
+            self.set_point_error_symbol(added_layer)
+            self.message_emitted.emit(
+            QCoreApplication.translate("QGISUtils",
+                                            "A memory layer with {} boundary points overlapped has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
+        else:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are not overlapped boundary points."),   Qgis.Info)
+
     def check_too_long_segments(self, db):
         tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
         features = []
@@ -740,3 +797,10 @@ class QGISUtils(QObject):
         line_symbol.appendSymbolLayer(simple_line_symbol_layer)
         layer.renderer().setSymbol(line_symbol)
         self.layer_symbology_changed.emit(layer.id())
+        
+    def set_point_error_symbol(self, layer):
+        symbol_def = {'name': 'diamond', 'color': '#ff0000', 'size': '3'}
+        point_symbol_layer = QgsMarkerSymbol.createSimple(symbol_def)
+        layer.renderer().setSymbol(point_symbol_layer)
+        self.layer_symbology_changed.emit(layer.id())
+        

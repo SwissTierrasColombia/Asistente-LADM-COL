@@ -87,7 +87,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._quality_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"), self._cadastre_menu)
         self._too_long_boundary_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check too long boundary segments"), self._quality_cadastre_menu)
-        self._quality_cadastre_menu.addActions([self._too_long_boundary_cadastre_action])
+        self._overlaps_boundary_points_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check overlaps in boundary points"), self._quality_cadastre_menu)
+        self._quality_cadastre_menu.addActions([self._too_long_boundary_cadastre_action,
+                                                self._overlaps_boundary_points_cadastre_action])
 
         self._cadastre_menu.addMenu(self._spatial_unit_cadastre_menu)
         self._cadastre_menu.addMenu(self._baunit_cadastre_menu)
@@ -113,6 +115,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._parcel_baunit_cadastre_action.triggered.connect(self.show_wiz_parcel_cad)
         self._party_cadastre_action.triggered.connect(self.show_wiz_party_cad)
         self._too_long_boundary_cadastre_action.triggered.connect(self.check_too_long_segments)
+        self._overlaps_boundary_points_cadastre_action.triggered.connect(self.check_overlaps_boundary_points)
         self._settings_action.triggered.connect(self.show_settings)
         self._about_action.triggered.connect(self.show_about_dialog)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
@@ -324,6 +327,9 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def check_too_long_segments(self):
         self.qgis_utils.check_too_long_segments(self.get_db_connection())
+
+    def check_overlaps_boundary_points(self):
+        self.qgis_utils.check_overlaps_boundary_points(self.get_db_connection())
 
     def show_about_dialog(self):
         self.msg = QMessageBox()
