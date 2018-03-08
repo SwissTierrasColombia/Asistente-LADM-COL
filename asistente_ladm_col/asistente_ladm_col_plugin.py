@@ -37,6 +37,7 @@ from .gui.create_responsibility_cadastre_wizard import CreateResponsibilityCadas
 from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWizard
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
+from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.settings_dialog import SettingsDialog
 from .utils.qgis_utils import QGISUtils
 
@@ -111,6 +112,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._menu.addMenu(self._cadastre_menu)
         self._menu.addSeparator()
+        self._load_layers_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"), self.iface.mainWindow())
+        self._menu.addAction(self._load_layers_action)
+        self._menu.addSeparator()
         self._settings_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
         self._help_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"), self.iface.mainWindow())
         self._about_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"), self.iface.mainWindow())
@@ -131,6 +135,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._administrative_source_cadastre_action.triggered.connect(self.show_wiz_administrative_source_cad)
         self._spatial_source_cadastre_action.triggered.connect(self.show_wiz_spatial_source_cad)
         self._too_long_boundary_cadastre_action.triggered.connect(self.check_too_long_segments)
+        self._load_layers_action.triggered.connect(self.load_layers_from_project_generator)
         self._settings_action.triggered.connect(self.show_settings)
         self._about_action.triggered.connect(self.show_about_dialog)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
@@ -298,6 +303,10 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_plugin_manager(self):
         self.iface.actionManagePlugins().trigger()
+
+    def load_layers_from_project_generator(self):
+        dlg = DialogLoadLayers(self.iface)
+        dlg.exec_()
 
     def get_settings_dialog(self):
         if self._settings_dialog is None:
