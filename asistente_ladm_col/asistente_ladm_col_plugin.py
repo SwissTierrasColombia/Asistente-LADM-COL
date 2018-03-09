@@ -304,8 +304,10 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_plugin_manager(self):
         self.iface.actionManagePlugins().trigger()
 
+    @_project_generator_required
+    @_db_connection_required
     def load_layers_from_project_generator(self):
-        dlg = DialogLoadLayers(self.iface)
+        dlg = DialogLoadLayers(self.iface, self.get_db_connection())
         dlg.exec_()
 
     def get_settings_dialog(self):

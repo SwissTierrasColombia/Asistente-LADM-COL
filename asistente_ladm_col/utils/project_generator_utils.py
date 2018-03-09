@@ -35,3 +35,12 @@ class ProjectGeneratorUtils(QObject):
             projectgenerator.create_project(layers, relations, legend)
         else:
             print("El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.")
+
+    def get_tables_info_without_ignored_tables(self, db):
+        if 'projectgenerator' in qgis.utils.plugins:
+            projectgenerator = qgis.utils.plugins["projectgenerator"]
+            generator = projectgenerator.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
+                db.uri, "smart2", db.schema)
+            return generator.get_tables_info_without_ignored_tables()
+        else:
+            print("El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.")

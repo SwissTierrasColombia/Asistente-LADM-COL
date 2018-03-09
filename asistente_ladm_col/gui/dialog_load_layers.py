@@ -21,21 +21,24 @@ import os
 from qgis.core import QgsProject, QgsVectorLayer, Qgis
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QSettings
-from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
+from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
 from ..utils import get_ui_class
 from ..utils.qt_utils import make_file_selector
+from ..utils.project_generator_utils import ProjectGeneratorUtils
 
 DIALOG_UI = get_ui_class('dlg_load_layers.ui')
 
 class DialogLoadLayers(QDialog, DIALOG_UI):
-    def __init__(self, iface, parent=None):
+    def __init__(self, iface, db, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
-        self._db = None
+        self._db = db
+        self.models_tree = {}
+        self.project_generator_utils = ProjectGeneratorUtils()
 
         self.cbo_select_predefined_tables.clear()
         self.cbo_select_predefined_tables.addItem(self.tr('Spatial data'), 'spatial_data')
@@ -48,17 +51,48 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         # Set connections
         self.buttonBox.accepted.connect(self.accepted)
 
+        # SIGNALS-SLOTS
+        self.chk_show_domains.toggled.connect(self.show_domains_changed)
+
         # Trigger some default behaviours
         self.restore_settings()
 
     def load_available_layers(self):
-        # Call project generator tabls_info and fill the layer tree
-        pass
+        # Call project generator tables_info and fill the layer tree
+        tables_info = self.project_generator_utils.get_tables_info_without_ignored_tables(self._db)
+        self.models_tree = {}
+        for record in tables_info:
+            if record['model'] not in self.models_tree:
+                self.models_tree[record['model']] = {
+                    record['table_alias'] or record['tablename']: record}
+            else:
+                self.models_tree[record['model']][record['table_alias'] or record['tablename']] = record
+
+        self.update_available_layers(self.chk_show_domains.isChecked())
+
+    def update_available_layers(self, show_domains=False):
+        self.trw_layers.clear()
+        sorted_models = sorted(self.models_tree.keys())
+        for model in sorted_models:
+            children = []
+            model_item = QTreeWidgetItem([model])
+            sorted_tables = sorted(self.models_tree[model].keys())
+            for table in sorted_tables:
+                if self.models_tree[model][table]['is_domain'] and not show_domains:
+                    continue
+
+                table_item = QTreeWidgetItem([table])
+                table_item.setData(0, Qt.UserRole, self.models_tree[model][table])
+                children.append(table_item)
+
+            model_item.addChildren(children)
+            self.trw_layers.addTopLevelItem(model_item)
+
+    def show_domains_changed(self, state):
+        self.update_available_layers(self.chk_show_domains.isChecked())
 
     def accepted(self):
         print("Accepted!")
-        self._db = None # Reset db connection
-        self._db = self.get_db_connection()
         self.save_settings()
 
     def save_settings(self):
