@@ -23,7 +23,8 @@ from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QSettings
 from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
 
-from ..config.table_mapping_config import DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE
+from ..config.table_mapping_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+                                           DEFAULT_NAME_SPACE_PREFIX)
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
 from ..utils import get_ui_class
@@ -105,6 +106,14 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/gpkg/dbfile', dict_conn['dbfile'])
 
         settings.setValue('Asistente-LADM_COL/quality/too_long_tolerance', int(self.txt_too_long_tolerance.text()) or DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)
+
+        settings.setValue('Asistente-LADM_COL/automatic_values/local_id', self.local_id_checkbox.isChecked())
+        if self.name_space_collapsible_group_box.isChecked() is True:
+            settings.setValue('Asistente-LADM_COL/automatic_values/namespace', self.txt_name_space.text())
+            print('graba espacio de nombres')
+        else:
+            settings.setValue('Asistente-LADM_COL/automatic_values/namespace', DEFAULT_NAME_SPACE_PREFIX)
+            print('graba espacio de nombres defecto')
 
     def restore_settings(self):
         # Restore QSettings
