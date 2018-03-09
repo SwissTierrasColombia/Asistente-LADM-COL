@@ -31,7 +31,7 @@ from ..config.table_mapping_config import (
     LEGAL_PARTY_TABLE,
     PARCEL_TABLE,
     LA_BAUNIT_TABLE,
-    LA_GROUP_PARTY,
+    LA_GROUP_PARTY_TABLE,
     VIDA_UTIL_FIELD_BOUNDARY_TABLE
 )
 
@@ -57,20 +57,66 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
             LEGAL_PARTY_TABLE:{'name':LEGAL_PARTY_TABLE, 'geometry':None},
             PARCEL_TABLE:{'name':PARCEL_TABLE, 'geometry':None},
             LA_BAUNIT_TABLE:{'name':LA_BAUNIT_TABLE, 'geometry':None},
-            LA_GROUP_PARTY:{'name':LA_GROUP_PARTY, 'geometry':None}}, load=True)
+            LA_GROUP_PARTY_TABLE:{'name':LA_GROUP_PARTY_TABLE, 'geometry':None}}, load=True)
 
         self._right_layer = res_layers[RIGHT_TABLE]
         if self._right_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateAdministrativeSourceCadastreWizard",
-                                           "Administrative Source layer couldn't be found..."),
+                QCoreApplication.translate("CreateRightCadastreWizard",
+                                           "Right layer couldn't be found..."),
                 Qgis.Warning)
             return
+
+        self._natural_party_layer = res_layers[NATURAL_PARTY_TABLE]
+        if self._natural_party_layer is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateRigthCadastreWizard",
+                                           "Natural Party layer couldn't be found..."),
+                Qgis.Warning)
+            return
+
+        self._legal_party_layer = res_layers[LEGAL_PARTY_TABLE]
+        if self._legal_party_layer is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateRigthCadastreWizard",
+                                           "Legal Party layer couldn't be found..."),
+                Qgis.Warning)
+            return
+
+        self._parcel_layer = res_layers[PARCEL_TABLE]
+        if self._parcel_layer is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateRigthCadastreWizard",
+                                           "Parcel layer couldn't be found..."),
+                Qgis.Warning)
+            return
+
+        self._la_baunit_layer = res_layers[LA_BAUNIT_TABLE]
+        if self._la_baunit_layer is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateRigthCadastreWizard",
+                                           "LA_Baunit layer couldn't be found..."),
+                Qgis.Warning)
+            return
+
+        self._la_group_party_layer = res_layers[LA_GROUP_PARTY_TABLE]
+        if self._la_group_party_layer is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateRigthCadastreWizard",
+                                           "LA_Group Party layer couldn't be found..."),
+                Qgis.Warning)
+            return
+
 
         # Configure automatic fields
         self.qgis_utils.configureAutomaticField(self._right_layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
 
         # Configure relation fields
+        self._natural_party_layer.setDisplayExpression('"documento_identidad"+\' \'+"primer_apellido"+\' \'+"segundo_apellido"+\' \'+"primer_nombre"+\' \'+"segundo_nombre"')
+        self._legal_party_layer.setDisplayExpression('"numero_nit"+\' \'+"razon_social"')
+        self._parcel_layer.setDisplayExpression('"nupre"+\' \'+"fmi"+\' \'+"nombre"')
+        self._la_baunit_layer.setDisplayExpression('"t_id"+\' \'+"nombre"+\' \'+"tipo"')
+        self._la_group_party_layer.setDisplayExpression('"t_id"+\' \'+"nombre"')
 
         # Don't suppress (i.e., show) feature form
         form_config = self._right_layer.editFormConfig()
