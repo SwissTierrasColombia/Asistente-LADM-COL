@@ -307,7 +307,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def load_layers_from_project_generator(self):
-        dlg = DialogLoadLayers(self.iface, self.get_db_connection())
+        dlg = DialogLoadLayers(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
     def get_settings_dialog(self):

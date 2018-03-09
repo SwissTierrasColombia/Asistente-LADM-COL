@@ -26,17 +26,18 @@ from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
 from ..utils import get_ui_class
-from ..utils.qt_utils import make_file_selector
 from ..utils.project_generator_utils import ProjectGeneratorUtils
+from ..utils.qt_utils import make_file_selector
 
 DIALOG_UI = get_ui_class('dlg_load_layers.ui')
 
 class DialogLoadLayers(QDialog, DIALOG_UI):
-    def __init__(self, iface, db, parent=None):
+    def __init__(self, iface, db, qgis_utils, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
         self._db = db
+        self.qgis_utils = qgis_utils
         self.models_tree = {}
         self.project_generator_utils = ProjectGeneratorUtils()
 
@@ -94,6 +95,14 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
     def accepted(self):
         print("Accepted!")
         self.save_settings()
+
+        # Load selected layers
+        layers_dict = {}
+        for item in self.trw_layers.selectedItems():
+            data = item.data(0, Qt.UserRole)
+            layers_dict[data['tablename']] = {'name': data['tablename'], 'geometry': None}
+
+        self.qgis_utils.get_layers(self._db, layers_dict, load=True)
 
     def save_settings(self):
         # Save QSettings
