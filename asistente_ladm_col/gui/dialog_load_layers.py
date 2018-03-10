@@ -23,6 +23,11 @@ from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QSettings
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
+from ..config.table_mapping_config import (
+    TABLE_PROP_ASSOCIATION,
+    TABLE_PROP_DOMAIN,
+    TABLE_PROP_STRUCTURE
+)
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
 from ..utils import get_ui_class
@@ -53,7 +58,9 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
 
         # SIGNALS-SLOTS
-        self.chk_show_domains.toggled.connect(self.show_domains_changed)
+        self.chk_show_domains.toggled.connect(self.show_table_type_changed)
+        self.chk_show_structures.toggled.connect(self.show_table_type_changed)
+        self.chk_show_associations.toggled.connect(self.show_table_type_changed)
 
         # Trigger some default behaviours
         self.restore_settings()
@@ -71,7 +78,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
 
         self.update_available_layers(self.chk_show_domains.isChecked())
 
-    def update_available_layers(self, show_domains=False):
+    def update_available_layers(self, show_domains=False, show_structures=False, show_associations=False):
         self.trw_layers.clear()
         sorted_models = sorted(self.models_tree.keys())
         for model in sorted_models:
@@ -79,7 +86,9 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
             model_item = QTreeWidgetItem([model])
             sorted_tables = sorted(self.models_tree[model].keys())
             for table in sorted_tables:
-                if self.models_tree[model][table]['is_domain'] and not show_domains:
+                if self.models_tree[model][table]['is_domain'] == TABLE_PROP_DOMAIN and not show_domains \
+                   or self.models_tree[model][table]['is_domain'] == TABLE_PROP_STRUCTURE and not show_structures \
+                   or self.models_tree[model][table]['is_domain'] == TABLE_PROP_ASSOCIATION and not show_associations:
                     continue
 
                 table_item = QTreeWidgetItem([table])
@@ -89,8 +98,8 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
             model_item.addChildren(children)
             self.trw_layers.addTopLevelItem(model_item)
 
-    def show_domains_changed(self, state):
-        self.update_available_layers(self.chk_show_domains.isChecked())
+    def show_table_type_changed(self, state):
+        self.update_available_layers(self.chk_show_domains.isChecked(), self.chk_show_structures.isChecked(), self.chk_show_associations.isChecked())
 
     def accepted(self):
         print("Accepted!")

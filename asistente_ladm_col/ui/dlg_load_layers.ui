@@ -66,30 +66,45 @@
      </item>
     </widget>
    </item>
-   <item row="5" column="0">
+   <item row="2" column="0" colspan="2">
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QCheckBox" name="chk_show_domains">
+      <property name="text">
+       <string>Show domain tables</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="chk_show_structures">
+      <property name="text">
+       <string>Show structures</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="chk_show_associations">
+      <property name="text">
+       <string>Show associations</string>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item row="3" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Select predefined tables for</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="3" column="1">
     <widget class="QComboBox" name="cbo_select_predefined_tables"/>
    </item>
-   <item row="6" column="0" colspan="2">
+   <item row="4" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QCheckBox" name="chk_show_domains">
-     <property name="text">
-      <string>Show domain tables</string>
      </property>
     </widget>
    </item>
