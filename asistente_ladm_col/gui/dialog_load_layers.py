@@ -18,9 +18,10 @@
 """
 import os
 
-from qgis.core import QgsProject, QgsVectorLayer, Qgis
+from qgis.core import QgsProject, QgsVectorLayer, Qgis, QgsWkbTypes
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import Qt, QSettings
+from qgis.PyQt.QtCore import Qt, QSettings, QCoreApplication
+from qgis.PyQt.QtGui import QBrush, QFont
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
 from ..config.table_mapping_config import (
@@ -74,16 +75,30 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
                 self.models_tree[record['model']] = {
                     record['table_alias'] or record['tablename']: record}
             else:
-                self.models_tree[record['model']][record['table_alias'] or record['tablename']] = record
+                if (record['table_alias'] or record['tablename']) in self.models_tree[record['model']]: # Multiple geometry columns
+                    # First geometry
+                    tmp_record = self.models_tree[record['model']][record['table_alias'] or record['tablename']]
+                    del self.models_tree[record['model']][record['table_alias'] or record['tablename']]
+                    tmp_name = "{} ({})".format((tmp_record['table_alias'] or tmp_record['tablename']), tmp_record['geometry_column'])
+                    self.models_tree[record['model']][tmp_name] = tmp_record
 
-        self.update_available_layers(self.chk_show_domains.isChecked())
+                    # Second geometry
+                    tmp_name = "{} ({})".format((record['table_alias'] or record['tablename']), record['geometry_column'])
+                    self.models_tree[record['model']][tmp_name] = record
+                else:
+                    self.models_tree[record['model']][record['table_alias'] or record['tablename']] = record
 
-    def update_available_layers(self, show_domains=False, show_structures=False, show_associations=False):
+        self.update_available_layers(self.chk_show_domains.isChecked(),
+                                     self.chk_show_structures.isChecked(),
+                                     self.chk_show_associations.isChecked())
+
+    def update_available_layers(self, show_domains=False, show_structures=False, show_associations=False, top_level_items_expanded_info=[]):
         self.trw_layers.clear()
         sorted_models = sorted(self.models_tree.keys())
         for model in sorted_models:
             children = []
             model_item = QTreeWidgetItem([model])
+
             sorted_tables = sorted(self.models_tree[model].keys())
             for table in sorted_tables:
                 if self.models_tree[model][table]['is_domain'] == TABLE_PROP_DOMAIN and not show_domains \
@@ -92,14 +107,39 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
                     continue
 
                 table_item = QTreeWidgetItem([table])
+                current_table_info = self.models_tree[model][table]
                 table_item.setData(0, Qt.UserRole, self.models_tree[model][table])
+                geometry_type = QgsWkbTypes().geometryType(QgsWkbTypes().parseType(current_table_info['type'])) if current_table_info['type'] else None
+                if self.qgis_utils.get_layer_from_layer_tree(current_table_info['tablename'],
+                         self._db.schema,
+                         geometry_type) is not None:
+                    table_item.setText(0, table + QCoreApplication.translate("DialogLoadLayers",
+                                               " [already loaded]"))
+                    table_item.setData(0, Qt.ForegroundRole, QBrush(Qt.lightGray))
+                    table_item.setFlags(Qt.ItemIsEnabled) # Not selectable
+                else: # Laye not in QGIS Layer Tree
+                    if not current_table_info['is_domain']: # This is a class
+                        font = QFont()
+                        font.setBold(True)
+                        table_item.setData(0, Qt.FontRole, font)
+
                 children.append(table_item)
 
             model_item.addChildren(children)
             self.trw_layers.addTopLevelItem(model_item)
 
+        # Set expand taking previous states into account
+        for i in range(self.trw_layers.topLevelItemCount()):
+            self.trw_layers.topLevelItem(i).setExpanded(top_level_items_expanded_info[i] if top_level_items_expanded_info else True)
+
     def show_table_type_changed(self, state):
-        self.update_available_layers(self.chk_show_domains.isChecked(), self.chk_show_structures.isChecked(), self.chk_show_associations.isChecked())
+        top_level_items_expanded_info = []
+        for i in range(self.trw_layers.topLevelItemCount()):
+            top_level_items_expanded_info.append(self.trw_layers.topLevelItem(i).isExpanded())
+        self.update_available_layers(self.chk_show_domains.isChecked(),
+                                     self.chk_show_structures.isChecked(),
+                                     self.chk_show_associations.isChecked(),
+                                     top_level_items_expanded_info)
 
     def accepted(self):
         print("Accepted!")
