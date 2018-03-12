@@ -27,12 +27,7 @@ from ..config.table_mapping_config import (
     GENDER_TYPE_TABLE,
     NATURAL_PARTY_TABLE,
     PARTY_DOCUMENT_TYPE_TABLE,
-    PARTY_TYPE_TABLE,
-    VIDA_UTIL_FIELD_BOUNDARY_TABLE,
-    NAME_SPACE_FIELD,
-    LOCAL_ID_FIELD,
-    DEFAULT_NAME_SPACE_PREFIX
-)
+    PARTY_TYPE_TABLE)
 
 WIZARD_UI = get_ui_class('wiz_create_natural_party_cadastre.ui')
 
@@ -64,13 +59,7 @@ class CreateNaturalPartyCadastreWizard(QWizard, WIZARD_UI):
             return
 
         # Configure automatic fields
-        self.qgis_utils.configureAutomaticField(self._natural_party_layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
-        local_id = QSettings().value('Asistente-LADM_COL/automatic_values/local_id', True)
-        if local_id is True:
-            self.qgis_utils.configureAutomaticField(self._natural_party_layer, LOCAL_ID_FIELD, '"t_id"')
-
-        name_space = str(QSettings().value('Asistente-LADM_COL/automatic_values/namespace', DEFAULT_NAME_SPACE_PREFIX))
-        self.qgis_utils.configureAutomaticField(self._natural_party_layer, NAME_SPACE_FIELD, "'{}'".format(name_space))
+        self.qgis_utils.set_automatic_fields(self._natural_party_layer, "p")
 
         # Don't suppress (i.e., show) feature form
         form_config = self._natural_party_layer.editFormConfig()

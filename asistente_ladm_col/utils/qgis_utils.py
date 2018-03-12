@@ -45,10 +45,12 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            LESS_TABLE,
                                            LESS_TABLE_BOUNDARY_FIELD,
                                            LESS_TABLE_PLOT_FIELD,
+                                           LOCAL_ID_FIELD,
                                            PLOT_TABLE,
                                            MOREBFS_TABLE_PLOT_FIELD,
                                            MOREBFS_TABLE_BOUNDARY_FIELD,
                                            MORE_BOUNDARY_FACE_STRING_TABLE,
+                                           NAMESPACE_FIELD,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
                                            VIDA_UTIL_FIELD_BOUNDARY_TABLE)
 
@@ -787,3 +789,15 @@ class QGISUtils(QObject):
         line_symbol.appendSymbolLayer(simple_line_symbol_layer)
         layer.setRenderer(QgsSingleSymbolRenderer(line_symbol))
         self.layer_symbology_changed.emit(layer.id())
+
+    def set_automatic_fields(self, layer, prefix):
+        self.configureAutomaticField(layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
+        layer_name = layer.name()
+
+        if QSettings().value('Asistente-LADM_COL/automatic_values/local_id', True):
+            self.configureAutomaticField(layer, prefix + LOCAL_ID_FIELD, '"{}"'.format(ID_FIELD))
+
+        if QSettings().value('Asistente-LADM_COL/automatic_values/namespace_check', True):
+            namespace = str(QSettings().value('Asistente-LADM_COL/automatic_values/namespace', ""))
+            self.configureAutomaticField(layer, prefix + NAMESPACE_FIELD, ("'{}".format(namespace) + "_{}'".format(layer_name)).upper())
+
