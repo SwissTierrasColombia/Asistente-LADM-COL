@@ -108,7 +108,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         settings.setValue('Asistente-LADM_COL/automatic_values/local_id', self.local_id_checkbox.isChecked())
         settings.setValue('Asistente-LADM_COL/automatic_values/namespace_check', self.name_space_collapsible_group_box.isChecked())
-        if self.name_space_collapsible_group_box.isChecked() is True:
+        if self.name_space_collapsible_group_box.isChecked():
             settings.setValue('Asistente-LADM_COL/automatic_values/namespace', self.txt_name_space.text())
 
 

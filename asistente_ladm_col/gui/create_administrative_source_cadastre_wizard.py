@@ -59,7 +59,7 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
             return
 
         # Configure automatic fields
-        self.qgis_utils.configureAutomaticField(self._administrative_source_layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
+        self.qgis_utils.set_automatic_fields(self._administrative_source_layer, "s")
 
         # Don't suppress (i.e., show) feature form
         form_config = self._administrative_source_layer.editFormConfig()
