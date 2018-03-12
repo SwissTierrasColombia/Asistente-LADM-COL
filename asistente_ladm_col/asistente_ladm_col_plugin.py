@@ -112,12 +112,12 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._menu.addMenu(self._cadastre_menu)
         self._menu.addSeparator()
-        self._load_layers_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"), self.iface.mainWindow())
+        self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"), self.iface.mainWindow())
         self._menu.addAction(self._load_layers_action)
         self._menu.addSeparator()
-        self._settings_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
-        self._help_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"), self.iface.mainWindow())
-        self._about_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"), self.iface.mainWindow())
+        self._settings_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
+        self._help_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"), self.iface.mainWindow())
+        self._about_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"), self.iface.mainWindow())
         self._menu.addActions([self._settings_action,
                                self._help_action,
                                self._about_action])

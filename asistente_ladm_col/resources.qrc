@@ -1,5 +1,12 @@
 <RCC>
-  <qresource prefix="Asistente-LADM_COL">
-    <file>images/icon.png</file>
-  </qresource>
+    <qresource prefix="/Asistente-LADM_COL">
+        <file>images/icon.png</file>
+        <file>images/lines.png</file>
+        <file>images/points.png</file>
+        <file>images/polygons.png</file>
+        <file>images/associations.png</file>
+        <file>images/structures.png</file>
+        <file>images/tables.png</file>
+        <file>images/domains.png</file>
+    </qresource>
 </RCC>

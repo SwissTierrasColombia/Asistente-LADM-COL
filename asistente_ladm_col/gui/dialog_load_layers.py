@@ -21,7 +21,7 @@ import os
 from qgis.core import QgsProject, QgsVectorLayer, Qgis, QgsWkbTypes
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QSettings, QCoreApplication
-from qgis.PyQt.QtGui import QBrush, QFont
+from qgis.PyQt.QtGui import QBrush, QFont, QIcon
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
 from ..config.table_mapping_config import (
@@ -35,6 +35,8 @@ from ..utils import get_ui_class
 from ..utils.project_generator_utils import ProjectGeneratorUtils
 from ..utils.qt_utils import make_file_selector
 
+from ..resources_rc import *
+
 DIALOG_UI = get_ui_class('dlg_load_layers.ui')
 
 class DialogLoadLayers(QDialog, DIALOG_UI):
@@ -46,6 +48,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.qgis_utils = qgis_utils
         self.models_tree = {}
         self.project_generator_utils = ProjectGeneratorUtils()
+        self.icon_names = ['points', 'lines', 'polygons', 'tables', 'domains', 'structures', 'associations']
 
         self.cbo_select_predefined_tables.clear()
         self.cbo_select_predefined_tables.addItem(self.tr('Spatial data'), 'spatial_data')
@@ -101,15 +104,18 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
 
             sorted_tables = sorted(self.models_tree[model].keys())
             for table in sorted_tables:
-                if self.models_tree[model][table]['is_domain'] == TABLE_PROP_DOMAIN and not show_domains \
-                   or self.models_tree[model][table]['is_domain'] == TABLE_PROP_STRUCTURE and not show_structures \
-                   or self.models_tree[model][table]['is_domain'] == TABLE_PROP_ASSOCIATION and not show_associations:
+                current_table_info = self.models_tree[model][table]
+                if current_table_info['is_domain'] == TABLE_PROP_DOMAIN and not show_domains \
+                   or current_table_info['is_domain'] == TABLE_PROP_STRUCTURE and not show_structures \
+                   or current_table_info['is_domain'] == TABLE_PROP_ASSOCIATION and not show_associations:
                     continue
 
                 table_item = QTreeWidgetItem([table])
-                current_table_info = self.models_tree[model][table]
                 table_item.setData(0, Qt.UserRole, self.models_tree[model][table])
                 geometry_type = QgsWkbTypes().geometryType(QgsWkbTypes().parseType(current_table_info['type'])) if current_table_info['type'] else None
+                icon_name = self.icon_names[3 if geometry_type is None else geometry_type]
+
+                # Is the layer already loaded?
                 if self.qgis_utils.get_layer_from_layer_tree(current_table_info['tablename'],
                          self._db.schema,
                          geometry_type) is not None:
@@ -122,6 +128,15 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
                         font = QFont()
                         font.setBold(True)
                         table_item.setData(0, Qt.FontRole, font)
+
+                if current_table_info['is_domain'] == TABLE_PROP_DOMAIN:
+                    icon_name = self.icon_names[4]
+                elif current_table_info['is_domain'] == TABLE_PROP_STRUCTURE:
+                    icon_name = self.icon_names[5]
+                elif current_table_info['is_domain'] == TABLE_PROP_ASSOCIATION:
+                    icon_name = self.icon_names[6]
+                icon = QIcon(":/Asistente-LADM_COL/images/{}.png".format(icon_name))
+                table_item.setData(0, Qt.DecorationRole, icon)
 
                 children.append(table_item)
 
