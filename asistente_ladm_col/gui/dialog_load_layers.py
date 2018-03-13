@@ -22,7 +22,7 @@ from qgis.core import QgsProject, QgsVectorLayer, Qgis, QgsWkbTypes
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QSettings, QCoreApplication
 from qgis.PyQt.QtGui import QBrush, QFont, QIcon
-from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
+from qgis.PyQt.QtWidgets import QAction, QDialog, QTreeWidgetItem, QLineEdit
 
 from ..config.table_mapping_config import (
     TABLE_PROP_ASSOCIATION,
@@ -54,14 +54,14 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.cbo_select_predefined_tables.addItem(self.tr('Spatial data'), 'spatial_data')
         self.cbo_select_predefined_tables.addItem(self.tr('Legal data'), 'legal_data')
         self.cbo_select_predefined_tables.currentIndexChanged.connect(self.select_predefined_changed)
+        self.txt_search_text.addAction(QIcon(":/Asistente-LADM_COL/images/search.png"), QLineEdit.LeadingPosition)
 
         # Load layers from the db
         self.load_available_layers()
 
         # Set connections
         self.buttonBox.accepted.connect(self.accepted)
-
-        # SIGNALS-SLOTS
+        self.txt_search_text.textChanged.connect(self.search_text_changed)
         self.chk_show_domains.toggled.connect(self.show_table_type_changed)
         self.chk_show_structures.toggled.connect(self.show_table_type_changed)
         self.chk_show_associations.toggled.connect(self.show_table_type_changed)
@@ -91,18 +91,28 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
                 else:
                     self.models_tree[record['model']][record['table_alias'] or record['tablename']] = record
 
-        self.update_available_layers(self.chk_show_domains.isChecked(),
-                                     self.chk_show_structures.isChecked(),
-                                     self.chk_show_associations.isChecked())
+        self.update_available_layers()
 
-    def update_available_layers(self, show_domains=False, show_structures=False, show_associations=False, top_level_items_expanded_info=[]):
+    def update_available_layers(self):
+        # Grab some context data
+        show_domains = self.chk_show_domains.isChecked()
+        show_structures = self.chk_show_structures.isChecked()
+        show_associations = self.chk_show_associations.isChecked()
+        top_level_items_expanded_info = []
+        for i in range(self.trw_layers.topLevelItemCount()):
+            top_level_items_expanded_info.append(self.trw_layers.topLevelItem(i).isExpanded())
+
+        # Iterate models adding childrens
         self.trw_layers.clear()
         sorted_models = sorted(self.models_tree.keys())
         for model in sorted_models:
             children = []
             model_item = QTreeWidgetItem([model])
 
-            sorted_tables = sorted(self.models_tree[model].keys())
+            # Filter by search text
+            list_tables = self.filter_tables_by_search_text(self.models_tree[model].keys(), self.txt_search_text.text())
+            sorted_tables = sorted(list_tables)
+
             for table in sorted_tables:
                 current_table_info = self.models_tree[model][table]
                 if current_table_info['is_domain'] == TABLE_PROP_DOMAIN and not show_domains \
@@ -143,18 +153,32 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
             model_item.addChildren(children)
             self.trw_layers.addTopLevelItem(model_item)
 
+        # Make mode items non selectable
         # Set expand taking previous states into account
         for i in range(self.trw_layers.topLevelItemCount()):
+            self.trw_layers.topLevelItem(i).setFlags(Qt.ItemIsEnabled) # Not selectable
             self.trw_layers.topLevelItem(i).setExpanded(top_level_items_expanded_info[i] if top_level_items_expanded_info else True)
 
+    def filter_tables_by_search_text(self, list_tables, search_text):
+        res = list(list_tables)[:]
+        search_text = search_text.lower()
+        if search_text:
+            if len(search_text) == 1:
+                for table in list_tables:
+                    if not table.lower().startswith(search_text):
+                        res.remove(table)
+            elif len(search_text) > 1:
+                for table in list_tables:
+                    if search_text not in table.lower():
+                        res.remove(table)
+
+        return res
+
+    def search_text_changed(self, text):
+        self.update_available_layers()
+
     def show_table_type_changed(self, state):
-        top_level_items_expanded_info = []
-        for i in range(self.trw_layers.topLevelItemCount()):
-            top_level_items_expanded_info.append(self.trw_layers.topLevelItem(i).isExpanded())
-        self.update_available_layers(self.chk_show_domains.isChecked(),
-                                     self.chk_show_structures.isChecked(),
-                                     self.chk_show_associations.isChecked(),
-                                     top_level_items_expanded_info)
+        self.update_available_layers()
 
     def accepted(self):
         print("Accepted!")

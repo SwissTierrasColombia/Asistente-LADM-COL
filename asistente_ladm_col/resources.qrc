@@ -8,5 +8,6 @@
         <file>images/structures.png</file>
         <file>images/tables.png</file>
         <file>images/domains.png</file>
+        <file>images/search.png</file>
     </qresource>
 </RCC>

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>472</width>
-    <height>472</height>
+    <height>567</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,6 +19,9 @@
      <property name="placeholderText">
       <string>Search table names</string>
      </property>
+     <property name="clearButtonEnabled">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item row="1" column="0" colspan="2">
@@ -29,41 +32,6 @@
      <attribute name="headerVisible">
       <bool>false</bool>
      </attribute>
-     <column>
-      <property name="text">
-       <string>1</string>
-      </property>
-     </column>
-     <item>
-      <property name="text">
-       <string>Cadastre</string>
-      </property>
-      <item>
-       <property name="text">
-        <string>New Subitem</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Predio</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Terreno</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Unidad de Construccion</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Col_Derecho</string>
-       </property>
-      </item>
-     </item>
     </widget>
    </item>
    <item row="2" column="0" colspan="2">
