@@ -3,10 +3,10 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2017-12-09
+        begin                : 2018-03-06
         git sha              : :%H$
-        copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
-        email                : gcarrillo@linuxmail.org
+        copyright            : (C) 2018 by Sergio Ramírez (Incige SAS)
+        email                : seralra96@gmail.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -29,9 +29,9 @@ from ..config.table_mapping_config import (
     VIDA_UTIL_FIELD_BOUNDARY_TABLE
 )
 
-WIZARD_UI = get_ui_class('wiz_create_party_cadastre.ui')
+WIZARD_UI = get_ui_class('wiz_create_restriction_cadastre.ui')
 
-class CreatePartyCadastreWizard(QWizard, WIZARD_UI):
+class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)

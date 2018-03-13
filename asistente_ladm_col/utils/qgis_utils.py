@@ -25,7 +25,9 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
 					   QgsPalLayerSettings, QgsTextFormat, QgsTextBufferSettings,
                        QgsVectorLayerSimpleLabeling, QgsField, QgsLineSymbol,
                        QgsOuterGlowEffect, QgsDrawSourceEffect, QgsEffectStack,
-                       QgsInnerShadowEffect, QgsSimpleLineSymbolLayer)
+                       QgsInnerShadowEffect, QgsSimpleLineSymbolLayer,
+                       QgsMarkerSymbol, QgsSimpleMarkerSymbolLayer, QgsMapLayer,
+                       QgsSingleSymbolRenderer)
 
 from qgis.PyQt.QtCore import (QObject, pyqtSignal, QCoreApplication, QVariant,
                               QSettings)
@@ -37,15 +39,18 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BOUNDARY_TABLE,
                                            DEFAULT_EPSG,
                                            DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+                                           ERROR_LAYER_GROUP,
                                            ID_FIELD,
                                            LAYERS_STYLE,
                                            LESS_TABLE,
                                            LESS_TABLE_BOUNDARY_FIELD,
                                            LESS_TABLE_PLOT_FIELD,
+                                           LOCAL_ID_FIELD,
                                            PLOT_TABLE,
                                            MOREBFS_TABLE_PLOT_FIELD,
                                            MOREBFS_TABLE_BOUNDARY_FIELD,
                                            MORE_BOUNDARY_FACE_STRING_TABLE,
+                                           NAMESPACE_FIELD,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
                                            VIDA_UTIL_FIELD_BOUNDARY_TABLE)
 
@@ -93,7 +98,7 @@ class QGISUtils(QObject):
                 for layer_id, layer_info in missing_layers.items():
                     # This should update None objects to newly added layer objects
                     response_layers[layer_id] = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
-                    if response_layers[layer_id]:
+                    if response_layers[layer_id] is not None:
                         self.set_layer_style(response_layers[layer_id])
 
         return response_layers
@@ -120,9 +125,26 @@ class QGISUtils(QObject):
 
     def configureAutomaticField(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
-        default_value = QgsDefaultValue(expression, True)
+        default_value = QgsDefaultValue(expression, True) # Calculate on update
         layer.setDefaultValueDefinition(index, default_value)
 
+    def resetAutomaticField(self, layer, field):
+        self.configureAutomaticField(layer, field, "")
+
+    def set_automatic_fields(self, layer, prefix):
+        self.configureAutomaticField(layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
+        layer_name = layer.name()
+
+        if QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True):
+            self.configureAutomaticField(layer, prefix + LOCAL_ID_FIELD, '"{}"'.format(ID_FIELD))
+        else:
+            self.resetAutomaticField(layer, prefix + LOCAL_ID_FIELD)
+
+        if QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True):
+            namespace = str(QSettings().value('Asistente-LADM_COL/automatic_values/namespace_prefix', ""))
+            self.configureAutomaticField(layer, prefix + NAMESPACE_FIELD, "'{}{}{}'".format(namespace, "_" if namespace else "", layer_name).upper())
+        else:
+            self.resetAutomaticField(layer, prefix + NAMESPACE_FIELD)
 
     def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, target_layer_name):
         if not csv_path or not os.path.exists(csv_path):
@@ -716,7 +738,9 @@ class QGISUtils(QObject):
 
         error_layer.dataProvider().addFeatures(features)
         if error_layer.featureCount() > 0:
-            added_layer = QgsProject.instance().addMapLayer(error_layer)
+            group = self.get_error_layers_group()
+            added_layer = QgsProject.instance().addMapLayer(error_layer, False)
+            added_layer = group.addLayer(added_layer).layer()
             self.set_line_error_symbol(added_layer)
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -727,6 +751,15 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "All boundary segments are within the tolerance ({}m.)!").format(tolerance),
                 Qgis.Info)
+
+    def get_error_layers_group(self):
+        root = QgsProject.instance().layerTreeRoot()
+        group = root.findGroup(ERROR_LAYER_GROUP)
+        if group is None:
+            index = self.project_generator_utils.get_first_index_for_geometry_type(QgsWkbTypes.UnknownGeometry)
+            group = root.insertGroup(index if index is not None else -1, ERROR_LAYER_GROUP)
+
+        return group
 
     def get_too_long_segments_from_simple_line(self, line, tolerance):
         segments_info = list()
@@ -755,7 +788,7 @@ class QGISUtils(QObject):
             symbol = QgsLineSymbol.createSimple(symbol_def)
         elif layer.geometryType() == QgsWkbTypes.PointGeometry:
             symbol = QgsMarkerSymbol.createSimple(symbol_def)
-        layer.renderer().setSymbol(symbol)
+        layer.setRenderer(QgsSingleSymbolRenderer(symbol))
         self.layer_symbology_changed.emit(layer.id())
 
     def set_label(self, layer, label_def):
@@ -773,12 +806,39 @@ class QGISUtils(QObject):
             layer.setLabelsEnabled(True)
 
     def set_point_error_symbol(self, layer):
-        symbol_def = {'name': 'diamond', 'color': '#ff0000', 'size': '3'}
-        point_symbol_layer = QgsMarkerSymbol.createSimple(symbol_def)
-        layer.renderer().setSymbol(point_symbol_layer)
+        if not(layer.isSpatial() and layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QgsWkbTypes.PointGeometry):
+            return None
+
+        draw_source_effect_properties = {'enabled': '1', 'opacity': '1', 'draw_mode': '2', 'blend_mode': '0'}
+        drop_shadow_effect_properties = {'enabled': '1', 'opacity': '1', 'draw_mode': '2', 'blend_mode': '0', 'offset_unit': 'MM', 'offset_angle': '135', 'offset_unit_scale': '3x:0,0,0,0,0,0', 'offset_distance': '2', 'blur_level': '10', 'color': '0,0,0,255'}
+
+        draw_source_effect_0 = QgsDrawSourceEffect().create(draw_source_effect_properties)
+        draw_source_effect_1 = draw_source_effect_0.clone()
+        drop_shadow_effect = QgsDropShadowEffect().create(drop_shadow_effect_properties)
+
+        effect_stack_0 = QgsEffectStack()
+        effect_stack_0.appendEffect(drop_shadow_effect)
+        effect_stack_0.appendEffect(draw_source_effect_0)
+        effect_stack_1 = QgsEffectStack()
+        effect_stack_1.appendEffect(draw_source_effect_1)
+
+        simple_point_symbol_layer_properties_0 = {'vertical_anchor_point': '1', 'outline_width_unit': 'MM', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width': '0.2', 'size': '3.4', 'angle': '0', 'joinstyle': 'bevel', 'outline_style': 'solid', 'scale_method': 'area', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'name': 'circle', 'horizontal_anchor_point': '1', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'color': '255,0,0,255', 'outline_color': '255,0,0,255', 'size_unit': 'MM', 'offset': '0,0'}
+        simple_point_symbol_layer_properties_1 = {'vertical_anchor_point': '1', 'outline_width_unit': 'MM', 'offset_map_unit_scale': '3x:0,0,0,0,0,0', 'outline_width': '0.2', 'size': '2.4', 'angle': '34', 'joinstyle': 'bevel', 'outline_style': 'solid', 'scale_method': 'area', 'outline_width_map_unit_scale': '3x:0,0,0,0,0,0', 'name': 'circle', 'horizontal_anchor_point': '1', 'size_map_unit_scale': '3x:0,0,0,0,0,0', 'offset_unit': 'MM', 'color': '255,0,0,255', 'outline_color': '255,0,0,255', 'size_unit': 'MM', 'offset': '0,0'}
+        simple_point_symbol_layer_0 = QgsSimpleMarkerSymbolLayer().create(simple_point_symbol_layer_properties_0)
+        simple_point_symbol_layer_0.setPaintEffect(effect_stack_0)
+        simple_point_symbol_layer_1 = QgsSimpleMarkerSymbolLayer().create(simple_point_symbol_layer_properties_1)
+        simple_point_symbol_layer_1.setPaintEffect(effect_stack_1)
+
+        point_symbol = QgsMarkerSymbol()
+        point_symbol.appendSymbolLayer(simple_point_symbol_layer_0)
+        point_symbol.appendSymbolLayer(simple_point_symbol_layer_1)
+        layer.setRenderer(QgsSingleSymbolRenderer(point_symbol))
         self.layer_symbology_changed.emit(layer.id())
 
     def set_line_error_symbol(self, layer):
+        if not(layer.isSpatial() and layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QgsWkbTypes.LineGeometry):
+            return None
+
         outer_glow_effect_properties = {'blend_mode': '0', 'blur_level': '3', 'draw_mode': '2', 'color2': '0,255,0,255', 'discrete': '0', 'spread_unit_scale': '3x:0,0,0,0,0,0', 'color_type': '0', 'spread_unit': 'MM', 'spread': '2', 'color1': '0,0,255,255', 'rampType': 'gradient', 'single_color': '239,41,41,255', 'opacity': '0.5', 'enabled': '1'}
         draw_source_effect_properties = {'blend_mode': '0', 'draw_mode': '2', 'enabled': '1', 'opacity': '1'}
         inner_shadow_effect_properties = {'offset_angle': '135', 'blend_mode': '13', 'blur_level': '10', 'draw_mode': '2', 'color': '0,0,0,255', 'offset_distance': '2', 'offset_unit': 'MM', 'offset_unit_scale': '3x:0,0,0,0,0,0', 'opacity': '0.146', 'enabled': '1'}
@@ -798,5 +858,5 @@ class QGISUtils(QObject):
 
         line_symbol = QgsLineSymbol()
         line_symbol.appendSymbolLayer(simple_line_symbol_layer)
-        layer.renderer().setSymbol(line_symbol)
+        layer.setRenderer(QgsSingleSymbolRenderer(line_symbol))
         self.layer_symbology_changed.emit(layer.id())

@@ -30,7 +30,13 @@ from .gui.point_spa_uni_cadastre_wizard import PointsSpatialUnitCadastreWizard
 from .gui.define_boundaries_cadastre_wizard import DefineBoundariesCadastreWizard
 from .gui.create_plot_cadastre_wizard import CreatePlotCadastreWizard
 from .gui.create_parcel_cadastre_wizard import CreateParcelCadastreWizard
-from .gui.create_party_cadastre_wizard import CreatePartyCadastreWizard
+from .gui.create_natural_party_cadastre_wizard import CreateNaturalPartyCadastreWizard
+from .gui.create_legal_party_cadastre_wizard import CreateLegalPartyCadastreWizard
+from .gui.create_right_cadastre_wizard import CreateRightCadastreWizard
+from .gui.create_responsibility_cadastre_wizard import CreateResponsibilityCadastreWizard
+from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWizard
+from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
+from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
 from .gui.settings_dialog import SettingsDialog
 from .utils.qgis_utils import QGISUtils
 
@@ -72,8 +78,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self._baunit_cadastre_menu.addActions([self._parcel_baunit_cadastre_action])
 
         self._party_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"), self._cadastre_menu)
-        self._party_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"), self._party_cadastre_menu)
-        self._party_cadastre_menu.addActions([self._party_cadastre_action])
+        self._natural_party_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Natural Party"), self._party_cadastre_menu)
+        self._legal_party_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Legal Party"), self._party_cadastre_menu)
+        self._party_cadastre_menu.addActions([self._natural_party_cadastre_action,
+                                              self._legal_party_cadastre_action])
 
         self._rrr_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "RRR"), self._cadastre_menu)
         self._right_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Right"), self._rrr_cadastre_menu)
@@ -84,6 +92,10 @@ class AsistenteLADMCOLPlugin(QObject):
                                             self._responsibility_rrr_cadastre_action])
 
         self._source_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._cadastre_menu)
+        self._administrative_source_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Administrative Source"), self._source_cadastre_menu)
+        self._spatial_source_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Spatial Source"), self._source_cadastre_menu)
+        self._source_cadastre_menu.addActions([self._administrative_source_cadastre_action,
+                                               self._spatial_source_cadastre_action])
 
         self._quality_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"), self._cadastre_menu)
         self._too_long_boundary_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check too long boundary segments"), self._quality_cadastre_menu)
@@ -113,7 +125,13 @@ class AsistenteLADMCOLPlugin(QObject):
         self._boundary_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_boundaries_cad)
         self._plot_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_plot_cad)
         self._parcel_baunit_cadastre_action.triggered.connect(self.show_wiz_parcel_cad)
-        self._party_cadastre_action.triggered.connect(self.show_wiz_party_cad)
+        self._natural_party_cadastre_action.triggered.connect(self.show_wiz_natural_party_cad)
+        self._legal_party_cadastre_action.triggered.connect(self.show_wiz_legal_party_cad)
+        self._right_rrr_cadastre_action.triggered.connect(self.show_wiz_right_rrr_cad)
+        self._responsibility_rrr_cadastre_action.triggered.connect(self.show_wiz_responsibility_rrr_cad)
+        self._restriction_rrr_cadastre_action.triggered.connect(self.show_wiz_restriction_rrr_cad)
+        self._administrative_source_cadastre_action.triggered.connect(self.show_wiz_administrative_source_cad)
+        self._spatial_source_cadastre_action.triggered.connect(self.show_wiz_spatial_source_cad)
         self._too_long_boundary_cadastre_action.triggered.connect(self.check_too_long_segments)
         self._overlaps_boundary_points_cadastre_action.triggered.connect(self.check_overlaps_in_boundary_points)
         self._settings_action.triggered.connect(self.show_settings)
@@ -196,12 +214,9 @@ class AsistenteLADMCOLPlugin(QObject):
         @wraps(func_to_decorate)
         def decorated_function(inst, *args, **kwargs):
             # Check if Project Generator is installed and active, disable access if not
-            plugin_found = 'projectgenerator' in qgis.utils.plugins
-            plugin_version_right = False
-            if plugin_found:
-                plugin_version_right = inst.is_plugin_version_valid()
+            plugin_version_right = inst.is_plugin_version_valid()
 
-            if plugin_found and plugin_version_right:
+            if plugin_version_right:
                 func_to_decorate(inst)
             else:
                 widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
@@ -226,6 +241,9 @@ class AsistenteLADMCOLPlugin(QObject):
         return None
 
     def is_plugin_version_valid(self):
+        plugin_found = 'projectgenerator' in qgis.utils.plugins
+        if not plugin_found:
+            return False
         current_version = self.get_plugin_version(qgis.utils.plugins['projectgenerator'].plugin_dir)
         min_required_version = PROJECT_GENERATOR_MIN_REQUIRED_VERSION
         if current_version is None:
@@ -319,8 +337,44 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_project_generator_required
     @_db_connection_required
-    def show_wiz_party_cad(self):
-        wiz = CreatePartyCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+    def show_wiz_natural_party_cad(self):
+        wiz = CreateNaturalPartyCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_legal_party_cad(self):
+        wiz = CreateLegalPartyCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_right_rrr_cad(self):
+        wiz = CreateRightCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_responsibility_rrr_cad(self):
+        wiz = CreateResponsibilityCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_restriction_rrr_cad(self):
+        wiz = CreateRestrictionCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_administrative_source_cad(self):
+        wiz = CreateAdministrativeSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_spatial_source_cad(self):
+        wiz = CreateSpatialSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     @_project_generator_required
@@ -336,7 +390,7 @@ class AsistenteLADMCOLPlugin(QObject):
         #self.msg.setIcon(QMessageBox.Information)
         self.msg.setTextFormat(Qt.RichText)
         self.msg.setWindowTitle(QCoreApplication.translate("AsistenteLADMCOLPlugin", 'About'))
-        description = QCoreApplication.translate("AsistenteLADMCOLPlugin", """<html><head/><body><p align="center"><span style=" font-size:14pt; font-weight:600;">Asistente LADM_COL</span></p><p align="center">Plugin de <a href="http://qgis.org"><span style=" text-decoration: underline; color:#0000ff;">QGIS</span></a> que ayuda a capturar y mantener datos conformes con <a href="https://github.com/AgenciaImplementacion/LADM_COL"><span style=" text-decoration: underline; color:#0000ff;">LADM_COL</span></a> y a generar archivos de intercambio de <a href="http://www.interlis.ch/index_e.htm"><span style=" text-decoration: underline; color:#0000ff;">INTERLIS</span></a> (.XTF).</p><p align="center">Licencia: <a href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE"><span style=" text-decoration: underline; color:#0000ff;">GNU General Public License v3.0</span></a></p><p align="center">Un proyecto de:<br/><a href="https://www.proadmintierra.info/"><span style=" text-decoration: underline; color:#0000ff;">Agencia de Implementación</span></a> (<a href="http://bsf-swissphoto.com/"><span style=" text-decoration: underline; color:#0000ff;">BSF-Swissphoto AG</span></a> - <a href="http://www.incige.com/"><span style=" text-decoration: underline; color:#0000ff;">INCIGE S.A.S</span></a>)</p><p align="center"><br/></p></body></html>""")
+        description = QCoreApplication.translate("AsistenteLADMCOLPlugin", """<html><head/><body><p align="center"><span style=" font-size:14pt; font-weight:600;">Asistente LADM_COL</span></p><p align="center">Plugin de <a href="http://qgis.org"><span style=" text-decoration: underline; color:#0000ff;">QGIS</span></a> que ayuda a capturar y mantener datos conformes con <a href="https://github.com/AgenciaImplementacion/LADM_COL"><span style=" text-decoration: underline; color:#0000ff;">LADM_COL</span></a> y a generar archivos de intercambio de <a href="http://www.interlis.ch/index_e.htm"><span style=" text-decoration: underline; color:#0000ff;">INTERLIS</span></a> (.XTF).</p><p align="center">Licencia: <a href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE"><span style=" text-decoration: underline; color:#0000ff;">GNU General Public License v3.0</span></a></p><p align="center">Repositorio código fuente: <a href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL"><span style=" text-decoration: underline; color:#0000ff;">Github</span></a></p><p align="center">Un proyecto de:<br/><a href="https://www.proadmintierra.info/"><span style=" text-decoration: underline; color:#0000ff;">Agencia de Implementación</span></a> (<a href="http://bsf-swissphoto.com/"><span style=" text-decoration: underline; color:#0000ff;">BSF-Swissphoto AG</span></a> - <a href="http://www.incige.com/"><span style=" text-decoration: underline; color:#0000ff;">INCIGE S.A.S</span></a>)</p><p align="center"><br/></p></body></html>""")
         self.msg.setText(description)
         self.msg.setStandardButtons(QMessageBox.Ok)
         msg_box = self.msg.exec_()

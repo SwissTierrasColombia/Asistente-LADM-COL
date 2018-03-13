@@ -30,8 +30,7 @@ from ..config.table_mapping_config import (
     PLOT_TABLE,
     UEBAUNIT_TABLE,
     UEBAUNIT_TABLE_PARCEL_FIELD,
-    UEBAUNIT_TABLE_PLOT_FIELD,
-    VIDA_UTIL_FIELD_BOUNDARY_TABLE
+    UEBAUNIT_TABLE_PLOT_FIELD
 )
 
 WIZARD_UI = get_ui_class('wiz_create_parcel_cadastre.ui')
@@ -52,10 +51,10 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
     def prepare_parcel_creation(self):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, {
-            PLOT_TABLE: {'name':PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            PARCEL_TABLE: {'name':PARCEL_TABLE, 'geometry':None},
-            LA_BAUNIT_TYPE_TABLE: {'name':LA_BAUNIT_TYPE_TABLE, 'geometry':None}, # Domain for Parcel
-            UEBAUNIT_TABLE: {'name':UEBAUNIT_TABLE, 'geometry':None}}, load=True)
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
+            LA_BAUNIT_TYPE_TABLE: {'name': LA_BAUNIT_TYPE_TABLE, 'geometry': None}, # Domain for Parcel
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}, load=True)
 
         self._plot_layer = res_layers[PLOT_TABLE]
         if self._plot_layer is None:
@@ -82,7 +81,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             return
 
         # Configure automatic fields
-        self.qgis_utils.configureAutomaticField(self._parcel_layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
+        self.qgis_utils.set_automatic_fields(self._parcel_layer, "u")
 
         # Don't suppress (i.e., show) feature form
         form_config = self._parcel_layer.editFormConfig()
