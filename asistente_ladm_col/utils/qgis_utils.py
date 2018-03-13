@@ -148,7 +148,9 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return False
 
-        overlapping = self.validate_non_overlapping_points(csv_layer)
+        overlapping = self.get_overlapping_points(csv_layer) # List of lists of ids
+        overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
+
         if overlapping:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -195,21 +197,13 @@ class QGISUtils(QObject):
             QCoreApplication.translate("QGISUtils",
                                        "{} points were added succesfully to '{}'.").format(len(new_features), target_layer_name),
             Qgis.Info)
-        return True
 
-    def validate_non_overlapping_points(self, point_layer):
-        # Validate non-overlapping points
-        index = QgsSpatialIndex(point_layer.getFeatures())
-        for feature in point_layer.getFeatures():
-            res = index.intersects(feature.geometry().boundingBox())
-            if len(res) > 1:
-                return res
-        return []
+        return True
 
     def get_overlapping_points(self, point_layer):
         """
         Returns a list of lists, where inner lists are ids of overlapping
-        points, e.g., [[1,3], [19, 2, 8]].
+        points, e.g., [[1, 3], [19, 2, 8]].
         """
         res = list()
         if point_layer.featureCount() == 0:
