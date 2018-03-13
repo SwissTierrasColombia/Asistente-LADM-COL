@@ -45,10 +45,12 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            LESS_TABLE,
                                            LESS_TABLE_BOUNDARY_FIELD,
                                            LESS_TABLE_PLOT_FIELD,
+                                           LOCAL_ID_FIELD,
                                            PLOT_TABLE,
                                            MOREBFS_TABLE_PLOT_FIELD,
                                            MOREBFS_TABLE_BOUNDARY_FIELD,
                                            MORE_BOUNDARY_FACE_STRING_TABLE,
+                                           NAMESPACE_FIELD,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
                                            VIDA_UTIL_FIELD_BOUNDARY_TABLE)
 
@@ -123,9 +125,26 @@ class QGISUtils(QObject):
 
     def configureAutomaticField(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
-        default_value = QgsDefaultValue(expression, True)
+        default_value = QgsDefaultValue(expression, True) # Calculate on update
         layer.setDefaultValueDefinition(index, default_value)
 
+    def resetAutomaticField(self, layer, field):
+        self.configureAutomaticField(layer, field, "")
+
+    def set_automatic_fields(self, layer, prefix):
+        self.configureAutomaticField(layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
+        layer_name = layer.name()
+
+        if QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True):
+            self.configureAutomaticField(layer, prefix + LOCAL_ID_FIELD, '"{}"'.format(ID_FIELD))
+        else:
+            self.resetAutomaticField(layer, prefix + LOCAL_ID_FIELD)
+
+        if QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True):
+            namespace = str(QSettings().value('Asistente-LADM_COL/automatic_values/namespace_prefix', ""))
+            self.configureAutomaticField(layer, prefix + NAMESPACE_FIELD, "'{}{}{}'".format(namespace, "_" if namespace else "", layer_name).upper())
+        else:
+            self.resetAutomaticField(layer, prefix + NAMESPACE_FIELD)
 
     def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, target_layer_name):
         if not csv_path or not os.path.exists(csv_path):
