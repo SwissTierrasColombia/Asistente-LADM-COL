@@ -18,7 +18,7 @@
 """
 from qgis.core import QgsEditFormConfig, QgsVectorLayerUtils, Qgis, QgsWkbTypes
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
+from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
@@ -27,7 +27,8 @@ from ..config.table_mapping_config import (
     GENDER_TYPE_TABLE,
     NATURAL_PARTY_TABLE,
     PARTY_DOCUMENT_TYPE_TABLE,
-    PARTY_TYPE_TABLE)
+    PARTY_TYPE_TABLE
+)
 
 WIZARD_UI = get_ui_class('wiz_create_natural_party_cadastre.ui')
 

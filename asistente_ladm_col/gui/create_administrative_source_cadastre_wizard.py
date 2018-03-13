@@ -26,8 +26,7 @@ from ..utils import get_ui_class
 from ..config.table_mapping_config import (
     ADMINISTRATIVE_SOURCE_TABLE,
     AVAILABILITY_STATE_TABLE,
-    ADMINISTRATIVE_SOURCE_TYPE_TABLE,
-    VIDA_UTIL_FIELD_BOUNDARY_TABLE
+    ADMINISTRATIVE_SOURCE_TYPE_TABLE
 )
 
 WIZARD_UI = get_ui_class('wiz_create_administrative_source_cadastre.ui')

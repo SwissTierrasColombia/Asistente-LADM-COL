@@ -25,7 +25,7 @@ from ..utils import get_ui_class
 #from ..utils.qt_utils import enable_next_wizard, disable_next_wizard
 from ..config.table_mapping_config import (
     LEGAL_PARTY_TABLE,
-    LEGAL_PARTY_TYPE_TABLE,
+    LEGAL_PARTY_TYPE_TABLE
 )
 
 WIZARD_UI = get_ui_class('wiz_create_legal_party_cadastre.ui')

@@ -26,7 +26,7 @@ from ..utils import get_ui_class
 from ..config.table_mapping_config import (
     SPATIAL_SOURCE_TABLE,
     AVAILABILITY_STATE_TABLE,
-    SPATIAL_SOURCE_TYPE_TABLE,
+    SPATIAL_SOURCE_TYPE_TABLE
 )
 
 WIZARD_UI = get_ui_class('wiz_create_spatial_source_cadastre.ui')

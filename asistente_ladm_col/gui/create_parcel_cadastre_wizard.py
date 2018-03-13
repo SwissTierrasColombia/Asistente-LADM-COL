@@ -30,7 +30,7 @@ from ..config.table_mapping_config import (
     PLOT_TABLE,
     UEBAUNIT_TABLE,
     UEBAUNIT_TABLE_PARCEL_FIELD,
-    UEBAUNIT_TABLE_PLOT_FIELD,
+    UEBAUNIT_TABLE_PLOT_FIELD
 )
 
 WIZARD_UI = get_ui_class('wiz_create_parcel_cadastre.ui')

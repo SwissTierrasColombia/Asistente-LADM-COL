@@ -106,10 +106,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         settings.setValue('Asistente-LADM_COL/quality/too_long_tolerance', int(self.txt_too_long_tolerance.text()) or DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)
 
-        settings.setValue('Asistente-LADM_COL/automatic_values/local_id', self.local_id_checkbox.isChecked())
-        settings.setValue('Asistente-LADM_COL/automatic_values/namespace_check', self.name_space_collapsible_group_box.isChecked())
-        if self.name_space_collapsible_group_box.isChecked():
-            settings.setValue('Asistente-LADM_COL/automatic_values/namespace', self.txt_name_space.text())
+        settings.setValue('Asistente-LADM_COL/automatic_values/local_id_enabled', self.chk_local_id.isChecked())
+        settings.setValue('Asistente-LADM_COL/automatic_values/namespace_enabled', self.namespace_collapsible_group_box.isChecked())
+        if self.namespace_collapsible_group_box.isChecked():
+            settings.setValue('Asistente-LADM_COL/automatic_values/namespace_prefix', self.txt_namespace.text())
 
 
     def restore_settings(self):
@@ -128,9 +128,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self.txt_too_long_tolerance.setText(str(settings.value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)))
 
-        self.name_space_collapsible_group_box.setChecked(settings.value('Asistente-LADM_COL/automatic_values/namespace_check', True, bool))
-        self.local_id_checkbox.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id', True, bool))
-        self.txt_name_space.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace', "")))
+        self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool))
+        self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
+        self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
 
 
     def db_source_changed(self):
