@@ -170,7 +170,9 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return False
 
-        overlapping = self.validate_non_overlapping_points(csv_layer)
+        overlapping = self.get_overlapping_points(csv_layer) # List of lists of ids
+        overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
+
         if overlapping:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -217,16 +219,30 @@ class QGISUtils(QObject):
             QCoreApplication.translate("QGISUtils",
                                        "{} points were added succesfully to '{}'.").format(len(new_features), target_layer_name),
             Qgis.Info)
+
         return True
 
-    def validate_non_overlapping_points(self, point_layer):
-        # Validate non-overlapping points
+    def get_overlapping_points(self, point_layer):
+        """
+        Returns a list of lists, where inner lists are ids of overlapping
+        points, e.g., [[1, 3], [19, 2, 8]].
+        """
+        res = list()
+        if point_layer.featureCount() == 0:
+            return res
+
+        set_points = set()
         index = QgsSpatialIndex(point_layer.getFeatures())
+
         for feature in point_layer.getFeatures():
-            res = index.intersects(feature.geometry().boundingBox())
-            if len(res) > 1:
-                return res
-        return []
+            if not feature.id() in set_points:
+                ids = index.intersects(feature.geometry().boundingBox())
+
+                if len(ids) > 1: # Points do overlap!
+                    set_points = set_points.union(set(ids))
+                    res.append(ids)
+
+        return res
 
     def extractAsSingleSegments(self, geom):
         """
@@ -650,10 +666,48 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return
 
+    def check_overlaps_in_boundary_points(self, db):
+        features = []
+        boundary_point_layer = self.get_layer(db, BOUNDARY_POINT_TABLE, load=True)
+
+        if boundary_point_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB!").format(BOUNDARY_POINT_TABLE),
+                Qgis.Warning)
+            return
+
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), "Overlapping boundary points", "memory")
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField("point_count", QVariant.Int)])
+        error_layer.updateFields()
+
+        overlapping = self.get_overlapping_points(boundary_point_layer)
+
+        for items in overlapping:
+            feature = boundary_point_layer.getFeature(items[0]) # We need a feature geometry, pick the first id to get it
+            point = feature.geometry()
+            new_feature = QgsVectorLayerUtils().createFeature(error_layer, point, {0: len(items)})
+            features.append(new_feature)
+
+        error_layer.dataProvider().addFeatures(features)
+
+        if error_layer.featureCount() > 0:
+            added_layer = QgsProject.instance().addMapLayer(error_layer)
+            #self.set_point_error_symbol(added_layer)
+            self.message_emitted.emit(
+            QCoreApplication.translate("QGISUtils",
+                                            "A memory layer with {} overlapping Boundary Points has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
+        else:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no overlapping boundary points."), Qgis.Info)
+
     def check_too_long_segments(self, db):
         tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
         features = []
         boundary_layer = self.get_layer(db, BOUNDARY_TABLE, load=True)
+
         if boundary_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
