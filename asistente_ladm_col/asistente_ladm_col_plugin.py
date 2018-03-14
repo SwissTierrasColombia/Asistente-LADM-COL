@@ -100,8 +100,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self._quality_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"), self._cadastre_menu)
         self._too_long_boundary_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check too long boundary segments"), self._quality_cadastre_menu)
         self._overlaps_boundary_points_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check overlaps in boundary points"), self._quality_cadastre_menu)
+        self._quality_check_all_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check all"), self._quality_cadastre_menu)
         self._quality_cadastre_menu.addActions([self._too_long_boundary_cadastre_action,
                                                 self._overlaps_boundary_points_cadastre_action])
+        self._quality_cadastre_menu.addSeparator()
+        self._quality_cadastre_menu.addAction(self._quality_check_all_cadastre_action)
 
         self._cadastre_menu.addMenu(self._spatial_unit_cadastre_menu)
         self._cadastre_menu.addMenu(self._baunit_cadastre_menu)
@@ -134,6 +137,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._spatial_source_cadastre_action.triggered.connect(self.show_wiz_spatial_source_cad)
         self._too_long_boundary_cadastre_action.triggered.connect(self.check_too_long_segments)
         self._overlaps_boundary_points_cadastre_action.triggered.connect(self.check_overlaps_in_boundary_points)
+        self._quality_check_all_cadastre_action.triggered.connect(self.quality_check_all)
         self._settings_action.triggered.connect(self.show_settings)
         self._about_action.triggered.connect(self.show_about_dialog)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
@@ -382,15 +386,23 @@ class AsistenteLADMCOLPlugin(QObject):
     def check_too_long_segments(self):
         self.qgis_utils.check_too_long_segments(self.get_db_connection())
 
+    @_project_generator_required
+    @_db_connection_required
     def check_overlaps_in_boundary_points(self):
         self.qgis_utils.check_overlaps_in_boundary_points(self.get_db_connection())
+
+    @_project_generator_required
+    @_db_connection_required
+    def quality_check_all(self):
+        self.check_too_long_segments()
+        self.check_overlaps_in_boundary_points()
 
     def show_about_dialog(self):
         self.msg = QMessageBox()
         #self.msg.setIcon(QMessageBox.Information)
         self.msg.setTextFormat(Qt.RichText)
         self.msg.setWindowTitle(QCoreApplication.translate("AsistenteLADMCOLPlugin", 'About'))
-        description = QCoreApplication.translate("AsistenteLADMCOLPlugin", """<html><head/><body><p align="center"><span style=" font-size:14pt; font-weight:600;">Asistente LADM_COL</span></p><p align="center">Plugin de <a href="http://qgis.org"><span style=" text-decoration: underline; color:#0000ff;">QGIS</span></a> que ayuda a capturar y mantener datos conformes con <a href="https://github.com/AgenciaImplementacion/LADM_COL"><span style=" text-decoration: underline; color:#0000ff;">LADM_COL</span></a> y a generar archivos de intercambio de <a href="http://www.interlis.ch/index_e.htm"><span style=" text-decoration: underline; color:#0000ff;">INTERLIS</span></a> (.XTF).</p><p align="center">Licencia: <a href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE"><span style=" text-decoration: underline; color:#0000ff;">GNU General Public License v3.0</span></a></p><p align="center">Repositorio código fuente: <a href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL"><span style=" text-decoration: underline; color:#0000ff;">Github</span></a></p><p align="center">Un proyecto de:<br/><a href="https://www.proadmintierra.info/"><span style=" text-decoration: underline; color:#0000ff;">Agencia de Implementación</span></a> (<a href="http://bsf-swissphoto.com/"><span style=" text-decoration: underline; color:#0000ff;">BSF-Swissphoto AG</span></a> - <a href="http://www.incige.com/"><span style=" text-decoration: underline; color:#0000ff;">INCIGE S.A.S</span></a>)</p><p align="center"><br/></p></body></html>""")
+        description = QCoreApplication.translate("AsistenteLADMCOLPlugin", """<html><head/><body><p align="center"><span style=" font-size:14pt; font-weight:600;">Asistente LADM_COL</span></p><p align="center">Plugin de <a href="http://qgis.org"><span style=" text-decoration: underline; color:#0000ff;">QGIS</span></a> que ayuda a capturar y mantener datos conformes con <a href="https://github.com/AgenciaImplementacion/LADM_COL"><span style=" text-decoration: underline; color:#0000ff;">LADM_COL</span></a> y a generar archivos de intercambio de <a href="http://www.interlis.ch/index_e.htm"><span style=" text-decoration: underline; color:#0000ff;">INTERLIS</span></a> (.XTF).</p><p align="center">Licencia: <a href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE"><span style=" text-decoration: underline; color:#0000ff;">GNU General Public License v3.0</span></a></p><p align="center">Repositorio de código fuente en <a href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL"><span style=" text-decoration: underline; color:#0000ff;">GitHub</span></a>.</p><p align="center">Un proyecto de:<br/><a href="https://www.proadmintierra.info/"><span style=" text-decoration: underline; color:#0000ff;">Agencia de Implementación</span></a> (<a href="http://bsf-swissphoto.com/"><span style=" text-decoration: underline; color:#0000ff;">BSF-Swissphoto AG</span></a> - <a href="http://www.incige.com/"><span style=" text-decoration: underline; color:#0000ff;">INCIGE S.A.S</span></a>)</p><p align="center"><br/></p></body></html>""")
         self.msg.setText(description)
         self.msg.setStandardButtons(QMessageBox.Ok)
         msg_box = self.msg.exec_()
