@@ -27,7 +27,7 @@
    <item row="1" column="0" colspan="2">
     <widget class="QTreeWidget" name="trw_layers">
      <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
+      <enum>QAbstractItemView::MultiSelection</enum>
      </property>
      <attribute name="headerVisible">
       <bool>false</bool>

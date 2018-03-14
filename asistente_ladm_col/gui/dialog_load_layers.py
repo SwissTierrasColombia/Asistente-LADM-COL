@@ -22,7 +22,8 @@ from qgis.core import QgsProject, QgsVectorLayer, Qgis, QgsWkbTypes
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QSettings, QCoreApplication
 from qgis.PyQt.QtGui import QBrush, QFont, QIcon
-from qgis.PyQt.QtWidgets import QAction, QDialog, QTreeWidgetItem, QLineEdit
+from qgis.PyQt.QtWidgets import (QAction, QDialog, QTreeWidgetItem, QLineEdit,
+                                 QTreeWidgetItemIterator)
 
 from ..config.table_mapping_config import (
     TABLE_PROP_ASSOCIATION,
@@ -46,7 +47,8 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.iface = iface
         self._db = db
         self.qgis_utils = qgis_utils
-        self.models_tree = {}
+        self.models_tree = dict()
+        self.selected_items = dict()
         self.project_generator_utils = ProjectGeneratorUtils()
         self.icon_names = ['points', 'lines', 'polygons', 'tables', 'domains', 'structures', 'associations']
 
@@ -61,6 +63,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
 
         # Set connections
         self.buttonBox.accepted.connect(self.accepted)
+        self.buttonBox.rejected.connect(self.rejected)
         self.txt_search_text.textChanged.connect(self.search_text_changed)
         self.chk_show_domains.toggled.connect(self.show_table_type_changed)
         self.chk_show_structures.toggled.connect(self.show_table_type_changed)
@@ -72,7 +75,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
     def load_available_layers(self):
         # Call project generator tables_info and fill the layer tree
         tables_info = self.project_generator_utils.get_tables_info_without_ignored_tables(self._db)
-        self.models_tree = {}
+        self.models_tree = dict()
         for record in tables_info:
             if record['model'] not in self.models_tree:
                 self.models_tree[record['model']] = {
@@ -102,7 +105,10 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         for i in range(self.trw_layers.topLevelItemCount()):
             top_level_items_expanded_info.append(self.trw_layers.topLevelItem(i).isExpanded())
 
-        # Iterate models adding childrens
+        # Save selection
+        self.update_selected_items()
+
+        # Iterate models adding children
         self.trw_layers.clear()
         sorted_models = sorted(self.models_tree.keys())
         for model in sorted_models:
@@ -153,6 +159,15 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
             model_item.addChildren(children)
             self.trw_layers.addTopLevelItem(model_item)
 
+        # Set selection
+        iterator = QTreeWidgetItemIterator(self.trw_layers, QTreeWidgetItemIterator.Selectable)
+        while iterator.value():
+            item = iterator.value()
+            if item.text(0) in self.selected_items:
+                item.setSelected(True)
+
+            iterator += 1
+
         # Make mode items non selectable
         # Set expand taking previous states into account
         for i in range(self.trw_layers.topLevelItemCount()):
@@ -174,6 +189,20 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
 
         return res
 
+    def update_selected_items(self):
+        iterator = QTreeWidgetItemIterator(self.trw_layers, QTreeWidgetItemIterator.Selectable)
+        while iterator.value():
+            item = iterator.value()
+
+            if item.isSelected():
+                self.selected_items[item.text(0)] = item.data(0, Qt.UserRole)
+            else:
+                if item.text(0) in self.selected_items:
+                    # It was selected before, but not anymore
+                    del self.selected_items[item.text(0)]
+
+            iterator += 1
+
     def search_text_changed(self, text):
         self.update_available_layers()
 
@@ -181,16 +210,19 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.update_available_layers()
 
     def accepted(self):
-        print("Accepted!")
         self.save_settings()
+        self.update_selected_items() # Take latest selection into account
 
         # Load selected layers
         layers_dict = {}
-        for item in self.trw_layers.selectedItems():
-            data = item.data(0, Qt.UserRole)
+        for item_text, data in self.selected_items.items():
             layers_dict[data['tablename']] = {'name': data['tablename'], 'geometry': None}
 
+        self.selected_items = dict() # Reset
         self.qgis_utils.get_layers(self._db, layers_dict, load=True)
+
+    def rejected(self):
+        self.selected_items = dict()
 
     def save_settings(self):
         # Save QSettings
