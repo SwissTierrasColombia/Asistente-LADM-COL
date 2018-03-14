@@ -27,7 +27,7 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsOuterGlowEffect, QgsDrawSourceEffect, QgsEffectStack,
                        QgsInnerShadowEffect, QgsSimpleLineSymbolLayer,
                        QgsMarkerSymbol, QgsSimpleMarkerSymbolLayer, QgsMapLayer,
-                       QgsSingleSymbolRenderer)
+                       QgsSingleSymbolRenderer, QgsDropShadowEffect)
 
 from qgis.PyQt.QtCore import (QObject, pyqtSignal, QCoreApplication, QVariant,
                               QSettings)
@@ -693,8 +693,11 @@ class QGISUtils(QObject):
         error_layer.dataProvider().addFeatures(features)
 
         if error_layer.featureCount() > 0:
-            added_layer = QgsProject.instance().addMapLayer(error_layer)
-            #self.set_point_error_symbol(added_layer)
+            group = self.get_error_layers_group()
+            added_layer = QgsProject.instance().addMapLayer(error_layer, False)
+            added_layer = group.addLayer(added_layer).layer()
+            self.set_point_error_symbol(added_layer)
+
             self.message_emitted.emit(
             QCoreApplication.translate("QGISUtils",
                                             "A memory layer with {} overlapping Boundary Points has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
