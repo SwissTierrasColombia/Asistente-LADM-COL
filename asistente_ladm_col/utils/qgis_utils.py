@@ -27,10 +27,11 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsOuterGlowEffect, QgsDrawSourceEffect, QgsEffectStack,
                        QgsInnerShadowEffect, QgsSimpleLineSymbolLayer)
 
-from qgis.PyQt.QtCore import (QObject, pyqtSignal, QCoreApplication, QVariant,
-                              QSettings)
+from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
+                              QVariant, QSettings)
 
 from .project_generator_utils import ProjectGeneratorUtils
+from .qt_utils import OverrideCursor
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
@@ -74,27 +75,28 @@ class QGISUtils(QObject):
         # layer has multiple geometries, layer_id should contain the geometry
         # type to make the layer_id unique
 
-        # Response is a dict like this:
-        # layers = {layer_id: layer_object} layer_object might be None
-        response_layers = dict()
-        for layer_id, layer_info in layers.items():
-            # If layer is in LayerTree, return it
-            layer_obj = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
-            response_layers[layer_id] = layer_obj
+        with OverrideCursor(Qt.WaitCursor):
+            # Response is a dict like this:
+            # layers = {layer_id: layer_object} layer_object might be None
+            response_layers = dict()
+            for layer_id, layer_info in layers.items():
+                # If layer is in LayerTree, return it
+                layer_obj = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
+                response_layers[layer_id] = layer_obj
 
-        if load:
-            layers_to_load = [layers[layer_id]['name'] for layer_id, layer_obj in response_layers.items() if layer_obj is None]
-            if layers_to_load:
-                self.project_generator_utils.load_layers(layers_to_load, db)
+            if load:
+                layers_to_load = [layers[layer_id]['name'] for layer_id, layer_obj in response_layers.items() if layer_obj is None]
+                if layers_to_load:
+                    self.project_generator_utils.load_layers(layers_to_load, db)
 
-                # Once load_layers() is called, go through the layer tree to get
-                # newly added layers
-                missing_layers = {layer_id: {'name': layers[layer_id]['name'], 'geometry': layers[layer_id]['geometry']} for layer_id, layer_obj in response_layers.items() if layer_obj is None}
-                for layer_id, layer_info in missing_layers.items():
-                    # This should update None objects to newly added layer objects
-                    response_layers[layer_id] = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
-                    if response_layers[layer_id]:
-                        self.set_layer_style(response_layers[layer_id])
+                    # Once load_layers() is called, go through the layer tree to get
+                    # newly added layers
+                    missing_layers = {layer_id: {'name': layers[layer_id]['name'], 'geometry': layers[layer_id]['geometry']} for layer_id, layer_obj in response_layers.items() if layer_obj is None}
+                    for layer_id, layer_info in missing_layers.items():
+                        # This should update None objects to newly added layer objects
+                        response_layers[layer_id] = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
+                        if response_layers[layer_id]:
+                            self.set_layer_style(response_layers[layer_id])
 
         return response_layers
 
