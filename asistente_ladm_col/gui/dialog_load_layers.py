@@ -58,9 +58,6 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.cbo_select_predefined_tables.currentIndexChanged.connect(self.select_predefined_changed)
         self.txt_search_text.addAction(QIcon(":/Asistente-LADM_COL/images/search.png"), QLineEdit.LeadingPosition)
 
-        # Load layers from the db
-        self.load_available_layers()
-
         # Set connections
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.rejected.connect(self.rejected)
@@ -71,6 +68,9 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
 
         # Trigger some default behaviours
         self.restore_settings()
+
+        # Load layers from the db
+        self.load_available_layers()
 
     def load_available_layers(self):
         # Call project generator tables_info and fill the layer tree
@@ -225,14 +225,16 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.selected_items = dict()
 
     def save_settings(self):
-        # Save QSettings
-        # settings = QSettings(
-        pass
+        settings = QSettings()
+        settings.setValue('Asistente-LADM_COL/load_layers_dialog/show_domains', self.chk_show_domains.isChecked())
+        settings.setValue('Asistente-LADM_COL/load_layers_dialog/show_structures', self.chk_show_structures.isChecked())
+        settings.setValue('Asistente-LADM_COL/load_layers_dialog/show_associations', self.chk_show_associations.isChecked())
 
     def restore_settings(self):
-        # Restore QSettings
-        # settings = QSettings()
-        pass
+        settings = QSettings()
+        self.chk_show_domains.setChecked(settings.value('Asistente-LADM_COL/load_layers_dialog/show_domains', False, bool))
+        self.chk_show_structures.setChecked(settings.value('Asistente-LADM_COL/load_layers_dialog/show_structures', False, bool))
+        self.chk_show_associations.setChecked(settings.value('Asistente-LADM_COL/load_layers_dialog/show_associations', False, bool))
 
     def select_predefined_changed(self):
         pass
