@@ -30,6 +30,8 @@ do
 done
 printf "\n"
 
-pushd /usr/src
+pushd /usr/src/asistente_ladm_col
+make
+cd ..
 xvfb-run nose2-3
 popd

@@ -37,6 +37,7 @@ from .gui.create_responsibility_cadastre_wizard import CreateResponsibilityCadas
 from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWizard
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
+from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.settings_dialog import SettingsDialog
 from .utils.qgis_utils import QGISUtils
 
@@ -116,9 +117,12 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._menu.addMenu(self._cadastre_menu)
         self._menu.addSeparator()
-        self._settings_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
-        self._help_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"), self.iface.mainWindow())
-        self._about_action = QAction(icon, QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"), self.iface.mainWindow())
+        self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"), self.iface.mainWindow())
+        self._menu.addAction(self._load_layers_action)
+        self._menu.addSeparator()
+        self._settings_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
+        self._help_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"), self.iface.mainWindow())
+        self._about_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"), self.iface.mainWindow())
         self._menu.addActions([self._settings_action,
                                self._help_action,
                                self._about_action])
@@ -138,6 +142,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._too_long_boundary_cadastre_action.triggered.connect(self.check_too_long_segments)
         self._overlaps_boundary_points_cadastre_action.triggered.connect(self.check_overlaps_in_boundary_points)
         self._quality_check_all_cadastre_action.triggered.connect(self.quality_check_all)
+        self._load_layers_action.triggered.connect(self.load_layers_from_project_generator)
         self._settings_action.triggered.connect(self.show_settings)
         self._about_action.triggered.connect(self.show_about_dialog)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
@@ -305,6 +310,12 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_plugin_manager(self):
         self.iface.actionManagePlugins().trigger()
+
+    @_project_generator_required
+    @_db_connection_required
+    def load_layers_from_project_generator(self):
+        dlg = DialogLoadLayers(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg.exec_()
 
     def get_settings_dialog(self):
         if self._settings_dialog is None:
