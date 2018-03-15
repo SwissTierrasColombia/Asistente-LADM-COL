@@ -23,13 +23,14 @@ from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QSettings, QCoreApplication
 from qgis.PyQt.QtGui import QBrush, QFont, QIcon
 from qgis.PyQt.QtWidgets import (QAction, QDialog, QTreeWidgetItem, QLineEdit,
-                                 QTreeWidgetItemIterator)
+                                 QTreeWidgetItemIterator, QComboBox)
 
 from ..config.table_mapping_config import (
     TABLE_PROP_ASSOCIATION,
     TABLE_PROP_DOMAIN,
     TABLE_PROP_STRUCTURE
 )
+from ..config.layer_sets import LAYER_SETS
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
 from ..utils import get_ui_class
@@ -52,11 +53,17 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.project_generator_utils = ProjectGeneratorUtils()
         self.icon_names = ['points', 'lines', 'polygons', 'tables', 'domains', 'structures', 'associations']
 
-        self.cbo_select_predefined_tables.clear()
-        self.cbo_select_predefined_tables.addItem(self.tr('Spatial data'), 'spatial_data')
-        self.cbo_select_predefined_tables.addItem(self.tr('Legal data'), 'legal_data')
-        self.cbo_select_predefined_tables.currentIndexChanged.connect(self.select_predefined_changed)
         self.txt_search_text.addAction(QIcon(":/Asistente-LADM_COL/images/search.png"), QLineEdit.LeadingPosition)
+
+        # Fill predefined tables combobox
+        self.cbo_select_predefined_tables.clear()
+        self.cbo_select_predefined_tables.setInsertPolicy(QComboBox.InsertAlphabetically)
+        self.cbo_select_predefined_tables.addItem("", []) # By default
+
+        for name, layer_list in LAYER_SETS.items():
+            self.cbo_select_predefined_tables.addItem(self.tr(name), layer_list)
+
+        self.cbo_select_predefined_tables.currentIndexChanged.connect(self.select_predefined_changed)
 
         # Set connections
         self.buttonBox.accepted.connect(self.accepted)
@@ -236,5 +243,34 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.chk_show_structures.setChecked(settings.value('Asistente-LADM_COL/load_layers_dialog/show_structures', False, bool))
         self.chk_show_associations.setChecked(settings.value('Asistente-LADM_COL/load_layers_dialog/show_associations', False, bool))
 
-    def select_predefined_changed(self):
-        pass
+    def select_predefined_changed(self, index):
+        layer_list = self.cbo_select_predefined_tables.currentData()
+
+        # Clear selection if a layer set was chosen
+        if layer_list:
+            self.trw_layers.clearSelection()
+            self.selected_items = dict()
+
+        # First find corresponding unique names in tree, since for
+        # tables with multiple geometry columns, the tree has as much
+        # tables as geometry columns are, but the table name is the same
+        select_layers_list = list()
+        for model, tables in self.models_tree.items():
+            for table_name_in_tree, record in tables.items():
+                if record['tablename'] in layer_list:
+                    select_layers_list.append(table_name_in_tree)
+                    self.selected_items[table_name_in_tree] = record
+
+        if select_layers_list:
+            # Select predefined layers in the view (some layers might not be visible)
+            count = len(select_layers_list) # We can stop before iterating all layers
+            iterator = QTreeWidgetItemIterator(self.trw_layers, QTreeWidgetItemIterator.Selectable)
+            while iterator.value():
+                item = iterator.value()
+                if item.text(0) in select_layers_list:
+                    item.setSelected(True)
+                    count -= 1
+                    if count == 0:
+                        return
+
+                iterator += 1
