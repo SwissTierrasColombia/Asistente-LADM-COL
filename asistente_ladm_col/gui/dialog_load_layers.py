@@ -72,15 +72,16 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.chk_show_domains.toggled.connect(self.show_table_type_changed)
         self.chk_show_structures.toggled.connect(self.show_table_type_changed)
         self.chk_show_associations.toggled.connect(self.show_table_type_changed)
+        self.trw_layers.itemSelectionChanged.connect(self.selection_changed)
 
-        # Trigger some default behaviours
+        # Reload latest settings
         self.restore_settings()
 
         # Load layers from the db
         self.load_available_layers()
 
     def load_available_layers(self):
-        # Call project generator tables_info and fill the layer tree
+        # Call project generator tables_info, cache it and fill the tree
         tables_info = self.project_generator_utils.get_tables_info_without_ignored_tables(self._db)
         self.models_tree = dict()
         for record in tables_info:
@@ -104,6 +105,8 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.update_available_layers()
 
     def update_available_layers(self):
+        self.trw_layers.setUpdatesEnabled(False) # Don't render until we're ready
+
         # Grab some context data
         show_domains = self.chk_show_domains.isChecked()
         show_structures = self.chk_show_structures.isChecked()
@@ -116,7 +119,10 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.update_selected_items()
 
         # Iterate models adding children
+        self.trw_layers.blockSignals(True) # We don't want to get itemSelectionChanged here
         self.trw_layers.clear()
+        self.trw_layers.blockSignals(False)
+
         sorted_models = sorted(self.models_tree.keys())
         for model in sorted_models:
             children = []
@@ -168,6 +174,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
 
         # Set selection
         iterator = QTreeWidgetItemIterator(self.trw_layers, QTreeWidgetItemIterator.Selectable)
+        self.trw_layers.blockSignals(True) # We don't want to get itemSelectionChanged here
         while iterator.value():
             item = iterator.value()
             if item.text(0) in self.selected_items:
@@ -175,11 +182,15 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
 
             iterator += 1
 
+        self.trw_layers.blockSignals(False)
+
         # Make mode items non selectable
         # Set expand taking previous states into account
         for i in range(self.trw_layers.topLevelItemCount()):
             self.trw_layers.topLevelItem(i).setFlags(Qt.ItemIsEnabled) # Not selectable
             self.trw_layers.topLevelItem(i).setExpanded(top_level_items_expanded_info[i] if top_level_items_expanded_info else True)
+
+        self.trw_layers.setUpdatesEnabled(True) # Now render!
 
     def filter_tables_by_search_text(self, list_tables, search_text):
         res = list(list_tables)[:]
@@ -246,10 +257,11 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
     def select_predefined_changed(self, index):
         layer_list = self.cbo_select_predefined_tables.currentData()
 
-        # Clear selection if a layer set was chosen
-        if layer_list:
-            self.trw_layers.clearSelection()
-            self.selected_items = dict()
+        # Clear layer selection
+        self.trw_layers.blockSignals(True) # We don't want to get itemSelectionChanged here
+        self.trw_layers.clearSelection()
+        self.trw_layers.blockSignals(False)
+        self.selected_items = dict()
 
         # First find corresponding unique names in tree, since for
         # tables with multiple geometry columns, the tree has as much
@@ -261,8 +273,11 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
                     select_layers_list.append(table_name_in_tree)
                     self.selected_items[table_name_in_tree] = record
 
+        self.update_selected_count_label()
+
+        # Select predefined layers in the view (some layers might not be visible)
         if select_layers_list:
-            # Select predefined layers in the view (some layers might not be visible)
+            self.trw_layers.blockSignals(True) # We don't want to get itemSelectionChanged here
             count = len(select_layers_list) # We can stop before iterating all layers
             iterator = QTreeWidgetItemIterator(self.trw_layers, QTreeWidgetItemIterator.Selectable)
             while iterator.value():
@@ -271,6 +286,27 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
                     item.setSelected(True)
                     count -= 1
                     if count == 0:
-                        return
+                        break
 
                 iterator += 1
+
+            self.trw_layers.blockSignals(False)
+
+    def update_selected_count_label(self):
+        selected_count = len(self.selected_items)
+        if selected_count == 0:
+            text = QCoreApplication.translate("DialogLoadLayers",
+                        "There are no selected layers to load")
+        elif selected_count == 1:
+            text = QCoreApplication.translate("DialogLoadLayers",
+                        "There is 1 selected layer ready to be loaded")
+        else:
+            text = QCoreApplication.translate("DialogLoadLayers",
+                        "There are {} selected layers ready to be loaded".format(selected_count))
+
+        self.lbl_selected_count.setText(text)
+
+    def selection_changed(self):
+        # Update internal dict and dialog label
+        self.update_selected_items()
+        self.update_selected_count_label()
