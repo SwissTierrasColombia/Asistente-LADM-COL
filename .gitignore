@@ -104,3 +104,11 @@ ENV/
 /Asistente-LADM_COL.zip
 *.qm
 resources_rc.py
+
+# QT Creator
+*.config
+*.creator
+*.files
+*.includes
+*.creator.user
+
