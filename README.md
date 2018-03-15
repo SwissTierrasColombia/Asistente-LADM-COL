@@ -16,7 +16,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual (0.0.5) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.0.0 y permite:
+La versión actual (0.0.6) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) [v3.0.2.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/v3.0.2.1) y permite:
 
  - Capturar datos para el modelo LADM_COL v2.2.1.
  - Agregar puntos a las capas `Punto Lindero` y `Punto Levantamiento` desde archivo CSV.
@@ -34,15 +34,21 @@ La versión actual (0.0.5) del Asistente LADM_COL depende del plugin [Project Ge
    - `MasCCL`    (relaciona `Lindero` y `Terreno`)
    - `Menos`     (relaciona `Terreno` y sus anillos/huecos internos)
  - Crear `Predios` a partir de `Terrrenos` existentes.
- - Revisar segmentos de linderos muy largos (que superen una tolerancia dada).
- - Usar el plugin 'Project Generator' (una dependencia) para cargar capas con formularios y relaciones configuradas.
+ - Crear `Interesados Naturales` e `Interesados Jurídicos` usando formularios preconfigurados.
+ - Crear `Fuente Espcial` y `Fuente Administrativa` usando formularios preconfigurados.
+ - Seleccionar capas a cargar de cualquier modelo de la base de datos o esquema:
+   - Usar el plugin 'Project Generator' para cargar capas con formularios y relaciones configuradas.
+   - Cargar conjuntos de capas preconfigurados.
+ - Realizar revisiones de calidad:
+   - Revisar segmentos de linderos muy largos (que superen una tolerancia dada).
+   - Revisar superposiciones en `Punto Lindero`.
  - Usar estilos preconfigurados para asignarlos a las capas cargadas.
 
 ## Pruebas automatizadas al software
 
-Esta se ejecutan automáticamente en cada commit realizado al repositorio y los resultados de estos están disponibles en:
+Éstas se ejecutan automáticamente luego de cada commit realizado al repositorio y los resultados están disponibles en:
 
-- Linux: https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL
+- GNU/Linux: https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL
 - Windows: http://portal.proadmintierra.info:18000/
 
 Para ejecutar las pruebas localmente se necesita tener instalado *docker* y *docker-compose*.
@@ -50,14 +56,12 @@ Se recomienda:
 - Descargar *docker* desde el [sitio oficial](https://www.docker.com/community-edition#/download). Por ejemplo, para Ubuntu/Linux_Mint pueden seguirse los pasos descritos en [Install using the convenience script](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
 - Instalar *docker-compose* usando los [binarios](https://github.com/docker/compose/releases/tag/1.18.0).
 
-El comando para ejecutar las pruebas es:
+El comando para ejecutar las pruebas es (ejecutar desde la raíz del repositorio):
 ```sh
 docker-compose run --rm qgis
 ```
 
-Importante ejecutar en el directorio raiz del repositorio!!!
-
-Si necesita recrear la imagen de docker puedes usar:
+En caso de requerir recrear la imagen de docker se puede ejecutar:
 ```sh
 docker-compose build
 ```

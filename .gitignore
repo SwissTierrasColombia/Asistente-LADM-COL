@@ -102,3 +102,5 @@ ENV/
 # Build
 /Asistente-LADM_COL
 /Asistente-LADM_COL.zip
+*.qm
+resources_rc.py

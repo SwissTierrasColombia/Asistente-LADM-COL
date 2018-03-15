@@ -302,7 +302,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
                         "There is 1 selected layer ready to be loaded")
         else:
             text = QCoreApplication.translate("DialogLoadLayers",
-                        "There are {} selected layers ready to be loaded".format(selected_count))
+                        "There are {} selected layers ready to be loaded").format(selected_count)
 
         self.lbl_selected_count.setText(text)
 
