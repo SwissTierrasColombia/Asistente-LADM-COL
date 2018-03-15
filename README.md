@@ -33,15 +33,16 @@ La versión actual (0.0.6) del Asistente LADM_COL depende del plugin [Project Ge
    - `PuntosCCL` (relaciona `Punto Lindero` y `Lindero`)
    - `MasCCL`    (relaciona `Lindero` y `Terreno`)
    - `Menos`     (relaciona `Terreno` y sus anillos/huecos internos)
- - Crear `Predios` a partir de `Terrrenos` existentes.
+ - Crear `Predios` a partir de `Terrenos` existentes.
  - Crear `Interesados Naturales` e `Interesados Jurídicos` usando formularios preconfigurados.
- - Crear `Fuente Espcial` y `Fuente Administrativa` usando formularios preconfigurados.
+ - Crear `Fuente Espacial` y `Fuente Administrativa` usando formularios preconfigurados.
  - Seleccionar capas a cargar de cualquier modelo de la base de datos o esquema:
    - Usar el plugin 'Project Generator' para cargar capas con formularios y relaciones configuradas.
    - Cargar conjuntos de capas preconfigurados.
  - Realizar revisiones de calidad:
    - Revisar segmentos de linderos muy largos (que superen una tolerancia dada).
    - Revisar superposiciones en `Punto Lindero`.
+ - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
  - Usar estilos preconfigurados para asignarlos a las capas cargadas.
 
 ## Pruebas automatizadas al software
