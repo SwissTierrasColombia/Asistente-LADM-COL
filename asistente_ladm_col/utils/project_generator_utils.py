@@ -33,7 +33,7 @@ class ProjectGeneratorUtils(QObject):
             layers = generator.layers(layer_list)
             relations = generator.relations(layers, layer_list)
             legend = generator.legend(layers)
-            projectgenerator.create_project(layers, relations, legend)
+            projectgenerator.create_project(layers, relations, legend, auto_transaction=False)
         else:
             print("El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.")
 

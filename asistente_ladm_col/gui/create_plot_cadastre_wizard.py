@@ -60,6 +60,8 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
             self.create_plot()
 
     def create_plot(self):
+        self.qgis_utils.turn_transaction_off()
+
         # Load layers
         self._plot_layer = self.qgis_utils.get_layer(self._db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, True)
         if self._plot_layer is None:

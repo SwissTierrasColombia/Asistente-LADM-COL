@@ -83,7 +83,7 @@ class QGISUtils(QObject):
         # Response is a dict like this:
         # layers = {layer_id: layer_object} layer_object might be None
         response_layers = dict()
-        
+
         with OverrideCursor(Qt.WaitCursor):
             for layer_id, layer_info in layers.items():
                 # If layer is in LayerTree, return it
@@ -274,6 +274,7 @@ class QGISUtils(QObject):
         return segments
 
     def explode_boundaries(self, db):
+        self.turn_transaction_off()
         layer = self.get_layer_from_layer_tree(BOUNDARY_TABLE, db.schema)
 
         if layer is None:
@@ -317,6 +318,7 @@ class QGISUtils(QObject):
         self.map_refresh_requested.emit()
 
     def merge_boundaries(self, db):
+        self.turn_transaction_off()
         layer = self.get_layer_from_layer_tree(BOUNDARY_TABLE, db.schema)
         if layer is None:
             self.message_with_button_load_layer_emitted.emit(
@@ -866,3 +868,6 @@ class QGISUtils(QObject):
         line_symbol.appendSymbolLayer(simple_line_symbol_layer)
         layer.setRenderer(QgsSingleSymbolRenderer(line_symbol))
         self.layer_symbology_changed.emit(layer.id())
+
+    def turn_transaction_off(self):
+        QgsProject.instance().setAutoTransaction(False)
