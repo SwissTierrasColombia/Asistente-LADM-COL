@@ -88,9 +88,13 @@ class AsistenteLADMCOLPlugin(QObject):
         self._right_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Right"), self._rrr_cadastre_menu)
         self._restriction_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Restriction"), self._rrr_cadastre_menu)
         self._responsibility_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Responsibility"), self._rrr_cadastre_menu)
+        self._right_rrr_cadastre_action.setEnabled(False)
+        self._restriction_rrr_cadastre_action.setEnabled(False)
+        self._responsibility_rrr_cadastre_action.setEnabled(False)
         self._rrr_cadastre_menu.addActions([self._right_rrr_cadastre_action,
                                             self._restriction_rrr_cadastre_action,
                                             self._responsibility_rrr_cadastre_action])
+
 
         self._source_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._cadastre_menu)
         self._administrative_source_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Administrative Source"), self._source_cadastre_menu)
