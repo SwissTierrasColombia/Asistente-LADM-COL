@@ -26,8 +26,7 @@ from ..utils import get_ui_class
 from ..config.table_mapping_config import (
     SPATIAL_SOURCE_TABLE,
     AVAILABILITY_STATE_TABLE,
-    SPATIAL_SOURCE_TYPE_TABLE,
-    VIDA_UTIL_FIELD_BOUNDARY_TABLE
+    SPATIAL_SOURCE_TYPE_TABLE
 )
 
 WIZARD_UI = get_ui_class('wiz_create_spatial_source_cadastre.ui')
@@ -59,7 +58,7 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
             return
 
         # Configure automatic fields
-        self.qgis_utils.configureAutomaticField(self._spatial_source_layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
+        self.qgis_utils.set_automatic_fields(self._spatial_source_layer, "s")
 
         # Don't suppress (i.e., show) feature form
         form_config = self._spatial_source_layer.editFormConfig()

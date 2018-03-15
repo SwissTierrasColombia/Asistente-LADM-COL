@@ -25,8 +25,7 @@ from ..utils import get_ui_class
 #from ..utils.qt_utils import enable_next_wizard, disable_next_wizard
 from ..config.table_mapping_config import (
     LEGAL_PARTY_TABLE,
-    LEGAL_PARTY_TYPE_TABLE,
-    VIDA_UTIL_FIELD_BOUNDARY_TABLE
+    LEGAL_PARTY_TYPE_TABLE
 )
 
 WIZARD_UI = get_ui_class('wiz_create_legal_party_cadastre.ui')
@@ -57,7 +56,7 @@ class CreateLegalPartyCadastreWizard(QWizard, WIZARD_UI):
             return
 
         # Configure automatic fields
-        self.qgis_utils.configureAutomaticField(self._legal_party_layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
+        self.qgis_utils.set_automatic_fields(self._legal_party_layer, "p")
 
         # Don't suppress (i.e., show) feature form
         form_config = self._legal_party_layer.editFormConfig()
