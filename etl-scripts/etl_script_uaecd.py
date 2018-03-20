@@ -71,6 +71,15 @@ def get_layer(layer_name):
     output_uri = db.get_uri_for_layer(layer_name)[1]
     return QgsVectorLayer(output_uri, layer_name, "postgres")
 
+def fix_geometries(layer_name):
+    params = {
+        'INPUT' : '{input_db_path}|layername={layer_name}'.format(input_db_path=INPUT_DB_PATH, layer_name=layer_name),
+        'OUTPUT' : 'ogr:dbname=\'{input_db_path}\' table="{layer_name}_fixed" (geom) sql='.format(input_db_path=INPUT_DB_PATH, layer_name=layer_name)
+    }
+    processing.run("native:fixgeometries", params)
+    print("INFO: Geometries from layer {} successfully fixed!".format(layer_name))
+
+
 
 def llenar_punto_lindero():
     params_refactor_punto_lindero = {
@@ -309,7 +318,7 @@ def llenar_unidad_construccion(tipo='nph'):
     input_layer = QgsVectorLayer(input_uri, "r_input_layer", "ogr")
 
     layer_construccion = get_ladm_col_layer("construccion")
-    output_unidad_construccion = get_ladm_col_layer()"unidad_construccion")
+    output_unidad_construccion = get_ladm_col_layer("unidad_construccion")
 
     # Llenar relacion unidad_construccion - construccion en capa refactored
     features_unidad_construccion = [f for f in input_layer.getFeatures()]
@@ -498,13 +507,19 @@ def llenar_rrr_fuente():
     output_rrr_fuente.dataProvider().addFeatures(features)
 
 
+
+# Pre-processing
+fix_geometries('Lote')
+fix_geometries('Construccion_NPH')
+fix_geometries('Und_Cons_NPH')
+
 llenar_punto_lindero()
 llenar_lindero()
 llenar_terreno() # First fix the source layer (with 'Fix Geometries' algorithm)
 llenar_tablas_de_topologia()
 llenar_predio()
 llenar_uebaunit()
-llenar_construccion('Construccion_NPH_Fixed') # First fix source layer geometries
+llenar_construccion('Construccion_NPH_fixed') # First fix source layer geometries
 llenar_construccion('Construccion_PH')
 llenar_construccion('Construccion_MJ')
 llenar_unidad_construccion('nph') # First fix source layer geometries
