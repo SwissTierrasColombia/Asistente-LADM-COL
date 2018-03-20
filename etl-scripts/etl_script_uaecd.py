@@ -224,7 +224,7 @@ def llenar_uebaunit():
     dict_terreno = {feat_terreno['su_local_id']: feat_terreno['t_id'] for feat_terreno in it_terreno}
 
     # Get uebaunit
-    table_uebaunit = get_ladm_col_layer("uebeaunit")
+    table_uebaunit = get_ladm_col_layer("uebaunit")
     rows = list()
 
     # Iterar tabla fuente de paso buscando CHIP y COD_LOTE en dicts Predio y Terreno
@@ -244,7 +244,7 @@ def llenar_uebaunit():
             print("WARNING: COD_LOTE-CHIP NOT FOUND in llenar_uebaunit", cod_lote, chip)
 
     # Llenar uebaunit
-    print("INFO:",len(rows), "added to uebaunit!!!")
+    print("INFO:",len(rows), " rows added to uebaunit!!!")
     table_uebaunit.dataProvider().addFeatures(rows)
 
 def llenar_construccion(layer_name):
