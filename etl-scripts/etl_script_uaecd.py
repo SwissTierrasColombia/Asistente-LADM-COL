@@ -24,6 +24,8 @@ import datetime
 import qgis
 import processing
 
+from qgis.core import QgsVectorLayerUtils
+
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
 INPUT_DB_PATH = '/docs/tr/ai/insumos/uaecd/Capas_Sector_Piloto/GDB_Piloto.gpkg'
@@ -58,14 +60,26 @@ def refactor_and_copy_paste(params_refactor, input_uri, output_layer_name):
 
     # Append refactored features to output_layer
     copy_paste_features(input_layer, output_layer)
-    print("INFO: Features successfully copied to layer {}!".format(output_layer_name))
 
 def copy_paste_features(input_layer, output_layer):
-    input_layer.selectAll()
-    iface.copySelectionToClipboard(input_layer)
-    output_layer.startEditing()
-    iface.pasteFromClipboard(output_layer)
-    output_layer.commitChanges()
+    # Define a mapping between input and target layer
+    mapping = dict()
+    for target_idx in output_layer.fields().allAttributesList():
+        target_field = output_layer.fields().field(target_idx)
+        input_idx = input_layer.fields().indexOf(target_field.name())
+        if input_idx != -1 and target_field.name() != 't_id':
+            mapping[target_idx] = input_idx
+
+    # Copy and Paste
+    new_features = []
+    for in_feature in input_layer.getFeatures():
+        attrs = {target_idx: in_feature[input_idx] for target_idx, input_idx in mapping.items()}
+        new_feature = QgsVectorLayerUtils().createFeature(output_layer, in_feature.geometry(), attrs)
+        new_features.append(new_feature)
+
+    output_layer.dataProvider().addFeatures(new_features)
+    print("INFO: {} features successfully copied to layer {}!".format(len(new_features), output_layer.name()))
+
 
 def get_ladm_col_layer(layer_name):
     """
@@ -322,7 +336,7 @@ def llenar_unidad_construccion(tipo='nph'):
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'},
             {'name': 'punto_referencia', 'type': 10, 'length': -1, 'precision': -1, 'expression': '"punto_referencia"'}
         ],
-        'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="{refactored_layer}"'"Cod_CONS"' (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH, refactored_layer=refactored_layer)
+        'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="{refactored_layer}" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH, refactored_layer=refactored_layer)
     }
 
     processing.run("qgis:refactorfields", params_refactor_unidad_construccion)
@@ -330,7 +344,7 @@ def llenar_unidad_construccion(tipo='nph'):
     input_layer = QgsVectorLayer(input_uri, "r_input_layer", "ogr")
 
     layer_construccion = get_ladm_col_layer("construccion")
-    output_unidad_construccion = get_ladm_col_layer("unidad_construccion")
+    output_unidad_construccion = get_ladm_col_layer("unidadconstruccion")
 
     # Llenar relacion unidad_construccion - construccion en capa refactored
     features_unidad_construccion = [f for f in input_layer.getFeatures()]
@@ -494,7 +508,7 @@ def llenar_fuente_administrativa(tipo='interesado_natural'):
     refactor_and_copy_paste(params_refactor_fuente_administrativa, input_uri_col_fte_adminis, "col_fuenteadministrativa")
 
 def llenar_rrr_fuente():
-    output_col_derecho = get_ladm_col_layer("col derecho")
+    output_col_derecho = get_ladm_col_layer("col_derecho")
     output_col_fuente_administrativa = get_ladm_col_layer("col_fuenteadministrativa")
     output_rrr_fuente = get_ladm_col_layer("rrrfuente")
 
@@ -517,6 +531,7 @@ def llenar_rrr_fuente():
             print("WARNING: Col_derecho local id not found in fuente administrativa in llenar_rrr_fuente", f['r_local_id'], f['r_espacio_de_nombres'])
 
     output_rrr_fuente.dataProvider().addFeatures(features)
+    print("INFO: {} features successfully added to rrr_fuente!".format(len(features)))
 
 
 
