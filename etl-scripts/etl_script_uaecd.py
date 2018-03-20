@@ -24,17 +24,20 @@ import datetime
 import qgis
 import processing
 
+from asistente_ladm_col.utils.qgis_utils import QGISUtils
+
 INPUT_DB_PATH = '/docs/tr/ai/insumos/uaecd/Capas_Sector_Piloto/GDB_Piloto.gpkg'
 REFACTORED_DB_PATH = '/docs/tr/ai/productos/uaecd/resultados_intermedios/refactored_{}.gpkg'.format(datetime.datetime.now().strftime("%y%m%d_%H%M%S"))
 
 # PostgreSQL connection to schema with a LADM_COL model
 OUTPUT_DB_NAME = 'test'
-OUTPUT_DB_SCHEMA = 'uaecd_ladm_col_05'
+OUTPUT_DB_SCHEMA = 'uaecd_ladm_col_07'
 OUTPUT_DB_USER = 'postgres'
 OUTPUT_DB_PASSWORD = 'postgres'
 
 # Asistente-LADM_COL plugin is a prerrequisite
-asistente_ladm_col = qgis.utils.plugins["asistente_ladm_col"]
+asistente_ladm_col = QGISUtils()
+
 
 def refactor_and_copy_paste(params_refactor, input_uri, output_layer_name):
     """
@@ -55,6 +58,7 @@ def refactor_and_copy_paste(params_refactor, input_uri, output_layer_name):
 
     # Append refactored features to output_layer
     copy_paste_features(input_layer, output_layer)
+    print("INFO: Features successfully copied to layer {}!".format(output_layer_name))
 
 def copy_paste_features(input_layer, output_layer):
     input_layer.selectAll()
@@ -63,7 +67,7 @@ def copy_paste_features(input_layer, output_layer):
     iface.pasteFromClipboard(output_layer)
     output_layer.commitChanges()
 
-def get_layer(layer_name):
+def get_ladm_col_layer(layer_name):
     """
     Get a layer from the LADM_COL database by name
     """
@@ -79,7 +83,15 @@ def fix_geometries(layer_name):
     processing.run("native:fixgeometries", params)
     print("INFO: Geometries from layer {} successfully fixed!".format(layer_name))
 
-
+def initialize_connection():
+    dict_conn = dict()
+    dict_conn['host'] = 'localhost'
+    dict_conn['port'] = '5432'
+    dict_conn['database'] = OUTPUT_DB_NAME
+    dict_conn['schema'] = OUTPUT_DB_SCHEMA
+    dict_conn['user'] = OUTPUT_DB_USER
+    dict_conn['password'] = OUTPUT_DB_PASSWORD
+    asistente_ladm_col.set_db_connection('pg', dict_conn)
 
 def llenar_punto_lindero():
     params_refactor_punto_lindero = {
@@ -168,8 +180,8 @@ def llenar_terreno():
 def llenar_tablas_de_topologia():
     # PuntoCCL, MasCCL, Menos
     db = asistente_ladm_col.get_db_connection()
-    asistente_ladm_col.qgis_utils.fill_topology_table_pointbfs(db, use_selection=False)
-    asistente_ladm_col.qgis_utils.fill_topology_tables_morebfs_less(db, use_selection=False)
+    asistente_ladm_col.fill_topology_table_pointbfs(db, use_selection=False)
+    asistente_ladm_col.fill_topology_tables_morebfs_less(db, use_selection=False)
 
 def llenar_predio():
     # Predio
@@ -416,9 +428,9 @@ def llenar_col_derecho(tipo='interesado_natural'):
 
     # Get col_derecho
     table_col_derecho = get_ladm_col_layer("col_derecho")
-    asistente_ladm_col.qgis_utils.configureAutomaticField(table_col_derecho, "comienzo_vida_util_version", "now()")
+    asistente_ladm_col.configureAutomaticField(table_col_derecho, "comienzo_vida_util_version", "now()")
     espacio_de_nombres = 'UAECD_Col_Derecho_Natural' if tipo == 'interesado_natural' else 'UAECD_Col_Derecho_Juridico'
-    asistente_ladm_col.qgis_utils.configureAutomaticField(table_col_derecho, "r_espacio_de_nombres", "'{}'".format(espacio_de_nombres))
+    asistente_ladm_col.configureAutomaticField(table_col_derecho, "r_espacio_de_nombres", "'{}'".format(espacio_de_nombres))
     rows = list()
 
     # Iterar tabla fuente de paso buscando CHIP y COD_LOTE en dicts Predio y Terreno
@@ -507,6 +519,8 @@ def llenar_rrr_fuente():
     output_rrr_fuente.dataProvider().addFeatures(features)
 
 
+
+initialize_connection()
 
 # Pre-processing
 fix_geometries('Lote')

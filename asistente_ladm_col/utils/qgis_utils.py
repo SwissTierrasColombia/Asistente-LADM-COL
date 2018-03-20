@@ -34,6 +34,7 @@ from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
 
 from .project_generator_utils import ProjectGeneratorUtils
 from .qt_utils import OverrideCursor
+from ..gui.settings_dialog import SettingsDialog
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
@@ -68,6 +69,24 @@ class QGISUtils(QObject):
     def __init__(self):
         QObject.__init__(self)
         self.project_generator_utils = ProjectGeneratorUtils()
+        self.__settings_dialog = None
+
+    def set_db_connection(self, mode, dict_conn):
+        """
+        Set plugin's main DB connection manually
+
+        mode: 'pg' or 'gpkg'
+        dict_conn: key-values (host, port, database, schema, user, password, dbfile)
+        """
+        self.get_settings_dialog().set_db_connection(mode, dict_conn)
+
+    def get_settings_dialog(self):
+        self.__settings_dialog = SettingsDialog()
+        return self.__settings_dialog
+
+    def get_db_connection(self):
+        self.__settings_dialog = self.get_settings_dialog()
+        return self.__settings_dialog.get_db_connection()
 
     def get_layer(self, db, layer_name, geometry_type=None, load=False):
         # Handy function to avoid sending a whole dict when all we need is a single table/layer
