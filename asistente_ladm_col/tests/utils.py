@@ -46,7 +46,7 @@ def get_dbconn():
     dict_conn['schema'] = DB_SCHEMA
     dict_conn['user'] = DB_USER
     dict_conn['password'] = DB_PASSWORD
-    asistente_ladm_col.qgis_utils.set_db_connection('pg', dict_conn)
+    asistente_ladm_col_plugin.qgis_utils.set_db_connection('pg', dict_conn)
 
     db = asistente_ladm_col_plugin.qgis_utils.get_db_connection()
     return db
