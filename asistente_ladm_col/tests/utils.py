@@ -39,15 +39,16 @@ asistente_ladm_col_plugin.initGui()
 
 def get_dbconn():
     #global DB_HOSTNAME DB_PORT DB_NAME DB_SCHEMA DB_USER DB_USER DB_PASSWORD
-    settings = asistente_ladm_col_plugin.get_settings_dialog()
-    settings.txt_pg_host.setText(DB_HOSTNAME)
-    settings.txt_pg_port.setText(DB_PORT)
-    settings.txt_pg_database.setText(DB_NAME)
-    settings.txt_pg_schema.setText(DB_SCHEMA)
-    settings.txt_pg_user.setText(DB_USER)
-    settings.txt_pg_password.setText(DB_PASSWORD)
-    settings.accepted()
-    db = asistente_ladm_col_plugin.get_db_connection()
+    dict_conn = dict()
+    dict_conn['host'] = DB_HOSTNAME
+    dict_conn['port'] = DB_PORT
+    dict_conn['database'] = DB_NAME
+    dict_conn['schema'] = DB_SCHEMA
+    dict_conn['user'] = DB_USER
+    dict_conn['password'] = DB_PASSWORD
+    asistente_ladm_col.qgis_utils.set_db_connection('pg', dict_conn)
+
+    db = asistente_ladm_col_plugin.qgis_utils.get_db_connection()
     return db
 
 def restore_schema(db_connection):
