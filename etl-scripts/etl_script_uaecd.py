@@ -552,9 +552,48 @@ def llenar_rrr_fuente():
     print("INFO: {} features successfully added to rrr_fuente!".format(len(features)))
 
 
+################################################################################
+################################################################################
+################################################################################
 
+def llenar_avaluos__predio_matriz_ph():
+    # First we need to add a temporal column to store COD_LOTE and be able to
+    # do joins to fill avaluopredio
+    output_predio_matriz_ph = get_ladm_col_layer("predio_matriz_ph")
+    if output_predio_matriz_ph.dataProvider().fields().indexFromName('tmp_cod_lote') == -1:
+        output_predio_matriz_ph.dataProvider().addAttributes([QgsField('tmp_cod_lote', QVariant.String)])
+
+    output_predio_matriz_ph.reload()
+
+    params_refactor_predio_matriz_ph = {
+        'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_predio_matriz_ph" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH)
+        'FIELDS_MAPPING' : [
+            {'type': 4, 'precision': 0, 'expression': '"t_id"', 'length': -1, 'name': 't_id'},
+            {'type': 2, 'precision': 0, 'expression': 'IF ("ETAPA_NUMERO" = \'\', NULL, "ETAPA_NUMERO")', 'length': -1, 'name': 'num_etapas'},
+            {'type': 2, 'precision': 0, 'expression': '"num_interiores"', 'length': -1, 'name': 'num_interiores'},
+            {'type': 2, 'precision': 0, 'expression': '"num_torres"', 'length': -1, 'name': 'num_torres'},
+            {'type': 2, 'precision': 0, 'expression': '"PISOS"', 'length': -1, 'name': 'num_pisos_por_torre'},
+            {'type': 2, 'precision': 0, 'expression': '"NUMERO_UNIDADES"', 'length': -1, 'name': 'num_unidades_privadas'},
+            {'type': 10, 'precision': -1, 'expression': '"tipologia_constructiva_copropiedad"', 'length': 20, 'name': 'tipologia_constructiva_copropiedad'},
+            {'type': 14, 'precision': -1, 'expression': "concat('01-01-', anio_construccion)", 'length': -1, 'name': 'anio_construccion_etapa'},
+            {'type': 10, 'precision': -1, 'expression': '"Estado_Conservacion_Copropiedad"', 'length': 255, 'name': 'estado_conservacion_copropiedad'},
+            {'type': 10, 'precision': -1, 'expression': '"materiales_construccion_areas_comunes"', 'length': 100, 'name': 'materiales_construccion_areas_comunes'},
+            {'type': 10, 'precision': -1, 'expression': '"disenio_funcionalidad_copropiedad"', 'length': 100, 'name': 'disenio_funcionalidad_copropiedad'},
+            {'type': 10, 'precision': -1, 'expression': '"COD_LOTE"', 'length': -1, 'name': 'tmp_cod_lote'}
+        ],
+        'INPUT' : '{input_db_path}|layername=Predio_Matriz_PH'.format(input_db_path=INPUT_DB_PATH)
+    }
+
+    input_uri = '{refactored_db_path}|layername=R_predio_matriz_ph'.format(refactored_db_path=REFACTORED_DB_PATH)
+    refactor_and_copy_paste(params_refactor_predio_matriz_ph, input_uri, output_predio_matriz_ph.name())
+
+
+################################################################################
 initialize_connection()
 
+################################################################################
+#                      MODELO CATASTRO-REGISTRO NÚCLEO
+################################################################################
 # Pre-processing
 fix_geometries('Lote')
 fix_geometries('Construccion_NPH')
@@ -579,3 +618,8 @@ llenar_col_derecho('interesado_juridico')
 llenar_fuente_administrativa('interesado_juridico')
 llenar_fuente_administrativa('interesado_natural')
 llenar_rrr_fuente()
+
+################################################################################
+#                                MODELO AVALÚOS
+################################################################################
+llenar_avaluos__predio_matriz_ph()
