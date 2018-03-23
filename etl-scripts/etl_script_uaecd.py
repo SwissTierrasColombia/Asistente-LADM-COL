@@ -33,13 +33,13 @@ REFACTORED_DB_PATH = '/docs/tr/ai/productos/uaecd/resultados_intermedios/refacto
 
 # PostgreSQL connection to schema with a LADM_COL model
 OUTPUT_DB_NAME = 'test'
-OUTPUT_DB_SCHEMA = 'uaecd_ladm_col_07'
+OUTPUT_DB_SCHEMA = 'uaecd_ladm_col_09'
 OUTPUT_DB_USER = 'postgres'
 OUTPUT_DB_PASSWORD = 'postgres'
 
 # Asistente-LADM_COL plugin is a prerrequisite
 asistente_ladm_col = QGISUtils()
-
+print("INFO: Using Refactored DB {}".format(REFACTORED_DB_PATH))
 
 def refactor_and_copy_paste(params_refactor, input_uri, output_layer_name):
     """
@@ -63,23 +63,41 @@ def refactor_and_copy_paste(params_refactor, input_uri, output_layer_name):
 
 def copy_paste_features(input_layer, output_layer):
     # Define a mapping between input and target layer
-    mapping = dict()
-    for target_idx in output_layer.fields().allAttributesList():
-        target_field = output_layer.fields().field(target_idx)
-        input_idx = input_layer.fields().indexOf(target_field.name())
-        if input_idx != -1 and target_field.name() != 't_id':
-            mapping[target_idx] = input_idx
+    input_layer.selectAll()
+    iface.copySelectionToClipboard(input_layer)
+    output_layer.startEditing()
+    iface.pasteFromClipboard(output_layer)
+    output_layer.commitChanges()
+    print("INFO: {} features successfully copied to layer {}!".format(input_layer.featureCount(), output_layer.name()))
 
-    # Copy and Paste
-    new_features = []
-    for in_feature in input_layer.getFeatures():
-        attrs = {target_idx: in_feature[input_idx] for target_idx, input_idx in mapping.items()}
-        new_feature = QgsVectorLayerUtils().createFeature(output_layer, in_feature.geometry(), attrs)
-        new_features.append(new_feature)
-
-    output_layer.dataProvider().addFeatures(new_features)
-    print("INFO: {} features successfully copied to layer {}!".format(len(new_features), output_layer.name()))
-
+    # mapping = dict()
+    # for target_idx in output_layer.fields().allAttributesList():
+    #     target_field = output_layer.fields().field(target_idx)
+    #     input_idx = input_layer.fields().indexOf(target_field.name())
+    #     if input_idx != -1 and target_field.name() != 't_id':
+    #         mapping[target_idx] = input_idx
+    #
+    # # Copy and Paste
+    # new_features = []
+    # for in_feature in input_layer.getFeatures():
+    #     attrs = {target_idx: in_feature[input_idx] for target_idx, input_idx in mapping.items()}
+    #     new_feature = QgsVectorLayerUtils().createFeature(output_layer, in_feature.geometry(), attrs)
+    #     new_features.append(new_feature)
+    #
+    # res, foo = output_layer.dataProvider().addFeatures(new_features)
+    # if res:
+    #     print("INFO: {} features successfully copied to layer {}!".format(len(new_features), output_layer.name()))
+    # else:
+    #     print("ERROR: Error copying {} features from {} to {}!!!".format(len(new_features), input_layer.name(), output_layer.name()))
+    #     print("       Field mapping: {}".format(mapping))
+    #     print("       Input layer info:")
+    #     print("           Is valid: {}".format(input_layer.isValid()))
+    #     print("           Num Feat: {}".format(input_layer.featureCount()))
+    #     print("           Source: {}".format(input_layer.source()))
+    #     print("       Output layer info:")
+    #     print("           Is valid: {}".format(output_layer.isValid()))
+    #     print("           Num Feat: {}".format(output_layer.featureCount()))
+    #     print("           Source: {}".format(output_layer.source()))
 
 def get_ladm_col_layer(layer_name):
     """
