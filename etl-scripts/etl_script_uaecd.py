@@ -24,7 +24,8 @@ import datetime
 import qgis
 import processing
 
-from qgis.core import QgsVectorLayerUtils
+from qgis.core import QgsVectorLayerUtils, QgsField
+from qgis.PyQt.QtCore import QVariant
 
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
@@ -587,6 +588,59 @@ def llenar_avaluos__predio_matriz_ph():
     input_uri = '{refactored_db_path}|layername=R_predio_matriz_ph'.format(refactored_db_path=REFACTORED_DB_PATH)
     refactor_and_copy_paste(params_refactor_predio_matriz_ph, input_uri, output_predio_matriz_ph.name())
 
+def llenar_avaluos__predio():
+    # First we need to add a temporal column to store NUPRE (CHIP) and be able
+    # to do joins to fill avaluopredio
+    output_predio = get_ladm_col_layer("avaluos_v2_2_1avaluos_predio")
+    if output_predio.dataProvider().fields().indexFromName('tmp_chip') == -1:
+        output_predio.dataProvider().addAttributes([QgsField('tmp_chip', QVariant.String)])
+
+    output_predio.reload()
+
+    # table_predio: Catastro_Registro.predio
+    # table_source: Pred_Identificador, GPKG de la UAECD
+    # table_target: Avaluos.predio (avaluos_v2_2_1avaluos_predio)
+    # table_matriz_ph: Predio_Matriz_PH (requerida para relacionar predios PH a su matriz PH)
+    table_predio = get_ladm_col_layer("predio")
+    source_uri = '{input_db_path}|layername=Pred_Identificador'.format(input_db_path=INPUT_DB_PATH)
+    table_source = QgsVectorLayer(source_uri, "table_source", "ogr")
+    table_target = get_ladm_col_layer("avaluos_v2_2_1avaluos_predio")
+    table_predio = get_ladm_col_layer("predio_matriz_ph")
+
+    features_predio = [f for f in table_predio.getFeatures()]
+    features = []
+    for f in features_predio:
+        it_table_source = table_source.getFeatures("\"CHIP\" = '{}'".format(f['nupre']))
+        f_table_source = QgsFeature()
+        it_table_source.nextFeature(f_table_source)
+
+        it_table_matriz_ph = table_matriz_ph.getFeatures("\"tmp_cod_lote\" = '{}'".format(f_table_source['Cod_LOTE']))
+        f_table_matriz_ph = QgsFeature()
+        it_table_matriz_ph.nextFeature(f_table_matriz_ph)
+
+        if f_table_source.isValid():
+            feature = QgsVectorLayerUtils().createFeature(table_target)
+            feature.setAttribute('tmp_chip', f['nupre'])
+            if f_table_matriz_ph.isValid(): # Not all predios are PH
+                feature.setAttribute('avpredmatrizph', f_table_matriz_ph['t_id'])
+
+            feature.setAttribute('area_calculada_plano_local', f_table_source['AREA_TERRENO'])
+            feature.setAttribute('aprovechamiento', 'Aprov_Optimo')
+            feature.setAttribute('disponibilidad_agua', 'A_Acueducto_Mpio')
+            feature.setAttribute('obra_al_interior', 'No_Posee')
+            feature.setAttribute('cercania_hitos', 'Cercano')
+            feature.setAttribute('capa_vegetal', 'Sin_Cobert_Vegetal')
+            feature.setAttribute('pendiente', 'Plano')
+            feature.setAttribute('frente', f_table_source['FRENTE'])
+            feature.setAttribute('fondo', f_table_source['FONDO'])
+            features.append(feature)
+        else:
+           pass
+
+    table_target.dataProvider().addFeatures(features)
+
+
+
 
 ################################################################################
 initialize_connection()
@@ -623,3 +677,4 @@ llenar_rrr_fuente()
 #                                MODELO AVALÚOS
 ################################################################################
 llenar_avaluos__predio_matriz_ph()
+llenar_avaluos__predio()
