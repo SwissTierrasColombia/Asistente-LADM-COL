@@ -602,8 +602,7 @@ def llenar_avaluos__predio():
     # table_target: Avaluos.predio (avaluos_v2_2_1avaluos_predio)
     # table_matriz_ph: Predio_Matriz_PH (requerida para relacionar predios PH a su matriz PH)
     table_predio = get_ladm_col_layer("predio")
-    source_uri = '{input_db_path}|layername=Pred_Identificador'.format(input_db_path=INPUT_DB_PATH)
-    table_source = QgsVectorLayer(source_uri, "table_source", "ogr")
+    table_source = QgsVectorLayer('{input_db_path}|layername=Pred_Identificador'.format(input_db_path=INPUT_DB_PATH), "table_source", "ogr")
     table_target = get_ladm_col_layer("avaluos_v2_2_1avaluos_predio")
     table_predio = get_ladm_col_layer("predio_matriz_ph")
 
@@ -690,11 +689,13 @@ def llenar_avaluos__construccion(tipo='nph'):
     table_target = get_ladm_col_layer("avaluos_v2_2_1avaluos_construccion")
 
     if tipo == 'nph':
-        table_source = source_uri = '{input_db_path}|layername=Construccion_NPH_fixed'.format(input_db_path=INPUT_DB_PATH)
+        source_uri = '{input_db_path}|layername=Construccion_NPH_fixed'.format(input_db_path=INPUT_DB_PATH)
     elif tipo == 'ph':
-        table_source = source_uri = '{input_db_path}|layername=Construccion_PH'.format(input_db_path=INPUT_DB_PATH)
+        source_uri = '{input_db_path}|layername=Construccion_PH'.format(input_db_path=INPUT_DB_PATH)
     elif tipo == 'mj':
-        table_source = source_uri = '{input_db_path}|layername=Construccion_MJ'.format(input_db_path=INPUT_DB_PATH)
+        source_uri = '{input_db_path}|layername=Construccion_MJ'.format(input_db_path=INPUT_DB_PATH)
+
+    table_source = QgsVectorLayer(source_uri, "table_source", "ogr")
 
     features_source = [f for f in table_source.getFeatures()]
     features = []
@@ -723,11 +724,13 @@ def llenar_avaluos__unidad_construccion(tipo='nph'):
     table_target = get_ladm_col_layer("unidad_construccion")
 
     if tipo == 'nph':
-        table_source = source_uri = '{input_db_path}|layername=Und_Cons_NPH_fixed'.format(input_db_path=INPUT_DB_PATH)
+        source_uri = '{input_db_path}|layername=Und_Cons_NPH_fixed'.format(input_db_path=INPUT_DB_PATH)
     elif tipo == 'ph':
-        table_source = source_uri = '{input_db_path}|layername=Und_Cons_PH'.format(input_db_path=INPUT_DB_PATH)
+        source_uri = '{input_db_path}|layername=Und_Cons_PH'.format(input_db_path=INPUT_DB_PATH)
     elif tipo == 'mj':
-        table_source = source_uri = '{input_db_path}|layername=Und_Cons_MJ'.format(input_db_path=INPUT_DB_PATH)
+        source_uri = '{input_db_path}|layername=Und_Cons_MJ'.format(input_db_path=INPUT_DB_PATH)
+
+    table_source = QgsVectorLayer(source_uri, "table_source", "ogr")
 
     features_cr_unidad_construccion = [f for f in layer_cr_unidad_construccion.getFeatures()]
     features = []
@@ -735,7 +738,7 @@ def llenar_avaluos__unidad_construccion(tipo='nph'):
         it_table_source = table_source.getFeatures("\"Cod_CONS\" = '{}'".format(f['su_local_id']))
         f_table_source = QgsFeature()
         it_table_source.nextFeature(f_table_source)
-        
+
         if f_table_source.isValid():
             feature = QgsVectorLayerUtils().createFeature(table_target)
             feature.setAttribute('ucons', f['t_id'])
@@ -755,6 +758,83 @@ def llenar_avaluos__unidad_construccion(tipo='nph'):
             features.append(feature)
         else:
            pass
+
+    table_target.dataProvider().addFeatures(features)
+
+def llenar_avaluos__calificacion_unidad_construccion():
+    # layer_cr_unidad_construccion: Catastro_Registro.UnidadConstruccion
+    # layer_av_unidad_construccion: Avaluos.Unidad_Construccion
+    # table_source: GPKG Source Cal_Und_construccion
+    # table_target: Table in LADM where to paste features to (Avaluos_Calificacion_Unidad_Construccion)
+    layer_cr_unidad_construccion = get_ladm_col_layer("unidadconstruccion")
+    layer_av_unidad_construccion = get_ladm_col_layer("unidad_construccion")
+    table_source = QgsVectorLayer('{input_db_path}|layername=Cal_Und_construccion'.format(input_db_path=INPUT_DB_PATH), "table_source", "ogr")
+    table_target = get_ladm_col_layer("calificacion_unidad_construccion")
+
+    features_source = [f for f in table_source.getFeatures()]
+    features = []
+    for f in features_source:
+        # Get corresponding feature in CR.UnidadConstruccion
+        it_cr_unidad_construccion = layer_cr_unidad_construccion.getFeatures("\"su_local_id\" = '{}'".format(f['COD_CONS_MODIF']))
+        f_cr_unidad_construccion = QgsFeature()
+        it_cr_unidad_construccion.nextFeature(f_cr_unidad_construccion)
+        if f_cr_unidad_construccion.isValid():
+
+            # Get corresponding feature in Av.Unidad_Construccion
+            it_av_unidad_construccion = layer_av_unidad_construccion.getFeatures("\"ucons\" = {}".format(f_cr_unidad_construccion['t_id']))
+            f_av_unidad_construccion = QgsFeature()
+            it_av_unidad_construccion.nextFeature(f_av_unidad_construccion)
+            if f_av_unidad_construccion.isValid():
+                feature = QgsVectorLayerUtils().createFeature(table_target)
+                feature.setAttribute('fichapredio', f_av_unidad_construccion['t_id'])
+
+                feature.setAttribute('tipo_calificar', f['USO_UC'])
+                feature.setAttribute('armazon', f['Armazon_MD'])
+                feature.setAttribute('puntos_armazon', f['puntos_armazon'] if f['puntos_armazon'] > 0 else None)  # Ranges not allowing 0!
+                feature.setAttribute('muros', f['Muros_MD'])
+                feature.setAttribute('puntos_muro', f['puntos_muro'] if f['puntos_muro'] > 0 else None)
+                feature.setAttribute('cubierta', f['Cubierta_MD'])
+                feature.setAttribute('puntos_cubierta', f['puntos_cubierta'] if f['puntos_muro'] > 0 else None)
+                feature.setAttribute('conservacion_cubierta', f['Coserva_Cubierta_MD'])
+                feature.setAttribute('puntos_cubierta_conservacion', f['puntos_cubierta_conservacion'] if f['puntos_cubierta_conservacion'] > 0 else None)
+                feature.setAttribute('sub_total_estructura', f['sub_total_estructura'])
+                feature.setAttribute('fachada', f['Fachada_MD'])
+                feature.setAttribute('puntos_fachada', f['puntos_fachada'] if f['puntos_fachada'] > 0 else None)
+                feature.setAttribute('cubrimiento_muros', f['Cubrimiento_Muros_MD'])
+                feature.setAttribute('puntos_cubrimiento_muros', f['puntos_cubrimiento_muros'] if f['puntos_cubrimiento_muros'] > 0 else None)
+                feature.setAttribute('piso', f['Pisos_MD'])
+                feature.setAttribute('puntos_piso', f['puntos_piso'] if f['puntos_piso'] > 0 else None)
+                feature.setAttribute('conservacion_acabados', f['Conserva_Acabados_MD'])
+                feature.setAttribute('puntos_conservacion_acabados', f['puntos_conservacion_acabados'] if f['puntos_conservacion_acabados'] > 0 else None)
+                feature.setAttribute('sub_total_acabados', f['sub_total_acabados'])
+                feature.setAttribute('tamanio_banio', f['Tamano_Bano_MD'])
+                feature.setAttribute('puntos_tamanio_banio', f['puntos_tamanio_banio'] if f['puntos_tamanio_banio'] > 0 else None)
+                feature.setAttribute('enchape_banio', f['Enchape_Bano_MD'])
+                feature.setAttribute('puntos_enchape_banio', f['puntos_enchape_banio'] if f['puntos_enchape_banio'] > 0 else None)
+                feature.setAttribute('mobiliario_banio', f['Mobiliario_Bano_MD'])
+                feature.setAttribute('puntos_mobiliario_banio', f['puntos_mobiliario_banio'] if f['puntos_mobiliario_banio'] > 0 else None)
+                feature.setAttribute('conservacion_banio', f['Conserva_Bano_MD'])
+                feature.setAttribute('puntos_conservacion_banio', f['puntos_conservacion_banio'] if f['puntos_conservacion_banio'] > 0 else None)
+                feature.setAttribute('sub_total_banio', f['sub_total_banio'])
+                feature.setAttribute('tamanio_cocina', f['Tamano_Cocina_MD'])
+                feature.setAttribute('puntos_tamanio_cocina', f['puntos_tamanio_cocina'] if f['puntos_tamanio_cocina'] > 0 else None)
+                feature.setAttribute('enchape_cocina', f['Enchape_Cocina_MD'])
+                feature.setAttribute('puntos_enchape_cocina', f['puntos_enchape_cocina'] if f['puntos_enchape_cocina'] > 0 else None)
+                feature.setAttribute('mobiliario_cocina', f['Mobiliario_Cocina_MD'])
+                feature.setAttribute('puntos_mobiliario_cocina', f['puntos_mobiliario_cocina'] if f['puntos_mobiliario_cocina'] > 0 else None)
+                feature.setAttribute('conservacion_cocina', f['Conserva_Cocina_MD'])
+                feature.setAttribute('puntos_conservacion_cocina', f['puntos_conservacion_cocina'] if f['puntos_conservacion_cocina'] > 0 else None)
+                feature.setAttribute('sub_total_cocina', f['sub_total_cocina'])
+                feature.setAttribute('total_residencial_y_comercial', f['total_RyC'] if f['total_RyC'] > 0 else None)
+                feature.setAttribute('cerchas', f['Comple_Industria_MD'])
+                feature.setAttribute('puntos_cerchas', f['puntos_comple_industria'] if int(f['puntos_comple_industria'] or 0) > 0 else None)
+                feature.setAttribute('total_industrial', f['total_industrial'] if f['total_industrial'] > 0 else None)
+
+                features.append(feature)
+            else:
+                print("Unidad de Construcción id not found in Av.Unidad_Construccion", f_cr_unidad_construccion['t_id'])
+        else:
+           print("COD_LOTE not found in CR.Unidad_Construccion:", f['COD_LOTE'])
 
     table_target.dataProvider().addFeatures(features)
 
@@ -803,3 +883,4 @@ llenar_avaluos__construccion('mj')
 llenar_avaluos__unidad_construccion('nph')
 llenar_avaluos__unidad_construccion('ph')
 llenar_avaluos__unidad_construccion('mj')
+llenar_avaluos__calificacion_unidad_construccion()
