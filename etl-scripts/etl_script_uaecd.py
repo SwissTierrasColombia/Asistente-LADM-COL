@@ -30,6 +30,7 @@ from qgis.PyQt.QtCore import QVariant
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
 INPUT_DB_PATH = '/docs/tr/ai/insumos/uaecd/Capas_Sector_Piloto/GDB_Piloto.gpkg'
+INPUT_DB_PATH_CARTO_REF = '/docs/tr/ai/insumos/uaecd/Capas_Sector_Piloto/GDB_Carto_REF.gpkg'
 REFACTORED_DB_PATH = '/docs/tr/ai/productos/uaecd/resultados_intermedios/refactored_{}.gpkg'.format(datetime.datetime.now().strftime("%y%m%d_%H%M%S"))
 
 # PostgreSQL connection to schema with a LADM_COL model
@@ -108,10 +109,10 @@ def get_ladm_col_layer(layer_name):
     output_uri = db.get_uri_for_layer(layer_name)[1]
     return QgsVectorLayer(output_uri, layer_name, "postgres")
 
-def fix_geometries(layer_name):
+def fix_geometries(layer_name, input_db_path=INPUT_DB_PATH):
     params = {
-        'INPUT' : '{input_db_path}|layername={layer_name}'.format(input_db_path=INPUT_DB_PATH, layer_name=layer_name),
-        'OUTPUT' : 'ogr:dbname=\'{input_db_path}\' table="{layer_name}_fixed" (geom) sql='.format(input_db_path=INPUT_DB_PATH, layer_name=layer_name)
+        'INPUT' : '{input_db_path}|layername={layer_name}'.format(input_db_path=input_db_path, layer_name=layer_name),
+        'OUTPUT' : 'ogr:dbname=\'{input_db_path}\' table="{layer_name}_fixed" (geom) sql='.format(input_db_path=input_db_path, layer_name=layer_name)
     }
     processing.run("native:fixgeometries", params)
     print("INFO: Geometries from layer {} successfully fixed!".format(layer_name))
@@ -838,6 +839,32 @@ def llenar_avaluos__calificacion_unidad_construccion():
 
     table_target.dataProvider().addFeatures(features)
 
+def llenar_avaluos__zhf():
+    params_refactor_zhf = {
+        'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_zhf" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH),
+        'INPUT' : '{input_db_path}|layername=ZHF_009116_fixed'.format(input_db_path=INPUT_DB_PATH_CARTO_REF),
+        'FIELDS_MAPPING' : [
+            {'type': 4, 'name': 't_id', 'length': -1, 'precision': 0, 'expression': '"t_id"'},
+            {'type': 10, 'name': 'identificador', 'length': 20, 'precision': -1, 'expression': '"ZHF_IDENTI"'}
+        ]
+    }
+
+    input_uri = '{refactored_db_path}|layername=R_zhf'.format(refactored_db_path=REFACTORED_DB_PATH)
+    refactor_and_copy_paste(params_refactor_zhf, input_uri, "zona_homogenea_fisica")
+
+def llenar_avaluos__zhg():
+    params_refactor_zhg = {
+        'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_zhg" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH),
+        'INPUT' : '{input_db_path}|layername=ZHG_009116'.format(input_db_path=INPUT_DB_PATH_CARTO_REF),
+        'FIELDS_MAPPING' : [
+            {'type': 4, 'name': 't_id', 'length': -1, 'precision': 0, 'expression': '"t_id"'},
+            {'type': 10, 'name': 'identificador', 'length': 20, 'precision': -1, 'expression': '"ZHG_IDENTI"'},
+            {'type': 2, 'name': 'valor', 'length': -1, 'precision': 0, 'expression': '"ZHGVM2TERR"'}
+        ]
+    }
+
+    input_uri = '{refactored_db_path}|layername=R_zhg'.format(refactored_db_path=REFACTORED_DB_PATH)
+    refactor_and_copy_paste(params_refactor_zhg, input_uri, "zona_homogenea_geoeconomica")
 
 ################################################################################
 initialize_connection()
@@ -873,6 +900,9 @@ llenar_rrr_fuente()
 ################################################################################
 #                                MODELO AVALÚOS
 ################################################################################
+# Pre-processing
+fix_geometries('ZHF_009116', INPUT_DB_PATH_CARTO_REF)
+
 llenar_avaluos__predio_matriz_ph()
 llenar_avaluos__predio()
 llenar_avaluos__avaluopredio()
@@ -884,3 +914,5 @@ llenar_avaluos__unidad_construccion('nph')
 llenar_avaluos__unidad_construccion('ph')
 llenar_avaluos__unidad_construccion('mj')
 llenar_avaluos__calificacion_unidad_construccion()
+llenar_avaluos__zhf()
+llenar_avaluos__zhg()
