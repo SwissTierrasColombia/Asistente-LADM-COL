@@ -48,10 +48,15 @@ def refactor_and_copy_paste(params_refactor, input_uri, output_layer_name):
     Run refactor field algorithm with the given mapping and appends the output
     features to output_layer
     """
-    processing.run("qgis:refactorfields", params_refactor)
+    res = processing.run("qgis:refactorfields", params_refactor)
 
-    input_layer = QgsVectorLayer(input_uri, "r_input_layer", "ogr")
-    if not input_layer.isValid():
+    input_layer = None
+    if input_uri == 'memory':
+        input_layer = res['OUTPUT']
+    else:
+        input_layer = QgsVectorLayer(input_uri, "r_input_layer", "ogr")
+
+    if input_layer is None or not input_layer.isValid():
         print("ERROR: Layer '{}' is not valid! Stopping...".format(input_uri))
         return
 
@@ -351,7 +356,7 @@ def llenar_unidad_construccion(tipo='nph'):
             {'name': 'uej2_la_espaciojuridicoredservicios', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicoredservicios"'},
             {'name': 'uej2_la_espaciojuridicounidadedificacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicounidadedificacion"'},
             {'name': 'uej2_construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_construccion"'},
-            {'name': 'uej2_unidadsource_uri = '{input_db_path}|layername=Pred_Identificador'.format(input_db_path=INPUT_DB_PATH)construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'},
+            {'name': 'uej2_unidadconstruccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'},
             {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'},
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'},
             {'name': 'punto_referencia', 'type': 10, 'length': -1, 'precision': -1, 'expression': '"punto_referencia"'}
@@ -568,7 +573,7 @@ def llenar_avaluos__predio_matriz_ph():
     output_predio_matriz_ph.reload()
 
     params_refactor_predio_matriz_ph = {
-        'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_predio_matriz_ph" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH)
+        'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_predio_matriz_ph" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH),
         'FIELDS_MAPPING' : [
             {'type': 4, 'precision': 0, 'expression': '"t_id"', 'length': -1, 'name': 't_id'},
             {'type': 2, 'precision': 0, 'expression': 'IF ("ETAPA_NUMERO" = \'\', NULL, "ETAPA_NUMERO")', 'length': -1, 'name': 'num_etapas'},
@@ -667,7 +672,7 @@ def llenar_avaluos__avaluopredio():
 
     table_target.dataProvider().addFeatures(features)
 
-def remover_campos_temporales_de_asociacion():
+def remover_campos_temporales_de_asociacion_avaluos():
     # En llenar_avaluos__predio_matriz_ph y llenar_avaluos__predio creamos
     # campos temporales para poder asociar datos. Aquí los removemos.
     predio_matriz_ph = get_ladm_col_layer("predio_matriz_ph")
@@ -866,6 +871,108 @@ def llenar_avaluos__zhg():
     input_uri = '{refactored_db_path}|layername=R_zhg'.format(refactored_db_path=REFACTORED_DB_PATH)
     refactor_and_copy_paste(params_refactor_zhg, input_uri, "zona_homogenea_geoeconomica")
 
+
+################################################################################
+################################################################################
+################################################################################
+
+def llenar_ficha__predio_ficha():
+    # First we need to add a temporal column to store CHIP and be able to
+    # join predio and fill predioficha_predio
+    predio_ficha = get_ladm_col_layer("predio_ficha")
+    if predio_ficha.dataProvider().fields().indexFromName('tmp_chip') == -1:
+        predio_ficha.dataProvider().addAttributes([QgsField('tmp_chip', QVariant.String)])
+
+    predio_ficha.reload()
+
+    params_refactor_predio_ficha = {
+        'INPUT' : '{input_db_path}|layername=predio_ficha'.format(input_db_path=INPUT_DB_PATH),
+        'FIELDS_MAPPING' : [
+            {'name': 't_id', 'precision': 0, 'expression': '"t_id"', 'type': 4, 'length': -1},
+            {'name': 'clase_suelo_pot', 'precision': -1, 'expression': '"clase_suelo_pot"', 'type': 10, 'length': 255},
+            {'name': 'categoria_suelo_pot', 'precision': -1, 'expression': '"categoria_suelo_pot"', 'type': 10, 'length': 255},
+            {'name': 'actividad_economica', 'precision': -1, 'expression': '"actividad_economica"', 'type': 10, 'length': 255},
+            {'name': 'derecho_fmi', 'precision': -1, 'expression': '"derecho_fmi"', 'type': 10, 'length': 255},
+            {'name': 'inscrito_rupta', 'precision': -1, 'expression': '"inscrito_rupta"', 'type': 1, 'length': -1},
+            {'name': 'fecha_medida_rupta', 'precision': -1, 'expression': '"fecha_medida_rupta"', 'type': 14, 'length': -1},
+            {'name': 'anotacion_fmi_rupta', 'precision': -1, 'expression': 'false', 'type': 1, 'length': -1},
+            {'name': 'inscrito_proteccion_colectiva', 'precision': -1, 'expression': '"inscrito_proteccion_colectiva"', 'type': 1, 'length': -1},
+            {'name': 'fecha_proteccion_colectiva', 'precision': -1, 'expression': '"fecha_proteccion_colectiva"', 'type': 14, 'length': -1},
+            {'name': 'anotacion_fmi_proteccion_colectiva', 'precision': -1, 'expression': 'false', 'type': 1, 'length': -1},
+            {'name': 'incrito_proteccion_ley1448', 'precision': -1, 'expression': '"incrito_proteccion_ley1448"', 'type': 1, 'length': -1},
+            {'name': 'fecha_proteccion_ley1448', 'precision': -1, 'expression': '"fecha_proteccion_ley1448"', 'type': 14, 'length': -1},
+            {'name': 'anotacion_fmi_ley1448', 'precision': -1, 'expression': 'false', 'type': 1, 'length': -1},
+            {'name': 'inscripcion_urt', 'precision': -1, 'expression': '"inscripcion_urt"', 'type': 1, 'length': -1},
+            {'name': 'fecha_inscripcion_urt', 'precision': -1, 'expression': '"fecha_inscripcion_urt"', 'type': 14, 'length': -1},
+            {'name': 'anotacion_fmi_urt', 'precision': -1, 'expression': 'false', 'type': 1, 'length': -1},
+            {'name': 'observaciones', 'precision': -1, 'expression': '"observaciones"', 'type': 10, 'length': 255},
+            {'name': 'nombre_quien_atendio', 'precision': -1, 'expression': '"nombre_quien_atendio"', 'type': 10, 'length': 40},
+            {'name': 'numero_documento_quien_atendio', 'precision': -1, 'expression': '"numero_documento_quien_atendio"', 'type': 10, 'length': 10},
+            {'name': 'categoria_quien_atendio', 'precision': -1, 'expression': '"categoria_quien_atendio"', 'type': 10, 'length': 255},
+            {'name': 'tipo_documento_quien_atendio', 'precision': -1, 'expression': '"tipo_documento_quien_atendio"', 'type': 10, 'length': 255},
+            {'name': 'nombre_encuestador', 'precision': -1, 'expression': '"nombre_encuestador"', 'type': 10, 'length': 40},
+            {'name': 'numero_documento_encuestador', 'precision': -1, 'expression': '"numero_documento_encuestador"', 'type': 10, 'length': 10},
+            {'name': 'tipo_documento_encuestador', 'precision': -1, 'expression': '"tipo_documento_encuestador"', 'type': 10, 'length': 255},
+            {'name': 'fecha_visita_predial', 'precision': -1, 'expression': 'if("fecha_visita_predial" IS NULL, NULL, concat(right("fecha_visita_predial",4), \'-\', substr("fecha_visita_predial",4,2),\'-\',left("fecha_visita_predial",2)))', 'type': 14, 'length': -1},
+            {'name': 'predio_tipo', 'precision': -1, 'expression': '"predio_tipo_MD"', 'type': 10, 'length': 255},
+            {'name': 'tipo_predio_publico', 'precision': -1, 'expression': '"tipo_predio_publico"', 'type': 10, 'length': 255},
+            {'name': 'estrato', 'precision': -1, 'expression': 'concat(\'Estrato_\',to_int("CODIGO_ESTRATO"))', 'type': 10, 'length': 255},
+            {'name': 'formalidad', 'precision': -1, 'expression': '"formalidad"', 'type': 1, 'length': -1},
+            {'name': 'estado_nupre', 'precision': -1, 'expression': '"estado_nupre"', 'type': 10, 'length': 255},
+            {'name': 'vigencia_fiscal', 'precision': -1, 'expression': "concat('01-01-',vigencia_fiscal)", 'type': 14, 'length': -1},
+            {'name': 'sector', 'precision': -1, 'expression': '"sector_MD"', 'type': 10, 'length': 2},
+            {'name': 'localidad_comuna', 'precision': -1, 'expression': '"localidad_comuna"', 'type': 10, 'length': 2},
+            {'name': 'barrio', 'precision': -1, 'expression': '"barrio_MD"', 'type': 10, 'length': 2},
+            {'name': 'manzana_vereda', 'precision': -1, 'expression': '"manzana_vereda"', 'type': 10, 'length': 4},
+            {'name': 'terreno', 'precision': -1, 'expression': '"terreno_MD"', 'type': 10, 'length': 4},
+            {'name': 'condicion_propiedad', 'precision': -1, 'expression': '"condicion_propiedad"', 'type': 10, 'length': 1},
+            {'name': 'edificio', 'precision': -1, 'expression': '"edificio"', 'type': 10, 'length': 2},
+            {'name': 'piso', 'precision': -1, 'expression': '"piso_MD"', 'type': 10, 'length': 2},
+            {'name': 'unidad', 'precision': -1, 'expression': '"unidad_MD"', 'type': 10, 'length': 4},
+            {'name': 'tmp_chip', 'precision': -1, 'expression': '"CHIP"', 'type': 10, 'length': -1}
+        ],
+        #'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_predio_ficha" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH)
+        'OUTPUT' : 'memory:'
+    }
+
+    refactor_and_copy_paste(params_refactor_predio_ficha, 'memory', predio_ficha.name())
+
+def llenar_ficha__predioficha_predio():
+    # table_cr_predio: Catastro_Registro.Predio
+    # table_ficha__predio_ficha: LADM_COL ficha predio_ficha
+    # association_table: LADM_COL ficha predioficha_predio
+    table_cr_predio = get_ladm_col_layer("predio")
+    table_ficha__predio_ficha = get_ladm_col_layer("predio_ficha")
+    association_table = get_ladm_col_layer("predioficha_predio")
+
+    features_source = [f for f in table_ficha__predio_ficha.getFeatures()]
+    features = []
+    for f in features_source:
+        # Get corresponding feature in CR.Predio
+        it_cr_predio = table_cr_predio.getFeatures("\"nupre\" = '{}'".format(f['tmp_chip']))
+        f_cr_predio = QgsFeature()
+        it_cr_predio.nextFeature(f_cr_predio)
+
+        if f_cr_predio.isValid():
+            feature = QgsVectorLayerUtils().createFeature(association_table)
+            feature.setAttribute('crpredio', f_cr_predio['t_id'])
+            feature.setAttribute('fichapredio', f['t_id'])
+
+            features.append(feature)
+        else:
+            print("CHIP not found in CR.predio", f['tmp_chip'])
+
+    association_table.dataProvider().addFeatures(features)
+
+def remover_campos_temporales_de_asociacion_ficha():
+    # En llenar_ficha__predio_ficha creamos campo temporal para poder asociar
+    # datos. Aquí lo removemos.
+    predio_ficha = get_ladm_col_layer("predio_ficha")
+    idx_tmp_field = predio_ficha.dataProvider().fields().indexFromName('tmp_chip')
+    if idx_tmp_field != -1:
+        predio_ficha.dataProvider().deleteAttributes([idx_tmp_field])
+        predio_ficha.updateFields()
+
 ################################################################################
 initialize_connection()
 
@@ -906,7 +1013,7 @@ fix_geometries('ZHF_009116', INPUT_DB_PATH_CARTO_REF)
 llenar_avaluos__predio_matriz_ph()
 llenar_avaluos__predio()
 llenar_avaluos__avaluopredio()
-remover_campos_temporales_de_asociacion()
+remover_campos_temporales_de_asociacion_avaluos()
 llenar_avaluos__construccion('nph')
 llenar_avaluos__construccion('ph')
 llenar_avaluos__construccion('mj')
@@ -916,3 +1023,12 @@ llenar_avaluos__unidad_construccion('mj')
 llenar_avaluos__calificacion_unidad_construccion()
 llenar_avaluos__zhf()
 llenar_avaluos__zhg()
+
+
+################################################################################
+#                                MODELO FICHA
+################################################################################
+
+llenar_ficha__predio_ficha()
+llenar_ficha__predioficha_predio()
+remover_campos_temporales_de_asociacion_ficha()
