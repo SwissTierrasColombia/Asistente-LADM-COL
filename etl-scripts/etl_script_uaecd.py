@@ -715,6 +715,49 @@ def llenar_avaluos__construccion(tipo='nph'):
 
     table_target.dataProvider().addFeatures(features)
 
+def llenar_avaluos__unidad_construccion(tipo='nph'):
+    # layer_cr_unidad_construccion: CR.unidadconstruccion
+    # table_source: GPKG Layer Und_Cons_PH, MJ, NPH
+    # table_target: Avaluos.unidad_construccion
+    layer_cr_unidad_construccion = get_ladm_col_layer("unidadconstruccion")
+    table_target = get_ladm_col_layer("unidad_construccion")
+
+    if tipo == 'nph':
+        table_source = source_uri = '{input_db_path}|layername=Und_Cons_NPH_fixed'.format(input_db_path=INPUT_DB_PATH)
+    elif tipo == 'ph':
+        table_source = source_uri = '{input_db_path}|layername=Und_Cons_PH'.format(input_db_path=INPUT_DB_PATH)
+    elif tipo == 'mj':
+        table_source = source_uri = '{input_db_path}|layername=Und_Cons_MJ'.format(input_db_path=INPUT_DB_PATH)
+
+    features_cr_unidad_construccion = [f for f in layer_cr_unidad_construccion.getFeatures()]
+    features = []
+    for f in features_cr_unidad_construccion:
+        it_table_source = table_source.getFeatures("\"Cod_CONS\" = '{}'".format(f['su_local_id']))
+        f_table_source = QgsFeature()
+        it_table_source.nextFeature(f_table_source)
+        
+        if f_table_source.isValid():
+            feature = QgsVectorLayerUtils().createFeature(table_target)
+            feature.setAttribute('ucons', f['t_id'])
+            feature.setAttribute('numero_total_pisos', f_table_source['MAX_NUM_PISOS'])
+            feature.setAttribute('acceso', 'Escaleras_Electricas') # Should be optional!
+            feature.setAttribute('nivel_de_acceso', f_table_source['nivel_acceso'])
+            feature.setAttribute('actividad_econo', 'definirPilotos')
+            feature.setAttribute('destino_econo', 'Definir_Operador')
+            feature.setAttribute('estilo', 'Tradicional')
+            feature.setAttribute('anio_construction', "'01-01-{}'".format(int(f_table_source['VETUSTEZ'])))
+            feature.setAttribute('construction_tipo', 'Convencional')
+            feature.setAttribute('estado_conservacion', f_table_source['ESTADO_CONSERVA'])
+            feature.setAttribute('funcionalidad', f_table_source['funcionalidad'])
+            feature.setAttribute('material', 'Definir_Pilotos')
+            feature.setAttribute('puntuacion', f_table_source['PUNTAJE'])
+            feature.setAttribute('tipologia', f_table_source['Tipologia'])
+            features.append(feature)
+        else:
+           pass
+
+    table_target.dataProvider().addFeatures(features)
+
 
 ################################################################################
 initialize_connection()
@@ -757,3 +800,6 @@ remover_campos_temporales_de_asociacion()
 llenar_avaluos__construccion('nph')
 llenar_avaluos__construccion('ph')
 llenar_avaluos__construccion('mj')
+llenar_avaluos__unidad_construccion('nph')
+llenar_avaluos__unidad_construccion('ph')
+llenar_avaluos__unidad_construccion('mj')
