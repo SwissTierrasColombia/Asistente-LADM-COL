@@ -350,7 +350,7 @@ def llenar_unidad_construccion(tipo='nph'):
             {'name': 'uej2_la_espaciojuridicoredservicios', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicoredservicios"'},
             {'name': 'uej2_la_espaciojuridicounidadedificacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicounidadedificacion"'},
             {'name': 'uej2_construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_construccion"'},
-            {'name': 'uej2_unidadconstruccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'},
+            {'name': 'uej2_unidadsource_uri = '{input_db_path}|layername=Pred_Identificador'.format(input_db_path=INPUT_DB_PATH)construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'},
             {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'},
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'},
             {'name': 'punto_referencia', 'type': 10, 'length': -1, 'precision': -1, 'expression': '"punto_referencia"'}
@@ -667,6 +667,53 @@ def llenar_avaluos__avaluopredio():
 
     table_target.dataProvider().addFeatures(features)
 
+def remover_campos_temporales_de_asociacion():
+    # En llenar_avaluos__predio_matriz_ph y llenar_avaluos__predio creamos
+    # campos temporales para poder asociar datos. Aquí los removemos.
+    predio_matriz_ph = get_ladm_col_layer("predio_matriz_ph")
+    idx_tmp_field = predio_matriz_ph.dataProvider().fields().indexFromName('tmp_cod_lote')
+    if idx_tmp_field != -1:
+        predio_matriz_ph.dataProvider().deleteAttributes([idx_tmp_field])
+        predio_matriz_ph.updateFields()
+
+    avaluos_predio = get_ladm_col_layer("avaluos_v2_2_1avaluos_predio")
+    idx_tmp_field = avaluos_predio.dataProvider().fields().indexFromName('tmp_chip')
+    if idx_tmp_field != -1:
+        avaluos_predio.dataProvider().deleteAttributes([idx_tmp_field])
+        avaluos_predio.updateFields()
+
+def llenar_avaluos__construccion(tipo='nph'):
+    # layer_cr_construccion: Catastro_Registro.Construccion
+    # table_source: GPKG Source (construccion)
+    # table_target: Table in LADM where to paste features to (Avaluos_Construccion)
+    layer_cr_construccion = get_ladm_col_layer("construccion")
+    table_target = get_ladm_col_layer("avaluos_v2_2_1avaluos_construccion")
+
+    if tipo == 'nph':
+        table_source = source_uri = '{input_db_path}|layername=Construccion_NPH_fixed'.format(input_db_path=INPUT_DB_PATH)
+    elif tipo == 'ph':
+        table_source = source_uri = '{input_db_path}|layername=Construccion_PH'.format(input_db_path=INPUT_DB_PATH)
+    elif tipo == 'mj':
+        table_source = source_uri = '{input_db_path}|layername=Construccion_MJ'.format(input_db_path=INPUT_DB_PATH)
+
+    features_source = [f for f in table_source.getFeatures()]
+    features = []
+    for f in features_source:
+        # Get corresponding feature in CR.Construccion
+        it_cr_construccion = layer_cr_construccion.getFeatures("\"su_local_id\" = '{}'".format(f['Cod_LOTE']))
+        f_cr_construccion = QgsFeature()
+        it_cr_construccion.nextFeature(f_cr_construccion)
+
+        if f_cr_construccion.isValid():
+            feature = QgsVectorLayerUtils().createFeature(table_target)
+            feature.setAttribute('cons', f_cr_construccion['t_id'])
+            feature.setAttribute('numero_pisos', f['MAX_NUM_PISOS'])
+
+            features.append(feature)
+        else:
+            print("Cod_LOTE not found in CR.Construccion", f['Cod_LOTE'])
+
+    table_target.dataProvider().addFeatures(features)
 
 
 ################################################################################
@@ -706,3 +753,7 @@ llenar_rrr_fuente()
 llenar_avaluos__predio_matriz_ph()
 llenar_avaluos__predio()
 llenar_avaluos__avaluopredio()
+remover_campos_temporales_de_asociacion()
+llenar_avaluos__construccion('nph')
+llenar_avaluos__construccion('ph')
+llenar_avaluos__construccion('mj')
