@@ -639,6 +639,33 @@ def llenar_avaluos__predio():
 
     table_target.dataProvider().addFeatures(features)
 
+def llenar_avaluos__avaluopredio():
+    # Asociación entre avalúos.predio y catastro_registro.predio
+    # Para ello se usa el campo temporal tmp_chip de la capa avaluos.predio
+
+    # table_predio_cr: predio (Catastro-Registro)
+    # table_predio_av: avaluos_predio (Avaluos)
+    # table_target: tabla de paso 1:1 avaluopredio
+    table_predio_cr = get_ladm_col_layer("predio")
+    table_predio_av = get_ladm_col_layer("avaluos_v2_2_1avaluos_predio")
+    table_target = get_ladm_col_layer("avaluopredio")
+
+    features_predio_av = [f for f in table_predio_av.getFeatures()]
+    features = []
+    for f in features_predio_av:
+        it_table_predio_cr = table_predio_cr.getFeatures("\"nupre\" = '{}'".format(f['tmp_chip']))
+        f_table_predio_cr = QgsFeature()
+        it_table_predio_cr.nextFeature(f_table_predio_cr)
+        if f_table_predio_cr.isValid():
+            feature = QgsVectorLayerUtils().createFeature(table_target)
+            feature.setAttribute('apredio', f['t_id'])
+            feature.setAttribute('predio', f_table_predio_cr['t_id'])
+
+            features.append(feature)
+        else:
+           pass
+
+    table_target.dataProvider().addFeatures(features)
 
 
 
@@ -678,3 +705,4 @@ llenar_rrr_fuente()
 ################################################################################
 llenar_avaluos__predio_matriz_ph()
 llenar_avaluos__predio()
+llenar_avaluos__avaluopredio()
