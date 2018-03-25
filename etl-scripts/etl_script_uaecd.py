@@ -572,6 +572,10 @@ def llenar_avaluos__predio_matriz_ph():
 
     output_predio_matriz_ph.reload()
 
+    if output_predio_matriz_ph.dataProvider().fields().indexFromName('tmp_cod_lote') == -1:
+        print("FIELD tmp_cod_lote DOES NOT EXIST!!! Create it before running llenar_avaluos__predio_matriz_ph()...")
+        return
+
     params_refactor_predio_matriz_ph = {
         'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_predio_matriz_ph" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH),
         'FIELDS_MAPPING' : [
@@ -602,6 +606,10 @@ def llenar_avaluos__predio():
         output_predio.dataProvider().addAttributes([QgsField('tmp_chip', QVariant.String)])
 
     output_predio.reload()
+
+    if output_predio.dataProvider().fields().indexFromName('tmp_chip') == -1:
+        print("FIELD tmp_chip DOES NOT EXIST!!! Create it before running llenar_avaluos__predio()...")
+        return
 
     # table_predio: Catastro_Registro.predio
     # table_source: Pred_Identificador, GPKG de la UAECD
@@ -885,6 +893,10 @@ def llenar_ficha__predio_ficha():
 
     predio_ficha.reload()
 
+    if predio_ficha.dataProvider().fields().indexFromName('tmp_chip') == -1:
+        print("FIELD tmp_chip DOES NOT EXIST!!! Create it before running llenar_ficha__predio_ficha()...")
+        return
+
     params_refactor_predio_ficha = {
         'INPUT' : '{input_db_path}|layername=predio_ficha'.format(input_db_path=INPUT_DB_PATH),
         'FIELDS_MAPPING' : [
@@ -931,7 +943,6 @@ def llenar_ficha__predio_ficha():
             {'name': 'unidad', 'precision': -1, 'expression': '"unidad_MD"', 'type': 10, 'length': 4},
             {'name': 'tmp_chip', 'precision': -1, 'expression': '"CHIP"', 'type': 10, 'length': -1}
         ],
-        #'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="R_predio_ficha" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH)
         'OUTPUT' : 'memory:'
     }
 
@@ -963,6 +974,80 @@ def llenar_ficha__predioficha_predio():
             print("CHIP not found in CR.predio", f['tmp_chip'])
 
     association_table.dataProvider().addFeatures(features)
+
+def llenar_ficha__nucleo_familiar():
+    #table_predio_ficha: Ficha
+    #table_predio: Catastro_Registro
+    #table_col_derecho: catastro_Registro
+    #table_interesado_natural: Catastro_Registro
+    #table_interesado_juridico: Catastro_Registro
+    #table_target: Table in LADM where to paste features to (Ficha_NucleoFamiliar)
+    table_predio_ficha = get_ladm_col_layer("predio_ficha")
+    table_predio = get_ladm_col_layer("predio")
+    table_col_derecho = get_ladm_col_layer("col_derecho")
+    table_interesado_natural = get_ladm_col_layer("interesado_natural")
+    table_interesado_juridico = get_ladm_col_layer("interesado_juridico")
+    table_target = get_ladm_col_layer("nucleofamiliar")
+
+    dict_int_natural = {f["t_id"]: f for f in table_interesado_natural.getFeatures()}
+    dict_int_juridico = {f["t_id"]: f for f in table_interesado_juridico.getFeatures()}
+
+    features_predio_ficha = [f for f in table_predio_ficha.getFeatures()]
+    features = []
+    for f in features_predio_ficha:
+        # Get corresponding feature in CR.predio
+        it_cr_predio = table_predio.getFeatures("\"nupre\" = '{}'".format(f['tmp_chip']))
+        f_cr_predio = QgsFeature()
+        it_cr_predio.nextFeature(f_cr_predio)
+
+        if f_cr_predio.isValid():
+            # Get corresponding features in CR.Col_derecho
+            features_cr_col_derecho = table_col_derecho.getFeatures("\"unidad_predio\" = {}".format(f_cr_predio['t_id']))
+            for f_cr_col_derecho in features_cr_col_derecho:
+                if f_cr_col_derecho.isValid():
+                    int_natural = f_cr_col_derecho['interesado_interesado_natural']
+                    int_juridico = f_cr_col_derecho['interesado_interesado_juridico']
+                    feature = QgsVectorLayerUtils().createFeature(table_target)
+
+                    if int_natural != NULL:
+                        # Get corresponding feature in CR.interesado_natural
+                        if int_natural in dict_int_natural:
+                            f_cr_interesado_natural = dict_int_natural[int_natural]
+
+                            if f_cr_interesado_natural.isValid():
+                                feature.setAttribute('documento_identidad', f_cr_interesado_natural['documento_identidad'][:10]) # Field should support more chars
+                                feature.setAttribute('tipo_documento', f_cr_interesado_natural['tipo_documento'])
+                                p_n = f_cr_interesado_natural['primer_nombre']
+                                s_n = f_cr_interesado_natural['segundo_nombre']
+                                p_a = f_cr_interesado_natural['primer_apellido']
+                                s_a = f_cr_interesado_natural['segundo_apellido']
+                                feature.setAttribute('primer_nombre', p_n[:20] if p_n != NULL else NULL)
+                                feature.setAttribute('segundo_nombre', s_n[:20] if s_n != NULL else NULL)
+                                feature.setAttribute('primer_apellido', p_a[:20] if p_a != NULL else NULL)
+                                feature.setAttribute('segundo_apellido', s_a[:20] if s_a != NULL else NULL)
+                                feature.setAttribute('genero', f_cr_interesado_natural['genero'])
+
+                    elif int_juridico != NULL:
+                        # Get corresponding feature in CR.interesado_juridico
+                        if int_juridico in dict_int_juridico:
+                            f_cr_interesado_juridico = dict_int_juridico[int_juridico]
+
+                            if f_cr_interesado_juridico.isValid():
+                                feature.setAttribute('documento_identidad', f_cr_interesado_juridico['numero_nit'][:10]) # Field should support more chars
+                                feature.setAttribute('tipo_documento', 'NIT')
+
+                    feature.setAttribute('fichapredio', f['t_id'])
+                    if feature['documento_identidad'] != NULL:
+                        features.append(feature)
+
+                else:
+                    pass
+        else:
+           print("CHIP not found in CR.Col_derecho:", f_cr_predio['t_id'])
+
+    res = table_target.dataProvider().addFeatures(features)
+    if res[0]:
+        print("{} features saved into Nucleo Familiar!".format(len(features)))
 
 def remover_campos_temporales_de_asociacion_ficha():
     # En llenar_ficha__predio_ficha creamos campo temporal para poder asociar
@@ -1024,11 +1109,11 @@ llenar_avaluos__calificacion_unidad_construccion()
 llenar_avaluos__zhf()
 llenar_avaluos__zhg()
 
-
 ################################################################################
 #                                MODELO FICHA
 ################################################################################
 
 llenar_ficha__predio_ficha()
 llenar_ficha__predioficha_predio()
+llenar_ficha__nucleo_familiar()
 remover_campos_temporales_de_asociacion_ficha()
