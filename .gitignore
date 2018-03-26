@@ -112,3 +112,5 @@ resources_rc.py
 *.includes
 *.creator.user
 
+# pycharm
+.idea

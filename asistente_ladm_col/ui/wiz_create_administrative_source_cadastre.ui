@@ -80,7 +80,7 @@
        <bool>true</bool>
       </property>
       <property name="plainText">
-       <string>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua.</string>
+       <string/>
       </property>
      </widget>
     </item>

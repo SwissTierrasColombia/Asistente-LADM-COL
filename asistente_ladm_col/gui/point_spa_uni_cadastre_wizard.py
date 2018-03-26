@@ -26,6 +26,9 @@ from ..utils.qt_utils import make_file_selector
 from ..utils import get_ui_class
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE)
+from ..config.help_strings import (WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_BP,
+                                   WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_SP,
+                                   WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
 
 WIZARD_UI = get_ui_class('wiz_add_points_cadastre.ui')
 
@@ -44,20 +47,23 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         self.txt_file_path.textChanged.connect(self.fill_long_lat_combos)
         self.txt_delimiter.textChanged.connect(self.fill_long_lat_combos)
 
-
         self.restore_settings()
 
         self.txt_file_path.textChanged.emit(self.txt_file_path.text())
 
-        self.rad_boundary_point.toggled.connect(self.adjust_page_subtitle)
-        self.adjust_page_subtitle() # Initialize it
+        self.rad_boundary_point.toggled.connect(self.point_option_changed)
+        self.point_option_changed() # Initialize it
         self.button(QWizard.FinishButton).clicked.connect(self.prepare_copy_csv_points_to_db)
 
-    def adjust_page_subtitle(self):
+        self.txt_help_page_2.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
+
+    def point_option_changed(self):
         if self.rad_boundary_point.isChecked():
             self.wizardPage2.setSubTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Configure Data Source for Boundary Points"))
-        else:
+            self.txt_help_page_1.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_BP)
+        else: # self.rad_survey_point is checked
             self.wizardPage2.setSubTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Configure Data Source for Survey Points"))
+            self.txt_help_page_1.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_SP)
 
     def prepare_copy_csv_points_to_db(self):
         csv_path = self.txt_file_path.text().strip()
