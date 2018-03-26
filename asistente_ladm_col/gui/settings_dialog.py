@@ -32,7 +32,7 @@ from ..utils.qt_utils import make_file_selector
 DIALOG_UI = get_ui_class('settings_dialog.ui')
 
 class SettingsDialog(QDialog, DIALOG_UI):
-    def __init__(self, iface, parent=None):
+    def __init__(self, iface=None, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
@@ -75,6 +75,25 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None # Reset db connection
         self._db = self.get_db_connection()
         self.save_settings()
+
+    def set_db_connection(self, mode, dict_conn):
+        """
+        To be used by external scripts
+        """
+        self.cbo_db_source.setCurrentIndex(self.cbo_db_source.findData(mode))
+        self.db_source_changed()
+
+        if self.cbo_db_source.currentData() == 'pg':
+            self.txt_pg_host.setText(dict_conn['host'])
+            self.txt_pg_port.setText(dict_conn['port'])
+            self.txt_pg_database.setText(dict_conn['database'])
+            self.txt_pg_schema.setText(dict_conn['schema'])
+            self.txt_pg_user.setText(dict_conn['user'])
+            self.txt_pg_password.setText(dict_conn['password'])
+        else:
+            self.txt_gpkg_file.setText(dict_conn['dbfile'])
+
+        self.accepted() # Create/update the db object
 
     def read_connection_parameters(self):
         """

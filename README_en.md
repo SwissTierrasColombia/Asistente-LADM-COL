@@ -39,6 +39,7 @@ The current version (0.0.6) of the LADM_COL Assistant depends on [Project Genera
  - Check quality:
    - Check too long `Boundary` segments (exceeding a given tolerance).
    - Check overlapping `Boundary Points`.
+ - Configure automatic values for `namespace` and `local_id` attributes.
  - Use configured styles for loaded layers.
 
 ## Testing

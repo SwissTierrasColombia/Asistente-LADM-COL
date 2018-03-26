@@ -38,7 +38,6 @@ from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWiz
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
 from .gui.dialog_load_layers import DialogLoadLayers
-from .gui.settings_dialog import SettingsDialog
 from .utils.qgis_utils import QGISUtils
 
 from functools import partial, wraps
@@ -62,7 +61,6 @@ class AsistenteLADMCOLPlugin(QObject):
         else:
             self.iface.mainWindow().menuBar().addMenu(self._menu)
 
-        self._settings_dialog = None
         self.qgis_utils = QGISUtils()
 
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
@@ -88,9 +86,13 @@ class AsistenteLADMCOLPlugin(QObject):
         self._right_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Right"), self._rrr_cadastre_menu)
         self._restriction_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Restriction"), self._rrr_cadastre_menu)
         self._responsibility_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Responsibility"), self._rrr_cadastre_menu)
+        self._right_rrr_cadastre_action.setEnabled(False)
+        self._restriction_rrr_cadastre_action.setEnabled(False)
+        self._responsibility_rrr_cadastre_action.setEnabled(False)
         self._rrr_cadastre_menu.addActions([self._right_rrr_cadastre_action,
                                             self._restriction_rrr_cadastre_action,
                                             self._responsibility_rrr_cadastre_action])
+
 
         self._source_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._cadastre_menu)
         self._administrative_source_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Administrative Source"), self._source_cadastre_menu)
@@ -305,8 +307,7 @@ class AsistenteLADMCOLPlugin(QObject):
         del self._define_boundary_toolbar
 
     def show_settings(self):
-        self._settings_dialog = self.get_settings_dialog()
-        self._settings_dialog.exec_()
+        self.qgis_utils.get_settings_dialog().exec_()
 
     def show_plugin_manager(self):
         self.iface.actionManagePlugins().trigger()
@@ -317,14 +318,8 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = DialogLoadLayers(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
-    def get_settings_dialog(self):
-        if self._settings_dialog is None:
-            self._settings_dialog = SettingsDialog(self.iface)
-        return self._settings_dialog
-
     def get_db_connection(self):
-        self._settings_dialog = self.get_settings_dialog()
-        return self._settings_dialog.get_db_connection()
+        return self.qgis_utils.get_db_connection()
 
     @_project_generator_required
     @_db_connection_required
