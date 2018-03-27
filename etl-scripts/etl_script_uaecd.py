@@ -249,7 +249,7 @@ def llenar_predio():
     input_uri = '{refactored_db_path}|layername=R_predio'.format(refactored_db_path=REFACTORED_DB_PATH)
     refactor_and_copy_paste(params_refactor_predio, input_uri, "predio")
 
-def llenar_uebaunit():
+def llenar_uebaunit_terreno_predio():
     # Relación Terreno-Predio (Necesita una tabla fuente de paso, en la UAECD tienen CHIP vs. COD LOTE)
 
     # Predio: dict = {CHIP : t_id}
@@ -316,6 +316,42 @@ def llenar_construccion(layer_name):
 
     input_uri = '{refactored_db_path}|layername=R_construccion'.format(refactored_db_path=REFACTORED_DB_PATH)
     refactor_and_copy_paste(params_refactor_construccion, input_uri, "construccion")
+
+def llenar_uebaunit_construccion_predio():
+    # Relación Construccion-Predio (Necesitaría una tabla fuente de paso, pero
+    # tenemos relación Construcción-Terreno (local_ids) y ya hemos relacionado
+    # Terreno-Predio)
+
+    # Construccion dict: {COD_LOTE : t_id}
+    layer_construccion = get_ladm_col_layer("construccion")
+    dict_construccion = {feat_construccion['su_local_id']: feat_construccion['t_id'] for feat_construccion in layer_construccion.getFeatures()}
+
+    # Terreno: dict = {COD_LOTE : t_id}
+    layer_terreno = get_ladm_col_layer("terreno")
+    dict_terreno = {feat_terreno['su_local_id']: feat_terreno['t_id'] for feat_terreno in layer_terreno.getFeatures()}
+
+    # Get uebaunit
+    table_uebaunit = get_ladm_col_layer("uebaunit")
+    rows = list()
+
+    # Iterar sobre construcciones buscando el t_id de terreno correspondiente
+
+    for cod_lote, cons_t_id in dict_construccion.items():
+        if cod_lote in dict_terreno:
+            terreno_t_id = dict_terreno[cod_lote]
+            it_table_uebaunit = table_uebaunit.getFeatures("\"ue_terreno\" = '{}'".format(terreno_t_id))
+
+            for f_table_uebaunit in it_table_uebaunit:
+                new_row = QgsVectorLayerUtils().createFeature(table_uebaunit)
+                new_row.setAttribute('ue_construccion', cons_t_id)
+                new_row.setAttribute('baunit_predio', f_table_uebaunit['baunit_predio'])
+                rows.append(new_row)
+        else:
+            print("WARNING: COD_LOTE NOT FOUND in llenar_uebaunit_construccion_predio:", cod_lote)
+
+    # Llenar uebaunit
+    table_uebaunit.dataProvider().addFeatures(rows)
+    print("INFO:", len(rows), " rows (construccion-predio) added to uebaunit!!!")
 
 def llenar_unidad_construccion(tipo='nph'):
     # Cada tipo de predio en la UAECD tiene su particularidad, entonces se
@@ -1074,13 +1110,15 @@ llenar_lindero()
 llenar_terreno() # First fix the source layer (with 'Fix Geometries' algorithm)
 llenar_tablas_de_topologia()
 llenar_predio()
-llenar_uebaunit()
+llenar_uebaunit_terreno_predio()
 llenar_construccion('Construccion_NPH_fixed') # First fix source layer geometries
 llenar_construccion('Construccion_PH')
 llenar_construccion('Construccion_MJ')
+llenar_uebaunit_construccion_predio()
 llenar_unidad_construccion('nph') # First fix source layer geometries
 llenar_unidad_construccion('ph')
 llenar_unidad_construccion('mj')
+#llenar_uebaunit_unidad_construccion_predio()
 llenar_interesado_natural()
 llenar_interesado_juridico()
 llenar_col_derecho('interesado_natural')
