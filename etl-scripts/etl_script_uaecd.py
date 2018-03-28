@@ -326,22 +326,40 @@ def llenar_uebaunit_construccion_predio():
     layer_construccion = get_ladm_col_layer("construccion")
     dict_construccion = {feat_construccion['su_local_id']: feat_construccion['t_id'] for feat_construccion in layer_construccion.getFeatures()}
 
-    # Terreno: dict = {COD_LOTE : t_id}
+    # Terreno: dict = {COD_LOTE : {'t_id':t_id, 'ns':su_espacio_de_nombres}
     layer_terreno = get_ladm_col_layer("terreno")
-    dict_terreno = {feat_terreno['su_local_id']: feat_terreno['t_id'] for feat_terreno in layer_terreno.getFeatures()}
+    dict_terreno = {feat_terreno['su_local_id']: {'t_id':feat_terreno['t_id'], 'ns':feat_terreno['su_espacio_de_nombres']} for feat_terreno in layer_terreno.getFeatures()}
+
+    # Get Predio
+    table_predio = get_ladm_col_layer("predio")
 
     # Get uebaunit
     table_uebaunit = get_ladm_col_layer("uebaunit")
     rows = list()
 
     # Iterar sobre construcciones buscando el t_id de terreno correspondiente
-
+    # y luego de uebanit extraer el t_id de predio
     for cod_lote, cons_t_id in dict_construccion.items():
         if cod_lote in dict_terreno:
-            terreno_t_id = dict_terreno[cod_lote]
+            terreno_t_id = dict_terreno[cod_lote]['t_id']
+            terreno_ns = dict_terreno[cod_lote]['ns']
             it_table_uebaunit = table_uebaunit.getFeatures("\"ue_terreno\" = '{}'".format(terreno_t_id))
 
             for f_table_uebaunit in it_table_uebaunit:
+                if terreno_ns == 'UAECD_Terreno_MJ_Matriz':
+                    # Estamos en MJ, debemos omitir de las parejas cons-predio
+                    # la que le corresponde al terreno. Sabemos cuál omitir
+                    # porque está marcado en la tabla predio.
+                    it_table_predio = table_predio.getFeatures("\"t_id\" = '{}'".format(f_table_uebaunit['baunit_predio']))
+                    f_table_predio = QgsFeature()
+                    it_table_predio.nextFeature(f_table_predio)
+
+                    if f_table_predio.isValid():
+                        if f_table_predio['u_espacio_de_nombres'] == 'UAECD_Predio_MJ_Matriz':
+                            # Llegamos al predio relacionado con terreno y no con
+                            # construcción, este lo omitimos en la relación
+                            continue
+
                 new_row = QgsVectorLayerUtils().createFeature(table_uebaunit)
                 new_row.setAttribute('ue_construccion', cons_t_id)
                 new_row.setAttribute('baunit_predio', f_table_uebaunit['baunit_predio'])
@@ -358,15 +376,12 @@ def llenar_unidad_construccion(tipo='nph'):
     # divide por casos (PH, NPH y Mejora)
     if tipo == 'nph':
         layer_name = 'Und_Cons_NPH_fixed'
-        expression_local_id = '"Cod_CONS"'
         refactored_layer = 'R_unidadconstruccion_nph'
     elif tipo == 'ph':
         layer_name = 'Und_Cons_PH'
-        expression_local_id = ''
         refactored_layer = 'R_unidadconstruccion_ph'
     elif tipo == 'mj':
         layer_name = 'Und_Cons_MJ'
-        expression_local_id = '"Cod_CONS"'
         refactored_layer = 'R_unidadconstruccion_mj'
 
     params_refactor_unidad_construccion = {
@@ -428,6 +443,55 @@ def llenar_unidad_construccion(tipo='nph'):
 
     # Finalmente, copiar refactored en capa unidad construccion
     copy_paste_features(input_layer, output_unidad_construccion)
+
+def llenar_uebaunit_unidad_construccion_predio(tipo='nph'):
+    # Relación Unidad_construccion-Predio
+    # En la tabla insumo tenemos la pareja Cod_CONS-CHIP, por medio de ella
+    # llegamos a t_id unidadconstrucción y t_id predio
+
+    # Unidadconstruccion dict: {COD_CONS : t_id}
+    layer_unidadconstruccion = get_ladm_col_layer("unidadconstruccion")
+    dict_unidadconstruccion = {feat_unidadconstruccion['su_local_id']: feat_unidadconstruccion['t_id'] for feat_unidadconstruccion in layer_unidadconstruccion.getFeatures()}
+
+    # Und_Cons: dict = {COD_Cons : CHIP}
+    if tipo == 'nph':
+        layer_name = 'Und_Cons_NPH_fixed'
+    elif tipo == 'ph':
+        layer_name = 'Und_Cons_PH'
+    elif tipo == 'mj':
+        layer_name = 'Und_Cons_MJ'
+
+    source_layer_uri = '{input_db_path}|layername={layer_name}'.format(input_db_path=INPUT_DB_PATH, layer_name=layer_name)
+    source_layer = QgsVectorLayer(source_layer_uri, "r_input_layer", "ogr")
+    dict_source = {feat_source['Cod_CONS']: feat_source['CHIP'] for feat_source in source_layer.getFeatures()}
+
+    # Predio:
+    table_predio = get_ladm_col_layer("predio")
+
+    # Get uebaunit
+    table_uebaunit = get_ladm_col_layer("uebaunit")
+    rows = list()
+
+    # Iterar sobre unidades de construcciones buscando llegar a predio vía el GPKG de origen
+    for cod_cons, und_cons_t_id in dict_unidadconstruccion.items():
+        if cod_cons in dict_source:
+            source_chip = dict_source[cod_cons]
+            it_table_predio = table_predio.getFeatures("\"nupre\" = '{}'".format(source_chip))
+            f_table_predio = QgsFeature()
+            it_table_predio.nextFeature(f_table_predio)
+
+            if f_table_predio.isValid():
+                new_row = QgsVectorLayerUtils().createFeature(table_uebaunit)
+                new_row.setAttribute('ue_unidadconstruccion', und_cons_t_id)
+                new_row.setAttribute('baunit_predio', f_table_predio['t_id'])
+                rows.append(new_row)
+        else:
+            #print("WARNING: COD_CONS NOT FOUND in llenar_uebaunit_unidad_construccion_predio:", cod_cons)
+            pass # Muchos mensajes...
+
+    # Llenar uebaunit
+    table_uebaunit.dataProvider().addFeatures(rows)
+    print("INFO:", len(rows), " rows (unidadconstruccion-predio) added to uebaunit!!!")
 
 def llenar_interesado_natural():
     # Interesado Natural
@@ -1118,7 +1182,9 @@ llenar_uebaunit_construccion_predio()
 llenar_unidad_construccion('nph') # First fix source layer geometries
 llenar_unidad_construccion('ph')
 llenar_unidad_construccion('mj')
-#llenar_uebaunit_unidad_construccion_predio()
+llenar_uebaunit_unidad_construccion_predio('nph')
+llenar_uebaunit_unidad_construccion_predio('ph')
+llenar_uebaunit_unidad_construccion_predio('mj')
 llenar_interesado_natural()
 llenar_interesado_juridico()
 llenar_col_derecho('interesado_natural')
