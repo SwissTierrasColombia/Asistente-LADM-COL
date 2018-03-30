@@ -1169,6 +1169,41 @@ def llenar_ficha__nucleo_familiar():
     if res[0]:
         print("{} features saved into Nucleo Familiar!".format(len(features)))
 
+def llenar_ficha__investigacion_de_mercado():
+    # layer_ficha__predio_ficha: Ficha.Predio_Ficha
+    # table_source: GPKG Source (InvestigacionMercado)
+    # table_target: Table in LADM where to paste features to (Ficha_Investigacion_Mercado)
+    layer_predio_ficha = get_ladm_col_layer("predio_ficha")
+    table_target = get_ladm_col_layer("investigacionmercado")
+
+    table_source = QgsVectorLayer('{input_db_path}|layername=InvestigacionMercado'.format(input_db_path=INPUT_DB_PATH), "table_source", "ogr")
+
+    features_source = [f for f in table_source.getFeatures()]
+    features = []
+    for f in features_source:
+        # Get corresponding feature in Ficha.Predio_Ficha
+        it_predio_ficha = layer_predio_ficha.getFeatures("\"tmp_chip\" = '{}'".format(f['CHIP']))
+        f_predio_ficha = QgsFeature()
+        it_predio_ficha.nextFeature(f_predio_ficha)
+
+        if f_predio_ficha.isValid():
+            feature = QgsVectorLayerUtils().createFeature(table_target)
+            feature.setAttribute('fichapredio', f_predio_ficha['t_id'])
+            feature.setAttribute('tipo_oferta', f['Tipo_Oferta'])
+            feature.setAttribute('disponible_mercado', f['Disponible_Mercado'])
+            feature.setAttribute('valor', f['Valor'])
+            feature.setAttribute('nombre_oferente', f['Nombre_Oferente'])
+            feature.setAttribute('telefono_contacto_oferente', f['Telefono_Contacto_Oferente'])
+            feature.setAttribute('observaciones', f['Observaciones'])
+
+            features.append(feature)
+        else:
+            print("CHIP not found in FICHA.Predio_Ficha", f['CHIP'])
+
+    res = table_target.dataProvider().addFeatures(features)
+    if res[0]:
+        print("{} features saved into Investigación de Mercado!".format(len(features)))
+
 def remover_campos_temporales_de_asociacion_ficha():
     # En llenar_ficha__predio_ficha creamos campo temporal para poder asociar
     # datos. Aquí lo removemos.
@@ -1240,4 +1275,5 @@ llenar_avaluos__zhg()
 llenar_ficha__predio_ficha()
 llenar_ficha__predioficha_predio()
 llenar_ficha__nucleo_familiar()
+llenar_ficha__investigacion_de_mercado()
 remover_campos_temporales_de_asociacion_ficha()
