@@ -67,7 +67,7 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
         if self._plot_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreatePlotCadastreWizard",
-                                           "Plot layer couldn't be found..."),
+                                           "Plot layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 

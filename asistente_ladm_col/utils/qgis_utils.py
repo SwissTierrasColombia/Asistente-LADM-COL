@@ -209,7 +209,7 @@ class QGISUtils(QObject):
         if target_point_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "The point layer '{}' couldn't be found in the DB...").format(target_layer_name),
+                                           "The point layer '{}' couldn't be found in the DB... {}").format(target_layer_name, db.get_description()),
                 Qgis.Warning)
             return False
 
@@ -386,7 +386,7 @@ class QGISUtils(QObject):
         if boundary_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in the DB!").format(BOUNDARY_TABLE),
+                                           "Table {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()),
                 Qgis.Warning)
             return
         if use_selection and boundary_layer.selectedFeatureCount() == 0:
@@ -406,7 +406,7 @@ class QGISUtils(QObject):
         bfs_layer = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
         if bfs_layer is None:
             self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB!").format(POINT_BOUNDARY_FACE_STRING_TABLE),
+                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()),
                 Qgis.Warning)
             return
 
@@ -449,8 +449,13 @@ class QGISUtils(QObject):
     def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer, use_selection=True):
         lines = boundary_layer.getSelectedFeatures() if use_selection else boundary_layer.getFeatures()
         points = boundary_point_layer.getFeatures()
-        index = QgsSpatialIndex(boundary_point_layer)
         intersect_pairs = list()
+
+        if boundary_point_layer.featureCount() == 0:
+            return intersect_pairs
+
+        index = QgsSpatialIndex(boundary_point_layer)
+
         for line in lines:
             bbox = line.geometry().boundingBox()
             bbox.scale(1.001)
@@ -476,7 +481,7 @@ class QGISUtils(QObject):
         plot_layer = res_layers[PLOT_TABLE]
         if plot_layer is None:
             self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB!").format(PLOT_TABLE),
+                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(PLOT_TABLE, db.get_description()),
                 Qgis.Warning)
             return
 
@@ -497,14 +502,14 @@ class QGISUtils(QObject):
         more_bfs_layer = res_layers[MORE_BOUNDARY_FACE_STRING_TABLE]
         if more_bfs_layer is None:
             self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB!").format(MORE_BOUNDARY_FACE_STRING_TABLE),
+                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(MORE_BOUNDARY_FACE_STRING_TABLE), db.get_description()
                 Qgis.Warning)
             return
 
         less_layer = res_layers[LESS_TABLE]
         if less_layer is None:
             self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB!").format(LESS_TABLE),
+                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(LESS_TABLE, db.get_description()),
                 Qgis.Warning)
             return
 
@@ -569,15 +574,19 @@ class QGISUtils(QObject):
                 Qgis.Info)
         else:
             self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.".format(MORE_BOUNDARY_FACE_STRING_TABLE)),
+                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.".format(LESS_BOUNDARY_FACE_STRING_TABLE)),
                 Qgis.Info)
 
     def get_pair_boundary_plot(self, boundary_layer, plot_layer, use_selection=True):
         lines = boundary_layer.getFeatures()
         polygons = plot_layer.getSelectedFeatures() if use_selection else plot_layer.getFeatures()
-        index = QgsSpatialIndex(boundary_layer)
         intersect_more_pairs = list()
         intersect_less_pairs = list()
+
+        if boundary_layer.featureCount() == 0:
+            return (intersect_more_pairs, intersect_less_pairs)
+
+        index = QgsSpatialIndex(boundary_layer)
 
         for polygon in polygons:
             bbox = polygon.geometry().boundingBox()
@@ -652,7 +661,7 @@ class QGISUtils(QObject):
         boundaries = res_layers[BOUNDARY_TABLE]
         if boundaries is None:
             self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "Layer {} not found in the DB!").format(BOUNDARY_TABLE),
+                QCoreApplication.translate("QGISUtils", "Layer {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()),
                 Qgis.Warning)
             return
         selected_boundaries = boundaries.selectedFeatures()
@@ -665,7 +674,7 @@ class QGISUtils(QObject):
         plots = res_layers[PLOT_TABLE]
         if plots is None:
             self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "Layer {} not found in the DB!").format(PLOT_TABLE),
+                QCoreApplication.translate("QGISUtils", "Layer {} not found in the DB! {}").format(PLOT_TABLE, db.get_description()),
                 Qgis.Warning)
             return
 
@@ -697,7 +706,7 @@ class QGISUtils(QObject):
         if boundary_point_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB!").format(BOUNDARY_POINT_TABLE),
+                                           "Table {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()),
                 Qgis.Warning)
             return
 
@@ -738,7 +747,7 @@ class QGISUtils(QObject):
         if boundary_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in the DB!").format(BOUNDARY_TABLE),
+                                           "Table {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()),
                 Qgis.Warning)
             return
 
