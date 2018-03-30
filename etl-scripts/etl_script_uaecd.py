@@ -457,13 +457,26 @@ def llenar_uebaunit_unidad_construccion_predio(tipo='nph'):
     if tipo == 'nph':
         layer_name = 'Und_Cons_NPH_fixed'
     elif tipo == 'ph':
-        layer_name = 'Und_Cons_PH'
+        # Como para PH se generó un polígono consolidado para UndCons, no podemos
+        # usar la tabla UndCons_PH (109 registros) sino tenemos que usar
+        # Pred_Identificador que tiene la relación de cada unidad con su predio
+        # 6645 registros de PH. En otras palabras, MJ y NPH tienen 1:1 con predio,
+        # pero PH 1:M, por haber consolidado las unidades de cons en una sola.
+        layer_name = 'Pred_Identificador'
     elif tipo == 'mj':
         layer_name = 'Und_Cons_MJ'
 
     source_layer_uri = '{input_db_path}|layername={layer_name}'.format(input_db_path=INPUT_DB_PATH, layer_name=layer_name)
     source_layer = QgsVectorLayer(source_layer_uri, "r_input_layer", "ogr")
-    dict_source = {feat_source['Cod_CONS']: feat_source['CHIP'] for feat_source in source_layer.getFeatures()}
+    dict_source = dict()
+    if tipo == 'ph': # 1:M
+        for feat_source in source_layer.getFeatures("\"u_nombres\" = 'UAECD_Predio_PH'"):
+            if feat_source['Cod_LOTE'] not in dict_source:
+                dict_source[feat_source['Cod_LOTE']] = [feat_source['CHIP']]
+            else:
+                dict_source[feat_source['Cod_LOTE']].append(feat_source['CHIP'])
+    else: # 1:1
+        dict_source = {feat_source['Cod_CONS']: feat_source['CHIP'] for feat_source in source_layer.getFeatures()}
 
     # Predio:
     table_predio = get_ladm_col_layer("predio")
@@ -474,17 +487,24 @@ def llenar_uebaunit_unidad_construccion_predio(tipo='nph'):
 
     # Iterar sobre unidades de construcciones buscando llegar a predio vía el GPKG de origen
     for cod_cons, und_cons_t_id in dict_unidadconstruccion.items():
-        if cod_cons in dict_source:
-            source_chip = dict_source[cod_cons]
-            it_table_predio = table_predio.getFeatures("\"nupre\" = '{}'".format(source_chip))
-            f_table_predio = QgsFeature()
-            it_table_predio.nextFeature(f_table_predio)
+        if tipo == 'ph':
+            cod_cons = cod_cons[:12] # Solo necesitamos Cod_LOTE para PH
 
-            if f_table_predio.isValid():
-                new_row = QgsVectorLayerUtils().createFeature(table_uebaunit)
-                new_row.setAttribute('ue_unidadconstruccion', und_cons_t_id)
-                new_row.setAttribute('baunit_predio', f_table_predio['t_id'])
-                rows.append(new_row)
+        if cod_cons in dict_source:
+            source_chips = dict_source[cod_cons]
+            if type(source_chips) != list: # Make MJ y NPH chips a list of 1 element
+                source_chips = [source_chips]
+
+            for source_chip in source_chips:
+                it_table_predio = table_predio.getFeatures("\"nupre\" = '{}'".format(source_chip))
+                f_table_predio = QgsFeature()
+                it_table_predio.nextFeature(f_table_predio)
+
+                if f_table_predio.isValid():
+                    new_row = QgsVectorLayerUtils().createFeature(table_uebaunit)
+                    new_row.setAttribute('ue_unidadconstruccion', und_cons_t_id)
+                    new_row.setAttribute('baunit_predio', f_table_predio['t_id'])
+                    rows.append(new_row)
         else:
             #print("WARNING: COD_CONS NOT FOUND in llenar_uebaunit_unidad_construccion_predio:", cod_cons)
             pass # Muchos mensajes...
