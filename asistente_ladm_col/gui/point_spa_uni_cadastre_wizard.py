@@ -59,10 +59,10 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
 
     def point_option_changed(self):
         if self.rad_boundary_point.isChecked():
-            self.wizardPage2.setSubTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Configure Data Source for Boundary Points"))
+            self.gbx_page_2.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Configure Data Source for Boundary Points"))
             self.txt_help_page_1.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_BP)
         else: # self.rad_survey_point is checked
-            self.wizardPage2.setSubTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Configure Data Source for Survey Points"))
+            self.gbx_page_2.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Configure Data Source for Survey Points"))
             self.txt_help_page_1.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_SP)
 
     def prepare_copy_csv_points_to_db(self):
