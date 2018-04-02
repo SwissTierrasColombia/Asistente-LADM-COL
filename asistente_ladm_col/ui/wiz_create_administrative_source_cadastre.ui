@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>650</width>
     <height>312</height>
    </rect>
   </property>
@@ -17,8 +17,8 @@
    <property name="subTitle">
     <string>How would you like to create administrative sources?</string>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_2">
-    <item>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QRadioButton" name="rad_party_create">
@@ -67,6 +67,22 @@
        </spacer>
       </item>
      </layout>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPlainTextEdit" name="txt_help_page_1">
+      <property name="maximumSize">
+       <size>
+        <width>200</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="plainText">
+       <string/>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

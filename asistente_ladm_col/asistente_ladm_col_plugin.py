@@ -17,13 +17,19 @@
  ***************************************************************************/
 """
 import os.path
+import shutil
+import glob
+from functools import partial, wraps
 
 import qgis.utils
-from qgis.core import QgsMessageLog, Qgis
+from qgis.core import (QgsMessageLog, Qgis, QgsApplication,
+                       QgsProcessingModelAlgorithm)
 from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
                               QLocale, QSettings)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton, QMessageBox
+
+from processing.modeler.ModelerUtils import ModelerUtils
 
 from .config.table_mapping_config import PROJECT_GENERATOR_MIN_REQUIRED_VERSION
 from .gui.point_spa_uni_cadastre_wizard import PointsSpatialUnitCadastreWizard
@@ -38,9 +44,9 @@ from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWiz
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
 from .gui.dialog_load_layers import DialogLoadLayers
+from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
 
-from functools import partial, wraps
 #import resources_rc
 
 class AsistenteLADMCOLPlugin(QObject):
@@ -169,6 +175,37 @@ class AsistenteLADMCOLPlugin(QObject):
                                                   self._fill_point_BFS_action,
                                                   self._fill_more_BFS_less_action])
         self._define_boundary_toolbar.setVisible(False)
+
+        # Add LADM_COL provider and models to QGIS
+        self.ladm_col_provider = LADMCOLAlgorithmProvider()
+        QgsApplication.processingRegistry().addProvider(self.ladm_col_provider)
+        if QgsApplication.processingRegistry().providerById('model'):
+            self.add_processing_models(None)
+        else: # We need to wait until processing is initialized
+            QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_models)
+
+
+    def add_processing_models(self, provider_id):
+        if not (provider_id == 'model' or provider_id is None):
+            return
+
+        if provider_id is not None: # If method acted as slot
+            QgsApplication.processingRegistry().providerAdded.disconnect(self.add_processing_models)
+
+        # Add ladm_col etl-model
+        basepath = os.path.dirname(os.path.abspath(__file__))
+        plugin_models_dir = os.path.join(basepath, "processing", "models")
+
+        for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):
+            alg = QgsProcessingModelAlgorithm()
+            if not alg.fromFile(filename):
+                print("ERROR: Couldn't load model from {}".format(filename))
+                return
+
+            destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))
+            shutil.copyfile(filename, destFilename)
+
+        QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
 
     def refresh_map(self):
         self.iface.mapCanvas().refresh()
@@ -305,6 +342,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.deleteLater()
         self.iface.mainWindow().removeToolBar(self._define_boundary_toolbar)
         del self._define_boundary_toolbar
+        QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
 
     def show_settings(self):
         self.qgis_utils.get_settings_dialog().exec_()
