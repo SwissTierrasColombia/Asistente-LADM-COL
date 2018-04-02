@@ -14,13 +14,24 @@ MAINTAINER Agencia Implementacion <agenciadeimplementacion@incige.com>
 #  future \
 #  transifex-client
 
+
+# SO deps
 RUN apt-get update && \
     apt-get -y install \
     iputils-ping \
     dnsutils \
     nmap \
     wget \
-    unzip
+    unzip \
+    vim
+
+# Python deps
+RUN apt-get -y install \
+    python3-pip
+
+# Python pip installs
+RUN pip3 install --upgrade pip && \
+pip3 install --upgrade psycopg
 
 # When our PRs get merged in time!
 # RUN wget https://github.com/opengisch/projectgenerator/releases/download/v3.0.0/projectgenerator-v3.0.0.zip -O /tmp/projectgenerator.zip
