@@ -33,5 +33,6 @@ printf "\n"
 pushd /usr/src/asistente_ladm_col
 make
 cd ..
+export PYTHONPATH=/usr/share/qgis/python/plugins:$PYTHONPATH
 xvfb-run nose2-3
 popd
