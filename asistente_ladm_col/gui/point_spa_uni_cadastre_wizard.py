@@ -18,7 +18,8 @@
 """
 import os
 
-from qgis.core import QgsProject, QgsVectorLayer, QgsSpatialIndex, Qgis
+from qgis.core import (QgsProject, QgsVectorLayer, QgsSpatialIndex, Qgis,
+                       QgsMapLayerProxyModel)
 from qgis.PyQt.QtCore import QSettings, QCoreApplication
 from qgis.PyQt.QtWidgets import QWizard
 
@@ -61,6 +62,8 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         self.point_option_changed() # Initialize it
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.currentIdChanged.connect(self.current_page_changed)
+
+        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PointLayer)
 
         self.txt_help_page_2.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
 
@@ -221,24 +224,24 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/add_points_type', 'boundary_point' if self.rad_boundary_point.isChecked() else 'survey_point')
-        settings.setValue('Asistente-LADM_COL/load_data_type', 'csv' if self.rad_csv.isChecked() else 'refactor')
-        settings.setValue('Asistente-LADM_COL/add_points_csv_file', self.txt_file_path.text().strip())
-        settings.setValue('Asistente-LADM_COL/csv_file_delimiter', self.txt_delimiter.text().strip())
+        settings.setValue('Asistente-LADM_COL/wizards/points_add_points_type', 'boundary_point' if self.rad_boundary_point.isChecked() else 'survey_point')
+        settings.setValue('Asistente-LADM_COL/wizards/points_load_data_type', 'csv' if self.rad_csv.isChecked() else 'refactor')
+        settings.setValue('Asistente-LADM_COL/wizards/points_add_points_csv_file', self.txt_file_path.text().strip())
+        settings.setValue('Asistente-LADM_COL/wizards/points_csv_file_delimiter', self.txt_delimiter.text().strip())
 
     def restore_settings(self):
         settings = QSettings()
-        point_type = settings.value('Asistente-LADM_COL/add_points_type') or 'boundary_point'
+        point_type = settings.value('Asistente-LADM_COL/wizards/points_add_points_type') or 'boundary_point'
         if point_type == 'boundary_point':
             self.rad_boundary_point.setChecked(True)
         else:
             self.rad_survey_point.setChecked(True)
 
-        load_data_type = settings.value('Asistente-LADM_COL/load_data_type') or 'csv'
+        load_data_type = settings.value('Asistente-LADM_COL/wizards/points_load_data_type') or 'csv'
         if load_data_type == 'refactor':
             self.rad_refactor.setChecked(True)
         else:
             self.rad_csv.setChecked(True)
 
-        self.txt_file_path.setText(settings.value('Asistente-LADM_COL/add_points_csv_file'))
-        self.txt_delimiter.setText(settings.value('Asistente-LADM_COL/csv_file_delimiter'))
+        self.txt_file_path.setText(settings.value('Asistente-LADM_COL/wizards/points_add_points_csv_file'))
+        self.txt_delimiter.setText(settings.value('Asistente-LADM_COL/wizards/points_csv_file_delimiter'))
