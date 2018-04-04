@@ -27,17 +27,8 @@
     <string/>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>5</number>
-    </property>
-    <property name="bottomMargin">
-     <number>0</number>
+    <property name="margin">
+     <number>9</number>
     </property>
     <item row="0" column="0">
      <widget class="QSplitter" name="splitter">
@@ -98,7 +89,7 @@
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>400</width>
+                 <width>300</width>
                  <height>16777215</height>
                 </size>
                </property>
