@@ -22,7 +22,8 @@ from qgis.core import QgsProject, QgsVectorLayer, QgsSpatialIndex, Qgis
 from qgis.PyQt.QtCore import QSettings, QCoreApplication
 from qgis.PyQt.QtWidgets import QWizard
 
-from ..utils.qt_utils import make_file_selector
+from ..utils.qt_utils import (make_file_selector, enable_next_wizard,
+                              disable_next_wizard)
 from ..utils import get_ui_class
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE)
@@ -40,6 +41,10 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
 
+        # Auxiliary data to set nonlinear next pages
+        self.pages = [self.wizardPage1, self.wizardPage2, self.wizardPage3]
+        self.dict_pages_ids = {self.pages[idx] : pid for idx, pid in enumerate(self.pageIds())}
+
         # Set connections
         self.btn_browse_file.clicked.connect(
             make_file_selector(self.txt_file_path,
@@ -52,18 +57,93 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         self.txt_file_path.textChanged.emit(self.txt_file_path.text())
 
         self.rad_boundary_point.toggled.connect(self.point_option_changed)
+        self.rad_csv.toggled.connect(self.adjust_page_2_controls)
         self.point_option_changed() # Initialize it
-        self.button(QWizard.FinishButton).clicked.connect(self.prepare_copy_csv_points_to_db)
+        self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
+        self.currentIdChanged.connect(self.current_page_changed)
 
         self.txt_help_page_2.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
 
+        self.wizardPage2.setButtonText(QWizard.FinishButton,
+                                       QCoreApplication.translate("PointsSpatialUnitCadastreWizard",
+                                            "Import"))
+
+    def nextId(self):
+        """
+        Set navigation order. Should return an integer. -1 is Finish.
+        """
+        if self.currentId() == self.dict_pages_ids[self.wizardPage1]:
+            if self.rad_boundary_point.isChecked():
+                return self.dict_pages_ids[self.wizardPage2]
+            elif self.rad_survey_point.isChecked():
+                return self.dict_pages_ids[self.wizardPage2]
+        elif self.currentId() == self.dict_pages_ids[self.wizardPage2]:
+            if self.rad_csv.isChecked():
+                return self.dict_pages_ids[self.wizardPage3]
+            elif self.rad_refactor.isChecked():
+                return -1
+        elif self.currentId() == self.dict_pages_ids[self.wizardPage3]:
+            return -1
+        else:
+            return -1
+
+    def current_page_changed(self, id):
+        """
+        Reset the Next button. Needed because Next might have been disabled by a
+        condition in a another SLOT.
+        """
+        enable_next_wizard(self)
+
+        if id == self.dict_pages_ids[self.wizardPage2]:
+            self.adjust_page_2_controls()
+        elif id == self.dict_pages_ids[self.wizardPage3]:
+            self.fill_long_lat_combos("")
+
+
+    def adjust_page_2_controls(self):
+        if self.rad_refactor.isChecked():
+            self.lbl_refactor_source.setEnabled(True)
+            self.mMapLayerComboBox.setEnabled(True)
+
+            disable_next_wizard(self)
+            self.wizardPage2.setFinalPage(True)
+
+        elif self.rad_csv.isChecked():
+            self.lbl_refactor_source.setEnabled(False)
+            self.mMapLayerComboBox.setEnabled(False)
+
+            enable_next_wizard(self)
+            self.wizardPage2.setFinalPage(False)
+
     def point_option_changed(self):
         if self.rad_boundary_point.isChecked():
-            self.gbx_page_2.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Configure Data Source for Boundary Points"))
+            self.gbx_page_2.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Load data to Boundary Points..."))
             self.txt_help_page_1.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_BP)
         else: # self.rad_survey_point is checked
-            self.gbx_page_2.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Configure Data Source for Survey Points"))
+            self.gbx_page_2.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Load data to Survey Points..."))
             self.txt_help_page_1.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_SP)
+
+    def finished_dialog(self):
+        self.save_settings()
+
+        if self.rad_refactor.isChecked():
+            if self.rad_boundary_point.isChecked():
+                output_layer_name = BOUNDARY_POINT_TABLE
+            elif self.rad_survey_point.isChecked():
+                output_layer_name = SURVEY_POINT_TABLE
+
+            if self.mMapLayerComboBox.currentLayer() is not None:
+                self.qgis_utils.show_etl_model(self._db,
+                                               self.mMapLayerComboBox.currentLayer(),
+                                               output_layer_name)
+            else:
+                self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                    QCoreApplication.translate("PointsSpatialUnitCadastreWizard",
+                                               "Select a source layer to set the field mapping to '{}'.").format(output_layer_name),
+                    Qgis.Warning)
+
+        elif self.rad_csv.isChecked():
+            self.prepare_copy_csv_points_to_db()
 
     def prepare_copy_csv_points_to_db(self):
         csv_path = self.txt_file_path.text().strip()
@@ -74,8 +154,6 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
                                            "No CSV file given or file doesn't exist."),
                 Qgis.Warning)
             return
-
-        self.save_settings()
 
         target_layer = BOUNDARY_POINT_TABLE if self.rad_boundary_point.isChecked() else SURVEY_POINT_TABLE
 
@@ -144,6 +222,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
     def save_settings(self):
         settings = QSettings()
         settings.setValue('Asistente-LADM_COL/add_points_type', 'boundary_point' if self.rad_boundary_point.isChecked() else 'survey_point')
+        settings.setValue('Asistente-LADM_COL/load_data_type', 'csv' if self.rad_csv.isChecked() else 'refactor')
         settings.setValue('Asistente-LADM_COL/add_points_csv_file', self.txt_file_path.text().strip())
         settings.setValue('Asistente-LADM_COL/csv_file_delimiter', self.txt_delimiter.text().strip())
 
@@ -154,5 +233,12 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
             self.rad_boundary_point.setChecked(True)
         else:
             self.rad_survey_point.setChecked(True)
+
+        load_data_type = settings.value('Asistente-LADM_COL/load_data_type') or 'csv'
+        if load_data_type == 'refactor':
+            self.rad_refactor.setChecked(True)
+        else:
+            self.rad_csv.setChecked(True)
+
         self.txt_file_path.setText(settings.value('Asistente-LADM_COL/add_points_csv_file'))
         self.txt_delimiter.setText(settings.value('Asistente-LADM_COL/csv_file_delimiter'))

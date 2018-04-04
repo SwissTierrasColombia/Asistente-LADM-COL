@@ -41,11 +41,11 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
 
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PolygonLayer)
 
-        self.rad_plot_from_boundaries.toggled.connect(self.adjust_pages)
+        self.rad_plot_from_boundaries.toggled.connect(self.adjust_page_controls)
         self.rad_plot_from_boundaries.toggled.emit(True)
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
 
-    def adjust_pages(self):
+    def adjust_page_controls(self):
         if self.rad_plot_from_boundaries.isChecked():
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
