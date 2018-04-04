@@ -914,7 +914,7 @@ class QGISUtils(QObject):
         return [
             {'length': -1, 'precision': 0, 'expression': '"t_id"', 'name': 't_id', 'type': 4},
             {'length': 255, 'precision': -1, 'expression': '"acuerdo"', 'name': 'acuerdo', 'type': 10},
-            {'length': 255, 'precision': -1, 'expression': '"bien_definido"', 'name': 'definicion_punto', 'type': 10},
+            {'length': 255, 'precision': -1, 'expression': '"definicion_punto"', 'name': 'definicion_punto', 'type': 10},
             {'length': 255, 'precision': -1, 'expression': '"descripcion_punto"', 'name': 'descripcion_punto', 'type': 10},
             {'length': -1, 'precision': 0, 'expression': '"exactitud_vertical"', 'name': 'exactitud_vertical', 'type': 2},
             {'length': -1, 'precision': 0, 'expression': '"exactitud_horizontal"', 'name': 'exactitud_horizontal', 'type': 2},
