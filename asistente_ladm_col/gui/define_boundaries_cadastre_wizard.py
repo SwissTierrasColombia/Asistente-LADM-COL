@@ -28,6 +28,8 @@ from ..config.table_mapping_config import (
     LENGTH_FIELD_BOUNDARY_TABLE,
     VIDA_UTIL_FIELD_BOUNDARY_TABLE
 )
+from ..config.help_strings import (get_refactor_help_string,
+                                   WIZ_DEFINE_BOUNDARIES_CADASTRE_PAGE_1_OPTION_DIGITIZE)
 
 WIZARD_UI = get_ui_class('wiz_define_boundaries_cadastre.ui')
 
@@ -53,10 +55,13 @@ class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
             finish_button_text = "Import"
+            self.txt_help_page_1.setHtml(get_refactor_help_string(BOUNDARY_TABLE, False))
+
         elif self.rad_digitizing.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
             finish_button_text = "Start"
+            self.txt_help_page_1.setHtml(WIZ_DEFINE_BOUNDARIES_CADASTRE_PAGE_1_OPTION_DIGITIZE)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
                                        QCoreApplication.translate("DefineBoundariesCadastreWizard",

@@ -188,7 +188,11 @@ Choose this option if you want to create a <b>Spatial Source</b> using a form.\
 <b>Spatial Source</b> is a specialization of the <i>COL_Fuente</i> class to store those sources corresponding to spatial data (geographic features, satellite imagery, photogrammetric flights, maps, coordinate listings, ancient or modern plans, location descriptions, and the like) that technically document the relationship between parties and parcels.\
 ")
 
-#
-WIZ_DEFINE_BOUNDARIES_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-\
+# Elige esta opción si deseas agregar un <b>Lindero</b> usando las herramientas de digitalización de QGIS.
+# <br><br>
+# <b>Lindero</b> es una clase especializada de <i>LA_CadenaCarasLindero</i> que permite registrar los linderos. Dos linderos no pueden cruzarse ni superponerse.
+WIZ_DEFINE_BOUNDARIES_CADASTRE_PAGE_1_OPTION_DIGITIZE = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Boundary</b> using QGIS digitazing tools.\
+<br><br>\
+<b>Boundary</b> is a specialization of the <i>LA_CadenaCarasLindero</i> class to store boundaries that define plots. Two boundaries must not cross or overlap. \
 ")
