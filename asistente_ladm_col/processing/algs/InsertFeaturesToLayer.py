@@ -22,6 +22,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant, QCoreApplication
 
 from qgis.core import (
+                       edit,
                        QgsGeometry,
                        QgsWkbTypes,
                        QgsProcessing,
@@ -115,18 +116,20 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
 
             feedback.setProgress(int(current * total))
 
-        target.dataProvider().enterUpdateMode()
-        try:
-            target.dataProvider().addFeatures(new_features)
-        except BaseException as e:
-            raise e
-        finally:
-            target.dataProvider().leaveUpdateMode()
+        # This might throw errors and print messages... But, in that case, that's what we want!
+        with edit(target):
+            res = target.addFeatures(new_features)
 
-        feedback.pushInfo("{} out of {} features from input layer were successfully copied into '{}'!".format(
-            len(new_features),
-            source.featureCount(),
-            target.name()
-        ))
+        if res:
+            feedback.pushInfo("{} out of {} features from input layer were successfully copied into '{}'!".format(
+                len(new_features),
+                source.featureCount(),
+                target.name()
+            ))
+        else:
+            feedback.pushInfo("The {} features from input layer could not be copied into '{}'. This is likely due to NOT NULL constraints that are not met.".format(
+                source.featureCount(),
+                target.name()
+            ))
 
         return {self.OUTPUT: target}

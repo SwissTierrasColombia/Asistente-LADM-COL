@@ -17,8 +17,9 @@
  ***************************************************************************/
 """
 from qgis.core import (QgsProject, QgsVectorLayer, QgsEditFormConfig,
-                       QgsSnappingConfig, QgsTolerance, QgsFeature, Qgis)
-from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication
+                       QgsSnappingConfig, QgsTolerance, QgsFeature, Qgis,
+                       QgsMapLayerProxyModel)
+from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard, QToolBar
 
 from ..utils import get_ui_class
@@ -39,7 +40,46 @@ class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
 
-        self.button(QWizard.FinishButton).clicked.connect(self.prepare_boundary_creation)
+        self.restore_settings()
+
+        self.rad_digitizing.toggled.connect(self.adjust_page_1_controls)
+        self.adjust_page_1_controls()
+        self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
+
+        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.LineLayer)
+
+    def adjust_page_1_controls(self):
+        if self.rad_refactor.isChecked():
+            self.lbl_refactor_source.setEnabled(True)
+            self.mMapLayerComboBox.setEnabled(True)
+            finish_button_text = "Import"
+        elif self.rad_digitizing.isChecked():
+            self.lbl_refactor_source.setEnabled(False)
+            self.mMapLayerComboBox.setEnabled(False)
+            finish_button_text = "Start"
+
+        self.wizardPage1.setButtonText(QWizard.FinishButton,
+                                       QCoreApplication.translate("DefineBoundariesCadastreWizard",
+                                       finish_button_text))
+
+    def finished_dialog(self):
+        self.save_settings()
+
+        if self.rad_refactor.isChecked():
+            output_layer_name = BOUNDARY_TABLE
+
+            if self.mMapLayerComboBox.currentLayer() is not None:
+                self.qgis_utils.show_etl_model(self._db,
+                                               self.mMapLayerComboBox.currentLayer(),
+                                               output_layer_name)
+            else:
+                self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                    QCoreApplication.translate("DefineBoundariesCadastreWizard",
+                                               "Select a source layer to set the field mapping to '{}'.").format(output_layer_name),
+                    Qgis.Warning)
+
+        elif self.rad_digitizing.isChecked():
+            self.prepare_boundary_creation()
 
     def prepare_boundary_creation(self):
         # Load layers
@@ -84,3 +124,16 @@ class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
             QCoreApplication.translate("DefineBoundariesCadastreWizard",
                                        "You can now start capturing boundaries clicking on the map..."),
             Qgis.Info)
+
+    def save_settings(self):
+        settings = QSettings()
+        settings.setValue('Asistente-LADM_COL/wizards/boundary_load_data_type', 'digitizing' if self.rad_digitizing.isChecked() else 'refactor')
+
+    def restore_settings(self):
+        settings = QSettings()
+
+        load_data_type = settings.value('Asistente-LADM_COL/wizards/boundary_load_data_type') or 'digitizing'
+        if load_data_type == 'refactor':
+            self.rad_refactor.setChecked(True)
+        else:
+            self.rad_digitizing.setChecked(True)
