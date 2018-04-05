@@ -192,7 +192,7 @@ Choose this option if you want to create a <b>Spatial Source</b> using a form.\
 # <br><br>
 # <b>Lindero</b> es una clase especializada de <i>LA_CadenaCarasLindero</i> que permite registrar los linderos. Dos linderos no pueden cruzarse ni superponerse.
 WIZ_DEFINE_BOUNDARIES_CADASTRE_PAGE_1_OPTION_DIGITIZE = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Boundary</b> using QGIS digitazing tools.\
+Choose this option if you want to create a <b>Boundary</b> using QGIS digitizing tools.\
 <br><br>\
 <b>Boundary</b> is a specialization of the <i>LA_CadenaCarasLindero</i> class to store boundaries that define plots. Two boundaries must not cross or overlap. \
 ")
