@@ -24,7 +24,16 @@
     <string/>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>9</number>
+    </property>
+    <property name="topMargin">
+     <number>9</number>
+    </property>
+    <property name="rightMargin">
+     <number>9</number>
+    </property>
+    <property name="bottomMargin">
      <number>9</number>
     </property>
     <item row="0" column="0">
@@ -139,7 +148,16 @@
   </widget>
   <widget class="QWizardPage" name="wizardPage2">
    <layout class="QGridLayout" name="gridLayout_10">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>9</number>
+    </property>
+    <property name="topMargin">
+     <number>9</number>
+    </property>
+    <property name="rightMargin">
+     <number>9</number>
+    </property>
+    <property name="bottomMargin">
      <number>9</number>
     </property>
     <item row="0" column="0">
@@ -251,10 +269,10 @@
                  <height>16777215</height>
                 </size>
                </property>
-               <property name="allowEmptyLayer" stdset="0">
+               <property name="allowEmptyLayer">
                 <bool>true</bool>
                </property>
-               <property name="showCrs" stdset="0">
+               <property name="showCrs">
                 <bool>false</bool>
                </property>
               </widget>
@@ -279,7 +297,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QTextBrowser" name="txt_help_page_3">
+      <widget class="QTextBrowser" name="txt_help_page_2">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -302,7 +320,16 @@
     <string/>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>9</number>
+    </property>
+    <property name="topMargin">
+     <number>9</number>
+    </property>
+    <property name="rightMargin">
+     <number>9</number>
+    </property>
+    <property name="bottomMargin">
      <number>9</number>
     </property>
     <item row="0" column="0">
@@ -493,7 +520,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QTextBrowser" name="txt_help_page_2">
+      <widget class="QTextBrowser" name="txt_help_page_3">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>

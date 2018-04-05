@@ -28,7 +28,8 @@ from ..utils.qt_utils import (make_file_selector, enable_next_wizard,
 from ..utils import get_ui_class
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE)
-from ..config.help_strings import (WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_BP,
+from ..config.help_strings import (get_refactor_help_string,
+                                   WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_BP,
                                    WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_SP,
                                    WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
 
@@ -70,6 +71,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         self.wizardPage2.setButtonText(QWizard.FinishButton,
                                        QCoreApplication.translate("PointsSpatialUnitCadastreWizard",
                                             "Import"))
+        self.txt_help_page_3.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
 
     def nextId(self):
         """
@@ -110,6 +112,10 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
 
             disable_next_wizard(self)
             self.wizardPage2.setFinalPage(True)
+            self.txt_help_page_2.setHtml(
+                get_refactor_help_string(
+                    BOUNDARY_POINT_TABLE if self.rad_boundary_point.isChecked() else SURVEY_POINT_TABLE,
+                    True))
 
         elif self.rad_csv.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -117,6 +123,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
 
             enable_next_wizard(self)
             self.wizardPage2.setFinalPage(False)
+            self.txt_help_page_2.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
 
     def point_option_changed(self):
         if self.rad_boundary_point.isChecked():

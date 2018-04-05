@@ -1,8 +1,7 @@
 from qgis.PyQt.QtCore import QCoreApplication
 
-"""
-For this module use multiline "\" instead of triple double quotes
-"""
+# For this module use multiline "\" instead of triple double quotes
+
 
 # Elige esta opción para cargar puntos a la capa <b>Punto Lindero</b> del modelo <i>LADM_COL</i>.
 # <br><br>
@@ -26,8 +25,16 @@ Choose this option to load points to <b>Survey Points</b> layer from <i>LADM_COL
 
 # Agrega un archivo de valores separados por coma (CSV) u otros como TSV, seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.
 WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV = QCoreApplication.translate("HelpStrings", "\
-Add a Comma Separated Values file (CSV) or others like Tab Separated Values (TSV), choosing the delimiter and fields that contains point coordinates.\
+Add a Comma Separated Values file (CSV), choosing the delimiter and fields that contain point coordinates.\
 ")
+
+def get_refactor_help_string(layer_name, layer_is_spatial):
+    # Agrega un archivo de valores separados por coma (CSV) u otros como TSV, seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.
+    return QCoreApplication.translate("HelpStrings", "\
+    Open a window that allows you to set a mapping between the input (source) {type} and the LADM_COL <b>{name}</b> {type}.\
+    ").format(
+        name=layer_name,
+        type=QCoreApplication.translate("HelpStrings", "layer") if layer_is_spatial else QCoreApplication.translate("HelpStrings", "table"))
 
 # Elige esta opción si deseas agregar una <b>Fuente administrativa</b> con un formulario.
 # <br><br>
