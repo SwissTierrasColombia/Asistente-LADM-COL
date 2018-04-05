@@ -75,7 +75,7 @@ class CreateLegalPartyCadastreWizard(QWizard, WIZARD_UI):
                                                "Select a source layer to set the field mapping to '{}'.").format(LEGAL_PARTY_TABLE),
                     Qgis.Warning)
 
-        elif self.rad_plot_from_boundaries.isChecked():
+        elif self.rad_create_manually.isChecked():
             self.prepare_legal_party_creation()
 
     def prepare_legal_party_creation(self):
