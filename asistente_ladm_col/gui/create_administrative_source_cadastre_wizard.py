@@ -30,6 +30,9 @@ from ..config.table_mapping_config import (
     ADMINISTRATIVE_SOURCE_TYPE_TABLE
 )
 
+from ..config.help_strings import (get_refactor_help_string,
+                                   WIZ_CREATE_ADMINISTRATIVE_SOURCE_PAGE_1_OPTION_FORM)
+
 WIZARD_UI = get_ui_class('wiz_create_administrative_source_cadastre.ui')
 
 class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
@@ -54,10 +57,13 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
             finish_button_text = "Import"
+            self.txt_help_page_1.setHtml(get_refactor_help_string(ADMINISTRATIVE_SOURCE_TABLE, False))
+
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
-            finish_button_text = "Finish"
+            finish_button_text = "Create"
+            self.txt_help_page_1.setHtml(WIZ_CREATE_ADMINISTRATIVE_SOURCE_PAGE_1_OPTION_FORM)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
                                        QCoreApplication.translate("CreateAdministrativeSourceCadastreWizard",

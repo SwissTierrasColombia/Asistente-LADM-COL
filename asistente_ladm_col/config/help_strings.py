@@ -40,9 +40,9 @@ def get_refactor_help_string(layer_name, layer_is_spatial):
 # <br><br>
 # <b>Fuente administrativa</b> es una Especialización de la clase <i>COL_Fuente</i> para almacenar aquellas fuentes constituidas por documentos (documento hipotecario, documentos notariales, documentos históricos, etc.) que documentan la relación entre instancias de interesados y de predios.
 WIZ_CREATE_ADMINISTRATIVE_SOURCE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to add a <b>Administrative Source</b> with a form.\
+Choose this option if you want to create an <b>Administrative Source</b> using a form.\
 <br><br>\
-<b>Administrative Source</b> is a specialization of the class <i>COL_Fuente</i> to store those sources constituted by documents (mortgage document, notarial documents, historical documents, etc.) that document the relationship between stakeholders and properties.\
+<b>Administrative Source</b> is a specialization of the <i>COL_Fuente</i> class to store those sources corresponding to documents (mortgage document, notarial documents, historical documents, and the like) that document the relationship between parties and parcels.\
 ")
 
 # Elige esta opción si deseas agregar una <b>Fuente Administrativa</b> con un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
@@ -179,12 +179,16 @@ WIZ_CREATE_RIGHT_CADASTRE_PAGE_1_OPTION_ = QCoreApplication.translate("HelpStrin
 \
 ")
 
-#
-WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_1_OPTION_ = QCoreApplication.translate("HelpStrings", "\
-\
+# Elige esta opción si deseas agregar una <b>Fuente espacial</b> usando un formulario.
+# <br><br>
+# <b>Fuente espacial</b> es una especialización de la clase <i>COL_Fuente</i> para almacenar las fuentes constituidas por datos espaciales (entidades geográficas, imágenes de satélite, vuelos fotogramétricos, listados de coordenadas, mapas, planos antiguos o modernos, descripción de localizaciones, etc.) que documentan técnicamente la relación entre instancias de interesados y de predios.
+WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Spatial Source</b> using a form.\
+<br><br>\
+<b>Spatial Source</b> is a specialization of the <i>COL_Fuente</i> class to store those sources corresponding to spatial data (geographic features, satellite imagery, photogrammetric flights, maps, coordinate listings, ancient or modern plans, location descriptions, and the like) that technically document the relationship between parties and parcels.\
 ")
 
 #
-WIZ_DEFINE_BOUNDARIES_CADASTRE_PAGE_1_OPTION_ = QCoreApplication.translate("HelpStrings", "\
+WIZ_DEFINE_BOUNDARIES_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
 \
 ")
