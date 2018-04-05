@@ -58,9 +58,9 @@ Choose this option if you want to add an <b>Administrative Source</b> with an ex
 # <br><br>
 # <b>Interesado Jurídico</b> es una Persona jurídica que tiene derechos, restricciones o responsabilidades referidas a uno o más predios.
 WIZ_CREATE_LEGAL_PARTY_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to add a <b>Legal Party</b> with with a form.\
+Choose this option if you want to create a <b>Legal Party</b> using a form.\
 <br><br>\
-<b>Legal Party</b> is a legal entity that has rights, restrictions or responsibilities related to one or more <i>Parcel</i>.\
+<b>Legal Party</b> is a legal entity that has rights, restrictions or responsibilities related to one or more <i>Parcels</i>.\
 ")
 
 # Elige esta opción si deseas agregar una <b>Interesado natural</b> con un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
@@ -76,9 +76,9 @@ Choose this option if you want to add a <b>Legal Party</b> with an external reso
 # <br><br>
 # <b>Interesado Natural</b> es una Persona natural que tiene derechos o a la que le recaen restricciones o responsabilidades referidas a uno o más predios.
 WIZ_CREATE_NATURAL_PARTY_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to add a <b>Natural Party</b> with a form.\
+Choose this option if you want to create a <b>Natural Party</b> using a form.\
 <br><br>\
-<b>Natural Party</b> is a natural person who has rights or who is subject to restrictions or responsibilities related to one or more <i>Parcel</i>.\
+<b>Natural Party</b> is a natural person who has rights or who is subject to restrictions or responsibilities related to one or more <i>Parcels</i>.\
 ")
 
 # Elige esta opción si deseas agregar una <b>Interesado Natural</b> con un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
