@@ -95,12 +95,11 @@ Choose this option if you want to add a <b>Natural Party</b> with an external re
 # <b>Predio</b> es una Clase especializada de BaUnit, que describe la unidad administrativa básica para el caso de Colombia.
 # El predio es la unidad territorial legal propia de Catastro.
 # Esta formada por el terreno y puede o no tener construcciones asociadas.
-WIZ_CREATE_PARCEL_CADASTRE_PAGE_1_OPTION_EXISTS_PLOT = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Parcel</b> based on an existing plot.\
+WIZ_CREATE_PARCEL_CADASTRE_PAGE_1_OPTION_EXISTING_PLOT = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Parcel</b> based on existing plots.\
 <br><br>\
-<b>Parcel</b> is a specialized BaUnit Class, which describes the basic administrative unit for the case of Colombia.\
-The property is the legal territorial unit of Cadastre.\
-It is formed by the terrain and may or may not have associated constructions.\
+<b>Parcel</b> is a specialized <i>BAUnit</i> class, which describes the basic administrative unit of Colombian cadastre.\
+ The <b>Parcel</b> is the legal territorial unit, which is formed by the plot and may or may not have associated constructions.\
 ")
 
 # Elige esta opción si deseas crear un <b>Predio</b> sin una geometría asociada.
@@ -111,9 +110,8 @@ It is formed by the terrain and may or may not have associated constructions.\
 WIZ_CREATE_PARCEL_CADASTRE_PAGE_1_OPTION_WITHOUT_GEOM = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create a <b>Parcel</b> without geometry.\
 <br><br>\
-<b>Parcel</b> is a specialized BaUnit Class, which describes the basic administrative unit for the case of Colombia.\
-The property is the legal territorial unit of Cadastre.\
-It is formed by the terrain and may or may not have associated constructions.\
+<b>Parcel</b> is a specialized <i>BAUnit</i> class, which describes the basic administrative unit of Colombian cadastre.\
+ The <b>Parcel</b> is the legal territorial unit, which is formed by the plot and may or may not have associated constructions.\
 ")
 
 # Elige esta opción si deseas crear un <b>Predio</b> desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.

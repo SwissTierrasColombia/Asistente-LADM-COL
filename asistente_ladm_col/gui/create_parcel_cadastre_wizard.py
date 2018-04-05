@@ -33,6 +33,8 @@ from ..config.table_mapping_config import (
     UEBAUNIT_TABLE_PARCEL_FIELD,
     UEBAUNIT_TABLE_PLOT_FIELD
 )
+from ..config.help_strings import (get_refactor_help_string,
+                                   WIZ_CREATE_PARCEL_CADASTRE_PAGE_1_OPTION_EXISTING_PLOT)
 
 WIZARD_UI = get_ui_class('wiz_create_parcel_cadastre.ui')
 
@@ -60,10 +62,13 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
             finish_button_text = "Import"
+            self.txt_help_page_1.setHtml(get_refactor_help_string(PARCEL_TABLE, False))
+
         elif self.rad_parcel_from_plot.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
-            finish_button_text = "Finish"
+            finish_button_text = "Create"
+            self.txt_help_page_1.setHtml(WIZ_CREATE_PARCEL_CADASTRE_PAGE_1_OPTION_EXISTING_PLOT)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
                                        QCoreApplication.translate("CreateParcelCadastreWizard",

@@ -155,7 +155,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QTextBrowser" name="txt_help_page_3">
+      <widget class="QTextBrowser" name="txt_help_page_1">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
