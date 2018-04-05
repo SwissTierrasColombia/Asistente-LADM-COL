@@ -69,20 +69,7 @@
      </layout>
     </item>
     <item row="0" column="1">
-     <widget class="QPlainTextEdit" name="txt_help_page_1">
-      <property name="maximumSize">
-       <size>
-        <width>200</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-      <property name="plainText">
-       <string/>
-      </property>
-     </widget>
+     <widget class="QTextBrowser" name="txt_help_page_1"/>
     </item>
    </layout>
   </widget>
