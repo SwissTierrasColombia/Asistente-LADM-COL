@@ -18,8 +18,9 @@
 """
 from functools import partial
 
-from qgis.core import QgsEditFormConfig, QgsVectorLayerUtils, Qgis, QgsWkbTypes
-from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication
+from qgis.core import (QgsEditFormConfig, QgsVectorLayerUtils, Qgis,
+                       QgsWkbTypes, QgsMapLayerProxyModel)
+from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
@@ -46,7 +47,44 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
 
-        self.button(QWizard.FinishButton).clicked.connect(self.prepare_parcel_creation)
+        self.restore_settings()
+
+        self.rad_parcel_from_plot.toggled.connect(self.adjust_page_1_controls)
+        self.adjust_page_1_controls()
+        self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
+
+        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.NoGeometry)
+
+    def adjust_page_1_controls(self):
+        if self.rad_refactor.isChecked():
+            self.lbl_refactor_source.setEnabled(True)
+            self.mMapLayerComboBox.setEnabled(True)
+            finish_button_text = "Import"
+        elif self.rad_parcel_from_plot.isChecked():
+            self.lbl_refactor_source.setEnabled(False)
+            self.mMapLayerComboBox.setEnabled(False)
+            finish_button_text = "Finish"
+
+        self.wizardPage1.setButtonText(QWizard.FinishButton,
+                                       QCoreApplication.translate("CreateParcelCadastreWizard",
+                                       finish_button_text))
+
+    def finished_dialog(self):
+        self.save_settings()
+
+        if self.rad_refactor.isChecked():
+            if self.mMapLayerComboBox.currentLayer() is not None:
+                self.qgis_utils.show_etl_model(self._db,
+                                               self.mMapLayerComboBox.currentLayer(),
+                                               PARCEL_TABLE)
+            else:
+                self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                    QCoreApplication.translate("CreateParcelCadastreWizard",
+                                               "Select a source layer to set the field mapping to '{}'.").format(PARCEL_TABLE),
+                    Qgis.Warning)
+
+        elif self.rad_parcel_from_plot.isChecked():
+            self.prepare_parcel_creation()
 
     def prepare_parcel_creation(self):
         # Load layers
@@ -149,3 +187,16 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
 
         self._parcel_layer.committedFeaturesAdded.disconnect()
         print("Parcel's committedFeaturesAdded SIGNAL disconnected")
+
+    def save_settings(self):
+        settings = QSettings()
+        settings.setValue('Asistente-LADM_COL/wizards/parcel_load_data_type', 'using_plots' if self.rad_parcel_from_plot.isChecked() else 'refactor')
+
+    def restore_settings(self):
+        settings = QSettings()
+
+        load_data_type = settings.value('Asistente-LADM_COL/wizards/parcel_load_data_type') or 'using_plots'
+        if load_data_type == 'refactor':
+            self.rad_refactor.setChecked(True)
+        else:
+            self.rad_parcel_from_plot.setChecked(True)

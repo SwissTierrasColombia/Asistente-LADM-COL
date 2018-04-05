@@ -65,16 +65,14 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
         self.save_settings()
 
         if self.rad_refactor.isChecked():
-            output_layer_name = PLOT_TABLE
-
             if self.mMapLayerComboBox.currentLayer() is not None:
                 self.qgis_utils.show_etl_model(self._db,
                                                self.mMapLayerComboBox.currentLayer(),
-                                               output_layer_name)
+                                               PLOT_TABLE)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreatePlotCadastreWizard",
-                                               "Select a source layer to set the field mapping to '{}'.").format(output_layer_name),
+                                               "Select a source layer to set the field mapping to '{}'.").format(PLOT_TABLE),
                     Qgis.Warning)
 
         elif self.rad_plot_from_boundaries.isChecked():
