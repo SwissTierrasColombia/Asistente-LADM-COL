@@ -94,8 +94,8 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
         self._spatial_source_layer = res_layers[SPATIAL_SOURCE_TABLE]
         if self._spatial_source_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateAdministrativeSourceCadastreWizard",
-                                           "Administrative Source layer couldn't be found..."),
+                QCoreApplication.translate("CreateSpatialSourceCadastreWizard",
+                                           "Spatil Source layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 

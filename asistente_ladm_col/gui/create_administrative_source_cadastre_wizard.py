@@ -98,7 +98,7 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
         if self._administrative_source_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateAdministrativeSourceCadastreWizard",
-                                           "Administrative Source layer couldn't be found..."),
+                                           "Administrative Source layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 

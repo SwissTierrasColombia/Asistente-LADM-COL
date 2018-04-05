@@ -90,7 +90,7 @@ class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
         if self._boundary_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("DefineBoundariesCadastreWizard",
-                                           "Boundary layer couldn't be found..."),
+                                           "Boundary layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 

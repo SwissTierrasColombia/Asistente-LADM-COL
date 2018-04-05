@@ -98,7 +98,7 @@ class CreateNaturalPartyCadastreWizard(QWizard, WIZARD_UI):
         if self._natural_party_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateNaturalPartyCadastreWizard",
-                                           "Natural Party layer couldn't be found..."),
+                                           "Natural Party layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 

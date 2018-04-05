@@ -94,7 +94,7 @@ class CreateLegalPartyCadastreWizard(QWizard, WIZARD_UI):
         if self._legal_party_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateLegalPartyCadastreWizard",
-                                           "Legal Party layer couldn't be found..."),
+                                           "Legal Party layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 

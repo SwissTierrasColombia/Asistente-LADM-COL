@@ -38,4 +38,7 @@ class DBConnector(QObject):
         pass
 
     def get_description(self):
-        print(self.mode,self.uri,self.conn)
+        return "Current connection details: '{}' -> {} {}".format(
+            self.mode,
+            self.uri,
+            'schema:{}'.format(self.schema) if self.schema else '')

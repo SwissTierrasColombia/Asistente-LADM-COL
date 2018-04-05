@@ -249,7 +249,7 @@ def llenar_predio():
     input_uri = '{refactored_db_path}|layername=R_predio'.format(refactored_db_path=REFACTORED_DB_PATH)
     refactor_and_copy_paste(params_refactor_predio, input_uri, "predio")
 
-def llenar_uebaunit():
+def llenar_uebaunit_terreno_predio():
     # Relación Terreno-Predio (Necesita una tabla fuente de paso, en la UAECD tienen CHIP vs. COD LOTE)
 
     # Predio: dict = {CHIP : t_id}
@@ -317,20 +317,71 @@ def llenar_construccion(layer_name):
     input_uri = '{refactored_db_path}|layername=R_construccion'.format(refactored_db_path=REFACTORED_DB_PATH)
     refactor_and_copy_paste(params_refactor_construccion, input_uri, "construccion")
 
+def llenar_uebaunit_construccion_predio():
+    # Relación Construccion-Predio (Necesitaría una tabla fuente de paso, pero
+    # tenemos relación Construcción-Terreno (local_ids) y ya hemos relacionado
+    # Terreno-Predio)
+
+    # Construccion dict: {COD_LOTE : t_id}
+    layer_construccion = get_ladm_col_layer("construccion")
+    dict_construccion = {feat_construccion['su_local_id']: feat_construccion['t_id'] for feat_construccion in layer_construccion.getFeatures()}
+
+    # Terreno: dict = {COD_LOTE : {'t_id':t_id, 'ns':su_espacio_de_nombres}
+    layer_terreno = get_ladm_col_layer("terreno")
+    dict_terreno = {feat_terreno['su_local_id']: {'t_id':feat_terreno['t_id'], 'ns':feat_terreno['su_espacio_de_nombres']} for feat_terreno in layer_terreno.getFeatures()}
+
+    # Get Predio
+    table_predio = get_ladm_col_layer("predio")
+
+    # Get uebaunit
+    table_uebaunit = get_ladm_col_layer("uebaunit")
+    rows = list()
+
+    # Iterar sobre construcciones buscando el t_id de terreno correspondiente
+    # y luego de uebanit extraer el t_id de predio
+    for cod_lote, cons_t_id in dict_construccion.items():
+        if cod_lote in dict_terreno:
+            terreno_t_id = dict_terreno[cod_lote]['t_id']
+            terreno_ns = dict_terreno[cod_lote]['ns']
+            it_table_uebaunit = table_uebaunit.getFeatures("\"ue_terreno\" = '{}'".format(terreno_t_id))
+
+            for f_table_uebaunit in it_table_uebaunit:
+                if terreno_ns == 'UAECD_Terreno_MJ_Matriz':
+                    # Estamos en MJ, debemos omitir de las parejas cons-predio
+                    # la que le corresponde al terreno. Sabemos cuál omitir
+                    # porque está marcado en la tabla predio.
+                    it_table_predio = table_predio.getFeatures("\"t_id\" = '{}'".format(f_table_uebaunit['baunit_predio']))
+                    f_table_predio = QgsFeature()
+                    it_table_predio.nextFeature(f_table_predio)
+
+                    if f_table_predio.isValid():
+                        if f_table_predio['u_espacio_de_nombres'] == 'UAECD_Predio_MJ_Matriz':
+                            # Llegamos al predio relacionado con terreno y no con
+                            # construcción, este lo omitimos en la relación
+                            continue
+
+                new_row = QgsVectorLayerUtils().createFeature(table_uebaunit)
+                new_row.setAttribute('ue_construccion', cons_t_id)
+                new_row.setAttribute('baunit_predio', f_table_uebaunit['baunit_predio'])
+                rows.append(new_row)
+        else:
+            print("WARNING: COD_LOTE NOT FOUND in llenar_uebaunit_construccion_predio:", cod_lote)
+
+    # Llenar uebaunit
+    table_uebaunit.dataProvider().addFeatures(rows)
+    print("INFO:", len(rows), " rows (construccion-predio) added to uebaunit!!!")
+
 def llenar_unidad_construccion(tipo='nph'):
     # Cada tipo de predio en la UAECD tiene su particularidad, entonces se
     # divide por casos (PH, NPH y Mejora)
     if tipo == 'nph':
         layer_name = 'Und_Cons_NPH_fixed'
-        expression_local_id = '"Cod_CONS"'
         refactored_layer = 'R_unidadconstruccion_nph'
     elif tipo == 'ph':
         layer_name = 'Und_Cons_PH'
-        expression_local_id = ''
         refactored_layer = 'R_unidadconstruccion_ph'
     elif tipo == 'mj':
         layer_name = 'Und_Cons_MJ'
-        expression_local_id = '"Cod_CONS"'
         refactored_layer = 'R_unidadconstruccion_mj'
 
     params_refactor_unidad_construccion = {
@@ -392,6 +443,75 @@ def llenar_unidad_construccion(tipo='nph'):
 
     # Finalmente, copiar refactored en capa unidad construccion
     copy_paste_features(input_layer, output_unidad_construccion)
+
+def llenar_uebaunit_unidad_construccion_predio(tipo='nph'):
+    # Relación Unidad_construccion-Predio
+    # En la tabla insumo tenemos la pareja Cod_CONS-CHIP, por medio de ella
+    # llegamos a t_id unidadconstrucción y t_id predio
+
+    # Unidadconstruccion dict: {COD_CONS : t_id}
+    layer_unidadconstruccion = get_ladm_col_layer("unidadconstruccion")
+    dict_unidadconstruccion = {feat_unidadconstruccion['su_local_id']: feat_unidadconstruccion['t_id'] for feat_unidadconstruccion in layer_unidadconstruccion.getFeatures()}
+
+    # Und_Cons: dict = {COD_Cons : CHIP}
+    if tipo == 'nph':
+        layer_name = 'Und_Cons_NPH_fixed'
+    elif tipo == 'ph':
+        # Como para PH se generó un polígono consolidado para UndCons, no podemos
+        # usar la tabla UndCons_PH (109 registros) sino tenemos que usar
+        # Pred_Identificador que tiene la relación de cada unidad con su predio
+        # 6645 registros de PH. En otras palabras, MJ y NPH tienen 1:1 con predio,
+        # pero PH 1:M, por haber consolidado las unidades de cons en una sola.
+        layer_name = 'Pred_Identificador'
+    elif tipo == 'mj':
+        layer_name = 'Und_Cons_MJ'
+
+    source_layer_uri = '{input_db_path}|layername={layer_name}'.format(input_db_path=INPUT_DB_PATH, layer_name=layer_name)
+    source_layer = QgsVectorLayer(source_layer_uri, "r_input_layer", "ogr")
+    dict_source = dict()
+    if tipo == 'ph': # 1:M
+        for feat_source in source_layer.getFeatures("\"u_nombres\" = 'UAECD_Predio_PH'"):
+            if feat_source['Cod_LOTE'] not in dict_source:
+                dict_source[feat_source['Cod_LOTE']] = [feat_source['CHIP']]
+            else:
+                dict_source[feat_source['Cod_LOTE']].append(feat_source['CHIP'])
+    else: # 1:1
+        dict_source = {feat_source['Cod_CONS']: feat_source['CHIP'] for feat_source in source_layer.getFeatures()}
+
+    # Predio:
+    table_predio = get_ladm_col_layer("predio")
+
+    # Get uebaunit
+    table_uebaunit = get_ladm_col_layer("uebaunit")
+    rows = list()
+
+    # Iterar sobre unidades de construcciones buscando llegar a predio vía el GPKG de origen
+    for cod_cons, und_cons_t_id in dict_unidadconstruccion.items():
+        if tipo == 'ph':
+            cod_cons = cod_cons[:12] # Solo necesitamos Cod_LOTE para PH
+
+        if cod_cons in dict_source:
+            source_chips = dict_source[cod_cons]
+            if type(source_chips) != list: # Make MJ y NPH chips a list of 1 element
+                source_chips = [source_chips]
+
+            for source_chip in source_chips:
+                it_table_predio = table_predio.getFeatures("\"nupre\" = '{}'".format(source_chip))
+                f_table_predio = QgsFeature()
+                it_table_predio.nextFeature(f_table_predio)
+
+                if f_table_predio.isValid():
+                    new_row = QgsVectorLayerUtils().createFeature(table_uebaunit)
+                    new_row.setAttribute('ue_unidadconstruccion', und_cons_t_id)
+                    new_row.setAttribute('baunit_predio', f_table_predio['t_id'])
+                    rows.append(new_row)
+        else:
+            #print("WARNING: COD_CONS NOT FOUND in llenar_uebaunit_unidad_construccion_predio:", cod_cons)
+            pass # Muchos mensajes...
+
+    # Llenar uebaunit
+    table_uebaunit.dataProvider().addFeatures(rows)
+    print("INFO:", len(rows), " rows (unidadconstruccion-predio) added to uebaunit!!!")
 
 def llenar_interesado_natural():
     # Interesado Natural
@@ -1049,6 +1169,41 @@ def llenar_ficha__nucleo_familiar():
     if res[0]:
         print("{} features saved into Nucleo Familiar!".format(len(features)))
 
+def llenar_ficha__investigacion_de_mercado():
+    # layer_ficha__predio_ficha: Ficha.Predio_Ficha
+    # table_source: GPKG Source (InvestigacionMercado)
+    # table_target: Table in LADM where to paste features to (Ficha_Investigacion_Mercado)
+    layer_predio_ficha = get_ladm_col_layer("predio_ficha")
+    table_target = get_ladm_col_layer("investigacionmercado")
+
+    table_source = QgsVectorLayer('{input_db_path}|layername=InvestigacionMercado'.format(input_db_path=INPUT_DB_PATH), "table_source", "ogr")
+
+    features_source = [f for f in table_source.getFeatures()]
+    features = []
+    for f in features_source:
+        # Get corresponding feature in Ficha.Predio_Ficha
+        it_predio_ficha = layer_predio_ficha.getFeatures("\"tmp_chip\" = '{}'".format(f['CHIP']))
+        f_predio_ficha = QgsFeature()
+        it_predio_ficha.nextFeature(f_predio_ficha)
+
+        if f_predio_ficha.isValid():
+            feature = QgsVectorLayerUtils().createFeature(table_target)
+            feature.setAttribute('fichapredio', f_predio_ficha['t_id'])
+            feature.setAttribute('tipo_oferta', f['Tipo_Oferta'])
+            feature.setAttribute('disponible_mercado', f['Disponible_Mercado'])
+            feature.setAttribute('valor', f['Valor'])
+            feature.setAttribute('nombre_oferente', f['Nombre_Oferente'])
+            feature.setAttribute('telefono_contacto_oferente', f['Telefono_Contacto_Oferente'])
+            feature.setAttribute('observaciones', f['Observaciones'])
+
+            features.append(feature)
+        else:
+            print("CHIP not found in FICHA.Predio_Ficha", f['CHIP'])
+
+    res = table_target.dataProvider().addFeatures(features)
+    if res[0]:
+        print("{} features saved into Investigación de Mercado!".format(len(features)))
+
 def remover_campos_temporales_de_asociacion_ficha():
     # En llenar_ficha__predio_ficha creamos campo temporal para poder asociar
     # datos. Aquí lo removemos.
@@ -1074,13 +1229,17 @@ llenar_lindero()
 llenar_terreno() # First fix the source layer (with 'Fix Geometries' algorithm)
 llenar_tablas_de_topologia()
 llenar_predio()
-llenar_uebaunit()
+llenar_uebaunit_terreno_predio()
 llenar_construccion('Construccion_NPH_fixed') # First fix source layer geometries
 llenar_construccion('Construccion_PH')
 llenar_construccion('Construccion_MJ')
+llenar_uebaunit_construccion_predio()
 llenar_unidad_construccion('nph') # First fix source layer geometries
 llenar_unidad_construccion('ph')
 llenar_unidad_construccion('mj')
+llenar_uebaunit_unidad_construccion_predio('nph')
+llenar_uebaunit_unidad_construccion_predio('ph')
+llenar_uebaunit_unidad_construccion_predio('mj')
 llenar_interesado_natural()
 llenar_interesado_juridico()
 llenar_col_derecho('interesado_natural')
@@ -1116,4 +1275,5 @@ llenar_avaluos__zhg()
 llenar_ficha__predio_ficha()
 llenar_ficha__predioficha_predio()
 llenar_ficha__nucleo_familiar()
+llenar_ficha__investigacion_de_mercado()
 remover_campos_temporales_de_asociacion_ficha()
