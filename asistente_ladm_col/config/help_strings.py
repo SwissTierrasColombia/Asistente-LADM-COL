@@ -168,15 +168,41 @@ Choose this option if you want to add a <b>Responsibility</b> from external reso
 <b>COL_Responsibility</b> is a class of type <i>LA_RRR</i> that records the responsibilities that stakeholders have on the premises.\
 ")
 
-
-#
-WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_1_OPTION_ = QCoreApplication.translate("HelpStrings", "\
-\
+# Elige esta opción si deseas agregar una <b>Restricción</b> con un formulario.
+# <br><br>
+# <b>COL_Restriccion</b> son las restricciones a las que está sometido un predio y que inciden sobre los derechos que pueden ejercerse sobre él.
+WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to add a <b>Restriction</b> with a form.\
+<br><br>\
+<b>COL_Restriction</b> are the restrictions to which a property is subject and that affect the rights that may be exercised over it.\
 ")
 
-#
+# Elige esta opción si deseas agregar una <b>Restricción</b> desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
+# <br><br>
+# <b>COL_Restriccion</b> son las restricciones a las que está sometido un predio y que inciden sobre los derechos que pueden ejercerse sobre él.
+WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_1_OPTION_ANOTHER = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to add a <b>Restriction</b> from external resource, such as a CSV file, a QGIS table, etc.\
+<br><br>\
+<b>COL_Restriction</b> are the restrictions to which a property is subject and that affect the rights that may be exercised over it.\
+")
+
+
+# Elige esta opción si deseas agregar una <b>Derecho</b> con un formulario.
+# <br><br>
+# <b>COL_Derecho</b> es una clase que registra las instancias de los derechos que un interesado ejerce sobre un predio. Es una especialización de la clase LA_RRR del propio modelo.
 WIZ_CREATE_RIGHT_CADASTRE_PAGE_1_OPTION_ = QCoreApplication.translate("HelpStrings", "\
-\
+Choose this option if you want to add a <b>Right</b> with a form.\
+<br><br>\
+<b>COL_Right</ b> is a class that registers the instances of rights that an interested party exercises over a property. It is a specialization of the class LA_RRR of the model itself.\
+")
+
+# Elige esta opción si deseas agregar una <b>Derecho</b> desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
+# <br><br>
+# <b>COL_Derecho</b> es una clase que registra las instancias de los derechos que un interesado ejerce sobre un predio. Es una especialización de la clase LA_RRR del propio modelo.
+WIZ_CREATE_RIGHT_CADASTRE_PAGE_1_OPTION_ = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to add a <b>Right</b> from external resource, such as a CSV file, a QGIS table, etc.\
+<br><br>\
+<b>COL_Right</ b> is a class that registers the instances of rights that an interested party exercises over a property. It is a specialization of the class LA_RRR of the model itself.\
 ")
 
 # Elige esta opción si deseas agregar una <b>Fuente espacial</b> usando un formulario.
