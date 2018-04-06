@@ -543,7 +543,7 @@
 <context>
     <name>HelpStrings</name>
     <message>
-        <location filename="../config/help_strings.py" line="10"/>
+        <location filename="../config/help_strings.py" line="6"/>
         <source>Choose this option to load points to &lt;b&gt;Boundary Points&lt;/b&gt; layer from &lt;i&gt;LADM_COL&lt;/i&gt; model.&lt;br&gt;&lt;br&gt;&lt;b&gt;Boundary Point&lt;/b&gt; is a specialized class of &lt;i&gt;LA_Point&lt;/i&gt; which store points that define a boundary.Boundary is an instance of &lt;i&gt;LA_BoundaryFaceString&lt;/i&gt; class and its specializations.</source>
         <translation>Elige esta opción para cargar puntos a la capa &lt;b&gt;Punto Lindero&lt;/b&gt; del modelo &lt;i&gt;LADM_COL&lt;/i&gt;.
 &lt;br&gt;&lt;br&gt;
@@ -551,69 +551,69 @@
 Lindero es una instancia de la clase &lt;i&gt;LA_BoundaryFaceString&lt;/i&gt; y sus especializaciones.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="20"/>
+        <location filename="../config/help_strings.py" line="13"/>
         <source>Choose this option to load points to &lt;b&gt;Survey Points&lt;/b&gt; layer from &lt;i&gt;LADM_COL&lt;/i&gt; model.&lt;br&gt;&lt;br&gt;&lt;b&gt;Survey Point&lt;/b&gt; is a specialized class of &lt;i&gt;LA_Point&lt;/i&gt; which represents a building, right of way or auxiliary vertex.</source>
         <translation>Elige esta opción para cargar puntos a la capa &lt;b&gt;Punto Levantamiento&lt;/b&gt; del modelo &lt;i&gt;LADM_COL&lt;/i&gt;.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Punto Levantamiento&lt;/b&gt; es una clase especializada de &lt;i&gt;LA_Punto&lt;/i&gt; que representa la posición horizontal de un vértice de construcción, servidumbre o auxiliares.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="27"/>
+        <location filename="../config/help_strings.py" line="19"/>
         <source>Add a Comma Separated Values file (CSV), choosing the delimiter and fields that contain point coordinates.</source>
         <translation>Agrega un archivo de valores separados por coma (CSV) u otros como TSV, seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="33"/>
+        <location filename="../config/help_strings.py" line="25"/>
         <source>    Open a window that allows you to set a mapping between the input (source) {type} and the LADM_COL &lt;b&gt;{name}&lt;/b&gt; {type}.    </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="37"/>
+        <location filename="../config/help_strings.py" line="29"/>
         <source>layer</source>
         <translation>capa</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="37"/>
+        <location filename="../config/help_strings.py" line="29"/>
         <source>table</source>
         <translation>tabla</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="42"/>
+        <location filename="../config/help_strings.py" line="31"/>
         <source>Choose this option if you want to create an &lt;b&gt;Administrative Source&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Administrative Source&lt;/b&gt; is a specialization of the &lt;i&gt;COL_Fuente&lt;/i&gt; class to store those sources corresponding to documents (mortgage document, notarial documents, historical documents, and the like) that document the relationship between parties and parcels.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Fuente administrativa&lt;/b&gt; con un formulario.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Fuente administrativa&lt;/b&gt; es una Especialización de la clase &lt;i&gt;COL_Fuente&lt;/i&gt; para almacenar aquellas fuentes constituidas por documentos (documento hipotecario, documentos notariales, documentos históricos, etc.) que documentan la relación entre instancias de interesados y de predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="51"/>
+        <location filename="../config/help_strings.py" line="37"/>
         <source>Choose this option if you want to add an &lt;b&gt;Administrative Source&lt;/b&gt; with an external resource, such as a CSV file, a QGIS table, etc.&lt;br&gt;&lt;br&gt;&lt;b&gt;Administrative Source&lt;/b&gt; is a Specialization of the class &lt;i&gt;COL_Fuente&lt;/i&gt; to store those sources constituted by documents (mortgage document, notarial documents, historical documents, etc.) that document the relationship between instances of interested and property.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Fuente Administrativa&lt;/b&gt; con un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Fuente Administrativa&lt;/b&gt; es una Especialización de la clase &lt;i&gt;COL_Fuente&lt;/i&gt; para almacenar aquellas fuentes constituidas por documentos (documento hipotecario, documentos notariales, documentos históricos, etc.) que documentan la relación entre instancias de interesados y de predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="60"/>
+        <location filename="../config/help_strings.py" line="43"/>
         <source>Choose this option if you want to create a &lt;b&gt;Legal Party&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Legal Party&lt;/b&gt; is a legal entity that has rights, restrictions or responsibilities related to one or more &lt;i&gt;Parcels&lt;/i&gt;.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Interesado Jurídico&lt;/b&gt; con un formulario.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Interesado Jurídico&lt;/b&gt; es una Persona jurídica que tiene derechos, restricciones o responsabilidades referidas a uno o más predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="69"/>
+        <location filename="../config/help_strings.py" line="49"/>
         <source>Choose this option if you want to add a &lt;b&gt;Legal Party&lt;/b&gt; with an external resource, such as a CSV file, a QGIS table, etc.&lt;br&gt;&lt;br&gt;&lt;b&gt;Legal Party&lt;/b&gt; is a legal entity that has rights, restrictions or responsibilities related to one or more &lt;i&gt;Parcel&lt;/i&gt;.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Interesado natural&lt;/b&gt; con un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Interesado natural&lt;/b&gt; es una Persona jurídica que tiene derechos, restricciones o responsabilidades referidas a uno o más predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="78"/>
+        <location filename="../config/help_strings.py" line="55"/>
         <source>Choose this option if you want to create a &lt;b&gt;Natural Party&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Natural Party&lt;/b&gt; is a natural person who has rights or who is subject to restrictions or responsibilities related to one or more &lt;i&gt;Parcels&lt;/i&gt;.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Interesado Natural&lt;/b&gt; con un formulario.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Interesado Natural&lt;/b&gt; es una Persona natural que tiene derechos o a la que le recaen restricciones o responsabilidades referidas a uno o más predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="87"/>
+        <location filename="../config/help_strings.py" line="61"/>
         <source>Choose this option if you want to add a &lt;b&gt;Natural Party&lt;/b&gt; with an external resource, such as a CSV file, a QGIS table, etc.&lt;br&gt;&lt;br&gt;&lt;b&gt;Natural Party&lt;/b&gt; is a natural person who has rights or who is subject to restrictions or responsibilities related to one or more &lt;i&gt;Parcel&lt;/i&gt;.</source>
         <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; basándose en un &lt;i&gt;Terreno&lt;i&gt; existente.
 &lt;br&gt;&lt;br&gt;
@@ -622,7 +622,7 @@ El predio es la unidad territorial legal propia de Catastro.
 Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="98"/>
+        <location filename="../config/help_strings.py" line="67"/>
         <source>Choose this option if you want to create a &lt;b&gt;Parcel&lt;/b&gt; based on existing plots.&lt;br&gt;&lt;br&gt;&lt;b&gt;Parcel&lt;/b&gt; is a specialized &lt;i&gt;BAUnit&lt;/i&gt; class, which describes the basic administrative unit of Colombian cadastre. The &lt;b&gt;Parcel&lt;/b&gt; is the legal territorial unit, which is formed by the plot and may or may not have associated constructions.</source>
         <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; sin una geometría asociada.
 &lt;br&gt;&lt;br&gt;
@@ -631,7 +631,7 @@ El predio es la unidad territorial legal propia de Catastro.
 Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="110"/>
+        <location filename="../config/help_strings.py" line="74"/>
         <source>Choose this option if you want to create a &lt;b&gt;Parcel&lt;/b&gt; without geometry.&lt;br&gt;&lt;br&gt;&lt;b&gt;Parcel&lt;/b&gt; is a specialized &lt;i&gt;BAUnit&lt;/i&gt; class, which describes the basic administrative unit of Colombian cadastre. The &lt;b&gt;Parcel&lt;/b&gt; is the legal territorial unit, which is formed by the plot and may or may not have associated constructions.</source>
         <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
 &lt;br&gt;&lt;br&gt;
@@ -640,7 +640,7 @@ El predio es la unidad territorial legal propia de Catastro.
 Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="122"/>
+        <location filename="../config/help_strings.py" line="81"/>
         <source>Choose this option if you want to create a &lt;b&gt;Parcel&lt;/b&gt; from external resource, such as a CSV file, a QGIS table, etc.&lt;br&gt;&lt;br&gt;&lt;b&gt;Parcel&lt;/b&gt; is a specialized BaUnit Class, which describes the basic administrative unit for the case of Colombia.The property is the legal territorial unit of Cadastre.It is formed by the terrain and may or may not have associated constructions.</source>
         <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
 &lt;br&gt;&lt;br&gt;
@@ -649,75 +649,75 @@ El predio es la unidad territorial legal propia de Catastro.
 Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="133"/>
+        <location filename="../config/help_strings.py" line="89"/>
         <source>Choose this option if you want to create a &lt;b&gt;Plot&lt;/b&gt; from a re-factored layer.&lt;br&gt;&lt;br&gt;&lt;b&gt;Plot&lt;/b&gt; is a portion of land with a defined geographical extension.</source>
         <translation>Elige esta opción si deseas crear un &lt;b&gt;Terreno&lt;/b&gt; a partir de una capa re-factorizada.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Terreno&lt;/b&gt; es una porción de tierra con una extensión geográfica definida.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="142"/>
+        <location filename="../config/help_strings.py" line="95"/>
         <source>Choose this option if you want to create a &lt;b&gt;Plot&lt;/b&gt; from existing &lt;i&gt;Boundaries&lt;/i&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;Plot&lt;/b&gt; is a portion of land with a defined geographical extension.</source>
         <translation>Elige esta opción si deseas crear un &lt;b&gt;Terreno&lt;/b&gt; a partir de &lt;i&gt;Límites&lt;/i&gt; existentes.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Terreno&lt;/b&gt; es una porción de tierra con una extensión geográfica definida.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="149"/>
+        <location filename="../config/help_strings.py" line="101"/>
         <source>Select the &lt;b&gt;Plot&lt;/ b&gt; layer from those available in the QGIS project.</source>
         <translation>Seleccione la capa de &lt;b&gt;Terreno&lt;/b&gt; de las disponibles en el proyecto de QGIS.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="156"/>
+        <location filename="../config/help_strings.py" line="105"/>
         <source>Choose this option if you want to add a &lt;b&gt;Responsibility&lt;/b&gt; with a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;COL_Responsibility&lt;/b&gt; is a class of type &lt;i&gt;LA_RRR&lt;/i&gt; that records the responsibilities that stakeholders have on the premises.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Responsabilidad&lt;/b&gt; con un formulario.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;COL_Responsabilidad&lt;/b&gt; es una clase de tipo &lt;i&gt;LA_RRR&lt;/i&gt; que registra las responsabilidades que las instancias de los interesados tienen sobre los predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="165"/>
+        <location filename="../config/help_strings.py" line="111"/>
         <source>Choose this option if you want to add a &lt;b&gt;Responsibility&lt;/b&gt; from external resource, such as a CSV file, a QGIS table, etc..&lt;br&gt;&lt;br&gt;&lt;b&gt;COL_Responsibility&lt;/b&gt; is a class of type &lt;i&gt;LA_RRR&lt;/i&gt; that records the responsibilities that stakeholders have on the premises.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Responsabilidad&lt;/b&gt; desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;COL_Responsabilidad&lt;/b&gt; es una clase de tipo &lt;i&gt;LA_RRR&lt;/i&gt; que registra las responsabilidades que las instancias de los interesados tienen sobre los predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="174"/>
+        <location filename="../config/help_strings.py" line="117"/>
         <source>Choose this option if you want to add a &lt;b&gt;Restriction&lt;/b&gt; with a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;COL_Restriction&lt;/b&gt; are the restrictions to which a property is subject and that affect the rights that may be exercised over it.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Restricción&lt;/b&gt; con un formulario.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;COL_Restriccion&lt;/b&gt; son las restricciones a las que está sometido un predio y que inciden sobre los derechos que pueden ejercerse sobre él.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="183"/>
+        <location filename="../config/help_strings.py" line="123"/>
         <source>Choose this option if you want to add a &lt;b&gt;Restriction&lt;/b&gt; from external resource, such as a CSV file, a QGIS table, etc.&lt;br&gt;&lt;br&gt;&lt;b&gt;COL_Restriction&lt;/b&gt; are the restrictions to which a property is subject and that affect the rights that may be exercised over it.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Restricción&lt;/b&gt; desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;COL_Restriccion&lt;/b&gt; son las restricciones a las que está sometido un predio y que inciden sobre los derechos que pueden ejercerse sobre él.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="192"/>
+        <location filename="../config/help_strings.py" line="129"/>
         <source>Choose this option if you want to add a &lt;b&gt;Right&lt;/b&gt; with a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;COL_Right&lt;/ b&gt; is a class that registers the instances of rights that an interested party exercises over a property. It is a specialization of the class LA_RRR of the model itself.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Derecho&lt;/b&gt; con un formulario.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;COL_Derecho&lt;/b&gt; es una clase que registra las instancias de los derechos que un interesado ejerce sobre un predio. Es una especialización de la clase LA_RRR del propio modelo.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="201"/>
+        <location filename="../config/help_strings.py" line="135"/>
         <source>Choose this option if you want to add a &lt;b&gt;Right&lt;/b&gt; from external resource, such as a CSV file, a QGIS table, etc.&lt;br&gt;&lt;br&gt;&lt;b&gt;COL_Right&lt;/ b&gt; is a class that registers the instances of rights that an interested party exercises over a property. It is a specialization of the class LA_RRR of the model itself.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Derecho&lt;/b&gt; desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;COL_Derecho&lt;/b&gt; es una clase que registra las instancias de los derechos que un interesado ejerce sobre un predio. Es una especialización de la clase LA_RRR del propio modelo.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="210"/>
+        <location filename="../config/help_strings.py" line="141"/>
         <source>Choose this option if you want to create a &lt;b&gt;Spatial Source&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Spatial Source&lt;/b&gt; is a specialization of the &lt;i&gt;COL_Fuente&lt;/i&gt; class to store those sources corresponding to spatial data (geographic features, satellite imagery, photogrammetric flights, maps, coordinate listings, ancient or modern plans, location descriptions, and the like) that technically document the relationship between parties and parcels.</source>
         <translation>Elige esta opción si deseas agregar una &lt;b&gt;Fuente espacial&lt;/b&gt; usando un formulario.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Fuente espacial&lt;/b&gt; es una especialización de la clase &lt;i&gt;COL_Fuente&lt;/i&gt; para almacenar las fuentes constituidas por datos espaciales (entidades geográficas, imágenes de satélite, vuelos fotogramétricos, listados de coordenadas, mapas, planos antiguos o modernos, descripción de localizaciones, etc.) que documentan técnicamente la relación entre instancias de interesados y de predios.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="219"/>
+        <location filename="../config/help_strings.py" line="147"/>
         <source>Choose this option if you want to create a &lt;b&gt;Boundary&lt;/b&gt; using QGIS digitizing tools.&lt;br&gt;&lt;br&gt;&lt;b&gt;Boundary&lt;/b&gt; is a specialization of the &lt;i&gt;LA_CadenaCarasLindero&lt;/i&gt; class to store boundaries that define plots. Two boundaries must not cross or overlap.</source>
         <translation>Elige esta opción si deseas agregar un &lt;b&gt;Lindero&lt;/b&gt; usando las herramientas de digitalización de QGIS.
 &lt;br&gt;&lt;br&gt;
@@ -798,52 +798,52 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>QGISUtils</name>
     <message>
-        <location filename="../utils/qgis_utils.py" line="213"/>
+        <location filename="../utils/qgis_utils.py" line="214"/>
         <source>The point layer &apos;{}&apos; couldn&apos;t be found in the DB... {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="303"/>
-        <location filename="../utils/qgis_utils.py" line="346"/>
+        <location filename="../utils/qgis_utils.py" line="304"/>
+        <location filename="../utils/qgis_utils.py" line="347"/>
         <source>First load the layer {} into QGIS!</source>
         <translation>¡Primero carga la capa {} a QGIS!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="305"/>
-        <location filename="../utils/qgis_utils.py" line="348"/>
-        <location filename="../utils/qgis_utils.py" line="399"/>
-        <location filename="../utils/qgis_utils.py" line="495"/>
+        <location filename="../utils/qgis_utils.py" line="306"/>
+        <location filename="../utils/qgis_utils.py" line="349"/>
+        <location filename="../utils/qgis_utils.py" line="400"/>
+        <location filename="../utils/qgis_utils.py" line="496"/>
         <source>Load layer {} now</source>
         <translation>Cargar la capa {} ahora</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="336"/>
+        <location filename="../utils/qgis_utils.py" line="337"/>
         <source>{} feature(s) was/were exploded generating {} feature(s).</source>
         <translation>{} objeto(s) espacial(es) fue(ron) partido(s) generando {} objeto(s) espacial(es).</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="355"/>
+        <location filename="../utils/qgis_utils.py" line="356"/>
         <source>First select at least 2 boundaries!</source>
         <translation>¡Primero selecciona por lo menos 2 linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="377"/>
+        <location filename="../utils/qgis_utils.py" line="378"/>
         <source>{} features were merged!</source>
         <translation>¡Se unieron {} objetos espaciales!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="686"/>
-        <location filename="../utils/qgis_utils.py" line="699"/>
+        <location filename="../utils/qgis_utils.py" line="687"/>
+        <location filename="../utils/qgis_utils.py" line="700"/>
         <source>Layer {} not found in the DB! {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="730"/>
+        <location filename="../utils/qgis_utils.py" line="731"/>
         <source>Table {} not found in DB! {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="938"/>
+        <location filename="../utils/qgis_utils.py" line="939"/>
         <source>Model ETL-model was not found and cannot be opened!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -852,13 +852,13 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">¡No se encontró la tabla {} en la base de datos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="397"/>
+        <location filename="../utils/qgis_utils.py" line="398"/>
         <source>First load the layer {} into QGIS and select at least one boundary!</source>
         <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un lindero!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="543"/>
-        <location filename="../utils/qgis_utils.py" line="569"/>
+        <location filename="../utils/qgis_utils.py" line="544"/>
+        <location filename="../utils/qgis_utils.py" line="570"/>
         <source>{} out of {} records were saved into &apos;{}&apos;! {} out of {} records already existed in the database.</source>
         <translation>¡{} de {} registros fueron guardados en &apos;{}&apos;! {} de {} registros ya existían en la base de datos.</translation>
     </message>
@@ -867,43 +867,43 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">¡No se encontró la tabla {} en la base de datos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="757"/>
+        <location filename="../utils/qgis_utils.py" line="758"/>
         <source>A memory layer with {} overlapping Boundary Points has been added to the map!</source>
         <translation>¡Se agregó una capa al mapa con {} Puntos Lindero superpuestos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="761"/>
+        <location filename="../utils/qgis_utils.py" line="762"/>
         <source>There are no overlapping boundary points.</source>
         <translation>No hay Puntos Lindero superpuestos.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="804"/>
+        <location filename="../utils/qgis_utils.py" line="805"/>
         <source>A memory layer with {} boundary segments longer than {}m. has been added to the map!</source>
         <translation>¡Se agregó una capa al mapa con {} segmentos de lindero más largos que {}m.!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="809"/>
+        <location filename="../utils/qgis_utils.py" line="810"/>
         <source>All boundary segments are within the tolerance ({}m.)!</source>
         <translation>¡Todos los segmentos de linderos están dentro de la tolerancia ({}m.)!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="314"/>
-        <location filename="../utils/qgis_utils.py" line="404"/>
+        <location filename="../utils/qgis_utils.py" line="315"/>
+        <location filename="../utils/qgis_utils.py" line="405"/>
         <source>First select at least one boundary!</source>
         <translation>¡Primero selecciona por lo menos un lindero!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="176"/>
+        <location filename="../utils/qgis_utils.py" line="177"/>
         <source>No CSV file given or file doesn&apos;t exist.</source>
         <translation>No se especificó un archivo CSV o el archivo no existe.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="192"/>
+        <location filename="../utils/qgis_utils.py" line="193"/>
         <source>CSV layer not valid!</source>
         <translation>¡La capa CSV no es válida!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="202"/>
+        <location filename="../utils/qgis_utils.py" line="203"/>
         <source>There are overlapping points, we cannot import them into the DB! See selected points.</source>
         <translation>Hay puntos superpuestos, ¡no podemos importarlos a la base de datos! Revisa los puntos seleccionados en el mapa.</translation>
     </message>
@@ -916,37 +916,37 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">No se encontró la capa de puntos &apos;{}&apos; en la base de datos...</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="243"/>
+        <location filename="../utils/qgis_utils.py" line="244"/>
         <source>{} points were added succesfully to &apos;{}&apos;.</source>
         <translation>Se agregaron {} puntos a &apos;{}&apos; satisfactoriamente.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="390"/>
-        <location filename="../utils/qgis_utils.py" line="411"/>
-        <location filename="../utils/qgis_utils.py" line="486"/>
-        <location filename="../utils/qgis_utils.py" line="507"/>
-        <location filename="../utils/qgis_utils.py" line="514"/>
-        <location filename="../utils/qgis_utils.py" line="771"/>
+        <location filename="../utils/qgis_utils.py" line="391"/>
+        <location filename="../utils/qgis_utils.py" line="412"/>
+        <location filename="../utils/qgis_utils.py" line="487"/>
+        <location filename="../utils/qgis_utils.py" line="508"/>
+        <location filename="../utils/qgis_utils.py" line="515"/>
+        <location filename="../utils/qgis_utils.py" line="772"/>
         <source>Table {} not found in the DB! {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="437"/>
+        <location filename="../utils/qgis_utils.py" line="438"/>
         <source>{} out of {} records were saved into {}! {} out of {} records already existed in the database.</source>
         <translation>¡{} de {} registros fueron guardados en {}! {} de {} registros ya existían en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="448"/>
+        <location filename="../utils/qgis_utils.py" line="449"/>
         <source>No pairs id_boundary-id_boundary_point found.</source>
         <translation>No se encontraron parejas id_lindero-id_punto_lindero.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="493"/>
+        <location filename="../utils/qgis_utils.py" line="494"/>
         <source>First load the layer {} into QGIS and select at least one plot!</source>
         <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un terreno!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="500"/>
+        <location filename="../utils/qgis_utils.py" line="501"/>
         <source>First select at least one plot!</source>
         <translation>¡Primero selecciona por lo menos un terreno!</translation>
     </message>
@@ -959,17 +959,17 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">¡No se encontró la capa {} en la base de datos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="692"/>
+        <location filename="../utils/qgis_utils.py" line="693"/>
         <source>First select boundaries!</source>
         <translation>¡Primero selecciona linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="716"/>
+        <location filename="../utils/qgis_utils.py" line="717"/>
         <source>{} new plot(s) has(have) been created!</source>
         <translation>¡{} nuevo(s) terreno(s) ha(n) sido creado(s)!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="720"/>
+        <location filename="../utils/qgis_utils.py" line="721"/>
         <source>No plot could be created. Make sure selected boundaries are closed!</source>
         <translation>No se pudieron crear terrenos. ¡Asegúrate que los linderos seleccionados formen polígonos cerrados!</translation>
     </message>
