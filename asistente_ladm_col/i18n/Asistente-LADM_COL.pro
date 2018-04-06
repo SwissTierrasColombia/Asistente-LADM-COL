@@ -30,6 +30,7 @@ SOURCES = ../asistente_ladm_col_plugin.py \
           ../gui/create_parcel_cadastre_wizard.py \
           ../gui/settings_dialog.py \
           ../lib/dbconnector/gpkg_connector.py \
-          ../lib/dbconnector/pg_connector.py
+          ../lib/dbconnector/pg_connector.py \
+          ../config/help_strings.py
 
 TRANSLATIONS = Asistente-LADM_COL_es.ts

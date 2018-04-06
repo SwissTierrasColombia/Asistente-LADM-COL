@@ -27,10 +27,12 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsOuterGlowEffect, QgsDrawSourceEffect, QgsEffectStack,
                        QgsInnerShadowEffect, QgsSimpleLineSymbolLayer,
                        QgsMarkerSymbol, QgsSimpleMarkerSymbolLayer, QgsMapLayer,
-                       QgsSingleSymbolRenderer, QgsDropShadowEffect)
+                       QgsSingleSymbolRenderer, QgsDropShadowEffect,
+                       QgsApplication)
 
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
                               QVariant, QSettings)
+import processing
 
 from .project_generator_utils import ProjectGeneratorUtils
 from .qt_utils import OverrideCursor
@@ -55,6 +57,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            NAMESPACE_FIELD,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
                                            VIDA_UTIL_FIELD_BOUNDARY_TABLE)
+from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 
 class QGISUtils(QObject):
 
@@ -919,3 +922,20 @@ class QGISUtils(QObject):
 
     def turn_transaction_off(self):
         QgsProject.instance().setAutoTransaction(False)
+
+    def show_etl_model(self, db, input_layer, ladm_col_layer_name):
+        model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
+        if model:
+            mapping = get_refactor_fields_mapping(ladm_col_layer_name)
+            output = self.get_layer(db, ladm_col_layer_name, geometry_type=None, load=True)
+            processing.execAlgorithmDialog("model:ETL-model", {
+                    'INPUT': input_layer.name(),
+                    'mapping': mapping,
+                    'output': output.name()
+                }
+            )
+        else:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Model ETL-model was not found and cannot be opened!"),
+                Qgis.Info)

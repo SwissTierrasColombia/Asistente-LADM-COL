@@ -100,13 +100,6 @@ def import_projectgenerator():
     global iface
     plugin_found = "projectgenerator" in qgis.utils.plugins
     if not plugin_found:
-        import sys
-        if platform == "linux" or platform == "linux2" or platform == "darwin":
-            sys.path.append("/usr/share/qgis/python/plugins")
-        elif platform == "win32":
-            sys.path.append("C:\\Users\\aimplementacion\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins")
-        else:
-            print("Please add the correct projectgenerator path")
         import projectgenerator
         pg = projectgenerator.classFactory(iface)
         qgis.utils.plugins["projectgenerator"] = pg
