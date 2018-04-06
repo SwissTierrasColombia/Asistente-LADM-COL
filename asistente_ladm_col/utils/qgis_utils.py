@@ -17,6 +17,7 @@
  ***************************************************************************/
 """
 import os
+import itertools
 
 from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri, Qgis,
@@ -265,6 +266,20 @@ class QGISUtils(QObject):
                     res.append(ids)
 
         return res
+
+
+
+    def get_overlapping_lines(self, line_layer):
+        obj_intersect = list() #declares it is a list
+        list_comb = list()
+        res = itertools.combinations(line_layer.getFeatures(), 2)
+        for e in res:
+            list_comb.append(e)
+        for l in list_comb:
+            if l[0].geometry().intersects(l[1].geometry()):
+                intersection = l[0].geometry().intersection(l[1].geometry())
+                obj_intersect.append(intersection)
+        return obj_intersect
 
     def extractAsSingleSegments(self, geom):
         """
@@ -759,6 +774,84 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "There are no overlapping boundary points."), Qgis.Info)
 
+    def check_overlaps_in_boundary_face_strings(self, db):
+        line_features = list()
+        point_features = list()
+        boundary_face_string_layer = self.get_layer(db, BOUNDARY_TABLE, load=True)
+
+        if boundary_face_string_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        error_point_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), "Overlapping Point BFS", "memory")
+        error_line_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG), "Overlapping Line BFS", "memory")
+        data_provider_point = error_point_layer.dataProvider()
+        data_provider_line = error_line_layer.dataProvider()
+        data_provider_point.addAttributes([QgsField("point_count", QVariant.Int)])
+        data_provider_line.addAttributes([QgsField("line_count", QVariant.Int)])
+        error_point_layer.updateFields()
+        error_line_layer.updateFields()
+
+        overlapping = self.get_overlapping_lines(boundary_face_string_layer)
+
+        line_overlap = list()
+        point_overlap = list()
+
+        for items in overlapping:
+            if items.wkbType() == QgsWkbTypes.Point:
+                point_overlap.append(items)
+                print('hay puntos')
+            elif items.wkbType() == QgsWkbTypes.LineString:
+                line_overlap.append(items)
+                print('hay lineas')
+            elif items.wkbType() == QgsWkbTypes.MultiLineString:
+                line_overlap.append(items)
+                print('hay multilineas')
+            elif items.wkbType() == QgsWkbTypes.GeometryCollection:
+                print('hay coleccion de geometrias')
+                overlaps = items.asGeometryCollection()
+                print(overlaps)
+                for o in overlaps:
+                    if o.wkbType() == QgsWkbTypes.Point:
+                        point_overlap.append(o)
+                        print('colect a puntos')
+                    elif o.wkbType() == QgsWkbTypes.LineString:
+                        line_overlap.append(o)
+                        print('colect a linea')
+
+        for items in point_overlap:
+            point = items
+            new_feature = QgsVectorLayerUtils().createFeature(error_point_layer, point)
+            point_features.append(new_feature)
+
+        for items in line_overlap:
+            line = items
+            new_feature = QgsVectorLayerUtils().createFeature(error_line_layer, line)
+            line_features.append(new_feature)
+
+        error_point_layer.dataProvider().addFeatures(point_features)
+        error_line_layer.dataProvider().addFeatures(line_features)
+
+        if error_point_layer.featureCount() > 0 or error_line_layer.featureCount() > 0:
+            group = self.get_error_layers_group()
+            added_point_layer = QgsProject.instance().addMapLayer(error_point_layer, False)
+            added_line_layer = QgsProject.instance().addMapLayer(error_line_layer, False)
+            added_point_layer = group.addLayer(added_point_layer).layer()
+            added_line_layer = group.addLayer(added_line_layer).layer()
+            self.set_point_error_symbol(added_point_layer)
+            self.set_line_error_symbol(added_line_layer)
+
+            self.message_emitted.emit(
+            QCoreApplication.translate("QGISUtils",
+                                            "A memory layer with {} overlapping line(s) Boundary face strings ").format(added_line_layer.featureCount())+"and {} point(s) Boundary face stings has been added to the map".format(added_point_layer.featureCount()), Qgis.Info)
+        else:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no overlapping boundary face strings."), Qgis.Info)
+
     def check_too_long_segments(self, db):
         tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
         features = []
@@ -771,7 +864,7 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return
 
-        error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG), "Boundary segments longer than {}m".format(tolerance), "memory")
+        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG), "Boundary segments longer than {}m".format(tolerance), "memory")
         pr = error_layer.dataProvider()
         pr.addAttributes([QgsField("boundary_id", QVariant.Int),
                           QgsField("distance", QVariant.Double)])
