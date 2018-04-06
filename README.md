@@ -16,27 +16,37 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual (0.0.6) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) [v3.0.2.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/v3.0.2.1) y permite:
+La versión actual ([0.0.7](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.0.7)) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.0.4 y permite:
 
  - Capturar datos para el modelo LADM_COL v2.2.1.
- - Agregar puntos a las capas `Punto Lindero` y `Punto Levantamiento` desde archivo CSV.
-   - Validar para evitar insertar puntos superpuestos.
- - Definir `Linderos` digitalizando sobre el mapa.
-   - Ayudas para la digitalización:
-     - Configuración automática de snapping y de valores predeterminados para campos.
-     - Partir líneas seleccionadas por segmento.
-     - Unir líneas seleccionadas.
+ - Agregar puntos a las capas `Punto Lindero` y `Punto Levantamiento`:
+   - Desde archivo CSV con la estructura requerida.
+     - Validar para evitar insertar puntos superpuestos.
+   - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
+ - Agregar `Linderos`:
+   - Digitalizando sobre el mapa.
+     - Ayudas para la digitalización:
+       - Configuración automática de snapping y de valores predeterminados para campos.
+       - Partir líneas seleccionadas por segmento.
+       - Unir líneas seleccionadas.
+   - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
  - Crear `Terrenos`:
    - A partir de linderos seleccionados.
-   - A partir de una capa fuente con la misma estructura de campos.
+   - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
  - Llenar automáticamente tablas de topología:
    - `PuntosCCL` (relaciona `Punto Lindero` y `Lindero`)
    - `MasCCL`    (relaciona `Lindero` y `Terreno`)
    - `Menos`     (relaciona `Terreno` y sus anillos/huecos internos)
- - Crear `Predios` a partir de `Terrenos` existentes.
- - Crear `Interesados Naturales` e `Interesados Jurídicos` usando formularios preconfigurados.
- - Crear `Fuente Espacial` y `Fuente Administrativa` usando formularios preconfigurados.
- - Seleccionar capas a cargar de cualquier modelo de la base de datos o esquema:
+ - Crear `Predios`:
+   - A partir de `Terrenos` existentes.
+   - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
+ - Crear `Interesados Naturales` e `Interesados Jurídicos`:
+   - Usando formularios preconfigurados.
+   - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
+ - Crear `Fuente Espacial` y `Fuente Administrativa`:
+   - Usando formularios preconfigurados.
+   - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
+ - Seleccionar en un diálogo las capas a cargar de cualquier modelo de la base de datos o esquema:
    - Usar el plugin 'Project Generator' para cargar capas con formularios y relaciones configuradas.
    - Cargar conjuntos de capas preconfigurados.
  - Realizar revisiones de calidad:
