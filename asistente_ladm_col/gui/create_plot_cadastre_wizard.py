@@ -53,13 +53,13 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
-            finish_button_text = "Import"
+            finish_button_text = QCoreApplication.translate("CreatePlotCadastreWizard", "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(PLOT_TABLE, True))
 
         elif self.rad_plot_from_boundaries.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
-            finish_button_text = "Finish"
+            finish_button_text = QCoreApplication.translate("CreatePlotCadastreWizard", "Finish")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_PLOT_CADASTRE_PAGE_1_OPTION_BOUNDARIES)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,

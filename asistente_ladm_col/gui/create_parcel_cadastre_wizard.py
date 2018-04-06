@@ -61,13 +61,13 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
-            finish_button_text = "Import"
+            finish_button_text = QCoreApplication.translate("CreateParcelCadastreWizard", "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(PARCEL_TABLE, False))
 
         elif self.rad_parcel_from_plot.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
-            finish_button_text = "Create"
+            finish_button_text = QCoreApplication.translate("CreateParcelCadastreWizard", "Create")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_PARCEL_CADASTRE_PAGE_1_OPTION_EXISTING_PLOT)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,

@@ -23,7 +23,6 @@ from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-#from ..utils.qt_utils import enable_next_wizard, disable_next_wizard
 from ..config.table_mapping_config import (
     GENDER_TYPE_TABLE,
     NATURAL_PARTY_TABLE,
@@ -56,13 +55,13 @@ class CreateNaturalPartyCadastreWizard(QWizard, WIZARD_UI):
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
-            finish_button_text = "Import"
+            finish_button_text = QCoreApplication.translate("CreateNaturalPartyCadastreWizard", "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(NATURAL_PARTY_TABLE, False))
 
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
-            finish_button_text = "Create"
+            finish_button_text = QCoreApplication.translate("CreateNaturalPartyCadastreWizard", "Create")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_NATURAL_PARTY_CADASTRE_PAGE_1_OPTION_FORM)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
