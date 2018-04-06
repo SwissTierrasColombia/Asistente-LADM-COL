@@ -787,7 +787,7 @@ class QGISUtils(QObject):
             return
 
         error_point_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), "Overlapping Point BFS", "memory")
-        error_line_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG), "Overlapping Line BFS", "memory")
+        error_line_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG), "Overlapping Line BFS", "memory")
         data_provider_point = error_point_layer.dataProvider()
         data_provider_line = error_line_layer.dataProvider()
         data_provider_point.addAttributes([QgsField("point_count", QVariant.Int)])
@@ -864,7 +864,7 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return
 
-        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG), "Boundary segments longer than {}m".format(tolerance), "memory")
+        error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG), "Boundary segments longer than {}m".format(tolerance), "memory")
         pr = error_layer.dataProvider()
         pr.addAttributes([QgsField("boundary_id", QVariant.Int),
                           QgsField("distance", QVariant.Double)])
