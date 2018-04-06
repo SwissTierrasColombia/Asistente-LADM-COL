@@ -1,0 +1,262 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Documentation for the Code &#8212; documentación de ladm_a_docs - </title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="author" title="Sobre este documento" href="about.html" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="prev" title="Cadastre" href="cadas.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Índice General"
+             accesskey="I">índice</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Índice de Módulos Python"
+             >módulos</a> |</li>
+        <li class="right" >
+          <a href="cadas.html" title="Cadastre"
+             accesskey="P">anterior</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">documentación de ladm_a_docs - </a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-testpypkg">
+<span id="documentation-for-the-code"></span><h1>Documentation for the Code<a class="headerlink" href="#module-testpypkg" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>A pypi demonstration vehicle.</p>
+<div class="section" id="modulo-test1-auto-members">
+<h2>Modulo test1 – auto members<a class="headerlink" href="#modulo-test1-auto-members" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>This is something I want to say that is not in the docstring.</p>
+<span class="target" id="module-testpypkg.test1"></span><span class="target" id="module-test1"></span><dl class="class">
+<dt id="testpypkg.test1.MyPublicClass">
+<em class="property">class </em><code class="descclassname">testpypkg.test1.</code><code class="descname">MyPublicClass</code><span class="sig-paren">(</span><em>foo</em>, <em>bar='baz'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/testpypkg/test1.html#MyPublicClass"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#testpypkg.test1.MyPublicClass" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>We use this as a public class example class.</p>
+<p>You never call this class before calling <a class="reference internal" href="#testpypkg.test1.public_fn_with_sphinxy_docstring" title="testpypkg.test1.public_fn_with_sphinxy_docstring"><code class="xref py py-func docutils literal notranslate"><span class="pre">public_fn_with_sphinxy_docstring()</span></code></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Nota</p>
+<p class="last">An example of intersphinx is this: you <strong>cannot</strong> use <code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code> on this class.</p>
+</div>
+<dl class="method">
+<dt id="testpypkg.test1.MyPublicClass.get_foobar">
+<code class="descname">get_foobar</code><span class="sig-paren">(</span><em>foo</em>, <em>bar=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/testpypkg/test1.html#MyPublicClass.get_foobar"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#testpypkg.test1.MyPublicClass.get_foobar" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>This gets the foobar</p>
+<p>This really should have a full function definition, but I am too lazy.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">get_foobar</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="go">30</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">get_foobar</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="go">ab</span>
+</pre></div>
+</div>
+<p>Isn’t that what you want?</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="testpypkg.test1.public_fn_with_googley_docstring">
+<code class="descclassname">testpypkg.test1.</code><code class="descname">public_fn_with_googley_docstring</code><span class="sig-paren">(</span><em>name</em>, <em>state=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/testpypkg/test1.html#public_fn_with_googley_docstring"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#testpypkg.test1.public_fn_with_googley_docstring" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>This function does something.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>name (str):  The name to use.</dd>
+<dt>Kwargs:</dt>
+<dd>state (bool): Current state to be in.</dd>
+<dt>Returns:</dt>
+<dd><p class="first">int.  The return code:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span>0 -- Success!
+1 -- No good.
+2 -- Try again.
+</pre></div>
+</div>
+</dd>
+<dt>Raises:</dt>
+<dd>AttributeError, KeyError</dd>
+</dl>
+<p>A really great idea.  A way you might use me is</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">public_fn_with_googley_docstring</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>BTW, this always returns 0.  <strong>NEVER</strong> use with <a class="reference internal" href="#testpypkg.test1.MyPublicClass" title="testpypkg.test1.MyPublicClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">MyPublicClass</span></code></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="testpypkg.test1.public_fn_with_sphinxy_docstring">
+<code class="descclassname">testpypkg.test1.</code><code class="descname">public_fn_with_sphinxy_docstring</code><span class="sig-paren">(</span><em>name</em>, <em>state=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/testpypkg/test1.html#public_fn_with_sphinxy_docstring"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#testpypkg.test1.public_fn_with_sphinxy_docstring" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>This function does something.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str.</em>) – The name to use.</li>
+<li><strong>state</strong> (<em>bool.</em>) – Current state to be in.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body"><p class="first">int – the return code.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">AttributeError, KeyError</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module2-explicit-members">
+<h2>module2 – explicit members<a class="headerlink" href="#module2-explicit-members" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>This is something I want to say that is not in the docstring.</p>
+<span class="target" id="module-testpypkg.module2"></span><span class="target" id="module-module2"></span><dl class="function">
+<dt id="testpypkg.module2.public_fn_with_sphinxy_docstring">
+<code class="descclassname">testpypkg.module2.</code><code class="descname">public_fn_with_sphinxy_docstring</code><span class="sig-paren">(</span><em>name</em>, <em>state=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/testpypkg/module2.html#public_fn_with_sphinxy_docstring"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#testpypkg.module2.public_fn_with_sphinxy_docstring" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>This function does something.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str.</em>) – The name to use.</li>
+<li><strong>state</strong> (<em>bool.</em>) – Current state to be in.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body"><p class="first">int – the return code.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">AttributeError, KeyError</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="testpypkg.module2._private_fn_with_docstring">
+<code class="descclassname">testpypkg.module2.</code><code class="descname">_private_fn_with_docstring</code><span class="sig-paren">(</span><em>foo</em>, <em>bar='baz'</em>, <em>foobarbas=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/testpypkg/module2.html#_private_fn_with_docstring"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#testpypkg.module2._private_fn_with_docstring" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>I have a docstring, but won’t be imported if you just use <code class="docutils literal notranslate"><span class="pre">:members:</span></code>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="testpypkg.module2.public_fn_without_docstring">
+<code class="descclassname">testpypkg.module2.</code><code class="descname">public_fn_without_docstring</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/testpypkg/module2.html#public_fn_without_docstring"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#testpypkg.module2.public_fn_without_docstring" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>It works!!!</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="testpypkg.module2.MyPublicClass">
+<em class="property">class </em><code class="descclassname">testpypkg.module2.</code><code class="descname">MyPublicClass</code><span class="sig-paren">(</span><em>foo</em>, <em>bar='baz'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/testpypkg/module2.html#MyPublicClass"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#testpypkg.module2.MyPublicClass" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>We use this as a public class example class.</p>
+<p>You never call this class before calling <a class="reference internal" href="#testpypkg.module2.public_fn_with_sphinxy_docstring" title="testpypkg.module2.public_fn_with_sphinxy_docstring"><code class="xref py py-func docutils literal notranslate"><span class="pre">public_fn_with_sphinxy_docstring()</span></code></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Nota</p>
+<p class="last">An example of intersphinx is this: you <strong>cannot</strong> use <code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code> on this class.</p>
+</div>
+<dl class="method">
+<dt id="testpypkg.module2.MyPublicClass._get_baz">
+<code class="descname">_get_baz</code><span class="sig-paren">(</span><em>baz=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/testpypkg/module2.html#MyPublicClass._get_baz"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#testpypkg.module2.MyPublicClass._get_baz" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>A private function to get baz.</p>
+<p>This really should have a full function definition, but I am too lazy.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="testpypkg.module2.MyPublicClass.get_foobar">
+<code class="descname">get_foobar</code><span class="sig-paren">(</span><em>foo</em>, <em>bar=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/testpypkg/module2.html#MyPublicClass.get_foobar"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#testpypkg.module2.MyPublicClass.get_foobar" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>This gets the foobar</p>
+<p>This really should have a full function definition, but I am too lazy.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">get_foobar</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="go">30</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">get_foobar</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="go">ab</span>
+</pre></div>
+</div>
+<p>Isn’t that what you want?</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Tabla de Contenidos</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Documentation for the Code</a><ul>
+<li><a class="reference internal" href="#modulo-test1-auto-members">Modulo test1 – auto members</a></li>
+<li><a class="reference internal" href="#module2-explicit-members">module2 – explicit members</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Tema anterior</h4>
+  <p class="topless"><a href="cadas.html"
+                        title="capítulo anterior">Cadastre</a></p>
+  <div role="note" aria-label="source link">
+    <h3>Esta página</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/code.rst.txt"
+            rel="nofollow">Mostrar el código</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Búsqueda rápida</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Ir a" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Índice General"
+             >índice</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Índice de Módulos Python"
+             >módulos</a> |</li>
+        <li class="right" >
+          <a href="cadas.html" title="Cadastre"
+             >anterior</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">documentación de ladm_a_docs - </a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Derechos de autor 2018, Agencia de Implementación.
+      Creado con <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+    </div>
+  </body>
+</html>

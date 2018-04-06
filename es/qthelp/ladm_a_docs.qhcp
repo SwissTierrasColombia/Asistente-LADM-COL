@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<QHelpCollectionProject version="1.0">
+    <assistant>
+        <title>documentación de ladm_a_docs - </title>
+        <homePage>qthelp://org.sphinx.ladmadocs/doc/index.html</homePage>
+        <startPage>qthelp://org.sphinx.ladmadocs/doc/index.html</startPage>
+    </assistant>
+    <docFiles>
+        <generate>
+            <file>
+                <input>ladm_a_docs.qhp</input>
+                <output>ladm_a_docs.qch</output>
+            </file>
+        </generate>
+        <register>
+            <file>ladm_a_docs.qch</file>
+        </register>
+    </docFiles>
+</QHelpCollectionProject>
