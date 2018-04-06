@@ -13,27 +13,37 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version (0.0.6) of the LADM_COL Assistant depends on [Project Generator](https://github.com/opengisch/projectgenerator/) plugin [v3.0.2.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/v3.0.2.1) and allows users to:
+The current version ([0.0.7](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.0.7)) of the LADM_COL Assistant depends on [Project Generator](https://github.com/opengisch/projectgenerator/) plugin v3.0.4 and allows users to:
 
  - Capture data for the LADM_COL v2.2.1 model.
- - Add points to the `Boundary Point` and `Survey Point` layers from CSV files.
-   - Validate and avoid insertion of overlapping points.
- - Define `Boundaries` by digitizing on the map.
-   - Aids for digitization:
-     - Automatic snapping configuration and default field values.
-     - Explode selected lines (split per segment).
-     - Merge selected lines.
+ - Add points to the `Boundary Point` and `Survey Point` layers:
+   - From CSV files.
+     - Validate and avoid insertion of overlapping points.
+   - From another layer with any structure, setting a field mapping.
+ - Define `Boundaries`:
+   - By digitizing on the map.
+     - Aids for digitization:
+       - Automatic snapping configuration and default field values.
+       - Explode selected lines (split per segment).
+       - Merge selected lines.
+   - From another layer with any structure, setting a field mapping.
  - Create `Plot`:
    - From selected boundaries.
-   - From a source layer with the same field structure as the `Plot` layer.
+   - From another layer with any structure, setting a field mapping.
  - Fill topology tables automatically:
    - `BFS Points` (relates `Boundary Points` to `Boundary`)
    - `More BFS` (relates `Boundaries` to `Plot`)
    - `Less` (relates `Plots` to their inner rings)
- - Create `Parcels` from existing `Plots`.
- - Create `Natural Parties` and `Legal Parties` using preconfigured forms.
- - Create `Spatial Sources` and `Administrative Sources` using preconfigured forms.
- - Select layers to load from any model in the database or schema:
+ - Create `Parcels`:
+   - From existing `Plots`.
+   - From another table with any structure, setting a field mapping.
+ - Create `Natural Parties` and `Legal Parties`:
+   - Using preconfigured forms.
+   - From another table with any structure, setting a field mapping.
+ - Create `Spatial Sources` and `Administrative Sources`:
+   - Using preconfigured forms.
+   - From another table with any structure, setting a field mapping.
+ - Select in a dialog layers to load from any model in the database or schema:
    - Use the 'Project Generator' plugin (a prerequisite) to load layers with configured forms and relations.
    - Load preconfigured layer sets.
  - Check quality:
