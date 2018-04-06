@@ -28,10 +28,7 @@ from ..utils.qt_utils import (make_file_selector, enable_next_wizard,
 from ..utils import get_ui_class
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE)
-from ..config.help_strings import (get_refactor_help_string,
-                                   WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_BP,
-                                   WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_SP,
-                                   WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
+from ..config.help_strings import HelpStrings
 
 WIZARD_UI = get_ui_class('wiz_add_points_cadastre.ui')
 
@@ -42,6 +39,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         self.iface = iface
         self._db = db
         self.qgis_utils = qgis_utils
+        self.help_strings = HelpStrings()
 
         # Auxiliary data to set nonlinear next pages
         self.pages = [self.wizardPage1, self.wizardPage2, self.wizardPage3]
@@ -66,12 +64,12 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
 
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PointLayer)
 
-        self.txt_help_page_2.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
+        self.txt_help_page_2.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
 
         self.wizardPage2.setButtonText(QWizard.FinishButton,
                                        QCoreApplication.translate("PointsSpatialUnitCadastreWizard",
                                             "Import"))
-        self.txt_help_page_3.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
+        self.txt_help_page_3.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
 
     def nextId(self):
         """
@@ -113,7 +111,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
             disable_next_wizard(self)
             self.wizardPage2.setFinalPage(True)
             self.txt_help_page_2.setHtml(
-                get_refactor_help_string(
+                self.help_strings.get_refactor_help_string(
                     BOUNDARY_POINT_TABLE if self.rad_boundary_point.isChecked() else SURVEY_POINT_TABLE,
                     True))
 
@@ -123,15 +121,15 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
 
             enable_next_wizard(self)
             self.wizardPage2.setFinalPage(False)
-            self.txt_help_page_2.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
+            self.txt_help_page_2.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
 
     def point_option_changed(self):
         if self.rad_boundary_point.isChecked():
             self.gbx_page_2.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Load data to Boundary Points..."))
-            self.txt_help_page_1.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_BP)
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_BP)
         else: # self.rad_survey_point is checked
             self.gbx_page_2.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Load data to Survey Points..."))
-            self.txt_help_page_1.setHtml(WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_SP)
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_SP)
 
     def finished_dialog(self):
         self.save_settings()

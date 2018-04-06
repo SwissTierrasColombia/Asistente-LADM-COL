@@ -27,8 +27,7 @@ from ..config.table_mapping_config import (
     PLOT_TABLE,
     VIDA_UTIL_FIELD_BOUNDARY_TABLE
 )
-from ..config.help_strings import (get_refactor_help_string,
-                                   WIZ_CREATE_PLOT_CADASTRE_PAGE_1_OPTION_BOUNDARIES)
+from ..config.help_strings import HelpStrings
 
 WIZARD_UI = get_ui_class('wiz_create_plot_cadastre.ui')
 
@@ -40,6 +39,7 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
         self._plot_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
+        self.help_strings = HelpStrings()
 
         self.restore_settings()
 
@@ -54,13 +54,13 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
             finish_button_text = "Import"
-            self.txt_help_page_1.setHtml(get_refactor_help_string(PLOT_TABLE, True))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(PLOT_TABLE, True))
 
         elif self.rad_plot_from_boundaries.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
             finish_button_text = "Finish"
-            self.txt_help_page_1.setHtml(WIZ_CREATE_PLOT_CADASTRE_PAGE_1_OPTION_BOUNDARIES)
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_PLOT_CADASTRE_PAGE_1_OPTION_BOUNDARIES)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
                                        QCoreApplication.translate("CreatePlotCadastreWizard",

@@ -30,8 +30,7 @@ from ..config.table_mapping_config import (
     PARTY_DOCUMENT_TYPE_TABLE,
     PARTY_TYPE_TABLE
 )
-from ..config.help_strings import (get_refactor_help_string,
-                                   WIZ_CREATE_NATURAL_PARTY_CADASTRE_PAGE_1_OPTION_FORM)
+from ..config.help_strings import HelpStrings
 
 WIZARD_UI = get_ui_class('wiz_create_natural_party_cadastre.ui')
 
@@ -43,6 +42,7 @@ class CreateNaturalPartyCadastreWizard(QWizard, WIZARD_UI):
         self._natural_party_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
+        self.help_strings = HelpStrings()
 
         self.restore_settings()
 
@@ -57,13 +57,13 @@ class CreateNaturalPartyCadastreWizard(QWizard, WIZARD_UI):
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
             finish_button_text = "Import"
-            self.txt_help_page_1.setHtml(get_refactor_help_string(NATURAL_PARTY_TABLE, False))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(NATURAL_PARTY_TABLE, False))
 
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
             finish_button_text = "Create"
-            self.txt_help_page_1.setHtml(WIZ_CREATE_NATURAL_PARTY_CADASTRE_PAGE_1_OPTION_FORM)
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_NATURAL_PARTY_CADASTRE_PAGE_1_OPTION_FORM)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
                                        QCoreApplication.translate("CreateNaturalPartyCadastreWizard",
