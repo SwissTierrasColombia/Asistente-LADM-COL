@@ -1,6 +1,8 @@
 
 all: resources_rc.py i18n/Asistente-LADM_COL_es.qm
 
+update_translations: i18n/Asistente-LADM_COL_locale.ts
+
 clean:
 	rm -f resources_rc.py
 	rm -f i18n/Asistente-LADM_COL_es.qm
