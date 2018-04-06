@@ -11,3 +11,6 @@ resources_rc.py: resources.qrc
 
 i18n/Asistente-LADM_COL_es.qm: i18n/Asistente-LADM_COL_es.ts
 	lrelease i18n/Asistente-LADM_COL.pro
+
+i18n/Asistente-LADM_COL_locale.ts: i18n/Asistente-LADM_COL.pro
+	lupdate i18n/Asistente-LADM_COL.pro

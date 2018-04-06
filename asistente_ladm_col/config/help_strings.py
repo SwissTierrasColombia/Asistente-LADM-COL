@@ -29,7 +29,7 @@ Add a Comma Separated Values file (CSV), choosing the delimiter and fields that 
 ")
 
 def get_refactor_help_string(layer_name, layer_is_spatial):
-    # Agrega un archivo de valores separados por coma (CSV) u otros como TSV, seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.
+    # Abre una ventana que te permite establecer una asignación entre la entrada (fuente) {type} y el tipo {type} <b>{name}</b> de LADM_COL.
     return QCoreApplication.translate("HelpStrings", "\
     Open a window that allows you to set a mapping between the input (source) {type} and the LADM_COL <b>{name}</b> {type}.\
     ").format(
@@ -186,7 +186,6 @@ Choose this option if you want to add a <b>Restriction</b> from external resourc
 <b>COL_Restriction</b> are the restrictions to which a property is subject and that affect the rights that may be exercised over it.\
 ")
 
-
 # Elige esta opción si deseas agregar una <b>Derecho</b> con un formulario.
 # <br><br>
 # <b>COL_Derecho</b> es una clase que registra las instancias de los derechos que un interesado ejerce sobre un predio. Es una especialización de la clase LA_RRR del propio modelo.
@@ -220,5 +219,5 @@ Choose this option if you want to create a <b>Spatial Source</b> using a form.\
 WIZ_DEFINE_BOUNDARIES_CADASTRE_PAGE_1_OPTION_DIGITIZE = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create a <b>Boundary</b> using QGIS digitizing tools.\
 <br><br>\
-<b>Boundary</b> is a specialization of the <i>LA_CadenaCarasLindero</i> class to store boundaries that define plots. Two boundaries must not cross or overlap. \
+<b>Boundary</b> is a specialization of the <i>LA_CadenaCarasLindero</i> class to store boundaries that define plots. Two boundaries must not cross or overlap.\
 ")
