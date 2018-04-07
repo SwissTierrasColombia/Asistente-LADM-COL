@@ -74,6 +74,10 @@
             <file>index.html</file>
             <file>ins.html</file>
             <file>py-modindex.html</file>
+            <file>_images/add_pnts.png</file>
+            <file>_images/cre_plts.png</file>
+            <file>_images/cre_prcl.png</file>
+            <file>_images/def_bndrs.png</file>
             <file>_modules/index.html</file>
             <file>_modules/testpypkg/module2.html</file>
             <file>_modules/testpypkg/test1.html</file>
@@ -95,10 +99,6 @@
             <file>_static/pygments.css</file>
             <file>_static/up-pressed.png</file>
             <file>_static/up.png</file>
-            <file>_images/add_pnts.png</file>
-            <file>_images/cre_plts.png</file>
-            <file>_images/cre_prcl.png</file>
-            <file>_images/def_bndrs.png</file>
         </files>
     </filterSection>
 </QtHelpProject>
