@@ -7,7 +7,7 @@ Spatial Unit
 Add Points
 ------------
 
-.. image:: _static/add_pnts.png
+.. image:: static/add_pnts.png
    :height: 400
    :width: 400
    :scale: 90
@@ -16,7 +16,7 @@ Add Points
 Define Boundaries
 ------------------
 
-.. image:: _static/def_bndrs.png
+.. image:: static/def_bndrs.png
    :height: 400
    :width: 400
    :scale: 90
@@ -25,7 +25,7 @@ Define Boundaries
 Create plot
 -----------
 
-.. image:: _static/cre_plts.png
+.. image:: static/cre_plts.png
    :height: 400
    :width: 400
    :scale: 90
@@ -37,7 +37,7 @@ BA Unit
 Parcel
 --------
 
-.. image:: _static/cre_prcl.png
+.. image:: static/cre_prcl.png
    :height: 400
    :width: 400
    :scale: 90
