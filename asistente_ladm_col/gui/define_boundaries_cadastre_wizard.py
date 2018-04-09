@@ -20,7 +20,7 @@ from qgis.core import (QgsProject, QgsVectorLayer, QgsEditFormConfig,
                        QgsSnappingConfig, QgsTolerance, QgsFeature, Qgis,
                        QgsMapLayerProxyModel)
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
-from qgis.PyQt.QtWidgets import QAction, QWizard, QToolBar
+from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
 from ..config.table_mapping_config import (
@@ -119,9 +119,6 @@ class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
         self.iface.layerTreeView().setCurrentLayer(self._boundary_layer)
         self._boundary_layer.startEditing()
         self.iface.actionAddFeature().trigger()
-
-        boundary_toolbar = self.iface.mainWindow().findChild(QToolBar, 'DefineBoundaries')
-        boundary_toolbar.setVisible(True)
 
         self.iface.messageBar().pushMessage("Asistente LADM_COL",
             QCoreApplication.translate("DefineBoundariesCadastreWizard",

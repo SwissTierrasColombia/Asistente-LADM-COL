@@ -168,13 +168,12 @@ class AsistenteLADMCOLPlugin(QObject):
         self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
         self._fill_more_BFS_less_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill More BFS and Less"), self.iface.mainWindow())
         self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
-        self._define_boundary_toolbar = self.iface.addToolBar(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Define Boundaries"))
-        self._define_boundary_toolbar.setObjectName("DefineBoundaries")
-        self._define_boundary_toolbar.addActions([self._boundary_explode_action,
-                                                  self._boundary_merge_action,
-                                                  self._fill_point_BFS_action,
-                                                  self._fill_more_BFS_less_action])
-        self._define_boundary_toolbar.setVisible(False)
+        self._ladm_col_toolbar = self.iface.addToolBar(QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"))
+        self._ladm_col_toolbar.setObjectName("ladmcoltools")
+        self._ladm_col_toolbar.addActions([self._boundary_explode_action,
+                                           self._boundary_merge_action,
+                                           self._fill_point_BFS_action,
+                                           self._fill_more_BFS_less_action])
 
         # Add LADM_COL provider and models to QGIS
         self.ladm_col_provider = LADMCOLAlgorithmProvider()
@@ -340,8 +339,8 @@ class AsistenteLADMCOLPlugin(QObject):
     def unload(self):
         # remove the plugin menu item and icon
         self._menu.deleteLater()
-        self.iface.mainWindow().removeToolBar(self._define_boundary_toolbar)
-        del self._define_boundary_toolbar
+        self.iface.mainWindow().removeToolBar(self._ladm_col_toolbar)
+        del self._ladm_col_toolbar
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
 
     def show_settings(self):
