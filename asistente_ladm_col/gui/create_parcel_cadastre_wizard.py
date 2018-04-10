@@ -123,9 +123,6 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return
 
-        # Configure automatic fields
-        self.qgis_utils.set_automatic_fields(self._parcel_layer, "u")
-
         # Don't suppress (i.e., show) feature form
         form_config = self._parcel_layer.editFormConfig()
         form_config.setSuppress(QgsEditFormConfig.SuppressOff)

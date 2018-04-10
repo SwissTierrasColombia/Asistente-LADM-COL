@@ -46,6 +46,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            ERROR_LAYER_GROUP,
                                            ID_FIELD,
                                            LAYERS_STYLE,
+                                           LENGTH_FIELD_BOUNDARY_TABLE,
                                            LESS_TABLE,
                                            LESS_TABLE_BOUNDARY_FIELD,
                                            LESS_TABLE_PLOT_FIELD,
@@ -55,8 +56,9 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            MOREBFS_TABLE_BOUNDARY_FIELD,
                                            MORE_BOUNDARY_FACE_STRING_TABLE,
                                            NAMESPACE_FIELD,
+                                           NAMESPACE_PREFIX,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
-                                           VIDA_UTIL_FIELD_BOUNDARY_TABLE)
+                                           VIDA_UTIL_FIELD)
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 
 class QGISUtils(QObject):
@@ -123,8 +125,9 @@ class QGISUtils(QObject):
                     for layer_id, layer_info in missing_layers.items():
                         # This should update None objects to newly added layer objects
                         response_layers[layer_id] = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
+
                         if response_layers[layer_id] is not None:
-                            self.set_layer_style(response_layers[layer_id])
+                            self.post_load_configurations(response_layers[layer_id])
 
         return response_layers
 
@@ -148,28 +151,57 @@ class QGISUtils(QObject):
                             return layer
         return None
 
-    def configureAutomaticField(self, layer, field, expression):
+    def post_load_configurations(self, layer):
+        # Do some post-load work, such as setting styles or
+        # setting automatic fields for that layer
+        self.set_automatic_fields(layer)
+        self.set_layer_style(layer)
+
+    def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
         default_value = QgsDefaultValue(expression, True) # Calculate on update
         layer.setDefaultValueDefinition(index, default_value)
 
-    def resetAutomaticField(self, layer, field):
-        self.configureAutomaticField(layer, field, "")
+    def reset_automatic_field(self, layer, field):
+        self.configure_automatic_field(layer, field, "")
 
-    def set_automatic_fields(self, layer, prefix):
-        self.configureAutomaticField(layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
+    def set_automatic_fields(self, layer):
         layer_name = layer.name()
+        ns_enabled, ns_field, ns_value = self.get_namespace_field_and_value(layer_name)
+        lid_enabled, lid_field, lid_value = self.get_local_id_field_and_value(layer_name)
 
-        if QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True):
-            self.configureAutomaticField(layer, prefix + LOCAL_ID_FIELD, '"{}"'.format(ID_FIELD))
-        else:
-            self.resetAutomaticField(layer, prefix + LOCAL_ID_FIELD)
+        if lid_enabled and lid_field:
+            self.configure_automatic_field(layer, lid_field, lid_value)
 
-        if QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True):
-            namespace = str(QSettings().value('Asistente-LADM_COL/automatic_values/namespace_prefix', ""))
-            self.configureAutomaticField(layer, prefix + NAMESPACE_FIELD, "'{}{}{}'".format(namespace, "_" if namespace else "", layer_name).upper())
-        else:
-            self.resetAutomaticField(layer, prefix + NAMESPACE_FIELD)
+        if ns_enabled and ns_field:
+            self.configure_automatic_field(layer, ns_field, ns_value)
+
+        if layer.fields().indexFromName(VIDA_UTIL_FIELD) != -1:
+            self.configure_automatic_field(layer, VIDA_UTIL_FIELD, "now()")
+
+        if layer_name == BOUNDARY_TABLE:
+            self.configure_automatic_field(layer, LENGTH_FIELD_BOUNDARY_TABLE, "$length")
+
+    def get_namespace_field_and_value(self, layer_name):
+        namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True)
+
+        field_prefix = NAMESPACE_PREFIX[layer_name] if layer_name in NAMESPACE_PREFIX else None
+        namespace_field = field_prefix + NAMESPACE_FIELD if field_prefix else None
+
+        namespace = str(QSettings().value('Asistente-LADM_COL/automatic_values/namespace_prefix', ""))
+        namespace_value = "'{}{}{}'".format(namespace, "_" if namespace else "", layer_name).upper()
+
+        return (namespace_enabled, namespace_field, namespace_value)
+
+    def get_local_id_field_and_value(self, layer_name):
+        local_id_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True)
+
+        field_prefix = NAMESPACE_PREFIX[layer_name] if layer_name in NAMESPACE_PREFIX else None
+        local_id_field = field_prefix + LOCAL_ID_FIELD if field_prefix else None
+
+        local_id_value = '"{}"'.format(ID_FIELD)
+
+        return (local_id_enabled, local_id_field, local_id_value)
 
     def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, target_layer_name):
         if not csv_path or not os.path.exists(csv_path):
@@ -704,7 +736,6 @@ class QGISUtils(QObject):
         boundary_geometries = [f.geometry() for f in selected_boundaries]
         collection = QgsGeometry().polygonize(boundary_geometries)
         features = list()
-        self.configureAutomaticField(plots, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
         for polygon in collection.asGeometryCollection():
             feature = QgsVectorLayerUtils().createFeature(plots, polygon)
             features.append(feature)
@@ -926,7 +957,7 @@ class QGISUtils(QObject):
     def show_etl_model(self, db, input_layer, ladm_col_layer_name):
         model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
         if model:
-            mapping = get_refactor_fields_mapping(ladm_col_layer_name)
+            mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
             output = self.get_layer(db, ladm_col_layer_name, geometry_type=None, load=True)
             processing.execAlgorithmDialog("model:ETL-model", {
                     'INPUT': input_layer.name(),

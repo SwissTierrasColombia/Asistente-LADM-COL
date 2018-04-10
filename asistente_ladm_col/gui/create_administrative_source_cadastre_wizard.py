@@ -102,9 +102,6 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return
 
-        # Configure automatic fields
-        self.qgis_utils.set_automatic_fields(self._administrative_source_layer, "s")
-
         # Don't suppress (i.e., show) feature form
         form_config = self._administrative_source_layer.editFormConfig()
         form_config.setSuppress(QgsEditFormConfig.SuppressOff)

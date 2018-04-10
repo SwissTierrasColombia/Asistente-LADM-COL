@@ -26,7 +26,7 @@ from ..utils import get_ui_class
 #from ..utils.qt_utils import enable_next_wizard, disable_next_wizard
 from ..config.table_mapping_config import (
     PLOT_TABLE,
-    VIDA_UTIL_FIELD_BOUNDARY_TABLE
+    VIDA_UTIL_FIELD
 )
 
 WIZARD_UI = get_ui_class('wiz_create_right_cadastre.ui')

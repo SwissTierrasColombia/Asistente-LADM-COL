@@ -43,7 +43,20 @@ TABLE_PROP_STRUCTURE = "STRUCTURE"
 UEBAUNIT_TABLE = "uebaunit"
 UEBAUNIT_TABLE_PARCEL_FIELD = "baunit_predio"
 UEBAUNIT_TABLE_PLOT_FIELD = "ue_terreno"
-VIDA_UTIL_FIELD_BOUNDARY_TABLE = "comienzo_vida_util_version"
+VIDA_UTIL_FIELD = "comienzo_vida_util_version"
+
+NAMESPACE_PREFIX = {
+    BOUNDARY_POINT_TABLE: 'p',
+    SURVEY_POINT_TABLE: 'p',
+    BOUNDARY_TABLE: 'ccl',
+    PLOT_TABLE: 'su',
+    CONSTRUCTION_TABLE: 'su',
+    PARCEL_TABLE: 'u',
+    NATURAL_PARTY_TABLE: 'p',
+    LEGAL_PARTY_TABLE: 'p',
+    ADMINISTRATIVE_SOURCE_TABLE: 's',
+    SPATIAL_SOURCE_TABLE: 's'
+}
 
 LAYERS_STYLE = {
     BOUNDARY_TABLE: {QgsWkbTypes.LineGeometry: {'symbology': {'name': 'Simple line', 'color': '#45508a', 'width': '0.16'}, 'label' : None}},

@@ -1,8 +1,9 @@
 from .table_mapping_config import *
 
-def get_refactor_fields_mapping(layer_name):
+def get_refactor_fields_mapping(layer_name, qgis_utils):
+    mapping = []
     if layer_name == BOUNDARY_POINT_TABLE:
-        return [
+         mapping = [
             {'length': -1, 'precision': 0, 'expression': '"t_id"', 'name': 't_id', 'type': 4},
             {'length': 255, 'precision': -1, 'expression': '"acuerdo"', 'name': 'acuerdo', 'type': 10},
             {'length': 255, 'precision': -1, 'expression': '"definicion_punto"', 'name': 'definicion_punto', 'type': 10},
@@ -27,7 +28,7 @@ def get_refactor_fields_mapping(layer_name):
             {'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"', 'name': 'fin_vida_util_version', 'type': 16}
         ]
     elif layer_name == SURVEY_POINT_TABLE:
-        return [
+        mapping = [
             {'type': 4, 'length': -1, 'name': 't_id', 'precision': 0, 'expression': '"t_id"'},
             {'type': 10, 'length': 255, 'name': 'tipo_punto_levantamiento', 'precision': -1, 'expression': '"tipo_punto_levantamiento"'},
             {'type': 10, 'length': 255, 'name': 'definicion_punto', 'precision': -1, 'expression': '"definicion_punto"'},
@@ -50,7 +51,7 @@ def get_refactor_fields_mapping(layer_name):
             {'type': 16, 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
     elif layer_name == BOUNDARY_TABLE:
-        return  [
+        mapping = [
             {'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'},
             {'name': 'longitud', 'type': 6, 'length': 6, 'precision': 1, 'expression': '"longitud"'},
             {'name': 'localizacion_textual', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"localizacion_textual"'},
@@ -60,7 +61,7 @@ def get_refactor_fields_mapping(layer_name):
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
     elif layer_name == PLOT_TABLE:
-        return [
+        mapping = [
             {'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'},
             {'name': 'area_registral', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"area_registral"'},
             {'name': 'area_calculada', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"area_calculada"'},
@@ -82,7 +83,7 @@ def get_refactor_fields_mapping(layer_name):
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
     elif layer_name == PARCEL_TABLE:
-        return [
+        mapping = [
             {'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'},
             {'name': 'departamento', 'type': 10, 'length': 2, 'precision': -1, 'expression': '"departamento"'},
             {'name': 'municipio', 'type': 10, 'length': 3, 'precision': -1, 'expression': '"municipio"'},
@@ -100,7 +101,7 @@ def get_refactor_fields_mapping(layer_name):
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
     elif layer_name == NATURAL_PARTY_TABLE:
-        return [
+        mapping = [
             {'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'},
             {'name': 'documento_identidad', 'type': 10, 'length': 10, 'precision': -1, 'expression': '"documento_identidad"'},
             {'name': 'tipo_documento', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo_documento"'},
@@ -120,7 +121,7 @@ def get_refactor_fields_mapping(layer_name):
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
     elif layer_name == LEGAL_PARTY_TABLE:
-        return [
+        mapping = [
             {'type': 4, 'precision': 0, 'name': 't_id', 'expression': '"t_id"', 'length': -1},
             {'type': 10, 'precision': -1, 'name': 'numero_nit', 'expression': '"numero_nit"', 'length': 20},
             {'type': 10, 'precision': -1, 'name': 'razon_social', 'expression': '"razon_social"', 'length': 100},
@@ -132,7 +133,7 @@ def get_refactor_fields_mapping(layer_name):
             {'type': 16, 'precision': -1, 'name': 'fin_vida_util_version', 'expression': '"fin_vida_util_version"', 'length': -1}
         ]
     elif layer_name == ADMINISTRATIVE_SOURCE_TABLE:
-        return [
+        mapping = [
             {'name': 't_id', 'precision': 0, 'expression': '"t_id"', 'type': 4, 'length': -1},
             {'name': 'texto', 'precision': -1, 'expression': '"texto"', 'type': 10, 'length': 255},
             {'name': 'tipo', 'precision': -1, 'expression': '"tipo"', 'type': 10, 'length': 255},
@@ -148,7 +149,7 @@ def get_refactor_fields_mapping(layer_name):
             {'name': 'oficialidad', 'precision': -1, 'expression': '"oficialidad"', 'type': 1, 'length': -1}
         ]
     elif layer_name == SPATIAL_SOURCE_TABLE:
-        return [
+        mapping = [
             {'type': 4, 'length': -1, 'name': 't_id', 'precision': 0, 'expression': '"t_id"'},
             {'type': 10, 'length': 255, 'name': 'tipo', 'precision': -1, 'expression': '"tipo"'},
             {'type': 16, 'length': -1, 'name': 'fecha_aceptacion', 'precision': -1, 'expression': '"fecha_aceptacion"'},
@@ -162,4 +163,13 @@ def get_refactor_fields_mapping(layer_name):
             {'type': 1, 'length': -1, 'name': 'oficialidad', 'precision': -1, 'expression': '"oficialidad"'}
         ]
 
-    return []
+    # Now see if we can adjust the mapping depending on user settings
+    ns_enabled, ns_field, ns_value = qgis_utils.get_namespace_field_and_value(layer_name)
+
+    if ns_enabled and ns_field:
+        for field in mapping:
+            if field['name'] == ns_field:
+                field['expression'] = '{}'.format(ns_value)
+                break
+
+    return mapping

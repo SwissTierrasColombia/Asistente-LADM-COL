@@ -23,11 +23,7 @@ from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-from ..config.table_mapping_config import (
-    BOUNDARY_TABLE,
-    LENGTH_FIELD_BOUNDARY_TABLE,
-    VIDA_UTIL_FIELD_BOUNDARY_TABLE
-)
+from ..config.table_mapping_config import BOUNDARY_TABLE
 from ..config.help_strings import HelpStrings
 
 WIZARD_UI = get_ui_class('wiz_define_boundaries_cadastre.ui')
@@ -96,10 +92,6 @@ class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
 
         # Disable transactions groups
         QgsProject.instance().setAutoTransaction(False)
-
-        # Configure automatic field longitud
-        self.qgis_utils.configureAutomaticField(self._boundary_layer, LENGTH_FIELD_BOUNDARY_TABLE, "$length")
-        self.qgis_utils.configureAutomaticField(self._boundary_layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
 
         # Configure Snapping
         snapping = QgsProject.instance().snappingConfig()

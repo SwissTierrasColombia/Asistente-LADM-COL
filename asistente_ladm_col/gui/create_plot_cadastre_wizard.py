@@ -23,10 +23,7 @@ from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
 from ..utils.qt_utils import enable_next_wizard, disable_next_wizard
-from ..config.table_mapping_config import (
-    PLOT_TABLE,
-    VIDA_UTIL_FIELD_BOUNDARY_TABLE
-)
+from ..config.table_mapping_config import PLOT_TABLE
 from ..config.help_strings import HelpStrings
 
 WIZARD_UI = get_ui_class('wiz_create_plot_cadastre.ui')
