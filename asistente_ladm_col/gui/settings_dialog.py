@@ -32,11 +32,12 @@ from ..utils.qt_utils import make_file_selector
 DIALOG_UI = get_ui_class('settings_dialog.ui')
 
 class SettingsDialog(QDialog, DIALOG_UI):
-    def __init__(self, iface=None, parent=None):
+    def __init__(self, iface=None, parent=None, qgis_utils=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
         self._db = None
+        self.qgis_utils = qgis_utils
 
         self.cbo_db_source.clear()
         self.cbo_db_source.addItem(self.tr('PostgreSQL / PostGIS'), 'pg')
@@ -125,11 +126,22 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         settings.setValue('Asistente-LADM_COL/quality/too_long_tolerance', int(self.txt_too_long_tolerance.text()) or DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)
 
-        settings.setValue('Asistente-LADM_COL/automatic_values/local_id_enabled', self.chk_local_id.isChecked())
+        # Changes in automatic namespace or local_id configuration?
+        current_namespace_enabled = settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
+        current_namespace_prefix = settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")
+        current_local_id_enabled = settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
+
         settings.setValue('Asistente-LADM_COL/automatic_values/namespace_enabled', self.namespace_collapsible_group_box.isChecked())
         if self.namespace_collapsible_group_box.isChecked():
             settings.setValue('Asistente-LADM_COL/automatic_values/namespace_prefix', self.txt_namespace.text())
 
+        settings.setValue('Asistente-LADM_COL/automatic_values/local_id_enabled', self.chk_local_id.isChecked())
+
+        if current_namespace_enabled != self.namespace_collapsible_group_box.isChecked() or \
+           current_namespace_prefix != self.txt_namespace.text() or \
+           current_local_id_enabled != self.chk_local_id.isChecked():
+
+            self.qgis_utils.automatic_namespace_local_id_configuration_changed(self._db)
 
     def restore_settings(self):
         # Restore QSettings
@@ -150,7 +162,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool))
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
-
 
     def db_source_changed(self):
         self._db = None

@@ -86,7 +86,7 @@ class QGISUtils(QObject):
         self.get_settings_dialog().set_db_connection(mode, dict_conn)
 
     def get_settings_dialog(self):
-        self.__settings_dialog = SettingsDialog()
+        self.__settings_dialog = SettingsDialog(qgis_utils=self)
         return self.__settings_dialog
 
     def get_db_connection(self):
@@ -151,6 +151,36 @@ class QGISUtils(QObject):
                             return layer
         return None
 
+    def get_ladm_layers_from_layer_tree(self, db):
+        ladm_layers = list()
+
+        for k,layer in QgsProject.instance().mapLayers().items():
+            if db.mode == 'pg':
+                if layer.dataProvider().name() == 'postgres':
+
+                    layer_uri = layer.dataProvider().uri()
+                    db_uri = QgsDataSourceUri(db.uri)
+
+                    if layer_uri.schema() == db.schema and \
+                       layer_uri.database() == db_uri.database() and \
+                       layer_uri.host() == db_uri.host() and \
+                       layer_uri.port() == db_uri.port() and \
+                       layer_uri.username() == db_uri.username() and \
+                       layer_uri.password() == db_uri.password():
+
+                        ladm_layers.append(layer)
+
+            elif db.mode == 'gpkg':
+                # To be implemented for GeoPackage layers
+                pass
+
+        return ladm_layers
+
+    def automatic_namespace_local_id_configuration_changed(self, db):
+        layers = self.get_ladm_layers_from_layer_tree(db)
+        for layer in layers:
+            self.set_automatic_fields_namespace_local_id(layer)
+
     def post_load_configurations(self, layer):
         # Do some post-load work, such as setting styles or
         # setting automatic fields for that layer
@@ -167,14 +197,7 @@ class QGISUtils(QObject):
 
     def set_automatic_fields(self, layer):
         layer_name = layer.name()
-        ns_enabled, ns_field, ns_value = self.get_namespace_field_and_value(layer_name)
-        lid_enabled, lid_field, lid_value = self.get_local_id_field_and_value(layer_name)
-
-        if lid_enabled and lid_field:
-            self.configure_automatic_field(layer, lid_field, lid_value)
-
-        if ns_enabled and ns_field:
-            self.configure_automatic_field(layer, ns_field, ns_value)
+        self.set_automatic_fields_namespace_local_id(layer)
 
         if layer.fields().indexFromName(VIDA_UTIL_FIELD) != -1:
             self.configure_automatic_field(layer, VIDA_UTIL_FIELD, "now()")
@@ -182,24 +205,46 @@ class QGISUtils(QObject):
         if layer_name == BOUNDARY_TABLE:
             self.configure_automatic_field(layer, LENGTH_FIELD_BOUNDARY_TABLE, "$length")
 
+    def set_automatic_fields_namespace_local_id(self, layer):
+        layer_name = layer.name()
+
+        ns_enabled, ns_field, ns_value = self.get_namespace_field_and_value(layer_name)
+        lid_enabled, lid_field, lid_value = self.get_local_id_field_and_value(layer_name)
+
+        if ns_enabled and ns_field:
+            self.configure_automatic_field(layer, ns_field, ns_value)
+        elif not ns_enabled and ns_field:
+            self.reset_automatic_field(layer, ns_field)
+
+        if lid_enabled and lid_field:
+            self.configure_automatic_field(layer, lid_field, lid_value)
+        elif not lid_enabled and lid_field:
+            self.reset_automatic_field(layer, lid_field)
+
     def get_namespace_field_and_value(self, layer_name):
-        namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True)
+        namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
 
         field_prefix = NAMESPACE_PREFIX[layer_name] if layer_name in NAMESPACE_PREFIX else None
         namespace_field = field_prefix + NAMESPACE_FIELD if field_prefix else None
 
-        namespace = str(QSettings().value('Asistente-LADM_COL/automatic_values/namespace_prefix', ""))
-        namespace_value = "'{}{}{}'".format(namespace, "_" if namespace else "", layer_name).upper()
+        if namespace_field is not None:
+            namespace = str(QSettings().value('Asistente-LADM_COL/automatic_values/namespace_prefix', ""))
+            namespace_value = "'{}{}{}'".format(namespace, "_" if namespace else "", layer_name).upper()
+        else:
+            namespace_value = None
 
         return (namespace_enabled, namespace_field, namespace_value)
 
     def get_local_id_field_and_value(self, layer_name):
-        local_id_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True)
+        local_id_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
 
         field_prefix = NAMESPACE_PREFIX[layer_name] if layer_name in NAMESPACE_PREFIX else None
         local_id_field = field_prefix + LOCAL_ID_FIELD if field_prefix else None
 
-        local_id_value = '"{}"'.format(ID_FIELD)
+        if local_id_field is not None:
+            local_id_value = '"{}"'.format(ID_FIELD)
+        else:
+            local_id_value = None
 
         return (local_id_enabled, local_id_field, local_id_value)
 
