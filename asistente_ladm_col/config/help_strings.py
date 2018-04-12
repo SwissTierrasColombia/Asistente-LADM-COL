@@ -22,6 +22,10 @@ Choose this option to load points to <b>Survey Points</b> layer from <i>LADM_COL
 Add a Comma Separated Values file (CSV), choosing the delimiter and fields that contain point coordinates.\
 ")
 
+        self.WIZ_ADD_POINTS_CADASTRE_PAGE_3_OPTION_CSV = QCoreApplication.translate("HelpStrings", "\
+Add a Comma Separated Values file (CSV), choosing the delimiter and fields that contain point coordinates.<br><br><a href='#template'>Click to download CSV template</a><br><br><a href='#data'>Click to download CSV sample data</a>\
+")
+
         self.WIZ_CREATE_ADMINISTRATIVE_SOURCE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create an <b>Administrative Source</b> using a form.\
 <br><br>\

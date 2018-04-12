@@ -17,11 +17,13 @@
  ***************************************************************************/
 """
 import os
+import stat
 
-from qgis.core import (QgsProject, QgsVectorLayer, QgsSpatialIndex, Qgis,
-                       QgsMapLayerProxyModel)
-from qgis.PyQt.QtCore import QSettings, QCoreApplication
-from qgis.PyQt.QtWidgets import QWizard
+from qgis.core import Qgis, QgsMapLayerProxyModel
+from qgis.gui import QgsMessageBar
+
+from qgis.PyQt.QtCore import Qt, QSettings, QCoreApplication, QFile
+from qgis.PyQt.QtWidgets import QWizard, QFileDialog, QSizePolicy, QGridLayout
 
 from ..utils.qt_utils import (make_file_selector, enable_next_wizard,
                               disable_next_wizard)
@@ -69,7 +71,15 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         self.wizardPage2.setButtonText(QWizard.FinishButton,
                                        QCoreApplication.translate("PointsSpatialUnitCadastreWizard",
                                             "Import"))
-        self.txt_help_page_3.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
+        self.txt_help_page_3.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_3_OPTION_CSV)
+        self.txt_help_page_3.anchorClicked.connect(self.save_template)
+
+        # Set MessageBar for QWizard
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.setLayout(QGridLayout())
+        # self.tabWidget.currentWidget().layout().setContentsMargins(0, 0, 0, 0)
+        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
     def nextId(self):
         """
@@ -250,3 +260,46 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
 
         self.txt_file_path.setText(settings.value('Asistente-LADM_COL/wizards/points_add_points_csv_file'))
         self.txt_delimiter.setText(settings.value('Asistente-LADM_COL/wizards/points_csv_file_delimiter'))
+
+    def save_template(self, url):
+        link = url.url()
+        if self.rad_boundary_point.isChecked():
+            if link == '#template':
+                self.download_csv_file('template_boundary_points.csv')
+            elif link == '#data':
+                self.download_csv_file('sample_boundary_points.csv')
+        elif self.rad_survey_point.isChecked():
+            if link == '#template':
+                self.download_csv_file('template_boundary_points.csv')
+            elif link == '#data':
+                self.download_csv_file('sample_boundary_points.csv')
+
+    def download_csv_file(self, filename):
+        new_filename, filter = QFileDialog.getSaveFileName(self,
+                                                           QCoreApplication.translate('PointsSpatialUnitCadastreWizard',
+                                                                                      'Save File'), '.csv',
+                                                           QCoreApplication.translate('PointsSpatialUnitCadastreWizard',
+                                                                                      'CSV File (*.csv *.txt *.tsv)'))
+        template_file = QFile(":/Asistente-LADM_COL/resources/csv/" + filename)
+        #template_file.setPermissions(QFileDevice.WriteUser)
+
+        if os.path.isfile(filename):
+            print('Removing file')
+            os.chmod(template_file, 0o777)
+            os.remove(template_file)
+
+        if template_file.copy(new_filename):
+            os.chmod(new_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
+            #qurl = QUrl()
+            #qurl.fromLocalFile(new_filename)
+            #QDesktopServices.openUrl(qurl)
+            msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'The file <a href="file://' + new_filename + '">' + os.path.basename(new_filename) + '</a> was downloaded')
+            self.show_message(msg, Qgis.Info )
+        else:
+            print('Failed copy')
+            msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'The file was not downloaded')
+            self.show_message("Fail", Qgis.Warning)
+
+
+    def show_message(self, message, level):
+        self.bar.pushMessage(message, level, 10)
