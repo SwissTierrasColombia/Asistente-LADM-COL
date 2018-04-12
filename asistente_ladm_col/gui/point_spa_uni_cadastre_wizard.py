@@ -283,10 +283,10 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         template_file = QFile(":/Asistente-LADM_COL/resources/csv/" + filename)
         #template_file.setPermissions(QFileDevice.WriteUser)
 
-        if os.path.isfile(filename):
+        if os.path.isfile(new_filename):
             print('Removing file')
-            os.chmod(template_file, 0o777)
-            os.remove(template_file)
+            os.chmod(new_filename, 0o777)
+            os.remove(new_filename)
 
         if template_file.copy(new_filename):
             os.chmod(new_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
