@@ -52,6 +52,9 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         self.txt_file_path.textChanged.connect(self.fill_long_lat_combos)
         self.txt_delimiter.textChanged.connect(self.fill_long_lat_combos)
 
+        self.cbo_delimiter.addItems([';', ',', 'tab', '|', '^', '~', 'other'])
+        self.cbo_delimiter.currentTextChanged.connect(self.separator_changed)
+
         self.restore_settings()
 
         self.txt_file_path.textChanged.emit(self.txt_file_path.text())
@@ -250,3 +253,12 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
 
         self.txt_file_path.setText(settings.value('Asistente-LADM_COL/wizards/points_add_points_csv_file'))
         self.txt_delimiter.setText(settings.value('Asistente-LADM_COL/wizards/points_csv_file_delimiter'))
+
+    def separator_changed(self, text):
+        if text == 'other':
+            self.txt_delimiter.setEnabled(True)
+        else:
+            self.txt_delimiter.setEnabled(False)
+            if text == 'tab':
+                text = '\t'
+            self.txt_delimiter.setText(text)
