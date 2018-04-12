@@ -53,7 +53,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.project_generator_utils = ProjectGeneratorUtils()
         self.icon_names = ['points', 'lines', 'polygons', 'tables', 'domains', 'structures', 'associations']
 
-        self.txt_search_text.addAction(QIcon(":/Asistente-LADM_COL/images/search.png"), QLineEdit.LeadingPosition)
+        self.txt_search_text.addAction(QIcon(":/Asistente-LADM_COL/resources/images/search.png"), QLineEdit.LeadingPosition)
 
         # Fill predefined tables combobox
         self.cbo_select_predefined_tables.clear()
@@ -164,7 +164,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
                     icon_name = self.icon_names[5]
                 elif current_table_info['is_domain'] == TABLE_PROP_ASSOCIATION:
                     icon_name = self.icon_names[6]
-                icon = QIcon(":/Asistente-LADM_COL/images/{}.png".format(icon_name))
+                icon = QIcon(":/Asistente-LADM_COL/resources/images/{}.png".format(icon_name))
                 table_item.setData(0, Qt.DecorationRole, icon)
 
                 children.append(table_item)

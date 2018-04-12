@@ -58,7 +58,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def initGui(self):
         # Set Menus
-        icon = QIcon(":/Asistente-LADM_COL/images/icon.png")
+        icon = QIcon(":/Asistente-LADM_COL/resources/images/icon.png")
         self._menu = QMenu("LAD&M_COL", self.iface.mainWindow().menuBar())
         actions = self.iface.mainWindow().menuBar().actions()
         if len(actions) > 0:
