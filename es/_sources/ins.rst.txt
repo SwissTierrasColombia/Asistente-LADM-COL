@@ -1,8 +1,18 @@
-Guia Intalación del plugin
-==========================
-En esta sección se describe el proceso para poder llevar a cabo la instalación
-del plugin de QGIS denominado LADM_COL.
+Installation guide for plugin
+==============================
 
-Proceso de instalación
+This section describes the process to perform the installation
+of the QGIS plugin assistant LADM_COL.
+
+Installation process
 ----------------------
-1. Es necesario que el Software Qgis este instalado.
+
+#. It is necessary to have Qgis Software installed, to obtain this go to `QGIS <https://qgis.org/en/site/forusers/download.html>`_.
+
+#. The process can be seen graphically in the following gif:
+
+.. image:: static/01_INSTALACION.gif
+   :height: 500
+   :width: 800
+   :scale: 100
+   :alt: install plugin process

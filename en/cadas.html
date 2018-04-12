@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Cadastre &#8212; ladm_a_docs  documentation</title>
+    <title>Cadastre &#8212; LADM_COL Assistant  documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="_static/documentation_options.js"></script>
@@ -16,8 +16,8 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Documentation for the Code" href="code.html" />
-    <link rel="prev" title="Ayuda del plugin" href="help.html" /> 
+    <link rel="next" title="Load Layers" href="load_lay.html" />
+    <link rel="prev" title="Welcome to the Assistant’s documentation LADM_COL!" href="index.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -29,12 +29,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="code.html" title="Documentation for the Code"
+          <a href="load_lay.html" title="Load Layers"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="help.html" title="Ayuda del plugin"
+          <a href="index.html" title="Welcome to the Assistant’s documentation LADM_COL!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">ladm_a_docs  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">LADM_COL Assistant  documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -47,16 +47,60 @@
 <h1>Cadastre<a class="headerlink" href="#cadastre" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="spatial-unit">
 <h2>Spatial Unit<a class="headerlink" href="#spatial-unit" title="Permalink to this headline">¶</a></h2>
+<p>In this process you define the new spatial objects that you want to add to the
+database with the structure of the <em>LADM_COL</em> model.</p>
 <div class="section" id="add-points">
 <h3>Add Points<a class="headerlink" href="#add-points" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/06_CARGA_PUNTOS.gif"><img alt="add points" src="_images/06_CARGA_PUNTOS.gif" style="width: 800.0px; height: 500.0px;" /></a>
+<ol class="arabic simple">
+<li>Boundary Point</li>
+</ol>
+<p>Choose this option to load points to <strong>Boundary Points</strong> layer from <em>LADM_COL</em>
+model.</p>
+<p><strong>Boundary Point</strong> is a specialized class of <em>LA_Point</em> which stores points that
+define a boundary. Boundary is an instance of <em>LA_BoundaryFaceString</em> class and
+its specializations.</p>
+<ol class="arabic simple" start="2">
+<li>Survey Point</li>
+</ol>
+<p>Choose this option to load points to <strong>Survey Points</strong> layer from <em>LADM_COL</em>
+model.</p>
+<p><strong>Survey Point</strong> is a specialized class of <em>LA_Point</em> which represents a
+building, right of way or auxiliary vertex.</p>
 <a class="reference internal image-reference" href="_images/add_pnts.png"><img alt="alternate text" src="_images/add_pnts.png" style="width: 360.0px; height: 360.0px;" /></a>
 </div>
 <div class="section" id="define-boundaries">
 <h3>Define Boundaries<a class="headerlink" href="#define-boundaries" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Digitizing</li>
+</ol>
+<p>Choose this option if you want to create a <strong>Boundary</strong> using QGIS digitizing
+tools.</p>
+<p><strong>Boundary</strong> is a specialization of the <em>LA_CadenaCarasLindero</em> class to store
+boundaries that define plots. Two boundaries must not cross or overlap.</p>
+<ol class="arabic simple" start="2">
+<li>From another QGIS Layer/table (setting a field mapping)</li>
+</ol>
+<p>Choose this option to open a window that allows you to import data from a source
+table into the <em>LADM_COL</em> <strong>lindero</strong> table.</p>
+<p>If the field structure of input and target tables differs, you can set a field
+mapping to define field transformations and correspondence.</p>
 <a class="reference internal image-reference" href="_images/def_bndrs.png"><img alt="alternate text" src="_images/def_bndrs.png" style="width: 360.0px; height: 360.0px;" /></a>
 </div>
 <div class="section" id="create-plot">
 <h3>Create plot<a class="headerlink" href="#create-plot" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Selecting existing boundaries</li>
+</ol>
+<p>Choose this option if you want to create a <strong>Plot</strong> from existing <em>Boundaries</em>.</p>
+<p><strong>Plot</strong> is a portion of land with a defined geographical extension.</p>
+<ol class="arabic simple" start="2">
+<li>From another QGIS Layer/table (setting a field mapping)</li>
+</ol>
+<p>Choose this option to open a window that allows you to import data from a source
+layer into the <em>LADM_COL</em> <strong>terreno</strong> layer.</p>
+<p>If the field structure of input and target layers differs, you can set a field
+mapping to define field transformations and correspondence.</p>
 <a class="reference internal image-reference" href="_images/cre_plts.png"><img alt="alternate text" src="_images/cre_plts.png" style="width: 360.0px; height: 360.0px;" /></a>
 </div>
 </div>
@@ -64,34 +108,123 @@
 <h2>BA Unit<a class="headerlink" href="#ba-unit" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="parcel">
 <h3>Parcel<a class="headerlink" href="#parcel" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Based on existing plot</li>
+</ol>
+<p>Choose this option if you want to create a <strong>Parcel</strong> based on existing plots.</p>
+<p><strong>Parcel</strong> is a specialized <em>BA Unit</em> class, which describes the basic
+administrative unit of Colombian cadastre. The <strong>Parcel</strong> is the legal
+territorial unit, which is formed by the plot and may or may not have associated
+constructions.</p>
+<ol class="arabic simple" start="2">
+<li>From another QGIS layer/table (setting a field mapping)</li>
+</ol>
+<p>Choose this option to open a window that allows you to import data from a source table into the <em>LADM_COL</em> <strong>predio</strong> table.</p>
+<p>If the field structure of input and target tables differs, you can set a field
+mapping to define field transformations and correspondence.</p>
 <a class="reference internal image-reference" href="_images/cre_prcl.png"><img alt="alternate text" src="_images/cre_prcl.png" style="width: 360.0px; height: 360.0px;" /></a>
 </div>
 </div>
 <div class="section" id="party">
 <h2>Party<a class="headerlink" href="#party" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id1">
-<h3>Party<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/07_CREACION_INTERESADO.gif"><img alt="add party" src="_images/07_CREACION_INTERESADO.gif" style="width: 800.0px; height: 500.0px;" /></a>
+<div class="section" id="natural-party">
+<h3>Natural Party<a class="headerlink" href="#natural-party" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Entering data manually using a form</li>
+</ol>
+<p>Choose this option if you want to create a <strong>Natural Party</strong> using a form.</p>
+<p><strong>Natural Party</strong> is a natural person who has rights or who is subject to
+restrictions or responsibilities related to one or more <em>Parcels</em>.</p>
+<ol class="arabic simple" start="2">
+<li>From another QGIS layer/table (setting a field mapping)</li>
+</ol>
+<p>Choose this option to open a window that allows you to import data from a source
+table into the <em>LADM_COL</em> <strong>interesado_natural</strong> table.</p>
+<p>If the field structure of input and target tables differs, you can set a field
+mapping to define field transformations and correspondence.</p>
+</div>
+<div class="section" id="legal-party">
+<h3>Legal Party<a class="headerlink" href="#legal-party" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Entering data manually using a form</li>
+</ol>
+<p>Choose this option if you want to create a <strong>Legal Party</strong> using a form.</p>
+<p><strong>Legal Party</strong> is a legal entity that has rights, restrictions or
+responsibilities related to one or more <em>Parcels</em>.</p>
+<ol class="arabic simple" start="2">
+<li>From another QGIS layer/table (setting a field mapping)</li>
+</ol>
+<p>Choose this option to open a window that allows you to import data from a source
+table into the <em>LADM_COL</em> <strong>interesado_juridico</strong> table.</p>
+<p>If the field structure of input and target tables differs, you can set a field
+mapping to define field transformations and correspondence.</p>
 </div>
 </div>
 <div class="section" id="rrr">
 <h2>RRR<a class="headerlink" href="#rrr" title="Permalink to this headline">¶</a></h2>
+<p>This functionality is currently being developed</p>
 <div class="section" id="right">
 <h3>Right<a class="headerlink" href="#right" title="Permalink to this headline">¶</a></h3>
+<p>This functionality is currently being developed</p>
 </div>
 <div class="section" id="restriccion">
 <h3>Restriccion<a class="headerlink" href="#restriccion" title="Permalink to this headline">¶</a></h3>
+<p>This functionality is currently being developed</p>
 </div>
-<div class="section" id="risponsibility">
-<h3>Risponsibility<a class="headerlink" href="#risponsibility" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="responsibility">
+<h3>Responsibility<a class="headerlink" href="#responsibility" title="Permalink to this headline">¶</a></h3>
+<p>This functionality is currently being developed</p>
 </div>
 </div>
 <div class="section" id="source">
 <h2>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="administrative-source">
+<h3>Administrative Source<a class="headerlink" href="#administrative-source" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Entering data manually using a form</li>
+</ol>
+<p>Choose this option if you want to create an <strong>Administrative Source</strong> using a
+form.</p>
+<p><strong>Administrative Source</strong> is a specialization of the <em>COL_Fuente</em> class to store
+those sources corresponding to documents (mortgage document, notarial documents,
+historical documents, and the like) that document the relationship
+between parties and parcels.</p>
+<ol class="arabic simple" start="2">
+<li>From another QGIS layer/table (setting a field mapping)</li>
+</ol>
+<p>Choose this option to open a window that allows you to import data from a source
+table into the <em>LADM_COL</em> <strong>col_fuenteadministrativa</strong> table.</p>
+<p>If the field structure of input and target tables differs, you can set a field
+mapping to define field transformations and correspondence.</p>
+</div>
+<div class="section" id="spatial-source">
+<h3>Spatial Source<a class="headerlink" href="#spatial-source" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Entering data manually using a form</li>
+</ol>
+<p>Choose this option if you want to create a <strong>Spatial Source</strong> using a form.</p>
+<p><strong>Spatial Source</strong> is a specialization of the <em>COL_Fuente</em> class to store those
+sources corresponding to spatial data (geographic features, satellite imagery,
+photogrammetric flights, maps, coordinate listings, ancient or modern plans,
+location descriptions, and the like) that technically document the relationship
+between parties and parcels.</p>
+<ol class="arabic simple" start="2">
+<li>From another QGIS layer/table (setting a field mapping)</li>
+</ol>
+<p>Choose this option to open a window that allows you to import data from a source
+table into the <em>LADM_COL</em> <strong>col_fuenteespacial</strong> table.</p>
+<p>If the field structure of input and target tables differs, you can set a field
+mapping to define field transformations and correspondence.</p>
+</div>
 </div>
 <div class="section" id="quality">
 <h2>Quality<a class="headerlink" href="#quality" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="check-too-long-boundary-segments">
 <h3>Check Too Long Boundary segments<a class="headerlink" href="#check-too-long-boundary-segments" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="check-overlaps-in-boundary-points">
+<h3>Check Overlaps in Boundary Points<a class="headerlink" href="#check-overlaps-in-boundary-points" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 </div>
@@ -116,18 +249,24 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#party">Party</a><ul>
-<li><a class="reference internal" href="#id1">Party</a></li>
+<li><a class="reference internal" href="#natural-party">Natural Party</a></li>
+<li><a class="reference internal" href="#legal-party">Legal Party</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#rrr">RRR</a><ul>
 <li><a class="reference internal" href="#right">Right</a></li>
 <li><a class="reference internal" href="#restriccion">Restriccion</a></li>
-<li><a class="reference internal" href="#risponsibility">Risponsibility</a></li>
+<li><a class="reference internal" href="#responsibility">Responsibility</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#source">Source</a></li>
+<li><a class="reference internal" href="#source">Source</a><ul>
+<li><a class="reference internal" href="#administrative-source">Administrative Source</a></li>
+<li><a class="reference internal" href="#spatial-source">Spatial Source</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#quality">Quality</a><ul>
 <li><a class="reference internal" href="#check-too-long-boundary-segments">Check Too Long Boundary segments</a></li>
+<li><a class="reference internal" href="#check-overlaps-in-boundary-points">Check Overlaps in Boundary Points</a></li>
 </ul>
 </li>
 </ul>
@@ -135,11 +274,11 @@
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="help.html"
-                        title="previous chapter">Ayuda del plugin</a></p>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to the Assistant’s documentation LADM_COL!</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="code.html"
-                        title="next chapter">Documentation for the Code</a></p>
+  <p class="topless"><a href="load_lay.html"
+                        title="next chapter">Load Layers</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -173,12 +312,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="code.html" title="Documentation for the Code"
+          <a href="load_lay.html" title="Load Layers"
              >next</a> |</li>
         <li class="right" >
-          <a href="help.html" title="Ayuda del plugin"
+          <a href="index.html" title="Welcome to the Assistant’s documentation LADM_COL!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">ladm_a_docs  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">LADM_COL Assistant  documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

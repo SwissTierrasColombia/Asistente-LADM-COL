@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Ayuda del plugin &#8212; documentación de ladm_a_docs - </title>
+    <title>Settings &#8212; documentación de LADM_COL Assistant - </title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="_static/documentation_options.js"></script>
@@ -17,8 +17,8 @@
     <link rel="author" title="Sobre este documento" href="about.html" />
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Búsqueda" href="search.html" />
-    <link rel="next" title="Cadastre" href="cadas.html" />
-    <link rel="prev" title="Guia Intalación del plugin" href="ins.html" /> 
+    <link rel="next" title="Installation guide for plugin" href="ins.html" />
+    <link rel="prev" title="Load Layers" href="load_lay.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navegación</h3>
@@ -30,12 +30,12 @@
           <a href="py-modindex.html" title="Índice de Módulos Python"
              >módulos</a> |</li>
         <li class="right" >
-          <a href="cadas.html" title="Cadastre"
+          <a href="ins.html" title="Installation guide for plugin"
              accesskey="N">siguiente</a> |</li>
         <li class="right" >
-          <a href="ins.html" title="Guia Intalación del plugin"
+          <a href="load_lay.html" title="Load Layers"
              accesskey="P">anterior</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">documentación de ladm_a_docs - </a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">documentación de LADM_COL Assistant - </a> &#187;</li> 
       </ul>
     </div>  
 
@@ -44,34 +44,51 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="ayuda-del-plugin">
-<h1>Ayuda del plugin<a class="headerlink" href="#ayuda-del-plugin" title="Enlazar permanentemente con este título">¶</a></h1>
-<p>That has a paragraph about a main subject and is set when the “=”
-is at least the same length of the title itself.</p>
-<div class="section" id="subject-subtitle">
-<h2>Subject Subtitle<a class="headerlink" href="#subject-subtitle" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>Subtitles are set with “-“ and are required to have the same length
-of the subtitle itself, just like titles.</p>
-<p>Lists can be unnumbered like:</p>
-<blockquote>
-<div><ul class="simple">
-<li>Item Foo</li>
-<li>Item Bar</li>
-</ul>
-</div></blockquote>
-<p>Or automatically numbered:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li>Item 1</li>
-<li>Item 2</li>
-</ol>
-</div></blockquote>
+  <div class="section" id="settings">
+<h1>Settings<a class="headerlink" href="#settings" title="Enlazar permanentemente con este título">¶</a></h1>
+<a class="reference internal image-reference" href="_images/03_CONFIGURACION.gif"><img alt="about plugin" src="_images/03_CONFIGURACION.gif" style="width: 800.0px; height: 500.0px;" /></a>
+<div class="section" id="database-connection">
+<h2>Database Connection<a class="headerlink" href="#database-connection" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>In this tab, the parameters are defined to connect to the database in which the
+physical model of LADM_COL is stored.</p>
+<p>These parameters are: </p>
+<p><em>Commo parameters</em></p>
+<p><strong>Source</strong>: define the origin of the data, it can be a spatial database
+<em>PostgreSQL/PostGIS</em> or <em>GeoPackage</em>.</p>
+<p><em>Only PostgreSQL/PostGIS parameters</em></p>
+<p><strong>Host</strong>: address where the database is hosted <em>localhost</em> is equivalent to
+<em>127.0.0.1</em></p>
+<p><strong>Port</strong>: listening port number for the database</p>
+<p><strong>Database</strong>: Name of the database that contains or will contain the physical
+model of LADM_COL</p>
+<p><strong>Schema</strong>: Name of the schema that stores the objects of the physical model of
+LADM_COL</p>
+<p><strong>User</strong>: User name that has permission on the database</p>
+<p><strong>Password</strong>: user’s password</p>
+<p><em>Only GeoPackage parameters</em></p>
+<p><strong>Database File</strong>: Disk location of the GeoPakage file that contains the
+database.</p>
+<p>The <em>Test Connection</em> button is used to know if the entered parameters are
+correct and allow connection to the database</p>
 </div>
-<div class="section" id="inline-markup">
-<h2>Inline Markup<a class="headerlink" href="#inline-markup" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>Words can have <em>emphasis in italics</em> or be <strong>bold</strong> and you can define
-code samples with back quotes, like when you talk about a command: <code class="docutils literal notranslate"><span class="pre">sudo</span></code>
-gives you super user powers!</p>
+<div class="section" id="quality">
+<h2>Quality<a class="headerlink" href="#quality" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>For data quality issues in this tab, the tolerance limit allowed for
+too long boundary segments is established, this must be defined in meters.</p>
+</div>
+<div class="section" id="automatic-values">
+<h2>Automatic Values<a class="headerlink" href="#automatic-values" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Most of the classes in LADM_COL have two attibutes that combined must be unique
+in the whole <code class="docutils literal notranslate"><span class="pre">schema/database</span></code>. They are called <strong>namespace</strong>
+and <strong>local_id</strong>. To make it easier to fill those attibutes, the <em>LADM_COL
+assistant</em> can set automatic values for them.</p>
+<p>Namely, <strong>namespace</strong> will correspond to an optional pefix (e.g.,
+MY_ORGANIZATION) plus the class name (e.g., BOUNDARY):
+<cite>MY_ORGANIZATION_BOUNDARY</cite>.</p>
+<p>On the other hand, <strong>local_id</strong> will correspond to the id of the record in the
+database.</p>
+<p>If you want to fill those values by youtself, uncheck the check boxes in this
+form.</p>
 </div>
 </div>
 
@@ -83,19 +100,20 @@ gives you super user powers!</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Tabla de Contenidos</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Ayuda del plugin</a><ul>
-<li><a class="reference internal" href="#subject-subtitle">Subject Subtitle</a></li>
-<li><a class="reference internal" href="#inline-markup">Inline Markup</a></li>
+<li><a class="reference internal" href="#">Settings</a><ul>
+<li><a class="reference internal" href="#database-connection">Database Connection</a></li>
+<li><a class="reference internal" href="#quality">Quality</a></li>
+<li><a class="reference internal" href="#automatic-values">Automatic Values</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Tema anterior</h4>
-  <p class="topless"><a href="ins.html"
-                        title="capítulo anterior">Guia Intalación del plugin</a></p>
+  <p class="topless"><a href="load_lay.html"
+                        title="capítulo anterior">Load Layers</a></p>
   <h4>Próximo tema</h4>
-  <p class="topless"><a href="cadas.html"
-                        title="próximo capítulo">Cadastre</a></p>
+  <p class="topless"><a href="ins.html"
+                        title="próximo capítulo">Installation guide for plugin</a></p>
   <div role="note" aria-label="source link">
     <h3>Esta página</h3>
     <ul class="this-page-menu">
@@ -129,12 +147,12 @@ gives you super user powers!</p>
           <a href="py-modindex.html" title="Índice de Módulos Python"
              >módulos</a> |</li>
         <li class="right" >
-          <a href="cadas.html" title="Cadastre"
+          <a href="ins.html" title="Installation guide for plugin"
              >siguiente</a> |</li>
         <li class="right" >
-          <a href="ins.html" title="Guia Intalación del plugin"
+          <a href="load_lay.html" title="Load Layers"
              >anterior</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">documentación de ladm_a_docs - </a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">documentación de LADM_COL Assistant - </a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
