@@ -252,7 +252,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
 
 
     def get_fields_from_csv_file(self, csv_path):
-        if not self.txt_delimiter.text().strip():
+        if not self.txt_delimiter.text():
             return []
 
         errorReading = False
@@ -265,7 +265,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         if not line:
             errorReading = True
         else:
-            return line.split(self.txt_delimiter.text().strip())
+            return line.split(self.txt_delimiter.text())
 
         if errorReading:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
