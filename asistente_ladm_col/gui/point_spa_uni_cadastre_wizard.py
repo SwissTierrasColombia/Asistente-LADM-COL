@@ -305,8 +305,14 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         template_file = QFile(":/Asistente-LADM_COL/resources/csv/" + filename)
         #template_file.setPermissions(QFileDevice.WriteUser)
 
+        if not template_file.exists():
+            print("File isn't exists!")
+            msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'Please recompile your resources_rc.py')
+            self.show_message(msg, Qgis.Warning)
+            return
+
         if os.path.isfile(new_filename):
-            print('Removing file')
+            print('Removing file!')
             os.chmod(new_filename, 0o777)
             os.remove(new_filename)
 
@@ -316,11 +322,11 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
             #qurl.fromLocalFile(new_filename)
             #QDesktopServices.openUrl(qurl)
             msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'The file <a href="file://' + new_filename + '">' + os.path.basename(new_filename) + '</a> was downloaded')
-            self.show_message(msg, Qgis.Info )
+            self.show_message(msg, Qgis.Info)
         else:
-            print('Failed copy')
+            print('Failed copy!')
             msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'The file was not downloaded')
-            self.show_message("Fail", Qgis.Warning)
+            self.show_message(msg, Qgis.Warning)
 
 
     def show_message(self, message, level):
