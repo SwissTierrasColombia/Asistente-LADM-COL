@@ -52,6 +52,9 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         self.txt_file_path.textChanged.connect(self.fill_long_lat_combos)
         self.txt_delimiter.textChanged.connect(self.fill_long_lat_combos)
 
+        self.cbo_delimiter.addItems([';', ',', 'tab', '|', '^', '~', 'other'])
+        self.cbo_delimiter.currentTextChanged.connect(self.separator_changed)
+
         self.restore_settings()
 
         self.txt_file_path.textChanged.emit(self.txt_file_path.text())
@@ -112,7 +115,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
             self.wizardPage2.setFinalPage(True)
             self.txt_help_page_2.setHtml(
                 self.help_strings.get_refactor_help_string(
-                    BOUNDARY_POINT_TABLE if self.rad_boundary_point.isChecked() else SURVEY_POINT_TABLE,
+                    self.current_point_name(),
                     True))
 
         elif self.rad_csv.isChecked():
@@ -134,11 +137,11 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
     def finished_dialog(self):
         self.save_settings()
 
+        if self.chk_disable_automatic_fields.isChecked():
+            automatic_fields_definitions = self.qgis_utils.disable_automatic_fields(self._db, self.current_point_name())
+
         if self.rad_refactor.isChecked():
-            if self.rad_boundary_point.isChecked():
-                output_layer_name = BOUNDARY_POINT_TABLE
-            elif self.rad_survey_point.isChecked():
-                output_layer_name = SURVEY_POINT_TABLE
+            output_layer_name = self.current_point_name()
 
             if self.mMapLayerComboBox.currentLayer() is not None:
                 self.qgis_utils.show_etl_model(self._db,
@@ -153,6 +156,14 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         elif self.rad_csv.isChecked():
             self.prepare_copy_csv_points_to_db()
 
+        if self.chk_disable_automatic_fields.isChecked():
+            self.qgis_utils.enable_automatic_fields(self._db, 
+                                                    automatic_fields_definitions, 
+                                                    self.current_point_name())
+
+    def current_point_name(self):
+        return BOUNDARY_POINT_TABLE if self.rad_boundary_point.isChecked() else SURVEY_POINT_TABLE
+
     def prepare_copy_csv_points_to_db(self):
         csv_path = self.txt_file_path.text().strip()
 
@@ -163,7 +174,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return
 
-        target_layer = BOUNDARY_POINT_TABLE if self.rad_boundary_point.isChecked() else SURVEY_POINT_TABLE
+        target_layer = self.current_point_name()
 
         res = self.qgis_utils.copy_csv_to_db(csv_path,
                                     self.txt_delimiter.text(),
@@ -233,6 +244,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         settings.setValue('Asistente-LADM_COL/wizards/points_load_data_type', 'csv' if self.rad_csv.isChecked() else 'refactor')
         settings.setValue('Asistente-LADM_COL/wizards/points_add_points_csv_file', self.txt_file_path.text().strip())
         settings.setValue('Asistente-LADM_COL/wizards/points_csv_file_delimiter', self.txt_delimiter.text().strip())
+        settings.setValue('Asistente-LADM_COL/wizards/disable_automatic_fields', self.chk_disable_automatic_fields.isChecked())
 
     def restore_settings(self):
         settings = QSettings()
@@ -250,3 +262,13 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
 
         self.txt_file_path.setText(settings.value('Asistente-LADM_COL/wizards/points_add_points_csv_file'))
         self.txt_delimiter.setText(settings.value('Asistente-LADM_COL/wizards/points_csv_file_delimiter'))
+        self.chk_disable_automatic_fields.setChecked(settings.value('Asistente-LADM_COL/wizards/disable_automatic_fields', True, bool))
+
+    def separator_changed(self, text):
+        if text == 'other':
+            self.txt_delimiter.setEnabled(True)
+        else:
+            self.txt_delimiter.setEnabled(False)
+            if text == 'tab':
+                text = '\t'
+            self.txt_delimiter.setText(text)
