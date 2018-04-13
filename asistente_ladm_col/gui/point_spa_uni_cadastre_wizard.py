@@ -58,9 +58,10 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
             {'name': ';', 'value': ';'},
             {'name': ',', 'value': ','},
             {'name': 'tab', 'value': '\t'},
+            {'name': 'space', 'value': ' '},
             {'name': '|', 'value': '|'},
             {'name': '~', 'value': '~'},
-            {'name': 'other', 'value': ''}
+            {'name': 'Other', 'value': ''}
         ]
         self.cbo_delimiter.addItems([ item['name'] for item in self.known_delimiters ])
         self.cbo_delimiter.currentTextChanged.connect(self.separator_changed)
@@ -300,13 +301,13 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         self.chk_disable_automatic_fields.setChecked(settings.value('Asistente-LADM_COL/wizards/disable_automatic_fields', True, bool))
 
     def separator_changed(self, text):
-        if text == 'other':
+        # first ocurrence
+        value = next((x['value'] for x in self.known_delimiters if x['name'] == text), '')
+        self.txt_delimiter.setText(value)
+        if value == '':
             self.txt_delimiter.setEnabled(True)
         else:
             self.txt_delimiter.setEnabled(False)
-            # first ocurrence
-            text = next((x['value'] for x in self.known_delimiters if x['name'] == text), '')
-            self.txt_delimiter.setText(text)
 
     def save_template(self, url):
         link = url.url()
