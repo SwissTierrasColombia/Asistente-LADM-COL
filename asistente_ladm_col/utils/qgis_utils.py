@@ -248,6 +248,21 @@ class QGISUtils(QObject):
 
         return (local_id_enabled, local_id_field, local_id_value)
 
+    def disable_automatic_fields(self, db, layer_name, geometry_type=None):
+        layer = self.get_layer(db, layer_name, geometry_type, True)
+        automatic_fields_definition = {idx: layer.defaultValueDefinition(idx) for idx in layer.attributeList()}
+
+        for field in layer.fields():
+            self.reset_automatic_field(layer, field.name())
+
+        return automatic_fields_definition 
+
+    def enable_automatic_fields(self, db, automatic_fields_definition, layer_name, geometry_type=None):
+        layer = self.get_layer(db, layer_name, geometry_type, True)
+
+        for idx, default_definition in automatic_fields_definition.items():
+            layer.setDefaultValueDefinition(idx, default_definition)
+
     def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, target_layer_name):
         if not csv_path or not os.path.exists(csv_path):
             self.message_emitted.emit(
