@@ -1,0 +1,46 @@
+Party
+======
+
+.. image:: ../static/07_CREACION_INTERESADO.gif
+   :height: 500
+   :width: 800
+   :scale: 100
+   :alt: add party
+
+Natural Party
+--------------
+
+1. Entering data manually using a form
+
+Choose this option if you want to create a **Natural Party** using a form.
+
+**Natural Party** is a natural person who has rights or who is subject to
+restrictions or responsibilities related to one or more *Parcels*.
+
+2. From another QGIS layer/table (setting a field mapping)
+
+Choose this option to open a window that allows you to import data from a source
+table into the *LADM_COL* **interesado_natural** table.
+
+If the field structure of input and target tables differs, you can set a field
+mapping to define field transformations and correspondence.
+
+
+
+Legal Party
+--------------
+
+1. Entering data manually using a form
+
+Choose this option if you want to create a **Legal Party** using a form.
+
+**Legal Party** is a legal entity that has rights, restrictions or
+responsibilities related to one or more *Parcels*.
+
+2. From another QGIS layer/table (setting a field mapping)
+
+Choose this option to open a window that allows you to import data from a source
+table into the *LADM_COL* **interesado_juridico** table.
+
+If the field structure of input and target tables differs, you can set a field
+mapping to define field transformations and correspondence.

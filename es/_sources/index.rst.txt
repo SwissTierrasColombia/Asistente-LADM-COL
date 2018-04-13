@@ -3,19 +3,21 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+
 Welcome to the Assistant's documentation LADM_COL!
 =====================================================
 
-.. toctree::
-   :glob:
-   :maxdepth: 2
-   :caption: Contents:
 
-      Cadastre <cadas.rst>
-      Load Layers<load_lay.rst>
-      Settings <help.rst>
-      Install <ins.rst>
-      About <about.rst>
+.. toctree::
+    :glob:
+    :maxdepth: 2
+    :caption: Contents:
+
+    cadas
+    load_lay
+    help
+    ins
+    about
 
 .. image:: static/05_FUNCIONALIDADES.gif
    :height: 500

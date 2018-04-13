@@ -1,5 +1,5 @@
 Settings
-================
+************
 
 .. image:: static/03_CONFIGURACION.gif
    :height: 500
@@ -15,7 +15,7 @@ physical model of LADM_COL is stored.
 
 These parameters are: \
 
-*Commo parameters*
+*Common parameters*
 
 **Source**: define the origin of the data, it can be a spatial database
 *PostgreSQL/PostGIS* or *GeoPackage*.

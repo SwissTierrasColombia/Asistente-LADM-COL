@@ -1,3 +1,6 @@
+About
+**********
+
 LADM_COL Assistant
 ==================
 
@@ -8,7 +11,7 @@ and to generate exchange files for `INTERLIS <http://www.interlis.ch/index_e.htm
 License:
 `GNU General Public License v3.0 <https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE>`_
 
-A Proyect of:
+A Project of:
 
 `Agencia de Implementación <https://www.proadmintierra.info/>`_
 (`BSF-Swissphoto AG <http://bsf-swissphoto.com/>`_ -

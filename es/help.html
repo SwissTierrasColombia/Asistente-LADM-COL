@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Settings &mdash; documentación de LADM_COL Assistant - </title>
+  <title>Configuración &mdash; documentación de LADM_COL Assistant - </title>
   
 
   
@@ -30,7 +30,7 @@
     <link rel="author" title="Sobre este documento" href="about.html" />
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Búsqueda" href="search.html" />
-    <link rel="next" title="Installation guide for plugin" href="ins.html" />
+    <link rel="next" title="Guía de instalación para el complemento" href="ins.html" />
     <link rel="prev" title="Load Layers" href="load_lay.html" /> 
 
   
@@ -80,18 +80,18 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Contenido:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="cadas.html">   Cadastre</a></li>
-<li class="toctree-l1"><a class="reference internal" href="load_lay.html">   Load Layers</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">   Settings</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#database-connection">Database Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#quality">Quality</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#automatic-values">Automatic Values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cadas.html">Cadastre</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_lay.html">Load Layers</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuración</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#database-connection">Conexión a base de datos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quality">Calidad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#automatic-values">Valores Automaticos</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="ins.html">   Install</a></li>
-<li class="toctree-l1"><a class="reference internal" href="about.html">   About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ins.html">Guía de instalación para el complemento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">Acerca de</a></li>
 </ul>
 
             
@@ -137,7 +137,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Settings</li>
+      <li>Configuración</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -157,50 +157,35 @@
            <div itemprop="articleBody">
             
   <div class="section" id="settings">
-<h1>Settings<a class="headerlink" href="#settings" title="Enlazar permanentemente con este título">¶</a></h1>
+<h1>Configuración<a class="headerlink" href="#settings" title="Enlazar permanentemente con este título">¶</a></h1>
 <a class="reference internal image-reference" href="_images/03_CONFIGURACION.gif"><img alt="about plugin" src="_images/03_CONFIGURACION.gif" style="width: 800.0px; height: 500.0px;" /></a>
 <div class="section" id="database-connection">
-<h2>Database Connection<a class="headerlink" href="#database-connection" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>In this tab, the parameters are defined to connect to the database in which the
-physical model of LADM_COL is stored.</p>
-<p>These parameters are: </p>
-<p><em>Commo parameters</em></p>
-<p><strong>Source</strong>: define the origin of the data, it can be a spatial database
-<em>PostgreSQL/PostGIS</em> or <em>GeoPackage</em>.</p>
-<p><em>Only PostgreSQL/PostGIS parameters</em></p>
-<p><strong>Host</strong>: address where the database is hosted <em>localhost</em> is equivalent to
-<em>127.0.0.1</em></p>
-<p><strong>Port</strong>: listening port number for the database</p>
-<p><strong>Database</strong>: Name of the database that contains or will contain the physical
-model of LADM_COL</p>
-<p><strong>Schema</strong>: Name of the schema that stores the objects of the physical model of
-LADM_COL</p>
-<p><strong>User</strong>: User name that has permission on the database</p>
-<p><strong>Password</strong>: user’s password</p>
-<p><em>Only GeoPackage parameters</em></p>
-<p><strong>Database File</strong>: Disk location of the GeoPakage file that contains the
-database.</p>
-<p>The <em>Test Connection</em> button is used to know if the entered parameters are
-correct and allow connection to the database</p>
+<h2>Conexión a base de datos<a class="headerlink" href="#database-connection" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En esta pestaña, los parámetros son definidos para conectarse a la base de datos en la que se almacena el modelo físico de LADM_COL.</p>
+<p>Estos parámetros son: </p>
+<p><em>Parámetros comunes</em></p>
+<p><strong>Fuente</strong>: define el origen de los datos, estos pueden ser una base de datos espacial de <em>PostgreSQL/PostGIS</em> o <em>GeoPackage</em>.</p>
+<p><em>Parámetros solo para PostgreSQL/PostGIS</em></p>
+<p><strong>Host</strong>: dirección donde la base de datos esta alojada <em>localhost</em> es equivalente a <em>127.0.0.1</em></p>
+<p><strong>Puerto</strong>: puerto de escucha para la base de datos</p>
+<p><strong>Base de datos</strong>: Nombre de la base de datos que contiene o contendrá el modelo físico de LADM_COL</p>
+<p><strong>Esquema</strong>: Nombre del esquema en el cual se almacenan los objetos del modelo físico de LADM_COL</p>
+<p><strong>Usuario</strong>: Nombre de usuario que tiene permisos sobre la base de datos</p>
+<p><strong>Contraseña</strong>: Contraseña de usuario</p>
+<p><em>Parámetros solo para GeoPackage</em></p>
+<p>** Archivo de base de datos <a href="#id1"><span class="problematic" id="id2">**</span></a>: Ubicación del disco del archivo GeoPakage que contiene la base de datos.</p>
+<p>El botón <em>Probar conexión</em> se usa para saber si los parámetros ingresados son correctos y permiten la conexión a la base de datos</p>
 </div>
 <div class="section" id="quality">
-<h2>Quality<a class="headerlink" href="#quality" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>For data quality issues in this tab, the tolerance limit allowed for
-too long boundary segments is established, this must be defined in meters.</p>
+<h2>Calidad<a class="headerlink" href="#quality" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Para problemas de calidad de datos en esta pestaña, se establece el límite de tolerancia permitido para segmentos de límite demasiado largos, esto debe definirse en metros.</p>
 </div>
 <div class="section" id="automatic-values">
-<h2>Automatic Values<a class="headerlink" href="#automatic-values" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>Most of the classes in LADM_COL have two attibutes that combined must be unique
-in the whole <code class="docutils literal notranslate"><span class="pre">schema/database</span></code>. They are called <strong>namespace</strong>
-and <strong>local_id</strong>. To make it easier to fill those attibutes, the <em>LADM_COL
-assistant</em> can set automatic values for them.</p>
-<p>Namely, <strong>namespace</strong> will correspond to an optional pefix (e.g.,
-MY_ORGANIZATION) plus the class name (e.g., BOUNDARY):
-<cite>MY_ORGANIZATION_BOUNDARY</cite>.</p>
-<p>On the other hand, <strong>local_id</strong> will correspond to the id of the record in the
-database.</p>
-<p>If you want to fill those values by youtself, uncheck the check boxes in this
-form.</p>
+<h2>Valores Automaticos<a class="headerlink" href="#automatic-values" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>La mayoría de las clase en  LADM_COL tienen dos atributos cuya combinación debe ser única en el <code class="docutils literal notranslate"><span class="pre">schema/database</span></code>. Estos son llamados <strong>espacio_de_nombres</strong> y <strong>local_id</strong>. Para facilitar el llenado de dichos atributos, el <em>Asistente LADM_COL</em> puede definir valores automáticos.</p>
+<p>Concretamente, <em>espacio_de_nombres</em> corresponderá a un prefijo opcional (p.e., MI_ORGANIZACION) más el nombre de la clase (p.e., LINDERO): MI_ORGANIZACION_LINDERO.</p>
+<p>Por otro lado, <strong>local_id</strong> corresponderá al ID del registro en la base de datos.</p>
+<p>Si por el contrario quieres llenar los datos manualmente, desmarca las cajas en el formulario.</p>
 </div>
 </div>
 
@@ -212,7 +197,7 @@ form.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ins.html" class="btn btn-neutral float-right" title="Installation guide for plugin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ins.html" class="btn btn-neutral float-right" title="Guía de instalación para el complemento" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="load_lay.html" class="btn btn-neutral" title="Load Layers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
