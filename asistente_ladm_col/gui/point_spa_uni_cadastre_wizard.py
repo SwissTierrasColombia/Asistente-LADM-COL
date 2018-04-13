@@ -51,10 +51,18 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         self.btn_browse_file.clicked.connect(
             make_file_selector(self.txt_file_path,
                                file_filter=QCoreApplication.translate("PointsSpatialUnitCadastreWizard",'CSV Comma Separated Value (*.csv)')))
-        self.txt_file_path.textChanged.connect(self.fill_long_lat_combos)
+        self.txt_file_path.textChanged.connect(self.file_path_changed)
         self.txt_delimiter.textChanged.connect(self.fill_long_lat_combos)
 
-        self.cbo_delimiter.addItems([';', ',', 'tab', '|', '^', '~', 'other'])
+        self.known_delimiters = [
+            {'name': ';', 'value': ';'},
+            {'name': ',', 'value': ','},
+            {'name': 'tab', 'value': '\t'},
+            {'name': '|', 'value': '|'},
+            {'name': '~', 'value': '~'},
+            {'name': 'other', 'value': ''}
+        ]
+        self.cbo_delimiter.addItems([ item['name'] for item in self.known_delimiters ])
         self.cbo_delimiter.currentTextChanged.connect(self.separator_changed)
 
         self.restore_settings()
@@ -192,6 +200,23 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
                                     self.cbo_latitude.currentText(),
                                     self._db,
                                     target_layer)
+    def file_path_changed(self):
+        self.autodetect_separator()
+        self.fill_long_lat_combos("")
+
+    def autodetect_separator(self):
+        csv_path = self.txt_file_path.text().strip()
+        if os.path.exists(csv_path):
+            with open(csv_path) as file:
+                first_line = file.readline()
+                for delimiter in [ item for item in self.known_delimiters ]:
+                    if delimiter['value'] == '':
+                        continue
+                    # if separator works like a column separator in header
+                    # number of cols is greater than 1
+                    if len(first_line.split(delimiter['value'])) > 1:
+                        self.cbo_delimiter.setCurrentText(delimiter['name'])
+                        return
 
     def fill_long_lat_combos(self, text):
         csv_path = self.txt_file_path.text().strip()
@@ -279,8 +304,8 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
             self.txt_delimiter.setEnabled(True)
         else:
             self.txt_delimiter.setEnabled(False)
-            if text == 'tab':
-                text = '\t'
+            # first ocurrence
+            text = next((x['value'] for x in self.known_delimiters if x['name'] == text), '')
             self.txt_delimiter.setText(text)
 
     def save_template(self, url):
