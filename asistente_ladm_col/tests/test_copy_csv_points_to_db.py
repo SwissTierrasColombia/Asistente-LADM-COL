@@ -28,6 +28,7 @@ class TestCopy(unittest.TestCase):
 
     def test_copy_csv_to_db(self):
         self.clean_table()
+        self.qgis_utils.disable_automatic_fields(self.db_connection, BOUNDARY_POINT_TABLE)
         self.upload_points_from_csv()
         self.validate_points_in_db()
         self.clean_table()
