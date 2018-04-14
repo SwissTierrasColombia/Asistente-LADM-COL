@@ -210,7 +210,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         if os.path.exists(csv_path):
             with open(csv_path) as file:
                 first_line = file.readline()
-                for delimiter in [ item for item in self.known_delimiters ]:
+                for delimiter in self.known_delimiters:
                     if delimiter['value'] == '':
                         continue
                     # if separator works like a column separator in header
@@ -235,15 +235,14 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
             self.cbo_latitude.addItems(fields)
 
             # Heuristics to suggest values for x and y
-            lowercase_fields = [field for field in fields]
             x_potential_names = ['x', 'lon', 'long', 'longitud', 'longitude', 'este', 'east', 'oeste', 'west']
             y_potential_names = ['y', 'lat', 'latitud', 'latitude', 'norte', 'north']
             for x_potential_name in x_potential_names:
-                if x_potential_name in lowercase_fields:
+                if x_potential_name in fields:
                     self.cbo_longitude.setCurrentText(x_potential_name)
                     break
             for y_potential_name in y_potential_names:
-                if y_potential_name in lowercase_fields:
+                if y_potential_name in fields:
                     self.cbo_latitude.setCurrentText(y_potential_name)
                     break
 
