@@ -1,0 +1,4 @@
+nombre_punto,definicion_punto,monumentacion,puntotipo,p_espacio_de_nombres,p_local_id,x,y,z
+G0009,Bien_Definido,Otros,Construccion,00_PUNTOLEVANTAMIENTO,1,963241.427,1077719.794,1434.672
+G0010,Bien_Definido,Otros,Construccion,00_PUNTOLEVANTAMIENTO,2,963246.089,1077723.512,1435.08
+G0011,Bien_Definido,Otros,Construccion,00_PUNTOLEVANTAMIENTO,3,963247.047,1077712.735,1434.675
