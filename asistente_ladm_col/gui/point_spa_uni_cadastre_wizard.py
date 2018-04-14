@@ -50,7 +50,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         # Set connections
         self.btn_browse_file.clicked.connect(
             make_file_selector(self.txt_file_path,
-                               file_filter=QCoreApplication.translate("PointsSpatialUnitCadastreWizard",'CSV Comma Separated Value (*.csv)')))
+                               file_filter=QCoreApplication.translate("PointsSpatialUnitCadastreWizard",'CSV File (*.csv *.txt)')))
         self.txt_file_path.textChanged.connect(self.file_path_changed)
         self.txt_delimiter.textChanged.connect(self.fill_long_lat_combos)
 
@@ -90,7 +90,6 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.setLayout(QGridLayout())
-        # self.tabWidget.currentWidget().layout().setContentsMargins(0, 0, 0, 0)
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
     def nextId(self):
@@ -124,7 +123,6 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         elif id == self.dict_pages_ids[self.wizardPage3]:
             self.fill_long_lat_combos("")
 
-
     def adjust_page_2_controls(self):
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -148,9 +146,11 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
     def point_option_changed(self):
         if self.rad_boundary_point.isChecked():
             self.gbx_page_2.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Load data to Boundary Points..."))
+            self.gbx_page_3.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Configure CSV data source for Boundary Points..."))
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_BP)
         else: # self.rad_survey_point is checked
             self.gbx_page_2.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Load data to Survey Points..."))
+            self.gbx_page_3.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Configure CSV data source for Survey Points..."))
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_SP)
 
     def finished_dialog(self):
@@ -176,8 +176,8 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
             self.prepare_copy_csv_points_to_db()
 
         if self.chk_disable_automatic_fields.isChecked():
-            self.qgis_utils.enable_automatic_fields(self._db, 
-                                                    automatic_fields_definitions, 
+            self.qgis_utils.enable_automatic_fields(self._db,
+                                                    automatic_fields_definitions,
                                                     self.current_point_name())
 
     def current_point_name(self):
@@ -250,7 +250,6 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         else:
             self.button(QWizard.FinishButton).setEnabled(False)
 
-
     def get_fields_from_csv_file(self, csv_path):
         if not self.txt_delimiter.text():
             return []
@@ -273,6 +272,69 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
                                            "It was not possible to read field names from the CSV. Check the file and try again."),
                 Qgis.Warning)
         return []
+
+    def separator_changed(self, text):
+        # first ocurrence
+        value = next((x['value'] for x in self.known_delimiters if x['name'] == text), '')
+        self.txt_delimiter.setText(value)
+        if value == '':
+            self.txt_delimiter.setEnabled(True)
+        else:
+            self.txt_delimiter.setEnabled(False)
+
+    def save_template(self, url):
+        link = url.url()
+        if self.rad_boundary_point.isChecked():
+            if link == '#template':
+                self.download_csv_file('template_boundary_points.csv')
+            elif link == '#data':
+                self.download_csv_file('sample_boundary_points.csv')
+        elif self.rad_survey_point.isChecked():
+            if link == '#template':
+                self.download_csv_file('template_survey_points.csv')
+            elif link == '#data':
+                self.download_csv_file('sample_survey_points.csv')
+
+    def download_csv_file(self, filename):
+        settings = QSettings()
+        settings.setValue('Asistente-LADM_COL/wizards/points_csv_file_delimiter', self.txt_delimiter.text().strip())
+
+        new_filename, filter = QFileDialog.getSaveFileName(self,
+                                   QCoreApplication.translate('PointsSpatialUnitCadastreWizard',
+                                                              'Save File'),
+                                   os.path.join(settings.value('Asistente-LADM_COL/wizards/points_download_csv_path', '.'), filename),
+                                   QCoreApplication.translate('PointsSpatialUnitCadastreWizard',
+                                                              'CSV File (*.csv *.txt)'))
+
+        if new_filename:
+            settings.setValue('Asistente-LADM_COL/wizards/points_download_csv_path', os.path.dirname(new_filename))
+            template_file = QFile(":/Asistente-LADM_COL/resources/csv/" + filename)
+
+            if not template_file.exists():
+                print("CSV doesn't exist! Probably due to a missing 'make' execution to generate resources...")
+                msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'CSV file not found. Update your plugin. For details see log.')
+                self.show_message(msg, Qgis.Warning)
+                return
+
+            if os.path.isfile(new_filename):
+                print('Removing existing file...')
+                os.chmod(new_filename, 0o777)
+                os.remove(new_filename)
+
+            if template_file.copy(new_filename):
+                os.chmod(new_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
+                #qurl = QUrl()
+                #qurl.fromLocalFile(new_filename)
+                #QDesktopServices.openUrl(qurl)
+                msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'The file <a href="file://{}">{}</a> was successfully saved!').format(new_filename, os.path.basename(new_filename))
+                self.show_message(msg, Qgis.Info)
+            else:
+                print('There was an error copying the CSV file!')
+                msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'The file couldn\'t be saved.')
+                self.show_message(msg, Qgis.Warning)
+
+    def show_message(self, message, level):
+        self.bar.pushMessage(message, level, 10)
 
     def save_settings(self):
         settings = QSettings()
@@ -299,61 +361,3 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         self.txt_file_path.setText(settings.value('Asistente-LADM_COL/wizards/points_add_points_csv_file'))
         self.txt_delimiter.setText(settings.value('Asistente-LADM_COL/wizards/points_csv_file_delimiter'))
         self.chk_disable_automatic_fields.setChecked(settings.value('Asistente-LADM_COL/wizards/disable_automatic_fields', True, bool))
-
-    def separator_changed(self, text):
-        # first ocurrence
-        value = next((x['value'] for x in self.known_delimiters if x['name'] == text), '')
-        self.txt_delimiter.setText(value)
-        if value == '':
-            self.txt_delimiter.setEnabled(True)
-        else:
-            self.txt_delimiter.setEnabled(False)
-
-    def save_template(self, url):
-        link = url.url()
-        if self.rad_boundary_point.isChecked():
-            if link == '#template':
-                self.download_csv_file('template_boundary_points.csv')
-            elif link == '#data':
-                self.download_csv_file('sample_boundary_points.csv')
-        elif self.rad_survey_point.isChecked():
-            if link == '#template':
-                self.download_csv_file('template_boundary_points.csv')
-            elif link == '#data':
-                self.download_csv_file('sample_boundary_points.csv')
-
-    def download_csv_file(self, filename):
-        new_filename, filter = QFileDialog.getSaveFileName(self,
-                                                           QCoreApplication.translate('PointsSpatialUnitCadastreWizard',
-                                                                                      'Save File'), '.csv',
-                                                           QCoreApplication.translate('PointsSpatialUnitCadastreWizard',
-                                                                                      'CSV File (*.csv *.txt *.tsv)'))
-        template_file = QFile(":/Asistente-LADM_COL/resources/csv/" + filename)
-        #template_file.setPermissions(QFileDevice.WriteUser)
-
-        if not template_file.exists():
-            print("File isn't exists!")
-            msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'Please recompile your resources_rc.py')
-            self.show_message(msg, Qgis.Warning)
-            return
-
-        if os.path.isfile(new_filename):
-            print('Removing file!')
-            os.chmod(new_filename, 0o777)
-            os.remove(new_filename)
-
-        if template_file.copy(new_filename):
-            os.chmod(new_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
-            #qurl = QUrl()
-            #qurl.fromLocalFile(new_filename)
-            #QDesktopServices.openUrl(qurl)
-            msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'The file <a href="file://' + new_filename + '">' + os.path.basename(new_filename) + '</a> was downloaded')
-            self.show_message(msg, Qgis.Info)
-        else:
-            print('Failed copy!')
-            msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'The file was not downloaded')
-            self.show_message(msg, Qgis.Warning)
-
-
-    def show_message(self, message, level):
-        self.bar.pushMessage(message, level, 10)
