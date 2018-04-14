@@ -51,9 +51,19 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         self.btn_browse_file.clicked.connect(
             make_file_selector(self.txt_file_path,
                                file_filter=QCoreApplication.translate("PointsSpatialUnitCadastreWizard",'CSV File (*.csv *.txt)')))
-        self.txt_file_path.textChanged.connect(self.fill_long_lat_combos)
+        self.txt_file_path.textChanged.connect(self.file_path_changed)
         self.txt_delimiter.textChanged.connect(self.fill_long_lat_combos)
-        self.cbo_delimiter.addItems([';', ',', 'tab', '|', '^', '~', 'other'])
+
+        self.known_delimiters = [
+            {'name': ';', 'value': ';'},
+            {'name': ',', 'value': ','},
+            {'name': 'tab', 'value': '\t'},
+            {'name': 'space', 'value': ' '},
+            {'name': '|', 'value': '|'},
+            {'name': '~', 'value': '~'},
+            {'name': 'Other', 'value': ''}
+        ]
+        self.cbo_delimiter.addItems([ item['name'] for item in self.known_delimiters ])
         self.cbo_delimiter.currentTextChanged.connect(self.separator_changed)
 
         self.restore_settings()
@@ -191,6 +201,23 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
                                     self.cbo_latitude.currentText(),
                                     self._db,
                                     target_layer)
+    def file_path_changed(self):
+        self.autodetect_separator()
+        self.fill_long_lat_combos("")
+
+    def autodetect_separator(self):
+        csv_path = self.txt_file_path.text().strip()
+        if os.path.exists(csv_path):
+            with open(csv_path) as file:
+                first_line = file.readline()
+                for delimiter in self.known_delimiters:
+                    if delimiter['value'] == '':
+                        continue
+                    # if separator works like a column separator in header
+                    # number of cols is greater than 1
+                    if len(first_line.split(delimiter['value'])) > 1:
+                        self.cbo_delimiter.setCurrentText(delimiter['name'])
+                        return
 
     def fill_long_lat_combos(self, text):
         csv_path = self.txt_file_path.text().strip()
@@ -208,15 +235,14 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
             self.cbo_latitude.addItems(fields)
 
             # Heuristics to suggest values for x and y
-            lowercase_fields = [field for field in fields]
             x_potential_names = ['x', 'lon', 'long', 'longitud', 'longitude', 'este', 'east', 'oeste', 'west']
             y_potential_names = ['y', 'lat', 'latitud', 'latitude', 'norte', 'north']
             for x_potential_name in x_potential_names:
-                if x_potential_name in lowercase_fields:
+                if x_potential_name in fields:
                     self.cbo_longitude.setCurrentText(x_potential_name)
                     break
             for y_potential_name in y_potential_names:
-                if y_potential_name in lowercase_fields:
+                if y_potential_name in fields:
                     self.cbo_latitude.setCurrentText(y_potential_name)
                     break
 
@@ -224,7 +250,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
             self.button(QWizard.FinishButton).setEnabled(False)
 
     def get_fields_from_csv_file(self, csv_path):
-        if not self.txt_delimiter.text().strip():
+        if not self.txt_delimiter.text():
             return []
 
         errorReading = False
@@ -237,7 +263,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         if not line:
             errorReading = True
         else:
-            return line.split(self.txt_delimiter.text().strip())
+            return line.split(self.txt_delimiter.text())
 
         if errorReading:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
@@ -247,13 +273,13 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         return []
 
     def separator_changed(self, text):
-        if text == 'other':
+        # first ocurrence
+        value = next((x['value'] for x in self.known_delimiters if x['name'] == text), '')
+        self.txt_delimiter.setText(value)
+        if value == '':
             self.txt_delimiter.setEnabled(True)
         else:
             self.txt_delimiter.setEnabled(False)
-            if text == 'tab':
-                text = '\t'
-            self.txt_delimiter.setText(text)
 
     def save_template(self, url):
         link = url.url()
