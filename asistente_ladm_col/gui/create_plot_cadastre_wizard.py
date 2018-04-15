@@ -18,15 +18,13 @@
 """
 from qgis.core import (QgsProject, QgsVectorLayer, QgsVectorLayerUtils,
                        QgsFeature, QgsMapLayerProxyModel, QgsWkbTypes, Qgis)
-from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication
+from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
 from ..utils.qt_utils import enable_next_wizard, disable_next_wizard
-from ..config.table_mapping_config import (
-    PLOT_TABLE,
-    VIDA_UTIL_FIELD_BOUNDARY_TABLE
-)
+from ..config.table_mapping_config import PLOT_TABLE
+from ..config.help_strings import HelpStrings
 
 WIZARD_UI = get_ui_class('wiz_create_plot_cadastre.ui')
 
@@ -38,60 +36,59 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
         self._plot_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
+        self.help_strings = HelpStrings()
 
-        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PolygonLayer)
+        self.restore_settings()
 
-        self.rad_plot_from_boundaries.toggled.connect(self.adjust_pages)
+        self.rad_plot_from_boundaries.toggled.connect(self.adjust_page_1_controls)
         self.rad_plot_from_boundaries.toggled.emit(True)
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
 
-    def adjust_pages(self):
-        if self.rad_plot_from_boundaries.isChecked():
-            disable_next_wizard(self)
-            self.wizardPage1.setFinalPage(True)
-        else:
-            enable_next_wizard(self)
-            self.wizardPage1.setFinalPage(False)
+        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PolygonLayer)
+
+    def adjust_page_1_controls(self):
+        if self.rad_refactor.isChecked():
+            self.lbl_refactor_source.setEnabled(True)
+            self.mMapLayerComboBox.setEnabled(True)
+            finish_button_text = QCoreApplication.translate("CreatePlotCadastreWizard", "Import")
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(PLOT_TABLE, True))
+
+        elif self.rad_plot_from_boundaries.isChecked():
+            self.lbl_refactor_source.setEnabled(False)
+            self.mMapLayerComboBox.setEnabled(False)
+            finish_button_text = QCoreApplication.translate("CreatePlotCadastreWizard", "Finish")
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_PLOT_CADASTRE_PAGE_1_OPTION_BOUNDARIES)
+
+        self.wizardPage1.setButtonText(QWizard.FinishButton,
+                                       QCoreApplication.translate("CreatePlotCadastreWizard",
+                                       finish_button_text))
 
     def finished_dialog(self):
-        if self.rad_plot_from_boundaries.isChecked():
+        self.save_settings()
+
+        if self.rad_refactor.isChecked():
+            if self.mMapLayerComboBox.currentLayer() is not None:
+                self.qgis_utils.show_etl_model(self._db,
+                                               self.mMapLayerComboBox.currentLayer(),
+                                               PLOT_TABLE)
+            else:
+                self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                    QCoreApplication.translate("CreatePlotCadastreWizard",
+                                               "Select a source layer to set the field mapping to '{}'.").format(PLOT_TABLE),
+                    Qgis.Warning)
+
+        elif self.rad_plot_from_boundaries.isChecked():
             self.qgis_utils.polygonize_boundaries(self._db)
+
+    def save_settings(self):
+        settings = QSettings()
+        settings.setValue('Asistente-LADM_COL/wizards/plot_load_data_type', 'from_boundaries' if self.rad_plot_from_boundaries.isChecked() else 'refactor')
+
+    def restore_settings(self):
+        settings = QSettings()
+
+        load_data_type = settings.value('Asistente-LADM_COL/wizards/plot_load_data_type') or 'from_boundaries'
+        if load_data_type == 'refactor':
+            self.rad_refactor.setChecked(True)
         else:
-            self.create_plot()
-
-    def create_plot(self):
-        self.qgis_utils.turn_transaction_off()
-
-        # Load layers
-        self._plot_layer = self.qgis_utils.get_layer(self._db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, True)
-        if self._plot_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreatePlotCadastreWizard",
-                                           "Plot layer couldn't be found... {}").format(self._db.get_description()),
-                Qgis.Warning)
-            return
-
-        refactored_layer = self.mMapLayerComboBox.currentLayer()
-        if refactored_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreatePlotCadastreWizard",
-                                           "Refactored layer couldn't be found..."),
-                Qgis.Warning)
-            return
-        refactored_features = [f for f in refactored_layer.getFeatures()]
-
-        features = []
-        for f in refactored_features:
-            attrs_list = f.attributes()
-            attrs = {i:j for i,j in enumerate(attrs_list) if j != None and i!=0} # Exclude NULLs and t_id
-            new_feature = QgsVectorLayerUtils().createFeature(self._plot_layer, f.geometry(), attrs)
-            features.append(new_feature)
-
-        self._plot_layer.startEditing()
-        self._plot_layer.addFeatures(features)
-        self._plot_layer.commitChanges()
-
-        self.iface.messageBar().pushMessage("Asistente LADM_COL",
-            QCoreApplication.translate("CreatePlotCadastreWizard",
-                                       "{} new plot(s) has(have) been created!").format(len(features)),
-            Qgis.Info)
+            self.rad_plot_from_boundaries.setChecked(True)

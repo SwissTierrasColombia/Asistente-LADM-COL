@@ -33,7 +33,7 @@ NATURAL_PARTY_TABLE = "interesado_natural"
 PARTY_DOCUMENT_TYPE_TABLE = "col_interesadodocumentotipo"
 PARTY_TYPE_TABLE = "la_interesadotipo"
 POINT_BOUNDARY_FACE_STRING_TABLE = "puntoccl"
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.0.2.1"
+PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.0.4"
 SPATIAL_SOURCE_TABLE = "col_fuenteespacial"
 SPATIAL_SOURCE_TYPE_TABLE = "col_fuenteespacialtipo"
 SURVEY_POINT_TABLE = "puntolevantamiento"
@@ -43,7 +43,20 @@ TABLE_PROP_STRUCTURE = "STRUCTURE"
 UEBAUNIT_TABLE = "uebaunit"
 UEBAUNIT_TABLE_PARCEL_FIELD = "baunit_predio"
 UEBAUNIT_TABLE_PLOT_FIELD = "ue_terreno"
-VIDA_UTIL_FIELD_BOUNDARY_TABLE = "comienzo_vida_util_version"
+VIDA_UTIL_FIELD = "comienzo_vida_util_version"
+
+NAMESPACE_PREFIX = {
+    BOUNDARY_POINT_TABLE: 'p',
+    SURVEY_POINT_TABLE: 'p',
+    BOUNDARY_TABLE: 'ccl',
+    PLOT_TABLE: 'su',
+    CONSTRUCTION_TABLE: 'su',
+    PARCEL_TABLE: 'u',
+    NATURAL_PARTY_TABLE: 'p',
+    LEGAL_PARTY_TABLE: 'p',
+    ADMINISTRATIVE_SOURCE_TABLE: 's',
+    SPATIAL_SOURCE_TABLE: 's'
+}
 
 LAYERS_STYLE = {
     BOUNDARY_TABLE: {QgsWkbTypes.LineGeometry: {'symbology': {'name': 'Simple line', 'color': '#45508a', 'width': '0.16'}, 'label' : None}},
