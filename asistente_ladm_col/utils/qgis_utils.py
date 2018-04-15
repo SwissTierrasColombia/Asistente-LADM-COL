@@ -29,9 +29,9 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsMarkerSymbol, QgsSimpleMarkerSymbolLayer, QgsMapLayer,
                        QgsSingleSymbolRenderer, QgsDropShadowEffect, QgsPointXY,
                        QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection)
-
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
                               QVariant, QSettings)
+import processing
 
 from .project_generator_utils import ProjectGeneratorUtils
 from .qt_utils import OverrideCursor
@@ -272,68 +272,74 @@ class QGISUtils(QObject):
     def get_overlapping_lines(self, line_layer, use_selection = True):
 
         dict_res = dict()
-        def insert_into_res(ids, geometry):
+        def insert_into_res(ids, geometry, save_several_geometries=False):
             pair = "{}-{}".format(min(ids), max(ids))
             if pair not in dict_res:
-                dict_res[pair] = geometry
-            #else:
-                #existing_geometry = dict_res[pair]
-                #if isinstance(existing_geometry, QgsGeometryCollection):
-                    ##existing_geometry.addGeometry(geometry.constGet())
-                    #pass
-                #else:
-                    #if existing_geometry.type() == QgsWkbTypes.PointGeometry:
-                        #multi_point = QgsMultiPoint()
-                        ##multi_point.addGeometry(existing_geometry.constGet())
-                        ##multi_point.addGeometry(geometry.constGet())
-                        #dict_res[pair] = multi_point
-                    #elif existing_geometry.type() == QgsWkbTypes.LineGeometry:
-                        #multi_line = QgsMultiLineString()
-                        ##multi_line.addGeometry(existing_geometry.constGet())
-                        ##multi_line.addGeometry(geometry.constGet())
-                        #dict_res[pair] = multi_line
+                print("", )
+                dict_res[pair] = [geometry]
+            else: # Pair is in dict already
+                duplicate = False
+                for existing_geometry in dict_res[pair]:
+                    if geometry.isGeosEqual(existing_geometry):
+                        duplicate = True
+                        break
 
-        obj_intersect = list() #declares it is a list
+                if not duplicate:
+                    dict_res[pair].append(geometry)
+
+        obj_intersect = list()
         lines = line_layer.getFeatures()
         print(lines)
         index = QgsSpatialIndex(line_layer)
         print(index)
+
         for line in lines:
             line_geometry = line.geometry()
             bbox = line_geometry.boundingBox()
             bbox.scale(1.001)
             candidates_ids = index.intersects(bbox)
-            candidates_ids.remove(line.id())
+            candidates_ids.remove(line.id()) # Remove auto-intersection
             candidates_features = line_layer.getFeatures(candidates_ids)
+
             for candidate_feature in candidates_features:
                 candidate_geometry = candidate_feature.geometry()
+
                 if line_geometry.intersects(candidate_geometry):
                     intersection = line_geometry.intersection(candidate_geometry)
+
                     if intersection.type() == QgsWkbTypes.PointGeometry and line_geometry.touches(candidate_geometry):
                         print("hay toque en extremos")
+
                     elif intersection.wkbType() == QgsWkbTypes.GeometryCollection:
                         geometry_collection = intersection.asGeometryCollection()
+
                         for geometry in geometry_collection:
                             if geometry.type() == QgsWkbTypes.PointGeometry:
+
                                 if geometry.touches(candidate_geometry):
                                     print("hay toque en extremos en una coleccion de geometrias")
                                 else:
-                                    insert_into_res([line.id(), candidate_feature.id()], geometry)
+                                    insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], geometry)
                                     #obj_intersect.append(geometry)
-                            if geometry.type() == QgsWkbTypes.LineGeometry:
-                                insert_into_res([line.id(), candidate_feature.id()], geometry)
+
+                            elif geometry.type() == QgsWkbTypes.LineGeometry:
+                                insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], geometry)
                                 #obj_intersect.append(geometry)
-                    else:
-                        insert_into_res([line.id(), candidate_feature.id()], intersection)
+
+                    else: # Point and not touches; lines
+                        insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], intersection)
                         #obj_intersect.append(intersection)
-                else:
-                    if line_geometry.distance(candidate_geometry) == 0:
-                        edge_vertex = [line_geometry.asPolyline()[0],line_geometry.asPolyline()[-1]]
-                        for edge in edge_vertex:
-                            edge_point = QgsGeometry.fromPointXY(QgsPointXY(edge))
-                            if abs(edge_point.distance(candidate_geometry)) < 0.0001:
-                                insert_into_res([line.id(), candidate_feature.id()], edge_point)
-                                #obj_intersect.append(edge_point)
+
+
+                else: #line_geometry.distance(candidate_geometry) == 0:
+                    edge_vertex = [line_geometry.asPolyline()[0], line_geometry.asPolyline()[-1]]
+
+                    for edge in edge_vertex:
+                        edge_point = QgsGeometry.fromPointXY(QgsPointXY(edge))
+
+                        if abs(edge_point.distance(candidate_geometry)) < 0.0001 and not edge_point.touches(candidate_geometry):
+                            insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], edge_point, True)
+                            #obj_intersect.append(edge_point)
 
         return dict_res #obj_intersect
 
@@ -853,39 +859,35 @@ class QGISUtils(QObject):
 
         overlapping = self.get_overlapping_lines(boundary_face_string_layer)
 
-        line_overlap = dict()
-        point_overlap = dict()
+        for pair, geometry_list in overlapping.items():
 
-        for pair, geometry in overlapping.items():
-            print(pair, geometry.asWkt())
-            if geometry.type() == QgsWkbTypes.PointGeometry:
-                point_overlap[pair] = geometry
-                print('hay puntos')
-            elif geometry.type() == QgsWkbTypes.LineGeometry:
-                line_overlap[pair] = geometry
-                print('hay lineas')
-            elif geometry.wkbType() == QgsWkbTypes.GeometryCollection:
-                print('hay coleccion de geometrias')
-                overlaps = geometry.asGeometryCollection()
-                print(overlaps)
-                for o in overlaps:
-                    if o.type() == QgsWkbTypes.PointGeometry:
-                        point_overlap[pair] = o
-                        print('colect a puntos')
-                    elif o.type() == QgsWkbTypes.LineGeometry:
-                        line_overlap[pair] = o
-                        print('colect a linea')
+            for geometry in geometry_list:
+                if geometry.type() == QgsWkbTypes.PointGeometry:
+                    new_feature = QgsVectorLayerUtils().createFeature(error_point_layer, geometry, {0: pair})
+                    point_features.append(new_feature)
+                elif geometry.type() == QgsWkbTypes.LineGeometry:
+                    new_feature = QgsVectorLayerUtils().createFeature(error_line_layer, geometry, {0: pair})
+                    line_features.append(new_feature)
 
-        for pair, point in point_overlap.items():
-            new_feature = QgsVectorLayerUtils().createFeature(error_point_layer, point, {0: pair})
-            point_features.append(new_feature)
+                elif geometry.wkbType() == QgsWkbTypes.GeometryCollection:
+                    overlaps = geometry.asGeometryCollection()
 
-        for pair, line in line_overlap.items():
-            new_feature = QgsVectorLayerUtils().createFeature(error_line_layer, line, {0: pair})
-            line_features.append(new_feature)
+                    for o in overlaps:
+                        if o.type() == QgsWkbTypes.PointGeometry:
+                            new_feature = QgsVectorLayerUtils().createFeature(error_point_layer, o, {0: pair})
+                            point_features.append(new_feature)
+
+                        elif o.type() == QgsWkbTypes.LineGeometry:
+                            new_feature = QgsVectorLayerUtils().createFeature(error_line_layer, o, {0: pair})
+                            line_features.append(new_feature)
 
         error_point_layer.dataProvider().addFeatures(point_features)
         error_line_layer.dataProvider().addFeatures(line_features)
+
+        res = processing.run("native:collect", {'INPUT':error_point_layer, 'FIELD':['intersecting_boundaries'],'OUTPUT':'memory:'})
+        error_point_layer = res['OUTPUT']
+        res = processing.run("native:collect", {'INPUT':error_line_layer, 'FIELD':['intersecting_boundaries'],'OUTPUT':'memory:'})
+        error_line_layer = res['OUTPUT']
 
         if error_point_layer.featureCount() > 0 or error_line_layer.featureCount() > 0:
             group = self.get_error_layers_group()
