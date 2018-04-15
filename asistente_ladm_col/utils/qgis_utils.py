@@ -21,15 +21,15 @@ import os
 from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri, Qgis,
                        QgsSpatialIndex, QgsVectorLayer, QgsMultiLineString,
-					   QgsFillSymbol, QgsLineSymbol, QgsMarkerSymbol,
-					   QgsPalLayerSettings, QgsTextFormat, QgsTextBufferSettings,
+					             QgsFillSymbol, QgsLineSymbol, QgsMarkerSymbol,
+					             QgsPalLayerSettings, QgsTextFormat, QgsTextBufferSettings,
                        QgsVectorLayerSimpleLabeling, QgsField, QgsLineSymbol,
                        QgsOuterGlowEffect, QgsDrawSourceEffect, QgsEffectStack,
                        QgsInnerShadowEffect, QgsSimpleLineSymbolLayer,
                        QgsMarkerSymbol, QgsSimpleMarkerSymbolLayer, QgsMapLayer,
-                       QgsSingleSymbolRenderer, QgsDropShadowEffect,
+                       QgsSingleSymbolRenderer, QgsDropShadowEffect, QgsPointXY,
+                       QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
                        QgsApplication)
-
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
                               QVariant, QSettings)
 import processing
@@ -255,7 +255,7 @@ class QGISUtils(QObject):
         for field in layer.fields():
             self.reset_automatic_field(layer, field.name())
 
-        return automatic_fields_definition 
+        return automatic_fields_definition
 
     def enable_automatic_fields(self, db, automatic_fields_definition, layer_name, geometry_type=None):
         layer = self.get_layer(db, layer_name, geometry_type, True)
@@ -360,6 +360,83 @@ class QGISUtils(QObject):
                     res.append(ids)
 
         return res
+
+    def get_overlapping_lines(self, line_layer, use_selection=True):
+        """
+        Return a dict whose key is a pair of line ids where there are
+        intersections, and whose value is a list of intersection geometries
+        """
+        dict_res = dict()
+
+        def insert_into_res(ids, geometry):
+            """
+            Local function to append a geometry into a list for each pair of ids
+            """
+            pair = "{}-{}".format(min(ids), max(ids))
+            if pair not in dict_res:
+                dict_res[pair] = [geometry]
+            else: # Pair is in dict already
+                duplicate = False
+                for existing_geometry in dict_res[pair]:
+                    if geometry.isGeosEqual(existing_geometry):
+                        # isGeosEqual gives True for lines even if they have
+                        # the orientation inverted
+                        duplicate = True
+                        break
+
+                if not duplicate:
+                    dict_res[pair].append(geometry)
+
+        lines = line_layer.getFeatures()
+        index = QgsSpatialIndex(line_layer)
+
+        for line in lines:
+            line_geometry = line.geometry()
+            bbox = line_geometry.boundingBox()
+            bbox.scale(1.001)
+            candidates_ids = index.intersects(bbox)
+            candidates_ids.remove(line.id()) # Remove auto-intersection
+            candidates_features = line_layer.getFeatures(candidates_ids)
+
+            for candidate_feature in candidates_features:
+                candidate_geometry = candidate_feature.geometry()
+
+                if line_geometry.intersects(candidate_geometry):
+                    intersection = line_geometry.intersection(candidate_geometry)
+
+                    if intersection.type() == QgsWkbTypes.PointGeometry and line_geometry.touches(candidate_geometry):
+                        pass # Don't insert intersections where end points are involved
+
+                    elif intersection.wkbType() == QgsWkbTypes.GeometryCollection:
+                        geometry_collection = intersection.asGeometryCollection()
+
+                        for geometry in geometry_collection:
+                            if geometry.type() == QgsWkbTypes.PointGeometry:
+
+                                if geometry.touches(candidate_geometry):
+                                    pass # End point intersection in a collection
+                                else:
+                                    insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], geometry)
+
+                            elif geometry.type() == QgsWkbTypes.LineGeometry:
+                                insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], geometry)
+
+                    else: # Point and not touches; lines
+                        insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], intersection)
+
+                else:
+                    # Intersections between an end point and the interior of a
+                    # segment (not a vertex) are not discovered by QGIS so far.
+                    # We need to use this workaround in the meantime
+                    edge_vertex = [line_geometry.asPolyline()[0], line_geometry.asPolyline()[-1]]
+
+                    for edge in edge_vertex:
+                        edge_point = QgsGeometry.fromPointXY(QgsPointXY(edge))
+
+                        if abs(edge_point.distance(candidate_geometry)) < 0.0001 and not edge_point.touches(candidate_geometry):
+                            insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], edge_point)
+
+        return dict_res
 
     def extractAsSingleSegments(self, geom):
         """
@@ -824,7 +901,7 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), "Overlapping boundary points", "memory")
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), QCoreApplication.translate("QGISUtils", "Overlapping boundary points"), "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("point_count", QVariant.Int)])
         error_layer.updateFields()
@@ -853,6 +930,92 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "There are no overlapping boundary points."), Qgis.Info)
 
+    def check_overlaps_in_boundaries(self, db):
+        boundary_layer = self.get_layer(db, BOUNDARY_TABLE, load=True)
+
+        if boundary_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        error_point_layer = QgsVectorLayer("MultiPoint?crs=EPSG:{}".format(DEFAULT_EPSG), "Overlapping boundaries (point intersections)", "memory")
+        error_line_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG), "Overlapping boundaries (line intersections)", "memory")
+        data_provider_point = error_point_layer.dataProvider()
+        data_provider_line = error_line_layer.dataProvider()
+        data_provider_point.addAttributes([QgsField("intersecting_boundaries", QVariant.String)])
+        data_provider_line.addAttributes([QgsField("intersecting_boundaries", QVariant.String)])
+        error_point_layer.updateFields()
+        error_line_layer.updateFields()
+
+        overlapping = self.get_overlapping_lines(boundary_layer)
+        line_features = list()
+        point_features = list()
+
+        for pair, geometry_list in overlapping.items():
+            for geometry in geometry_list:
+                # Insert a features per intersection geometry
+                if geometry.type() == QgsWkbTypes.PointGeometry:
+                    new_feature = QgsVectorLayerUtils().createFeature(error_point_layer, geometry, {0: pair})
+                    point_features.append(new_feature)
+
+                elif geometry.type() == QgsWkbTypes.LineGeometry:
+                    new_feature = QgsVectorLayerUtils().createFeature(error_line_layer, geometry, {0: pair})
+                    line_features.append(new_feature)
+
+                elif geometry.wkbType() == QgsWkbTypes.GeometryCollection:
+                    collection = geometry.asGeometryCollection()
+
+                    for collection_item in collection:
+                        if collection_item.type() == QgsWkbTypes.PointGeometry:
+                            new_feature = QgsVectorLayerUtils().createFeature(error_point_layer, collection_item, {0: pair})
+                            point_features.append(new_feature)
+
+                        elif collection_item.type() == QgsWkbTypes.LineGeometry:
+                            new_feature = QgsVectorLayerUtils().createFeature(error_line_layer, collection_item, {0: pair})
+                            line_features.append(new_feature)
+
+        error_point_layer.dataProvider().addFeatures(point_features)
+        error_line_layer.dataProvider().addFeatures(line_features)
+
+        # We want to have a feature per pair of ids, so collect several features
+        # into a single feature for each pair of ids
+        res = processing.run("native:collect", {'INPUT':error_point_layer, 'FIELD':['intersecting_boundaries'],'OUTPUT':'memory:'})
+        error_point_layer = res['OUTPUT']
+        error_point_layer.setName(QCoreApplication.translate("QGISUtils", "Overlapping boundaries (point intersections)"))
+        res = processing.run("native:collect", {'INPUT':error_line_layer, 'FIELD':['intersecting_boundaries'],'OUTPUT':'memory:'})
+        error_line_layer = res['OUTPUT']
+        error_line_layer.setName(QCoreApplication.translate("QGISUtils","Overlapping boundaries (line intersections)"))
+
+        if error_point_layer.featureCount() > 0 or error_line_layer.featureCount() > 0:
+            group = self.get_error_layers_group()
+            msg = ''
+
+            if error_point_layer.featureCount() > 0:
+                added_point_layer = QgsProject.instance().addMapLayer(error_point_layer, False)
+                added_point_layer = group.addLayer(added_point_layer).layer()
+                self.set_point_error_symbol(added_point_layer)
+                msg = QCoreApplication.translate("QGISUtils",
+                    "A memory layer with {} overlapping boundaries (point intersections) has been added to the map.").format(added_point_layer.featureCount())
+
+            if error_line_layer.featureCount() > 0:
+                added_line_layer = QgsProject.instance().addMapLayer(error_line_layer, False)
+                added_line_layer = group.addLayer(added_line_layer).layer()
+                self.set_line_error_symbol(added_line_layer)
+                msg = QCoreApplication.translate("QGISUtils",
+                    "A memory layer with {} overlapping boundaries (line intersections) has been added to the map.").format(added_line_layer.featureCount())
+
+            if error_point_layer.featureCount() > 0 and error_line_layer.featureCount() > 0:
+                msg = QCoreApplication.translate("QGISUtils",
+                    "Two memory layers with overlapping boundaries ({} point intersections and {} line intersections) have been added to the map.").format(added_point_layer.featureCount(), added_line_layer.featureCount())
+
+            self.message_emitted.emit(msg, Qgis.Info)
+        else:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no overlapping boundaries."), Qgis.Info)
+
     def check_too_long_segments(self, db):
         tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
         features = []
@@ -865,7 +1028,10 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return
 
-        error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG), "Boundary segments longer than {}m".format(tolerance), "memory")
+        error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG),
+                            QCoreApplication.translate("QGISUtils",
+                                "Boundary segments longer than {}m.").format(tolerance),
+                            "memory")
         pr = error_layer.dataProvider()
         pr.addAttributes([QgsField("boundary_id", QVariant.Int),
                           QgsField("distance", QVariant.Double)])
