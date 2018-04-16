@@ -46,6 +46,7 @@ from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadast
 from .gui.dialog_load_layers import DialogLoadLayers
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
+from .utils.quality import QualityUtils
 
 #import resources_rc
 
@@ -68,6 +69,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.iface.mainWindow().menuBar().addMenu(self._menu)
 
         self.qgis_utils = QGISUtils()
+        self.quality = QualityUtils(self.qgis_utils)
 
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
         self._spatial_unit_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Spatial Unit"), self._cadastre_menu)
@@ -430,24 +432,24 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def check_too_long_segments(self):
-        self.qgis_utils.check_too_long_segments(self.get_db_connection())
+        self.quality.check_too_long_segments(self.get_db_connection())
 
     @_project_generator_required
     @_db_connection_required
     def check_overlaps_in_boundary_points(self):
-        self.qgis_utils.check_overlaps_in_boundary_points(self.get_db_connection())
+        self.quality.check_overlaps_in_boundary_points(self.get_db_connection())
 
     @_project_generator_required
     @_db_connection_required
     def check_overlaps_in_boundaries(self):
-        self.qgis_utils.check_overlaps_in_boundaries(self.get_db_connection())
+        self.quality.check_overlaps_in_boundaries(self.get_db_connection())
 
     @_project_generator_required
     @_db_connection_required
     def quality_check_all(self):
-        self.check_too_long_segments()
-        self.check_overlaps_in_boundary_points()
-        self.check_overlaps_in_boundaries()
+        self.quality.check_too_long_segments(self.get_db_connection())
+        self.quality.check_overlaps_in_boundary_points(self.get_db_connection())
+        self.quality.check_overlaps_in_boundaries(self.get_db_connection())
 
     def show_about_dialog(self):
         self.msg = QMessageBox()
