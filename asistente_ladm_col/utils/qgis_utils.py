@@ -29,7 +29,7 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsMarkerSymbol, QgsSimpleMarkerSymbolLayer, QgsMapLayer,
                        QgsSingleSymbolRenderer, QgsDropShadowEffect, QgsPointXY,
                        QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
-                       QgsApplication)
+                       QgsApplication, QgsProcessingFeedback)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
                               QVariant, QSettings)
 import processing
@@ -981,10 +981,11 @@ class QGISUtils(QObject):
 
         # We want to have a feature per pair of ids, so collect several features
         # into a single feature for each pair of ids
-        res = processing.run("native:collect", {'INPUT':error_point_layer, 'FIELD':['intersecting_boundaries'],'OUTPUT':'memory:'})
+        feedback = QgsProcessingFeedback()
+        res = processing.run("native:collect", {'INPUT':error_point_layer, 'FIELD':['intersecting_boundaries'],'OUTPUT':'memory:'}, feedback=feedback)
         error_point_layer = res['OUTPUT']
         error_point_layer.setName(QCoreApplication.translate("QGISUtils", "Overlapping boundaries (point intersections)"))
-        res = processing.run("native:collect", {'INPUT':error_line_layer, 'FIELD':['intersecting_boundaries'],'OUTPUT':'memory:'})
+        res = processing.run("native:collect", {'INPUT':error_line_layer, 'FIELD':['intersecting_boundaries'],'OUTPUT':'memory:'}, feedback=feedback)
         error_line_layer = res['OUTPUT']
         error_line_layer.setName(QCoreApplication.translate("QGISUtils","Overlapping boundaries (line intersections)"))
 

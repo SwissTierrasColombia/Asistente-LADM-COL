@@ -24,7 +24,7 @@ import datetime
 import qgis
 import processing
 
-from qgis.core import QgsVectorLayerUtils, QgsField
+from qgis.core import QgsVectorLayerUtils, QgsField, QgsProcessingFeedback
 from qgis.PyQt.QtCore import QVariant
 
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
@@ -48,7 +48,8 @@ def refactor_and_copy_paste(params_refactor, input_uri, output_layer_name):
     Run refactor field algorithm with the given mapping and appends the output
     features to output_layer
     """
-    res = processing.run("qgis:refactorfields", params_refactor)
+    feedback = QgsProcessingFeedback()
+    res = processing.run("qgis:refactorfields", params_refactor, feedback=feedback)
 
     input_layer = None
     if input_uri == 'memory':
@@ -119,7 +120,8 @@ def fix_geometries(layer_name, input_db_path=INPUT_DB_PATH):
         'INPUT' : '{input_db_path}|layername={layer_name}'.format(input_db_path=input_db_path, layer_name=layer_name),
         'OUTPUT' : 'ogr:dbname=\'{input_db_path}\' table="{layer_name}_fixed" (geom) sql='.format(input_db_path=input_db_path, layer_name=layer_name)
     }
-    processing.run("native:fixgeometries", params)
+    feedback = QgsProcessingFeedback()
+    processing.run("native:fixgeometries", params, feedback=feedback)
     print("INFO: Geometries from layer {} successfully fixed!".format(layer_name))
 
 def initialize_connection():
@@ -415,7 +417,8 @@ def llenar_unidad_construccion(tipo='nph'):
         'OUTPUT' : 'ogr:dbname="{refactored_db_path}" table="{refactored_layer}" (geom) sql='.format(refactored_db_path=REFACTORED_DB_PATH, refactored_layer=refactored_layer)
     }
 
-    processing.run("qgis:refactorfields", params_refactor_unidad_construccion)
+    feedback = QgsProcessingFeedback()
+    processing.run("qgis:refactorfields", params_refactor_unidad_construccion, feedback=feedback)
     input_uri = '{refactored_db_path}|layername={refactored_layer}'.format(refactored_db_path=REFACTORED_DB_PATH, refactored_layer=refactored_layer)
     input_layer = QgsVectorLayer(input_uri, "r_input_layer", "ogr")
 
