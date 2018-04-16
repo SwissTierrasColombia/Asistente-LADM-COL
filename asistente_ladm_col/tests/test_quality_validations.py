@@ -80,7 +80,7 @@ class TesQualityValidations(unittest.TestCase):
         features = [feature for feature in boundary_overlap_layer.getFeatures()]
         self.assertEqual(len(features), 12)
 
-        overlapping = self.quality.get_overlapping_lines(boundary_overlap_layer)
+        overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_overlap_layer)
 
         expected_overlaps = {
             '9-335': ['Point (963643.395574557245709 1077747.43814651435241103)'],
