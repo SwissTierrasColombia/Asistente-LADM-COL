@@ -287,7 +287,7 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return False
 
-        overlapping = self.get_overlapping_points(csv_layer) # List of lists of ids
+        overlapping = self.geometry.get_overlapping_points(csv_layer) # List of lists of ids
         overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
 
         if overlapping:

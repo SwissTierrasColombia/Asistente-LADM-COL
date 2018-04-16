@@ -21,11 +21,14 @@ from qgis.core import (
     QgsGeometry,
     QgsLineString,
     QgsMultiLineString,
+    QgsPointXY,
     QgsSpatialIndex,
     QgsVectorLayerUtils,
     QgsWkbTypes
 )
 from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
+
+from ..config.table_mapping_config import ID_FIELD
 
 class GeometryUtils(QObject):
 
@@ -178,3 +181,102 @@ class GeometryUtils(QObject):
         else:
             segments.extend(self.get_polyline_as_single_segments(geom.constGet()))
         return segments
+
+    def get_overlapping_points(self, point_layer):
+        """
+        Returns a list of lists, where inner lists are ids of overlapping
+        points, e.g., [[1, 3], [19, 2, 8]].
+        """
+        res = list()
+        if point_layer.featureCount() == 0:
+            return res
+
+        set_points = set()
+        index = QgsSpatialIndex(point_layer.getFeatures())
+
+        for feature in point_layer.getFeatures():
+            if not feature.id() in set_points:
+                ids = index.intersects(feature.geometry().boundingBox())
+
+                if len(ids) > 1: # Points do overlap!
+                    set_points = set_points.union(set(ids))
+                    res.append(ids)
+
+        return res
+
+    def get_overlapping_lines(self, line_layer, use_selection=True):
+        """
+        Return a dict whose key is a pair of line ids where there are
+        intersections, and whose value is a list of intersection geometries
+        """
+        dict_res = dict()
+
+        def insert_into_res(ids, geometry):
+            """
+            Local function to append a geometry into a list for each pair of ids
+            """
+            pair = "{}-{}".format(min(ids), max(ids))
+            if pair not in dict_res:
+                dict_res[pair] = [geometry]
+            else: # Pair is in dict already
+                duplicate = False
+                for existing_geometry in dict_res[pair]:
+                    if geometry.isGeosEqual(existing_geometry):
+                        # isGeosEqual gives True for lines even if they have
+                        # the orientation inverted
+                        duplicate = True
+                        break
+
+                if not duplicate:
+                    dict_res[pair].append(geometry)
+
+        lines = line_layer.getFeatures()
+        index = QgsSpatialIndex(line_layer)
+
+        for line in lines:
+            line_geometry = line.geometry()
+            bbox = line_geometry.boundingBox()
+            bbox.scale(1.001)
+            candidates_ids = index.intersects(bbox)
+            candidates_ids.remove(line.id()) # Remove auto-intersection
+            candidates_features = line_layer.getFeatures(candidates_ids)
+
+            for candidate_feature in candidates_features:
+                candidate_geometry = candidate_feature.geometry()
+
+                if line_geometry.intersects(candidate_geometry):
+                    intersection = line_geometry.intersection(candidate_geometry)
+
+                    if intersection.type() == QgsWkbTypes.PointGeometry and line_geometry.touches(candidate_geometry):
+                        pass # Don't insert intersections where end points are involved
+
+                    elif intersection.wkbType() == QgsWkbTypes.GeometryCollection:
+                        geometry_collection = intersection.asGeometryCollection()
+
+                        for geometry in geometry_collection:
+                            if geometry.type() == QgsWkbTypes.PointGeometry:
+
+                                if geometry.touches(candidate_geometry):
+                                    pass # End point intersection in a collection
+                                else:
+                                    insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], geometry)
+
+                            elif geometry.type() == QgsWkbTypes.LineGeometry:
+                                insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], geometry)
+
+                    else: # Point and not touches; lines
+                        insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], intersection)
+
+                else:
+                    # Intersections between an end point and the interior of a
+                    # segment (not a vertex) are not discovered by QGIS so far.
+                    # We need to use this workaround in the meantime
+                    edge_vertex = [line_geometry.asPolyline()[0], line_geometry.asPolyline()[-1]]
+
+                    for edge in edge_vertex:
+                        edge_point = QgsGeometry.fromPointXY(QgsPointXY(edge))
+
+                        if abs(edge_point.distance(candidate_geometry)) < 0.0001 and not edge_point.touches(candidate_geometry):
+                            insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], edge_point)
+
+        return dict_res
