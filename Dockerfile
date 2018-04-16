@@ -30,7 +30,8 @@ RUN apt-get -y install \
     python3-pip
 
 # Python pip installs
-RUN pip3 install --upgrade pip && \
+# temporally pip==9.0.3 version
+RUN pip3 install --upgrade pip==9.0.3 && \
     pip3 install --upgrade psycopg2
 
 # When our PRs get merged in time!
