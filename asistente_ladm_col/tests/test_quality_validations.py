@@ -16,7 +16,7 @@ from asistente_ladm_col.utils.quality import QualityUtils
 
 import processing
 from processing.core.Processing import Processing
-
+from qgis.analysis import QgsNativeAlgorithms
 from processing.tools import *
 
 import_projectgenerator()
@@ -27,6 +27,8 @@ class TesQualityValidations(unittest.TestCase):
     def setUpClass(self):
         self.qgis_utils = QGISUtils()
         self.quality = QualityUtils(self.qgis_utils)
+        Processing.initialize()
+        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
 
     def test_get_too_long_segments_from_simple_line(self):
         print('Validating too long segments...')
@@ -111,10 +113,8 @@ class TesQualityValidations(unittest.TestCase):
                 self.assertIn(overlap.asWkt(), expected_overlaps[pair])
 
     def test_get_missing_boundary_points_in_boundaries(self):
-        print('Validating missing boundary points in boundaries')
-        Processing.initialize()
-        Processing.activateProvider('native')
-        print(QgsApplication.instance().processingRegistry().providerById('native').isActive())
+        print('Validating missing boundary points in boundaries...')
+
         gpkg_path = get_test_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
