@@ -1,6 +1,3 @@
-from qgis.core import QgsWkbTypes
-from qgis.PyQt.QtGui import QColor
-
 ADMINISTRATIVE_SOURCE_TABLE = "col_fuenteadministrativa"
 ADMINISTRATIVE_SOURCE_TYPE_TABLE = "col_fuenteadministrativatipo"
 AVAILABILITY_STATE_TABLE = "col_estadodisponibilidadtipo"
@@ -33,7 +30,7 @@ NATURAL_PARTY_TABLE = "interesado_natural"
 PARTY_DOCUMENT_TYPE_TABLE = "col_interesadodocumentotipo"
 PARTY_TYPE_TABLE = "la_interesadotipo"
 POINT_BOUNDARY_FACE_STRING_TABLE = "puntoccl"
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.0.4"
+PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.0.5"
 SPATIAL_SOURCE_TABLE = "col_fuenteespacial"
 SPATIAL_SOURCE_TYPE_TABLE = "col_fuenteespacialtipo"
 SURVEY_POINT_TABLE = "puntolevantamiento"
@@ -57,12 +54,3 @@ NAMESPACE_PREFIX = {
     ADMINISTRATIVE_SOURCE_TABLE: 's',
     SPATIAL_SOURCE_TABLE: 's'
 }
-
-LAYERS_STYLE = {
-    BOUNDARY_TABLE: {QgsWkbTypes.LineGeometry: {'symbology': {'name': 'Simple line', 'color': '#45508a', 'width': '0.16'}, 'label' : None}},
-    BOUNDARY_POINT_TABLE: {QgsWkbTypes.PointGeometry:{'symbology': {'name': 'diamond', 'color': '#487bb6', 'size': '2'}, 'label' : {'field_name': 'nombre_punto', 'text_size' : 8 , 'color' : QColor(40,51,105)}}},
-    SURVEY_POINT_TABLE: {QgsWkbTypes.PointGeometry: {'symbology': {'name': 'diamond', 'color': '#b2df8a', 'size': '2'}, 'label':{'field_name': 'nombre_punto', 'text_size' : 8 , 'color' : QColor(140,46,0)}}},
-    PLOT_TABLE: {QgsWkbTypes.PointGeometry:{'symbology': {'name': 'star', 'color': '#b80808', 'size': '4.8'}, 'label': {'field_name': 'nombre_punto', 'text_size' : 9 , 'color' : QColor(0,0,0)}},
-        QgsWkbTypes.PolygonGeometry:{'symbology': {'name': 'Simple fill', 'color': '166,206,227,128', 'outline_color': '131,167,184,128'}, 'label': None}},
-    CONSTRUCTION_TABLE: {QgsWkbTypes.PointGeometry:{'symbology': {'name': 'square', 'color': '#000000', 'size': '3'}, 'label': None},
-        QgsWkbTypes.PolygonGeometry: {'symbology': {'name': 'Simple fill', 'color': '251,154,153,128', 'outline_color': '148,90,90,128'}, 'label': None}}}

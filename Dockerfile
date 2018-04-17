@@ -30,11 +30,12 @@ RUN apt-get -y install \
     python3-pip
 
 # Python pip installs
-RUN pip3 install --upgrade pip && \
+# temporally pip==9.0.3 version
+RUN pip3 install --upgrade pip==9.0.3 && \
     pip3 install --upgrade psycopg2
 
 # When our PRs get merged in time!
-RUN wget https://github.com/opengisch/projectgenerator/releases/download/v3.0.4/projectgenerator-v3.0.4.zip -O /tmp/projectgenerator.zip
+RUN wget https://github.com/opengisch/projectgenerator/releases/download/v3.0.5/projectgenerator-v3.0.5.zip -O /tmp/projectgenerator.zip
 
 # When we need a custom release
 # RUN wget https://github.com/AgenciaImplementacion/projectgenerator/releases/download/v3.0.2.1/projectgenerator.zip -O /tmp/projectgenerator.zip

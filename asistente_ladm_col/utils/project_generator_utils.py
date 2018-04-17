@@ -46,8 +46,8 @@ class ProjectGeneratorUtils(QObject):
         else:
             print("El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.")
 
-    def get_first_index_for_geometry_type(self, geometry_type, group=QgsProject.instance().layerTreeRoot()):
+    def get_first_index_for_layer_type(self, layer_type, group=QgsProject.instance().layerTreeRoot()):
         if 'projectgenerator' in qgis.utils.plugins:
             import projectgenerator
-            return projectgenerator.utils.qgis_utils.get_first_index_for_geometry_type(geometry_type, group)
+            return projectgenerator.utils.qgis_utils.get_first_index_for_layer_type(layer_type, group)
         return None
