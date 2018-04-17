@@ -129,10 +129,12 @@ class TesQualityValidations(unittest.TestCase):
 
         missing_points = self.quality.get_missing_boundary_points_in_boundaries(point_layer, boundary_layer)
 
-        print(missing_points)
-        for key, point_list in missing_points.items():
-            print(key, point_list)
-
+        self.assertEqual(len(missing_points),4)
+        self.assertEqual(len(missing_points[6]),3)
+        self.assertEqual(len(missing_points[1]),2)
+        self.assertEqual(len(missing_points[8]),1)
+        self.assertEqual(len(missing_points[2]),1)
+        self.assertNotIn(7,missing_points)
 
     def validate_segments(self, segments_info, tolerance):
         for segment_info in segments_info:
