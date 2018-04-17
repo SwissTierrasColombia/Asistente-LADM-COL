@@ -4,7 +4,7 @@ import psycopg2
 import os
 
 from sys import platform
-from qgis.core import QgsVectorLayer, QgsWkbTypes
+from qgis.core import QgsVectorLayer, QgsWkbTypes, QgsApplication
 from qgis.testing import unittest, start_app
 
 start_app() # need to start before asistente_ladm_col.tests.utils
@@ -13,6 +13,11 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_path
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.quality import QualityUtils
+
+import processing
+from processing.core.Processing import Processing
+
+from processing.tools import *
 
 import_projectgenerator()
 
@@ -104,6 +109,29 @@ class TesQualityValidations(unittest.TestCase):
             print("Testing pair {}...".format(pair))
             for overlap in overlaps:
                 self.assertIn(overlap.asWkt(), expected_overlaps[pair])
+
+    def test_get_missing_boundary_points_in_boundaries(self):
+        print('Validating missing boundary points in boundaries')
+        Processing.initialize()
+        Processing.activateProvider('native')
+        print(QgsApplication.instance().processingRegistry().providerById('native').isActive())
+        gpkg_path = get_test_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
+        boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
+        uri = gpkg_path + '|layername={layername}'.format(layername='boundary_points_')
+        point_layer = QgsVectorLayer(uri, 'boundary_points_', 'ogr')
+
+        boundary_features = [feature for feature in boundary_layer.getFeatures()]
+        self.assertEqual(len(boundary_features), 8)
+
+        point_features = [feature for feature in point_layer.getFeatures()]
+        self.assertEqual(len(point_features), 9)
+
+        missing_points = self.quality.get_missing_boundary_points_in_boundaries(point_layer, boundary_layer)
+
+        print(missing_points)
+        for key, point_list in missing_points.items():
+            print(key, point_list)
 
 
     def validate_segments(self, segments_info, tolerance):
