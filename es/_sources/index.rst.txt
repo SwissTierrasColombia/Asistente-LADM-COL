@@ -25,6 +25,8 @@ Welcome to the Assistant's documentation LADM_COL!
    :scale: 100
    :alt: intro
 
+.. thumbnail:: static/05_FUNCIONALIDADES.gif
+
 .. Code <code.rst>
 
 
