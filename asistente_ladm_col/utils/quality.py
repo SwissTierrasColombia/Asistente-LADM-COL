@@ -234,8 +234,12 @@ class QualityUtils(QObject):
                 Qgis.Info)
 
     def check_missing_boundary_points_in_boundaries(self, db):
-        boundary_point_layer = self.qgis_utils.get_layer(db, BOUNDARY_POINT_TABLE, load=True) # TODO should be a single call...
-        boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
+        res_layers = self.qgis_utils.get_layers(db, {
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None},
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}}, load=True)
+
+        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
+        boundary_layer = res_layers[BOUNDARY_TABLE]
 
         if boundary_point_layer is None:
             self.qgis_utils.message_emitted.emit(
