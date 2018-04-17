@@ -112,7 +112,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._too_long_boundary_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check too long boundary segments"), self._quality_cadastre_menu)
         self._overlaps_boundary_points_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check overlaps in boundary points"), self._quality_cadastre_menu)
         self._overlaps_boundaries_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check overlaps in boundaries"), self._quality_cadastre_menu)
-        self._missing_boundary_points_vertices_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check missing boundary points vertices"), self._quality_cadastre_menu)
+        self._missing_boundary_points_vertices_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check missing boundary points in boundaries"), self._quality_cadastre_menu)
         self._quality_check_all_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check all"), self._quality_cadastre_menu)
         self._quality_cadastre_menu.addActions([self._too_long_boundary_cadastre_action,
                                                 self._overlaps_boundary_points_cadastre_action,
@@ -156,7 +156,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._too_long_boundary_cadastre_action.triggered.connect(self.check_too_long_segments)
         self._overlaps_boundary_points_cadastre_action.triggered.connect(self.check_overlaps_in_boundary_points)
         self._overlaps_boundaries_cadastre_action.triggered.connect(self.check_overlaps_in_boundaries)
-        self._missing_boundary_points_vertices_cadastre_action.triggered.connect(self.check_missing_boundary_points_vertices)
+        self._missing_boundary_points_vertices_cadastre_action.triggered.connect(self.check_missing_boundary_points_in_boundaries)
         self._quality_check_all_cadastre_action.triggered.connect(self.quality_check_all)
         self._load_layers_action.triggered.connect(self.load_layers_from_project_generator)
         self._settings_action.triggered.connect(self.show_settings)
@@ -449,8 +449,8 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_project_generator_required
     @_db_connection_required
-    def check_missing_boundary_points_vertices(self):
-        self.quality.check_missing_boundary_points_vertices(self.get_db_connection())
+    def check_missing_boundary_points_in_boundaries(self):
+        self.quality.check_missing_boundary_points_in_boundaries(self.get_db_connection())
 
     @_project_generator_required
     @_db_connection_required
@@ -458,6 +458,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality.check_too_long_segments(self.get_db_connection())
         self.quality.check_overlaps_in_boundary_points(self.get_db_connection())
         self.quality.check_overlaps_in_boundaries(self.get_db_connection())
+        self.quality.check_missing_boundary_points_in_boundaries(self.get_db_connection())
 
     def show_about_dialog(self):
         self.msg = QMessageBox()

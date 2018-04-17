@@ -24,7 +24,7 @@ class TesQualityValidations(unittest.TestCase):
         self.quality = QualityUtils(self.qgis_utils)
 
     def test_get_too_long_segments_from_simple_line(self):
-        print('Validating too long segments')
+        print('Validating too long segments...')
         gpkg_path = get_test_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='too_long_lines')
         boundary_layer = QgsVectorLayer(uri, 'too_long_lines', 'ogr')
@@ -72,7 +72,7 @@ class TesQualityValidations(unittest.TestCase):
         self.validate_segments(segments_info, tolerance)
 
     def test_get_overlapping_lines(self):
-        print('Validating overlaps in boundaries')
+        print('Validating overlaps in boundaries...')
         gpkg_path = get_test_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='test_boundaries_overlap')
         boundary_overlap_layer = QgsVectorLayer(uri, 'test_boundaries_overlap', 'ogr')
@@ -85,7 +85,11 @@ class TesQualityValidations(unittest.TestCase):
         expected_overlaps = {
             '9-335': ['Point (963643.395574557245709 1077747.43814651435241103)'],
             '4-5': ['MultiPoint ((963850.90352329798042774 1077652.23999353917315602),(963880.39959512907080352 1077685.35838998109102249))'],
-            '5-6': ['Point (964081.01700186752714217 1077722.2743631626944989)','Point (964211.2347710223402828 1077618.29701916221529245)','LineString (963980.77503829856868833 1077802.31638198206201196, 963926.86899802810512483 1077925.5301883143838495)'],
+            '5-6': [
+                'Point (964081.01700186752714217 1077722.2743631626944989)',
+                'Point (964211.2347710223402828 1077618.29701916221529245)',
+                'LineString (963980.77503829856868833 1077802.31638198206201196, 963926.86899802810512483 1077925.5301883143838495)'
+            ],
             '7-10': ['Point (963750.28136727144010365 1077824.19025488453917205)'],
             '5-336': ['Point (964079.46952913235872984 1077829.37777462997473776)'],
             '6-325': ['Point (963849.37875852338038385 1077949.20776149653829634)'],
@@ -97,7 +101,7 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(len(overlapping), 9)
         for pair, overlaps in overlapping.items():
             self.assertEqual(len(overlaps), len(expected_overlaps[pair]))
-            print("probando pareja {}".format(pair))
+            print("Testing pair {}...".format(pair))
             for overlap in overlaps:
                 self.assertIn(overlap.asWkt(), expected_overlaps[pair])
 

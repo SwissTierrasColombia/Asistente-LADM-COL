@@ -21,6 +21,7 @@ from qgis.core import (
     QgsField,
     QgsGeometry,
     QgsPointXY,
+    QgsFeedback,
     QgsProcessingFeedback,
     QgsProject,
     QgsSpatialIndex,
@@ -31,7 +32,6 @@ from qgis.core import (
     QgsRectangle
 )
 from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
-from processing.tools.dataobjects import createContext
 import processing
 
 from ..config.table_mapping_config import (
@@ -230,38 +230,48 @@ class QualityUtils(QObject):
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "All boundary segments are within the tolerance ({}m.)!").format(tolerance),
+                                           "All boundary segments are within the length tolerance for segments ({}m.)!").format(tolerance),
                 Qgis.Info)
 
-    def check_missing_boundary_points_vertices(self, db):
-        features = []
-        boundary_point_layer = self.qgis_utils.get_layer(db, BOUNDARY_POINT_TABLE, load=True)
+    def check_missing_boundary_points_in_boundaries(self, db):
+        boundary_point_layer = self.qgis_utils.get_layer(db, BOUNDARY_POINT_TABLE, load=True) # TODO should be a single call...
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
 
         if boundary_point_layer is None:
-            self.message_emitted.emit(
+            self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "Table {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()),
                 Qgis.Warning)
             return
 
         if boundary_layer is None:
-            self.message_emitted.emit(
+            self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "Table {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()),
                 Qgis.Warning)
             return
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), "Missing boundary points vertices", "memory")
+        if boundary_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no boundaries to check 'missing boundary points in boundaries'."),
+                Qgis.Info)
+            return
+
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), "Missing boundary points in boundaries", "memory")
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField("point_count", QVariant.Int)])
+        data_provider.addAttributes([QgsField("boundary_id", QVariant.Int)])
         error_layer.updateFields()
 
-        missing_points = self.get_missing_boundary_points_vertices(boundary_point_layer, boundary_layer)
+        missing_points = self.get_missing_boundary_points_in_boundaries(boundary_point_layer, boundary_layer)
 
-        for item in missing_points:
-            new_feature = QgsVectorLayerUtils().createFeature(error_layer, item)
-            data_provider.addFeature(new_feature)
+        new_features = list()
+        for key, point_list in missing_points.items():
+            for point in point_list:
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, point, {0: key})
+                new_features.append(new_feature)
+
+        data_provider.addFeatures(new_features)
 
         if error_layer.featureCount() > 0:
             group = self.qgis_utils.get_error_layers_group()
@@ -270,12 +280,12 @@ class QualityUtils(QObject):
             self.qgis_utils.symbology.set_point_error_symbol(added_layer)
 
             self.qgis_utils.message_emitted.emit(
-            QCoreApplication.translate("QGISUtils",
-                                            "A memory layer with {} missing Boundary Points vertices has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
+                QCoreApplication.translate("QGISUtils",
+                    "A memory layer with {} boundary vertices with no associated boundary points has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "There are no missing boundary points vertices."), Qgis.Info)
+                                           "There are no missing boundary points in boundaries."), Qgis.Info)
 
     def get_too_long_segments_from_simple_line(self, line, tolerance):
         segments_info = list()
@@ -292,28 +302,44 @@ class QualityUtils(QObject):
             vertex1 = vertex2
         return segments_info
 
-    def get_missing_boundary_points_vertices(self, point_layer, boundary_layer):
-
-        res = list()
+    def get_missing_boundary_points_in_boundaries(self, boundary_point_layer, boundary_layer):
+        res = dict()
 
         feedback = QgsProcessingFeedback()
         extracted_vertices = processing.run("native:extractvertices", {'INPUT':boundary_layer,'OUTPUT':'memory:'}, feedback=feedback)
         extracted_vertices_layer = extracted_vertices['OUTPUT']
+
         cleaned_vertices = processing.run("qgis:deleteduplicategeometries", {'INPUT':extracted_vertices_layer,'OUTPUT':'memory:'}, feedback=feedback)
         cleaned_vertices_layer = cleaned_vertices['OUTPUT']
 
-        context = createContext()
-        indexB = QgsSpatialIndex(point_layer.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(cleaned_vertices_layer.sourceCrs(), context.transformContext())), feedback)
-
-        for featA in cleaned_vertices_layer.getFeatures():
-            if featA.hasGeometry():
-                geom = featA.geometry()
-                diff_geom = QgsGeometry(geom)
-                point_vert = {'x':diff_geom.asPoint().x(),'y':diff_geom.asPoint().y()}
-                bbox = QgsRectangle(QgsPointXY(point_vert['x']-0.0001,point_vert['y']-0.0001),QgsPointXY(point_vert['x']+0.0001,point_vert['y']+0.0001))
-                intersects = indexB.intersects(bbox)
-                if intersects:
-                    pass #Don't insert intersection points
+        if boundary_point_layer.featureCount() == 0: # TODO Write a test for this case
+            # Return all extracted and cleaned vertices
+            for feature in cleaned_vertices_layer.getFeatures():
+                if feature[ID_FIELD] in res:
+                    res[feature[ID_FIELD]].append(feature.geometry())
                 else:
-                    res.append(diff_geom)
+                    res[feature[ID_FIELD]] = [feature.geometry()]
+
+            return res
+
+        index = QgsSpatialIndex(boundary_point_layer.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([])), feedback)
+
+        for feature in cleaned_vertices_layer.getFeatures():
+            if feature.hasGeometry():
+                geom = feature.geometry()
+                diff_geom = QgsGeometry(geom)
+
+                # Use a custom bbox to include very near but not exactly equal points
+                point_vert = {'x': diff_geom.asPoint().x(), 'y': diff_geom.asPoint().y()}
+                bbox = QgsRectangle(
+                    QgsPointXY(point_vert['x'] - 0.0001, point_vert['y'] - 0.0001),
+                    QgsPointXY(point_vert['x'] + 0.0001, point_vert['y'] + 0.0001)
+                )
+                intersects = index.intersects(bbox)
+
+                if not intersects:
+                    if feature[ID_FIELD] in res:
+                        res[feature[ID_FIELD]].append(diff_geom)
+                    else:
+                        res[feature[ID_FIELD]] = [diff_geom]
         return res
