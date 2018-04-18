@@ -19,12 +19,14 @@
 
 import os
 import psycopg2
+import qgis.utils
 
 from sys import platform
+from shutil import copyfile
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
+
 # get from https://github.com/qgis/QGIS/blob/master/tests/src/python/test_qgssymbolexpressionvariables.py
 from qgis.testing.mocked import get_iface
-import qgis.utils
 
 # PostgreSQL connection to schema with a LADM_COL model from ./etl_script_uaecd.py
 DB_HOSTNAME = "postgres"
@@ -95,6 +97,13 @@ def get_iface():
 def get_test_path(path):
     basepath = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(basepath, "resources", path)
+
+def get_test_copy_path(path):
+    src_path = get_test_path(path)
+    dst_path = os.path.split(src_path)
+    dst_path = os.path.join(dst_path[0], "_" + dst_path[1])
+    copyfile(src_path, dst_path)
+    return dst_path
 
 def import_projectgenerator():
     global iface
