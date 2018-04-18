@@ -21,12 +21,15 @@ from qgis.core import (
     QgsField,
     QgsGeometry,
     QgsPointXY,
+    QgsFeedback,
     QgsProcessingFeedback,
     QgsProject,
     QgsSpatialIndex,
     QgsVectorLayer,
     QgsVectorLayerUtils,
-    QgsWkbTypes
+    QgsWkbTypes,
+    QgsFeatureRequest,
+    QgsRectangle
 )
 from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
 import processing
@@ -61,7 +64,7 @@ class QualityUtils(QObject):
         data_provider.addAttributes([QgsField("point_count", QVariant.Int)])
         error_layer.updateFields()
 
-        overlapping = self.get_overlapping_points(boundary_point_layer)
+        overlapping = self.qgis_utils.geometry.get_overlapping_points(boundary_point_layer)
 
         for items in overlapping:
             feature = boundary_point_layer.getFeature(items[0]) # We need a feature geometry, pick the first id to get it
@@ -105,7 +108,7 @@ class QualityUtils(QObject):
         error_point_layer.updateFields()
         error_line_layer.updateFields()
 
-        overlapping = self.get_overlapping_lines(boundary_layer)
+        overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_layer)
         line_features = list()
         point_features = list()
 
@@ -227,8 +230,66 @@ class QualityUtils(QObject):
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "All boundary segments are within the tolerance ({}m.)!").format(tolerance),
+                                           "All boundary segments are within the length tolerance for segments ({}m.)!").format(tolerance),
                 Qgis.Info)
+
+    def check_missing_boundary_points_in_boundaries(self, db):
+        res_layers = self.qgis_utils.get_layers(db, {
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None},
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}}, load=True)
+
+        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
+        boundary_layer = res_layers[BOUNDARY_TABLE]
+
+        if boundary_point_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        if boundary_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        if boundary_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no boundaries to check 'missing boundary points in boundaries'."),
+                Qgis.Info)
+            return
+
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), "Missing boundary points in boundaries", "memory")
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField("boundary_id", QVariant.Int)])
+        error_layer.updateFields()
+
+        missing_points = self.get_missing_boundary_points_in_boundaries(boundary_point_layer, boundary_layer)
+
+        new_features = list()
+        for key, point_list in missing_points.items():
+            for point in point_list:
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, point, {0: key})
+                new_features.append(new_feature)
+
+        data_provider.addFeatures(new_features)
+
+        if error_layer.featureCount() > 0:
+            group = self.qgis_utils.get_error_layers_group()
+            added_layer = QgsProject.instance().addMapLayer(error_layer, False)
+            added_layer = group.addLayer(added_layer).layer()
+            self.qgis_utils.symbology.set_point_error_symbol(added_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "A memory layer with {} boundary vertices with no associated boundary points has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no missing boundary points in boundaries."), Qgis.Info)
 
     def get_too_long_segments_from_simple_line(self, line, tolerance):
         segments_info = list()
@@ -245,101 +306,44 @@ class QualityUtils(QObject):
             vertex1 = vertex2
         return segments_info
 
-    def get_overlapping_points(self, point_layer):
-        """
-        Returns a list of lists, where inner lists are ids of overlapping
-        points, e.g., [[1, 3], [19, 2, 8]].
-        """
-        res = list()
-        if point_layer.featureCount() == 0:
+    def get_missing_boundary_points_in_boundaries(self, boundary_point_layer, boundary_layer):
+        res = dict()
+
+        feedback = QgsProcessingFeedback()
+        extracted_vertices = processing.run("native:extractvertices", {'INPUT':boundary_layer,'OUTPUT':'memory:'}, feedback=feedback)
+        extracted_vertices_layer = extracted_vertices['OUTPUT']
+
+        cleaned_vertices = processing.run("qgis:deleteduplicategeometries", {'INPUT':extracted_vertices_layer,'OUTPUT':'memory:'}, feedback=feedback)
+        cleaned_vertices_layer = cleaned_vertices['OUTPUT']
+
+        if boundary_point_layer.featureCount() == 0: # TODO Write a test for this case
+            # Return all extracted and cleaned vertices
+            for feature in cleaned_vertices_layer.getFeatures():
+                if feature[ID_FIELD] in res:
+                    res[feature[ID_FIELD]].append(feature.geometry())
+                else:
+                    res[feature[ID_FIELD]] = [feature.geometry()]
+
             return res
 
-        set_points = set()
-        index = QgsSpatialIndex(point_layer.getFeatures())
+        index = QgsSpatialIndex(boundary_point_layer.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([])), feedback)
 
-        for feature in point_layer.getFeatures():
-            if not feature.id() in set_points:
-                ids = index.intersects(feature.geometry().boundingBox())
+        for feature in cleaned_vertices_layer.getFeatures():
+            if feature.hasGeometry():
+                geom = feature.geometry()
+                diff_geom = QgsGeometry(geom)
 
-                if len(ids) > 1: # Points do overlap!
-                    set_points = set_points.union(set(ids))
-                    res.append(ids)
+                # Use a custom bbox to include very near but not exactly equal points
+                point_vert = {'x': diff_geom.asPoint().x(), 'y': diff_geom.asPoint().y()}
+                bbox = QgsRectangle(
+                    QgsPointXY(point_vert['x'] - 0.0001, point_vert['y'] - 0.0001),
+                    QgsPointXY(point_vert['x'] + 0.0001, point_vert['y'] + 0.0001)
+                )
+                intersects = index.intersects(bbox)
 
+                if not intersects:
+                    if feature[ID_FIELD] in res:
+                        res[feature[ID_FIELD]].append(diff_geom)
+                    else:
+                        res[feature[ID_FIELD]] = [diff_geom]
         return res
-
-    def get_overlapping_lines(self, line_layer, use_selection=True):
-        """
-        Return a dict whose key is a pair of line ids where there are
-        intersections, and whose value is a list of intersection geometries
-        """
-        dict_res = dict()
-
-        def insert_into_res(ids, geometry):
-            """
-            Local function to append a geometry into a list for each pair of ids
-            """
-            pair = "{}-{}".format(min(ids), max(ids))
-            if pair not in dict_res:
-                dict_res[pair] = [geometry]
-            else: # Pair is in dict already
-                duplicate = False
-                for existing_geometry in dict_res[pair]:
-                    if geometry.isGeosEqual(existing_geometry):
-                        # isGeosEqual gives True for lines even if they have
-                        # the orientation inverted
-                        duplicate = True
-                        break
-
-                if not duplicate:
-                    dict_res[pair].append(geometry)
-
-        lines = line_layer.getFeatures()
-        index = QgsSpatialIndex(line_layer)
-
-        for line in lines:
-            line_geometry = line.geometry()
-            bbox = line_geometry.boundingBox()
-            bbox.scale(1.001)
-            candidates_ids = index.intersects(bbox)
-            candidates_ids.remove(line.id()) # Remove auto-intersection
-            candidates_features = line_layer.getFeatures(candidates_ids)
-
-            for candidate_feature in candidates_features:
-                candidate_geometry = candidate_feature.geometry()
-
-                if line_geometry.intersects(candidate_geometry):
-                    intersection = line_geometry.intersection(candidate_geometry)
-
-                    if intersection.type() == QgsWkbTypes.PointGeometry and line_geometry.touches(candidate_geometry):
-                        pass # Don't insert intersections where end points are involved
-
-                    elif intersection.wkbType() == QgsWkbTypes.GeometryCollection:
-                        geometry_collection = intersection.asGeometryCollection()
-
-                        for geometry in geometry_collection:
-                            if geometry.type() == QgsWkbTypes.PointGeometry:
-
-                                if geometry.touches(candidate_geometry):
-                                    pass # End point intersection in a collection
-                                else:
-                                    insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], geometry)
-
-                            elif geometry.type() == QgsWkbTypes.LineGeometry:
-                                insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], geometry)
-
-                    else: # Point and not touches; lines
-                        insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], intersection)
-
-                else:
-                    # Intersections between an end point and the interior of a
-                    # segment (not a vertex) are not discovered by QGIS so far.
-                    # We need to use this workaround in the meantime
-                    edge_vertex = [line_geometry.asPolyline()[0], line_geometry.asPolyline()[-1]]
-
-                    for edge in edge_vertex:
-                        edge_point = QgsGeometry.fromPointXY(QgsPointXY(edge))
-
-                        if abs(edge_point.distance(candidate_geometry)) < 0.0001 and not edge_point.touches(candidate_geometry):
-                            insert_into_res([line[ID_FIELD], candidate_feature[ID_FIELD]], edge_point)
-
-        return dict_res

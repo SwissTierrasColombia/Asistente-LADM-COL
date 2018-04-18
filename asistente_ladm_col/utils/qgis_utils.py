@@ -33,6 +33,7 @@ import processing
 from .project_generator_utils import ProjectGeneratorUtils
 from .qt_utils import OverrideCursor
 from .symbology import SymbologyUtils
+from .geometry import GeometryUtils
 from ..gui.settings_dialog import SettingsDialog
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
@@ -71,6 +72,8 @@ class QGISUtils(QObject):
         QObject.__init__(self)
         self.project_generator_utils = ProjectGeneratorUtils()
         self.symbology = SymbologyUtils()
+        self.geometry = GeometryUtils()
+
         self.__settings_dialog = None
 
     def set_db_connection(self, mode, dict_conn):
@@ -284,7 +287,7 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return False
 
-        overlapping = self.get_overlapping_points(csv_layer) # List of lists of ids
+        overlapping = self.geometry.get_overlapping_points(csv_layer) # List of lists of ids
         overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
 
         if overlapping:
@@ -336,31 +339,210 @@ class QGISUtils(QObject):
 
         return True
 
-    def extractAsSingleSegments(self, geom):
-        """
-        Copied from:
-        https://github.com/qgis/QGIS/blob/55203a0fc2b8e35fa2909da77a84bbfde8fcba5c/python/plugins/processing/algs/qgis/Explode.py#L89
-        """
-        segments = []
-        if geom.isMultipart():
-            for part in range(geom.constGet().numGeometries()):
-                segments.extend(self.getPolylineAsSingleSegments(geom.constGet().geometryN(part)))
-        else:
-            segments.extend(self.getPolylineAsSingleSegments(geom.constGet()))
-        return segments
+    def fill_topology_table_pointbfs(self, db, use_selection=True):
+        res_layers = self.get_layers(db, {
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry':None},
+            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry':None},
+            BOUNDARY_POINT_TABLE: {'name':BOUNDARY_POINT_TABLE, 'geometry':None}}, load=True)
 
-    def getPolylineAsSingleSegments(self, polyline):
-        """
-        Copied from:
-        https://github.com/qgis/QGIS/blob/55203a0fc2b8e35fa2909da77a84bbfde8fcba5c/python/plugins/processing/algs/qgis/Explode.py#L99
-        """
-        segments = []
-        for i in range(polyline.numPoints() - 1):
-            ptA = polyline.pointN(i)
-            ptB = polyline.pointN(i + 1)
-            segment = QgsGeometry(QgsLineString([ptA, ptB]))
-            segments.append(segment)
-        return segments
+        boundary_layer = res_layers[BOUNDARY_TABLE]
+        if boundary_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+        if use_selection and boundary_layer.selectedFeatureCount() == 0:
+            if self.get_layer_from_layer_tree(BOUNDARY_TABLE, schema=db.schema) is None:
+                self.message_with_button_load_layer_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                                               "First load the layer {} into QGIS and select at least one boundary!").format(BOUNDARY_TABLE),
+                    QCoreApplication.translate("QGISUtils", "Load layer {} now").format(BOUNDARY_TABLE),
+                    [BOUNDARY_TABLE, None],
+                    Qgis.Warning)
+            else:
+                self.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils", "First select at least one boundary!"),
+                    Qgis.Warning)
+            return
+
+        bfs_layer = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
+        if bfs_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        bfs_features = bfs_layer.getFeatures()
+
+        # Get unique pairs id_boundary-id_boundary_point
+        existing_pairs = [(bfs_feature[BFS_TABLE_BOUNDARY_FIELD], bfs_feature[BFS_TABLE_BOUNDARY_POINT_FIELD]) for bfs_feature in bfs_features]
+        existing_pairs = set(existing_pairs)
+
+        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
+        id_pairs = self.geometry.get_pair_boundary_boundary_point(boundary_layer, boundary_point_layer, use_selection)
+
+        if id_pairs:
+            bfs_layer.startEditing()
+            features = list()
+            for id_pair in id_pairs:
+                if not id_pair in existing_pairs: # Avoid duplicated pairs in the DB
+                    # Create feature
+                    feature = QgsVectorLayerUtils().createFeature(bfs_layer)
+                    feature.setAttribute(BFS_TABLE_BOUNDARY_FIELD, id_pair[0])
+                    feature.setAttribute(BFS_TABLE_BOUNDARY_POINT_FIELD, id_pair[1])
+                    features.append(feature)
+            bfs_layer.addFeatures(features)
+            bfs_layer.commitChanges()
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "{} out of {} records were saved into {}! {} out of {} records already existed in the database.").format(
+                    len(features),
+                    len(id_pairs),
+                    POINT_BOUNDARY_FACE_STRING_TABLE,
+                    len(id_pairs) - len(features),
+                    len(id_pairs)
+                ),
+                Qgis.Info)
+        else:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_boundary_point found."),
+                Qgis.Info)
+
+    def fill_topology_tables_morebfs_less(self, db, use_selection=True):
+        res_layers = self.get_layers(db, {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            MORE_BOUNDARY_FACE_STRING_TABLE: {'name': MORE_BOUNDARY_FACE_STRING_TABLE, 'geometry':None},
+            LESS_TABLE: {'name': LESS_TABLE, 'geometry':None},
+            BOUNDARY_TABLE: {'name':BOUNDARY_TABLE, 'geometry':None}}, load=True)
+
+        plot_layer = res_layers[PLOT_TABLE]
+        if plot_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(PLOT_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        if use_selection and plot_layer.selectedFeatureCount() == 0:
+            if self.get_layer_from_layer_tree(PLOT_TABLE, schema=db.schema, geometry_type=QgsWkbTypes.PolygonGeometry) is None:
+                self.message_with_button_load_layer_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                                               "First load the layer {} into QGIS and select at least one plot!").format(PLOT_TABLE),
+                    QCoreApplication.translate("QGISUtils", "Load layer {} now").format(PLOT_TABLE),
+                    [PLOT_TABLE, None],
+                    Qgis.Warning)
+            else:
+                self.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils", "First select at least one plot!"),
+                    Qgis.Warning)
+            return
+
+        more_bfs_layer = res_layers[MORE_BOUNDARY_FACE_STRING_TABLE]
+        if more_bfs_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(MORE_BOUNDARY_FACE_STRING_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        less_layer = res_layers[LESS_TABLE]
+        if less_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(LESS_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        more_bfs_features = more_bfs_layer.getFeatures()
+        less_features = less_layer.getFeatures()
+
+        # Get unique pairs id_boundary-id_plot in both tables
+        existing_more_pairs = [(more_bfs_feature[MOREBFS_TABLE_PLOT_FIELD], more_bfs_feature[MOREBFS_TABLE_BOUNDARY_FIELD]) for more_bfs_feature in more_bfs_features]
+        existing_more_pairs = set(existing_more_pairs)
+        existing_less_pairs = [(less_feature[LESS_TABLE_PLOT_FIELD], less_feature[LESS_TABLE_BOUNDARY_FIELD]) for less_feature in less_features]
+        existing_less_pairs = set(existing_less_pairs)
+
+        boundary_layer = res_layers[BOUNDARY_TABLE]
+        id_more_pairs, id_less_pairs = self.geometry.get_pair_boundary_plot(boundary_layer, plot_layer, use_selection)
+
+        if id_more_pairs:
+            more_bfs_layer.startEditing()
+            features = list()
+            for id_pair in id_more_pairs:
+                if not id_pair in existing_more_pairs: # Avoid duplicated pairs in the DB
+                    # Create feature
+                    feature = QgsVectorLayerUtils().createFeature(more_bfs_layer)
+                    feature.setAttribute(MOREBFS_TABLE_PLOT_FIELD, id_pair[0])
+                    feature.setAttribute(MOREBFS_TABLE_BOUNDARY_FIELD, id_pair[1])
+                    features.append(feature)
+            more_bfs_layer.addFeatures(features)
+            more_bfs_layer.commitChanges()
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "{} out of {} records were saved into '{}'! {} out of {} records already existed in the database.").format(
+                    len(features),
+                    len(id_more_pairs),
+                    MORE_BOUNDARY_FACE_STRING_TABLE,
+                    len(id_more_pairs) - len(features),
+                    len(id_more_pairs)
+                ),
+                Qgis.Info)
+        else:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.".format(MORE_BOUNDARY_FACE_STRING_TABLE)),
+                Qgis.Info)
+
+        if id_less_pairs:
+            less_layer.startEditing()
+            features = list()
+            for id_pair in id_less_pairs:
+                if not id_pair in existing_less_pairs: # Avoid duplicated pairs in the DB
+                    # Create feature
+                    feature = QgsVectorLayerUtils().createFeature(less_layer)
+                    feature.setAttribute(LESS_TABLE_PLOT_FIELD, id_pair[0])
+                    feature.setAttribute(LESS_TABLE_BOUNDARY_FIELD, id_pair[1])
+                    features.append(feature)
+            less_layer.addFeatures(features)
+            less_layer.commitChanges()
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "{} out of {} records were saved into '{}'! {} out of {} records already existed in the database.").format(
+                    len(features),
+                    len(id_less_pairs),
+                    LESS_TABLE,
+                    len(id_less_pairs) - len(features),
+                    len(id_less_pairs)
+                ),
+                Qgis.Info)
+        else:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.".format(LESS_TABLE)),
+                Qgis.Info)
+
+    def get_error_layers_group(self):
+        root = QgsProject.instance().layerTreeRoot()
+        group = root.findGroup(ERROR_LAYER_GROUP)
+        if group is None:
+            index = self.project_generator_utils.get_first_index_for_layer_type('unknown') # unknown is the option for groups
+            group = root.insertGroup(index if index is not None else -1, ERROR_LAYER_GROUP)
+
+        return group
+
+    def turn_transaction_off(self):
+        QgsProject.instance().setAutoTransaction(False)
+
+    def show_etl_model(self, db, input_layer, ladm_col_layer_name):
+        model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
+        if model:
+            mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
+            output = self.get_layer(db, ladm_col_layer_name, geometry_type=None, load=True)
+            processing.execAlgorithmDialog("model:ETL-model", {
+                    'INPUT': input_layer.name(),
+                    'mapping': mapping,
+                    'output': output.name()
+                }
+            )
+        else:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Model ETL-model was not found and cannot be opened!"),
+                Qgis.Info)
 
     def explode_boundaries(self, db):
         self.turn_transaction_off()
@@ -386,7 +568,7 @@ class QGISUtils(QObject):
 
         segments = list()
         for f in layer.selectedFeatures():
-            segments.extend(self.extractAsSingleSegments(f.geometry()))
+            segments.extend(self.geometry.extract_as_single_segments(f.geometry()))
 
         layer.startEditing() # Safe, even if layer is already on editing state
 
@@ -446,303 +628,6 @@ class QGISUtils(QObject):
             Qgis.Info)
         self.map_refresh_requested.emit()
 
-    def fill_topology_table_pointbfs(self, db, use_selection=True):
-        res_layers = self.get_layers(db, {
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry':None},
-            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry':None},
-            BOUNDARY_POINT_TABLE: {'name':BOUNDARY_POINT_TABLE, 'geometry':None}}, load=True)
-
-        boundary_layer = res_layers[BOUNDARY_TABLE]
-        if boundary_layer is None:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
-        if use_selection and boundary_layer.selectedFeatureCount() == 0:
-            if self.get_layer_from_layer_tree(BOUNDARY_TABLE, schema=db.schema) is None:
-                self.message_with_button_load_layer_emitted.emit(
-                    QCoreApplication.translate("QGISUtils",
-                                               "First load the layer {} into QGIS and select at least one boundary!").format(BOUNDARY_TABLE),
-                    QCoreApplication.translate("QGISUtils", "Load layer {} now").format(BOUNDARY_TABLE),
-                    [BOUNDARY_TABLE, None],
-                    Qgis.Warning)
-            else:
-                self.message_emitted.emit(
-                    QCoreApplication.translate("QGISUtils", "First select at least one boundary!"),
-                    Qgis.Warning)
-            return
-
-        bfs_layer = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
-        if bfs_layer is None:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
-
-        bfs_features = bfs_layer.getFeatures()
-
-        # Get unique pairs id_boundary-id_boundary_point
-        existing_pairs = [(bfs_feature[BFS_TABLE_BOUNDARY_FIELD], bfs_feature[BFS_TABLE_BOUNDARY_POINT_FIELD]) for bfs_feature in bfs_features]
-        existing_pairs = set(existing_pairs)
-
-        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
-        id_pairs = self.get_pair_boundary_boundary_point(boundary_layer, boundary_point_layer, use_selection)
-
-        if id_pairs:
-            bfs_layer.startEditing()
-            features = list()
-            for id_pair in id_pairs:
-                if not id_pair in existing_pairs: # Avoid duplicated pairs in the DB
-                    # Create feature
-                    feature = QgsVectorLayerUtils().createFeature(bfs_layer)
-                    feature.setAttribute(BFS_TABLE_BOUNDARY_FIELD, id_pair[0])
-                    feature.setAttribute(BFS_TABLE_BOUNDARY_POINT_FIELD, id_pair[1])
-                    features.append(feature)
-            bfs_layer.addFeatures(features)
-            bfs_layer.commitChanges()
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "{} out of {} records were saved into {}! {} out of {} records already existed in the database.").format(
-                    len(features),
-                    len(id_pairs),
-                    POINT_BOUNDARY_FACE_STRING_TABLE,
-                    len(id_pairs) - len(features),
-                    len(id_pairs)
-                ),
-                Qgis.Info)
-        else:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_boundary_point found."),
-                Qgis.Info)
-
-    def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer, use_selection=True):
-        lines = boundary_layer.getSelectedFeatures() if use_selection else boundary_layer.getFeatures()
-        points = boundary_point_layer.getFeatures()
-        intersect_pairs = list()
-
-        if boundary_point_layer.featureCount() == 0:
-            return intersect_pairs
-
-        index = QgsSpatialIndex(boundary_point_layer)
-
-        for line in lines:
-            bbox = line.geometry().boundingBox()
-            bbox.scale(1.001)
-            candidates_ids = index.intersects(bbox)
-            candidates_features = boundary_point_layer.getFeatures(candidates_ids)
-            for candidate_feature in candidates_features:
-                #if line.geometry().intersects(candidate_feature.geometry()):
-                #    intersect_pair.append(line['t_id'], candidate_feature['t_id'])
-                candidate_point = candidate_feature.geometry().asPoint()
-                for line_vertex in line.geometry().asPolyline():
-                    if abs(line_vertex.x() - candidate_point.x()) < 0.001 \
-                       and abs(line_vertex.y() - candidate_point.y()) < 0.001:
-                        intersect_pairs.append((line[ID_FIELD], candidate_feature[ID_FIELD]))
-        return intersect_pairs
-
-    def fill_topology_tables_morebfs_less(self, db, use_selection=True):
-        res_layers = self.get_layers(db, {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            MORE_BOUNDARY_FACE_STRING_TABLE: {'name': MORE_BOUNDARY_FACE_STRING_TABLE, 'geometry':None},
-            LESS_TABLE: {'name': LESS_TABLE, 'geometry':None},
-            BOUNDARY_TABLE: {'name':BOUNDARY_TABLE, 'geometry':None}}, load=True)
-
-        plot_layer = res_layers[PLOT_TABLE]
-        if plot_layer is None:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(PLOT_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
-
-        if use_selection and plot_layer.selectedFeatureCount() == 0:
-            if self.get_layer_from_layer_tree(PLOT_TABLE, schema=db.schema, geometry_type=QgsWkbTypes.PolygonGeometry) is None:
-                self.message_with_button_load_layer_emitted.emit(
-                    QCoreApplication.translate("QGISUtils",
-                                               "First load the layer {} into QGIS and select at least one plot!").format(PLOT_TABLE),
-                    QCoreApplication.translate("QGISUtils", "Load layer {} now").format(PLOT_TABLE),
-                    [PLOT_TABLE, None],
-                    Qgis.Warning)
-            else:
-                self.message_emitted.emit(
-                    QCoreApplication.translate("QGISUtils", "First select at least one plot!"),
-                    Qgis.Warning)
-            return
-
-        more_bfs_layer = res_layers[MORE_BOUNDARY_FACE_STRING_TABLE]
-        if more_bfs_layer is None:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(MORE_BOUNDARY_FACE_STRING_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
-
-        less_layer = res_layers[LESS_TABLE]
-        if less_layer is None:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(LESS_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
-
-        more_bfs_features = more_bfs_layer.getFeatures()
-        less_features = less_layer.getFeatures()
-
-        # Get unique pairs id_boundary-id_plot in both tables
-        existing_more_pairs = [(more_bfs_feature[MOREBFS_TABLE_PLOT_FIELD], more_bfs_feature[MOREBFS_TABLE_BOUNDARY_FIELD]) for more_bfs_feature in more_bfs_features]
-        existing_more_pairs = set(existing_more_pairs)
-        existing_less_pairs = [(less_feature[LESS_TABLE_PLOT_FIELD], less_feature[LESS_TABLE_BOUNDARY_FIELD]) for less_feature in less_features]
-        existing_less_pairs = set(existing_less_pairs)
-
-        boundary_layer = res_layers[BOUNDARY_TABLE]
-        id_more_pairs, id_less_pairs = self.get_pair_boundary_plot(boundary_layer, plot_layer, use_selection)
-
-        if id_more_pairs:
-            more_bfs_layer.startEditing()
-            features = list()
-            for id_pair in id_more_pairs:
-                if not id_pair in existing_more_pairs: # Avoid duplicated pairs in the DB
-                    # Create feature
-                    feature = QgsVectorLayerUtils().createFeature(more_bfs_layer)
-                    feature.setAttribute(MOREBFS_TABLE_PLOT_FIELD, id_pair[0])
-                    feature.setAttribute(MOREBFS_TABLE_BOUNDARY_FIELD, id_pair[1])
-                    features.append(feature)
-            more_bfs_layer.addFeatures(features)
-            more_bfs_layer.commitChanges()
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "{} out of {} records were saved into '{}'! {} out of {} records already existed in the database.").format(
-                    len(features),
-                    len(id_more_pairs),
-                    MORE_BOUNDARY_FACE_STRING_TABLE,
-                    len(id_more_pairs) - len(features),
-                    len(id_more_pairs)
-                ),
-                Qgis.Info)
-        else:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.".format(MORE_BOUNDARY_FACE_STRING_TABLE)),
-                Qgis.Info)
-
-        if id_less_pairs:
-            less_layer.startEditing()
-            features = list()
-            for id_pair in id_less_pairs:
-                if not id_pair in existing_less_pairs: # Avoid duplicated pairs in the DB
-                    # Create feature
-                    feature = QgsVectorLayerUtils().createFeature(less_layer)
-                    feature.setAttribute(LESS_TABLE_PLOT_FIELD, id_pair[0])
-                    feature.setAttribute(LESS_TABLE_BOUNDARY_FIELD, id_pair[1])
-                    features.append(feature)
-            less_layer.addFeatures(features)
-            less_layer.commitChanges()
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "{} out of {} records were saved into '{}'! {} out of {} records already existed in the database.").format(
-                    len(features),
-                    len(id_less_pairs),
-                    LESS_TABLE,
-                    len(id_less_pairs) - len(features),
-                    len(id_less_pairs)
-                ),
-                Qgis.Info)
-        else:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.".format(LESS_TABLE)),
-                Qgis.Info)
-
-    def get_pair_boundary_plot(self, boundary_layer, plot_layer, use_selection=True):
-        lines = boundary_layer.getFeatures()
-        polygons = plot_layer.getSelectedFeatures() if use_selection else plot_layer.getFeatures()
-        intersect_more_pairs = list()
-        intersect_less_pairs = list()
-
-        if boundary_layer.featureCount() == 0:
-            return (intersect_more_pairs, intersect_less_pairs)
-
-        index = QgsSpatialIndex(boundary_layer)
-
-        for polygon in polygons:
-            bbox = polygon.geometry().boundingBox()
-            bbox.scale(1.001)
-            candidates_ids = index.intersects(bbox)
-
-            candidates_features = boundary_layer.getFeatures(candidates_ids)
-
-            for candidate_feature in candidates_features:
-                polygon_geom = polygon.geometry()
-                is_multipart = polygon_geom.isMultipart()
-                candidate_geometry = candidate_feature.geometry()
-
-                if polygon_geom.intersects(candidate_geometry):
-                    # Does the current multipolygon have inner rings?
-                    has_inner_rings = False
-                    multi_polygon = None
-                    single_polygon = None
-
-                    if is_multipart:
-                        multi_polygon = polygon_geom.get()
-                        for part in range(multi_polygon.numGeometries()):
-                            if multi_polygon.ringCount(part) > 1:
-                                has_inner_rings = True
-                                break
-                    else:
-                        single_polygon = polygon_geom.get()
-                        if single_polygon.numInteriorRings() > 0:
-                            has_inner_rings = True
-
-                    # Now we'll test intersections against borders
-                    if has_inner_rings:
-                        # In this case we need to identify whether the
-                        # intersection is with outer rings (goes to MOREBFS
-                        # table) or with inner rings (goes to LESS table)
-                        multi_outer_rings = QgsMultiLineString()
-                        multi_inner_rings = QgsMultiLineString()
-
-                        if is_multipart and multi_polygon:
-                            for i in range(multi_polygon.numGeometries()):
-                                temp_polygon = multi_polygon.geometryN(i)
-                                multi_outer_rings.addGeometry(temp_polygon.exteriorRing().clone())
-                                for j in range(temp_polygon.numInteriorRings()):
-                                    multi_inner_rings.addGeometry(temp_polygon.interiorRing(j).clone())
-
-                        elif not is_multipart and single_polygon:
-                            multi_outer_rings.addGeometry(single_polygon.exteriorRing().clone())
-                            for j in range(single_polygon.numInteriorRings()):
-                                multi_inner_rings.addGeometry(single_polygon.interiorRing(j).clone())
-
-                        intersection_type = QgsGeometry(multi_outer_rings).intersection(candidate_geometry).type()
-                        if intersection_type == QgsWkbTypes.LineGeometry:
-                            intersect_more_pairs.append((polygon[ID_FIELD], candidate_feature[ID_FIELD]))
-                        else:
-                            print("WARNING: (MoreBFS) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
-                                polygon[ID_FIELD],
-                                candidate_feature[ID_FIELD],
-                                intersection_type))
-
-                        intersection_type = QgsGeometry(multi_inner_rings).intersection(candidate_geometry).type()
-                        if intersection_type == QgsWkbTypes.LineGeometry:
-                            intersect_less_pairs.append((polygon[ID_FIELD], candidate_feature[ID_FIELD]))
-                        else:
-                            print("WARNING: (Less) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
-                                polygon[ID_FIELD],
-                                candidate_feature[ID_FIELD],
-                                intersection_type))
-
-                    else:
-                        boundary = None
-                        if is_multipart and multi_polygon:
-                            boundary = multi_polygon.boundary()
-                        elif not is_multipart and single_polygon:
-                            boundary = single_polygon.boundary()
-
-                        intersection_type = QgsGeometry(boundary).intersection(candidate_geometry).type()
-                        if boundary and intersection_type == QgsWkbTypes.LineGeometry:
-                            intersect_more_pairs.append((polygon[ID_FIELD], candidate_feature[ID_FIELD]))
-                        else:
-                            print("WARNING: (MoreBFS) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
-                                polygon[ID_FIELD],
-                                candidate_feature[ID_FIELD],
-                                intersection_type))
-
-        return (intersect_more_pairs, intersect_less_pairs)
-
     def polygonize_boundaries(self, db):
         res_layers = self.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
@@ -787,32 +672,3 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils", "No plot could be created. Make sure selected boundaries are closed!"),
                 Qgis.Warning)
             return
-
-    def get_error_layers_group(self):
-        root = QgsProject.instance().layerTreeRoot()
-        group = root.findGroup(ERROR_LAYER_GROUP)
-        if group is None:
-            index = self.project_generator_utils.get_first_index_for_layer_type('unknown') # unknown is the option for groups
-            group = root.insertGroup(index if index is not None else -1, ERROR_LAYER_GROUP)
-
-        return group
-
-    def turn_transaction_off(self):
-        QgsProject.instance().setAutoTransaction(False)
-
-    def show_etl_model(self, db, input_layer, ladm_col_layer_name):
-        model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
-        if model:
-            mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
-            output = self.get_layer(db, ladm_col_layer_name, geometry_type=None, load=True)
-            processing.execAlgorithmDialog("model:ETL-model", {
-                    'INPUT': input_layer.name(),
-                    'mapping': mapping,
-                    'output': output.name()
-                }
-            )
-        else:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Model ETL-model was not found and cannot be opened!"),
-                Qgis.Info)
