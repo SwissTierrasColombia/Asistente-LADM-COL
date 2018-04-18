@@ -10,7 +10,7 @@ from qgis.testing import unittest, start_app
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.config.table_mapping_config import ID_FIELD
-from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_path
+from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_copy_path
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.quality import QualityUtils
 
@@ -32,7 +32,7 @@ class TesQualityValidations(unittest.TestCase):
 
     def test_get_too_long_segments_from_simple_line(self):
         print('Validating too long segments...')
-        gpkg_path = get_test_path('geopackage/tests_data.gpkg')
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='too_long_lines')
         boundary_layer = QgsVectorLayer(uri, 'too_long_lines', 'ogr')
 
@@ -80,7 +80,7 @@ class TesQualityValidations(unittest.TestCase):
 
     def test_get_overlapping_lines(self):
         print('Validating overlaps in boundaries...')
-        gpkg_path = get_test_path('geopackage/tests_data.gpkg')
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='test_boundaries_overlap')
         boundary_overlap_layer = QgsVectorLayer(uri, 'test_boundaries_overlap', 'ogr')
 
@@ -115,7 +115,7 @@ class TesQualityValidations(unittest.TestCase):
     def test_get_missing_boundary_points_in_boundaries(self):
         print('Validating missing boundary points in boundaries...')
 
-        gpkg_path = get_test_path('geopackage/tests_data.gpkg')
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary_points_')
@@ -139,7 +139,7 @@ class TesQualityValidations(unittest.TestCase):
     def test_get_missing_boundary_points_in_boundaries_without_points(self):
         print('Validating missing boundary points in boundaries without points...')
 
-        gpkg_path = get_test_path('geopackage/tests_data.gpkg')
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
         point_layer = QgsVectorLayer("MultiPoint?crs=EPSG:{}".format(3116), "Boundary points", "memory")
@@ -164,7 +164,7 @@ class TesQualityValidations(unittest.TestCase):
 
     def test_boundary_dangles(self):
         print('Validating boundary_dangles...')
-        gpkg_path = get_test_path('geopackage/tests_data.gpkg')
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='test_boundaries_overlap')
         boundary_layer = QgsVectorLayer(uri, 'dangles', 'ogr')
 
@@ -182,7 +182,7 @@ class TesQualityValidations(unittest.TestCase):
 
     def test_boundary_dangles_no_dangles(self):
         print('Validating boundary_dangles with no dangles...')
-        gpkg_path = get_test_path('geopackage/tests_data.gpkg')
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'dangles', 'ogr')
 
