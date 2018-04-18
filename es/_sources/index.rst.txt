@@ -22,7 +22,6 @@ Welcome to the Assistant's documentation LADM_COL!
 .. image:: static/05_FUNCIONALIDADES.gif
    :height: 500
    :width: 800
-   :scale: 100
    :alt: intro
 
 .. thumbnail:: static/05_FUNCIONALIDADES.gif

@@ -11,7 +11,6 @@ Add Points
 .. image:: ../static/06_CARGA_PUNTOS.gif
    :height: 500
    :width: 800
-   :scale: 100
    :alt: add points
 
 1. Boundary Point
@@ -35,7 +34,6 @@ building, right of way or auxiliary vertex.
 .. image:: ../static/add_pnts.png
    :height: 400
    :width: 400
-   :scale: 90
    :alt: alternate text
 
 
@@ -61,7 +59,6 @@ mapping to define field transformations and correspondence.
 .. image:: ../static/def_bndrs.png
    :height: 400
    :width: 400
-   :scale: 90
    :alt: alternate text
 
 Create plot
@@ -84,5 +81,4 @@ mapping to define field transformations and correspondence.
 .. image:: ../static/cre_plts.png
    :height: 400
    :width: 400
-   :scale: 90
    :alt: alternate text

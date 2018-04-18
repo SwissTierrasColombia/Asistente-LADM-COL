@@ -20,5 +20,4 @@ A Project of:
 .. image:: static/01_INSTALACION.gif
    :height: 500
    :width: 800
-   :scale: 100
    :alt: about plugin

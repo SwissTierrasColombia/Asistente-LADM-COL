@@ -23,5 +23,4 @@ mapping to define field transformations and correspondence.
 .. image:: ../static/cre_prcl.png
    :height: 400
    :width: 400
-   :scale: 90
    :alt: alternate text

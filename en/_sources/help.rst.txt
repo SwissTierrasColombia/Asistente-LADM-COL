@@ -4,7 +4,6 @@ Settings
 .. image:: static/03_CONFIGURACION.gif
    :height: 500
    :width: 800
-   :scale: 100
    :alt: about plugin
 
 Database Connection

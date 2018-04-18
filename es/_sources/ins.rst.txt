@@ -14,5 +14,4 @@ Installation process
 .. image:: static/01_INSTALACION.gif
    :height: 500
    :width: 800
-   :scale: 100
    :alt: install plugin process

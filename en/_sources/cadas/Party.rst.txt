@@ -4,7 +4,6 @@ Party
 .. image:: ../static/07_CREACION_INTERESADO.gif
    :height: 500
    :width: 800
-   :scale: 100
    :alt: add party
 
 Natural Party
