@@ -19,7 +19,7 @@ class TesQualityValidations(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.qgis_utils = QGISUtils()
+        self.quality = QGISUtils().quality
 
     def test_get_too_long_segments_from_simple_line(self):
         print('Validating too long segments')
@@ -39,22 +39,22 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(lines.constGet().numGeometries(), 4)
 
         line = lines.constGet().geometryN(0)
-        segments_info = self.qgis_utils.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 2)
         self.validate_segments(segments_info, tolerance)
 
         line = lines.constGet().geometryN(1)
-        segments_info = self.qgis_utils.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 1)
         self.validate_segments(segments_info, tolerance)
 
         line = lines.constGet().geometryN(2)
-        segments_info = self.qgis_utils.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 0)
         self.validate_segments(segments_info, tolerance)
 
         line = lines.constGet().geometryN(3)
-        segments_info = self.qgis_utils.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 1)
         self.validate_segments(segments_info, tolerance)
 
@@ -65,7 +65,7 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(lines.constGet().numGeometries(), 1)
 
         line = lines.constGet().geometryN(0)
-        segments_info = self.qgis_utils.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 1)
         self.validate_segments(segments_info, tolerance)
 
@@ -78,7 +78,7 @@ class TesQualityValidations(unittest.TestCase):
         features = [feature for feature in boundary_overlap_layer.getFeatures()]
         self.assertEqual(len(features), 12)
 
-        overlapping = self.qgis_utils.get_overlapping_lines(boundary_overlap_layer)
+        overlapping = self.quality.get_overlapping_lines(boundary_overlap_layer)
 
         line_overlap = dict()
         point_overlap = dict()

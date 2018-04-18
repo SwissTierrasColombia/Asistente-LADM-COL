@@ -23,10 +23,10 @@ from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-from ..config.table_mapping_config import BOUNDARY_TABLE
+from ..config.table_mapping_config import BUILDING_TABLE
 from ..config.help_strings import HelpStrings
 
-WIZARD_UI = get_ui_class('wiz_create_build_cadastre.ui')
+WIZARD_UI = get_ui_class('wiz_create_building_cadastre.ui')
 
 class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
@@ -44,23 +44,23 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
         self.adjust_page_1_controls()
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
 
-        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.LineLayer)
+        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PolygonLayer)
 
     def adjust_page_1_controls(self):
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
-            finish_button_text = QCoreApplication.translate("CreateBuildingsCadastreWizard", "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(BOUNDARY_TABLE, False))
+            finish_button_text = QCoreApplication.translate("CreateBuildingCadastreWizard", "Import")
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(BUILDING_TABLE, False))
 
         elif self.rad_digitizing.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
-            finish_button_text = QCoreApplication.translate("CreateBuildingsCadastreWizard", "Start")
-            self.txt_help_page_1.setHtml(self.help_strings.WIZ_DEFINE_BOUNDARIES_CADASTRE_PAGE_1_OPTION_DIGITIZE)
+            finish_button_text = QCoreApplication.translate("CreateBuildingCadastreWizard", "Start")
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_BUILDING_CADASTRE_PAGE_1_OPTION_POINTS)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
-                                       QCoreApplication.translate("CreateBuildingsCadastreWizard",
+                                       QCoreApplication.translate("CreateBuildingCadastreWizard",
                                        finish_button_text))
 
     def finished_dialog(self):
@@ -70,11 +70,11 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
             if self.mMapLayerComboBox.currentLayer() is not None:
                 self.qgis_utils.show_etl_model(self._db,
                                                self.mMapLayerComboBox.currentLayer(),
-                                               BOUNDARY_TABLE)
+                                               BUILDING_TABLE)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                    QCoreApplication.translate("CreateBuildingsCadastreWizard",
-                                               "Select a source layer to set the field mapping to '{}'.").format(BOUNDARY_TABLE),
+                    QCoreApplication.translate("CreateBuildingCadastreWizard",
+                                               "Select a source layer to set the field mapping to '{}'.").format(BUILDING_TABLE),
                     Qgis.Warning)
 
         elif self.rad_digitizing.isChecked():
@@ -82,10 +82,10 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
 
     def prepare_boundary_creation(self):
         # Load layers
-        self._boundary_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_TABLE, load=True)
+        self._boundary_layer = self.qgis_utils.get_layer(self._db, BUILDING_TABLE, load=True)
         if self._boundary_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateBuildingsCadastreWizard",
+                QCoreApplication.translate("CreateBuildingCadastreWizard",
                                            "Boundary layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
@@ -113,7 +113,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
         self.iface.actionAddFeature().trigger()
 
         self.iface.messageBar().pushMessage("Asistente LADM_COL",
-            QCoreApplication.translate("CreateBuildingsCadastreWizard",
+            QCoreApplication.translate("CreateBuildingCadastreWizard",
                                        "You can now start capturing boundaries clicking on the map..."),
             Qgis.Info)
 

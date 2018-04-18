@@ -41,6 +41,7 @@ UEBAUNIT_TABLE = "uebaunit"
 UEBAUNIT_TABLE_PARCEL_FIELD = "baunit_predio"
 UEBAUNIT_TABLE_PLOT_FIELD = "ue_terreno"
 VIDA_UTIL_FIELD = "comienzo_vida_util_version"
+BUILDING_TABLE = "construccion"
 
 NAMESPACE_PREFIX = {
     BOUNDARY_POINT_TABLE: 'p',
