@@ -136,6 +136,32 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(len(missing_points[2]),1)
         self.assertNotIn(7,missing_points)
 
+    def test_get_missing_boundary_points_in_boundaries_without_points(self):
+        print('Validating missing boundary points in boundaries without points...')
+
+        gpkg_path = get_test_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
+        boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
+        point_layer = QgsVectorLayer("MultiPoint?crs=EPSG:{}".format(3116), "Boundary points", "memory")
+
+        boundary_features = [feature for feature in boundary_layer.getFeatures()]
+        self.assertEqual(len(boundary_features), 8)
+
+        point_features = [feature for feature in point_layer.getFeatures()]
+        self.assertEqual(len(point_features), 0)
+
+        missing_points = self.quality.get_missing_boundary_points_in_boundaries(point_layer, boundary_layer)
+
+        self.assertEqual(len(missing_points),6)
+        self.assertEqual(len(missing_points[1]),4)
+        self.assertEqual(len(missing_points[2]),1)
+        self.assertEqual(len(missing_points[3]),2)
+        self.assertEqual(len(missing_points[5]),1)
+        self.assertEqual(len(missing_points[6]),6)
+        self.assertEqual(len(missing_points[8]),2)
+        self.assertNotIn(4,missing_points)
+        self.assertNotIn(7,missing_points)
+
     def validate_segments(self, segments_info, tolerance):
         for segment_info in segments_info:
             #print(segment_info[0].asWkt(), segment_info[1])

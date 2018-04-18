@@ -365,7 +365,7 @@ class QualityUtils(QObject):
         cleaned_vertices = processing.run("qgis:deleteduplicategeometries", {'INPUT':extracted_vertices_layer,'OUTPUT':'memory:'}, feedback=feedback)
         cleaned_vertices_layer = cleaned_vertices['OUTPUT']
 
-        if boundary_point_layer.featureCount() == 0: # TODO Write a test for this case
+        if boundary_point_layer.featureCount() == 0:
             # Return all extracted and cleaned vertices
             for feature in cleaned_vertices_layer.getFeatures():
                 if feature[ID_FIELD] in res:
