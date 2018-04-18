@@ -291,6 +291,55 @@ class QualityUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "There are no missing boundary points in boundaries."), Qgis.Info)
 
+    def check_dangles_in_boundaries(self, db):
+        boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
+
+        if boundary_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        if boundary_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no boundaries to check for dangles."),
+                Qgis.Info)
+            return
+
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                            QCoreApplication.translate("QGISUtils",
+                                "Dangles in boundaries"),
+                            "memory")
+        pr = error_layer.dataProvider()
+        pr.addAttributes([QgsField("boundary_id", QVariant.Int)])
+        error_layer.updateFields()
+
+        end_points, dangle_ids = self.get_dangle_ids(boundary_layer)
+
+        new_features = []
+        for dangle in end_points.getFeatures(dangle_ids):
+            new_feature = QgsVectorLayerUtils().createFeature(end_points, dangle.geometry(), {0: dangle[ID_FIELD]})
+            new_features.append(new_feature)
+
+        error_layer.dataProvider().addFeatures(new_features)
+
+        if error_layer.featureCount() > 0:
+            group = self.qgis_utils.get_error_layers_group()
+            added_layer = QgsProject.instance().addMapLayer(error_layer, False)
+            added_layer = group.addLayer(added_layer).layer()
+            self.qgis_utils.symbology.set_point_error_symbol(added_layer)
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "A memory layer with {} boundary dangles has been added to the map!").format(added_layer.featureCount()),
+                Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Boundaries have no dangles!"),
+                Qgis.Info)
+
     def get_too_long_segments_from_simple_line(self, line, tolerance):
         segments_info = list()
         vertices = line.vertices()
@@ -347,3 +396,24 @@ class QualityUtils(QObject):
                     else:
                         res[feature[ID_FIELD]] = [diff_geom]
         return res
+
+    def get_dangle_ids(self, boundary_layer):
+        # 1. Run extract specific vertices
+        # 2. Call to get_overlapping_points
+        # 3. Obtain dangle ids (those not present in overlapping points result)
+        res = processing.run("qgis:extractspecificvertices", {
+                'INPUT': boundary_layer,
+                'VERTICES': '0,-1', # First and last
+                'OUTPUT': 'memory:'
+            },
+            feedback=QgsProcessingFeedback()
+        )
+        end_points = res['OUTPUT']
+
+        end_point_ids = [point.id() for point in end_points.getFeatures()]
+        overlapping_points = self.qgis_utils.geometry.get_overlapping_points(end_points)
+
+        # Unpack list of lists into single list
+        overlapping_point_ids = [item for sublist in overlapping_points for item in sublist]
+
+        return (end_points, list(set(end_point_ids) - set(overlapping_point_ids)))
