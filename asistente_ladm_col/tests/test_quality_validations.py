@@ -4,15 +4,20 @@ import psycopg2
 import os
 
 from sys import platform
-from qgis.core import QgsVectorLayer, QgsWkbTypes
+from qgis.core import QgsVectorLayer, QgsWkbTypes, QgsApplication
 from qgis.testing import unittest, start_app
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-#from asistente_ladm_col.gui.point_spa_uni_cadastre_wizard import PointsSpatialUnitCadastreWizard
+from asistente_ladm_col.config.table_mapping_config import ID_FIELD
 from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_path
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.quality import QualityUtils
+
+import processing
+from processing.core.Processing import Processing
+from qgis.analysis import QgsNativeAlgorithms
+from processing.tools import *
 
 import_projectgenerator()
 
@@ -22,6 +27,8 @@ class TesQualityValidations(unittest.TestCase):
     def setUpClass(self):
         self.qgis_utils = QGISUtils()
         self.quality = QualityUtils(self.qgis_utils)
+        Processing.initialize()
+        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
 
     def test_get_too_long_segments_from_simple_line(self):
         print('Validating too long segments...')
@@ -104,6 +111,86 @@ class TesQualityValidations(unittest.TestCase):
             print("Testing pair {}...".format(pair))
             for overlap in overlaps:
                 self.assertIn(overlap.asWkt(), expected_overlaps[pair])
+
+    def test_get_missing_boundary_points_in_boundaries(self):
+        print('Validating missing boundary points in boundaries...')
+
+        gpkg_path = get_test_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
+        boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
+        uri = gpkg_path + '|layername={layername}'.format(layername='boundary_points_')
+        point_layer = QgsVectorLayer(uri, 'boundary_points_', 'ogr')
+
+        boundary_features = [feature for feature in boundary_layer.getFeatures()]
+        self.assertEqual(len(boundary_features), 8)
+
+        point_features = [feature for feature in point_layer.getFeatures()]
+        self.assertEqual(len(point_features), 9)
+
+        missing_points = self.quality.get_missing_boundary_points_in_boundaries(point_layer, boundary_layer)
+
+        self.assertEqual(len(missing_points),4)
+        self.assertEqual(len(missing_points[6]),3)
+        self.assertEqual(len(missing_points[1]),2)
+        self.assertEqual(len(missing_points[8]),1)
+        self.assertEqual(len(missing_points[2]),1)
+        self.assertNotIn(7,missing_points)
+
+    def test_get_missing_boundary_points_in_boundaries_without_points(self):
+        print('Validating missing boundary points in boundaries without points...')
+
+        gpkg_path = get_test_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
+        boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
+        point_layer = QgsVectorLayer("MultiPoint?crs=EPSG:{}".format(3116), "Boundary points", "memory")
+
+        boundary_features = [feature for feature in boundary_layer.getFeatures()]
+        self.assertEqual(len(boundary_features), 8)
+
+        point_features = [feature for feature in point_layer.getFeatures()]
+        self.assertEqual(len(point_features), 0)
+
+        missing_points = self.quality.get_missing_boundary_points_in_boundaries(point_layer, boundary_layer)
+
+        self.assertEqual(len(missing_points),6)
+        self.assertEqual(len(missing_points[1]),4)
+        self.assertEqual(len(missing_points[2]),1)
+        self.assertEqual(len(missing_points[3]),2)
+        self.assertEqual(len(missing_points[5]),1)
+        self.assertEqual(len(missing_points[6]),6)
+        self.assertEqual(len(missing_points[8]),2)
+        self.assertNotIn(4,missing_points)
+        self.assertNotIn(7,missing_points)
+
+    def test_boundary_dangles(self):
+        print('Validating boundary_dangles...')
+        gpkg_path = get_test_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='test_boundaries_overlap')
+        boundary_layer = QgsVectorLayer(uri, 'dangles', 'ogr')
+
+        features = [feature for feature in boundary_layer.getFeatures()]
+        self.assertEqual(len(features), 12)
+
+        end_points, dangle_ids = self.quality.get_dangle_ids(boundary_layer)
+        self.assertEqual(len(dangle_ids), 18)
+
+        boundary_ids = [feature[ID_FIELD] for feature in end_points.getFeatures(dangle_ids)]
+        boundary_ids.sort()
+        expected_boundary_ids = [4, 4, 5, 6, 6, 7, 8, 8, 10, 10, 325, 325, 334, 334, 335, 336, 336, 337]
+
+        self.assertEqual(boundary_ids, expected_boundary_ids)
+
+    def test_boundary_dangles_no_dangles(self):
+        print('Validating boundary_dangles with no dangles...')
+        gpkg_path = get_test_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
+        boundary_layer = QgsVectorLayer(uri, 'dangles', 'ogr')
+
+        features = [feature for feature in boundary_layer.getFeatures()]
+        self.assertEqual(len(features), 8)
+
+        end_points, dangle_ids = self.quality.get_dangle_ids(boundary_layer)
+        self.assertEqual(len(dangle_ids), 0)
 
 
     def validate_segments(self, segments_info, tolerance):
