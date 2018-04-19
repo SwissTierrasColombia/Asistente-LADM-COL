@@ -32,7 +32,9 @@ from processing.modeler.ModelerUtils import ModelerUtils
 
 from .config.general_config import (
     PLUGIN_NAME,
-    PROJECT_GENERATOR_MIN_REQUIRED_VERSION
+    PROJECT_GENERATOR_MIN_REQUIRED_VERSION,
+    PROJECT_GENERATOR_EXACT_REQUIRED_VERSION,
+    PROJECT_GENERATOR_REQUIRED_VERSION_URL
 )
 from .gui.point_spa_uni_cadastre_wizard import PointsSpatialUnitCadastreWizard
 from .gui.define_boundaries_cadastre_wizard import DefineBoundariesCadastreWizard
@@ -284,14 +286,22 @@ class AsistenteLADMCOLPlugin(QObject):
             if plugin_version_right:
                 func_to_decorate(inst)
             else:
-                widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
-                             QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'Project Generator' version {} (or higher) is required, but couldn't be found. Click the button to show the Plugin Manager.").format(PROJECT_GENERATOR_MIN_REQUIRED_VERSION))
-                button = QPushButton(widget)
-                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
-                button.pressed.connect(inst.show_plugin_manager)
-                widget.layout().addWidget(button)
-                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
-                self.log.logMessage(
+                if PROJECT_GENERATOR_REQUIRED_VERSION_URL:
+                    # If we depend on a specific version of Project Generator (only on that one)
+                    # and it is not the latest version, show a download link
+                    msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'Project Generator' version {} is required, but couldn't be found. Download it <a href=\"{}\">from this link</a> and use 'Install from ZIP'.").format(PROJECT_GENERATOR_MIN_REQUIRED_VERSION, PROJECT_GENERATOR_REQUIRED_VERSION_URL)
+                    inst.iface.messageBar().pushMessage("Asistente LADM_COL", msg, Qgis.Warning, 15)
+                else:
+                    msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'Project Generator' version {} {}is required, but couldn't be found. Click the button to show the Plugin Manager.").format(PROJECT_GENERATOR_MIN_REQUIRED_VERSION, '' if PROJECT_GENERATOR_EXACT_REQUIRED_VERSION else '(or higher) ')
+
+                    widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+                    button = QPushButton(widget)
+                    button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
+                    button.pressed.connect(inst.show_plugin_manager)
+                    widget.layout().addWidget(button)
+                    inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
+
+                inst.log.logMessage(
                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, Project Generator not found."),
                     PLUGIN_NAME,
                     Qgis.Warning
@@ -330,11 +340,15 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self.log.logMessage("[Project Generator] Min required version: {}, current_version: {}".format(min_required_version_splitted, current_version_splitted), PLUGIN_NAME, Qgis.Info)
 
-        for i in range(len(current_version_splitted)):
-            if int(current_version_splitted[i]) < int(min_required_version_splitted[i]):
-                return False
-            elif int(current_version_splitted[i]) > int(min_required_version_splitted[i]):
-                return True
+        if PROJECT_GENERATOR_EXACT_REQUIRED_VERSION:
+            return min_required_version_splitted == current_version_splitted
+
+        else: # Min version and subsequent versions should work
+            for i in range(len(current_version_splitted)):
+                if int(current_version_splitted[i]) < int(min_required_version_splitted[i]):
+                    return False
+                elif int(current_version_splitted[i]) > int(min_required_version_splitted[i]):
+                    return True
 
         return True
 
