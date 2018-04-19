@@ -156,10 +156,6 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
     def finished_dialog(self):
         self.save_settings()
 
-        settings = QSettings()
-        if settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
-            automatic_fields_definitions = self.qgis_utils.disable_automatic_fields(self._db, self.current_point_name())
-
         if self.rad_refactor.isChecked():
             output_layer_name = self.current_point_name()
 
@@ -174,12 +170,13 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
                     Qgis.Warning)
 
         elif self.rad_csv.isChecked():
+            automatic_fields_definition = self.qgis_utils.check_if_and_disable_automatic_fields(self._db, self.current_point_name())
+
             self.prepare_copy_csv_points_to_db()
 
-        if settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
-            self.qgis_utils.enable_automatic_fields(self._db,
-                                                    automatic_fields_definitions,
-                                                    self.current_point_name())
+            self.qgis_utils.check_if_and_enable_automatic_fields(self._db,
+                                                        automatic_fields_definition,
+                                                        self.current_point_name())
 
     def current_point_name(self):
         return BOUNDARY_POINT_TABLE if self.rad_boundary_point.isChecked() else SURVEY_POINT_TABLE

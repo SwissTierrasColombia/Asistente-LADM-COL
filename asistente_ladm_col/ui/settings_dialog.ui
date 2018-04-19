@@ -33,7 +33,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_db_connection">
       <attribute name="title">
@@ -274,6 +274,9 @@
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
           <widget class="QCheckBox" name="chk_disable_automatic_fields">
+           <property name="toolTip">
+            <string>For instance, when loading data from CSV or from another QGIS table/layer</string>
+           </property>
            <property name="text">
             <string>Disable automatic fields while batch loading/importing data</string>
            </property>

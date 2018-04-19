@@ -1,3 +1,4 @@
+from qgis.PyQt.QtCore import QSettings
 from .table_mapping_config import *
 
 def get_refactor_fields_mapping(layer_name, qgis_utils):
@@ -24,7 +25,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'length': -1, 'precision': 0, 'expression': '"ue_servidumbrepaso"', 'name': 'ue_servidumbrepaso', 'type': 4},
             {'length': -1, 'precision': 0, 'expression': '"ue_unidadconstruccion"', 'name': 'ue_unidadconstruccion', 'type': 4},
             {'length': -1, 'precision': 0, 'expression': '"ue_construccion"', 'name': 'ue_construccion', 'type': 4},
-            {'length': -1, 'precision': -1, 'expression': 'now()', 'name': 'comienzo_vida_util_version', 'type': 16},
+            {'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"', 'name': 'comienzo_vida_util_version', 'type': 16},
             {'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"', 'name': 'fin_vida_util_version', 'type': 16}
         ]
     elif layer_name == SURVEY_POINT_TABLE:
@@ -47,7 +48,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'type': 4, 'length': -1, 'name': 'ue_servidumbrepaso', 'precision': 0, 'expression': '"ue_servidumbrepaso"'},
             {'type': 4, 'length': -1, 'name': 'ue_construccion', 'precision': 0, 'expression': '"ue_construccion"'},
             {'type': 4, 'length': -1, 'name': 'ue_unidadconstruccion', 'precision': 0, 'expression': '"ue_unidadconstruccion"'},
-            {'type': 16, 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'expression': 'now()'},
+            {'type': 16, 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
             {'type': 16, 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
     elif layer_name == BOUNDARY_TABLE:
@@ -57,7 +58,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'name': 'localizacion_textual', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"localizacion_textual"'},
             {'name': 'ccl_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"ccl_espacio_de_nombres"'},
             {'name': 'ccl_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"ccl_local_id"'},
-            {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'},
+            {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
     elif layer_name == PLOT_TABLE:
@@ -79,7 +80,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'name': 'uej2_la_espaciojuridicounidadedificacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicounidadedificacion"'},
             {'name': 'uej2_construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_construccion"'},
             {'name': 'uej2_unidadconstruccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'},
-            {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'},
+            {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
     elif layer_name == PARCEL_TABLE:
@@ -97,7 +98,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo"'},
             {'name': 'u_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"u_espacio_de_nombres"'},
             {'name': 'u_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"u_local_id"'},
-            {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'},
+            {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
     elif layer_name == NATURAL_PARTY_TABLE:
@@ -117,7 +118,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'name': 'p_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"p_espacio_de_nombres"'},
             {'name': 'p_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"p_local_id"'},
             {'name': 'agrupacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"agrupacion"'},
-            {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'now()'},
+            {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
     elif layer_name == LEGAL_PARTY_TABLE:
@@ -129,7 +130,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'type': 10, 'precision': -1, 'name': 'tipo', 'expression': '"tipo"', 'length': 255},
             {'type': 10, 'precision': -1, 'name': 'p_espacio_de_nombres', 'expression': '"p_espacio_de_nombres"', 'length': 255},
             {'type': 10, 'precision': -1, 'name': 'p_local_id', 'expression': '"p_local_id"', 'length': 255},
-            {'type': 16, 'precision': -1, 'name': 'comienzo_vida_util_version', 'expression': 'now()', 'length': -1},
+            {'type': 16, 'precision': -1, 'name': 'comienzo_vida_util_version', 'expression': '"comienzo_vida_util_version"', 'length': -1},
             {'type': 16, 'precision': -1, 'name': 'fin_vida_util_version', 'expression': '"fin_vida_util_version"', 'length': -1}
         ]
     elif layer_name == ADMINISTRATIVE_SOURCE_TABLE:
@@ -163,13 +164,17 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'type': 1, 'length': -1, 'name': 'oficialidad', 'precision': -1, 'expression': '"oficialidad"'}
         ]
 
-    # Now see if we can adjust the mapping depending on user settings
-    ns_enabled, ns_field, ns_value = qgis_utils.get_namespace_field_and_value(layer_name)
+    # If the user doesn't want to disable automatic fields...
+    if not QSettings().value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
+        # Now see if we can adjust the mapping depending on user settings
+        ns_enabled, ns_field, ns_value = qgis_utils.get_namespace_field_and_value(layer_name)
 
-    if ns_enabled and ns_field:
         for field in mapping:
-            if field['name'] == ns_field:
-                field['expression'] = '{}'.format(ns_value)
-                break
+            if ns_enabled and ns_field:
+                if field['name'] == ns_field:
+                    field['expression'] = '{}'.format(ns_value)
+
+            if field['name'] == VIDA_UTIL_FIELD:
+                field['expression'] = 'now()'
 
     return mapping
