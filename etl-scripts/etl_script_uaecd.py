@@ -24,7 +24,13 @@ import datetime
 import qgis
 import processing
 
-from qgis.core import QgsVectorLayerUtils, QgsField, QgsProcessingFeedback
+from qgis.core import (
+    QgsVectorLayerUtils,
+    QgsField,
+    QgsProcessingFeedback,
+    Qgis,
+    QgsApplication
+)
 from qgis.PyQt.QtCore import QVariant
 
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
@@ -39,9 +45,12 @@ OUTPUT_DB_SCHEMA = 'uaecd_ladm_col_09'
 OUTPUT_DB_USER = 'postgres'
 OUTPUT_DB_PASSWORD = 'postgres'
 
+log = QgsApplication.messageLog()
+log_group_name = 'Script ETL UAECD'
+
 # Asistente-LADM_COL plugin is a prerrequisite
 asistente_ladm_col = QGISUtils()
-print("INFO: Using Refactored DB {}".format(REFACTORED_DB_PATH))
+log.logMessage("Using Refactored DB {}".format(REFACTORED_DB_PATH), log_group_name, Qgis.Info)
 
 def refactor_and_copy_paste(params_refactor, input_uri, output_layer_name):
     """
@@ -58,12 +67,12 @@ def refactor_and_copy_paste(params_refactor, input_uri, output_layer_name):
         input_layer = QgsVectorLayer(input_uri, "r_input_layer", "ogr")
 
     if input_layer is None or not input_layer.isValid():
-        print("ERROR: Layer '{}' is not valid! Stopping...".format(input_uri))
+        log.logMessage("Layer '{}' is not valid! Stopping...".format(input_uri), log_group_name, Qgis.Critical)
         return
 
     output_layer = get_ladm_col_layer(output_layer_name)
     if not output_layer.isValid():
-        print("ERROR: Layer {} is not valid! Stopping...".format(output_layer.name()))
+        log.logMessage("Layer {} is not valid! Stopping...".format(output_layer.name()), log_group_name, Qgis.Critical)
         return
 
     # Append refactored features to output_layer
@@ -76,7 +85,7 @@ def copy_paste_features(input_layer, output_layer):
     output_layer.startEditing()
     iface.pasteFromClipboard(output_layer)
     output_layer.commitChanges()
-    print("INFO: {} features successfully copied to layer {}!".format(input_layer.featureCount(), output_layer.name()))
+    log.logMessage("INFO: {} features successfully copied to layer {}!".format(input_layer.featureCount(), output_layer.name()), log_group_name, Qgis.Info)
 
     # mapping = dict()
     # for target_idx in output_layer.fields().allAttributesList():
@@ -122,7 +131,7 @@ def fix_geometries(layer_name, input_db_path=INPUT_DB_PATH):
     }
     feedback = QgsProcessingFeedback()
     processing.run("native:fixgeometries", params, feedback=feedback)
-    print("INFO: Geometries from layer {} successfully fixed!".format(layer_name))
+    log.logMessage("Geometries from layer {} successfully fixed!".format(layer_name), log_group_name, Qgis.Info)
 
 def initialize_connection():
     dict_conn = dict()
@@ -282,10 +291,10 @@ def llenar_uebaunit_terreno_predio():
             new_row.setAttribute("baunit_predio", dict_predio[chip])
             rows.append(new_row)
         else:
-            print("WARNING: COD_LOTE-CHIP NOT FOUND in llenar_uebaunit", cod_lote, chip)
+            log.logMessage("COD_LOTE-CHIP NOT FOUND in llenar_uebaunit {}-{}".format(cod_lote, chip), log_group_name, Qgis.Warning)
 
     # Llenar uebaunit
-    print("INFO:",len(rows), " rows added to uebaunit!!!")
+    log.logMessage("{} rows added to uebaunit!!!".format(len(rows)), log_group_name, Qgis.Info)
     table_uebaunit.dataProvider().addFeatures(rows)
 
 def llenar_construccion(layer_name):
@@ -367,11 +376,11 @@ def llenar_uebaunit_construccion_predio():
                 new_row.setAttribute('baunit_predio', f_table_uebaunit['baunit_predio'])
                 rows.append(new_row)
         else:
-            print("WARNING: COD_LOTE NOT FOUND in llenar_uebaunit_construccion_predio:", cod_lote)
+            log.logMessage("COD_LOTE NOT FOUND in llenar_uebaunit_construccion_predio: {}".format(cod_lote), log_group_name, Qgis.Warning)
 
     # Llenar uebaunit
     table_uebaunit.dataProvider().addFeatures(rows)
-    print("INFO:", len(rows), " rows (construccion-predio) added to uebaunit!!!")
+    log.logMessage("{} rows (construccion-predio) added to uebaunit!!!".format(len(rows)), log_group_name, Qgis.Info)
 
 def llenar_unidad_construccion(tipo='nph'):
     # Cada tipo de predio en la UAECD tiene su particularidad, entonces se
@@ -439,7 +448,7 @@ def llenar_unidad_construccion(tipo='nph'):
             attrs = {idx_construccion: f_construccion['t_id']}
             attrMap[f.id()] = attrs
         else:
-            print("WARNING: Construccion not found in llenar_unidad_construccion:", f['su_local_id'])
+            log.logMessage("Construccion not found in llenar_unidad_construccion: {}".format(f['su_local_id']), log_group_name, Qgis.Info)
 
     input_layer.dataProvider().changeAttributeValues(attrMap)
     input_layer.reload()
@@ -514,7 +523,7 @@ def llenar_uebaunit_unidad_construccion_predio(tipo='nph'):
 
     # Llenar uebaunit
     table_uebaunit.dataProvider().addFeatures(rows)
-    print("INFO:", len(rows), " rows (unidadconstruccion-predio) added to uebaunit!!!")
+    log.logMessage("{} rows (unidadconstruccion-predio) added to uebaunit!!!".format(len(rows)), log_group_name, Qgis.Info)
 
 def llenar_interesado_natural():
     # Interesado Natural
@@ -613,15 +622,14 @@ def llenar_col_derecho(tipo='interesado_natural'):
             new_row.setAttribute("r_local_id", r_local_id)
             rows.append(new_row)
         else:
-            print("WARNING: NOT FOUND NUM_DOCUMENTO-CHIP in llenar_col_derecho", numero_documento, chip)
+            log.logMessage("NOT FOUND NUM_DOCUMENTO-CHIP in llenar_col_derecho {}-{}".format(numero_documento, chip), log_group_name, Qgis.Info)
 
     # Llenar col_derecho
     res = table_col_derecho.dataProvider().addFeatures(rows)
     if res[0]:
-        print("INFO:", len(rows), "rows added to col_derecho!!!")
+        log.logMessage("{} rows added to col_derecho!!!".format(len(rows)), log_group_name, Qgis.Info)
     else:
-        print("ERROR: There was an error adding {} rows to col_derecho...".format(len(rows)))
-
+        log.logMessage("There was an error adding {} rows to col_derecho...".format(len(rows)), log_group_name, Qgis.Critical)
 
 def llenar_fuente_administrativa(tipo='interesado_natural'):
     # Hay dos tablas 'maestras', una para int Jurídicos, otra para Naturales
@@ -676,10 +684,10 @@ def llenar_rrr_fuente():
             feature.setAttribute('rfuente', f_col_fuente_administrativa['t_id'])
             features.append(feature)
         else:
-            print("WARNING: Col_derecho local id not found in fuente administrativa in llenar_rrr_fuente", f['r_local_id'], f['r_espacio_de_nombres'])
+            log.logMessage("Col_derecho local id not found in fuente administrativa in llenar_rrr_fuente {}-{}".format(f['r_local_id'], f['r_espacio_de_nombres']), log_group_name, Qgis.Warning)
 
     output_rrr_fuente.dataProvider().addFeatures(features)
-    print("INFO: {} features successfully added to rrr_fuente!".format(len(features)))
+    log.logMessage("{} features successfully added to rrr_fuente!".format(len(features)), log_group_name, Qgis.Info)
 
 
 ################################################################################
@@ -696,7 +704,7 @@ def llenar_avaluos__predio_matriz_ph():
     output_predio_matriz_ph.reload()
 
     if output_predio_matriz_ph.dataProvider().fields().indexFromName('tmp_cod_lote') == -1:
-        print("FIELD tmp_cod_lote DOES NOT EXIST!!! Create it before running llenar_avaluos__predio_matriz_ph()...")
+        log.logMessage("FIELD tmp_cod_lote DOES NOT EXIST!!! Create it before running llenar_avaluos__predio_matriz_ph()...", log_group_name, Qgis.Critical)
         return
 
     params_refactor_predio_matriz_ph = {
@@ -731,7 +739,7 @@ def llenar_avaluos__predio():
     output_predio.reload()
 
     if output_predio.dataProvider().fields().indexFromName('tmp_chip') == -1:
-        print("FIELD tmp_chip DOES NOT EXIST!!! Create it before running llenar_avaluos__predio()...")
+        log.logMessage("FIELD tmp_chip DOES NOT EXIST!!! Create it before running llenar_avaluos__predio()...", log_group_name, Qgis.Info)
         return
 
     # table_predio: Catastro_Registro.predio
@@ -849,7 +857,7 @@ def llenar_avaluos__construccion(tipo='nph'):
 
             features.append(feature)
         else:
-            print("Cod_LOTE not found in CR.Construccion", f['Cod_LOTE'])
+            log.logMessage("Cod_LOTE not found in CR.Construccion {}".format(f['Cod_LOTE']), log_group_name, Qgis.Warning)
 
     table_target.dataProvider().addFeatures(features)
 
@@ -969,9 +977,9 @@ def llenar_avaluos__calificacion_unidad_construccion():
 
                 features.append(feature)
             else:
-                print("Unidad de Construcción id not found in Av.Unidad_Construccion", f_cr_unidad_construccion['t_id'])
+                log.logMessage("Unidad de Construcción id not found in Av.Unidad_Construccion {}".format(f_cr_unidad_construccion['t_id']), log_group_name, Qgis.Warning)
         else:
-           print("COD_LOTE not found in CR.Unidad_Construccion:", f['COD_LOTE'])
+            log.logMessage("COD_LOTE not found in CR.Unidad_Construccion: {}".format(f['COD_LOTE']), log_group_name, Qgis.Warning)
 
     table_target.dataProvider().addFeatures(features)
 
@@ -1017,7 +1025,7 @@ def llenar_ficha__predio_ficha():
     predio_ficha.reload()
 
     if predio_ficha.dataProvider().fields().indexFromName('tmp_chip') == -1:
-        print("FIELD tmp_chip DOES NOT EXIST!!! Create it before running llenar_ficha__predio_ficha()...")
+        log.logMessage("FIELD tmp_chip DOES NOT EXIST!!! Create it before running llenar_ficha__predio_ficha()...", log_group_name, Qgis.Info)
         return
 
     params_refactor_predio_ficha = {
@@ -1094,7 +1102,7 @@ def llenar_ficha__predioficha_predio():
 
             features.append(feature)
         else:
-            print("CHIP not found in CR.predio", f['tmp_chip'])
+            log.logMessage("CHIP not found in CR.predio {}".format(f['tmp_chip']), log_group_name, Qgis.Warning)
 
     association_table.dataProvider().addFeatures(features)
 
@@ -1166,11 +1174,11 @@ def llenar_ficha__nucleo_familiar():
                 else:
                     pass
         else:
-           print("CHIP not found in CR.Col_derecho:", f_cr_predio['t_id'])
+            log.logMessage("CHIP not found in CR.Col_derecho: {}".format(f_cr_predio['t_id']), log_group_name, Qgis.Info)
 
     res = table_target.dataProvider().addFeatures(features)
     if res[0]:
-        print("{} features saved into Nucleo Familiar!".format(len(features)))
+        log.logMessage("{} features saved into Nucleo Familiar!".format(len(features)), log_group_name, Qgis.Info)
 
 def llenar_ficha__investigacion_de_mercado():
     # layer_ficha__predio_ficha: Ficha.Predio_Ficha
@@ -1201,11 +1209,11 @@ def llenar_ficha__investigacion_de_mercado():
 
             features.append(feature)
         else:
-            print("CHIP not found in FICHA.Predio_Ficha", f['CHIP'])
+            log.logMessage("CHIP not found in FICHA.Predio_Ficha {}".format(f['CHIP']), log_group_name, Qgis.Info)
 
     res = table_target.dataProvider().addFeatures(features)
     if res[0]:
-        print("{} features saved into Investigación de Mercado!".format(len(features)))
+        log.logMessage("{} features saved into Investigación de Mercado!".format(len(features)), log_group_name, Qgis.Info)
 
 def remover_campos_temporales_de_asociacion_ficha():
     # En llenar_ficha__predio_ficha creamos campo temporal para poder asociar

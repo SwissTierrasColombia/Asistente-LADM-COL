@@ -17,13 +17,16 @@
  ***************************************************************************/
 """
 import qgis
-from qgis.core import QgsProject
+from qgis.core import QgsProject, Qgis, QgsApplication
 from qgis.PyQt.QtCore import QObject
+
+from ..config.general_config import PLUGIN_NAME
 
 class ProjectGeneratorUtils(QObject):
 
     def __init__(self):
         QObject.__init__(self)
+        self.log = QgsApplication.messageLog()
 
     def load_layers(self, layer_list, db):
         if 'projectgenerator' in qgis.utils.plugins:
@@ -35,7 +38,11 @@ class ProjectGeneratorUtils(QObject):
             legend = generator.legend(layers)
             projectgenerator.create_project(layers, relations, legend, auto_transaction=False)
         else:
-            print("El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.")
+            self.log.logMessage(
+                "El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",
+                PLUGIN_NAME,
+                Qgis.Critical
+            )
 
     def get_tables_info_without_ignored_tables(self, db):
         if 'projectgenerator' in qgis.utils.plugins:
@@ -44,7 +51,11 @@ class ProjectGeneratorUtils(QObject):
                 db.uri, "smart2", db.schema)
             return generator.get_tables_info_without_ignored_tables()
         else:
-            print("El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.")
+            self.log.logMessage(
+                "El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",
+                PLUGIN_NAME,
+                Qgis.Critical
+            )
 
     def get_first_index_for_layer_type(self, layer_type, group=QgsProject.instance().layerTreeRoot()):
         if 'projectgenerator' in qgis.utils.plugins:
