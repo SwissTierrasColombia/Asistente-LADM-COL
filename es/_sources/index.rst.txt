@@ -23,8 +23,8 @@ Welcome to the Assistant's documentation LADM_COL!
    :height: 500
    :width: 800
    :alt: intro
-
-.. thumbnail:: static/05_FUNCIONALIDADES.gif
+   :download: true
+   :title: Functionality of the LADM_COL Assistant plugin
 
 .. Code <code.rst>
 

@@ -34,7 +34,7 @@ LADM_COL
 
 **User**: User name that has permission on the database
 
-**Password**: user's password
+**Password**: user password
 
 *Only GeoPackage parameters*
 
