@@ -18,7 +18,7 @@
 """
 from qgis.core import (QgsProject, QgsVectorLayer, QgsEditFormConfig,
                        QgsSnappingConfig, QgsTolerance, QgsFeature, Qgis,
-                       QgsMapLayerProxyModel)
+                       QgsMapLayerProxyModel, QgsWkbTypes)
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
@@ -84,7 +84,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
     def prepare_building_creation(self):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, {
-            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': None},
+            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None}
         }, load=True)
 
@@ -119,7 +119,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
 
         # Suppress feature form
         form_config = self._building_layer.editFormConfig()
-        form_config.setSuppress(QgsEditFormConfig.SuppressOn)
+        form_config.setSuppress(QgsEditFormConfig.SuppressOff)
         self._building_layer.setEditFormConfig(form_config)
 
         # Enable edition mode

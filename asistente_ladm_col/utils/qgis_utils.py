@@ -48,13 +48,14 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            LESS_TABLE_BOUNDARY_FIELD,
                                            LESS_TABLE_PLOT_FIELD,
                                            LOCAL_ID_FIELD,
-                                           PLOT_TABLE,
                                            MOREBFS_TABLE_PLOT_FIELD,
                                            MOREBFS_TABLE_BOUNDARY_FIELD,
                                            MORE_BOUNDARY_FACE_STRING_TABLE,
                                            NAMESPACE_FIELD,
                                            NAMESPACE_PREFIX,
+                                           PLOT_TABLE,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
+                                           REFERENCE_POINT_FIELD,
                                            VIDA_UTIL_FIELD)
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 
@@ -128,7 +129,6 @@ class QGISUtils(QObject):
 
                         if response_layers[layer_id] is not None:
                             self.post_load_configurations(response_layers[layer_id])
-
         return response_layers
 
     def get_layer_from_layer_tree(self, layer_name, schema=None, geometry_type=None):
@@ -201,6 +201,10 @@ class QGISUtils(QObject):
 
         if layer.fields().indexFromName(VIDA_UTIL_FIELD) != -1:
             self.configure_automatic_field(layer, VIDA_UTIL_FIELD, "now()")
+
+        # centroid must be calculated automatically from geometry
+        #if layer.fields().indexFromName(REFERENCE_POINT_FIELD) != -1:
+        #    self.configure_automatic_field(layer, REFERENCE_POINT_FIELD, "centroid($geometry)")
 
         if layer_name == BOUNDARY_TABLE:
             self.configure_automatic_field(layer, LENGTH_FIELD_BOUNDARY_TABLE, "$length")
