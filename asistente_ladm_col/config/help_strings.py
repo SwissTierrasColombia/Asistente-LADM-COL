@@ -100,6 +100,12 @@ Choose this option if you want to create a <b>Plot</b> from existing <i>Boundari
 Select the <b>Plot</ b> layer from those available in the QGIS project.\
 ")
 
+        self.WIZ_CREATE_BUILDING_CADASTRE_PAGE_1_OPTION_POINTS = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Building</b> from existing <i>Survey Points</i>.\
+<br><br>\
+<b>Building</b> is a type of legal space of the building unit of the LADM model that stores data specific of the resulting valuation.\
+")
+
         self.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to add a <b>Responsibility</b> with a form.\
 <br><br>\
