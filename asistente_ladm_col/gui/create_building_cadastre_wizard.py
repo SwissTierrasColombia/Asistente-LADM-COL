@@ -3,10 +3,10 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2017-11-14
+        begin                : 19/04/18
         git sha              : :%H$
-        copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
-        email                : gcarrillo@linuxmail.org
+        copyright            : (C) 2018 by Jorge Useche (Incige SAS)
+        email                : naturalmentejorge@gmail.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -51,7 +51,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
             finish_button_text = QCoreApplication.translate('CreateBuildingCadastreWizard', 'Import')
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(BUILDING_TABLE, False))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(BUILDING_TABLE, True))
 
         elif self.rad_digitizing.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -68,7 +68,6 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
 
         if self.rad_refactor.isChecked():
             if self.mMapLayerComboBox.currentLayer() is not None:
-                print('self.mMapLayerComboBox.currentLayer()', self.mMapLayerComboBox.currentLayer().name())
                 self.qgis_utils.show_etl_model(self._db,
                                                self.mMapLayerComboBox.currentLayer(),
                                                BUILDING_TABLE)
@@ -117,7 +116,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
         snapping.setTolerance(9)
         QgsProject.instance().setSnappingConfig(snapping)
 
-        # Suppress feature form
+        # Don't suppress feature form
         form_config = self._building_layer.editFormConfig()
         form_config.setSuppress(QgsEditFormConfig.SuppressOff)
         self._building_layer.setEditFormConfig(form_config)
@@ -129,7 +128,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
 
         self.iface.messageBar().pushMessage('Asistente LADM_COL',
             QCoreApplication.translate('CreateBuildingCadastreWizard',
-                                       "You can now start capturing buildings clicking on the map..."),
+                                       "You can now start capturing buildings digitizing on the map..."),
             Qgis.Info)
 
     def save_settings(self):
