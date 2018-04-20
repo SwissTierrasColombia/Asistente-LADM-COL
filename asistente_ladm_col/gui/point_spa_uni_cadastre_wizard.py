@@ -19,7 +19,7 @@
 import os
 import stat
 
-from qgis.core import Qgis, QgsMapLayerProxyModel
+from qgis.core import Qgis, QgsMapLayerProxyModel, QgsApplication
 from qgis.gui import QgsMessageBar
 
 from qgis.PyQt.QtCore import Qt, QSettings, QCoreApplication, QFile
@@ -28,6 +28,7 @@ from qgis.PyQt.QtWidgets import QWizard, QFileDialog, QSizePolicy, QGridLayout
 from ..utils.qt_utils import (make_file_selector, enable_next_wizard,
                               disable_next_wizard)
 from ..utils import get_ui_class
+from ..config.general_config import PLUGIN_NAME
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE)
 from ..config.help_strings import HelpStrings
@@ -39,6 +40,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
+        self.log = QgsApplication.messageLog()
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
@@ -308,25 +310,22 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
             template_file = QFile(":/Asistente-LADM_COL/resources/csv/" + filename)
 
             if not template_file.exists():
-                print("CSV doesn't exist! Probably due to a missing 'make' execution to generate resources...")
+                self.log.logMessage("CSV doesn't exist! Probably due to a missing 'make' execution to generate resources...", PLUGIN_NAME, Qgis.Critical)
                 msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'CSV file not found. Update your plugin. For details see log.')
                 self.show_message(msg, Qgis.Warning)
                 return
 
             if os.path.isfile(new_filename):
-                print('Removing existing file...')
+                self.log.logMessage('Removing existing file {}...'.format(new_filename), PLUGIN_NAME, Qgis.Info)
                 os.chmod(new_filename, 0o777)
                 os.remove(new_filename)
 
             if template_file.copy(new_filename):
                 os.chmod(new_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
-                #qurl = QUrl()
-                #qurl.fromLocalFile(new_filename)
-                #QDesktopServices.openUrl(qurl)
                 msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'The file <a href="file://{}">{}</a> was successfully saved!').format(new_filename, os.path.basename(new_filename))
                 self.show_message(msg, Qgis.Info)
             else:
-                print('There was an error copying the CSV file!')
+                self.log.logMessage('There was an error copying the CSV file {}!'.format(new_filename), PLUGIN_NAME, Qgis.Info)
                 msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'The file couldn\'t be saved.')
                 self.show_message(msg, Qgis.Warning)
 

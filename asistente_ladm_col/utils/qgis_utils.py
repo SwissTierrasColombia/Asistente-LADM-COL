@@ -35,13 +35,15 @@ from .qt_utils import OverrideCursor
 from .symbology import SymbologyUtils
 from .geometry import GeometryUtils
 from ..gui.settings_dialog import SettingsDialog
+from ..config.general_config import (
+    DEFAULT_EPSG,
+    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+    ERROR_LAYER_GROUP
+)
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
-                                           DEFAULT_EPSG,
-                                           DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-                                           ERROR_LAYER_GROUP,
                                            ID_FIELD,
                                            LENGTH_FIELD_BOUNDARY_TABLE,
                                            LESS_TABLE,

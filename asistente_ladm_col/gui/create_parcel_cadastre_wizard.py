@@ -19,11 +19,12 @@
 from functools import partial
 
 from qgis.core import (QgsEditFormConfig, QgsVectorLayerUtils, Qgis,
-                       QgsWkbTypes, QgsMapLayerProxyModel)
+                       QgsWkbTypes, QgsMapLayerProxyModel, QgsApplication)
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
+from ..config.general_config import PLUGIN_NAME
 from ..config.table_mapping_config import (
     ID_FIELD,
     LA_BAUNIT_TYPE_TABLE,
@@ -42,6 +43,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
+        self.log = QgsApplication.messageLog()
         self._plot_layer = None
         self._parcel_layer = None
         self._uebaunit_table = None
@@ -159,15 +161,15 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         res = self._parcel_layer.commitChanges()
         if res:
             self._parcel_layer.featureAdded.disconnect(self.call_parcel_commit)
-            print("Parcel's featureAdded SIGNAL disconnected")
+            self.log.logMessage("Parcel's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
 
     def finish_parcel(self, plot_ids, layerId, features):
         if len(features) != 1:
-            print("We should have got only one predio... We cannot do anything with {} predios".format(len(features)))
+            self.log.logMessage("We should have got only one predio... We cannot do anything with {} predios".format(len(features)), PLUGIN_NAME, Qgis.Warning)
         else:
             fid = features[0].id()
             if not self._parcel_layer.getFeature(fid).isValid():
-                print("Feature not found in layer Predio...")
+                self.log.logMessage("Feature not found in layer Predio...", PLUGIN_NAME, Qgis.Warning)
             else:
                 parcel_id = self._parcel_layer.getFeature(fid)[ID_FIELD]
 
@@ -177,7 +179,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                     new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
                     new_feature.setAttribute(UEBAUNIT_TABLE_PLOT_FIELD, plot_id)
                     new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
-                    print("Saving Plot-Parcel:", plot_id, parcel_id)
+                    self.log.logMessage("Saving Plot-Parcel: {}-{}".format(plot_id, parcel_id), PLUGIN_NAME, Qgis.Info)
                     new_features.append(new_feature)
 
                 self._uebaunit_table.dataProvider().addFeatures(new_features)
@@ -188,7 +190,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                     Qgis.Info)
 
         self._parcel_layer.committedFeaturesAdded.disconnect()
-        print("Parcel's committedFeaturesAdded SIGNAL disconnected")
+        self.log.logMessage("Parcel's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
 
     def save_settings(self):
         settings = QSettings()

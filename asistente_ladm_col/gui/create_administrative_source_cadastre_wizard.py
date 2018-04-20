@@ -23,7 +23,6 @@ from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-#from ..utils.qt_utils import enable_next_wizard, disable_next_wizard
 from ..config.table_mapping_config import (
     ADMINISTRATIVE_SOURCE_TABLE,
     AVAILABILITY_STATE_TABLE,

@@ -18,12 +18,15 @@
 """
 import os
 
-from qgis.core import QgsProject, QgsVectorLayer, Qgis
+from qgis.core import QgsProject, QgsVectorLayer, Qgis, QgsApplication
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QSettings
 from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
 
-from ..config.table_mapping_config import DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE
+from ..config.general_config import (
+    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+    PLUGIN_NAME
+)
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
 from ..utils import get_ui_class
@@ -36,6 +39,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
+        self.log = QgsApplication.messageLog()
         self._db = None
         self.qgis_utils = qgis_utils
 
@@ -59,10 +63,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def get_db_connection(self):
         if self._db is not None:
-            print("Returning existing db connection...")
+            self.log.logMessage("Returning existing db connection...", PLUGIN_NAME, Qgis.Info)
             return self._db
         else:
-            print("Getting new db connection...")
+            self.log.logMessage("Getting new db connection...", PLUGIN_NAME, Qgis.Info)
             dict_conn = self.read_connection_parameters()
             uri = self.get_connection_uri(dict_conn)
             if self.cbo_db_source.currentData() == 'pg':
@@ -72,7 +76,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
             return db
 
     def accepted(self):
-        print("Accepted!")
         self._db = None # Reset db connection
         self._db = self.get_db_connection()
         self.save_settings()
@@ -179,7 +182,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None # Reset db connection
         res, msg = self.get_db_connection().test_connection()
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
-        print("Test connection!")
+        self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
 
     def show_message(self, message, level):
         self.bar.pushMessage(message, level, 10)

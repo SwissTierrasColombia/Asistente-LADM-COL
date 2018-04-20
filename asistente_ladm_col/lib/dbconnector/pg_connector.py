@@ -19,10 +19,11 @@
 import psycopg2
 import psycopg2.extras
 
-from qgis.core import QgsWkbTypes
+from qgis.core import QgsWkbTypes, Qgis, QgsApplication
 from qgis.PyQt.QtCore import QCoreApplication
 
 from .db_connector import DBConnector
+from ...config.general_config import PLUGIN_NAME
 
 class PGConnector(DBConnector):
     def __init__(self, uri, schema="public"):
@@ -30,6 +31,7 @@ class PGConnector(DBConnector):
         self.uri = uri
         self.conn = None
         self.schema = schema
+        self.log = QgsApplication.messageLog()
         self.mode = 'pg'
         self.provider = 'postgres'
         self._tables_info = None
@@ -37,7 +39,7 @@ class PGConnector(DBConnector):
     def test_connection(self):
         try:
             self.conn = psycopg2.connect(self.uri)
-            print("Connection was set!", self.conn)
+            self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
         except Exception as e:
             return (False, QCoreApplication.translate("PGConnector",
                     "There was an error connecting to the database: {}").format(e))
@@ -48,7 +50,7 @@ class PGConnector(DBConnector):
     def save_connection(self):
         if self.conn is None:
             self.conn = psycopg2.connect(self.uri)
-            print("Connection was set!", self.conn)
+            self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
 
     def validate_db(self):
         pass

@@ -18,6 +18,7 @@
 """
 from qgis.core import (
     Qgis,
+    QgsApplication,
     QgsGeometry,
     QgsLineString,
     QgsMultiLineString,
@@ -28,12 +29,14 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
 
+from ..config.general_config import PLUGIN_NAME
 from ..config.table_mapping_config import ID_FIELD
 
 class GeometryUtils(QObject):
 
     def __init__(self):
         QObject.__init__(self)
+        self.log = QgsApplication.messageLog()
 
     def get_pair_boundary_plot(self, boundary_layer, plot_layer, use_selection=True):
         lines = boundary_layer.getFeatures()
@@ -99,19 +102,27 @@ class GeometryUtils(QObject):
                         if intersection_type == QgsWkbTypes.LineGeometry:
                             intersect_more_pairs.append((polygon[ID_FIELD], candidate_feature[ID_FIELD]))
                         else:
-                            print("WARNING: (MoreBFS) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
-                                polygon[ID_FIELD],
-                                candidate_feature[ID_FIELD],
-                                intersection_type))
+                            self.log.logMessage(
+                                "(MoreBFS) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
+                                    polygon[ID_FIELD],
+                                    candidate_feature[ID_FIELD],
+                                    intersection_type),
+                                PLUGIN_NAME,
+                                Qgis.Warning
+                            )
 
                         intersection_type = QgsGeometry(multi_inner_rings).intersection(candidate_geometry).type()
                         if intersection_type == QgsWkbTypes.LineGeometry:
                             intersect_less_pairs.append((polygon[ID_FIELD], candidate_feature[ID_FIELD]))
                         else:
-                            print("WARNING: (Less) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
-                                polygon[ID_FIELD],
-                                candidate_feature[ID_FIELD],
-                                intersection_type))
+                            self.log.logMessage(
+                                "(Less) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
+                                    polygon[ID_FIELD],
+                                    candidate_feature[ID_FIELD],
+                                    intersection_type),
+                                PLUGIN_NAME,
+                                Qgis.Warning
+                            )
 
                     else:
                         boundary = None
@@ -124,10 +135,14 @@ class GeometryUtils(QObject):
                         if boundary and intersection_type == QgsWkbTypes.LineGeometry:
                             intersect_more_pairs.append((polygon[ID_FIELD], candidate_feature[ID_FIELD]))
                         else:
-                            print("WARNING: (MoreBFS) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
-                                polygon[ID_FIELD],
-                                candidate_feature[ID_FIELD],
-                                intersection_type))
+                            self.log.logMessage(
+                                "(MoreBFS) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
+                                    polygon[ID_FIELD],
+                                    candidate_feature[ID_FIELD],
+                                    intersection_type),
+                                PLUGIN_NAME,
+                                Qgis.Warning
+                            )
 
         return (intersect_more_pairs, intersect_less_pairs)
 

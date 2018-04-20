@@ -34,11 +34,13 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
 import processing
 
+from ..config.general_config import (
+    DEFAULT_EPSG,
+    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE
+)
 from ..config.table_mapping_config import (
     BOUNDARY_POINT_TABLE,
     BOUNDARY_TABLE,
-    DEFAULT_EPSG,
-    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
     ID_FIELD
 )
 
