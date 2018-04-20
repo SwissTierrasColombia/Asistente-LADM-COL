@@ -50,13 +50,14 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            LESS_TABLE_BOUNDARY_FIELD,
                                            LESS_TABLE_PLOT_FIELD,
                                            LOCAL_ID_FIELD,
-                                           PLOT_TABLE,
                                            MOREBFS_TABLE_PLOT_FIELD,
                                            MOREBFS_TABLE_BOUNDARY_FIELD,
                                            MORE_BOUNDARY_FACE_STRING_TABLE,
                                            NAMESPACE_FIELD,
                                            NAMESPACE_PREFIX,
+                                           PLOT_TABLE,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
+                                           REFERENCE_POINT_FIELD,
                                            VIDA_UTIL_FIELD)
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 
@@ -130,7 +131,6 @@ class QGISUtils(QObject):
 
                         if response_layers[layer_id] is not None:
                             self.post_load_configurations(response_layers[layer_id])
-
         return response_layers
 
     def get_layer_from_layer_tree(self, layer_name, schema=None, geometry_type=None):
@@ -204,6 +204,10 @@ class QGISUtils(QObject):
         if layer.fields().indexFromName(VIDA_UTIL_FIELD) != -1:
             self.configure_automatic_field(layer, VIDA_UTIL_FIELD, "now()")
 
+        # centroid must be calculated automatically from geometry
+        #if layer.fields().indexFromName(REFERENCE_POINT_FIELD) != -1:
+        #    self.configure_automatic_field(layer, REFERENCE_POINT_FIELD, "centroid($geometry)")
+
         if layer_name == BOUNDARY_TABLE:
             self.configure_automatic_field(layer, LENGTH_FIELD_BOUNDARY_TABLE, "$length")
 
@@ -250,6 +254,14 @@ class QGISUtils(QObject):
 
         return (local_id_enabled, local_id_field, local_id_value)
 
+    def check_if_and_disable_automatic_fields(self, db, layer_name, geometry_type=None):
+        settings = QSettings()
+        automatic_fields_definition = {}
+        if settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
+            automatic_fields_definition = self.disable_automatic_fields(db, layer_name, geometry_type)
+
+        return automatic_fields_definition
+
     def disable_automatic_fields(self, db, layer_name, geometry_type=None):
         layer = self.get_layer(db, layer_name, geometry_type, True)
         automatic_fields_definition = {idx: layer.defaultValueDefinition(idx) for idx in layer.attributeList()}
@@ -257,13 +269,25 @@ class QGISUtils(QObject):
         for field in layer.fields():
             self.reset_automatic_field(layer, field.name())
 
+        print("AUTOFIELDS DISABLED!")
         return automatic_fields_definition
+
+    def check_if_and_enable_automatic_fields(self, db, automatic_fields_definition, layer_name, geometry_type=None):
+        if automatic_fields_definition:
+            settings = QSettings()
+            if settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
+                self.enable_automatic_fields(db,
+                                             automatic_fields_definition,
+                                             layer_name,
+                                             geometry_type)
 
     def enable_automatic_fields(self, db, automatic_fields_definition, layer_name, geometry_type=None):
         layer = self.get_layer(db, layer_name, geometry_type, True)
 
         for idx, default_definition in automatic_fields_definition.items():
             layer.setDefaultValueDefinition(idx, default_definition)
+
+        print("AUTOFIELDS ENABLED!")
 
     def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, target_layer_name):
         if not csv_path or not os.path.exists(csv_path):
@@ -530,16 +554,23 @@ class QGISUtils(QObject):
         QgsProject.instance().setAutoTransaction(False)
 
     def show_etl_model(self, db, input_layer, ladm_col_layer_name):
+
         model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
         if model:
+            automatic_fields_definition = self.check_if_and_disable_automatic_fields(db, ladm_col_layer_name)
+
             mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
             output = self.get_layer(db, ladm_col_layer_name, geometry_type=None, load=True)
-            processing.execAlgorithmDialog("model:ETL-model", {
-                    'INPUT': input_layer.name(),
-                    'mapping': mapping,
-                    'output': output.name()
-                }
-            )
+            params = {
+                'INPUT': input_layer.name(),
+                'mapping': mapping,
+                'output': output.name()
+            }
+            processing.execAlgorithmDialog("model:ETL-model", params)
+
+            self.check_if_and_enable_automatic_fields(db,
+                                                      automatic_fields_definition,
+                                                      ladm_col_layer_name)
         else:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",

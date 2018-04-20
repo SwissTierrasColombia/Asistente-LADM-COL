@@ -158,9 +158,6 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
     def finished_dialog(self):
         self.save_settings()
 
-        if self.chk_disable_automatic_fields.isChecked():
-            automatic_fields_definitions = self.qgis_utils.disable_automatic_fields(self._db, self.current_point_name())
-
         if self.rad_refactor.isChecked():
             output_layer_name = self.current_point_name()
 
@@ -175,12 +172,13 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
                     Qgis.Warning)
 
         elif self.rad_csv.isChecked():
+            automatic_fields_definition = self.qgis_utils.check_if_and_disable_automatic_fields(self._db, self.current_point_name())
+
             self.prepare_copy_csv_points_to_db()
 
-        if self.chk_disable_automatic_fields.isChecked():
-            self.qgis_utils.enable_automatic_fields(self._db,
-                                                    automatic_fields_definitions,
-                                                    self.current_point_name())
+            self.qgis_utils.check_if_and_enable_automatic_fields(self._db,
+                                                        automatic_fields_definition,
+                                                        self.current_point_name())
 
     def current_point_name(self):
         return BOUNDARY_POINT_TABLE if self.rad_boundary_point.isChecked() else SURVEY_POINT_TABLE
@@ -340,7 +338,6 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         settings.setValue('Asistente-LADM_COL/wizards/points_load_data_type', 'csv' if self.rad_csv.isChecked() else 'refactor')
         settings.setValue('Asistente-LADM_COL/wizards/points_add_points_csv_file', self.txt_file_path.text().strip())
         settings.setValue('Asistente-LADM_COL/wizards/points_csv_file_delimiter', self.txt_delimiter.text().strip())
-        settings.setValue('Asistente-LADM_COL/wizards/disable_automatic_fields', self.chk_disable_automatic_fields.isChecked())
 
     def restore_settings(self):
         settings = QSettings()
@@ -358,4 +355,3 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
 
         self.txt_file_path.setText(settings.value('Asistente-LADM_COL/wizards/points_add_points_csv_file'))
         self.txt_delimiter.setText(settings.value('Asistente-LADM_COL/wizards/points_csv_file_delimiter'))
-        self.chk_disable_automatic_fields.setChecked(settings.value('Asistente-LADM_COL/wizards/disable_automatic_fields', True, bool))
