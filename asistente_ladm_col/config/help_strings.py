@@ -100,13 +100,10 @@ Choose this option if you want to create a <b>Plot</b> from existing <i>Boundari
 Select the <b>Plot</ b> layer from those available in the QGIS project.\
 ")
 
-# Elige esta opción si deseas crear una <b>Construcción</b>  a partir de <i>Points</i> existentes.
-# <br><br>
-# <b>Construcción</b> es un tipo de espacio jurídico de la unidad de edificación del modelo LADM que almacena datos específicos del avalúo resultante del mismo.
         self.WIZ_CREATE_BUILDING_CADASTRE_PAGE_1_OPTION_POINTS = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Building</b> from existing <i>Points</i>.\
+Choose this option if you want to create a <b>Building</b> from existing <i>Survey Points</i>.\
 <br><br>\
-<b>Building</b> is a type of legal space of the building unit of the LADM model that stores data specific to the resulting valuation.\
+<b>Building</b> is a type of legal space of the building unit of the LADM model that stores data specific of the resulting valuation.\
 ")
 
         self.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
