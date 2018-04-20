@@ -111,17 +111,17 @@
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="117"/>
         <source>Check overlaps in boundaries</source>
-        <translation>Validar supersoción en linderos</translation>
+        <translation>Validar superposiciones en Linderos</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="118"/>
         <source>Check missing boundary points in boundaries</source>
-        <translation>Validar vértices de lindero sin Punto Lindero asociado</translation>
+        <translation>Validar nodos de lindero sin Punto Lindero asociado</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="119"/>
         <source>Check dangles in boundaries</source>
-        <translation>Validar nodos no conectados</translation>
+        <translation>Validar nodos de Linderos no conectados</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="120"/>
@@ -622,9 +622,9 @@
     <message>
         <location filename="../config/help_strings.py" line="29"/>
         <source>Choose this option if you want to create an &lt;b&gt;Administrative Source&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Administrative Source&lt;/b&gt; is a specialization of the &lt;i&gt;COL_Fuente&lt;/i&gt; class to store those sources corresponding to documents (mortgage document, notarial documents, historical documents, and the like) that document the relationship between parties and parcels.</source>
-        <translation>Elige esta opción si deseas agregar una &lt;b&gt;Fuente administrativa&lt;/b&gt; con un formulario.
+        <translation type="unfinished">Elige esta opción si deseas agregar una &lt;b&gt;Fuente administrativa&lt;/b&gt; con un formulario.
 &lt;br&gt;&lt;br&gt;
-&lt;b&gt;Fuente administrativa&lt;/b&gt; es una Especialización de la clase &lt;i&gt;COL_Fuente&lt;/i&gt; para almacenar aquellas fuentes constituidas por documentos (documento hipotecario, documentos notariales, documentos históricos, etc.) que documentan la relación entre instancias de interesados y de predios.</translation>
+&lt;b&gt;Fuente administrativa&lt;/b&gt; es una especialización de la clase &lt;i&gt;COL_Fuente&lt;/i&gt; para almacenar aquellas fuentes constituidas por documentos (documento hipotecario, documentos notariales, documentos históricos, etc.) que documentan la relación entre instancias de interesados y de predios.</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="41"/>
@@ -650,9 +650,9 @@
     <message>
         <location filename="../config/help_strings.py" line="59"/>
         <source>Choose this option if you want to add a &lt;b&gt;Natural Party&lt;/b&gt; with an external resource, such as a CSV file, a QGIS table, etc.&lt;br&gt;&lt;br&gt;&lt;b&gt;Natural Party&lt;/b&gt; is a natural person who has rights or who is subject to restrictions or responsibilities related to one or more &lt;i&gt;Parcel&lt;/i&gt;.</source>
-        <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; basándose en un &lt;i&gt;Terreno&lt;i&gt; existente.
+        <translation type="unfinished">Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; basándose en un &lt;i&gt;Terreno&lt;i&gt; existente.
 &lt;br&gt;&lt;br&gt;
-&lt;b&gt;Predio&lt;/b&gt; es una Clase especializada de BaUnit, que describe la unidad administrativa básica para el caso de Colombia.
+&lt;b&gt;Predio&lt;/b&gt; es una clase especializada de BaUnit, que describe la unidad administrativa básica para el caso de Colombia.
 El predio es la unidad territorial legal propia de Catastro.
 Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
     </message>
@@ -676,24 +676,24 @@ Lindero es una instancia de la clase &lt;i&gt;LA_BoundaryFaceString&lt;/i&gt; y 
     <message>
         <location filename="../config/help_strings.py" line="35"/>
         <source>Choose this option if you want to add an &lt;b&gt;Administrative Source&lt;/b&gt; with an external resource, such as a CSV file, a QGIS table, etc.&lt;br&gt;&lt;br&gt;&lt;b&gt;Administrative Source&lt;/b&gt; is a specialization of the class &lt;i&gt;COL_Fuente&lt;/i&gt; to store those sources constituted by documents (mortgage document, notarial documents, historical documents, etc.) that document the relationship between instances of interested and property.</source>
-        <translation>Elige esta opción si deseas agregar una &lt;b&gt;Fuente Administrativa&lt;/b&gt; con un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros. -&lt;br&gt;&lt;br&gt; -&lt;b&gt;Fuente Administrativa&lt;/b&gt; es una Especialización de la clase &lt;i&gt;COL_Fuente&lt;/i&gt; para almacenar aquellas fuentes constituidas por documentos (documento hipotecario, documentos notariales, documentos históricos, etc.) que documentan la relación entre instancias de interesados y de predios.</translation>
+        <translation type="unfinished">Elige esta opción si deseas agregar una &lt;b&gt;Fuente Administrativa&lt;/b&gt; con un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros. -&lt;br&gt;&lt;br&gt; -&lt;b&gt;Fuente Administrativa&lt;/b&gt; es una especialización de la clase &lt;i&gt;COL_Fuente&lt;/i&gt; para almacenar aquellas fuentes constituidas por documentos (documento hipotecario, documentos notariales, documentos históricos, etc.) que documentan la relación entre instancias de interesados y de predios.</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="65"/>
         <source>Choose this option if you want to create a &lt;b&gt;Parcel&lt;/b&gt; based on existing plots.&lt;br&gt;&lt;br&gt;&lt;b&gt;Parcel&lt;/b&gt; is a specialized &lt;i&gt;BA Unit&lt;/i&gt; class, which describes the basic administrative unit of Colombian cadastre. The &lt;b&gt;Parcel&lt;/b&gt; is the legal territorial unit, which is formed by the plot and may or may not have associated constructions.</source>
-        <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; sin una geometría asociada. -&lt;br&gt;&lt;br&gt; -&lt;b&gt;Predio&lt;/b&gt; es una Clase especializada de BaUnit, que describe la unidad administrativa básica para el caso de Colombia. -El predio es la unidad territorial legal propia de Catastro. -Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
+        <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; sin una geometría asociada. -&lt;br&gt;&lt;br&gt; -&lt;b&gt;Predio&lt;/b&gt; es una clase especializada de BAUnit, que describe la unidad administrativa básica para el caso de Colombia. El predio es la unidad territorial legal propia de Catastro. Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="72"/>
         <source>Choose this option if you want to create a &lt;b&gt;Parcel&lt;/b&gt; without geometry.&lt;br&gt;&lt;br&gt;&lt;b&gt;Parcel&lt;/b&gt; is a specialized &lt;i&gt;BA Unit&lt;/i&gt; class, which describes the basic administrative unit of Colombian cadastre. The &lt;b&gt;Parcel&lt;/b&gt; is the legal territorial unit, which is formed by the plot and may or may not have associated constructions.</source>
-        <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros. -&lt;br&gt;&lt;br&gt; -&lt;b&gt;Predio&lt;/b&gt; es una Clase especializada de BaUnit, que describe la unidad administrativa básica para el caso de Colombia. -El predio es la unidad territorial legal propia de Catastro. Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
+        <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros. &lt;br&gt;&lt;br&gt; -&lt;b&gt;Predio&lt;/b&gt; es una clase especializada de BAUnit, que describe la unidad administrativa básica para el caso de Colombia. El predio es la unidad territorial legal propia de Catastro. Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="79"/>
         <source>Choose this option if you want to create a &lt;b&gt;Parcel&lt;/b&gt; from external resource, such as a CSV file, a QGIS table, etc.&lt;br&gt;&lt;br&gt;&lt;b&gt;Parcel&lt;/b&gt; is a specialized BaUnit Class, which describes the basic administrative unit for the case of Colombia.The property is the legal territorial unit of Cadastre.It is formed by the terrain and may or may not have associated constructions.</source>
         <translation>Elige esta opción si deseas crear un &lt;b&gt;Predio&lt;/b&gt; desde un recurso externo, como un archivo CSV, una tabla de QGIS, entre otros.
 &lt;br&gt;&lt;br&gt;
-&lt;b&gt;Predio&lt;/b&gt; es una Clase especializada de BaUnit, que describe la unidad administrativa básica para el caso de Colombia.
+&lt;b&gt;Predio&lt;/b&gt; es una clase especializada de BAUnit, que describe la unidad administrativa básica para el caso de Colombia.
 El predio es la unidad territorial legal propia de Catastro.
 Esta formada por el terreno y puede o no tener construcciones asociadas.</translation>
     </message>
@@ -719,7 +719,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     <message>
         <location filename="../config/help_strings.py" line="106"/>
         <source>Choose this option if you want to create a &lt;b&gt;Building&lt;/b&gt; from existing &lt;i&gt;Survey Points&lt;/i&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;Building&lt;/b&gt; is a type of legal space of the building unit of the LADM model that stores data specific of the resulting valuation.</source>
-        <translation>Elige esta opción si deseas crear una &lt;b&gt;Construcción&lt;/b&gt;  a partir de &lt;i&gt;Puntos Levantamiento&lt;/i&gt; existentes.
+        <translation>Elige esta opción si deseas crear una &lt;b&gt;Construcción&lt;/b&gt; a partir de &lt;i&gt;Puntos de Levantamiento&lt;/i&gt; existentes.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Construcción&lt;/b&gt; es un tipo de espacio jurídico de la unidad de edificación del modelo LADM que almacena datos específicos del avalúo resultante del mismo.</translation>
     </message>
@@ -813,7 +813,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     <message>
         <location filename="../gui/point_spa_uni_cadastre_wizard.py" line="149"/>
         <source>Configure CSV data source for Boundary Points...</source>
-        <translation>Configurar fuente de datos CSV para Puntos Lindero...</translation>
+        <translation>Configurar fuente de datos CSV para Punto Lindero...</translation>
     </message>
     <message>
         <location filename="../gui/point_spa_uni_cadastre_wizard.py" line="152"/>
@@ -823,7 +823,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     <message>
         <location filename="../gui/point_spa_uni_cadastre_wizard.py" line="153"/>
         <source>Configure CSV data source for Survey Points...</source>
-        <translation>Configurar fuente de datos CSV para Puntos Levantamiento...</translation>
+        <translation>Configurar fuente de datos CSV para Puntos de Levantamiento...</translation>
     </message>
     <message>
         <location filename="../gui/point_spa_uni_cadastre_wizard.py" line="171"/>
