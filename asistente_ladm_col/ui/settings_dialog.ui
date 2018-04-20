@@ -273,6 +273,26 @@
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
+          <widget class="QCheckBox" name="chk_disable_automatic_fields">
+           <property name="toolTip">
+            <string>For instance, when loading data from CSV or from another QGIS table/layer</string>
+           </property>
+           <property name="text">
+            <string>Disable automatic fields while batch loading/importing data</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QLabel" name="label_10">
            <property name="text">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Most of the classes in LADM_COL have two attributes that combined must be unique in the whole schema/database. They are called &lt;span style=&quot; font-weight:600;&quot;&gt;namespace&lt;/span&gt; and &lt;span style=&quot; font-weight:600;&quot;&gt;local_id&lt;/span&gt;. To make it easier to fill those attributes, the &lt;span style=&quot; font-style:italic;&quot;&gt;LADM_COL Assistant&lt;/span&gt; can set automatic values for them. &lt;/p&gt;&lt;p&gt;Namely, &lt;span style=&quot; font-weight:600;&quot;&gt;namespace&lt;/span&gt; will correspond to an optional prefix (e.g., MY_ORGANIZATION) plus the class name (e.g., BOUNDARY): MY_ORGANIZATION_BOUNDARY.&lt;/p&gt;&lt;p&gt;On the other hand, &lt;span style=&quot; font-weight:600;&quot;&gt;local_id&lt;/span&gt; will correspond to the id of the record in the database.&lt;/p&gt;&lt;p&gt;If you want to fill those values by yourself, uncheck the following checkboxes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>

@@ -252,6 +252,14 @@ class QGISUtils(QObject):
 
         return (local_id_enabled, local_id_field, local_id_value)
 
+    def check_if_and_disable_automatic_fields(self, db, layer_name, geometry_type=None):
+        settings = QSettings()
+        automatic_fields_definition = {}
+        if settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
+            automatic_fields_definition = self.disable_automatic_fields(db, layer_name, geometry_type)
+
+        return automatic_fields_definition
+
     def disable_automatic_fields(self, db, layer_name, geometry_type=None):
         layer = self.get_layer(db, layer_name, geometry_type, True)
         automatic_fields_definition = {idx: layer.defaultValueDefinition(idx) for idx in layer.attributeList()}
@@ -259,13 +267,25 @@ class QGISUtils(QObject):
         for field in layer.fields():
             self.reset_automatic_field(layer, field.name())
 
+        print("AUTOFIELDS DISABLED!")
         return automatic_fields_definition
+
+    def check_if_and_enable_automatic_fields(self, db, automatic_fields_definition, layer_name, geometry_type=None):
+        if automatic_fields_definition:
+            settings = QSettings()
+            if settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
+                self.enable_automatic_fields(db,
+                                             automatic_fields_definition,
+                                             layer_name,
+                                             geometry_type)
 
     def enable_automatic_fields(self, db, automatic_fields_definition, layer_name, geometry_type=None):
         layer = self.get_layer(db, layer_name, geometry_type, True)
 
         for idx, default_definition in automatic_fields_definition.items():
             layer.setDefaultValueDefinition(idx, default_definition)
+
+        print("AUTOFIELDS ENABLED!")
 
     def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, target_layer_name):
         if not csv_path or not os.path.exists(csv_path):
@@ -532,16 +552,23 @@ class QGISUtils(QObject):
         QgsProject.instance().setAutoTransaction(False)
 
     def show_etl_model(self, db, input_layer, ladm_col_layer_name):
+
         model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
         if model:
+            automatic_fields_definition = self.check_if_and_disable_automatic_fields(db, ladm_col_layer_name)
+
             mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
             output = self.get_layer(db, ladm_col_layer_name, geometry_type=None, load=True)
-            processing.execAlgorithmDialog("model:ETL-model", {
-                    'INPUT': input_layer.name(),
-                    'mapping': mapping,
-                    'output': output.name()
-                }
-            )
+            params = {
+                'INPUT': input_layer.name(),
+                'mapping': mapping,
+                'output': output.name()
+            }
+            processing.execAlgorithmDialog("model:ETL-model", params)
+
+            self.check_if_and_enable_automatic_fields(db,
+                                                      automatic_fields_definition,
+                                                      ladm_col_layer_name)
         else:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
