@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>wiz_boundary</class>
- <widget class="QWizard" name="wiz_boundary">
+ <class>wiz_create_building_cadastre</class>
+ <widget class="QWizard" name="wiz_create_building_cadastre">
   <property name="geometry">
    <rect>
     <x>0</x>

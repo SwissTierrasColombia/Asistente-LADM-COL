@@ -16,7 +16,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([0.0.7](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.0.7)) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.0.4 y permite:
+La versión actual ([0.0.8](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.0.8)) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) [v3.0.5](https://plugins.qgis.org/plugins/projectgenerator/version/3.0.5/download/') y permite:
 
  - Capturar datos para el modelo LADM_COL v2.2.1.
  - Agregar puntos a las capas `Punto Lindero` y `Punto Levantamiento`:
@@ -37,6 +37,11 @@ La versión actual ([0.0.7](https://github.com/AgenciaImplementacion/Asistente-L
    - `PuntosCCL` (relaciona `Punto Lindero` y `Lindero`)
    - `MasCCL`    (relaciona `Lindero` y `Terreno`)
    - `Menos`     (relaciona `Terreno` y sus anillos/huecos internos)
+ - Crear `Construcciones`:
+   - Digitalizando sobre el mapa.
+     - Ayudas para la digitalización:
+       - Configuración automática de snapping y de valores predeterminados para campos.
+   - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
  - Crear `Predios`:
    - A partir de `Terrenos` existentes.
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
@@ -52,6 +57,9 @@ La versión actual ([0.0.7](https://github.com/AgenciaImplementacion/Asistente-L
  - Realizar revisiones de calidad:
    - Revisar segmentos de linderos muy largos (que superen una tolerancia dada).
    - Revisar superposiciones en `Punto Lindero`.
+   - Revisar superposiciones en `Lindero`.
+   - Revisar nodos de `Lindero` sin `Punto Lindero` asociado.
+   - Revisar nodos de `Lindero` no conectados.
  - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
  - Usar estilos preconfigurados para asignarlos a las capas cargadas.
 

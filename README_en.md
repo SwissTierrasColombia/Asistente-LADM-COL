@@ -13,7 +13,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([0.0.7](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.0.7)) of the LADM_COL Assistant depends on [Project Generator](https://github.com/opengisch/projectgenerator/) plugin v3.0.4 and allows users to:
+The current version ([0.0.8](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.0.8)) of the LADM_COL Assistant depends on [Project Generator](https://github.com/opengisch/projectgenerator/) plugin [v3.0.5](https://plugins.qgis.org/plugins/projectgenerator/version/3.0.5/download/) and allows users to:
 
  - Capture data for the LADM_COL v2.2.1 model.
  - Add points to the `Boundary Point` and `Survey Point` layers:
@@ -37,6 +37,11 @@ The current version ([0.0.7](https://github.com/AgenciaImplementacion/Asistente-
  - Create `Parcels`:
    - From existing `Plots`.
    - From another table with any structure, setting a field mapping.
+ - Crete `Buildings`:
+   - By digitizing on the map.
+     - Aids for digitization:
+       - Automatic snapping configuration and default field values.
+   - From another layer with any structure, setting a field mapping.
  - Create `Natural Parties` and `Legal Parties`:
    - Using preconfigured forms.
    - From another table with any structure, setting a field mapping.
@@ -48,7 +53,10 @@ The current version ([0.0.7](https://github.com/AgenciaImplementacion/Asistente-
    - Load preconfigured layer sets.
  - Check quality:
    - Check too long `Boundary` segments (exceeding a given tolerance).
-   - Check overlapping `Boundary Points`.
+   - Check overlaps in `Boundary Points`.
+   - Check overlaps in `Boundary`.
+   - Check missing `Boundary Points` in `Boundaries`.
+   - Check dangles in `Boundary`.
  - Configure automatic values for `namespace` and `local_id` attributes.
  - Use configured styles for loaded layers.
 
