@@ -5,7 +5,7 @@ FORMS = ../ui/dlg_load_layers.ui \
         ../ui/wiz_create_plot_cadastre.ui \
         ../ui/wiz_define_boundaries_cadastre.ui \
         ../ui/wiz_create_parcel_cadastre.ui \
-        ../ui/wiz_create_build_cadastre.ui \
+        ../ui/wiz_create_building_cadastre.ui \
         ../ui/wiz_create_party_cadastre.ui \
         ../ui/wiz_create_legal_party_cadastre.ui \
         ../ui/wiz_create_natural_party_cadastre.ui \
@@ -29,7 +29,7 @@ SOURCES = ../asistente_ladm_col_plugin.py \
           ../gui/define_boundaries_cadastre_wizard.py \
           ../gui/point_spa_uni_cadastre_wizard.py \
           ../gui/create_parcel_cadastre_wizard.py \
-          ../gui/create_build_cadastre_wizard.py \
+          ../gui/create_building_cadastre_wizard.py \
           ../gui/settings_dialog.py \
           ../lib/dbconnector/gpkg_connector.py \
           ../lib/dbconnector/pg_connector.py \

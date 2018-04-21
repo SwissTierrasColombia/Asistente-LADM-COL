@@ -1099,16 +1099,29 @@ p, li { white-space: pre-wrap; }
         <translation>¿Cómo te gustaría definir linderos?</translation>
     </message>
     <message>
+        <location filename="../ui/wiz_create_building_cadastre.ui" line="17"/>
+        <source>Create Building</source>
+        <translation>Crear Construcción</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_cadastre.ui" line="67"/>
+        <source>How would you like to define buildings?</source>
+        <translation>¿Cómo te gustaría crear construcciones?</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_cadastre.ui" line="87"/>
         <location filename="../ui/wiz_define_boundaries_cadastre.ui" line="87"/>
         <source>Source:</source>
         <translation>Fuente:</translation>
     </message>
     <message>
+        <location filename="../ui/wiz_create_building_cadastre.ui" line="118"/>
         <location filename="../ui/wiz_define_boundaries_cadastre.ui" line="118"/>
         <source>Digitizing</source>
         <translation>Digitlizando</translation>
     </message>
     <message>
+        <location filename="../ui/wiz_create_building_cadastre.ui" line="144"/>
         <location filename="../ui/wiz_define_boundaries_cadastre.ui" line="144"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
         <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>

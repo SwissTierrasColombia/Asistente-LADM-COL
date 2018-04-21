@@ -5,6 +5,7 @@ from .table_mapping_config import *
 # and the value is a list of layers to load
 LAYER_SETS = {
     'Datos de Interesados': [
+        GENDER_TYPE_TABLE,
         NATURAL_PARTY_TABLE,
         LEGAL_PARTY_TABLE,
         LEGAL_PARTY_TYPE_TABLE,
