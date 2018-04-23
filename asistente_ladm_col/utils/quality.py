@@ -364,12 +364,26 @@ class QualityUtils(QObject):
         extracted_vertices = processing.run("native:extractvertices", {'INPUT':boundary_layer,'OUTPUT':'memory:'}, feedback=feedback)
         extracted_vertices_layer = extracted_vertices['OUTPUT']
 
-        cleaned_vertices = processing.run("qgis:deleteduplicategeometries", {'INPUT':extracted_vertices_layer,'OUTPUT':'memory:'}, feedback=feedback)
-        cleaned_vertices_layer = cleaned_vertices['OUTPUT']
+        # From vertices layer, get points with no overlap
+        overlapping_points = self.qgis_utils.geometry.get_overlapping_points(extracted_vertices_layer)
+
+        extracted_vertices_ids = [feature.id() for feature in extracted_vertices_layer.getFeatures()]
+
+        # Unpack list of lists into single list
+        overlapping_point_ids = [item for sublist in overlapping_points for item in sublist]
+
+        # Unpack list of lists into single list selecting only the first point
+        # per list. That means, discard overlapping points, and only keep one
+        cleaned_point_ids = [sublist[0] for sublist in overlapping_points]
+
+        # All vertices (even duplicated, due to the alg we use), minus all
+        # overlapping ids, plus only one of the overlapping ids
+        # This gets a list of all vertex ids with no duplicates
+        no_duplicate_ids = list(set(extracted_vertices_ids) - set(overlapping_point_ids)) + cleaned_point_ids
 
         if boundary_point_layer.featureCount() == 0:
             # Return all extracted and cleaned vertices
-            for feature in cleaned_vertices_layer.getFeatures():
+            for feature in extracted_vertices_layer.getFeatures(no_duplicate_ids):
                 if feature[ID_FIELD] in res:
                     res[feature[ID_FIELD]].append(feature.geometry())
                 else:
@@ -379,7 +393,7 @@ class QualityUtils(QObject):
 
         index = QgsSpatialIndex(boundary_point_layer.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([])), feedback)
 
-        for feature in cleaned_vertices_layer.getFeatures():
+        for feature in extracted_vertices_layer.getFeatures(no_duplicate_ids):
             if feature.hasGeometry():
                 geom = feature.geometry()
                 diff_geom = QgsGeometry(geom)
