@@ -129,11 +129,15 @@ class TesQualityValidations(unittest.TestCase):
 
         missing_points = self.quality.get_missing_boundary_points_in_boundaries(point_layer, boundary_layer)
 
-        self.assertEqual(len(missing_points),4)
+        self.assertEqual(len([geom for k, v in missing_points.items() for geom in v]), 7)
+        self.assertEqual(len(missing_points),5)
+        self.assertEqual(len(missing_points[1]),1)
+        self.assertEqual(len(missing_points[3]),1)
+        self.assertEqual(len(missing_points[4]),1)
         self.assertEqual(len(missing_points[6]),3)
-        self.assertEqual(len(missing_points[1]),2)
         self.assertEqual(len(missing_points[8]),1)
-        self.assertEqual(len(missing_points[2]),1)
+        self.assertNotIn(2,missing_points)
+        self.assertNotIn(5,missing_points)
         self.assertNotIn(7,missing_points)
 
     def test_get_missing_boundary_points_in_boundaries_without_points(self):
@@ -152,14 +156,15 @@ class TesQualityValidations(unittest.TestCase):
 
         missing_points = self.quality.get_missing_boundary_points_in_boundaries(point_layer, boundary_layer)
 
-        self.assertEqual(len(missing_points),6)
-        self.assertEqual(len(missing_points[1]),4)
-        self.assertEqual(len(missing_points[2]),1)
-        self.assertEqual(len(missing_points[3]),2)
-        self.assertEqual(len(missing_points[5]),1)
+        self.assertEqual(len([geom for k, v in missing_points.items() for geom in v]), 16)
+        self.assertEqual(len(missing_points),5)
+        self.assertEqual(len(missing_points[1]),3)
+        self.assertEqual(len(missing_points[3]),3)
+        self.assertEqual(len(missing_points[4]),1)
         self.assertEqual(len(missing_points[6]),6)
-        self.assertEqual(len(missing_points[8]),2)
-        self.assertNotIn(4,missing_points)
+        self.assertEqual(len(missing_points[8]),3)
+        self.assertNotIn(2,missing_points)
+        self.assertNotIn(5,missing_points)
         self.assertNotIn(7,missing_points)
 
     def test_boundary_dangles(self):
