@@ -84,23 +84,25 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         # Call project generator tables_info, cache it and fill the tree
         tables_info = self.project_generator_utils.get_tables_info_without_ignored_tables(self._db)
         self.models_tree = dict()
-        for record in tables_info:
-            if record['model'] not in self.models_tree:
-                self.models_tree[record['model']] = {
-                    record['table_alias'] or record['tablename']: record}
-            else:
-                if (record['table_alias'] or record['tablename']) in self.models_tree[record['model']]: # Multiple geometry columns
-                    # First geometry
-                    tmp_record = self.models_tree[record['model']][record['table_alias'] or record['tablename']]
-                    del self.models_tree[record['model']][record['table_alias'] or record['tablename']]
-                    tmp_name = "{} ({})".format((tmp_record['table_alias'] or tmp_record['tablename']), tmp_record['geometry_column'])
-                    self.models_tree[record['model']][tmp_name] = tmp_record
 
-                    # Second geometry
-                    tmp_name = "{} ({})".format((record['table_alias'] or record['tablename']), record['geometry_column'])
-                    self.models_tree[record['model']][tmp_name] = record
+        for record in tables_info:
+            if record['model'] is not None:
+                if record['model'] not in self.models_tree:
+                    self.models_tree[record['model']] = {
+                        record['table_alias'] or record['tablename']: record}
                 else:
-                    self.models_tree[record['model']][record['table_alias'] or record['tablename']] = record
+                    if (record['table_alias'] or record['tablename']) in self.models_tree[record['model']]: # Multiple geometry columns
+                        # First geometry
+                        tmp_record = self.models_tree[record['model']][record['table_alias'] or record['tablename']]
+                        del self.models_tree[record['model']][record['table_alias'] or record['tablename']]
+                        tmp_name = "{} ({})".format((tmp_record['table_alias'] or tmp_record['tablename']), tmp_record['geometry_column'])
+                        self.models_tree[record['model']][tmp_name] = tmp_record
+
+                        # Second geometry
+                        tmp_name = "{} ({})".format((record['table_alias'] or record['tablename']), record['geometry_column'])
+                        self.models_tree[record['model']][tmp_name] = record
+                    else:
+                        self.models_tree[record['model']][record['table_alias'] or record['tablename']] = record
 
         self.update_available_layers()
 
