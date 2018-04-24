@@ -129,16 +129,16 @@ class TesQualityValidations(unittest.TestCase):
 
         missing_points = self.quality.get_missing_boundary_points_in_boundaries(point_layer, boundary_layer)
 
-        self.assertEqual(len([geom for k, v in missing_points.items() for geom in v]), 7)
-        self.assertEqual(len(missing_points),5)
-        self.assertEqual(len(missing_points[1]),1)
-        self.assertEqual(len(missing_points[3]),1)
-        self.assertEqual(len(missing_points[4]),1)
-        self.assertEqual(len(missing_points[6]),3)
-        self.assertEqual(len(missing_points[8]),1)
-        self.assertNotIn(2,missing_points)
-        self.assertNotIn(5,missing_points)
-        self.assertNotIn(7,missing_points)
+        geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
+
+        self.assertEqual(len(geometries), 7)
+        self.assertIn('Point (962933.31867467891424894 1077991.8205501982010901)', geometries)
+        self.assertIn('Point (963525.77339165192097425 1078270.34507849626243114)', geometries)
+        self.assertIn('Point (963820.82056145928800106 1078251.46205962845124304)', geometries)
+        self.assertIn('Point (963202.40169354318641126 1078020.14507849956862628)', geometries)
+        self.assertIn('Point (963287.37527844763826579 1078395.44507849449291825)', geometries)
+        self.assertIn('Point (963353.46584448451176286 1078440.2922483051661402)', geometries)
+        self.assertIn('Point (963447.88093882286921144 1078482.77904075756669044)', geometries)
 
     def test_get_missing_boundary_points_in_boundaries_without_points(self):
         print('Validating missing boundary points in boundaries without points...')
@@ -156,16 +156,25 @@ class TesQualityValidations(unittest.TestCase):
 
         missing_points = self.quality.get_missing_boundary_points_in_boundaries(point_layer, boundary_layer)
 
-        self.assertEqual(len([geom for k, v in missing_points.items() for geom in v]), 16)
-        self.assertEqual(len(missing_points),5)
-        self.assertEqual(len(missing_points[1]),3)
-        self.assertEqual(len(missing_points[3]),3)
-        self.assertEqual(len(missing_points[4]),1)
-        self.assertEqual(len(missing_points[6]),6)
-        self.assertEqual(len(missing_points[8]),3)
-        self.assertNotIn(2,missing_points)
-        self.assertNotIn(5,missing_points)
-        self.assertNotIn(7,missing_points)
+        geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
+
+        self.assertEqual(len(geometries), 16)
+        self.assertIn('Point (963303.89791995682753623 1077772.30545586138032377)', geometries)
+        self.assertIn('Point (962933.31867467891424894 1077991.8205501982010901)', geometries)
+        self.assertIn('Point (963065.49980675254482776 1078159.40734264859929681)', geometries)
+        self.assertIn('Point (963395.95263693667948246 1078256.18281434546224773)', geometries)
+        self.assertIn('Point (963525.77339165192097425 1078270.34507849626243114)', geometries)
+        self.assertIn('Point (963709.88282561174128205 1078376.56205962691456079)', geometries)
+        self.assertIn('Point (963820.82056145928800106 1078251.46205962845124304)', geometries)
+        self.assertIn('Point (963608.38659919798374176 1078138.16394642251543701)', geometries)
+        self.assertIn('Point (963431.35829731356352568 1077965.85639925510622561)', geometries)
+        self.assertIn('Point (963202.40169354318641126 1078020.14507849956862628)', geometries)
+        self.assertIn('Point (963277.93376901384908706 1078371.84130490990355611)', geometries)
+        self.assertIn('Point (963287.37527844763826579 1078395.44507849449291825)', geometries)
+        self.assertIn('Point (963332.22244825831148773 1078402.52621057000942528)', geometries)
+        self.assertIn('Point (963353.46584448451176286 1078440.2922483051661402)', geometries)
+        self.assertIn('Point (963447.88093882286921144 1078482.77904075756669044)', geometries)
+        self.assertIn('Point (963521.05263693502638489 1078508.74319170042872429)', geometries)
 
     def test_boundary_dangles(self):
         print('Validating boundary_dangles...')
