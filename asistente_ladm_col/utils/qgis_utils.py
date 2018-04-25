@@ -17,6 +17,8 @@
  ***************************************************************************/
 """
 import os
+import webbrowser
+import socket
 
 from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri, Qgis,
@@ -27,7 +29,7 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
                        QgsApplication, QgsProcessingFeedback)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
-                              QVariant, QSettings)
+                              QVariant, QSettings, QLocale)
 import processing
 
 from .project_generator_utils import ProjectGeneratorUtils
@@ -38,7 +40,9 @@ from ..gui.settings_dialog import SettingsDialog
 from ..config.general_config import (
     DEFAULT_EPSG,
     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-    ERROR_LAYER_GROUP
+    ERROR_LAYER_GROUP,
+    TEST_SERVER,
+    HELP_URL
 )
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
@@ -705,3 +709,29 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils", "No plot could be created. Make sure selected boundaries are closed!"),
                 Qgis.Warning)
             return
+
+    def help_requested(self, module=''):
+        url = HELP_URL
+        def is_connected(hostname):
+            try:
+                host = socket.gethostbyname(hostname)
+                s = socket.create_connection((host, 80), 2)
+                return True
+            except:
+                pass
+            return False
+
+        if not is_connected(TEST_SERVER):
+            basepath = os.path.dirname(os.path.abspath(__file__))
+            dirdoc = os.path.join(os.path.dirname(basepath), "help")
+            print(dirdoc)
+            if os.path.exists(dirdoc):
+                url = os.path.join("file://", dirdoc)
+            else:
+                print("no tiene internet")
+                return url
+        os_language = QLocale(QSettings().value('locale/userLocale')).name()[:2]
+        if os_language in ['es', 'de']:
+            webbrowser.open("{}/{}/{}".format(url, os_language, module))
+        else:
+            webbrowser.open("{}/en/{}".format(url, module))
