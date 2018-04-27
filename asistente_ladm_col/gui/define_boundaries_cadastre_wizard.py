@@ -43,6 +43,7 @@ class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
         self.rad_digitizing.toggled.connect(self.adjust_page_1_controls)
         self.adjust_page_1_controls()
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
+        self.button(QWizard.HelpButton).clicked.connect(self.show_help)
 
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.LineLayer)
 
@@ -129,3 +130,6 @@ class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
             self.rad_refactor.setChecked(True)
         else:
             self.rad_digitizing.setChecked(True)
+
+    def show_help(self):
+        self.qgis_utils.show_help("define_boundaries")

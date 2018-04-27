@@ -20,6 +20,7 @@ import os
 import webbrowser
 import socket
 
+
 from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri, Qgis,
                        QgsSpatialIndex, QgsVectorLayer, QgsMultiLineString,
@@ -711,8 +712,10 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return
 
-    def help_requested(self, module='index.html'):
+    def show_help(self, module=''):
         url = HELP_URL
+        section = MODULE_HELP_MAPPING[module]
+
         def is_connected(hostname):
             try:
                 host = socket.gethostbyname(hostname)
@@ -725,8 +728,7 @@ class QGISUtils(QObject):
         if not is_connected(TEST_SERVER):
             basepath = os.path.dirname(os.path.abspath(__file__))
             dirdoc = os.path.join(os.path.dirname(basepath), "help", os_language)
-            print(dirdoc)
-            if os.path.exists(os.path.join("file://", dirdoc, module)):
+            if os.path.exists(os.path.join("file://", dirdoc)):
                 url = os.path.join("file://", dirdoc)
             else:
                 self.message_emitted.emit(
@@ -736,8 +738,7 @@ class QGISUtils(QObject):
                 return url
         else:
             url = os.path.join(url, os_language)
-        print(url)
         if os_language in ['es', 'de']:
-            webbrowser.open("{}/{}".format(url, module))
+            webbrowser.open("{}/{}".format(url, section))
         else:
-            webbrowser.open("{}/{}".format(url, module))
+            webbrowser.open("{}/{}".format(url, section))
