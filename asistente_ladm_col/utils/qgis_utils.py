@@ -710,7 +710,7 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return
 
-    def help_requested(self, module=''):
+    def help_requested(self, module='index.html'):
         url = HELP_URL
         def is_connected(hostname):
             try:
@@ -720,18 +720,23 @@ class QGISUtils(QObject):
             except:
                 pass
             return False
-
+        os_language = QLocale(QSettings().value('locale/userLocale')).name()[:2]
         if not is_connected(TEST_SERVER):
             basepath = os.path.dirname(os.path.abspath(__file__))
-            dirdoc = os.path.join(os.path.dirname(basepath), "help")
+            dirdoc = os.path.join(os.path.dirname(basepath), "help", os_language)
             print(dirdoc)
-            if os.path.exists(dirdoc):
+            if os.path.exists(os.path.join("file://", dirdoc, module)):
                 url = os.path.join("file://", dirdoc)
             else:
-                print("no tiene internet")
+                self.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                                               "You don't have internet connection or local documentation!"),
+                    Qgis.Warning)
                 return url
-        os_language = QLocale(QSettings().value('locale/userLocale')).name()[:2]
-        if os_language in ['es', 'de']:
-            webbrowser.open("{}/{}/{}".format(url, os_language, module))
         else:
-            webbrowser.open("{}/en/{}".format(url, module))
+            url = os.path.join(url, os_language)
+        print(url)
+        if os_language in ['es', 'de']:
+            webbrowser.open("{}/{}".format(url, module))
+        else:
+            webbrowser.open("{}/{}".format(url, module))
