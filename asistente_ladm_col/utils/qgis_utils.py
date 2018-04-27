@@ -41,6 +41,7 @@ from ..config.general_config import (
     DEFAULT_EPSG,
     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
     ERROR_LAYER_GROUP,
+    MODULE_HELP_MAPPING,
     TEST_SERVER,
     HELP_URL
 )
