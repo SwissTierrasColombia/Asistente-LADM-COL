@@ -2,6 +2,11 @@ DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 ERROR_LAYER_GROUP = "Validation errors"
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
+MODULE_HELP_MAPPING = {
+    '' : 'index.html', # default module is '', just go to index.html
+    'natural_party' : 'Party.html#natural-party',
+    'legal_party' : 'Party.html#legal-party'
+}
 PLUGIN_NAME = "Asistente LADM_COL"
 
 # Configure Project Generator Dependency
