@@ -26,7 +26,7 @@ from qgis.core import Qgis, QgsApplication, QgsProcessingModelAlgorithm
 from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
                               QLocale, QSettings)
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton, QMessageBox
+from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton
 
 from processing.modeler.ModelerUtils import ModelerUtils
 
@@ -49,6 +49,7 @@ from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWiz
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
 from .gui.dialog_load_layers import DialogLoadLayers
+from .gui.about_dialog import AboutDialog
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_version
@@ -504,14 +505,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.show_help()
 
     def show_about_dialog(self):
-        self.msg = QMessageBox()
-        #self.msg.setIcon(QMessageBox.Information)
-        self.msg.setTextFormat(Qt.RichText)
-        self.msg.setWindowTitle(QCoreApplication.translate("AsistenteLADMCOLPlugin", 'About'))
-        description = QCoreApplication.translate("AsistenteLADMCOLPlugin", """<html><head/><body><p align="center"><span style=" font-size:14pt; font-weight:600;">Asistente LADM_COL</span></p><p align="center">Plugin de <a href="http://qgis.org"><span style=" text-decoration: underline; color:#0000ff;">QGIS</span></a> que ayuda a capturar y mantener datos conformes con <a href="https://github.com/AgenciaImplementacion/LADM_COL"><span style=" text-decoration: underline; color:#0000ff;">LADM_COL</span></a> y a generar archivos de intercambio de <a href="http://www.interlis.ch/index_e.htm"><span style=" text-decoration: underline; color:#0000ff;">INTERLIS</span></a> (.XTF).</p><p align="center">Licencia: <a href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE"><span style=" text-decoration: underline; color:#0000ff;">GNU General Public License v3.0</span></a></p><p align="center">Repositorio de código fuente en <a href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL"><span style=" text-decoration: underline; color:#0000ff;">GitHub</span></a>.</p><p align="center">Un proyecto de:<br/><a href="https://www.proadmintierra.info/"><span style=" text-decoration: underline; color:#0000ff;">Agencia de Implementación</span></a> (<a href="http://bsf-swissphoto.com/"><span style=" text-decoration: underline; color:#0000ff;">BSF-Swissphoto AG</span></a> - <a href="http://www.incige.com/"><span style=" text-decoration: underline; color:#0000ff;">INCIGE S.A.S</span></a>)</p><p align="center"><br/></p></body></html>""")
-        self.msg.setText(description)
-        self.msg.setStandardButtons(QMessageBox.Ok)
-        msg_box = self.msg.exec_()
+        dialog = AboutDialog()
+        rich_text = '<html><head/><body><p align="center"><span style=" font-size:10pt; font-weight:600;">v{}</span></p></body></html>'
+        dialog.lbl_version.setText(rich_text.format(get_plugin_version('asistente_ladm_col'))) 
+        dialog.exec_()
 
     def installTranslator(self):
         qgis_locale = QLocale(QSettings().value('locale/userLocale'))
