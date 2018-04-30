@@ -68,6 +68,7 @@ from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 
 class QGISUtils(QObject):
 
+    activate_layer_requested = pyqtSignal(QgsMapLayer)
     layer_symbology_changed = pyqtSignal(str) # layer id
     message_emitted = pyqtSignal(str, int) # Message, level
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
@@ -566,6 +567,7 @@ class QGISUtils(QObject):
 
             mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
             output = self.get_layer(db, ladm_col_layer_name, geometry_type=None, load=True)
+            self.activate_layer_requested.emit(input_layer)
             params = {
                 'INPUT': input_layer.name(),
                 'mapping': mapping,

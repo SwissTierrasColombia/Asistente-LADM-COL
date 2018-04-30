@@ -173,6 +173,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._load_layers_action.triggered.connect(self.load_layers_from_project_generator)
         self._settings_action.triggered.connect(self.show_settings)
         self._about_action.triggered.connect(self.show_about_dialog)
+        self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
@@ -228,6 +229,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def refresh_map(self):
         self.iface.mapCanvas().refresh()
+
+    def activate_layer(self, layer):
+        self.iface.layerTreeView().setCurrentLayer(layer)
 
     def refresh_layer_symbology(self, layer_id):
         self.iface.layerTreeView().refreshLayerSymbology(layer_id)
