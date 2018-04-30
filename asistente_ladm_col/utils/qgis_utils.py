@@ -20,6 +20,7 @@ import os
 import webbrowser
 import socket
 
+
 from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri, Qgis,
                        QgsSpatialIndex, QgsVectorLayer, QgsMultiLineString,
@@ -713,8 +714,10 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return
 
-    def help_requested(self, module=''):
+    def show_help(self, module=''):
         url = HELP_URL
+        section = MODULE_HELP_MAPPING[module]
+
         def is_connected(hostname):
             try:
                 host = socket.gethostbyname(hostname)
@@ -723,18 +726,21 @@ class QGISUtils(QObject):
             except:
                 pass
             return False
-
+        os_language = QLocale(QSettings().value('locale/userLocale')).name()[:2]
         if not is_connected(TEST_SERVER):
             basepath = os.path.dirname(os.path.abspath(__file__))
-            dirdoc = os.path.join(os.path.dirname(basepath), "help")
-            print(dirdoc)
-            if os.path.exists(dirdoc):
+            dirdoc = os.path.join(os.path.dirname(basepath), "help", os_language)
+            if os.path.exists(os.path.join("file://", dirdoc)):
                 url = os.path.join("file://", dirdoc)
             else:
-                print("no tiene internet")
+                self.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                                               "You don't have internet connection or local documentation!"),
+                    Qgis.Warning)
                 return url
-        os_language = QLocale(QSettings().value('locale/userLocale')).name()[:2]
-        if os_language in ['es', 'de']:
-            webbrowser.open("{}/{}/{}".format(url, os_language, module))
         else:
-            webbrowser.open("{}/en/{}".format(url, module))
+            url = os.path.join(url, os_language)
+        if os_language in ['es', 'de']:
+            webbrowser.open("{}/{}".format(url, section))
+        else:
+            webbrowser.open("{}/{}".format(url, section))

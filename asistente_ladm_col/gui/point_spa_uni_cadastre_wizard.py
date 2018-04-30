@@ -87,6 +87,7 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
                                             "Import"))
         self.txt_help_page_3.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_3_OPTION_CSV)
         self.txt_help_page_3.anchorClicked.connect(self.save_template)
+        self.button(QWizard.HelpButton).clicked.connect(self.show_help)
 
         # Set MessageBar for QWizard
         self.bar = QgsMessageBar()
@@ -355,3 +356,6 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
 
         self.txt_file_path.setText(settings.value('Asistente-LADM_COL/wizards/points_add_points_csv_file'))
         self.txt_delimiter.setText(settings.value('Asistente-LADM_COL/wizards/points_csv_file_delimiter'))
+
+    def show_help(self):
+        self.qgis_utils.show_help("add_points")
