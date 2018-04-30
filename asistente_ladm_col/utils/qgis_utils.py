@@ -34,7 +34,7 @@ from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
 import processing
 
 from .project_generator_utils import ProjectGeneratorUtils
-from .qt_utils import OverrideCursor
+from .qt_utils import OverrideCursor, get_plugin_version
 from .symbology import SymbologyUtils
 from .geometry import GeometryUtils
 from ..gui.settings_dialog import SettingsDialog
@@ -72,6 +72,7 @@ class QGISUtils(QObject):
     activate_layer_requested = pyqtSignal(QgsMapLayer)
     layer_symbology_changed = pyqtSignal(str) # layer id
     message_emitted = pyqtSignal(str, int) # Message, level
+    message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
     message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
     map_refresh_requested = pyqtSignal()
@@ -715,8 +716,9 @@ class QGISUtils(QObject):
             return
 
     def show_help(self, module=''):
-        url = HELP_URL
+        url = ''
         section = MODULE_HELP_MAPPING[module]
+        plugin_version = get_plugin_version('asistente_ladm_col')
 
         def is_connected(hostname):
             try:
@@ -726,21 +728,32 @@ class QGISUtils(QObject):
             except:
                 pass
             return False
+
+        # If we don't have Internet access check if the documentation is in the
+        # expected local dir and show it. Otherwise, show a warning message.
         os_language = QLocale(QSettings().value('locale/userLocale')).name()[:2]
         if not is_connected(TEST_SERVER):
             basepath = os.path.dirname(os.path.abspath(__file__))
-            dirdoc = os.path.join(os.path.dirname(basepath), "help", os_language)
-            if os.path.exists(os.path.join("file://", dirdoc)):
-                url = os.path.join("file://", dirdoc)
+            plugin_dir = os.path.dirname(basepath)
+
+            help_path = os.path.join(
+                "file://",
+                plugin_dir,
+                "help",
+                os_language,
+                plugin_version
+            )
+
+            if os.path.exists(help_path):
+                url = help_path
             else:
-                self.message_emitted.emit(
+                self.message_with_duration_emitted.emit(
                     QCoreApplication.translate("QGISUtils",
-                                               "You don't have internet connection or local documentation!"),
-                    Qgis.Warning)
-                return url
+                                               "The plugin help cannot be open. Is the Internet connection OK?"),
+                    Qgis.Warning,
+                    20)
+                return
         else:
-            url = os.path.join(url, os_language)
-        if os_language in ['es', 'de']:
-            webbrowser.open("{}/{}".format(url, section))
-        else:
-            webbrowser.open("{}/{}".format(url, section))
+            url = "{}/{}/{}".format(HELP_URL, os_language, plugin_version)
+
+        webbrowser.open("{}/{}".format(url, section))

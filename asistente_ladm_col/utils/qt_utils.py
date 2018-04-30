@@ -20,6 +20,8 @@
 
 import os.path
 import inspect
+
+import qgis
 from qgis.PyQt.QtWidgets import (
     QFileDialog,
     QApplication,
@@ -79,6 +81,17 @@ def enable_next_wizard(wizard, with_back=True):
     button_list = [QWizard.HelpButton, QWizard.Stretch, QWizard.NextButton, QWizard.FinishButton, QWizard.CancelButton]
     if with_back: button_list.insert(2, QWizard.BackButton)
     wizard.setButtonLayout(button_list)
+
+
+def get_plugin_version(plugin_name):
+    file_path = os.path.join(qgis.utils.plugins[plugin_name].plugin_dir, 'metadata.txt')
+    if os.path.isfile(file_path):
+        with open(file_path) as metadata:
+            for line in metadata:
+                line_array = line.strip().split("=")
+                if line_array[0] == 'version':
+                    return line_array[1].strip()
+    return None
 
 
 class NetworkError(RuntimeError):

@@ -51,6 +51,7 @@ from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadast
 from .gui.dialog_load_layers import DialogLoadLayers
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
+from .utils.qt_utils import get_plugin_version
 from .utils.quality import QualityUtils
 
 #import resources_rc
@@ -172,10 +173,12 @@ class AsistenteLADMCOLPlugin(QObject):
         self._quality_check_all_cadastre_action.triggered.connect(self.quality_check_all)
         self._load_layers_action.triggered.connect(self.load_layers_from_project_generator)
         self._settings_action.triggered.connect(self.show_settings)
+        self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
         self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.qgis_utils.message_emitted.connect(self.show_message)
+        self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
@@ -236,8 +239,8 @@ class AsistenteLADMCOLPlugin(QObject):
     def refresh_layer_symbology(self, layer_id):
         self.iface.layerTreeView().refreshLayerSymbology(layer_id)
 
-    def show_message(self, msg, level):
-        self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level)
+    def show_message(self, msg, level, duration=5):
+        self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level, duration)
 
     def show_message_to_load_layer(self, msg, button_text, layer, level):
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
@@ -317,21 +320,11 @@ class AsistenteLADMCOLPlugin(QObject):
 
         return decorated_function
 
-    def get_plugin_version(self, plugin_dir):
-        file_path = os.path.join(plugin_dir, 'metadata.txt')
-        if os.path.isfile(file_path):
-            with open(file_path) as metadata:
-                for line in metadata:
-                    line_array = line.strip().split("=")
-                    if line_array[0] == 'version':
-                        return line_array[1]
-        return None
-
     def is_plugin_version_valid(self):
         plugin_found = 'projectgenerator' in qgis.utils.plugins
         if not plugin_found:
             return False
-        current_version = self.get_plugin_version(qgis.utils.plugins['projectgenerator'].plugin_dir)
+        current_version = get_plugin_version('projectgenerator')
         min_required_version = PROJECT_GENERATOR_MIN_REQUIRED_VERSION
         if current_version is None:
             return False
@@ -506,6 +499,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality.check_overlaps_in_boundary_points(self.get_db_connection())
         self.quality.check_overlaps_in_boundaries(self.get_db_connection())
         self.quality.check_missing_boundary_points_in_boundaries(self.get_db_connection())
+
+    def show_help(self):
+        self.qgis_utils.show_help()
 
     def show_about_dialog(self):
         self.msg = QMessageBox()
