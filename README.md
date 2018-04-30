@@ -89,8 +89,8 @@ docker-compose build
 ## Pasos para traducir al español
 
  + Si se han agregado archivos .py o .ui al código fuente, actualizar el archivo `asistente_ladm_col/i18n/Asistente-LADM_COL.pro`.
- + En la terminal de comandos, y desde la carpeta *Asistente-LADM_COL*, ejecutar
-`lupdate asistente_ladm_col/i18n/Asistente-LADM_COL.pro` (lo cual actualiza el archivo de cadenas de traducción `asistente_ladm_col/i18n/Asistente-LADM_COL_es.ts`)
+ + Ir a la carpeta *asistente_ladm_col* y ejecutar:
+`make update_translations` (lo cual actualiza el archivo de cadenas de traducción `asistente_ladm_col/i18n/Asistente-LADM_COL_es.ts`)
  + Abrir el programa *Qt-Linguist* y cargar el archivo  `asistente_ladm_col/i18n/Asistente-LADM_COL_es.ts`
  + Editar las cadenas de texto traducibles y guardar el archivo.
  + Ir a la carpeta *asistente_ladm_col* y ejecutar:

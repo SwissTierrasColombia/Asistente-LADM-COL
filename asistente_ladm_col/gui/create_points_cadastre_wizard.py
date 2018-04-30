@@ -52,7 +52,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         # Set connections
         self.btn_browse_file.clicked.connect(
             make_file_selector(self.txt_file_path,
-                               file_filter=QCoreApplication.translate("PointsSpatialUnitCadastreWizard",'CSV File (*.csv *.txt)')))
+                               file_filter=QCoreApplication.translate("CreatePointsCadastreWizard",'CSV File (*.csv *.txt)')))
         self.txt_file_path.textChanged.connect(self.file_path_changed)
         self.txt_delimiter.textChanged.connect(self.fill_long_lat_combos)
 
@@ -83,7 +83,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         self.txt_help_page_2.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV)
 
         self.wizardPage2.setButtonText(QWizard.FinishButton,
-                                       QCoreApplication.translate("PointsSpatialUnitCadastreWizard",
+                                       QCoreApplication.translate("CreatePointsCadastreWizard",
                                             "Import"))
         self.txt_help_page_3.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_3_OPTION_CSV)
         self.txt_help_page_3.anchorClicked.connect(self.save_template)
@@ -148,12 +148,12 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
     def point_option_changed(self):
         if self.rad_boundary_point.isChecked():
-            self.gbx_page_2.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Load data to Boundary Points..."))
-            self.gbx_page_3.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Configure CSV data source for Boundary Points..."))
+            self.gbx_page_2.setTitle(QCoreApplication.translate("CreatePointsCadastreWizard", "Load data to Boundary Points..."))
+            self.gbx_page_3.setTitle(QCoreApplication.translate("CreatePointsCadastreWizard", "Configure CSV data source for Boundary Points..."))
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_BP)
         else: # self.rad_survey_point is checked
-            self.gbx_page_2.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Load data to Survey Points..."))
-            self.gbx_page_3.setTitle(QCoreApplication.translate("PointsSpatialUnitCadastreWizard", "Configure CSV data source for Survey Points..."))
+            self.gbx_page_2.setTitle(QCoreApplication.translate("CreatePointsCadastreWizard", "Load data to Survey Points..."))
+            self.gbx_page_3.setTitle(QCoreApplication.translate("CreatePointsCadastreWizard", "Configure CSV data source for Survey Points..."))
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_SP)
 
     def finished_dialog(self):
@@ -168,7 +168,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                                                output_layer_name)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                    QCoreApplication.translate("PointsSpatialUnitCadastreWizard",
+                    QCoreApplication.translate("CreatePointsCadastreWizard",
                                                "Select a source layer to set the field mapping to '{}'.").format(output_layer_name),
                     Qgis.Warning)
 
@@ -189,7 +189,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
         if not csv_path or not os.path.exists(csv_path):
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("PointsSpatialUnitCadastreWizard",
+                QCoreApplication.translate("CreatePointsCadastreWizard",
                                            "No CSV file given or file doesn't exist."),
                 Qgis.Warning)
             return
@@ -268,7 +268,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
         if errorReading:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("PointsSpatialUnitCadastreWizard",
+                QCoreApplication.translate("CreatePointsCadastreWizard",
                                            "It was not possible to read field names from the CSV. Check the file and try again."),
                 Qgis.Warning)
         return []
@@ -300,10 +300,10 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         settings.setValue('Asistente-LADM_COL/wizards/points_csv_file_delimiter', self.txt_delimiter.text().strip())
 
         new_filename, filter = QFileDialog.getSaveFileName(self,
-                                   QCoreApplication.translate('PointsSpatialUnitCadastreWizard',
+                                   QCoreApplication.translate('CreatePointsCadastreWizard',
                                                               'Save File'),
                                    os.path.join(settings.value('Asistente-LADM_COL/wizards/points_download_csv_path', '.'), filename),
-                                   QCoreApplication.translate('PointsSpatialUnitCadastreWizard',
+                                   QCoreApplication.translate('CreatePointsCadastreWizard',
                                                               'CSV File (*.csv *.txt)'))
 
         if new_filename:
@@ -312,7 +312,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
             if not template_file.exists():
                 self.log.logMessage("CSV doesn't exist! Probably due to a missing 'make' execution to generate resources...", PLUGIN_NAME, Qgis.Critical)
-                msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'CSV file not found. Update your plugin. For details see log.')
+                msg = QCoreApplication.translate('CreatePointsCadastreWizard', 'CSV file not found. Update your plugin. For details see log.')
                 self.show_message(msg, Qgis.Warning)
                 return
 
@@ -323,11 +323,11 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
             if template_file.copy(new_filename):
                 os.chmod(new_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
-                msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'The file <a href="file://{}">{}</a> was successfully saved!').format(new_filename, os.path.basename(new_filename))
+                msg = QCoreApplication.translate('CreatePointsCadastreWizard', 'The file <a href="file://{}">{}</a> was successfully saved!').format(new_filename, os.path.basename(new_filename))
                 self.show_message(msg, Qgis.Info)
             else:
                 self.log.logMessage('There was an error copying the CSV file {}!'.format(new_filename), PLUGIN_NAME, Qgis.Info)
-                msg = QCoreApplication.translate('PointsSpatialUnitCadastreWizard', 'The file couldn\'t be saved.')
+                msg = QCoreApplication.translate('CreatePointsCadastreWizard', 'The file couldn\'t be saved.')
                 self.show_message(msg, Qgis.Warning)
 
     def show_message(self, message, level):

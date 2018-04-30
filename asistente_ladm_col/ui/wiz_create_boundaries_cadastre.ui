@@ -64,7 +64,7 @@
         <item row="0" column="0">
          <widget class="QGroupBox" name="gbx_page_1">
           <property name="title">
-           <string>How would you like to define boundaries?</string>
+           <string>How would you like to create boundaries?</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="4" column="0">
