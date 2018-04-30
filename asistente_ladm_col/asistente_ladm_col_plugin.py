@@ -36,8 +36,8 @@ from .config.general_config import (
     PROJECT_GENERATOR_EXACT_REQUIRED_VERSION,
     PROJECT_GENERATOR_REQUIRED_VERSION_URL
 )
-from .gui.point_spa_uni_cadastre_wizard import PointsSpatialUnitCadastreWizard
-from .gui.define_boundaries_cadastre_wizard import DefineBoundariesCadastreWizard
+from .gui.create_points_cadastre_wizard import CreatePointsCadastreWizard
+from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
 from .gui.create_plot_cadastre_wizard import CreatePlotCadastreWizard
 from .gui.create_parcel_cadastre_wizard import CreateParcelCadastreWizard
 from .gui.create_building_cadastre_wizard import CreateBuildingCadastreWizard
@@ -80,14 +80,16 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality = QualityUtils(self.qgis_utils)
 
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
+        self._surveying_and_representation_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Surveying and Representation"), self._cadastre_menu)
+        self._point_surveying_and_representation_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Point"), self._surveying_and_representation_cadastre_menu)
+        self._boundary_surveying_and_representation_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Boundary"), self._surveying_and_representation_cadastre_menu)
+        self._surveying_and_representation_cadastre_menu.addActions([self._point_surveying_and_representation_cadastre_action,
+                                                       self._boundary_surveying_and_representation_cadastre_action])
+
         self._spatial_unit_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Spatial Unit"), self._cadastre_menu)
-        self._point_spatial_unit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Add Points"), self._spatial_unit_cadastre_menu)
-        self._boundary_spatial_unit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Define Boundaries"), self._spatial_unit_cadastre_menu)
         self._plot_spatial_unit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Plot"), self._spatial_unit_cadastre_menu)
         self._building_spatial_unit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building"),self._spatial_unit_cadastre_menu)
-        self._spatial_unit_cadastre_menu.addActions([self._point_spatial_unit_cadastre_action,
-                                                     self._boundary_spatial_unit_cadastre_action,
-                                                     self._plot_spatial_unit_cadastre_action,
+        self._spatial_unit_cadastre_menu.addActions([self._plot_spatial_unit_cadastre_action,
                                                      self._building_spatial_unit_cadastre_action])
 
         self._baunit_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "BA Unit"), self._cadastre_menu)
@@ -133,6 +135,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._quality_cadastre_menu.addSeparator()
         self._quality_cadastre_menu.addAction(self._quality_check_all_cadastre_action)
 
+        self._cadastre_menu.addMenu(self._surveying_and_representation_cadastre_menu)
         self._cadastre_menu.addMenu(self._spatial_unit_cadastre_menu)
         self._cadastre_menu.addMenu(self._baunit_cadastre_menu)
         self._cadastre_menu.addMenu(self._party_cadastre_menu)
@@ -154,8 +157,8 @@ class AsistenteLADMCOLPlugin(QObject):
                                self._about_action])
 
         # Set connections
-        self._point_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_point_sp_un_cad)
-        self._boundary_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_boundaries_cad)
+        self._point_surveying_and_representation_cadastre_action.triggered.connect(self.show_wiz_point_cad)
+        self._boundary_surveying_and_representation_cadastre_action.triggered.connect(self.show_wiz_boundaries_cad)
         self._plot_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_plot_cad)
         self._parcel_baunit_cadastre_action.triggered.connect(self.show_wiz_parcel_cad)
         self._building_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_building_cad)
@@ -184,7 +187,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
 
-        # Toolbar for Define Boundaries
+        # Toolbar
         self._boundary_explode_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Explode..."), self.iface.mainWindow())
         self._boundary_explode_action.triggered.connect(self.call_explode_boundaries)
         self._boundary_merge_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Merge..."), self.iface.mainWindow())
@@ -398,14 +401,14 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_project_generator_required
     @_db_connection_required
-    def show_wiz_point_sp_un_cad(self):
-        wiz = PointsSpatialUnitCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+    def show_wiz_point_cad(self):
+        wiz = CreatePointsCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     @_project_generator_required
     @_db_connection_required
     def show_wiz_boundaries_cad(self):
-        wiz = DefineBoundariesCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz = CreateBoundariesCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     @_project_generator_required
@@ -507,7 +510,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_about_dialog(self):
         dialog = AboutDialog()
         rich_text = '<html><head/><body><p align="center"><span style=" font-size:10pt; font-weight:600;">v{}</span></p></body></html>'
-        dialog.lbl_version.setText(rich_text.format(get_plugin_version('asistente_ladm_col'))) 
+        dialog.lbl_version.setText(rich_text.format(get_plugin_version('asistente_ladm_col')))
         dialog.exec_()
 
     def installTranslator(self):

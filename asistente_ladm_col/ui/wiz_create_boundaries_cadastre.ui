@@ -14,7 +14,7 @@
    <cursorShape>ArrowCursor</cursorShape>
   </property>
   <property name="windowTitle">
-   <string>Define Boundaries</string>
+   <string>Create Boundaries</string>
   </property>
   <property name="options">
    <set>QWizard::HaveHelpButton</set>

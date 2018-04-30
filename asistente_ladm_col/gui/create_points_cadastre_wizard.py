@@ -33,9 +33,9 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE)
 from ..config.help_strings import HelpStrings
 
-WIZARD_UI = get_ui_class('wiz_add_points_cadastre.ui')
+WIZARD_UI = get_ui_class('wiz_create_points_cadastre.ui')
 
-class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
+class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
@@ -358,4 +358,4 @@ class PointsSpatialUnitCadastreWizard(QWizard, WIZARD_UI):
         self.txt_delimiter.setText(settings.value('Asistente-LADM_COL/wizards/points_csv_file_delimiter'))
 
     def show_help(self):
-        self.qgis_utils.show_help("add_points")
+        self.qgis_utils.show_help("create_points")

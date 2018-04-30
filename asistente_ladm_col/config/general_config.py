@@ -4,8 +4,8 @@ ERROR_LAYER_GROUP = "Validation errors"
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
-    'add_points':'cadas/Spatial_Unit.html#add-points',
-    'define_boundaries':'cadas/Spatial_Unit.html#define-boundaries',
+    'create_points':'cadas/Spatial_Unit.html#add-points',
+    'create_boundaries':'cadas/Spatial_Unit.html#define-boundaries',
     'create_plot':'cadas/Spatial_Unit.html#create-plot',
     'legal_party' : 'cadas/Party.html#legal-party',
     'natural_party' : 'cadas/Party.html#natural-party'
