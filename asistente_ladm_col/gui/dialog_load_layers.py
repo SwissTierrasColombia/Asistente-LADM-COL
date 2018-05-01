@@ -25,6 +25,14 @@ from qgis.PyQt.QtGui import QBrush, QFont, QIcon
 from qgis.PyQt.QtWidgets import (QAction, QDialog, QTreeWidgetItem, QLineEdit,
                                  QTreeWidgetItemIterator, QComboBox)
 
+from ..config.general_config import (
+    TABLE_NAME,
+    GEOMETRY_COLUMN,
+    GEOMETRY_TYPE,
+    KIND_SETTINGS,
+    TABLE_ALIAS,
+    MODEL
+)
 from ..config.table_mapping_config import (
     TABLE_PROP_ASSOCIATION,
     TABLE_PROP_DOMAIN,
@@ -86,23 +94,23 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.models_tree = dict()
 
         for record in tables_info:
-            if record['model'] is not None:
-                if record['model'] not in self.models_tree:
-                    self.models_tree[record['model']] = {
-                        record['table_alias'] or record['tablename']: record}
+            if record[MODEL] is not None:
+                if record[MODEL] not in self.models_tree:
+                    self.models_tree[record[MODEL]] = {
+                        record[TABLE_ALIAS] or record[TABLE_NAME]: record}
                 else:
-                    if (record['table_alias'] or record['tablename']) in self.models_tree[record['model']]: # Multiple geometry columns
+                    if (record[TABLE_ALIAS] or record[TABLE_NAME]) in self.models_tree[record[MODEL]]: # Multiple geometry columns
                         # First geometry
-                        tmp_record = self.models_tree[record['model']][record['table_alias'] or record['tablename']]
-                        del self.models_tree[record['model']][record['table_alias'] or record['tablename']]
-                        tmp_name = "{} ({})".format((tmp_record['table_alias'] or tmp_record['tablename']), tmp_record['geometry_column'])
-                        self.models_tree[record['model']][tmp_name] = tmp_record
+                        tmp_record = self.models_tree[record[MODEL]][record[TABLE_ALIAS] or record[TABLE_NAME]]
+                        del self.models_tree[record[MODEL]][record[TABLE_ALIAS] or record[TABLE_NAME]]
+                        tmp_name = "{} ({})".format((tmp_record[TABLE_ALIAS] or tmp_record[TABLE_NAME]), tmp_record[GEOMETRY_COLUMN])
+                        self.models_tree[record[MODEL]][tmp_name] = tmp_record
 
                         # Second geometry
-                        tmp_name = "{} ({})".format((record['table_alias'] or record['tablename']), record['geometry_column'])
-                        self.models_tree[record['model']][tmp_name] = record
+                        tmp_name = "{} ({})".format((record[TABLE_ALIAS] or record[TABLE_NAME]), record[GEOMETRY_COLUMN])
+                        self.models_tree[record[MODEL]][tmp_name] = record
                     else:
-                        self.models_tree[record['model']][record['table_alias'] or record['tablename']] = record
+                        self.models_tree[record[MODEL]][record[TABLE_ALIAS] or record[TABLE_NAME]] = record
 
         self.update_available_layers()
 
@@ -136,18 +144,18 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
 
             for table in sorted_tables:
                 current_table_info = self.models_tree[model][table]
-                if current_table_info['is_domain'] == TABLE_PROP_DOMAIN and not show_domains \
-                   or current_table_info['is_domain'] == TABLE_PROP_STRUCTURE and not show_structures \
-                   or current_table_info['is_domain'] == TABLE_PROP_ASSOCIATION and not show_associations:
+                if current_table_info[KIND_SETTINGS] == TABLE_PROP_DOMAIN and not show_domains \
+                   or current_table_info[KIND_SETTINGS] == TABLE_PROP_STRUCTURE and not show_structures \
+                   or current_table_info[KIND_SETTINGS] == TABLE_PROP_ASSOCIATION and not show_associations:
                     continue
 
                 table_item = QTreeWidgetItem([table])
                 table_item.setData(0, Qt.UserRole, self.models_tree[model][table])
-                geometry_type = QgsWkbTypes().geometryType(QgsWkbTypes().parseType(current_table_info['type'])) if current_table_info['type'] else None
+                geometry_type = QgsWkbTypes().geometryType(QgsWkbTypes().parseType(current_table_info[GEOMETRY_TYPE])) if current_table_info[GEOMETRY_TYPE] else None
                 icon_name = self.icon_names[3 if geometry_type is None else geometry_type]
 
                 # Is the layer already loaded?
-                if self.qgis_utils.get_layer_from_layer_tree(current_table_info['tablename'],
+                if self.qgis_utils.get_layer_from_layer_tree(current_table_info[TABLE_NAME],
                          self._db.schema,
                          geometry_type) is not None:
                     table_item.setText(0, table + QCoreApplication.translate("DialogLoadLayers",
@@ -155,16 +163,16 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
                     table_item.setData(0, Qt.ForegroundRole, QBrush(Qt.lightGray))
                     table_item.setFlags(Qt.ItemIsEnabled) # Not selectable
                 else: # Laye not in QGIS Layer Tree
-                    if not current_table_info['is_domain']: # This is a class
+                    if not current_table_info[KIND_SETTINGS]: # This is a class
                         font = QFont()
                         font.setBold(True)
                         table_item.setData(0, Qt.FontRole, font)
 
-                if current_table_info['is_domain'] == TABLE_PROP_DOMAIN:
+                if current_table_info[KIND_SETTINGS] == TABLE_PROP_DOMAIN:
                     icon_name = self.icon_names[4]
-                elif current_table_info['is_domain'] == TABLE_PROP_STRUCTURE:
+                elif current_table_info[KIND_SETTINGS] == TABLE_PROP_STRUCTURE:
                     icon_name = self.icon_names[5]
-                elif current_table_info['is_domain'] == TABLE_PROP_ASSOCIATION:
+                elif current_table_info[KIND_SETTINGS] == TABLE_PROP_ASSOCIATION:
                     icon_name = self.icon_names[6]
                 icon = QIcon(":/Asistente-LADM_COL/resources/images/{}.png".format(icon_name))
                 table_item.setData(0, Qt.DecorationRole, icon)
@@ -236,7 +244,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         # Load selected layers
         layers_dict = {}
         for item_text, data in self.selected_items.items():
-            layers_dict[data['tablename']] = {'name': data['tablename'], 'geometry': None}
+            layers_dict[data[TABLE_NAME]] = {'name': data[TABLE_NAME], 'geometry': None}
 
         self.selected_items = dict() # Reset
         self.qgis_utils.get_layers(self._db, layers_dict, load=True)
@@ -271,7 +279,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         select_layers_list = list()
         for model, tables in self.models_tree.items():
             for table_name_in_tree, record in tables.items():
-                if record['tablename'] in layer_list:
+                if record[TABLE_NAME] in layer_list:
                     select_layers_list.append(table_name_in_tree)
                     self.selected_items[table_name_in_tree] = record
 
