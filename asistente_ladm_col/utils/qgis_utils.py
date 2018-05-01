@@ -749,7 +749,7 @@ class QGISUtils(QObject):
             else:
                 self.message_with_duration_emitted.emit(
                     QCoreApplication.translate("QGISUtils",
-                                               "The plugin help cannot be open. Is the Internet connection OK?"),
+                                               "The plugin help cannot be open. Check the Internet connection."),
                     Qgis.Warning,
                     20)
                 return
