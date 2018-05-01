@@ -26,9 +26,9 @@ from ..utils import get_ui_class
 from ..config.table_mapping_config import BOUNDARY_TABLE
 from ..config.help_strings import HelpStrings
 
-WIZARD_UI = get_ui_class('wiz_define_boundaries_cadastre.ui')
+WIZARD_UI = get_ui_class('wiz_create_boundaries_cadastre.ui')
 
-class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
+class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
@@ -43,6 +43,7 @@ class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
         self.rad_digitizing.toggled.connect(self.adjust_page_1_controls)
         self.adjust_page_1_controls()
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
+        self.button(QWizard.HelpButton).clicked.connect(self.show_help)
 
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.LineLayer)
 
@@ -50,17 +51,17 @@ class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
-            finish_button_text = QCoreApplication.translate("DefineBoundariesCadastreWizard", "Import")
+            finish_button_text = QCoreApplication.translate("CreateBoundariesCadastreWizard", "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(BOUNDARY_TABLE, False))
 
         elif self.rad_digitizing.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
-            finish_button_text = QCoreApplication.translate("DefineBoundariesCadastreWizard", "Start")
+            finish_button_text = QCoreApplication.translate("CreateBoundariesCadastreWizard", "Start")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_DEFINE_BOUNDARIES_CADASTRE_PAGE_1_OPTION_DIGITIZE)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
-                                       QCoreApplication.translate("DefineBoundariesCadastreWizard",
+                                       QCoreApplication.translate("CreateBoundariesCadastreWizard",
                                        finish_button_text))
 
     def finished_dialog(self):
@@ -73,7 +74,7 @@ class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
                                                BOUNDARY_TABLE)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                    QCoreApplication.translate("DefineBoundariesCadastreWizard",
+                    QCoreApplication.translate("CreateBoundariesCadastreWizard",
                                                "Select a source layer to set the field mapping to '{}'.").format(BOUNDARY_TABLE),
                     Qgis.Warning)
 
@@ -85,7 +86,7 @@ class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
         self._boundary_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_TABLE, load=True)
         if self._boundary_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("DefineBoundariesCadastreWizard",
+                QCoreApplication.translate("CreateBoundariesCadastreWizard",
                                            "Boundary layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
@@ -113,7 +114,7 @@ class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
         self.iface.actionAddFeature().trigger()
 
         self.iface.messageBar().pushMessage("Asistente LADM_COL",
-            QCoreApplication.translate("DefineBoundariesCadastreWizard",
+            QCoreApplication.translate("CreateBoundariesCadastreWizard",
                                        "You can now start capturing boundaries clicking on the map..."),
             Qgis.Info)
 
@@ -129,3 +130,6 @@ class DefineBoundariesCadastreWizard(QWizard, WIZARD_UI):
             self.rad_refactor.setChecked(True)
         else:
             self.rad_digitizing.setChecked(True)
+
+    def show_help(self):
+        self.qgis_utils.show_help("create_boundaries")

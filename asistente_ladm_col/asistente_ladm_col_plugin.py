@@ -26,7 +26,7 @@ from qgis.core import Qgis, QgsApplication, QgsProcessingModelAlgorithm
 from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
                               QLocale, QSettings)
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton, QMessageBox
+from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton
 
 from processing.modeler.ModelerUtils import ModelerUtils
 
@@ -36,8 +36,8 @@ from .config.general_config import (
     PROJECT_GENERATOR_EXACT_REQUIRED_VERSION,
     PROJECT_GENERATOR_REQUIRED_VERSION_URL
 )
-from .gui.point_spa_uni_cadastre_wizard import PointsSpatialUnitCadastreWizard
-from .gui.define_boundaries_cadastre_wizard import DefineBoundariesCadastreWizard
+from .gui.create_points_cadastre_wizard import CreatePointsCadastreWizard
+from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
 from .gui.create_plot_cadastre_wizard import CreatePlotCadastreWizard
 from .gui.create_parcel_cadastre_wizard import CreateParcelCadastreWizard
 from .gui.create_building_cadastre_wizard import CreateBuildingCadastreWizard
@@ -49,8 +49,10 @@ from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWiz
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
 from .gui.dialog_load_layers import DialogLoadLayers
+from .gui.about_dialog import AboutDialog
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
+from .utils.qt_utils import get_plugin_version
 from .utils.quality import QualityUtils
 
 #import resources_rc
@@ -78,14 +80,16 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality = QualityUtils(self.qgis_utils)
 
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
+        self._surveying_and_representation_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Surveying and Representation"), self._cadastre_menu)
+        self._point_surveying_and_representation_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Point"), self._surveying_and_representation_cadastre_menu)
+        self._boundary_surveying_and_representation_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Boundary"), self._surveying_and_representation_cadastre_menu)
+        self._surveying_and_representation_cadastre_menu.addActions([self._point_surveying_and_representation_cadastre_action,
+                                                       self._boundary_surveying_and_representation_cadastre_action])
+
         self._spatial_unit_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Spatial Unit"), self._cadastre_menu)
-        self._point_spatial_unit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Add Points"), self._spatial_unit_cadastre_menu)
-        self._boundary_spatial_unit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Define Boundaries"), self._spatial_unit_cadastre_menu)
         self._plot_spatial_unit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Plot"), self._spatial_unit_cadastre_menu)
         self._building_spatial_unit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building"),self._spatial_unit_cadastre_menu)
-        self._spatial_unit_cadastre_menu.addActions([self._point_spatial_unit_cadastre_action,
-                                                     self._boundary_spatial_unit_cadastre_action,
-                                                     self._plot_spatial_unit_cadastre_action,
+        self._spatial_unit_cadastre_menu.addActions([self._plot_spatial_unit_cadastre_action,
                                                      self._building_spatial_unit_cadastre_action])
 
         self._baunit_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "BA Unit"), self._cadastre_menu)
@@ -131,6 +135,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._quality_cadastre_menu.addSeparator()
         self._quality_cadastre_menu.addAction(self._quality_check_all_cadastre_action)
 
+        self._cadastre_menu.addMenu(self._surveying_and_representation_cadastre_menu)
         self._cadastre_menu.addMenu(self._spatial_unit_cadastre_menu)
         self._cadastre_menu.addMenu(self._baunit_cadastre_menu)
         self._cadastre_menu.addMenu(self._party_cadastre_menu)
@@ -152,8 +157,8 @@ class AsistenteLADMCOLPlugin(QObject):
                                self._about_action])
 
         # Set connections
-        self._point_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_point_sp_un_cad)
-        self._boundary_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_boundaries_cad)
+        self._point_surveying_and_representation_cadastre_action.triggered.connect(self.show_wiz_point_cad)
+        self._boundary_surveying_and_representation_cadastre_action.triggered.connect(self.show_wiz_boundaries_cad)
         self._plot_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_plot_cad)
         self._parcel_baunit_cadastre_action.triggered.connect(self.show_wiz_parcel_cad)
         self._building_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_building_cad)
@@ -172,14 +177,17 @@ class AsistenteLADMCOLPlugin(QObject):
         self._quality_check_all_cadastre_action.triggered.connect(self.quality_check_all)
         self._load_layers_action.triggered.connect(self.load_layers_from_project_generator)
         self._settings_action.triggered.connect(self.show_settings)
+        self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
+        self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.qgis_utils.message_emitted.connect(self.show_message)
+        self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
 
-        # Toolbar for Define Boundaries
+        # Toolbar
         self._boundary_explode_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Explode..."), self.iface.mainWindow())
         self._boundary_explode_action.triggered.connect(self.call_explode_boundaries)
         self._boundary_merge_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Merge..."), self.iface.mainWindow())
@@ -229,11 +237,14 @@ class AsistenteLADMCOLPlugin(QObject):
     def refresh_map(self):
         self.iface.mapCanvas().refresh()
 
+    def activate_layer(self, layer):
+        self.iface.layerTreeView().setCurrentLayer(layer)
+
     def refresh_layer_symbology(self, layer_id):
         self.iface.layerTreeView().refreshLayerSymbology(layer_id)
 
-    def show_message(self, msg, level):
-        self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level)
+    def show_message(self, msg, level, duration=5):
+        self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level, duration)
 
     def show_message_to_load_layer(self, msg, button_text, layer, level):
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
@@ -313,21 +324,11 @@ class AsistenteLADMCOLPlugin(QObject):
 
         return decorated_function
 
-    def get_plugin_version(self, plugin_dir):
-        file_path = os.path.join(plugin_dir, 'metadata.txt')
-        if os.path.isfile(file_path):
-            with open(file_path) as metadata:
-                for line in metadata:
-                    line_array = line.strip().split("=")
-                    if line_array[0] == 'version':
-                        return line_array[1]
-        return None
-
     def is_plugin_version_valid(self):
         plugin_found = 'projectgenerator' in qgis.utils.plugins
         if not plugin_found:
             return False
-        current_version = self.get_plugin_version(qgis.utils.plugins['projectgenerator'].plugin_dir)
+        current_version = get_plugin_version('projectgenerator')
         min_required_version = PROJECT_GENERATOR_MIN_REQUIRED_VERSION
         if current_version is None:
             return False
@@ -400,14 +401,14 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_project_generator_required
     @_db_connection_required
-    def show_wiz_point_sp_un_cad(self):
-        wiz = PointsSpatialUnitCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+    def show_wiz_point_cad(self):
+        wiz = CreatePointsCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     @_project_generator_required
     @_db_connection_required
     def show_wiz_boundaries_cad(self):
-        wiz = DefineBoundariesCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz = CreateBoundariesCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     @_project_generator_required
@@ -503,15 +504,14 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality.check_overlaps_in_boundaries(self.get_db_connection())
         self.quality.check_missing_boundary_points_in_boundaries(self.get_db_connection())
 
+    def show_help(self):
+        self.qgis_utils.show_help()
+
     def show_about_dialog(self):
-        self.msg = QMessageBox()
-        #self.msg.setIcon(QMessageBox.Information)
-        self.msg.setTextFormat(Qt.RichText)
-        self.msg.setWindowTitle(QCoreApplication.translate("AsistenteLADMCOLPlugin", 'About'))
-        description = QCoreApplication.translate("AsistenteLADMCOLPlugin", """<html><head/><body><p align="center"><span style=" font-size:14pt; font-weight:600;">Asistente LADM_COL</span></p><p align="center">Plugin de <a href="http://qgis.org"><span style=" text-decoration: underline; color:#0000ff;">QGIS</span></a> que ayuda a capturar y mantener datos conformes con <a href="https://github.com/AgenciaImplementacion/LADM_COL"><span style=" text-decoration: underline; color:#0000ff;">LADM_COL</span></a> y a generar archivos de intercambio de <a href="http://www.interlis.ch/index_e.htm"><span style=" text-decoration: underline; color:#0000ff;">INTERLIS</span></a> (.XTF).</p><p align="center">Licencia: <a href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE"><span style=" text-decoration: underline; color:#0000ff;">GNU General Public License v3.0</span></a></p><p align="center">Repositorio de código fuente en <a href="https://github.com/AgenciaImplementacion/Asistente-LADM_COL"><span style=" text-decoration: underline; color:#0000ff;">GitHub</span></a>.</p><p align="center">Un proyecto de:<br/><a href="https://www.proadmintierra.info/"><span style=" text-decoration: underline; color:#0000ff;">Agencia de Implementación</span></a> (<a href="http://bsf-swissphoto.com/"><span style=" text-decoration: underline; color:#0000ff;">BSF-Swissphoto AG</span></a> - <a href="http://www.incige.com/"><span style=" text-decoration: underline; color:#0000ff;">INCIGE S.A.S</span></a>)</p><p align="center"><br/></p></body></html>""")
-        self.msg.setText(description)
-        self.msg.setStandardButtons(QMessageBox.Ok)
-        msg_box = self.msg.exec_()
+        dialog = AboutDialog()
+        rich_text = '<html><head/><body><p align="center"><span style=" font-size:10pt; font-weight:600;">v{}</span></p></body></html>'
+        dialog.lbl_version.setText(rich_text.format(get_plugin_version('asistente_ladm_col')))
+        dialog.exec_()
 
     def installTranslator(self):
         qgis_locale = QLocale(QSettings().value('locale/userLocale'))

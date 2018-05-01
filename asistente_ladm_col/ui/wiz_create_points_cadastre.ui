@@ -14,7 +14,7 @@
    <cursorShape>ArrowCursor</cursorShape>
   </property>
   <property name="windowTitle">
-   <string>Add Points</string>
+   <string>Create Points</string>
   </property>
   <property name="options">
    <set>QWizard::HaveHelpButton</set>

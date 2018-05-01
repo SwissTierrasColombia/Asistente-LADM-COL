@@ -1,9 +1,10 @@
 FORMS = ../ui/dlg_load_layers.ui \
         ../ui/settings_dialog.ui \
-        ../ui/wiz_add_points_cadastre.ui \
+        ../ui/about_dialog.ui \
+        ../ui/wiz_create_points_cadastre.ui \
         ../ui/wiz_create_administrative_source_cadastre.ui \
         ../ui/wiz_create_plot_cadastre.ui \
-        ../ui/wiz_define_boundaries_cadastre.ui \
+        ../ui/wiz_create_boundaries_cadastre.ui \
         ../ui/wiz_create_parcel_cadastre.ui \
         ../ui/wiz_create_building_cadastre.ui \
         ../ui/wiz_create_party_cadastre.ui \
@@ -26,8 +27,8 @@ SOURCES = ../asistente_ladm_col_plugin.py \
           ../gui/create_spatial_source_cadastre_wizard.py \
           ../gui/dialog_load_layers.py \
           ../gui/create_plot_cadastre_wizard.py \
-          ../gui/define_boundaries_cadastre_wizard.py \
-          ../gui/point_spa_uni_cadastre_wizard.py \
+          ../gui/create_boundaries_cadastre_wizard.py \
+          ../gui/create_points_cadastre_wizard.py \
           ../gui/create_parcel_cadastre_wizard.py \
           ../gui/create_building_cadastre_wizard.py \
           ../gui/settings_dialog.py \

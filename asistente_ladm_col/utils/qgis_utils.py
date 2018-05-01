@@ -17,6 +17,9 @@
  ***************************************************************************/
 """
 import os
+import webbrowser
+import socket
+
 
 from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri, Qgis,
@@ -27,18 +30,21 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
                        QgsApplication, QgsProcessingFeedback)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
-                              QVariant, QSettings)
+                              QVariant, QSettings, QLocale)
 import processing
 
 from .project_generator_utils import ProjectGeneratorUtils
-from .qt_utils import OverrideCursor
+from .qt_utils import OverrideCursor, get_plugin_version
 from .symbology import SymbologyUtils
 from .geometry import GeometryUtils
 from ..gui.settings_dialog import SettingsDialog
 from ..config.general_config import (
     DEFAULT_EPSG,
     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-    ERROR_LAYER_GROUP
+    ERROR_LAYER_GROUP,
+    MODULE_HELP_MAPPING,
+    TEST_SERVER,
+    HELP_URL
 )
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
@@ -63,8 +69,10 @@ from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 
 class QGISUtils(QObject):
 
+    activate_layer_requested = pyqtSignal(QgsMapLayer)
     layer_symbology_changed = pyqtSignal(str) # layer id
     message_emitted = pyqtSignal(str, int) # Message, level
+    message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
     message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
     map_refresh_requested = pyqtSignal()
@@ -561,6 +569,7 @@ class QGISUtils(QObject):
 
             mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
             output = self.get_layer(db, ladm_col_layer_name, geometry_type=None, load=True)
+            self.activate_layer_requested.emit(input_layer)
             params = {
                 'INPUT': input_layer.name(),
                 'mapping': mapping,
@@ -705,3 +714,46 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils", "No plot could be created. Make sure selected boundaries are closed!"),
                 Qgis.Warning)
             return
+
+    def show_help(self, module=''):
+        url = ''
+        section = MODULE_HELP_MAPPING[module]
+        plugin_version = get_plugin_version('asistente_ladm_col')
+
+        def is_connected(hostname):
+            try:
+                host = socket.gethostbyname(hostname)
+                s = socket.create_connection((host, 80), 2)
+                return True
+            except:
+                pass
+            return False
+
+        # If we don't have Internet access check if the documentation is in the
+        # expected local dir and show it. Otherwise, show a warning message.
+        os_language = QLocale(QSettings().value('locale/userLocale')).name()[:2]
+        if not is_connected(TEST_SERVER):
+            basepath = os.path.dirname(os.path.abspath(__file__))
+            plugin_dir = os.path.dirname(basepath)
+
+            help_path = os.path.join(
+                "file://",
+                plugin_dir,
+                "help",
+                os_language,
+                plugin_version
+            )
+
+            if os.path.exists(help_path):
+                url = help_path
+            else:
+                self.message_with_duration_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                                               "The plugin help cannot be open. Check the Internet connection."),
+                    Qgis.Warning,
+                    20)
+                return
+        else:
+            url = "{}/{}/{}".format(HELP_URL, os_language, plugin_version)
+
+        webbrowser.open("{}/{}".format(url, section))
