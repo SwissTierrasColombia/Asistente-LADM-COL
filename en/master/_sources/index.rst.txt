@@ -13,10 +13,10 @@ Welcome to the Assistant's documentation LADM_COL!
     :maxdepth: 2
     :caption: Contents:
 
-    cadas
-    load_lay
+    cadastre
+    load_layers
     help
-    ins
+    installation
     about
 
 .. image:: static/05_FUNCIONALIDADES.gif
