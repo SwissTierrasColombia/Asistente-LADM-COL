@@ -50,6 +50,7 @@ from .gui.create_administrative_source_cadastre_wizard import CreateAdministrati
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.about_dialog import AboutDialog
+from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_version
@@ -80,6 +81,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality = QualityUtils(self.qgis_utils)
 
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
+
+        self._preprocessing_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Preprocessing"), self._cadastre_menu)
+        self._controlled_measurement_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Controlled Measurement"), self._preprocessing_menu)
+        self._preprocessing_menu.addActions([self._controlled_measurement_action])
+
         self._surveying_and_representation_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Surveying and Representation"), self._cadastre_menu)
         self._point_surveying_and_representation_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Point"), self._surveying_and_representation_cadastre_menu)
         self._boundary_surveying_and_representation_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Boundary"), self._surveying_and_representation_cadastre_menu)
@@ -135,6 +141,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._quality_cadastre_menu.addSeparator()
         self._quality_cadastre_menu.addAction(self._quality_check_all_cadastre_action)
 
+        self._cadastre_menu.addMenu(self._preprocessing_menu)
+        self._cadastre_menu.addSeparator()
         self._cadastre_menu.addMenu(self._surveying_and_representation_cadastre_menu)
         self._cadastre_menu.addMenu(self._spatial_unit_cadastre_menu)
         self._cadastre_menu.addMenu(self._baunit_cadastre_menu)
@@ -157,6 +165,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                self._about_action])
 
         # Set connections
+        self._controlled_measurement_action.triggered.connect(self.show_dlg_controlled_measurement)
         self._point_surveying_and_representation_cadastre_action.triggered.connect(self.show_wiz_point_cad)
         self._boundary_surveying_and_representation_cadastre_action.triggered.connect(self.show_wiz_boundaries_cad)
         self._plot_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_plot_cad)
@@ -219,7 +228,7 @@ class AsistenteLADMCOLPlugin(QObject):
         if provider_id is not None: # If method acted as slot
             QgsApplication.processingRegistry().providerAdded.disconnect(self.add_processing_models)
 
-        # Add ladm_col etl-model
+        # Add ladm_col models
         basepath = os.path.dirname(os.path.abspath(__file__))
         plugin_models_dir = os.path.join(basepath, "processing", "models")
 
@@ -398,6 +407,10 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def get_db_connection(self):
         return self.qgis_utils.get_db_connection()
+
+    def show_dlg_controlled_measurement(self):
+        dlg = ControlledMeasurementDialog(self.qgis_utils)
+        dlg.exec_()
 
     @_project_generator_required
     @_db_connection_required
