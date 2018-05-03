@@ -36,12 +36,12 @@
 <context>
     <name>AsistenteLADMCOLPlugin</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="82"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="83"/>
         <source>Cadastre</source>
         <translation>Catastro</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="89"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="95"/>
         <source>Spatial Unit</source>
         <translation>Unidad Espacial</translation>
     </message>
@@ -54,188 +54,198 @@
         <translation type="vanished">Definir Linderos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="95"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="101"/>
         <source>BA Unit</source>
         <translation>Unidad Administrativa Básica</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="99"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="105"/>
         <source>Party</source>
         <translation>Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="105"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="111"/>
         <source>RRR</source>
         <translation>RRR</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="117"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="123"/>
         <source>Source</source>
         <translation>Fuente</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="90"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="96"/>
         <source>Create Plot</source>
         <translation>Crear Terreno</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="83"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="85"/>
+        <source>Preprocessing</source>
+        <translation>Pre-procesamiento</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="86"/>
+        <source>Controlled Measurement</source>
+        <translation>Medición Controlada</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="89"/>
         <source>Surveying and Representation</source>
         <translation>Topografía y Representación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="84"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="90"/>
         <source>Create Point</source>
         <translation>Crear Punto</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="85"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="91"/>
         <source>Create Boundary</source>
         <translation>Crear Lindero</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="91"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="97"/>
         <source>Create Building</source>
         <translation>Crear Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="96"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="102"/>
         <source>Create Parcel</source>
         <translation>Crear Predio</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="100"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="106"/>
         <source>Create Natural Party</source>
         <translation>Crear Interesado Natural</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="101"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="107"/>
         <source>Create Legal Party</source>
         <translation>Crear Interesado Jurídico</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="106"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="112"/>
         <source>Create Right</source>
         <translation>Crear Derecho</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="107"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="113"/>
         <source>Create Restriction</source>
         <translation>Crear Restricción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="108"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="114"/>
         <source>Create Responsibility</source>
         <translation>Crear Responsabilidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="118"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="124"/>
         <source>Create Administrative Source</source>
         <translation>Crear Fuente Administrativa</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="119"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="125"/>
         <source>Create Spatial Source</source>
         <translation>Crear Fuente Espacial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="123"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="129"/>
         <source>Quality</source>
         <translation>Calidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="124"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="130"/>
         <source>Check too long boundary segments</source>
         <translation>Revisar segmentos de linderos muy largos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="125"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="131"/>
         <source>Check overlaps in boundary points</source>
         <translation>Revisar superposiciones en Punto Lindero</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="126"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="132"/>
         <source>Check overlaps in boundaries</source>
         <translation>Revisar superposiciones en Linderos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="127"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="133"/>
         <source>Check missing boundary points in boundaries</source>
         <translation>Revisar nodos de lindero sin Punto Lindero asociado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="128"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="134"/>
         <source>Check dangles in boundaries</source>
         <translation>Revisar nodos de Linderos no conectados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="129"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="135"/>
         <source>Check all</source>
         <translation>Revisar todo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="149"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="157"/>
         <source>Load layers</source>
         <translation>Cargar capas</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="152"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="283"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="160"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="292"/>
         <source>Settings</source>
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="153"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="161"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="154"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="162"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="191"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="200"/>
         <source>Explode...</source>
         <translation>Partir por segmento...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="193"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="202"/>
         <source>Merge...</source>
         <translation>Unir...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="195"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="204"/>
         <source>Fill Point BFS</source>
         <translation>Llenar PuntosCCL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="197"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="206"/>
         <source>Fill More BFS and Less</source>
         <translation>Llenar más CCL y menos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="199"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="208"/>
         <source>LADM-COL tools</source>
         <translation>Herramientas LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="288"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="297"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, connection to DB was not valid.</source>
         <translation>No se pudo ejecutar una funcionalidad, la conexión a la base de datos no fue válida.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="307"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="316"/>
         <source>The plugin &apos;Project Generator&apos; version {} is required, but couldn&apos;t be found. Download it &lt;a href=&quot;{}&quot;&gt;from this link&lt;/a&gt; and use &apos;Install from ZIP&apos;.</source>
         <translation>Se requiere el plugin &apos;Project Generator&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar desde ZIP&quot;.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="310"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="319"/>
         <source>The plugin &apos;Project Generator&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
         <translation>Se requiere el plugin &apos;Project Generator&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Plugins.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="320"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="329"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, Project Generator not found.</source>
         <translation>No se pudo ejecutar una funcionalidad, no se encontró Project Generator.</translation>
     </message>
@@ -244,7 +254,7 @@
         <translation type="vanished">Se requiere el plugin &apos;Project Generator&apos; versión {} (o superior), pero no está instalado. Click en el botón para mostrar el Administrador de Plugins.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="314"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="323"/>
         <source>Plugin Manager</source>
         <translation>Administrador de Plugins</translation>
     </message>
@@ -253,13 +263,51 @@
         <translation type="vanished">No se pudo ejecutar una funcionalidad, no se encontró Project Generator.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="281"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="290"/>
         <source>You need to set a valid connection to your DB first. Click the button to go to Settings.</source>
         <translation>Primero debes definir una conexión válida. Click sobre el botón para ir a Configuración.</translation>
     </message>
     <message>
         <source>A dialog couldn&apos;t be open, connection to DB was not valid.</source>
         <translation type="vanished">No se pudo ejecutar una funcionalidad, la conexión a la base de datos no fue válida.</translation>
+    </message>
+</context>
+<context>
+    <name>ControlledMeasurementDialog</name>
+    <message>
+        <location filename="../ui/controlled_measurement_dialog.ui" line="20"/>
+        <source>Controlled Measurement</source>
+        <translation>Medición Controlada</translation>
+    </message>
+    <message>
+        <location filename="../ui/controlled_measurement_dialog.ui" line="42"/>
+        <source>Point layer</source>
+        <translation>Capa de puntos</translation>
+    </message>
+    <message>
+        <location filename="../ui/controlled_measurement_dialog.ui" line="65"/>
+        <source>Tolerance [m.]</source>
+        <translation>Tolerancia [m.]</translation>
+    </message>
+    <message>
+        <location filename="../gui/controlled_measurement_dialog.py" line="58"/>
+        <source>First select a point layer!</source>
+        <translation>¡Primero selecciona una capa de puntos!</translation>
+    </message>
+    <message>
+        <location filename="../gui/controlled_measurement_dialog.py" line="65"/>
+        <source>Set a tolerance greater than zero!</source>
+        <translation>¡Define una tolerancia mayor que cero!</translation>
+    </message>
+    <message>
+        <location filename="../gui/controlled_measurement_dialog.py" line="81"/>
+        <source>Model Group_Points was not found and cannot be opened!</source>
+        <translation>¡No se encontró el modelo Group_Points y por ello no puede ser abierto!</translation>
+    </message>
+    <message>
+        <location filename="../gui/controlled_measurement_dialog.py" line="138"/>
+        <source>A new average point layer has been added to the map!</source>
+        <translation>¡Una nueva capa de puntos promediados se ha agregado al mapa!</translation>
     </message>
 </context>
 <context>
@@ -695,22 +743,22 @@
 <context>
     <name>DialogLoadLayers</name>
     <message>
-        <location filename="../gui/dialog_load_layers.py" line="153"/>
+        <location filename="../gui/dialog_load_layers.py" line="161"/>
         <source> [already loaded]</source>
         <translation> [ya está cargada]</translation>
     </message>
     <message>
-        <location filename="../gui/dialog_load_layers.py" line="300"/>
+        <location filename="../gui/dialog_load_layers.py" line="308"/>
         <source>There are no selected layers to load</source>
         <translation>No hay capas seleccionadas para cargar</translation>
     </message>
     <message>
-        <location filename="../gui/dialog_load_layers.py" line="303"/>
+        <location filename="../gui/dialog_load_layers.py" line="311"/>
         <source>There is 1 selected layer ready to be loaded</source>
         <translation>Hay 1 capa seleccionada lista para cargar</translation>
     </message>
     <message>
-        <location filename="../gui/dialog_load_layers.py" line="306"/>
+        <location filename="../gui/dialog_load_layers.py" line="314"/>
         <source>There are {} selected layers ready to be loaded</source>
         <translation>Hay {} capas seleccionadas listas para cargar</translation>
     </message>
