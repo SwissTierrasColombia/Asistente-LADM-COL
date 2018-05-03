@@ -102,8 +102,8 @@ class QualityUtils(QObject):
             return
 
         overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_layer)
-        error_point_layer = overlapping['native:difference_1:Intersected_Lines']
         error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
+        error_point_layer = overlapping['native:saveselectedfeatures_3:Intersected_Points']
         error_line_layer.setName("Overlapping boundaries (line intersections)")
         error_point_layer.setName("Overlapping boundaries (point intersections)")
 

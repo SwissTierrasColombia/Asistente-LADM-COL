@@ -229,8 +229,8 @@ class GeometryUtils(QObject):
         feedback = QgsProcessingFeedback()
         dict_res = processing.run("model:Overlapping_Boundaries", {
                     'Boundary':line_layer,
-                    'native:difference_1:Intersected_Lines':'memory:',
-                    'native:saveselectedfeatures_2:Intersected_Lines':'memory:'
+                    'native:saveselectedfeatures_2:Intersected_Lines':'memory:',
+                    'native:saveselectedfeatures_3:Intersected_Points':'memory:'
                 },
                 feedback=feedback)
 
