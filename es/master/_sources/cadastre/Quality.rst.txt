@@ -19,3 +19,6 @@ Check Missing Boundary Points in Boundaries
 
 Check Dangles in Boundaries
 ----------------------------
+
+Check All
+----------

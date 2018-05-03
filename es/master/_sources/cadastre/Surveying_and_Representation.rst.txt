@@ -1,5 +1,8 @@
+Surveying and Representation
+*****************************
+
 Create Point
--------------
+=============
 
 .. image:: ../static/06_CARGA_PUNTOS.gif
    :height: 500
@@ -25,7 +28,7 @@ building, right of way or auxiliary vertex.
 
 
 Create Boundary
-----------------
+================
 
 1. Digitizing
 
