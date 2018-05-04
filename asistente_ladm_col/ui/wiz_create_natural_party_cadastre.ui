@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Create Natural Party</string>
   </property>
+  <property name="options">
+   <set>QWizard::HaveHelpButton</set>
+  </property>
   <widget class="QWizardPage" name="wizardPage1">
    <property name="subTitle">
     <string/>
@@ -127,10 +130,10 @@
                  <height>16777215</height>
                 </size>
                </property>
-               <property name="allowEmptyLayer">
+               <property name="allowEmptyLayer" stdset="0">
                 <bool>true</bool>
                </property>
-               <property name="showCrs">
+               <property name="showCrs" stdset="0">
                 <bool>false</bool>
                </property>
               </widget>
