@@ -65,7 +65,7 @@
            <item row="1" column="0">
             <widget class="QRadioButton" name="rad_create_manually">
              <property name="text">
-              <string>Entering data &amp;manually using a form</string>
+              <string>Entering data manually using a form</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -91,7 +91,7 @@
               <bool>true</bool>
              </property>
              <property name="text">
-              <string>From another &amp;QGIS layer/table (setting a field mapping)</string>
+              <string>From another QGIS layer/table (setting a field mapping)</string>
              </property>
             </widget>
            </item>
