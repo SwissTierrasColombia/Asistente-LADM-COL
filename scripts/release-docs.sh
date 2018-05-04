@@ -47,5 +47,5 @@ push_tag() {
 
 clone_repo
 install_deps
-build_repo
+#build_repo
 push_tag
