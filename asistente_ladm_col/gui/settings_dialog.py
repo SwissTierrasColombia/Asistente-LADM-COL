@@ -50,6 +50,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         # Set connections
         self.buttonBox.accepted.connect(self.accepted)
+        self.buttonBox.helpRequested.connect(self.show_help)
         self.btn_test_connection.clicked.connect(self.test_connection)
 
         # Trigger some default behaviours
@@ -201,3 +202,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         elif self.cbo_db_source.currentData() == 'gpkg':
             uri = [dict_conn['dbfile']]
         return ' '.join(uri)
+
+    def show_help(self):
+        self.qgis_utils.show_help("settings")

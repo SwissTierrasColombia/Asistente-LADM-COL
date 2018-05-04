@@ -76,6 +76,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         # Set connections
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.rejected.connect(self.rejected)
+        self.buttonBox.helpRequested.connect(self.show_help)
         self.txt_search_text.textChanged.connect(self.search_text_changed)
         self.chk_show_domains.toggled.connect(self.show_table_type_changed)
         self.chk_show_structures.toggled.connect(self.show_table_type_changed)
@@ -320,3 +321,6 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         # Update internal dict and dialog label
         self.update_selected_items()
         self.update_selected_count_label()
+
+    def show_help(self):
+        self.qgis_utils.show_help("load_layers")
