@@ -30,3 +30,8 @@ mapping to define field transformations and correspondence.
 
 Create Building
 ---------------
+
+.. image:: ../static/crear_construccion.gif
+   :height: 500
+   :width: 800
+   :alt: Create Building

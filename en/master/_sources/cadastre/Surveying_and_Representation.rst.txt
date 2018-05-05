@@ -20,6 +20,12 @@ its specializations.
 
 2. Survey Point
 
+
+.. image:: ../static/crear_punto_levantamiento_csv.gif
+   :height: 500
+   :width: 800
+   :alt: Crear Survey Points
+
 Choose this option to load points to **Survey Points** layer from *LADM_COL*
 model.
 

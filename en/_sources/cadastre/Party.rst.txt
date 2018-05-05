@@ -1,10 +1,10 @@
 Party
 ======
 
-.. image:: ../static/07_CREACION_INTERESADO.gif
+.. image:: ../static/crear_interesado_natural.gif
    :height: 500
    :width: 800
-   :alt: add party
+   :alt: Create Natural Party
 
 Natural Party
 --------------

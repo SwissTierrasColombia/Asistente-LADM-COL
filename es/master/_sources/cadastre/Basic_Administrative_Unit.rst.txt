@@ -20,7 +20,9 @@ Choose this option to open a window that allows you to import data from a source
 If the field structure of input and target tables differs, you can set a field
 mapping to define field transformations and correspondence.
 
-.. image:: ../static/cre_prcl.png
-   :height: 400
-   :width: 400
-   :alt: alternate text
+.. image:: ../static/refactor_fields_predio.gif
+   :height: 500
+   :width: 800
+   :alt: Create Parcel from another table
+
+
