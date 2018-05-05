@@ -290,22 +290,22 @@
         <translation>Tolerancia [m.]</translation>
     </message>
     <message>
-        <location filename="../gui/controlled_measurement_dialog.py" line="58"/>
+        <location filename="../gui/controlled_measurement_dialog.py" line="59"/>
         <source>First select a point layer!</source>
         <translation>¡Primero selecciona una capa de puntos!</translation>
     </message>
     <message>
-        <location filename="../gui/controlled_measurement_dialog.py" line="65"/>
+        <location filename="../gui/controlled_measurement_dialog.py" line="66"/>
         <source>Set a tolerance greater than zero!</source>
         <translation>¡Define una tolerancia mayor que cero!</translation>
     </message>
     <message>
-        <location filename="../gui/controlled_measurement_dialog.py" line="81"/>
+        <location filename="../gui/controlled_measurement_dialog.py" line="82"/>
         <source>Model Group_Points was not found and cannot be opened!</source>
         <translation>¡No se encontró el modelo Group_Points y por ello no puede ser abierto!</translation>
     </message>
     <message>
-        <location filename="../gui/controlled_measurement_dialog.py" line="138"/>
+        <location filename="../gui/controlled_measurement_dialog.py" line="139"/>
         <source>A new average point layer has been added to the map!</source>
         <translation>¡Una nueva capa de puntos promediados se ha agregado al mapa!</translation>
     </message>
@@ -313,22 +313,22 @@
 <context>
     <name>CreateAdministrativeSourceCadastreWizard</name>
     <message>
-        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="58"/>
+        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="59"/>
         <source>Import</source>
         <translation>Importar</translation>
     </message>
     <message>
-        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="64"/>
+        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="65"/>
         <source>Create</source>
         <translation>Crear</translation>
     </message>
     <message>
-        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="81"/>
+        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="82"/>
         <source>Select a source layer to set the field mapping to &apos;{}&apos;.</source>
         <translation>Selecciona una capa fuente para definir el mapeo de campos a &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="99"/>
+        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="100"/>
         <source>Administrative Source layer couldn&apos;t be found... {}</source>
         <translation>No se pudo encontrar la capa Fuente Administrativa... {}</translation>
     </message>
@@ -364,22 +364,22 @@
 <context>
     <name>CreateLegalPartyCadastreWizard</name>
     <message>
-        <location filename="../gui/create_legal_party_cadastre_wizard.py" line="57"/>
+        <location filename="../gui/create_legal_party_cadastre_wizard.py" line="58"/>
         <source>Import</source>
         <translation>Importar</translation>
     </message>
     <message>
-        <location filename="../gui/create_legal_party_cadastre_wizard.py" line="63"/>
+        <location filename="../gui/create_legal_party_cadastre_wizard.py" line="64"/>
         <source>Create</source>
         <translation>Crear</translation>
     </message>
     <message>
-        <location filename="../gui/create_legal_party_cadastre_wizard.py" line="80"/>
+        <location filename="../gui/create_legal_party_cadastre_wizard.py" line="81"/>
         <source>Select a source layer to set the field mapping to &apos;{}&apos;.</source>
         <translation>Selecciona una capa fuente para definir el mapeo de campos a &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../gui/create_legal_party_cadastre_wizard.py" line="96"/>
+        <location filename="../gui/create_legal_party_cadastre_wizard.py" line="97"/>
         <source>Legal Party layer couldn&apos;t be found... {}</source>
         <translation>No se pudo encontrar la tabla Interesado Jurídico... {}</translation>
     </message>
@@ -387,22 +387,22 @@
 <context>
     <name>CreateNaturalPartyCadastreWizard</name>
     <message>
-        <location filename="../gui/create_natural_party_cadastre_wizard.py" line="58"/>
+        <location filename="../gui/create_natural_party_cadastre_wizard.py" line="59"/>
         <source>Import</source>
         <translation>Importar</translation>
     </message>
     <message>
-        <location filename="../gui/create_natural_party_cadastre_wizard.py" line="64"/>
+        <location filename="../gui/create_natural_party_cadastre_wizard.py" line="65"/>
         <source>Create</source>
         <translation>Crear</translation>
     </message>
     <message>
-        <location filename="../gui/create_natural_party_cadastre_wizard.py" line="81"/>
+        <location filename="../gui/create_natural_party_cadastre_wizard.py" line="82"/>
         <source>Select a source layer to set the field mapping to &apos;{}&apos;.</source>
         <translation>Selecciona una capa fuente para definir el mapeo de campos a &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../gui/create_natural_party_cadastre_wizard.py" line="99"/>
+        <location filename="../gui/create_natural_party_cadastre_wizard.py" line="100"/>
         <source>Natural Party layer couldn&apos;t be found... {}</source>
         <translation>No se pudo encontrar la tabla Interesado Natural... {}</translation>
     </message>
@@ -410,42 +410,42 @@
 <context>
     <name>CreateParcelCadastreWizard</name>
     <message>
-        <location filename="../gui/create_parcel_cadastre_wizard.py" line="66"/>
+        <location filename="../gui/create_parcel_cadastre_wizard.py" line="67"/>
         <source>Import</source>
         <translation>Importar</translation>
     </message>
     <message>
-        <location filename="../gui/create_parcel_cadastre_wizard.py" line="72"/>
+        <location filename="../gui/create_parcel_cadastre_wizard.py" line="73"/>
         <source>Create</source>
         <translation>Crear</translation>
     </message>
     <message>
-        <location filename="../gui/create_parcel_cadastre_wizard.py" line="89"/>
+        <location filename="../gui/create_parcel_cadastre_wizard.py" line="90"/>
         <source>Select a source layer to set the field mapping to &apos;{}&apos;.</source>
         <translation>Selecciona una capa fuente para definir el mapeo de campos a &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../gui/create_parcel_cadastre_wizard.py" line="107"/>
+        <location filename="../gui/create_parcel_cadastre_wizard.py" line="108"/>
         <source>Plot layer couldn&apos;t be found... {}</source>
         <translation>No se encontró la capa Terreno... {}</translation>
     </message>
     <message>
-        <location filename="../gui/create_parcel_cadastre_wizard.py" line="115"/>
+        <location filename="../gui/create_parcel_cadastre_wizard.py" line="116"/>
         <source>Parcel layer couldn&apos;t be found... {}</source>
         <translation>No se encontró la capa Predio... {}</translation>
     </message>
     <message>
-        <location filename="../gui/create_parcel_cadastre_wizard.py" line="123"/>
+        <location filename="../gui/create_parcel_cadastre_wizard.py" line="124"/>
         <source>UEBAUNIT table couldn&apos;t be found... {}</source>
         <translation>No se encontró la tabla UEBAUNIT... {}</translation>
     </message>
     <message>
-        <location filename="../gui/create_parcel_cadastre_wizard.py" line="151"/>
+        <location filename="../gui/create_parcel_cadastre_wizard.py" line="152"/>
         <source>Please select a Plot</source>
         <translation>Por favor selecciona un terreno</translation>
     </message>
     <message>
-        <location filename="../gui/create_parcel_cadastre_wizard.py" line="156"/>
+        <location filename="../gui/create_parcel_cadastre_wizard.py" line="157"/>
         <source>Please select only one Plot</source>
         <translation>Por favor selecciona solo un terreno</translation>
     </message>
@@ -514,22 +514,22 @@
 <context>
     <name>CreateSpatialSourceCadastreWizard</name>
     <message>
-        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="57"/>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="58"/>
         <source>Import</source>
         <translation>Importar</translation>
     </message>
     <message>
-        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="63"/>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="64"/>
         <source>Create</source>
         <translation>Crear</translation>
     </message>
     <message>
-        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="80"/>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="81"/>
         <source>Select a source layer to set the field mapping to &apos;{}&apos;.</source>
         <translation>Selecciona una capa fuente para definir el mapeo de campos a &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="97"/>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="98"/>
         <source>Spatial Source layer couldn&apos;t be found... {}</source>
         <translation>No se pudo encontrar la tabla Fuente Espacial... {}</translation>
     </message>
@@ -735,7 +735,7 @@
         <translation>Seleccionar tablas predefinidas para</translation>
     </message>
     <message>
-        <location filename="../ui/dlg_load_layers.ui" line="156"/>
+        <location filename="../ui/dlg_load_layers.ui" line="146"/>
         <source>There are no selected layers to load</source>
         <translation>No hay capas seleccionadas para cargar</translation>
     </message>
@@ -743,22 +743,22 @@
 <context>
     <name>DialogLoadLayers</name>
     <message>
-        <location filename="../gui/dialog_load_layers.py" line="161"/>
+        <location filename="../gui/dialog_load_layers.py" line="162"/>
         <source> [already loaded]</source>
         <translation> [ya está cargada]</translation>
     </message>
     <message>
-        <location filename="../gui/dialog_load_layers.py" line="308"/>
+        <location filename="../gui/dialog_load_layers.py" line="309"/>
         <source>There are no selected layers to load</source>
         <translation>No hay capas seleccionadas para cargar</translation>
     </message>
     <message>
-        <location filename="../gui/dialog_load_layers.py" line="311"/>
+        <location filename="../gui/dialog_load_layers.py" line="312"/>
         <source>There is 1 selected layer ready to be loaded</source>
         <translation>Hay 1 capa seleccionada lista para cargar</translation>
     </message>
     <message>
-        <location filename="../gui/dialog_load_layers.py" line="314"/>
+        <location filename="../gui/dialog_load_layers.py" line="315"/>
         <source>There are {} selected layers ready to be loaded</source>
         <translation>Hay {} capas seleccionadas listas para cargar</translation>
     </message>
@@ -1302,22 +1302,22 @@ p, li { white-space: pre-wrap; }
         <translation>Crear Fuente Administrativa</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_administrative_source_cadastre.ui" line="46"/>
+        <location filename="../ui/wiz_create_administrative_source_cadastre.ui" line="49"/>
         <source>How would you like to create administrative sources?</source>
         <translation>¿Cómo te gustaría crear fuentes administrativas?</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_administrative_source_cadastre.ui" line="65"/>
+        <location filename="../ui/wiz_create_administrative_source_cadastre.ui" line="68"/>
         <source>Entering data manually using a form</source>
         <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_administrative_source_cadastre.ui" line="91"/>
+        <location filename="../ui/wiz_create_administrative_source_cadastre.ui" line="94"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
         <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_administrative_source_cadastre.ui" line="112"/>
+        <location filename="../ui/wiz_create_administrative_source_cadastre.ui" line="115"/>
         <source>Source:</source>
         <translation>Fuente:</translation>
     </message>
@@ -1362,22 +1362,22 @@ p, li { white-space: pre-wrap; }
         <translation>Crear Interesado Jurídico</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_legal_party_cadastre.ui" line="46"/>
+        <location filename="../ui/wiz_create_legal_party_cadastre.ui" line="49"/>
         <source>How would you like to create legal parties?</source>
         <translation>¿Cómo te gustaría crear interesados jurídicos?</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_legal_party_cadastre.ui" line="68"/>
+        <location filename="../ui/wiz_create_legal_party_cadastre.ui" line="71"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
         <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_legal_party_cadastre.ui" line="88"/>
+        <location filename="../ui/wiz_create_legal_party_cadastre.ui" line="91"/>
         <source>Entering data manually using a form</source>
         <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_legal_party_cadastre.ui" line="125"/>
+        <location filename="../ui/wiz_create_legal_party_cadastre.ui" line="128"/>
         <source>Source:</source>
         <translation>Fuente:</translation>
     </message>
@@ -1390,22 +1390,22 @@ p, li { white-space: pre-wrap; }
         <translation>Crear Interesado Natural</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_natural_party_cadastre.ui" line="46"/>
+        <location filename="../ui/wiz_create_natural_party_cadastre.ui" line="49"/>
         <source>How would you like to create natural parties?</source>
         <translation>¿Cómo te gustaría crear interesados naturales?</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_natural_party_cadastre.ui" line="65"/>
+        <location filename="../ui/wiz_create_natural_party_cadastre.ui" line="68"/>
         <source>Entering data manually using a form</source>
         <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_natural_party_cadastre.ui" line="91"/>
+        <location filename="../ui/wiz_create_natural_party_cadastre.ui" line="94"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
         <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_natural_party_cadastre.ui" line="112"/>
+        <location filename="../ui/wiz_create_natural_party_cadastre.ui" line="115"/>
         <source>Source:</source>
         <translation>Fuente:</translation>
     </message>
@@ -1418,22 +1418,22 @@ p, li { white-space: pre-wrap; }
         <translation>Crear Predio</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_parcel_cadastre.ui" line="46"/>
+        <location filename="../ui/wiz_create_parcel_cadastre.ui" line="49"/>
         <source>How would you like to create parcels?</source>
         <translation>¿Cómo te gustaría crear predios?</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_parcel_cadastre.ui" line="65"/>
+        <location filename="../ui/wiz_create_parcel_cadastre.ui" line="68"/>
         <source>Based on existing plot</source>
         <translation>Con base en un terreno existente</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_parcel_cadastre.ui" line="91"/>
+        <location filename="../ui/wiz_create_parcel_cadastre.ui" line="94"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
         <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_parcel_cadastre.ui" line="112"/>
+        <location filename="../ui/wiz_create_parcel_cadastre.ui" line="115"/>
         <source>Source:</source>
         <translation>Fuente:</translation>
     </message>
@@ -1474,27 +1474,27 @@ p, li { white-space: pre-wrap; }
         <translation>Crear Responsabilidad</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_responsibility_cadastre.ui" line="18"/>
+        <location filename="../ui/wiz_create_responsibility_cadastre.ui" line="21"/>
         <source>How would you like to create responsibilities?</source>
         <translation>¿Cómo te gustaría crear responsabilidades?</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_responsibility_cadastre.ui" line="26"/>
+        <location filename="../ui/wiz_create_responsibility_cadastre.ui" line="29"/>
         <source>Entering data manually using a form</source>
         <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_responsibility_cadastre.ui" line="52"/>
+        <location filename="../ui/wiz_create_responsibility_cadastre.ui" line="55"/>
         <source>From another source (e.g., CSV file, QGIS table, etc.)</source>
         <translation>Desde otra fuente (por ejemplo, archivo CSV, tabla de QGIS, etc.)</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_responsibility_cadastre.ui" line="80"/>
+        <location filename="../ui/wiz_create_responsibility_cadastre.ui" line="83"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Noto Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation></translation>
     </message>
 </context>
@@ -1506,27 +1506,27 @@ p, li { white-space: pre-wrap; }
         <translation>Crear Restricción</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_restriction_cadastre.ui" line="18"/>
+        <location filename="../ui/wiz_create_restriction_cadastre.ui" line="21"/>
         <source>How would you like to create restrictions?</source>
         <translation>¿Cómo te gustaría crear restricciones?</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_restriction_cadastre.ui" line="26"/>
+        <location filename="../ui/wiz_create_restriction_cadastre.ui" line="29"/>
         <source>Entering data manually using a form</source>
         <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_restriction_cadastre.ui" line="52"/>
+        <location filename="../ui/wiz_create_restriction_cadastre.ui" line="55"/>
         <source>From another source (e.g., CSV file, QGIS table, etc.)</source>
         <translation>Desde otra fuente (por ejemplo, archivo CSV, tabla de QGIS, etc.)</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_restriction_cadastre.ui" line="80"/>
+        <location filename="../ui/wiz_create_restriction_cadastre.ui" line="83"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Noto Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation></translation>
     </message>
 </context>
@@ -1538,27 +1538,27 @@ p, li { white-space: pre-wrap; }
         <translation>Crear Derecho</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_right_cadastre.ui" line="18"/>
+        <location filename="../ui/wiz_create_right_cadastre.ui" line="21"/>
         <source>How would you like to create rights?</source>
         <translation>¿Cómo te gustaría crear derechos?</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_right_cadastre.ui" line="26"/>
+        <location filename="../ui/wiz_create_right_cadastre.ui" line="29"/>
         <source>Entering data manually using a form</source>
         <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_right_cadastre.ui" line="52"/>
+        <location filename="../ui/wiz_create_right_cadastre.ui" line="55"/>
         <source>From another source (e.g., CSV file, QGIS table, etc.)</source>
         <translation>Desde otra fuente (por ejemplo, archivo CSV, tabla de QGIS, etc.)</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_right_cadastre.ui" line="80"/>
+        <location filename="../ui/wiz_create_right_cadastre.ui" line="83"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Noto Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation></translation>
     </message>
 </context>
@@ -1570,22 +1570,22 @@ p, li { white-space: pre-wrap; }
         <translation>Crear Fuente Espacial</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_spatial_source_cadastre.ui" line="46"/>
+        <location filename="../ui/wiz_create_spatial_source_cadastre.ui" line="49"/>
         <source>How would you like to create spatial sources?</source>
         <translation>¿Cómo te gustaría crear fuentes espaciales?</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_spatial_source_cadastre.ui" line="65"/>
+        <location filename="../ui/wiz_create_spatial_source_cadastre.ui" line="68"/>
         <source>Entering data manually using a form</source>
         <translation>Ingresando datos manualmente en un formulario</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_spatial_source_cadastre.ui" line="91"/>
+        <location filename="../ui/wiz_create_spatial_source_cadastre.ui" line="94"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
         <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_spatial_source_cadastre.ui" line="112"/>
+        <location filename="../ui/wiz_create_spatial_source_cadastre.ui" line="115"/>
         <source>Source:</source>
         <translation>Fuente:</translation>
     </message>
