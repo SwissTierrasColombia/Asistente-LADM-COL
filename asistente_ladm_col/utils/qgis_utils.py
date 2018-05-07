@@ -34,7 +34,7 @@ from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
 import processing
 
 from .project_generator_utils import ProjectGeneratorUtils
-from .qt_utils import OverrideCursor, get_plugin_version
+from .qt_utils import OverrideCursor, get_plugin_metadata
 from .symbology import SymbologyUtils
 from .geometry import GeometryUtils
 from ..gui.settings_dialog import SettingsDialog
@@ -718,7 +718,7 @@ class QGISUtils(QObject):
     def show_help(self, module=''):
         url = ''
         section = MODULE_HELP_MAPPING[module]
-        plugin_version = get_plugin_version('asistente_ladm_col')
+        plugin_version = get_plugin_metadata('asistente_ladm_col', 'version')
 
         def is_connected(hostname):
             try:

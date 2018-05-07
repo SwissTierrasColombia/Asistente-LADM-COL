@@ -24,13 +24,12 @@ from qgis.PyQt.QtCore import Qt, QSettings
 from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
 
 from ..config.general_config import (
-    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-    PLUGIN_NAME
+    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE
 )
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
 from ..utils import get_ui_class
-from ..utils.qt_utils import make_file_selector
+from ..utils.qt_utils import make_file_selector, get_plugin_metadata
 
 DIALOG_UI = get_ui_class('settings_dialog.ui')
 
@@ -42,6 +41,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.log = QgsApplication.messageLog()
         self._db = None
         self.qgis_utils = qgis_utils
+        self.plugin_name = get_plugin_metadata('asistente_ladm_col', 'name')
 
         self.cbo_db_source.clear()
         self.cbo_db_source.addItem(self.tr('PostgreSQL / PostGIS'), 'pg')
@@ -64,10 +64,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def get_db_connection(self):
         if self._db is not None:
-            self.log.logMessage("Returning existing db connection...", PLUGIN_NAME, Qgis.Info)
+            self.log.logMessage("Returning existing db connection...", self.plugin_name, Qgis.Info)
             return self._db
         else:
-            self.log.logMessage("Getting new db connection...", PLUGIN_NAME, Qgis.Info)
+            self.log.logMessage("Getting new db connection...", self.plugin_name, Qgis.Info)
             dict_conn = self.read_connection_parameters()
             uri = self.get_connection_uri(dict_conn)
             if self.cbo_db_source.currentData() == 'pg':
@@ -183,7 +183,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None # Reset db connection
         res, msg = self.get_db_connection().test_connection()
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
-        self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
+        self.log.logMessage("Test connection!", self.plugin_name, Qgis.Info)
 
     def show_message(self, message, level):
         self.bar.pushMessage(message, level, 10)

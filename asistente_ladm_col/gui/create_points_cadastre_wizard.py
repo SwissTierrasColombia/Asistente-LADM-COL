@@ -28,10 +28,10 @@ from qgis.PyQt.QtWidgets import QWizard, QFileDialog, QSizePolicy, QGridLayout
 from ..utils.qt_utils import (make_file_selector, enable_next_wizard,
                               disable_next_wizard)
 from ..utils import get_ui_class
-from ..config.general_config import PLUGIN_NAME
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE)
 from ..config.help_strings import HelpStrings
+from ..utils.qt_utils import get_plugin_metadata
 
 WIZARD_UI = get_ui_class('wiz_create_points_cadastre.ui')
 
@@ -44,6 +44,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
+        self.plugin_name = get_plugin_metadata('asistente_ladm_col', 'name')
 
         # Auxiliary data to set nonlinear next pages
         self.pages = [self.wizardPage1, self.wizardPage2, self.wizardPage3]
@@ -311,13 +312,13 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             template_file = QFile(":/Asistente-LADM_COL/resources/csv/" + filename)
 
             if not template_file.exists():
-                self.log.logMessage("CSV doesn't exist! Probably due to a missing 'make' execution to generate resources...", PLUGIN_NAME, Qgis.Critical)
+                self.log.logMessage("CSV doesn't exist! Probably due to a missing 'make' execution to generate resources...", self.plugin_name, Qgis.Critical)
                 msg = QCoreApplication.translate('CreatePointsCadastreWizard', 'CSV file not found. Update your plugin. For details see log.')
                 self.show_message(msg, Qgis.Warning)
                 return
 
             if os.path.isfile(new_filename):
-                self.log.logMessage('Removing existing file {}...'.format(new_filename), PLUGIN_NAME, Qgis.Info)
+                self.log.logMessage('Removing existing file {}...'.format(new_filename), self.plugin_name, Qgis.Info)
                 os.chmod(new_filename, 0o777)
                 os.remove(new_filename)
 
@@ -326,7 +327,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                 msg = QCoreApplication.translate('CreatePointsCadastreWizard', 'The file <a href="file://{}">{}</a> was successfully saved!').format(new_filename, os.path.basename(new_filename))
                 self.show_message(msg, Qgis.Info)
             else:
-                self.log.logMessage('There was an error copying the CSV file {}!'.format(new_filename), PLUGIN_NAME, Qgis.Info)
+                self.log.logMessage('There was an error copying the CSV file {}!'.format(new_filename), self.plugin_name, Qgis.Info)
                 msg = QCoreApplication.translate('CreatePointsCadastreWizard', 'The file couldn\'t be saved.')
                 self.show_message(msg, Qgis.Warning)
 

@@ -29,14 +29,15 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
 
-from ..config.general_config import PLUGIN_NAME
 from ..config.table_mapping_config import ID_FIELD
+from ..utils.qt_utils import get_plugin_metadata
 
 class GeometryUtils(QObject):
 
     def __init__(self):
         QObject.__init__(self)
         self.log = QgsApplication.messageLog()
+        self.plugin_name = get_plugin_metadata('asistente_ladm_col', 'name')
 
     def get_pair_boundary_plot(self, boundary_layer, plot_layer, use_selection=True):
         lines = boundary_layer.getFeatures()
@@ -107,7 +108,7 @@ class GeometryUtils(QObject):
                                     polygon[ID_FIELD],
                                     candidate_feature[ID_FIELD],
                                     intersection_type),
-                                PLUGIN_NAME,
+                                self.plugin_name,
                                 Qgis.Warning
                             )
 
@@ -120,7 +121,7 @@ class GeometryUtils(QObject):
                                     polygon[ID_FIELD],
                                     candidate_feature[ID_FIELD],
                                     intersection_type),
-                                PLUGIN_NAME,
+                                self.plugin_name,
                                 Qgis.Warning
                             )
 
@@ -140,7 +141,7 @@ class GeometryUtils(QObject):
                                     polygon[ID_FIELD],
                                     candidate_feature[ID_FIELD],
                                     intersection_type),
-                                PLUGIN_NAME,
+                                self.plugin_name,
                                 Qgis.Warning
                             )
 
