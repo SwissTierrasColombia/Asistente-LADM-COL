@@ -23,7 +23,7 @@ from qgis.core import QgsWkbTypes, Qgis, QgsApplication
 from qgis.PyQt.QtCore import QCoreApplication
 
 from .db_connector import DBConnector
-from ...utils.qt_utils import get_plugin_metadata
+from ...config.general_config import NAME_METADATA
 
 class PGConnector(DBConnector):
     def __init__(self, uri, schema="public"):
@@ -35,12 +35,11 @@ class PGConnector(DBConnector):
         self.mode = 'pg'
         self.provider = 'postgres'
         self._tables_info = None
-        self.plugin_name = get_plugin_metadata('asistente_ladm_col', 'name')
 
     def test_connection(self):
         try:
             self.conn = psycopg2.connect(self.uri)
-            self.log.logMessage("Connection was set! {}".format(self.conn), self.plugin_name, Qgis.Info)
+            self.log.logMessage("Connection was set! {}".format(self.conn), NAME_METADATA, Qgis.Info)
         except Exception as e:
             return (False, QCoreApplication.translate("PGConnector",
                     "There was an error connecting to the database: {}").format(e))
@@ -51,7 +50,7 @@ class PGConnector(DBConnector):
     def save_connection(self):
         if self.conn is None:
             self.conn = psycopg2.connect(self.uri)
-            self.log.logMessage("Connection was set! {}".format(self.conn), self.plugin_name, Qgis.Info)
+            self.log.logMessage("Connection was set! {}".format(self.conn), NAME_METADATA, Qgis.Info)
 
     def validate_db(self):
         pass

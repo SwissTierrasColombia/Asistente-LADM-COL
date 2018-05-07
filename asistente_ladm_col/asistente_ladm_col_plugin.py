@@ -33,7 +33,9 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from .config.general_config import (
     PROJECT_GENERATOR_MIN_REQUIRED_VERSION,
     PROJECT_GENERATOR_EXACT_REQUIRED_VERSION,
-    PROJECT_GENERATOR_REQUIRED_VERSION_URL
+    PROJECT_GENERATOR_REQUIRED_VERSION_URL,
+    NAME_METADATA,
+    VERSION_METADATA
 )
 from .gui.create_points_cadastre_wizard import CreatePointsCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
@@ -52,8 +54,8 @@ from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
-from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
+from .utils.qt_utils import get_plugin_metadata
 
 #import resources_rc
 
@@ -69,7 +71,6 @@ class AsistenteLADMCOLPlugin(QObject):
         # Set Menus
         icon = QIcon(":/Asistente-LADM_COL/resources/images/icon.png")
         self._menu = QMenu("LAD&M_COL", self.iface.mainWindow().menuBar())
-        self.plugin_name = get_plugin_metadata('asistente_ladm_col', 'name')
         actions = self.iface.mainWindow().menuBar().actions()
         if len(actions) > 0:
             last_action = actions[-1]
@@ -235,7 +236,7 @@ class AsistenteLADMCOLPlugin(QObject):
         for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):
             alg = QgsProcessingModelAlgorithm()
             if not alg.fromFile(filename):
-                self.log.logMessage("Couldn't load model from {}".format(filename), self.plugin_name, Qgis.Critical)
+                self.log.logMessage("Couldn't load model from {}".format(filename), NAME_METADATA, Qgis.Critical)
                 return
 
             destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))
@@ -295,7 +296,7 @@ class AsistenteLADMCOLPlugin(QObject):
                 inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
                 inst.log.logMessage(
                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, connection to DB was not valid."),
-                    inst.plugin_name,
+                    NAME_METADATA,
                     Qgis.Warning
                 )
 
@@ -327,7 +328,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
                 inst.log.logMessage(
                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, Project Generator not found."),
-                    inst.plugin_name,
+                    NAME_METADATA,
                     Qgis.Warning
                 )
 
@@ -352,7 +353,7 @@ class AsistenteLADMCOLPlugin(QObject):
             min_required_version_splitted = min_required_version_splitted + ['0','0','0','0']
             min_required_version_splitted = min_required_version_splitted[:4]
 
-        self.log.logMessage("[Project Generator] Min required version: {}, current_version: {}".format(min_required_version_splitted, current_version_splitted), self.plugin_name, Qgis.Info)
+        self.log.logMessage("[Project Generator] Min required version: {}, current_version: {}".format(min_required_version_splitted, current_version_splitted), NAME_METADATA, Qgis.Info)
 
         if PROJECT_GENERATOR_EXACT_REQUIRED_VERSION:
             return min_required_version_splitted == current_version_splitted
@@ -523,7 +524,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_about_dialog(self):
         dialog = AboutDialog()
         rich_text = '<html><head/><body><p align="center"><span style=" font-size:10pt; font-weight:600;">v{}</span></p></body></html>'
-        dialog.lbl_version.setText(rich_text.format(get_plugin_metadata('asistente_ladm_col', 'version')))
+        dialog.lbl_version.setText(rich_text.format(VERSION_METADATA))
         dialog.exec_()
 
     def installTranslator(self):

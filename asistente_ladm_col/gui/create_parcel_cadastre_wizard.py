@@ -24,6 +24,7 @@ from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
+from ..config.general_config import NAME_METADATA
 from ..config.table_mapping_config import (
     ID_FIELD,
     LA_BAUNIT_TYPE_TABLE,
@@ -34,7 +35,6 @@ from ..config.table_mapping_config import (
     UEBAUNIT_TABLE_PLOT_FIELD
 )
 from ..config.help_strings import HelpStrings
-from ..utils.qt_utils import get_plugin_metadata
 
 WIZARD_UI = get_ui_class('wiz_create_parcel_cadastre.ui')
 
@@ -50,7 +50,6 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
-        self.plugin_name = get_plugin_metadata('asistente_ladm_col', 'name')
 
         self.restore_settings()
 
@@ -163,15 +162,15 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         res = self._parcel_layer.commitChanges()
         if res:
             self._parcel_layer.featureAdded.disconnect(self.call_parcel_commit)
-            self.log.logMessage("Parcel's featureAdded SIGNAL disconnected", self.plugin_name, Qgis.Info)
+            self.log.logMessage("Parcel's featureAdded SIGNAL disconnected", NAME_METADATA, Qgis.Info)
 
     def finish_parcel(self, plot_ids, layerId, features):
         if len(features) != 1:
-            self.log.logMessage("We should have got only one predio... We cannot do anything with {} predios".format(len(features)), self.plugin_name, Qgis.Warning)
+            self.log.logMessage("We should have got only one predio... We cannot do anything with {} predios".format(len(features)), NAME_METADATA, Qgis.Warning)
         else:
             fid = features[0].id()
             if not self._parcel_layer.getFeature(fid).isValid():
-                self.log.logMessage("Feature not found in layer Predio...", self.plugin_name, Qgis.Warning)
+                self.log.logMessage("Feature not found in layer Predio...", NAME_METADATA, Qgis.Warning)
             else:
                 parcel_id = self._parcel_layer.getFeature(fid)[ID_FIELD]
 
@@ -181,7 +180,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                     new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
                     new_feature.setAttribute(UEBAUNIT_TABLE_PLOT_FIELD, plot_id)
                     new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
-                    self.log.logMessage("Saving Plot-Parcel: {}-{}".format(plot_id, parcel_id), self.plugin_name, Qgis.Info)
+                    self.log.logMessage("Saving Plot-Parcel: {}-{}".format(plot_id, parcel_id), NAME_METADATA, Qgis.Info)
                     new_features.append(new_feature)
 
                 self._uebaunit_table.dataProvider().addFeatures(new_features)
@@ -192,7 +191,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                     Qgis.Info)
 
         self._parcel_layer.committedFeaturesAdded.disconnect()
-        self.log.logMessage("Parcel's committedFeaturesAdded SIGNAL disconnected", self.plugin_name, Qgis.Info)
+        self.log.logMessage("Parcel's committedFeaturesAdded SIGNAL disconnected", NAME_METADATA, Qgis.Info)
 
     def save_settings(self):
         settings = QSettings()

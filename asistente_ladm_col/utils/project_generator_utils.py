@@ -20,14 +20,13 @@ import qgis
 from qgis.core import QgsProject, Qgis, QgsApplication
 from qgis.PyQt.QtCore import QObject
 
-from .qt_utils import get_plugin_metadata
+from ..config.general_config import NAME_METADATA
 
 class ProjectGeneratorUtils(QObject):
 
     def __init__(self):
         QObject.__init__(self)
         self.log = QgsApplication.messageLog()
-        self.plugin_name = get_plugin_metadata('asistente_ladm_col', 'name')
 
     def load_layers(self, layer_list, db):
         if 'projectgenerator' in qgis.utils.plugins:
@@ -41,7 +40,7 @@ class ProjectGeneratorUtils(QObject):
         else:
             self.log.logMessage(
                 "El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",
-                self.plugin_name,
+                NAME_METADATA,
                 Qgis.Critical
             )
 
@@ -54,7 +53,7 @@ class ProjectGeneratorUtils(QObject):
         else:
             self.log.logMessage(
                 "El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",
-                self.plugin_name,
+                NAME_METADATA,
                 Qgis.Critical
             )
 
