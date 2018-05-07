@@ -29,8 +29,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
 
-from ..config.general_config import PLUGIN_NAME
 from ..config.table_mapping_config import ID_FIELD
+from ..config.general_config import PLUGIN_NAME
 
 class GeometryUtils(QObject):
 

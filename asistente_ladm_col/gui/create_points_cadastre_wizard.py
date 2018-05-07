@@ -28,10 +28,10 @@ from qgis.PyQt.QtWidgets import QWizard, QFileDialog, QSizePolicy, QGridLayout
 from ..utils.qt_utils import (make_file_selector, enable_next_wizard,
                               disable_next_wizard)
 from ..utils import get_ui_class
-from ..config.general_config import PLUGIN_NAME
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE)
 from ..config.help_strings import HelpStrings
+from ..config.general_config import PLUGIN_NAME
 
 WIZARD_UI = get_ui_class('wiz_create_points_cadastre.ui')
 

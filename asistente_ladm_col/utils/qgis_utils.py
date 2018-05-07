@@ -34,7 +34,7 @@ from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
 import processing
 
 from .project_generator_utils import ProjectGeneratorUtils
-from .qt_utils import OverrideCursor, get_plugin_version
+from .qt_utils import OverrideCursor
 from .symbology import SymbologyUtils
 from .geometry import GeometryUtils
 from ..gui.settings_dialog import SettingsDialog
@@ -44,7 +44,8 @@ from ..config.general_config import (
     ERROR_LAYER_GROUP,
     MODULE_HELP_MAPPING,
     TEST_SERVER,
-    HELP_URL
+    HELP_URL,
+    PLUGIN_VERSION
 )
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
@@ -718,7 +719,7 @@ class QGISUtils(QObject):
     def show_help(self, module=''):
         url = ''
         section = MODULE_HELP_MAPPING[module]
-        plugin_version = get_plugin_version('asistente_ladm_col')
+        plugin_version = PLUGIN_VERSION
 
         def is_connected(hostname):
             try:

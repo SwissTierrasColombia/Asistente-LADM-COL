@@ -31,10 +31,11 @@ from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton
 from processing.modeler.ModelerUtils import ModelerUtils
 
 from .config.general_config import (
-    PLUGIN_NAME,
     PROJECT_GENERATOR_MIN_REQUIRED_VERSION,
     PROJECT_GENERATOR_EXACT_REQUIRED_VERSION,
-    PROJECT_GENERATOR_REQUIRED_VERSION_URL
+    PROJECT_GENERATOR_REQUIRED_VERSION_URL,
+    PLUGIN_NAME,
+    PLUGIN_VERSION
 )
 from .gui.create_points_cadastre_wizard import CreatePointsCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
@@ -53,8 +54,8 @@ from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
-from .utils.qt_utils import get_plugin_version
 from .utils.quality import QualityUtils
+from .utils.qt_utils import get_plugin_metadata
 
 #import resources_rc
 
@@ -293,7 +294,7 @@ class AsistenteLADMCOLPlugin(QObject):
                 button.pressed.connect(inst.show_settings)
                 widget.layout().addWidget(button)
                 inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
-                self.log.logMessage(
+                inst.log.logMessage(
                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, connection to DB was not valid."),
                     PLUGIN_NAME,
                     Qgis.Warning
@@ -337,7 +338,7 @@ class AsistenteLADMCOLPlugin(QObject):
         plugin_found = 'projectgenerator' in qgis.utils.plugins
         if not plugin_found:
             return False
-        current_version = get_plugin_version('projectgenerator')
+        current_version = get_plugin_metadata('projectgenerator', 'version')
         min_required_version = PROJECT_GENERATOR_MIN_REQUIRED_VERSION
         if current_version is None:
             return False
@@ -523,7 +524,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_about_dialog(self):
         dialog = AboutDialog()
         rich_text = '<html><head/><body><p align="center"><span style=" font-size:10pt; font-weight:600;">v{}</span></p></body></html>'
-        dialog.lbl_version.setText(rich_text.format(get_plugin_version('asistente_ladm_col')))
+        dialog.lbl_version.setText(rich_text.format(PLUGIN_VERSION))
         dialog.exec_()
 
     def installTranslator(self):
