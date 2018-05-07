@@ -107,7 +107,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         """
         dict_conn = dict()
         dict_conn['host'] = self.txt_pg_host.text().strip() or 'localhost'
-        dict_conn['port'] = self.txt_pg_port.text().strip() or 5432
+        dict_conn['port'] = self.txt_pg_port.text().strip() or '5432'
         dict_conn['database'] = self.txt_pg_database.text().strip()
         dict_conn['schema'] = self.txt_pg_schema.text().strip() or 'public'
         dict_conn['user'] = self.txt_pg_user.text().strip()
