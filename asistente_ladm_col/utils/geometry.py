@@ -30,7 +30,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
 
 from ..config.table_mapping_config import ID_FIELD
-from ..config.general_config import NAME_METADATA
+from ..config.general_config import PLUGIN_NAME
 
 class GeometryUtils(QObject):
 
@@ -107,7 +107,7 @@ class GeometryUtils(QObject):
                                     polygon[ID_FIELD],
                                     candidate_feature[ID_FIELD],
                                     intersection_type),
-                                NAME_METADATA,
+                                PLUGIN_NAME,
                                 Qgis.Warning
                             )
 
@@ -120,7 +120,7 @@ class GeometryUtils(QObject):
                                     polygon[ID_FIELD],
                                     candidate_feature[ID_FIELD],
                                     intersection_type),
-                                NAME_METADATA,
+                                PLUGIN_NAME,
                                 Qgis.Warning
                             )
 
@@ -140,7 +140,7 @@ class GeometryUtils(QObject):
                                     polygon[ID_FIELD],
                                     candidate_feature[ID_FIELD],
                                     intersection_type),
-                                NAME_METADATA,
+                                PLUGIN_NAME,
                                 Qgis.Warning
                             )
 

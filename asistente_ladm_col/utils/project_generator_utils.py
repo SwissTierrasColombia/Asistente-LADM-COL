@@ -20,7 +20,7 @@ import qgis
 from qgis.core import QgsProject, Qgis, QgsApplication
 from qgis.PyQt.QtCore import QObject
 
-from ..config.general_config import NAME_METADATA
+from ..config.general_config import PLUGIN_NAME
 
 class ProjectGeneratorUtils(QObject):
 
@@ -40,7 +40,7 @@ class ProjectGeneratorUtils(QObject):
         else:
             self.log.logMessage(
                 "El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",
-                NAME_METADATA,
+                PLUGIN_NAME,
                 Qgis.Critical
             )
 
@@ -53,7 +53,7 @@ class ProjectGeneratorUtils(QObject):
         else:
             self.log.logMessage(
                 "El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",
-                NAME_METADATA,
+                PLUGIN_NAME,
                 Qgis.Critical
             )
 

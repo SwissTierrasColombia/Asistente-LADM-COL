@@ -25,7 +25,7 @@ from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
 
 from ..config.general_config import (
     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-    NAME_METADATA
+    PLUGIN_NAME
 )
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
@@ -64,10 +64,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def get_db_connection(self):
         if self._db is not None:
-            self.log.logMessage("Returning existing db connection...", NAME_METADATA, Qgis.Info)
+            self.log.logMessage("Returning existing db connection...", PLUGIN_NAME, Qgis.Info)
             return self._db
         else:
-            self.log.logMessage("Getting new db connection...", NAME_METADATA, Qgis.Info)
+            self.log.logMessage("Getting new db connection...", PLUGIN_NAME, Qgis.Info)
             dict_conn = self.read_connection_parameters()
             uri = self.get_connection_uri(dict_conn)
             if self.cbo_db_source.currentData() == 'pg':
@@ -183,7 +183,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None # Reset db connection
         res, msg = self.get_db_connection().test_connection()
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
-        self.log.logMessage("Test connection!", NAME_METADATA, Qgis.Info)
+        self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
 
     def show_message(self, message, level):
         self.bar.pushMessage(message, level, 10)

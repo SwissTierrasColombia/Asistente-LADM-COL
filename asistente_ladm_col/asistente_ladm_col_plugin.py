@@ -34,8 +34,8 @@ from .config.general_config import (
     PROJECT_GENERATOR_MIN_REQUIRED_VERSION,
     PROJECT_GENERATOR_EXACT_REQUIRED_VERSION,
     PROJECT_GENERATOR_REQUIRED_VERSION_URL,
-    NAME_METADATA,
-    VERSION_METADATA
+    PLUGIN_NAME,
+    PLUGIN_VERSION
 )
 from .gui.create_points_cadastre_wizard import CreatePointsCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
@@ -236,7 +236,7 @@ class AsistenteLADMCOLPlugin(QObject):
         for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):
             alg = QgsProcessingModelAlgorithm()
             if not alg.fromFile(filename):
-                self.log.logMessage("Couldn't load model from {}".format(filename), NAME_METADATA, Qgis.Critical)
+                self.log.logMessage("Couldn't load model from {}".format(filename), PLUGIN_NAME, Qgis.Critical)
                 return
 
             destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))
@@ -296,7 +296,7 @@ class AsistenteLADMCOLPlugin(QObject):
                 inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
                 inst.log.logMessage(
                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, connection to DB was not valid."),
-                    NAME_METADATA,
+                    PLUGIN_NAME,
                     Qgis.Warning
                 )
 
@@ -328,7 +328,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
                 inst.log.logMessage(
                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, Project Generator not found."),
-                    NAME_METADATA,
+                    PLUGIN_NAME,
                     Qgis.Warning
                 )
 
@@ -353,7 +353,7 @@ class AsistenteLADMCOLPlugin(QObject):
             min_required_version_splitted = min_required_version_splitted + ['0','0','0','0']
             min_required_version_splitted = min_required_version_splitted[:4]
 
-        self.log.logMessage("[Project Generator] Min required version: {}, current_version: {}".format(min_required_version_splitted, current_version_splitted), NAME_METADATA, Qgis.Info)
+        self.log.logMessage("[Project Generator] Min required version: {}, current_version: {}".format(min_required_version_splitted, current_version_splitted), PLUGIN_NAME, Qgis.Info)
 
         if PROJECT_GENERATOR_EXACT_REQUIRED_VERSION:
             return min_required_version_splitted == current_version_splitted
@@ -524,7 +524,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_about_dialog(self):
         dialog = AboutDialog()
         rich_text = '<html><head/><body><p align="center"><span style=" font-size:10pt; font-weight:600;">v{}</span></p></body></html>'
-        dialog.lbl_version.setText(rich_text.format(VERSION_METADATA))
+        dialog.lbl_version.setText(rich_text.format(PLUGIN_VERSION))
         dialog.exec_()
 
     def installTranslator(self):

@@ -45,7 +45,7 @@ from ..config.general_config import (
     MODULE_HELP_MAPPING,
     TEST_SERVER,
     HELP_URL,
-    VERSION_METADATA
+    PLUGIN_VERSION
 )
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
@@ -719,7 +719,7 @@ class QGISUtils(QObject):
     def show_help(self, module=''):
         url = ''
         section = MODULE_HELP_MAPPING[module]
-        plugin_version = VERSION_METADATA
+        plugin_version = PLUGIN_VERSION
 
         def is_connected(hostname):
             try:
