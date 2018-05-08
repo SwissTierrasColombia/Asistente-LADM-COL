@@ -24,6 +24,7 @@ from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
 from ..config.table_mapping_config import (
+    BUILDING_TABLE,
     BUILDING_UNIT_TABLE,
     LA_DIMENSION_TYPE_TABLE,
     LA_BUILDING_UNIT_TYPE_TABLE,
@@ -98,6 +99,7 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, {
             BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None},
             LA_DIMENSION_TYPE_TABLE: {'name': LA_DIMENSION_TYPE_TABLE, 'geometry': None},
             LA_BUILDING_UNIT_TYPE_TABLE: {'name': LA_BUILDING_UNIT_TYPE_TABLE, 'geometry': None},
@@ -112,12 +114,20 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
         }, load=True)
 
         self._building_unit_layer = res_layers[BUILDING_UNIT_TABLE]
+        self._building_layer = res_layers[BUILDING_TABLE]
         self._survey_point_layer = res_layers[SURVEY_POINT_TABLE]
 
         if self._building_unit_layer is None:
             self.iface.messageBar().pushMessage('Asistente LADM_COL',
                 QCoreApplication.translate('CreateBuildingUnitCadastreWizard',
-                                           "BuildingUnit layer couldn't be found... {}").format(self._db.get_description()),
+                                           "Building Unit layer couldn't be found... {}").format(self._db.get_description()),
+                Qgis.Warning)
+            return
+
+        if self._building_layer is None:
+            self.iface.messageBar().pushMessage('Asistente LADM_COL',
+                QCoreApplication.translate('CreateBuildingUnitCadastreWizard',
+                                           "Building layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 

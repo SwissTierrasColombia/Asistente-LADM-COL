@@ -51,6 +51,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
+                                           BUILDING_TABLE,
                                            ID_FIELD,
                                            LENGTH_FIELD_BOUNDARY_TABLE,
                                            LESS_TABLE,
@@ -125,6 +126,7 @@ class QGISUtils(QObject):
                 # If layer is in LayerTree, return it
                 layer_obj = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
                 response_layers[layer_id] = layer_obj
+                self.pre_load_configurations(response_layers[layer_id])
 
             if load:
                 layers_to_load = [layers[layer_id]['name'] for layer_id, layer_obj in response_layers.items() if layer_obj is None]
@@ -140,6 +142,12 @@ class QGISUtils(QObject):
 
                         if response_layers[layer_id] is not None:
                             self.post_load_configurations(response_layers[layer_id])
+
+                #for layer_id in response_layers:
+                #    layer_obj = response_layers[layer_id]
+                #    if layer_obj is not None:
+                #        self.post_load_mandatory_configurations(layer_obj)
+
         return response_layers
 
     def get_layer_from_layer_tree(self, layer_name, schema=None, geometry_type=None):
@@ -195,8 +203,11 @@ class QGISUtils(QObject):
     def post_load_configurations(self, layer):
         # Do some post-load work, such as setting styles or
         # setting automatic fields for that layer
+        # It only passes through here if the layer is NOT loaded.
         self.set_automatic_fields(layer)
         self.symbology.set_layer_style(layer)
+        self.set_display_expresion(layer)
+
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
@@ -219,6 +230,16 @@ class QGISUtils(QObject):
 
         if layer_name == BOUNDARY_TABLE:
             self.configure_automatic_field(layer, LENGTH_FIELD_BOUNDARY_TABLE, "$length")
+
+    def set_display_expresion(self, layer):
+        display_expression = layer.displayExpression()
+        if display_expression != '"dispname"' and display_expression != '"t_id"':
+            # If is different to default value, not overwrite
+            return
+        layer_name = layer.name()
+        if layer_name == BUILDING_TABLE:
+            layer.setDisplayExpression('"su_espacio_de_nombres"+\' \'+"su_local_id"')
+            print('new display_expression', layer.displayExpression()) # OJO QUITAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     def set_automatic_fields_namespace_local_id(self, layer):
         layer_name = layer.name()

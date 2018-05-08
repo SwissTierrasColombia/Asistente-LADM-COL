@@ -6,8 +6,7 @@ BFS_TABLE_BOUNDARY_POINT_FIELD = "punto_puntolindero"
 BOUNDARY_POINT_TABLE = "puntolindero"
 BOUNDARY_TABLE = "lindero"
 BUILDING_TABLE = "construccion"
-BUILDING_UNIT_TABLE = "unidad_construccion"
-CONSTRUCTION_TABLE = "construccion"
+BUILDING_UNIT_TABLE = "unidadconstruccion"
 CONTROL_POINT_TABLE = "puntocontrol"
 GENDER_TYPE_TABLE = "col_generotipo"
 ID_FIELD = "t_id"
@@ -59,7 +58,7 @@ NAMESPACE_PREFIX = {
     SURVEY_POINT_TABLE: 'p',
     BOUNDARY_TABLE: 'ccl',
     PLOT_TABLE: 'su',
-    CONSTRUCTION_TABLE: 'su',
+    BUILDING_TABLE: 'su',
     PARCEL_TABLE: 'u',
     NATURAL_PARTY_TABLE: 'p',
     LEGAL_PARTY_TABLE: 'p',

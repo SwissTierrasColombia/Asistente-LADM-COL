@@ -6,7 +6,7 @@ from .table_mapping_config import (
     BOUNDARY_POINT_TABLE,
     SURVEY_POINT_TABLE,
     PLOT_TABLE,
-    CONSTRUCTION_TABLE
+    BUILDING_TABLE
 )
 
 LAYERS_STYLE = {
@@ -70,7 +70,7 @@ LAYERS_STYLE = {
             'label': None
         }
     },
-    CONSTRUCTION_TABLE: {
+    BUILDING_TABLE: {
         QgsWkbTypes.PointGeometry:{
             'symbology': {
                 'name': 'square',

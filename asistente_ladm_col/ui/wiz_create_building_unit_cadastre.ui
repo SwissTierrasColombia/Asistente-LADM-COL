@@ -64,7 +64,7 @@
         <item row="0" column="0">
          <widget class="QGroupBox" name="gbx_page_1">
           <property name="title">
-           <string>How would you like to create buildings?</string>
+           <string>How would you like to create building units?</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="4" column="0">
@@ -102,10 +102,10 @@
                  <height>16777215</height>
                 </size>
                </property>
-               <property name="allowEmptyLayer">
+               <property name="allowEmptyLayer" stdset="0">
                 <bool>true</bool>
                </property>
-               <property name="showCrs">
+               <property name="showCrs" stdset="0">
                 <bool>false</bool>
                </property>
               </widget>
