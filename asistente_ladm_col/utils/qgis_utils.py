@@ -126,7 +126,6 @@ class QGISUtils(QObject):
                 # If layer is in LayerTree, return it
                 layer_obj = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
                 response_layers[layer_id] = layer_obj
-                self.pre_load_configurations(response_layers[layer_id])
 
             if load:
                 layers_to_load = [layers[layer_id]['name'] for layer_id, layer_obj in response_layers.items() if layer_obj is None]
@@ -142,11 +141,6 @@ class QGISUtils(QObject):
 
                         if response_layers[layer_id] is not None:
                             self.post_load_configurations(response_layers[layer_id])
-
-                #for layer_id in response_layers:
-                #    layer_obj = response_layers[layer_id]
-                #    if layer_obj is not None:
-                #        self.post_load_mandatory_configurations(layer_obj)
 
         return response_layers
 
