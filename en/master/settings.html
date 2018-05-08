@@ -1,14 +1,14 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Settings &mdash; documentación de LADM_COL Assistant - </title>
+  <title>Settings &mdash; LADM_COL Assistant  documentation</title>
   
 
   
@@ -29,11 +29,9 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/banner.css" type="text/css" />
   <link rel="stylesheet" href="_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
-    <link rel="author" title="Sobre este documento" href="about.html" />
-    <link rel="index" title="Índice" href="genindex.html" />
-    <link rel="search" title="Búsqueda" href="search.html" />
-    <link rel="next" title="Installation guide for plugin" href="installation.html" />
-    <link rel="prev" title="Load Layers" href="load_layers.html" /> 
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -83,15 +81,9 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="cadastre.html">Cadastre</a></li>
 <li class="toctree-l1"><a class="reference internal" href="load_layers.html">Load Layers</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Settings</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#database-connection">Database Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#quality">Quality</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#automatic-values">Automatic Values</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation guide for plugin</a></li>
 <li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
 </ul>
@@ -145,7 +137,7 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/help.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/settings.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -165,9 +157,9 @@
 
 
 <div class="section" id="settings">
-<h1>Settings<a class="headerlink" href="#settings" title="Enlazar permanentemente con este título">¶</a></h1>
+<h1>Settings<a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h1>
 <a class=""
-               data-lightbox="group-b1d2016d-49c1-48c0-a330-5ed02c139eb9"
+               data-lightbox="group-c5359658-a8f0-4e2d-b109-afbd8d4afdc0"
                href="_images/03_CONFIGURACION.gif"
                title=""
                data-title=""
@@ -175,9 +167,9 @@
                      class=""
                      width="800"
                      height="500"
-                     alt="about plugin"/>
+                     alt="basic settings"/>
                 </a><div class="section" id="database-connection">
-<h2>Database Connection<a class="headerlink" href="#database-connection" title="Enlazar permanentemente con este título">¶</a></h2>
+<h2>Database Connection<a class="headerlink" href="#database-connection" title="Permalink to this headline">¶</a></h2>
 <p>In this tab, the parameters are defined to connect to the database in which the
 physical model of LADM_COL is stored.</p>
 <p>These parameters are: </p>
@@ -201,12 +193,12 @@ database.</p>
 correct and allow connection to the database</p>
 </div>
 <div class="section" id="quality">
-<h2>Quality<a class="headerlink" href="#quality" title="Enlazar permanentemente con este título">¶</a></h2>
+<h2>Quality<a class="headerlink" href="#quality" title="Permalink to this headline">¶</a></h2>
 <p>For data quality issues in this tab, the tolerance limit allowed for
 too long boundary segments is established, this must be defined in meters.</p>
 </div>
 <div class="section" id="automatic-values">
-<h2>Automatic Values<a class="headerlink" href="#automatic-values" title="Enlazar permanentemente con este título">¶</a></h2>
+<h2>Automatic Values<a class="headerlink" href="#automatic-values" title="Permalink to this headline">¶</a></h2>
 <p>Most of the classes in LADM_COL have two attibutes that combined must be unique
 in the whole <code class="docutils literal notranslate"><span class="pre">schema/database</span></code>. They are called <strong>namespace</strong>
 and <strong>local_id</strong>. To make it easier to fill those attibutes, the <em>LADM_COL
@@ -218,7 +210,17 @@ MY_ORGANIZATION) plus the class name (e.g., BOUNDARY):
 database.</p>
 <p>If you want to fill those values by youtself, uncheck the check boxes in this
 form.</p>
-</div>
+<a class=""
+               data-lightbox="group-1dc4ba39-979b-469b-8a7d-ab3d5bb87f53"
+               href="_images/settings.gif"
+               title=""
+               data-title=""
+               ><img src="_images/settings.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="about plugin"/>
+                </a></div>
 </div>
 
 
@@ -226,15 +228,6 @@ form.</p>
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="installation.html" class="btn btn-neutral float-right" title="Installation guide for plugin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="load_layers.html" class="btn btn-neutral" title="Load Layers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
@@ -265,11 +258,11 @@ form.</p>
     <div class="rst-other-versions">
         <dl>
             <dt>Tags</dt>
-            <dd><a href="0.0.9/help.html">0.0.9</a></dd>
+            <dd><a href="../0.0.9/index.html">0.0.9</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
-            <dd><a href="master/help.html">master</a></dd>
+            <dd><a href="settings.html">master</a></dd>
         </dl>
     </div>
 </div>
@@ -281,7 +274,7 @@ form.</p>
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'',
-            LANGUAGE:'es',
+            LANGUAGE:'en',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -291,7 +284,6 @@ form.</p>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="_static/translations.js"></script>
       <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
       <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
       <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>

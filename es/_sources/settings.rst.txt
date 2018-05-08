@@ -4,7 +4,7 @@ Settings
 .. image:: static/03_CONFIGURACION.gif
    :height: 500
    :width: 800
-   :alt: about plugin
+   :alt: basic settings
 
 Database Connection
 ---------------------
@@ -67,3 +67,8 @@ database.
 
 If you want to fill those values by youtself, uncheck the check boxes in this
 form.
+
+.. image:: static/settings.gif
+   :height: 500
+   :width: 800
+   :alt: about plugin
