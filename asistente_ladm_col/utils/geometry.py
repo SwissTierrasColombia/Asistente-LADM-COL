@@ -168,7 +168,9 @@ class GeometryUtils(QObject):
                 for line_vertex in line.geometry().asPolyline():
                     if abs(line_vertex.x() - candidate_point.x()) < 0.001 \
                        and abs(line_vertex.y() - candidate_point.y()) < 0.001:
-                        intersect_pairs.append((line[ID_FIELD], candidate_feature[ID_FIELD]))
+                        pair = (line[ID_FIELD], candidate_feature[ID_FIELD])
+                        if pair not in intersect_pairs:
+                            intersect_pairs.append(pair)
         return intersect_pairs
 
     def get_polyline_as_single_segments(self, polyline):
