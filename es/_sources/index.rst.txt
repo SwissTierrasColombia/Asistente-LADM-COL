@@ -15,7 +15,7 @@ Welcome to the Assistant's documentation LADM_COL!
 
     cadastre
     load_layers
-    help
+    settings
     installation
     about
 
