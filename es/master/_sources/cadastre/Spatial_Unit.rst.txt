@@ -8,6 +8,11 @@ database with the structure of the *LADM_COL* model.
 Create Plot
 -----------
 
+.. image:: ../static/_CREAR_TERRENO.gif
+   :height: 500
+   :width: 800
+   :alt: Create Plot
+
 1. Selecting existing boundaries
 
 Choose this option if you want to create a **Plot** from existing *Boundaries*.
@@ -21,11 +26,6 @@ layer into the *LADM_COL* **terreno** layer.
 
 If the field structure of input and target layers differs, you can set a field
 mapping to define field transformations and correspondence.
-
-.. image:: ../static/cre_plts.png
-   :height: 400
-   :width: 400
-   :alt: alternate text
 
 
 Create Building

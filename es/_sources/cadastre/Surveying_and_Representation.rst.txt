@@ -4,12 +4,12 @@ Surveying and Representation
 Create Point
 =============
 
-.. image:: ../static/06_CARGA_PUNTOS.gif
+1. Boundary Point
+
+.. image:: ../static/_CREAR_PUNTO_LINDERO_.gif
    :height: 500
    :width: 800
-   :alt: add points
-
-1. Boundary Point
+   :alt: Create Boundary Point
 
 Choose this option to load points to **Boundary Points** layer from *LADM_COL*
 model.
@@ -19,7 +19,6 @@ define a boundary. Boundary is an instance of *LA_BoundaryFaceString* class and
 its specializations.
 
 2. Survey Point
-
 
 .. image:: ../static/crear_punto_levantamiento_csv.gif
    :height: 500
@@ -35,6 +34,12 @@ building, right of way or auxiliary vertex.
 
 Create Boundary
 ================
+
+.. image:: ../static/_CREAR_LINDERO.gif
+   :height: 500
+   :width: 800
+   :alt: Create Boundary Point
+
 
 1. Digitizing
 
@@ -52,7 +57,12 @@ table into the *LADM_COL* **lindero** table.
 If the field structure of input and target tables differs, you can set a field
 mapping to define field transformations and correspondence.
 
-.. image:: ../static/def_bndrs.png
-   :height: 400
-   :width: 400
-   :alt: alternate text
+.. image:: ../static/_LLENAR_TOPOLOGIAS.gif
+   :height: 500
+   :width: 800
+   :alt: Create Boundary Point
+
+.. image:: ../static/_UNIR_PARTIR_LINDERO.gif
+   :height: 500
+   :width: 800
+   :alt: Create Boundary Point
