@@ -46,3 +46,6 @@ TABLE_ALIAS = 'table_alias'
 MODEL = 'model'
 
 TEST_SERVER = "www.google.com"
+
+# For test metadata table of LADM scheme.
+PG_METADATA_TABLE = 't_ili2db_table_prop'
