@@ -59,6 +59,7 @@ NAMESPACE_PREFIX = {
     BOUNDARY_TABLE: 'ccl',
     PLOT_TABLE: 'su',
     BUILDING_TABLE: 'su',
+    BUILDING_UNIT_TABLE: 'su',
     PARCEL_TABLE: 'u',
     NATURAL_PARTY_TABLE: 'p',
     LEGAL_PARTY_TABLE: 'p',

@@ -99,22 +99,15 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, {
             BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            BUILDING_TABLE + '_POL': {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            BUILDING_TABLE + '_POI': {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
             SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None},
-            LA_DIMENSION_TYPE_TABLE: {'name': LA_DIMENSION_TYPE_TABLE, 'geometry': None},
-            LA_BUILDING_UNIT_TYPE_TABLE: {'name': LA_BUILDING_UNIT_TYPE_TABLE, 'geometry': None},
-            LA_INTERPOLATION_TYPE_TABLE: {'name': LA_INTERPOLATION_TYPE_TABLE, 'geometry': None},
-            LA_MONUMENTATION_TYPE_TABLE: {'name': LA_MONUMENTATION_TYPE_TABLE, 'geometry': None},
-            LA_SURFACE_RELATION_TYPE_TABLE: {'name': LA_SURFACE_RELATION_TYPE_TABLE, 'geometry': None},
-            LA_POINT_TYPE_TABLE: {'name': LA_POINT_TYPE_TABLE, 'geometry': None},
-            POINT_DEFINITION_TYPE_TABLE: {'name': POINT_DEFINITION_TYPE_TABLE, 'geometry': None},
-            POINT_INTERPOLATION_TYPE_TABLE: {'name': POINT_INTERPOLATION_TYPE_TABLE, 'geometry': None},
-            POINT_MONUMENTATION_TYPE_TABLE: {'name': POINT_MONUMENTATION_TYPE_TABLE, 'geometry': None},
             SURVEY_POINT_TYPE_TABLE: {'name': SURVEY_POINT_TYPE_TABLE, 'geometry': None}
         }, load=True)
 
         self._building_unit_layer = res_layers[BUILDING_UNIT_TABLE]
-        self._building_layer = res_layers[BUILDING_TABLE]
+        self._building_layer = res_layers[BUILDING_TABLE + '_POL']
+        self._building_layer2 = res_layers[BUILDING_TABLE + '_POI'] # QUITAR ESO!!!!!!!!!!!!!!!
         self._survey_point_layer = res_layers[SURVEY_POINT_TABLE]
 
         if self._building_unit_layer is None:
@@ -138,22 +131,20 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return
 
-        if res_layers[LA_DIMENSION_TYPE_TABLE] is None or \
-           res_layers[LA_BUILDING_UNIT_TYPE_TABLE] is None or \
-           res_layers[LA_SURFACE_RELATION_TYPE_TABLE] is None or \
-           res_layers[LA_INTERPOLATION_TYPE_TABLE] is None or \
-           res_layers[LA_MONUMENTATION_TYPE_TABLE] is None or \
-           res_layers[LA_POINT_TYPE_TABLE] is None or \
-           res_layers[POINT_DEFINITION_TYPE_TABLE] is None or \
-           res_layers[POINT_INTERPOLATION_TYPE_TABLE] is None or \
-           res_layers[POINT_MONUMENTATION_TYPE_TABLE] is None or \
-           res_layers[SURVEY_POINT_TYPE_TABLE] is None:
+        if res_layers[SURVEY_POINT_TYPE_TABLE] is None:
 
             self.iface.messageBar().pushMessage('Asistente LADM_COL',
                 QCoreApplication.translate('CreateBuildingUnitCadastreWizard',
                                            "At least one domain table for bulding or survey point couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
+
+        #
+        self._building_layer.setDisplayExpression('"su_espacio_de_nombres"+\' \'+"su_local_id"')
+        print('_building_layer', self._building_layer.name(), self._building_layer.displayExpression())
+
+        self._building_layer2.setDisplayExpression('"su_espacio_de_nombres"+\' \'+"su_local_id"')
+        print('_building_layer2', self._building_layer2.name(), self._building_layer2.displayExpression())
 
         # Disable transactions groups
         QgsProject.instance().setAutoTransaction(False)
@@ -179,7 +170,7 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
 
         self.iface.messageBar().pushMessage('Asistente LADM_COL',
             QCoreApplication.translate('CreateBuildingUnitCadastreWizard',
-                                       "You can now start capturing building_units digitizing on the map..."),
+                                       'You can now start capturing building units digitizing on the map...'),
             Qgis.Info)
 
     def save_settings(self):

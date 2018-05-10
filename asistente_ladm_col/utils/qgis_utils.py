@@ -213,6 +213,7 @@ class QGISUtils(QObject):
 
     def set_automatic_fields(self, layer):
         layer_name = layer.name()
+
         self.set_automatic_fields_namespace_local_id(layer)
 
         if layer.fields().indexFromName(VIDA_UTIL_FIELD) != -1:
@@ -233,7 +234,6 @@ class QGISUtils(QObject):
         layer_name = layer.name()
         if layer_name == BUILDING_TABLE:
             layer.setDisplayExpression('"su_espacio_de_nombres"+\' \'+"su_local_id"')
-            print('new display_expression', layer.displayExpression()) # OJO QUITAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     def set_automatic_fields_namespace_local_id(self, layer):
         layer_name = layer.name()
