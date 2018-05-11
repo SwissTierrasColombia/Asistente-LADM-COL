@@ -4,18 +4,25 @@ import psycopg2
 import os
 
 from sys import platform
-from qgis.core import QgsVectorLayer, QgsWkbTypes, QgsApplication
+from qgis.core import (
+    QgsVectorLayer,
+    QgsWkbTypes,
+    QgsApplication,
+    QgsProcessingFeedback,
+    QgsProcessingModelAlgorithm
+)
 from qgis.testing import unittest, start_app
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.config.table_mapping_config import ID_FIELD
-from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_copy_path
+from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_copy_path, get_test_path
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.quality import QualityUtils
 
 import processing
 from processing.core.Processing import Processing
+from processing.modeler.ModelerUtils import ModelerUtils
 from qgis.analysis import QgsNativeAlgorithms
 from processing.tools import *
 
@@ -28,6 +35,8 @@ class TesQualityValidations(unittest.TestCase):
         self.qgis_utils = QGISUtils()
         self.quality = QualityUtils(self.qgis_utils)
         Processing.initialize()
+        print("Carpetas a modelos....")
+        print(ModelerUtils.modelsFolders())
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
 
     def test_get_too_long_segments_from_simple_line(self):
@@ -85,32 +94,55 @@ class TesQualityValidations(unittest.TestCase):
         boundary_overlap_layer = QgsVectorLayer(uri, 'test_boundaries_overlap', 'ogr')
 
         features = [feature for feature in boundary_overlap_layer.getFeatures()]
-        self.assertEqual(len(features), 12)
+        self.assertEqual(len(features), 15)
 
         overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_overlap_layer)
 
-        expected_overlaps = {
-            '9-335': ['Point (963643.395574557245709 1077747.43814651435241103)'],
-            '4-5': ['MultiPoint ((963850.90352329798042774 1077652.23999353917315602),(963880.39959512907080352 1077685.35838998109102249))'],
-            '5-6': [
-                'Point (964081.01700186752714217 1077722.2743631626944989)',
-                'Point (964211.2347710223402828 1077618.29701916221529245)',
-                'LineString (963980.77503829856868833 1077802.31638198206201196, 963926.86899802810512483 1077925.5301883143838495)'
-            ],
-            '7-10': ['Point (963750.28136727144010365 1077824.19025488453917205)'],
-            '5-336': ['Point (964079.46952913235872984 1077829.37777462997473776)'],
-            '6-325': ['Point (963849.37875852338038385 1077949.20776149653829634)'],
-            '9-334': ['Point (963662.21440408274065703 1077708.90435272408649325)'],
-            '335-337': ['LineString (963643.395574557245709 1077747.43814651435241103, 963543.5341855603037402 1077760.18016819190233946)'],
-            '5-7': ['MultiLineString ((963905.69162506482098252 1077713.75645868084393442, 964144.41837483353447169 1077577.06614228105172515),(964144.41837483353447169 1077577.06614228105172515, 964309.98692709254100919 1077617.49567248369567096))']
-        }
+        error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
+        error_point_layer = overlapping['native:saveselectedfeatures_3:Intersected_Points']
 
-        self.assertEqual(len(overlapping), 9)
+        point_features = error_point_layer.getFeatures()
+        line_features = error_line_layer.getFeatures()
+        overlapping = dict()
+        def insert_into_res(ids, geometry):
+            """
+            Local function to append a geometry into a list for each pair of ids
+            """
+            pair = "{}-{}".format(min(ids), max(ids))
+            if pair not in overlapping:
+                overlapping[pair] = [geometry]
+            else: # Pair is in dict already
+                duplicate = False
+                if not duplicate:
+                    overlapping[pair].append(geometry)
+
+        for point in point_features:
+            insert_into_res([point.attribute(1), point.attribute(8)], point.geometry().asWkt())
+        for line in line_features:
+            insert_into_res([line.attribute(1), line.attribute(8)], line.geometry().asWkt())
+
+        expected_overlaps = {'7-15': ['MultiPoint ((963651.61653553508222103 1077966.0537187303416431))', 'MultiLineString ((964213.72614089539274573 1077962.10928706941194832, 963759.37523004529066384 1078021.79097451153211296))'],
+                             '7-8': ['MultiPoint ((963750.28136727144010365 1077824.19025488453917205))'],
+                             '9-9': ['MultiPoint ((963662.21440408274065703 1077708.90435272408649325))'],
+                             '9-12': ['MultiPoint ((963643.395574557245709 1077747.43814651435241103))'],
+                             '9-10': ['MultiPoint ((963643.395574557245709 1077747.43814651435241103))'],
+                             '6-7': ['MultiPoint ((963849.37875852338038385 1077949.20776149653829634))'],
+                             '4-6': ['MultiPoint ((963850.90352329798042774 1077652.23999353917315602))', 'MultiPoint ((963880.39959512907080352 1077685.35838998109102249))'],
+                             '1-4': ['MultiPoint ((963801.72997597197536379 1077798.46595053421333432))'],
+                             '4-5': ['MultiPoint ((964081.01700186752714217 1077722.2743631626944989))', 'MultiPoint ((964211.2347710223402828 1077618.29701916221529245))', 'MultiLineString ((963926.86899802810512483 1077925.5301883143838495, 963980.77503829856868833 1077802.31638198206201196))'],
+                             '5-11': ['MultiPoint ((964079.46952913235872984 1077829.37777462997473776))'],
+                             '13-14': ['MultiPoint ((963384.55712854664307088 1077823.99900980317033827))', 'MultiLineString ((963210.47528458514716476 1077644.75307651958428323, 963255.32157539459876716 1077724.74916282831691206))'],
+                             '1-5': ['MultiLineString ((964309.98692709254100919 1077617.49567248369567096, 964144.41837483353447169 1077577.06614228105172515),(964144.41837483353447169 1077577.06614228105172515, 963905.69162506482098252 1077713.75645868084393442))'],
+                             '12-335': ['MultiLineString ((963643.395574557245709 1077747.43814651435241103, 963543.5341855603037402 1077760.18016819190233946))']}
+
+        self.assertEqual(error_point_layer.featureCount(), 13)
+        self.assertEqual(error_line_layer.featureCount(), 5)
+
         for pair, overlaps in overlapping.items():
             self.assertEqual(len(overlaps), len(expected_overlaps[pair]))
             print("Testing pair {}...".format(pair))
             for overlap in overlaps:
-                self.assertIn(overlap.asWkt(), expected_overlaps[pair])
+                self.assertIn(overlap, expected_overlaps[pair])
 
     def test_get_missing_boundary_points_in_boundaries(self):
         print('Validating missing boundary points in boundaries...')
@@ -183,14 +215,14 @@ class TesQualityValidations(unittest.TestCase):
         boundary_layer = QgsVectorLayer(uri, 'dangles', 'ogr')
 
         features = [feature for feature in boundary_layer.getFeatures()]
-        self.assertEqual(len(features), 12)
+        self.assertEqual(len(features), 15)
 
         end_points, dangle_ids = self.quality.get_dangle_ids(boundary_layer)
-        self.assertEqual(len(dangle_ids), 18)
+        self.assertEqual(len(dangle_ids), 19)
 
         boundary_ids = [feature[ID_FIELD] for feature in end_points.getFeatures(dangle_ids)]
         boundary_ids.sort()
-        expected_boundary_ids = [4, 4, 5, 6, 6, 7, 8, 8, 10, 10, 325, 325, 334, 334, 335, 336, 336, 337]
+        expected_boundary_ids = [4, 4, 5, 6, 6, 7, 8, 10, 10, 13, 14, 325, 325, 334, 334, 335, 336, 336, 337]
 
         self.assertEqual(boundary_ids, expected_boundary_ids)
 
