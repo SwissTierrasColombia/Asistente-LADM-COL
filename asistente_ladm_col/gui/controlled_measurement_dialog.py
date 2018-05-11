@@ -48,6 +48,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PointLayer)
 
         self.accepted.connect(self.accept_dialog)
+        self.buttonBox.helpRequested.connect(self.show_help)
 
     def accept_dialog(self):
         input_layer = self.mMapLayerComboBox.currentLayer()
@@ -138,3 +139,6 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             QCoreApplication.translate("ControlledMeasurementDialog",
                                        "A new average point layer has been added to the map!"),
             Qgis.Info)
+
+    def show_help(self):
+        self.qgis_utils.show_help("controlled_measurement")

@@ -50,6 +50,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         # Set connections
         self.buttonBox.accepted.connect(self.accepted)
+        self.buttonBox.helpRequested.connect(self.show_help)
         self.btn_test_connection.clicked.connect(self.test_connection)
 
         # Trigger some default behaviours
@@ -106,7 +107,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         """
         dict_conn = dict()
         dict_conn['host'] = self.txt_pg_host.text().strip() or 'localhost'
-        dict_conn['port'] = self.txt_pg_port.text().strip() or 5432
+        dict_conn['port'] = self.txt_pg_port.text().strip() or '5432'
         dict_conn['database'] = self.txt_pg_database.text().strip()
         dict_conn['schema'] = self.txt_pg_schema.text().strip() or 'public'
         dict_conn['user'] = self.txt_pg_user.text().strip()
@@ -201,3 +202,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         elif self.cbo_db_source.currentData() == 'gpkg':
             uri = [dict_conn['dbfile']]
         return ' '.join(uri)
+
+    def show_help(self):
+        self.qgis_utils.show_help("settings")

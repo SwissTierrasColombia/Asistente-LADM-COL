@@ -24,7 +24,7 @@ before_deploy:
   - sudo apt-get -qq update
   - sudo apt-get install -y pyqt5-dev-tools qtchooser
   - pushd asistente_ladm_col; make clean; make all; popd
-  #- ./scripts/release-docs.sh
+  - ./scripts/release-docs.sh
   - zip -r asistente_ladm_col.zip asistente_ladm_col
     -x asistente_ladm_col/tests/\*
     asistente_ladm_col/resources/\*

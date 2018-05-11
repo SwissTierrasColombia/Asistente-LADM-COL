@@ -1,6 +1,7 @@
 FORMS = ../ui/dlg_load_layers.ui \
         ../ui/settings_dialog.ui \
         ../ui/about_dialog.ui \
+        ../ui/controlled_measurement_dialog.ui \
         ../ui/wiz_create_points_cadastre.ui \
         ../ui/wiz_create_administrative_source_cadastre.ui \
         ../ui/wiz_create_plot_cadastre.ui \
@@ -32,6 +33,7 @@ SOURCES = ../asistente_ladm_col_plugin.py \
           ../gui/create_parcel_cadastre_wizard.py \
           ../gui/create_building_cadastre_wizard.py \
           ../gui/settings_dialog.py \
+          ../gui/controlled_measurement_dialog.py \
           ../lib/dbconnector/gpkg_connector.py \
           ../lib/dbconnector/pg_connector.py \
           ../config/help_strings.py

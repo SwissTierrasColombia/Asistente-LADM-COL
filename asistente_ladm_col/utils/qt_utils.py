@@ -19,7 +19,7 @@
 """
 
 import os.path
-import inspect
+import sys
 
 import qgis
 from qgis.PyQt.QtWidgets import (
@@ -40,7 +40,6 @@ from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.core import QgsNetworkAccessManager
 from functools import partial
 import fnmatch
-
 
 def selectFileName(line_edit_widget, title, file_filter, parent):
     filename, matched_filter = QFileDialog.getOpenFileName(parent, title, line_edit_widget.text(), file_filter)
@@ -83,13 +82,18 @@ def enable_next_wizard(wizard, with_back=True):
     wizard.setButtonLayout(button_list)
 
 
-def get_plugin_version(plugin_name):
-    file_path = os.path.join(qgis.utils.plugins[plugin_name].plugin_dir, 'metadata.txt')
+def get_plugin_metadata(plugin_name, key):
+    plugin_dir = None
+    if plugin_name in qgis.utils.plugins:
+        plugin_dir = qgis.utils.plugins[plugin_name].plugin_dir
+    else:
+        plugin_dir = os.path.dirname(sys.modules[plugin_name].__file__)
+    file_path = os.path.join(plugin_dir, 'metadata.txt')
     if os.path.isfile(file_path):
         with open(file_path) as metadata:
             for line in metadata:
                 line_array = line.strip().split("=")
-                if line_array[0] == 'version':
+                if line_array[0] == key:
                     return line_array[1].strip()
     return None
 
