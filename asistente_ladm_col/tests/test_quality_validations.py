@@ -8,21 +8,18 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
     QgsApplication,
-    QgsProcessingFeedback,
-    QgsProcessingModelAlgorithm
 )
 from qgis.testing import unittest, start_app
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.config.table_mapping_config import ID_FIELD
-from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_copy_path, get_test_path
+from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_copy_path
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.quality import QualityUtils
 
 import processing
 from processing.core.Processing import Processing
-from processing.modeler.ModelerUtils import ModelerUtils
 from qgis.analysis import QgsNativeAlgorithms
 from processing.tools import *
 
@@ -35,8 +32,6 @@ class TesQualityValidations(unittest.TestCase):
         self.qgis_utils = QGISUtils()
         self.quality = QualityUtils(self.qgis_utils)
         Processing.initialize()
-        print("Carpetas a modelos....")
-        print(ModelerUtils.modelsFolders())
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
 
     def test_get_too_long_segments_from_simple_line(self):
