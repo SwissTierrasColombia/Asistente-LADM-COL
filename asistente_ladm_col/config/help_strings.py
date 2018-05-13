@@ -108,11 +108,11 @@ Choose this option if you want to create a <b>Building</b> from existing <i>Surv
 
 # Elige esta opción si deseas crear una <b>Unidad de Construcción</b> a partir de <i>Puntos</i> existentes.
 # <br><br>
-# <b>Unidad de Construccion<b> es cada conjunto de materiales consolidados dentro de un <i>Predio</i> que tiene una caracteristicas especificas en cuanto a elementos constitutivos físicos y usos de los mismos.
+# <b>Unidad de Construccion<b> es cada conjunto de materiales consolidados dentro de un <i>Predio</i> que tiene unas caracteristicas especificas en cuanto a elementos constitutivos físicos y usos de los mismos.
         self.WIZ_CREATE_BUILDING_UNIT_CADASTRE_PAGE_1_OPTION_POINTS = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create a <b>Building Unit</b> from existing <i>Survey Points</i>.\
 <br><br>\
-<b>Building Unit</b> is a group of consolidated materials within a <i>Parcel</i> that has specific characteristics in terms of physical constituent elements and uses thereof.\
+<b>Building Unit</b> is a group of consolidated materials within a <i>Parcel</i> that has specific characteristics in terms of physical constituent elements and their usage.\
 ")
 
         self.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\

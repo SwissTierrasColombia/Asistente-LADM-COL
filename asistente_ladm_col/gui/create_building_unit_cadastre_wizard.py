@@ -3,7 +3,7 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 19/04/18
+        begin                : 09/05/18
         git sha              : :%H$
         copyright            : (C) 2018 by Jorge Useche (Incige SAS)
         email                : naturalmentejorge@gmail.com
@@ -32,6 +32,9 @@ from ..config.table_mapping_config import (
     LA_MONUMENTATION_TYPE_TABLE,
     LA_POINT_TYPE_TABLE,
     LA_SURFACE_RELATION_TYPE_TABLE,
+    LOCAL_ID_FIELD,
+    NAMESPACE_FIELD,
+    NAMESPACE_PREFIX,
     POINT_DEFINITION_TYPE_TABLE,
     POINT_INTERPOLATION_TYPE_TABLE,
     POINT_MONUMENTATION_TYPE_TABLE,
@@ -107,7 +110,7 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
 
         self._building_unit_layer = res_layers[BUILDING_UNIT_TABLE]
         self._building_layer = res_layers[BUILDING_TABLE + '_POL']
-        self._building_layer2 = res_layers[BUILDING_TABLE + '_POI'] # QUITAR ESO!!!!!!!!!!!!!!!
+        self._building_layer_points = res_layers[BUILDING_TABLE + '_POI']
         self._survey_point_layer = res_layers[SURVEY_POINT_TABLE]
 
         if self._building_unit_layer is None:
@@ -132,19 +135,20 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
             return
 
         if res_layers[SURVEY_POINT_TYPE_TABLE] is None:
-
             self.iface.messageBar().pushMessage('Asistente LADM_COL',
                 QCoreApplication.translate('CreateBuildingUnitCadastreWizard',
-                                           "At least one domain table for bulding or survey point couldn't be found... {}").format(self._db.get_description()),
+                                           "At least one domain table for bulding unit couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 
-        #
-        self._building_layer.setDisplayExpression('"su_espacio_de_nombres"+\' \'+"su_local_id"')
-        print('_building_layer', self._building_layer.name(), self._building_layer.displayExpression())
-
-        self._building_layer2.setDisplayExpression('"su_espacio_de_nombres"+\' \'+"su_local_id"')
-        print('_building_layer2', self._building_layer2.name(), self._building_layer2.displayExpression())
+        display_expression = '"{}{}" \' \' "{}{}"'.format(
+            NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
+            NAMESPACE_FIELD,
+            NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
+            LOCAL_ID_FIELD
+        )
+        self._building_layer.setDisplayExpression(display_expression)
+        self._building_layer_points.setDisplayExpression(display_expression)
 
         # Disable transactions groups
         QgsProject.instance().setAutoTransaction(False)
