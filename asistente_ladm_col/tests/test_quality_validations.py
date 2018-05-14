@@ -96,9 +96,13 @@ class TesQualityValidations(unittest.TestCase):
         error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
         error_point_layer = overlapping['native:saveselectedfeatures_3:Intersected_Points']
 
+        self.assertEqual(error_point_layer.featureCount(), 13)
+        self.assertEqual(error_line_layer.featureCount(), 5)
+
         point_features = error_point_layer.getFeatures()
         line_features = error_line_layer.getFeatures()
         overlapping = dict()
+
         def insert_into_res(ids, geometry):
             """
             Local function to append a geometry into a list for each pair of ids
@@ -107,35 +111,46 @@ class TesQualityValidations(unittest.TestCase):
             if pair not in overlapping:
                 overlapping[pair] = [geometry]
             else: # Pair is in dict already
-                duplicate = False
-                if not duplicate:
-                    overlapping[pair].append(geometry)
+                overlapping[pair].append(geometry)
 
         for point in point_features:
-            insert_into_res([point.attribute(1), point.attribute(8)], point.geometry().asWkt())
+            insert_into_res([point[ID_FIELD], point[ID_FIELD+'_2']], point.geometry().asWkt())
+
         for line in line_features:
-            insert_into_res([line.attribute(1), line.attribute(8)], line.geometry().asWkt())
+            insert_into_res([line[ID_FIELD], line[ID_FIELD+'_2']], line.geometry().asWkt())
 
-        expected_overlaps = {'7-15': ['MultiPoint ((963651.61653553508222103 1077966.0537187303416431))', 'MultiLineString ((964213.72614089539274573 1077962.10928706941194832, 963759.37523004529066384 1078021.79097451153211296))'],
-                             '7-8': ['MultiPoint ((963750.28136727144010365 1077824.19025488453917205))'],
-                             '9-9': ['MultiPoint ((963662.21440408274065703 1077708.90435272408649325))'],
-                             '9-12': ['MultiPoint ((963643.395574557245709 1077747.43814651435241103))'],
-                             '9-10': ['MultiPoint ((963643.395574557245709 1077747.43814651435241103))'],
-                             '6-7': ['MultiPoint ((963849.37875852338038385 1077949.20776149653829634))'],
-                             '4-6': ['MultiPoint ((963850.90352329798042774 1077652.23999353917315602))', 'MultiPoint ((963880.39959512907080352 1077685.35838998109102249))'],
-                             '1-4': ['MultiPoint ((963801.72997597197536379 1077798.46595053421333432))'],
-                             '4-5': ['MultiPoint ((964081.01700186752714217 1077722.2743631626944989))', 'MultiPoint ((964211.2347710223402828 1077618.29701916221529245))', 'MultiLineString ((963926.86899802810512483 1077925.5301883143838495, 963980.77503829856868833 1077802.31638198206201196))'],
-                             '5-11': ['MultiPoint ((964079.46952913235872984 1077829.37777462997473776))'],
-                             '13-14': ['MultiPoint ((963384.55712854664307088 1077823.99900980317033827))', 'MultiLineString ((963210.47528458514716476 1077644.75307651958428323, 963255.32157539459876716 1077724.74916282831691206))'],
-                             '1-5': ['MultiLineString ((964309.98692709254100919 1077617.49567248369567096, 964144.41837483353447169 1077577.06614228105172515),(964144.41837483353447169 1077577.06614228105172515, 963905.69162506482098252 1077713.75645868084393442))'],
-                             '12-335': ['MultiLineString ((963643.395574557245709 1077747.43814651435241103, 963543.5341855603037402 1077760.18016819190233946))']}
-
-        self.assertEqual(error_point_layer.featureCount(), 13)
-        self.assertEqual(error_line_layer.featureCount(), 5)
+        expected_overlaps = {
+            '7-15': [
+                     'MultiPoint ((963651.61653553508222103 1077966.0537187303416431))',
+                     'MultiLineString ((964213.72614089539274573 1077962.10928706941194832, 963759.37523004529066384 1078021.79097451153211296))'
+                    ],
+            '7-10': ['MultiPoint ((963750.28136727144010365 1077824.19025488453917205))'],
+            '9-335': ['MultiPoint ((963643.395574557245709 1077747.43814651435241103))'],
+            '9-337': ['MultiPoint ((963643.395574557245709 1077747.43814651435241103))'],
+            '9-334': ['MultiPoint ((963662.21440408274065703 1077708.90435272408649325))'],
+            '6-325': ['MultiPoint ((963849.37875852338038385 1077949.20776149653829634))'],
+            '4-7': ['MultiPoint ((963801.72997597197536379 1077798.46595053421333432))'],
+            '4-5': [
+                    'MultiPoint ((963850.90352329798042774 1077652.23999353917315602))',
+                    'MultiPoint ((963880.39959512907080352 1077685.35838998109102249))'
+                   ],
+            '5-336': ['MultiPoint ((964079.46952913235872984 1077829.37777462997473776))'],
+            '5-6': [
+                    'MultiPoint ((964081.01700186752714217 1077722.2743631626944989))',
+                    'MultiPoint ((964211.2347710223402828 1077618.29701916221529245))',
+                    'MultiLineString ((963926.86899802810512483 1077925.5301883143838495, 963980.77503829856868833 1077802.31638198206201196))'
+                   ],
+            '13-14': [
+                      'MultiPoint ((963384.55712854664307088 1077823.99900980317033827))',
+                      'MultiLineString ((963210.47528458514716476 1077644.75307651958428323, 963255.32157539459876716 1077724.74916282831691206))'
+                     ],
+            '5-7': ['MultiLineString ((964309.98692709254100919 1077617.49567248369567096, 964144.41837483353447169 1077577.06614228105172515),(964144.41837483353447169 1077577.06614228105172515, 963905.69162506482098252 1077713.75645868084393442))'],
+            '335-337': ['MultiLineString ((963643.395574557245709 1077747.43814651435241103, 963543.5341855603037402 1077760.18016819190233946))']
+        }
 
         for pair, overlaps in overlapping.items():
-            self.assertEqual(len(overlaps), len(expected_overlaps[pair]))
             print("Testing pair {}...".format(pair))
+            self.assertEqual(len(overlaps), len(expected_overlaps[pair]))
             for overlap in overlaps:
                 self.assertIn(overlap, expected_overlaps[pair])
 
