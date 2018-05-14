@@ -16,6 +16,7 @@ MODULE_HELP_MAPPING = {
     'create_boundaries': 'cadastre/Surveying_and_Representation.html#create-boundary',
     'create_plot': 'cadastre/Spatial_Unit.html#create-plot',
     'create_building': 'cadastre/Spatial_Unit.html#create-building',
+    'create_building_unit': 'cadastre/Spatial_Unit.html#create-building-unit',
     'create_spatial_source': 'cadastre/Source.html#spatial-source',
     'legal_party': 'cadastre/Party.html#legal-party',
     'load_layers': 'load_layers.html#load-layers',

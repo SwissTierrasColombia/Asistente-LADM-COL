@@ -22,7 +22,7 @@ cd "$MY_PATH"
 file=scripts.conf
 if [[ ! -e "$file" ]]
 then
-  DEFAULT_QGIS_PLUGIN_PATH="$HOME/.local/share/QGIS/QGIS3/profiles/default/python/plugins"
+  DEFAULT_QGIS_PLUGIN_PATH="$HOME/.local/share/QGIS/QGIS3/profiles/default/python/plugins/asistente_ladm_col"
   echo "¿Dónde está la ruta destino de tu plugin?: [ $DEFAULT_QGIS_PLUGIN_PATH ]"
   read QGIS_PLUGIN_PATH
   if [ "$QGIS_PLUGIN_PATH" = "" ]
