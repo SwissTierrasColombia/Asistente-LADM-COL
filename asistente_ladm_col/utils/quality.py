@@ -101,58 +101,11 @@ class QualityUtils(QObject):
                 Qgis.Warning)
             return
 
-        error_point_layer = QgsVectorLayer("MultiPoint?crs=EPSG:{}".format(DEFAULT_EPSG), "Overlapping boundaries (point intersections)", "memory")
-        error_line_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG), "Overlapping boundaries (line intersections)", "memory")
-        data_provider_point = error_point_layer.dataProvider()
-        data_provider_line = error_line_layer.dataProvider()
-        data_provider_point.addAttributes([QgsField("intersecting_boundaries", QVariant.String)])
-        data_provider_line.addAttributes([QgsField("intersecting_boundaries", QVariant.String)])
-        error_point_layer.updateFields()
-        error_line_layer.updateFields()
-
         overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_layer)
-        line_features = list()
-        point_features = list()
-
-        for pair, geometry_list in overlapping.items():
-            for geometry in geometry_list:
-                # Insert a features per intersection geometry
-                if geometry.type() == QgsWkbTypes.PointGeometry:
-                    new_feature = QgsVectorLayerUtils().createFeature(error_point_layer, geometry, {0: pair})
-                    point_features.append(new_feature)
-
-                elif geometry.type() == QgsWkbTypes.LineGeometry:
-                    new_feature = QgsVectorLayerUtils().createFeature(error_line_layer, geometry, {0: pair})
-                    line_features.append(new_feature)
-
-                elif geometry.wkbType() == QgsWkbTypes.GeometryCollection:
-                    collection = geometry.asGeometryCollection()
-
-                    for collection_item in collection:
-                        if collection_item.type() == QgsWkbTypes.PointGeometry:
-                            new_feature = QgsVectorLayerUtils().createFeature(error_point_layer, collection_item, {0: pair})
-                            point_features.append(new_feature)
-
-                        elif collection_item.type() == QgsWkbTypes.LineGeometry:
-                            new_feature = QgsVectorLayerUtils().createFeature(error_line_layer, collection_item, {0: pair})
-                            line_features.append(new_feature)
-
-        error_point_layer.dataProvider().addFeatures(point_features)
-        error_line_layer.dataProvider().addFeatures(line_features)
-
-        if error_point_layer.featureCount() > 0:
-            # We want to have a feature per pair of ids, so collect several features
-            # into a single feature for each pair of ids
-            res = processing.run("native:collect", {'INPUT':error_point_layer, 'FIELD':['intersecting_boundaries'],'OUTPUT':'memory:'}, feedback=QgsProcessingFeedback())
-            if type(res['OUTPUT']) == QgsVectorLayer:
-                error_point_layer = res['OUTPUT']
-                error_point_layer.setName(QCoreApplication.translate("QGISUtils", "Overlapping boundaries (point intersections)"))
-
-        if error_line_layer.featureCount() > 0:
-            res = processing.run("native:collect", {'INPUT':error_line_layer, 'FIELD':['intersecting_boundaries'],'OUTPUT':'memory:'}, feedback=QgsProcessingFeedback())
-            if type(res['OUTPUT']) == QgsVectorLayer:
-                error_line_layer = res['OUTPUT']
-                error_line_layer.setName(QCoreApplication.translate("QGISUtils","Overlapping boundaries (line intersections)"))
+        error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
+        error_point_layer = overlapping['native:saveselectedfeatures_3:Intersected_Points']
+        error_line_layer.setName("Overlapping boundaries (line intersections)")
+        error_point_layer.setName("Overlapping boundaries (point intersections)")
 
         if error_point_layer.featureCount() > 0 or error_line_layer.featureCount() > 0:
             group = self.qgis_utils.get_error_layers_group()
