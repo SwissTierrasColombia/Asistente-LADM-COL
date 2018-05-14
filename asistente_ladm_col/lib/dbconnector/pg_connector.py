@@ -23,7 +23,7 @@ from qgis.core import QgsWkbTypes, Qgis, QgsApplication
 from qgis.PyQt.QtCore import QCoreApplication
 
 from .db_connector import DBConnector
-from ...config.general_config import PLUGIN_NAME, PG_METADATA_TABLE
+from ...config.general_config import PLUGIN_NAME, INTERLIS_TEST_METADATA_TABLE_PG
 
 class PGConnector(DBConnector):
     def __init__(self, uri, schema="public"):
@@ -36,7 +36,7 @@ class PGConnector(DBConnector):
         self.provider = 'postgres'
         self._tables_info = None
 
-    def db_or_schema_exists(self):
+    def _schema_exists(self):
         if self.schema:
             cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
             cur.execute("""
@@ -55,7 +55,7 @@ class PGConnector(DBConnector):
                           count(tablename)
                         FROM pg_catalog.pg_tables
                         WHERE schemaname = '{}' and tablename = '{}'
-            """.format(self.schema, PG_METADATA_TABLE))
+            """.format(self.schema, INTERLIS_TEST_METADATA_TABLE_PG))
 
             return bool(cur.fetchone()[0])
 
@@ -68,15 +68,15 @@ class PGConnector(DBConnector):
         except Exception as e:
             return (False, QCoreApplication.translate("PGConnector",
                     "There was an error connecting to the database: {}").format(e))
-        if not self.db_or_schema_exists():
+
+        if not self._schema_exists():
             return (False, QCoreApplication.translate("PGConnector",
-                    "There was an error connecting to the schema: {}").format(self.schema))
+                    "The schema '{}' does not exist in the database!").format(self.schema))
         if not self._metadata_exists():
             return (False, QCoreApplication.translate("PGConnector",
-                    "There was an error database don't have LADM valid schema"))
-        return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS successful!"))
+                    "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
 
-        # TODO does the schema exist?
+        return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS successful!"))
 
     def save_connection(self):
         if self.conn is None:
@@ -153,4 +153,3 @@ class PGConnector(DBConnector):
                     WHERE i.indisprimary AND schemaname ='{}'
                     """.format(self.schema))
         return (True, cur)
-

@@ -47,5 +47,5 @@ MODEL = 'model'
 
 TEST_SERVER = "www.google.com"
 
-# For test metadata table of LADM scheme.
-PG_METADATA_TABLE = 't_ili2db_table_prop'
+# For testing if an schema comes from ili2db
+INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
