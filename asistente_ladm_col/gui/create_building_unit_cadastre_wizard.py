@@ -39,7 +39,8 @@ from ..config.table_mapping_config import (
     POINT_INTERPOLATION_TYPE_TABLE,
     POINT_MONUMENTATION_TYPE_TABLE,
     SURVEY_POINT_TABLE,
-    SURVEY_POINT_TYPE_TABLE
+    SURVEY_POINT_TYPE_TABLE,
+    TYPE_BUILDING_TYPE_TABLE
 )
 from ..config.help_strings import HelpStrings
 
@@ -104,6 +105,10 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
             BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             BUILDING_TABLE + '_POL': {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             BUILDING_TABLE + '_POI': {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
+            LA_BUILDING_UNIT_TYPE_TABLE: {'name': LA_BUILDING_UNIT_TYPE_TABLE, 'geometry': None},
+            LA_DIMENSION_TYPE_TABLE: {'name': LA_DIMENSION_TYPE_TABLE, 'geometry': None},
+            LA_SURFACE_RELATION_TYPE_TABLE: {'name': LA_SURFACE_RELATION_TYPE_TABLE, 'geometry': None},
+            TYPE_BUILDING_TYPE_TABLE: {'name': TYPE_BUILDING_TYPE_TABLE, 'geometry': None},
             SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None},
             SURVEY_POINT_TYPE_TABLE: {'name': SURVEY_POINT_TYPE_TABLE, 'geometry': None}
         }, load=True)
@@ -134,14 +139,7 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return
 
-        if res_layers[SURVEY_POINT_TYPE_TABLE] is None:
-            self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                QCoreApplication.translate('CreateBuildingUnitCadastreWizard',
-                                           "At least one domain table for bulding unit couldn't be found... {}").format(self._db.get_description()),
-                Qgis.Warning)
-            return
-
-        display_expression = '"{}{}" \' \' "{}{}"'.format(
+        display_expression = '"{}{}" + \' \' + "{}{}"'.format(
             NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
             NAMESPACE_FIELD,
             NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
