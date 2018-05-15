@@ -1,10 +1,6 @@
-import qgis
 import nose2
-import psycopg2
-import os
 
-from sys import platform
-from qgis.core import QgsVectorLayer, QgsWkbTypes, QgsApplication
+from qgis.core import QgsVectorLayer, QgsApplication
 from qgis.testing import unittest, start_app
 
 start_app() # need to start before asistente_ladm_col.tests.utils
@@ -14,10 +10,8 @@ from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_cop
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.quality import QualityUtils
 
-import processing
 from processing.core.Processing import Processing
 from qgis.analysis import QgsNativeAlgorithms
-from processing.tools import *
 
 import_projectgenerator()
 
@@ -77,6 +71,31 @@ class TesQualityValidations(unittest.TestCase):
         segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 1)
         self.validate_segments(segments_info, tolerance)
+
+    def test_overlapping_points(self):
+        test_layer = 'tests_puntolindero'
+        print('Test to validate the overlap of points...')
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={}'.format(test_layer)
+        overlapping_points_layer = QgsVectorLayer(uri, 'overlapping_points', 'ogr')
+        features = [feature for feature in overlapping_points_layer.getFeatures()]
+
+        expected_overlaps = {
+            '286, 285': 'Point (963166.65579999983310699 1077249.80199999921023846)'
+        }
+
+        self.assertEqual(len(features), 286, 'The number of features are not the same')
+        overlapping = self.qgis_utils.geometry.get_overlapping_points(overlapping_points_layer)
+
+        for items in overlapping:
+            points = []
+            for i in range(len(items)):
+                feature = overlapping_points_layer.getFeature(items[i])
+                points.append(feature.geometry().asWkt())
+
+            unique_points = set(points) # get uniques values
+            self.assertEqual(len(unique_points), 1, 'the intersection failed, points are not equals')
+            self.assertIn(list(unique_points)[0], expected_overlaps[str(items)[1:-1]])
 
     def test_get_overlapping_lines(self):
         print('Validating overlaps in boundaries...')
