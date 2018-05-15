@@ -20,7 +20,9 @@ import qgis
 from qgis.core import QgsProject, Qgis, QgsApplication
 from qgis.PyQt.QtCore import QObject
 
-from ..config.general_config import PLUGIN_NAME
+from ..config.general_config import PLUGIN_NAME, KIND_SETTINGS, TABLE_NAME
+from ..config.table_mapping_config import TABLE_PROP_DOMAIN
+from .domains_parser import DomainRelationGenerator
 
 class ProjectGeneratorUtils(QObject):
 
@@ -43,6 +45,46 @@ class ProjectGeneratorUtils(QObject):
                 PLUGIN_NAME,
                 Qgis.Critical
             )
+
+    def get_layers_and_relations_info(self, db):
+        if 'projectgenerator' in qgis.utils.plugins:
+            projectgenerator = qgis.utils.plugins["projectgenerator"]
+            generator = projectgenerator.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
+                db.uri, "smart2", db.schema)
+
+            import time
+            print("Layers")
+            start = time.time()
+
+            layers = generator.get_tables_info_without_ignored_tables()
+
+            end = time.time()
+            print(end - start)
+            print("Relations")
+
+            relations = generator.get_relations_info()
+
+            end2 = time.time()
+            print(end2 - end)
+            print("Domains")
+
+            domain_generator = DomainRelationGenerator(generator._db_connector, "smart2")
+            layer_names = [record[TABLE_NAME] for record in layers]
+            domain_names = [record[TABLE_NAME] for record in layers if record[KIND_SETTINGS] == TABLE_PROP_DOMAIN]
+            domains = domain_generator.get_domain_relations_info(layer_names, domain_names)
+
+            end3 = time.time()
+            print(end3 - end2)
+            print(domains)
+
+            return (layers, domains)
+        else:
+            self.log.logMessage(
+                "El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",
+                PLUGIN_NAME,
+                Qgis.Critical
+            )
+            return (None, None)
 
     def get_tables_info_without_ignored_tables(self, db):
         if 'projectgenerator' in qgis.utils.plugins:

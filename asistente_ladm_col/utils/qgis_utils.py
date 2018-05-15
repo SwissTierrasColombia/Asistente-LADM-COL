@@ -87,6 +87,8 @@ class QGISUtils(QObject):
         self.geometry = GeometryUtils()
 
         self.__settings_dialog = None
+        self._layers = None
+        self._relations = None
 
     def set_db_connection(self, mode, dict_conn):
         """
@@ -95,15 +97,23 @@ class QGISUtils(QObject):
         mode: 'pg' or 'gpkg'
         dict_conn: key-values (host, port, database, schema, user, password, dbfile)
         """
-        self.get_settings_dialog().set_db_connection(mode, dict_conn)
+        dlg = self.get_settings_dialog()
+        dlg.set_db_connection(mode, dict_conn)
 
     def get_settings_dialog(self):
-        self.__settings_dialog = SettingsDialog(qgis_utils=self)
+        if self.__settings_dialog is None:
+            self.__settings_dialog = SettingsDialog(qgis_utils=self)
+            self.__settings_dialog.cache_layers_and_relations_requested.connect(self.cache_layers_and_relations)
+
         return self.__settings_dialog
 
     def get_db_connection(self):
         self.__settings_dialog = self.get_settings_dialog()
         return self.__settings_dialog.get_db_connection()
+
+    def cache_layers_and_relations(self, db):
+        self._layers, self._relations = self.project_generator_utils.get_layers_and_relations_info(db)
+        print("### {} LAYERS AND {} RELATIONS CACHED!!! ###".format(len(self._layers), len(self._relations)))
 
     def get_layer(self, db, layer_name, geometry_type=None, load=False):
         # Handy function to avoid sending a whole dict when all we need is a single table/layer
