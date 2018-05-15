@@ -289,7 +289,7 @@ class AsistenteLADMCOLPlugin(QObject):
             db = inst.get_db_connection()
             res, msg = db.test_connection()
             if res:
-                if inst.qgis_utils._layers is None and inst.qgis_utils._relations is None:
+                if not inst.qgis_utils._layers and not inst.qgis_utils._relations:
                     inst.qgis_utils.cache_layers_and_relations(db)
 
                 func_to_decorate(inst)

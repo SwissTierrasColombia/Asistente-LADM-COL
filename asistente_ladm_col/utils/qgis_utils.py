@@ -87,8 +87,8 @@ class QGISUtils(QObject):
         self.geometry = GeometryUtils()
 
         self.__settings_dialog = None
-        self._layers = None
-        self._relations = None
+        self._layers = list()
+        self._relations = list()
 
     def set_db_connection(self, mode, dict_conn):
         """
@@ -115,6 +115,15 @@ class QGISUtils(QObject):
         self._layers, self._relations = self.project_generator_utils.get_layers_and_relations_info(db)
         print("### {} LAYERS AND {} RELATIONS CACHED!!! ###".format(len(self._layers), len(self._relations)))
 
+    def get_related_layers(self, layer_names):
+        related_layers = list()
+        for relation in self._relations:
+            for layer_name in layer_names:
+                if relation['referencing_layer'] == layer_name:
+                    related_layers.append(relation['referenced_layer'])
+
+        return related_layers
+
     def get_layer(self, db, layer_name, geometry_type=None, load=False):
         # Handy function to avoid sending a whole dict when all we need is a single table/layer
         res_layer = self.get_layers(db, {layer_name: {'name': layer_name, 'geometry': geometry_type}}, load)
@@ -129,17 +138,33 @@ class QGISUtils(QObject):
         # Response is a dict like this:
         # layers = {layer_id: layer_object} layer_object might be None
         response_layers = dict()
+        additional_layers_to_load = list()
 
         with OverrideCursor(Qt.WaitCursor):
             for layer_id, layer_info in layers.items():
+                layer_obj = None
+                ladm_layers = self.get_ladm_layers_from_layer_tree(db)
+
                 # If layer is in LayerTree, return it
-                layer_obj = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
+                for ladm_layer in ladm_layers:
+                    if layer_info['name'] == ladm_layer.dataProvider().uri().table():
+                        if layer_info['geometry'] is not None and layer_info['geometry'] != ladm_layer.wkbType():
+                            continue
+
+                        layer_obj = ladm_layer
+
                 response_layers[layer_id] = layer_obj
 
             if load:
                 layers_to_load = [layers[layer_id]['name'] for layer_id, layer_obj in response_layers.items() if layer_obj is None]
+
                 if layers_to_load:
-                    self.project_generator_utils.load_layers(layers_to_load, db)
+                    # Get related layers from cached relations and add them to
+                    # list of layers to load, Project Generator will set relations
+                    additional_layers_to_load = self.get_related_layers(layers_to_load)
+                    all_layers_to_load = list(set(layers_to_load + additional_layers_to_load))
+
+                    self.project_generator_utils.load_layers(all_layers_to_load, db)
 
                     # Once load_layers() is called, go through the layer tree to get
                     # newly added layers
