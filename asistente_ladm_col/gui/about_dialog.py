@@ -17,6 +17,7 @@
  ***************************************************************************/
 """
 from ..utils import get_ui_class
+from ..utils import qgis_utils
 
 import os
 import glob
@@ -24,7 +25,6 @@ import shutil
 import zipfile
 import tempfile
 from functools import partial
-from qgis.utils import iface
 
 from qgis.core import QgsNetworkContentFetcherTask as QNCFT
 from qgis.core import QgsApplication
@@ -42,12 +42,29 @@ DIALOG_UI = get_ui_class('about_dialog.ui')
 
 
 class AboutDialog(QDialog, DIALOG_UI):
-    def __init__(self):
+    def __init__(self, iface=None, qgis_utils=None):
         QDialog.__init__(self)
         self.setupUi(self)
         #self.PLUGIN_VERSION='0.0.10-alpha'
-        self.btn_download_help.clicked.connect(self.down_help)
+        #self.btn_download_help.clicked.connect(self.down_help)
+        self.qgis_utils = qgis_utils
         self.iface = iface
+        self.check_doc()
+
+
+    def check_doc(self):
+        if  (os.path.exists(
+                os.path.join(QgsApplication.qgisSettingsDirPath(), 'python/plugins', 'asistente_ladm_col', 'help','es'))
+            or
+            os.path.exists(
+                os.path.join(QgsApplication.qgisSettingsDirPath(), 'python/plugins', 'asistente_ladm_col', 'help', 'en'))):
+            self.iface.messageBar().pushMessage("Asistente LADM_COL", "Offline Documentation exist", 1, 30)
+            self.btn_download_help.setText('Ver Documentación')
+            self.btn_download_help.clicked.connect(self.show_help)
+        else:
+            self.btn_download_help.clicked.connect(self.down_help)
+
+
 
     def save_file(self, a):
         tmpFile = tempfile.mktemp()
@@ -74,3 +91,6 @@ class AboutDialog(QDialog, DIALOG_UI):
         #a.fetched.connect(lambda: self.save_file(a))
         a.fetched.connect(partial(self.save_file, a))
         QgsApplication.taskManager().addTask(a)
+
+    def show_help(self):
+        self.qgis_utils.show_help('')

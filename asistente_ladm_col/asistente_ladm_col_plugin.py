@@ -532,7 +532,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.show_help()
 
     def show_about_dialog(self):
-        dialog = AboutDialog()
+        dialog = AboutDialog(self.iface, self.qgis_utils)
         rich_text = '<html><head/><body><p align="center"><span style=" font-size:10pt; font-weight:600;">v{}</span></p></body></html>'
         dialog.lbl_version.setText(rich_text.format(PLUGIN_VERSION))
         dialog.exec_()
