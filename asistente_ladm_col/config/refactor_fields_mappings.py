@@ -18,13 +18,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'length': 255, 'precision': -1, 'expression': '"puntotipo"', 'name': 'puntotipo', 'type': 10},
             {'length': 255, 'precision': -1, 'expression': '"p_espacio_de_nombres"', 'name': 'p_espacio_de_nombres', 'type': 10},
             {'length': 255, 'precision': -1, 'expression': '"p_local_id"', 'name': 'p_local_id', 'type': 10},
-            {'length': -1, 'precision': 0, 'expression': '"ue_la_unidadespacial"', 'name': 'ue_la_unidadespacial', 'type': 4},
-            {'length': -1, 'precision': 0, 'expression': '"ue_terreno"', 'name': 'ue_terreno', 'type': 4},
-            {'length': -1, 'precision': 0, 'expression': '"ue_la_espaciojuridicoredservicios"', 'name': 'ue_la_espaciojuridicoredservicios', 'type': 4},
-            {'length': -1, 'precision': 0, 'expression': '"ue_la_espaciojuridicounidadedificacion"', 'name': 'ue_la_espaciojuridicounidadedificacion', 'type': 4},
-            {'length': -1, 'precision': 0, 'expression': '"ue_servidumbrepaso"', 'name': 'ue_servidumbrepaso', 'type': 4},
-            {'length': -1, 'precision': 0, 'expression': '"ue_unidadconstruccion"', 'name': 'ue_unidadconstruccion', 'type': 4},
-            {'length': -1, 'precision': 0, 'expression': '"ue_construccion"', 'name': 'ue_construccion', 'type': 4},
             {'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"', 'name': 'comienzo_vida_util_version', 'type': 16},
             {'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"', 'name': 'fin_vida_util_version', 'type': 16}
         ]
@@ -41,13 +34,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'type': 10, 'length': 255, 'name': 'puntotipo', 'precision': -1, 'expression': '"puntotipo"'},
             {'type': 10, 'length': 255, 'name': 'p_espacio_de_nombres', 'precision': -1, 'expression': '"p_espacio_de_nombres"'},
             {'type': 10, 'length': 255, 'name': 'p_local_id', 'precision': -1, 'expression': '"p_local_id"'},
-            {'type': 4, 'length': -1, 'name': 'ue_la_unidadespacial', 'precision': 0, 'expression': '"ue_la_unidadespacial"'},
-            {'type': 4, 'length': -1, 'name': 'ue_la_espaciojuridicoredservicios', 'precision': 0, 'expression': '"ue_la_espaciojuridicoredservicios"'},
-            {'type': 4, 'length': -1, 'name': 'ue_la_espaciojuridicounidadedificacion', 'precision': 0, 'expression': '"ue_la_espaciojuridicounidadedificacion"'},
-            {'type': 4, 'length': -1, 'name': 'ue_terreno', 'precision': 0, 'expression': '"ue_terreno"'},
-            {'type': 4, 'length': -1, 'name': 'ue_servidumbrepaso', 'precision': 0, 'expression': '"ue_servidumbrepaso"'},
-            {'type': 4, 'length': -1, 'name': 'ue_construccion', 'precision': 0, 'expression': '"ue_construccion"'},
-            {'type': 4, 'length': -1, 'name': 'ue_unidadconstruccion', 'precision': 0, 'expression': '"ue_unidadconstruccion"'},
             {'type': 16, 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
             {'type': 16, 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
@@ -73,13 +59,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'name': 'su_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"su_espacio_de_nombres"'},
             {'name': 'su_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"su_local_id"'},
             {'name': 'nivel', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"nivel"'},
-            {'name': 'uej2_la_unidadespacial', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_unidadespacial"'},
-            {'name': 'uej2_servidumbrepaso', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_servidumbrepaso"'},
-            {'name': 'uej2_terreno', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_terreno"'},
-            {'name': 'uej2_la_espaciojuridicoredservicios', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicoredservicios"'},
-            {'name': 'uej2_la_espaciojuridicounidadedificacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicounidadedificacion"'},
-            {'name': 'uej2_construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_construccion"'},
-            {'name': 'uej2_unidadconstruccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'},
             {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
@@ -174,16 +153,28 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'name': 'su_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"su_espacio_de_nombres"'},
             {'name': 'su_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"su_local_id"'},
             {'name': 'nivel', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"nivel"'},
-            {'name': 'uej2_la_unidadespacial', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_unidadespacial"'},
-            {'name': 'uej2_servidumbrepaso', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_servidumbrepaso"'},
-            {'name': 'uej2_terreno', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_terreno"'},
-            {'name': 'uej2_la_espaciojuridicoredservicios', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicoredservicios"'},
-            {'name': 'uej2_la_espaciojuridicounidadedificacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_la_espaciojuridicounidadedificacion"'},
-            {'name': 'uej2_construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_construccion"'},
-            {'name': 'uej2_unidadconstruccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"uej2_unidadconstruccion"'},
             {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'},
             {'name': 'punto_referencia', 'type': 10, 'length': -1, 'precision': -1, 'expression': '"punto_referencia"'}
+        ]
+    elif layer_name == BUILDING_UNIT_TABLE:
+        mapping = [
+            {'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'},
+            {'name': 'avaluo_unidad_construccion', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"avaluo_unidad_construccion"'},
+            {'name': 'numero_pisos', 'type': 2, 'length': -1, 'precision': 0, 'expression': '"numero_pisos"'},
+            {'name': 'tipo_construccion', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo_construccion"'},
+            {'name': 'area_construida', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"area_construida"'},
+            {'name': 'area_privada_construida', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"area_privada_construida"'},
+            {'name': 'construccion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"construccion"'}, # This value will be updated in the next step...
+            {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo"'},
+            {'name': 'dimension', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"dimension"'},
+            {'name': 'etiqueta', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"etiqueta"'},
+            {'name': 'relacion_superficie', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"relacion_superficie"'},
+            {'name': 'su_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"su_espacio_de_nombres"'},
+            {'name': 'su_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"su_local_id"'},
+            {'name': 'nivel', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"nivel"'},
+            {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'comienzo_vida_util_version'},
+            {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
 
     # If the user doesn't want to disable automatic fields...

@@ -140,6 +140,7 @@ class QGISUtils(QObject):
 
                         if response_layers[layer_id] is not None:
                             self.post_load_configurations(response_layers[layer_id])
+
         return response_layers
 
     def get_layer_from_layer_tree(self, layer_name, schema=None, geometry_type=None):
@@ -208,6 +209,7 @@ class QGISUtils(QObject):
 
     def set_automatic_fields(self, layer):
         layer_name = layer.name()
+
         self.set_automatic_fields_namespace_local_id(layer)
 
         if layer.fields().indexFromName(VIDA_UTIL_FIELD) != -1:
