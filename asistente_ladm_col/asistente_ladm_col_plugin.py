@@ -500,12 +500,12 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def check_overlaps_in_boundary_points(self):
-        self.quality.check_overlaps_points(self.get_db_connection(), BOUNDARY_POINT_TABLE)
+        self.quality.check_overlapping_points(self.get_db_connection(), BOUNDARY_POINT_TABLE)
 
     @_project_generator_required
     @_db_connection_required
     def check_overlaps_in_control_points(self):
-        self.quality.check_overlaps_points(self.get_db_connection(), CONTROL_POINT_TABLE)
+        self.quality.check_overlapping_points(self.get_db_connection(), CONTROL_POINT_TABLE)
 
     @_project_generator_required
     @_db_connection_required
