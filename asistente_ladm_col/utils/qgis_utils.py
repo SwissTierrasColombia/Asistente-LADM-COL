@@ -28,7 +28,7 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsMapLayer,
                        QgsPointXY,
                        QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
-                       QgsApplication, QgsProcessingFeedback)
+                       QgsApplication, QgsProcessingFeedback, QgsRelation)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
                               QVariant, QSettings, QLocale)
 import processing
@@ -231,8 +231,59 @@ class QGISUtils(QObject):
     def post_load_configurations(self, layer):
         # Do some post-load work, such as setting styles or
         # setting automatic fields for that layer
+        self.configure_missing_relations(layer)
         self.set_automatic_fields(layer)
         self.symbology.set_layer_style(layer)
+
+    def configure_missing_relations(self, layer):
+        layer_name = layer.dataProvider().uri().table()
+
+        db_relations = list()
+        for relation in self._relations:
+            if relation['referencing_layer'] == layer_name:
+                db_relations.append(relation)
+        print(db_relations)
+
+        qgis_relations = QgsProject.instance().relationManager().referencingRelations(layer)
+
+        new_relations = list()
+        # Compare relations, configure what is missing
+        for db_relation in db_relations:
+            found = False
+            for qgis_relation in qgis_relations:
+                referenced_layer = qgis_relation.referencedLayer()
+                referenced_layer_name = referenced_layer.dataProvider().uri().table()
+                referenced_field = referenced_layer.fields()[qgis_relation.referencedFields()[0]].name()
+                referencing_field = layer.fields()[qgis_relation.referencingFields()[0]].name()
+
+                # We known that referencing_layer already matches, so don't check
+                if referenced_layer_name == db_relation['referenced_layer'] and \
+                    referencing_field == db_relation['referencing_field'] and \
+                    referenced_field == db_relation['referenced_field']:
+
+                    found = True
+                    break
+
+            if not found:
+                print("Relation NOT found:",db_relation['name'])
+                # This relation is not configured into QGIS, let's do it
+                new_rel = QgsRelation()
+                new_rel.setReferencingLayer(layer.id())
+                referenced_layer = self.get_layer_from_layer_tree(db_relation['referenced_layer'], layer.dataProvider().uri().schema())
+                if referenced_layer is None:
+                    print("Referenced_layer NOT FOUND in layer tree...", db_relation['referenced_layer'])
+                    continue
+                new_rel.setReferencedLayer(referenced_layer.id())
+                new_rel.addFieldPair(db_relation['referencing_field'], db_relation['referenced_field'])
+                new_rel.setId(db_relation['name']) #generateId()
+                new_rel.setName(db_relation['name'])
+
+                new_relations.append(new_rel)
+
+        all_qgis_relations = list(QgsProject.instance().relationManager().relations().values())
+        all_qgis_relations.extend(new_relations)
+        print("NEW RELATIONS ADDED!!!", len(new_relations))
+        QgsProject.instance().relationManager().setRelations(all_qgis_relations)
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
