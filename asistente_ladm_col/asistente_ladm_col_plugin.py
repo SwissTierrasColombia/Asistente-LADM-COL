@@ -30,6 +30,10 @@ from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton
 
 from processing.modeler.ModelerUtils import ModelerUtils
 
+from .config.table_mapping_config import (
+    BOUNDARY_POINT_TABLE,
+    CONTROL_POINT_TABLE
+)
 from .config.general_config import (
     PROJECT_GENERATOR_MIN_REQUIRED_VERSION,
     PROJECT_GENERATOR_EXACT_REQUIRED_VERSION,
@@ -133,12 +137,14 @@ class AsistenteLADMCOLPlugin(QObject):
         self._quality_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"), self._cadastre_menu)
         self._too_long_boundary_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check too long boundary segments"), self._quality_cadastre_menu)
         self._overlaps_boundary_points_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check overlaps in boundary points"), self._quality_cadastre_menu)
+        self._overlaps_control_points_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check overlaps in control points"),self._quality_cadastre_menu)
         self._overlaps_boundaries_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check overlaps in boundaries"), self._quality_cadastre_menu)
         self._missing_boundary_points_vertices_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check missing boundary points in boundaries"), self._quality_cadastre_menu)
         self._boundary_dangles_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check dangles in boundaries"), self._quality_cadastre_menu)
         self._quality_check_all_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check all"), self._quality_cadastre_menu)
         self._quality_cadastre_menu.addActions([self._too_long_boundary_cadastre_action,
                                                 self._overlaps_boundary_points_cadastre_action,
+                                                self._overlaps_control_points_cadastre_action,
                                                 self._overlaps_boundaries_cadastre_action,
                                                 self._missing_boundary_points_vertices_cadastre_action,
                                                 self._boundary_dangles_action])
@@ -185,6 +191,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._spatial_source_cadastre_action.triggered.connect(self.show_wiz_spatial_source_cad)
         self._too_long_boundary_cadastre_action.triggered.connect(self.check_too_long_segments)
         self._overlaps_boundary_points_cadastre_action.triggered.connect(self.check_overlaps_in_boundary_points)
+        self._overlaps_control_points_cadastre_action.triggered.connect(self.check_overlaps_in_control_points)
         self._overlaps_boundaries_cadastre_action.triggered.connect(self.check_overlaps_in_boundaries)
         self._missing_boundary_points_vertices_cadastre_action.triggered.connect(self.check_missing_boundary_points_in_boundaries)
         self._boundary_dangles_action.triggered.connect(self.check_dangles_in_boundaries)
@@ -503,7 +510,12 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def check_overlaps_in_boundary_points(self):
-        self.quality.check_overlaps_in_boundary_points(self.get_db_connection())
+        self.quality.check_overlapping_points(self.get_db_connection(), BOUNDARY_POINT_TABLE)
+
+    @_project_generator_required
+    @_db_connection_required
+    def check_overlaps_in_control_points(self):
+        self.quality.check_overlapping_points(self.get_db_connection(), CONTROL_POINT_TABLE)
 
     @_project_generator_required
     @_db_connection_required

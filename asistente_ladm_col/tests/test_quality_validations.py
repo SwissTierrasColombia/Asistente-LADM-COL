@@ -1,14 +1,6 @@
-import qgis
 import nose2
-import psycopg2
-import os
 
-from sys import platform
-from qgis.core import (
-    QgsVectorLayer,
-    QgsWkbTypes,
-    QgsApplication,
-)
+from qgis.core import QgsVectorLayer, QgsApplication
 from qgis.testing import unittest, start_app
 
 start_app() # need to start before asistente_ladm_col.tests.utils
@@ -18,10 +10,8 @@ from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_cop
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.quality import QualityUtils
 
-import processing
 from processing.core.Processing import Processing
 from qgis.analysis import QgsNativeAlgorithms
-from processing.tools import *
 
 import_projectgenerator()
 
@@ -35,7 +25,7 @@ class TesQualityValidations(unittest.TestCase):
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
 
     def test_get_too_long_segments_from_simple_line(self):
-        print('Validating too long segments...')
+        print('\nINFO: Validating too long segments...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='too_long_lines')
         boundary_layer = QgsVectorLayer(uri, 'too_long_lines', 'ogr')
@@ -82,8 +72,36 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(len(segments_info), 1)
         self.validate_segments(segments_info, tolerance)
 
+    def test_overlapping_points(self):
+        print('\nINFO: Validating overlaps in points...')
+        test_layer = 'tests_puntolindero'
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={}'.format(test_layer)
+        overlapping_points_layer = QgsVectorLayer(uri, 'overlapping_points', 'ogr')
+
+        features = [feature for feature in overlapping_points_layer.getFeatures()]
+        self.assertEqual(len(features), 286, 'The number of features differs')
+
+        expected_overlaps = {
+            '286, 285': 'Point (963166.65579999983310699 1077249.80199999921023846)'
+        }
+
+        overlapping = self.qgis_utils.geometry.get_overlapping_points(overlapping_points_layer)
+        self.assertTrue(len(overlapping), 1) # One list of overlapping ids
+
+        for overlapping_ids in overlapping:
+            self.assertTrue(len(overlapping_ids), 2) # Two points overlap
+            points = []
+
+            for feature in overlapping_points_layer.getFeatures(overlapping_ids):
+                points.append(feature.geometry().asWkt())
+
+            unique_points = set(points) # get unique values
+            self.assertEqual(len(unique_points), 1, 'The intersection failed, points are not equal')
+            self.assertEqual(list(unique_points)[0], list(expected_overlaps.values())[0])
+
     def test_get_overlapping_lines(self):
-        print('Validating overlaps in boundaries...')
+        print('\nINFO: Validating overlaps in boundaries...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='test_boundaries_overlap')
         boundary_overlap_layer = QgsVectorLayer(uri, 'test_boundaries_overlap', 'ogr')
@@ -155,7 +173,7 @@ class TesQualityValidations(unittest.TestCase):
                 self.assertIn(overlap, expected_overlaps[pair])
 
     def test_get_missing_boundary_points_in_boundaries(self):
-        print('Validating missing boundary points in boundaries...')
+        print('\nINFO: Validating missing boundary points in boundaries...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
@@ -183,7 +201,7 @@ class TesQualityValidations(unittest.TestCase):
         self.assertIn('Point (963447.88093882286921144 1078482.77904075756669044)', geometries)
 
     def test_get_missing_boundary_points_in_boundaries_without_points(self):
-        print('Validating missing boundary points in boundaries without points...')
+        print('\nINFO: Validating missing boundary points in boundaries without points...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
@@ -219,7 +237,7 @@ class TesQualityValidations(unittest.TestCase):
         self.assertIn('Point (963521.05263693502638489 1078508.74319170042872429)', geometries)
 
     def test_boundary_dangles(self):
-        print('Validating boundary_dangles...')
+        print('\nINFO: Validating boundary_dangles...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='test_boundaries_overlap')
         boundary_layer = QgsVectorLayer(uri, 'dangles', 'ogr')
@@ -237,7 +255,7 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(boundary_ids, expected_boundary_ids)
 
     def test_boundary_dangles_no_dangles(self):
-        print('Validating boundary_dangles with no dangles...')
+        print('\nINFO: Validating boundary_dangles with no dangles...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'dangles', 'ogr')
