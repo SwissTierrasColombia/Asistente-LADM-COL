@@ -33,6 +33,8 @@ from ..config.table_mapping_config import (
     LA_BAUNIT_TABLE,
     LA_GROUP_PARTY_TABLE,
     VIDA_UTIL_FIELD_BOUNDARY_TABLE
+    PLOT_TABLE,
+    VIDA_UTIL_FIELD
 )
 
 WIZARD_UI = get_ui_class('wiz_create_right_cadastre.ui')

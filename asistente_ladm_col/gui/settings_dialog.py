@@ -18,12 +18,15 @@
 """
 import os
 
-from qgis.core import QgsProject, QgsVectorLayer, Qgis
+from qgis.core import QgsProject, QgsVectorLayer, Qgis, QgsApplication
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QSettings
 from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
 
-from ..config.table_mapping_config import DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE
+from ..config.general_config import (
+    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+    PLUGIN_NAME
+)
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
 from ..utils import get_ui_class
@@ -32,11 +35,13 @@ from ..utils.qt_utils import make_file_selector
 DIALOG_UI = get_ui_class('settings_dialog.ui')
 
 class SettingsDialog(QDialog, DIALOG_UI):
-    def __init__(self, iface, parent=None):
+    def __init__(self, iface=None, parent=None, qgis_utils=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
+        self.log = QgsApplication.messageLog()
         self._db = None
+        self.qgis_utils = qgis_utils
 
         self.cbo_db_source.clear()
         self.cbo_db_source.addItem(self.tr('PostgreSQL / PostGIS'), 'pg')
@@ -45,6 +50,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         # Set connections
         self.buttonBox.accepted.connect(self.accepted)
+        self.buttonBox.helpRequested.connect(self.show_help)
         self.btn_test_connection.clicked.connect(self.test_connection)
 
         # Trigger some default behaviours
@@ -58,10 +64,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def get_db_connection(self):
         if self._db is not None:
-            print("Returning existing db connection...")
+            self.log.logMessage("Returning existing db connection...", PLUGIN_NAME, Qgis.Info)
             return self._db
         else:
-            print("Getting new db connection...")
+            self.log.logMessage("Getting new db connection...", PLUGIN_NAME, Qgis.Info)
             dict_conn = self.read_connection_parameters()
             uri = self.get_connection_uri(dict_conn)
             if self.cbo_db_source.currentData() == 'pg':
@@ -71,10 +77,28 @@ class SettingsDialog(QDialog, DIALOG_UI):
             return db
 
     def accepted(self):
-        print("Accepted!")
         self._db = None # Reset db connection
         self._db = self.get_db_connection()
         self.save_settings()
+
+    def set_db_connection(self, mode, dict_conn):
+        """
+        To be used by external scripts
+        """
+        self.cbo_db_source.setCurrentIndex(self.cbo_db_source.findData(mode))
+        self.db_source_changed()
+
+        if self.cbo_db_source.currentData() == 'pg':
+            self.txt_pg_host.setText(dict_conn['host'])
+            self.txt_pg_port.setText(dict_conn['port'])
+            self.txt_pg_database.setText(dict_conn['database'])
+            self.txt_pg_schema.setText(dict_conn['schema'])
+            self.txt_pg_user.setText(dict_conn['user'])
+            self.txt_pg_password.setText(dict_conn['password'])
+        else:
+            self.txt_gpkg_file.setText(dict_conn['dbfile'])
+
+        self.accepted() # Create/update the db object
 
     def read_connection_parameters(self):
         """
@@ -83,7 +107,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         """
         dict_conn = dict()
         dict_conn['host'] = self.txt_pg_host.text().strip() or 'localhost'
-        dict_conn['port'] = self.txt_pg_port.text().strip() or 5432
+        dict_conn['port'] = self.txt_pg_port.text().strip() or '5432'
         dict_conn['database'] = self.txt_pg_database.text().strip()
         dict_conn['schema'] = self.txt_pg_schema.text().strip() or 'public'
         dict_conn['user'] = self.txt_pg_user.text().strip()
@@ -106,6 +130,25 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         settings.setValue('Asistente-LADM_COL/quality/too_long_tolerance', int(self.txt_too_long_tolerance.text()) or DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)
 
+        settings.setValue('Asistente-LADM_COL/automatic_values/disable_automatic_fields', self.chk_disable_automatic_fields.isChecked())
+
+        # Changes in automatic namespace or local_id configuration?
+        current_namespace_enabled = settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
+        current_namespace_prefix = settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")
+        current_local_id_enabled = settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
+
+        settings.setValue('Asistente-LADM_COL/automatic_values/namespace_enabled', self.namespace_collapsible_group_box.isChecked())
+        if self.namespace_collapsible_group_box.isChecked():
+            settings.setValue('Asistente-LADM_COL/automatic_values/namespace_prefix', self.txt_namespace.text())
+
+        settings.setValue('Asistente-LADM_COL/automatic_values/local_id_enabled', self.chk_local_id.isChecked())
+
+        if current_namespace_enabled != self.namespace_collapsible_group_box.isChecked() or \
+           current_namespace_prefix != self.txt_namespace.text() or \
+           current_local_id_enabled != self.chk_local_id.isChecked():
+
+            self.qgis_utils.automatic_namespace_local_id_configuration_changed(self._db)
+
     def restore_settings(self):
         # Restore QSettings
         settings = QSettings()
@@ -122,6 +165,11 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self.txt_too_long_tolerance.setText(str(settings.value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)))
 
+        self.chk_disable_automatic_fields.setChecked(settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool))
+        self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool))
+        self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
+        self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
+
     def db_source_changed(self):
         self._db = None
         if self.cbo_db_source.currentData() == 'pg':
@@ -135,7 +183,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None # Reset db connection
         res, msg = self.get_db_connection().test_connection()
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
-        print("Test connection!")
+        self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
 
     def show_message(self, message, level):
         self.bar.pushMessage(message, level, 10)
@@ -154,3 +202,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         elif self.cbo_db_source.currentData() == 'gpkg':
             uri = [dict_conn['dbfile']]
         return ' '.join(uri)
+
+    def show_help(self):
+        self.qgis_utils.show_help("settings")

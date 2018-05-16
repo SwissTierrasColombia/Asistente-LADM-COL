@@ -19,10 +19,11 @@
 import psycopg2
 import psycopg2.extras
 
-from qgis.core import QgsWkbTypes
+from qgis.core import QgsWkbTypes, Qgis, QgsApplication
 from qgis.PyQt.QtCore import QCoreApplication
 
 from .db_connector import DBConnector
+from ...config.general_config import PLUGIN_NAME, INTERLIS_TEST_METADATA_TABLE_PG
 
 class PGConnector(DBConnector):
     def __init__(self, uri, schema="public"):
@@ -30,25 +31,57 @@ class PGConnector(DBConnector):
         self.uri = uri
         self.conn = None
         self.schema = schema
+        self.log = QgsApplication.messageLog()
         self.mode = 'pg'
         self.provider = 'postgres'
         self._tables_info = None
 
+    def _schema_exists(self):
+        if self.schema:
+            cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            cur.execute("""
+                        SELECT EXISTS(SELECT 1 FROM pg_namespace WHERE nspname = '{}');
+            """.format(self.schema))
+
+            return bool(cur.fetchone()[0])
+
+        return False
+
+    def _metadata_exists(self):
+        if self.schema:
+            cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            cur.execute("""
+                        SELECT
+                          count(tablename)
+                        FROM pg_catalog.pg_tables
+                        WHERE schemaname = '{}' and tablename = '{}'
+            """.format(self.schema, INTERLIS_TEST_METADATA_TABLE_PG))
+
+            return bool(cur.fetchone()[0])
+
+        return False
+
     def test_connection(self):
         try:
             self.conn = psycopg2.connect(self.uri)
-            print("Connection was set!", self.conn)
+            self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
         except Exception as e:
             return (False, QCoreApplication.translate("PGConnector",
                     "There was an error connecting to the database: {}").format(e))
-        return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS successful!"))
 
-        # TODO does the schema exist?
+        if not self._schema_exists():
+            return (False, QCoreApplication.translate("PGConnector",
+                    "The schema '{}' does not exist in the database!").format(self.schema))
+        if not self._metadata_exists():
+            return (False, QCoreApplication.translate("PGConnector",
+                    "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
+
+        return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS successful!"))
 
     def save_connection(self):
         if self.conn is None:
             self.conn = psycopg2.connect(self.uri)
-            print("Connection was set!", self.conn)
+            self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
 
     def validate_db(self):
         pass

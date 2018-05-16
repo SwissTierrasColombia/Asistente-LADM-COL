@@ -19,12 +19,14 @@
 
 import os
 import psycopg2
+import qgis.utils
 
 from sys import platform
+from shutil import copyfile
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
+
 # get from https://github.com/qgis/QGIS/blob/master/tests/src/python/test_qgssymbolexpressionvariables.py
 from qgis.testing.mocked import get_iface
-import qgis.utils
 
 # PostgreSQL connection to schema with a LADM_COL model from ./etl_script_uaecd.py
 DB_HOSTNAME = "postgres"
@@ -39,15 +41,16 @@ asistente_ladm_col_plugin.initGui()
 
 def get_dbconn():
     #global DB_HOSTNAME DB_PORT DB_NAME DB_SCHEMA DB_USER DB_USER DB_PASSWORD
-    settings = asistente_ladm_col_plugin.get_settings_dialog()
-    settings.txt_pg_host.setText(DB_HOSTNAME)
-    settings.txt_pg_port.setText(DB_PORT)
-    settings.txt_pg_database.setText(DB_NAME)
-    settings.txt_pg_schema.setText(DB_SCHEMA)
-    settings.txt_pg_user.setText(DB_USER)
-    settings.txt_pg_password.setText(DB_PASSWORD)
-    settings.accepted()
-    db = asistente_ladm_col_plugin.get_db_connection()
+    dict_conn = dict()
+    dict_conn['host'] = DB_HOSTNAME
+    dict_conn['port'] = DB_PORT
+    dict_conn['database'] = DB_NAME
+    dict_conn['schema'] = DB_SCHEMA
+    dict_conn['user'] = DB_USER
+    dict_conn['password'] = DB_PASSWORD
+    asistente_ladm_col_plugin.qgis_utils.set_db_connection('pg', dict_conn)
+
+    db = asistente_ladm_col_plugin.qgis_utils.get_db_connection()
     return db
 
 def restore_schema(db_connection):
@@ -95,17 +98,17 @@ def get_test_path(path):
     basepath = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(basepath, "resources", path)
 
+def get_test_copy_path(path):
+    src_path = get_test_path(path)
+    dst_path = os.path.split(src_path)
+    dst_path = os.path.join(dst_path[0], "_" + dst_path[1])
+    copyfile(src_path, dst_path)
+    return dst_path
+
 def import_projectgenerator():
     global iface
     plugin_found = "projectgenerator" in qgis.utils.plugins
     if not plugin_found:
-        import sys
-        if platform == "linux" or platform == "linux2" or platform == "darwin":
-            sys.path.append("/usr/share/qgis/python/plugins")
-        elif platform == "win32":
-            sys.path.append("C:\\Users\\aimplementacion\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins")
-        else:
-            print("Please add the correct projectgenerator path")
         import projectgenerator
         pg = projectgenerator.classFactory(iface)
         qgis.utils.plugins["projectgenerator"] = pg

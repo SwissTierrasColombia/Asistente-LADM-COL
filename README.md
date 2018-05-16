@@ -1,6 +1,7 @@
 [![License](https://img.shields.io/github/license/AgenciaImplementacion/Asistente-LADM_COL.svg)](https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29)
 [![Release](https://img.shields.io/github/release/AgenciaImplementacion/asistente-ladm_col.svg)](https://github.com/AgenciaImplementacion/asistente-ladm_col/releases)
 [![Build Status](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL.svg?branch=master)](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL)
+[![Build Status](http://portal.proadmintierra.info:18000/status.svg)](http://portal.proadmintierra.info:18000)
 
 You can read the docs in [English](README_en.md).
 
@@ -16,33 +17,60 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual (0.0.5) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.0.0 y permite:
+La versión actual ([0.0.9](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.0.9)) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.0.7 y permite:
 
  - Capturar datos para el modelo LADM_COL v2.2.1.
- - Agregar puntos a las capas `Punto Lindero` y `Punto Levantamiento` desde archivo CSV.
-   - Validar para evitar insertar puntos superpuestos.
- - Definir `Linderos` digitalizando sobre el mapa.
-   - Ayudas para la digitalización:
-     - Configuración automática de snapping y de valores predeterminados para campos.
-     - Partir líneas seleccionadas por segmento.
-     - Unir líneas seleccionadas.
+ - Preprocesar puntos: Medición controlada.
+ - Agregar puntos a las capas `Punto Lindero` y `Punto Levantamiento`:
+   - Desde archivo CSV con la estructura requerida.
+     - Validar para evitar insertar puntos superpuestos.
+   - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
+ - Agregar `Linderos`:
+   - Digitalizando sobre el mapa.
+     - Ayudas para la digitalización:
+       - Configuración automática de snapping y de valores predeterminados para campos.
+       - Partir líneas seleccionadas por segmento.
+       - Unir líneas seleccionadas.
+   - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
  - Crear `Terrenos`:
    - A partir de linderos seleccionados.
-   - A partir de una capa fuente con la misma estructura de campos.
+   - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
  - Llenar automáticamente tablas de topología:
    - `PuntosCCL` (relaciona `Punto Lindero` y `Lindero`)
    - `MasCCL`    (relaciona `Lindero` y `Terreno`)
    - `Menos`     (relaciona `Terreno` y sus anillos/huecos internos)
- - Crear `Predios` a partir de `Terrrenos` existentes.
- - Revisar segmentos de linderos muy largos (que superen una tolerancia dada).
- - Usar el plugin 'Project Generator' (una dependencia) para cargar capas con formularios y relaciones configuradas.
+ - Crear `Construcciones`:
+   - Digitalizando sobre el mapa.
+     - Ayudas para la digitalización:
+       - Configuración automática de snapping y de valores predeterminados para campos.
+   - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
+ - Crear `Predios`:
+   - A partir de `Terrenos` existentes.
+   - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
+ - Crear `Interesados Naturales` e `Interesados Jurídicos`:
+   - Usando formularios preconfigurados.
+   - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
+ - Crear `Fuente Espacial` y `Fuente Administrativa`:
+   - Usando formularios preconfigurados.
+   - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
+ - Seleccionar en un diálogo las capas a cargar de cualquier modelo de la base de datos o esquema:
+   - Usar el plugin 'Project Generator' para cargar capas con formularios y relaciones configuradas.
+   - Cargar conjuntos de capas preconfigurados.
+ - Realizar revisiones de calidad:
+   - Revisar segmentos de linderos muy largos (que superen una tolerancia dada).
+   - Revisar superposiciones en `Punto Lindero`.
+   - Revisar superposiciones en `Lindero`.
+   - Revisar nodos de `Lindero` sin `Punto Lindero` asociado.
+   - Revisar nodos de `Lindero` no conectados.
+ - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
  - Usar estilos preconfigurados para asignarlos a las capas cargadas.
+ - Visualizar GIFs ilustrativos en la ayuda (online) del plugin.
 
 ## Pruebas automatizadas al software
 
-Esta se ejecutan automáticamente en cada commit realizado al repositorio y los resultados de estos están disponibles en:
+Éstas se ejecutan automáticamente luego de cada commit realizado al repositorio y los resultados están disponibles en:
 
-- Linux: https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL
+- GNU/Linux: https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL
 - Windows: http://portal.proadmintierra.info:18000/
 
 Para ejecutar las pruebas localmente se necesita tener instalado *docker* y *docker-compose*.
@@ -50,14 +78,12 @@ Se recomienda:
 - Descargar *docker* desde el [sitio oficial](https://www.docker.com/community-edition#/download). Por ejemplo, para Ubuntu/Linux_Mint pueden seguirse los pasos descritos en [Install using the convenience script](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
 - Instalar *docker-compose* usando los [binarios](https://github.com/docker/compose/releases/tag/1.18.0).
 
-El comando para ejecutar las pruebas es:
+El comando para ejecutar las pruebas es (ejecutar desde la raíz del repositorio):
 ```sh
 docker-compose run --rm qgis
 ```
 
-Importante ejecutar en el directorio raiz del repositorio!!!
-
-Si necesita recrear la imagen de docker puedes usar:
+En caso de requerir recrear la imagen de docker se puede ejecutar:
 ```sh
 docker-compose build
 ```
@@ -65,8 +91,8 @@ docker-compose build
 ## Pasos para traducir al español
 
  + Si se han agregado archivos .py o .ui al código fuente, actualizar el archivo `asistente_ladm_col/i18n/Asistente-LADM_COL.pro`.
- + En la terminal de comandos, y desde la carpeta *Asistente-LADM_COL*, ejecutar
-`lupdate asistente_ladm_col/i18n/Asistente-LADM_COL.pro` (lo cual actualiza el archivo de cadenas de traducción `asistente_ladm_col/i18n/Asistente-LADM_COL_es.ts`)
+ + Ir a la carpeta *asistente_ladm_col* y ejecutar:
+`make update_translations` (lo cual actualiza el archivo de cadenas de traducción `asistente_ladm_col/i18n/Asistente-LADM_COL_es.ts`)
  + Abrir el programa *Qt-Linguist* y cargar el archivo  `asistente_ladm_col/i18n/Asistente-LADM_COL_es.ts`
  + Editar las cadenas de texto traducibles y guardar el archivo.
  + Ir a la carpeta *asistente_ladm_col* y ejecutar:

@@ -22,11 +22,18 @@ cd "$MY_PATH"
 file=scripts.conf
 if [[ ! -e "$file" ]]
 then
+  DEFAULT_QGIS_PLUGIN_PATH="$HOME/.local/share/QGIS/QGIS3/profiles/default/python/plugins/asistente_ladm_col"
+  echo "¿Dónde está la ruta destino de tu plugin?: [ $DEFAULT_QGIS_PLUGIN_PATH ]"
+  read QGIS_PLUGIN_PATH
+  if [ "$QGIS_PLUGIN_PATH" = "" ]
+  then
+    QGIS_PLUGIN_PATH="$DEFAULT_QGIS_PLUGIN_PATH"
+  fi
   tee "$file" << EOF
 # Establezca valores NOMBRE=VALOR sin espacios en el igual
-ASISTENTE_LADM_DIR="/home/jorge/bin/QGIS/build-master/output/python/plugins/Asistente-LADM_COL/"
+ASISTENTE_LADM_DIR="$QGIS_PLUGIN_PATH"
 EOF
-  echo "Modifique el archivo $MY_PATH/$file a su conveniencia."
+  echo "Se ha modificado el archivo de configuración $MY_PATH/$file."
 fi
 
 source $file

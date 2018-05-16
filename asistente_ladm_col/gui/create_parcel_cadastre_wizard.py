@@ -18,11 +18,13 @@
 """
 from functools import partial
 
-from qgis.core import QgsEditFormConfig, QgsVectorLayerUtils, Qgis, QgsWkbTypes
-from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication
+from qgis.core import (QgsEditFormConfig, QgsVectorLayerUtils, Qgis,
+                       QgsWkbTypes, QgsMapLayerProxyModel, QgsApplication)
+from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
+from ..config.general_config import PLUGIN_NAME
 from ..config.table_mapping_config import (
     ID_FIELD,
     LA_BAUNIT_TYPE_TABLE,
@@ -30,9 +32,9 @@ from ..config.table_mapping_config import (
     PLOT_TABLE,
     UEBAUNIT_TABLE,
     UEBAUNIT_TABLE_PARCEL_FIELD,
-    UEBAUNIT_TABLE_PLOT_FIELD,
-    VIDA_UTIL_FIELD_BOUNDARY_TABLE
+    UEBAUNIT_TABLE_PLOT_FIELD
 )
+from ..config.help_strings import HelpStrings
 
 WIZARD_UI = get_ui_class('wiz_create_parcel_cadastre.ui')
 
@@ -41,13 +43,56 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
+        self.log = QgsApplication.messageLog()
         self._plot_layer = None
         self._parcel_layer = None
         self._uebaunit_table = None
         self._db = db
         self.qgis_utils = qgis_utils
+        self.help_strings = HelpStrings()
 
-        self.button(QWizard.FinishButton).clicked.connect(self.prepare_parcel_creation)
+        self.restore_settings()
+
+        self.rad_parcel_from_plot.toggled.connect(self.adjust_page_1_controls)
+        self.adjust_page_1_controls()
+        self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
+        self.button(QWizard.HelpButton).clicked.connect(self.show_help)
+
+        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.NoGeometry)
+
+    def adjust_page_1_controls(self):
+        if self.rad_refactor.isChecked():
+            self.lbl_refactor_source.setEnabled(True)
+            self.mMapLayerComboBox.setEnabled(True)
+            finish_button_text = QCoreApplication.translate("CreateParcelCadastreWizard", "Import")
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(PARCEL_TABLE, False))
+
+        elif self.rad_parcel_from_plot.isChecked():
+            self.lbl_refactor_source.setEnabled(False)
+            self.mMapLayerComboBox.setEnabled(False)
+            finish_button_text = QCoreApplication.translate("CreateParcelCadastreWizard", "Create")
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_PARCEL_CADASTRE_PAGE_1_OPTION_EXISTING_PLOT)
+
+        self.wizardPage1.setButtonText(QWizard.FinishButton,
+                                       QCoreApplication.translate("CreateParcelCadastreWizard",
+                                       finish_button_text))
+
+    def finished_dialog(self):
+        self.save_settings()
+
+        if self.rad_refactor.isChecked():
+            if self.mMapLayerComboBox.currentLayer() is not None:
+                self.qgis_utils.show_etl_model(self._db,
+                                               self.mMapLayerComboBox.currentLayer(),
+                                               PARCEL_TABLE)
+            else:
+                self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                    QCoreApplication.translate("CreateParcelCadastreWizard",
+                                               "Select a source layer to set the field mapping to '{}'.").format(PARCEL_TABLE),
+                    Qgis.Warning)
+
+        elif self.rad_parcel_from_plot.isChecked():
+            self.prepare_parcel_creation()
 
     def prepare_parcel_creation(self):
         # Load layers
@@ -61,7 +106,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         if self._plot_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
-                                           "Plot layer couldn't be found..."),
+                                           "Plot layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 
@@ -69,7 +114,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         if self._parcel_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
-                                           "Parcel layer couldn't be found..."),
+                                           "Parcel layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 
@@ -77,12 +122,9 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         if self._uebaunit_table is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
-                                           "UEBAUNIT table couldn't be found..."),
+                                           "UEBAUNIT table couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
-
-        # Configure automatic fields
-        self.qgis_utils.configureAutomaticField(self._parcel_layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
 
         # Don't suppress (i.e., show) feature form
         form_config = self._parcel_layer.editFormConfig()
@@ -120,15 +162,15 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         res = self._parcel_layer.commitChanges()
         if res:
             self._parcel_layer.featureAdded.disconnect(self.call_parcel_commit)
-            print("Parcel's featureAdded SIGNAL disconnected")
+            self.log.logMessage("Parcel's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
 
     def finish_parcel(self, plot_ids, layerId, features):
         if len(features) != 1:
-            print("We should have got only one predio... We cannot do anything with {} predios".format(len(features)))
+            self.log.logMessage("We should have got only one predio... We cannot do anything with {} predios".format(len(features)), PLUGIN_NAME, Qgis.Warning)
         else:
             fid = features[0].id()
             if not self._parcel_layer.getFeature(fid).isValid():
-                print("Feature not found in layer Predio...")
+                self.log.logMessage("Feature not found in layer Predio...", PLUGIN_NAME, Qgis.Warning)
             else:
                 parcel_id = self._parcel_layer.getFeature(fid)[ID_FIELD]
 
@@ -138,7 +180,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                     new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
                     new_feature.setAttribute(UEBAUNIT_TABLE_PLOT_FIELD, plot_id)
                     new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
-                    print("Saving Plot-Parcel:", plot_id, parcel_id)
+                    self.log.logMessage("Saving Plot-Parcel: {}-{}".format(plot_id, parcel_id), PLUGIN_NAME, Qgis.Info)
                     new_features.append(new_feature)
 
                 self._uebaunit_table.dataProvider().addFeatures(new_features)
@@ -149,4 +191,20 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                     Qgis.Info)
 
         self._parcel_layer.committedFeaturesAdded.disconnect()
-        print("Parcel's committedFeaturesAdded SIGNAL disconnected")
+        self.log.logMessage("Parcel's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+
+    def save_settings(self):
+        settings = QSettings()
+        settings.setValue('Asistente-LADM_COL/wizards/parcel_load_data_type', 'using_plots' if self.rad_parcel_from_plot.isChecked() else 'refactor')
+
+    def restore_settings(self):
+        settings = QSettings()
+
+        load_data_type = settings.value('Asistente-LADM_COL/wizards/parcel_load_data_type') or 'using_plots'
+        if load_data_type == 'refactor':
+            self.rad_refactor.setChecked(True)
+        else:
+            self.rad_parcel_from_plot.setChecked(True)
+
+    def show_help(self):
+        self.qgis_utils.show_help("create_parcel")

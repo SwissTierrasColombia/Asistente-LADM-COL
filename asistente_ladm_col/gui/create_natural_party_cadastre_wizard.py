@@ -16,20 +16,20 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.core import QgsEditFormConfig, QgsVectorLayerUtils, Qgis, QgsWkbTypes
+from qgis.core import (QgsEditFormConfig, QgsVectorLayerUtils, Qgis,
+                       QgsWkbTypes, QgsMapLayerProxyModel)
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication
+from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-#from ..utils.qt_utils import enable_next_wizard, disable_next_wizard
 from ..config.table_mapping_config import (
     GENDER_TYPE_TABLE,
     NATURAL_PARTY_TABLE,
     PARTY_DOCUMENT_TYPE_TABLE,
-    PARTY_TYPE_TABLE,
-    VIDA_UTIL_FIELD_BOUNDARY_TABLE
+    PARTY_TYPE_TABLE
 )
+from ..config.help_strings import HelpStrings
 
 WIZARD_UI = get_ui_class('wiz_create_natural_party_cadastre.ui')
 
@@ -41,8 +41,50 @@ class CreateNaturalPartyCadastreWizard(QWizard, WIZARD_UI):
         self._natural_party_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
+        self.help_strings = HelpStrings()
 
-        self.button(QWizard.FinishButton).clicked.connect(self.prepare_natural_party_creation)
+        self.restore_settings()
+
+        self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
+        self.adjust_page_1_controls()
+        self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
+        self.button(QWizard.HelpButton).clicked.connect(self.show_help)
+
+        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.NoGeometry)
+
+    def adjust_page_1_controls(self):
+        if self.rad_refactor.isChecked():
+            self.lbl_refactor_source.setEnabled(True)
+            self.mMapLayerComboBox.setEnabled(True)
+            finish_button_text = QCoreApplication.translate("CreateNaturalPartyCadastreWizard", "Import")
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(NATURAL_PARTY_TABLE, False))
+
+        elif self.rad_create_manually.isChecked():
+            self.lbl_refactor_source.setEnabled(False)
+            self.mMapLayerComboBox.setEnabled(False)
+            finish_button_text = QCoreApplication.translate("CreateNaturalPartyCadastreWizard", "Create")
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_NATURAL_PARTY_CADASTRE_PAGE_1_OPTION_FORM)
+
+        self.wizardPage1.setButtonText(QWizard.FinishButton,
+                                       QCoreApplication.translate("CreateNaturalPartyCadastreWizard",
+                                       finish_button_text))
+
+    def finished_dialog(self):
+        self.save_settings()
+
+        if self.rad_refactor.isChecked():
+            if self.mMapLayerComboBox.currentLayer() is not None:
+                self.qgis_utils.show_etl_model(self._db,
+                                               self.mMapLayerComboBox.currentLayer(),
+                                               NATURAL_PARTY_TABLE)
+            else:
+                self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                    QCoreApplication.translate("CreateNaturalPartyCadastreWizard",
+                                               "Select a source layer to set the field mapping to '{}'.").format(NATURAL_PARTY_TABLE),
+                    Qgis.Warning)
+
+        elif self.rad_create_manually.isChecked():
+            self.prepare_natural_party_creation()
 
     def prepare_natural_party_creation(self):
         # Load layers
@@ -56,12 +98,9 @@ class CreateNaturalPartyCadastreWizard(QWizard, WIZARD_UI):
         if self._natural_party_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateNaturalPartyCadastreWizard",
-                                           "Natural Party layer couldn't be found..."),
+                                           "Natural Party layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
-
-        # Configure automatic fields
-        self.qgis_utils.configureAutomaticField(self._natural_party_layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
 
         # Don't suppress (i.e., show) feature form
         form_config = self._natural_party_layer.editFormConfig()
@@ -75,3 +114,19 @@ class CreateNaturalPartyCadastreWizard(QWizard, WIZARD_UI):
         self.iface.layerTreeView().setCurrentLayer(self._natural_party_layer)
         self._natural_party_layer.startEditing()
         self.iface.actionAddFeature().trigger()
+
+    def save_settings(self):
+        settings = QSettings()
+        settings.setValue('Asistente-LADM_COL/wizards/natural_party_load_data_type', 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
+
+    def restore_settings(self):
+        settings = QSettings()
+
+        load_data_type = settings.value('Asistente-LADM_COL/wizards/natural_party_load_data_type') or 'create_manually'
+        if load_data_type == 'refactor':
+            self.rad_refactor.setChecked(True)
+        else:
+            self.rad_create_manually.setChecked(True)
+
+    def show_help(self):
+        self.qgis_utils.show_help("natural_party")
