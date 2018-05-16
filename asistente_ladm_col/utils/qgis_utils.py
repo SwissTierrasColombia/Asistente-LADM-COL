@@ -17,9 +17,8 @@
  ***************************************************************************/
 """
 import os
-import webbrowser
 import socket
-
+import webbrowser
 
 from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri, Qgis,
@@ -30,7 +29,7 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
                        QgsApplication, QgsProcessingFeedback)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
-                              QVariant, QSettings, QLocale)
+                              QVariant, QSettings, QLocale, QUrl, QFile, QIODevice)
 import processing
 
 from .project_generator_utils import ProjectGeneratorUtils
@@ -45,7 +44,7 @@ from ..config.general_config import (
     MODULE_HELP_MAPPING,
     TEST_SERVER,
     HELP_URL,
-    PLUGIN_VERSION
+    PLUGIN_VERSION,
 )
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
