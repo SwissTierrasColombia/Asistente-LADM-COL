@@ -32,7 +32,7 @@ class ProjectGeneratorUtils(QObject):
         if 'projectgenerator' in qgis.utils.plugins:
             projectgenerator = qgis.utils.plugins["projectgenerator"]
             generator = projectgenerator.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
-                db.uri, "smart2", db.schema)
+                db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             layers = generator.layers(layer_list)
             relations = generator.relations(layers, layer_list)
             legend = generator.legend(layers)
@@ -48,7 +48,7 @@ class ProjectGeneratorUtils(QObject):
         if 'projectgenerator' in qgis.utils.plugins:
             projectgenerator = qgis.utils.plugins["projectgenerator"]
             generator = projectgenerator.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
-                db.uri, "smart2", db.schema)
+                db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             return generator.get_tables_info_without_ignored_tables()
         else:
             self.log.logMessage(
