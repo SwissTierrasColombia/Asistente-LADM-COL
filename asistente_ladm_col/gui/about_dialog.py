@@ -45,7 +45,7 @@ class AboutDialog(QDialog, DIALOG_UI):
     def __init__(self, iface=None, qgis_utils=None):
         QDialog.__init__(self)
         self.setupUi(self)
-        #self.PLUGIN_VERSION='0.0.10-alpha'
+        self.PLUGIN_VERSION='0.0.10-alpha'
         #self.btn_download_help.clicked.connect(self.down_help)
         self.qgis_utils = qgis_utils
         self.iface = iface
@@ -87,7 +87,8 @@ class AboutDialog(QDialog, DIALOG_UI):
             self.iface.messageBar().pushMessage("Asistente LADM_COL", "Error, el archivo descargado no es valido.",1, 30)
 
     def down_help(self):
-        a = QNCFT(QUrl(os.path.join(HELP_DOWNLOAD, PLUGIN_VERSION, 'asistente_ladm_col_docs.zip')))
+        url='/'.join([HELP_DOWNLOAD,self.PLUGIN_VERSION, 'asistente_ladm_col_docs.zip'] )
+        a = QNCFT(QUrl(url))
         #a.fetched.connect(lambda: self.save_file(a))
         a.fetched.connect(partial(self.save_file, a))
         QgsApplication.taskManager().addTask(a)
