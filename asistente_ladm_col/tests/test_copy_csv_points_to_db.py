@@ -17,6 +17,7 @@ class TestCopy(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
+        print("\nINFO: Setting up copy CSV points to DB validation...")
         self.qgis_utils = QGISUtils()
         self.db_connection = get_dbconn()
         result = self.db_connection.test_connection()
@@ -27,6 +28,7 @@ class TestCopy(unittest.TestCase):
         restore_schema(self.db_connection)
 
     def test_copy_csv_to_db(self):
+        print("\nINFO: Validating copy CSV points to DB...")
         self.clean_table()
         self.qgis_utils.disable_automatic_fields(self.db_connection, BOUNDARY_POINT_TABLE)
         self.upload_points_from_csv()
