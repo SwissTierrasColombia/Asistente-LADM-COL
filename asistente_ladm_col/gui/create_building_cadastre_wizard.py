@@ -23,20 +23,7 @@ from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-from ..config.table_mapping_config import (
-    BUILDING_TABLE,
-    LA_DIMENSION_TYPE_TABLE,
-    LA_BUILDING_UNIT_TYPE_TABLE,
-    LA_INTERPOLATION_TYPE_TABLE,
-    LA_MONUMENTATION_TYPE_TABLE,
-    LA_POINT_TYPE_TABLE,
-    LA_SURFACE_RELATION_TYPE_TABLE,
-    POINT_DEFINITION_TYPE_TABLE,
-    POINT_INTERPOLATION_TYPE_TABLE,
-    POINT_MONUMENTATION_TYPE_TABLE,
-    SURVEY_POINT_TABLE,
-    SURVEY_POINT_TYPE_TABLE
-)
+from ..config.table_mapping_config import BUILDING_TABLE, SURVEY_POINT_TABLE
 from ..config.help_strings import HelpStrings
 
 WIZARD_UI = get_ui_class('wiz_create_building_cadastre.ui')
@@ -98,17 +85,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, {
             BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None},
-            LA_DIMENSION_TYPE_TABLE: {'name': LA_DIMENSION_TYPE_TABLE, 'geometry': None},
-            LA_BUILDING_UNIT_TYPE_TABLE: {'name': LA_BUILDING_UNIT_TYPE_TABLE, 'geometry': None},
-            LA_INTERPOLATION_TYPE_TABLE: {'name': LA_INTERPOLATION_TYPE_TABLE, 'geometry': None},
-            LA_MONUMENTATION_TYPE_TABLE: {'name': LA_MONUMENTATION_TYPE_TABLE, 'geometry': None},
-            LA_SURFACE_RELATION_TYPE_TABLE: {'name': LA_SURFACE_RELATION_TYPE_TABLE, 'geometry': None},
-            LA_POINT_TYPE_TABLE: {'name': LA_POINT_TYPE_TABLE, 'geometry': None},
-            POINT_DEFINITION_TYPE_TABLE: {'name': POINT_DEFINITION_TYPE_TABLE, 'geometry': None},
-            POINT_INTERPOLATION_TYPE_TABLE: {'name': POINT_INTERPOLATION_TYPE_TABLE, 'geometry': None},
-            POINT_MONUMENTATION_TYPE_TABLE: {'name': POINT_MONUMENTATION_TYPE_TABLE, 'geometry': None},
-            SURVEY_POINT_TYPE_TABLE: {'name': SURVEY_POINT_TYPE_TABLE, 'geometry': None}
+            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None}
         }, load=True)
 
         self._building_layer = res_layers[BUILDING_TABLE]
@@ -125,23 +102,6 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
             self.iface.messageBar().pushMessage('Asistente LADM_COL',
                 QCoreApplication.translate('CreateBuildingCadastreWizard',
                                            "Survey Point layer couldn't be found... {}").format(self._db.get_description()),
-                Qgis.Warning)
-            return
-
-        if res_layers[LA_DIMENSION_TYPE_TABLE] is None or \
-           res_layers[LA_BUILDING_UNIT_TYPE_TABLE] is None or \
-           res_layers[LA_SURFACE_RELATION_TYPE_TABLE] is None or \
-           res_layers[LA_INTERPOLATION_TYPE_TABLE] is None or \
-           res_layers[LA_MONUMENTATION_TYPE_TABLE] is None or \
-           res_layers[LA_POINT_TYPE_TABLE] is None or \
-           res_layers[POINT_DEFINITION_TYPE_TABLE] is None or \
-           res_layers[POINT_INTERPOLATION_TYPE_TABLE] is None or \
-           res_layers[POINT_MONUMENTATION_TYPE_TABLE] is None or \
-           res_layers[SURVEY_POINT_TYPE_TABLE] is None:
-
-            self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                QCoreApplication.translate('CreateBuildingCadastreWizard',
-                                           "At least one domain table for bulding or survey point couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 

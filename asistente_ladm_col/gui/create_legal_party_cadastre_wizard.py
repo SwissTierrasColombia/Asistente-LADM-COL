@@ -23,11 +23,7 @@ from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-from ..config.table_mapping_config import (
-    LEGAL_PARTY_TABLE,
-    LEGAL_PARTY_TYPE_TABLE
-)
-
+from ..config.table_mapping_config import LEGAL_PARTY_TABLE
 from ..config.help_strings import HelpStrings
 
 WIZARD_UI = get_ui_class('wiz_create_legal_party_cadastre.ui')
@@ -87,11 +83,8 @@ class CreateLegalPartyCadastreWizard(QWizard, WIZARD_UI):
 
     def prepare_legal_party_creation(self):
         # Load layers
-        res_layers = self.qgis_utils.get_layers(self._db, {
-            LEGAL_PARTY_TABLE: {'name': LEGAL_PARTY_TABLE, 'geometry': None},
-            LEGAL_PARTY_TYPE_TABLE: {'name': LEGAL_PARTY_TYPE_TABLE, 'geometry': None}}, load=True)
+        self._legal_party_layer = self.qgis_utils.get_layer(self._db, LEGAL_PARTY_TABLE, load=True)
 
-        self._legal_party_layer = res_layers[LEGAL_PARTY_TABLE]
         if self._legal_party_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateLegalPartyCadastreWizard",
