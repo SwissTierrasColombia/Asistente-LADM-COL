@@ -27,7 +27,6 @@ from ..utils import get_ui_class
 from ..config.general_config import PLUGIN_NAME
 from ..config.table_mapping_config import (
     ID_FIELD,
-    LA_BAUNIT_TYPE_TABLE,
     PARCEL_TABLE,
     PLOT_TABLE,
     UEBAUNIT_TABLE,
@@ -99,7 +98,6 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         res_layers = self.qgis_utils.get_layers(self._db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
-            LA_BAUNIT_TYPE_TABLE: {'name': LA_BAUNIT_TYPE_TABLE, 'geometry': None}, # Domain for Parcel
             UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}, load=True)
 
         self._plot_layer = res_layers[PLOT_TABLE]
