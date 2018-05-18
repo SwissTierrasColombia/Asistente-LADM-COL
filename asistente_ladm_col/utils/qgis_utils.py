@@ -45,7 +45,12 @@ from ..config.general_config import (
     MODULE_HELP_MAPPING,
     TEST_SERVER,
     HELP_URL,
-    PLUGIN_VERSION
+    PLUGIN_VERSION,
+    REFERENCING_LAYER,
+    REFERENCING_FIELD,
+    RELATION_NAME,
+    REFERENCED_LAYER,
+    REFERENCED_FIELD
 )
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
@@ -119,8 +124,8 @@ class QGISUtils(QObject):
         related_layers = list()
         for relation in self._relations:
             for layer_name in layer_names:
-                if relation['referencing_layer'] == layer_name:
-                    related_layers.append(relation['referenced_layer'])
+                if relation[REFERENCING_LAYER] == layer_name:
+                    related_layers.append(relation[REFERENCED_LAYER])
 
         return related_layers
 
@@ -240,43 +245,46 @@ class QGISUtils(QObject):
 
         db_relations = list()
         for relation in self._relations:
-            if relation['referencing_layer'] == layer_name:
+            if relation[REFERENCING_LAYER] == layer_name:
                 db_relations.append(relation)
         print(db_relations)
 
         qgis_relations = QgsProject.instance().relationManager().referencingRelations(layer)
+        qgis_rels = list()
+        for qgis_relation in qgis_relations:
+            qgis_rel = dict()
+            referenced_layer = qgis_relation.referencedLayer()
+            qgis_rel[REFERENCED_LAYER] = referenced_layer.dataProvider().uri().table()
+            qgis_rel[REFERENCED_FIELD] = referenced_layer.fields()[qgis_relation.referencedFields()[0]].name()
+            qgis_rel[REFERENCING_FIELD] = layer.fields()[qgis_relation.referencingFields()[0]].name()
+            qgis_rels.append(qgis_rel)
 
         new_relations = list()
         # Compare relations, configure what is missing
         for db_relation in db_relations:
             found = False
-            for qgis_relation in qgis_relations:
-                referenced_layer = qgis_relation.referencedLayer()
-                referenced_layer_name = referenced_layer.dataProvider().uri().table()
-                referenced_field = referenced_layer.fields()[qgis_relation.referencedFields()[0]].name()
-                referencing_field = layer.fields()[qgis_relation.referencingFields()[0]].name()
-
+            for qgis_rel in qgis_rels:
                 # We known that referencing_layer already matches, so don't check
-                if referenced_layer_name == db_relation['referenced_layer'] and \
-                    referencing_field == db_relation['referencing_field'] and \
-                    referenced_field == db_relation['referenced_field']:
+                if qgis_rel[REFERENCED_LAYER] == db_relation[REFERENCED_LAYER] and \
+                    qgis_rel[REFERENCING_FIELD] == db_relation[REFERENCING_FIELD] and \
+                    qgis_rel[REFERENCED_FIELD] == db_relation[REFERENCED_FIELD]:
 
                     found = True
                     break
 
             if not found:
-                print("Relation NOT found:",db_relation['name'])
+                print("Relation NOT found:",db_relation[RELATION_NAME])
                 # This relation is not configured into QGIS, let's do it
                 new_rel = QgsRelation()
                 new_rel.setReferencingLayer(layer.id())
-                referenced_layer = self.get_layer_from_layer_tree(db_relation['referenced_layer'], layer.dataProvider().uri().schema())
+                referenced_layer = self.get_layer_from_layer_tree(db_relation[REFERENCED_LAYER], layer.dataProvider().uri().schema())
                 if referenced_layer is None:
-                    print("Referenced_layer NOT FOUND in layer tree...", db_relation['referenced_layer'])
+                    print("Referenced_layer NOT FOUND in layer tree...", db_relation[REFERENCED_LAYER])
                     continue
                 new_rel.setReferencedLayer(referenced_layer.id())
-                new_rel.addFieldPair(db_relation['referencing_field'], db_relation['referenced_field'])
-                new_rel.setId(db_relation['name']) #generateId()
-                new_rel.setName(db_relation['name'])
+                new_rel.addFieldPair(db_relation[REFERENCING_FIELD], db_relation[REFERENCED_FIELD])
+                new_rel.setId(db_relation[RELATION_NAME]) #generateId()
+                new_rel.setName(db_relation[RELATION_NAME])
 
                 new_relations.append(new_rel)
 

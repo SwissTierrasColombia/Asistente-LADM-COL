@@ -45,6 +45,11 @@ GEOMETRY_TYPE = 'type'
 KIND_SETTINGS = 'kind_settings'
 TABLE_ALIAS = 'table_alias'
 MODEL = 'model'
+REFERENCING_LAYER = 'referencing_table'
+REFERENCING_FIELD = 'referencing_column'
+RELATION_NAME = 'constraint_name'
+REFERENCED_LAYER = 'referenced_table'
+REFERENCED_FIELD = 'referenced_column'
 
 TEST_SERVER = "www.google.com"
 

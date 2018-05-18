@@ -20,7 +20,12 @@ import qgis
 from qgis.core import QgsProject, Qgis, QgsApplication
 from qgis.PyQt.QtCore import QObject
 
-from ..config.general_config import PLUGIN_NAME, KIND_SETTINGS, TABLE_NAME
+from ..config.general_config import (
+    PLUGIN_NAME,
+    KIND_SETTINGS,
+    TABLE_NAME,
+    REFERENCING_FIELD
+)
 from ..config.table_mapping_config import TABLE_PROP_DOMAIN
 from .domains_parser import DomainRelationGenerator
 
@@ -63,6 +68,7 @@ class ProjectGeneratorUtils(QObject):
             print("Relations")
 
             relations = generator.get_relations_info()
+            relations = self.filter_relations(relations)
 
             end2 = time.time()
             print(end2 - end)
@@ -75,9 +81,10 @@ class ProjectGeneratorUtils(QObject):
 
             end3 = time.time()
             print(end3 - end2)
-            print(domains)
+            print("DOMAINS",domains)
+            print("RELATIONS",relations)
 
-            return (layers, domains)
+            return (layers, relations + domains)
         else:
             self.log.logMessage(
                 "El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",
@@ -85,6 +92,14 @@ class ProjectGeneratorUtils(QObject):
                 Qgis.Critical
             )
             return (None, None)
+
+    def filter_relations(self, relations):
+        filtered_relations = list()
+        for relation in relations:
+            if not relation[REFERENCING_FIELD].startswith('uej2_') and \
+               not relation[REFERENCING_FIELD].startswith('ue_'):
+                filtered_relations.append(relation)
+        return filtered_relations
 
     def get_tables_info_without_ignored_tables(self, db):
         if 'projectgenerator' in qgis.utils.plugins:

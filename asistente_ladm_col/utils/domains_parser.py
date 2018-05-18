@@ -3,8 +3,7 @@
 /***************************************************************************
     begin                :    04/10/17
     git sha              :    :%H$
-    copyright            :    (C) 2017 by Germán Carrillo (BSF-Swissphoto)
-                              (C) 2016 by OPENGIS.ch
+    copyright            :    (C) 2017-2018 by Germán Carrillo (BSF-Swissphoto)
     email                :    gcarrillo@linuxmail.org
  ***************************************************************************/
 
@@ -18,6 +17,14 @@
  ***************************************************************************/
 """
 import re
+
+from ..config.general_config import (
+    REFERENCING_LAYER,
+    REFERENCING_FIELD,
+    RELATION_NAME,
+    REFERENCED_LAYER,
+    REFERENCED_FIELD
+)
 
 class DomainRelationGenerator:
     """TODO: remove when ili2db issue #19 is solved"""
@@ -106,12 +113,12 @@ class DomainRelationGenerator:
                             # Might be that due to ORM mapping, a class is not
                             # in mapped_layers
                             relation = {
-                                'referencing_layer': classes_ili_pg[iliclass],
-                                'referencing_field' : attrs_ili_pg_owner[
+                                REFERENCING_LAYER: classes_ili_pg[iliclass],
+                                REFERENCING_FIELD : attrs_ili_pg_owner[
                                     classes_ili_pg[iliclass]][iliattr],
-                                'referenced_layer': domains_ili_pg[ilidomain],
-                                'referenced_field' : self._db_connector.iliCodeName,
-                                'name' : "{}_{}_{}_{}".format(classes_ili_pg[iliclass],
+                                REFERENCED_LAYER: domains_ili_pg[ilidomain],
+                                REFERENCED_FIELD : self._db_connector.iliCodeName,
+                                RELATION_NAME : "{}_{}_{}_{}".format(classes_ili_pg[iliclass],
                                                                      attrs_ili_pg_owner[
                                                                          classes_ili_pg[iliclass]][iliattr],
                                                                      domains_ili_pg[
