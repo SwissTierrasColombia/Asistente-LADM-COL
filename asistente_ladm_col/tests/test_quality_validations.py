@@ -172,6 +172,22 @@ class TesQualityValidations(unittest.TestCase):
             for overlap in overlaps:
                 self.assertIn(overlap, expected_overlaps[pair])
 
+    def test_overlapping_polygons(self):
+        print('\nINFO: Validating overlaps in polygons ...')
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='topology_polygons_overlap')
+        polygons_overlap_layer = QgsVectorLayer(uri, 'test_polygons_overlap', 'ogr')
+
+        expected_overlaps = [[126, 484], [126, 542], [127, 484], [127, 512]]
+        flat_expected_overlaps = list(set([id for items in expected_overlaps for id in items]))  # Build a flat list of uniques ids
+
+        overlapping = self.qgis_utils.geometry.get_overlapping_polygons(polygons_overlap_layer)
+        flat_overlapping = list(set([id for items in overlapping for id in items]))
+
+        # checks
+        self.assertEqual(len(overlapping), 4)
+        self.assertEqual(flat_expected_overlaps.sort(), flat_overlapping.sort())
+
     def test_get_missing_boundary_points_in_boundaries(self):
         print('\nINFO: Validating missing boundary points in boundaries...')
 

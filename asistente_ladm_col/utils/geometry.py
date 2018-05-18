@@ -223,6 +223,31 @@ class GeometryUtils(QObject):
 
         return res
 
+    def get_overlapping_polygons(self, polygons_layer):
+        """
+        Function that obtains the overlapping polygons on same layer
+        :param polygons_layer: vector layer with geometry type polygon
+        :return: Returns a list of list with the ids of overlapping polygons,
+        e.g., [[1, 2], [1, 3]]
+        """
+
+        list_overlapping_polygons = list()
+        if (QgsWkbTypes.PolygonGeometry != polygons_layer.geometryType()):
+            return list_overlapping_polygons
+
+        features = [i for i in polygons_layer.getFeatures()]
+        features_1 = features_2 = features
+
+        for f1 in features_1[:-1]:
+            for f2 in features_2[1:]:
+                isOverlap = f1.geometry().overlaps(f2.geometry())
+                if isOverlap == True:
+                    #list_overlapping_polygons.append({f1[ID_FIELD]:f2[ID_FIELD]})
+                    list_overlapping_polygons.append([f1.id(), f2.id()])
+            del features_2[0] # move the list
+
+        return list_overlapping_polygons
+
     def get_overlapping_lines(self, line_layer, use_selection=True):
         """
         Return a dict whose key is a pair of line ids where there are
