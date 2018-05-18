@@ -32,7 +32,6 @@ from ..config.table_mapping_config import (
     PARCEL_TABLE,
     LA_BAUNIT_TABLE,
     LA_GROUP_PARTY_TABLE,
-    VIDA_UTIL_FIELD_BOUNDARY_TABLE
     PLOT_TABLE,
     VIDA_UTIL_FIELD
 )
@@ -111,7 +110,7 @@ class CreateResponsibilityCadastreWizard(QWizard, WIZARD_UI):
             return
 
         # Configure automatic fields
-        self.qgis_utils.configureAutomaticField(self._responsibility_layer, VIDA_UTIL_FIELD_BOUNDARY_TABLE, "now()")
+        self.qgis_utils.configure_automatic_field(self._responsibility_layer, VIDA_UTIL_FIELD, "now()")
 
         # Configure relation fields
         self._natural_party_layer.setDisplayExpression('"documento_identidad"+\' \'+"primer_apellido"+\' \'+"segundo_apellido"+\' \'+"primer_nombre"+\' \'+"segundo_nombre"')
