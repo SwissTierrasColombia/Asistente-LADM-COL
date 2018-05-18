@@ -57,32 +57,14 @@ class ProjectGeneratorUtils(QObject):
             generator = projectgenerator.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
                 db.uri, "smart2", db.schema)
 
-            import time
-            print("Layers")
-            start = time.time()
-
             layers = generator.get_tables_info_without_ignored_tables()
-
-            end = time.time()
-            print(end - start)
-            print("Relations")
-
             relations = generator.get_relations_info()
             relations = self.filter_relations(relations)
-
-            end2 = time.time()
-            print(end2 - end)
-            print("Domains")
 
             domain_generator = DomainRelationGenerator(generator._db_connector, "smart2")
             layer_names = [record[TABLE_NAME] for record in layers]
             domain_names = [record[TABLE_NAME] for record in layers if record[KIND_SETTINGS] == TABLE_PROP_DOMAIN]
             domains = domain_generator.get_domain_relations_info(layer_names, domain_names)
-
-            end3 = time.time()
-            print(end3 - end2)
-            print("DOMAINS",domains)
-            print("RELATIONS",relations)
 
             return (layers, relations + domains)
         else:

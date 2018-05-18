@@ -76,12 +76,14 @@ from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 class QGISUtils(QObject):
 
     activate_layer_requested = pyqtSignal(QgsMapLayer)
+    clear_status_bar_emitted = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
     message_emitted = pyqtSignal(str, int) # Message, level
     message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
     message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
     map_refresh_requested = pyqtSignal()
+    status_bar_message_emitted = pyqtSignal(str, int) # Message, duration
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
 
@@ -117,8 +119,14 @@ class QGISUtils(QObject):
         return self.__settings_dialog.get_db_connection()
 
     def cache_layers_and_relations(self, db):
-        self._layers, self._relations = self.project_generator_utils.get_layers_and_relations_info(db)
-        print("### {} LAYERS AND {} RELATIONS CACHED!!! ###".format(len(self._layers), len(self._relations)))
+        self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
+            "Extracting data from the database... This is done only once per session!"), 0)
+        QCoreApplication.processEvents()
+
+        with OverrideCursor(Qt.WaitCursor):
+            self._layers, self._relations = self.project_generator_utils.get_layers_and_relations_info(db)
+
+        self.clear_status_bar_emitted.emit()
 
     def get_related_layers(self, layer_names, already_loaded):
         related_layers = list()
@@ -171,6 +179,9 @@ class QGISUtils(QObject):
                     additional_layers_to_load = self.get_related_layers(layers_to_load, already_loaded)
                     all_layers_to_load = list(set(layers_to_load + additional_layers_to_load))
 
+                    self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
+                        "Loading LADM_COL layers to QGIS and configuring their relations and forms..."), 0)
+                    QCoreApplication.processEvents()
                     self.project_generator_utils.load_layers(all_layers_to_load, db)
 
                     # Once load_layers() is called, go through the layer tree to get
@@ -182,6 +193,8 @@ class QGISUtils(QObject):
 
                         if response_layers[layer_id] is not None:
                             self.post_load_configurations(response_layers[layer_id])
+
+                    self.clear_status_bar_emitted.emit()
 
         return response_layers
 
@@ -249,7 +262,6 @@ class QGISUtils(QObject):
         for relation in self._relations:
             if relation[REFERENCING_LAYER] == layer_name:
                 db_relations.append(relation)
-        print(db_relations)
 
         qgis_relations = QgsProject.instance().relationManager().referencingRelations(layer)
         qgis_rels = list()
@@ -275,13 +287,12 @@ class QGISUtils(QObject):
                     break
 
             if not found:
-                print("Relation NOT found:",db_relation[RELATION_NAME])
                 # This relation is not configured into QGIS, let's do it
                 new_rel = QgsRelation()
                 new_rel.setReferencingLayer(layer.id())
                 referenced_layer = self.get_layer_from_layer_tree(db_relation[REFERENCED_LAYER], layer.dataProvider().uri().schema())
                 if referenced_layer is None:
-                    print("Referenced_layer NOT FOUND in layer tree...", db_relation[REFERENCED_LAYER])
+                    # Referenced_layer NOT FOUND in layer tree...
                     continue
                 new_rel.setReferencedLayer(referenced_layer.id())
                 new_rel.addFieldPair(db_relation[REFERENCING_FIELD], db_relation[REFERENCED_FIELD])
@@ -292,7 +303,6 @@ class QGISUtils(QObject):
 
         all_qgis_relations = list(QgsProject.instance().relationManager().relations().values())
         all_qgis_relations.extend(new_relations)
-        print("NEW RELATIONS ADDED!!!", len(new_relations))
         QgsProject.instance().relationManager().setRelations(all_qgis_relations)
 
     def configure_automatic_field(self, layer, field, expression):
@@ -376,7 +386,6 @@ class QGISUtils(QObject):
         for field in layer.fields():
             self.reset_automatic_field(layer, field.name())
 
-        print("AUTOFIELDS DISABLED!")
         return automatic_fields_definition
 
     def check_if_and_enable_automatic_fields(self, db, automatic_fields_definition, layer_name, geometry_type=None):
@@ -393,8 +402,6 @@ class QGISUtils(QObject):
 
         for idx, default_definition in automatic_fields_definition.items():
             layer.setDefaultValueDefinition(idx, default_definition)
-
-        print("AUTOFIELDS ENABLED!")
 
     def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, target_layer_name):
         if not csv_path or not os.path.exists(csv_path):

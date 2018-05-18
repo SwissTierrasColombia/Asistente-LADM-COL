@@ -194,11 +194,13 @@ class AsistenteLADMCOLPlugin(QObject):
         self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
         self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
+        self.qgis_utils.clear_status_bar_emitted.connect(self.clear_status_bar)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
+        self.qgis_utils.status_bar_message_emitted.connect(self.show_status_bar_message)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
 
         # Toolbar
@@ -254,6 +256,9 @@ class AsistenteLADMCOLPlugin(QObject):
     def activate_layer(self, layer):
         self.iface.layerTreeView().setCurrentLayer(layer)
 
+    def clear_status_bar(self):
+        self.iface.statusBarIface().clearMessage()
+
     def refresh_layer_symbology(self, layer_id):
         self.iface.layerTreeView().refreshLayerSymbology(layer_id)
 
@@ -275,6 +280,9 @@ class AsistenteLADMCOLPlugin(QObject):
         button.pressed.connect(partial(self.load_layers, layers))
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, level, 15)
+
+    def show_status_bar_message(self, msg, duration):
+        self.iface.statusBarIface().showMessage(msg, duration)
 
     def load_layer(self, layer):
         self.qgis_utils.get_layer(self.get_db_connection(), layer[0], layer[1], load=True)
