@@ -38,12 +38,14 @@ from ..config.table_mapping_config import (
 
 WIZARD_UI = get_ui_class('wiz_create_restriction_cadastre.ui')
 
+from ..config.help_strings import HelpStrings
+
 class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
-        self._plot_layer = None
+        self._responsibility_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
@@ -183,4 +185,4 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
             self.rad_create_manually.setChecked(True)
 
     def show_help(self):
-        self.qgis_utils.show_help("restriction")
+        self.qgis_utils.show_help("create_restriction")

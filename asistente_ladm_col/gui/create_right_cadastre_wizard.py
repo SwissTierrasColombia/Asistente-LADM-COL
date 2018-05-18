@@ -186,4 +186,4 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
             self.rad_create_manually.setChecked(True)
 
     def show_help(self):
-        self.qgis_utils.show_help("right")
+        self.qgis_utils.show_help("create_right")
