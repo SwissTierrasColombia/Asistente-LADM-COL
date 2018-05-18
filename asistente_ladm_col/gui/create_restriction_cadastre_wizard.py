@@ -16,11 +16,11 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.core import QgsEditFormConfig, QgsVectorLayerUtils, Qgis, QgsWkbTypes
+from qgis.core import (QgsEditFormConfig, QgsVectorLayerUtils, Qgis,
+                       QgsWkbTypes, QgsMapLayerProxyModel)
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication
+from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
-
 
 from ..utils import get_ui_class
 #from ..utils.qt_utils import enable_next_wizard, disable_next_wizard
@@ -46,8 +46,48 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
         self._plot_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
+        self.help_strings = HelpStrings()
 
-        self.button(QWizard.FinishButton).clicked.connect(self.prepare_restriction_creation)
+        self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
+        self.adjust_page_1_controls()
+        self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
+        self.button(QWizard.HelpButton).clicked.connect(self.show_help)
+
+        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.NoGeometry)
+
+    def adjust_page_1_controls(self):
+        if self.rad_refactor.isChecked():
+            self.lbl_refactor_source.setEnabled(True)
+            self.mMapLayerComboBox.setEnabled(True)
+            finish_button_text = QCoreApplication.translate("CreateRestrictionCadastreWizard", "Import")
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(RESTRICTION_TABLE, False))
+
+        elif self.rad_create_manually.isChecked():
+            self.lbl_refactor_source.setEnabled(False)
+            self.mMapLayerComboBox.setEnabled(False)
+            finish_button_text = QCoreApplication.translate("CreateRestrictionCadastreWizard", "Create")
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_1_OPTION_FORM)
+
+        self.wizardPage1.setButtonText(QWizard.FinishButton,
+                                       QCoreApplication.translate("CreateRestrictionCadastreWizard",
+                                       finish_button_text))
+
+    def finished_dialog(self):
+        self.save_settings()
+
+        if self.rad_refactor.isChecked():
+            if self.mMapLayerComboBox.currentLayer() is not None:
+                self.qgis_utils.show_etl_model(self._db,
+                                               self.mMapLayerComboBox.currentLayer(),
+                                               RESTRICTION_TABLE)
+            else:
+                self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                    QCoreApplication.translate("CreateRestrictionCadastreWizard",
+                                               "Select a source layer to set the field mapping to '{}'.").format(RESTRICTION_TABLE),
+                    Qgis.Warning)
+
+        elif self.rad_create_manually.isChecked():
+            self.prepare_right_creation()
 
     def prepare_restriction_creation(self):
         # Load layers
@@ -109,9 +149,6 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
             return
 
 
-        # Configure automatic fields
-        self.qgis_utils.configure_automatic_field(self._restriction_layer, VIDA_UTIL_FIELD, "now()")
-
         # Configure relation fields
         self._natural_party_layer.setDisplayExpression('"documento_identidad"+\' \'+"primer_apellido"+\' \'+"segundo_apellido"+\' \'+"primer_nombre"+\' \'+"segundo_nombre"')
         self._legal_party_layer.setDisplayExpression('"numero_nit"+\' \'+"razon_social"')
@@ -124,10 +161,26 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
         form_config.setSuppress(QgsEditFormConfig.SuppressOff)
         self._restriction_layer.setEditFormConfig(form_config)
 
-        self.edit_spatial_source()
+        self.edit_restriction()
 
-    def edit_spatial_source(self):
+    def edit_restriction(self):
         # Open Form
         self.iface.layerTreeView().setCurrentLayer(self._restriction_layer)
         self._restriction_layer.startEditing()
         self.iface.actionAddFeature().trigger()
+
+    def save_settings(self):
+        settings = QSettings()
+        settings.setValue('Asistente-LADM_COL/wizards/restriction_load_data_type', 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
+
+    def restore_settings(self):
+        settings = QSettings()
+
+        load_data_type = settings.value('Asistente-LADM_COL/wizards/restriction_load_data_type') or 'create_manually'
+        if load_data_type == 'refactor':
+            self.rad_refactor.setChecked(True)
+        else:
+            self.rad_create_manually.setChecked(True)
+
+    def show_help(self):
+        self.qgis_utils.show_help("restriction")
