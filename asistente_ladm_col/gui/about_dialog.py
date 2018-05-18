@@ -45,8 +45,7 @@ class AboutDialog(QDialog, DIALOG_UI):
     def __init__(self, iface=None, qgis_utils=None):
         QDialog.__init__(self)
         self.setupUi(self)
-        self.PLUGIN_VERSION='0.0.10-alpha'
-        #self.btn_download_help.clicked.connect(self.down_help)
+        #self.PLUGIN_VERSION='0.0.10-alpha'
         self.qgis_utils = qgis_utils
         self.iface = iface
         self.check_doc()

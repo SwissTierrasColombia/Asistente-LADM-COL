@@ -739,15 +739,12 @@ class QGISUtils(QObject):
             plugin_dir = os.path.dirname(basepath)
 
             help_path = os.path.join(
-                "file://",
                 plugin_dir,
                 "help",
-                os_language,
-                plugin_version
+                os_language
             )
-
             if os.path.exists(help_path):
-                url = help_path
+                url = os.path.join("file://",help_path)
             else:
                 self.message_with_duration_emitted.emit(
                     QCoreApplication.translate("QGISUtils",
