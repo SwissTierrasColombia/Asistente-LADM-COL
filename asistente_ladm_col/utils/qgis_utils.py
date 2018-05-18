@@ -120,12 +120,13 @@ class QGISUtils(QObject):
         self._layers, self._relations = self.project_generator_utils.get_layers_and_relations_info(db)
         print("### {} LAYERS AND {} RELATIONS CACHED!!! ###".format(len(self._layers), len(self._relations)))
 
-    def get_related_layers(self, layer_names):
+    def get_related_layers(self, layer_names, already_loaded):
         related_layers = list()
         for relation in self._relations:
             for layer_name in layer_names:
                 if relation[REFERENCING_LAYER] == layer_name:
-                    related_layers.append(relation[REFERENCED_LAYER])
+                    if relation[REFERENCED_LAYER] not in already_loaded:
+                        related_layers.append(relation[REFERENCED_LAYER])
 
         return related_layers
 
@@ -166,7 +167,8 @@ class QGISUtils(QObject):
                 if layers_to_load:
                     # Get related layers from cached relations and add them to
                     # list of layers to load, Project Generator will set relations
-                    additional_layers_to_load = self.get_related_layers(layers_to_load)
+                    already_loaded = [ladm_layer.dataProvider().uri().table() for ladm_layer in ladm_layers]
+                    additional_layers_to_load = self.get_related_layers(layers_to_load, already_loaded)
                     all_layers_to_load = list(set(layers_to_load + additional_layers_to_load))
 
                     self.project_generator_utils.load_layers(all_layers_to_load, db)
