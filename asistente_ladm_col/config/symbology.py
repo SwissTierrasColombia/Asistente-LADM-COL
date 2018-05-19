@@ -6,7 +6,8 @@ from .table_mapping_config import (
     BOUNDARY_POINT_TABLE,
     SURVEY_POINT_TABLE,
     PLOT_TABLE,
-    BUILDING_TABLE
+    BUILDING_TABLE,
+    BUILDING_UNIT_TABLE
 )
 
 LAYERS_STYLE = {
@@ -73,7 +74,7 @@ LAYERS_STYLE = {
     BUILDING_TABLE: {
         QgsWkbTypes.PointGeometry:{
             'symbology': {
-                'name': 'square',
+                'name': 'diamond',
                 'color': '#000000',
                 'size': '3'
             },
@@ -84,6 +85,23 @@ LAYERS_STYLE = {
                 'name': 'Simple fill',
                 'color': '251,154,153,128',
                 'outline_color': '148,90,90,128'
+            }, 'label': None
+        }
+    },
+    BUILDING_UNIT_TABLE: {
+        QgsWkbTypes.PointGeometry:{
+            'symbology': {
+                'name': 'diamond',
+                'color': '#ffdb8b',
+                'size': '3'
+            },
+            'label': None
+        },
+        QgsWkbTypes.PolygonGeometry: {
+            'symbology': {
+                'name': 'Simple fill',
+                'color': '255,219,139,128',
+                'outline_color': '166,166,166,128'
             }, 'label': None
         }
     }

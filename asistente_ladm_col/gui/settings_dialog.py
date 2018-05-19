@@ -18,15 +18,21 @@
 """
 import os
 
-from qgis.core import QgsProject, QgsVectorLayer, Qgis, QgsApplication
+from qgis.core import (
+    QgsProject,
+    QgsVectorLayer,
+    Qgis,
+    QgsApplication
+)
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import Qt, QSettings
+from qgis.PyQt.QtCore import Qt, QSettings, pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
 
 from ..config.general_config import (
     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
     PLUGIN_NAME
 )
+from ..lib.dbconnector.db_connector import DBConnector
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
 from ..utils import get_ui_class
@@ -35,6 +41,9 @@ from ..utils.qt_utils import make_file_selector
 DIALOG_UI = get_ui_class('settings_dialog.ui')
 
 class SettingsDialog(QDialog, DIALOG_UI):
+
+    cache_layers_and_relations_requested = pyqtSignal(DBConnector)
+
     def __init__(self, iface=None, parent=None, qgis_utils=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
@@ -79,6 +88,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def accepted(self):
         self._db = None # Reset db connection
         self._db = self.get_db_connection()
+        self.cache_layers_and_relations_requested.emit(self._db)
         self.save_settings()
 
     def set_db_connection(self, mode, dict_conn):

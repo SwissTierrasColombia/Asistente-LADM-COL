@@ -24,7 +24,7 @@ MODULE_HELP_MAPPING = {
     'settings': 'help.html#settings'
 }
 # Configure Project Generator Dependency
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.0.7"
+PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.2.2"
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), set to True
@@ -45,6 +45,11 @@ GEOMETRY_TYPE = 'type'
 KIND_SETTINGS = 'kind_settings'
 TABLE_ALIAS = 'table_alias'
 MODEL = 'model'
+REFERENCING_LAYER = 'referencing_table'
+REFERENCING_FIELD = 'referencing_column'
+RELATION_NAME = 'constraint_name'
+REFERENCED_LAYER = 'referenced_table'
+REFERENCED_FIELD = 'referenced_column'
 
 TEST_SERVER = "www.google.com"
 

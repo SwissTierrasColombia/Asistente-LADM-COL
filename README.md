@@ -85,7 +85,7 @@ docker-compose run --rm qgis
 
 En caso de requerir recrear la imagen de docker se puede ejecutar:
 ```sh
-docker-compose build
+docker-compose down --rmi local && docker-compose build
 ```
 
 ## Pasos para traducir al español

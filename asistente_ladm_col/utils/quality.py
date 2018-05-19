@@ -50,28 +50,37 @@ class QualityUtils(QObject):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
 
-    def check_overlaps_in_boundary_points(self, db):
+    def check_overlapping_points(self, db, point_layer_name):
         features = []
-        boundary_point_layer = self.qgis_utils.get_layer(db, BOUNDARY_POINT_TABLE, load=True)
+        point_layer = self.qgis_utils.get_layer(db, point_layer_name, load=True)
 
-        if boundary_point_layer is None:
+        if point_layer is None:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()),
+                                           "Table {} not found in DB! {}").format(point_layer_name, db.get_description()),
                 Qgis.Warning)
             return
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), QCoreApplication.translate("QGISUtils", "Overlapping boundary points"), "memory")
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     QCoreApplication.translate("QGISUtils", "Overlapping points in {}"
+                                                                .format(point_layer_name)), "memory")
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField("point_count", QVariant.Int)])
+        data_provider.addAttributes([QgsField("point_count", QVariant.Int), QgsField("intersecting_ids", QVariant.String) ])
         error_layer.updateFields()
 
-        overlapping = self.qgis_utils.geometry.get_overlapping_points(boundary_point_layer)
+        overlapping = self.qgis_utils.geometry.get_overlapping_points(point_layer)
+        flat_overlapping = [id for items in overlapping for id in items]  # Build a flat list of ids
+
+        t_ids = {f.id(): f[ID_FIELD] for f in point_layer.getFeatures(flat_overlapping)}
 
         for items in overlapping:
-            feature = boundary_point_layer.getFeature(items[0]) # We need a feature geometry, pick the first id to get it
+            # We need a feature geometry, pick the first id to get it
+            feature = point_layer.getFeature(items[0])
             point = feature.geometry()
-            new_feature = QgsVectorLayerUtils().createFeature(error_layer, point, {0: len(items)})
+            new_feature = QgsVectorLayerUtils().createFeature(
+                error_layer,
+                point,
+                {0: len(items), 1: ", ".join([str(t_ids[i]) for i in items])})
             features.append(new_feature)
 
         error_layer.dataProvider().addFeatures(features)
@@ -83,13 +92,13 @@ class QualityUtils(QObject):
             self.qgis_utils.symbology.set_point_error_symbol(added_layer)
 
             self.qgis_utils.message_emitted.emit(
-            QCoreApplication.translate("QGISUtils",
-                                            "A memory layer with {} overlapping Boundary Points has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
+                QCoreApplication.translate("QGISUtils",
+                                           "A memory layer with {} overlapping points in '{}' has been added to the map!").format(
+                    point_layer_name, added_layer.featureCount()), Qgis.Info)
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "There are no overlapping boundary points."), Qgis.Info)
-
+                                           "There are no overlapping points in layer '{}'!").format(point_layer_name), Qgis.Info)
 
     def check_overlaps_in_boundaries(self, db):
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)

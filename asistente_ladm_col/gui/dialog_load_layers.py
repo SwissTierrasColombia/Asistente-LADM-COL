@@ -42,7 +42,6 @@ from ..config.layer_sets import LAYER_SETS
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
 from ..utils import get_ui_class
-from ..utils.project_generator_utils import ProjectGeneratorUtils
 from ..utils.qt_utils import make_file_selector
 
 from ..resources_rc import *
@@ -58,7 +57,6 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.qgis_utils = qgis_utils
         self.models_tree = dict()
         self.selected_items = dict()
-        self.project_generator_utils = ProjectGeneratorUtils()
         self.icon_names = ['points', 'lines', 'polygons', 'tables', 'domains', 'structures', 'associations']
 
         self.txt_search_text.addAction(QIcon(":/Asistente-LADM_COL/resources/images/search.png"), QLineEdit.LeadingPosition)
@@ -90,8 +88,8 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.load_available_layers()
 
     def load_available_layers(self):
-        # Call project generator tables_info, cache it and fill the tree
-        tables_info = self.project_generator_utils.get_tables_info_without_ignored_tables(self._db)
+        # Call project generator tables_info and fill the tree
+        tables_info = self.qgis_utils._layers
         self.models_tree = dict()
 
         for record in tables_info:

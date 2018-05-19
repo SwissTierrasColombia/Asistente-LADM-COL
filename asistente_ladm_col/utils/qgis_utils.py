@@ -27,7 +27,7 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsMapLayer,
                        QgsPointXY,
                        QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
-                       QgsApplication, QgsProcessingFeedback)
+                       QgsApplication, QgsProcessingFeedback, QgsRelation)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
                               QVariant, QSettings, QLocale, QUrl, QFile, QIODevice)
 import processing
@@ -45,6 +45,11 @@ from ..config.general_config import (
     TEST_SERVER,
     HELP_URL,
     PLUGIN_VERSION,
+    REFERENCING_LAYER,
+    REFERENCING_FIELD,
+    RELATION_NAME,
+    REFERENCED_LAYER,
+    REFERENCED_FIELD
 )
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
@@ -70,12 +75,14 @@ from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 class QGISUtils(QObject):
 
     activate_layer_requested = pyqtSignal(QgsMapLayer)
+    clear_status_bar_emitted = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
     message_emitted = pyqtSignal(str, int) # Message, level
     message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
     message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
     map_refresh_requested = pyqtSignal()
+    status_bar_message_emitted = pyqtSignal(str, int) # Message, duration
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
 
@@ -86,6 +93,8 @@ class QGISUtils(QObject):
         self.geometry = GeometryUtils()
 
         self.__settings_dialog = None
+        self._layers = list()
+        self._relations = list()
 
     def set_db_connection(self, mode, dict_conn):
         """
@@ -94,15 +103,39 @@ class QGISUtils(QObject):
         mode: 'pg' or 'gpkg'
         dict_conn: key-values (host, port, database, schema, user, password, dbfile)
         """
-        self.get_settings_dialog().set_db_connection(mode, dict_conn)
+        dlg = self.get_settings_dialog()
+        dlg.set_db_connection(mode, dict_conn)
 
     def get_settings_dialog(self):
-        self.__settings_dialog = SettingsDialog(qgis_utils=self)
+        if self.__settings_dialog is None:
+            self.__settings_dialog = SettingsDialog(qgis_utils=self)
+            self.__settings_dialog.cache_layers_and_relations_requested.connect(self.cache_layers_and_relations)
+
         return self.__settings_dialog
 
     def get_db_connection(self):
         self.__settings_dialog = self.get_settings_dialog()
         return self.__settings_dialog.get_db_connection()
+
+    def cache_layers_and_relations(self, db):
+        self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
+            "Extracting data from the database... This is done only once per session!"), 0)
+        QCoreApplication.processEvents()
+
+        with OverrideCursor(Qt.WaitCursor):
+            self._layers, self._relations = self.project_generator_utils.get_layers_and_relations_info(db)
+
+        self.clear_status_bar_emitted.emit()
+
+    def get_related_layers(self, layer_names, already_loaded):
+        related_layers = list()
+        for relation in self._relations:
+            for layer_name in layer_names:
+                if relation[REFERENCING_LAYER] == layer_name:
+                    if relation[REFERENCED_LAYER] not in already_loaded:
+                        related_layers.append(relation[REFERENCED_LAYER])
+
+        return related_layers
 
     def get_layer(self, db, layer_name, geometry_type=None, load=False):
         # Handy function to avoid sending a whole dict when all we need is a single table/layer
@@ -118,17 +151,37 @@ class QGISUtils(QObject):
         # Response is a dict like this:
         # layers = {layer_id: layer_object} layer_object might be None
         response_layers = dict()
+        additional_layers_to_load = list()
 
         with OverrideCursor(Qt.WaitCursor):
             for layer_id, layer_info in layers.items():
+                layer_obj = None
+                ladm_layers = self.get_ladm_layers_from_layer_tree(db)
+
                 # If layer is in LayerTree, return it
-                layer_obj = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
+                for ladm_layer in ladm_layers:
+                    if layer_info['name'] == ladm_layer.dataProvider().uri().table():
+                        if layer_info['geometry'] is not None and layer_info['geometry'] != ladm_layer.wkbType():
+                            continue
+
+                        layer_obj = ladm_layer
+
                 response_layers[layer_id] = layer_obj
 
             if load:
                 layers_to_load = [layers[layer_id]['name'] for layer_id, layer_obj in response_layers.items() if layer_obj is None]
+
                 if layers_to_load:
-                    self.project_generator_utils.load_layers(layers_to_load, db)
+                    # Get related layers from cached relations and add them to
+                    # list of layers to load, Project Generator will set relations
+                    already_loaded = [ladm_layer.dataProvider().uri().table() for ladm_layer in ladm_layers]
+                    additional_layers_to_load = self.get_related_layers(layers_to_load, already_loaded)
+                    all_layers_to_load = list(set(layers_to_load + additional_layers_to_load))
+
+                    self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
+                        "Loading LADM_COL layers to QGIS and configuring their relations and forms..."), 0)
+                    QCoreApplication.processEvents()
+                    self.project_generator_utils.load_layers(all_layers_to_load, db)
 
                     # Once load_layers() is called, go through the layer tree to get
                     # newly added layers
@@ -139,6 +192,8 @@ class QGISUtils(QObject):
 
                         if response_layers[layer_id] is not None:
                             self.post_load_configurations(response_layers[layer_id])
+
+                    self.clear_status_bar_emitted.emit()
 
         return response_layers
 
@@ -195,8 +250,59 @@ class QGISUtils(QObject):
     def post_load_configurations(self, layer):
         # Do some post-load work, such as setting styles or
         # setting automatic fields for that layer
+        self.configure_missing_relations(layer)
         self.set_automatic_fields(layer)
         self.symbology.set_layer_style(layer)
+
+    def configure_missing_relations(self, layer):
+        layer_name = layer.dataProvider().uri().table()
+
+        db_relations = list()
+        for relation in self._relations:
+            if relation[REFERENCING_LAYER] == layer_name:
+                db_relations.append(relation)
+
+        qgis_relations = QgsProject.instance().relationManager().referencingRelations(layer)
+        qgis_rels = list()
+        for qgis_relation in qgis_relations:
+            qgis_rel = dict()
+            referenced_layer = qgis_relation.referencedLayer()
+            qgis_rel[REFERENCED_LAYER] = referenced_layer.dataProvider().uri().table()
+            qgis_rel[REFERENCED_FIELD] = referenced_layer.fields()[qgis_relation.referencedFields()[0]].name()
+            qgis_rel[REFERENCING_FIELD] = layer.fields()[qgis_relation.referencingFields()[0]].name()
+            qgis_rels.append(qgis_rel)
+
+        new_relations = list()
+        # Compare relations, configure what is missing
+        for db_relation in db_relations:
+            found = False
+            for qgis_rel in qgis_rels:
+                # We known that referencing_layer already matches, so don't check
+                if qgis_rel[REFERENCED_LAYER] == db_relation[REFERENCED_LAYER] and \
+                    qgis_rel[REFERENCING_FIELD] == db_relation[REFERENCING_FIELD] and \
+                    qgis_rel[REFERENCED_FIELD] == db_relation[REFERENCED_FIELD]:
+
+                    found = True
+                    break
+
+            if not found:
+                # This relation is not configured into QGIS, let's do it
+                new_rel = QgsRelation()
+                new_rel.setReferencingLayer(layer.id())
+                referenced_layer = self.get_layer_from_layer_tree(db_relation[REFERENCED_LAYER], layer.dataProvider().uri().schema())
+                if referenced_layer is None:
+                    # Referenced_layer NOT FOUND in layer tree...
+                    continue
+                new_rel.setReferencedLayer(referenced_layer.id())
+                new_rel.addFieldPair(db_relation[REFERENCING_FIELD], db_relation[REFERENCED_FIELD])
+                new_rel.setId(db_relation[RELATION_NAME]) #generateId()
+                new_rel.setName(db_relation[RELATION_NAME])
+
+                new_relations.append(new_rel)
+
+        all_qgis_relations = list(QgsProject.instance().relationManager().relations().values())
+        all_qgis_relations.extend(new_relations)
+        QgsProject.instance().relationManager().setRelations(all_qgis_relations)
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
@@ -279,7 +385,6 @@ class QGISUtils(QObject):
         for field in layer.fields():
             self.reset_automatic_field(layer, field.name())
 
-        print("AUTOFIELDS DISABLED!")
         return automatic_fields_definition
 
     def check_if_and_enable_automatic_fields(self, db, automatic_fields_definition, layer_name, geometry_type=None):
@@ -296,8 +401,6 @@ class QGISUtils(QObject):
 
         for idx, default_definition in automatic_fields_definition.items():
             layer.setDefaultValueDefinition(idx, default_definition)
-
-        print("AUTOFIELDS ENABLED!")
 
     def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, target_layer_name):
         if not csv_path or not os.path.exists(csv_path):
