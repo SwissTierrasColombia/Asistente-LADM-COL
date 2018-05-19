@@ -26,9 +26,8 @@ import zipfile
 import tempfile
 from functools import partial
 
-from qgis.core import QgsNetworkContentFetcherTask as QNCFT
-from qgis.core import QgsApplication
-from qgis.PyQt.QtCore import (QUrl, QFile, QIODevice)
+from qgis.core import QgsNetworkContentFetcherTask, QgsApplication, Qgis
+from qgis.PyQt.QtCore import QUrl, QFile, QIODevice, QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
 
 from ..config.general_config import (
@@ -48,22 +47,18 @@ class AboutDialog(QDialog, DIALOG_UI):
         #self.PLUGIN_VERSION='0.0.10-alpha'
         self.qgis_utils = qgis_utils
         self.iface = iface
-        self.check_doc()
+        self.check_local_help()
 
-
-    def check_doc(self):
+    def check_local_help(self):
         if  (os.path.exists(
                 os.path.join(QgsApplication.qgisSettingsDirPath(), 'python/plugins', 'asistente_ladm_col', 'help','es'))
             or
             os.path.exists(
                 os.path.join(QgsApplication.qgisSettingsDirPath(), 'python/plugins', 'asistente_ladm_col', 'help', 'en'))):
-            self.iface.messageBar().pushMessage("Asistente LADM_COL", "Offline Documentation exist", 1, 30)
-            self.btn_download_help.setText('Ver Documentación')
+            self.btn_download_help.setText(QCoreApplication.translate("AboutDialog", 'Open help from local folder'))
             self.btn_download_help.clicked.connect(self.show_help)
         else:
-            self.btn_download_help.clicked.connect(self.down_help)
-
-
+            self.btn_download_help.clicked.connect(self.download_help)
 
     def save_file(self, a):
         tmpFile = tempfile.mktemp()
@@ -72,7 +67,6 @@ class AboutDialog(QDialog, DIALOG_UI):
         outFile.open(QIODevice.WriteOnly)
         outFile.write(a.reply().readAll())
         outFile.close()
-        print(os.path.join(QgsApplication.qgisSettingsDirPath(), 'python/plugins', 'asistente_ladm_col', 'help'))
         try:
             with zipfile.ZipFile(tmpFile, "r") as zip_ref:
                 zip_ref.extractall(tmpFold)
@@ -83,12 +77,13 @@ class AboutDialog(QDialog, DIALOG_UI):
                     print(i)
                     shutil.move(i, os.path.join(b, i[-2:]))
         except zipfile.BadZipFile as e:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL", "Error, el archivo descargado no es valido.",1, 30)
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("AboutDialog", "There was an error in the download. The downloaded file is invalid."),
+                Qgis.Warning)
 
-    def down_help(self):
-        url='/'.join([HELP_DOWNLOAD,self.PLUGIN_VERSION, 'asistente_ladm_col_docs.zip'] )
-        a = QNCFT(QUrl(url))
-        #a.fetched.connect(lambda: self.save_file(a))
+    def download_help(self):
+        url = '/'.join([HELP_DOWNLOAD, PLUGIN_VERSION, 'asistente_ladm_col_docs.zip'] )
+        a = QgsNetworkContentFetcherTask(QUrl(url))
         a.fetched.connect(partial(self.save_file, a))
         QgsApplication.taskManager().addTask(a)
 
