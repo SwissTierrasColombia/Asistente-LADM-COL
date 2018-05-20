@@ -35,7 +35,7 @@
    <item row="4" column="0" alignment="Qt::AlignHCenter">
     <widget class="QPushButton" name="btn_download_help">
      <property name="text">
-      <string>Download Help for offline access</string>
+      <string>Download help for offline access</string>
      </property>
     </widget>
    </item>
