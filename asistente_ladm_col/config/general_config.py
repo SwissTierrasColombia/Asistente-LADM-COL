@@ -24,7 +24,7 @@ MODULE_HELP_MAPPING = {
     'settings': 'help.html#settings'
 }
 # Configure Project Generator Dependency
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.2.2"
+PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.2.3"
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), set to True
@@ -55,3 +55,7 @@ TEST_SERVER = "www.google.com"
 
 # For testing if an schema comes from ili2db
 INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
+
+# Documentation
+
+HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
