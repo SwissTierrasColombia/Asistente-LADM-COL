@@ -94,14 +94,7 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
 
     def prepare_right_creation(self):
         # Load layers
-        res_layers = self.qgis_utils.get_layers(self._db, {
-            RIGHT_TABLE: {'name':RIGHT_TABLE, 'geometry':None},
-            RIGHT_TYPE_TABLE: {'name':RIGHT_TYPE_TABLE, 'geometry':None},
-            NATURAL_PARTY_TABLE: {'name':NATURAL_PARTY_TABLE, 'geometry':None},
-            LEGAL_PARTY_TABLE:{'name':LEGAL_PARTY_TABLE, 'geometry':None},
-            PARCEL_TABLE:{'name':PARCEL_TABLE, 'geometry':None},
-            LA_BAUNIT_TABLE:{'name':LA_BAUNIT_TABLE, 'geometry':None},
-            LA_GROUP_PARTY_TABLE:{'name':LA_GROUP_PARTY_TABLE, 'geometry':None}}, load=True)
+        res_layers = self.qgis_utils.get_layer(self._db, RIGHT_TABLE, None, load=True)
 
         self._right_layer = res_layers[RIGHT_TABLE]
         if self._right_layer is None:
@@ -111,53 +104,13 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return
 
-        self._natural_party_layer = res_layers[NATURAL_PARTY_TABLE]
-        if self._natural_party_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateRigthCadastreWizard",
-                                           "Natural Party layer couldn't be found..."),
-                Qgis.Warning)
-            return
-
-        self._legal_party_layer = res_layers[LEGAL_PARTY_TABLE]
-        if self._legal_party_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateRigthCadastreWizard",
-                                           "Legal Party layer couldn't be found..."),
-                Qgis.Warning)
-            return
-
-        self._parcel_layer = res_layers[PARCEL_TABLE]
-        if self._parcel_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateRigthCadastreWizard",
-                                           "Parcel layer couldn't be found..."),
-                Qgis.Warning)
-            return
-
-        self._la_baunit_layer = res_layers[LA_BAUNIT_TABLE]
-        if self._la_baunit_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateRigthCadastreWizard",
-                                           "LA_Baunit layer couldn't be found..."),
-                Qgis.Warning)
-            return
-
-        self._la_group_party_layer = res_layers[LA_GROUP_PARTY_TABLE]
-        if self._la_group_party_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateRigthCadastreWizard",
-                                           "LA_Group Party layer couldn't be found..."),
-                Qgis.Warning)
-            return
-
-
         # Configure relation fields
-        self._natural_party_layer.setDisplayExpression('"documento_identidad"+\' \'+"primer_apellido"+\' \'+"segundo_apellido"+\' \'+"primer_nombre"+\' \'+"segundo_nombre"')
-        self._legal_party_layer.setDisplayExpression('"numero_nit"+\' \'+"razon_social"')
-        self._parcel_layer.setDisplayExpression('"nupre"+\' \'+"fmi"+\' \'+"nombre"')
-        self._la_baunit_layer.setDisplayExpression('"t_id"+\' \'+"nombre"+\' \'+"tipo"')
-        self._la_group_party_layer.setDisplayExpression('"t_id"+\' \'+"nombre"')
+        # TODO take this block to qgis_utils (post_load_configurations)
+        # self._natural_party_layer.setDisplayExpression('"documento_identidad"+\' \'+"primer_apellido"+\' \'+"segundo_apellido"+\' \'+"primer_nombre"+\' \'+"segundo_nombre"')
+        # self._legal_party_layer.setDisplayExpression('"numero_nit"+\' \'+"razon_social"')
+        # self._parcel_layer.setDisplayExpression('"nupre"+\' \'+"fmi"+\' \'+"nombre"')
+        # self._la_baunit_layer.setDisplayExpression('"t_id"+\' \'+"nombre"+\' \'+"tipo"')
+        # self._la_group_party_layer.setDisplayExpression('"t_id"+\' \'+"nombre"')
 
         # Don't suppress (i.e., show) feature form
         form_config = self._right_layer.editFormConfig()
