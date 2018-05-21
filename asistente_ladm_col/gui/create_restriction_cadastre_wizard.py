@@ -93,9 +93,8 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
 
     def prepare_restriction_creation(self):
         # Load layers
-        res_layers = self.qgis_utils.get_layer(self._db, RESTRICTION_TABLE, None, load=True)
+        self._restriction_layer = self.qgis_utils.get_layer(self._db, RESTRICTION_TABLE, None, load=True)
 
-        self._restriction_layer = res_layers
         if self._restriction_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateRestrictionCadastreWizard",

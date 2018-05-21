@@ -94,9 +94,8 @@ class CreateResponsibilityCadastreWizard(QWizard, WIZARD_UI):
 
     def prepare_responsibility_creation(self):
         # Load layers
-        res_layers = self.qgis_utils.get_layer(self._db, RESPONSIBILITY_TABLE, None, load=True)
+        self._responsibility_layer = self.qgis_utils.get_layer(self._db, RESPONSIBILITY_TABLE, None, load=True)
 
-        self._responsibility_layer = res_layers
         if self._responsibility_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateResponsibilityCadastreWizard",
