@@ -56,6 +56,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
+                                           DICT_DISPLAY_EXPRESSIONS,
                                            ID_FIELD,
                                            LENGTH_FIELD_BOUNDARY_TABLE,
                                            LESS_TABLE,
@@ -252,6 +253,7 @@ class QGISUtils(QObject):
         # Do some post-load work, such as setting styles or
         # setting automatic fields for that layer
         self.configure_missing_relations(layer)
+        self.set_display_expressions(layer)
         self.set_automatic_fields(layer)
         self.symbology.set_layer_style(layer)
 
@@ -304,6 +306,12 @@ class QGISUtils(QObject):
         all_qgis_relations = list(QgsProject.instance().relationManager().relations().values())
         all_qgis_relations.extend(new_relations)
         QgsProject.instance().relationManager().setRelations(all_qgis_relations)
+
+    def set_display_expressions(self, layer):
+        print("Entra a verificar")
+        if layer.name() in DICT_DISPLAY_EXPRESSIONS:
+            print("Tiene expresiones")
+            layer.setDisplayExpression(DICT_DISPLAY_EXPRESSIONS[layer.name()])
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)

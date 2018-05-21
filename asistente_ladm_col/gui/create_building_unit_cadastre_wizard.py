@@ -123,14 +123,15 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return
 
-        display_expression = '"{}{}" + \' \' + "{}{}"'.format(
-            NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
-            NAMESPACE_FIELD,
-            NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
-            LOCAL_ID_FIELD
-        )
-        self._building_layer.setDisplayExpression(display_expression)
-        self._building_layer_points.setDisplayExpression(display_expression)
+        #TODO review this part for _building_layer_points
+        # display_expression = '"{}{}" + \' \' + "{}{}"'.format(
+        #     NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
+        #     NAMESPACE_FIELD,
+        #     NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
+        #     LOCAL_ID_FIELD
+        # )
+        # self._building_layer.setDisplayExpression(display_expression)
+        # self._building_layer_points.setDisplayExpression(display_expression)
 
         # Disable transactions groups
         QgsProject.instance().setAutoTransaction(False)

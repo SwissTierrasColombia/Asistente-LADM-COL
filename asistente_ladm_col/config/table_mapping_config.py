@@ -7,7 +7,12 @@ BOUNDARY_POINT_TABLE = "puntolindero"
 BOUNDARY_TABLE = "lindero"
 BUILDING_TABLE = "construccion"
 BUILDING_UNIT_TABLE = "unidadconstruccion"
+BUSINESS_NAME_FIELD = "razon_social"
 CONTROL_POINT_TABLE = "puntocontrol"
+DOCUMENT_ID_FIELD = "documento_identidad"
+FIRST_NAME_FIELD = "primer_nombre"
+FIRST_SURNAME_FIELD = "primer_apellido"
+FMI_FIELD = "fmi"
 GENDER_TYPE_TABLE = "col_generotipo"
 LA_GROUP_PARTY_TABLE = "la_agrupacion_interesados"
 ID_FIELD = "t_id"
@@ -32,8 +37,11 @@ LOCAL_ID_FIELD = "_local_id"
 MORE_BOUNDARY_FACE_STRING_TABLE = "masccl"
 MOREBFS_TABLE_BOUNDARY_FIELD = "cclp_lindero"
 MOREBFS_TABLE_PLOT_FIELD = "uep_terreno"
+NAME_FIELD = "nombre"
 NAMESPACE_FIELD = "_espacio_de_nombres"
 NATURAL_PARTY_TABLE = "interesado_natural"
+NIT_NUMBER_FIELD = "numero_nit"
+NUPRE_FIELD = "nupre"
 PARTY_DOCUMENT_TYPE_TABLE = "col_interesadodocumentotipo"
 PARTY_TYPE_TABLE = "la_interesadotipo"
 POINT_AGREEMENT_TYPE_TABLE = "col_acuerdotipo"
@@ -50,6 +58,8 @@ RESTRICTION_TYPE_TABLE = "col_restricciontipo"
 RIGHT_TABLE = "col_derecho"
 RIGHT_TYPE_TABLE = "col_derechotipo"
 REFERENCE_POINT_FIELD = "punto_referencia"
+SECOND_NAME_FIELD = "segundo_nombre"
+SECOND_SURNAME_FIELD = "segundo_apellido"
 SPATIAL_SOURCE_TABLE = "col_fuenteespacial"
 SPATIAL_SOURCE_TYPE_TABLE = "col_fuenteespacialtipo"
 SURVEY_POINT_TABLE = "puntolevantamiento"
@@ -58,6 +68,7 @@ TABLE_PROP_ASSOCIATION = "ASSOCIATION"
 TABLE_PROP_DOMAIN = "ENUM"
 TABLE_PROP_STRUCTURE = "STRUCTURE"
 TYPE_BUILDING_TYPE_TABLE = "col_tipoconstrucciontipo"
+TYPE_FIELD = "tipo"
 UEBAUNIT_TABLE = "uebaunit"
 UEBAUNIT_TABLE_PARCEL_FIELD = "baunit_predio"
 UEBAUNIT_TABLE_PLOT_FIELD = "ue_terreno"
@@ -80,4 +91,20 @@ NAMESPACE_PREFIX = {
     RIGHT_TABLE: 'r',
     SPATIAL_SOURCE_TABLE: 's',
     SURVEY_POINT_TABLE: 'p'
+}
+
+DICT_DISPLAY_EXPRESSIONS = {
+    NATURAL_PARTY_TABLE: '{}+\' \'+{}+\' \'+{}+\' \'+{}+\' \'+{}'.format(DOCUMENT_ID_FIELD,
+                                                                    FIRST_SURNAME_FIELD,
+                                                                    SECOND_SURNAME_FIELD,
+                                                                    FIRST_NAME_FIELD,
+                                                                    SECOND_NAME_FIELD),
+    LEGAL_PARTY_TABLE: '{}+\' \'+{}'.format(NIT_NUMBER_FIELD, BUSINESS_NAME_FIELD),
+    PARCEL_TABLE: '{}+\' \'+{}+\' \'+{}'.format(NUPRE_FIELD, FMI_FIELD, NAME_FIELD),
+    LA_BAUNIT_TABLE: '{}+\' \'+{}+\' \'+{}'.format(ID_FIELD, NAME_FIELD, TYPE_FIELD),
+    LA_GROUP_PARTY_TABLE: '{}+\' \'+{}'.format(ID_FIELD, NAME_FIELD),
+    BUILDING_UNIT_TABLE: '"{}{}" + \' \' + "{}{}"'.format(NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
+                                                                    NAMESPACE_FIELD,
+                                                                    NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
+                                                                    LOCAL_ID_FIELD)
 }
