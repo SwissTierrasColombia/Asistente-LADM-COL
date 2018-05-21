@@ -289,6 +289,15 @@ class AsistenteLADMCOLPlugin(QObject):
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, level, 15)
 
+    def show_message_to_open_about_dialog(self, msg):
+        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        button = QPushButton(widget)
+        button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+            "Open About Dialog"))
+        button.pressed.connect(self.show_about_dialog)
+        widget.layout().addWidget(button)
+        self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
+
     def show_status_bar_message(self, msg, duration):
         self.iface.statusBarIface().showMessage(msg, duration)
 
@@ -558,9 +567,10 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_about_dialog(self):
         if self._about_dialog is None:
             self._about_dialog = AboutDialog(self.qgis_utils)
+            self._about_dialog.message_with_button_open_about_emitted.connect(self.show_message_to_open_about_dialog)
         else:
             self._about_dialog.check_local_help()
-            
+
         rich_text = '<html><head/><body><p align="center"><span style=" font-size:10pt; font-weight:600;">v{}</span></p></body></html>'
         self._about_dialog.lbl_version.setText(rich_text.format(PLUGIN_VERSION))
         self._about_dialog.exec_()

@@ -33,19 +33,24 @@ from qgis.PyQt.QtCore import (
     QIODevice,
     QCoreApplication,
     QLocale,
-    QSettings
+    QSettings,
+    pyqtSignal
 )
 from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
 
 from ..config.general_config import (
     PLUGIN_VERSION,
     HELP_DOWNLOAD,
-    PLUGIN_NAME
+    PLUGIN_NAME,
+    TEST_SERVER
 )
 
 DIALOG_UI = get_ui_class('about_dialog.ui')
 
 class AboutDialog(QDialog, DIALOG_UI):
+
+    message_with_button_open_about_emitted = pyqtSignal(str)
+
     def __init__(self, qgis_utils):
         QDialog.__init__(self)
         self.setupUi(self)
@@ -94,23 +99,28 @@ class AboutDialog(QDialog, DIALOG_UI):
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate("AboutDialog", "There was an error with the download. The downloaded file is invalid."),
                     Qgis.Warning)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("AboutDialog", "Help fiels were successfully downloaded and can be accessed offline from the About dialog!"),
-                Qgis.Info)
+            else:
+                self.message_with_button_open_about_emitted.emit(
+                    QCoreApplication.translate("AboutDialog", "Help files were successfully downloaded and can be accessed offline from the About dialog!"))
 
         self.check_local_help()
 
     def download_help(self):
-        self.btn_download_help.setEnabled(False)
-        url = '/'.join([HELP_DOWNLOAD, PLUGIN_VERSION, 'asistente_ladm_col_docs.zip'])
-        fetcher_task = QgsNetworkContentFetcherTask(QUrl(url))
-        fetcher_task.fetched.connect(partial(self.save_file, fetcher_task))
-        fetcher_task.taskCompleted.connect(self.enable_download_button)
+        if self.qgis_utils.is_connected(TEST_SERVER):
+            self.btn_download_help.setEnabled(False)
+            url = '/'.join([HELP_DOWNLOAD, PLUGIN_VERSION, 'asistente_ladm_col_docs.zip'])
+            fetcher_task = QgsNetworkContentFetcherTask(QUrl(url))
+            fetcher_task.taskCompleted.connect(self.enable_download_button)
+            fetcher_task.fetched.connect(partial(self.save_file, fetcher_task))
+            QgsApplication.taskManager().addTask(fetcher_task)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("AboutDialog", "There was a problem connecting to Internet."),
+                Qgis.Warning)
 
     def enable_download_button(self):
         self.btn_download_help.setEnabled(True)
         self.check_local_help()
 
     def show_help(self):
-        self.qgis_utils.show_help('')
+        self.qgis_utils.show_help('', offline=True)
