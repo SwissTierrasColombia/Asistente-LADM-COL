@@ -96,7 +96,7 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
         # Load layers
         res_layers = self.qgis_utils.get_layer(self._db, RIGHT_TABLE, None, load=True)
 
-        self._right_layer = res_layers[RIGHT_TABLE]
+        self._right_layer = res_layers
         if self._right_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateRightCadastreWizard",
