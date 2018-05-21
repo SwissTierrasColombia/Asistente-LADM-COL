@@ -556,11 +556,13 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def quality_check_all(self):
-        self.quality.check_too_long_segments(self.get_db_connection())
-        self.quality.check_overlaps_in_boundary_points(self.get_db_connection())
-        self.quality.check_overlaps_in_boundaries(self.get_db_connection())
-        self.quality.check_missing_boundary_points_in_boundaries(self.get_db_connection())
-
+        self.check_too_long_segments()
+        self.check_overlaps_in_boundary_points()
+        self.check_overlaps_in_control_points()
+        self.check_overlaps_in_boundaries()
+        self.check_missing_boundary_points_in_boundaries()
+        self.check_dangles_in_boundaries()
+        
     def show_help(self):
         self.qgis_utils.show_help()
 
