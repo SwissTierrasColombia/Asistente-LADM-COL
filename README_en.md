@@ -14,7 +14,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([0.0.9](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.0.9)) of the LADM_COL Assistant depends on [Project Generator](https://github.com/opengisch/projectgenerator/) plugin v3.0.7 and allows users to:
+The current version ([0.1.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.1.0)) of the LADM_COL Assistant depends on [Project Generator](https://github.com/opengisch/projectgenerator/) plugin v3.2.3 and allows users to:
 
  - Capture data for the LADM_COL v2.2.1 model.
  - Preprocess points: Controlled Measurement.
@@ -39,7 +39,12 @@ The current version ([0.0.9](https://github.com/AgenciaImplementacion/Asistente-
  - Create `Parcels`:
    - From existing `Plots`.
    - From another table with any structure, setting a field mapping.
- - Crete `Buildings`:
+ - Create `Buildings`:
+   - By digitizing on the map.
+     - Aids for digitization:
+       - Automatic snapping configuration and default field values.
+   - From another layer with any structure, setting a field mapping.
+ - Create `Building Units`:
    - By digitizing on the map.
      - Aids for digitization:
        - Automatic snapping configuration and default field values.
@@ -51,17 +56,18 @@ The current version ([0.0.9](https://github.com/AgenciaImplementacion/Asistente-
    - Using preconfigured forms.
    - From another table with any structure, setting a field mapping.
  - Select in a dialog layers to load from any model in the database or schema:
-   - Use the 'Project Generator' plugin (a prerequisite) to load layers with configured forms and relations.
+   - Use the 'Project Generator' plugin (a prerequisite) to load layers with configured forms, relations and domains.
    - Load preconfigured layer sets.
  - Check quality:
    - Check too long `Boundary` segments (exceeding a given tolerance).
    - Check overlaps in `Boundary Points`.
+   - Check overlaps in `Control Points`.
    - Check overlaps in `Boundary`.
    - Check missing `Boundary Points` in `Boundaries`.
    - Check dangles in `Boundary`.
  - Configure automatic values for `namespace` and `local_id` attributes.
  - Use configured styles for loaded layers.
- - View illustrative GIFs in the plugin's online help.
+ - View illustrative GIFs in the plugin's online help or download them for offline work.
 
 ## Testing
 

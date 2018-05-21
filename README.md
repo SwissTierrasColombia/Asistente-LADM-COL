@@ -17,7 +17,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([0.0.9](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.0.9)) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.0.7 y permite:
+La versión actual ([0.1.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.1.0)) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.2.3 y permite:
 
  - Capturar datos para el modelo LADM_COL v2.2.1.
  - Preprocesar puntos: Medición controlada.
@@ -44,6 +44,11 @@ La versión actual ([0.0.9](https://github.com/AgenciaImplementacion/Asistente-L
      - Ayudas para la digitalización:
        - Configuración automática de snapping y de valores predeterminados para campos.
    - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
+ - Crear `Unidades de Construcción`:
+   - Digitalizando sobre el mapa.
+     - Ayudas para la digitalización:
+       - Configuración automática de snapping y de valores predeterminados para campos.
+   - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
  - Crear `Predios`:
    - A partir de `Terrenos` existentes.
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
@@ -54,17 +59,18 @@ La versión actual ([0.0.9](https://github.com/AgenciaImplementacion/Asistente-L
    - Usando formularios preconfigurados.
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
  - Seleccionar en un diálogo las capas a cargar de cualquier modelo de la base de datos o esquema:
-   - Usar el plugin 'Project Generator' para cargar capas con formularios y relaciones configuradas.
+   - Usar el plugin 'Project Generator' para cargar capas con formularios, relaciones y dominios configurados.
    - Cargar conjuntos de capas preconfigurados.
  - Realizar revisiones de calidad:
    - Revisar segmentos de linderos muy largos (que superen una tolerancia dada).
    - Revisar superposiciones en `Punto Lindero`.
+   - Revisar superposiciones en `Punto de Control`.
    - Revisar superposiciones en `Lindero`.
    - Revisar nodos de `Lindero` sin `Punto Lindero` asociado.
    - Revisar nodos de `Lindero` no conectados.
  - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
  - Usar estilos preconfigurados para asignarlos a las capas cargadas.
- - Visualizar GIFs ilustrativos en la ayuda (online) del plugin.
+ - Visualizar GIFs ilustrativos en la ayuda online del plugin o descargarlos para trabajo offline.
 
 ## Pruebas automatizadas al software
 
