@@ -55,3 +55,7 @@ TEST_SERVER = "www.google.com"
 
 # For testing if an schema comes from ili2db
 INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
+
+# Documentation
+
+HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'

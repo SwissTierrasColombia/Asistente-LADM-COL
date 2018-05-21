@@ -17,9 +17,8 @@
  ***************************************************************************/
 """
 import os
-import webbrowser
 import socket
-
+import webbrowser
 
 from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri, Qgis,
@@ -30,7 +29,7 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
                        QgsApplication, QgsProcessingFeedback, QgsRelation)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
-                              QVariant, QSettings, QLocale)
+                              QVariant, QSettings, QLocale, QUrl, QFile, QIODevice)
 import processing
 
 from .project_generator_utils import ProjectGeneratorUtils
@@ -821,37 +820,34 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return
 
-    def show_help(self, module=''):
+    def is_connected(self, hostname):
+        try:
+            host = socket.gethostbyname(hostname)
+            s = socket.create_connection((host, 80), 2)
+            return True
+        except:
+            pass
+        return False
+
+    def show_help(self, module='', offline=False):
         url = ''
         section = MODULE_HELP_MAPPING[module]
         plugin_version = PLUGIN_VERSION
 
-        def is_connected(hostname):
-            try:
-                host = socket.gethostbyname(hostname)
-                s = socket.create_connection((host, 80), 2)
-                return True
-            except:
-                pass
-            return False
-
         # If we don't have Internet access check if the documentation is in the
         # expected local dir and show it. Otherwise, show a warning message.
         os_language = QLocale(QSettings().value('locale/userLocale')).name()[:2]
-        if not is_connected(TEST_SERVER):
+        if offline or not self.is_connected(TEST_SERVER):
             basepath = os.path.dirname(os.path.abspath(__file__))
             plugin_dir = os.path.dirname(basepath)
 
             help_path = os.path.join(
-                "file://",
                 plugin_dir,
                 "help",
-                os_language,
-                plugin_version
+                os_language
             )
-
             if os.path.exists(help_path):
-                url = help_path
+                url = os.path.join("file://",help_path)
             else:
                 self.message_with_duration_emitted.emit(
                     QCoreApplication.translate("QGISUtils",
