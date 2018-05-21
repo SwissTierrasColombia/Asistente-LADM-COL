@@ -89,7 +89,7 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
                     Qgis.Warning)
 
         elif self.rad_create_manually.isChecked():
-            self.prepare_right_creation()
+            self.prepare_restriction_creation()
 
     def prepare_restriction_creation(self):
         # Load layers

@@ -90,7 +90,7 @@ class CreateResponsibilityCadastreWizard(QWizard, WIZARD_UI):
                     Qgis.Warning)
 
         elif self.rad_create_manually.isChecked():
-            self.prepare_right_creation()
+            self.prepare_responsibility_creation()
 
     def prepare_responsibility_creation(self):
         # Load layers
