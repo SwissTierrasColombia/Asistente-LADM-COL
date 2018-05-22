@@ -100,6 +100,12 @@ class AboutDialog(QDialog, DIALOG_UI):
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate("AboutDialog", "There was an error with the download. The downloaded file is invalid."),
                     Qgis.Warning)
+            try:
+                os.remove(tmpFile)
+                os.remove(tmpFold)
+            except:
+                pass
+
             else:
                 self.message_with_button_open_about_emitted.emit(
                     QCoreApplication.translate("AboutDialog", "Help files were successfully downloaded and can be accessed offline from the About dialog!"))
