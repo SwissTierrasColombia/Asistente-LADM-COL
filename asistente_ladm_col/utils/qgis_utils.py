@@ -192,8 +192,10 @@ class QGISUtils(QObject):
                         # This should update None objects to newly added layer objects
                         response_layers[layer_id] = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
 
-                        if response_layers[layer_id] is not None:
-                            self.post_load_configurations(response_layers[layer_id])
+                    # Apply post-load configs to all just loaded layers
+                    for layer in self.get_ladm_layers_from_layer_tree(db):
+                        if layer.dataProvider().uri().table() in all_layers_to_load:
+                            self.post_load_configurations(layer)
 
                     self.clear_status_bar_emitted.emit()
 
