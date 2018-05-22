@@ -39,11 +39,12 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
 
 from ..config.general_config import (
-    PLUGIN_VERSION,
+    HELP_DIR_NAME,
     HELP_DOWNLOAD,
-    PLUGIN_NAME,
-    TEST_SERVER,
-    QGIS_LANG
+    PLUGIN_DIR,
+    PLUGIN_VERSION,
+    QGIS_LANG,
+    TEST_SERVER
 )
 
 DIALOG_UI = get_ui_class('about_dialog.ui')
@@ -56,7 +57,6 @@ class AboutDialog(QDialog, DIALOG_UI):
         QDialog.__init__(self)
         self.setupUi(self)
         self.qgis_utils = qgis_utils
-        self.help_dir = os.path.join(QgsApplication.qgisSettingsDirPath(), 'python', 'plugins', 'asistente_ladm_col', 'help')
         self.check_local_help()
 
     def check_local_help(self):
@@ -69,7 +69,8 @@ class AboutDialog(QDialog, DIALOG_UI):
         except TypeError as e:
             pass
 
-        if os.path.exists(os.path.join(self.help_dir,
+        if os.path.exists(os.path.join(PLUGIN_DIR,
+                                       HELP_DIR_NAME,
                                        QGIS_LANG,
                                        'index.html')):
             self.btn_download_help.setText(QCoreApplication.translate("AboutDialog", 'Open help from local folder'))
@@ -93,7 +94,7 @@ class AboutDialog(QDialog, DIALOG_UI):
                     languages = glob.glob(os.path.join(tmpFold, 'asistente_ladm_col_docs/*'))
 
                     for language in languages:
-                        shutil.move(language, os.path.join(self.help_dir, language[-2:]))
+                        shutil.move(language, os.path.join(QGIS_LANG, language[-2:]))
 
             except zipfile.BadZipFile as e:
                 self.qgis_utils.message_emitted.emit(

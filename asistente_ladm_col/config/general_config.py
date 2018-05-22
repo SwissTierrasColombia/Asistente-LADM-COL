@@ -9,6 +9,7 @@ HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
 PLUGIN_DIR = os.path.dirname(os.path.dirname(__file__))
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
+HELP_DIR_NAME = 'help'
 QGIS_LANG = QLocale(QSettings().value('locale/userLocale')).name()[:2]
 
 MODULE_HELP_MAPPING = {
