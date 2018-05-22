@@ -69,6 +69,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            PLOT_TABLE,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
                                            REFERENCE_POINT_FIELD,
+                                           SURVEY_POINT_TABLE,
                                            VIDA_UTIL_FIELD)
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 
@@ -426,18 +427,20 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return False
 
-        overlapping = self.geometry.get_overlapping_points(csv_layer) # List of lists of ids
-        overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
+        # Skip checking point overlaps if layer is Surver points
+        if target_layer_name != SURVEY_POINT_TABLE:
+            overlapping = self.geometry.get_overlapping_points(csv_layer) # List of lists of ids
+            overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
 
-        if overlapping:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are overlapping points, we cannot import them into the DB! See selected points."),
-                Qgis.Warning)
-            QgsProject.instance().addMapLayer(csv_layer)
-            csv_layer.selectByIds(overlapping)
-            self.zoom_to_selected_requested.emit()
-            return False
+            if overlapping:
+                self.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                                               "There are overlapping points, we cannot import them into the DB! See selected points."),
+                    Qgis.Warning)
+                QgsProject.instance().addMapLayer(csv_layer)
+                csv_layer.selectByIds(overlapping)
+                self.zoom_to_selected_requested.emit()
+                return False
 
         target_point_layer = self.get_layer(db, target_layer_name, load=True)
         if target_point_layer is None:
@@ -463,11 +466,6 @@ class QGISUtils(QObject):
             new_features.append(new_feature)
 
         target_point_layer.dataProvider().addFeatures(new_features)
-
-        #self.iface.copySelectionToClipboard(csv_layer)
-        #target_point_layer.startEditing()
-        #self.iface.pasteFromClipboard(target_point_layer)
-        #target_point_layer.commitChanges()
 
         QgsProject.instance().addMapLayer(target_point_layer)
         self.zoom_full_requested.emit()
