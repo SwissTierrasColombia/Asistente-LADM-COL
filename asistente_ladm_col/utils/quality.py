@@ -125,24 +125,24 @@ class QualityUtils(QObject):
                                      QgsField("overlapping_ids", QVariant.String)])
         error_layer.updateFields()
 
-        overlapping = self.qgis_utils.geometry.get_overlapping_polygons(polygon_layer)
+        overlapping = self.qgis_utils.geometry.get_overlapping_polygons(polygon_layer, ID_FIELD)
         flat_overlapping = [id for items in overlapping for id in items]  # Build a flat list of ids
-        flat_overlapping = list(set(flat_overlapping))
+        flat_overlapping = list(set(flat_overlapping)) # uniques values
         features = []
 
-        t_ids = {f.id(): f[ID_FIELD] for f in polygon_layer.getFeatures(flat_overlapping)}
+        t_ids = {f[ID_FIELD] : f.id() for f in polygon_layer.getFeatures() if f[ID_FIELD] in flat_overlapping}
 
-        for id in flat_overlapping:
-            feature = polygon_layer.getFeature(id)
+        for id_field in flat_overlapping:
+            feature = polygon_layer.getFeature(t_ids[id_field])
             polygon = feature.geometry()
-            overlapping_select_ids = [list(set(i) - set([id])) for i in overlapping if id in i]
+            overlapping_select_ids = [list(set(i) - set([id_field])) for i in overlapping if id_field in i]
             flat_overlapping_select_ids = [id for items in
                                            overlapping_select_ids for id in items]  # Build a flat list of ids
 
             new_feature = QgsVectorLayerUtils().createFeature(error_layer, polygon,
                                                               {0: len(flat_overlapping_select_ids),
-                                                               1:t_ids[id],
-                                                               2: ", ".join([str(t_ids[i]) for i in flat_overlapping_select_ids])})
+                                                               1:id_field,
+                                                               2: ", ".join([str(i) for i in flat_overlapping_select_ids])})
 
 
             features.append(new_feature)

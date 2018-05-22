@@ -223,28 +223,36 @@ class GeometryUtils(QObject):
 
         return res
 
-    def get_overlapping_polygons(self, polygons_layer):
+    def get_overlapping_polygons(self, polygons_layer, id_field):
         """
         Function that obtains the overlapping polygons on same layer
         :param polygons_layer: vector layer with geometry type polygon
-        :return: Returns a list of list with the ids of overlapping polygons,
+        :param id_field: identify field of layer
+        :return: Returns a list of list with the id_field of overlapping polygons,
         e.g., [[1, 2], [1, 3]]
         """
 
         list_overlapping_polygons = list()
+
         if (QgsWkbTypes.PolygonGeometry != polygons_layer.geometryType()):
             return list_overlapping_polygons
 
-        features = [i for i in polygons_layer.getFeatures()]
-        features_1 = features_2 = features
+        single_parts_layer = processing.run("native:multiparttosingleparts",
+                                            {'INPUT': polygons_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        index = QgsSpatialIndex(single_parts_layer)
 
-        for f1 in features_1[:-1]:
-            for f2 in features_2[1:]:
-                isOverlap = f1.geometry().overlaps(f2.geometry())
+        for feature in single_parts_layer.getFeatures():
+            bbox = feature.geometry().boundingBox()
+            bbox.scale(1.001)
+            candidates_ids = index.intersects(bbox)
+            candidates_features = single_parts_layer.getFeatures(candidates_ids)
+
+            for candidate_feature in candidates_features:
+                isOverlap = feature.geometry().overlaps(candidate_feature.geometry())
                 if isOverlap == True:
-                    #list_overlapping_polygons.append({f1[ID_FIELD]:f2[ID_FIELD]})
-                    list_overlapping_polygons.append([f1.id(), f2.id()])
-            del features_2[0] # move the list
+                    polygons_overlap = sorted([feature[ID_FIELD], candidate_feature[ID_FIELD]])
+                    if polygons_overlap not in list_overlapping_polygons:
+                        list_overlapping_polygons.append(polygons_overlap)
 
         return list_overlapping_polygons
 
