@@ -310,9 +310,7 @@ class QGISUtils(QObject):
         QgsProject.instance().relationManager().setRelations(all_qgis_relations)
 
     def set_display_expressions(self, layer):
-        print("Entra a verificar")
         if layer.name() in DICT_DISPLAY_EXPRESSIONS:
-            print("Tiene expresiones")
             layer.setDisplayExpression(DICT_DISPLAY_EXPRESSIONS[layer.name()])
 
     def configure_automatic_field(self, layer, field, expression):

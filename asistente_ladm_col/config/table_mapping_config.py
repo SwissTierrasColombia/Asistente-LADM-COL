@@ -103,7 +103,7 @@ DICT_DISPLAY_EXPRESSIONS = {
     PARCEL_TABLE: '{}+\' \'+{}+\' \'+{}'.format(NUPRE_FIELD, FMI_FIELD, NAME_FIELD),
     LA_BAUNIT_TABLE: '{}+\' \'+{}+\' \'+{}'.format(ID_FIELD, NAME_FIELD, TYPE_FIELD),
     LA_GROUP_PARTY_TABLE: '{}+\' \'+{}'.format(ID_FIELD, NAME_FIELD),
-    BUILDING_UNIT_TABLE: '"{}{}" + \' \' + "{}{}"'.format(NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
+    BUILDING_TABLE: '"{}{}" + \' \' + "{}{}"'.format(NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
                                                                     NAMESPACE_FIELD,
                                                                     NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
                                                                     LOCAL_ID_FIELD)
