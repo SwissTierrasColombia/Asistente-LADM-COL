@@ -49,7 +49,8 @@ from ..config.general_config import (
     RELATION_NAME,
     REFERENCED_LAYER,
     REFERENCED_FIELD,
-    PLUGIN_DIR
+    PLUGIN_DIR,
+    HELP_DIR_NAME
 )
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
@@ -842,7 +843,7 @@ class QGISUtils(QObject):
 
             help_path = os.path.join(
                 PLUGIN_DIR,
-                "help",
+                HELP_DIR_NAME,
                 os_language
             )
             if os.path.exists(help_path):
