@@ -116,6 +116,12 @@ class AsistenteLADMCOLPlugin(QObject):
         self._party_cadastre_menu.addActions([self._natural_party_cadastre_action,
                                               self._legal_party_cadastre_action])
 
+        self._source_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._cadastre_menu)
+        self._administrative_source_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Administrative Source"), self._source_cadastre_menu)
+        self._spatial_source_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Spatial Source"), self._source_cadastre_menu)
+        self._source_cadastre_menu.addActions([self._administrative_source_cadastre_action,
+                                               self._spatial_source_cadastre_action])
+
         self._rrr_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "RRR"), self._cadastre_menu)
         self._right_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Right"), self._rrr_cadastre_menu)
         self._restriction_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Restriction"), self._rrr_cadastre_menu)
@@ -123,13 +129,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._rrr_cadastre_menu.addActions([self._right_rrr_cadastre_action,
                                             self._restriction_rrr_cadastre_action,
                                             self._responsibility_rrr_cadastre_action])
-
-
-        self._source_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._cadastre_menu)
-        self._administrative_source_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Administrative Source"), self._source_cadastre_menu)
-        self._spatial_source_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Spatial Source"), self._source_cadastre_menu)
-        self._source_cadastre_menu.addActions([self._administrative_source_cadastre_action,
-                                               self._spatial_source_cadastre_action])
 
         self._quality_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"), self._cadastre_menu)
         self._too_long_boundary_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check too long boundary segments"), self._quality_cadastre_menu)
@@ -154,8 +153,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._cadastre_menu.addMenu(self._spatial_unit_cadastre_menu)
         self._cadastre_menu.addMenu(self._baunit_cadastre_menu)
         self._cadastre_menu.addMenu(self._party_cadastre_menu)
-        self._cadastre_menu.addMenu(self._rrr_cadastre_menu)
         self._cadastre_menu.addMenu(self._source_cadastre_menu)
+        self._cadastre_menu.addMenu(self._rrr_cadastre_menu)
         self._cadastre_menu.addSeparator()
         self._cadastre_menu.addMenu(self._quality_cadastre_menu)
 
