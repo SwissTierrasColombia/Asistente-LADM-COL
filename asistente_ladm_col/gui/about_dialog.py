@@ -94,7 +94,7 @@ class AboutDialog(QDialog, DIALOG_UI):
                     languages = glob.glob(os.path.join(tmpFold, 'asistente_ladm_col_docs/*'))
 
                     for language in languages:
-                        shutil.move(language, os.path.join(QGIS_LANG, language[-2:]))
+                        shutil.move(language, os.path.join(PLUGIN_DIR, HELP_DIR_NAME, language[-2:]))
 
             except zipfile.BadZipFile as e:
                 self.qgis_utils.message_emitted.emit(
