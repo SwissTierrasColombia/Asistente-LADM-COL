@@ -49,7 +49,8 @@ from ..config.general_config import (
     RELATION_NAME,
     REFERENCED_LAYER,
     REFERENCED_FIELD,
-    PLUGIN_DIR
+    PLUGIN_DIR,
+    QGIS_LANG
 )
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
@@ -833,8 +834,7 @@ class QGISUtils(QObject):
 
         # If we don't have Internet access check if the documentation is in the
         # expected local dir and show it. Otherwise, show a warning message.
-        os_language = QLocale(QSettings().value('locale/userLocale')).name()[:2]
-        web_url = "{}/{}/{}".format(HELP_URL, os_language, PLUGIN_VERSION)
+        web_url = "{}/{}/{}".format(HELP_URL, QGIS_LANG, PLUGIN_VERSION)
 
         is_connected = self.is_connected(TEST_SERVER)
         if offline or not is_connected:
@@ -843,7 +843,7 @@ class QGISUtils(QObject):
             help_path = os.path.join(
                 PLUGIN_DIR,
                 "help",
-                os_language
+                QGIS_LANG
             )
             if os.path.exists(help_path):
                 url = os.path.join("file://", help_path)

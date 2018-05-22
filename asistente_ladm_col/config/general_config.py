@@ -1,5 +1,6 @@
 import os.path
 from ..utils.qt_utils import get_plugin_metadata
+from qgis.PyQt.QtCore import QLocale, QSettings
 
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
@@ -8,6 +9,7 @@ HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
 PLUGIN_DIR = os.path.dirname(os.path.dirname(__file__))
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
+QGIS_LANG = QLocale(QSettings().value('locale/userLocale')).name()[:2]
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
