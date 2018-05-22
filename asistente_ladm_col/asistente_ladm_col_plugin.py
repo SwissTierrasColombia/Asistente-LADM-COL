@@ -40,7 +40,8 @@ from .config.general_config import (
     PROJECT_GENERATOR_EXACT_REQUIRED_VERSION,
     PROJECT_GENERATOR_REQUIRED_VERSION_URL,
     PLUGIN_NAME,
-    PLUGIN_VERSION
+    PLUGIN_VERSION,
+    PLUGIN_DIR
 )
 from .gui.create_points_cadastre_wizard import CreatePointsCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
@@ -70,7 +71,6 @@ class AsistenteLADMCOLPlugin(QObject):
         QObject.__init__(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
-        self.plugin_dir = os.path.dirname(__file__)
         self.installTranslator()
         self._about_dialog = None
 
@@ -565,11 +565,13 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def quality_check_all(self):
-        self.quality.check_too_long_segments(self.get_db_connection())
-        self.quality.check_overlaps_in_boundary_points(self.get_db_connection())
-        self.quality.check_overlaps_in_boundaries(self.get_db_connection())
-        self.quality.check_missing_boundary_points_in_boundaries(self.get_db_connection())
-
+        self.check_too_long_segments()
+        self.check_overlaps_in_boundary_points()
+        self.check_overlaps_in_control_points()
+        self.check_overlaps_in_boundaries()
+        self.check_missing_boundary_points_in_boundaries()
+        self.check_dangles_in_boundaries()
+        
     def show_help(self):
         self.qgis_utils.show_help()
 
@@ -586,7 +588,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def installTranslator(self):
         qgis_locale = QLocale(QSettings().value('locale/userLocale'))
-        locale_path = os.path.join(self.plugin_dir, 'i18n')
+        locale_path = os.path.join(PLUGIN_DIR, 'i18n')
         self.translator = QTranslator()
         self.translator.load(qgis_locale, 'Asistente-LADM_COL', '_', locale_path)
         QCoreApplication.installTranslator(self.translator)

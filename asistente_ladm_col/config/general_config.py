@@ -1,9 +1,11 @@
+import os.path
 from ..utils.qt_utils import get_plugin_metadata
 
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 ERROR_LAYER_GROUP = "Validation errors"
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
+PLUGIN_DIR = os.path.dirname(os.path.dirname(__file__))
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
 
