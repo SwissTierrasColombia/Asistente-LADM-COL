@@ -84,6 +84,7 @@ class QGISUtils(QObject):
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
     message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
     map_refresh_requested = pyqtSignal()
+    map_freeze_requested = pyqtSignal(bool)
     status_bar_message_emitted = pyqtSignal(str, int) # Message, duration
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
@@ -155,6 +156,8 @@ class QGISUtils(QObject):
         response_layers = dict()
         additional_layers_to_load = list()
 
+        self.map_freeze_requested.emit(True)
+
         with OverrideCursor(Qt.WaitCursor):
             for layer_id, layer_info in layers.items():
                 layer_obj = None
@@ -185,19 +188,35 @@ class QGISUtils(QObject):
                     QCoreApplication.processEvents()
                     self.project_generator_utils.load_layers(all_layers_to_load, db)
 
-                    # Once load_layers() is called, go through the layer tree to get
-                    # newly added layers
+                    # Now that all layers are loaded, update response dict
+                    # and apply post_load_configurations to new layers
                     missing_layers = {layer_id: {'name': layers[layer_id]['name'], 'geometry': layers[layer_id]['geometry']} for layer_id, layer_obj in response_layers.items() if layer_obj is None}
-                    for layer_id, layer_info in missing_layers.items():
-                        # This should update None objects to newly added layer objects
-                        response_layers[layer_id] = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
 
                     # Apply post-load configs to all just loaded layers
                     for layer in self.get_ladm_layers_from_layer_tree(db):
-                        if layer.dataProvider().uri().table() in all_layers_to_load:
+                        layer_name = layer.dataProvider().uri().table()
+                        layer_geometry = layer.wkbType()
+
+                        if layer_name in all_layers_to_load:
+                            # Discard already loaded layers
+
+                            for layer_id, layer_info in missing_layers.items():
+                                # This should update response_layers dict with
+                                # newly added layer objects
+                                if layer_info['name'] == layer_name:
+                                    if layer_info['geometry'] is not None and layer_info['geometry'] != layer_geometry:
+                                        continue
+
+                                    response_layers[layer_id] = layer
+                                    del missing_layers[layer_id] # Don't look for this layer anymore
+                                    break
+
                             self.post_load_configurations(layer)
 
                     self.clear_status_bar_emitted.emit()
+
+        self.map_freeze_requested.emit(False)
+        self.map_refresh_requested.emit()
 
         return response_layers
 
@@ -257,7 +276,8 @@ class QGISUtils(QObject):
         self.configure_missing_relations(layer)
         self.set_display_expressions(layer)
         self.set_automatic_fields(layer)
-        self.symbology.set_layer_style(layer)
+        if layer.isSpatial():
+            self.symbology.set_layer_style(layer)
 
     def configure_missing_relations(self, layer):
         layer_name = layer.dataProvider().uri().table()

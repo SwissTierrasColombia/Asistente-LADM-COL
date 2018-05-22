@@ -206,6 +206,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
         self.qgis_utils.status_bar_message_emitted.connect(self.show_status_bar_message)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
+        self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
 
         # Toolbar
         self._boundary_explode_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Explode..."), self.iface.mainWindow())
@@ -256,6 +257,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def refresh_map(self):
         self.iface.mapCanvas().refresh()
+
+    def freeze_map(self, frozen):
+        self.iface.mapCanvas().freeze(frozen)
 
     def activate_layer(self, layer):
         self.iface.layerTreeView().setCurrentLayer(layer)
