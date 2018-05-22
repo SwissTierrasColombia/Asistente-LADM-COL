@@ -39,7 +39,8 @@ from .config.general_config import (
     PROJECT_GENERATOR_EXACT_REQUIRED_VERSION,
     PROJECT_GENERATOR_REQUIRED_VERSION_URL,
     PLUGIN_NAME,
-    PLUGIN_VERSION
+    PLUGIN_VERSION,
+    PLUGIN_DIR
 )
 from .gui.create_points_cadastre_wizard import CreatePointsCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
@@ -69,7 +70,6 @@ class AsistenteLADMCOLPlugin(QObject):
         QObject.__init__(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
-        self.plugin_dir = os.path.dirname(__file__)
         self.installTranslator()
         self._about_dialog = None
 
@@ -579,7 +579,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def installTranslator(self):
         qgis_locale = QLocale(QSettings().value('locale/userLocale'))
-        locale_path = os.path.join(self.plugin_dir, 'i18n')
+        locale_path = os.path.join(PLUGIN_DIR, 'i18n')
         self.translator = QTranslator()
         self.translator.load(qgis_locale, 'Asistente-LADM_COL', '_', locale_path)
         QCoreApplication.installTranslator(self.translator)

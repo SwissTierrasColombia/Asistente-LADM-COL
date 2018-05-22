@@ -39,7 +39,6 @@ from .geometry import GeometryUtils
 from ..gui.settings_dialog import SettingsDialog
 from ..config.general_config import (
     DEFAULT_EPSG,
-    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
     ERROR_LAYER_GROUP,
     MODULE_HELP_MAPPING,
     TEST_SERVER,
@@ -49,7 +48,8 @@ from ..config.general_config import (
     REFERENCING_FIELD,
     RELATION_NAME,
     REFERENCED_LAYER,
-    REFERENCED_FIELD
+    REFERENCED_FIELD,
+    PLUGIN_DIR
 )
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
@@ -830,30 +830,38 @@ class QGISUtils(QObject):
     def show_help(self, module='', offline=False):
         url = ''
         section = MODULE_HELP_MAPPING[module]
-        plugin_version = PLUGIN_VERSION
 
         # If we don't have Internet access check if the documentation is in the
         # expected local dir and show it. Otherwise, show a warning message.
         os_language = QLocale(QSettings().value('locale/userLocale')).name()[:2]
-        if offline or not self.is_connected(TEST_SERVER):
+        web_url = "{}/{}/{}".format(HELP_URL, os_language, PLUGIN_VERSION)
+
+        is_connected = self.is_connected(TEST_SERVER)
+        if offline or not is_connected:
             basepath = os.path.dirname(os.path.abspath(__file__))
-            plugin_dir = os.path.dirname(basepath)
 
             help_path = os.path.join(
-                plugin_dir,
+                PLUGIN_DIR,
                 "help",
                 os_language
             )
             if os.path.exists(help_path):
-                url = os.path.join("file://",help_path)
+                url = os.path.join("file://", help_path)
             else:
-                self.message_with_duration_emitted.emit(
-                    QCoreApplication.translate("QGISUtils",
-                                               "The plugin help cannot be open. Check the Internet connection."),
-                    Qgis.Warning,
-                    20)
+                if is_connected:
+                    self.message_with_duration_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                                   "The local help could not be found in '{}' and cannot be open.").format(help_path),
+                        Qgis.Warning,
+                        20)
+                else:
+                    self.message_with_duration_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                                   "Is your computer connected to Internet? If so, go to <a href=\"{}\">online help</a>.").format(web_url),
+                        Qgis.Warning,
+                        20)
                 return
         else:
-            url = "{}/{}/{}".format(HELP_URL, os_language, plugin_version)
+            url = web_url
 
         webbrowser.open("{}/{}".format(url, section))
