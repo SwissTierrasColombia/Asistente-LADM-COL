@@ -176,7 +176,61 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': 'comienzo_vida_util_version'},
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
-
+    elif layer_name == RIGHT_TABLE:
+        mapping = [
+            {'expression': '"t_id"', 'precision': 0, 'type': 4, 'length': -1, 'name': 't_id'},
+            {'expression': '"tipo"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'tipo'},
+            {'expression': '"codigo_registral_derecho"', 'precision': -1, 'type': 10, 'length': 3, 'name': 'codigo_registral_derecho'},
+            {'expression': '"descripcion"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'descripcion'},
+            {'expression': '"comprobacion_comparte"', 'precision': -1, 'type': 1, 'length': -1, 'name': 'comprobacion_comparte'},
+            {'expression': '"uso_efectivo"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'uso_efectivo'},
+            {'expression': '"r_espacio_de_nombres"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'r_espacio_de_nombres'},
+            {'expression': '"r_local_id"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'r_local_id'},
+            {'expression': '"interesado_interesado_natural"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'interesado_interesado_natural'},
+            {'expression': '"interesado_interesado_juridico"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'interesado_interesado_juridico'},
+            {'expression': '"interesado_la_agrupacion_interesados"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'interesado_la_agrupacion_interesados'},
+            {'expression': '"unidad_la_baunit"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'unidad_la_baunit'},
+            {'expression': '"unidad_predio"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'unidad_predio'},
+            {'expression': '"comienzo_vida_util_version"', 'precision': -1, 'type': 16, 'length': -1, 'name': 'comienzo_vida_util_version'},
+            {'expression': '"fin_vida_util_version"', 'precision': -1, 'type': 16, 'length': -1, 'name': 'fin_vida_util_version'}
+        ]
+    elif layer_name == RESPONSIBILITY_TABLE:
+        mapping = [
+            {'expression': '"t_id"', 'precision': 0, 'type': 4, 'length': -1, 'name': 't_id'},
+            {'expression': '"tipo"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'tipo'},
+            {'expression': '"codigo_registral_responsabilidad"', 'precision': -1, 'type': 10, 'length': 3, 'name': 'codigo_registral_responsabilidad'},
+            {'expression': '"descripcion"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'descripcion'},
+            {'expression': '"comprobacion_comparte"', 'precision': -1, 'type': 1, 'length': -1, 'name': 'comprobacion_comparte'},
+            {'expression': '"uso_efectivo"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'uso_efectivo'},
+            {'expression': '"r_espacio_de_nombres"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'r_espacio_de_nombres'},
+            {'expression': '"r_local_id"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'r_local_id'},
+            {'expression': '"interesado_interesado_natural"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'interesado_interesado_natural'},
+            {'expression': '"interesado_interesado_juridico"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'interesado_interesado_juridico'},
+            {'expression': '"interesado_la_agrupacion_interesados"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'interesado_la_agrupacion_interesados'},
+            {'expression': '"unidad_la_baunit"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'unidad_la_baunit'},
+            {'expression': '"unidad_predio"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'unidad_predio'},
+            {'expression': '"comienzo_vida_util_version"', 'precision': -1, 'type': 16, 'length': -1, 'name': 'comienzo_vida_util_version'},
+            {'expression': '"fin_vida_util_version"', 'precision': -1, 'type': 16, 'length': -1, 'name': 'fin_vida_util_version'}
+        ]
+    elif layer_name == RESTRICTION_TABLE:
+        mapping = [
+            {'expression': '"t_id"', 'precision': 0, 'type': 4, 'length': -1, 'name': 't_id'},
+            {'expression': '"interesado_requerido"', 'precision': -1, 'type': 1, 'length': -1, 'name': 'interesado_requerido'},
+            {'expression': '"tipo"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'tipo'},
+            {'expression': '"codigo_registral_restriccion"', 'precision': -1, 'type': 10, 'length': 3, 'name': 'codigo_registral_restriccion'},
+            {'expression': '"descripcion"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'descripcion'},
+            {'expression': '"comprobacion_comparte"', 'precision': -1, 'type': 1, 'length': -1, 'name': 'comprobacion_comparte'},
+            {'expression': '"uso_efectivo"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'uso_efectivo'},
+            {'expression': '"r_espacio_de_nombres"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'r_espacio_de_nombres'},
+            {'expression': '"r_local_id"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'r_local_id'},
+            {'expression': '"interesado_interesado_natural"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'interesado_interesado_natural'},
+            {'expression': '"interesado_interesado_juridico"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'interesado_interesado_juridico'},
+            {'expression': '"interesado_la_agrupacion_interesados"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'interesado_la_agrupacion_interesados'},
+            {'expression': '"unidad_la_baunit"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'unidad_la_baunit'},
+            {'expression': '"unidad_predio"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'unidad_predio'},
+            {'expression': '"comienzo_vida_util_version"', 'precision': -1, 'type': 16, 'length': -1, 'name': 'comienzo_vida_util_version'},
+            {'expression': '"fin_vida_util_version"', 'precision': -1, 'type': 16, 'length': -1, 'name': 'fin_vida_util_version'}
+        ]
     # If the user doesn't want to disable automatic fields...
     if not QSettings().value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
         # Now see if we can adjust the mapping depending on user settings
