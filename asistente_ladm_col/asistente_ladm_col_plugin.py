@@ -40,7 +40,8 @@ from .config.general_config import (
     PROJECT_GENERATOR_REQUIRED_VERSION_URL,
     PLUGIN_NAME,
     PLUGIN_VERSION,
-    PLUGIN_DIR
+    PLUGIN_DIR,
+    QGIS_LANG
 )
 from .gui.create_points_cadastre_wizard import CreatePointsCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
