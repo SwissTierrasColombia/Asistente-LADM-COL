@@ -23,7 +23,9 @@ from ..config.general_config import (
     REFERENCING_FIELD,
     RELATION_NAME,
     REFERENCED_LAYER,
-    REFERENCED_FIELD
+    REFERENCED_FIELD,
+    RELATION_TYPE,
+    DOMAIN_CLASS_RELATION
 )
 
 class DomainRelationGenerator:
@@ -117,13 +119,14 @@ class DomainRelationGenerator:
                                 REFERENCING_FIELD : attrs_ili_pg_owner[
                                     classes_ili_pg[iliclass]][iliattr],
                                 REFERENCED_LAYER: domains_ili_pg[ilidomain],
-                                REFERENCED_FIELD : self._db_connector.iliCodeName,
-                                RELATION_NAME : "{}_{}_{}_{}".format(classes_ili_pg[iliclass],
+                                REFERENCED_FIELD: self._db_connector.iliCodeName,
+                                RELATION_NAME: "{}_{}_{}_{}".format(classes_ili_pg[iliclass],
                                                                      attrs_ili_pg_owner[
                                                                          classes_ili_pg[iliclass]][iliattr],
                                                                      domains_ili_pg[
                                                                          ilidomain],
-                                                                     self._db_connector.iliCodeName)
+                                                                     self._db_connector.iliCodeName),
+                                RELATION_TYPE: DOMAIN_CLASS_RELATION
                             }
 
                             if self.debug:
