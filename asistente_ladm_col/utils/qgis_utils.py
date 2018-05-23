@@ -17,9 +17,8 @@
  ***************************************************************************/
 """
 import os
-import webbrowser
 import socket
-
+import webbrowser
 
 from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri, Qgis,
@@ -30,7 +29,7 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
                        QgsApplication, QgsProcessingFeedback, QgsRelation)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
-                              QVariant, QSettings, QLocale)
+                              QVariant, QSettings, QLocale, QUrl, QFile, QIODevice)
 import processing
 
 from .project_generator_utils import ProjectGeneratorUtils
@@ -40,7 +39,6 @@ from .geometry import GeometryUtils
 from ..gui.settings_dialog import SettingsDialog
 from ..config.general_config import (
     DEFAULT_EPSG,
-    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
     ERROR_LAYER_GROUP,
     MODULE_HELP_MAPPING,
     TEST_SERVER,
@@ -52,7 +50,9 @@ from ..config.general_config import (
     REFERENCED_LAYER,
     REFERENCED_FIELD,
     RELATION_TYPE,
-    DOMAIN_CLASS_RELATION
+    DOMAIN_CLASS_RELATION,
+    PLUGIN_DIR,
+    HELP_DIR_NAME
 )
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
@@ -73,6 +73,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            PLOT_TABLE,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
                                            REFERENCE_POINT_FIELD,
+                                           SURVEY_POINT_TABLE,
                                            VIDA_UTIL_FIELD)
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 
@@ -471,18 +472,20 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return False
 
-        overlapping = self.geometry.get_overlapping_points(csv_layer) # List of lists of ids
-        overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
+        # Skip checking point overlaps if layer is Surver points
+        if target_layer_name != SURVEY_POINT_TABLE:
+            overlapping = self.geometry.get_overlapping_points(csv_layer) # List of lists of ids
+            overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
 
-        if overlapping:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are overlapping points, we cannot import them into the DB! See selected points."),
-                Qgis.Warning)
-            QgsProject.instance().addMapLayer(csv_layer)
-            csv_layer.selectByIds(overlapping)
-            self.zoom_to_selected_requested.emit()
-            return False
+            if overlapping:
+                self.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                                               "There are overlapping points, we cannot import them into the DB! See selected points."),
+                    Qgis.Warning)
+                QgsProject.instance().addMapLayer(csv_layer)
+                csv_layer.selectByIds(overlapping)
+                self.zoom_to_selected_requested.emit()
+                return False
 
         target_point_layer = self.get_layer(db, target_layer_name, load=True)
         if target_point_layer is None:
@@ -508,11 +511,6 @@ class QGISUtils(QObject):
             new_features.append(new_feature)
 
         target_point_layer.dataProvider().addFeatures(new_features)
-
-        #self.iface.copySelectionToClipboard(csv_layer)
-        #target_point_layer.startEditing()
-        #self.iface.pasteFromClipboard(target_point_layer)
-        #target_point_layer.commitChanges()
 
         QgsProject.instance().addMapLayer(target_point_layer)
         self.zoom_full_requested.emit()
@@ -865,45 +863,50 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return
 
-    def show_help(self, module=''):
+    def is_connected(self, hostname):
+        try:
+            host = socket.gethostbyname(hostname)
+            s = socket.create_connection((host, 80), 2)
+            return True
+        except:
+            pass
+        return False
+
+    def show_help(self, module='', offline=False):
         url = ''
         section = MODULE_HELP_MAPPING[module]
-        plugin_version = PLUGIN_VERSION
-
-        def is_connected(hostname):
-            try:
-                host = socket.gethostbyname(hostname)
-                s = socket.create_connection((host, 80), 2)
-                return True
-            except:
-                pass
-            return False
 
         # If we don't have Internet access check if the documentation is in the
         # expected local dir and show it. Otherwise, show a warning message.
         os_language = QLocale(QSettings().value('locale/userLocale')).name()[:2]
-        if not is_connected(TEST_SERVER):
+        web_url = "{}/{}/{}".format(HELP_URL, os_language, PLUGIN_VERSION)
+
+        is_connected = self.is_connected(TEST_SERVER)
+        if offline or not is_connected:
             basepath = os.path.dirname(os.path.abspath(__file__))
-            plugin_dir = os.path.dirname(basepath)
 
             help_path = os.path.join(
-                "file://",
-                plugin_dir,
-                "help",
-                os_language,
-                plugin_version
+                PLUGIN_DIR,
+                HELP_DIR_NAME,
+                os_language
             )
-
             if os.path.exists(help_path):
-                url = help_path
+                url = os.path.join("file://", help_path)
             else:
-                self.message_with_duration_emitted.emit(
-                    QCoreApplication.translate("QGISUtils",
-                                               "The plugin help cannot be open. Check the Internet connection."),
-                    Qgis.Warning,
-                    20)
+                if is_connected:
+                    self.message_with_duration_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                                   "The local help could not be found in '{}' and cannot be open.").format(help_path),
+                        Qgis.Warning,
+                        20)
+                else:
+                    self.message_with_duration_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                                   "Is your computer connected to Internet? If so, go to <a href=\"{}\">online help</a>.").format(web_url),
+                        Qgis.Warning,
+                        20)
                 return
         else:
-            url = "{}/{}/{}".format(HELP_URL, os_language, plugin_version)
+            url = web_url
 
         webbrowser.open("{}/{}".format(url, section))

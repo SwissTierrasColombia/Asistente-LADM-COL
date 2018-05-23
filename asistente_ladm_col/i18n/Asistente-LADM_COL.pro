@@ -32,6 +32,7 @@ SOURCES = ../asistente_ladm_col_plugin.py \
           ../gui/create_points_cadastre_wizard.py \
           ../gui/create_parcel_cadastre_wizard.py \
           ../gui/create_building_cadastre_wizard.py \
+          ../gui/about_dialog.py \
           ../gui/settings_dialog.py \
           ../gui/controlled_measurement_dialog.py \
           ../lib/dbconnector/gpkg_connector.py \

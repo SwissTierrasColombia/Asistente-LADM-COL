@@ -1,11 +1,14 @@
+import os.path
 from ..utils.qt_utils import get_plugin_metadata
 
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 ERROR_LAYER_GROUP = "Validation errors"
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
+PLUGIN_DIR = os.path.dirname(os.path.dirname(__file__))
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
+HELP_DIR_NAME = 'help'
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
@@ -27,7 +30,7 @@ MODULE_HELP_MAPPING = {
     'settings': 'help.html#settings'
 }
 # Configure Project Generator Dependency
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.2.2"
+PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.2.3"
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), set to True
@@ -61,3 +64,7 @@ TEST_SERVER = "www.google.com"
 
 # For testing if an schema comes from ili2db
 INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
+
+# Documentation
+
+HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
