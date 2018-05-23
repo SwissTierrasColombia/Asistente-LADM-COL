@@ -171,7 +171,7 @@ class CreateResponsibilityCadastreWizard(QWizard, WIZARD_UI):
             else:
                 responsibility_id = self._responsibility_layer.getFeature(fid)[ID_FIELD]
 
-                # Fill uebaunit table
+                # Fill rrrfuente table
                 new_features = []
                 for administrative_source_id in administrative_source_ids:
                     new_feature = QgsVectorLayerUtils().createFeature(self._rrr_source_relation_layer)

@@ -97,7 +97,7 @@ Choose this option if you want to create a <b>Plot</b> from existing <i>Boundari
 ")
 
         self.WIZ_CREATE_PLOT_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
-Select the <b>Plot</ b> layer from those available in the QGIS project.\
+Select the <b>Plot</b> layer from those available in the QGIS project.\
 ")
 
         self.WIZ_CREATE_BUILDING_CADASTRE_PAGE_1_OPTION_POINTS = QCoreApplication.translate("HelpStrings", "\
@@ -142,13 +142,13 @@ Choose this option if you want to add a <b>Restriction</b> from external resourc
         self.WIZ_CREATE_RIGHT_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to add a <b>Right</b> with a form.\
 <br><br>\
-<b>COL_Right</ b> is a class that registers the instances of rights that an interested party exercises over a property. It is a specialization of the class LA_RRR of the model itself.\
+<b>COL_Right</b> is a class that registers the instances of rights that an interested party exercises over a property. It is a specialization of the class LA_RRR of the model itself.\
 ")
 
         self.WIZ_CREATE_RIGHT_CADASTRE_PAGE_1_OPTION_ANOTHER = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to add a <b>Right</b> from external resource, such as a CSV file, a QGIS table, etc.\
 <br><br>\
-<b>COL_Right</ b> is a class that registers the instances of rights that an interested party exercises over a property. It is a specialization of the class LA_RRR of the model itself.\
+<b>COL_Right</b> is a class that registers the instances of rights that an interested party exercises over a property. It is a specialization of the class LA_RRR of the model itself.\
 ")
 
         self.WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
