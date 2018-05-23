@@ -183,7 +183,7 @@ class QGISUtils(QObject):
                 # If layer is in LayerTree, return it
                 for ladm_layer in ladm_layers:
                     if layer_info['name'] == ladm_layer.dataProvider().uri().table():
-                        if layer_info['geometry'] is not None and layer_info['geometry'] != ladm_layer.wkbType():
+                        if layer_info['geometry'] is not None and layer_info['geometry'] != ladm_layer.geometryType():
                             continue
 
                         layer_obj = ladm_layer
@@ -212,7 +212,7 @@ class QGISUtils(QObject):
                     # Apply post-load configs to all just loaded layers
                     for layer in self.get_ladm_layers_from_layer_tree(db):
                         layer_name = layer.dataProvider().uri().table()
-                        layer_geometry = layer.wkbType()
+                        layer_geometry = layer.geometryType()
 
                         if layer_name in all_layers_to_load:
                             # Discard already loaded layers
