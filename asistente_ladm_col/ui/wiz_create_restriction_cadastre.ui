@@ -65,7 +65,8 @@
            <item row="1" column="0">
             <widget class="QRadioButton" name="rad_create_manually">
              <property name="text">
-              <string>Entering data manually using a form</string>
+              <string>Entering data manually using a form
+(you need to select Administrative Sources before)</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -130,10 +131,10 @@
                  <height>16777215</height>
                 </size>
                </property>
-               <property name="allowEmptyLayer" stdset="0">
+               <property name="allowEmptyLayer">
                 <bool>true</bool>
                </property>
-               <property name="showCrs" stdset="0">
+               <property name="showCrs">
                 <bool>false</bool>
                </property>
               </widget>
