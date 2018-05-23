@@ -16,39 +16,42 @@
  *                                                                         *
  ***************************************************************************/
 """
+from functools import partial
+
 from qgis.core import (QgsEditFormConfig, QgsVectorLayerUtils, Qgis,
-                       QgsWkbTypes, QgsMapLayerProxyModel)
+                       QgsWkbTypes, QgsMapLayerProxyModel, QgsApplication)
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
+from ..config.general_config import PLUGIN_NAME
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-#from ..utils.qt_utils import enable_next_wizard, disable_next_wizard
 from ..config.table_mapping_config import (
+    ID_FIELD,
     RESTRICTION_TABLE,
-    RESTRICTION_TYPE_TABLE,
-    NATURAL_PARTY_TABLE,
-    LEGAL_PARTY_TABLE,
-    PARCEL_TABLE,
-    LA_BAUNIT_TABLE,
-    LA_GROUP_PARTY_TABLE,
-    PLOT_TABLE,
-    VIDA_UTIL_FIELD
+    ADMINISTRATIVE_SOURCE_TABLE,
+    RRR_SOURCE_RELATION_TABLE,
+    RRR_SOURCE_RESTRICTION_FIELD,
+    RRR_SOURCE_SOURCE_FIELD
 )
+from ..config.help_strings import HelpStrings
 
 WIZARD_UI = get_ui_class('wiz_create_restriction_cadastre.ui')
-
-from ..config.help_strings import HelpStrings
 
 class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
+        self.log = QgsApplication.messageLog()
         self._responsibility_layer = None
+        self._administrative_source_layer = None
+        self._rrr_source_relation_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
+
+        self.restore_settings()
 
         self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
         self.adjust_page_1_controls()
@@ -93,7 +96,16 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
 
     def prepare_restriction_creation(self):
         # Load layers
-        self._restriction_layer = self.qgis_utils.get_layer(self._db, RESTRICTION_TABLE, None, load=True)
+        #self._restriction_layer = self.qgis_utils.get_layer(self._db, RESTRICTION_TABLE, None, load=True)
+
+        res_layers = self.qgis_utils.get_layers(self._db, {
+            RESTRICTION_TABLE: {'name': RESTRICTION_TABLE, 'geometry': None},
+            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None},
+            RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None}}, load=True)
+
+        self._restriction_layer = res_layers[RESTRICTION_TABLE]
+        self._administrative_source_layer = res_layers[ADMINISTRATIVE_SOURCE_TABLE]
+        self._rrr_source_relation_layer =  res_layers[RRR_SOURCE_RELATION_TABLE]
 
         if self._restriction_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
@@ -102,13 +114,19 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return
 
-        # Configure relation fields
-        # TODO take this block to qgis_utils (post_load_configurations)
-        # self._natural_party_layer.setDisplayExpression('"documento_identidad"+\' \'+"primer_apellido"+\' \'+"segundo_apellido"+\' \'+"primer_nombre"+\' \'+"segundo_nombre"')
-        # self._legal_party_layer.setDisplayExpression('"numero_nit"+\' \'+"razon_social"')
-        # self._parcel_layer.setDisplayExpression('"nupre"+\' \'+"fmi"+\' \'+"nombre"')
-        # self._la_baunit_layer.setDisplayExpression('"t_id"+\' \'+"nombre"+\' \'+"tipo"')
-        # self._la_group_party_layer.setDisplayExpression('"t_id"+\' \'+"nombre"')
+        if self._administrative_source_layer is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateRestrictionCadastreWizard",
+                                           "Administrative source layer couldn't be found..."),
+                Qgis.Warning)
+            return
+
+        if self._rrr_source_relation_layer is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateRestrictionCadastreWizard",
+                                           "rrr source relation layer couldn't be found..."),
+                Qgis.Warning)
+            return
 
         # Don't suppress (i.e., show) feature form
         form_config = self._restriction_layer.editFormConfig()
@@ -118,10 +136,59 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
         self.edit_restriction()
 
     def edit_restriction(self):
-        # Open Form
-        self.iface.layerTreeView().setCurrentLayer(self._restriction_layer)
-        self._restriction_layer.startEditing()
-        self.iface.actionAddFeature().trigger()
+        if self._administrative_source_layer.selectedFeatureCount() >= 1:
+            # Open Form
+            self.iface.layerTreeView().setCurrentLayer(self._restriction_layer)
+            self._restriction_layer.startEditing()
+            self.iface.actionAddFeature().trigger()
+
+            administrative_source_ids = [f['t_id'] for f in self._administrative_source_layer.selectedFeatures()]
+
+            # Create connections to react when a feature is added to buffer and
+            # when it gets stored into the DB
+            self._restriction_layer.featureAdded.connect(self.call_restriction_commit)
+            self._restriction_layer.committedFeaturesAdded.connect(partial(self.finish_restriction, administrative_source_ids))
+
+        else:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateRestrictionCadastreWizard",
+                                           "Please select an Administrative source"),
+                Qgis.Warning)
+
+    def call_restriction_commit(self, fid):
+        res = self._restriction_layer.commitChanges()
+        if res:
+            self._restriction_layer.featureAdded.disconnect(self.call_restriction_commit)
+            self.log.logMessage("Restriction's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+
+    def finish_restriction(self, administrative_source_ids, layerId, features):
+        if len(features) != 1:
+            self.log.logMessage("We should have got only one restriction... We cannot do anything with {} restriction".format(len(features)), PLUGIN_NAME, Qgis.Warning)
+        else:
+            fid = features[0].id()
+            if not self._restriction_layer.getFeature(fid).isValid():
+                self.log.logMessage("Feature not found in layer Restriction...", PLUGIN_NAME, Qgis.Warning)
+            else:
+                restriction_id = self._restriction_layer.getFeature(fid)[ID_FIELD]
+
+                # Fill uebaunit table
+                new_features = []
+                for administrative_source_id in administrative_source_ids:
+                    new_feature = QgsVectorLayerUtils().createFeature(self._rrr_source_relation_layer)
+                    new_feature.setAttribute(RRR_SOURCE_SOURCE_FIELD, administrative_source_id)
+                    new_feature.setAttribute(RRR_SOURCE_RESTRICTION_FIELD, restriction_id)
+                    self.log.logMessage("Saving Administrative_source-Restriction: {}-{}".format(administrative_source_id, restriction_id), PLUGIN_NAME, Qgis.Info)
+                    new_features.append(new_feature)
+
+                self._rrr_source_relation_layer.dataProvider().addFeatures(new_features)
+
+                self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                    QCoreApplication.translate("CreateRestrictionCadastreWizard",
+                                               "The new restriction (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!".format(restriction_id, administrative_source_ids[0])),
+                    Qgis.Info)
+
+        self._restriction_layer.committedFeaturesAdded.disconnect()
+        self.log.logMessage("Restriction's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
 
     def save_settings(self):
         settings = QSettings()

@@ -16,24 +16,23 @@
  *                                                                         *
  ***************************************************************************/
 """
+from functools import partial
+
 from qgis.core import (QgsEditFormConfig, QgsVectorLayerUtils, Qgis,
-                       QgsWkbTypes, QgsMapLayerProxyModel)
+                       QgsWkbTypes, QgsMapLayerProxyModel, QgsApplication)
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
+from ..config.general_config import PLUGIN_NAME
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-#from ..utils.qt_utils import enable_next_wizard, disable_next_wizard
 from ..config.table_mapping_config import (
+    ID_FIELD,
     RIGHT_TABLE,
-    RIGHT_TYPE_TABLE,
-    NATURAL_PARTY_TABLE,
-    LEGAL_PARTY_TABLE,
-    PARCEL_TABLE,
-    LA_BAUNIT_TABLE,
-    LA_GROUP_PARTY_TABLE,
-    PLOT_TABLE,
-    VIDA_UTIL_FIELD
+    ADMINISTRATIVE_SOURCE_TABLE,
+    RRR_SOURCE_RELATION_TABLE,
+    RRR_SOURCE_RIGHT_FIELD,
+    RRR_SOURCE_SOURCE_FIELD
 )
 from ..config.help_strings import HelpStrings
 
@@ -44,7 +43,10 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
+        self.log = QgsApplication.messageLog()
         self._right_layer = None
+        self._administrative_source_layer = None
+        self._rrr_source_relation_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
@@ -94,7 +96,16 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
 
     def prepare_right_creation(self):
         # Load layers
-        self._right_layer = self.qgis_utils.get_layer(self._db, RIGHT_TABLE, None, load=True)
+        #self._right_layer = self.qgis_utils.get_layer(self._db, RIGHT_TABLE, None, load=True)
+
+        res_layers = self.qgis_utils.get_layers(self._db, {
+            RIGHT_TABLE: {'name': RIGHT_TABLE, 'geometry': None},
+            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None},
+            RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None}}, load=True)
+
+        self._right_layer = res_layers[RIGHT_TABLE]
+        self._administrative_source_layer = res_layers[ADMINISTRATIVE_SOURCE_TABLE]
+        self._rrr_source_relation_layer =  res_layers[RRR_SOURCE_RELATION_TABLE]
 
         if self._right_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
@@ -103,13 +114,19 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return
 
-        # Configure relation fields
-        # TODO take this block to qgis_utils (post_load_configurations)
-        # self._natural_party_layer.setDisplayExpression('"documento_identidad"+\' \'+"primer_apellido"+\' \'+"segundo_apellido"+\' \'+"primer_nombre"+\' \'+"segundo_nombre"')
-        # self._legal_party_layer.setDisplayExpression('"numero_nit"+\' \'+"razon_social"')
-        # self._parcel_layer.setDisplayExpression('"nupre"+\' \'+"fmi"+\' \'+"nombre"')
-        # self._la_baunit_layer.setDisplayExpression('"t_id"+\' \'+"nombre"+\' \'+"tipo"')
-        # self._la_group_party_layer.setDisplayExpression('"t_id"+\' \'+"nombre"')
+        if self._administrative_source_layer is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateRightCadastreWizard",
+                                           "Administrative source layer couldn't be found..."),
+                Qgis.Warning)
+            return
+
+        if self._rrr_source_relation_layer is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateRightCadastreWizard",
+                                           "rrr source relation layer couldn't be found..."),
+                Qgis.Warning)
+            return
 
         # Don't suppress (i.e., show) feature form
         form_config = self._right_layer.editFormConfig()
@@ -119,10 +136,59 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
         self.edit_right()
 
     def edit_right(self):
-        # Open Form
-        self.iface.layerTreeView().setCurrentLayer(self._right_layer)
-        self._right_layer.startEditing()
-        self.iface.actionAddFeature().trigger()
+        if self._administrative_source_layer.selectedFeatureCount() >= 1:
+            # Open Form
+            self.iface.layerTreeView().setCurrentLayer(self._right_layer)
+            self._right_layer.startEditing()
+            self.iface.actionAddFeature().trigger()
+
+            administrative_source_ids = [f['t_id'] for f in self._administrative_source_layer.selectedFeatures()]
+
+            # Create connections to react when a feature is added to buffer and
+            # when it gets stored into the DB
+            self._right_layer.featureAdded.connect(self.call_right_commit)
+            self._right_layer.committedFeaturesAdded.connect(partial(self.finish_right, administrative_source_ids))
+
+        else:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateRightCadastreWizard",
+                                           "Please select an Administrative source"),
+                Qgis.Warning)
+
+    def call_right_commit(self, fid):
+        res = self._right_layer.commitChanges()
+        if res:
+            self._right_layer.featureAdded.disconnect(self.call_right_commit)
+            self.log.logMessage("Right's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+
+    def finish_right(self, administrative_source_ids, layerId, features):
+        if len(features) != 1:
+            self.log.logMessage("We should have got only one right... We cannot do anything with {} rights".format(len(features)), PLUGIN_NAME, Qgis.Warning)
+        else:
+            fid = features[0].id()
+            if not self._right_layer.getFeature(fid).isValid():
+                self.log.logMessage("Feature not found in layer Right...", PLUGIN_NAME, Qgis.Warning)
+            else:
+                right_id = self._right_layer.getFeature(fid)[ID_FIELD]
+
+                # Fill uebaunit table
+                new_features = []
+                for administrative_source_id in administrative_source_ids:
+                    new_feature = QgsVectorLayerUtils().createFeature(self._rrr_source_relation_layer)
+                    new_feature.setAttribute(RRR_SOURCE_SOURCE_FIELD, administrative_source_id)
+                    new_feature.setAttribute(RRR_SOURCE_RIGHT_FIELD, right_id)
+                    self.log.logMessage("Saving Administrative_source-Right: {}-{}".format(administrative_source_id, right_id), PLUGIN_NAME, Qgis.Info)
+                    new_features.append(new_feature)
+
+                self._rrr_source_relation_layer.dataProvider().addFeatures(new_features)
+
+                self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                    QCoreApplication.translate("CreateRightCadastreWizard",
+                                               "The new right (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!".format(right_id, administrative_source_ids[0])),
+                    Qgis.Info)
+
+        self._right_layer.committedFeaturesAdded.disconnect()
+        self.log.logMessage("Right's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
 
     def save_settings(self):
         settings = QSettings()
