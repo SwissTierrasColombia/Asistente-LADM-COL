@@ -53,6 +53,9 @@ REFERENCING_FIELD = 'referencing_column'
 RELATION_NAME = 'constraint_name'
 REFERENCED_LAYER = 'referenced_table'
 REFERENCED_FIELD = 'referenced_column'
+RELATION_TYPE = 'relation_type'
+DOMAIN_CLASS_RELATION = 'domain_class'
+CLASS_CLASS_RELATION = 'class_class'
 
 TEST_SERVER = "www.google.com"
 

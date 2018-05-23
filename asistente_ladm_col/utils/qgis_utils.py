@@ -50,7 +50,9 @@ from ..config.general_config import (
     REFERENCING_FIELD,
     RELATION_NAME,
     REFERENCED_LAYER,
-    REFERENCED_FIELD
+    REFERENCED_FIELD,
+    RELATION_TYPE,
+    DOMAIN_CLASS_RELATION
 )
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
@@ -131,6 +133,8 @@ class QGISUtils(QObject):
         self.clear_status_bar_emitted.emit()
 
     def get_related_layers(self, layer_names, already_loaded):
+        # For a given layer we load its domains, all its related layers and
+        # the domains of those related layers
         related_layers = list()
         for relation in self._relations:
             for layer_name in layer_names:
@@ -138,7 +142,19 @@ class QGISUtils(QObject):
                     if relation[REFERENCED_LAYER] not in already_loaded:
                         related_layers.append(relation[REFERENCED_LAYER])
 
+        related_layers.extend(self.get_related_domains(related_layers, already_loaded))
         return related_layers
+
+    def get_related_domains(self, layer_names, already_loaded):
+        related_domains = list()
+        for relation in self._relations:
+            if relation[RELATION_TYPE] == DOMAIN_CLASS_RELATION:
+                for layer_name in layer_names:
+                    if relation[REFERENCING_LAYER] == layer_name:
+                        if relation[REFERENCED_LAYER] not in already_loaded:
+                            related_domains.append(relation[REFERENCED_LAYER])
+
+        return related_domains
 
     def get_layer(self, db, layer_name, geometry_type=None, load=False):
         # Handy function to avoid sending a whole dict when all we need is a single table/layer
