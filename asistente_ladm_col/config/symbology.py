@@ -1,5 +1,4 @@
 from qgis.core import QgsWkbTypes
-from qgis.PyQt.QtGui import QColor
 
 from .table_mapping_config import (
     BOUNDARY_TABLE,
@@ -10,99 +9,33 @@ from .table_mapping_config import (
     BUILDING_UNIT_TABLE
 )
 
-LAYERS_STYLE = {
+ERROR_LAYER = 'error_layer'
+
+LAYER_QML_STYLE = {
     BOUNDARY_TABLE: {
-        QgsWkbTypes.LineGeometry: {
-            'symbology': {
-                'name': 'Simple line',
-                'color': '#45508a',
-                'width': '0.16'
-            },
-            'label' : None
-        }
+        QgsWkbTypes.LineGeometry: 'style_boundary'
     },
     BOUNDARY_POINT_TABLE: {
-        QgsWkbTypes.PointGeometry:{
-            'symbology': {
-                'name': 'diamond',
-                'color': '#487bb6',
-                'size': '2'
-            },
-            'label' : {
-                'field_name': 'nombre_punto',
-                'text_size' : 8 ,
-                'color' : QColor(40,51,105)
-            }
-        }
+        QgsWkbTypes.PointGeometry: 'style_boundary_point'
     },
     SURVEY_POINT_TABLE: {
-        QgsWkbTypes.PointGeometry: {
-            'symbology': {
-                'name': 'diamond',
-                'color': '#b2df8a',
-                'size': '2'
-            },
-            'label': {
-                'field_name': 'nombre_punto',
-                'text_size' : 8 ,
-                'color' : QColor(140,46,0)
-            }
-        }
+        QgsWkbTypes.PointGeometry: 'style_survey_point'
     },
     PLOT_TABLE: {
-        QgsWkbTypes.PointGeometry: {
-            'symbology': {
-                'name': 'star',
-                'color': '#b80808',
-                'size': '4.8'
-            },
-            'label': {
-                'field_name': 'nombre_punto',
-                'text_size' : 9 ,
-                'color' : QColor(0,0,0)
-            }
-        },
-        QgsWkbTypes.PolygonGeometry: {
-            'symbology': {
-                'name': 'Simple fill',
-                'color': '166,206,227,128',
-                'outline_color': '131,167,184,128'
-            },
-            'label': None
-        }
+        QgsWkbTypes.PointGeometry: 'style_plot_point',
+        QgsWkbTypes.PolygonGeometry: 'style_plot_polygon'
     },
     BUILDING_TABLE: {
-        QgsWkbTypes.PointGeometry:{
-            'symbology': {
-                'name': 'diamond',
-                'color': '#000000',
-                'size': '3'
-            },
-            'label': None
-        },
-        QgsWkbTypes.PolygonGeometry: {
-            'symbology': {
-                'name': 'Simple fill',
-                'color': '251,154,153,128',
-                'outline_color': '148,90,90,128'
-            }, 'label': None
-        }
+        QgsWkbTypes.PointGeometry: 'style_building_point',
+        QgsWkbTypes.PolygonGeometry: 'style_building_25'
     },
     BUILDING_UNIT_TABLE: {
-        QgsWkbTypes.PointGeometry:{
-            'symbology': {
-                'name': 'diamond',
-                'color': '#ffdb8b',
-                'size': '3'
-            },
-            'label': None
-        },
-        QgsWkbTypes.PolygonGeometry: {
-            'symbology': {
-                'name': 'Simple fill',
-                'color': '255,219,139,128',
-                'outline_color': '166,166,166,128'
-            }, 'label': None
-        }
+        QgsWkbTypes.PointGeometry: 'style_building_unit_point',
+        QgsWkbTypes.PolygonGeometry: 'style_building_unit_25'
+    },
+    ERROR_LAYER: {
+        QgsWkbTypes.PointGeometry: 'style_point_error',
+        QgsWkbTypes.LineGeometry: 'style_line_error',
+        QgsWkbTypes.PolygonGeometry: 'style_polygon_error'
     }
 }
