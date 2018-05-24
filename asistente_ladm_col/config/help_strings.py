@@ -96,10 +96,6 @@ Choose this option if you want to create a <b>Plot</b> from existing <i>Boundari
 <b>Plot</b> is a portion of land with a defined geographical extension.\
 ")
 
-        self.WIZ_CREATE_PLOT_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
-Select the <b>Plot</b> layer from those available in the QGIS project.\
-")
-
         self.WIZ_CREATE_BUILDING_CADASTRE_PAGE_1_OPTION_POINTS = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create a <b>Building</b> from existing <i>Survey Points</i>.\
 <br><br>\
