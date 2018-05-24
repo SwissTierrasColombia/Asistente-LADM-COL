@@ -250,10 +250,9 @@ class GeometryUtils(QObject):
             for candidate_feature in candidates_features:
                 isOverlap = feature.geometry().overlaps(candidate_feature.geometry())
                 if isOverlap == True:
-                    polygons_overlap = sorted([feature[ID_FIELD], candidate_feature[ID_FIELD]])
+                    polygons_overlap = sorted([feature[id_field], candidate_feature[id_field]])
                     if polygons_overlap not in list_overlapping_polygons:
                         list_overlapping_polygons.append(polygons_overlap)
-
         return list_overlapping_polygons
 
     def get_overlapping_lines(self, line_layer, use_selection=True):
