@@ -89,7 +89,7 @@ class QualityUtils(QObject):
             group = self.qgis_utils.get_error_layers_group()
             added_layer = QgsProject.instance().addMapLayer(error_layer, False)
             added_layer = group.addLayer(added_layer).layer()
-            self.qgis_utils.symbology.set_point_error_symbol(added_layer)
+            self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -123,14 +123,14 @@ class QualityUtils(QObject):
             if error_point_layer.featureCount() > 0:
                 added_point_layer = QgsProject.instance().addMapLayer(error_point_layer, False)
                 added_point_layer = group.addLayer(added_point_layer).layer()
-                self.qgis_utils.symbology.set_point_error_symbol(added_point_layer)
+                self.qgis_utils.symbology.set_layer_style_from_qml(added_point_layer, is_error_layer=True)
                 msg = QCoreApplication.translate("QGISUtils",
                     "A memory layer with {} overlapping boundaries (point intersections) has been added to the map.").format(added_point_layer.featureCount())
 
             if error_line_layer.featureCount() > 0:
                 added_line_layer = QgsProject.instance().addMapLayer(error_line_layer, False)
                 added_line_layer = group.addLayer(added_line_layer).layer()
-                self.qgis_utils.symbology.set_line_error_symbol(added_line_layer)
+                self.qgis_utils.symbology.set_layer_style_from_qml(added_line_layer, is_error_layer=True)
                 msg = QCoreApplication.translate("QGISUtils",
                     "A memory layer with {} overlapping boundaries (line intersections) has been added to the map.").format(added_line_layer.featureCount())
 
@@ -186,7 +186,7 @@ class QualityUtils(QObject):
             group = self.qgis_utils.get_error_layers_group()
             added_layer = QgsProject.instance().addMapLayer(error_layer, False)
             added_layer = group.addLayer(added_layer).layer()
-            self.qgis_utils.symbology.set_line_error_symbol(added_layer)
+            self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "A memory layer with {} boundary segments longer than {}m. has been added to the map!").format(added_layer.featureCount(), tolerance),
@@ -245,7 +245,7 @@ class QualityUtils(QObject):
             group = self.qgis_utils.get_error_layers_group()
             added_layer = QgsProject.instance().addMapLayer(error_layer, False)
             added_layer = group.addLayer(added_layer).layer()
-            self.qgis_utils.symbology.set_point_error_symbol(added_layer)
+            self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -293,7 +293,7 @@ class QualityUtils(QObject):
             group = self.qgis_utils.get_error_layers_group()
             added_layer = QgsProject.instance().addMapLayer(error_layer, False)
             added_layer = group.addLayer(added_layer).layer()
-            self.qgis_utils.symbology.set_point_error_symbol(added_layer)
+            self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "A memory layer with {} boundary dangles has been added to the map!").format(added_layer.featureCount()),
