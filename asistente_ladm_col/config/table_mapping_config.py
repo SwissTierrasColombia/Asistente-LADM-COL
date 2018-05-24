@@ -41,6 +41,7 @@ NAME_FIELD = "nombre"
 NAMESPACE_FIELD = "_espacio_de_nombres"
 NATURAL_PARTY_TABLE = "interesado_natural"
 NIT_NUMBER_FIELD = "numero_nit"
+NUMBER_OF_FLOORS = "numero_pisos"
 NUPRE_FIELD = "nupre"
 PARTY_DOCUMENT_TYPE_TABLE = "col_interesadodocumentotipo"
 PARTY_TYPE_TABLE = "la_interesadotipo"
@@ -112,4 +113,15 @@ DICT_DISPLAY_EXPRESSIONS = {
                                                                     NAMESPACE_FIELD,
                                                                     NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
                                                                     LOCAL_ID_FIELD)
+}
+
+LAYER_VARIABLES = {
+    BUILDING_TABLE: {
+        "qgis_25d_angle": 90,
+        "qgis_25d_height": 1
+    },
+    BUILDING_UNIT_TABLE: {
+        "qgis_25d_angle": 90,
+        "qgis_25d_height": '"{}" * 2.5'.format(NUMBER_OF_FLOORS)
+    }
 }

@@ -54,7 +54,7 @@ class SymbologyUtils(QObject):
     def __init__(self):
         QObject.__init__(self)
 
-    def set_layer_style_from_qml(self, layer, emit=True):
+    def set_layer_style_from_qml(self, layer, emit=False):
         if layer.name() in LAYER_QML_STYLE:
             renderer, labeling = self.get_style_from_qml(LAYER_QML_STYLE[layer.name()][layer.geometryType()])
             if renderer:

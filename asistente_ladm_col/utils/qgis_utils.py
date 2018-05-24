@@ -27,7 +27,8 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsMapLayer,
                        QgsPointXY,
                        QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
-                       QgsApplication, QgsProcessingFeedback, QgsRelation)
+                       QgsApplication, QgsProcessingFeedback, QgsRelation,
+                       QgsExpressionContextUtils)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
                               QVariant, QSettings, QLocale, QUrl, QFile, QIODevice)
 import processing
@@ -61,6 +62,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BOUNDARY_TABLE,
                                            DICT_DISPLAY_EXPRESSIONS,
                                            ID_FIELD,
+                                           LAYER_VARIABLES,
                                            LENGTH_FIELD_BOUNDARY_TABLE,
                                            LESS_TABLE,
                                            LESS_TABLE_BOUNDARY_FIELD,
@@ -293,6 +295,7 @@ class QGISUtils(QObject):
         # setting automatic fields for that layer
         self.configure_missing_relations(layer)
         self.set_display_expressions(layer)
+        self.set_layer_variables(layer)
         self.set_automatic_fields(layer)
         if layer.isSpatial():
             self.symbology.set_layer_style_from_qml(layer)
@@ -350,6 +353,11 @@ class QGISUtils(QObject):
     def set_display_expressions(self, layer):
         if layer.name() in DICT_DISPLAY_EXPRESSIONS:
             layer.setDisplayExpression(DICT_DISPLAY_EXPRESSIONS[layer.name()])
+
+    def set_layer_variables(self, layer):
+        if layer.name() in LAYER_VARIABLES:
+            for variable, value in LAYER_VARIABLES[layer.name()].items():
+                QgsExpressionContextUtils.setLayerVariable(layer, variable, value)
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
