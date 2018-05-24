@@ -16,6 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os.path
+
 from qgis.core import (
     QgsFillSymbol,
     QgsLineSymbol,
@@ -34,11 +36,16 @@ from qgis.core import (
     QgsOuterGlowEffect,
     QgsOuterGlowEffect,
     QgsSimpleLineSymbolLayer,
-    QgsWkbTypes
+    QgsWkbTypes,
+    QgsFeatureRenderer,
+    QgsAbstractVectorLayerLabeling,
+    QgsReadWriteContext
 )
-from qgis.PyQt.QtCore import QObject, pyqtSignal
+from qgis.PyQt.QtCore import QObject, pyqtSignal, QFile, QIODevice
+from qgis.PyQt.QtXml import QDomDocument
 
-from ..config.symbology import LAYERS_STYLE
+from ..config.general_config import STYLES_DIR
+from ..config.symbology import LAYER_QML_STYLE
 
 class SymbologyUtils(QObject):
 
@@ -47,34 +54,42 @@ class SymbologyUtils(QObject):
     def __init__(self):
         QObject.__init__(self)
 
-    def set_layer_style(self, layer):
-        if layer.name() in LAYERS_STYLE:
-            self.set_symbology(layer, LAYERS_STYLE[layer.name()][layer.geometryType()]['symbology'])
-            self.set_label(layer, LAYERS_STYLE[layer.name()][layer.geometryType()]['label'])
+    def set_layer_style_from_qml(self, layer, emit=True):
+        if layer.name() in LAYER_QML_STYLE:
+            renderer, labeling = self.get_style_from_qml(LAYER_QML_STYLE[layer.name()][layer.geometryType()])
+            if renderer:
+                layer.setRenderer(renderer)
+                if emit:
+                    self.layer_symbology_changed.emit(layer.id())
+            if labeling:
+                layer.setLabeling(labeling)
+                layer.setLabelsEnabled(True)
 
-    def set_symbology(self, layer, symbol_def):
-        if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
-            symbol = QgsFillSymbol.createSimple(symbol_def)
-        elif layer.geometryType() == QgsWkbTypes.LineGeometry:
-            symbol = QgsLineSymbol.createSimple(symbol_def)
-        elif layer.geometryType() == QgsWkbTypes.PointGeometry:
-            symbol = QgsMarkerSymbol.createSimple(symbol_def)
-        layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-        self.layer_symbology_changed.emit(layer.id())
+    def get_style_from_qml(self, qml_name):
+        renderer = None
+        labeling = None
 
-    def set_label(self, layer, label_def):
-        if label_def is not None:
-            label_settings = QgsPalLayerSettings()
-            label_settings.fieldName = str(label_def['field_name'])
-            text_format = QgsTextFormat()
-            text_format.setSize(int(label_def['text_size']))
-            text_format.setColor(label_def['color'])
-            buffer = QgsTextBufferSettings()
-            buffer.setEnabled(True)
-            text_format.setBuffer(buffer)
-            label_settings.setFormat(text_format)
-            layer.setLabeling(QgsVectorLayerSimpleLabeling(label_settings))
-            layer.setLabelsEnabled(True)
+        style_path = os.path.join(STYLES_DIR, qml_name + '.qml')
+        file = QFile(style_path)
+        if not file.open(QIODevice.ReadOnly | QIODevice.Text):
+            print("Unable to read style file from", style_path)
+
+        doc = QDomDocument()
+        doc.setContent(file)
+        file.close()
+        doc_elem = doc.documentElement()
+
+        nodes = doc_elem.elementsByTagName("renderer-v2")
+        if nodes.count():
+            renderer_elem = nodes.at(0).toElement()
+            renderer = QgsFeatureRenderer.load(renderer_elem, QgsReadWriteContext())
+
+        nodes = doc_elem.elementsByTagName("labeling")
+        if nodes.count():
+            labeling_elem = nodes.at(0).toElement()
+            labeling = QgsAbstractVectorLayerLabeling.create(labeling_elem, QgsReadWriteContext())
+
+        return (renderer, labeling)
 
     def set_point_error_symbol(self, layer):
         if not(layer.isSpatial() and layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QgsWkbTypes.PointGeometry):

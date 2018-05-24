@@ -255,7 +255,7 @@ class QGISUtils(QObject):
         # setting automatic fields for that layer
         self.configure_missing_relations(layer)
         self.set_automatic_fields(layer)
-        self.symbology.set_layer_style(layer)
+        self.symbology.set_layer_style_from_qml(layer)
 
     def configure_missing_relations(self, layer):
         layer_name = layer.dataProvider().uri().table()
