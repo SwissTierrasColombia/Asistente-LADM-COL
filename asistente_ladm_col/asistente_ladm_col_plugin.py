@@ -550,7 +550,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def check_overlaps_in_plots(self):
-        self.quality.check_overlaps_polygons(self.get_db_connection(), PLOT_TABLE)
+        self.quality.check_overlapping_polygons(self.get_db_connection(), PLOT_TABLE)
 
     @_project_generator_required
     @_db_connection_required
@@ -569,9 +569,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.check_overlaps_in_boundary_points()
         self.check_overlaps_in_control_points()
         self.check_overlaps_in_boundaries()
+        self.check_overlaps_in_plots()
         self.check_missing_boundary_points_in_boundaries()
         self.check_dangles_in_boundaries()
-        
+
     def show_help(self):
         self.qgis_utils.show_help()
 

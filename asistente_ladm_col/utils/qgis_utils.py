@@ -517,7 +517,7 @@ class QGISUtils(QObject):
         existing_pairs = set(existing_pairs)
 
         boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
-        id_pairs = self.geometry.get_pair_boundary_boundary_point(boundary_layer, boundary_point_layer, ID_FIELD, use_selection)
+        id_pairs = self.geometry.get_pair_boundary_boundary_point(boundary_layer, boundary_point_layer, use_selection=use_selection)
 
         if id_pairs:
             bfs_layer.startEditing()
@@ -598,7 +598,7 @@ class QGISUtils(QObject):
         existing_less_pairs = set(existing_less_pairs)
 
         boundary_layer = res_layers[BOUNDARY_TABLE]
-        id_more_pairs, id_less_pairs = self.geometry.get_pair_boundary_plot(boundary_layer, plot_layer, ID_FIELD, use_selection)
+        id_more_pairs, id_less_pairs = self.geometry.get_pair_boundary_plot(boundary_layer, plot_layer, use_selection=use_selection)
 
         if id_more_pairs:
             more_bfs_layer.startEditing()
