@@ -51,6 +51,12 @@ class QualityUtils(QObject):
         self.qgis_utils = qgis_utils
 
     def check_overlapping_points(self, db, point_layer_name):
+        """
+        Shows which points are overlapping
+        :param db: db connection instance
+        :param entity: points layer
+        :return:
+        """
         features = []
         point_layer = self.qgis_utils.get_layer(db, point_layer_name, load=True)
 
@@ -99,6 +105,67 @@ class QualityUtils(QObject):
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "There are no overlapping points in layer '{}'!").format(point_layer_name), Qgis.Info)
+
+    def check_overlapping_polygons(self, db, polygon_layer_name):
+        polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, QgsWkbTypes.PolygonGeometry, load=True)
+
+        if polygon_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(polygon_layer_name, db.get_description()),
+                Qgis.Warning)
+            return
+
+        error_layer = QgsVectorLayer("Polygon?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     QCoreApplication.translate("QGISUtils", "Overlapping polygons in {}"
+                                                                .format(polygon_layer_name)), "memory")
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField("polygon_id", QVariant.String),
+                                     QgsField("overlapping_count", QVariant.Int),
+                                     QgsField("overlapping_ids", QVariant.String)])
+        error_layer.updateFields()
+
+        overlapping = self.qgis_utils.geometry.get_overlapping_polygons(polygon_layer, ID_FIELD)
+        flat_overlapping = [id for items in overlapping for id in items]  # Build a flat list of ids
+        flat_overlapping = list(set(flat_overlapping)) # unique values
+        features = []
+
+        t_ids = {f[ID_FIELD] : f.id() for f in polygon_layer.getFeatures() if f[ID_FIELD] in flat_overlapping}
+
+        for polygon_id in flat_overlapping:
+            feature = polygon_layer.getFeature(t_ids[polygon_id])
+            polygon = feature.geometry()
+
+            # Get all ids that overlap with current id
+            overlapping_ids = [list(set(pair) - set([polygon_id]))[0] for pair in overlapping if polygon_id in pair]
+
+            new_feature = QgsVectorLayerUtils().createFeature(
+                error_layer,
+                polygon,
+                {0: polygon_id,
+                 1: len(overlapping_ids),
+                 2: ", ".join([str(id) for id in overlapping_ids])
+                })
+
+            features.append(new_feature)
+
+        error_layer.dataProvider().addFeatures(features)
+
+        if error_layer.featureCount() > 0:
+            group = self.qgis_utils.get_error_layers_group()
+            added_layer = QgsProject.instance().addMapLayer(error_layer, False)
+            added_layer = group.addLayer(added_layer).layer()
+            self.qgis_utils.symbology.set_point_error_symbol(added_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "A memory layer with {} overlapping polygons in layer '{}' has been added to the map!").format(
+                    added_layer.featureCount(), polygon_layer_name), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "There are no overlapping polygons in layer '{}'!").format(
+                    polygon_layer_name), Qgis.Info)
 
     def check_overlaps_in_boundaries(self, db):
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)

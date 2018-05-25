@@ -32,7 +32,8 @@ from processing.modeler.ModelerUtils import ModelerUtils
 
 from .config.table_mapping_config import (
     BOUNDARY_POINT_TABLE,
-    CONTROL_POINT_TABLE
+    CONTROL_POINT_TABLE,
+    PLOT_TABLE
 )
 from .config.general_config import (
     PROJECT_GENERATOR_MIN_REQUIRED_VERSION,
@@ -137,6 +138,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._overlaps_boundary_points_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check overlaps in boundary points"), self._quality_cadastre_menu)
         self._overlaps_control_points_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check overlaps in control points"),self._quality_cadastre_menu)
         self._overlaps_boundaries_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check overlaps in boundaries"), self._quality_cadastre_menu)
+        self._overlaps_plots_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check overlaps in plots"),self._quality_cadastre_menu)
         self._missing_boundary_points_vertices_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check missing boundary points in boundaries"), self._quality_cadastre_menu)
         self._boundary_dangles_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check dangles in boundaries"), self._quality_cadastre_menu)
         self._quality_check_all_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check all"), self._quality_cadastre_menu)
@@ -144,6 +146,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                                 self._overlaps_boundary_points_cadastre_action,
                                                 self._overlaps_control_points_cadastre_action,
                                                 self._overlaps_boundaries_cadastre_action,
+                                                self._overlaps_plots_cadastre_action,
                                                 self._missing_boundary_points_vertices_cadastre_action,
                                                 self._boundary_dangles_action])
         self._quality_cadastre_menu.addSeparator()
@@ -191,6 +194,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._overlaps_boundary_points_cadastre_action.triggered.connect(self.check_overlaps_in_boundary_points)
         self._overlaps_control_points_cadastre_action.triggered.connect(self.check_overlaps_in_control_points)
         self._overlaps_boundaries_cadastre_action.triggered.connect(self.check_overlaps_in_boundaries)
+        self._overlaps_plots_cadastre_action.triggered.connect(self.check_overlaps_in_plots)
         self._missing_boundary_points_vertices_cadastre_action.triggered.connect(self.check_missing_boundary_points_in_boundaries)
         self._boundary_dangles_action.triggered.connect(self.check_dangles_in_boundaries)
         self._quality_check_all_cadastre_action.triggered.connect(self.quality_check_all)
@@ -546,6 +550,11 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_project_generator_required
     @_db_connection_required
+    def check_overlaps_in_plots(self):
+        self.quality.check_overlapping_polygons(self.get_db_connection(), PLOT_TABLE)
+
+    @_project_generator_required
+    @_db_connection_required
     def check_missing_boundary_points_in_boundaries(self):
         self.quality.check_missing_boundary_points_in_boundaries(self.get_db_connection())
 
@@ -561,9 +570,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.check_overlaps_in_boundary_points()
         self.check_overlaps_in_control_points()
         self.check_overlaps_in_boundaries()
+        self.check_overlaps_in_plots()
         self.check_missing_boundary_points_in_boundaries()
         self.check_dangles_in_boundaries()
-        
+
     def show_help(self):
         self.qgis_utils.show_help()
 

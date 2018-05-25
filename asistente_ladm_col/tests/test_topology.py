@@ -31,8 +31,7 @@ class TestTopology(unittest.TestCase):
         uri = gpkg_path + '|layername={layername}'.format(layername='tests_plots')
         plot_layer = QgsVectorLayer(uri, 'tests_plots', 'ogr')
 
-        use_selection = False
-        result1, result2 = self.qgis_utils.geometry.get_pair_boundary_plot(boundary_layer, plot_layer, use_selection);
+        result1, result2 = self.qgis_utils.geometry.get_pair_boundary_plot(boundary_layer, plot_layer, use_selection=False)
 
         self.assertEqual(result1, [(1, 3), (3, 3)])
 
