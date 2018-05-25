@@ -155,7 +155,7 @@ class QualityUtils(QObject):
             group = self.qgis_utils.get_error_layers_group()
             added_layer = QgsProject.instance().addMapLayer(error_layer, False)
             added_layer = group.addLayer(added_layer).layer()
-            self.qgis_utils.symbology.set_point_error_symbol(added_layer)
+            self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
