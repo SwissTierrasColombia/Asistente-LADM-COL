@@ -231,6 +231,30 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"comienzo_vida_util_version"', 'precision': -1, 'type': 16, 'length': -1, 'name': 'comienzo_vida_util_version'},
             {'expression': '"fin_vida_util_version"', 'precision': -1, 'type': 16, 'length': -1, 'name': 'fin_vida_util_version'}
         ]
+    elif layer_name == CONTROL_POINT_TABLE:
+        mapping = [
+         {'name': 't_id', 'precision': 0, 'type': 4, 'length': -1, 'expression': '"t_id"'},
+         {'name': 'nombre_punto', 'precision': -1, 'type': 10, 'length': 20, 'expression': '"nombre_punto"'},
+         {'name': 'exactitud_vertical', 'precision': 0, 'type': 2, 'length': -1, 'expression': '"exactitud_vertical"'},
+         {'name': 'exactitud_horizontal', 'precision': 0, 'type': 2, 'length': -1, 'expression': '"exactitud_horizontal"'},
+         {'name': 'tipo_punto_control', 'precision': -1, 'type': 10, 'length': 255, 'expression': '"tipo_punto_control"'},
+         {'name': 'confiabilidad', 'precision': -1, 'type': 1, 'length': -1, 'expression': '"confiabilidad"'},
+         {'name': 'posicion_interpolacion', 'precision': -1, 'type': 10, 'length': 255, 'expression': '"posicion_interpolacion"'},
+         {'name': 'monumentacion', 'precision': -1, 'type': 10, 'length': 255, 'expression': '"monumentacion"'},
+         {'name': 'puntotipo', 'precision': -1, 'type': 10, 'length': 255, 'expression': '"puntotipo"'},
+         {'name': 'p_espacio_de_nombres', 'precision': -1, 'type': 10, 'length': 255, 'expression': '"p_espacio_de_nombres"'},
+         {'name': 'p_local_id', 'precision': -1, 'type': 10, 'length': 255, 'expression': '"p_local_id"'},
+         {'name': 'ue_la_unidadespacial', 'precision': 0, 'type': 4, 'length': -1, 'expression': '"ue_la_unidadespacial"'},
+         {'name': 'ue_la_espaciojuridicoredservicios', 'precision': 0, 'type': 4, 'length': -1, 'expression': '"ue_la_espaciojuridicoredservicios"'},
+         {'name': 'ue_terreno', 'precision': 0, 'type': 4, 'length': -1, 'expression': '"ue_terreno"'},
+         {'name': 'ue_servidumbrepaso', 'precision': 0, 'type': 4, 'length': -1, 'expression': '"ue_servidumbrepaso"'},
+         {'name': 'ue_la_espaciojuridicounidadedificacion', 'precision': 0, 'type': 4, 'length': -1, 'expression': '"ue_la_espaciojuridicounidadedificacion"'},
+         {'name': 'ue_construccion', 'precision': 0, 'type': 4, 'length': -1, 'expression': '"ue_construccion"'},
+         {'name': 'ue_unidadconstruccion', 'precision': 0, 'type': 4, 'length': -1, 'expression': '"ue_unidadconstruccion"'},
+         {'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16, 'length': -1, 'expression': '"comienzo_vida_util_version"'},
+         {'name': 'fin_vida_util_version', 'precision': -1, 'type': 16, 'length': -1, 'expression': '"fin_vida_util_version"'}
+        ]
+
     # If the user doesn't want to disable automatic fields...
     if not QSettings().value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
         # Now see if we can adjust the mapping depending on user settings

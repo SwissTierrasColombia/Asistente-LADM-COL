@@ -29,7 +29,8 @@ from ..utils.qt_utils import (make_file_selector, enable_next_wizard,
                               disable_next_wizard)
 from ..utils import get_ui_class
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
-                                           SURVEY_POINT_TABLE)
+                                           SURVEY_POINT_TABLE,
+                                           CONTROL_POINT_TABLE)
 from ..config.help_strings import HelpStrings
 from ..config.general_config import PLUGIN_NAME
 
@@ -73,6 +74,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         self.txt_file_path.textChanged.emit(self.txt_file_path.text())
 
         self.rad_boundary_point.toggled.connect(self.point_option_changed)
+        self.rad_control_point.toggled.connect(self.point_option_changed)
         self.rad_csv.toggled.connect(self.adjust_page_2_controls)
         self.point_option_changed() # Initialize it
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
@@ -103,6 +105,8 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             if self.rad_boundary_point.isChecked():
                 return self.dict_pages_ids[self.wizardPage2]
             elif self.rad_survey_point.isChecked():
+                return self.dict_pages_ids[self.wizardPage2]
+            elif self.rad_control_point.isChecked():
                 return self.dict_pages_ids[self.wizardPage2]
         elif self.currentId() == self.dict_pages_ids[self.wizardPage2]:
             if self.rad_csv.isChecked():
@@ -151,10 +155,14 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             self.gbx_page_2.setTitle(QCoreApplication.translate("CreatePointsCadastreWizard", "Load data to Boundary Points..."))
             self.gbx_page_3.setTitle(QCoreApplication.translate("CreatePointsCadastreWizard", "Configure CSV data source for Boundary Points..."))
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_BP)
-        else: # self.rad_survey_point is checked
+        elif self.rad_survey_point.isChecked(): # self.rad_survey_point is checked
             self.gbx_page_2.setTitle(QCoreApplication.translate("CreatePointsCadastreWizard", "Load data to Survey Points..."))
             self.gbx_page_3.setTitle(QCoreApplication.translate("CreatePointsCadastreWizard", "Configure CSV data source for Survey Points..."))
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_SP)
+        else: # self.rad_control_point is checked
+            self.gbx_page_2.setTitle(QCoreApplication.translate("CreatePointsCadastreWizard", "Load data to Control Points..."))
+            self.gbx_page_3.setTitle(QCoreApplication.translate("CreatePointsCadastreWizard", "Configure CSV data source for Control Points..."))
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_CP)
 
     def finished_dialog(self):
         self.save_settings()
@@ -182,7 +190,13 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                                                         self.current_point_name())
 
     def current_point_name(self):
-        return BOUNDARY_POINT_TABLE if self.rad_boundary_point.isChecked() else SURVEY_POINT_TABLE
+        if self.rad_boundary_point.isChecked():
+            return BOUNDARY_POINT_TABLE
+        elif self.rad_survey_point.isChecked():
+            return SURVEY_POINT_TABLE
+        else:
+            return CONTROL_POINT_TABLE
+        #return BOUNDARY_POINT_TABLE if self.rad_boundary_point.isChecked() else SURVEY_POINT_TABLE
 
     def prepare_copy_csv_points_to_db(self):
         csv_path = self.txt_file_path.text().strip()
@@ -294,6 +308,11 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                 self.download_csv_file('template_survey_points.csv')
             elif link == '#data':
                 self.download_csv_file('sample_survey_points.csv')
+        elif self.rad_control_point.isChecked():
+            if link == '#template':
+                self.download_csv_file('template_control_points.csv')
+            elif link == '#data':
+                self.download_csv_file('sample_control_points.csv')
 
     def download_csv_file(self, filename):
         settings = QSettings()
@@ -335,7 +354,15 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/wizards/points_add_points_type', 'boundary_point' if self.rad_boundary_point.isChecked() else 'survey_point')
+        point_type = None
+        if self.rad_boundary_point.isChecked():
+            point_type = 'boundary_point'
+        elif self.rad_survey_point.isChecked():
+            point_type = 'survey_point'
+        else:
+            point_type = 'control_point'
+
+        settings.setValue('Asistente-LADM_COL/wizards/points_add_points_type', point_type)
         settings.setValue('Asistente-LADM_COL/wizards/points_load_data_type', 'csv' if self.rad_csv.isChecked() else 'refactor')
         settings.setValue('Asistente-LADM_COL/wizards/points_add_points_csv_file', self.txt_file_path.text().strip())
         settings.setValue('Asistente-LADM_COL/wizards/points_csv_file_delimiter', self.txt_delimiter.text().strip())
@@ -345,8 +372,10 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         point_type = settings.value('Asistente-LADM_COL/wizards/points_add_points_type') or 'boundary_point'
         if point_type == 'boundary_point':
             self.rad_boundary_point.setChecked(True)
-        else:
+        elif point_type == 'survey_point':
             self.rad_survey_point.setChecked(True)
+        else:
+            self.rad_control_point.setChecked(True)
 
         load_data_type = settings.value('Asistente-LADM_COL/wizards/points_load_data_type') or 'csv'
         if load_data_type == 'refactor':

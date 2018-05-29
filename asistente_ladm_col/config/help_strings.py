@@ -18,6 +18,12 @@ Choose this option to load points to <b>Survey Points</b> layer from <i>LADM_COL
 <b>Survey Point</b> is a specialized class of <i>LA_Point</i> which represents a building, right of way or auxiliary vertex.\
 ")
 
+        self.WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_CP = QCoreApplication.translate("HelpStrings", "\
+Choose this option to load points to <b>Control Points</b> layer from <i>LADM_COL</i> model.\
+<br><br>\
+<b>Control Point</b> is a specialized class of <i>LA_Point</i> which store control points for surveying.\
+")
+
         self.WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV = QCoreApplication.translate("HelpStrings", "\
 Add a Comma Separated Values file (CSV), choosing the delimiter and fields that contain point coordinates.\
 ")

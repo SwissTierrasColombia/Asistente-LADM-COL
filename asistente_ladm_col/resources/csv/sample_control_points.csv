@@ -1,0 +1,4 @@
+t_id,nombre_punto,exactitud_vertical,exactitud_horizontal,tipo_punto_control,confiabilidad,posicion_interpolacion,monumentacion,puntotipo,p_espacio_de_nombres,p_local_id,ue_la_unidadespacial,ue_la_espaciojuridicoredservicios,ue_terreno,ue_servidumbrepaso,ue_la_espaciojuridicounidadedificacion,ue_construccion,ue_unidadconstruccion,comienzo_vida_util_version,fin_vida_util_version,x,y,z
+1855,P03,1,1,Apoyo,false,Aislado,Mojon,Control,PUNTOCONTROL,1855,,,,,,,,2018-05-29T10:21:50,,963361.9612,1077239.469,2000
+1852,P01,1,1,Control,false,Aislado,Mojon,Control,PUNTOCONTROL,1852,,,,,,,,2018-05-29T10:15:49,,963465.8252,1077689.546,2000
+1854,P02,1,1,Control,false,Aislado,,Control,PUNTOCONTROL,1854,,,,,,,,2018-05-29T10:19:06,,963761.1249,1077396.283,2000
