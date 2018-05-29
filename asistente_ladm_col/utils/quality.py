@@ -100,7 +100,7 @@ class QualityUtils(QObject):
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "A memory layer with {} overlapping points in '{}' has been added to the map!").format(
-                    point_layer_name, added_layer.featureCount()), Qgis.Info)
+                    added_layer.featureCount(), point_layer_name), Qgis.Info)
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
