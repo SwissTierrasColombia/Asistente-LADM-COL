@@ -253,6 +253,7 @@ class QGISUtils(QObject):
 
         self.map_freeze_requested.emit(False)
         self.map_refresh_requested.emit()
+        self.activate_layer_requested.emit(list(response_layers.values())[0])
 
         return response_layers
 
