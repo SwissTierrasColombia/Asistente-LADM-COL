@@ -178,39 +178,47 @@ class QualityUtils(QObject):
             return
 
         overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_layer)
-        error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
         error_point_layer = overlapping['native:saveselectedfeatures_3:Intersected_Points']
-        error_line_layer.setName("Overlapping boundaries (line intersections)")
-        error_point_layer.setName("Overlapping boundaries (point intersections)")
+        error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
+        if type(error_point_layer) is QgsVectorLayer:
+            error_point_layer.setName("Overlapping boundaries (point intersections)")
+        if type(error_line_layer) is QgsVectorLayer:
+            error_line_layer.setName("Overlapping boundaries (line intersections)")
 
-        if error_point_layer.featureCount() > 0 or error_line_layer.featureCount() > 0:
+        if (type(error_point_layer) is not QgsVectorLayer and \
+           type(error_line_layer) is not QgsVectorLayer) or \
+           (error_point_layer.featureCount() == 0 and \
+           error_line_layer.featureCount() == 0):
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no overlapping boundaries."), Qgis.Info)
+        else:
             group = self.qgis_utils.get_error_layers_group()
             msg = ''
 
-            if error_point_layer.featureCount() > 0:
+            if type(error_point_layer) is QgsVectorLayer and error_point_layer.featureCount() > 0:
                 added_point_layer = QgsProject.instance().addMapLayer(error_point_layer, False)
                 added_point_layer = group.addLayer(added_point_layer).layer()
                 self.qgis_utils.symbology.set_layer_style_from_qml(added_point_layer, is_error_layer=True)
                 msg = QCoreApplication.translate("QGISUtils",
                     "A memory layer with {} overlapping boundaries (point intersections) has been added to the map.").format(added_point_layer.featureCount())
 
-            if error_line_layer.featureCount() > 0:
+            if type(error_line_layer) is QgsVectorLayer and error_line_layer.featureCount() > 0:
                 added_line_layer = QgsProject.instance().addMapLayer(error_line_layer, False)
                 added_line_layer = group.addLayer(added_line_layer).layer()
                 self.qgis_utils.symbology.set_layer_style_from_qml(added_line_layer, is_error_layer=True)
                 msg = QCoreApplication.translate("QGISUtils",
                     "A memory layer with {} overlapping boundaries (line intersections) has been added to the map.").format(added_line_layer.featureCount())
 
-            if error_point_layer.featureCount() > 0 and error_line_layer.featureCount() > 0:
+            if type(error_point_layer) is QgsVectorLayer and \
+               type(error_line_layer) is QgsVectorLayer and \
+               error_point_layer.featureCount() > 0 and \
+               error_line_layer.featureCount() > 0:
                 msg = QCoreApplication.translate("QGISUtils",
                     "Two memory layers with overlapping boundaries ({} point intersections and {} line intersections) have been added to the map.").format(added_point_layer.featureCount(), added_line_layer.featureCount())
 
             self.qgis_utils.message_emitted.emit(msg, Qgis.Info)
-        else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no overlapping boundaries."), Qgis.Info)
-
 
     def check_too_long_segments(self, db):
         tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
