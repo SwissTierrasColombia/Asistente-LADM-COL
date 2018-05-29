@@ -178,7 +178,9 @@ class QGISUtils(QObject):
 
         self.map_freeze_requested.emit(True)
 
+        profiler = QgsApplication.profiler()
         with OverrideCursor(Qt.WaitCursor):
+            profiler.start("existing_layers")
             for layer_id, layer_info in layers.items():
                 layer_obj = None
                 ladm_layers = self.get_ladm_layers_from_layer_tree(db)
@@ -192,7 +194,9 @@ class QGISUtils(QObject):
                         layer_obj = ladm_layer
 
                 response_layers[layer_id] = layer_obj
-
+            profiler.end()
+            print("Existing layers",profiler.totalTime())
+            profiler.clear()
             if load:
                 layers_to_load = [layers[layer_id]['name'] for layer_id, layer_obj in response_layers.items() if layer_obj is None]
 
@@ -200,18 +204,27 @@ class QGISUtils(QObject):
                     # Get related layers from cached relations and add them to
                     # list of layers to load, Project Generator will set relations
                     already_loaded = [ladm_layer.dataProvider().uri().table() for ladm_layer in ladm_layers]
+                    profiler.start("related_layers")
                     additional_layers_to_load = self.get_related_layers(layers_to_load, already_loaded)
+                    profiler.end()
+                    print("Related layers",profiler.totalTime())
+                    profiler.clear()
                     all_layers_to_load = list(set(layers_to_load + additional_layers_to_load))
 
                     self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
                         "Loading LADM_COL layers to QGIS and configuring their relations and forms..."), 0)
                     QCoreApplication.processEvents()
+                    profiler.start("load_layers")
                     self.project_generator_utils.load_layers(all_layers_to_load, db)
+                    profiler.end()
+                    print("Load layers",profiler.totalTime())
+                    profiler.clear()
 
                     # Now that all layers are loaded, update response dict
                     # and apply post_load_configurations to new layers
                     missing_layers = {layer_id: {'name': layers[layer_id]['name'], 'geometry': layers[layer_id]['geometry']} for layer_id, layer_obj in response_layers.items() if layer_obj is None}
 
+                    profiler.start("post_load")
                     # Apply post-load configs to all just loaded layers
                     for layer in self.get_ladm_layers_from_layer_tree(db):
                         layer_name = layer.dataProvider().uri().table()
@@ -233,10 +246,14 @@ class QGISUtils(QObject):
 
                             self.post_load_configurations(layer)
 
+                    profiler.end()
+                    print("Post load",profiler.totalTime())
+                    profiler.clear()
                     self.clear_status_bar_emitted.emit()
 
         self.map_freeze_requested.emit(False)
         self.map_refresh_requested.emit()
+        self.activate_layer_requested.emit(list(response_layers.values())[0])
 
         return response_layers
 

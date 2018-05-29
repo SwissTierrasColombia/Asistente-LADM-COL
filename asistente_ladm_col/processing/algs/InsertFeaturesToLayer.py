@@ -117,8 +117,7 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
             feedback.setProgress(int(current * total))
 
         # This might throw errors and print messages... But, in that case, that's what we want!
-        with edit(target):
-            res = target.addFeatures(new_features)
+        res = target.dataProvider().addFeatures(new_features)
 
         if res:
             feedback.pushInfo("{} out of {} features from input layer were successfully copied into '{}'!".format(
