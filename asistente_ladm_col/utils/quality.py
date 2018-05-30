@@ -41,7 +41,8 @@ from ..config.general_config import (
 from ..config.table_mapping_config import (
     BOUNDARY_POINT_TABLE,
     BOUNDARY_TABLE,
-    ID_FIELD
+    ID_FIELD,
+    PLOT_TABLE
 )
 
 class QualityUtils(QObject):
@@ -166,6 +167,46 @@ class QualityUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                     "There are no overlapping polygons in layer '{}'!").format(
                     polygon_layer_name), Qgis.Info)
+
+    def check_plot_covered_by_boundary(self, db):
+
+        differences_layer_name = "Differences between {} and {}".format(PLOT_TABLE, BOUNDARY_TABLE)
+        plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
+        boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, QgsWkbTypes.LineGeometry, load=True)
+
+        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     QCoreApplication.translate("QGISUtils", differences_layer_name), "memory")
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField(ID_FIELD, QVariant.String)])
+        error_layer.updateFields()
+
+        features = []
+        differences = self.qgis_utils.geometry.get_difference_between_polygon_polyline(plot_layer, boundary_layer)
+
+        for difference in differences:
+            print(type(difference['geometry']), difference['id'])
+
+        for difference in differences:
+            new_feature = QgsVectorLayerUtils().createFeature(error_layer, difference['geometry'],{0: difference['id']})
+            features.append(new_feature)
+
+        error_layer.dataProvider().addFeatures(features)
+
+        if error_layer.featureCount() > 0:
+            group = self.qgis_utils.get_error_layers_group()
+            added_layer = QgsProject.instance().addMapLayer(error_layer, False)
+            added_layer = group.addLayer(added_layer).layer()
+            self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "A memory layer with {} differences multylines in layer '{}' has been added to the map!").format(
+                    added_layer.featureCount(), differences_layer_name), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "'{}' are covered by '{}'!").format(
+                    PLOT_TABLE,BOUNDARY_TABLE), Qgis.Info)
 
     def check_overlaps_in_boundaries(self, db):
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
