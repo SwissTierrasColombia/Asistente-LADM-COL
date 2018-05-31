@@ -173,11 +173,17 @@ class QualityUtils(QObject):
         if boundary_layer is None:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()),
-                Qgis.Warning)
+                    "Table {} not found in DB! {}").format(
+                        BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
             return
 
         overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_layer)
+        if overlapping is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                   "There are no boundaries to check for overlaps!"), Qgis.Info)
+            return
+
         error_point_layer = overlapping['native:saveselectedfeatures_3:Intersected_Points']
         error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
         if type(error_point_layer) is QgsVectorLayer:
