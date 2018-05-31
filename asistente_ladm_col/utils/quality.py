@@ -92,10 +92,7 @@ class QualityUtils(QObject):
         error_layer.dataProvider().addFeatures(features)
 
         if error_layer.featureCount() > 0:
-            group = self.qgis_utils.get_error_layers_group()
-            added_layer = QgsProject.instance().addMapLayer(error_layer, False)
-            added_layer = group.addLayer(added_layer).layer()
-            self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
+            added_layer = self.add_error_layer(error_layer)
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -152,10 +149,7 @@ class QualityUtils(QObject):
         error_layer.dataProvider().addFeatures(features)
 
         if error_layer.featureCount() > 0:
-            group = self.qgis_utils.get_error_layers_group()
-            added_layer = QgsProject.instance().addMapLayer(error_layer, False)
-            added_layer = group.addLayer(added_layer).layer()
-            self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
+            added_layer = self.add_error_layer(error_layer)
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -200,20 +194,15 @@ class QualityUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "There are no overlapping boundaries."), Qgis.Info)
         else:
-            group = self.qgis_utils.get_error_layers_group()
             msg = ''
 
             if type(error_point_layer) is QgsVectorLayer and error_point_layer.featureCount() > 0:
-                added_point_layer = QgsProject.instance().addMapLayer(error_point_layer, False)
-                added_point_layer = group.addLayer(added_point_layer).layer()
-                self.qgis_utils.symbology.set_layer_style_from_qml(added_point_layer, is_error_layer=True)
+                added_point_layer = self.add_error_layer(error_point_layer)
                 msg = QCoreApplication.translate("QGISUtils",
                     "A memory layer with {} overlapping boundaries (point intersections) has been added to the map.").format(added_point_layer.featureCount())
 
             if type(error_line_layer) is QgsVectorLayer and error_line_layer.featureCount() > 0:
-                added_line_layer = QgsProject.instance().addMapLayer(error_line_layer, False)
-                added_line_layer = group.addLayer(added_line_layer).layer()
-                self.qgis_utils.symbology.set_layer_style_from_qml(added_line_layer, is_error_layer=True)
+                added_line_layer = self.add_error_layer(error_line_layer)
                 msg = QCoreApplication.translate("QGISUtils",
                     "A memory layer with {} overlapping boundaries (line intersections) has been added to the map.").format(added_line_layer.featureCount())
 
@@ -264,10 +253,7 @@ class QualityUtils(QObject):
 
         error_layer.dataProvider().addFeatures(features)
         if error_layer.featureCount() > 0:
-            group = self.qgis_utils.get_error_layers_group()
-            added_layer = QgsProject.instance().addMapLayer(error_layer, False)
-            added_layer = group.addLayer(added_layer).layer()
-            self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
+            added_layer = self.add_error_layer(error_layer)
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "A memory layer with {} boundary segments longer than {}m. has been added to the map!").format(added_layer.featureCount(), tolerance),
@@ -323,10 +309,7 @@ class QualityUtils(QObject):
         data_provider.addFeatures(new_features)
 
         if error_layer.featureCount() > 0:
-            group = self.qgis_utils.get_error_layers_group()
-            added_layer = QgsProject.instance().addMapLayer(error_layer, False)
-            added_layer = group.addLayer(added_layer).layer()
-            self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
+            added_layer = self.add_error_layer(error_layer)
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -371,10 +354,8 @@ class QualityUtils(QObject):
         error_layer.dataProvider().addFeatures(new_features)
 
         if error_layer.featureCount() > 0:
-            group = self.qgis_utils.get_error_layers_group()
-            added_layer = QgsProject.instance().addMapLayer(error_layer, False)
-            added_layer = group.addLayer(added_layer).layer()
-            self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
+            added_layer = self.add_error_layer(error_layer)
+
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "A memory layer with {} boundary dangles has been added to the map!").format(added_layer.featureCount()),
@@ -476,3 +457,18 @@ class QualityUtils(QObject):
         overlapping_point_ids = [item for sublist in overlapping_points for item in sublist]
 
         return (end_points, list(set(end_point_ids) - set(overlapping_point_ids)))
+
+    def add_error_layer(self, error_layer):
+        group = self.qgis_utils.get_error_layers_group()
+
+        # Check if layer is loaded and remove it
+        layers = group.findLayers()
+        for layer in layers:
+            if layer.name() == error_layer.name():
+                group.removeLayer(layer.layer())
+                break
+
+        added_layer = QgsProject.instance().addMapLayer(error_layer, False)
+        added_layer = group.addLayer(added_layer).layer()
+        self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
+        return added_layer
