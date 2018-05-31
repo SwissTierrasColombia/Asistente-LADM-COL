@@ -102,12 +102,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         Set navigation order. Should return an integer. -1 is Finish.
         """
         if self.currentId() == self.dict_pages_ids[self.wizardPage1]:
-            if self.rad_boundary_point.isChecked():
-                return self.dict_pages_ids[self.wizardPage2]
-            elif self.rad_survey_point.isChecked():
-                return self.dict_pages_ids[self.wizardPage2]
-            elif self.rad_control_point.isChecked():
-                return self.dict_pages_ids[self.wizardPage2]
+            return self.dict_pages_ids[self.wizardPage2]
         elif self.currentId() == self.dict_pages_ids[self.wizardPage2]:
             if self.rad_csv.isChecked():
                 return self.dict_pages_ids[self.wizardPage3]
@@ -196,7 +191,6 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             return SURVEY_POINT_TABLE
         else:
             return CONTROL_POINT_TABLE
-        #return BOUNDARY_POINT_TABLE if self.rad_boundary_point.isChecked() else SURVEY_POINT_TABLE
 
     def prepare_copy_csv_points_to_db(self):
         csv_path = self.txt_file_path.text().strip()
@@ -374,7 +368,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             self.rad_boundary_point.setChecked(True)
         elif point_type == 'survey_point':
             self.rad_survey_point.setChecked(True)
-        else:
+        else: # 'control_point'
             self.rad_control_point.setChecked(True)
 
         load_data_type = settings.value('Asistente-LADM_COL/wizards/points_load_data_type') or 'csv'
