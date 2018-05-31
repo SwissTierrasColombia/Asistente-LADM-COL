@@ -128,7 +128,7 @@ class QGISUtils(QObject):
 
     def cache_layers_and_relations(self, db):
         self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
-            "Extracting data from the database... This is done only once per session!"), 0)
+            "Extracting relations and domains from the database... This is done only once per session!"), 0)
         QCoreApplication.processEvents()
 
         with OverrideCursor(Qt.WaitCursor):
