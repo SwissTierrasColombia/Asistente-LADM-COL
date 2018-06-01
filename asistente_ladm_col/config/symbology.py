@@ -3,6 +3,7 @@ from qgis.core import QgsWkbTypes
 from .table_mapping_config import (
     BOUNDARY_TABLE,
     BOUNDARY_POINT_TABLE,
+    CONTROL_POINT_TABLE,
     SURVEY_POINT_TABLE,
     PLOT_TABLE,
     BUILDING_TABLE,
@@ -20,6 +21,9 @@ LAYER_QML_STYLE = {
     },
     SURVEY_POINT_TABLE: {
         QgsWkbTypes.PointGeometry: 'style_survey_point'
+    },
+    CONTROL_POINT_TABLE: {
+        QgsWkbTypes.PointGeometry: 'style_control_point'
     },
     PLOT_TABLE: {
         QgsWkbTypes.PointGeometry: 'style_plot_point',
