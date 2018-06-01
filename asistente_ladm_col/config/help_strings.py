@@ -18,11 +18,11 @@ Choose this option to load points to <b>Survey Points</b> layer from <i>LADM_COL
 <b>Survey Point</b> is a specialized class of <i>LA_Point</i> which represents a building, right of way or auxiliary vertex.\
 ")
 
-        # Clase especializada de LA_Punto que representa puntos de la densificación de la red local, que se utiliza en la operación catastral para el levantamiento de información fisica de los objetos territoriales, como puntos de control.
+        # <b>Punto de Control</b> es una clase especializada de <i>LA_Punto</i> que representa puntos de la densificación de la red local, que se utiliza en la operación catastral para el levantamiento de información fisica de los objetos territoriales.
         self.WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_CP = QCoreApplication.translate("HelpStrings", "\
 Choose this option to load points to <b>Control Points</b> layer from <i>LADM_COL</i> model.\
 <br><br>\
-<b>Control Point</b> is a specialized class of <i>LA_Point</i> which stores control points for surveying.\
+<b>Control Point</b> is a specialized class of <i>LA_Point</i> which represents points belonging to the local network, used in cadastre operation for surveying physical information of the territorial objects.\
 ")
 
         self.WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV = QCoreApplication.translate("HelpStrings", "\
