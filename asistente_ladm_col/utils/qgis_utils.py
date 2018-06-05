@@ -28,7 +28,7 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsPointXY,
                        QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
                        QgsApplication, QgsProcessingFeedback, QgsRelation,
-                       QgsExpressionContextUtils)
+                       QgsExpressionContextUtils, QgsEditorWidgetSetup)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
                               QVariant, QSettings, QLocale, QUrl, QFile, QIODevice)
 import processing
@@ -60,7 +60,9 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
+                                           CUSTOM_WIDGET_CONFIGURATION,
                                            DICT_DISPLAY_EXPRESSIONS,
+                                           EXTFILE_DATA_FIELD,
                                            ID_FIELD,
                                            LAYER_VARIABLES,
                                            LENGTH_FIELD_BOUNDARY_TABLE,
@@ -313,6 +315,7 @@ class QGISUtils(QObject):
         self.configure_missing_relations(layer)
         self.set_display_expressions(layer)
         self.set_layer_variables(layer)
+        self.set_custom_widgets(layer)
         self.set_automatic_fields(layer)
         if layer.isSpatial():
             self.symbology.set_layer_style_from_qml(layer)
@@ -375,6 +378,15 @@ class QGISUtils(QObject):
         if layer.name() in LAYER_VARIABLES:
             for variable, value in LAYER_VARIABLES[layer.name()].items():
                 QgsExpressionContextUtils.setLayerVariable(layer, variable, value)
+
+    def set_custom_widgets(self, layer):
+        layer_name = layer.name()
+        if layer_name in CUSTOM_WIDGET_CONFIGURATION:
+            editor_widget_setup = QgsEditorWidgetSetup(
+                    CUSTOM_WIDGET_CONFIGURATION[layer_name]['type'],
+                    CUSTOM_WIDGET_CONFIGURATION[layer_name]['config'])
+            index = layer.fields().indexFromName(EXTFILE_DATA_FIELD)
+            layer.setEditorWidgetSetup(index, editor_widget_setup)
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
