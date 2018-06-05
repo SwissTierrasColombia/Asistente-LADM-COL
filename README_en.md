@@ -1,7 +1,7 @@
 [![License](https://img.shields.io/github/license/AgenciaImplementacion/Asistente-LADM_COL.svg)](https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29)
 [![Release](https://img.shields.io/github/release/AgenciaImplementacion/asistente-ladm_col.svg)](https://github.com/AgenciaImplementacion/asistente-ladm_col/releases)
 [![Build Status](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL.svg?branch=master)](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL)
-[![Build Status](http://portal.proadmintierra.info:18000/status.svg)](http://portal.proadmintierra.info:18000)
+[![Build Status](http://portal.proadmintierra.info:18000/status.svg?branch=master)](http://portal.proadmintierra.info:18000)
 
 # LADM_COL Assistant
 [QGIS](http://qgis.org) plugin to capture and maintain data compliant with [LADM_COL](https://github.com/AgenciaImplementacion/LADM_COL) as well as generate [INTERLIS](http://www.interlis.ch/index_e.htm) interchange files (.XTF).
@@ -14,7 +14,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([0.1.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.1.0)) of the LADM_COL Assistant depends on [Project Generator](https://github.com/opengisch/projectgenerator/) plugin v3.2.3 and allows users to:
+The current version ([0.2.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.2.0)) of the LADM_COL Assistant depends on [Project Generator](https://github.com/opengisch/projectgenerator/) plugin v3.2.3 (or higher) and allows users to:
 
  - Capture data for the LADM_COL v2.2.1 model.
  - Preprocess points: Controlled Measurement.
@@ -39,12 +39,7 @@ The current version ([0.1.0](https://github.com/AgenciaImplementacion/Asistente-
  - Create `Parcels`:
    - From existing `Plots`.
    - From another table with any structure, setting a field mapping.
- - Create `Buildings`:
-   - By digitizing on the map.
-     - Aids for digitization:
-       - Automatic snapping configuration and default field values.
-   - From another layer with any structure, setting a field mapping.
- - Create `Building Units`:
+ - Create `Buildings` and `Building Units`:
    - By digitizing on the map.
      - Aids for digitization:
        - Automatic snapping configuration and default field values.
@@ -55,6 +50,9 @@ The current version ([0.1.0](https://github.com/AgenciaImplementacion/Asistente-
  - Create `Spatial Sources` and `Administrative Sources`:
    - Using preconfigured forms.
    - From another table with any structure, setting a field mapping.
+ - Create `Rights`, `Restrictions` and `Responsibilities`:
+   - Using preconfigured forms (linking the new object to selected `Administrative Sources`).
+   - From another table with any structure, setting a field mapping.
  - Select in a dialog layers to load from any model in the database or schema:
    - Use the 'Project Generator' plugin (a prerequisite) to load layers with configured forms, relations and domains.
    - Load preconfigured layer sets.
@@ -63,10 +61,11 @@ The current version ([0.1.0](https://github.com/AgenciaImplementacion/Asistente-
    - Check overlaps in `Boundary Points`.
    - Check overlaps in `Control Points`.
    - Check overlaps in `Boundary`.
+   - Check overlaps in `Plot`.
    - Check missing `Boundary Points` in `Boundaries`.
    - Check dangles in `Boundary`.
  - Configure automatic values for `namespace` and `local_id` attributes.
- - Use configured styles for loaded layers.
+ - Load styles for newly added layers from preconfigured QML files.
  - View illustrative GIFs in the plugin's online help or download them for offline work.
 
 ## Testing

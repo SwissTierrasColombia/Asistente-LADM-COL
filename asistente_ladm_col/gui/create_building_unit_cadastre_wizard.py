@@ -24,11 +24,7 @@ from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
 from ..config.table_mapping_config import (
-    BUILDING_TABLE,
     BUILDING_UNIT_TABLE,
-    LOCAL_ID_FIELD,
-    NAMESPACE_FIELD,
-    NAMESPACE_PREFIX,
     SURVEY_POINT_TABLE
 )
 from ..config.help_strings import HelpStrings
@@ -92,14 +88,10 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, {
             BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            BUILDING_TABLE + '_POL': {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            BUILDING_TABLE + '_POI': {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
             SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None}
         }, load=True)
 
         self._building_unit_layer = res_layers[BUILDING_UNIT_TABLE]
-        self._building_layer = res_layers[BUILDING_TABLE + '_POL']
-        self._building_layer_points = res_layers[BUILDING_TABLE + '_POI']
         self._survey_point_layer = res_layers[SURVEY_POINT_TABLE]
 
         if self._building_unit_layer is None:
@@ -109,28 +101,12 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return
 
-        if self._building_layer is None:
-            self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                QCoreApplication.translate('CreateBuildingUnitCadastreWizard',
-                                           "Building layer couldn't be found... {}").format(self._db.get_description()),
-                Qgis.Warning)
-            return
-
         if self._survey_point_layer is None:
             self.iface.messageBar().pushMessage('Asistente LADM_COL',
                 QCoreApplication.translate('CreateBuildingUnitCadastreWizard',
                                            "Survey Point layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
-
-        display_expression = '"{}{}" + \' \' + "{}{}"'.format(
-            NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
-            NAMESPACE_FIELD,
-            NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
-            LOCAL_ID_FIELD
-        )
-        self._building_layer.setDisplayExpression(display_expression)
-        self._building_layer_points.setDisplayExpression(display_expression)
 
         # Disable transactions groups
         QgsProject.instance().setAutoTransaction(False)
