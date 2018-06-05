@@ -53,6 +53,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
     def accept_dialog(self):
         input_layer = self.mMapLayerComboBox.currentLayer()
         tolerance = self.dsb_tolerance.value()
+        definition_field = 'tipe_def'
 
         if input_layer is None:
             self.qgis_utils.message_emitted.emit(
@@ -68,20 +69,11 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
                 Qgis.Warning)
             return
 
-        # Run model
-        model = QgsApplication.processingRegistry().algorithmById("model:Group_Points")
-        if model:
-            params = {
-                'inputpoints': input_layer.name(),
-                'bufferdistance': tolerance,
-                'native:multiparttosingleparts_2:output': 'memory:'
-            }
-            res = processing.run("model:Group_Points", params)
-        else:
+        res, msg = self.run_group_points_model(input_layer, tolerance, definition_field)
+        if res is None:
             self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ControlledMeasurementDialog",
-                                           "Model Group_Points was not found and cannot be opened!"),
-                Qgis.Warning)
+            QCoreApplication.translate("ControlledMeasurementDialog", msg), Qgis.Warning)
+            return
 
         # Create memory layer with average points
         groups = res['native:multiparttosingleparts_2:output']
@@ -139,6 +131,26 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             QCoreApplication.translate("ControlledMeasurementDialog",
                                        "A new average point layer has been added to the map!"),
             Qgis.Info)
+
+    def run_group_points_model(self, input_layer, tolerance, definition_field):
+        # Run model
+        model = QgsApplication.processingRegistry().algorithmById("model:Group_Points")
+        if model:
+            params = {
+                '1_Inputpoints': input_layer.source(),
+                '2_Typedefinition': definition_field,
+                '3_Tolerance': tolerance,
+                'native:multiparttosingleparts_2:output': 'memory:',
+                'native:mergevectorlayers_1:output': 'memory:'
+            }
+            res = processing.run("model:Group_Points", params)
+            msg = "Model Group_Points and execute OK!"
+            return res, msg
+        else:
+            res = None
+            msg = "Model Group_Points was not found and cannot be opened!"
+            return res, msg
+
 
     def show_help(self):
         self.qgis_utils.show_help("controlled_measurement")
