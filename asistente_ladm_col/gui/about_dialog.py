@@ -39,9 +39,11 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
 
 from ..config.general_config import (
-    PLUGIN_VERSION,
+    HELP_DIR_NAME,
     HELP_DOWNLOAD,
-    PLUGIN_NAME,
+    PLUGIN_DIR,
+    PLUGIN_VERSION,
+    QGIS_LANG,
     TEST_SERVER
 )
 
@@ -55,8 +57,6 @@ class AboutDialog(QDialog, DIALOG_UI):
         QDialog.__init__(self)
         self.setupUi(self)
         self.qgis_utils = qgis_utils
-        self.os_language = QLocale(QSettings().value('locale/userLocale')).name()[:2]
-        self.help_dir = os.path.join(QgsApplication.qgisSettingsDirPath(), 'python', 'plugins', 'asistente_ladm_col', 'help')
         self.check_local_help()
 
     def check_local_help(self):
@@ -69,8 +69,9 @@ class AboutDialog(QDialog, DIALOG_UI):
         except TypeError as e:
             pass
 
-        if os.path.exists(os.path.join(self.help_dir,
-                                       self.os_language,
+        if os.path.exists(os.path.join(PLUGIN_DIR,
+                                       HELP_DIR_NAME,
+                                       QGIS_LANG,
                                        'index.html')):
             self.btn_download_help.setText(QCoreApplication.translate("AboutDialog", 'Open help from local folder'))
             self.btn_download_help.clicked.connect(self.show_help)
@@ -93,7 +94,7 @@ class AboutDialog(QDialog, DIALOG_UI):
                     languages = glob.glob(os.path.join(tmpFold, 'asistente_ladm_col_docs/*'))
 
                     for language in languages:
-                        shutil.move(language, os.path.join(self.help_dir, language[-2:]))
+                        shutil.move(language, os.path.join(PLUGIN_DIR, HELP_DIR_NAME, language[-2:]))
 
             except zipfile.BadZipFile as e:
                 self.qgis_utils.message_emitted.emit(
@@ -103,12 +104,18 @@ class AboutDialog(QDialog, DIALOG_UI):
                 self.message_with_button_open_about_emitted.emit(
                     QCoreApplication.translate("AboutDialog", "Help files were successfully downloaded and can be accessed offline from the About dialog!"))
 
+            try:
+                os.remove(tmpFile)
+                os.remove(tmpFold)
+            except:
+                pass
+
         self.check_local_help()
 
     def download_help(self):
         if self.qgis_utils.is_connected(TEST_SERVER):
             self.btn_download_help.setEnabled(False)
-            url = '/'.join([HELP_DOWNLOAD, PLUGIN_VERSION, 'asistente_ladm_col_docs.zip'])
+            url = '/'.join([HELP_DOWNLOAD, PLUGIN_VERSION, 'asistente_ladm_col_docs_{lang}.zip'.format(lang=QGIS_LANG)])
             fetcher_task = QgsNetworkContentFetcherTask(QUrl(url))
             fetcher_task.taskCompleted.connect(self.enable_download_button)
             fetcher_task.fetched.connect(partial(self.save_file, fetcher_task))

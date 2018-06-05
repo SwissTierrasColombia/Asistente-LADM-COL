@@ -1,11 +1,17 @@
+import os.path
 from ..utils.qt_utils import get_plugin_metadata
+from qgis.PyQt.QtCore import QLocale, QSettings
 
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 ERROR_LAYER_GROUP = "Validation errors"
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
+PLUGIN_DIR = os.path.dirname(os.path.dirname(__file__))
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
+HELP_DIR_NAME = 'help'
+QGIS_LANG = QLocale(QSettings().value('locale/userLocale')).name()[:2]
+STYLES_DIR = os.path.join(PLUGIN_DIR, 'styles')
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
@@ -17,6 +23,9 @@ MODULE_HELP_MAPPING = {
     'create_plot': 'cadastre/Spatial_Unit.html#create-plot',
     'create_building': 'cadastre/Spatial_Unit.html#create-building',
     'create_building_unit': 'cadastre/Spatial_Unit.html#create-building-unit',
+    'create_right': 'cadastre/RRR.html#right',
+    'create_responsibility': 'cadastre/RRR.html#responsibility',
+    'create_restriction': 'cadastre/RRR.html#restriction',
     'create_spatial_source': 'cadastre/Source.html#spatial-source',
     'legal_party': 'cadastre/Party.html#legal-party',
     'load_layers': 'load_layers.html#load-layers',
@@ -50,6 +59,9 @@ REFERENCING_FIELD = 'referencing_column'
 RELATION_NAME = 'constraint_name'
 REFERENCED_LAYER = 'referenced_table'
 REFERENCED_FIELD = 'referenced_column'
+RELATION_TYPE = 'relation_type'
+DOMAIN_CLASS_RELATION = 'domain_class'
+CLASS_CLASS_RELATION = 'class_class'
 
 TEST_SERVER = "www.google.com"
 

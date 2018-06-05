@@ -27,7 +27,8 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsMapLayer,
                        QgsPointXY,
                        QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
-                       QgsApplication, QgsProcessingFeedback, QgsRelation)
+                       QgsApplication, QgsProcessingFeedback, QgsRelation,
+                       QgsExpressionContextUtils)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
                               QVariant, QSettings, QLocale, QUrl, QFile, QIODevice)
 import processing
@@ -39,7 +40,6 @@ from .geometry import GeometryUtils
 from ..gui.settings_dialog import SettingsDialog
 from ..config.general_config import (
     DEFAULT_EPSG,
-    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
     ERROR_LAYER_GROUP,
     MODULE_HELP_MAPPING,
     TEST_SERVER,
@@ -49,13 +49,20 @@ from ..config.general_config import (
     REFERENCING_FIELD,
     RELATION_NAME,
     REFERENCED_LAYER,
-    REFERENCED_FIELD
+    REFERENCED_FIELD,
+    RELATION_TYPE,
+    DOMAIN_CLASS_RELATION,
+    PLUGIN_DIR,
+    QGIS_LANG,
+    HELP_DIR_NAME
 )
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
+                                           DICT_DISPLAY_EXPRESSIONS,
                                            ID_FIELD,
+                                           LAYER_VARIABLES,
                                            LENGTH_FIELD_BOUNDARY_TABLE,
                                            LESS_TABLE,
                                            LESS_TABLE_BOUNDARY_FIELD,
@@ -69,6 +76,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            PLOT_TABLE,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
                                            REFERENCE_POINT_FIELD,
+                                           SURVEY_POINT_TABLE,
                                            VIDA_UTIL_FIELD)
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 
@@ -82,6 +90,7 @@ class QGISUtils(QObject):
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
     message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
     map_refresh_requested = pyqtSignal()
+    map_freeze_requested = pyqtSignal(bool)
     status_bar_message_emitted = pyqtSignal(str, int) # Message, duration
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
@@ -119,7 +128,7 @@ class QGISUtils(QObject):
 
     def cache_layers_and_relations(self, db):
         self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
-            "Extracting data from the database... This is done only once per session!"), 0)
+            "Extracting relations and domains from the database... This is done only once per session!"), 0)
         QCoreApplication.processEvents()
 
         with OverrideCursor(Qt.WaitCursor):
@@ -128,6 +137,8 @@ class QGISUtils(QObject):
         self.clear_status_bar_emitted.emit()
 
     def get_related_layers(self, layer_names, already_loaded):
+        # For a given layer we load its domains, all its related layers and
+        # the domains of those related layers
         related_layers = list()
         for relation in self._relations:
             for layer_name in layer_names:
@@ -135,7 +146,19 @@ class QGISUtils(QObject):
                     if relation[REFERENCED_LAYER] not in already_loaded:
                         related_layers.append(relation[REFERENCED_LAYER])
 
+        related_layers.extend(self.get_related_domains(related_layers, already_loaded))
         return related_layers
+
+    def get_related_domains(self, layer_names, already_loaded):
+        related_domains = list()
+        for relation in self._relations:
+            if relation[RELATION_TYPE] == DOMAIN_CLASS_RELATION:
+                for layer_name in layer_names:
+                    if relation[REFERENCING_LAYER] == layer_name:
+                        if relation[REFERENCED_LAYER] not in already_loaded:
+                            related_domains.append(relation[REFERENCED_LAYER])
+
+        return related_domains
 
     def get_layer(self, db, layer_name, geometry_type=None, load=False):
         # Handy function to avoid sending a whole dict when all we need is a single table/layer
@@ -153,7 +176,11 @@ class QGISUtils(QObject):
         response_layers = dict()
         additional_layers_to_load = list()
 
+        self.map_freeze_requested.emit(True)
+
+        profiler = QgsApplication.profiler()
         with OverrideCursor(Qt.WaitCursor):
+            profiler.start("existing_layers")
             for layer_id, layer_info in layers.items():
                 layer_obj = None
                 ladm_layers = self.get_ladm_layers_from_layer_tree(db)
@@ -161,13 +188,15 @@ class QGISUtils(QObject):
                 # If layer is in LayerTree, return it
                 for ladm_layer in ladm_layers:
                     if layer_info['name'] == ladm_layer.dataProvider().uri().table():
-                        if layer_info['geometry'] is not None and layer_info['geometry'] != ladm_layer.wkbType():
+                        if layer_info['geometry'] is not None and layer_info['geometry'] != ladm_layer.geometryType():
                             continue
 
                         layer_obj = ladm_layer
 
                 response_layers[layer_id] = layer_obj
-
+            profiler.end()
+            print("Existing layers",profiler.totalTime())
+            profiler.clear()
             if load:
                 layers_to_load = [layers[layer_id]['name'] for layer_id, layer_obj in response_layers.items() if layer_obj is None]
 
@@ -175,25 +204,56 @@ class QGISUtils(QObject):
                     # Get related layers from cached relations and add them to
                     # list of layers to load, Project Generator will set relations
                     already_loaded = [ladm_layer.dataProvider().uri().table() for ladm_layer in ladm_layers]
+                    profiler.start("related_layers")
                     additional_layers_to_load = self.get_related_layers(layers_to_load, already_loaded)
+                    profiler.end()
+                    print("Related layers",profiler.totalTime())
+                    profiler.clear()
                     all_layers_to_load = list(set(layers_to_load + additional_layers_to_load))
 
                     self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
                         "Loading LADM_COL layers to QGIS and configuring their relations and forms..."), 0)
                     QCoreApplication.processEvents()
+                    profiler.start("load_layers")
                     self.project_generator_utils.load_layers(all_layers_to_load, db)
+                    profiler.end()
+                    print("Load layers",profiler.totalTime())
+                    profiler.clear()
 
-                    # Once load_layers() is called, go through the layer tree to get
-                    # newly added layers
+                    # Now that all layers are loaded, update response dict
+                    # and apply post_load_configurations to new layers
                     missing_layers = {layer_id: {'name': layers[layer_id]['name'], 'geometry': layers[layer_id]['geometry']} for layer_id, layer_obj in response_layers.items() if layer_obj is None}
-                    for layer_id, layer_info in missing_layers.items():
-                        # This should update None objects to newly added layer objects
-                        response_layers[layer_id] = self.get_layer_from_layer_tree(layer_info['name'], db.schema, layer_info['geometry'])
 
-                        if response_layers[layer_id] is not None:
-                            self.post_load_configurations(response_layers[layer_id])
+                    profiler.start("post_load")
+                    # Apply post-load configs to all just loaded layers
+                    for layer in self.get_ladm_layers_from_layer_tree(db):
+                        layer_name = layer.dataProvider().uri().table()
+                        layer_geometry = layer.geometryType()
 
+                        if layer_name in all_layers_to_load:
+                            # Discard already loaded layers
+
+                            for layer_id, layer_info in missing_layers.items():
+                                # This should update response_layers dict with
+                                # newly added layer objects
+                                if layer_info['name'] == layer_name:
+                                    if layer_info['geometry'] is not None and layer_info['geometry'] != layer_geometry:
+                                        continue
+
+                                    response_layers[layer_id] = layer
+                                    del missing_layers[layer_id] # Don't look for this layer anymore
+                                    break
+
+                            self.post_load_configurations(layer)
+
+                    profiler.end()
+                    print("Post load",profiler.totalTime())
+                    profiler.clear()
                     self.clear_status_bar_emitted.emit()
+
+        self.map_freeze_requested.emit(False)
+        self.map_refresh_requested.emit()
+        self.activate_layer_requested.emit(list(response_layers.values())[0])
 
         return response_layers
 
@@ -251,8 +311,11 @@ class QGISUtils(QObject):
         # Do some post-load work, such as setting styles or
         # setting automatic fields for that layer
         self.configure_missing_relations(layer)
+        self.set_display_expressions(layer)
+        self.set_layer_variables(layer)
         self.set_automatic_fields(layer)
-        self.symbology.set_layer_style(layer)
+        if layer.isSpatial():
+            self.symbology.set_layer_style_from_qml(layer)
 
     def configure_missing_relations(self, layer):
         layer_name = layer.dataProvider().uri().table()
@@ -303,6 +366,15 @@ class QGISUtils(QObject):
         all_qgis_relations = list(QgsProject.instance().relationManager().relations().values())
         all_qgis_relations.extend(new_relations)
         QgsProject.instance().relationManager().setRelations(all_qgis_relations)
+
+    def set_display_expressions(self, layer):
+        if layer.name() in DICT_DISPLAY_EXPRESSIONS:
+            layer.setDisplayExpression(DICT_DISPLAY_EXPRESSIONS[layer.name()])
+
+    def set_layer_variables(self, layer):
+        if layer.name() in LAYER_VARIABLES:
+            for variable, value in LAYER_VARIABLES[layer.name()].items():
+                QgsExpressionContextUtils.setLayerVariable(layer, variable, value)
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
@@ -426,18 +498,20 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return False
 
-        overlapping = self.geometry.get_overlapping_points(csv_layer) # List of lists of ids
-        overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
+        # Skip checking point overlaps if layer is Surver points
+        if target_layer_name != SURVEY_POINT_TABLE:
+            overlapping = self.geometry.get_overlapping_points(csv_layer) # List of lists of ids
+            overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
 
-        if overlapping:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are overlapping points, we cannot import them into the DB! See selected points."),
-                Qgis.Warning)
-            QgsProject.instance().addMapLayer(csv_layer)
-            csv_layer.selectByIds(overlapping)
-            self.zoom_to_selected_requested.emit()
-            return False
+            if overlapping:
+                self.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                                               "There are overlapping points, we cannot import them into the DB! See selected points."),
+                    Qgis.Warning)
+                QgsProject.instance().addMapLayer(csv_layer)
+                csv_layer.selectByIds(overlapping)
+                self.zoom_to_selected_requested.emit()
+                return False
 
         target_point_layer = self.get_layer(db, target_layer_name, load=True)
         if target_point_layer is None:
@@ -463,11 +537,6 @@ class QGISUtils(QObject):
             new_features.append(new_feature)
 
         target_point_layer.dataProvider().addFeatures(new_features)
-
-        #self.iface.copySelectionToClipboard(csv_layer)
-        #target_point_layer.startEditing()
-        #self.iface.pasteFromClipboard(target_point_layer)
-        #target_point_layer.commitChanges()
 
         QgsProject.instance().addMapLayer(target_point_layer)
         self.zoom_full_requested.emit()
@@ -519,7 +588,7 @@ class QGISUtils(QObject):
         existing_pairs = set(existing_pairs)
 
         boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
-        id_pairs = self.geometry.get_pair_boundary_boundary_point(boundary_layer, boundary_point_layer, use_selection)
+        id_pairs = self.geometry.get_pair_boundary_boundary_point(boundary_layer, boundary_point_layer, use_selection=use_selection)
 
         if id_pairs:
             bfs_layer.startEditing()
@@ -600,7 +669,7 @@ class QGISUtils(QObject):
         existing_less_pairs = set(existing_less_pairs)
 
         boundary_layer = res_layers[BOUNDARY_TABLE]
-        id_more_pairs, id_less_pairs = self.geometry.get_pair_boundary_plot(boundary_layer, plot_layer, use_selection)
+        id_more_pairs, id_less_pairs = self.geometry.get_pair_boundary_plot(boundary_layer, plot_layer, use_selection=use_selection)
 
         if id_more_pairs:
             more_bfs_layer.startEditing()
@@ -832,30 +901,37 @@ class QGISUtils(QObject):
     def show_help(self, module='', offline=False):
         url = ''
         section = MODULE_HELP_MAPPING[module]
-        plugin_version = PLUGIN_VERSION
 
         # If we don't have Internet access check if the documentation is in the
         # expected local dir and show it. Otherwise, show a warning message.
-        os_language = QLocale(QSettings().value('locale/userLocale')).name()[:2]
-        if offline or not self.is_connected(TEST_SERVER):
+        web_url = "{}/{}/{}".format(HELP_URL, QGIS_LANG, PLUGIN_VERSION)
+
+        is_connected = self.is_connected(TEST_SERVER)
+        if offline or not is_connected:
             basepath = os.path.dirname(os.path.abspath(__file__))
-            plugin_dir = os.path.dirname(basepath)
 
             help_path = os.path.join(
-                plugin_dir,
-                "help",
-                os_language
+                PLUGIN_DIR,
+                HELP_DIR_NAME,
+                QGIS_LANG
             )
             if os.path.exists(help_path):
-                url = os.path.join("file://",help_path)
+                url = os.path.join("file://", help_path)
             else:
-                self.message_with_duration_emitted.emit(
-                    QCoreApplication.translate("QGISUtils",
-                                               "The plugin help cannot be open. Check the Internet connection."),
-                    Qgis.Warning,
-                    20)
+                if is_connected:
+                    self.message_with_duration_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                                   "The local help could not be found in '{}' and cannot be open.").format(help_path),
+                        Qgis.Warning,
+                        20)
+                else:
+                    self.message_with_duration_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                                   "Is your computer connected to Internet? If so, go to <a href=\"{}\">online help</a>.").format(web_url),
+                        Qgis.Warning,
+                        20)
                 return
         else:
-            url = "{}/{}/{}".format(HELP_URL, os_language, plugin_version)
+            url = web_url
 
         webbrowser.open("{}/{}".format(url, section))

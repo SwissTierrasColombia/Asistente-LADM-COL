@@ -24,7 +24,13 @@ from ..config.general_config import (
     PLUGIN_NAME,
     KIND_SETTINGS,
     TABLE_NAME,
-    REFERENCING_FIELD
+    RELATION_NAME,
+    REFERENCED_LAYER,
+    REFERENCED_FIELD,
+    REFERENCING_LAYER,
+    REFERENCING_FIELD,
+    RELATION_TYPE,
+    CLASS_CLASS_RELATION
 )
 from ..config.table_mapping_config import TABLE_PROP_DOMAIN
 from .domains_parser import DomainRelationGenerator
@@ -80,7 +86,15 @@ class ProjectGeneratorUtils(QObject):
         for relation in relations:
             if not relation[REFERENCING_FIELD].startswith('uej2_') and \
                not relation[REFERENCING_FIELD].startswith('ue_'):
-                filtered_relations.append(relation)
+                new_relation = {
+                    RELATION_NAME: relation[RELATION_NAME],
+                    REFERENCED_LAYER: relation[REFERENCED_LAYER],
+                    REFERENCED_FIELD: relation[REFERENCED_FIELD],
+                    REFERENCING_LAYER: relation[REFERENCING_LAYER],
+                    REFERENCING_FIELD: relation[REFERENCING_FIELD],
+                    RELATION_TYPE: CLASS_CLASS_RELATION
+                }
+                filtered_relations.append(new_relation)
         return filtered_relations
 
     def get_tables_info_without_ignored_tables(self, db):

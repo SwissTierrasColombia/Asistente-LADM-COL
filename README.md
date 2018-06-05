@@ -1,7 +1,7 @@
 [![License](https://img.shields.io/github/license/AgenciaImplementacion/Asistente-LADM_COL.svg)](https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29)
 [![Release](https://img.shields.io/github/release/AgenciaImplementacion/asistente-ladm_col.svg)](https://github.com/AgenciaImplementacion/asistente-ladm_col/releases)
 [![Build Status](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL.svg?branch=master)](https://travis-ci.org/AgenciaImplementacion/Asistente-LADM_COL)
-[![Build Status](http://portal.proadmintierra.info:18000/status.svg)](http://portal.proadmintierra.info:18000)
+[![Build Status](http://portal.proadmintierra.info:18000/status.svg?branch=master)](http://portal.proadmintierra.info:18000)
 
 You can read the docs in [English](README_en.md).
 
@@ -17,7 +17,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([0.1.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.1.0)) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.2.3 y permite:
+La versión actual ([0.2.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.2.0)) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.2.3 (o superior) y permite:
 
  - Capturar datos para el modelo LADM_COL v2.2.1.
  - Preprocesar puntos: Medición controlada.
@@ -39,12 +39,7 @@ La versión actual ([0.1.0](https://github.com/AgenciaImplementacion/Asistente-L
    - `PuntosCCL` (relaciona `Punto Lindero` y `Lindero`)
    - `MasCCL`    (relaciona `Lindero` y `Terreno`)
    - `Menos`     (relaciona `Terreno` y sus anillos/huecos internos)
- - Crear `Construcciones`:
-   - Digitalizando sobre el mapa.
-     - Ayudas para la digitalización:
-       - Configuración automática de snapping y de valores predeterminados para campos.
-   - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
- - Crear `Unidades de Construcción`:
+ - Crear `Construcciones` y `Ùnidades de Construcción`:
    - Digitalizando sobre el mapa.
      - Ayudas para la digitalización:
        - Configuración automática de snapping y de valores predeterminados para campos.
@@ -58,6 +53,9 @@ La versión actual ([0.1.0](https://github.com/AgenciaImplementacion/Asistente-L
  - Crear `Fuente Espacial` y `Fuente Administrativa`:
    - Usando formularios preconfigurados.
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
+ - Crear `Derechos`, `Restricciones` y `Responsabilidades` (`RRR`):
+   - Usando formularios preconfigurados (relacionando el nuevo objeto a `Fuentes Administrativas` previamente seleccionadas).
+   - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
  - Seleccionar en un diálogo las capas a cargar de cualquier modelo de la base de datos o esquema:
    - Usar el plugin 'Project Generator' para cargar capas con formularios, relaciones y dominios configurados.
    - Cargar conjuntos de capas preconfigurados.
@@ -66,10 +64,11 @@ La versión actual ([0.1.0](https://github.com/AgenciaImplementacion/Asistente-L
    - Revisar superposiciones en `Punto Lindero`.
    - Revisar superposiciones en `Punto de Control`.
    - Revisar superposiciones en `Lindero`.
+   - Revisar superposiciones en `Terreno`.
    - Revisar nodos de `Lindero` sin `Punto Lindero` asociado.
    - Revisar nodos de `Lindero` no conectados.
  - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
- - Usar estilos preconfigurados para asignarlos a las capas cargadas.
+ - Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.
  - Visualizar GIFs ilustrativos en la ayuda online del plugin o descargarlos para trabajo offline.
 
 ## Pruebas automatizadas al software

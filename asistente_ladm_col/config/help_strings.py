@@ -18,6 +18,13 @@ Choose this option to load points to <b>Survey Points</b> layer from <i>LADM_COL
 <b>Survey Point</b> is a specialized class of <i>LA_Point</i> which represents a building, right of way or auxiliary vertex.\
 ")
 
+        # <b>Punto de Control</b> es una clase especializada de <i>LA_Punto</i> que representa puntos de la densificación de la red local, que se utiliza en la operación catastral para el levantamiento de información fisica de los objetos territoriales.
+        self.WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_CP = QCoreApplication.translate("HelpStrings", "\
+Choose this option to load points to <b>Control Points</b> layer from <i>LADM_COL</i> model.\
+<br><br>\
+<b>Control Point</b> is a specialized class of <i>LA_Point</i> which represents points belonging to the local network, used in cadastre operation for surveying physical information of the territorial objects.\
+")
+
         self.WIZ_ADD_POINTS_CADASTRE_PAGE_2_OPTION_CSV = QCoreApplication.translate("HelpStrings", "\
 Add a Comma Separated Values file (CSV), choosing the delimiter and fields that contain point coordinates.\
 ")
@@ -96,10 +103,6 @@ Choose this option if you want to create a <b>Plot</b> from existing <i>Boundari
 <b>Plot</b> is a portion of land with a defined geographical extension.\
 ")
 
-        self.WIZ_CREATE_PLOT_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
-Select the <b>Plot</ b> layer from those available in the QGIS project.\
-")
-
         self.WIZ_CREATE_BUILDING_CADASTRE_PAGE_1_OPTION_POINTS = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create a <b>Building</b> from existing <i>Survey Points</i>.\
 <br><br>\
@@ -115,40 +118,25 @@ Choose this option if you want to create a <b>Building Unit</b> from existing <i
 <b>Building Unit</b> is a group of consolidated materials within a <i>Parcel</i> that has specific characteristics in terms of physical constituent elements and their usage.\
 ")
 
+# Clase de tipo LA_RRR que registra las responsabilidades que las instancias de los interesados tienen sobre los predios.
         self.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to add a <b>Responsibility</b> with a form.\
+Choose this option if you have selected at least one <i>Administrative Source</i> and want to link such selected sources to a new <b>Responsibility</b> that you will create using a form.\
 <br><br>\
-<b>COL_Responsibility</b> is a class of type <i>LA_RRR</i> that records the responsibilities that stakeholders have on the premises.\
+<b>COL_Responsibility</b> is a class of type <i>LA_RRR</i> which stores responsibilities that parties have over parcels.\
 ")
 
-        self.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_1_OPTION_ANOTHER = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to add a <b>Responsibility</b> from external resource, such as a CSV file, a QGIS table, etc..\
-<br><br>\
-<b>COL_Responsibility</b> is a class of type <i>LA_RRR</i> that records the responsibilities that stakeholders have on the premises.\
-")
-
+# Restricciones a las que está sometido un predio y que inciden sobre los derechos que pueden ejercerse sobre él.
         self.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to add a <b>Restriction</b> with a form.\
+Choose this option if you have selected at least one <i>Administrative Source</i> and want to link such selected sources to a new <b>Restriction</b> that you will create using a form.\
 <br><br>\
-<b>COL_Restriction</b> are the restrictions to which a property is subject and that affect the rights that may be exercised over it.\
+<b>COL_Restriction</b> are the restrictions on a parcel that affect rights that parties may have over it.\
 ")
 
-        self.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_1_OPTION_ANOTHER = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to add a <b>Restriction</b> from external resource, such as a CSV file, a QGIS table, etc.\
-<br><br>\
-<b>COL_Restriction</b> are the restrictions to which a property is subject and that affect the rights that may be exercised over it.\
-")
-
+# <b>COL_Derecho</b> es una clase que registra las instancias de los derechos que un interesado ejerce sobre un predio. Es una especialización de la clase LA_RRR del propio modelo.
         self.WIZ_CREATE_RIGHT_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to add a <b>Right</b> with a form.\
+Choose this option if you have selected at least one <i>Administrative Source</i> and want to link such selected sources to a new <b>Right</b> that you will create using a form.\
 <br><br>\
-<b>COL_Right</ b> is a class that registers the instances of rights that an interested party exercises over a property. It is a specialization of the class LA_RRR of the model itself.\
-")
-
-        self.WIZ_CREATE_RIGHT_CADASTRE_PAGE_1_OPTION_ANOTHER = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to add a <b>Right</b> from external resource, such as a CSV file, a QGIS table, etc.\
-<br><br>\
-<b>COL_Right</ b> is a class that registers the instances of rights that an interested party exercises over a property. It is a specialization of the class LA_RRR of the model itself.\
+<b>COL_Right</b> is a class that stores right instances that a party has over a parcel. It is a specialization of the class LA_RRR.\
 ")
 
         self.WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\

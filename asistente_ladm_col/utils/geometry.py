@@ -40,7 +40,7 @@ class GeometryUtils(QObject):
         QObject.__init__(self)
         self.log = QgsApplication.messageLog()
 
-    def get_pair_boundary_plot(self, boundary_layer, plot_layer, use_selection=True):
+    def get_pair_boundary_plot(self, boundary_layer, plot_layer, id_field=ID_FIELD, use_selection=True):
         lines = boundary_layer.getFeatures()
         polygons = plot_layer.getSelectedFeatures() if use_selection else plot_layer.getFeatures()
         intersect_more_pairs = list()
@@ -102,12 +102,12 @@ class GeometryUtils(QObject):
 
                         intersection_type = QgsGeometry(multi_outer_rings).intersection(candidate_geometry).type()
                         if intersection_type == QgsWkbTypes.LineGeometry:
-                            intersect_more_pairs.append((polygon[ID_FIELD], candidate_feature[ID_FIELD]))
+                            intersect_more_pairs.append((polygon[id_field], candidate_feature[id_field]))
                         else:
                             self.log.logMessage(
                                 "(MoreBFS) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
-                                    polygon[ID_FIELD],
-                                    candidate_feature[ID_FIELD],
+                                    polygon[id_field],
+                                    candidate_feature[id_field],
                                     intersection_type),
                                 PLUGIN_NAME,
                                 Qgis.Warning
@@ -115,12 +115,12 @@ class GeometryUtils(QObject):
 
                         intersection_type = QgsGeometry(multi_inner_rings).intersection(candidate_geometry).type()
                         if intersection_type == QgsWkbTypes.LineGeometry:
-                            intersect_less_pairs.append((polygon[ID_FIELD], candidate_feature[ID_FIELD]))
+                            intersect_less_pairs.append((polygon[id_field], candidate_feature[id_field]))
                         else:
                             self.log.logMessage(
                                 "(Less) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
-                                    polygon[ID_FIELD],
-                                    candidate_feature[ID_FIELD],
+                                    polygon[id_field],
+                                    candidate_feature[id_field],
                                     intersection_type),
                                 PLUGIN_NAME,
                                 Qgis.Warning
@@ -135,12 +135,12 @@ class GeometryUtils(QObject):
 
                         intersection_type = QgsGeometry(boundary).intersection(candidate_geometry).type()
                         if boundary and intersection_type == QgsWkbTypes.LineGeometry:
-                            intersect_more_pairs.append((polygon[ID_FIELD], candidate_feature[ID_FIELD]))
+                            intersect_more_pairs.append((polygon[id_field], candidate_feature[id_field]))
                         else:
                             self.log.logMessage(
                                 "(MoreBFS) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
-                                    polygon[ID_FIELD],
-                                    candidate_feature[ID_FIELD],
+                                    polygon[id_field],
+                                    candidate_feature[id_field],
                                     intersection_type),
                                 PLUGIN_NAME,
                                 Qgis.Warning
@@ -148,7 +148,7 @@ class GeometryUtils(QObject):
 
         return (intersect_more_pairs, intersect_less_pairs)
 
-    def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer, use_selection=True):
+    def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer, id_field=ID_FIELD, use_selection=True):
         lines = boundary_layer.getSelectedFeatures() if use_selection else boundary_layer.getFeatures()
         points = boundary_point_layer.getFeatures()
         intersect_pairs = list()
@@ -170,7 +170,7 @@ class GeometryUtils(QObject):
                 for line_vertex in line.geometry().asPolyline():
                     if abs(line_vertex.x() - candidate_point.x()) < 0.001 \
                        and abs(line_vertex.y() - candidate_point.y()) < 0.001:
-                        pair = (line[ID_FIELD], candidate_feature[ID_FIELD])
+                        pair = (line[id_field], candidate_feature[id_field])
                         if pair not in intersect_pairs:
                             intersect_pairs.append(pair)
         return intersect_pairs
@@ -225,9 +225,12 @@ class GeometryUtils(QObject):
 
     def get_overlapping_lines(self, line_layer, use_selection=True):
         """
-        Return a dict whose key is a pair of line ids where there are
+        Returns a dict whose key is a pair of line ids where there are
         intersections, and whose value is a list of intersection geometries
         """
+        if line_layer.featureCount() == 0:
+            return None
+
         feedback = QgsProcessingFeedback()
         dict_res = processing.run("model:Overlapping_Boundaries", {
                     'Boundary':line_layer,
@@ -237,3 +240,36 @@ class GeometryUtils(QObject):
                 feedback=feedback)
 
         return dict_res
+
+    def get_overlapping_polygons(self, polygon_layer, id_field=ID_FIELD):
+        """
+        Obtains overlapping polygons from a single layer
+        :param polygon_layer: vector layer with geometry type polygon
+        :param id_field: layer's identifier field
+        :return: List of lists with pairs of overlapping polygons' ids,
+        e.g., [[1, 2], [1, 3]]
+        """
+        list_overlapping_polygons = list()
+
+        if (QgsWkbTypes.PolygonGeometry != polygon_layer.geometryType() or \
+            polygon_layer.featureCount() == 0):
+            return list_overlapping_polygons
+
+        single_parts_layer = processing.run("native:multiparttosingleparts",
+                                            {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        index = QgsSpatialIndex(single_parts_layer)
+
+        for feature in single_parts_layer.getFeatures():
+            bbox = feature.geometry().boundingBox()
+            bbox.scale(1.001)
+            candidates_ids = index.intersects(bbox)
+            candidates_features = single_parts_layer.getFeatures(candidates_ids)
+
+            for candidate_feature in candidates_features:
+                is_overlap = feature.geometry().overlaps(candidate_feature.geometry())
+                if is_overlap == True:
+                    overlapping_polygons = sorted([feature[id_field], candidate_feature[id_field]])
+                    if overlapping_polygons not in list_overlapping_polygons:
+                        list_overlapping_polygons.append(overlapping_polygons)
+
+        return list_overlapping_polygons

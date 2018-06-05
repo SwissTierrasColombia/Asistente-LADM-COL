@@ -386,8 +386,13 @@
       <layout class="QFormLayout" name="formLayout">
        <item row="0" column="0" colspan="2">
         <widget class="QLabel" name="label_11">
+         <property name="font">
+          <font>
+           <italic>true</italic>
+          </font>
+         </property>
          <property name="text">
-          <string>TextLabel</string>
+          <string>TODO: Explain what is this tab about</string>
          </property>
         </widget>
        </item>
@@ -450,7 +455,7 @@
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
