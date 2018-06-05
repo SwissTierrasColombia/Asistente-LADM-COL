@@ -56,6 +56,9 @@ TEST_SERVER = "www.google.com"
 # For testing if an schema comes from ili2db
 INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
 
+# Endpoint for testing the Source Service
+DEFAULT_ENDPOINT_SOURCE_SERVICE = "https://ide.proadmintierra.info/ws/"
+
 # Documentation
 
 HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
