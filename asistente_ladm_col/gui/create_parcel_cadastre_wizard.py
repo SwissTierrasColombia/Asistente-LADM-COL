@@ -157,10 +157,9 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
 
     def call_parcel_commit(self, fid):
+        self._parcel_layer.featureAdded.disconnect(self.call_parcel_commit)
+        self.log.logMessage("Parcel's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         res = self._parcel_layer.commitChanges()
-        if res:
-            self._parcel_layer.featureAdded.disconnect(self.call_parcel_commit)
-            self.log.logMessage("Parcel's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
 
     def finish_parcel(self, plot_ids, layerId, features):
         if len(features) != 1:

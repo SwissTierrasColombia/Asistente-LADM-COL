@@ -156,10 +156,9 @@ class CreateResponsibilityCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
 
     def call_responsibility_commit(self, fid):
+        self._responsibility_layer.featureAdded.disconnect(self.call_responsibility_commit)
+        self.log.logMessage("Responsibility's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         res = self._responsibility_layer.commitChanges()
-        if res:
-            self._responsibility_layer.featureAdded.disconnect(self.call_responsibility_commit)
-            self.log.logMessage("Responsibility's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
 
     def finish_responsibility(self, administrative_source_ids, layerId, features):
         if len(features) != 1:
