@@ -63,6 +63,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            CUSTOM_WIDGET_CONFIGURATION,
                                            DICT_DISPLAY_EXPRESSIONS,
                                            EXTFILE_DATA_FIELD,
+                                           EXTFILE_TABLE,
                                            ID_FIELD,
                                            LAYER_VARIABLES,
                                            LENGTH_FIELD_BOUNDARY_TABLE,
@@ -316,6 +317,7 @@ class QGISUtils(QObject):
         self.set_display_expressions(layer)
         self.set_layer_variables(layer)
         self.set_custom_widgets(layer)
+        self.set_custom_events(layer)
         self.set_automatic_fields(layer)
         if layer.isSpatial():
             self.symbology.set_layer_style_from_qml(layer)
@@ -387,6 +389,15 @@ class QGISUtils(QObject):
                     CUSTOM_WIDGET_CONFIGURATION[layer_name]['config'])
             index = layer.fields().indexFromName(EXTFILE_DATA_FIELD)
             layer.setEditorWidgetSetup(index, editor_widget_setup)
+
+    def set_custom_events(self, layer):
+        if layer.name() == EXTFILE_TABLE:
+            index = layer.fields().indexFromName(EXTFILE_DATA_FIELD)
+            def feature_added(fid):
+                # Upload to server and get returner id (URL)
+                layer.editBuffer().changeAttributeValue(fid, index, 'http://stackoverflow.com')
+
+            layer.featureAdded.connect(feature_added)
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
