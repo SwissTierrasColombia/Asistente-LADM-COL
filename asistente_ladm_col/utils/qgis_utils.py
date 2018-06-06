@@ -100,7 +100,7 @@ class QGISUtils(QObject):
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
 
-    def __init__(self, source_handler):
+    def __init__(self, source_handler=None):
         QObject.__init__(self)
         self.project_generator_utils = ProjectGeneratorUtils()
         self.symbology = SymbologyUtils()
@@ -395,7 +395,8 @@ class QGISUtils(QObject):
 
     def set_custom_events(self, layer):
         if layer.name() == EXTFILE_TABLE:
-            self.source_handler.handle_source_upload(layer, EXTFILE_DATA_FIELD)
+            if self.source_handler is not None:
+                self.source_handler.handle_source_upload(layer, EXTFILE_DATA_FIELD)
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
