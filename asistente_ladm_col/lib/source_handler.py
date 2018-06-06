@@ -1,4 +1,4 @@
-import os
+import os.path
 
 from qgis.PyQt.QtCore import QEventLoop, QUrl, pyqtSignal, QObject
 from qgis.PyQt.QtWidgets import QDialog
@@ -45,22 +45,32 @@ class SourceHandler(QObject):
         url = 'http://geotux.co'
 
         def feature_added(fid):
-            # Upload to server and get returner id (URL)
-            dialogs = self.iface.mainWindow().findChildren(QDialog, 'featureactiondlg:{}:0'.format(layer.id()))
-            if len(dialogs) == 1:
-                dialogs[0].setEnabled(False) # Prevent the user to click Ok again
+            features = layer.editBuffer().addedFeatures()
+            if fid in features:
+                feature = features[fid]
+                data_url = feature[index]
+                if not os.path.isfile(data_url):
+                    print("Value entered into field 'datos' is not a file! Therefore, it wasn't uploaded to the server.")
+                    return
 
-                # We'll block execution until we get response from the server
-                event_loop = QEventLoop()
-                self.response_ready.connect(event_loop.quit)
-                fetchResource(url)
-                event_loop.exec_()
-                print("Event Loop finished!")
+                # Upload to server and get returner id (URL)
+                dialogs = self.iface.mainWindow().findChildren(QDialog, 'featureactiondlg:{}:0'.format(layer.id()))
+                if len(dialogs) == 1:
+                    dialogs[0].setEnabled(False) # Prevent the user to click Ok again
 
-                layer.editBuffer().changeAttributeValue(fid, index, 'http://stackoverflow.com')
-                dialogs[0].setEnabled(True)
+                    # We'll block execution until we get response from the server
+                    event_loop = QEventLoop()
+                    self.response_ready.connect(event_loop.quit)
+                    fetchResource(url)
+                    event_loop.exec_()
+                    print("Event Loop finished!")
+
+                    layer.editBuffer().changeAttributeValue(fid, index, 'http://stackoverflow.com')
+                    dialogs[0].setEnabled(True)
+                else:
+                    # This might happen if the user has opened two feature forms
+                    pass
             else:
-                # This might happen if the user has opened two feature forms
-                pass
+                print("Feature not found in edit buffer!")
 
         layer.featureAdded.connect(feature_added)
