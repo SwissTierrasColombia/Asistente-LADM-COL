@@ -27,7 +27,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsField,
     QgsVectorLayerUtils,
-    QgsMapLayerProxyModel
+    QgsMapLayerProxyModel,
+    QgsFieldProxyModel
 )
 from qgis.PyQt.QtCore import QVariant, QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog
@@ -46,12 +47,17 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         self.qgis_utils = qgis_utils
 
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PointLayer)
+        self.mFieldComboBox.setFilters(QgsFieldProxyModel.String)
 
         self.accepted.connect(self.accept_dialog)
         self.buttonBox.helpRequested.connect(self.show_help)
 
+        self.mMapLayerComboBox.layerChanged.connect(self.mFieldComboBox.setLayer)
+
+
     def accept_dialog(self):
         input_layer = self.mMapLayerComboBox.currentLayer()
+        self.mFieldComboBox.setLayer(self.mMapLayerComboBox.currentLayer())
         tolerance = self.dsb_tolerance.value()
         definition_field = 'tipe_def'
 
@@ -76,7 +82,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             return
 
         # Create memory layer with average points
-        groups = res['native:multiparttosingleparts_2:output']
+        groups = res['native:mergevectorlayers_1:output']
         if not(type(groups) == QgsVectorLayer and groups.isValid()):
             return
 

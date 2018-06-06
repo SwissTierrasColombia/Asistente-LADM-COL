@@ -34,6 +34,25 @@ class TestExport(unittest.TestCase):
             ControlledMeasurementDialog, measure_layer, 0.5, 'tipe_def')
         if res is not None:
             self.assertEqual(res['native:mergevectorlayers_1:output'].featureCount(), 38)
+            for r in range(1,10):
+                dt = [i.id() for i in res['native:mergevectorlayers_1:output'].getFeatures("\"belongs_to_group\"={}".format(r))]
+                self.assertEqual(len(dt), 2)
+            features = res['native:mergevectorlayers_1:output'].getFeatures("\"belongs_to_group\"=4")
+            features = [f for f in features]
+            self.assertEqual(sorted([f.attributes()[0] for f in features]) , [191, 192])
+        else:
+            print("Model not found!!!", msg)
+
+        res, msg = ControlledMeasurementDialog.run_group_points_model(
+            ControlledMeasurementDialog, measure_layer, 5.0, 'tipe_def')
+        if res is not None:
+            self.assertEqual(res['native:mergevectorlayers_1:output'].featureCount(), 38)
+            for r in [3, 8]:
+                dt = [i.id() for i in res['native:mergevectorlayers_1:output'].getFeatures("\"belongs_to_group\"={}".format(r))]
+                self.assertEqual(len(dt), 4)
+            features = res['native:mergevectorlayers_1:output'].getFeatures("\"belongs_to_group\"=3")
+            features = [f for f in features]
+            self.assertEqual(sorted([f.attributes()[0] for f in features]), [189, 190, 191, 192])
         else:
             print("Model not found!!!", msg)
 
