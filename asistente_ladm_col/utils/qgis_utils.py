@@ -30,7 +30,9 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsApplication, QgsProcessingFeedback, QgsRelation,
                        QgsExpressionContextUtils, QgsEditorWidgetSetup)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
-                              QVariant, QSettings, QLocale, QUrl, QFile, QIODevice)
+                              QVariant, QSettings, QLocale, QUrl, QFile, QIODevice,
+                              QEventLoop)
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkAccessManager
 import processing
 
 from .project_generator_utils import ProjectGeneratorUtils
@@ -98,11 +100,12 @@ class QGISUtils(QObject):
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, source_handler):
         QObject.__init__(self)
         self.project_generator_utils = ProjectGeneratorUtils()
         self.symbology = SymbologyUtils()
         self.geometry = GeometryUtils()
+        self.source_handler = source_handler
 
         self.__settings_dialog = None
         self._layers = list()
@@ -392,12 +395,7 @@ class QGISUtils(QObject):
 
     def set_custom_events(self, layer):
         if layer.name() == EXTFILE_TABLE:
-            index = layer.fields().indexFromName(EXTFILE_DATA_FIELD)
-            def feature_added(fid):
-                # Upload to server and get returner id (URL)
-                layer.editBuffer().changeAttributeValue(fid, index, 'http://stackoverflow.com')
-
-            layer.featureAdded.connect(feature_added)
+            self.source_handler.handle_source_upload(layer, EXTFILE_DATA_FIELD)
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
