@@ -30,7 +30,8 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsApplication, QgsProcessingFeedback, QgsRelation,
                        QgsExpressionContextUtils, QgsEditorWidgetSetup)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
-                              QVariant, QSettings, QLocale, QUrl, QFile, QIODevice)
+                              QVariant, QSettings, QLocale, QUrl, QFile)
+
 import processing
 
 from .project_generator_utils import ProjectGeneratorUtils
@@ -63,6 +64,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            CUSTOM_WIDGET_CONFIGURATION,
                                            DICT_DISPLAY_EXPRESSIONS,
                                            EXTFILE_DATA_FIELD,
+                                           EXTFILE_TABLE,
                                            ID_FIELD,
                                            LAYER_VARIABLES,
                                            LENGTH_FIELD_BOUNDARY_TABLE,
@@ -97,11 +99,12 @@ class QGISUtils(QObject):
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, source_handler=None):
         QObject.__init__(self)
         self.project_generator_utils = ProjectGeneratorUtils()
         self.symbology = SymbologyUtils()
         self.geometry = GeometryUtils()
+        self.source_handler = source_handler
 
         self.__settings_dialog = None
         self._layers = list()
@@ -316,6 +319,7 @@ class QGISUtils(QObject):
         self.set_display_expressions(layer)
         self.set_layer_variables(layer)
         self.set_custom_widgets(layer)
+        self.set_custom_events(layer)
         self.set_automatic_fields(layer)
         if layer.isSpatial():
             self.symbology.set_layer_style_from_qml(layer)
@@ -387,6 +391,11 @@ class QGISUtils(QObject):
                     CUSTOM_WIDGET_CONFIGURATION[layer_name]['config'])
             index = layer.fields().indexFromName(EXTFILE_DATA_FIELD)
             layer.setEditorWidgetSetup(index, editor_widget_setup)
+
+    def set_custom_events(self, layer):
+        if layer.name() == EXTFILE_TABLE:
+            if self.source_handler is not None:
+                self.source_handler.handle_source_upload(layer, EXTFILE_DATA_FIELD)
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
