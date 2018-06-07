@@ -30,9 +30,8 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsApplication, QgsProcessingFeedback, QgsRelation,
                        QgsExpressionContextUtils, QgsEditorWidgetSetup)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
-                              QVariant, QSettings, QLocale, QUrl, QFile, QIODevice,
-                              QEventLoop)
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkAccessManager
+                              QVariant, QSettings, QLocale, QUrl, QFile)
+
 import processing
 
 from .project_generator_utils import ProjectGeneratorUtils
