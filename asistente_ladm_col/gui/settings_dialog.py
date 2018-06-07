@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
+import os, json
 
 from qgis.core import (
     QgsProject,
@@ -26,8 +26,9 @@ from qgis.core import (
     QgsNetworkContentFetcherTask
 )
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import Qt, QSettings, pyqtSignal, QUrl, QCoreApplication
+from qgis.PyQt.QtCore import Qt, QSettings, pyqtSignal, QUrl, QCoreApplication, QTextStream, QIODevice, QEventLoop
 from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
+from qgis.PyQt.Qt import QNetworkRequest, QNetworkAccessManager
 
 from ..config.general_config import (
     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
@@ -47,6 +48,7 @@ DIALOG_UI = get_ui_class('settings_dialog.ui')
 class SettingsDialog(QDialog, DIALOG_UI):
 
     cache_layers_and_relations_requested = pyqtSignal(DBConnector)
+    fetcher_task = None
 
     def __init__(self, iface=None, parent=None, qgis_utils=None):
         QDialog.__init__(self, parent)
@@ -222,21 +224,29 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def test_service(self):
         if self.qgis_utils.is_connected(TEST_SERVER):
             url = self.txt_service_endpoint.text().strip()
-            fetcher_task = QgsNetworkContentFetcherTask(QUrl(url))
-            fetcher_task.taskCompleted.connect(self.task_test_service_completed)
-            fetcher_task.fetched.connect(partial(self.test_service_fetched, fetcher_task))
-            QgsApplication.taskManager().addTask(fetcher_task)
+            nam = QNetworkAccessManager()
+            request = QNetworkRequest(QUrl(url))
+            reply = nam.get(request)
+            loop = QEventLoop()
+            reply.finished.connect(loop.quit)
+            loop.exec_()
+            allData = reply.readAll()
+            response = QTextStream(allData, QIODevice.ReadOnly)
+            status = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
+            if status == 200:
+                try:
+                    data = json.loads(response.readAll())
+                    if data['id'] == "IDEATFileManager":
+                        self.show_message("Success." , Qgis.Success)
+                    else:
+                        self.show_message("The service is not compatible." , Qgis.Warning)
+                except (json.decoder.JSONDecodeError, KeyError) as e:
+                    self.show_message("Response of the service is not compatible." , Qgis.Warning)
+            else:
+                self.show_message("Could no connect to the server." , Qgis.Warning)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("Settings", "There was a problem connecting to Internet."),
-                Qgis.Warning)
-                
-    def test_service_fetched(self, fetcher_task):
-        self.show_message("Connection to service successful!", Qgis.Info)
-    
-    def task_test_service_completed(self):
-        pass
-        
+            self.show_message("There was a problem connecting to Internet." , Qgis.Warning)
+
     def show_message(self, message, level):
         self.bar.pushMessage(message, level, 10)
 
