@@ -38,7 +38,7 @@ import processing
 from ..utils import get_ui_class
 
 DIALOG_UI = get_ui_class('controlled_measurement_dialog.ui')
-GROUP_ID = 'AUTO' # If you change this, adjust the Group_Points as well
+GROUP_ID = 'belongs_to_group' # If you change this, adjust the Group_Points as well
 
 class ControlledMeasurementDialog(QDialog, DIALOG_UI):
     def __init__(self, qgis_utils):
@@ -53,13 +53,12 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         self.buttonBox.helpRequested.connect(self.show_help)
 
         self.mMapLayerComboBox.layerChanged.connect(self.mFieldComboBox.setLayer)
-
+        self.mFieldComboBox.setLayer(self.mMapLayerComboBox.currentLayer())
 
     def accept_dialog(self):
         input_layer = self.mMapLayerComboBox.currentLayer()
-        self.mFieldComboBox.setLayer(self.mMapLayerComboBox.currentLayer())
         tolerance = self.dsb_tolerance.value()
-        definition_field = 'tipe_def'
+        definition_field = self.mFieldComboBox.currentField()
 
         if input_layer is None:
             self.qgis_utils.message_emitted.emit(
@@ -87,8 +86,8 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             return
 
         idx = groups.fields().indexOf(GROUP_ID)
-        group_ids = groups.uniqueValues(idx)
 
+        group_ids = groups.uniqueValues(idx)
         layer = QgsVectorLayer("Point?crs=EPSG:3116", "Average Points", "memory")
         layer.dataProvider().addAttributes([
             QgsField("group_id", QVariant.Int),
@@ -112,10 +111,13 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
                 x_list.append(current_point.x())
                 y_list.append(current_point.y())
 
-            x_mean = statistics.mean(x_list)
-            y_mean = statistics.mean(y_list)
-            x_stdev = statistics.pstdev(x_list)
-            y_stdev = statistics.pstdev(y_list)
+            if x_list and y_list != []:
+                x_mean = statistics.mean(x_list)
+                y_mean = statistics.mean(y_list)
+                x_stdev = statistics.pstdev(x_list)
+                y_stdev = statistics.pstdev(y_list)
+            else:
+                continue
             geom = QgsGeometry.fromPointXY(QgsPointXY(x_mean, y_mean))
 
             new_feature = QgsVectorLayerUtils.createFeature(layer, geom,
