@@ -60,7 +60,6 @@ from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadast
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
-from .lib.source_handler import SourceHandler
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
 from .utils.quality import QualityUtils
@@ -87,7 +86,7 @@ class AsistenteLADMCOLPlugin(QObject):
         else:
             self.iface.mainWindow().menuBar().addMenu(self._menu)
 
-        self.qgis_utils = QGISUtils(SourceHandler(self.iface))
+        self.qgis_utils = QGISUtils()
         self.quality = QualityUtils(self.qgis_utils)
 
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
