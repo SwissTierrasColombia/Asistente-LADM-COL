@@ -71,6 +71,7 @@ INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
 # Endpoint for testing the Source Service (avoid last slash)
 DEFAULT_ENDPOINT_SOURCE_SERVICE = 'http://filemanager.appsglobals.com:8888/filemanager' #"https://ide.proadmintierra.info/fm"
 SOURCE_SERVICE_UPLOAD_SUFFIX = 'v1/file'
+SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
 
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'

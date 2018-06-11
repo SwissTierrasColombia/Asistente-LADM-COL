@@ -394,7 +394,7 @@ class QGISUtils(QObject):
 
     def set_custom_events(self, layer):
         if layer.name() == EXTFILE_TABLE:
-            source_handler = SourceHandler()
+            source_handler = SourceHandler(self)
             source_handler.message_with_duration_emitted.connect(self.message_with_duration_emitted)
             source_handler.handle_source_upload(layer, EXTFILE_DATA_FIELD)
 
