@@ -91,6 +91,7 @@ NAMESPACE_PREFIX = {
     BUILDING_TABLE: 'su',
     BUILDING_UNIT_TABLE: 'su',
     CONTROL_POINT_TABLE: 'p',
+    EXTFILE_TABLE: 's',
     LEGAL_PARTY_TABLE: 'p',
     SPATIAL_SOURCE_TABLE: 's',
     NATURAL_PARTY_TABLE: 'p',
@@ -139,12 +140,14 @@ CUSTOM_WIDGET_CONFIGURATION = {
                 'name': NULL,
                 'type': 'collection'
             },
+            'UseLink': True,
+            'FullUrl': True,
             'FileWidget': True,
             'DocumentViewer': 0,
             'RelativeStorage': 0,
             'StorageMode': 0,
-            'DocumentViewerHeight': 0,
             'FileWidgetButton': True,
+            'DocumentViewerHeight': 0,
             'DocumentViewerWidth': 0,
             'FileWidgetFilter': ''
         }

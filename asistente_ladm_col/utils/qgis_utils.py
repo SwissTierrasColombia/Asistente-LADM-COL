@@ -83,6 +83,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            SURVEY_POINT_TABLE,
                                            VIDA_UTIL_FIELD)
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
+from ..lib.source_handler import SourceHandler
 
 class QGISUtils(QObject):
 
@@ -99,12 +100,11 @@ class QGISUtils(QObject):
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
 
-    def __init__(self, source_handler=None):
+    def __init__(self):
         QObject.__init__(self)
         self.project_generator_utils = ProjectGeneratorUtils()
         self.symbology = SymbologyUtils()
         self.geometry = GeometryUtils()
-        self.source_handler = source_handler
 
         self.__settings_dialog = None
         self._layers = list()
@@ -394,8 +394,9 @@ class QGISUtils(QObject):
 
     def set_custom_events(self, layer):
         if layer.name() == EXTFILE_TABLE:
-            if self.source_handler is not None:
-                self.source_handler.handle_source_upload(layer, EXTFILE_DATA_FIELD)
+            source_handler = SourceHandler()
+            source_handler.message_with_duration_emitted.connect(self.message_with_duration_emitted)
+            source_handler.handle_source_upload(layer, EXTFILE_DATA_FIELD)
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)

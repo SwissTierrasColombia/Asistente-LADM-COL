@@ -164,7 +164,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         settings.setValue('Asistente-LADM_COL/automatic_values/disable_automatic_fields', self.chk_disable_automatic_fields.isChecked())
 
-        settings.setValue('Asistente-LADM_COL/source/service_endpoint', self.txt_service_endpoint.text().strip() or DEFAULT_ENDPOINT_SOURCE_SERVICE)
+        endpoint = self.txt_service_endpoint.text().strip()
+        settings.setValue('Asistente-LADM_COL/source/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
 
         # Changes in automatic namespace or local_id configuration?
         current_namespace_enabled = settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
@@ -203,7 +204,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool))
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
-        
+
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/source/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
 
     def db_source_changed(self):
@@ -220,7 +221,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         res, msg = self.get_db_connection().test_connection()
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
         self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
-        
+
     def test_service(self):
         if self.qgis_utils.is_connected(TEST_SERVER):
             url = self.txt_service_endpoint.text().strip()

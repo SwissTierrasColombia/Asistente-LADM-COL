@@ -1,5 +1,7 @@
 import os.path
+import json
 
+from qgis.core import QgsProject, QgsDataSourceUri, Qgis, QgsApplication
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import (
     QEventLoop,
@@ -8,86 +10,179 @@ from qgis.PyQt.QtCore import (
     QObject,
     Qt,
     QTextStream,
-    QIODevice
+    QIODevice,
+    QCoreApplication,
+    QFile,
+    QVariant,
+    QByteArray,
+    QSettings
 )
 from qgis.PyQt.QtWidgets import QDialog, QProgressBar, QSizePolicy, QGridLayout
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkAccessManager
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkAccessManager, QHttpMultiPart, QHttpPart
 from qgis.PyQt.Qt import QNetworkRequest
+
+from ..config.general_config import (
+    DEFAULT_ENDPOINT_SOURCE_SERVICE,
+    PLUGIN_NAME,
+    SOURCE_SERVICE_UPLOAD_SUFFIX
+)
+from ..gui.upload_progress_dialog import UploadProgressDialog
 
 class SourceHandler(QObject):
     """
     Configure behavior of a form when a feature has just been added on a given
     field, which is expected to have an Attachment widget.
     """
-    response_ready = pyqtSignal()
 
-    def __init__(self, iface):
+    message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
+
+    def __init__(self):
         QObject.__init__(self)
-        self.iface = iface
+        self.log = QgsApplication.messageLog()
+
+    def upload_files(self, layer, field_index, features):
+        file_features = [feature for feature in features if os.path.isfile(feature[field_index])]
+        total = len(features)
+        not_found = total - len(file_features)
+
+        upload_dialog = UploadProgressDialog(len(file_features), not_found)
+        upload_dialog.show()
+        count = 0
+        upload_errors = 0
+        new_values = dict()
+
+        for feature in file_features:
+            data_url = feature[field_index]
+            file_name = os.path.basename(data_url)
+
+            nam = QNetworkAccessManager()
+            #reply.downloadProgress.connect(upload_dialog.update_current_progress)
+
+            multiPart = QHttpMultiPart(QHttpMultiPart.FormDataType)
+            textPart = QHttpPart()
+            textPart.setHeader(QNetworkRequest.ContentDispositionHeader, QVariant("form-data; name=\"driver\""))
+            textPart.setBody(QByteArray().append('Local'))
+
+            filePart = QHttpPart()
+            filePart.setHeader(QNetworkRequest.ContentDispositionHeader, QVariant("form-data; name=\"file\"; filename=\"{}\"".format(file_name)))
+            #filePart.setHeader(QNetworkRequest.ContentDispositionHeader, QVariant("form-data; name=\"file\""))
+            #filePart.setHeader(QNetworkRequest.ContentTypeHeader, QVariant("application/pdf"))
+            file = QFile(data_url)
+            file.open(QIODevice.ReadOnly)
+
+            filePart.setBodyDevice(file)
+            file.setParent(multiPart)  # we cannot delete the file now, so delete it with the multiPart
+
+            multiPart.append(filePart)
+            multiPart.append(textPart)
+
+            service_url = '/'.join([
+                QSettings().value('Asistente-LADM_COL/source/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE),
+                SOURCE_SERVICE_UPLOAD_SUFFIX])
+            request = QNetworkRequest(QUrl(service_url))
+            reply = nam.post(request, multiPart)
+            #reply.uploadProgress.connect(upload_dialog.update_current_progress)
+            reply.error.connect(self.error_returned)
+            multiPart.setParent(reply)
+
+            # We'll block execution until we get response from the server
+            loop = QEventLoop()
+            reply.finished.connect(loop.quit)
+            loop.exec_()
+            print("Event Loop finished!")
+
+            response = reply.readAll()
+            data = QTextStream(response, QIODevice.ReadOnly)
+            content = data.readAll()
+
+            if content is None:
+                self.log.logMessage("There was an error uploading file '{}'".format(data_url), PLUGIN_NAME, Qgis.Critical)
+                upload_errors += 1
+                continue
+
+            try:
+                response = json.loads(content)
+            except json.decoder.JSONDecodeError:
+                self.log.logMessage("Couldn't parse JSON response from server for file '{}'!!!".format(data_url), PLUGIN_NAME, Qgis.Critical)
+                upload_errors += 1
+                continue
+
+            if 'error' in response:
+                self.log.logMessage("STATUS: {}. ERROR: {} MESSAGE: {} FILE: {}".format(
+                        response['status'],
+                        response['error'],
+                        response['message'],
+                        data_url),
+                    PLUGIN_NAME, Qgis.Critical)
+                upload_errors += 1
+                continue
+
+            print("Content read!", content)
+            reply.deleteLater()
+
+            if 'url' not in response:
+                self.log.logMessage("'url' attribute not found in JSON response for file '{}'!".format(data_url), PLUGIN_NAME, Qgis.Critical)
+                upload_errors += 1
+                continue
+
+            url = self.get_file_url(response['url'])
+            new_values[feature.id()] = {field_index : url}
+            #print(new_values)
+
+            count += 1
+            upload_dialog.update_total_progress(count)
+
+        if not_found > 0:
+            self.message_with_duration_emitted.emit(
+                QCoreApplication.translate("SourceHandler",
+                    "{} out of {} records {} ignored because {} file path couldn't be found in the local disk!").format(
+                        not_found,
+                        total,
+                        QCoreApplication.translate("SourceHandler", 'was') if not_found == 1 else QCoreApplication.translate("SourceHandler", 'were'),
+                        QCoreApplication.translate("SourceHandler", 'its') if not_found == 1 else QCoreApplication.translate("SourceHandler", 'their')
+                    ),
+                Qgis.Warning,
+                0)
+        if len(new_values):
+            self.message_with_duration_emitted.emit(
+                QCoreApplication.translate("SourceHandler",
+                    "{} out of {} files {} uploaded to the server and {} remote location stored in the database!").format(
+                        len(new_values),
+                        total,
+                        QCoreApplication.translate("SourceHandler", 'was') if len(new_values) == 1 else QCoreApplication.translate("SourceHandler", 'were'),
+                        QCoreApplication.translate("SourceHandler", 'its') if len(new_values) == 1 else QCoreApplication.translate("SourceHandler", 'their')
+                    ),
+                Qgis.Info,
+                0)
+        if upload_errors:
+            self.message_with_duration_emitted.emit(
+                QCoreApplication.translate("SourceHandler",
+                    "{} out of {} files could not be uploaded to the server because of upload errors! See log for details.").format(
+                        upload_errors,
+                        total
+                    ),
+                Qgis.Warning,
+                0)
+
+        return new_values
+
+    def error_returned(self, error_code):
+        self.log.logMessage("Qt network error code: {}".format(error_code), PLUGIN_NAME, Qgis.Critical)
 
     def handle_source_upload(self, layer, field_name):
-        index = layer.fields().indexFromName(field_name)
+        field_index = layer.fields().indexFromName(field_name)
 
-        def feature_added(fid):
-            features = layer.editBuffer().addedFeatures()
-            if fid in features:
-                feature = features[fid]
-                data_url = feature[index]
-                if not os.path.isfile(data_url):
-                    print("Value entered into field 'datos' is not a file! Therefore, it wasn't uploaded to the server.")
-                    return
+        def features_added(layer_id, features):
+            modified_layer = QgsProject.instance().mapLayer(layer_id)
+            if modified_layer is None or QgsDataSourceUri(modified_layer.source()).table().lower() != layer.name().lower():
+                return
 
-                # Upload to server and get returner id (URL)
-                dialogs = self.iface.mainWindow().findChildren(QDialog, 'featureactiondlg:{}:0'.format(layer.id()))
-                if len(dialogs) == 1:
-                    dlg = dialogs[0]
+            new_values = self.upload_files(modified_layer, field_index, features)
+            if new_values:
+                modified_layer.dataProvider().changeAttributeValues(new_values)
 
-                    bar = QgsMessageBar()
-                    bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-                    dlg.setLayout(QGridLayout())
-                    dlg.layout().addWidget(bar, 0, 0, Qt.AlignTop)
+        layer.committedFeaturesAdded.connect(features_added)
 
-                    widget = self.iface.messageBar().createMessage("Asistente LADM_COL","Uploading file...")
-                    progress_bar = QProgressBar()
-                    widget.layout().addWidget(progress_bar)
-                    bar.pushWidget(widget, 0, 0)
-
-                    dlg.setEnabled(False) # Prevent the user from clicking Ok again
-
-                    def update_progress(current, total):
-                        print(current, total)
-                        if total == 0 and current == 0 or total == -1:
-                            progress_bar.setRange(0, 0)
-                        elif total > 0:
-                            progress_bar.setRange(0, 100)
-                            progress_bar.setValue(100 * current/total)
-
-                    url = 'http://geotux.tuxfamily.org'
-                    nam = QNetworkAccessManager()
-                    request = QNetworkRequest(QUrl(url))
-                    reply = nam.get(request)
-                    reply.downloadProgress.connect(update_progress)
-                    reply.uploadProgress.connect(update_progress)
-
-                    # We'll block execution until we get response from the server
-                    loop = QEventLoop()
-                    reply.finished.connect(loop.quit)
-                    loop.exec_()
-                    print("Event Loop finished!")
-
-                    response = reply.readAll()
-                    data = QTextStream(response, QIODevice.ReadOnly)
-                    content = data.readAll()
-                    #print("Content read!", content)
-                    reply.deleteLater()
-
-                    layer.editBuffer().changeAttributeValue(fid, index, 'http://stackoverflow.com')
-                    dlg.setEnabled(True)
-                else:
-                    # This might happen if the user has opened two feature forms
-                    print("More than one feature form dialog found!")
-            else:
-                # This might happen if the feature is being added from attr table
-                print("Feature not found in edit buffer!")
-
-        layer.featureAdded.connect(feature_added)
+    def get_file_url(self, part):
+        endpoint = QSettings().value('Asistente-LADM_COL/source/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE)
+        return '/'.join([endpoint, part[1:] if part.startswith('/') else part])
