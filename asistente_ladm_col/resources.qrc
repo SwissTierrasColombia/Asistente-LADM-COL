@@ -11,7 +11,9 @@
         <file>resources/images/search.png</file>
         <file>resources/csv/template_boundary_points.csv</file>
         <file>resources/csv/template_survey_points.csv</file>
+        <file>resources/csv/template_control_points.csv</file>
         <file>resources/csv/sample_boundary_points.csv</file>
         <file>resources/csv/sample_survey_points.csv</file>
+        <file>resources/csv/sample_control_points.csv</file>
     </qresource>
 </RCC>

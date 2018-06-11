@@ -156,10 +156,9 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
 
     def call_restriction_commit(self, fid):
+        self._restriction_layer.featureAdded.disconnect(self.call_restriction_commit)
+        self.log.logMessage("Restriction's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         res = self._restriction_layer.commitChanges()
-        if res:
-            self._restriction_layer.featureAdded.disconnect(self.call_restriction_commit)
-            self.log.logMessage("Restriction's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
 
     def finish_restriction(self, administrative_source_ids, layerId, features):
         if len(features) != 1:

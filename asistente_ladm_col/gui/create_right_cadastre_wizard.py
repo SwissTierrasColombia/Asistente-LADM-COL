@@ -156,10 +156,9 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
 
     def call_right_commit(self, fid):
+        self._right_layer.featureAdded.disconnect(self.call_right_commit)
+        self.log.logMessage("Right's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         res = self._right_layer.commitChanges()
-        if res:
-            self._right_layer.featureAdded.disconnect(self.call_right_commit)
-            self.log.logMessage("Right's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
 
     def finish_right(self, administrative_source_ids, layerId, features):
         if len(features) != 1:

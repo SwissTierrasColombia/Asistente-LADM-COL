@@ -56,7 +56,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.models_tree = dict()
-        self.selected_items = dict()
+        self.selected_items_dict = dict()
         self.icon_names = ['points', 'lines', 'polygons', 'tables', 'domains', 'structures', 'associations']
 
         self.txt_search_text.addAction(QIcon(":/Asistente-LADM_COL/resources/images/search.png"), QLineEdit.LeadingPosition)
@@ -186,7 +186,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.trw_layers.blockSignals(True) # We don't want to get itemSelectionChanged here
         while iterator.value():
             item = iterator.value()
-            if item.text(0) in self.selected_items:
+            if item.text(0) in self.selected_items_dict:
                 item.setSelected(True)
 
             iterator += 1
@@ -222,11 +222,11 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
             item = iterator.value()
 
             if item.isSelected():
-                self.selected_items[item.text(0)] = item.data(0, Qt.UserRole)
+                self.selected_items_dict[item.text(0)] = item.data(0, Qt.UserRole)
             else:
-                if item.text(0) in self.selected_items:
+                if item.text(0) in self.selected_items_dict:
                     # It was selected before, but not anymore
-                    del self.selected_items[item.text(0)]
+                    del self.selected_items_dict[item.text(0)]
 
             iterator += 1
 
@@ -240,16 +240,17 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.save_settings()
         self.update_selected_items() # Take latest selection into account
 
-        # Load selected layers
-        layers_dict = {}
-        for item_text, data in self.selected_items.items():
-            layers_dict[data[TABLE_NAME]] = {'name': data[TABLE_NAME], 'geometry': None}
+        if len(self.selected_items_dict):
+            # Load selected layers
+            layers_dict = {}
+            for item_text, data in self.selected_items_dict.items():
+                layers_dict[data[TABLE_NAME]] = {'name': data[TABLE_NAME], 'geometry': None}
 
-        self.selected_items = dict() # Reset
-        self.qgis_utils.get_layers(self._db, layers_dict, load=True)
+            self.selected_items_dict = dict() # Reset
+            self.qgis_utils.get_layers(self._db, layers_dict, load=True)
 
     def rejected(self):
-        self.selected_items = dict()
+        self.selected_items_dict = dict()
 
     def save_settings(self):
         settings = QSettings()
@@ -270,7 +271,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.trw_layers.blockSignals(True) # We don't want to get itemSelectionChanged here
         self.trw_layers.clearSelection()
         self.trw_layers.blockSignals(False)
-        self.selected_items = dict()
+        self.selected_items_dict = dict()
 
         # First find corresponding unique names in tree, since for
         # tables with multiple geometry columns, the tree has as much
@@ -280,7 +281,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
             for table_name_in_tree, record in tables.items():
                 if record[TABLE_NAME] in layer_list:
                     select_layers_list.append(table_name_in_tree)
-                    self.selected_items[table_name_in_tree] = record
+                    self.selected_items_dict[table_name_in_tree] = record
 
         self.update_selected_count_label()
 
@@ -302,7 +303,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
             self.trw_layers.blockSignals(False)
 
     def update_selected_count_label(self):
-        selected_count = len(self.selected_items)
+        selected_count = len(self.selected_items_dict)
         if selected_count == 0:
             text = QCoreApplication.translate("DialogLoadLayers",
                         "There are no selected layers to load")

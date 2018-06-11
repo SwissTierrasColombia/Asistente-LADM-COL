@@ -122,8 +122,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self._source_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._cadastre_menu)
         self._administrative_source_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Administrative Source"), self._source_cadastre_menu)
         self._spatial_source_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Spatial Source"), self._source_cadastre_menu)
+        self._upload_source_files_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Upload Pending Source Files"), self._source_cadastre_menu)
         self._source_cadastre_menu.addActions([self._administrative_source_cadastre_action,
                                                self._spatial_source_cadastre_action])
+        self._source_cadastre_menu.addSeparator()
+        self._source_cadastre_menu.addAction(self._upload_source_files_cadastre_action)
 
         self._rrr_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "RRR"), self._cadastre_menu)
         self._right_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Right"), self._rrr_cadastre_menu)
@@ -190,6 +193,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._restriction_rrr_cadastre_action.triggered.connect(self.show_wiz_restriction_rrr_cad)
         self._administrative_source_cadastre_action.triggered.connect(self.show_wiz_administrative_source_cad)
         self._spatial_source_cadastre_action.triggered.connect(self.show_wiz_spatial_source_cad)
+        self._upload_source_files_cadastre_action.triggered.connect(self.upload_source_files)
         self._too_long_boundary_cadastre_action.triggered.connect(self.check_too_long_segments)
         self._overlaps_boundary_points_cadastre_action.triggered.connect(self.check_overlaps_in_boundary_points)
         self._overlaps_control_points_cadastre_action.triggered.connect(self.check_overlaps_in_control_points)
@@ -527,6 +531,11 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_wiz_spatial_source_cad(self):
         wiz = CreateSpatialSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def upload_source_files(self):
+        self.qgis_utils.upload_source_files(self.get_db_connection())
 
     @_project_generator_required
     @_db_connection_required
