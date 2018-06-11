@@ -277,10 +277,7 @@ class GeometryUtils(QObject):
     def get_difference_between_polygon_polyline(self, polygon_layer, line_layer, id_field=ID_FIELD):
         difference_features = list()
 
-        if (QgsWkbTypes.PolygonGeometry != polygon_layer.geometryType()):
-            return difference_features
-
-        if polygon_layer.featureCount() == 0:
+        if (QgsWkbTypes.PolygonGeometry != polygon_layer.geometryType() or polygon_layer.featureCount() == 0):
             return difference_features
 
         if (QgsWkbTypes.LineGeometry != line_layer.geometryType()):
