@@ -1,3 +1,5 @@
+from qgis.core import NULL
+
 ADMINISTRATIVE_SOURCE_TABLE = "col_fuenteadministrativa"
 ADMINISTRATIVE_SOURCE_TYPE_TABLE = "col_fuenteadministrativatipo"
 AVAILABILITY_STATE_TABLE = "col_estadodisponibilidadtipo"
@@ -10,6 +12,8 @@ BUILDING_UNIT_TABLE = "unidadconstruccion"
 BUSINESS_NAME_FIELD = "razon_social"
 CONTROL_POINT_TABLE = "puntocontrol"
 DOCUMENT_ID_FIELD = "documento_identidad"
+EXTFILE_TABLE = "extarchivo"
+EXTFILE_DATA_FIELD = "datos"
 FIRST_NAME_FIELD = "primer_nombre"
 FIRST_SURNAME_FIELD = "primer_apellido"
 FMI_FIELD = "fmi"
@@ -87,6 +91,7 @@ NAMESPACE_PREFIX = {
     BUILDING_TABLE: 'su',
     BUILDING_UNIT_TABLE: 'su',
     CONTROL_POINT_TABLE: 'p',
+    EXTFILE_TABLE: 's',
     LEGAL_PARTY_TABLE: 'p',
     SPATIAL_SOURCE_TABLE: 's',
     NATURAL_PARTY_TABLE: 'p',
@@ -123,5 +128,28 @@ LAYER_VARIABLES = {
     BUILDING_UNIT_TABLE: {
         "qgis_25d_angle": 90,
         "qgis_25d_height": '"{}" * 2.5'.format(NUMBER_OF_FLOORS)
+    }
+}
+
+CUSTOM_WIDGET_CONFIGURATION = {
+    EXTFILE_TABLE: {
+        'type': 'ExternalResource',
+        'config': {
+            'PropertyCollection': {
+                'properties': {},
+                'name': NULL,
+                'type': 'collection'
+            },
+            'UseLink': True,
+            'FullUrl': True,
+            'FileWidget': True,
+            'DocumentViewer': 0,
+            'RelativeStorage': 0,
+            'StorageMode': 0,
+            'FileWidgetButton': True,
+            'DocumentViewerHeight': 0,
+            'DocumentViewerWidth': 0,
+            'FileWidgetFilter': ''
+        }
     }
 }
