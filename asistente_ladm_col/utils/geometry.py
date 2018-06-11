@@ -26,7 +26,8 @@ from qgis.core import (
     QgsSpatialIndex,
     QgsVectorLayerUtils,
     QgsWkbTypes,
-    QgsProcessingFeedback
+    QgsProcessingFeedback,
+    QgsVectorLayer
 )
 from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
 import processing
@@ -246,7 +247,9 @@ class GeometryUtils(QObject):
         e.g., [[1, 2], [1, 3]]
         """
         list_overlapping_polygons = list()
-        if (QgsWkbTypes.PolygonGeometry != polygon_layer.geometryType()):
+        if type(polygon_layer) != QgsVectorLayer or \
+           QgsWkbTypes.PolygonGeometry != polygon_layer.geometryType() or \
+           polygon_layer.featureCount() == 0:
             return list_overlapping_polygons
 
         features = [i for i in polygon_layer.getFeatures()]

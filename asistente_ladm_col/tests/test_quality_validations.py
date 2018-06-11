@@ -12,7 +12,7 @@ from asistente_ladm_col.utils.quality import QualityUtils
 
 from processing.core.Processing import Processing
 from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import (QgsWkbTypes)
+from qgis.core import QgsWkbTypes
 import processing
 
 import_projectgenerator()
@@ -175,12 +175,13 @@ class TesQualityValidations(unittest.TestCase):
                 self.assertIn(overlap, expected_overlaps[pair])
 
     def test_overlapping_polygons(self):
-        print('\nINFO: Validating overlaps in polygons ...')
+        print('\nINFO: Validating overlaps in polygons (plots)...')
+
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='topology_polygons_overlap')
         polygons_overlap_layer = QgsVectorLayer(uri, 'test_polygons_overlap', 'ogr')
 
-        if (QgsWkbTypes.MultiPolygon == polygons_overlap_layer.wkbType()):
+        if QgsWkbTypes.MultiPolygon == polygons_overlap_layer.wkbType():
             polygons_overlap_layer = processing.run("native:multiparttosingleparts",
                                            {'INPUT': polygons_overlap_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 

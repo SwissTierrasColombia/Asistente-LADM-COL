@@ -129,12 +129,13 @@ class QualityUtils(QObject):
             polygon_layer = processing.run("native:multiparttosingleparts",
                                            {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
-
         overlapping = self.qgis_utils.geometry.get_overlapping_polygons(polygon_layer)
 
         flat_overlapping = [id for items in overlapping for id in items]  # Build a flat list of ids
         flat_overlapping = list(set(flat_overlapping))  # unique values
-        t_ids = {f.id():f[ID_FIELD] for f in polygon_layer.getFeatures() if f.id() in flat_overlapping}
+
+        if type(polygon_layer) == QgsVectorLayer: # A string might come from processing for empty layers
+            t_ids = {f.id():f[ID_FIELD] for f in polygon_layer.getFeatures() if f.id() in flat_overlapping}
 
         features = []
 
