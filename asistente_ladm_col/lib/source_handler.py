@@ -36,11 +36,28 @@ class SourceHandler(QObject):
 
     message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
 
-    def __init__(self):
+    def __init__(self, qgis_utils):
         QObject.__init__(self)
         self.log = QgsApplication.messageLog()
+        self.qgis_utils = qgis_utils
 
     def upload_files(self, layer, field_index, features):
+        """
+        Upload given features' source files to remote server and return a dict
+        formatted as changeAttributeValues expects to update 'datos' attribute
+        to a remote location.
+        """
+        # First test if we have Internet connection and a valid service
+        dlg = self.qgis_utils.get_settings_dialog()
+        res, msg = dlg.is_source_service_valid()
+        if not res:
+            msg['text'] = "No file could be uploaded to the server. You can do it later from the 'Upload source files' menu. Reason: {}".format(msg['text'])
+            self.message_with_duration_emitted.emit(
+                msg['text'],
+                msg['level'],
+                20)
+            return dict()
+
         file_features = [feature for feature in features if os.path.isfile(feature[field_index])]
         total = len(features)
         not_found = total - len(file_features)

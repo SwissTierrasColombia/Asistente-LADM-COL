@@ -34,13 +34,14 @@ from ..config.general_config import (
     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
     PLUGIN_NAME,
     TEST_SERVER,
-    DEFAULT_ENDPOINT_SOURCE_SERVICE
+    DEFAULT_ENDPOINT_SOURCE_SERVICE,
+    SOURCE_SERVICE_EXPECTED_ID
 )
 from ..lib.dbconnector.db_connector import DBConnector
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
 from ..utils import get_ui_class
-from ..utils.qt_utils import make_file_selector
+from ..utils.qt_utils import OverrideCursor
 from functools import partial
 
 DIALOG_UI = get_ui_class('settings_dialog.ui')
@@ -223,30 +224,58 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
 
     def test_service(self):
-        if self.qgis_utils.is_connected(TEST_SERVER):
-            url = self.txt_service_endpoint.text().strip()
-            nam = QNetworkAccessManager()
-            request = QNetworkRequest(QUrl(url))
-            reply = nam.get(request)
-            loop = QEventLoop()
-            reply.finished.connect(loop.quit)
-            loop.exec_()
-            allData = reply.readAll()
-            response = QTextStream(allData, QIODevice.ReadOnly)
-            status = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
-            if status == 200:
-                try:
-                    data = json.loads(response.readAll())
-                    if data['id'] == "IDEATFileManager":
-                        self.show_message("Success." , Qgis.Success)
+        self.setEnabled(False)
+        QCoreApplication.processEvents()
+        res, msg = self.is_source_service_valid()
+        self.setEnabled(True)
+        self.show_message(msg['text'], msg['level'])
+
+    def is_source_service_valid(self):
+        res = False
+        msg = {'text': '', 'level': Qgis.Warning}
+        url = self.txt_service_endpoint.text().strip()
+        if url:
+            with OverrideCursor(Qt.WaitCursor):
+                self.qgis_utils.status_bar_message_emitted.emit("Checking source service availability (this might take a while)...", 0)
+                if self.qgis_utils.is_connected(TEST_SERVER):
+
+                    nam = QNetworkAccessManager()
+                    request = QNetworkRequest(QUrl(url))
+                    reply = nam.get(request)
+
+                    loop = QEventLoop()
+                    reply.finished.connect(loop.quit)
+                    loop.exec_()
+
+                    allData = reply.readAll()
+                    response = QTextStream(allData, QIODevice.ReadOnly)
+                    status = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
+                    if status == 200:
+                        try:
+                            data = json.loads(response.readAll())
+                            if 'id' in data and data['id'] == SOURCE_SERVICE_EXPECTED_ID:
+                                res = True
+                                msg['text'] = "The tested service is valid to upload files!"
+                                msg['level'] = Qgis.Info
+                            else:
+                                res = False
+                                msg['text'] = "The tested upload service is not compatible: no valid 'id' found in response."
+                        except json.decoder.JSONDecodeError as e:
+                            res = False
+                            msg['text'] = "Response from the tested service is not compatible: not valid JSON found."
                     else:
-                        self.show_message("The service is not compatible." , Qgis.Warning)
-                except (json.decoder.JSONDecodeError, KeyError) as e:
-                    self.show_message("Response of the service is not compatible." , Qgis.Warning)
-            else:
-                self.show_message("Could no connect to the server." , Qgis.Warning)
+                        res = False
+                        msg['text'] = "There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL."
+                else:
+                    res = False
+                    msg['text'] = "There was a problem connecting to Internet."
+
+                self.qgis_utils.clear_status_bar_emitted.emit()
         else:
-            self.show_message("There was a problem connecting to Internet." , Qgis.Warning)
+            res = False
+            msg['text'] = "Not valid service URL to test!"
+
+        return (res, msg)
 
     def show_message(self, message, level):
         self.bar.pushMessage(message, level, 10)
