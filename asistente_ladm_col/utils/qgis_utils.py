@@ -107,6 +107,7 @@ class QGISUtils(QObject):
         self.geometry = GeometryUtils()
 
         self.__settings_dialog = None
+        self._source_handler = None
         self._layers = list()
         self._relations = list()
 
@@ -130,6 +131,11 @@ class QGISUtils(QObject):
     def get_db_connection(self):
         self.__settings_dialog = self.get_settings_dialog()
         return self.__settings_dialog.get_db_connection()
+
+    def get_source_handler(self):
+        if self._source_handler is None:
+            self._source_handler = SourceHandler(self)
+        return self._source_handler
 
     def cache_layers_and_relations(self, db):
         self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
@@ -394,9 +400,9 @@ class QGISUtils(QObject):
 
     def set_custom_events(self, layer):
         if layer.name() == EXTFILE_TABLE:
-            source_handler = SourceHandler(self)
-            source_handler.message_with_duration_emitted.connect(self.message_with_duration_emitted)
-            source_handler.handle_source_upload(layer, EXTFILE_DATA_FIELD)
+            self._source_handler = self.get_source_handler()
+            self._source_handler.message_with_duration_emitted.connect(self.message_with_duration_emitted)
+            self._source_handler.handle_source_upload(layer, EXTFILE_DATA_FIELD)
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
@@ -910,6 +916,27 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils", "No plot could be created. Make sure selected boundaries are closed!"),
                 Qgis.Warning)
             return
+
+    def upload_source_files(self, db):
+        extfile_layer = self.get_layer(db, EXTFILE_TABLE, None, True)
+        if extfile_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "Layer {} not found in the DB! {}").format(EXTFILE_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        field_index = extfile_layer.fields().indexFromName(EXTFILE_DATA_FIELD)
+        features = list()
+
+        if extfile_layer.selectedFeatureCount():
+            features = extfile_layer.selectedFeatures()
+        else:
+            features = [f for f in extfile_layer.getFeatures()]
+
+        self._source_handler = self.get_source_handler()
+        new_values = self._source_handler.upload_files(extfile_layer, field_index, features)
+        if new_values:
+            extfile_layer.dataProvider().changeAttributeValues(new_values)
 
     def is_connected(self, hostname):
         try:

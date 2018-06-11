@@ -30,8 +30,9 @@ from ..gui.upload_progress_dialog import UploadProgressDialog
 
 class SourceHandler(QObject):
     """
-    Configure behavior of a form when a feature has just been added on a given
-    field, which is expected to have an Attachment widget.
+    Upload source files from a given field of a layer to a remote server that
+    is configured in Settings Dialog. The server returns a file URL that is
+    then stored in the source table.
     """
 
     message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
@@ -52,7 +53,7 @@ class SourceHandler(QObject):
         res, msg = dlg.is_source_service_valid()
         if not res:
             msg['text'] = QCoreApplication.translate("SourceHandler",
-                "No file could be uploaded to the server. You can do it later from the 'Upload source files' menu. Reason: {}".format(msg['text']))
+                "No file could be uploaded to the server. You can do it later from the 'Upload Pending Source Files' menu. Reason: {}".format(msg['text']))
             self.message_with_duration_emitted.emit(
                 msg['text'],
                 msg['level'],
@@ -83,8 +84,6 @@ class SourceHandler(QObject):
 
             filePart = QHttpPart()
             filePart.setHeader(QNetworkRequest.ContentDispositionHeader, QVariant("form-data; name=\"file\"; filename=\"{}\"".format(file_name)))
-            #filePart.setHeader(QNetworkRequest.ContentDispositionHeader, QVariant("form-data; name=\"file\""))
-            #filePart.setHeader(QNetworkRequest.ContentTypeHeader, QVariant("application/pdf"))
             file = QFile(data_url)
             file.open(QIODevice.ReadOnly)
 
@@ -107,7 +106,6 @@ class SourceHandler(QObject):
             loop = QEventLoop()
             reply.finished.connect(loop.quit)
             loop.exec_()
-            print("Event Loop finished!")
 
             response = reply.readAll()
             data = QTextStream(response, QIODevice.ReadOnly)
@@ -135,7 +133,6 @@ class SourceHandler(QObject):
                 upload_errors += 1
                 continue
 
-            print("Content read!", content)
             reply.deleteLater()
 
             if 'url' not in response:
@@ -145,7 +142,6 @@ class SourceHandler(QObject):
 
             url = self.get_file_url(response['url'])
             new_values[feature.id()] = {field_index : url}
-            #print(new_values)
 
             count += 1
             upload_dialog.update_total_progress(count)
