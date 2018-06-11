@@ -51,7 +51,8 @@ class SourceHandler(QObject):
         dlg = self.qgis_utils.get_settings_dialog()
         res, msg = dlg.is_source_service_valid()
         if not res:
-            msg['text'] = "No file could be uploaded to the server. You can do it later from the 'Upload source files' menu. Reason: {}".format(msg['text'])
+            msg['text'] = QCoreApplication.translate("SourceHandler",
+                "No file could be uploaded to the server. You can do it later from the 'Upload source files' menu. Reason: {}".format(msg['text']))
             self.message_with_duration_emitted.emit(
                 msg['text'],
                 msg['level'],

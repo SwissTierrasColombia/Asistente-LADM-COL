@@ -26,7 +26,16 @@ from qgis.core import (
     QgsNetworkContentFetcherTask
 )
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import Qt, QSettings, pyqtSignal, QUrl, QCoreApplication, QTextStream, QIODevice, QEventLoop
+from qgis.PyQt.QtCore import (
+    Qt,
+    QSettings,
+    pyqtSignal,
+    QUrl,
+    QCoreApplication,
+    QTextStream,
+    QIODevice,
+    QEventLoop
+)
 from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
 from qgis.PyQt.Qt import QNetworkRequest, QNetworkAccessManager
 
@@ -237,6 +246,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         if url:
             with OverrideCursor(Qt.WaitCursor):
                 self.qgis_utils.status_bar_message_emitted.emit("Checking source service availability (this might take a while)...", 0)
+                QCoreApplication.processEvents()
                 if self.qgis_utils.is_connected(TEST_SERVER):
 
                     nam = QNetworkAccessManager()
@@ -255,25 +265,30 @@ class SettingsDialog(QDialog, DIALOG_UI):
                             data = json.loads(response.readAll())
                             if 'id' in data and data['id'] == SOURCE_SERVICE_EXPECTED_ID:
                                 res = True
-                                msg['text'] = "The tested service is valid to upload files!"
+                                msg['text'] = QCoreApplication.translate("SettingsDialog",
+                                    "The tested service is valid to upload files!")
                                 msg['level'] = Qgis.Info
                             else:
                                 res = False
-                                msg['text'] = "The tested upload service is not compatible: no valid 'id' found in response."
+                                msg['text'] = QCoreApplication.translate("SettingsDialog",
+                                    "The tested upload service is not compatible: no valid 'id' found in response.")
                         except json.decoder.JSONDecodeError as e:
                             res = False
-                            msg['text'] = "Response from the tested service is not compatible: not valid JSON found."
+                            msg['text'] = QCoreApplication.translate("SettingsDialog",
+                                "Response from the tested service is not compatible: not valid JSON found.")
                     else:
                         res = False
-                        msg['text'] = "There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL."
+                        msg['text'] = QCoreApplication.translate("SettingsDialog",
+                            "There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL.")
                 else:
                     res = False
-                    msg['text'] = "There was a problem connecting to Internet."
+                    msg['text'] = QCoreApplication.translate("SettingsDialog",
+                        "There was a problem connecting to Internet.")
 
                 self.qgis_utils.clear_status_bar_emitted.emit()
         else:
             res = False
-            msg['text'] = "Not valid service URL to test!"
+            msg['text'] = QCoreApplication.translate("SettingsDialog", "Not valid service URL to test!")
 
         return (res, msg)
 

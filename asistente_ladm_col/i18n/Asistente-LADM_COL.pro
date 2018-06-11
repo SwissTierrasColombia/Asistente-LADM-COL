@@ -2,6 +2,7 @@ FORMS = ../ui/dlg_load_layers.ui \
         ../ui/settings_dialog.ui \
         ../ui/about_dialog.ui \
         ../ui/controlled_measurement_dialog.ui \
+        ../ui/upload_progress_dialog.ui \
         ../ui/wiz_create_points_cadastre.ui \
         ../ui/wiz_create_administrative_source_cadastre.ui \
         ../ui/wiz_create_plot_cadastre.ui \
@@ -35,8 +36,10 @@ SOURCES = ../asistente_ladm_col_plugin.py \
           ../gui/about_dialog.py \
           ../gui/settings_dialog.py \
           ../gui/controlled_measurement_dialog.py \
+          ../gui/upload_progress_dialog.py \
           ../lib/dbconnector/gpkg_connector.py \
           ../lib/dbconnector/pg_connector.py \
+          ../lib/source_handler.py \
           ../config/help_strings.py
 
 TRANSLATIONS = Asistente-LADM_COL_es.ts
