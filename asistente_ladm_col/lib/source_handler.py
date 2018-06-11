@@ -1,6 +1,7 @@
 import os.path
+import json
 
-from qgis.core import QgsProject, QgsDataSourceUri, Qgis
+from qgis.core import QgsProject, QgsDataSourceUri, Qgis, QgsApplication
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import (
     QEventLoop,
@@ -10,12 +11,21 @@ from qgis.PyQt.QtCore import (
     Qt,
     QTextStream,
     QIODevice,
-    QCoreApplication
+    QCoreApplication,
+    QFile,
+    QVariant,
+    QByteArray,
+    QSettings
 )
 from qgis.PyQt.QtWidgets import QDialog, QProgressBar, QSizePolicy, QGridLayout
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkAccessManager
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkAccessManager, QHttpMultiPart, QHttpPart
 from qgis.PyQt.Qt import QNetworkRequest
 
+from ..config.general_config import (
+    DEFAULT_ENDPOINT_SOURCE_SERVICE,
+    PLUGIN_NAME,
+    SOURCE_SERVICE_UPLOAD_SUFFIX
+)
 from ..gui.upload_progress_dialog import UploadProgressDialog
 
 class SourceHandler(QObject):
@@ -28,6 +38,7 @@ class SourceHandler(QObject):
 
     def __init__(self):
         QObject.__init__(self)
+        self.log = QgsApplication.messageLog()
 
     def upload_files(self, layer, field_index, features):
         file_features = [feature for feature in features if os.path.isfile(feature[field_index])]
@@ -37,17 +48,42 @@ class SourceHandler(QObject):
         upload_dialog = UploadProgressDialog(len(file_features), not_found)
         upload_dialog.show()
         count = 0
+        upload_errors = 0
         new_values = dict()
 
         for feature in file_features:
             data_url = feature[field_index]
+            file_name = os.path.basename(data_url)
 
-            url = 'http://geotux.tuxfamily.org'
             nam = QNetworkAccessManager()
-            request = QNetworkRequest(QUrl(url))
-            reply = nam.get(request)
-            reply.downloadProgress.connect(upload_dialog.update_current_progress)
+            #reply.downloadProgress.connect(upload_dialog.update_current_progress)
+
+            multiPart = QHttpMultiPart(QHttpMultiPart.FormDataType)
+            textPart = QHttpPart()
+            textPart.setHeader(QNetworkRequest.ContentDispositionHeader, QVariant("form-data; name=\"driver\""))
+            textPart.setBody(QByteArray().append('Local'))
+
+            filePart = QHttpPart()
+            filePart.setHeader(QNetworkRequest.ContentDispositionHeader, QVariant("form-data; name=\"file\"; filename=\"{}\"".format(file_name)))
+            #filePart.setHeader(QNetworkRequest.ContentDispositionHeader, QVariant("form-data; name=\"file\""))
+            #filePart.setHeader(QNetworkRequest.ContentTypeHeader, QVariant("application/pdf"))
+            file = QFile(data_url)
+            file.open(QIODevice.ReadOnly)
+
+            filePart.setBodyDevice(file)
+            file.setParent(multiPart)  # we cannot delete the file now, so delete it with the multiPart
+
+            multiPart.append(filePart)
+            multiPart.append(textPart)
+
+            service_url = '/'.join([
+                QSettings().value('Asistente-LADM_COL/source/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE),
+                SOURCE_SERVICE_UPLOAD_SUFFIX])
+            request = QNetworkRequest(QUrl(service_url))
+            reply = nam.post(request, multiPart)
             #reply.uploadProgress.connect(upload_dialog.update_current_progress)
+            reply.error.connect(self.error_returned)
+            multiPart.setParent(reply)
 
             # We'll block execution until we get response from the server
             loop = QEventLoop()
@@ -58,11 +94,40 @@ class SourceHandler(QObject):
             response = reply.readAll()
             data = QTextStream(response, QIODevice.ReadOnly)
             content = data.readAll()
-            #print("Content read!", content)
+
+            if content is None:
+                self.log.logMessage("There was an error uploading file '{}'".format(data_url), PLUGIN_NAME, Qgis.Critical)
+                upload_errors += 1
+                continue
+
+            try:
+                response = json.loads(content)
+            except json.decoder.JSONDecodeError:
+                self.log.logMessage("Couldn't parse JSON response from server for file '{}'!!!".format(data_url), PLUGIN_NAME, Qgis.Critical)
+                upload_errors += 1
+                continue
+
+            if 'error' in response:
+                self.log.logMessage("STATUS: {}. ERROR: {} MESSAGE: {} FILE: {}".format(
+                        response['status'],
+                        response['error'],
+                        response['message'],
+                        data_url),
+                    PLUGIN_NAME, Qgis.Critical)
+                upload_errors += 1
+                continue
+
+            print("Content read!", content)
             reply.deleteLater()
 
-            new_values[feature.id()] = {field_index : 'http://stackoverflow.com'}
-            print(new_values)
+            if 'url' not in response:
+                self.log.logMessage("'url' attribute not found in JSON response for file '{}'!".format(data_url), PLUGIN_NAME, Qgis.Critical)
+                upload_errors += 1
+                continue
+
+            url = self.get_file_url(response['url'])
+            new_values[feature.id()] = {field_index : url}
+            #print(new_values)
 
             count += 1
             upload_dialog.update_total_progress(count)
@@ -89,8 +154,20 @@ class SourceHandler(QObject):
                     ),
                 Qgis.Info,
                 0)
+        if upload_errors:
+            self.message_with_duration_emitted.emit(
+                QCoreApplication.translate("SourceHandler",
+                    "{} out of {} files could not be uploaded to the server because of upload errors! See log for details.").format(
+                        upload_errors,
+                        total
+                    ),
+                Qgis.Warning,
+                0)
 
         return new_values
+
+    def error_returned(self, error_code):
+        self.log.logMessage("Qt network error code: {}".format(error_code), PLUGIN_NAME, Qgis.Critical)
 
     def handle_source_upload(self, layer, field_name):
         field_index = layer.fields().indexFromName(field_name)
@@ -105,3 +182,7 @@ class SourceHandler(QObject):
                 modified_layer.dataProvider().changeAttributeValues(new_values)
 
         layer.committedFeaturesAdded.connect(features_added)
+
+    def get_file_url(self, part):
+        endpoint = QSettings().value('Asistente-LADM_COL/source/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE)
+        return '/'.join([endpoint, part[1:] if part.startswith('/') else part])

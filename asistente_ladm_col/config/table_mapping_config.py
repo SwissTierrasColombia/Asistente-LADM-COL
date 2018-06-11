@@ -140,12 +140,14 @@ CUSTOM_WIDGET_CONFIGURATION = {
                 'name': NULL,
                 'type': 'collection'
             },
+            'UseLink': True,
+            'FullUrl': True,
             'FileWidget': True,
             'DocumentViewer': 0,
             'RelativeStorage': 0,
             'StorageMode': 0,
-            'DocumentViewerHeight': 0,
             'FileWidgetButton': True,
+            'DocumentViewerHeight': 0,
             'DocumentViewerWidth': 0,
             'FileWidgetFilter': ''
         }

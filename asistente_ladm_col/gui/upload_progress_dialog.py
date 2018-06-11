@@ -60,11 +60,20 @@ class UploadProgressDialog(QDialog, DIALOG_UI):
         self.buttonBox.setEnabled(False)
 
     def set_total_process_label(self, step):
-        self.lbl_total_process.setText(
-            "Uploading {} out of {} files ({} files not found in the local disk)".format(
-                step,
-                self.total_steps,
-                self.not_found))
+        message = ''
+        if self.not_found:
+            message = QCoreApplication.translate("UploadProgressDialog",
+                "Uploading {} out of {} files ({} files not found in the local disk)").format(
+                    step + 1,
+                    self.total_steps,
+                    self.not_found)
+        else:
+            message = QCoreApplication.translate("UploadProgressDialog",
+                "Uploading {} out of {} files").format(
+                    step + 1,
+                    self.total_steps)
+
+        self.lbl_total_process.setText(message)
 
     def update_total_progress(self, step):
         self.total_progress_bar.setValue(step)
