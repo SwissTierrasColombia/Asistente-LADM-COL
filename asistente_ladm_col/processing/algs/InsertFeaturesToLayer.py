@@ -96,7 +96,7 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
 
             geom = QgsGeometry()
 
-            if in_feature.hasGeometry():
+            if in_feature.hasGeometry() and target.isSpatial():
                 # Convert geometry to match destination layer
                 # Adapted from QGIS qgisapp.cpp, pasteFromClipboard()
                 geom = in_feature.geometry()
@@ -116,8 +116,11 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
 
             feedback.setProgress(int(current * total))
 
-        # This might throw errors and print messages... But, in that case, that's what we want!
-        res = target.dataProvider().addFeatures(new_features)
+        # This might print error messages... But, hey! That's what we want!
+        with edit(target):
+            target.beginEditCommand("Inserting features...")
+            res = target.addFeatures(new_features)
+            target.endEditCommand()
 
         if res:
             feedback.pushInfo("{} out of {} features from input layer were successfully copied into '{}'!".format(

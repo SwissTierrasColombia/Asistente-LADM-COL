@@ -228,6 +228,9 @@ class GeometryUtils(QObject):
         Returns a dict whose key is a pair of line ids where there are
         intersections, and whose value is a list of intersection geometries
         """
+        if line_layer.featureCount() == 0:
+            return None
+
         feedback = QgsProcessingFeedback()
         dict_res = processing.run("model:Overlapping_Boundaries", {
                     'Boundary':line_layer,

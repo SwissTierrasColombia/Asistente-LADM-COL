@@ -37,6 +37,22 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'type': 16, 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
             {'type': 16, 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
+    elif layer_name == CONTROL_POINT_TABLE:
+        mapping = [
+            {'name': 't_id', 'precision': 0, 'type': 4, 'length': -1, 'expression': '"t_id"'},
+            {'name': 'nombre_punto', 'precision': -1, 'type': 10, 'length': 20, 'expression': '"nombre_punto"'},
+            {'name': 'exactitud_vertical', 'precision': 0, 'type': 2, 'length': -1, 'expression': '"exactitud_vertical"'},
+            {'name': 'exactitud_horizontal', 'precision': 0, 'type': 2, 'length': -1, 'expression': '"exactitud_horizontal"'},
+            {'name': 'tipo_punto_control', 'precision': -1, 'type': 10, 'length': 255, 'expression': '"tipo_punto_control"'},
+            {'name': 'confiabilidad', 'precision': -1, 'type': 1, 'length': -1, 'expression': '"confiabilidad"'},
+            {'name': 'posicion_interpolacion', 'precision': -1, 'type': 10, 'length': 255, 'expression': '"posicion_interpolacion"'},
+            {'name': 'monumentacion', 'precision': -1, 'type': 10, 'length': 255, 'expression': '"monumentacion"'},
+            {'name': 'puntotipo', 'precision': -1, 'type': 10, 'length': 255, 'expression': '"puntotipo"'},
+            {'name': 'p_espacio_de_nombres', 'precision': -1, 'type': 10, 'length': 255, 'expression': '"p_espacio_de_nombres"'},
+            {'name': 'p_local_id', 'precision': -1, 'type': 10, 'length': 255, 'expression': '"p_local_id"'},
+            {'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16, 'length': -1, 'expression': '"comienzo_vida_util_version"'},
+            {'name': 'fin_vida_util_version', 'precision': -1, 'type': 16, 'length': -1, 'expression': '"fin_vida_util_version"'}
+        ]
     elif layer_name == BOUNDARY_TABLE:
         mapping = [
             {'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'},
@@ -154,8 +170,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'name': 'su_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"su_local_id"'},
             {'name': 'nivel', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"nivel"'},
             {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
-            {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'},
-            {'name': 'punto_referencia', 'type': 10, 'length': -1, 'precision': -1, 'expression': '"punto_referencia"'}
+            {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
     elif layer_name == BUILDING_UNIT_TABLE:
         mapping = [
@@ -231,6 +246,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"comienzo_vida_util_version"', 'precision': -1, 'type': 16, 'length': -1, 'name': 'comienzo_vida_util_version'},
             {'expression': '"fin_vida_util_version"', 'precision': -1, 'type': 16, 'length': -1, 'name': 'fin_vida_util_version'}
         ]
+
     # If the user doesn't want to disable automatic fields...
     if not QSettings().value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
         # Now see if we can adjust the mapping depending on user settings

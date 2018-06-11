@@ -51,6 +51,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.log = QgsApplication.messageLog()
         self._db = None
         self.qgis_utils = qgis_utils
+        self.connection_is_dirty = False
 
         self.cbo_db_source.clear()
         self.cbo_db_source.addItem(self.tr('PostgreSQL / PostGIS'), 'pg')
@@ -61,6 +62,13 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.helpRequested.connect(self.show_help)
         self.btn_test_connection.clicked.connect(self.test_connection)
+        self.txt_pg_host.textEdited.connect(self.set_connection_dirty)
+        self.txt_pg_port.textEdited.connect(self.set_connection_dirty)
+        self.txt_pg_database.textEdited.connect(self.set_connection_dirty)
+        self.txt_pg_schema.textEdited.connect(self.set_connection_dirty)
+        self.txt_pg_user.textEdited.connect(self.set_connection_dirty)
+        self.txt_pg_password.textEdited.connect(self.set_connection_dirty)
+        self.txt_gpkg_file.textEdited.connect(self.set_connection_dirty)
 
         # Trigger some default behaviours
         self.restore_settings()
@@ -88,8 +96,15 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def accepted(self):
         self._db = None # Reset db connection
         self._db = self.get_db_connection()
-        self.cache_layers_and_relations_requested.emit(self._db)
+        if self.connection_is_dirty:
+            self.connection_is_dirty = False
+            self.cache_layers_and_relations_requested.emit(self._db)
         self.save_settings()
+
+    def reject(self):
+        self.restore_settings()
+        self.connection_is_dirty = False
+        self.done(0)
 
     def set_db_connection(self, mode, dict_conn):
         """
@@ -212,6 +227,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         elif self.cbo_db_source.currentData() == 'gpkg':
             uri = [dict_conn['dbfile']]
         return ' '.join(uri)
+
+    def set_connection_dirty(self, text):
+        if not self.connection_is_dirty:
+            self.connection_is_dirty = True
 
     def show_help(self):
         self.qgis_utils.show_help("settings")
