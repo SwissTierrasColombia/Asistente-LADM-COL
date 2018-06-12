@@ -108,6 +108,10 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
                 trusty = feature[0].attributes()[groups.fields().indexFromName("trusty")]
             except:
                 trusty = 'False'
+            try:
+                fields_values = dict(zip(range(0, len(feature[0].attributes())), feature[0].attributes()))
+            except:
+                continue
             x_mean = 0
             y_mean = 0
             count = 0
@@ -126,18 +130,15 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             else:
                 continue
             geom = QgsGeometry.fromPointXY(QgsPointXY(x_mean, y_mean))
-
-            new_feature = QgsVectorLayerUtils.createFeature(layer, geom,
-                {
-                    16: trusty,
-                    17: group_id,
-                    18: len(x_list),
-                    19: x_mean,
-                    20: y_mean,
-                    21: x_stdev,
-                    22: y_stdev
-                }
-            )
+            fields_values.update({
+                layer.fields().indexOf("group_id"): group_id,
+                layer.fields().indexOf("count"): len(x_list),
+                layer.fields().indexOf("x_mean"): x_mean,
+                layer.fields().indexOf("y_mean"): y_mean,
+                layer.fields().indexOf("x_stdev"): x_stdev,
+                layer.fields().indexOf("y_stdev"): y_stdev
+            })
+            new_feature = QgsVectorLayerUtils.createFeature(layer, geom, fields_values)
             new_features.append(new_feature)
 
         layer.dataProvider().addFeatures(new_features)
