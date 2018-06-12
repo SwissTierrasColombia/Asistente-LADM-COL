@@ -30,6 +30,7 @@ MODULE_HELP_MAPPING = {
     'legal_party': 'cadastre/Party.html#legal-party',
     'load_layers': 'load_layers.html#load-layers',
     'natural_party': 'cadastre/Party.html#natural-party',
+    'quality_rules': 'index.html', # TODO: Add this to help sections
     'settings': 'help.html#settings'
 }
 # Configure Project Generator Dependency

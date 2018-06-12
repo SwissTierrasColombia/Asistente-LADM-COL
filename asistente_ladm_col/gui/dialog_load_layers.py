@@ -193,7 +193,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
 
         self.trw_layers.blockSignals(False)
 
-        # Make mode items non selectable
+        # Make model items non selectable
         # Set expand taking previous states into account
         for i in range(self.trw_layers.topLevelItemCount()):
             self.trw_layers.topLevelItem(i).setFlags(Qt.ItemIsEnabled) # Not selectable
