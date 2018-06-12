@@ -170,8 +170,8 @@ class SourceHandler(QObject):
                     "{} out of {} records {} ignored because {} file path couldn't be found in the local disk!").format(
                         not_found,
                         total,
-                        QCoreApplication.translate("SourceHandler", 'was') if not_found == 1 else QCoreApplication.translate("SourceHandler", 'were'),
-                        QCoreApplication.translate("SourceHandler", 'its') if not_found == 1 else QCoreApplication.translate("SourceHandler", 'their')
+                        QCoreApplication.translate("SourceHandler", "was") if not_found == 1 else QCoreApplication.translate("SourceHandler", "were"),
+                        QCoreApplication.translate("SourceHandler", "its") if not_found == 1 else QCoreApplication.translate("SourceHandler", "their")
                     ),
                 Qgis.Warning,
                 0)
@@ -181,8 +181,8 @@ class SourceHandler(QObject):
                     "{} out of {} files {} uploaded to the server and {} remote location stored in the database!").format(
                         len(new_values),
                         total,
-                        QCoreApplication.translate("SourceHandler", 'was') if len(new_values) == 1 else QCoreApplication.translate("SourceHandler", 'were'),
-                        QCoreApplication.translate("SourceHandler", 'its') if len(new_values) == 1 else QCoreApplication.translate("SourceHandler", 'their')
+                        QCoreApplication.translate("SourceHandler", "was") if len(new_values) == 1 else QCoreApplication.translate("SourceHandler", "were"),
+                        QCoreApplication.translate("SourceHandler", "its") if len(new_values) == 1 else QCoreApplication.translate("SourceHandler", "their")
                     ),
                 Qgis.Info,
                 0)

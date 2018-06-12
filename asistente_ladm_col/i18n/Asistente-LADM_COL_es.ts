@@ -353,22 +353,22 @@
 <context>
     <name>CreateAdministrativeSourceCadastreWizard</name>
     <message>
-        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="55"/>
+        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="58"/>
         <source>Import</source>
         <translation>Importar</translation>
     </message>
     <message>
-        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="61"/>
+        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="64"/>
         <source>Create</source>
         <translation>Crear</translation>
     </message>
     <message>
-        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="78"/>
+        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="81"/>
         <source>Select a source layer to set the field mapping to &apos;{}&apos;.</source>
         <translation>Selecciona una capa fuente para definir el mapeo de campos a &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="93"/>
+        <location filename="../gui/create_administrative_source_cadastre_wizard.py" line="99"/>
         <source>Administrative Source layer couldn&apos;t be found... {}</source>
         <translation>No se pudo encontrar la capa Fuente Administrativa... {}</translation>
     </message>
@@ -678,22 +678,22 @@
 <context>
     <name>CreateSpatialSourceCadastreWizard</name>
     <message>
-        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="54"/>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="57"/>
         <source>Import</source>
         <translation>Importar</translation>
     </message>
     <message>
-        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="60"/>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="63"/>
         <source>Create</source>
         <translation>Crear</translation>
     </message>
     <message>
-        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="77"/>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="80"/>
         <source>Select a source layer to set the field mapping to &apos;{}&apos;.</source>
         <translation>Selecciona una capa fuente para definir el mapeo de campos a &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="89"/>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="97"/>
         <source>Spatial Source layer couldn&apos;t be found... {}</source>
         <translation>No se pudo encontrar la tabla Fuente Espacial... {}</translation>
     </message>
@@ -1514,17 +1514,41 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     <message>
         <location filename="../lib/source_handler.py" line="169"/>
         <source>{} out of {} records {} ignored because {} file path couldn&apos;t be found in the local disk!</source>
-        <translation>Se ignoraron {} de {} registros {} porque {} ruta(s) no se encontró(encontraron) en el disco local!</translation>
+        <translation>¡{} de {} registros {} ignorado(s) porque {} ruta(s) no se encontró(encontraron) en el disco local!</translation>
+    </message>
+    <message>
+        <location filename="../lib/source_handler.py" line="173"/>
+        <location filename="../lib/source_handler.py" line="184"/>
+        <source>was</source>
+        <translation>fue</translation>
+    </message>
+    <message>
+        <location filename="../lib/source_handler.py" line="173"/>
+        <location filename="../lib/source_handler.py" line="184"/>
+        <source>were</source>
+        <translation>fueron</translation>
+    </message>
+    <message>
+        <location filename="../lib/source_handler.py" line="174"/>
+        <location filename="../lib/source_handler.py" line="185"/>
+        <source>its</source>
+        <translation>su</translation>
+    </message>
+    <message>
+        <location filename="../lib/source_handler.py" line="174"/>
+        <location filename="../lib/source_handler.py" line="185"/>
+        <source>their</source>
+        <translation>sus</translation>
     </message>
     <message>
         <location filename="../lib/source_handler.py" line="180"/>
         <source>{} out of {} files {} uploaded to the server and {} remote location stored in the database!</source>
-        <translation>{} de {} archivos {} subido(s) al servidor y {} ubicación(ubicaciones) remota(s) almacenada(s) en la base de datos!</translation>
+        <translation>¡{} de {} archivos {} subido(s) al servidor y {} ubicación(ubicaciones) remota(s) almacenada(s) en la base de datos!</translation>
     </message>
     <message>
         <location filename="../lib/source_handler.py" line="191"/>
         <source>{} out of {} files could not be uploaded to the server because of upload errors! See log for details.</source>
-        <translation>No se pudieron subir {} de {} archivos al servidor debido a errores! Revisa el log para más detalles.</translation>
+        <translation>¡No se pudieron subir {} de {} archivos al servidor debido a errores! Revisa el log para más detalles.</translation>
     </message>
 </context>
 <context>
