@@ -274,15 +274,15 @@ class GeometryUtils(QObject):
         listGeoms = list()
         intersection = feature_polygon.geometry().intersection(feature_overlap.geometry())
 
-        if (intersection.wkbType() == QgsWkbTypes.Polygon):
+        if intersection.wkbType() == QgsWkbTypes.Polygon:
             listGeoms.append(intersection)
-        elif (intersection.wkbType() == QgsWkbTypes.MultiPolygon):
+        elif intersection.wkbType() == QgsWkbTypes.MultiPolygon:
             listGeoms.append(intersection)
-        elif (intersection.wkbType() == QgsWkbTypes.GeometryCollection):
+        elif intersection.wkbType() == QgsWkbTypes.GeometryCollection:
             for polygonCollection in intersection.asGeometryCollection():
-                if (QgsWkbTypes.PolygonGeometry == polygonCollection.type()):
+                if QgsWkbTypes.PolygonGeometry == polygonCollection.type():
                     listGeoms.append(polygonCollection)
-                elif (QgsWkbTypes.MultiPolygon == polygonCollection.type()):
+                elif QgsWkbTypes.MultiPolygon == polygonCollection.type():
                     listGeoms.append(polygonCollection)
 
         return QgsGeometry.collectGeometry(listGeoms)
