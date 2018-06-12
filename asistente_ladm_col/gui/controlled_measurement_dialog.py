@@ -28,7 +28,7 @@ from qgis.core import (
     QgsField,
     QgsVectorLayerUtils,
     QgsMapLayerProxyModel,
-    QgsFieldProxyModel
+    QgsFieldProxyModel,
 )
 from qgis.PyQt.QtCore import QVariant, QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog
@@ -81,26 +81,33 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             return
 
         # Create memory layer with average points
-        groups = res['native:mergevectorlayers_1:output']
+        groups = self.time_validate(res['native:mergevectorlayers_1:output'])
         if not(type(groups) == QgsVectorLayer and groups.isValid()):
             return
 
         idx = groups.fields().indexOf(GROUP_ID)
 
         group_ids = groups.uniqueValues(idx)
-        layer = QgsVectorLayer("Point?crs=EPSG:3116", "Average Points", "memory")
+
+        # layer = QgsVectorLayer("Point?crs=EPSG:3116", "Average Points", "memory")
+        layer = self.copy_attribs(groups, "Average Points")
         layer.dataProvider().addAttributes([
             QgsField("group_id", QVariant.Int),
             QgsField("count", QVariant.Int),
             QgsField("x_mean", QVariant.Double),
             QgsField("y_mean", QVariant.Double),
             QgsField("x_stdev", QVariant.Double),
-            QgsField("y_stdev", QVariant.Double)
+            QgsField("y_stdev", QVariant.Double),
         ])
         layer.updateFields()
         new_features = []
 
         for group_id in group_ids:
+            feature = [f for f in groups.getFeatures("\"{}\"={}".format(GROUP_ID, group_id))]
+            try:
+                trusty = feature[0].attributes()[groups.fields().indexFromName("trusty")]
+            except:
+                trusty = 'False'
             x_mean = 0
             y_mean = 0
             count = 0
@@ -122,17 +129,21 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
 
             new_feature = QgsVectorLayerUtils.createFeature(layer, geom,
                 {
-                    0: group_id,
-                    1: len(x_list),
-                    2: x_mean,
-                    3: y_mean,
-                    4: x_stdev,
-                    5: y_stdev
+                    16: trusty,
+                    17: group_id,
+                    18: len(x_list),
+                    19: x_mean,
+                    20: y_mean,
+                    21: x_stdev,
+                    22: y_stdev
                 }
             )
             new_features.append(new_feature)
 
         layer.dataProvider().addFeatures(new_features)
+        features = groups.getFeatures("\"{}\" IS NULL".format("belongs_to_group"))
+        layer.dataProvider().addFeatures(features)
+        layer.commitChanges()
         QgsProject.instance().addMapLayer(layer)
 
         self.qgis_utils.message_emitted.emit(
@@ -159,6 +170,55 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             msg = "Model Group_Points was not found and cannot be opened!"
             return res, msg
 
+    def time_validate(self, input_features):
+        groups_num = input_features.uniqueValues(input_features.fields().indexFromName("belongs_to_group"))
+
+        new_layer = self.copy_attribs(input_features)
+        time_layer = self.copy_attribs(input_features)
+        time2_layer = self.copy_attribs(input_features)
+        for i in groups_num:
+            if i is None:
+                new_layer.startEditing()
+                features = input_features.getFeatures("\"{}\" IS NULL".format("belongs_to_group"))
+                new_layer.dataProvider().addFeatures(features)
+                [new_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "False") for feat in
+                 new_layer.getFeatures()]
+                new_layer.commitChanges()
+            else:
+                features = input_features.getFeatures("\"{}\"={}".format("belongs_to_group", i))
+                fg = len([f for f in features])
+                if fg > 1:
+                    # features = time_filter(features)
+                    features = input_features.getFeatures("\"{}\"={}".format("belongs_to_group", i))
+                    time_layer.startEditing()
+                    time_layer.dataProvider().addFeatures(features)
+                    [time_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "True") for feat in
+                     time_layer.getFeatures()]
+                    time_layer.updateFields()
+                else:
+                    features = input_features.getFeatures("\"{}\"={}".format("belongs_to_group", i))
+                    time2_layer.startEditing()
+                    time2_layer.dataProvider().addFeatures(features)
+                    [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "False") for feat in
+                     time2_layer.getFeatures()]
+                    time2_layer.updateFields()
+                time_layer.commitChanges()
+                time2_layer.commitChanges()
+
+        new_layer.startEditing()
+        new_layer.dataProvider().addFeatures(time_layer.getFeatures())
+        new_layer.dataProvider().addFeatures(time2_layer.getFeatures())
+        new_layer.commitChanges()
+        QgsProject.instance().addMapLayer(new_layer)
+        return new_layer
+
+    def copy_attribs(self, sourceLYR, name="Previous Average Points"):
+        destLYR = QgsVectorLayer("Point?crs=EPSG:3116", name, "memory")
+        destLYR.startEditing()
+        destLYR.dataProvider().addAttributes(sourceLYR.fields())
+        destLYR.addAttribute(QgsField("trusty", QVariant.String))
+        destLYR.updateFields()
+        return destLYR
 
     def show_help(self):
         self.qgis_utils.show_help("controlled_measurement")
