@@ -26,6 +26,9 @@ from qgis.PyQt.QtWidgets import (
     QTreeWidgetItem,
     QTreeWidgetItemIterator
 )
+from ..config.general_config import (
+    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE
+)
 from ..config.table_mapping_config import (
     BOUNDARY_POINT_TABLE,
     CONTROL_POINT_TABLE,
@@ -45,6 +48,8 @@ class DialogQuality(QDialog, DIALOG_UI):
         self.qgis_utils = qgis_utils
         self.quality = quality
 
+        too_long_tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
+
         self.trw_quality_rules.setItemsExpandable(False)
 
         # Set connections
@@ -55,37 +60,37 @@ class DialogQuality(QDialog, DIALOG_UI):
         self.btn_clear_selection.clicked.connect(self.clear_selection)
 
         self.items_dict = collections.OrderedDict()
-        self.items_dict['Rules for Points'] = {
+        self.items_dict[QCoreApplication.translate("DialogQuality", "Rules for Points")] = {
                 'icon': 'points',
                 'rules': [{
                     'id' : 'check_overlaps_in_boundary_points',
-                    'text': 'Boundary Points should not overlap'
+                    'text': QCoreApplication.translate("DialogQuality", "Boundary Points should not overlap")
                 },{
                     'id' : 'check_overlaps_in_control_points',
-                    'text': 'Control Points should not overlap'
+                    'text': QCoreApplication.translate("DialogQuality", "Control Points should not overlap")
                 }]
             }
-        self.items_dict['Rules for Lines'] = {
+        self.items_dict[QCoreApplication.translate("DialogQuality", "Rules for Lines")] = {
                 'icon' : 'lines',
                 'rules': [{
                     'id': 'check_too_long_boundary_segments',
-                    'text': 'Boundary segments should not be longer than tolerance'
+                    'text': QCoreApplication.translate("DialogQuality", "Boundary segments should not be longer than {}m.").format(too_long_tolerance)
                 }, {
                     'id': 'check_overlaps_in_boundaries',
-                    'text': 'Boundaries should not overlap'
+                    'text': QCoreApplication.translate("DialogQuality", "Boundaries should not overlap")
                 }, {
                     'id': 'check_missing_boundary_points_in_boundaries',
-                    'text': 'Boundary nodes should be covered by Bundary Points'
+                    'text': QCoreApplication.translate("DialogQuality", "Boundary nodes should be covered by Bundary Points")
                 }, {
                     'id': 'check_dangles_in_boundaries',
-                    'text': 'Boundaries should not have dangles'
+                    'text': QCoreApplication.translate("DialogQuality", "Boundaries should not have dangles")
                 }]
             }
-        self.items_dict['Rules for Polygons'] = {
+        self.items_dict[QCoreApplication.translate("DialogQuality", "Rules for Polygons")] = {
                 'icon': 'polygons',
                 'rules': [{
                     'id': 'check_overlaps_in_plots',
-                    'text': 'Plots should not overlap'
+                    'text': QCoreApplication.translate("DialogQuality", "Plots should not overlap")
                 }]
             }
 
