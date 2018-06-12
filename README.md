@@ -17,11 +17,11 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([0.2.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.2.0)) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.2.3 (o superior) y permite:
+La versión actual ([0.3.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.3.0)) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.2.3 (o superior) y permite:
 
  - Capturar datos para el modelo LADM_COL v2.2.1.
  - Preprocesar puntos: Medición controlada.
- - Agregar puntos a las capas `Punto Lindero` y `Punto Levantamiento`:
+ - Agregar puntos a las capas `Punto Lindero`, `Punto Levantamiento` y `Punto Control`:
    - Desde archivo CSV con la estructura requerida.
      - Validar para evitar insertar puntos superpuestos.
    - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.

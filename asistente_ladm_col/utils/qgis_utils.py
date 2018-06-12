@@ -28,9 +28,10 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsPointXY,
                        QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
                        QgsApplication, QgsProcessingFeedback, QgsRelation,
-                       QgsExpressionContextUtils)
+                       QgsExpressionContextUtils, QgsEditorWidgetSetup)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
-                              QVariant, QSettings, QLocale, QUrl, QFile, QIODevice)
+                              QVariant, QSettings, QLocale, QUrl, QFile)
+
 import processing
 
 from .project_generator_utils import ProjectGeneratorUtils
@@ -60,7 +61,11 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
+                                           BUILDING_UNIT_TABLE,
+                                           CUSTOM_WIDGET_CONFIGURATION,
                                            DICT_DISPLAY_EXPRESSIONS,
+                                           EXTFILE_DATA_FIELD,
+                                           EXTFILE_TABLE,
                                            ID_FIELD,
                                            LAYER_VARIABLES,
                                            LENGTH_FIELD_BOUNDARY_TABLE,
@@ -73,12 +78,14 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            MORE_BOUNDARY_FACE_STRING_TABLE,
                                            NAMESPACE_FIELD,
                                            NAMESPACE_PREFIX,
+                                           NUMBER_OF_FLOORS,
                                            PLOT_TABLE,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
                                            REFERENCE_POINT_FIELD,
                                            SURVEY_POINT_TABLE,
                                            VIDA_UTIL_FIELD)
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
+from ..lib.source_handler import SourceHandler
 
 class QGISUtils(QObject):
 
@@ -102,6 +109,7 @@ class QGISUtils(QObject):
         self.geometry = GeometryUtils()
 
         self.__settings_dialog = None
+        self._source_handler = None
         self._layers = list()
         self._relations = list()
 
@@ -126,9 +134,14 @@ class QGISUtils(QObject):
         self.__settings_dialog = self.get_settings_dialog()
         return self.__settings_dialog.get_db_connection()
 
+    def get_source_handler(self):
+        if self._source_handler is None:
+            self._source_handler = SourceHandler(self)
+        return self._source_handler
+
     def cache_layers_and_relations(self, db):
         self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
-            "Extracting data from the database... This is done only once per session!"), 0)
+            "Extracting relations and domains from the database... This is done only once per session!"), 0)
         QCoreApplication.processEvents()
 
         with OverrideCursor(Qt.WaitCursor):
@@ -313,6 +326,8 @@ class QGISUtils(QObject):
         self.configure_missing_relations(layer)
         self.set_display_expressions(layer)
         self.set_layer_variables(layer)
+        self.set_custom_widgets(layer)
+        self.set_custom_events(layer)
         self.set_automatic_fields(layer)
         if layer.isSpatial():
             self.symbology.set_layer_style_from_qml(layer)
@@ -375,6 +390,26 @@ class QGISUtils(QObject):
         if layer.name() in LAYER_VARIABLES:
             for variable, value in LAYER_VARIABLES[layer.name()].items():
                 QgsExpressionContextUtils.setLayerVariable(layer, variable, value)
+
+    def set_custom_widgets(self, layer):
+        layer_name = layer.name()
+        if layer_name in CUSTOM_WIDGET_CONFIGURATION:
+            editor_widget_setup = QgsEditorWidgetSetup(
+                    CUSTOM_WIDGET_CONFIGURATION[layer_name]['type'],
+                    CUSTOM_WIDGET_CONFIGURATION[layer_name]['config'])
+            if layer_name == EXTFILE_TABLE:
+                index = layer.fields().indexFromName(EXTFILE_DATA_FIELD)
+            elif layer_name == BUILDING_UNIT_TABLE:
+                index = layer.fields().indexFromName(NUMBER_OF_FLOORS)
+
+            layer.setEditorWidgetSetup(index, editor_widget_setup)
+
+
+    def set_custom_events(self, layer):
+        if layer.name() == EXTFILE_TABLE:
+            self._source_handler = self.get_source_handler()
+            self._source_handler.message_with_duration_emitted.connect(self.message_with_duration_emitted)
+            self._source_handler.handle_source_upload(layer, EXTFILE_DATA_FIELD)
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
@@ -888,6 +923,27 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils", "No plot could be created. Make sure selected boundaries are closed!"),
                 Qgis.Warning)
             return
+
+    def upload_source_files(self, db):
+        extfile_layer = self.get_layer(db, EXTFILE_TABLE, None, True)
+        if extfile_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "Layer {} not found in the DB! {}").format(EXTFILE_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        field_index = extfile_layer.fields().indexFromName(EXTFILE_DATA_FIELD)
+        features = list()
+
+        if extfile_layer.selectedFeatureCount():
+            features = extfile_layer.selectedFeatures()
+        else:
+            features = [f for f in extfile_layer.getFeatures()]
+
+        self._source_handler = self.get_source_handler()
+        new_values = self._source_handler.upload_files(extfile_layer, field_index, features)
+        if new_values:
+            extfile_layer.dataProvider().changeAttributeValues(new_values)
 
     def is_connected(self, hostname):
         try:
