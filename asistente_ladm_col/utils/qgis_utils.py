@@ -61,6 +61,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
+                                           BUILDING_UNIT_TABLE,
                                            CUSTOM_WIDGET_CONFIGURATION,
                                            DICT_DISPLAY_EXPRESSIONS,
                                            EXTFILE_DATA_FIELD,
@@ -77,6 +78,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            MORE_BOUNDARY_FACE_STRING_TABLE,
                                            NAMESPACE_FIELD,
                                            NAMESPACE_PREFIX,
+                                           NUMBER_OF_FLOORS,
                                            PLOT_TABLE,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
                                            REFERENCE_POINT_FIELD,
@@ -395,8 +397,13 @@ class QGISUtils(QObject):
             editor_widget_setup = QgsEditorWidgetSetup(
                     CUSTOM_WIDGET_CONFIGURATION[layer_name]['type'],
                     CUSTOM_WIDGET_CONFIGURATION[layer_name]['config'])
-            index = layer.fields().indexFromName(EXTFILE_DATA_FIELD)
+            if layer_name == EXTFILE_TABLE:
+                index = layer.fields().indexFromName(EXTFILE_DATA_FIELD)
+            elif layer_name == BUILDING_UNIT_TABLE:
+                index = layer.fields().indexFromName(NUMBER_OF_FLOORS)
+
             layer.setEditorWidgetSetup(index, editor_widget_setup)
+
 
     def set_custom_events(self, layer):
         if layer.name() == EXTFILE_TABLE:
