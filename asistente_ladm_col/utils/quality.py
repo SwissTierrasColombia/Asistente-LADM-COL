@@ -124,31 +124,34 @@ class QualityUtils(QObject):
                                                                 .format(polygon_layer_name)), "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("polygon_id", QVariant.String),
-                                     QgsField("overlapping_count", QVariant.Int),
-                                     QgsField("overlapping_ids", QVariant.String)])
+                                     QgsField("overlapping_ids", QVariant.String),
+                                     QgsField("count_parts", QVariant.Int)])
         error_layer.updateFields()
 
-        overlapping = self.qgis_utils.geometry.get_overlapping_polygons(polygon_layer, ID_FIELD)
+        if (QgsWkbTypes.MultiPolygon == polygon_layer.wkbType()):
+            polygon_layer = processing.run("native:multiparttosingleparts",
+                                           {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+
+
+        overlapping = self.qgis_utils.geometry.get_overlapping_polygons(polygon_layer)
+
         flat_overlapping = [id for items in overlapping for id in items]  # Build a flat list of ids
-        flat_overlapping = list(set(flat_overlapping)) # unique values
+        flat_overlapping = list(set(flat_overlapping))  # unique values
+        t_ids = {f.id():f[ID_FIELD] for f in polygon_layer.getFeatures() if f.id() in flat_overlapping}
+
         features = []
 
-        t_ids = {f[ID_FIELD] : f.id() for f in polygon_layer.getFeatures() if f[ID_FIELD] in flat_overlapping}
-
-        for polygon_id in flat_overlapping:
-            feature = polygon_layer.getFeature(t_ids[polygon_id])
-            polygon = feature.geometry()
-
-            # Get all ids that overlap with current id
-            overlapping_ids = [list(set(pair) - set([polygon_id]))[0] for pair in overlapping if polygon_id in pair]
+        for overlapping_item in overlapping:
+            polygon_id_field = overlapping_item[0]
+            overlapping_id_field = overlapping_item[1]
+            polygon_intersection = self.qgis_utils.geometry.get_intersection_polygons(polygon_layer, polygon_id_field, overlapping_id_field)
 
             new_feature = QgsVectorLayerUtils().createFeature(
                 error_layer,
-                polygon,
-                {0: polygon_id,
-                 1: len(overlapping_ids),
-                 2: ", ".join([str(id) for id in overlapping_ids])
-                })
+                polygon_intersection,
+                {0: t_ids[polygon_id_field],
+                 1: t_ids[overlapping_id_field],
+                 2: len(polygon_intersection.asMultiPolygon()) if polygon_intersection.isMultipart() else 1})
 
             features.append(new_feature)
 

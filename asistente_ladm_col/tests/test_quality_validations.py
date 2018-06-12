@@ -12,6 +12,8 @@ from asistente_ladm_col.utils.quality import QualityUtils
 
 from processing.core.Processing import Processing
 from qgis.analysis import QgsNativeAlgorithms
+from qgis.core import (QgsWkbTypes)
+import processing
 
 import_projectgenerator()
 
@@ -178,14 +180,18 @@ class TesQualityValidations(unittest.TestCase):
         uri = gpkg_path + '|layername={layername}'.format(layername='topology_polygons_overlap')
         polygons_overlap_layer = QgsVectorLayer(uri, 'test_polygons_overlap', 'ogr')
 
-        expected_overlaps = [[126, 484], [126, 542], [127, 484], [127, 512], [127, 547], [543, 543], [545, 546]]
+        if (QgsWkbTypes.MultiPolygon == polygons_overlap_layer.wkbType()):
+            polygons_overlap_layer = processing.run("native:multiparttosingleparts",
+                                           {'INPUT': polygons_overlap_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+
+        expected_overlaps = [[11, 44], [11, 47], [12, 44], [12, 45], [12, 57], [48, 49], [53, 55]]
         flat_expected_overlaps = list(set([id for items in expected_overlaps for id in items]))  # Build a flat list of uniques ids
 
-        overlapping = self.qgis_utils.geometry.get_overlapping_polygons(polygons_overlap_layer, 'fid')
+        overlapping = self.qgis_utils.geometry.get_overlapping_polygons(polygons_overlap_layer)
         flat_overlapping = list(set([id for items in overlapping for id in items]))
 
         # checks
-        self.assertEqual(len(flat_overlapping), 9)
+        self.assertEqual(len(flat_overlapping), 10)
         self.assertEqual(flat_expected_overlaps.sort(), flat_overlapping.sort())
 
     def test_get_missing_boundary_points_in_boundaries(self):
