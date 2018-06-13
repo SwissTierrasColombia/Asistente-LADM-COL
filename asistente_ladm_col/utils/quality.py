@@ -68,6 +68,12 @@ class QualityUtils(QObject):
                 Qgis.Warning)
             return
 
+        if point_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                   "There are no points in layer '{}' to check for overlaps!").format(point_layer_name), Qgis.Info)
+            return
+
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
                                      QCoreApplication.translate("QGISUtils", "Overlapping points in {}"
                                                                 .format(point_layer_name)), "memory")
@@ -266,6 +272,12 @@ class QualityUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "Table {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()),
                 Qgis.Warning)
+            return
+
+        if boundary_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                   "There are no boundaries to check for too long segments!"), Qgis.Info)
             return
 
         error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG),

@@ -23,7 +23,10 @@ from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-from ..config.table_mapping_config import ADMINISTRATIVE_SOURCE_TABLE
+from ..config.table_mapping_config import (
+    ADMINISTRATIVE_SOURCE_TABLE,
+    EXTFILE_TABLE
+)
 
 from ..config.help_strings import HelpStrings
 
@@ -85,9 +88,12 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
 
     def prepare_administrative_source_creation(self):
         # Load layers
-        self._administrative_source_layer = self.qgis_utils.get_layer(self._db,
-            ADMINISTRATIVE_SOURCE_TABLE,
-            load=True)
+        res_layers = self.qgis_utils.get_layers(self._db, {
+            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None},
+            EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None}
+        }, load=True)
+
+        self._administrative_source_layer = res_layers[ADMINISTRATIVE_SOURCE_TABLE]
         if self._administrative_source_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateAdministrativeSourceCadastreWizard",

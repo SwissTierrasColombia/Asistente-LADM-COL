@@ -16,33 +16,49 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
+import os, json
 
 from qgis.core import (
     QgsProject,
     QgsVectorLayer,
     Qgis,
-    QgsApplication
+    QgsApplication,
+    QgsNetworkContentFetcherTask
 )
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import Qt, QSettings, pyqtSignal
+from qgis.PyQt.QtCore import (
+    Qt,
+    QSettings,
+    pyqtSignal,
+    QUrl,
+    QCoreApplication,
+    QTextStream,
+    QIODevice,
+    QEventLoop
+)
 from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
+from qgis.PyQt.Qt import QNetworkRequest, QNetworkAccessManager
 
 from ..config.general_config import (
     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-    PLUGIN_NAME
+    PLUGIN_NAME,
+    TEST_SERVER,
+    DEFAULT_ENDPOINT_SOURCE_SERVICE,
+    SOURCE_SERVICE_EXPECTED_ID
 )
 from ..lib.dbconnector.db_connector import DBConnector
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
 from ..utils import get_ui_class
-from ..utils.qt_utils import make_file_selector
+from ..utils.qt_utils import OverrideCursor
+from functools import partial
 
 DIALOG_UI = get_ui_class('settings_dialog.ui')
 
 class SettingsDialog(QDialog, DIALOG_UI):
 
     cache_layers_and_relations_requested = pyqtSignal(DBConnector)
+    fetcher_task = None
 
     def __init__(self, iface=None, parent=None, qgis_utils=None):
         QDialog.__init__(self, parent)
@@ -69,6 +85,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_pg_user.textEdited.connect(self.set_connection_dirty)
         self.txt_pg_password.textEdited.connect(self.set_connection_dirty)
         self.txt_gpkg_file.textEdited.connect(self.set_connection_dirty)
+        self.btn_test_service.clicked.connect(self.test_service)
 
         # Trigger some default behaviours
         self.restore_settings()
@@ -157,6 +174,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         settings.setValue('Asistente-LADM_COL/automatic_values/disable_automatic_fields', self.chk_disable_automatic_fields.isChecked())
 
+        endpoint = self.txt_service_endpoint.text().strip()
+        settings.setValue('Asistente-LADM_COL/source/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
+
         # Changes in automatic namespace or local_id configuration?
         current_namespace_enabled = settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
         current_namespace_prefix = settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")
@@ -195,6 +215,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
 
+        self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/source/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
+
     def db_source_changed(self):
         self._db = None
         if self.cbo_db_source.currentData() == 'pg':
@@ -209,6 +231,66 @@ class SettingsDialog(QDialog, DIALOG_UI):
         res, msg = self.get_db_connection().test_connection()
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
         self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
+
+    def test_service(self):
+        self.setEnabled(False)
+        QCoreApplication.processEvents()
+        res, msg = self.is_source_service_valid()
+        self.setEnabled(True)
+        self.show_message(msg['text'], msg['level'])
+
+    def is_source_service_valid(self):
+        res = False
+        msg = {'text': '', 'level': Qgis.Warning}
+        url = self.txt_service_endpoint.text().strip()
+        if url:
+            with OverrideCursor(Qt.WaitCursor):
+                self.qgis_utils.status_bar_message_emitted.emit("Checking source service availability (this might take a while)...", 0)
+                QCoreApplication.processEvents()
+                if self.qgis_utils.is_connected(TEST_SERVER):
+
+                    nam = QNetworkAccessManager()
+                    request = QNetworkRequest(QUrl(url))
+                    reply = nam.get(request)
+
+                    loop = QEventLoop()
+                    reply.finished.connect(loop.quit)
+                    loop.exec_()
+
+                    allData = reply.readAll()
+                    response = QTextStream(allData, QIODevice.ReadOnly)
+                    status = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
+                    if status == 200:
+                        try:
+                            data = json.loads(response.readAll())
+                            if 'id' in data and data['id'] == SOURCE_SERVICE_EXPECTED_ID:
+                                res = True
+                                msg['text'] = QCoreApplication.translate("SettingsDialog",
+                                    "The tested service is valid to upload files!")
+                                msg['level'] = Qgis.Info
+                            else:
+                                res = False
+                                msg['text'] = QCoreApplication.translate("SettingsDialog",
+                                    "The tested upload service is not compatible: no valid 'id' found in response.")
+                        except json.decoder.JSONDecodeError as e:
+                            res = False
+                            msg['text'] = QCoreApplication.translate("SettingsDialog",
+                                "Response from the tested service is not compatible: not valid JSON found.")
+                    else:
+                        res = False
+                        msg['text'] = QCoreApplication.translate("SettingsDialog",
+                            "There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL.")
+                else:
+                    res = False
+                    msg['text'] = QCoreApplication.translate("SettingsDialog",
+                        "There was a problem connecting to Internet.")
+
+                self.qgis_utils.clear_status_bar_emitted.emit()
+        else:
+            res = False
+            msg['text'] = QCoreApplication.translate("SettingsDialog", "Not valid service URL to test!")
+
+        return (res, msg)
 
     def show_message(self, message, level):
         self.bar.pushMessage(message, level, 10)
