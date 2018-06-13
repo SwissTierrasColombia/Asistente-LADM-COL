@@ -4,6 +4,7 @@ from qgis.PyQt.QtCore import QLocale, QSettings
 
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
+DEFAULT_POLYGON_AREA_TOLERANCE = 0.1 # square meters
 ERROR_LAYER_GROUP = "Validation errors"
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
 PLUGIN_DIR = os.path.dirname(os.path.dirname(__file__))
