@@ -91,7 +91,11 @@ class DialogQuality(QDialog, DIALOG_UI):
                 'rules': [{
                     'id': 'check_overlaps_in_plots',
                     'text': QCoreApplication.translate("DialogQuality", "Plots should not overlap")
-                }]
+                },{
+                        'id': 'check_plot_covered_boundary',
+                        'text': QCoreApplication.translate("DialogQuality", "Plot must be covered by boundary")
+                    }
+                ]
             }
 
         self.load_items()
@@ -149,6 +153,9 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_dangles_in_boundaries(self._db)
                 elif id == 'check_overlaps_in_plots':
                     self.quality.check_overlapping_polygons(self._db, PLOT_TABLE)
+                elif id == 'check_plot_covered_boundary':
+                    self.quality.check_plot_covered_by_boundary(self._db)
+
 
             iterator += 1
 
