@@ -33,7 +33,7 @@ from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
 import processing
 
 from ..config.table_mapping_config import ID_FIELD
-from ..config.general_config import PLUGIN_NAME
+from ..config.general_config import PLUGIN_NAME, DEFAULT_POLYGON_AREA_TOLERANCE
 
 class GeometryUtils(QObject):
 
@@ -246,43 +246,45 @@ class GeometryUtils(QObject):
         """
         Obtains overlapping polygons from a single layer
         :param polygon_layer: vector layer with geometry type polygon
-        :return: List of lists with pairs of unique overlapping polygons' ids,
+        :return: List of lists with pairs of overlapping polygons' ids,
         e.g., [[1, 2], [1, 3]]
         """
         list_overlapping_polygons = list()
         if type(polygon_layer) != QgsVectorLayer or \
-           QgsWkbTypes.PolygonGeometry != polygon_layer.geometryType() or \
-           polygon_layer.featureCount() == 0:
+            QgsWkbTypes.PolygonGeometry != polygon_layer.geometryType() or \
+            polygon_layer.featureCount() == 0:
             return list_overlapping_polygons
 
-        features = [i for i in polygon_layer.getFeatures()]
-        features_1 = features_2 = features
+        index = QgsSpatialIndex(polygon_layer)
 
-        for f1 in features_1[:-1]:
-            for f2 in features_2[1:]:
-                isOverlap = f1.geometry().overlaps(f2.geometry())
-                if isOverlap == True:
-                    list_overlapping_polygons.append([f1.id(),f2.id()])
-            del features_2[0] # move the list
+        for feature in polygon_layer.getFeatures():
+            bbox = feature.geometry().boundingBox()
+            bbox.scale(1.001)
+            candidates_ids = index.intersects(bbox)
+            candidates_features = polygon_layer.getFeatures(candidates_ids)
+
+            for candidate_feature in candidates_features:
+                is_overlap = feature.geometry().overlaps(candidate_feature.geometry())
+                if is_overlap == True:
+                    overlapping_polygons = sorted([feature.id(), candidate_feature.id()])
+                    if overlapping_polygons not in list_overlapping_polygons:
+                        list_overlapping_polygons.append(overlapping_polygons)
 
         return list_overlapping_polygons
 
     def get_intersection_polygons(self, polygon_layer, polygon_id, overlapping_id):
-        feature_polygon = [feature for feature in polygon_layer.getFeatures() if feature.id() == polygon_id][0]
-        feature_overlap = [feature for feature in polygon_layer.getFeatures() if feature.id() == overlapping_id][0]
+        feature_polygon = polygon_layer.getFeature(polygon_id)
+        feature_overlap = polygon_layer.getFeature(overlapping_id)
 
         listGeoms = list()
         intersection = feature_polygon.geometry().intersection(feature_overlap.geometry())
 
-        if intersection.wkbType() == QgsWkbTypes.Polygon:
-            listGeoms.append(intersection)
-        elif intersection.wkbType() == QgsWkbTypes.MultiPolygon:
-            listGeoms.append(intersection)
+        if intersection.type() == QgsWkbTypes.PolygonGeometry:
+            if intersection.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
+                listGeoms.append(intersection)
         elif intersection.wkbType() == QgsWkbTypes.GeometryCollection:
-            for polygonCollection in intersection.asGeometryCollection():
-                if QgsWkbTypes.PolygonGeometry == polygonCollection.type():
-                    listGeoms.append(polygonCollection)
-                elif QgsWkbTypes.MultiPolygon == polygonCollection.type():
-                    listGeoms.append(polygonCollection)
-
-        return QgsGeometry.collectGeometry(listGeoms)
+            for part in intersection.asGeometryCollection():
+                if QgsWkbTypes.PolygonGeometry == part.type():
+                    if part.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
+                        listGeoms.append(part)
+        return QgsGeometry.collectGeometry(listGeoms) if len(listGeoms) > 0 else None

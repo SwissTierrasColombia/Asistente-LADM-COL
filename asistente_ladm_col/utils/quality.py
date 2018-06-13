@@ -147,14 +147,16 @@ class QualityUtils(QObject):
             overlapping_id_field = overlapping_item[1]
             polygon_intersection = self.qgis_utils.geometry.get_intersection_polygons(polygon_layer, polygon_id_field, overlapping_id_field)
 
-            new_feature = QgsVectorLayerUtils().createFeature(
-                error_layer,
-                polygon_intersection,
-                {0: t_ids[polygon_id_field],
-                 1: t_ids[overlapping_id_field],
-                 2: len(polygon_intersection.asMultiPolygon()) if polygon_intersection.isMultipart() else 1})
+            if polygon_intersection != None:
 
-            features.append(new_feature)
+                new_feature = QgsVectorLayerUtils().createFeature(
+                    error_layer,
+                    polygon_intersection,
+                    {0: t_ids[polygon_id_field],
+                     1: t_ids[overlapping_id_field],
+                     2: len(polygon_intersection.asMultiPolygon()) if polygon_intersection.isMultipart() else 1})
+
+                features.append(new_feature)
 
         error_layer.dataProvider().addFeatures(features)
 

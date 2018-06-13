@@ -185,15 +185,31 @@ class TesQualityValidations(unittest.TestCase):
             polygons_overlap_layer = processing.run("native:multiparttosingleparts",
                                            {'INPUT': polygons_overlap_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
-        expected_overlaps = [[11, 44], [11, 47], [12, 44], [12, 45], [12, 57], [48, 49], [53, 55]]
+        expected_overlaps = [[11, 44], [11, 47], [12, 44], [12, 45], [12, 57], [48, 49], [53, 55], [61, 62]]
         flat_expected_overlaps = list(set([id for items in expected_overlaps for id in items]))  # Build a flat list of uniques ids
 
         overlapping = self.qgis_utils.geometry.get_overlapping_polygons(polygons_overlap_layer)
         flat_overlapping = list(set([id for items in overlapping for id in items]))
 
         # checks
-        self.assertEqual(len(flat_overlapping), 10)
+        self.assertEqual(len(flat_overlapping), 12)
         self.assertEqual(flat_expected_overlaps.sort(), flat_overlapping.sort())
+
+    def test_intersection_polygons_tolerance(self):
+        print('\nINFO: Validating intersection in polygons (plots)...')
+
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='topology_polygons_overlap')
+        polygons_intersection_layer = QgsVectorLayer(uri, 'test_polygons_intersection_tolerance', 'ogr')
+
+        [61, 62]
+
+        polygon_id = 61
+        overlapping_id = 62
+        polygon_intersection = self.qgis_utils.geometry.get_intersection_polygons(polygons_intersection_layer,
+                                                                                  polygon_id,
+                                                                                  overlapping_id)
+        self.assertEqual(polygon_intersection, None)
 
     def test_get_missing_boundary_points_in_boundaries(self):
         print('\nINFO: Validating missing boundary points in boundaries...')
