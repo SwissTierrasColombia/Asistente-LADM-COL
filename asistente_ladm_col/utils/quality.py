@@ -128,7 +128,8 @@ class QualityUtils(QObject):
                                      QgsField("count_parts", QVariant.Int)])
         error_layer.updateFields()
 
-        if (QgsWkbTypes.MultiPolygon == polygon_layer.wkbType()):
+        if QgsWkbTypes.isMultiType(polygon_layer.wkbType()) and \
+            polygon_layer.geometryType() == QgsWkbTypes.PolygonGeometry:
             polygon_layer = processing.run("native:multiparttosingleparts",
                                            {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
@@ -138,7 +139,7 @@ class QualityUtils(QObject):
         flat_overlapping = list(set(flat_overlapping))  # unique values
 
         if type(polygon_layer) == QgsVectorLayer: # A string might come from processing for empty layers
-            t_ids = {f.id():f[ID_FIELD] for f in polygon_layer.getFeatures() if f.id() in flat_overlapping}
+            t_ids = {f.id(): f[ID_FIELD] for f in polygon_layer.getFeatures() if f.id() in flat_overlapping}
 
         features = []
 
@@ -147,8 +148,7 @@ class QualityUtils(QObject):
             overlapping_id_field = overlapping_item[1]
             polygon_intersection = self.qgis_utils.geometry.get_intersection_polygons(polygon_layer, polygon_id_field, overlapping_id_field)
 
-            if polygon_intersection != None:
-
+            if polygon_intersection is not None:
                 new_feature = QgsVectorLayerUtils().createFeature(
                     error_layer,
                     polygon_intersection,

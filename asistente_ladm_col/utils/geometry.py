@@ -282,9 +282,12 @@ class GeometryUtils(QObject):
         if intersection.type() == QgsWkbTypes.PolygonGeometry:
             if intersection.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
                 listGeoms.append(intersection)
-        elif intersection.wkbType() == QgsWkbTypes.GeometryCollection:
+        elif intersection.wkbType() in [QgsWkbTypes.GeometryCollection,
+            QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
+            QgsWkbTypes.GeometryCollectionZM]:
             for part in intersection.asGeometryCollection():
                 if QgsWkbTypes.PolygonGeometry == part.type():
                     if part.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
                         listGeoms.append(part)
+
         return QgsGeometry.collectGeometry(listGeoms) if len(listGeoms) > 0 else None

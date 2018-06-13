@@ -181,7 +181,8 @@ class TesQualityValidations(unittest.TestCase):
         uri = gpkg_path + '|layername={layername}'.format(layername='topology_polygons_overlap')
         polygons_overlap_layer = QgsVectorLayer(uri, 'test_polygons_overlap', 'ogr')
 
-        if QgsWkbTypes.MultiPolygon == polygons_overlap_layer.wkbType():
+        if QgsWkbTypes.isMultiType(polygons_overlap_layer.wkbType()) and \
+            polygons_overlap_layer.geometryType() == QgsWkbTypes.PolygonGeometry:
             polygons_overlap_layer = processing.run("native:multiparttosingleparts",
                                            {'INPUT': polygons_overlap_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
