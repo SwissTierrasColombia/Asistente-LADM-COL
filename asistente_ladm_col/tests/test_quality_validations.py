@@ -12,6 +12,8 @@ from asistente_ladm_col.utils.quality import QualityUtils
 
 from processing.core.Processing import Processing
 from qgis.analysis import QgsNativeAlgorithms
+from qgis.core import QgsWkbTypes
+import processing
 
 import_projectgenerator()
 
@@ -199,8 +201,6 @@ class TesQualityValidations(unittest.TestCase):
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='topology_polygons_overlap')
         polygons_intersection_layer = QgsVectorLayer(uri, 'test_polygons_intersection_tolerance', 'ogr')
-
-        [61, 62]
 
         polygon_id = 61
         overlapping_id = 62

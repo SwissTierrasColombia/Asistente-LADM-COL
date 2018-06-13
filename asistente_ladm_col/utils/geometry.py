@@ -26,13 +26,14 @@ from qgis.core import (
     QgsSpatialIndex,
     QgsVectorLayerUtils,
     QgsWkbTypes,
-    QgsProcessingFeedback
+    QgsProcessingFeedback,
+    QgsVectorLayer
 )
 from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
 import processing
 
 from ..config.table_mapping_config import ID_FIELD
-from ..config.general_config import PLUGIN_NAME
+from ..config.general_config import PLUGIN_NAME, DEFAULT_POLYGON_AREA_TOLERANCE
 
 class GeometryUtils(QObject):
 
