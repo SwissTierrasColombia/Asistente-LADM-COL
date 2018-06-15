@@ -71,7 +71,7 @@ TEST_SERVER = "www.google.com"
 INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
 
 # Endpoint for testing the Source Service (avoid last slash)
-DEFAULT_ENDPOINT_SOURCE_SERVICE = 'http://filemanager.appsglobals.com:8888/filemanager' #"https://ide.proadmintierra.info/fm"
+DEFAULT_ENDPOINT_SOURCE_SERVICE = 'http://portal.proadmintierra.info:18888/filemanager'
 SOURCE_SERVICE_UPLOAD_SUFFIX = 'v1/file'
 SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
 
