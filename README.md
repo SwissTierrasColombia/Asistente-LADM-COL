@@ -17,10 +17,12 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([0.3.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.3.0)) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.2.3 (o superior) y permite:
+La versión actual ([0.4.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.4.0)) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.2.3 (o superior) y permite:
 
  - Capturar datos para el modelo LADM_COL v2.2.1.
  - Preprocesar puntos: Medición controlada.
+   - Agrupamiento de puntos por cercanía.
+   - Cálculo de posición promediada para puntos del mismo grupo.
  - Agregar puntos a las capas `Punto Lindero`, `Punto Levantamiento` y `Punto Control`:
    - Desde archivo CSV con la estructura requerida.
      - Validar para evitar insertar puntos superpuestos.
@@ -53,6 +55,10 @@ La versión actual ([0.3.0](https://github.com/AgenciaImplementacion/Asistente-L
  - Crear `Fuente Espacial` y `Fuente Administrativa`:
    - Usando formularios preconfigurados.
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
+ - Crear `Archivos Fuente`:
+   - Asociar fuentes a archivos fuente.
+   - Almacenar archivos fuente en servidor en el momento de guardar cambios o
+     posteriormente, de forma masiva.
  - Crear `Derechos`, `Restricciones` y `Responsabilidades` (`RRR`):
    - Usando formularios preconfigurados (relacionando el nuevo objeto a `Fuentes Administrativas` previamente seleccionadas).
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.

@@ -14,10 +14,12 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([0.3.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.3.0)) of the LADM_COL Assistant depends on [Project Generator](https://github.com/opengisch/projectgenerator/) plugin v3.2.3 (or higher) and allows users to:
+The current version ([0.4.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.4.0)) of the LADM_COL Assistant depends on [Project Generator](https://github.com/opengisch/projectgenerator/) plugin v3.2.3 (or higher) and allows users to:
 
  - Capture data for the LADM_COL v2.2.1 model.
  - Preprocess points: Controlled Measurement.
+   - Group points by nearness.
+   - Average point position from points of the same group.
  - Add points to the `Boundary Point`, `Survey Point` and `Control Point` layers:
    - From CSV files.
      - Validate and avoid insertion of overlapping points.
@@ -50,6 +52,9 @@ The current version ([0.3.0](https://github.com/AgenciaImplementacion/Asistente-
  - Create `Spatial Sources` and `Administrative Sources`:
    - Using preconfigured forms.
    - From another table with any structure, setting a field mapping.
+ - Create `Source Files`:
+   - Associate sources to source files.
+   - Upload source files to a server at saving-edits time or later, in batch mode.
  - Create `Rights`, `Restrictions` and `Responsibilities`:
    - Using preconfigured forms (linking the new object to selected `Administrative Sources`).
    - From another table with any structure, setting a field mapping.

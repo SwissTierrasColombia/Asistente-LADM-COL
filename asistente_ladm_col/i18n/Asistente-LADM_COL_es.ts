@@ -1317,70 +1317,70 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>QGISUtils</name>
     <message>
-        <location filename="../utils/qgis_utils.py" line="547"/>
+        <location filename="../utils/qgis_utils.py" line="554"/>
         <source>The point layer &apos;{}&apos; couldn&apos;t be found in the DB... {}</source>
         <translation>No se encontró la capa de puntos &apos;{}&apos; en la base de datos... {}</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="797"/>
-        <location filename="../utils/qgis_utils.py" line="840"/>
+        <location filename="../utils/qgis_utils.py" line="804"/>
+        <location filename="../utils/qgis_utils.py" line="847"/>
         <source>First load the layer {} into QGIS!</source>
         <translation>¡Primero carga la capa {} a QGIS!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="596"/>
-        <location filename="../utils/qgis_utils.py" line="667"/>
-        <location filename="../utils/qgis_utils.py" line="799"/>
-        <location filename="../utils/qgis_utils.py" line="842"/>
+        <location filename="../utils/qgis_utils.py" line="603"/>
+        <location filename="../utils/qgis_utils.py" line="674"/>
+        <location filename="../utils/qgis_utils.py" line="806"/>
+        <location filename="../utils/qgis_utils.py" line="849"/>
         <source>Load layer {} now</source>
         <translation>Cargar la capa {} ahora</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="141"/>
+        <location filename="../utils/qgis_utils.py" line="143"/>
         <source>Extracting relations and domains from the database... This is done only once per session!</source>
         <translation>Extrayendo relaciones y dominios de la base de datos... ¡Esto se realiza solo una vez por sesión!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="830"/>
+        <location filename="../utils/qgis_utils.py" line="837"/>
         <source>{} feature(s) was/were exploded generating {} feature(s).</source>
         <translation>{} objeto(s) espacial(es) fue(ron) partido(s) generando {} objeto(s) espacial(es).</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="849"/>
+        <location filename="../utils/qgis_utils.py" line="856"/>
         <source>First select at least 2 boundaries!</source>
         <translation>¡Primero selecciona por lo menos 2 linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="871"/>
+        <location filename="../utils/qgis_utils.py" line="878"/>
         <source>{} features were merged!</source>
         <translation>¡Se unieron {} objetos espaciales!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="883"/>
-        <location filename="../utils/qgis_utils.py" line="896"/>
-        <location filename="../utils/qgis_utils.py" line="924"/>
+        <location filename="../utils/qgis_utils.py" line="890"/>
+        <location filename="../utils/qgis_utils.py" line="903"/>
+        <location filename="../utils/qgis_utils.py" line="931"/>
         <source>Layer {} not found in the DB! {}</source>
         <translation>¡No se encontró la capa {} en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="787"/>
+        <location filename="../utils/qgis_utils.py" line="794"/>
         <source>Model ETL-model was not found and cannot be opened!</source>
         <translation>¡No se encontró el modelo &apos;ETL-model&apos; y por ello no puede ser abierto!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="594"/>
+        <location filename="../utils/qgis_utils.py" line="601"/>
         <source>First load the layer {} into QGIS and select at least one boundary!</source>
         <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un lindero!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="715"/>
-        <location filename="../utils/qgis_utils.py" line="741"/>
+        <location filename="../utils/qgis_utils.py" line="722"/>
+        <location filename="../utils/qgis_utils.py" line="748"/>
         <source>{} out of {} records were saved into &apos;{}&apos;! {} out of {} records already existed in the database.</source>
         <translation>¡{} de {} registros fueron guardados en &apos;{}&apos;! {} de {} registros ya existían en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="601"/>
-        <location filename="../utils/qgis_utils.py" line="808"/>
+        <location filename="../utils/qgis_utils.py" line="608"/>
+        <location filename="../utils/qgis_utils.py" line="815"/>
         <source>First select at least one boundary!</source>
         <translation>¡Primero selecciona por lo menos un lindero!</translation>
     </message>
@@ -1389,81 +1389,81 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">Extrayendo datos de la base de datos... ¡Esto se realiza solamente una vez por cada sesión de QGIS!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="225"/>
+        <location filename="../utils/qgis_utils.py" line="227"/>
         <source>Loading LADM_COL layers to QGIS and configuring their relations and forms...</source>
         <translation>Cargando capas LADM_COL a QGIS y configurando sus formularios y relaciones...</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="508"/>
+        <location filename="../utils/qgis_utils.py" line="515"/>
         <source>No CSV file given or file doesn&apos;t exist.</source>
         <translation>No se especificó un archivo CSV o el archivo no existe.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="524"/>
+        <location filename="../utils/qgis_utils.py" line="531"/>
         <source>CSV layer not valid!</source>
         <translation>¡La capa CSV no es válida!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="536"/>
+        <location filename="../utils/qgis_utils.py" line="543"/>
         <source>There are overlapping points, we cannot import them into the DB! See selected points.</source>
         <translation>Hay puntos superpuestos, ¡no podemos importarlos a la base de datos! Revisa los puntos seleccionados en el mapa.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="572"/>
+        <location filename="../utils/qgis_utils.py" line="579"/>
         <source>{} points were added succesfully to &apos;{}&apos;.</source>
         <translation>Se agregaron {} puntos a &apos;{}&apos; satisfactoriamente.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="587"/>
-        <location filename="../utils/qgis_utils.py" line="608"/>
-        <location filename="../utils/qgis_utils.py" line="658"/>
-        <location filename="../utils/qgis_utils.py" line="679"/>
+        <location filename="../utils/qgis_utils.py" line="594"/>
+        <location filename="../utils/qgis_utils.py" line="615"/>
+        <location filename="../utils/qgis_utils.py" line="665"/>
         <location filename="../utils/qgis_utils.py" line="686"/>
+        <location filename="../utils/qgis_utils.py" line="693"/>
         <source>Table {} not found in the DB! {}</source>
         <translation>¡No se encontró la tabla {} en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="634"/>
+        <location filename="../utils/qgis_utils.py" line="641"/>
         <source>{} out of {} records were saved into {}! {} out of {} records already existed in the database.</source>
         <translation>¡{} de {} registros fueron guardados en {}! {} de {} registros ya existían en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="645"/>
+        <location filename="../utils/qgis_utils.py" line="652"/>
         <source>No pairs id_boundary-id_boundary_point found.</source>
         <translation>No se encontraron parejas id_lindero-id_punto_lindero.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="665"/>
+        <location filename="../utils/qgis_utils.py" line="672"/>
         <source>First load the layer {} into QGIS and select at least one plot!</source>
         <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un terreno!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="672"/>
+        <location filename="../utils/qgis_utils.py" line="679"/>
         <source>First select at least one plot!</source>
         <translation>¡Primero selecciona por lo menos un terreno!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="889"/>
+        <location filename="../utils/qgis_utils.py" line="896"/>
         <source>First select boundaries!</source>
         <translation>¡Primero selecciona linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="912"/>
+        <location filename="../utils/qgis_utils.py" line="919"/>
         <source>{} new plot(s) has(have) been created!</source>
         <translation>¡{} nuevo(s) terreno(s) ha(n) sido creado(s)!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="916"/>
+        <location filename="../utils/qgis_utils.py" line="923"/>
         <source>No plot could be created. Make sure selected boundaries are closed!</source>
         <translation>No se pudieron crear terrenos. ¡Asegúrate que los linderos seleccionados formen polígonos cerrados!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="972"/>
+        <location filename="../utils/qgis_utils.py" line="979"/>
         <source>The local help could not be found in &apos;{}&apos; and cannot be open.</source>
         <translation>No se encontró la ayuda local en &apos;{}&apos; y por lo tanto no se pudo abrir.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="978"/>
+        <location filename="../utils/qgis_utils.py" line="985"/>
         <source>Is your computer connected to Internet? If so, go to &lt;a href=&quot;{}&quot;&gt;online help&lt;/a&gt;.</source>
         <translation>¿Está tu computador conectado a Internet? Si es así, ve a la&lt;a href=&quot;{}&quot;&gt;ayuda en línea&lt;/a&gt;.</translation>
     </message>
