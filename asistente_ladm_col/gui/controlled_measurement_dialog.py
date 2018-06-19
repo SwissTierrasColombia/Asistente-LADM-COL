@@ -29,6 +29,7 @@ from qgis.core import (
     QgsVectorLayerUtils,
     QgsMapLayerProxyModel,
     QgsFieldProxyModel,
+    QgsFeatureRequest
 )
 from qgis.PyQt.QtCore import QVariant, QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog
@@ -105,10 +106,6 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         for group_id in group_ids:
             feature = [f for f in groups.getFeatures("\"{}\"={}".format(GROUP_ID, group_id))]
             try:
-                trusty = feature[0].attributes()[groups.fields().indexFromName("trusty")]
-            except:
-                trusty = 'False'
-            try:
                 fields_values = dict(zip(range(0, len(feature[0].attributes())), feature[0].attributes()))
             except:
                 continue
@@ -173,36 +170,45 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
 
     def time_validate(self, input_features):
         groups_num = input_features.uniqueValues(input_features.fields().indexFromName("belongs_to_group"))
-
+        idx = input_features.fields().indexFromName("timestamp")  # Cambiar por el campo de tiempo cuando este se incluya
         new_layer = self.copy_attribs(input_features)
         time_layer = self.copy_attribs(input_features)
         time2_layer = self.copy_attribs(input_features)
         for i in groups_num:
             if i is None:
-                new_layer.startEditing()
+                #new_layer.startEditing()
                 features = input_features.getFeatures("\"{}\" IS NULL".format("belongs_to_group"))
                 new_layer.dataProvider().addFeatures(features)
                 [new_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "False") for feat in
                  new_layer.getFeatures()]
                 new_layer.commitChanges()
             else:
-                features = input_features.getFeatures("\"{}\"={}".format("belongs_to_group", i))
-                fg = len([f for f in features])
+                features, not_features = self.time_filter(input_features, input_features.getFeatures("\"{}\"={}".format("belongs_to_group", i)), idx)
+                features = [f for f in features]
+                not_features = [f for f in not_features]
+                fg = len(features)
                 if fg > 1:
-                    # features = time_filter(features)
-                    features = input_features.getFeatures("\"{}\"={}".format("belongs_to_group", i))
                     time_layer.startEditing()
                     time_layer.dataProvider().addFeatures(features)
                     [time_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "True") for feat in
                      time_layer.getFeatures()]
+                    #[time_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("belongs_to_group"), fg) for
+                    # feat in time_layer.getFeatures()]
                     time_layer.updateFields()
                 else:
-                    features = input_features.getFeatures("\"{}\"={}".format("belongs_to_group", i))
                     time2_layer.startEditing()
                     time2_layer.dataProvider().addFeatures(features)
                     [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "False") for feat in
                      time2_layer.getFeatures()]
+                    [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("belongs_to_group"), None) for
+                     feat in time2_layer.getFeatures()]
                     time2_layer.updateFields()
+                time2_layer.dataProvider().addFeatures(not_features)
+                [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "False") for feat in
+                 time2_layer.getFeatures()]
+                [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("belongs_to_group"), None) for feat in
+                 time2_layer.getFeatures()]
+                time2_layer.updateFields()
                 time_layer.commitChanges()
                 time2_layer.commitChanges()
 
@@ -220,6 +226,28 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         destLYR.addAttribute(QgsField("trusty", QVariant.String))
         destLYR.updateFields()
         return destLYR
+
+    def time_filter(self, layer, features, idx):
+        time_lap = 30  # cambiar por el rango de tiempo cuando este se incluya en el dialog.
+        dates = {}
+        for feat in features:
+            attrs = feat.attributes()
+            dates[feat.id()] = attrs[idx]
+        ids = {}
+        pivot = 0
+        ids[list(dates.keys())[list(dates.values()).index(sorted(dates.values())[0])]] = sorted(dates.values())[0]
+        for i in range(0, len(sorted(dates.values()))):
+            if abs(sorted(dates.values())[pivot].secsTo(sorted(dates.values())[i]) / 60) > time_lap:
+                ids[list(dates.keys())[list(dates.values()).index(sorted(dates.values())[i])]] = \
+                sorted(dates.values())[i]
+                pivot = i
+            else:
+                pass
+        features = layer.getFeatures(QgsFeatureRequest().setFilterFids(sorted(ids.keys())))
+        no_features = layer.getFeatures(
+            QgsFeatureRequest().setFilterFids([i for i in sorted(dates.keys()) if i not in sorted(ids.keys())]))
+        return features, no_features
+
 
     def show_help(self):
         self.qgis_utils.show_help("controlled_measurement")
