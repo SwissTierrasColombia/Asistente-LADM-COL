@@ -13,6 +13,7 @@ Licencia: [GNU General Public License v3.0](https://github.com/AgenciaImplementa
 
 Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
 
+ :arrow_right: Se recomienda utilizar la versión de QGIS más reciente, disponible en https://qgis.org/downloads/weekly/
 
 
 ## Funcionalidades
