@@ -12,6 +12,9 @@ License: [GNU General Public License v3.0](https://github.com/AgenciaImplementac
 A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE SAS](http://www.incige.com/))
 
 
+:arrow_right: We suggest you to use a very recent QGIS version, available at https://qgis.org/downloads/weekly/
+
+
 ## Functionalities
 
 The current version ([0.4.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.4.0)) of the LADM_COL Assistant depends on [Project Generator](https://github.com/opengisch/projectgenerator/) plugin v3.2.3 (or higher) and allows users to:
