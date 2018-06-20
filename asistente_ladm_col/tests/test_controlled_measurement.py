@@ -85,7 +85,8 @@ class TestExport(unittest.TestCase):
             features, no_features = ControlledMeasurementDialog.time_filter(ControlledMeasurementDialog,
                                                                             res['native:mergevectorlayers_1:output'],
                                                 res['native:mergevectorlayers_1:output'].getFeatures("\"{}\"={}".format("belongs_to_group", i)),
-                                                idx=res['native:mergevectorlayers_1:output'].fields().indexFromName("timestamp"))
+                                                idx=res['native:mergevectorlayers_1:output'].fields().indexFromName("timestamp"),
+                                                                            time_tolerance=30)
             self.assertEqual(len([feat for feat in features]), feat[i])
             self.assertEqual(len([feat for feat in no_features]), no_feat[i])
 
@@ -99,7 +100,8 @@ class TestExport(unittest.TestCase):
             features, no_features = ControlledMeasurementDialog.time_filter(ControlledMeasurementDialog,
                                                                             res['native:mergevectorlayers_1:output'],
                                                 res['native:mergevectorlayers_1:output'].getFeatures("\"{}\"={}".format("belongs_to_group", i)),
-                                                idx=res['native:mergevectorlayers_1:output'].fields().indexFromName("timestamp"))
+                                                idx=res['native:mergevectorlayers_1:output'].fields().indexFromName("timestamp"),
+                                                                            time_tolerance=30)
             self.assertEqual(len([feat for feat in features]), feat[i])
             self.assertEqual(len([feat for feat in no_features]), no_feat[i])
 
