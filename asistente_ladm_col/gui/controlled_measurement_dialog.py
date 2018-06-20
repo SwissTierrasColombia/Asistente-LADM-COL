@@ -54,12 +54,17 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         self.buttonBox.helpRequested.connect(self.show_help)
 
         self.mMapLayerComboBox.layerChanged.connect(self.mFieldComboBox.setLayer)
+        self.mMapLayerComboBox.layerChanged.connect(self.tFieldComboBox.setLayer)
         self.mFieldComboBox.setLayer(self.mMapLayerComboBox.currentLayer())
+
+        self.tFieldComboBox.setLayer(self.mMapLayerComboBox.currentLayer())
 
     def accept_dialog(self):
         input_layer = self.mMapLayerComboBox.currentLayer()
         tolerance = self.dsb_tolerance.value()
         definition_field = self.mFieldComboBox.currentField()
+        time_tolerance = self.time_tolerance.value()
+        time_field = self.tFieldComboBox.currentField()
 
         if input_layer is None:
             self.qgis_utils.message_emitted.emit(
@@ -82,7 +87,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             return
 
         # Create memory layer with average points
-        groups = self.time_validate(res['native:mergevectorlayers_1:output'])
+        groups = self.time_validate(res['native:mergevectorlayers_1:output'], time_tolerance, time_field)
         if not(type(groups) == QgsVectorLayer and groups.isValid()):
             return
 
@@ -104,7 +109,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         new_features = []
 
         for group_id in group_ids:
-            feature = [f for f in groups.getFeatures("\"{}\"={}".format(GROUP_ID, group_id))]
+            feature = [f for f in groups.getFeatures("\"{}\"={} AND \"{}\" = 'True'".format(GROUP_ID, group_id, "trusty"))]
             try:
                 fields_values = dict(zip(range(0, len(feature[0].attributes())), feature[0].attributes()))
             except:
@@ -168,9 +173,9 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             msg = "Model Group_Points was not found and cannot be opened!"
             return res, msg
 
-    def time_validate(self, input_features):
+    def time_validate(self, input_features, time_tolerance, time_field):
         groups_num = input_features.uniqueValues(input_features.fields().indexFromName("belongs_to_group"))
-        idx = input_features.fields().indexFromName("timestamp")  # Cambiar por el campo de tiempo cuando este se incluya
+        idx = input_features.fields().indexFromName(time_field)  # Cambiar por el campo de tiempo cuando este se incluya
         new_layer = self.copy_attribs(input_features)
         time_layer = self.copy_attribs(input_features)
         time2_layer = self.copy_attribs(input_features)
@@ -183,7 +188,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
                  new_layer.getFeatures()]
                 new_layer.commitChanges()
             else:
-                features, not_features = self.time_filter(input_features, input_features.getFeatures("\"{}\"={}".format("belongs_to_group", i)), idx)
+                features, not_features = self.time_filter(input_features, input_features.getFeatures("\"{}\"={}".format("belongs_to_group", i)), idx, time_tolerance)
                 features = [f for f in features]
                 not_features = [f for f in not_features]
                 fg = len(features)
@@ -192,6 +197,10 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
                     time_layer.dataProvider().addFeatures(features)
                     [time_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "True") for feat in
                      time_layer.getFeatures()]
+                    time2_layer.startEditing()
+                    time2_layer.dataProvider().addFeatures(not_features)
+                    [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "False") for feat in
+                     time2_layer.getFeatures()]
                     #[time_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("belongs_to_group"), fg) for
                     # feat in time_layer.getFeatures()]
                     time_layer.updateFields()
@@ -202,10 +211,10 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
                      time2_layer.getFeatures()]
                     [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("belongs_to_group"), None) for
                      feat in time2_layer.getFeatures()]
+                    time2_layer.dataProvider().addFeatures(not_features)
+                    [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "False") for feat in
+                     time2_layer.getFeatures()]
                     time2_layer.updateFields()
-                time2_layer.dataProvider().addFeatures(not_features)
-                [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "False") for feat in
-                 time2_layer.getFeatures()]
                 [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("belongs_to_group"), None) for feat in
                  time2_layer.getFeatures()]
                 time2_layer.updateFields()
@@ -227,8 +236,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         destLYR.updateFields()
         return destLYR
 
-    def time_filter(self, layer, features, idx):
-        time_lap = 30  # cambiar por el rango de tiempo cuando este se incluya en el dialog.
+    def time_filter(self, layer, features, idx, time_tolerance):
         dates = {}
         for feat in features:
             attrs = feat.attributes()
@@ -237,7 +245,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         pivot = 0
         ids[list(dates.keys())[list(dates.values()).index(sorted(dates.values())[0])]] = sorted(dates.values())[0]
         for i in range(0, len(sorted(dates.values()))):
-            if abs(sorted(dates.values())[pivot].secsTo(sorted(dates.values())[i]) / 60) > time_lap:
+            if abs(sorted(dates.values())[pivot].secsTo(sorted(dates.values())[i]) / 60) > time_tolerance:
                 ids[list(dates.keys())[list(dates.values()).index(sorted(dates.values())[i])]] = \
                 sorted(dates.values())[i]
                 pivot = i
