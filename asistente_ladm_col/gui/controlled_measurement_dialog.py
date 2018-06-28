@@ -111,7 +111,9 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         for group_id in group_ids:
             feature = [f for f in groups.getFeatures("\"{}\"={} AND \"{}\" = 'True'".format(GROUP_ID, group_id, "trusty"))]
             try:
-                fields_values = dict(zip(range(0, len(feature[0].attributes())), feature[0].attributes()))
+                new_feature = self.concat_point_name(feature, groups) ####
+                fields_values = dict(zip(range(0, len(feature[0].attributes())), new_feature)) #implementar función para fusionar los valores de datos.
+                print(fields_values)
             except:
                 continue
             x_mean = 0
@@ -255,6 +257,19 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         no_features = layer.getFeatures(
             QgsFeatureRequest().setFilterFids([i for i in sorted(dates.keys()) if i not in sorted(ids.keys())]))
         return features, no_features
+
+    def concat_point_name(self, feature, input_layer):
+        final_features = feature[0].attributes()
+        index = input_layer.fields().indexFromName('ID de punt') #Cambiar Por Field con nombre de punto.
+        for i in range(1, len(feature)):
+            if feature[i].attributes()[index] != feature[0].attributes()[index]:
+                if type(feature[i].attributes()[index]) == str:
+                    final_features[index] = ";".join([final_features[index], feature[i].attributes()[index]])
+                else:
+                    final_features.insert(index, feature[0].attributes()[index])
+            else:
+                final_features[i] = feature[0].attributes()[index]
+        return final_features
 
 
     def show_help(self):
