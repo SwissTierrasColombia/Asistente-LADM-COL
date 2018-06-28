@@ -22,7 +22,7 @@ import glob
 from functools import partial, wraps
 
 import qgis.utils
-from qgis.core import Qgis, QgsApplication, QgsProcessingModelAlgorithm
+from qgis.core import Qgis, QgsApplication, QgsProcessingModelAlgorithm, QgsMessageLog
 from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
                               QLocale, QSettings)
 from qgis.PyQt.QtGui import QIcon
@@ -58,6 +58,7 @@ from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWiz
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
 from .gui.dialog_load_layers import DialogLoadLayers
+from .gui.dockwidget_queries import DockWidgetQueries
 from .gui.dialog_quality import DialogQuality
 from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
@@ -153,7 +154,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.addMenu(self._cadastre_menu)
         self._menu.addSeparator()
         self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"), self.iface.mainWindow())
-        self._menu.addAction(self._load_layers_action)
+        self._queries_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Show Queries"), self.iface.mainWindow())
+        self._menu.addActions([self._load_layers_action,
+                              self._queries_action])
         self._menu.addSeparator()
         self._settings_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
         self._help_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"), self.iface.mainWindow())
@@ -180,6 +183,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._upload_source_files_cadastre_action.triggered.connect(self.upload_source_files)
         self._quality_cadastre_action.triggered.connect(self.show_dlg_quality)
         self._load_layers_action.triggered.connect(self.load_layers_from_project_generator)
+        self._queries_action.triggered.connect(self.show_queries)
         self._settings_action.triggered.connect(self.show_settings)
         self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
@@ -540,3 +544,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.translator = QTranslator()
         self.translator.load(qgis_locale, 'Asistente-LADM_COL', '_', locale_path)
         QCoreApplication.installTranslator(self.translator)
+
+    def show_queries(self):
+        from PyQt5.QtWidgets import QDockWidget
+        self.dwq = DockWidgetQueries(self.iface)
+        self.wdg = QDockWidget()
+        self.wdg.setWindowTitle('MyDock')
+        QgsMessageLog.logMessage('create dock widget', 'LADM')
+        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dwq)
