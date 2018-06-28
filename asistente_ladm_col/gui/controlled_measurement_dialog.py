@@ -55,9 +55,11 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
 
         self.mMapLayerComboBox.layerChanged.connect(self.mFieldComboBox.setLayer)
         self.mMapLayerComboBox.layerChanged.connect(self.tFieldComboBox.setLayer)
-        self.mFieldComboBox.setLayer(self.mMapLayerComboBox.currentLayer())
+        self.mMapLayerComboBox.layerChanged.connect(self.pnFieldComboBox.setLayer)
 
+        self.mFieldComboBox.setLayer(self.mMapLayerComboBox.currentLayer())
         self.tFieldComboBox.setLayer(self.mMapLayerComboBox.currentLayer())
+        self.pnFieldComboBox.setLayer(self.mMapLayerComboBox.currentLayer())
 
     def accept_dialog(self):
         input_layer = self.mMapLayerComboBox.currentLayer()
@@ -65,6 +67,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         definition_field = self.mFieldComboBox.currentField()
         time_tolerance = self.time_tolerance.value()
         time_field = self.tFieldComboBox.currentField()
+        point_name = self.pnFieldComboBox.currentField()
 
         if input_layer is None:
             self.qgis_utils.message_emitted.emit(
@@ -111,7 +114,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         for group_id in group_ids:
             feature = [f for f in groups.getFeatures("\"{}\"={} AND \"{}\" = 'True'".format(GROUP_ID, group_id, "trusty"))]
             try:
-                new_feature = self.concat_point_name(feature, groups) ####
+                new_feature = self.concat_point_name(feature, groups, point_name) ####
                 fields_values = dict(zip(range(0, len(feature[0].attributes())), new_feature)) #implementar función para fusionar los valores de datos.
                 print(fields_values)
             except:
@@ -258,9 +261,9 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             QgsFeatureRequest().setFilterFids([i for i in sorted(dates.keys()) if i not in sorted(ids.keys())]))
         return features, no_features
 
-    def concat_point_name(self, feature, input_layer):
+    def concat_point_name(self, feature, input_layer, point_name):
         final_features = feature[0].attributes()
-        index = input_layer.fields().indexFromName('ID de punt') #Cambiar Por Field con nombre de punto.
+        index = input_layer.fields().indexFromName(point_name) #Cambiar Por Field con nombre de punto.
         for i in range(1, len(feature)):
             if feature[i].attributes()[index] != feature[0].attributes()[index]:
                 if type(feature[i].attributes()[index]) == str:
