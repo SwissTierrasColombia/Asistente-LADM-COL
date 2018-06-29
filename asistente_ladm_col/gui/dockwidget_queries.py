@@ -27,7 +27,7 @@ from qgis.PyQt.QtWidgets import (QAction, QDialog, QTreeWidgetItem, QLineEdit,
 
 from ..utils import get_ui_class
 
-from ..resources_rc import *
+from ..data.qtmodels import STRTreeViewModel
 
 DOCKWIDGET_UI = get_ui_class('dockwidget_queries.ui')
 
@@ -37,4 +37,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.setupUi(self)
         self.iface = iface
         #self.iface.addDockWidget(DOCKWIDGET_UI)
+
+        self._adminUnitTreeModel = STRTreeViewModel()
 
