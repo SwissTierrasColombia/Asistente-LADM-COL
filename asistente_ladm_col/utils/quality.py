@@ -41,6 +41,8 @@ from ..config.general_config import (
 from ..config.table_mapping_config import (
     BOUNDARY_POINT_TABLE,
     BOUNDARY_TABLE,
+    BUILDING_TABLE,
+    SURVEY_POINT_TABLE,
     ID_FIELD
 )
 
@@ -336,6 +338,61 @@ class QualityUtils(QObject):
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "There are no missing boundary points in boundaries."), Qgis.Info)
+
+    def check_missing_survey_points_in_buildings(self, db):
+        res_layers = self.qgis_utils.get_layers(db, {
+            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None},
+            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': None}}, load=True)
+
+        survey_point_layer = res_layers[SURVEY_POINT_TABLE]
+        building_layer = res_layers[BUILDING_TABLE]
+
+        if survey_point_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(SURVEY_POINT_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        if building_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(BUILDING_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        if building_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no buildings to check 'missing survey points in buildings'."),
+                Qgis.Info)
+            return
+
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), "Missing survey points in buildings", "memory")
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField("boundary_id", QVariant.Int)])
+        error_layer.updateFields()
+
+        missing_points = self.get_missing_boundary_points_in_boundaries(survey_point_layer, building_layer)
+
+        new_features = list()
+        for key, point_list in missing_points.items():
+            for point in point_list:
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, point, {0: key})
+                new_features.append(new_feature)
+
+        data_provider.addFeatures(new_features)
+
+        if error_layer.featureCount() > 0:
+            added_layer = self.add_error_layer(error_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "A memory layer with {} boundary vertices with no associated survey points has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no missing survey points in buildings."), Qgis.Info)
 
     def check_dangles_in_boundaries(self, db):
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)

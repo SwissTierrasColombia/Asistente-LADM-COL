@@ -91,6 +91,9 @@ class DialogQuality(QDialog, DIALOG_UI):
                 'rules': [{
                     'id': 'check_overlaps_in_plots',
                     'text': QCoreApplication.translate("DialogQuality", "Plots should not overlap")
+                }, {
+                    'id': 'check_missing_survey_points_in_buildings',
+                    'text': QCoreApplication.translate("DialogQuality", "Buildings nodes should be covered by Survey Points")
                 }]
             }
 
@@ -149,6 +152,8 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_dangles_in_boundaries(self._db)
                 elif id == 'check_overlaps_in_plots':
                     self.quality.check_overlapping_polygons(self._db, PLOT_TABLE)
+                elif id == 'check_missing_survey_points_in_buildings':
+                    self.quality.check_missing_survey_points_in_buildings(self._db)
 
             iterator += 1
 
