@@ -16,11 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 """
+from PyQt5.QtWidgets import QFileSystemModel
 from qgis.gui import QgsMessageBar, QgsDockWidget
 
 from ..utils import get_ui_class
 
-#from ..data.qtmodels import TreeViewModel
+from ..data.qtmodels import TreeViewModel
 
 DOCKWIDGET_UI = get_ui_class('dockwidget_queries.ui')
 
@@ -29,10 +30,13 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         super(DockWidgetQueries, self).__init__(None)
         self.setupUi(self)
         self.iface = iface
+        self.setWindowTitle('Search')
+        QFileSystemModel
+        self.parentmodel = QFileSystemModel()
+        self.parentmodel.setRootPath('')
+        self.treeModel = TreeViewModel(self.parentmodel)
+        #self.treeView.setModel(self.treeModel)
+        self.treeView.setModel(self.parentmodel) # example
 
-        #self.layout = QVBoxLayout()
-        #self.setLayout(self.layout)
-
-        #self._adminUnitTreeModel = TreeViewModel()
 
 

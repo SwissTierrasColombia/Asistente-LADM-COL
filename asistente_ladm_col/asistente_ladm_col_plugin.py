@@ -76,6 +76,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.log = QgsApplication.messageLog()
         self.installTranslator()
         self._about_dialog = None
+        self.dwq = None
 
     def initGui(self):
         # Set Menus
@@ -546,5 +547,8 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.installTranslator(self.translator)
 
     def show_queries(self):
-        self.dwq = DockWidgetQueries(self.iface)
-        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dwq)
+        if self.dwq is None:
+            self.dwq = DockWidgetQueries(self.iface)
+            self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dwq)
+        else:
+            self.dwq.toggleUserVisible()

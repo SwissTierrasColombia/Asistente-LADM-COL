@@ -17,14 +17,17 @@ email                : gkahiu@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt5.QtCore import QAbstractItemModel, QModelIndex
+from PyQt5.QtCore import QAbstractItemModel, QModelIndex, Qt
+from db_manager.db_model import TreeItem
+
 
 class TreeViewModel(QAbstractItemModel):
     """
     Model for rendering social tenure relationship nodes in a tree view.
     """
-    def __init__(self, root=None, parent=None, view=None):
+    def __init__(self, root, parent=None, view=None):
         QAbstractItemModel.__init__(self,parent)
+        TreeItem
         self._rootNode = root
         self._view = view
 

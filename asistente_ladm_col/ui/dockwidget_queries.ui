@@ -46,7 +46,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>Search</string>
+    <string/>
    </property>
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
