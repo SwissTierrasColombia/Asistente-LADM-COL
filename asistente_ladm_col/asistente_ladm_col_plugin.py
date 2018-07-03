@@ -22,7 +22,7 @@ import glob
 from functools import partial, wraps
 
 import qgis.utils
-from qgis.core import Qgis, QgsApplication, QgsProcessingModelAlgorithm, QgsMessageLog
+from qgis.core import Qgis, QgsApplication, QgsProcessingModelAlgorithm
 from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
                               QLocale, QSettings)
 from qgis.PyQt.QtGui import QIcon
@@ -546,9 +546,5 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.installTranslator(self.translator)
 
     def show_queries(self):
-        from PyQt5.QtWidgets import QDockWidget
         self.dwq = DockWidgetQueries(self.iface)
-        self.wdg = QDockWidget()
-        self.wdg.setWindowTitle('MyDock')
-        QgsMessageLog.logMessage('create dock widget', 'LADM')
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dwq)

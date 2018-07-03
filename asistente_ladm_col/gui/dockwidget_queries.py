@@ -16,27 +16,23 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
-
-from qgis.core import QgsProject, QgsVectorLayer, Qgis, QgsWkbTypes
 from qgis.gui import QgsMessageBar, QgsDockWidget
-from qgis.PyQt.QtCore import Qt, QSettings, QCoreApplication
-from qgis.PyQt.QtGui import QBrush, QFont, QIcon
-from qgis.PyQt.QtWidgets import (QAction, QDialog, QTreeWidgetItem, QLineEdit,
-                                 QTreeWidgetItemIterator, QComboBox)
 
 from ..utils import get_ui_class
 
-from ..data.qtmodels import STRTreeViewModel
+#from ..data.qtmodels import TreeViewModel
 
 DOCKWIDGET_UI = get_ui_class('dockwidget_queries.ui')
 
 class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
     def __init__(self, iface, parent=None):
-        QgsDockWidget.__init__(self, parent)
+        super(DockWidgetQueries, self).__init__(None)
         self.setupUi(self)
         self.iface = iface
-        #self.iface.addDockWidget(DOCKWIDGET_UI)
 
-        self._adminUnitTreeModel = STRTreeViewModel()
+        #self.layout = QVBoxLayout()
+        #self.setLayout(self.layout)
+
+        #self._adminUnitTreeModel = TreeViewModel()
+
 
