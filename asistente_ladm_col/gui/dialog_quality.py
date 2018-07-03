@@ -80,7 +80,7 @@ class DialogQuality(QDialog, DIALOG_UI):
                     'text': QCoreApplication.translate("DialogQuality", "Boundaries should not overlap")
                 }, {
                     'id': 'check_missing_boundary_points_in_boundaries',
-                    'text': QCoreApplication.translate("DialogQuality", "Boundary nodes should be covered by Bundary Points")
+                    'text': QCoreApplication.translate("DialogQuality", "Boundary nodes should be covered by Boundary Points")
                 }, {
                     'id': 'check_dangles_in_boundaries',
                     'text': QCoreApplication.translate("DialogQuality", "Boundaries should not have dangles")
