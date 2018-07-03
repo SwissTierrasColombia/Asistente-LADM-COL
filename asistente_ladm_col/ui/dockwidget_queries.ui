@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SearchForm</class>
- <widget class="QWidget" name="SearchForm">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,115 +13,125 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Search</string>
-     </property>
-     <widget class="QTabWidget" name="tabWidget">
+  <widget class="QGroupBox" name="groupBox_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>340</y>
+     <width>411</width>
+     <height>321</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Results</string>
+   </property>
+   <widget class="QTreeView" name="treeView">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>30</y>
+      <width>411</width>
+      <height>291</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>411</width>
+     <height>321</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Search</string>
+   </property>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>381</width>
+      <height>211</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Terreno</string>
+     </attribute>
+     <widget class="QLineEdit" name="lineEdit">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>40</y>
-        <width>381</width>
-        <height>211</height>
-       </rect>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="tab">
-       <attribute name="title">
-        <string>Terreno</string>
-       </attribute>
-       <widget class="QLineEdit" name="lineEdit">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>351</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="placeholderText">
-         <string>Search for</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label">
-        <property name="geometry">
-         <rect>
-          <x>18</x>
-          <y>60</y>
-          <width>341</width>
-          <height>24</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>In field:</string>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="comboBox">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>90</y>
-          <width>351</width>
-          <height>31</height>
-         </rect>
-        </property>
-       </widget>
-      </widget>
-     </widget>
-     <widget class="QPushButton" name="pushButton">
-      <property name="geometry">
-       <rect>
-        <x>240</x>
-        <y>270</y>
-        <width>124</width>
-        <height>33</height>
+        <y>10</y>
+        <width>351</width>
+        <height>31</height>
        </rect>
       </property>
       <property name="text">
-       <string>clear</string>
+       <string/>
+      </property>
+      <property name="placeholderText">
+       <string>Search for</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>50</x>
-        <y>270</y>
-        <width>124</width>
-        <height>33</height>
+        <x>18</x>
+        <y>60</y>
+        <width>341</width>
+        <height>24</height>
        </rect>
       </property>
       <property name="text">
-       <string>query</string>
+       <string>In field:</string>
       </property>
      </widget>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
-      <string>Results</string>
-     </property>
-     <widget class="QTreeView" name="treeView">
+     <widget class="QComboBox" name="comboBox">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>30</y>
-        <width>411</width>
-        <height>291</height>
+        <x>10</x>
+        <y>90</y>
+        <width>351</width>
+        <height>31</height>
        </rect>
       </property>
      </widget>
     </widget>
-   </item>
-  </layout>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>270</y>
+      <width>124</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>clear</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>270</y>
+      <width>124</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>query</string>
+    </property>
+   </widget>
+  </widget>
  </widget>
  <resources/>
  <connections/>
