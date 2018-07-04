@@ -62,7 +62,7 @@
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
-      <string>Terreno</string>
+      <string>Plot</string>
      </attribute>
      <widget class="QLineEdit" name="lineEdit">
       <property name="geometry">
@@ -93,7 +93,7 @@
        <string>In field:</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="comboBox">
+     <widget class="QComboBox" name="cbo_plot_fields">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -115,7 +115,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>clear</string>
+     <string>Clear</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_2">
@@ -128,7 +128,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>query</string>
+     <string>Query</string>
     </property>
    </widget>
   </widget>

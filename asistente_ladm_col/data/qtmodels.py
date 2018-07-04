@@ -27,7 +27,6 @@ class TreeViewModel(QAbstractItemModel):
     """
     def __init__(self, root, parent=None, view=None):
         QAbstractItemModel.__init__(self,parent)
-        TreeItem
         self._rootNode = root
         self._view = view
 

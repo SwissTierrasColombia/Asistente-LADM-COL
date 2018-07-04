@@ -548,7 +548,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_queries(self):
         if self.dwq is None:
-            self.dwq = DockWidgetQueries(self.iface)
+            self.dwq = DockWidgetQueries(self.iface, self.get_db_connection(), self.qgis_utils)
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dwq)
         else:
             self.dwq.toggleUserVisible()
