@@ -274,6 +274,37 @@ class TesQualityValidations(unittest.TestCase):
         self.assertIn('Point (963447.88093882286921144 1078482.77904075756669044)', geometries)
         self.assertIn('Point (963521.05263693502638489 1078508.74319170042872429)', geometries)
 
+    def test_check_missing_survey_points_in_buildings(self):
+        print('\nINFO: Validating missing survey points in buildings...')
+
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='construccion')
+        building_layer = QgsVectorLayer(uri, 'construccion', 'ogr')
+        uril = gpkg_path + '|layername={layername}'.format(layername='p_levantamiento')
+        survey_layer = QgsVectorLayer(uril, 'p_levantamiento', 'ogr')
+
+        building_features = [feature for feature in building_layer.getFeatures()]
+        self.assertEqual(len(building_features), 4)
+
+        survey_features = [feature for feature in survey_layer.getFeatures()]
+        self.assertEqual(len(survey_features), 11)
+
+        missing_points = self.quality.get_missing_boundary_points_in_boundaries(survey_layer, building_layer)
+
+        geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
+
+        self.assertEqual(len(geometries), 9)
+        self.assertIn('Point (1091236.35652560647577047 1121774.96929413848556578)', geometries)
+        self.assertIn('Point (1091186.87442427431233227 1121732.1977132954634726)', geometries)
+        self.assertIn('Point (1091077.77337037585675716 1121602.12974193692207336)', geometries)
+        self.assertIn('Point (1091205.35301685449667275 1121546.94486430194228888)', geometries)
+        self.assertIn('Point (1091305.89359214110299945 1121627.02843385003507137)', geometries)
+        self.assertIn('Point (1091408.70686221891082823 1121544.53974786633625627)', geometries)
+        self.assertIn('Point (1091371.58370406995527446 1121507.19097788003273308)', geometries)
+        self.assertIn('Point (1091314.24563915398903191 1121448.97160633862949908)', geometries)
+        self.assertIn('Point (1091213.62314918311312795 1121543.89559642062522471)', geometries)
+
+
     def test_boundary_dangles(self):
         print('\nINFO: Validating boundary_dangles...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
