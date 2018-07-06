@@ -370,7 +370,7 @@ class QualityUtils(QObject):
 
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), "Missing survey points in buildings", "memory")
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField("boundary_id", QVariant.Int)])
+        data_provider.addAttributes([QgsField("building_id", QVariant.Int)])
         error_layer.updateFields()
 
         missing_points = self.get_missing_boundary_points_in_boundaries(survey_point_layer, building_layer)
@@ -388,7 +388,7 @@ class QualityUtils(QObject):
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} boundary vertices with no associated survey points has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
+                    "A memory layer with {} building vertices with no associated survey points has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
