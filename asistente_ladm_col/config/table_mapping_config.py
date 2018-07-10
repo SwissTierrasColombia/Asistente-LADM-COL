@@ -151,11 +151,5 @@ CUSTOM_WIDGET_CONFIGURATION = {
             'DocumentViewerWidth': 0,
             'FileWidgetFilter': ''
         }
-    },
-    # TODO: Remove the next one for building units when
-    # https://github.com/opengisch/projectgenerator/issues/141 is solved...
-    BUILDING_UNIT_TABLE: {
-        'type': 'Range',
-        'config': {'Min': 1, 'Step': 1, 'Style': 'SpinBox', 'Max': 100, 'AllowNull': False, 'Precision': 0}
     }
 }
