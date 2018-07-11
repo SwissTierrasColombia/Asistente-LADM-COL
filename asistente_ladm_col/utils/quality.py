@@ -342,7 +342,7 @@ class QualityUtils(QObject):
     def check_missing_survey_points_in_buildings(self, db):
         res_layers = self.qgis_utils.get_layers(db, {
             SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None},
-            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': None}}, load=True)
+            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}}, load=True)
 
         survey_point_layer = res_layers[SURVEY_POINT_TABLE]
         building_layer = res_layers[BUILDING_TABLE]
