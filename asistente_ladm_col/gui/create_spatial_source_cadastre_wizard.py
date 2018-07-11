@@ -60,6 +60,7 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
         self.iface = iface
         self.log = QgsApplication.messageLog()
         self._spatial_source_layer = None
+        self._extfile_table = None
         self._plot_layer = None
         self._boundary_layer = None
         self._boundary_point_layer = None
@@ -158,6 +159,14 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateSpatialSourceCadastreWizard",
                                            "Spatial Source layer couldn't be found... {}").format(self._db.get_description()),
+                Qgis.Warning)
+            return
+
+        self._extfile_table = res_layers[EXTFILE_TABLE]
+        if self._extfile_table is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateSpatialSourceCadastreWizard",
+                                           "ExtFile table couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 
@@ -303,6 +312,8 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
         self._spatial_source_layer.featureAdded.disconnect(self.call_spatial_source_commit)
         self.log.logMessage("Spatial Source's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         res = self._spatial_source_layer.commitChanges()
+        if self._extfile_table.isEditable():
+            res = self._extfile_table.commitChanges()
 
     def finish_spatial_source(self, feature_ids_dict, layerId, features):
         if len(features) != 1:
@@ -370,7 +381,7 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
                     self.iface.messageBar().pushMessage("Asistente LADM_COL",
                         QCoreApplication.translate("CreateSpatialSourceCadastreWizard",
                                                    "The new spatial source (t_id={}) was successfully created and associated with the following features: {}".format(spatial_source_id, feature_ids_dict)),
-                        Qgis.Info)
+                        Qgis.Info, 30)
 
         self._spatial_source_layer.committedFeaturesAdded.disconnect()
         self.log.logMessage("Spatial Source's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
