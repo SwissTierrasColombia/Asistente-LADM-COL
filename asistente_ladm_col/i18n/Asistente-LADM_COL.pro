@@ -19,7 +19,8 @@ FORMS = ../ui/dlg_load_layers.ui \
         ../ui/wiz_create_right_cadastre.ui \
         ../ui/wiz_create_spatial_source_cadastre.ui
 
-SOURCES = ../asistente_ladm_col_plugin.py \
+SOURCES = ../__init__.py \
+          ../asistente_ladm_col_plugin.py \
           ../utils/qgis_utils.py \
           ../gui/create_administrative_source_cadastre_wizard.py \
           ../gui/create_legal_party_cadastre_wizard.py \

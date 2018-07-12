@@ -380,7 +380,7 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
                 if new_features:
                     self.iface.messageBar().pushMessage("Asistente LADM_COL",
                         QCoreApplication.translate("CreateSpatialSourceCadastreWizard",
-                                                   "The new spatial source (t_id={}) was successfully created and associated with the following features: {}".format(spatial_source_id, feature_ids_dict)),
+                                                   "The new spatial source (t_id={}) was successfully created and associated with the following features: {}").format(spatial_source_id, feature_ids_dict),
                         Qgis.Info, 30)
 
         self._spatial_source_layer.committedFeaturesAdded.disconnect()
