@@ -147,7 +147,6 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
                    or current_table_info[KIND_SETTINGS] == TABLE_PROP_STRUCTURE and not show_structures \
                    or current_table_info[KIND_SETTINGS] == TABLE_PROP_ASSOCIATION and not show_associations:
                     continue
-
                 table_item = QTreeWidgetItem([table])
                 table_item.setData(0, Qt.UserRole, self.models_tree[model][table])
                 geometry_type = QgsWkbTypes().geometryType(QgsWkbTypes().parseType(current_table_info[GEOMETRY_TYPE])) if current_table_info[GEOMETRY_TYPE] else None

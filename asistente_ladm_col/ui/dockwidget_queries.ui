@@ -118,7 +118,7 @@
      <string>Clear</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="btn_query">
     <property name="geometry">
      <rect>
       <x>50</x>
