@@ -264,11 +264,15 @@ class GeometryUtils(QObject):
             candidates_features = polygon_layer.getFeatures(candidates_ids)
 
             for candidate_feature in candidates_features:
-                is_overlap = feature.geometry().overlaps(candidate_feature.geometry())
-                if is_overlap == True:
-                    overlapping_polygons = sorted([feature.id(), candidate_feature.id()])
-                    if overlapping_polygons not in list_overlapping_polygons:
-                        list_overlapping_polygons.append(overlapping_polygons)
+                is_overlap = feature.geometry().overlaps(candidate_feature.geometry()) or \
+                             feature.geometry().contains(candidate_feature.geometry()) or \
+                             feature.geometry().within(candidate_feature.geometry())
+
+                if is_overlap:
+                    if feature.id() != candidate_feature.id():
+                        overlapping_polygons = sorted([feature.id(), candidate_feature.id()])
+                        if overlapping_polygons not in list_overlapping_polygons:
+                            list_overlapping_polygons.append(overlapping_polygons)
 
         return list_overlapping_polygons
 

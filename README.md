@@ -18,7 +18,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([0.4.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.4.0)) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.2.3 (o superior) y permite:
+La versión actual ([0.5.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.5.0)) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.2.3 (o superior) y permite:
 
  - Capturar datos para el modelo LADM_COL v2.2.1.
  - Preprocesar puntos: Medición controlada.
@@ -55,6 +55,7 @@ La versión actual ([0.4.0](https://github.com/AgenciaImplementacion/Asistente-L
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
  - Crear `Fuente Espacial` y `Fuente Administrativa`:
    - Usando formularios preconfigurados.
+     - Y relacionando la nueva `Fuente Espacial` a `Terrenos`, `Linderos` o `Puntos` previamente seleccionados.
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
  - Crear `Archivos Fuente`:
    - Asociar fuentes a archivos fuente.
@@ -74,6 +75,7 @@ La versión actual ([0.4.0](https://github.com/AgenciaImplementacion/Asistente-L
    - Revisar superposiciones en `Terreno`.
    - Revisar nodos de `Lindero` sin `Punto Lindero` asociado.
    - Revisar nodos de `Lindero` no conectados.
+   - Revisar nodos de `Construcción` sin `Punto Levantamiento` asociado.
  - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
  - Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.
  - Visualizar GIFs ilustrativos en la ayuda online del plugin o descargarlos para trabajo offline.
