@@ -64,7 +64,7 @@
      <attribute name="title">
       <string>Plot</string>
      </attribute>
-     <widget class="QLineEdit" name="lineEdit">
+     <widget class="QLineEdit" name="txt_plot_query">
       <property name="geometry">
        <rect>
         <x>10</x>

@@ -17,14 +17,13 @@
  ***************************************************************************/
 """
 from PyQt5.QtCore import QCoreApplication
-from PyQt5.QtWidgets import QFileSystemModel
-from ..config.sql import PREDIO_SQL
+from ..config.sql import GET_PARCEL_SQL
 
 from ..config.table_mapping_config import PLOT_TABLE, UEBAUNIT_TABLE, PARCEL_TABLE
 from qgis._core import QgsWkbTypes, Qgis
 from qgis.gui import QgsDockWidget
 
-from ..utils import get_ui_class, qgis_utils
+from ..utils import get_ui_class
 
 from ..data.qtmodels import QueryTreeViewModel
 
@@ -45,7 +44,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         self.treeModel = QueryTreeViewModel()
         self.treeView.setModel(self.treeModel)
-        self.treeModel.agregar()
 
         self._plot_layer = None
 
@@ -54,7 +52,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.add_events()
 
     def add_events(self):
-        self.btn_query.clicked.connect(self.query_terreno)
+        self.btn_query.clicked.connect(self.query_plot)
 
 
     def add_options(self):
@@ -71,7 +69,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         if self._plot_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                QCoreApplication.translate("DockerWidgetQueries",
                                                                            "Plot layer couldn't be found... {}").format(
                                                     self._db.get_description()),
                                                 Qgis.Warning)
@@ -86,8 +84,19 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 self.cbo_plot_fields.addItem(alias, name)
 
 
-    def query_terreno(self):
-        t_id_terreno = 677
-        print(PREDIO_SQL('test_ladm_col', t_id_terreno))
+    def query_plot(self):
+        option = self.cbo_plot_fields.currentData()
+        query = self.txt_plot_query.text()
+        if option == 't_id':
+            if query != '' and query.isdigit():
+                string_sql = GET_PARCEL_SQL('test_ladm_col', query)
+                #self.treeModel.updateResults(self._db, string_sql)
+                results = self.treeModel.updateResults(self._db, string_sql)
+                self.iface.results = results
+            else:
+                self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                    QCoreApplication.translate("DockerWidgetQueries","t_id must be an integer"))
+
+
 
 

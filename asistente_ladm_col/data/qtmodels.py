@@ -20,7 +20,7 @@ email                : gkahiu@gmail.com
 from PyQt5.QtCore import QAbstractItemModel, Qt, QModelIndex
 from PyQt5.QtGui import QIcon, QBrush, QFont
 from PyQt5.QtWidgets import QTreeWidgetItem
-
+from ..config.table_mapping_config import PARCEL_RIGHT_FIELD
 
 class QueryTreeViewModel(QAbstractItemModel):
     """
@@ -31,9 +31,9 @@ class QueryTreeViewModel(QAbstractItemModel):
         QAbstractItemModel.__init__(self, parent)
         self.rootItem = QTreeWidgetItem(parent)
 
-        self.agregar()
+        self.addTestData() #
 
-    def agregar(self):
+    def addTestData(self):
         #item2 = QTreeWidgetItem(self.rootItem)
         #item2 = QTreeWidgetItem(['hola'])
         item2 = QTreeWidgetItem()
@@ -83,3 +83,21 @@ class QueryTreeViewModel(QAbstractItemModel):
 
     def data(self, index, role):
         return None
+
+    def updateResults(self, db_connection, sql_query):
+        """
+        db_connection is a pg_connector object
+        """
+        colnames, results = db_connection.retrieveSqlData(sql_query)
+        print('colnames:', colnames)
+        for item in results:
+            print('item:', item)
+            for colname, index in colnames.items():
+                if colname != PARCEL_RIGHT_FIELD:
+                    print('colname:', colname, ', value:', item[index])
+
+            for derecho in item[colnames[PARCEL_RIGHT_FIELD]]:
+                print('derecho', derecho)
+                for colname, value in derecho.items():
+                    print('colname:', colname, ', value:', value)
+        return colnames, results

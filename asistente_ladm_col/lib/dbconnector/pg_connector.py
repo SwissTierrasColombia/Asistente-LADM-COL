@@ -153,3 +153,15 @@ class PGConnector(DBConnector):
                     WHERE i.indisprimary AND schemaname ='{}'
                     """.format(self.schema))
         return (True, cur)
+
+    def retrieveSqlData(self, sql_query):
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        query = cur.execute(sql_query)
+        results = cur.fetchall()
+        colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
+        return colnames, results
+

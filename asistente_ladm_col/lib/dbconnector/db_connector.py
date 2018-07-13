@@ -42,3 +42,6 @@ class DBConnector(QObject):
             self.mode,
             self.uri,
             'schema:{}'.format(self.schema) if self.schema else '')
+
+    def retrieveSqlData(self, sql_query):
+        pass

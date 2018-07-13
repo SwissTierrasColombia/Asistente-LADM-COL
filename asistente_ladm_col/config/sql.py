@@ -1,4 +1,4 @@
-def PREDIO_SQL(db_schema, plot__t_id):
+def GET_PARCEL_SQL(db_schema, plot__t_id):
     return """
      SELECT     predio.fmi            AS "Folio" ,
                predio.nupre          AS "NUPRE" ,
