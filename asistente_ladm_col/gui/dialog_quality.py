@@ -84,6 +84,10 @@ class DialogQuality(QDialog, DIALOG_UI):
                 }, {
                     'id': 'check_dangles_in_boundaries',
                     'text': QCoreApplication.translate("DialogQuality", "Boundaries should not have dangles")
+                },
+                    {
+                        'id': 'check_right_to_way_overlaps_buildings',
+                        'text': QCoreApplication.translate("DialogQuality", "Right To Way should not overlap with Buildings")
                 }]
             }
         self.items_dict[QCoreApplication.translate("DialogQuality", "Rules for Polygons")] = {
@@ -154,6 +158,8 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_overlapping_polygons(self._db, PLOT_TABLE)
                 elif id == 'check_missing_survey_points_in_buildings':
                     self.quality.check_missing_survey_points_in_buildings(self._db)
+                elif id == 'check_right_to_way_overlaps_buildings':
+                    self.quality.check_right_to_way_overlaps_buildings(self._db)
 
             iterator += 1
 

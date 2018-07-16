@@ -292,23 +292,23 @@ class GeometryUtils(QObject):
 
         return QgsGeometry.collectGeometry(listGeoms) if len(listGeoms) > 0 else None
 
-    def get_touches_beetwin_line_poligon(self, feature_overlap, feature_polygon):
+    def get_touches_between_line_poligon(self, feature_overlap, feature_polygon):
+        list_overlapping = list()
+        ids = list()
         feedback = QgsProcessingFeedback()
         extracted_lines = processing.run("qgis:polygonstolines", {'INPUT': feature_overlap, 'OUTPUT': 'memory:'},
                                          feedback=feedback)
         feature_overlap = extracted_lines['OUTPUT']
         index = QgsSpatialIndex(feature_polygon)
-        for feature in feature_overlap.getFeatures():
+        for feature in feature_overlap.getFeatures():  # TODO POLYGONS
             bbox = feature.geometry().boundingBox()
             bbox.scale(1.001)
             candidates_ids = index.intersects(bbox)
-            candidates_features = feature_overlap.getFeatures(candidates_ids)
+            candidates_features = feature_polygon.getFeatures(candidates_ids)
             for candidate_feature in candidates_features:
                 candidate_feature_geo = candidate_feature.geometry()
-                for poly_feature in feature_polygon.getFeatures():
-                    is_overlap = poly_feature.geometry().intersects(candidate_feature_geo)
-                    if is_overlap == True:
-                        if candidate_feature_geo not in list_overlapping:
-                            list_overlapping.append(candidate_feature_geo)
-                            print(list_overlapping)
-        return list_overlapping
+                if feature.geometry().intersects(candidate_feature_geo) and not feature.geometry().touches(candidate_feature_geo):
+                    ids.append([feature.id(), candidate_feature.id()])
+                    intersection = feature.geometry().intersection(candidate_feature_geo)
+                    list_overlapping.append(intersection)  # TODO Add 2 ids
+        return ids, QgsGeometry.collectGeometry(list_overlapping) if len(list_overlapping) > 0 else None

@@ -42,6 +42,7 @@ from ..config.table_mapping_config import (
     BOUNDARY_POINT_TABLE,
     BOUNDARY_TABLE,
     BUILDING_TABLE,
+    RIGHT_TO_WAY_TABLE,
     SURVEY_POINT_TABLE,
     ID_FIELD
 )
@@ -511,6 +512,66 @@ class QualityUtils(QObject):
                     else:
                         res[feature[ID_FIELD]] = [diff_geom]
         return res
+
+    def check_right_to_way_overlaps_buildings(self, db):
+        res_layers = self.qgis_utils.get_layers(db, {
+            RIGHT_TO_WAY_TABLE: {'name': RIGHT_TO_WAY_TABLE, 'geometry': None},
+            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}}, load=True)
+
+        right_to_way_table = res_layers[RIGHT_TO_WAY_TABLE]
+        building_layer = res_layers[BUILDING_TABLE]
+
+        if right_to_way_table is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(RIGHT_TO_WAY_TABLE,
+                                                                                  db.get_description()),
+                Qgis.Warning)
+            return
+
+        if building_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(BUILDING_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        if building_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no buildings to check 'Overlaps Right To Way with buildings'."),
+                Qgis.Info)
+            return
+
+        error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG), "Overlaps Right To Way with buildings",
+                                     "memory")
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField("building_id", QVariant.Int)])
+        data_provider.addAttributes([QgsField("right_to_way_id", QVariant.Int)])
+        error_layer.updateFields()
+
+        ids, overlap_lines = self.qgis_utils.geometry.get_touches_between_line_poligon(right_to_way_table, building_layer)
+
+        new_features = list()
+        for key, line in zip(ids, overlap_lines.asGeometryCollection()):
+            new_feature = QgsVectorLayerUtils().createFeature(error_layer, line, {0: key[0], 1: key[1]})
+            new_features.append(new_feature)
+
+        data_provider.addFeatures(new_features)
+
+        if error_layer.featureCount() > 0:
+            added_layer = self.add_error_layer(error_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "A memory layer with {} building vertices with no associated survey points has been added to the map!").format(
+                    added_layer.featureCount()), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no overlaps right to way with buildings."), Qgis.Info)
+
+
 
     def get_dangle_ids(self, boundary_layer):
         # 1. Run extract specific vertices
