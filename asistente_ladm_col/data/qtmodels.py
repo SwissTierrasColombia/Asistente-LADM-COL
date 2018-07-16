@@ -31,26 +31,27 @@ class QueryTreeViewModel(QAbstractItemModel):
         QAbstractItemModel.__init__(self, parent)
         self.rootItem = QTreeWidgetItem(parent)
 
-        self.addTestData() #
+        self.addTestData() # only for tests purpose
+        self.addTestData()
 
     def addTestData(self):
         #item2 = QTreeWidgetItem(self.rootItem)
         #item2 = QTreeWidgetItem(['hola'])
-        item2 = QTreeWidgetItem()
+        item = QTreeWidgetItem()
         icon_name = 'domains'
         icon = QIcon(":/Asistente-LADM_COL/resources/images/{}.png".format(icon_name))
-        item2.setText(0, 'Jejeje')
-        item2.setData(0, Qt.DecorationRole, icon)
+        item.setText(0, 'Jejeje')
+        item.setData(0, Qt.DecorationRole, icon)
         #item2.setData(1, Qt.UserRole, 1)
-        item2.setData(0, Qt.DisplayRole, "Porque")
-        item2.setData(1, Qt.DisplayRole, "Porque")
-        item2.setData(3, Qt.DisplayRole, "Porque")
-        item2.setData(0, Qt.ForegroundRole, QBrush(Qt.lightGray))
+        item.setData(0, Qt.DisplayRole, "Porque")
+        item.setData(1, Qt.DisplayRole, "Porque")
+        item.setData(3, Qt.DisplayRole, "Porque")
+        item.setData(0, Qt.ForegroundRole, QBrush(Qt.lightGray))
         font = QFont()
         font.setBold(True)
-        item2.setData(0, Qt.FontRole, font)
+        item.setData(0, Qt.FontRole, font)
 
-        #self.rootItem.addChild(item2)
+        self.rootItem.addChild(item)
 
     def columnCount(self, parent):
         return 1
@@ -84,20 +85,15 @@ class QueryTreeViewModel(QAbstractItemModel):
     def data(self, index, role):
         return None
 
-    def updateResults(self, db_connection, sql_query):
-        """
-        db_connection is a pg_connector object
-        """
-        colnames, results = db_connection.retrieveSqlData(sql_query)
+    def updateResults(self, colnames, results):
         print('colnames:', colnames)
         for item in results:
             print('item:', item)
             for colname, index in colnames.items():
                 if colname != PARCEL_RIGHT_FIELD:
-                    print('colname:', colname, ', value:', item[index])
+                    print('-- colname:', colname, ', value:', item[index])
 
             for derecho in item[colnames[PARCEL_RIGHT_FIELD]]:
-                print('derecho', derecho)
+                print('------ derecho', derecho)
                 for colname, value in derecho.items():
-                    print('colname:', colname, ', value:', value)
-        return colnames, results
+                    print('-------- colname:', colname, ', value:', value)

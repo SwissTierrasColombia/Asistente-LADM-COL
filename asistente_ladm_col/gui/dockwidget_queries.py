@@ -17,7 +17,6 @@
  ***************************************************************************/
 """
 from PyQt5.QtCore import QCoreApplication
-from ..config.sql import GET_PARCEL_SQL
 
 from ..config.table_mapping_config import PLOT_TABLE, UEBAUNIT_TABLE, PARCEL_TABLE
 from qgis._core import QgsWkbTypes, Qgis
@@ -89,10 +88,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         query = self.txt_plot_query.text()
         if option == 't_id':
             if query != '' and query.isdigit():
-                string_sql = GET_PARCEL_SQL('test_ladm_col', query)
+                plot__t_id = query
+                colnames, results = self._db.get_parcels_and_parties_by_plot(plot__t_id)
                 #self.treeModel.updateResults(self._db, string_sql)
-                results = self.treeModel.updateResults(self._db, string_sql)
-                self.iface.results = results
+                self.treeModel.updateResults(colnames, results)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("DockerWidgetQueries","t_id must be an integer"))
