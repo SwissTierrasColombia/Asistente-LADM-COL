@@ -37,7 +37,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self._db = db
         self.qgis_utils = qgis_utils
 
-        self.setWindowTitle('Search')
         #self.parentmodel = QFileSystemModel()
         #self.parentmodel.setRootPath('')
         # self.treeView.setModel(self.parentmodel) # example
