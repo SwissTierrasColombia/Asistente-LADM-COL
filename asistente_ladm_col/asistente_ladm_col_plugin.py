@@ -415,6 +415,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.deleteLater()
         self.iface.mainWindow().removeToolBar(self._ladm_col_toolbar)
         del self._ladm_col_toolbar
+        del self.dwq
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
 
     def show_settings(self):
