@@ -96,7 +96,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         #self.tabWidget.currentWidget().layout().setContentsMargins(0, 0, 0, 0)
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
-    def get_db_connection(self):
+    def get_db_connection(self, update_connection=True):
         if self._db is not None:
             self.log.logMessage("Returning existing db connection...", PLUGIN_NAME, Qgis.Info)
             return self._db
@@ -108,6 +108,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 db = PGConnector(uri, dict_conn['schema'])
             else:
                 db = GPKGConnector(uri)
+
+            if update_connection:
+                self._db = db
+
             return db
 
     def accepted(self):
@@ -228,7 +232,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def test_connection(self):
         self._db = None # Reset db connection
-        res, msg = self.get_db_connection().test_connection()
+        res, msg = self.get_db_connection(False).test_connection()
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
         self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
 
