@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtCore import QCoreApplication, Qt
 
 from ..config.table_mapping_config import PLOT_TABLE, UEBAUNIT_TABLE, PARCEL_TABLE
 from qgis._core import QgsWkbTypes, Qgis
@@ -32,6 +32,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
         super(DockWidgetQueries, self).__init__(None)
         self.setupUi(self)
+        self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.iface = iface
         self._db = db
         self.qgis_utils = qgis_utils

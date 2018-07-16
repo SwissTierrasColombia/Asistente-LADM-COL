@@ -547,6 +547,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.translator.load(qgis_locale, 'Asistente-LADM_COL', '_', locale_path)
         QCoreApplication.installTranslator(self.translator)
 
+    #@_db_connection_required # OJO volver a poner
     def show_queries(self):
         if self.dwq is None:
             self.dwq = DockWidgetQueries(self.iface, self.get_db_connection(), self.qgis_utils)
