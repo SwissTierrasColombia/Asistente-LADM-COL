@@ -307,8 +307,17 @@ class GeometryUtils(QObject):
             candidates_features = feature_polygon.getFeatures(candidates_ids)
             for candidate_feature in candidates_features:
                 candidate_feature_geo = candidate_feature.geometry()
-                if feature.geometry().intersects(candidate_feature_geo) and not feature.geometry().touches(candidate_feature_geo):
-                    ids.append([feature.id(), candidate_feature.id()])
+                if feature.geometry().intersects(candidate_feature_geo) and not feature.geometry().touches(
+                        candidate_feature_geo):
                     intersection = feature.geometry().intersection(candidate_feature_geo)
-                    list_overlapping.append(intersection)  # TODO Add 2 ids
+                    if intersection.wkbType() == QgsWkbTypes.LineString:
+                        ids.append([feature.id(), candidate_feature.id()])
+                        list_overlapping.append(intersection)
+                    elif intersection.wkbType() in [QgsWkbTypes.GeometryCollection,
+                                                    QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
+                                                    QgsWkbTypes.GeometryCollectionZM]:
+                        for part in intersection.asGeometryCollection():
+                            if QgsWkbTypes.LineString == part.wkbType():
+                                ids.append([feature.id(), candidate_feature.id()])
+                                list_overlapping.append(part)
         return ids, QgsGeometry.collectGeometry(list_overlapping) if len(list_overlapping) > 0 else None
