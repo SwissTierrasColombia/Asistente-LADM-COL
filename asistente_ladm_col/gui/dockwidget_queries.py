@@ -63,9 +63,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         self._plot_layer = res_layers[PLOT_TABLE]
 
-        #self.iface._plot_layer = self._plot_layer  # expose for debug purposes
-        #self.iface._db = self._db
-
         if self._plot_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                                                 QCoreApplication.translate("DockerWidgetQueries",
