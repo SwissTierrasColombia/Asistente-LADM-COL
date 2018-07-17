@@ -37,7 +37,7 @@
         <number>0</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="rightMargin">
         <number>0</number>
@@ -127,7 +127,7 @@
         <number>0</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="rightMargin">
         <number>0</number>
@@ -136,7 +136,17 @@
         <number>0</number>
        </property>
        <item row="0" column="0">
-        <widget class="QTreeView" name="treeView"/>
+        <widget class="QTreeView" name="treeView">
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+        </widget>
        </item>
       </layout>
      </widget>

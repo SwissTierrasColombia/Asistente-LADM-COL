@@ -24,7 +24,7 @@ from qgis.gui import QgsDockWidget
 
 from ..utils import get_ui_class
 
-from ..data.qtmodels import QueryTreeViewModel
+from ..data.tree_models import TreeModel
 
 DOCKWIDGET_UI = get_ui_class('dockwidget_queries.ui')
 
@@ -37,22 +37,14 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self._db = db
         self.qgis_utils = qgis_utils
 
-        #self.parentmodel = QFileSystemModel()
-        #self.parentmodel.setRootPath('')
-        # self.treeView.setModel(self.parentmodel) # example
-
-        self.treeModel = QueryTreeViewModel()
-        self.treeView.setModel(self.treeModel)
+        # self.treeView.selectionModel().selectionChanged.connect(self.treeModel.updateActions)
 
         self._plot_layer = None
 
         self.add_options()
 
-        self.add_events()
-
-    def add_events(self):
+        # Set connections
         self.btn_query.clicked.connect(self.query_plot)
-
 
     def add_options(self):
         self.cbo_plot_fields.clear()
@@ -79,20 +71,17 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             else:
                 self.cbo_plot_fields.addItem(alias, name)
 
-
     def query_plot(self):
         option = self.cbo_plot_fields.currentData()
         query = self.txt_plot_query.text()
         if option == 't_id':
             if query != '' and query.isdigit():
-                plot__t_id = query
-                colnames, results = self._db.get_parcels_and_parties_by_plot(plot__t_id)
-                #self.treeModel.updateResults(self._db, string_sql)
-                self.treeModel.updateResults(colnames, results)
+                plot_t_id = query
+                records = self._db.get_parcels_and_parties_by_plot(plot_t_id)
+                print(records)
+                self.treeModel = TreeModel(data=records)
+                self.treeView.setModel(self.treeModel)
+                self.treeView.expandAll()
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("DockerWidgetQueries","t_id must be an integer"))
-
-
-
-
