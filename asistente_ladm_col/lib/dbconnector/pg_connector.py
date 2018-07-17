@@ -132,7 +132,8 @@ class PGConnector(DBConnector):
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute("""
                     SELECT
                       tbls.schemaname AS schemaname,
@@ -152,7 +153,8 @@ class PGConnector(DBConnector):
                       AND g.f_table_name = tbls.tablename
                     WHERE i.indisprimary AND schemaname ='{}'
                     """.format(self.schema))
-        return (True, cur)
+        return (True, cur.fetchall())
+
 
     def retrieveSqlData(self, sql_query):
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -165,8 +167,8 @@ class PGConnector(DBConnector):
         sql_query = """
              SELECT     predio.fmi            AS "Folio" ,
                        predio.nupre          AS "NUPRE" ,
-                       predio.numero_predial AS "Número Predial" ,
-                       predio.nombre         AS "Nombre del predio" ,
+                       predio.numero_predial AS "Número_Predial" ,
+                       predio.nombre         AS "Nombre_del_Predio" ,
                        Json_agg(derecho)     AS derecho ,
                        CASE
                                   WHEN Json_agg(servidumbre)::text <> '[null]' THEN Json_agg(servidumbre)
@@ -180,15 +182,15 @@ class PGConnector(DBConnector):
             INNER JOIN
                        (
                                  SELECT    col_derecho.unidad_predio ,
-                                           col_derecho.tipo "Tipo derecho" ,
-                                           col_derecho.codigo_registral_derecho "Codigo Registral" ,
+                                           col_derecho.tipo "Tipo_Derecho" ,
+                                           col_derecho.codigo_registral_derecho "Código_Registral" ,
                                            col_derecho.descripcion "Descripción" ,
-                                           interesado_natural.documento_identidad "Documento Identidad" ,
-                                           interesado_natural.tipo_documento "Tipo Documento" ,
-                                           interesado_natural.primer_apellido "Primer Apellido" ,
-                                           interesado_natural.primer_nombre "Primer Nombre" ,
-                                           interesado_natural.segundo_apellido "Segundo Apellido" ,
-                                           interesado_natural.segundo_nombre "Segundo Nombre" ,
+                                           interesado_natural.documento_identidad "Documento_Identidad" ,
+                                           interesado_natural.tipo_documento "Tipo_Documento" ,
+                                           interesado_natural.primer_apellido "Primer_Apellido" ,
+                                           interesado_natural.primer_nombre "Primer_Nombre" ,
+                                           interesado_natural.segundo_apellido "Segundo_Apellido" ,
+                                           interesado_natural.segundo_nombre "Segundo_Nombre" ,
                                            interesado_natural.genero "Género"
                                  FROM      {db_schema}.col_derecho
                                  LEFT JOIN {db_schema}.interesado_natural
@@ -210,5 +212,10 @@ class PGConnector(DBConnector):
                        predio.numero_predial ,
                        predio.nombre;
             """.format(db_schema=self.schema, plot_t_id=plot__t_id)
-        return self.retrieveSqlData(sql_query)
 
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
+        cur.execute(sql_query)
+        records = cur.fetchall()
+        res = [record._asdict() for record in records]
+
+        return res
