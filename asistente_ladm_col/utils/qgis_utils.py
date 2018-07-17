@@ -28,7 +28,8 @@ from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
                        QgsPointXY,
                        QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
                        QgsApplication, QgsProcessingFeedback, QgsRelation,
-                       QgsExpressionContextUtils, QgsEditorWidgetSetup)
+                       QgsExpressionContextUtils, QgsEditorWidgetSetup,
+                       QgsLayerTreeGroup)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
                               QVariant, QSettings, QLocale, QUrl, QFile)
 
@@ -102,11 +103,12 @@ class QGISUtils(QObject):
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, layer_tree_view):
         QObject.__init__(self)
         self.project_generator_utils = ProjectGeneratorUtils()
         self.symbology = SymbologyUtils()
         self.geometry = GeometryUtils()
+        self.layer_tree_view = layer_tree_view
 
         self.__settings_dialog = None
         self._source_handler = None
@@ -762,9 +764,13 @@ class QGISUtils(QObject):
         root = QgsProject.instance().layerTreeRoot()
         group = root.findGroup(ERROR_LAYER_GROUP)
         if group is None:
-            index = self.project_generator_utils.get_first_index_for_layer_type('unknown') # unknown is the option for groups
-            group = root.insertGroup(index if index is not None else -1, ERROR_LAYER_GROUP)
-
+            group = root.insertGroup(0, ERROR_LAYER_GROUP)
+        elif not self.layer_tree_view.layerTreeModel().node2index(group).row() == 0 or type(group.parent()) is QgsLayerTreeGroup:
+            group_clone = group.clone()
+            root.insertChildNode(0, group_clone)
+            parent = group.parent()
+            parent.removeChildNode(group)
+            group = group_clone
         return group
 
     def turn_transaction_off(self):
