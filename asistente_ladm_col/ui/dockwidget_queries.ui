@@ -12,7 +12,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>312</width>
+    <width>515</width>
     <height>535</height>
    </size>
   </property>
@@ -63,23 +63,97 @@
           <layout class="QGridLayout" name="gridLayout_4">
            <item row="0" column="0">
             <widget class="QTabWidget" name="tab_plot_options">
+             <property name="tabPosition">
+              <enum>QTabWidget::South</enum>
+             </property>
              <property name="currentIndex">
               <number>0</number>
              </property>
              <widget class="QWidget" name="tab_plot_coordinates">
               <attribute name="title">
-               <string>Tab 1</string>
+               <string>Coordinate</string>
               </attribute>
               <layout class="QGridLayout" name="gridLayout_5">
                <item row="0" column="0">
-                <widget class="QLineEdit" name="txt_plot_query">
+                <widget class="QLabel" name="label_2">
                  <property name="text">
-                  <string/>
+                  <string>Select a Plot feature to identify releated information:</string>
                  </property>
-                 <property name="placeholderText">
-                  <string>Search for</string>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
                  </property>
                 </widget>
+               </item>
+               <item row="1" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                 <item>
+                  <widget class="QPushButton" name="btn_identify_plot">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="mouseTracking">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Identify</string>
+                   </property>
+                   <property name="autoDefault">
+                    <bool>false</bool>
+                   </property>
+                   <property name="default">
+                    <bool>false</bool>
+                   </property>
+                   <property name="flat">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_3">
+                   <property name="text">
+                    <string>t_id:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_4">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_plot_neighbours">
+              <attribute name="title">
+               <string>Neighbours</string>
+              </attribute>
+              <layout class="QGridLayout" name="gridLayout_6"/>
+             </widget>
+             <widget class="QWidget" name="tab_plot_survey">
+              <attribute name="title">
+               <string>Survey</string>
+              </attribute>
+              <layout class="QGridLayout" name="gridLayout_7">
+               <item row="2" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_2">
+                 <item>
+                  <widget class="QPushButton" name="btn_clear_plot">
+                   <property name="text">
+                    <string>Clear</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btn_query_plot">
+                   <property name="text">
+                    <string>Query</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
                <item row="1" column="0">
                 <layout class="QHBoxLayout" name="horizontalLayout">
@@ -102,35 +176,17 @@
                  </item>
                 </layout>
                </item>
-               <item row="2" column="0">
-                <layout class="QHBoxLayout" name="horizontalLayout_2">
-                 <item>
-                  <widget class="QPushButton" name="btn_clear">
-                   <property name="text">
-                    <string>Clear</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="btn_query">
-                   <property name="text">
-                    <string>Query</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
+               <item row="0" column="0">
+                <widget class="QLineEdit" name="txt_plot_query">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="placeholderText">
+                  <string>Search for</string>
+                 </property>
+                </widget>
                </item>
               </layout>
-             </widget>
-             <widget class="QWidget" name="tab_plot_neighbours">
-              <attribute name="title">
-               <string>Tab 2</string>
-              </attribute>
-             </widget>
-             <widget class="QWidget" name="tab_plot_survey">
-              <attribute name="title">
-               <string>Page</string>
-              </attribute>
              </widget>
             </widget>
            </item>

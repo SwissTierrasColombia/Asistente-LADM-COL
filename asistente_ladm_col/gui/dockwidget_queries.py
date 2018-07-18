@@ -17,10 +17,11 @@
  ***************************************************************************/
 """
 from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtGui import QColor
 
 from ..config.table_mapping_config import PLOT_TABLE, UEBAUNIT_TABLE, PARCEL_TABLE
-from qgis._core import QgsWkbTypes, Qgis
-from qgis.gui import QgsDockWidget
+from qgis._core import QgsWkbTypes, Qgis, QgsMessageLog
+from qgis.gui import QgsDockWidget, QgsMapToolEmitPoint
 
 from ..utils import get_ui_class
 
@@ -44,7 +45,9 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.add_options()
 
         # Set connections
-        self.btn_query.clicked.connect(self.query_plot)
+        self.btn_query_plot.clicked.connect(self.query_plot)
+        self.btn_clear_plot.clicked.connect(self.clear_plot)
+        self.btn_identify_plot.clicked.connect(self.identify_plot)
 
     def add_options(self):
         self.cbo_plot_fields.clear()
@@ -85,3 +88,50 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("DockerWidgetQueries","t_id must be an integer"))
+
+
+    def clear_plot(self):
+        self.txt_plot_query.setText('')
+
+
+    def identify_plot(self):
+        # encender capa plot
+
+        # ponerla como la capa principal?
+
+        # activar evento click
+        self.mapCanvas = self.iface.mapCanvas()
+        self.mapCanvas.setSelectionColor(QColor("red"))
+        self.layer = self.iface.activeLayer()
+        #self.iface.actionSelect().trigger()
+
+        # configurar listener click
+        self.canvas_clicked = ClickedMapPoint(self.mapCanvas, self.layer)
+        self.mapCanvas.setMapTool(self.canvas_clicked)
+        #self.clickeado()
+
+        #self.canvas_clicked.canvasClicked.connect(self.clickeado)
+
+        # activate previous tool
+        #currentTool = self.iface.mapCanvas().mapTool()
+        #currentTool.activate()
+
+
+class ClickedMapPoint(QgsMapToolEmitPoint):
+    def __init__(self, canvas, layer):
+        self.canvas = canvas
+        self.layer = layer
+        QgsMapToolEmitPoint.__init__(self, self.canvas)
+
+    def canvasPressEvent( self, e ):
+        #point = self.toMapCoordinates(self.canvas.mouseLastXY())
+        #point = list(point)
+        #print(point)
+        currentTool = self.canvas.mapTool()
+        currentTool.activate()
+        QgsMessageLog.logMessage('canvasPressEvent')
+
+        if  self.layer.selectedFeatureCount() != 1:
+            QgsMessageLog.logMessage('selectedFeaturesCount')
+        else:
+            print(self.layer.selectedFeatures())
