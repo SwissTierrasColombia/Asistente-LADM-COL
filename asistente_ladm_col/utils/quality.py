@@ -543,14 +543,14 @@ class QualityUtils(QObject):
                 Qgis.Info)
             return
 
-        error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG), "Overlaps Right To Way with buildings",
+        error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG), "Overlaps Right To Way with buildings",
                                      "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("building_id", QVariant.Int)])
         data_provider.addAttributes([QgsField("right_to_way_id", QVariant.Int)])
         error_layer.updateFields()
 
-        ids, overlap_lines = self.qgis_utils.geometry.get_touches_between_line_poligon(right_to_way_table, building_layer)
+        ids, overlap_lines = self.qgis_utils.geometry.get_touches_between_poligon_poligon(right_to_way_table, building_layer)
 
         new_features = list()
         for key, line in zip(ids, overlap_lines.asGeometryCollection()):
@@ -564,7 +564,7 @@ class QualityUtils(QObject):
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} building vertices with no associated survey points has been added to the map!").format(
+                                           "A memory layer with {} overlaps Right To Way with Buildings has been added to the map!").format(
                     added_layer.featureCount()), Qgis.Info)
         else:
             self.qgis_utils.message_emitted.emit(
