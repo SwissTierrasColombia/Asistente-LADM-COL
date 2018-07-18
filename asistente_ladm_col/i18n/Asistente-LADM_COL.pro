@@ -22,6 +22,7 @@ FORMS = ../ui/dlg_load_layers.ui \
 SOURCES = ../__init__.py \
           ../asistente_ladm_col_plugin.py \
           ../utils/qgis_utils.py \
+          ../utils/quality.py \
           ../gui/create_administrative_source_cadastre_wizard.py \
           ../gui/create_legal_party_cadastre_wizard.py \
           ../gui/create_natural_party_cadastre_wizard.py \
