@@ -17,11 +17,11 @@
  ***************************************************************************/
 """
 from PyQt5.QtCore import QCoreApplication, Qt
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QColor, QIcon, QCursor
 
 from ..config.table_mapping_config import PLOT_TABLE, UEBAUNIT_TABLE, PARCEL_TABLE
 from qgis._core import QgsWkbTypes, Qgis, QgsMessageLog
-from qgis.gui import QgsDockWidget, QgsMapToolEmitPoint
+from qgis.gui import QgsDockWidget, QgsMapToolIdentifyFeature
 
 from ..utils import get_ui_class
 
@@ -41,16 +41,18 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         # self.treeView.selectionModel().selectionChanged.connect(self.treeModel.updateActions)
 
         self._plot_layer = None
+        self._identify_tool = None
 
         self.add_options()
+
+        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/{}.png".format('tables')))
 
         # Set connections
         self.btn_query_plot.clicked.connect(self.query_plot)
         self.btn_clear_plot.clicked.connect(self.clear_plot)
         self.btn_identify_plot.clicked.connect(self.identify_plot)
 
-    def add_options(self):
-        self.cbo_plot_fields.clear()
+    def add_layers(self):
         res_layers = self.qgis_utils.get_layers(self._db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
@@ -65,6 +67,12 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                                                     self._db.get_description()),
                                                 Qgis.Warning)
             return
+
+    def add_options(self):
+        if self._plot_layer == None:
+            self.add_layers()
+
+        self.cbo_plot_fields.clear()
 
         for field in self._plot_layer.fields():
             alias = field.alias()
@@ -95,19 +103,23 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
 
     def identify_plot(self):
-        # encender capa plot
+        # enable needed layers
+        self.add_layers()
 
-        # ponerla como la capa principal?
-
-        # activar evento click
+        # recover old state of mapCanvas
         self.mapCanvas = self.iface.mapCanvas()
-        self.mapCanvas.setSelectionColor(QColor("red"))
-        self.layer = self.iface.activeLayer()
-        #self.iface.actionSelect().trigger()
+        self.previousTool = self.mapCanvas.mapTool()
 
-        # configurar listener click
-        self.canvas_clicked = ClickedMapPoint(self.mapCanvas, self.layer)
-        self.mapCanvas.setMapTool(self.canvas_clicked)
+        # configure listeners
+        if self._identify_tool == None:
+            self._identify_tool = CustomMapToolIdentifyFeature(self.mapCanvas, self._plot_layer, self.btn_identify_plot, self.previousTool, self.callback_identify)
+        else:
+            self._identify_tool.activate()
+        self.mapCanvas.setMapTool(self._identify_tool)
+
+        #self._click_point.activate()
+
+        #self.iface.actionSelect().trigger()
         #self.clickeado()
 
         #self.canvas_clicked.canvasClicked.connect(self.clickeado)
@@ -116,22 +128,55 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         #currentTool = self.iface.mapCanvas().mapTool()
         #currentTool.activate()
 
+    def callback_identify(self, plot_feature):
+        plot_t_id = plot_feature['t_id']
+        records = self._db.get_parcels_and_parties_by_plot(plot_t_id)
+        print(records)
+        self.treeModel = TreeModel(data=records)
+        self.treeView.setModel(self.treeModel)
+        self.treeView.expandAll()
 
-class ClickedMapPoint(QgsMapToolEmitPoint):
-    def __init__(self, canvas, layer):
+
+
+class CustomMapToolIdentifyFeature(QgsMapToolIdentifyFeature):
+    def __init__(self, canvas, vlayer, button, previousTool, callback_identify):
         self.canvas = canvas
-        self.layer = layer
-        QgsMapToolEmitPoint.__init__(self, self.canvas)
+        self.vlayer = vlayer
+        self.button = button
+        self.previousTool = previousTool
+        self.callback_identify = callback_identify
 
-    def canvasPressEvent( self, e ):
-        #point = self.toMapCoordinates(self.canvas.mouseLastXY())
-        #point = list(point)
-        #print(point)
-        currentTool = self.canvas.mapTool()
-        currentTool.activate()
-        QgsMessageLog.logMessage('canvasPressEvent')
+        self.button.setCheckable(True)
 
-        if  self.layer.selectedFeatureCount() != 1:
-            QgsMessageLog.logMessage('selectedFeaturesCount')
-        else:
-            print(self.layer.selectedFeatures())
+        QgsMapToolIdentifyFeature.__init__(self, self.canvas, self.vlayer)
+
+        self.featureIdentified.connect(self.featureIdentifiedListener)
+
+    def featureIdentifiedListener(self, feature):
+        self.vlayer.selectByIds([feature.id()])
+        print(feature.id())
+        self.callback_identify(feature)
+        self.deactivate()
+        self.canvas.unsetMapTool(self) # instead of self.featureIdentified.disconnect(self.featureIdentifiedListener)
+        try:
+            self.previousTool.activate()
+        except AttributeError:
+            # if isn't active, doesn't matter
+            pass
+
+
+    def activate(self):
+        """
+        Overrides parent class.  Set custom cursor and change icon.
+        """
+        self.canvas.setCursor(QCursor(Qt.PointingHandCursor))
+        self.canvas.setSelectionColor(QColor("red"))
+        self.button.setChecked(True)
+
+    def deactivate(self):
+        """
+        Overrides parent class.  Change icon back.
+        """
+        self.button.setChecked(False)
+        self.canvas.mapTool()
+
