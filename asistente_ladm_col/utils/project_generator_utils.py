@@ -115,3 +115,9 @@ class ProjectGeneratorUtils(QObject):
             import projectgenerator
             return projectgenerator.utils.qgis_utils.get_first_index_for_layer_type(layer_type, group)
         return None
+
+    def get_suggested_index_for_layer(self, layer, group):
+        if 'projectgenerator' in qgis.utils.plugins:
+            import projectgenerator
+            return projectgenerator.utils.qgis_utils.get_suggested_index_for_layer(layer, group)
+        return None

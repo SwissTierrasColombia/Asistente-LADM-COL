@@ -34,6 +34,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
 import processing
 
+from .project_generator_utils import ProjectGeneratorUtils
 from ..config.general_config import (
     DEFAULT_EPSG,
     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE
@@ -51,6 +52,7 @@ class QualityUtils(QObject):
     def __init__(self, qgis_utils):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
+        self.project_generator_utils = ProjectGeneratorUtils()
 
     def check_overlapping_points(self, db, point_layer_name):
         """
@@ -544,6 +546,7 @@ class QualityUtils(QObject):
                 break
 
         added_layer = QgsProject.instance().addMapLayer(error_layer, False)
-        added_layer = group.addLayer(added_layer).layer()
+        index = self.project_generator_utils.get_suggested_index_for_layer(added_layer, group)
+        added_layer = group.insertLayer(index, added_layer).layer()
         self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
         return added_layer
