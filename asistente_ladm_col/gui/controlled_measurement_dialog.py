@@ -37,6 +37,7 @@ from qgis.PyQt.QtWidgets import QDialog
 import processing
 
 from ..utils import get_ui_class
+from asistente_ladm_col.config.general_config import DEFAULT_EPSG
 
 DIALOG_UI = get_ui_class('controlled_measurement_dialog.ui')
 GROUP_ID = 'belongs_to_group' # If you change this, adjust the Group_Points as well
@@ -98,7 +99,6 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
 
         group_ids = groups.uniqueValues(idx)
 
-        # layer = QgsVectorLayer("Point?crs=EPSG:3116", "Average Points", "memory")
         layer = self.copy_attribs(groups, "Average Points")
         layer.dataProvider().addAttributes([
             QgsField("group_id", QVariant.Int),
@@ -114,9 +114,8 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         for group_id in group_ids:
             feature = [f for f in groups.getFeatures("\"{}\"={} AND \"{}\" = 'True'".format(GROUP_ID, group_id, "trusty"))]
             try:
-                new_feature = self.concat_point_name(feature, groups, point_name) ####
-                fields_values = dict(zip(range(0, len(feature[0].attributes())), new_feature)) #implementar función para fusionar los valores de datos.
-                print(fields_values)
+                new_feature = self.concat_point_name(feature, groups, point_name)
+                fields_values = dict(zip(range(0, len(feature[0].attributes())), new_feature))
             except:
                 continue
             x_mean = 0
@@ -129,7 +128,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
                 x_list.append(current_point.x())
                 y_list.append(current_point.y())
 
-            if x_list and y_list != []:
+            if x_list and y_list:
                 x_mean = statistics.mean(x_list)
                 y_mean = statistics.mean(y_list)
                 x_stdev = statistics.pstdev(x_list)
@@ -137,19 +136,20 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             else:
                 continue
             geom = QgsGeometry.fromPointXY(QgsPointXY(x_mean, y_mean))
+            fields = layer.fields()
             fields_values.update({
-                layer.fields().indexOf("group_id"): group_id,
-                layer.fields().indexOf("count"): len(x_list),
-                layer.fields().indexOf("x_mean"): x_mean,
-                layer.fields().indexOf("y_mean"): y_mean,
-                layer.fields().indexOf("x_stdev"): x_stdev,
-                layer.fields().indexOf("y_stdev"): y_stdev
+                fields.indexOf("group_id"): group_id,
+                fields.indexOf("count"): len(x_list),
+                fields.indexOf("x_mean"): x_mean,
+                fields.indexOf("y_mean"): y_mean,
+                fields.indexOf("x_stdev"): x_stdev,
+                fields.indexOf("y_stdev"): y_stdev
             })
             new_feature = QgsVectorLayerUtils.createFeature(layer, geom, fields_values)
             new_features.append(new_feature)
 
         layer.dataProvider().addFeatures(new_features)
-        features = groups.getFeatures("\"{}\" IS NULL".format("belongs_to_group"))
+        features = groups.getFeatures("\"belongs_to_group\" IS NULL")
         layer.dataProvider().addFeatures(features)
         layer.commitChanges()
         QgsProject.instance().addMapLayer(layer)
@@ -179,38 +179,35 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             return res, msg
 
     def time_validate(self, input_features, time_tolerance, time_field):
+        """This function goes through the groups obtained from the model and updates the trusty field called
+        trusty as the case may be (True or False), also if True uses the auxiliary function time_filter to determine
+        the records that are not within the allowed time range."""
         groups_num = input_features.uniqueValues(input_features.fields().indexFromName("belongs_to_group"))
-        idx = input_features.fields().indexFromName(time_field)  # Cambiar por el campo de tiempo cuando este se incluya
+        idx = input_features.fields().indexFromName(time_field)
         new_layer = self.copy_attribs(input_features)
         time_layer = self.copy_attribs(input_features)
         time2_layer = self.copy_attribs(input_features)
         for i in groups_num:
             if i is None:
-                #new_layer.startEditing()
                 features = input_features.getFeatures("\"{}\" IS NULL".format("belongs_to_group"))
                 new_layer.dataProvider().addFeatures(features)
                 [new_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "False") for feat in
                  new_layer.getFeatures()]
-                new_layer.commitChanges()
+                time_layer.updateFields()
             else:
-                features, not_features = self.time_filter(input_features, input_features.getFeatures("\"{}\"={}".format("belongs_to_group", i)), idx, time_tolerance)
+                features, not_features = self.time_filter(input_features, input_features.getFeatures("\"belongs_to_group\"={}".format(i)), idx, time_tolerance)
                 features = [f for f in features]
                 not_features = [f for f in not_features]
                 fg = len(features)
                 if fg > 1:
-                    time_layer.startEditing()
                     time_layer.dataProvider().addFeatures(features)
                     [time_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "True") for feat in
                      time_layer.getFeatures()]
-                    time2_layer.startEditing()
                     time2_layer.dataProvider().addFeatures(not_features)
                     [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "False") for feat in
                      time2_layer.getFeatures()]
-                    #[time_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("belongs_to_group"), fg) for
-                    # feat in time_layer.getFeatures()]
                     time_layer.updateFields()
                 else:
-                    time2_layer.startEditing()
                     time2_layer.dataProvider().addFeatures(features)
                     [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "False") for feat in
                      time2_layer.getFeatures()]
@@ -226,7 +223,6 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
                 time_layer.commitChanges()
                 time2_layer.commitChanges()
 
-        new_layer.startEditing()
         new_layer.dataProvider().addFeatures(time_layer.getFeatures())
         new_layer.dataProvider().addFeatures(time2_layer.getFeatures())
         new_layer.commitChanges()
@@ -234,7 +230,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         return new_layer
 
     def copy_attribs(self, sourceLYR, name="Previous Average Points"):
-        destLYR = QgsVectorLayer("Point?crs=EPSG:3116", name, "memory")
+        destLYR = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), name, "memory")
         destLYR.startEditing()
         destLYR.dataProvider().addAttributes(sourceLYR.fields())
         destLYR.addAttribute(QgsField("trusty", QVariant.String))
@@ -242,6 +238,8 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         return destLYR
 
     def time_filter(self, layer, features, idx, time_tolerance):
+        """enter a group of records, this filters through a time field and returns which are within the allowed
+        time range and which are not."""
         dates = {}
         for feat in features:
             attrs = feat.attributes()
