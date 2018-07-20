@@ -45,7 +45,8 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         self.add_options()
 
-        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/{}.png".format('tables')))
+        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/surveying.png"))
+        self.btn_identify_plot_2.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/party.png"))
 
         # Set connections
         self.btn_query_plot.clicked.connect(self.query_plot)

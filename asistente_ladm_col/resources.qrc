@@ -9,6 +9,11 @@
         <file>resources/images/tables.png</file>
         <file>resources/images/domains.png</file>
         <file>resources/images/search.png</file>
+        <file>resources/images/ladmcol.png</file>
+        <file>resources/images/party.png</file>
+        <file>resources/images/rrr.png</file>
+        <file>resources/images/surveying.png</file>
+        <file>resources/images/unit.png</file>
         <file>resources/csv/template_boundary_points.csv</file>
         <file>resources/csv/template_survey_points.csv</file>
         <file>resources/csv/template_control_points.csv</file>
