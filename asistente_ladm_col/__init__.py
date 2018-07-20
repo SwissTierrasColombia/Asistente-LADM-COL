@@ -16,7 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 """
+from qgis.core import QgsApplication, Qgis
 from qgis.PyQt.QtCore import QCoreApplication
+
+from .config.general_config import PLUGIN_NAME
 
 def classFactory(iface):
     try:
@@ -29,6 +32,8 @@ def classFactory(iface):
                <a target=\"_blank\" href=\"https://qgis.org/downloads/weekly/\">this link</a>. \
                Otherwise, use a <a href=\"https://qgis.org/en/site/forusers/download.html\" target=\"_blank\">nightly build</a>."),
             1, 0) # We don't use Qgis.Info because it was introduced after 2.99
+
+        QgsApplication.messageLog().logMessage("ERROR while loading the plugin: " + repr(e), PLUGIN_NAME, Qgis.Critical)
 
         from mock import Mock
         return Mock()
