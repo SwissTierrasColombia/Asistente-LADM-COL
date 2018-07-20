@@ -78,8 +78,8 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     QCoreApplication.translate("QGISUtils", "Overlapping points in {}"
-                                                                .format(point_layer_name)), "memory")
+                                     QCoreApplication.translate("QGISUtils", "Overlapping points in {}")
+                                                                .format(point_layer_name), "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("point_count", QVariant.Int), QgsField("intersecting_ids", QVariant.String) ])
         error_layer.updateFields()
@@ -124,8 +124,8 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("Polygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     QCoreApplication.translate("QGISUtils", "Overlapping polygons in {}"
-                                                                .format(polygon_layer_name)), "memory")
+                                     QCoreApplication.translate("QGISUtils", "Overlapping polygons in {}")
+                                                                .format(polygon_layer_name), "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("polygon_id", QVariant.String),
                                      QgsField("overlapping_ids", QVariant.String),
@@ -315,7 +315,9 @@ class QualityUtils(QObject):
                 Qgis.Info)
             return
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), "Missing boundary points in boundaries", "memory")
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     QCoreApplication.translate("QGISUtils", "Missing boundary points in boundaries"),
+                                     "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("boundary_id", QVariant.Int)])
         error_layer.updateFields()
@@ -370,7 +372,9 @@ class QualityUtils(QObject):
                 Qgis.Info)
             return
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), "Missing survey points in buildings", "memory")
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     QCoreApplication.translate("QGISUtils", "Missing survey points in buildings"),
+                                     "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("building_id", QVariant.Int)])
         error_layer.updateFields()
