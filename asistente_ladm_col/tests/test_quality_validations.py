@@ -186,15 +186,17 @@ class TesQualityValidations(unittest.TestCase):
             polygons_overlap_layer = processing.run("native:multiparttosingleparts",
                                            {'INPUT': polygons_overlap_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
-        expected_overlaps = [[11, 44], [11, 47], [12, 44], [12, 45], [12, 57], [48, 49], [53, 55], [61, 62], [63, 64], [63, 65], [64, 65]]
+        expected_overlaps = [[11, 44], [11, 47], [12, 44], [12, 45], [12, 57], [48, 49], [53, 55], [61, 62], [63, 64], [63, 65], [64, 65], [66, 68], [67, 68]]
         flat_expected_overlaps = list(set([id for items in expected_overlaps for id in items]))  # Build a flat list of uniques ids
 
         overlapping = self.qgis_utils.geometry.get_overlapping_polygons(polygons_overlap_layer)
         flat_overlapping = list(set([id for items in overlapping for id in items]))
 
         # checks
-        self.assertEqual(len(flat_overlapping), 15)
-        self.assertEqual(flat_expected_overlaps.sort(), flat_overlapping.sort())
+        self.assertEqual(len(flat_overlapping), 18)
+        flat_expected_overlaps.sort()
+        flat_overlapping.sort()
+        self.assertEqual(flat_expected_overlaps, flat_overlapping)
 
     def test_intersection_polygons_tolerance(self):
         print('\nINFO: Validating intersection in polygons (plots)...')
@@ -360,7 +362,6 @@ class TesQualityValidations(unittest.TestCase):
 
         end_points, dangle_ids = self.quality.get_dangle_ids(boundary_layer)
         self.assertEqual(len(dangle_ids), 0)
-
 
     def validate_segments(self, segments_info, tolerance):
         for segment_info in segments_info:

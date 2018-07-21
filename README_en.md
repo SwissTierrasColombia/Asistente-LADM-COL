@@ -17,7 +17,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([0.4.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.4.0)) of the LADM_COL Assistant depends on [Project Generator](https://github.com/opengisch/projectgenerator/) plugin v3.2.3 (or higher) and allows users to:
+The current version ([0.5.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.5.0)) of the LADM_COL Assistant depends on [Project Generator](https://github.com/opengisch/projectgenerator/) plugin v3.2.3 (or higher) and allows users to:
 
  - Capture data for the LADM_COL v2.2.1 model.
  - Preprocess points: Controlled Measurement.
@@ -54,12 +54,13 @@ The current version ([0.4.0](https://github.com/AgenciaImplementacion/Asistente-
    - From another table with any structure, setting a field mapping.
  - Create `Spatial Sources` and `Administrative Sources`:
    - Using preconfigured forms.
+     - And associating the new `Spatial Source` to selected `Plots`, `Boundaries` or `Points`.
    - From another table with any structure, setting a field mapping.
  - Create `Source Files`:
    - Associate sources to source files.
    - Upload source files to a server at saving-edits time or later, in batch mode.
  - Create `Rights`, `Restrictions` and `Responsibilities`:
-   - Using preconfigured forms (linking the new object to selected `Administrative Sources`).
+   - Using preconfigured forms (associating the new object to selected `Administrative Sources`).
    - From another table with any structure, setting a field mapping.
  - Select in a dialog layers to load from any model in the database or schema:
    - Use the 'Project Generator' plugin (a prerequisite) to load layers with configured forms, relations and domains.
@@ -72,6 +73,7 @@ The current version ([0.4.0](https://github.com/AgenciaImplementacion/Asistente-
    - Check overlaps in `Plot`.
    - Check missing `Boundary Points` in `Boundaries`.
    - Check dangles in `Boundary`.
+   - Check missing `Survey Points` in `Buildings`.
  - Configure automatic values for `namespace` and `local_id` attributes.
  - Load styles for newly added layers from preconfigured QML files.
  - View illustrative GIFs in the plugin's online help or download them for offline work.

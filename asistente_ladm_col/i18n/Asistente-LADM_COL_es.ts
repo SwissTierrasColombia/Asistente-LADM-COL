@@ -678,24 +678,104 @@
 <context>
     <name>CreateSpatialSourceCadastreWizard</name>
     <message>
-        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="57"/>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="74"/>
+        <source>Points</source>
+        <translation>Puntos</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="99"/>
         <source>Import</source>
         <translation>Importar</translation>
     </message>
     <message>
-        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="63"/>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="106"/>
         <source>Create</source>
         <translation>Crear</translation>
     </message>
     <message>
-        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="80"/>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="126"/>
         <source>Select a source layer to set the field mapping to &apos;{}&apos;.</source>
         <translation>Selecciona una capa fuente para definir el mapeo de campos a &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="97"/>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="160"/>
         <source>Spatial Source layer couldn&apos;t be found... {}</source>
         <translation>No se pudo encontrar la tabla Fuente Espacial... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="168"/>
+        <source>ExtFile table couldn&apos;t be found... {}</source>
+        <translation>No se encontró la tabla ExtFile... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="177"/>
+        <source>Plot layer couldn&apos;t be found... {}</source>
+        <translation>No se encontró la capa Terreno... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="185"/>
+        <source>UESOURCE table couldn&apos;t be found... {}</source>
+        <translation>No se encontró la tabla UEFuente... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="194"/>
+        <source>Boundary layer couldn&apos;t be found... {}</source>
+        <translation>No se encontró la capa Lindero... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="202"/>
+        <source>CCLSOURCE table couldn&apos;t be found... {}</source>
+        <translation>No se encontró la tabla CCLFuente... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="212"/>
+        <source>Boundary Point layer couldn&apos;t be found... {}</source>
+        <translation>No se encontró la tabla Punto Lindero... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="220"/>
+        <source>Survey Point layer couldn&apos;t be found... {}</source>
+        <translation>No se encontró la tabla Punto Levantamiento... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="228"/>
+        <source>Control Point layer couldn&apos;t be found... {}</source>
+        <translation>No se encontró la tabla Punto Control... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="236"/>
+        <source>POINTSOURCE table couldn&apos;t be found... {}</source>
+        <translation>No se encontró la tabla PuntoFuente... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="256"/>
+        <source>Please select at least one Plot</source>
+        <translation>Por favor selecciona por lo menos un terreno</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="266"/>
+        <source>Please select at least one Boundary</source>
+        <translation>Por favor selecciona por lo menos un lindero</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="276"/>
+        <source>Please select at least one Boundary Point</source>
+        <translation>Por favor selecciona por lo menos un Punto de Lindero</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="286"/>
+        <source>Please select at least one Survey Point</source>
+        <translation>Por favor selecciona por lo menos un Punto de Levantamiento</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="296"/>
+        <source>Please select at least one Control Point</source>
+        <translation>Por favor selecciona por lo menos un Punto de Control</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_spatial_source_cadastre_wizard.py" line="382"/>
+        <source>The new spatial source (t_id={}) was successfully created and associated with the following features: {}</source>
+        <translation>La nueva fuente espacial (t_id={}) se creó exitosamente y fue asociada con los siguientes objetos espaciales: {}</translation>
     </message>
 </context>
 <context>
@@ -972,6 +1052,7 @@
     </message>
     <message>
         <location filename="../ui/dlg_quality.ui" line="47"/>
+        <location filename="../gui/dialog_quality.py" line="83"/>
         <source>Boundary nodes should be covered by Boundary Points</source>
         <translation>Los nodos de Linderos deben estar cubiertos por Puntos de Lindero</translation>
     </message>
@@ -1006,6 +1087,11 @@
         <translation>Los Puntos de Control no deben superponerse</translation>
     </message>
     <message>
+        <location filename="../gui/dialog_quality.py" line="96"/>
+        <source>Buildings nodes should be covered by Survey Points</source>
+        <translation>Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento</translation>
+    </message>
+    <message>
         <source>Boundary segments should not be longer than tolerance</source>
         <translation type="vanished">Los segmentos de Linderos no deben ser más largos que </translation>
     </message>
@@ -1020,9 +1106,8 @@
         <translation>Los Linderos no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../gui/dialog_quality.py" line="83"/>
         <source>Boundary nodes should be covered by Bundary Points</source>
-        <translation>Los nodos de Linderos deben estar cubiertos por Puntos de Lindero</translation>
+        <translation type="vanished">Los nodos de Linderos deben estar cubiertos por Puntos de Lindero</translation>
     </message>
     <message>
         <location filename="../gui/dialog_quality.py" line="86"/>
@@ -1076,6 +1161,11 @@
         <location filename="../config/help_strings.py" line="136"/>
         <source>Choose this option if you have selected at least one &lt;i&gt;Administrative Source&lt;/i&gt; and want to link such selected sources to a new &lt;b&gt;Right&lt;/b&gt; that you will create using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;COL_Right&lt;/b&gt; is a class that stores right instances that a party has over a parcel. It is a specialization of the class LA_RRR.</source>
         <translation>Elige esta opción si has seleccionado por lo menos una &lt;i&gt;Fuente Administrativa&lt;/i&gt; y deseas relacionar esas fuentes seleccionadas con un nuevo &lt;b&gt;Derecho&lt;/b&gt; que vas a crear usando un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;COL_Derecho&lt;/b&gt; es una clase que registra las instancias de los derechos que un interesado ejerce sobre un predio. Es una especialización de la clase &lt;i&gt;LA_RRR&lt;/i&gt; del propio modelo.</translation>
+    </message>
+    <message>
+        <location filename="../config/help_strings.py" line="142"/>
+        <source>Choose this option if you want to create a &lt;b&gt;Spatial Source&lt;/b&gt; using a form. Then select a layer to get all its selected features associated with the newly created &lt;b&gt;Spatial Source&lt;/b&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;Spatial Source&lt;/b&gt; is a specialization of the &lt;i&gt;COL_Fuente&lt;/i&gt; class to store those sources corresponding to spatial data (geographic features, satellite imagery, photogrammetric flights, maps, coordinate listings, ancient or modern plans, location descriptions, and the like) that technically document the relationship between parties and parcels.</source>
+        <translation>Elige esta opción si deseas agregar una &lt;b&gt;Fuente espacial&lt;/b&gt; usando un formulario. Luego selecciona una capa para asociar todos sus objetos seleccionados a la nueva &lt;b&gt;Fuente Espacial&lt;/b&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;Fuente espacial&lt;/b&gt; es una especialización de la clase &lt;i&gt;COL_Fuente&lt;/i&gt; para almacenar las fuentes constituidas por datos espaciales (entidades geográficas, imágenes de satélite, vuelos fotogramétricos, listados de coordenadas, mapas, planos antiguos o modernos, descripción de localizaciones, etc.) que documentan técnicamente la relación entre instancias de interesados y de predios.</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="156"/>
@@ -1237,9 +1327,8 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 &lt;b&gt;COL_Derecho&lt;/b&gt; es una clase que registra las instancias de los derechos que un interesado ejerce sobre un predio. Es una especialización de la clase LA_RRR del propio modelo.</translation>
     </message>
     <message>
-        <location filename="../config/help_strings.py" line="142"/>
         <source>Choose this option if you want to create a &lt;b&gt;Spatial Source&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Spatial Source&lt;/b&gt; is a specialization of the &lt;i&gt;COL_Fuente&lt;/i&gt; class to store those sources corresponding to spatial data (geographic features, satellite imagery, photogrammetric flights, maps, coordinate listings, ancient or modern plans, location descriptions, and the like) that technically document the relationship between parties and parcels.</source>
-        <translation>Elige esta opción si deseas agregar una &lt;b&gt;Fuente espacial&lt;/b&gt; usando un formulario.
+        <translation type="vanished">Elige esta opción si deseas agregar una &lt;b&gt;Fuente espacial&lt;/b&gt; usando un formulario.
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Fuente espacial&lt;/b&gt; es una especialización de la clase &lt;i&gt;COL_Fuente&lt;/i&gt; para almacenar las fuentes constituidas por datos espaciales (entidades geográficas, imágenes de satélite, vuelos fotogramétricos, listados de coordenadas, mapas, planos antiguos o modernos, descripción de localizaciones, etc.) que documentan técnicamente la relación entre instancias de interesados y de predios.</translation>
     </message>
@@ -1582,6 +1671,14 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <location filename="../gui/upload_progress_dialog.py" line="71"/>
         <source>Uploading {} out of {} files</source>
         <translation>Subiendo {} de {} archivos</translation>
+    </message>
+</context>
+<context>
+    <name>__init__</name>
+    <message>
+        <location filename="../__init__.py" line="26"/>
+        <source>The plugin Asistente LADM_COL requires a newer version of QGIS!                If you&apos;re on Windows, you can download a recent version from                &lt;a target=&quot;_blank&quot; href=&quot;https://qgis.org/downloads/weekly/&quot;&gt;this link&lt;/a&gt;.                Otherwise, use a &lt;a href=&quot;https://qgis.org/en/site/forusers/download.html&quot; target=&quot;_blank&quot;&gt;nightly build&lt;/a&gt;.</source>
+        <translation>¡El plugin Asistente LADM_COL requiere una versión más nueva de QGIS!                Si estás en Windows, puedes descargar una versión más reciente desde                &lt;a target=&quot;_blank&quot; href=&quot;https://qgis.org/downloads/weekly/&quot;&gt;este enlace&lt;/a&gt;.                Si no usas Windows, descarga un &lt;a href=&quot;https://qgis.org/en/site/forusers/download.html&quot; target=&quot;_blank&quot;&gt;binario reciente&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -2028,16 +2125,28 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../ui/wiz_create_spatial_source_cadastre.ui" line="68"/>
-        <source>Entering data manually using a form</source>
-        <translation>Ingresando datos manualmente en un formulario</translation>
+        <source>Entering data manually using a form.
+Associate newly created source with selected features from:</source>
+        <translation>Ingresando datos manualmente en un formulario.
+Asociar la nueva fuente con los objetos seleccionados de:</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_spatial_source_cadastre.ui" line="94"/>
+        <source>Entering data manually using a form.
+Associate newly created source with selected features from layer:</source>
+        <translation type="vanished">Ingresando datos manualmente en un formulario.
+Asociar la nueva fuente con los objetos seleccionados de:</translation>
+    </message>
+    <message>
+        <source>Entering data manually using a form</source>
+        <translation type="vanished">Ingresando datos manualmente en un formulario</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_spatial_source_cadastre.ui" line="121"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
         <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_spatial_source_cadastre.ui" line="115"/>
+        <location filename="../ui/wiz_create_spatial_source_cadastre.ui" line="142"/>
         <source>Source:</source>
         <translation>Fuente:</translation>
     </message>
