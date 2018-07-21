@@ -306,13 +306,13 @@ class TesQualityValidations(unittest.TestCase):
 
 
     def test_check_right_to_way_overlaps_buildings(self):
-        print('\nINFO: Validating overlaps into Right To Way with Buildings...')
+        print('\nINFO: Validating Right to Way-Building overlaps...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='construccion')
         building_layer = QgsVectorLayer(uri, 'construccion', 'ogr')
-        uril = gpkg_path + '|layername={layername}'.format(layername='servidumbrepaso')
-        right_to_way_layer = QgsVectorLayer(uril, 'servidumbrepaso', 'ogr')
+        uri = gpkg_path + '|layername={layername}'.format(layername='servidumbrepaso')
+        right_to_way_layer = QgsVectorLayer(uri, 'servidumbrepaso', 'ogr')
 
         building_features = [feature for feature in building_layer.getFeatures()]
         self.assertEqual(len(building_features), 4)
@@ -320,7 +320,7 @@ class TesQualityValidations(unittest.TestCase):
         right_to_way_features = [feature for feature in right_to_way_layer.getFeatures()]
         self.assertEqual(len(right_to_way_features), 6)
 
-        ids, over_pol = self.qgis_utils.geometry.get_touches_between_poligon_poligon(right_to_way_layer, building_layer)
+        ids, over_pol = self.qgis_utils.geometry.get_inner_intersections_between_polygons(right_to_way_layer, building_layer)
 
         geometries = [v.asWkt() for v in over_pol.asGeometryCollection()]
 

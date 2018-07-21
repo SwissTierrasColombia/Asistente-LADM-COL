@@ -286,58 +286,31 @@ class GeometryUtils(QObject):
             QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
             QgsWkbTypes.GeometryCollectionZM]:
             for part in intersection.asGeometryCollection():
-                if QgsWkbTypes.PolygonGeometry == part.type():
+                if part.type() == QgsWkbTypes.PolygonGeometry:
                     if part.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
                         listGeoms.append(part)
 
         return QgsGeometry.collectGeometry(listGeoms) if len(listGeoms) > 0 else None
 
-    def get_touches_between_line_poligon(self, feature_overlap, feature_polygon):
-        list_overlapping = list()
+    def get_inner_intersections_between_polygons(self, polygon_layer_1, polygon_layer_2):
+        """
+        Discard intersections other than inner intersections (i.e., only returns
+        polygon intersections)
+        """
         ids = list()
-        feedback = QgsProcessingFeedback()
-        extracted_lines = processing.run("qgis:polygonstolines", {'INPUT': feature_overlap, 'OUTPUT': 'memory:'},
-                                         feedback=feedback)
-        feature_overlap = extracted_lines['OUTPUT']
-        index = QgsSpatialIndex(feature_polygon)
-        for feature in feature_overlap.getFeatures():  # TODO POLYGONS
-            bbox = feature.geometry().boundingBox()
-            bbox.scale(1.001)
-            candidates_ids = index.intersects(bbox)
-            candidates_features = feature_polygon.getFeatures(candidates_ids)
-            for candidate_feature in candidates_features:
-                candidate_feature_geo = candidate_feature.geometry()
-                if feature.geometry().intersects(candidate_feature_geo) and not feature.geometry().touches(candidate_feature_geo):
-                    intersection = feature.geometry().intersection(candidate_feature_geo)
-                    if intersection.wkbType() == QgsWkbTypes.LineString:
-                        ids.append([feature.id(), candidate_feature.id()])
-                        list_overlapping.append(intersection)
-                    elif intersection.wkbType() in [QgsWkbTypes.GeometryCollection,
-                                                    QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
-                                                    QgsWkbTypes.GeometryCollectionZM]:
-                        for part in intersection.asGeometryCollection():
-                            if QgsWkbTypes.LineString == part.wkbType() and not part.touches(candidate_feature_geo):
-                                ids.append([feature.id(), candidate_feature.id()])
-                                list_overlapping.append(part)
-                            elif QgsWkbTypes.LineString == part.wkbType() and part.touches(candidate_feature_geo):
-                                ids.append([feature.id(), candidate_feature.id()])
-                                intersection = part.intersection(candidate_feature_geo)
-                                list_overlapping.append(intersection)
-        return ids, QgsGeometry.collectGeometry(list_overlapping) if len(list_overlapping) > 0 else None
+        list_overlapping = list()
+        index = QgsSpatialIndex(polygon_layer_2)
 
-    def get_touches_between_poligon_poligon(self, feature_overlap, feature_polygon):
-        list_overlapping = list()
-        ids = list()
-        index = QgsSpatialIndex(feature_polygon)
-        for feature in feature_overlap.getFeatures():  # TODO POLYGONS
+        for feature in polygon_layer_1.getFeatures():
             bbox = feature.geometry().boundingBox()
-            bbox.scale(1.001)
             candidates_ids = index.intersects(bbox)
-            candidates_features = feature_polygon.getFeatures(candidates_ids)
+            candidates_features = polygon_layer_2.getFeatures(candidates_ids)
+
             for candidate_feature in candidates_features:
                 candidate_feature_geo = candidate_feature.geometry()
                 if feature.geometry().intersects(candidate_feature_geo) and not feature.geometry().touches(candidate_feature_geo):
                     intersection = feature.geometry().intersection(candidate_feature_geo)
+
                     if intersection.type() == QgsWkbTypes.PolygonGeometry and intersection.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
                         ids.append([feature.id(), candidate_feature.id()])
                         list_overlapping.append(intersection)
@@ -345,11 +318,8 @@ class GeometryUtils(QObject):
                                                     QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
                                                     QgsWkbTypes.GeometryCollectionZM]:
                         for part in intersection.asGeometryCollection():
-                            if QgsWkbTypes.PolygonGeometry == part.type() and intersection.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
+                            if part.type() == QgsWkbTypes.PolygonGeometry and intersection.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
                                 ids.append([feature.id(), candidate_feature.id()])
                                 list_overlapping.append(part)
-                            elif QgsWkbTypes.PolygonGeometry == part.type() and intersection.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
-                                ids.append([feature.id(), candidate_feature.id()])
-                                intersection = part.intersection(candidate_feature_geo)
-                                list_overlapping.append(intersection)
+
         return ids, QgsGeometry.collectGeometry(list_overlapping) if len(list_overlapping) > 0 else None

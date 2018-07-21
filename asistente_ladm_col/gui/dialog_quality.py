@@ -84,10 +84,6 @@ class DialogQuality(QDialog, DIALOG_UI):
                 }, {
                     'id': 'check_dangles_in_boundaries',
                     'text': QCoreApplication.translate("DialogQuality", "Boundaries should not have dangles")
-                },
-                    {
-                        'id': 'check_right_to_way_overlaps_buildings',
-                        'text': QCoreApplication.translate("DialogQuality", "Right To Way should not overlap with Buildings")
                 }]
             }
         self.items_dict[QCoreApplication.translate("DialogQuality", "Rules for Polygons")] = {
@@ -98,6 +94,9 @@ class DialogQuality(QDialog, DIALOG_UI):
                 }, {
                     'id': 'check_missing_survey_points_in_buildings',
                     'text': QCoreApplication.translate("DialogQuality", "Buildings nodes should be covered by Survey Points")
+                }, {
+                    'id': 'check_right_to_way_overlaps_buildings',
+                    'text': QCoreApplication.translate("DialogQuality", "Right to Way should not overlap Buildings")
                 }]
             }
 
