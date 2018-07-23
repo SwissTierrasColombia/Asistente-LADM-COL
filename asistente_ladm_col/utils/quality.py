@@ -43,7 +43,7 @@ from ..config.table_mapping_config import (
     BOUNDARY_POINT_TABLE,
     BOUNDARY_TABLE,
     BUILDING_TABLE,
-    RIGHT_TO_WAY_TABLE,
+    RIGHT_OF_WAY_TABLE,
     SURVEY_POINT_TABLE,
     ID_FIELD
 )
@@ -519,18 +519,18 @@ class QualityUtils(QObject):
                         res[feature[ID_FIELD]] = [diff_geom]
         return res
 
-    def check_right_to_way_overlaps_buildings(self, db):
+    def check_right_of_way_overlaps_buildings(self, db):
         res_layers = self.qgis_utils.get_layers(db, {
-            RIGHT_TO_WAY_TABLE: {'name': RIGHT_TO_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}}, load=True)
 
-        right_to_way_layer = res_layers[RIGHT_TO_WAY_TABLE]
+        right_of_way_layer = res_layers[RIGHT_OF_WAY_TABLE]
         building_layer = res_layers[BUILDING_TABLE]
 
-        if right_to_way_layer is None:
+        if right_of_way_layer is None:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                    "Table {} not found in DB! {}").format(RIGHT_TO_WAY_TABLE,
+                    "Table {} not found in DB! {}").format(RIGHT_OF_WAY_TABLE,
                     db.get_description()),
                 Qgis.Warning)
             return
@@ -543,35 +543,35 @@ class QualityUtils(QObject):
                 Qgis.Warning)
             return
 
-        if right_to_way_layer.featureCount() == 0:
+        if right_of_way_layer.featureCount() == 0:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                   "There are no Right to Way features to check 'Right to Way should not overlap buildings'."),
+                   "There are no Right of Way features to check 'Right of Way should not overlap buildings'."),
                 Qgis.Info)
             return
 
         if building_layer.featureCount() == 0:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                   "There are no buildings to check 'Right to Way should not overlap buildings'."),
+                   "There are no buildings to check 'Right of Way should not overlap buildings'."),
                 Qgis.Info)
             return
 
         error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
                                      QCoreApplication.translate("QGISUtils",
-                                        "Right to Way-Building overlaps"),
+                                        "Right of Way-Building overlaps"),
                                      "memory")
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField("right_to_way_id", QVariant.Int)])
+        data_provider.addAttributes([QgsField("right_of_way_id", QVariant.Int)])
         data_provider.addAttributes([QgsField("building_id", QVariant.Int)])
         error_layer.updateFields()
 
-        ids, overlapping_polygons = self.qgis_utils.geometry.get_inner_intersections_between_polygons(right_to_way_layer, building_layer)
+        ids, overlapping_polygons = self.qgis_utils.geometry.get_inner_intersections_between_polygons(right_of_way_layer, building_layer)
 
         if overlapping_polygons is not None:
             new_features = list()
             for key, polygon in zip(ids, overlapping_polygons.asGeometryCollection()):
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, polygon, {0: key[0], 1: key[1]}) # right_to_way_id, building_id
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, polygon, {0: key[0], 1: key[1]}) # right_of_way_id, building_id
                 new_features.append(new_feature)
 
             data_provider.addFeatures(new_features)
@@ -581,12 +581,12 @@ class QualityUtils(QObject):
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} Right to Way-Building overlaps has been added to the map!").format(
+                                           "A memory layer with {} Right of Way-Building overlaps has been added to the map!").format(
                     added_layer.featureCount()), Qgis.Info)
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "There are no Right to Way-Building overlaps."), Qgis.Info)
+                                           "There are no Right of Way-Building overlaps."), Qgis.Info)
 
     def get_dangle_ids(self, boundary_layer):
         # 1. Run extract specific vertices

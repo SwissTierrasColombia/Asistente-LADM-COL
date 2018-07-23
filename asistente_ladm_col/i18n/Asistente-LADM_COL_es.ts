@@ -1098,7 +1098,7 @@
     </message>
     <message>
         <location filename="../gui/dialog_quality.py" line="99"/>
-        <source>Right to Way should not overlap Buildings</source>
+        <source>Right of Way should not overlap Buildings</source>
         <translation>Las Servidumbres no se deben superponer con Construcciones</translation>
     </message>
     <message>
@@ -1731,27 +1731,27 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     </message>
     <message>
         <location filename="../utils/quality.py" line="548"/>
-        <source>There are no Right to Way features to check &apos;Right to Way should not overlap buildings&apos;.</source>
+        <source>There are no Right of Way features to check &apos;Right of Way should not overlap buildings&apos;.</source>
         <translation>No hay servidumbres para revisar &apos;las Servidumbres no se deben superponer con Construcciones&apos;.</translation>
     </message>
     <message>
         <location filename="../utils/quality.py" line="555"/>
-        <source>There are no buildings to check &apos;Right to Way should not overlap buildings&apos;.</source>
+        <source>There are no buildings to check &apos;Right of Way should not overlap buildings&apos;.</source>
         <translation>No hay construcciones para revisar &apos;las Servidumbres no se deben superponer con Construcciones&apos;.</translation>
     </message>
     <message>
         <location filename="../utils/quality.py" line="561"/>
-        <source>Right to Way-Building overlaps</source>
+        <source>Right of Way-Building overlaps</source>
         <translation>Superposiciones entre Servidumbre y Construcción</translation>
     </message>
     <message>
         <location filename="../utils/quality.py" line="582"/>
-        <source>A memory layer with {} Right to Way-Building overlaps has been added to the map!</source>
+        <source>A memory layer with {} Right of Way-Building overlaps has been added to the map!</source>
         <translation>¡Una capa temporal con {} superposiciones tipo polígono entre Servidumbre y Construcción ha sido agregada al mapa!</translation>
     </message>
     <message>
         <location filename="../utils/quality.py" line="587"/>
-        <source>There are no Right to Way-Building overlaps.</source>
+        <source>There are no Right of Way-Building overlaps.</source>
         <translation>No hay superposiciones entre Servidumbres y Construcciones.</translation>
     </message>
 </context>
