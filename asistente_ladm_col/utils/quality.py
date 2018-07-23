@@ -568,12 +568,13 @@ class QualityUtils(QObject):
 
         ids, overlapping_polygons = self.qgis_utils.geometry.get_inner_intersections_between_polygons(right_to_way_layer, building_layer)
 
-        new_features = list()
-        for key, polygon in zip(ids, overlapping_polygons.asGeometryCollection()):
-            new_feature = QgsVectorLayerUtils().createFeature(error_layer, polygon, {0: key[0], 1: key[1]}) # right_to_way_id, building_id
-            new_features.append(new_feature)
+        if overlapping_polygons is not None:
+            new_features = list()
+            for key, polygon in zip(ids, overlapping_polygons.asGeometryCollection()):
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, polygon, {0: key[0], 1: key[1]}) # right_to_way_id, building_id
+                new_features.append(new_feature)
 
-        data_provider.addFeatures(new_features)
+            data_provider.addFeatures(new_features)
 
         if error_layer.featureCount() > 0:
             added_layer = self.add_error_layer(error_layer)
