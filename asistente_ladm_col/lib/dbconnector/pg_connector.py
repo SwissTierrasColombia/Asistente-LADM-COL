@@ -47,6 +47,20 @@ class PGConnector(DBConnector):
 
         return False
 
+    def _postgis_exists(self):
+        if self.schema:
+            cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            cur.execute("""
+                        SELECT 
+                            count(extversion)
+                        FROM pg_catalog.pg_extension
+                        WHERE extname='postgis'
+            """.format(self.schema, INTERLIS_TEST_METADATA_TABLE_PG))
+
+            return bool(cur.fetchone()[0])
+
+        return False
+
     def _metadata_exists(self):
         if self.schema:
             cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -72,6 +86,10 @@ class PGConnector(DBConnector):
         if not self._schema_exists():
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' does not exist in the database!").format(self.schema))
+        if not self._postgis_exists():
+            return (False, QCoreApplication.translate("PGConnector",
+                    "The schema '{}' does not have the postgis extension in the database!").format(
+                self.schema))
         if not self._metadata_exists():
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
