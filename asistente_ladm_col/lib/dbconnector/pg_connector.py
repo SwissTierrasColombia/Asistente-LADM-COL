@@ -83,13 +83,12 @@ class PGConnector(DBConnector):
             return (False, QCoreApplication.translate("PGConnector",
                     "There was an error connecting to the database: {}").format(e))
 
+        if not self._postgis_exists():
+            return (False, QCoreApplication.translate("PGConnector",
+                    "The schema '{}' does not have the postgis extension in the database!").format(self.schema))
         if not self._schema_exists():
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' does not exist in the database!").format(self.schema))
-        if not self._postgis_exists():
-            return (False, QCoreApplication.translate("PGConnector",
-                    "The schema '{}' does not have the postgis extension in the database!").format(
-                self.schema))
         if not self._metadata_exists():
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))

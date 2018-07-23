@@ -117,12 +117,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         if self.connection_is_dirty:
             self.connection_is_dirty = False
-            try:
+            if self._db.test_connection()[0]:
                 self.cache_layers_and_relations_requested.emit(self._db)
-            except psycopg2.OperationalError as e:
-                pass
-            except psycopg2.ProgrammingError as e:
-                pass
         self.save_settings()
 
     def reject(self):
