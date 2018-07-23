@@ -44,6 +44,7 @@ SOURCES = ../__init__.py \
           ../lib/dbconnector/gpkg_connector.py \
           ../lib/dbconnector/pg_connector.py \
           ../lib/source_handler.py \
+          ../config/general_config.py \
           ../config/help_strings.py
 
 TRANSLATIONS = Asistente-LADM_COL_es.ts

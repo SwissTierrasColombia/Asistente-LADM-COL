@@ -1831,6 +1831,14 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     </message>
 </context>
 <context>
+    <name>TranslatableConfigStrings</name>
+    <message>
+        <location filename="../config/general_config.py" line="84"/>
+        <source>Validation errors</source>
+        <translation>Errores de validación</translation>
+    </message>
+</context>
+<context>
     <name>UploadProgressDialog</name>
     <message>
         <location filename="../ui/upload_progress_dialog.ui" line="14"/>

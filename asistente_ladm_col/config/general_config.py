@@ -1,11 +1,11 @@
 import os.path
+
 from ..utils.qt_utils import get_plugin_metadata
-from qgis.PyQt.QtCore import QLocale, QSettings
+from qgis.PyQt.QtCore import QLocale, QSettings, QObject, QCoreApplication
 
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 DEFAULT_POLYGON_AREA_TOLERANCE = 0.1 # square meters
-ERROR_LAYER_GROUP = "Validation errors"
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
 PLUGIN_DIR = os.path.dirname(os.path.dirname(__file__))
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
@@ -77,3 +77,7 @@ SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
 
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
+
+class TranslatableConfigStrings(QObject):
+    def __init__(self):
+        self.ERROR_LAYER_GROUP = QCoreApplication.translate("TranslatableConfigStrings", "Validation errors")

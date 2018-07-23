@@ -42,7 +42,6 @@ from .geometry import GeometryUtils
 from ..gui.settings_dialog import SettingsDialog
 from ..config.general_config import (
     DEFAULT_EPSG,
-    ERROR_LAYER_GROUP,
     MODULE_HELP_MAPPING,
     TEST_SERVER,
     HELP_URL,
@@ -56,7 +55,8 @@ from ..config.general_config import (
     DOMAIN_CLASS_RELATION,
     PLUGIN_DIR,
     QGIS_LANG,
-    HELP_DIR_NAME
+    HELP_DIR_NAME,
+    TranslatableConfigStrings
 )
 from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
@@ -108,6 +108,7 @@ class QGISUtils(QObject):
         self.project_generator_utils = ProjectGeneratorUtils()
         self.symbology = SymbologyUtils()
         self.geometry = GeometryUtils()
+        self.translatable_config_strings = TranslatableConfigStrings()
         self.layer_tree_view = layer_tree_view
 
         self.__settings_dialog = None
@@ -762,9 +763,9 @@ class QGISUtils(QObject):
 
     def get_error_layers_group(self):
         root = QgsProject.instance().layerTreeRoot()
-        group = root.findGroup(ERROR_LAYER_GROUP)
+        group = root.findGroup(self.translatable_config_strings.ERROR_LAYER_GROUP)
         if group is None:
-            group = root.insertGroup(0, ERROR_LAYER_GROUP)
+            group = root.insertGroup(0, self.translatable_config_strings.ERROR_LAYER_GROUP)
         elif not self.layer_tree_view.layerTreeModel().node2index(group).row() == 0 or type(group.parent()) is QgsLayerTreeGroup:
             group_clone = group.clone()
             root.insertChildNode(0, group_clone)

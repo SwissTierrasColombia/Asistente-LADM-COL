@@ -30,7 +30,8 @@ from ..config.general_config import (
     REFERENCING_LAYER,
     REFERENCING_FIELD,
     RELATION_TYPE,
-    CLASS_CLASS_RELATION
+    CLASS_CLASS_RELATION,
+    TranslatableConfigStrings
 )
 from ..config.table_mapping_config import TABLE_PROP_DOMAIN
 from .domains_parser import DomainRelationGenerator
@@ -40,6 +41,7 @@ class ProjectGeneratorUtils(QObject):
     def __init__(self):
         QObject.__init__(self)
         self.log = QgsApplication.messageLog()
+        self.translatable_config_strings = TranslatableConfigStrings()
 
     def load_layers(self, layer_list, db):
         if 'projectgenerator' in qgis.utils.plugins:
@@ -48,7 +50,7 @@ class ProjectGeneratorUtils(QObject):
                 db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             layers = generator.layers(layer_list)
             relations = generator.relations(layers, layer_list)
-            legend = generator.legend(layers)
+            legend = generator.legend(layers, ignore_node_names=[self.translatable_config_strings.ERROR_LAYER_GROUP])
             projectgenerator.create_project(layers, relations, legend, auto_transaction=False)
         else:
             self.log.logMessage(
