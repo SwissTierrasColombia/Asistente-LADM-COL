@@ -1041,38 +1041,43 @@
     </message>
     <message>
         <location filename="../ui/dlg_quality.ui" line="32"/>
+        <source>Rules for Points</source>
+        <translation>Reglas para Puntos</translation>
+    </message>
+    <message>
+        <location filename="../ui/dlg_quality.ui" line="37"/>
         <source>Rules for Polygons</source>
         <translation>Reglas para Polígonos</translation>
     </message>
     <message>
-        <location filename="../ui/dlg_quality.ui" line="39"/>
+        <location filename="../ui/dlg_quality.ui" line="44"/>
         <location filename="../gui/dialog_quality.py" line="93"/>
         <source>Plots should not overlap</source>
         <translation>Los Terrenos no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../ui/dlg_quality.ui" line="47"/>
+        <location filename="../ui/dlg_quality.ui" line="52"/>
         <location filename="../gui/dialog_quality.py" line="83"/>
         <source>Boundary nodes should be covered by Boundary Points</source>
         <translation>Los nodos de Linderos deben estar cubiertos por Puntos de Lindero</translation>
     </message>
     <message>
-        <location filename="../ui/dlg_quality.ui" line="56"/>
+        <location filename="../ui/dlg_quality.ui" line="61"/>
         <source>Rules for Lines</source>
         <translation>Reglas para Líneas</translation>
     </message>
     <message>
-        <location filename="../ui/dlg_quality.ui" line="60"/>
+        <location filename="../ui/dlg_quality.ui" line="65"/>
         <source>Boundary should not have dangles</source>
-        <translation>Los Linderos no deben tener nodos colgados</translation>
+        <translation>Los Linderos no deben tener nodos sin conectar</translation>
     </message>
     <message>
-        <location filename="../ui/dlg_quality.ui" line="86"/>
+        <location filename="../ui/dlg_quality.ui" line="91"/>
         <source>Select All</source>
         <translation>Seleccionar Todas</translation>
     </message>
     <message>
-        <location filename="../ui/dlg_quality.ui" line="93"/>
+        <location filename="../ui/dlg_quality.ui" line="98"/>
         <source>Clear Selection</source>
         <translation>Limpiar Selección</translation>
     </message>
@@ -1090,6 +1095,11 @@
         <location filename="../gui/dialog_quality.py" line="96"/>
         <source>Buildings nodes should be covered by Survey Points</source>
         <translation>Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_quality.py" line="99"/>
+        <source>Right of Way should not overlap Buildings</source>
+        <translation>Las Servidumbres no se deben superponer con Construcciones</translation>
     </message>
     <message>
         <source>Boundary segments should not be longer than tolerance</source>
@@ -1112,7 +1122,7 @@
     <message>
         <location filename="../gui/dialog_quality.py" line="86"/>
         <source>Boundaries should not have dangles</source>
-        <translation>Los Linderos no deben tener nodos colgados</translation>
+        <translation>Los Linderos no deben tener nodos sin conectar</translation>
     </message>
 </context>
 <context>
@@ -1406,70 +1416,70 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>QGISUtils</name>
     <message>
-        <location filename="../utils/qgis_utils.py" line="554"/>
+        <location filename="../utils/qgis_utils.py" line="556"/>
         <source>The point layer &apos;{}&apos; couldn&apos;t be found in the DB... {}</source>
         <translation>No se encontró la capa de puntos &apos;{}&apos; en la base de datos... {}</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="804"/>
-        <location filename="../utils/qgis_utils.py" line="847"/>
+        <location filename="../utils/qgis_utils.py" line="810"/>
+        <location filename="../utils/qgis_utils.py" line="853"/>
         <source>First load the layer {} into QGIS!</source>
         <translation>¡Primero carga la capa {} a QGIS!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="603"/>
-        <location filename="../utils/qgis_utils.py" line="674"/>
-        <location filename="../utils/qgis_utils.py" line="806"/>
-        <location filename="../utils/qgis_utils.py" line="849"/>
+        <location filename="../utils/qgis_utils.py" line="605"/>
+        <location filename="../utils/qgis_utils.py" line="676"/>
+        <location filename="../utils/qgis_utils.py" line="812"/>
+        <location filename="../utils/qgis_utils.py" line="855"/>
         <source>Load layer {} now</source>
         <translation>Cargar la capa {} ahora</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="143"/>
+        <location filename="../utils/qgis_utils.py" line="145"/>
         <source>Extracting relations and domains from the database... This is done only once per session!</source>
         <translation>Extrayendo relaciones y dominios de la base de datos... ¡Esto se realiza solo una vez por sesión!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="837"/>
+        <location filename="../utils/qgis_utils.py" line="843"/>
         <source>{} feature(s) was/were exploded generating {} feature(s).</source>
         <translation>{} objeto(s) espacial(es) fue(ron) partido(s) generando {} objeto(s) espacial(es).</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="856"/>
+        <location filename="../utils/qgis_utils.py" line="862"/>
         <source>First select at least 2 boundaries!</source>
         <translation>¡Primero selecciona por lo menos 2 linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="878"/>
+        <location filename="../utils/qgis_utils.py" line="884"/>
         <source>{} features were merged!</source>
         <translation>¡Se unieron {} objetos espaciales!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="890"/>
-        <location filename="../utils/qgis_utils.py" line="903"/>
-        <location filename="../utils/qgis_utils.py" line="931"/>
+        <location filename="../utils/qgis_utils.py" line="896"/>
+        <location filename="../utils/qgis_utils.py" line="909"/>
+        <location filename="../utils/qgis_utils.py" line="937"/>
         <source>Layer {} not found in the DB! {}</source>
         <translation>¡No se encontró la capa {} en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="794"/>
+        <location filename="../utils/qgis_utils.py" line="800"/>
         <source>Model ETL-model was not found and cannot be opened!</source>
         <translation>¡No se encontró el modelo &apos;ETL-model&apos; y por ello no puede ser abierto!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="601"/>
+        <location filename="../utils/qgis_utils.py" line="603"/>
         <source>First load the layer {} into QGIS and select at least one boundary!</source>
         <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un lindero!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="722"/>
-        <location filename="../utils/qgis_utils.py" line="748"/>
+        <location filename="../utils/qgis_utils.py" line="724"/>
+        <location filename="../utils/qgis_utils.py" line="750"/>
         <source>{} out of {} records were saved into &apos;{}&apos;! {} out of {} records already existed in the database.</source>
         <translation>¡{} de {} registros fueron guardados en &apos;{}&apos;! {} de {} registros ya existían en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="608"/>
-        <location filename="../utils/qgis_utils.py" line="815"/>
+        <location filename="../utils/qgis_utils.py" line="610"/>
+        <location filename="../utils/qgis_utils.py" line="821"/>
         <source>First select at least one boundary!</source>
         <translation>¡Primero selecciona por lo menos un lindero!</translation>
     </message>
@@ -1478,81 +1488,83 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">Extrayendo datos de la base de datos... ¡Esto se realiza solamente una vez por cada sesión de QGIS!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="227"/>
+        <location filename="../utils/qgis_utils.py" line="229"/>
         <source>Loading LADM_COL layers to QGIS and configuring their relations and forms...</source>
         <translation>Cargando capas LADM_COL a QGIS y configurando sus formularios y relaciones...</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="515"/>
+        <location filename="../utils/qgis_utils.py" line="517"/>
         <source>No CSV file given or file doesn&apos;t exist.</source>
         <translation>No se especificó un archivo CSV o el archivo no existe.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="531"/>
+        <location filename="../utils/qgis_utils.py" line="533"/>
         <source>CSV layer not valid!</source>
         <translation>¡La capa CSV no es válida!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="543"/>
+        <location filename="../utils/qgis_utils.py" line="545"/>
         <source>There are overlapping points, we cannot import them into the DB! See selected points.</source>
         <translation>Hay puntos superpuestos, ¡no podemos importarlos a la base de datos! Revisa los puntos seleccionados en el mapa.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="579"/>
+        <location filename="../utils/qgis_utils.py" line="581"/>
         <source>{} points were added succesfully to &apos;{}&apos;.</source>
         <translation>Se agregaron {} puntos a &apos;{}&apos; satisfactoriamente.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="594"/>
-        <location filename="../utils/qgis_utils.py" line="615"/>
-        <location filename="../utils/qgis_utils.py" line="665"/>
-        <location filename="../utils/qgis_utils.py" line="686"/>
-        <location filename="../utils/qgis_utils.py" line="693"/>
+        <location filename="../utils/qgis_utils.py" line="596"/>
+        <location filename="../utils/qgis_utils.py" line="617"/>
+        <location filename="../utils/qgis_utils.py" line="667"/>
+        <location filename="../utils/qgis_utils.py" line="688"/>
+        <location filename="../utils/qgis_utils.py" line="695"/>
+        <location filename="../utils/quality.py" line="242"/>
+        <location filename="../utils/quality.py" line="409"/>
         <source>Table {} not found in the DB! {}</source>
         <translation>¡No se encontró la tabla {} en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="641"/>
+        <location filename="../utils/qgis_utils.py" line="643"/>
         <source>{} out of {} records were saved into {}! {} out of {} records already existed in the database.</source>
         <translation>¡{} de {} registros fueron guardados en {}! {} de {} registros ya existían en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="652"/>
+        <location filename="../utils/qgis_utils.py" line="654"/>
         <source>No pairs id_boundary-id_boundary_point found.</source>
         <translation>No se encontraron parejas id_lindero-id_punto_lindero.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="672"/>
+        <location filename="../utils/qgis_utils.py" line="674"/>
         <source>First load the layer {} into QGIS and select at least one plot!</source>
         <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un terreno!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="679"/>
+        <location filename="../utils/qgis_utils.py" line="681"/>
         <source>First select at least one plot!</source>
         <translation>¡Primero selecciona por lo menos un terreno!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="896"/>
+        <location filename="../utils/qgis_utils.py" line="902"/>
         <source>First select boundaries!</source>
         <translation>¡Primero selecciona linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="919"/>
+        <location filename="../utils/qgis_utils.py" line="925"/>
         <source>{} new plot(s) has(have) been created!</source>
         <translation>¡{} nuevo(s) terreno(s) ha(n) sido creado(s)!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="923"/>
+        <location filename="../utils/qgis_utils.py" line="929"/>
         <source>No plot could be created. Make sure selected boundaries are closed!</source>
         <translation>No se pudieron crear terrenos. ¡Asegúrate que los linderos seleccionados formen polígonos cerrados!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="979"/>
+        <location filename="../utils/qgis_utils.py" line="985"/>
         <source>The local help could not be found in &apos;{}&apos; and cannot be open.</source>
         <translation>No se encontró la ayuda local en &apos;{}&apos; y por lo tanto no se pudo abrir.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="985"/>
+        <location filename="../utils/qgis_utils.py" line="991"/>
         <source>Is your computer connected to Internet? If so, go to &lt;a href=&quot;{}&quot;&gt;online help&lt;/a&gt;.</source>
         <translation>¿Está tu computador conectado a Internet? Si es así, ve a la&lt;a href=&quot;{}&quot;&gt;ayuda en línea&lt;/a&gt;.</translation>
     </message>
@@ -1563,6 +1575,184 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     <message>
         <source>The plugin help cannot be open. Is the Internet connection OK?</source>
         <translation type="vanished">No se puede abrir la ayuda del plugin. Revisa si hay conexión a Internet.</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="70"/>
+        <location filename="../utils/quality.py" line="122"/>
+        <location filename="../utils/quality.py" line="186"/>
+        <location filename="../utils/quality.py" line="300"/>
+        <location filename="../utils/quality.py" line="307"/>
+        <location filename="../utils/quality.py" line="357"/>
+        <location filename="../utils/quality.py" line="364"/>
+        <location filename="../utils/quality.py" line="532"/>
+        <location filename="../utils/quality.py" line="540"/>
+        <source>Table {} not found in DB! {}</source>
+        <translation>¡No se encontró la tabla {} en la base de datos! {}</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="77"/>
+        <source>There are no points in layer &apos;{}&apos; to check for overlaps!</source>
+        <translation>¡No hay puntos en la capa {} para revisar superposiciones!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="82"/>
+        <source>Overlapping points in {}</source>
+        <translation>Puntos superpuestos en {}</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="109"/>
+        <source>A memory layer with {} overlapping points in &apos;{}&apos; has been added to the map!</source>
+        <translation>¡Una capa temporal con {} puntos superpuestos en la capa &apos;{}&apos; ha sido agregada al mapa!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="114"/>
+        <source>There are no overlapping points in layer &apos;{}&apos;!</source>
+        <translation>¡No hay puntos superpuestos en la capa &apos;{}&apos;!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="128"/>
+        <source>Overlapping polygons in {}</source>
+        <translation>Polígonos superpuestos en {}</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="172"/>
+        <source>A memory layer with {} overlapping polygons in layer &apos;{}&apos; has been added to the map!</source>
+        <translation>¡Una capa temporal con {} polígonos superpuestos en la capa &apos;{}&apos; ha sido agregada al mapa!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="177"/>
+        <source>There are no overlapping polygons in layer &apos;{}&apos;!</source>
+        <translation>¡No hay polígonos superpuestos en la capa &apos;{}&apos;!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="194"/>
+        <source>There are no boundaries to check for overlaps!</source>
+        <translation>¡No hay linderos para revisar superposiciones!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="211"/>
+        <source>There are no overlapping boundaries.</source>
+        <translation>No hay linderos superpuestos.</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="218"/>
+        <source>A memory layer with {} overlapping boundaries (point intersections) has been added to the map.</source>
+        <translation>Una capa temporal con {} linderos superpuestos (intersecciones tipo punto) ha sido agregada al mapa.</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="223"/>
+        <source>A memory layer with {} overlapping boundaries (line intersections) has been added to the map.</source>
+        <translation>Una capa temporal con {} linderos superpuestos (intersecciones tipo línea) ha sido agregada al mapa.</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="230"/>
+        <source>Two memory layers with overlapping boundaries ({} point intersections and {} line intersections) have been added to the map.</source>
+        <translation>Dos capas temporales con superposiciones de linderos ({} puntos superpuestos y {} líneas superpuestas) han sido agregadas al mapa.</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="249"/>
+        <source>There are no boundaries to check for too long segments!</source>
+        <translation>¡No hay linderos para revisar linderos con segmentos muy largos!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="254"/>
+        <source>Boundary segments longer than {}m.</source>
+        <translation>Segmentos de lindero más largos que {}m.</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="281"/>
+        <source>A memory layer with {} boundary segments longer than {}m. has been added to the map!</source>
+        <translation>¡Una capa temporal con {} segmentos de lindero más largos que {}m. ha sido agregada al mapa!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="286"/>
+        <source>All boundary segments are within the length tolerance for segments ({}m.)!</source>
+        <translation>¡Todos los segmentos de lindero están dentro de la tolerancia de longitud para segmentos ({}m.)!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="314"/>
+        <source>There are no boundaries to check &apos;missing boundary points in boundaries&apos;.</source>
+        <translation>No hay linderos para revisar &apos;nodos de linderos deben estar cubiertos por puntos de lindero&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="320"/>
+        <source>Missing boundary points in boundaries</source>
+        <translation>Nodos de Lindero sin Punto Lindero asociado</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="340"/>
+        <source>A memory layer with {} boundary vertices with no associated boundary points has been added to the map!</source>
+        <translation>¡Una capa temporal con {} nodos de lindero sin punto de lindero asociado ha sido agregada al mapa!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="344"/>
+        <source>There are no missing boundary points in boundaries.</source>
+        <translation>No hay nodos de linderos sin puntos de lindero asociados.</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="371"/>
+        <source>There are no buildings to check &apos;missing survey points in buildings&apos;.</source>
+        <translation>No hay construcciones para revisar &apos;nodos de construcciones deben estar cubiertos por puntos de levantamiento&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="377"/>
+        <source>Missing survey points in buildings</source>
+        <translation>Nodos de Construcción sin Punto de Levantamiento asociado</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="397"/>
+        <source>A memory layer with {} building vertices with no associated survey points has been added to the map!</source>
+        <translation>¡Una capa temporal con {} nodos de construcciones sin punto de levantamiento asociado ha sido agregada al mapa!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="401"/>
+        <source>There are no missing survey points in buildings.</source>
+        <translation>No hay puntos de levantamiento faltantes en las construcciones.</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="416"/>
+        <source>There are no boundaries to check for dangles.</source>
+        <translation>No hay linderos para revisar nodos sin conectar.</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="422"/>
+        <source>Dangles in boundaries</source>
+        <translation>Nodos sin conectar en linderos</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="442"/>
+        <source>A memory layer with {} boundary dangles has been added to the map!</source>
+        <translation>¡Una capa temporal con {} nodos sin conectar en linderos ha sido agregada al mapa!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="447"/>
+        <source>Boundaries have no dangles!</source>
+        <translation>¡Los linderos no tienen nodos sin conectar!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="548"/>
+        <source>There are no Right of Way features to check &apos;Right of Way should not overlap buildings&apos;.</source>
+        <translation>No hay servidumbres para revisar &apos;las Servidumbres no se deben superponer con Construcciones&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="555"/>
+        <source>There are no buildings to check &apos;Right of Way should not overlap buildings&apos;.</source>
+        <translation>No hay construcciones para revisar &apos;las Servidumbres no se deben superponer con Construcciones&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="561"/>
+        <source>Right of Way-Building overlaps</source>
+        <translation>Superposiciones entre Servidumbre y Construcción</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="582"/>
+        <source>A memory layer with {} Right of Way-Building overlaps has been added to the map!</source>
+        <translation>¡Una capa temporal con {} superposiciones tipo polígono entre Servidumbre y Construcción ha sido agregada al mapa!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="587"/>
+        <source>There are no Right of Way-Building overlaps.</source>
+        <translation>No hay superposiciones entre Servidumbres y Construcciones.</translation>
     </message>
 </context>
 <context>
@@ -1641,6 +1831,14 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     </message>
 </context>
 <context>
+    <name>TranslatableConfigStrings</name>
+    <message>
+        <location filename="../config/general_config.py" line="84"/>
+        <source>Validation errors</source>
+        <translation>Errores de validación</translation>
+    </message>
+</context>
+<context>
     <name>UploadProgressDialog</name>
     <message>
         <location filename="../ui/upload_progress_dialog.ui" line="14"/>
@@ -1676,7 +1874,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>__init__</name>
     <message>
-        <location filename="../__init__.py" line="26"/>
+        <location filename="../__init__.py" line="29"/>
         <source>The plugin Asistente LADM_COL requires a newer version of QGIS!                If you&apos;re on Windows, you can download a recent version from                &lt;a target=&quot;_blank&quot; href=&quot;https://qgis.org/downloads/weekly/&quot;&gt;this link&lt;/a&gt;.                Otherwise, use a &lt;a href=&quot;https://qgis.org/en/site/forusers/download.html&quot; target=&quot;_blank&quot;&gt;nightly build&lt;/a&gt;.</source>
         <translation>¡El plugin Asistente LADM_COL requiere una versión más nueva de QGIS!                Si estás en Windows, puedes descargar una versión más reciente desde                &lt;a target=&quot;_blank&quot; href=&quot;https://qgis.org/downloads/weekly/&quot;&gt;este enlace&lt;/a&gt;.                Si no usas Windows, descarga un &lt;a href=&quot;https://qgis.org/en/site/forusers/download.html&quot; target=&quot;_blank&quot;&gt;binario reciente&lt;/a&gt;.</translation>
     </message>

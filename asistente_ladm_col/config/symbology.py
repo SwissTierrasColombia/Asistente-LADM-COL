@@ -7,7 +7,8 @@ from .table_mapping_config import (
     SURVEY_POINT_TABLE,
     PLOT_TABLE,
     BUILDING_TABLE,
-    BUILDING_UNIT_TABLE
+    BUILDING_UNIT_TABLE,
+    RIGHT_OF_WAY_TABLE
 )
 
 ERROR_LAYER = 'error_layer'
@@ -36,6 +37,10 @@ LAYER_QML_STYLE = {
     BUILDING_UNIT_TABLE: {
         QgsWkbTypes.PointGeometry: 'style_building_unit_point',
         QgsWkbTypes.PolygonGeometry: 'style_building_unit_25'
+    },
+    RIGHT_OF_WAY_TABLE: {
+        QgsWkbTypes.PointGeometry: 'style_right_of_way_point',
+        QgsWkbTypes.PolygonGeometry: 'style_right_of_way'
     },
     ERROR_LAYER: {
         QgsWkbTypes.PointGeometry: 'style_point_error',
