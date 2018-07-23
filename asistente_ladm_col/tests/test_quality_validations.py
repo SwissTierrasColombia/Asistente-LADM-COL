@@ -306,6 +306,33 @@ class TesQualityValidations(unittest.TestCase):
         self.assertIn('Point (1091314.24563915398903191 1121448.97160633862949908)', geometries)
         self.assertIn('Point (1091213.62314918311312795 1121543.89559642062522471)', geometries)
 
+
+    def test_check_right_to_way_overlaps_buildings(self):
+        print('\nINFO: Validating Right to Way-Building overlaps...')
+
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='construccion')
+        building_layer = QgsVectorLayer(uri, 'construccion', 'ogr')
+        uri = gpkg_path + '|layername={layername}'.format(layername='servidumbrepaso')
+        right_to_way_layer = QgsVectorLayer(uri, 'servidumbrepaso', 'ogr')
+
+        building_features = [feature for feature in building_layer.getFeatures()]
+        self.assertEqual(len(building_features), 4)
+
+        right_to_way_features = [feature for feature in right_to_way_layer.getFeatures()]
+        self.assertEqual(len(right_to_way_features), 6)
+
+        ids, over_pol = self.qgis_utils.geometry.get_inner_intersections_between_polygons(right_to_way_layer, building_layer)
+
+        geometries = [v.asWkt() for v in over_pol.asGeometryCollection()]
+
+        self.assertEqual(len(geometries), 4)
+
+        self.assertIn('Polygon ((1091354.41819027159363031 1121694.23184006474912167, 1091354.2822037145961076 1121696.81558464490808547, 1091355.59206581697799265 1121695.52748471638187766, 1091354.41819027159363031 1121694.23184006474912167))', geometries)
+        self.assertIn('Polygon ((1091254.39762192475609481 1121590.49773243162781, 1091250.73030774760991335 1121597.99486360652372241, 1091259.24529790692031384 1121594.80259312898851931, 1091254.39762192475609481 1121590.49773243162781))', geometries)
+        self.assertIn('Polygon ((1091236.35652560647577047 1121774.96929413848556578, 1091240.31053024088032544 1121761.7039380690548569, 1091224.81715030129998922 1121764.51856614812277257, 1091236.35652560647577047 1121774.96929413848556578))', geometries)
+        self.assertIn('Polygon ((1091210.77726722555235028 1121751.80323319789022207, 1091216.81715549202635884 1121740.58629784546792507, 1091200.99485773546621203 1121742.94371541915461421, 1091210.77726722555235028 1121751.80323319789022207))', geometries)
+
     def test_boundary_dangles(self):
         print('\nINFO: Validating boundary_dangles...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')

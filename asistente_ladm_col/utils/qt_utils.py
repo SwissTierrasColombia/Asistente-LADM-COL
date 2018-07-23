@@ -21,7 +21,7 @@
 import os.path
 import sys
 
-import qgis
+import qgis.utils
 from qgis.PyQt.QtWidgets import (
     QFileDialog,
     QApplication,
