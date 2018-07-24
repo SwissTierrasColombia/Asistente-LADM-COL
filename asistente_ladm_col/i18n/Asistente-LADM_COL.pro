@@ -22,6 +22,7 @@ FORMS = ../ui/dlg_load_layers.ui \
 SOURCES = ../__init__.py \
           ../asistente_ladm_col_plugin.py \
           ../utils/qgis_utils.py \
+          ../utils/quality.py \
           ../gui/create_administrative_source_cadastre_wizard.py \
           ../gui/create_legal_party_cadastre_wizard.py \
           ../gui/create_natural_party_cadastre_wizard.py \
@@ -43,6 +44,7 @@ SOURCES = ../__init__.py \
           ../lib/dbconnector/gpkg_connector.py \
           ../lib/dbconnector/pg_connector.py \
           ../lib/source_handler.py \
+          ../config/general_config.py \
           ../config/help_strings.py
 
 TRANSLATIONS = Asistente-LADM_COL_es.ts

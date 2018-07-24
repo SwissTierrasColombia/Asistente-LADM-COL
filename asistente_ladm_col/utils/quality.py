@@ -34,6 +34,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
 import processing
 
+from .project_generator_utils import ProjectGeneratorUtils
 from ..config.general_config import (
     DEFAULT_EPSG,
     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE
@@ -42,6 +43,7 @@ from ..config.table_mapping_config import (
     BOUNDARY_POINT_TABLE,
     BOUNDARY_TABLE,
     BUILDING_TABLE,
+    RIGHT_OF_WAY_TABLE,
     SURVEY_POINT_TABLE,
     ID_FIELD
 )
@@ -51,6 +53,7 @@ class QualityUtils(QObject):
     def __init__(self, qgis_utils):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
+        self.project_generator_utils = ProjectGeneratorUtils()
 
     def check_overlapping_points(self, db, point_layer_name):
         """
@@ -76,8 +79,8 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     QCoreApplication.translate("QGISUtils", "Overlapping points in {}"
-                                                                .format(point_layer_name)), "memory")
+                                     QCoreApplication.translate("QGISUtils", "Overlapping points in {}")
+                                                                .format(point_layer_name), "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("point_count", QVariant.Int), QgsField("intersecting_ids", QVariant.String) ])
         error_layer.updateFields()
@@ -122,8 +125,8 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("Polygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     QCoreApplication.translate("QGISUtils", "Overlapping polygons in {}"
-                                                                .format(polygon_layer_name)), "memory")
+                                     QCoreApplication.translate("QGISUtils", "Overlapping polygons in {}")
+                                                                .format(polygon_layer_name), "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("polygon_id", QVariant.String),
                                      QgsField("overlapping_ids", QVariant.String),
@@ -313,7 +316,9 @@ class QualityUtils(QObject):
                 Qgis.Info)
             return
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), "Missing boundary points in boundaries", "memory")
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     QCoreApplication.translate("QGISUtils", "Missing boundary points in boundaries"),
+                                     "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("boundary_id", QVariant.Int)])
         error_layer.updateFields()
@@ -368,7 +373,9 @@ class QualityUtils(QObject):
                 Qgis.Info)
             return
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), "Missing survey points in buildings", "memory")
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     QCoreApplication.translate("QGISUtils", "Missing survey points in buildings"),
+                                     "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("building_id", QVariant.Int)])
         error_layer.updateFields()
@@ -512,6 +519,75 @@ class QualityUtils(QObject):
                         res[feature[ID_FIELD]] = [diff_geom]
         return res
 
+    def check_right_of_way_overlaps_buildings(self, db):
+        res_layers = self.qgis_utils.get_layers(db, {
+            RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}}, load=True)
+
+        right_of_way_layer = res_layers[RIGHT_OF_WAY_TABLE]
+        building_layer = res_layers[BUILDING_TABLE]
+
+        if right_of_way_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "Table {} not found in DB! {}").format(RIGHT_OF_WAY_TABLE,
+                    db.get_description()),
+                Qgis.Warning)
+            return
+
+        if building_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "Table {} not found in DB! {}").format(BUILDING_TABLE,
+                    db.get_description()),
+                Qgis.Warning)
+            return
+
+        if right_of_way_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                   "There are no Right of Way features to check 'Right of Way should not overlap buildings'."),
+                Qgis.Info)
+            return
+
+        if building_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                   "There are no buildings to check 'Right of Way should not overlap buildings'."),
+                Qgis.Info)
+            return
+
+        error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     QCoreApplication.translate("QGISUtils",
+                                        "Right of Way-Building overlaps"),
+                                     "memory")
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField("right_of_way_id", QVariant.Int)])
+        data_provider.addAttributes([QgsField("building_id", QVariant.Int)])
+        error_layer.updateFields()
+
+        ids, overlapping_polygons = self.qgis_utils.geometry.get_inner_intersections_between_polygons(right_of_way_layer, building_layer)
+
+        if overlapping_polygons is not None:
+            new_features = list()
+            for key, polygon in zip(ids, overlapping_polygons.asGeometryCollection()):
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, polygon, {0: key[0], 1: key[1]}) # right_of_way_id, building_id
+                new_features.append(new_feature)
+
+            data_provider.addFeatures(new_features)
+
+        if error_layer.featureCount() > 0:
+            added_layer = self.add_error_layer(error_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "A memory layer with {} Right of Way-Building overlaps has been added to the map!").format(
+                    added_layer.featureCount()), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no Right of Way-Building overlaps."), Qgis.Info)
+
     def get_dangle_ids(self, boundary_layer):
         # 1. Run extract specific vertices
         # 2. Call to get_overlapping_points
@@ -544,6 +620,7 @@ class QualityUtils(QObject):
                 break
 
         added_layer = QgsProject.instance().addMapLayer(error_layer, False)
-        added_layer = group.addLayer(added_layer).layer()
+        index = self.project_generator_utils.get_suggested_index_for_layer(added_layer, group)
+        added_layer = group.insertLayer(index, added_layer).layer()
         self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
         return added_layer
