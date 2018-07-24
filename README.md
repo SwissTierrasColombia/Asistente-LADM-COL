@@ -18,7 +18,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([0.5.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.5.0)) del Asistente LADM_COL depende del plugin [Project Generator](https://github.com/opengisch/projectgenerator/) v3.2.3 (o superior) y permite:
+La versión actual ([0.6.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.6.0)) del Asistente LADM_COL depende del plugin [Project Generator v3.2.4.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/3.2.4.1) y permite:
 
  - Capturar datos para el modelo LADM_COL v2.2.1.
  - Preprocesar puntos: Medición controlada.
@@ -76,6 +76,7 @@ La versión actual ([0.5.0](https://github.com/AgenciaImplementacion/Asistente-L
    - Revisar nodos de `Lindero` sin `Punto Lindero` asociado.
    - Revisar nodos de `Lindero` no conectados.
    - Revisar nodos de `Construcción` sin `Punto Levantamiento` asociado.
+   - Revisar superposiciones entre `Servidumbre` y `Construcción`. 
  - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
  - Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.
  - Visualizar GIFs ilustrativos en la ayuda online del plugin o descargarlos para trabajo offline.

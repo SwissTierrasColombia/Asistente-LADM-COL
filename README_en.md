@@ -17,7 +17,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([0.5.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.5.0)) of the LADM_COL Assistant depends on [Project Generator](https://github.com/opengisch/projectgenerator/) plugin v3.2.3 (or higher) and allows users to:
+The current version ([0.6.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.6.0)) of the LADM_COL Assistant depends on [Project Generator v3.2.4.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/3.2.4.1) and allows users to:
 
  - Capture data for the LADM_COL v2.2.1 model.
  - Preprocess points: Controlled Measurement.
@@ -74,6 +74,7 @@ The current version ([0.5.0](https://github.com/AgenciaImplementacion/Asistente-
    - Check missing `Boundary Points` in `Boundaries`.
    - Check dangles in `Boundary`.
    - Check missing `Survey Points` in `Buildings`.
+   - Check overlaps between `Right of Way` and `Building`.
  - Configure automatic values for `namespace` and `local_id` attributes.
  - Load styles for newly added layers from preconfigured QML files.
  - View illustrative GIFs in the plugin's online help or download them for offline work.
