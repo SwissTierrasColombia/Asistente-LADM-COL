@@ -36,6 +36,17 @@ class PGConnector(DBConnector):
         self.provider = 'postgres'
         self._tables_info = None
 
+    def _postgis_exists(self):
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute("""
+                    SELECT
+                        count(extversion)
+                    FROM pg_catalog.pg_extension
+                    WHERE extname='postgis'
+                    """)
+
+        return bool(cur.fetchone()[0])
+
     def _schema_exists(self):
         if self.schema:
             cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -46,17 +57,6 @@ class PGConnector(DBConnector):
             return bool(cur.fetchone()[0])
 
         return False
-
-    def _postgis_exists(self):
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cur.execute("""
-                    SELECT 
-                        count(extversion)
-                    FROM pg_catalog.pg_extension
-                    WHERE extname='postgis'
-                    """)
-
-        return bool(cur.fetchone()[0])
 
     def _metadata_exists(self):
         if self.schema:
@@ -82,7 +82,7 @@ class PGConnector(DBConnector):
 
         if not self._postgis_exists():
             return (False, QCoreApplication.translate("PGConnector",
-                    "The schema '{}' does not have the postgis extension in the database!").format(self.schema))
+                    "The current database does not have PostGIS installed! Please install it before proceeding."))
         if not self._schema_exists():
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' does not exist in the database!").format(self.schema))

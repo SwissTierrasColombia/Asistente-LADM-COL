@@ -55,7 +55,6 @@ from functools import partial
 
 DIALOG_UI = get_ui_class('settings_dialog.ui')
 
-
 class SettingsDialog(QDialog, DIALOG_UI):
 
     cache_layers_and_relations_requested = pyqtSignal(DBConnector)
@@ -119,6 +118,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.connection_is_dirty = False
             if self._db.test_connection()[0]:
                 self.cache_layers_and_relations_requested.emit(self._db)
+                
         self.save_settings()
 
     def reject(self):
