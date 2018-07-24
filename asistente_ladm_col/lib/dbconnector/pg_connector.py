@@ -48,18 +48,15 @@ class PGConnector(DBConnector):
         return False
 
     def _postgis_exists(self):
-        if self.schema:
-            cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-            cur.execute("""
-                        SELECT 
-                            count(extversion)
-                        FROM pg_catalog.pg_extension
-                        WHERE extname='postgis'
-            """.format(self.schema, INTERLIS_TEST_METADATA_TABLE_PG))
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute("""
+                    SELECT 
+                        count(extversion)
+                    FROM pg_catalog.pg_extension
+                    WHERE extname='postgis'
+                    """)
 
-            return bool(cur.fetchone()[0])
-
-        return False
+        return bool(cur.fetchone()[0])
 
     def _metadata_exists(self):
         if self.schema:

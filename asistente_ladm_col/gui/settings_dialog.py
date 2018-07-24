@@ -17,7 +17,6 @@
  ***************************************************************************/
 """
 import os, json
-import psycopg2
 
 from qgis.core import (
     QgsProject,
@@ -55,6 +54,7 @@ from ..utils.qt_utils import OverrideCursor
 from functools import partial
 
 DIALOG_UI = get_ui_class('settings_dialog.ui')
+
 
 class SettingsDialog(QDialog, DIALOG_UI):
 
