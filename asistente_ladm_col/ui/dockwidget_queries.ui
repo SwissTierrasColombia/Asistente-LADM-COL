@@ -67,7 +67,7 @@
               <enum>QTabWidget::South</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="tab_plot_coordinates">
               <attribute name="title">
@@ -115,7 +115,7 @@
                <item row="1" column="0">
                 <layout class="QGridLayout" name="gridLayout_9">
                  <item row="0" column="0" alignment="Qt::AlignHCenter">
-                  <widget class="QPushButton" name="btn_identify_plot_2">
+                  <widget class="QPushButton" name="btn_identify_plot_neighbours">
                    <property name="text">
                     <string>Identify</string>
                    </property>

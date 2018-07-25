@@ -42,16 +42,18 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         self._plot_layer = None
         self._identify_tool = None
+        self._identify_neighbours_tool = None
 
         self.add_options()
 
         self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/surveying.png"))
-        self.btn_identify_plot_2.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/party.png"))
+        self.btn_identify_plot_neighbours.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/party.png"))
 
         # Set connections
         self.btn_query_plot.clicked.connect(self.query_plot)
         self.btn_clear_plot.clicked.connect(self.clear_plot)
         self.btn_identify_plot.clicked.connect(self.identify_plot)
+        self.btn_identify_plot_neighbours.clicked.connect(self.identify_plot_neighbours)
 
     def add_layers(self):
         res_layers = self.qgis_utils.get_layers(self._db, {
@@ -130,6 +132,30 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         #currentTool.activate()
 
     def callback_identify(self, plot_feature):
+        plot_t_id = plot_feature['t_id']
+        records = self._db.get_parcels_and_parties_by_plot(plot_t_id)
+        print(records)
+        self.treeModel = TreeModel(data=records)
+        self.treeView.setModel(self.treeModel)
+        self.treeView.expandAll()
+
+    def identify_plot_neighbours(self):
+        # enable needed layers
+        self.add_layers()
+
+        # recover old state of mapCanvas
+        self.mapCanvas = self.iface.mapCanvas()
+        self.previousTool = self.mapCanvas.mapTool()
+
+        # configure listeners
+        if self._identify_neighbours_tool == None:
+            self._identify_neighbours_tool = CustomMapToolIdentifyFeature(self.mapCanvas, self._plot_layer, self.btn_identify_plot_neighbours,
+                                                               self.previousTool, self.callback_identify_neighbours)
+        else:
+            self._identify_neighbours_tool.activate()
+        self.mapCanvas.setMapTool(self._identify_neighbours_tool)
+
+    def callback_identify_neighbours(self, plot_feature):
         plot_t_id = plot_feature['t_id']
         records = self._db.get_parcels_and_parties_by_plot(plot_t_id)
         print(records)
