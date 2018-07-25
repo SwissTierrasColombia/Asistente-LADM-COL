@@ -29,6 +29,11 @@
      </column>
      <item>
       <property name="text">
+       <string>Rules for Points</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
        <string>Rules for Polygons</string>
       </property>
       <property name="flags">

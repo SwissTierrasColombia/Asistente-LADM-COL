@@ -1,11 +1,11 @@
 import os.path
+
 from ..utils.qt_utils import get_plugin_metadata
-from qgis.PyQt.QtCore import QLocale, QSettings
+from qgis.PyQt.QtCore import QLocale, QSettings, QObject, QCoreApplication
 
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 DEFAULT_POLYGON_AREA_TOLERANCE = 0.1 # square meters
-ERROR_LAYER_GROUP = "Validation errors"
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
 PLUGIN_DIR = os.path.dirname(os.path.dirname(__file__))
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
@@ -35,16 +35,16 @@ MODULE_HELP_MAPPING = {
     'settings': 'help.html#settings'
 }
 # Configure Project Generator Dependency
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.2.3"
+PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.2.4.1"
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), set to True
-PROJECT_GENERATOR_EXACT_REQUIRED_VERSION = False
+PROJECT_GENERATOR_EXACT_REQUIRED_VERSION = True
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-PROJECT_GENERATOR_REQUIRED_VERSION_URL = ''
+PROJECT_GENERATOR_REQUIRED_VERSION_URL = 'https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.2.4.1/projectgenerator.zip'
 
 # Project Generator definitions
 SCHEMA_NAME = 'schemaname'
@@ -77,3 +77,7 @@ SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
 
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
+
+class TranslatableConfigStrings(QObject):
+    def __init__(self):
+        self.ERROR_LAYER_GROUP = QCoreApplication.translate("TranslatableConfigStrings", "Validation errors")

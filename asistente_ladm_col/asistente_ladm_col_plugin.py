@@ -89,7 +89,7 @@ class AsistenteLADMCOLPlugin(QObject):
         else:
             self.iface.mainWindow().menuBar().addMenu(self._menu)
 
-        self.qgis_utils = QGISUtils()
+        self.qgis_utils = QGISUtils(self.iface.layerTreeView())
         self.quality = QualityUtils(self.qgis_utils)
 
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)

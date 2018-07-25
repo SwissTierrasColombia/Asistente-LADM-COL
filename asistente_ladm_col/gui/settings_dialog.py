@@ -117,9 +117,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def accepted(self):
         self._db = None # Reset db connection
         self._db = self.get_db_connection()
+
         if self.connection_is_dirty:
             self.connection_is_dirty = False
-            self.cache_layers_and_relations_requested.emit(self._db)
+            if self._db.test_connection()[0]:
+                self.cache_layers_and_relations_requested.emit(self._db)
+                
         self.save_settings()
 
     def reject(self):
