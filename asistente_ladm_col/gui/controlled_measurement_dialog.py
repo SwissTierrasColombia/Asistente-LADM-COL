@@ -178,68 +178,66 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             msg = "Model Group_Points was not found and cannot be opened!"
             return res, msg
 
-    def time_validate(self, input_features, time_tolerance, time_field):
+    def time_validate(self, layer, time_tolerance, time_field):
         """This function goes through the groups obtained from the model and updates the trusty field called
         trusty as the case may be (True or False), also if True uses the auxiliary function time_filter to determine
         the records that are not within the allowed time range."""
-        groups_num = input_features.uniqueValues(input_features.fields().indexFromName("belongs_to_group"))
-        idx = input_features.fields().indexFromName(time_field)
-        new_layer = self.copy_attribs(input_features)
-        time_layer = self.copy_attribs(input_features)
-        time2_layer = self.copy_attribs(input_features)
-        for i in groups_num:
-            if i is None:
-                features = input_features.getFeatures("\"{}\" IS NULL".format("belongs_to_group"))
-                new_layer.dataProvider().addFeatures(features)
-                [new_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "False") for feat in
-                 new_layer.getFeatures()]
-                time_layer.updateFields()
-            else:
-                features, not_features = self.time_filter(input_features, input_features.getFeatures("\"belongs_to_group\"={}".format(i)), idx, time_tolerance)
-                features = [f for f in features]
-                not_features = [f for f in not_features]
-                fg = len(features)
-                if fg > 1:
-                    time_layer.dataProvider().addFeatures(features)
-                    [time_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "True") for feat in
-                     time_layer.getFeatures()]
-                    time2_layer.dataProvider().addFeatures(not_features)
-                    [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "False") for feat in
-                     time2_layer.getFeatures()]
-                    time_layer.updateFields()
-                else:
-                    time2_layer.dataProvider().addFeatures(features)
-                    [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "False") for feat in
-                     time2_layer.getFeatures()]
-                    [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("belongs_to_group"), None) for
-                     feat in time2_layer.getFeatures()]
-                    time2_layer.dataProvider().addFeatures(not_features)
-                    [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("trusty"), "False") for feat in
-                     time2_layer.getFeatures()]
-                    time2_layer.updateFields()
-                [time2_layer.changeAttributeValue(feat.id(), feat.fields().indexOf("belongs_to_group"), None) for feat in
-                 time2_layer.getFeatures()]
-                time2_layer.updateFields()
-                time_layer.commitChanges()
-                time2_layer.commitChanges()
+        layer.dataProvider().addAttributes([QgsField("trusty", QVariant.String)])
+        layer.updateFields()
 
-        new_layer.dataProvider().addFeatures(time_layer.getFeatures())
-        new_layer.dataProvider().addFeatures(time2_layer.getFeatures())
-        new_layer.commitChanges()
+        groups_num = layer.uniqueValues(layer.fields().indexFromName("belongs_to_group"))
+        idx_time_field = layer.fields().indexFromName(time_field)
+        new_layer = self.copy_attribs(layer)
+
+        for group in groups_num:
+            if group is None:
+                features = layer.getFeatures("\"{}\" IS NULL".format("belongs_to_group"))
+                for feature in features:
+                    feature.setAttribute("trusty", "False")
+
+                new_layer.dataProvider().addFeatures(features)
+            else:
+                independent_features, dependent_features = self.time_filter(
+                    layer,
+                    layer.getFeatures("\"belongs_to_group\"={}".format(group)),
+                    idx_time_field,
+                    time_tolerance)
+                independent_features = [f for f in independent_features]
+                dependent_features = [f for f in dependent_features]
+
+                if len(independent_features) > 1:
+                    for feature in independent_features:
+                        feature.setAttribute("trusty", "True")
+
+                    for feature in dependent_features:
+                        feature.setAttribute("trusty", "False")
+
+                    new_layer.dataProvider().addFeatures(independent_features)
+                    new_layer.dataProvider().addFeatures(dependent_features)
+                else:
+                    for feature in independent_features:
+                        feature.setAttribute("trusty", "False")
+                        feature.setAttribute("belongs_to_group", None)
+
+                    for feature in dependent_features:
+                        feature.setAttribute("trusty", "False")
+
+                    new_layer.dataProvider().addFeatures(independent_features)
+                    new_layer.dataProvider().addFeatures(dependent_features)
+
         QgsProject.instance().addMapLayer(new_layer)
         return new_layer
 
     def copy_attribs(self, sourceLYR, name="Previous Average Points"):
         destLYR = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), name, "memory")
-        destLYR.startEditing()
         destLYR.dataProvider().addAttributes(sourceLYR.fields())
         destLYR.addAttribute(QgsField("trusty", QVariant.String))
         destLYR.updateFields()
         return destLYR
 
     def time_filter(self, layer, features, idx, time_tolerance):
-        """enter a group of records, this filters through a time field and returns which are within the allowed
-        time range and which are not."""
+        """ Filters a time field and returns which features are within the
+        allowed time range and which are not."""
         dates = {}
         for feat in features:
             attrs = feat.attributes()
