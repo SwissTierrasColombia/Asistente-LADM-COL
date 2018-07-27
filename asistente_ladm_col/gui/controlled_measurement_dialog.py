@@ -190,12 +190,13 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         new_layer = self.copy_attribs(layer)
 
         for group in groups_num:
+            print(group)
             if group is None:
-                features = layer.getFeatures("\"{}\" IS NULL".format("belongs_to_group"))
-                for feature in features:
+                not_group_features = [f for f in layer.getFeatures("\"{}\" IS NULL".format("belongs_to_group"))]
+                for feature in not_group_features:
                     feature.setAttribute("trusty", "False")
 
-                new_layer.dataProvider().addFeatures(features)
+                new_layer.dataProvider().addFeatures(not_group_features)
             else:
                 independent_features, dependent_features = self.time_filter(
                     layer,
@@ -224,7 +225,6 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
 
                     new_layer.dataProvider().addFeatures(independent_features)
                     new_layer.dataProvider().addFeatures(dependent_features)
-
         QgsProject.instance().addMapLayer(new_layer)
         return new_layer
 
