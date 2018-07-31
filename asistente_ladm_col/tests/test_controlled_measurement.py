@@ -1,12 +1,16 @@
 import nose2
 
 from qgis.core import QgsVectorLayer, QgsApplication
-from asistente_ladm_col.tests.utils import get_test_copy_path
 from qgis.testing import unittest
-from asistente_ladm_col.gui.controlled_measurement_dialog import ControlledMeasurementDialog
-
 from processing.core.Processing import Processing
 from qgis.analysis import QgsNativeAlgorithms
+
+from asistente_ladm_col.config.general_config import (
+    TRUSTWORTHY_FIELD_NAME,
+    GROUP_FIELD_NAME
+)
+from asistente_ladm_col.tests.utils import get_test_copy_path
+from asistente_ladm_col.gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
 
@@ -41,10 +45,10 @@ class TestExport(unittest.TestCase):
         res_layer = res['native:mergevectorlayers_1:output']
         self.assertEqual(res_layer.featureCount(), 38)
         for g in range(1,10):
-            dt = [f.id() for f in res_layer.getFeatures("\"belongs_to_group\"={}".format(g))]
+            dt = [f.id() for f in res_layer.getFeatures("\"{}\"={}".format(GROUP_FIELD_NAME, g))]
             self.assertEqual(len(dt), 2) # All groups have 2 features
 
-        features = res_layer.getFeatures("\"belongs_to_group\"=4")
+        features = res_layer.getFeatures("\"{}\"=4".format(GROUP_FIELD_NAME))
         features = [f for f in features]
         self.assertEqual(sorted([f.attributes()[0] for f in features]) , [191, 192])
 
@@ -56,9 +60,9 @@ class TestExport(unittest.TestCase):
         res_layer = res['native:mergevectorlayers_1:output']
         self.assertEqual(res_layer.featureCount(), 38)
         for g in [3, 8]:
-            dt = [f.id() for f in res_layer.getFeatures("\"belongs_to_group\"={}".format(g))]
+            dt = [f.id() for f in res_layer.getFeatures("\"{}\"={}".format(GROUP_FIELD_NAME, g))]
             self.assertEqual(len(dt), 4)
-        features = res_layer.getFeatures("\"belongs_to_group\"=3")
+        features = res_layer.getFeatures("\"{}\"=3".format(GROUP_FIELD_NAME))
         features = [f for f in features]
         self.assertEqual(sorted([f.attributes()[0] for f in features]), [189, 190, 191, 192])
 
@@ -84,7 +88,7 @@ class TestExport(unittest.TestCase):
         for i in [10, 6, 3]:
             features, no_features = self.TestClass.time_filter(
                 layer=res_layer,
-                features=res_layer.getFeatures("\"belongs_to_group\"={}".format(i)),
+                features=res_layer.getFeatures("\"{}\"={}".format(GROUP_FIELD_NAME, i)),
                 idx=res_layer.fields().indexFromName("timestamp"),
                 time_tolerance=30) # minutes
 
@@ -95,17 +99,17 @@ class TestExport(unittest.TestCase):
 
         new_layer = self.TestClass.time_validate(res_layer, 30, "timestamp")
 
-        null_group_count = [i.id() for i in new_layer.getFeatures("\"belongs_to_group\" IS NULL")]
+        null_group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]
         self.assertEqual(len(null_group_count), 21)
 
-        group_count = [i.id() for i in new_layer.getFeatures("\"belongs_to_group\" IS NOT NULL")]
+        group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NOT NULL".format(GROUP_FIELD_NAME))]
         self.assertEqual(len(group_count), 17)
 
-        not_trusty_count = [i.id() for i in new_layer.getFeatures("\"trusty\" = 'False'")]
-        self.assertEqual(len(not_trusty_count), 24)
+        not_trustworthy_count = [i.id() for i in new_layer.getFeatures("\"{}\" = 'False'".format(TRUSTWORTHY_FIELD_NAME))]
+        self.assertEqual(len(not_trustworthy_count), 24)
 
-        trusty_count = [i.id() for i in new_layer.getFeatures("\"trusty\" = 'True'")]
-        self.assertEqual(len(trusty_count), 14)
+        trustworthy_count = [i.id() for i in new_layer.getFeatures("\"{}\" = 'True'".format(TRUSTWORTHY_FIELD_NAME))]
+        self.assertEqual(len(trustworthy_count), 14)
 
         # Test to check time validation with 5 meters of distance.
         res, msg = self.TestClass.run_group_points_model(measure_layer, 5, 'def_type')
@@ -115,7 +119,7 @@ class TestExport(unittest.TestCase):
         for i in [8, 4, 3]:
             features, no_features = self.TestClass.time_filter(
                 res_layer,
-                res_layer.getFeatures("\"belongs_to_group\"={}".format(i)),
+                res_layer.getFeatures("\"{}\"={}".format(GROUP_FIELD_NAME, i)),
                 idx=res_layer.fields().indexFromName("timestamp"),
                 time_tolerance=30)
 
@@ -126,17 +130,17 @@ class TestExport(unittest.TestCase):
 
         new_layer = self.TestClass.time_validate(res_layer, 30, "timestamp")
 
-        null_group_count = [i.id() for i in new_layer.getFeatures("\"belongs_to_group\" IS NULL")]
+        null_group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]
         self.assertEqual(len(null_group_count), 19)
 
-        group_count = [i.id() for i in new_layer.getFeatures("\"belongs_to_group\" IS NOT NULL")]
+        group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NOT NULL".format(GROUP_FIELD_NAME))]
         self.assertEqual(len(group_count), 19)
 
-        not_trusty_count = [i.id() for i in new_layer.getFeatures("\"trusty\" = 'False'")]
-        self.assertEqual(len(not_trusty_count), 22)
+        not_trustworthy_count = [i.id() for i in new_layer.getFeatures("\"{}\" = 'False'".format(TRUSTWORTHY_FIELD_NAME))]
+        self.assertEqual(len(not_trustworthy_count), 22)
 
-        trusty_count = [i.id() for i in new_layer.getFeatures("\"trusty\" = 'True'")]
-        self.assertEqual(len(trusty_count), 16)
+        trustworthy_count = [i.id() for i in new_layer.getFeatures("\"{}\" = 'True'".format(TRUSTWORTHY_FIELD_NAME))]
+        self.assertEqual(len(trustworthy_count), 16)
 
 
 if __name__ == '__main__':

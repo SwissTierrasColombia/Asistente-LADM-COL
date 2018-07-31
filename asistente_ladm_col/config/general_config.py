@@ -69,5 +69,8 @@ TEST_SERVER = "www.google.com"
 INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
 
 # Documentation
-
 HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
+
+# Controlled Measurement
+TRUSTWORTHY_FIELD_NAME = "trustworthy"
+GROUP_FIELD_NAME = "belongs_to_group"

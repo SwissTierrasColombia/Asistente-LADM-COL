@@ -36,11 +36,15 @@ from qgis.PyQt.QtWidgets import QDialog
 
 import processing
 
+from ..config.general_config import (
+    DEFAULT_EPSG,
+    TRUSTWORTHY_FIELD_NAME,
+    GROUP_FIELD_NAME
+)
 from ..utils import get_ui_class
-from asistente_ladm_col.config.general_config import DEFAULT_EPSG
 
 DIALOG_UI = get_ui_class('controlled_measurement_dialog.ui')
-GROUP_ID = 'belongs_to_group' # If you change this, adjust the Group_Points as well
+GROUP_ID = GROUP_FIELD_NAME # If you change this, adjust the Group_Points as well
 
 class ControlledMeasurementDialog(QDialog, DIALOG_UI):
     def __init__(self, qgis_utils):
@@ -112,7 +116,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         new_features = []
 
         for group_id in group_ids:
-            feature = [f for f in groups.getFeatures("\"{}\"={} AND \"{}\" = 'True'".format(GROUP_ID, group_id, "trusty"))]
+            feature = [f for f in groups.getFeatures("\"{}\"={} AND \"{}\" = 'True'".format(GROUP_ID, group_id, TRUSTWORTHY_FIELD_NAME))]
             try:
                 new_feature = self.concat_point_name(feature, groups, point_name)
                 fields_values = dict(zip(range(0, len(feature[0].attributes())), new_feature))
@@ -149,7 +153,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             new_features.append(new_feature)
 
         layer.dataProvider().addFeatures(new_features)
-        features = groups.getFeatures("\"belongs_to_group\" IS NULL")
+        features = groups.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))
         layer.dataProvider().addFeatures(features)
         layer.commitChanges()
         QgsProject.instance().addMapLayer(layer)
@@ -179,28 +183,31 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             return res, msg
 
     def time_validate(self, layer, time_tolerance, time_field):
-        """This function goes through the groups obtained from the model and updates the trusty field called
-        trusty as the case may be (True or False), also if True uses the auxiliary function time_filter to determine
-        the records that are not within the allowed time range."""
+        """
+        This function goes through the groups obtained from the model and
+        updates the trustworthy field called trustworthy as the case may be
+        (True or False), also if True uses the auxiliary function time_filter
+        to determine the records that are not within the allowed time range.
+        """
 
-        layer.dataProvider().addAttributes([QgsField("trusty", QVariant.String)])
+        layer.dataProvider().addAttributes([QgsField(TRUSTWORTHY_FIELD_NAME, QVariant.String)])
         layer.updateFields()
 
-        groups_num = layer.uniqueValues(layer.fields().indexFromName("belongs_to_group"))
+        groups_num = layer.uniqueValues(layer.fields().indexFromName(GROUP_FIELD_NAME))
         idx_time_field = layer.fields().indexFromName(time_field)
         new_layer = self.copy_attribs(layer, "Previous Average Points")
 
         for group in groups_num:
             if group is None:
-                not_group_features = [f for f in layer.getFeatures("\"{}\" IS NULL".format("belongs_to_group"))]
+                not_group_features = [f for f in layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]
                 for feature in not_group_features:
-                    feature.setAttribute("trusty", "False")
+                    feature.setAttribute(TRUSTWORTHY_FIELD_NAME, "False")
 
                 new_layer.dataProvider().addFeatures(not_group_features)
             else:
                 independent_features, dependent_features = self.time_filter(
                     layer=layer,
-                    features=layer.getFeatures("\"belongs_to_group\"={}".format(group)),
+                    features=layer.getFeatures("\"{}\"={}".format(GROUP_FIELD_NAME, group)),
                     idx=idx_time_field,
                     time_tolerance=time_tolerance)
                 independent_features = [f for f in independent_features]
@@ -208,20 +215,20 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
 
                 if len(independent_features) > 1:
                     for feature in independent_features:
-                        feature.setAttribute("trusty", "True")
+                        feature.setAttribute(TRUSTWORTHY_FIELD_NAME, "True")
 
                     for feature in dependent_features:
-                        feature.setAttribute("trusty", "False")
+                        feature.setAttribute(TRUSTWORTHY_FIELD_NAME, "False")
 
                     new_layer.dataProvider().addFeatures(independent_features)
                     new_layer.dataProvider().addFeatures(dependent_features)
                 else:
                     for feature in independent_features:
-                        feature.setAttribute("trusty", "False")
-                        feature.setAttribute("belongs_to_group", None)
+                        feature.setAttribute(TRUSTWORTHY_FIELD_NAME, "False")
+                        feature.setAttribute(GROUP_FIELD_NAME, None)
 
                     for feature in dependent_features:
-                        feature.setAttribute("trusty", "False")
+                        feature.setAttribute(TRUSTWORTHY_FIELD_NAME, "False")
 
                     new_layer.dataProvider().addFeatures(independent_features)
                     new_layer.dataProvider().addFeatures(dependent_features)
