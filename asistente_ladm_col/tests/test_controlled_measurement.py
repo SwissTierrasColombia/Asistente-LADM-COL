@@ -7,14 +7,17 @@ from asistente_ladm_col.gui.controlled_measurement_dialog import ControlledMeasu
 
 from processing.core.Processing import Processing
 from qgis.analysis import QgsNativeAlgorithms
+from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
 
 class TestExport(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
+        self.qgis_utils = QGISUtils()
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
+        self.TestClass = ControlledMeasurementDialog(self.qgis_utils)
 
     def test_get_point_groups(self):
         print('\nINFO: Validating controlled measurement (Point Grouping)...')
@@ -31,8 +34,7 @@ class TestExport(unittest.TestCase):
         self.assertEqual(len(nbdef), 18)
 
         # Test model with distance of 0.5 meters
-        res, msg = ControlledMeasurementDialog.run_group_points_model(
-            ControlledMeasurementDialog, measure_layer, 0.5, 'def_type')
+        res, msg = self.TestClass.run_group_points_model(measure_layer, 0.5, 'def_type')
 
         self.assertIsNotNone(res) # Model not found
 
@@ -47,8 +49,7 @@ class TestExport(unittest.TestCase):
         self.assertEqual(sorted([f.attributes()[0] for f in features]) , [191, 192])
 
         # Test model with distance of 5 meters
-        res, msg = ControlledMeasurementDialog.run_group_points_model(
-            ControlledMeasurementDialog, measure_layer, 5.0, 'def_type')
+        res, msg = self.TestClass.run_group_points_model(measure_layer, 5.0, 'def_type')
 
         self.assertIsNotNone(res) # Model not found
 
@@ -76,14 +77,14 @@ class TestExport(unittest.TestCase):
         self.assertEqual(len(nbdef), 18)
 
         # Test to check time validation with 0.5 meters of distance
-        res, msg = ControlledMeasurementDialog.run_group_points_model(
-            ControlledMeasurementDialog, measure_layer, 0.5, 'def_type')
+        res, msg = self.TestClass.run_group_points_model(
+             measure_layer, 0.5, 'def_type')
         res_layer = res['native:mergevectorlayers_1:output']
 
         for i in [10, 6, 3]:
-            features, no_features = ControlledMeasurementDialog.time_filter(ControlledMeasurementDialog,
-                res_layer,
-                res_layer.getFeatures("\"belongs_to_group\"={}".format(i)),
+            features, no_features = self.TestClass.time_filter(
+                layer=res_layer,
+                features=res_layer.getFeatures("\"belongs_to_group\"={}".format(i)),
                 idx=res_layer.fields().indexFromName("timestamp"),
                 time_tolerance=30) # minutes
 
@@ -92,15 +93,27 @@ class TestExport(unittest.TestCase):
             self.assertEqual(len([feat for feat in features]), feat[i])
             self.assertEqual(len([feat for feat in no_features]), no_feat[i])
 
+        new_layer = self.TestClass.time_validate(res_layer, 30, "timestamp")
+
+        null_group_count = [i.id() for i in new_layer.getFeatures("\"belongs_to_group\" IS NULL")]
+        self.assertEqual(len(null_group_count), 21)
+
+        group_count = [i.id() for i in new_layer.getFeatures("\"belongs_to_group\" IS NOT NULL")]
+        self.assertEqual(len(group_count), 17)
+
+        not_trusty_count = [i.id() for i in new_layer.getFeatures("\"trusty\" = 'False'")]
+        self.assertEqual(len(not_trusty_count), 24)
+
+        trusty_count = [i.id() for i in new_layer.getFeatures("\"trusty\" = 'True'")]
+        self.assertEqual(len(trusty_count), 14)
 
         # Test to check time validation with 5 meters of distance.
-        res, msg = ControlledMeasurementDialog.run_group_points_model(
-            ControlledMeasurementDialog, measure_layer, 5, 'def_type')
+        res, msg = self.TestClass.run_group_points_model(measure_layer, 5, 'def_type')
 
         res_layer = res['native:mergevectorlayers_1:output']
 
         for i in [8, 4, 3]:
-            features, no_features = ControlledMeasurementDialog.time_filter(ControlledMeasurementDialog,
+            features, no_features = self.TestClass.time_filter(
                 res_layer,
                 res_layer.getFeatures("\"belongs_to_group\"={}".format(i)),
                 idx=res_layer.fields().indexFromName("timestamp"),
@@ -111,6 +124,19 @@ class TestExport(unittest.TestCase):
             self.assertEqual(len([feat for feat in features]), feat[i])
             self.assertEqual(len([feat for feat in no_features]), no_feat[i])
 
+        new_layer = self.TestClass.time_validate(res_layer, 30, "timestamp")
+
+        null_group_count = [i.id() for i in new_layer.getFeatures("\"belongs_to_group\" IS NULL")]
+        self.assertEqual(len(null_group_count), 19)
+
+        group_count = [i.id() for i in new_layer.getFeatures("\"belongs_to_group\" IS NOT NULL")]
+        self.assertEqual(len(group_count), 19)
+
+        not_trusty_count = [i.id() for i in new_layer.getFeatures("\"trusty\" = 'False'")]
+        self.assertEqual(len(not_trusty_count), 22)
+
+        trusty_count = [i.id() for i in new_layer.getFeatures("\"trusty\" = 'True'")]
+        self.assertEqual(len(trusty_count), 16)
 
 
 if __name__ == '__main__':

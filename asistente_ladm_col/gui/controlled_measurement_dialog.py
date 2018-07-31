@@ -99,7 +99,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
 
         group_ids = groups.uniqueValues(idx)
 
-        layer = self.copy_attribs(groups, "Average Points")
+        layer = self._copy_attribs(groups, "Average Points")
         layer.dataProvider().addAttributes([
             QgsField("group_id", QVariant.Int),
             QgsField("count", QVariant.Int),
@@ -187,10 +187,9 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
 
         groups_num = layer.uniqueValues(layer.fields().indexFromName("belongs_to_group"))
         idx_time_field = layer.fields().indexFromName(time_field)
-        new_layer = self.copy_attribs(layer)
+        new_layer = self._copy_attribs(layer, "Previous Average Points")
 
         for group in groups_num:
-            print(group)
             if group is None:
                 not_group_features = [f for f in layer.getFeatures("\"{}\" IS NULL".format("belongs_to_group"))]
                 for feature in not_group_features:
@@ -199,10 +198,10 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
                 new_layer.dataProvider().addFeatures(not_group_features)
             else:
                 independent_features, dependent_features = self.time_filter(
-                    layer,
-                    layer.getFeatures("\"belongs_to_group\"={}".format(group)),
-                    idx_time_field,
-                    time_tolerance)
+                    layer=layer,
+                    features=layer.getFeatures("\"belongs_to_group\"={}".format(group)),
+                    idx=idx_time_field,
+                    time_tolerance=time_tolerance)
                 independent_features = [f for f in independent_features]
                 dependent_features = [f for f in dependent_features]
 
@@ -225,12 +224,12 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
 
                     new_layer.dataProvider().addFeatures(independent_features)
                     new_layer.dataProvider().addFeatures(dependent_features)
-        QgsProject.instance().addMapLayer(new_layer)
+        #QgsProject.instance().addMapLayer(new_layer) #uncoment for view result of this
         return new_layer
 
-    def copy_attribs(self, sourceLYR, name="Previous Average Points"):
+    def _copy_attribs(self, layer, name):
         destLYR = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), name, "memory")
-        destLYR.dataProvider().addAttributes(sourceLYR.fields())
+        destLYR.dataProvider().addAttributes(layer.fields())
         destLYR.addAttribute(QgsField("trusty", QVariant.String))
         destLYR.updateFields()
         return destLYR
