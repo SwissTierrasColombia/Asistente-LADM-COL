@@ -29,7 +29,8 @@ from qgis.core import (
     QgsVectorLayerUtils,
     QgsMapLayerProxyModel,
     QgsFieldProxyModel,
-    QgsFeatureRequest
+    QgsFeatureRequest,
+    NULL
 )
 from qgis.PyQt.QtCore import QVariant, QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog
@@ -44,7 +45,6 @@ from ..config.general_config import (
 from ..utils import get_ui_class
 
 DIALOG_UI = get_ui_class('controlled_measurement_dialog.ui')
-GROUP_ID = GROUP_FIELD_NAME # If you change this, adjust the Group_Points as well
 
 class ControlledMeasurementDialog(QDialog, DIALOG_UI):
     def __init__(self, qgis_utils):
@@ -94,74 +94,15 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             QCoreApplication.translate("ControlledMeasurementDialog", msg), Qgis.Warning)
             return
 
-        # Create memory layer with average points
-        groups = self.time_validate(res['native:mergevectorlayers_1:output'], time_tolerance, time_field)
-        if not(type(groups) == QgsVectorLayer and groups.isValid()):
-            return
+        layer_with_groups = res['native:mergevectorlayers_1:output']
 
-        idx = groups.fields().indexOf(GROUP_ID)
+        # Add trustworthy field and fill it
+        layer_with_groups.dataProvider().addAttributes([QgsField(TRUSTWORTHY_FIELD_NAME, QVariant.String)])
+        layer_with_groups.updateFields()
+        layer_with_trustworthy = self.validate_trustworthy(layer_with_groups, time_tolerance, time_field)
 
-        group_ids = groups.uniqueValues(idx)
-
-        layer = self.copy_attribs(groups, "Average Points")
-        layer.dataProvider().addAttributes([
-            QgsField("group_id", QVariant.Int),
-            QgsField("count", QVariant.Int),
-            QgsField("x_mean", QVariant.Double),
-            QgsField("y_mean", QVariant.Double),
-            QgsField("x_stdev", QVariant.Double),
-            QgsField("y_stdev", QVariant.Double),
-        ])
-        layer.updateFields()
-        new_features = []
-
-        for group_id in group_ids:
-            feature = [f for f in groups.getFeatures("\"{}\"={} AND \"{}\" = 'True'".format(GROUP_ID, group_id, TRUSTWORTHY_FIELD_NAME))]
-            try:
-                new_feature = self.concat_point_name(feature, groups, point_name)
-                fields_values = dict(zip(range(0, len(feature[0].attributes())), new_feature))
-            except:
-                continue
-            x_mean = 0
-            y_mean = 0
-            count = 0
-            x_list = []
-            y_list = []
-            for feature in groups.getFeatures('"{}" = {}'.format(GROUP_ID, group_id)):
-                current_point = feature.geometry().asPoint()
-                x_list.append(current_point.x())
-                y_list.append(current_point.y())
-
-            if x_list and y_list:
-                x_mean = statistics.mean(x_list)
-                y_mean = statistics.mean(y_list)
-                x_stdev = statistics.pstdev(x_list)
-                y_stdev = statistics.pstdev(y_list)
-            else:
-                continue
-            geom = QgsGeometry.fromPointXY(QgsPointXY(x_mean, y_mean))
-            fields = layer.fields()
-            fields_values.update({
-                fields.indexOf("group_id"): group_id,
-                fields.indexOf("count"): len(x_list),
-                fields.indexOf("x_mean"): x_mean,
-                fields.indexOf("y_mean"): y_mean,
-                fields.indexOf("x_stdev"): x_stdev,
-                fields.indexOf("y_stdev"): y_stdev
-            })
-            new_feature = QgsVectorLayerUtils.createFeature(layer, geom, fields_values)
-            new_features.append(new_feature)
-
-        layer.dataProvider().addFeatures(new_features)
-        features = groups.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))
-        layer.dataProvider().addFeatures(features)
-        layer.commitChanges()
-        QgsProject.instance().addMapLayer(layer)
-
-        self.qgis_utils.message_emitted.emit(
-            QCoreApplication.translate("ControlledMeasurementDialog",
-                                       "A new average point layer has been added to the map!"),
-            Qgis.Info)
+        QgsProject.instance().addMapLayer(layer_with_trustworthy)
+        self.average_per_group(layer_with_trustworthy, point_name)
 
     def run_group_points_model(self, input_layer, tolerance, definition_field):
         # Run model
@@ -176,22 +117,19 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             }
             res = processing.run("model:Group_Points", params)
             msg = "Model Group_Points and execute OK!"
-            return res, msg
         else:
             res = None
             msg = "Model Group_Points was not found and cannot be opened!"
-            return res, msg
 
-    def time_validate(self, layer, time_tolerance, time_field):
+        return res, msg
+
+    def validate_trustworthy(self, layer, time_tolerance, time_field):
         """
         This function goes through the groups obtained from the model and
         updates the trustworthy field called trustworthy as the case may be
         (True or False), also if True uses the auxiliary function time_filter
         to determine the records that are not within the allowed time range.
         """
-
-        layer.dataProvider().addAttributes([QgsField(TRUSTWORTHY_FIELD_NAME, QVariant.String)])
-        layer.updateFields()
 
         groups_num = layer.uniqueValues(layer.fields().indexFromName(GROUP_FIELD_NAME))
         idx_time_field = layer.fields().indexFromName(time_field)
@@ -205,13 +143,18 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
 
                 new_layer.dataProvider().addFeatures(not_group_features)
             else:
-                independent_features, dependent_features = self.time_filter(
-                    layer=layer,
-                    features=layer.getFeatures("\"{}\"={}".format(GROUP_FIELD_NAME, group)),
-                    idx=idx_time_field,
-                    time_tolerance=time_tolerance)
-                independent_features = [f for f in independent_features]
-                dependent_features = [f for f in dependent_features]
+                if time_field:
+                    independent_features, dependent_features = self.time_filter(
+                        layer=layer,
+                        features=layer.getFeatures("\"{}\"={}".format(GROUP_FIELD_NAME, group)),
+                        idx=idx_time_field,
+                        time_tolerance=time_tolerance)
+
+                    independent_features = [f for f in independent_features]
+                    dependent_features = [f for f in dependent_features]
+                else:
+                    independent_features = [f for f in layer.getFeatures("\"{}\"={}".format(GROUP_FIELD_NAME, group))]
+                    dependent_features = []
 
                 if len(independent_features) > 1:
                     for feature in independent_features:
@@ -225,7 +168,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
                 else:
                     for feature in independent_features:
                         feature.setAttribute(TRUSTWORTHY_FIELD_NAME, "False")
-                        feature.setAttribute(GROUP_FIELD_NAME, None)
+                        feature.setAttribute(GROUP_FIELD_NAME, NULL)
 
                     for feature in dependent_features:
                         feature.setAttribute(TRUSTWORTHY_FIELD_NAME, "False")
@@ -263,18 +206,87 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             QgsFeatureRequest().setFilterFids([i for i in sorted(dates.keys()) if i not in sorted(ids.keys())]))
         return features, no_features
 
-    def concat_point_name(self, feature, input_layer, point_name):
-        final_features = feature[0].attributes()
-        index = input_layer.fields().indexFromName(point_name) #Cambiar Por Field con nombre de punto.
-        for i in range(1, len(feature)):
-            if feature[i].attributes()[index] != feature[0].attributes()[index]:
-                if type(feature[i].attributes()[index]) == str:
-                    final_features[index] = ";".join([final_features[index], feature[i].attributes()[index]])
-                else:
-                    final_features.insert(index, feature[0].attributes()[index])
+    def concat_point_name(self, features, point_name_idx):
+        """
+        If field is of type String, concatenate, otherwise preserve first value
+        """
+        feature_attrs = features[0].attributes()[:]
+        for i in range(1, len(features)):
+            if features[i].attributes()[point_name_idx] != feature_attrs[point_name_idx]:
+                if type(features[i].attributes()[point_name_idx]) == str: # Concatenate values
+                    feature_attrs[point_name_idx] = ";".join([feature_attrs[point_name_idx], features[i].attributes()[point_name_idx]])
+                else: # Let first feature's value
+                    feature_attrs.insert(point_name_idx, feature_attrs[point_name_idx])
             else:
-                final_features[i] = feature[0].attributes()[index]
-        return final_features
+                feature_attrs[i] = feature_attrs[point_name_idx]
+
+        return feature_attrs
+
+    def average_per_group(self, source_layer, point_name):
+        idx = source_layer.fields().indexOf(GROUP_FIELD_NAME)
+        group_ids = source_layer.uniqueValues(idx)
+
+        layer = self.copy_attribs(source_layer, "Average Points")
+
+        layer.dataProvider().addAttributes([
+            QgsField("group_id", QVariant.Int),
+            QgsField("count", QVariant.Int),
+            QgsField("x_mean", QVariant.Double),
+            QgsField("y_mean", QVariant.Double),
+            QgsField("x_stdev", QVariant.Double),
+            QgsField("y_stdev", QVariant.Double),
+        ])
+        layer.updateFields()
+        new_features = []
+
+        for group_id in group_ids:
+            features = [f for f in source_layer.getFeatures("\"{}\"={} AND \"{}\" = 'True'".format(GROUP_FIELD_NAME, group_id, TRUSTWORTHY_FIELD_NAME))]
+            if not len(features):
+                continue
+
+            new_attrs = self.concat_point_name(features, source_layer.fields().indexFromName(point_name))
+            fields_values = dict(zip(range(0, len(features[0].attributes())), new_attrs))
+
+            x_mean = 0
+            y_mean = 0
+            count = 0
+            x_list = []
+            y_list = []
+            for feature in source_layer.getFeatures('"{}" = {}'.format(GROUP_FIELD_NAME, group_id)):
+                current_point = feature.geometry().asPoint()
+                x_list.append(current_point.x())
+                y_list.append(current_point.y())
+
+            if x_list and y_list:
+                x_mean = statistics.mean(x_list)
+                y_mean = statistics.mean(y_list)
+                x_stdev = statistics.pstdev(x_list)
+                y_stdev = statistics.pstdev(y_list)
+            else:
+                continue
+
+            geom = QgsGeometry.fromPointXY(QgsPointXY(x_mean, y_mean))
+            fields = layer.fields()
+            fields_values.update({
+                fields.indexOf("group_id"): group_id,
+                fields.indexOf("count"): len(x_list),
+                fields.indexOf("x_mean"): x_mean,
+                fields.indexOf("y_mean"): y_mean,
+                fields.indexOf("x_stdev"): x_stdev,
+                fields.indexOf("y_stdev"): y_stdev
+            })
+            new_feature = QgsVectorLayerUtils.createFeature(layer, geom, fields_values)
+            new_features.append(new_feature)
+
+        layer.dataProvider().addFeatures(new_features)
+        features = source_layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))
+        layer.dataProvider().addFeatures(features)
+        QgsProject.instance().addMapLayer(layer)
+
+        self.qgis_utils.message_emitted.emit(
+            QCoreApplication.translate("ControlledMeasurementDialog",
+                                       "A new average point layer has been added to the map!"),
+            Qgis.Info)
 
 
     def show_help(self):

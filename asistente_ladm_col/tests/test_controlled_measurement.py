@@ -1,9 +1,10 @@
 import nose2
 
-from qgis.core import QgsVectorLayer, QgsApplication
+from qgis.core import QgsVectorLayer, QgsApplication, QgsField
 from qgis.testing import unittest
 from processing.core.Processing import Processing
 from qgis.analysis import QgsNativeAlgorithms
+from qgis.PyQt.QtCore import QVariant
 
 from asistente_ladm_col.config.general_config import (
     TRUSTWORTHY_FIELD_NAME,
@@ -85,6 +86,9 @@ class TestExport(unittest.TestCase):
              measure_layer, 0.5, 'def_type')
         res_layer = res['native:mergevectorlayers_1:output']
 
+        res_layer.dataProvider().addAttributes([QgsField(TRUSTWORTHY_FIELD_NAME, QVariant.String)])
+        res_layer.updateFields()
+
         for i in [10, 6, 3]:
             features, no_features = self.TestClass.time_filter(
                 layer=res_layer,
@@ -97,7 +101,7 @@ class TestExport(unittest.TestCase):
             self.assertEqual(len([feat for feat in features]), feat[i])
             self.assertEqual(len([feat for feat in no_features]), no_feat[i])
 
-        new_layer = self.TestClass.time_validate(res_layer, 30, "timestamp")
+        new_layer = self.TestClass.validate_trustworthy(res_layer, 30, "timestamp")
 
         null_group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]
         self.assertEqual(len(null_group_count), 21)
@@ -115,6 +119,8 @@ class TestExport(unittest.TestCase):
         res, msg = self.TestClass.run_group_points_model(measure_layer, 5, 'def_type')
 
         res_layer = res['native:mergevectorlayers_1:output']
+        res_layer.dataProvider().addAttributes([QgsField(TRUSTWORTHY_FIELD_NAME, QVariant.String)])
+        res_layer.updateFields()
 
         for i in [8, 4, 3]:
             features, no_features = self.TestClass.time_filter(
@@ -128,7 +134,7 @@ class TestExport(unittest.TestCase):
             self.assertEqual(len([feat for feat in features]), feat[i])
             self.assertEqual(len([feat for feat in no_features]), no_feat[i])
 
-        new_layer = self.TestClass.time_validate(res_layer, 30, "timestamp")
+        new_layer = self.TestClass.validate_trustworthy(res_layer, 30, "timestamp")
 
         null_group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]
         self.assertEqual(len(null_group_count), 19)
