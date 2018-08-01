@@ -23,6 +23,7 @@ from qgis.PyQt.QtCore import QVariant, QCoreApplication
 
 from qgis.core import (
                        edit,
+                       QgsEditError,
                        QgsGeometry,
                        QgsWkbTypes,
                        QgsProcessing,
@@ -74,6 +75,14 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         target = self.parameterAsVectorLayer(parameters, self.OUTPUT, context)
 
+        editable_before = False
+        if target.isEditable():
+            editable_before = True
+            feedback.reportError("\nWARNING: You need to close the edit session on layer '{}' before running this algorithm.".format(
+                target.name()
+            ))
+            return {self.OUTPUT: None}
+
         # Define a mapping between source and target layer
         mapping = dict()
         for target_idx in target.fields().allAttributesList():
@@ -116,20 +125,31 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
 
             feedback.setProgress(int(current * total))
 
-        # This might print error messages... But, hey! That's what we want!
-        with edit(target):
-            target.beginEditCommand("Inserting features...")
-            res = target.addFeatures(new_features)
-            target.endEditCommand()
+        try:
+            # This might print error messages... But, hey! That's what we want!
+            with edit(target):
+                target.beginEditCommand("Inserting features...")
+                res = target.addFeatures(new_features)
+                target.endEditCommand()
+        except QgsEditError as e:
+            if not editable_before:
+                # Let's close the edit session to prepare for a next run
+                target.rollBack()
+
+            feedback.reportError("\nERROR: No features could be copied into '{}', because of the following error:\n{}\n".format(
+                target.name(),
+                repr(e)
+            ))
+            return {self.OUTPUT: None}
 
         if res:
-            feedback.pushInfo("{} out of {} features from input layer were successfully copied into '{}'!".format(
+            feedback.pushInfo("\nSUCCESS: {} out of {} features from input layer were successfully copied into '{}'!".format(
                 len(new_features),
                 source.featureCount(),
                 target.name()
             ))
         else:
-            feedback.pushInfo("The {} features from input layer could not be copied into '{}'. This is likely due to NOT NULL constraints that are not met.".format(
+            feedback.reportError("\nERROR: The {} features from input layer could not be copied into '{}'. This is likely due to NOT NULL constraints that are not met.".format(
                 source.featureCount(),
                 target.name()
             ))
