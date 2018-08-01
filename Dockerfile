@@ -35,10 +35,10 @@ RUN pip3 install --upgrade pip==9.0.3 && \
     pip3 install --upgrade psycopg2
 
 # When our PRs get merged in time!
-#RUN wget https://github.com/opengisch/projectgenerator/releases/download/v3.2.3/projectgenerator-v3.2.3.zip -O /tmp/projectgenerator.zip
+RUN wget https://github.com/opengisch/projectgenerator/releases/download/v3.2.6/projectgenerator.v3.2.6.zip -O /tmp/projectgenerator.zip
 
 # When we need a custom release
-RUN wget https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.2.4.1/projectgenerator.zip -O /tmp/projectgenerator.zip
+#RUN wget https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.2.4.1/projectgenerator.zip -O /tmp/projectgenerator.zip
 
 RUN unzip /tmp/projectgenerator.zip -d /usr/share/qgis/python/plugins
 RUN rm -rf /tmp/projectgenerator.zip

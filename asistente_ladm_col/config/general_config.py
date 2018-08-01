@@ -35,16 +35,16 @@ MODULE_HELP_MAPPING = {
     'settings': 'help.html#settings'
 }
 # Configure Project Generator Dependency
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.2.4.1"
+PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.2.6"
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), set to True
-PROJECT_GENERATOR_EXACT_REQUIRED_VERSION = True
+PROJECT_GENERATOR_EXACT_REQUIRED_VERSION = False
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-PROJECT_GENERATOR_REQUIRED_VERSION_URL = 'https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.2.4.1/projectgenerator.zip'
+PROJECT_GENERATOR_REQUIRED_VERSION_URL = ''
 
 # Project Generator definitions
 SCHEMA_NAME = 'schemaname'
