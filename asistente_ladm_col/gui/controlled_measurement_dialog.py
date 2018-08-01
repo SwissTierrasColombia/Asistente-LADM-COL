@@ -68,7 +68,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
 
     def accept_dialog(self):
         input_layer = self.mMapLayerComboBox.currentLayer()
-        tolerance = self.dsb_tolerance.value()
+        tolerance = self.dsb_tolerance.value() / 2
         definition_field = self.mFieldComboBox.currentField()
         time_tolerance = self.time_tolerance.value()
         time_field = self.tFieldComboBox.currentField()
@@ -193,11 +193,11 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             dates[feat.id()] = attrs[idx]
         ids = {}
         pivot = 0
-        ids[list(dates.keys())[list(dates.values()).index(sorted(dates.values())[0])]] = sorted(dates.values())[0]
-        for i in range(0, len(sorted(dates.values()))):
+        ids[list(dates.keys())[list(dates.values()).index(sorted(dates.values())[pivot])]] = sorted(dates.values())[pivot]
+        for i in range(1, len(sorted(dates.values()))):
             if abs(sorted(dates.values())[pivot].secsTo(sorted(dates.values())[i]) / 60) > time_tolerance:
                 ids[list(dates.keys())[list(dates.values()).index(sorted(dates.values())[i])]] = \
-                sorted(dates.values())[i]
+                    sorted(dates.values())[i]
                 pivot = i
             else:
                 pass
