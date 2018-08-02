@@ -73,6 +73,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         time_tolerance = self.time_tolerance.value()
         time_field = self.tFieldComboBox.currentField()
         point_name = self.pnFieldComboBox.currentField()
+        time_validate = self.mGroupBox.isChecked()
 
         if input_layer is None:
             self.qgis_utils.message_emitted.emit(
@@ -99,9 +100,9 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         # Add trustworthy field and fill it
         layer_with_groups.dataProvider().addAttributes([QgsField(TRUSTWORTHY_FIELD_NAME, QVariant.String)])
         layer_with_groups.updateFields()
-        layer_with_trustworthy = self.validate_trustworthy(layer_with_groups, time_tolerance, time_field)
+        layer_with_trustworthy = self.validate_trustworthy(layer_with_groups, time_tolerance, time_field, time_validate)
 
-        QgsProject.instance().addMapLayer(layer_with_trustworthy)
+        #QgsProject.instance().addMapLayer(layer_with_trustworthy)
         self.average_per_group(layer_with_trustworthy, point_name)
 
     def run_group_points_model(self, input_layer, tolerance, definition_field):
@@ -123,7 +124,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
 
         return res, msg
 
-    def validate_trustworthy(self, layer, time_tolerance, time_field):
+    def validate_trustworthy(self, layer, time_tolerance, time_field, time_validate):
         """
         This function goes through the groups obtained from the model and
         updates the trustworthy field called trustworthy as the case may be
@@ -135,6 +136,11 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         idx_time_field = layer.fields().indexFromName(time_field)
         new_layer = self.copy_attribs(layer, "Previous Average Points")
 
+        if not time_field:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("ControlledMeasurementDialog",
+                                           "There is no selected time field, no time filter is applied."),
+                Qgis.Warning)
         for group in groups_num:
             if group is None:
                 not_group_features = [f for f in layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]
@@ -143,7 +149,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
 
                 new_layer.dataProvider().addFeatures(not_group_features)
             else:
-                if time_field:
+                if time_validate and time_field:
                     independent_features, dependent_features = self.time_filter(
                         layer=layer,
                         features=layer.getFeatures("\"{}\"={}".format(GROUP_FIELD_NAME, group)),
@@ -168,10 +174,10 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
                 else:
                     for feature in independent_features:
                         feature.setAttribute(TRUSTWORTHY_FIELD_NAME, "False")
-                        feature.setAttribute(GROUP_FIELD_NAME, NULL)
 
                     for feature in dependent_features:
                         feature.setAttribute(TRUSTWORTHY_FIELD_NAME, "False")
+                        feature.setAttribute(GROUP_FIELD_NAME, NULL)
 
                     new_layer.dataProvider().addFeatures(independent_features)
                     new_layer.dataProvider().addFeatures(dependent_features)
@@ -194,16 +200,14 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         ids = {}
         pivot = 0
         ids[list(dates.keys())[list(dates.values()).index(sorted(dates.values())[pivot])]] = sorted(dates.values())[pivot]
-        for i in range(1, len(sorted(dates.values()))):
+        for i in range(1, len(list(dates.values()))):
             if abs(sorted(dates.values())[pivot].secsTo(sorted(dates.values())[i]) / 60) > time_tolerance:
                 ids[list(dates.keys())[list(dates.values()).index(sorted(dates.values())[i])]] = \
                     sorted(dates.values())[i]
                 pivot = i
-            else:
-                pass
         features = layer.getFeatures(QgsFeatureRequest().setFilterFids(sorted(ids.keys())))
         no_features = layer.getFeatures(
-            QgsFeatureRequest().setFilterFids([i for i in sorted(dates.keys()) if i not in sorted(ids.keys())]))
+            QgsFeatureRequest().setFilterFids([i for i in list(dates.keys()) if i not in list(ids.keys())]))
         return features, no_features
 
     def concat_point_name(self, features, point_name_idx):
@@ -213,7 +217,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         feature_attrs = features[0].attributes()[:]
         for i in range(1, len(features)):
             if features[i].attributes()[point_name_idx] != feature_attrs[point_name_idx]:
-                if type(features[i].attributes()[point_name_idx]) == str: # Concatenate values
+                if type(features[i].attributes()[point_name_idx]) == str:  # Concatenate values
                     feature_attrs[point_name_idx] = ";".join([feature_attrs[point_name_idx], features[i].attributes()[point_name_idx]])
                 else: # Let first feature's value
                     feature_attrs.insert(point_name_idx, feature_attrs[point_name_idx])

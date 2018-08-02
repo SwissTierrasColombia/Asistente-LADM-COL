@@ -101,7 +101,7 @@ class TestExport(unittest.TestCase):
             self.assertEqual(len([feat for feat in features]), feat[i])
             self.assertEqual(len([feat for feat in no_features]), no_feat[i])
 
-        new_layer = self.TestClass.validate_trustworthy(res_layer, 30, "timestamp")
+        new_layer = self.TestClass.validate_trustworthy(res_layer, 30, "timestamp", True)
 
         null_group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]
         self.assertEqual(len(null_group_count), 21)
@@ -134,7 +134,7 @@ class TestExport(unittest.TestCase):
             self.assertEqual(len([feat for feat in features]), feat[i])
             self.assertEqual(len([feat for feat in no_features]), no_feat[i])
 
-        new_layer = self.TestClass.validate_trustworthy(res_layer, 30, "timestamp")
+        new_layer = self.TestClass.validate_trustworthy(res_layer, 30, "timestamp", True)
 
         null_group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]
         self.assertEqual(len(null_group_count), 19)
