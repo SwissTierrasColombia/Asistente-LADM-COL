@@ -102,7 +102,6 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         layer_with_groups.updateFields()
         layer_with_trustworthy = self.validate_trustworthy(layer_with_groups, time_tolerance, time_field, time_validate)
 
-        #QgsProject.instance().addMapLayer(layer_with_trustworthy)
         self.average_per_group(layer_with_trustworthy, point_name)
 
     def run_group_points_model(self, input_layer, tolerance, definition_field):
@@ -291,7 +290,6 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
             QCoreApplication.translate("ControlledMeasurementDialog",
                                        "A new average point layer has been added to the map!"),
             Qgis.Info)
-
 
     def show_help(self):
         self.qgis_utils.show_help("controlled_measurement")
