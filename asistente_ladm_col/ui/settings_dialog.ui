@@ -307,7 +307,7 @@
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>85</height>
+             <height>16777215</height>
             </size>
            </property>
            <property name="title">
@@ -382,23 +382,12 @@
     </widget>
    </item>
   </layout>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>2</width>
-     <height>2</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout"/>
-  </widget>
  </widget>
  <customwidgets>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgis.gui</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

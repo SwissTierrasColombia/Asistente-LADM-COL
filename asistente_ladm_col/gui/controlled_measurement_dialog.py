@@ -32,8 +32,9 @@ from qgis.core import (
     QgsFeatureRequest,
     NULL
 )
-from qgis.PyQt.QtCore import QVariant, QCoreApplication
-from qgis.PyQt.QtWidgets import QDialog
+from qgis.gui import QgsMessageBar
+from qgis.PyQt.QtCore import Qt, QVariant, QCoreApplication
+from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
 
 import processing
 
@@ -46,16 +47,18 @@ from ..utils import get_ui_class
 
 DIALOG_UI = get_ui_class('controlled_measurement_dialog.ui')
 
+
 class ControlledMeasurementDialog(QDialog, DIALOG_UI):
-    def __init__(self, qgis_utils):
-        QDialog.__init__(self)
+    def __init__(self, iface=None, parent=None, qgis_utils=None):
+        QDialog.__init__(self, parent)
         self.setupUi(self)
+        self.iface = iface
         self.qgis_utils = qgis_utils
 
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PointLayer)
         self.mFieldComboBox.setFilters(QgsFieldProxyModel.String)
 
-        self.accepted.connect(self.accept_dialog)
+        self.accepted.connect(self.accept_check)
         self.buttonBox.helpRequested.connect(self.show_help)
 
         self.mMapLayerComboBox.layerChanged.connect(self.mFieldComboBox.setLayer)
@@ -65,6 +68,42 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         self.mFieldComboBox.setLayer(self.mMapLayerComboBox.currentLayer())
         self.tFieldComboBox.setLayer(self.mMapLayerComboBox.currentLayer())
         self.pnFieldComboBox.setLayer(self.mMapLayerComboBox.currentLayer())
+
+        # Implement MessageBar
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.setLayout(QGridLayout())
+        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
+
+        self._want_to_close = False
+
+    def accept(self):
+        if self._want_to_close:  # assume it is true
+            pass
+        else:
+            self.accept_check()
+            return
+
+    def show_message(self, message, level):
+        self.bar.pushMessage(message, level, 10)
+
+    def accept_check(self):
+        if self.mMapLayerComboBox.currentLayer() and \
+                self.mFieldComboBox.currentField() and \
+                self.tFieldComboBox.currentField() and \
+                self.pnFieldComboBox.currentField():
+            self.accept_dialog()
+            self._want_to_close = True
+        else:
+            if not self.mMapLayerComboBox.currentLayer():
+                self.show_message("Plese select layer", Qgis.Warning)
+            elif not self.mFieldComboBox.currentField():
+                self.show_message("Plese select Definition Field", Qgis.Warning)
+            elif not self.pnFieldComboBox.currentField():
+                self.show_message("Plese select Point Name Field", Qgis.Warning)
+            elif self.mGroupBox.isChecked():
+                if not self.tFieldComboBox.currentField():
+                    self.show_message("Plese select Time Field", Qgis.Warning)
 
     def accept_dialog(self):
         input_layer = self.mMapLayerComboBox.currentLayer()
@@ -191,7 +230,8 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
 
     def time_filter(self, layer, features, idx, time_tolerance):
         """ Filters a time field and returns which features are within the
-        allowed time range and which are not."""
+        allowed time range and which are not.
+        This return a list for each group of dependent fetures and independent features"""
         dates = {}
         for feat in features:
             attrs = feat.attributes()
