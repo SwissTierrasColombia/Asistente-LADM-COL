@@ -49,16 +49,16 @@ DIALOG_UI = get_ui_class('controlled_measurement_dialog.ui')
 
 
 class ControlledMeasurementDialog(QDialog, DIALOG_UI):
-    def __init__(self, iface=None, parent=None, qgis_utils=None):
+    def __init__(self, parent=None, qgis_utils=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.iface = iface
         self.qgis_utils = qgis_utils
 
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PointLayer)
         self.mFieldComboBox.setFilters(QgsFieldProxyModel.String)
 
-        self.accepted.connect(self.accept_check)
+        self.buttonBox.accepted.disconnect()
+        self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.helpRequested.connect(self.show_help)
 
         self.mMapLayerComboBox.layerChanged.connect(self.mFieldComboBox.setLayer)
@@ -75,35 +75,26 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         self.setLayout(QGridLayout())
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
-        self._want_to_close = False
-
-    def accept(self):
-        if self._want_to_close:  # assume it is true
-            pass
-        else:
-            self.accept_check()
+    def accepted(self):
+        if not self.mMapLayerComboBox.currentLayer():
+            self.show_message("Plese select layer", Qgis.Warning)
             return
+        elif not self.mFieldComboBox.currentField():
+            self.show_message("Plese select Definition Field", Qgis.Warning)
+            return
+        elif not self.pnFieldComboBox.currentField():
+            self.show_message("Plese select Point Name Field", Qgis.Warning)
+            return
+        elif self.mGroupBox.isChecked():
+            if not self.tFieldComboBox.currentField():
+                self.show_message("Plese select Time Field", Qgis.Warning)
+                return
+        self.accept_dialog()
+        self.close()
 
     def show_message(self, message, level):
         self.bar.pushMessage(message, level, 10)
 
-    def accept_check(self):
-        if self.mMapLayerComboBox.currentLayer() and \
-                self.mFieldComboBox.currentField() and \
-                self.tFieldComboBox.currentField() and \
-                self.pnFieldComboBox.currentField():
-            self.accept_dialog()
-            self._want_to_close = True
-        else:
-            if not self.mMapLayerComboBox.currentLayer():
-                self.show_message("Plese select layer", Qgis.Warning)
-            elif not self.mFieldComboBox.currentField():
-                self.show_message("Plese select Definition Field", Qgis.Warning)
-            elif not self.pnFieldComboBox.currentField():
-                self.show_message("Plese select Point Name Field", Qgis.Warning)
-            elif self.mGroupBox.isChecked():
-                if not self.tFieldComboBox.currentField():
-                    self.show_message("Plese select Time Field", Qgis.Warning)
 
     def accept_dialog(self):
         input_layer = self.mMapLayerComboBox.currentLayer()
@@ -174,11 +165,6 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         idx_time_field = layer.fields().indexFromName(time_field)
         new_layer = self.copy_attribs(layer, "Previous Average Points")
 
-        if not time_field:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ControlledMeasurementDialog",
-                                           "There is no selected time field, no time filter is applied."),
-                Qgis.Warning)
         for group in groups_num:
             if group is None:
                 not_group_features = [f for f in layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]

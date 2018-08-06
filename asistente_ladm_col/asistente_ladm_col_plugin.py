@@ -447,7 +447,7 @@ class AsistenteLADMCOLPlugin(QObject):
         return self.qgis_utils.get_db_connection()
 
     def show_dlg_controlled_measurement(self):
-        dlg = ControlledMeasurementDialog(self.qgis_utils)
+        dlg = ControlledMeasurementDialog(qgis_utils=self.qgis_utils)
         dlg.exec_()
 
     @_project_generator_required
