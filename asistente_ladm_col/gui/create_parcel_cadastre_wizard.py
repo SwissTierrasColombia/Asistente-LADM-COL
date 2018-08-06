@@ -206,17 +206,17 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                 if plot_ids and building_ids:
                     self.iface.messageBar().pushMessage("Asistente LADM_COL",
                         QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Terreno (t_id={}) and Construcción(es) (t_id={})!").format(parcel_id, plot_ids[0], ", ".join([str(b) for b in building_ids])),
+                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={}) and Building(s) (t_id={})!").format(parcel_id, plot_ids[0], ", ".join([str(b) for b in building_ids])),
                         Qgis.Info)
                 elif plot_ids and not building_ids:
                     self.iface.messageBar().pushMessage("Asistente LADM_COL",
                         QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Terreno (t_id={})!").format(parcel_id, plot_ids[0]),
+                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={})!").format(parcel_id, plot_ids[0]),
                         Qgis.Info)
                 elif not plot_ids and building_ids:
                     self.iface.messageBar().pushMessage("Asistente LADM_COL",
                         QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Construcción(es) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_ids])),
+                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Building(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_ids])),
                         Qgis.Info)
 
         self._parcel_layer.committedFeaturesAdded.disconnect()
