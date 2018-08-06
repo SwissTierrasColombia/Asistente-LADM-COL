@@ -22,24 +22,25 @@ class TestExport(unittest.TestCase):
         self.qgis_utils = QGISUtils()
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
-        self.TestClass = ControlledMeasurementDialog(self.qgis_utils)
+        self.TestClass = ControlledMeasurementDialog(qgis_utils=self.qgis_utils)
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='tests_controlled_measurement')
+        self.measure_layer = QgsVectorLayer(uri, 'tests_controlled_measurement', 'ogr')
 
     def test_get_point_groups(self):
         print('\nINFO: Validating controlled measurement (Point Grouping)...')
-        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        uri = gpkg_path + '|layername={layername}'.format(layername='tests_controlled_measurement')
-        measure_layer = QgsVectorLayer(uri, 'tests_controlled_measurement', 'ogr')
 
-        self.assertEqual(measure_layer.featureCount(), 38)
 
-        bdef = [i.id() for i in measure_layer.getFeatures("\"def_type\"='Bien_Definido'")]
+        self.assertEqual(self.measure_layer.featureCount(), 38)
+
+        bdef = [i.id() for i in self.measure_layer.getFeatures("\"def_type\"='Bien_Definido'")]
         self.assertEqual(len(bdef), 20)
 
-        nbdef = [i.id() for i in measure_layer.getFeatures("\"def_type\"='No_Bien_Definido'")]
+        nbdef = [i.id() for i in self.measure_layer.getFeatures("\"def_type\"='No_Bien_Definido'")]
         self.assertEqual(len(nbdef), 18)
 
         # Test model with distance of 0.5 meters
-        res, msg = self.TestClass.run_group_points_model(measure_layer, 0.5, 'def_type')
+        res, msg = self.TestClass.run_group_points_model(self.measure_layer, 0.5, 'def_type')
 
         self.assertIsNotNone(res) # Model not found
 
@@ -51,10 +52,10 @@ class TestExport(unittest.TestCase):
 
         features = res_layer.getFeatures("\"{}\"=4".format(GROUP_FIELD_NAME))
         features = [f for f in features]
-        self.assertEqual(sorted([f.attributes()[0] for f in features]) , [191, 192])
+        self.assertEqual(sorted([f.attributes()[0] for f in features]), [191, 192])
 
         # Test model with distance of 5 meters
-        res, msg = self.TestClass.run_group_points_model(measure_layer, 5.0, 'def_type')
+        res, msg = self.TestClass.run_group_points_model(self.measure_layer, 5.0, 'def_type')
 
         self.assertIsNotNone(res) # Model not found
 
@@ -67,23 +68,23 @@ class TestExport(unittest.TestCase):
         features = [f for f in features]
         self.assertEqual(sorted([f.attributes()[0] for f in features]), [189, 190, 191, 192])
 
-    def test_time_groups_validation(self):
-        print('\nINFO: Validating controlled measurement (Time Group Validation)...')
-        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        uri = gpkg_path + '|layername={layername}'.format(layername='tests_controlled_measurement')
-        measure_layer = QgsVectorLayer(uri, 'tests_controlled_measurement', 'ogr')
+    def test_trustworthy_validation(self):
+        print('\nINFO: Validating controlled measurement (Trustworthy Validation)...')
 
-        self.assertEqual(measure_layer.featureCount(), 38)
+        self.assertEqual(self.measure_layer.featureCount(), 38)
 
-        bdef = [i.id() for i in measure_layer.getFeatures("\"def_type\"='Bien_Definido'")]
+        bdef = [i.id() for i in self.measure_layer.getFeatures("\"def_type\"='Bien_Definido'")]
         self.assertEqual(len(bdef), 20)
 
-        nbdef = [i.id() for i in measure_layer.getFeatures("\"def_type\"='No_Bien_Definido'")]
+        nbdef = [i.id() for i in self.measure_layer.getFeatures("\"def_type\"='No_Bien_Definido'")]
         self.assertEqual(len(nbdef), 18)
 
+
+    def test_groups_validation(self):
+        print('\nINFO: Validating controlled measurement (Time Group Validation)...')
         # Test to check time validation with 0.5 meters of distance
         res, msg = self.TestClass.run_group_points_model(
-             measure_layer, 0.5, 'def_type')
+             self.measure_layer, 0.5, 'def_type')
         res_layer = res['native:mergevectorlayers_1:output']
 
         res_layer.dataProvider().addAttributes([QgsField(TRUSTWORTHY_FIELD_NAME, QVariant.String)])
@@ -101,22 +102,11 @@ class TestExport(unittest.TestCase):
             self.assertEqual(len([feat for feat in features]), feat[i])
             self.assertEqual(len([feat for feat in no_features]), no_feat[i])
 
-        new_layer = self.TestClass.validate_trustworthy(res_layer, 30, "timestamp", True)
 
-        null_group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]
-        self.assertEqual(len(null_group_count), 21)
-
-        group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NOT NULL".format(GROUP_FIELD_NAME))]
-        self.assertEqual(len(group_count), 17)
-
-        not_trustworthy_count = [i.id() for i in new_layer.getFeatures("\"{}\" = 'False'".format(TRUSTWORTHY_FIELD_NAME))]
-        self.assertEqual(len(not_trustworthy_count), 24)
-
-        trustworthy_count = [i.id() for i in new_layer.getFeatures("\"{}\" = 'True'".format(TRUSTWORTHY_FIELD_NAME))]
-        self.assertEqual(len(trustworthy_count), 14)
-
+    def test_groups_validation_second_distance(self):
+        print('\nINFO: Validating controlled measurement (Time Group Validation Second Distance)...')
         # Test to check time validation with 5 meters of distance.
-        res, msg = self.TestClass.run_group_points_model(measure_layer, 5, 'def_type')
+        res, msg = self.TestClass.run_group_points_model(self.measure_layer, 5, 'def_type')
 
         res_layer = res['native:mergevectorlayers_1:output']
         res_layer.dataProvider().addAttributes([QgsField(TRUSTWORTHY_FIELD_NAME, QVariant.String)])
@@ -134,6 +124,36 @@ class TestExport(unittest.TestCase):
             self.assertEqual(len([feat for feat in features]), feat[i])
             self.assertEqual(len([feat for feat in no_features]), no_feat[i])
 
+
+    def test_distance_validation(self):
+        print('\nINFO: Validating controlled measurement (Distance Validation)...')
+        # Test to check time validation with 0.5 meters of distance
+        res, msg = self.TestClass.run_group_points_model(
+            self.measure_layer, 0.5, 'def_type')
+        res_layer = res['native:mergevectorlayers_1:output']
+        res_layer.dataProvider().addAttributes([QgsField(TRUSTWORTHY_FIELD_NAME, QVariant.String)])
+        res_layer.updateFields()
+        new_layer = self.TestClass.validate_trustworthy(res_layer, 30, "timestamp", True)
+
+        null_group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]
+        self.assertEqual(len(null_group_count), 21)
+
+        group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NOT NULL".format(GROUP_FIELD_NAME))]
+        self.assertEqual(len(group_count), 17)
+
+        not_trustworthy_count = [i.id() for i in
+                                 new_layer.getFeatures("\"{}\" = 'False'".format(TRUSTWORTHY_FIELD_NAME))]
+        self.assertEqual(len(not_trustworthy_count), 24)
+
+        trustworthy_count = [i.id() for i in new_layer.getFeatures("\"{}\" = 'True'".format(TRUSTWORTHY_FIELD_NAME))]
+        self.assertEqual(len(trustworthy_count), 14)
+
+        # With Second distance
+        res, msg = self.TestClass.run_group_points_model(
+            self.measure_layer, 5, 'def_type')
+        res_layer = res['native:mergevectorlayers_1:output']
+        res_layer.dataProvider().addAttributes([QgsField(TRUSTWORTHY_FIELD_NAME, QVariant.String)])
+        res_layer.updateFields()
         new_layer = self.TestClass.validate_trustworthy(res_layer, 30, "timestamp", True)
 
         null_group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]
@@ -147,6 +167,95 @@ class TestExport(unittest.TestCase):
 
         trustworthy_count = [i.id() for i in new_layer.getFeatures("\"{}\" = 'True'".format(TRUSTWORTHY_FIELD_NAME))]
         self.assertEqual(len(trustworthy_count), 16)
+
+    def test_time_validation_without_time(self):
+        print('\nINFO: Validating controlled measurement (Distance Validation)...')
+        # Test to check time validation with 0.5 meters of distance
+        res, msg = self.TestClass.run_group_points_model(
+            self.measure_layer, 0.5, 'def_type')
+        res_layer = res['native:mergevectorlayers_1:output']
+        res_layer.dataProvider().addAttributes([QgsField(TRUSTWORTHY_FIELD_NAME, QVariant.String)])
+        res_layer.updateFields()
+        new_layer = self.TestClass.validate_trustworthy(res_layer, 30, "timestamp", False)
+
+        null_group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]
+        self.assertEqual(len(null_group_count), 18)
+
+        group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NOT NULL".format(GROUP_FIELD_NAME))]
+        self.assertEqual(len(group_count), 20)
+
+        not_trustworthy_count = [i.id() for i in
+                                 new_layer.getFeatures("\"{}\" = 'False'".format(TRUSTWORTHY_FIELD_NAME))]
+        self.assertEqual(len(not_trustworthy_count), 18)
+
+        trustworthy_count = [i.id() for i in new_layer.getFeatures("\"{}\" = 'True'".format(TRUSTWORTHY_FIELD_NAME))]
+        self.assertEqual(len(trustworthy_count), 20)
+
+        # With Second distance
+        res, msg = self.TestClass.run_group_points_model(
+            self.measure_layer, 5, 'def_type')
+        res_layer = res['native:mergevectorlayers_1:output']
+        res_layer.dataProvider().addAttributes([QgsField(TRUSTWORTHY_FIELD_NAME, QVariant.String)])
+        res_layer.updateFields()
+        new_layer = self.TestClass.validate_trustworthy(res_layer, 30, "timestamp", False)
+
+        null_group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]
+        self.assertEqual(len(null_group_count), 18)
+
+        group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NOT NULL".format(GROUP_FIELD_NAME))]
+        self.assertEqual(len(group_count), 20)
+
+        not_trustworthy_count = [i.id() for i in
+                                 new_layer.getFeatures("\"{}\" = 'False'".format(TRUSTWORTHY_FIELD_NAME))]
+        self.assertEqual(len(not_trustworthy_count), 18)
+
+        trustworthy_count = [i.id() for i in new_layer.getFeatures("\"{}\" = 'True'".format(TRUSTWORTHY_FIELD_NAME))]
+        self.assertEqual(len(trustworthy_count), 20)
+
+
+    def test_diferent_time_validation(self):
+        print('\nINFO: Validating controlled measurement (Distance Validation)...')
+        # Test to check time validation with 0.5 meters of distance
+        res, msg = self.TestClass.run_group_points_model(
+            self.measure_layer, 5, 'def_type')
+        res_layer = res['native:mergevectorlayers_1:output']
+        res_layer.dataProvider().addAttributes([QgsField(TRUSTWORTHY_FIELD_NAME, QVariant.String)])
+        res_layer.updateFields()
+        new_layer = self.TestClass.validate_trustworthy(res_layer, 30, "timestamp", True)
+
+        null_group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]
+        self.assertEqual(len(null_group_count), 19)
+
+        group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NOT NULL".format(GROUP_FIELD_NAME))]
+        self.assertEqual(len(group_count), 19)
+
+        not_trustworthy_count = [i.id() for i in
+                                 new_layer.getFeatures("\"{}\" = 'False'".format(TRUSTWORTHY_FIELD_NAME))]
+        self.assertEqual(len(not_trustworthy_count), 22)
+
+        trustworthy_count = [i.id() for i in new_layer.getFeatures("\"{}\" = 'True'".format(TRUSTWORTHY_FIELD_NAME))]
+        self.assertEqual(len(trustworthy_count), 16)
+
+        # With Second distance
+        res, msg = self.TestClass.run_group_points_model(
+            self.measure_layer, 5, 'def_type')
+        res_layer = res['native:mergevectorlayers_1:output']
+        res_layer.dataProvider().addAttributes([QgsField(TRUSTWORTHY_FIELD_NAME, QVariant.String)])
+        res_layer.updateFields()
+        new_layer = self.TestClass.validate_trustworthy(res_layer, 10, "timestamp", True)
+
+        null_group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NULL".format(GROUP_FIELD_NAME))]
+        self.assertEqual(len(null_group_count), 19)
+
+        group_count = [i.id() for i in new_layer.getFeatures("\"{}\" IS NOT NULL".format(GROUP_FIELD_NAME))]
+        self.assertEqual(len(group_count), 19)
+
+        not_trustworthy_count = [i.id() for i in
+                                 new_layer.getFeatures("\"{}\" = 'False'".format(TRUSTWORTHY_FIELD_NAME))]
+        self.assertEqual(len(not_trustworthy_count), 21)
+
+        trustworthy_count = [i.id() for i in new_layer.getFeatures("\"{}\" = 'True'".format(TRUSTWORTHY_FIELD_NAME))]
+        self.assertEqual(len(trustworthy_count), 17)
 
 
 if __name__ == '__main__':
