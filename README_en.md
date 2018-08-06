@@ -17,7 +17,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([0.6.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.6.0)) of the LADM_COL Assistant depends on [Project Generator v3.2.4.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/3.2.4.1) and allows users to:
+The current version ([0.6.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.6.1)) of the LADM_COL Assistant depends on [Project Generator v3.2.6](https://github.com/opengisch/projectgenerator/releases/tag/v3.2.6) and allows users to:
 
  - Capture data for the LADM_COL v2.2.1 model.
  - Preprocess points: Controlled Measurement.
@@ -42,7 +42,8 @@ The current version ([0.6.0](https://github.com/AgenciaImplementacion/Asistente-
    - `More BFS` (relates `Boundaries` to `Plot`)
    - `Less` (relates `Plots` to their inner rings)
  - Create `Parcels`:
-   - From existing `Plots`.
+   - Using preconfigured forms.
+     - And associating the new `Parcel` to selected `Plots` and/or `Buildings`.
    - From another table with any structure, setting a field mapping.
  - Create `Buildings` and `Building Units`:
    - By digitizing on the map.
