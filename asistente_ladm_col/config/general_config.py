@@ -67,6 +67,9 @@ CLASS_CLASS_RELATION = 'class_class'
 
 TEST_SERVER = "www.google.com"
 
+# About dialog
+RELEASE_URL = "https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/"
+
 # For testing if an schema comes from ili2db
 INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
 

@@ -42,7 +42,8 @@ from .config.general_config import (
     PLUGIN_NAME,
     PLUGIN_VERSION,
     PLUGIN_DIR,
-    QGIS_LANG
+    QGIS_LANG,
+    RELEASE_URL
 )
 from .gui.create_points_cadastre_wizard import CreatePointsCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
@@ -530,8 +531,8 @@ class AsistenteLADMCOLPlugin(QObject):
         else:
             self._about_dialog.check_local_help()
 
-        rich_text = '<html><head/><body><p align="center"><span style=" font-size:10pt; font-weight:600;">v{}</span></p></body></html>'
-        self._about_dialog.lbl_version.setText(rich_text.format(PLUGIN_VERSION))
+        rich_text = '<html><head/><body><p align="center"><a href="{release_url}{version}"><span style=" font-size:10pt; text-decoration: underline; color:#0000ff;">v{version}</span></a></p></body></html>'
+        self._about_dialog.lbl_version.setText(rich_text.format(release_url=RELEASE_URL, version=PLUGIN_VERSION))
         self._about_dialog.exec_()
 
     def installTranslator(self):
