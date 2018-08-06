@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Surveying and Representation &mdash; documentación de LADM_COL Assistant - </title>
+  <title>Topografía y Representación &mdash; documentación de LADM_COL Assistant - </title>
   
 
   
@@ -31,8 +31,8 @@
     <link rel="author" title="Sobre este documento" href="../about.html" />
     <link rel="index" title="Índice" href="../genindex.html" />
     <link rel="search" title="Búsqueda" href="../search.html" />
-    <link rel="next" title="Spatial Unit" href="Spatial_Unit.html" />
-    <link rel="prev" title="Preprocessing" href="Preprocessing.html" /> 
+    <link rel="next" title="Unidad Espacial" href="Spatial_Unit.html" />
+    <link rel="prev" title="Pre-procesamiento" href="Preprocessing.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -83,24 +83,29 @@
             
               <p class="caption"><span class="caption-text">Contenidos:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../cadastre.html">Cadastre</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="Preprocessing.html">Preprocessing</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Surveying and Representation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#create-point">Create Point</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#create-boundary">Create Boundary</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../cadastre.html">Catastro</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Preprocessing.html">Pre-procesamiento</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Topografía y Representación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-point">Crear Punto</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#boundary-point">Punto lindero</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#survey-point">Punto Levantamiento</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#control-point">Punto de Control</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Spatial_Unit.html">Spatial Unit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Basic_Administrative_Unit.html">Basic Administrative Unit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Party.html">Party</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-boundary">Crear Lindero</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Spatial_Unit.html">Unidad Espacial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Basic_Administrative_Unit.html">Unidad Administrativa Básica</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Party.html">Interesado</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Source.html">Fuente</a></li>
 <li class="toctree-l2"><a class="reference internal" href="RRR.html">RRR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Source.html">Source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Quality.html">Calidad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Quality.html">Revisar Reglas de Calidad</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../load_layers.html">Cargar capas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../settings.html">Configuración</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../toolbar.html">Toolbar LADM_COL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../toolbar.html">Barra de herramientas de LADM_COL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Guía de Instalación para el plugin</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../about.html">Acerca de</a></li>
 </ul>
@@ -148,9 +153,9 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../cadastre.html">Cadastre</a> &raquo;</li>
+          <li><a href="../cadastre.html">Catastro</a> &raquo;</li>
         
-      <li>Surveying and Representation</li>
+      <li>Topografía y Representación</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -177,16 +182,51 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../0.6.0/cadastre/Surveying_and_Representation.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.0.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../0.6.1/cadastre/Surveying_and_Representation.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.1.</a></p>
 <div class="section" id="surveying-and-representation">
-<h1>Surveying and Representation<a class="headerlink" href="#surveying-and-representation" title="Enlazar permanentemente con este título">¶</a></h1>
+<h1>Topografía y Representación<a class="headerlink" href="#surveying-and-representation" title="Enlazar permanentemente con este título">¶</a></h1>
 <div class="section" id="create-point">
-<h2>Create Point<a class="headerlink" href="#create-point" title="Enlazar permanentemente con este título">¶</a></h2>
+<h2>Crear Punto<a class="headerlink" href="#create-point" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="boundary-point">
+<h3>Punto lindero<a class="headerlink" href="#boundary-point" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Elige esta opción para cargar puntos a la capa <strong>Punto Lindero</strong> del modelo <em>LADM_COL</em>.</p>
+<p><strong>Punto Lindero</strong> es una clase especializada de <em>LA_Punto</em> que almacena puntos que definen un lindero. Lindero es una instancia de la clase <em>LA_BoundaryFaceString</em> y sus especializaciones.</p>
 <ol class="arabic simple">
-<li>Boundary Point</li>
+<li>Desde un archivo CSV con la estructura requerida</li>
 </ol>
+<blockquote>
+<div><p>Agrega un archivo de valores separados por coma (CSV), seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.</p>
 <a class=""
-               data-lightbox="group-4cc3a2d6-f0b1-4ea1-bec6-f44b38ab0487"
+               data-lightbox="group-c0b6391c-0e49-4bba-9993-a01ffbaf86cc"
+               href="../_images/_CREAR_PUNTO_LINDERO_1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/_CREAR_PUNTO_LINDERO_1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Control Point"/>
+                </a></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Desde otra capa de QGIS (definiendo un mapeo de campos)</li>
+</ol>
+<blockquote>
+<div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>puntolindero</strong> de <em>LADM_COL</em>.</p>
+<p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
+<p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
+</div></blockquote>
+</div>
+<div class="section" id="survey-point">
+<h3>Punto Levantamiento<a class="headerlink" href="#survey-point" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Elige esta opción para cargar puntos a la capa <strong>Punto Levantamiento</strong> del modelo <em>LADM_COL</em>.</p>
+<p><strong>Punto Levantamiento</strong> es una clase especializada de <em>LA_Punto</em> que representa la posición horizontal de un vértice de construcción, servidumbre o auxiliares.</p>
+<ol class="arabic simple">
+<li>Desde un archivo CSV con la estructura requerida</li>
+</ol>
+<blockquote>
+<div><p>Agrega un archivo de valores separados por coma (CSV), seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.</p>
+<a class=""
+               data-lightbox="group-2aaea2a8-17a3-45c3-aed9-9c0e9356421d"
                href="../_images/_CREAR_PUNTO_LINDERO_1.gif"
                title=""
                data-title=""
@@ -195,33 +235,56 @@
                      width="800"
                      height="500"
                      alt="Create Boundary Point"/>
-                </a><p>Choose this option to load points to <strong>Boundary Points</strong> layer from <em>LADM_COL</em>
-model.</p>
-<p><strong>Boundary Point</strong> is a specialized class of <em>LA_Point</em> which stores points that
-define a boundary. Boundary is an instance of <em>LA_BoundaryFaceString</em> class and
-its specializations.</p>
+                </a></div></blockquote>
 <ol class="arabic simple" start="2">
-<li>Survey Point</li>
+<li>Desde otra capa de QGIS (definiendo un mapeo de campos)</li>
 </ol>
+<blockquote>
+<div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>lindero</strong> de <em>LADM_COL</em>.</p>
+<p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
+<p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
+</div></blockquote>
+</div>
+<div class="section" id="control-point">
+<h3>Punto de Control<a class="headerlink" href="#control-point" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Elige esta opción para cargar puntos a la capa <strong>Punto de Control</strong> del modelo <em>LADM_COL</em>.</p>
+<p><strong>Punto de Control</strong> es una clase especializada de <em>LA_Punto</em> que representa puntos de la densificación de la red local, que se utiliza en la operación catastral para el levantamiento de información fisica de los objetos territoriales.</p>
+<ol class="arabic simple">
+<li>Desde un archivo CSV con la estructura requerida</li>
+</ol>
+<blockquote>
+<div><p>Agrega un archivo de valores separados por coma (CSV), seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.</p>
 <a class=""
-               data-lightbox="group-4ae5f522-e1fb-4503-ae65-2bd9f8d099d8"
-               href="../_images/crear_punto_levantamiento_csv1.gif"
+               data-lightbox="group-a886f09e-1975-4dcd-9a92-127597eccdb4"
+               href="../_images/crear_punto_control1.gif"
                title=""
                data-title=""
-               ><img src="../_images/crear_punto_levantamiento_csv1.gif"
+               ><img src="../_images/crear_punto_control1.gif"
                      class=""
                      width="800"
                      height="500"
-                     alt="Crear Survey Points"/>
-                </a><p>Choose this option to load points to <strong>Survey Points</strong> layer from <em>LADM_COL</em>
-model.</p>
-<p><strong>Survey Point</strong> is a specialized class of <em>LA_Point</em> which represents a
-building, right of way or auxiliary vertex.</p>
+                     alt="Create Boundary Point"/>
+                </a></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Desde otra capa de QGIS (definiendo un mapeo de campos)</li>
+</ol>
+<blockquote>
+<div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>puntocontrol</strong> de <em>LADM_COL</em>.</p>
+<p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
+<p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
+</div></blockquote>
+</div>
 </div>
 <div class="section" id="create-boundary">
-<h2>Create Boundary<a class="headerlink" href="#create-boundary" title="Enlazar permanentemente con este título">¶</a></h2>
+<h2>Crear Lindero<a class="headerlink" href="#create-boundary" title="Enlazar permanentemente con este título">¶</a></h2>
+<ol class="arabic simple">
+<li>Digitalizando</li>
+</ol>
+<blockquote>
+<div><p>Elige esta opción si deseas agregar un <strong>Lindero</strong> usando las herramientas de digitalización de QGIS.</p>
+<p><strong>Lindero</strong> es una clase especializada de <em>LA_CadenaCarasLindero</em> que permite registrar los linderos. Dos linderos no pueden cruzarse ni superponerse.</p>
 <a class=""
-               data-lightbox="group-a6911910-638d-47a3-be1e-f30cf57b3aef"
+               data-lightbox="group-e84c2b4e-c50e-4725-a028-666677babccb"
                href="../_images/_CREAR_LINDERO1.gif"
                title=""
                data-title=""
@@ -230,32 +293,17 @@ building, right of way or auxiliary vertex.</p>
                      width="800"
                      height="500"
                      alt="Create Boundary Point"/>
-                </a><ol class="arabic simple">
-<li>Digitizing</li>
-</ol>
-<p>Choose this option if you want to create a <strong>Boundary</strong> using QGIS digitizing
-tools.</p>
-<p><strong>Boundary</strong> is a specialization of the <em>LA_CadenaCarasLindero</em> class to store
-boundaries that define plots. Two boundaries must not cross or overlap.</p>
+                </a></div></blockquote>
 <ol class="arabic simple" start="2">
-<li>From another QGIS Layer/table (setting a field mapping)</li>
+<li>Desde otra capa de QGIS (definiendo un mapeo de campos)</li>
 </ol>
-<p>Choose this option to open a window that allows you to import data from a source
-table into the <em>LADM_COL</em> <strong>lindero</strong> table.</p>
-<p>If the field structure of input and target tables differs, you can set a field
-mapping to define field transformations and correspondence.</p>
+<blockquote>
+<div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>lindero</strong> de <em>LADM_COL</em>.</p>
+<p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
+<p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
+<p>Si necesitas unir o partir por segmentos los linderos, puedes utilizar los botones <em>Unir</em> y <em>Partir por segmento</em> en la barra de herramientas de LADM-COL.</p>
 <a class=""
-               data-lightbox="group-d6848ffa-dcd3-434a-8e8c-d69f95c50b02"
-               href="../_images/_LLENAR_TOPOLOGIAS1.gif"
-               title=""
-               data-title=""
-               ><img src="../_images/_LLENAR_TOPOLOGIAS1.gif"
-                     class=""
-                     width="800"
-                     height="500"
-                     alt="Create Boundary Point"/>
-                </a><a class=""
-               data-lightbox="group-cf3deb47-3634-4e33-a140-23876d9fe610"
+               data-lightbox="group-a67dd505-91a1-4687-809e-01726207246f"
                href="../_images/_UNIR_PARTIR_LINDERO1.gif"
                title=""
                data-title=""
@@ -264,7 +312,13 @@ mapping to define field transformations and correspondence.</p>
                      width="800"
                      height="500"
                      alt="Create Boundary Point"/>
-                </a></div>
+                </a></div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<blockquote>
+<div>Puedes llenar la tabla de topología PuntoCCL usando el botón <em>Llenar PuntosCCL</em> en barra de herramientas de LADM_COL que hace más rápido y de forma automática este trabajo. Para usar esta función revisa este <a class="reference external" href="../toolbar.html">ENLACE</a>.</div></blockquote>
+</div>
 </div>
 
 
@@ -275,10 +329,10 @@ mapping to define field transformations and correspondence.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Spatial_Unit.html" class="btn btn-neutral float-right" title="Spatial Unit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Spatial_Unit.html" class="btn btn-neutral float-right" title="Unidad Espacial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Preprocessing.html" class="btn btn-neutral" title="Preprocessing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Preprocessing.html" class="btn btn-neutral" title="Pre-procesamiento" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -318,10 +372,15 @@ mapping to define field transformations and correspondence.</p>
             <dd><a href="../../0.4.0/cadastre/Surveying_and_Representation.html">0.4.0</a></dd>
             <dd><a href="../../0.5.0/cadastre/Surveying_and_Representation.html">0.5.0</a></dd>
             <dd><a href="../../0.6.0/cadastre/Surveying_and_Representation.html">0.6.0</a></dd>
+            <dd><a href="../../0.6.1/cadastre/Surveying_and_Representation.html">0.6.1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
             <dd><a href="Surveying_and_Representation.html">master</a></dd>
+            <dd><a href="../../prepare_PR_2/cadastre/Surveying_and_Representation.html">prepare_PR_2</a></dd>
+            <dd><a href="../../update_docs/cadastre/Surveying_and_Representation.html">update_docs</a></dd>
+            <dd><a href="../../update_docs_n/cadastre/Surveying_and_Representation.html">update_docs_n</a></dd>
+            <dd><a href="../../update_quality_rules/cadastre/Surveying_and_Representation.html">update_quality_rules</a></dd>
         </dl>
     </div>
 </div>

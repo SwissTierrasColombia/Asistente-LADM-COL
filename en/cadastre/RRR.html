@@ -31,8 +31,8 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Source" href="Source.html" />
-    <link rel="prev" title="Party" href="Party.html" /> 
+    <link rel="next" title="Check Quality Rules" href="Quality.html" />
+    <link rel="prev" title="Source" href="Source.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -89,14 +89,14 @@
 <li class="toctree-l2"><a class="reference internal" href="Spatial_Unit.html">Spatial Unit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Basic_Administrative_Unit.html">Basic Administrative Unit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Party.html">Party</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Source.html">Source</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">RRR</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#right">Right</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#restriccion">Restriccion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#restriction">Restriction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#responsibility">Responsibility</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Source.html">Source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Quality.html">Quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Quality.html">Check Quality Rules</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../load_layers.html">Load Layers</a></li>
@@ -178,21 +178,107 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../0.6.0/cadastre/RRR.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.0.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../0.6.1/cadastre/RRR.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.1.</a></p>
 <div class="section" id="rrr">
 <h1>RRR<a class="headerlink" href="#rrr" title="Permalink to this headline">¶</a></h1>
-<p>This functionality is currently being developed</p>
 <div class="section" id="right">
 <h2>Right<a class="headerlink" href="#right" title="Permalink to this headline">¶</a></h2>
-<p>This functionality is currently being developed</p>
+<ol class="arabic simple">
+<li>Entering data manually using a form (you need to select Administrative sources before)</li>
+</ol>
+<blockquote>
+<div><p>Choose this option if you have selected at least one <em>Administrative Source</em> and
+want to link such selected sources to a new <strong>Right</strong> that you will create using
+a form.</p>
+<p><strong>COL_Right</strong> is a class that stores right instances that a party has over a
+parcel. It is a specialization of the class <em>LA_RRR</em>.</p>
+<a class=""
+               data-lightbox="group-05791151-9767-4f67-b7bd-76db40d28d18"
+               href="../_images/crear_derecho_1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/crear_derecho_1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Right"/>
+                </a></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>From another QGIS layer/table (setting a field mapping)</li>
+</ol>
+<blockquote>
+<div><p>Choose this option to open a window that allows you to import data from a source
+table into the <em>LADM_COL</em> <strong>col_derecho table</strong>.</p>
+<p>If the field structure of input and target tables differs, you can set a field
+mapping to define field transformations and correspondence.</p>
+<p>For use this function check this <a class="reference external" href="../mapping_fields.html">LINK</a>.</p>
+</div></blockquote>
 </div>
-<div class="section" id="restriccion">
-<h2>Restriccion<a class="headerlink" href="#restriccion" title="Permalink to this headline">¶</a></h2>
-<p>This functionality is currently being developed</p>
+<div class="section" id="restriction">
+<h2>Restriction<a class="headerlink" href="#restriction" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Entering data manually using a form (you need to select Administrative sources before)</li>
+</ol>
+<blockquote>
+<div><p>Choose this option if you have selected at least one <em>Administrative Source</em> and
+want to link such selected sources to a new <strong>Restriction</strong> that you will create
+using a form.</p>
+<p><strong>COL_Restriction</strong> are the restrictions on a parcel that affect rights that parties
+may have over it.</p>
+<a class=""
+               data-lightbox="group-1995bfd6-b3b8-4329-b5c3-11abd1066920"
+               href="../_images/crear_restriccion_1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/crear_restriccion_1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Restriction"/>
+                </a></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>From another QGIS layer/table (setting a field mapping)</li>
+</ol>
+<blockquote>
+<div><p>Choose this option to open a window that allows you to import data from a source
+table into the <em>LADM_COL</em> <strong>col_restriccion table</strong>.</p>
+<p>If the field structure of input and target tables differs, you can set a field
+mapping to define field transformations and correspondence.</p>
+<p>For use this function check this <a class="reference external" href="../mapping_fields.html">LINK</a>.</p>
+</div></blockquote>
 </div>
 <div class="section" id="responsibility">
 <h2>Responsibility<a class="headerlink" href="#responsibility" title="Permalink to this headline">¶</a></h2>
-<p>This functionality is currently being developed</p>
+<ol class="arabic simple">
+<li>Entering data manually using a form (you need to select Administrative sources before)</li>
+</ol>
+<blockquote>
+<div><p>Choose this option if you have selected at least one <em>Administrative Source</em> and
+want to link such selected sources to a new <strong>Responsibility</strong> that you will create
+using a form.</p>
+<p><strong>COL_Responsibility</strong> is a class of type <em>LA_RRR</em> which stores responsibilities
+that parties have over parcels.</p>
+<a class=""
+               data-lightbox="group-6fed2a55-4f74-4614-ae72-a8be8ce2eb4f"
+               href="../_images/crear_responsabilidad_1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/crear_responsabilidad_1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Responsibility"/>
+                </a></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>From another QGIS layer/table (setting a field mapping)</li>
+</ol>
+<blockquote>
+<div><p>Choose this option to open a window that allows you to import data from a source
+table into the <em>LADM_COL</em> <strong>col_responsabilidad</strong> table.</p>
+<p>If the field structure of input and target tables differs, you can set a field
+mapping to define field transformations and correspondence.</p>
+<p>For use this function check this <a class="reference external" href="../mapping_fields.html">LINK</a>.</p>
+</div></blockquote>
 </div>
 </div>
 
@@ -204,10 +290,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Source.html" class="btn btn-neutral float-right" title="Source" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Quality.html" class="btn btn-neutral float-right" title="Check Quality Rules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Party.html" class="btn btn-neutral" title="Party" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Source.html" class="btn btn-neutral" title="Source" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -247,10 +333,15 @@
             <dd><a href="../0.4.0/cadastre/RRR.html">0.4.0</a></dd>
             <dd><a href="../0.5.0/cadastre/RRR.html">0.5.0</a></dd>
             <dd><a href="../0.6.0/cadastre/RRR.html">0.6.0</a></dd>
+            <dd><a href="../0.6.1/cadastre/RRR.html">0.6.1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
             <dd><a href="../master/cadastre/RRR.html">master</a></dd>
+            <dd><a href="../prepare_PR_2/cadastre/RRR.html">prepare_PR_2</a></dd>
+            <dd><a href="../update_docs/cadastre/RRR.html">update_docs</a></dd>
+            <dd><a href="../update_docs_n/cadastre/RRR.html">update_docs_n</a></dd>
+            <dd><a href="../update_quality_rules/cadastre/RRR.html">update_quality_rules</a></dd>
         </dl>
     </div>
 </div>

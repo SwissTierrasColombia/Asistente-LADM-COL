@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Basic Administrative Unit &mdash; documentación de LADM_COL Assistant - </title>
+  <title>Unidad Administrativa Básica &mdash; documentación de LADM_COL Assistant - </title>
   
 
   
@@ -31,8 +31,8 @@
     <link rel="author" title="Sobre este documento" href="../about.html" />
     <link rel="index" title="Índice" href="../genindex.html" />
     <link rel="search" title="Búsqueda" href="../search.html" />
-    <link rel="next" title="Party" href="Party.html" />
-    <link rel="prev" title="Spatial Unit" href="Spatial_Unit.html" /> 
+    <link rel="next" title="Interesado" href="Party.html" />
+    <link rel="prev" title="Unidad Espacial" href="Spatial_Unit.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -83,23 +83,23 @@
             
               <p class="caption"><span class="caption-text">Contenidos:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../cadastre.html">Cadastre</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="Preprocessing.html">Preprocessing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Surveying_and_Representation.html">Surveying and Representation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Spatial_Unit.html">Spatial Unit</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Basic Administrative Unit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#parcel">Parcel</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../cadastre.html">Catastro</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Preprocessing.html">Pre-procesamiento</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Surveying_and_Representation.html">Topografía y Representación</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spatial_Unit.html">Unidad Espacial</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Unidad Administrativa Básica</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parcel">Predio</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Party.html">Party</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Party.html">Interesado</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Source.html">Fuente</a></li>
 <li class="toctree-l2"><a class="reference internal" href="RRR.html">RRR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Source.html">Source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Quality.html">Calidad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Quality.html">Revisar Reglas de Calidad</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../load_layers.html">Cargar capas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../settings.html">Configuración</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../toolbar.html">Toolbar LADM_COL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../toolbar.html">Barra de herramientas de LADM_COL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Guía de Instalación para el plugin</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../about.html">Acerca de</a></li>
 </ul>
@@ -147,9 +147,9 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../cadastre.html">Cadastre</a> &raquo;</li>
+          <li><a href="../cadastre.html">Catastro</a> &raquo;</li>
         
-      <li>Basic Administrative Unit</li>
+      <li>Unidad Administrativa Básica</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -176,36 +176,37 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../0.6.0/cadastre/Basic_Administrative_Unit.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.0.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../0.6.1/cadastre/Basic_Administrative_Unit.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.1.</a></p>
 <div class="section" id="basic-administrative-unit">
-<h1>Basic Administrative Unit<a class="headerlink" href="#basic-administrative-unit" title="Enlazar permanentemente con este título">¶</a></h1>
+<h1>Unidad Administrativa Básica<a class="headerlink" href="#basic-administrative-unit" title="Enlazar permanentemente con este título">¶</a></h1>
 <div class="section" id="parcel">
-<h2>Parcel<a class="headerlink" href="#parcel" title="Enlazar permanentemente con este título">¶</a></h2>
+<h2>Predio<a class="headerlink" href="#parcel" title="Enlazar permanentemente con este título">¶</a></h2>
 <ol class="arabic simple">
-<li>Based on existing plot</li>
+<li>Basado en un terreno existente</li>
 </ol>
-<p>Choose this option if you want to create a <strong>Parcel</strong> based on existing plots.</p>
-<p><strong>Parcel</strong> is a specialized <em>BA Unit</em> class, which describes the basic
-administrative unit of Colombian cadastre. The <strong>Parcel</strong> is the legal
-territorial unit, which is formed by the plot and may or may not have associated
-constructions.</p>
-<ol class="arabic simple" start="2">
-<li>From another QGIS layer/table (setting a field mapping)</li>
-</ol>
-<p>Choose this option to open a window that allows you to import data from a source table into the <em>LADM_COL</em> <strong>predio</strong> table.</p>
-<p>If the field structure of input and target tables differs, you can set a field
-mapping to define field transformations and correspondence.</p>
+<blockquote>
+<div><p>Escoje esta opción si deseas crear un <strong>Predio</strong> basado en terrenos existentes.</p>
+<p><strong>Predio</strong> es una clase <em>BA Unit</em> especializada, que describe la unidad administrativa básica del catastro colombiano. El <strong>Predio</strong> es la unidad jurídica territorial, que está formada por el terreno y puede o no tener construcciones asociadas.</p>
 <a class=""
-               data-lightbox="group-fd7c92b1-aac2-4814-9ef6-58e032ba868b"
-               href="../_images/refactor_fields_predio1.gif"
+               data-lightbox="group-b24ecc74-b68a-4bb4-9993-0c4fd2baf5e0"
+               href="../_images/crear_predio1.gif"
                title=""
                data-title=""
-               ><img src="../_images/refactor_fields_predio1.gif"
+               ><img src="../_images/crear_predio1.gif"
                      class=""
                      width="800"
                      height="500"
-                     alt="Create Parcel from another table"/>
-                </a></div>
+                     alt="Create Parcel"/>
+                </a></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Desde otra tabla/capa de QGIS (configurando un mapeo de campos)</li>
+</ol>
+<blockquote>
+<div><p>Escoje esta opción para abrir una ventana que te permita importar datos de una tabla fuente en la tabla <em>LADM_COL</em> <strong>predio</strong>.</p>
+<p>Si la estructura del campo de entrada y el campo de salida difieren, tu puedes establecer un mapeo de campos para definir las transformaciones y correspondencias.</p>
+<p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
+</div></blockquote>
+</div>
 </div>
 
 
@@ -216,10 +217,10 @@ mapping to define field transformations and correspondence.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Party.html" class="btn btn-neutral float-right" title="Party" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Party.html" class="btn btn-neutral float-right" title="Interesado" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Spatial_Unit.html" class="btn btn-neutral" title="Spatial Unit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Spatial_Unit.html" class="btn btn-neutral" title="Unidad Espacial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -259,10 +260,15 @@ mapping to define field transformations and correspondence.</p>
             <dd><a href="../../0.4.0/cadastre/Basic_Administrative_Unit.html">0.4.0</a></dd>
             <dd><a href="../../0.5.0/cadastre/Basic_Administrative_Unit.html">0.5.0</a></dd>
             <dd><a href="../../0.6.0/cadastre/Basic_Administrative_Unit.html">0.6.0</a></dd>
+            <dd><a href="../../0.6.1/cadastre/Basic_Administrative_Unit.html">0.6.1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
             <dd><a href="Basic_Administrative_Unit.html">master</a></dd>
+            <dd><a href="../../prepare_PR_2/cadastre/Basic_Administrative_Unit.html">prepare_PR_2</a></dd>
+            <dd><a href="../../update_docs/cadastre/Basic_Administrative_Unit.html">update_docs</a></dd>
+            <dd><a href="../../update_docs_n/cadastre/Basic_Administrative_Unit.html">update_docs_n</a></dd>
+            <dd><a href="../../update_quality_rules/cadastre/Basic_Administrative_Unit.html">update_quality_rules</a></dd>
         </dl>
     </div>
 </div>

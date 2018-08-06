@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Source &mdash; documentación de LADM_COL Assistant - </title>
+  <title>Fuente &mdash; documentación de LADM_COL Assistant - </title>
   
 
   
@@ -31,8 +31,8 @@
     <link rel="author" title="Sobre este documento" href="../about.html" />
     <link rel="index" title="Índice" href="../genindex.html" />
     <link rel="search" title="Búsqueda" href="../search.html" />
-    <link rel="next" title="Calidad" href="Quality.html" />
-    <link rel="prev" title="RRR" href="RRR.html" /> 
+    <link rel="next" title="RRR" href="RRR.html" />
+    <link rel="prev" title="Interesado" href="Party.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -83,24 +83,24 @@
             
               <p class="caption"><span class="caption-text">Contenidos:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../cadastre.html">Cadastre</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="Preprocessing.html">Preprocessing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Surveying_and_Representation.html">Surveying and Representation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Spatial_Unit.html">Spatial Unit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Basic_Administrative_Unit.html">Basic Administrative Unit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Party.html">Party</a></li>
-<li class="toctree-l2"><a class="reference internal" href="RRR.html">RRR</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Source</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#administrative-source">Administrative Source</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#spatial-source">Spatial Source</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../cadastre.html">Catastro</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Preprocessing.html">Pre-procesamiento</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Surveying_and_Representation.html">Topografía y Representación</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spatial_Unit.html">Unidad Espacial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Basic_Administrative_Unit.html">Unidad Administrativa Básica</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Party.html">Interesado</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Fuente</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#administrative-source">Fuente Administrativa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spatial-source">Fuente Espacial</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Quality.html">Calidad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RRR.html">RRR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Quality.html">Revisar Reglas de Calidad</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../load_layers.html">Cargar capas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../settings.html">Configuración</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../toolbar.html">Toolbar LADM_COL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../toolbar.html">Barra de herramientas de LADM_COL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Guía de Instalación para el plugin</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../about.html">Acerca de</a></li>
 </ul>
@@ -148,9 +148,9 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../cadastre.html">Cadastre</a> &raquo;</li>
+          <li><a href="../cadastre.html">Catastro</a> &raquo;</li>
         
-      <li>Source</li>
+      <li>Fuente</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -177,46 +177,64 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../0.6.0/cadastre/Source.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.0.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../0.6.1/cadastre/Source.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.1.</a></p>
 <div class="section" id="source">
-<h1>Source<a class="headerlink" href="#source" title="Enlazar permanentemente con este título">¶</a></h1>
+<h1>Fuente<a class="headerlink" href="#source" title="Enlazar permanentemente con este título">¶</a></h1>
 <div class="section" id="administrative-source">
-<h2>Administrative Source<a class="headerlink" href="#administrative-source" title="Enlazar permanentemente con este título">¶</a></h2>
+<h2>Fuente Administrativa<a class="headerlink" href="#administrative-source" title="Enlazar permanentemente con este título">¶</a></h2>
 <ol class="arabic simple">
-<li>Entering data manually using a form</li>
+<li>Ingresando datos manualmente en un formulario</li>
 </ol>
-<p>Choose this option if you want to create an <strong>Administrative Source</strong> using a
-form.</p>
-<p><strong>Administrative Source</strong> is a specialization of the <em>COL_Fuente</em> class to store
-those sources corresponding to documents (mortgage document, notarial documents,
-historical documents, and the like) that document the relationship
-between parties and parcels.</p>
+<blockquote>
+<div><p>Elige esta opción si deseas agregar una <strong>Fuente administrativa</strong> con un formulario.</p>
+<p><strong>Fuente administrativa</strong> es una especialización de la clase <em>COL_Fuente</em> para almacenar aquellas fuentes constituidas por documentos (documento hipotecario, documentos notariales, documentos históricos, etc.) que documentan la relación entre instancias de interesados y de predios.</p>
+<a class=""
+               data-lightbox="group-e6f506ae-87ef-46a7-adde-96812483297d"
+               href="../_images/crear_fuente_administrativa1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/crear_fuente_administrativa1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Administrative Source"/>
+                </a></div></blockquote>
 <ol class="arabic simple" start="2">
-<li>From another QGIS layer/table (setting a field mapping)</li>
+<li>Desde otra capa de QGIS (definiendo un mapeo de campos)</li>
 </ol>
-<p>Choose this option to open a window that allows you to import data from a source
-table into the <em>LADM_COL</em> <strong>col_fuenteadministrativa</strong> table.</p>
-<p>If the field structure of input and target tables differs, you can set a field
-mapping to define field transformations and correspondence.</p>
+<blockquote>
+<div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>col_fuenteadministrativa</strong> de <em>LADM_COL</em>.</p>
+<p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
+<p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
+</div></blockquote>
 </div>
 <div class="section" id="spatial-source">
-<h2>Spatial Source<a class="headerlink" href="#spatial-source" title="Enlazar permanentemente con este título">¶</a></h2>
+<h2>Fuente Espacial<a class="headerlink" href="#spatial-source" title="Enlazar permanentemente con este título">¶</a></h2>
 <ol class="arabic simple">
-<li>Entering data manually using a form</li>
+<li>Ingresando datos manualmente en un formulario</li>
 </ol>
-<p>Choose this option if you want to create a <strong>Spatial Source</strong> using a form.</p>
-<p><strong>Spatial Source</strong> is a specialization of the <em>COL_Fuente</em> class to store those
-sources corresponding to spatial data (geographic features, satellite imagery,
-photogrammetric flights, maps, coordinate listings, ancient or modern plans,
-location descriptions, and the like) that technically document the relationship
-between parties and parcels.</p>
+<blockquote>
+<div><p>Elige esta opción si deseas agregar una <strong>Fuente Espacial</strong> usando un formulario. (Previamente debes haber seleccionado objetos de la tabla terreno, lindero, puntolindero, puntolevantamiento, o puntocontro a los cuales se asociará la nueva fuente espacial)</p>
+<p><strong>Fuente espacial</strong> es una especialización de la clase <em>COL_Fuente</em> para almacenar las fuentes constituidas por datos espaciales (entidades geográficas, imágenes de satélite, vuelos fotogramétricos, listados de coordenadas, mapas, planos antiguos o modernos, descripción de localizaciones, etc.) que documentan técnicamente la relación entre instancias de interesados y de predios.</p>
+<a class=""
+               data-lightbox="group-5f812deb-579c-4103-9de6-e4d2f0b4f142"
+               href="../_images/crear_fuente_espacial1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/crear_fuente_espacial1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Spatial Source"/>
+                </a></div></blockquote>
 <ol class="arabic simple" start="2">
-<li>From another QGIS layer/table (setting a field mapping)</li>
+<li>Desde otra capa de QGIS (definiendo un mapeo de campos)</li>
 </ol>
-<p>Choose this option to open a window that allows you to import data from a source
-table into the <em>LADM_COL</em> <strong>col_fuenteespacial</strong> table.</p>
-<p>If the field structure of input and target tables differs, you can set a field
-mapping to define field transformations and correspondence.</p>
+<blockquote>
+<div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>col_fuenteespacial</strong> de <em>LADM_COL</em>.</p>
+<p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
+<p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
+</div></blockquote>
 </div>
 </div>
 
@@ -228,10 +246,10 @@ mapping to define field transformations and correspondence.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Quality.html" class="btn btn-neutral float-right" title="Calidad" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="RRR.html" class="btn btn-neutral float-right" title="RRR" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="RRR.html" class="btn btn-neutral" title="RRR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Party.html" class="btn btn-neutral" title="Interesado" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -271,10 +289,15 @@ mapping to define field transformations and correspondence.</p>
             <dd><a href="../../0.4.0/cadastre/Source.html">0.4.0</a></dd>
             <dd><a href="../../0.5.0/cadastre/Source.html">0.5.0</a></dd>
             <dd><a href="../../0.6.0/cadastre/Source.html">0.6.0</a></dd>
+            <dd><a href="../../0.6.1/cadastre/Source.html">0.6.1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
             <dd><a href="Source.html">master</a></dd>
+            <dd><a href="../../prepare_PR_2/cadastre/Source.html">prepare_PR_2</a></dd>
+            <dd><a href="../../update_docs/cadastre/Source.html">update_docs</a></dd>
+            <dd><a href="../../update_docs_n/cadastre/Source.html">update_docs_n</a></dd>
+            <dd><a href="../../update_quality_rules/cadastre/Source.html">update_quality_rules</a></dd>
         </dl>
     </div>
 </div>

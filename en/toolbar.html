@@ -87,8 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="load_layers.html">Load Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settings.html">Settings</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Toolbar LADM_COL</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#explode">Explode</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#merge">Merge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#explode-and-merge">Explode and Merge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fill-points-bfs">Fill Points BFS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fill-more-bfs-and-less">Fill More BFS and Less</a></li>
 </ul>
@@ -167,26 +166,39 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="0.6.0/toolbar.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.0.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="0.6.1/toolbar.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.1.</a></p>
 <div class="section" id="toolbar-ladm-col">
 <h1>Toolbar LADM_COL<a class="headerlink" href="#toolbar-ladm-col" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="explode">
-<h2>Explode<a class="headerlink" href="#explode" title="Permalink to this headline">¶</a></h2>
+<p>This is how toolbar looks like:</p>
 <a class=""
-               data-lightbox="group-2f1ed0b9-715f-4650-adf5-fc61bd1227e7"
-               href="_images/_UNIR_PARTIR_LINDERO2.gif"
+               data-lightbox="group-75ea19b9-36ff-47f2-8575-633c535cd8ec"
+               href="_images/ladm_col_toolbar.png"
                title=""
                data-title=""
-               ><img src="_images/_UNIR_PARTIR_LINDERO2.gif"
+               ><img src="_images/ladm_col_toolbar.png"
+                     class=""
+                     width="418"
+                     height="25"
+                     alt="LADM-COL toolbar"/>
+                </a><p>If the toolbar does not appear on the QGIS interface, you can make it show with
+the next interaction: right click on the gray region in QGIS and clicking in
+“LADM-COL Toolbar” or like in the following gif:</p>
+<a class=""
+               data-lightbox="group-eebe91d6-ffcd-4cb1-9517-6707266b4408"
+               href="_images/show_ladm_col_toolbar.gif"
+               title=""
+               data-title=""
+               ><img src="_images/show_ladm_col_toolbar.gif"
                      class=""
                      width="800"
                      height="500"
-                     alt="basic settings"/>
-                </a></div>
-<div class="section" id="merge">
-<h2>Merge<a class="headerlink" href="#merge" title="Permalink to this headline">¶</a></h2>
+                     alt="Show LADM-COL toolbar"/>
+                </a><div class="section" id="explode-and-merge">
+<h2>Explode and Merge<a class="headerlink" href="#explode-and-merge" title="Permalink to this headline">¶</a></h2>
+<p>If you need to merge or explodes boundaries you can use the <em>merge</em> and <em>explode</em>
+buttons on Toolbar LADM_COL.</p>
 <a class=""
-               data-lightbox="group-5890ebf1-6fe7-49d8-ac60-4e0277a0e5b6"
+               data-lightbox="group-32013cdd-58d2-4333-b0fd-7962fe07e2f0"
                href="_images/_UNIR_PARTIR_LINDERO2.gif"
                title=""
                data-title=""
@@ -198,8 +210,14 @@
                 </a></div>
 <div class="section" id="fill-points-bfs">
 <h2>Fill Points BFS<a class="headerlink" href="#fill-points-bfs" title="Permalink to this headline">¶</a></h2>
+<p>You can fill point bfs topology table using the button <em>Fill Point BFS</em> on
+Toolbar LADM_COL which makes automatic and faster this job.</p>
+<p>This are the tables that relate with this function:</p>
+<ul class="simple">
+<li>puntosccl –&gt; puntolindero and lindero</li>
+</ul>
 <a class=""
-               data-lightbox="group-e9a0e899-2ef9-46e8-b492-4f94feece7e3"
+               data-lightbox="group-7f5fe615-bc46-40e9-a171-ea989d080215"
                href="_images/_LLENAR_TOPOLOGIAS_PUNTO_LINDERO.gif"
                title=""
                data-title=""
@@ -211,8 +229,15 @@
                 </a></div>
 <div class="section" id="fill-more-bfs-and-less">
 <h2>Fill More BFS and Less<a class="headerlink" href="#fill-more-bfs-and-less" title="Permalink to this headline">¶</a></h2>
+<p>You can fill More BFS and Less topology table using the button <em>Fill More BFS
+and Less</em> on Toolbar LADM_COL which makes automatic and faster this job.</p>
+<p>This are the tables that relate with this function:</p>
+<ul class="simple">
+<li>masccl –&gt; terreno and lindero</li>
+<li>menos –&gt; terreno and lindero (holes or intern rings)</li>
+</ul>
 <a class=""
-               data-lightbox="group-9f3d8bac-604e-4783-bdbb-6ae6a2dd8817"
+               data-lightbox="group-a4c89e06-c91d-406c-bd07-47df3bd03949"
                href="_images/_TOPOLOGIAS_TERRENO.gif"
                title=""
                data-title=""
@@ -275,10 +300,15 @@
             <dd><a href="0.4.0/toolbar.html">0.4.0</a></dd>
             <dd><a href="0.5.0/toolbar.html">0.5.0</a></dd>
             <dd><a href="0.6.0/toolbar.html">0.6.0</a></dd>
+            <dd><a href="0.6.1/toolbar.html">0.6.1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
             <dd><a href="master/toolbar.html">master</a></dd>
+            <dd><a href="prepare_PR_2/toolbar.html">prepare_PR_2</a></dd>
+            <dd><a href="update_docs/toolbar.html">update_docs</a></dd>
+            <dd><a href="update_docs_n/toolbar.html">update_docs_n</a></dd>
+            <dd><a href="update_quality_rules/toolbar.html">update_quality_rules</a></dd>
         </dl>
     </div>
 </div>

@@ -31,8 +31,8 @@
     <link rel="author" title="Sobre este documento" href="../about.html" />
     <link rel="index" title="Índice" href="../genindex.html" />
     <link rel="search" title="Búsqueda" href="../search.html" />
-    <link rel="next" title="Source" href="Source.html" />
-    <link rel="prev" title="Party" href="Party.html" /> 
+    <link rel="next" title="Revisar Reglas de Calidad" href="Quality.html" />
+    <link rel="prev" title="Fuente" href="Source.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -83,25 +83,25 @@
             
               <p class="caption"><span class="caption-text">Contenidos:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../cadastre.html">Cadastre</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="Preprocessing.html">Preprocessing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Surveying_and_Representation.html">Surveying and Representation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Spatial_Unit.html">Spatial Unit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Basic_Administrative_Unit.html">Basic Administrative Unit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Party.html">Party</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../cadastre.html">Catastro</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Preprocessing.html">Pre-procesamiento</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Surveying_and_Representation.html">Topografía y Representación</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spatial_Unit.html">Unidad Espacial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Basic_Administrative_Unit.html">Unidad Administrativa Básica</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Party.html">Interesado</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Source.html">Fuente</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">RRR</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#right">Right</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#restriccion">Restriccion</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#responsibility">Responsibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#right">Derecho</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#restriction">Restricción</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#responsibility">Responsabilidad</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Source.html">Source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Quality.html">Calidad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Quality.html">Revisar Reglas de Calidad</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../load_layers.html">Cargar capas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../settings.html">Configuración</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../toolbar.html">Toolbar LADM_COL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../toolbar.html">Barra de herramientas de LADM_COL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Guía de Instalación para el plugin</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../about.html">Acerca de</a></li>
 </ul>
@@ -149,7 +149,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../cadastre.html">Cadastre</a> &raquo;</li>
+          <li><a href="../cadastre.html">Catastro</a> &raquo;</li>
         
       <li>RRR</li>
     
@@ -178,21 +178,92 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../0.6.0/cadastre/RRR.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.0.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../0.6.1/cadastre/RRR.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.1.</a></p>
 <div class="section" id="rrr">
 <h1>RRR<a class="headerlink" href="#rrr" title="Enlazar permanentemente con este título">¶</a></h1>
-<p>This functionality is currently being developed</p>
 <div class="section" id="right">
-<h2>Right<a class="headerlink" href="#right" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>This functionality is currently being developed</p>
+<h2>Derecho<a class="headerlink" href="#right" title="Enlazar permanentemente con este título">¶</a></h2>
+<ol class="arabic simple">
+<li>Ingresando datos manualmente en un formulario (necesitas haber seleccionado Fuentes Administrativas)</li>
+</ol>
+<blockquote>
+<div><p>Elige esta opción si has seleccionado por lo menos una <em>Fuente Administrativa</em> y deseas relacionar esas fuentes seleccionadas con un nuevo <strong>Derecho</strong> que vas a crear usando un formulario.</p>
+<p><strong>COL_Derecho</strong> es una clase que registra las instancias de los derechos que un interesado ejerce sobre un predio. Es una especialización de la clase <em>LA_RRR</em> del propio modelo.</p>
+<a class=""
+               data-lightbox="group-5e3c73d8-5b26-423a-9203-82df1368d28d"
+               href="../_images/crear_derecho_1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/crear_derecho_1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Right"/>
+                </a></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Desde otra tabla de QGIS (definiendo un mapeo de campos)</li>
+</ol>
+<blockquote>
+<div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>col_derecho</strong> de <em>LADM_COL</em>.</p>
+<p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
+<p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
+</div></blockquote>
 </div>
-<div class="section" id="restriccion">
-<h2>Restriccion<a class="headerlink" href="#restriccion" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>This functionality is currently being developed</p>
+<div class="section" id="restriction">
+<h2>Restricción<a class="headerlink" href="#restriction" title="Enlazar permanentemente con este título">¶</a></h2>
+<ol class="arabic simple">
+<li>Ingresando datos manualmente en un formulario (necesitas haber seleccionado Fuentes Administrativas)</li>
+</ol>
+<blockquote>
+<div><p>Elige esta opción si has seleccionado por lo menos una <em>Fuente Administrativa</em> y deseas relacionar esas fuentes seleccionadas con una nueva <strong>Restricción</strong> que vas a crear usando un formulario.</p>
+<p><strong>COL_Restricción</strong> almacena las restricciones a las que está sometido un predio y que inciden sobre los derechos que pueden ejercerse sobre él.</p>
+<a class=""
+               data-lightbox="group-127603f1-fab4-4a75-8b28-e3229600d6c7"
+               href="../_images/crear_restriccion_1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/crear_restriccion_1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Restriction"/>
+                </a></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Desde otra tabla de QGIS (definiendo un mapeo de campos)</li>
+</ol>
+<blockquote>
+<div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>col_restriccion</strong> de <em>LADM_COL</em>.</p>
+<p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
+<p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
+</div></blockquote>
 </div>
 <div class="section" id="responsibility">
-<h2>Responsibility<a class="headerlink" href="#responsibility" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>This functionality is currently being developed</p>
+<h2>Responsabilidad<a class="headerlink" href="#responsibility" title="Enlazar permanentemente con este título">¶</a></h2>
+<ol class="arabic simple">
+<li>Ingresando datos manualmente en un formulario (necesitas haber seleccionado Fuentes Administrativas)</li>
+</ol>
+<blockquote>
+<div><p>Elige esta opción si has seleccionado por lo menos una <em>Fuente Administrativa</em> y deseas relacionar esas fuentes seleccionadas con una nueva <strong>Responsabilidad</strong> que vas a crear usando un formulario.</p>
+<p><strong>COL_Responsabilidad</strong> es una clase de tipo <em>LA_RRR</em> que registra las responsabilidades que las instancias de los interesados tienen sobre los predios.</p>
+<a class=""
+               data-lightbox="group-b0a83d32-eadd-487d-8324-2d10c0b7278b"
+               href="../_images/crear_responsabilidad_1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/crear_responsabilidad_1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Responsibility"/>
+                </a></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Desde otra tabla de QGIS (definiendo un mapeo de campos)</li>
+</ol>
+<blockquote>
+<div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>col_responsabilidad</strong> de <em>LADM_COL</em>.</p>
+<p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
+<p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
+</div></blockquote>
 </div>
 </div>
 
@@ -204,10 +275,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Source.html" class="btn btn-neutral float-right" title="Source" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Quality.html" class="btn btn-neutral float-right" title="Revisar Reglas de Calidad" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Party.html" class="btn btn-neutral" title="Party" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Source.html" class="btn btn-neutral" title="Fuente" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -247,10 +318,15 @@
             <dd><a href="../../0.4.0/cadastre/RRR.html">0.4.0</a></dd>
             <dd><a href="../../0.5.0/cadastre/RRR.html">0.5.0</a></dd>
             <dd><a href="../../0.6.0/cadastre/RRR.html">0.6.0</a></dd>
+            <dd><a href="../../0.6.1/cadastre/RRR.html">0.6.1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
             <dd><a href="RRR.html">master</a></dd>
+            <dd><a href="../../prepare_PR_2/cadastre/RRR.html">prepare_PR_2</a></dd>
+            <dd><a href="../../update_docs/cadastre/RRR.html">update_docs</a></dd>
+            <dd><a href="../../update_docs_n/cadastre/RRR.html">update_docs_n</a></dd>
+            <dd><a href="../../update_quality_rules/cadastre/RRR.html">update_quality_rules</a></dd>
         </dl>
     </div>
 </div>

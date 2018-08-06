@@ -72,3 +72,16 @@ form.
    :height: 500
    :width: 800
    :alt: about plugin
+
+
+Sources
+-------
+
+It's possible to configure through a data repository a URL path to upload
+administrative sources and spatial sources associated with the information
+collected in LADM-COL.
+
+.. image:: static/Configurar_fuentes.gif
+   :height: 500
+   :width: 800
+   :alt: Setting up sources

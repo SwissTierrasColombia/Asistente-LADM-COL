@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Calidad &mdash; documentación de LADM_COL Assistant - </title>
+  <title>Revisar Reglas de Calidad &mdash; documentación de LADM_COL Assistant - </title>
   
 
   
@@ -32,7 +32,7 @@
     <link rel="index" title="Índice" href="../genindex.html" />
     <link rel="search" title="Búsqueda" href="../search.html" />
     <link rel="next" title="Cargar capas" href="../load_layers.html" />
-    <link rel="prev" title="Source" href="Source.html" /> 
+    <link rel="prev" title="RRR" href="RRR.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -83,28 +83,41 @@
             
               <p class="caption"><span class="caption-text">Contenidos:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../cadastre.html">Cadastre</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="Preprocessing.html">Preprocessing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Surveying_and_Representation.html">Surveying and Representation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Spatial_Unit.html">Spatial Unit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Basic_Administrative_Unit.html">Basic Administrative Unit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Party.html">Party</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../cadastre.html">Catastro</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Preprocessing.html">Pre-procesamiento</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Surveying_and_Representation.html">Topografía y Representación</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spatial_Unit.html">Unidad Espacial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Basic_Administrative_Unit.html">Unidad Administrativa Básica</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Party.html">Interesado</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Source.html">Fuente</a></li>
 <li class="toctree-l2"><a class="reference internal" href="RRR.html">RRR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Source.html">Source</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Calidad</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#check-too-long-boundary-segments">Check Too Long Boundary segments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#check-overlaps-in-boundary-points">Check Overlaps in Boundary Points</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#check-overlaps-in-boundaries">Check Overlaps in Boundaries</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#check-missing-boundary-points-in-boundaries">Check Missing Boundary Points in Boundaries</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#check-dangles-in-boundaries">Check Dangles in Boundaries</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#check-all">Check All</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Revisar Reglas de Calidad</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#rules-for-points">Reglas para Puntos</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#boundary-points-should-not-overlap">Los Puntos de Linderos no deben superponerse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#control-points-should-not-overlap">Los Puntos de Control no deben superponerse</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#rules-for-lines">Reglas para Lineas</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#boundary-segments-should-not-be-longer-than">Los segmentos de Linderos no deben ser más largos que</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#boundaries-should-not-overlap">Los Linderos no deben superponerse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#boundary-nodes-should-be-covered-by-boundary-point">Los nodos de Linderos deben estar cubiertos por Putos de Lindero</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#boundaries-should-not-have-dangles">Los Linderos no deben tener nodos sin conectar</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#rules-for-polygons">Reglas para Poligonos</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#plots-should-not-overlap">Los Terrenos no deben superponerse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#buildings-nodes-should-be-covered-by-survey-points">Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#right-of-way-should-not-overlap-buildings">Las Servidumbres no se deben superponer con Construcciones</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#check-all">Revisar Todo</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../load_layers.html">Cargar capas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../settings.html">Configuración</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../toolbar.html">Toolbar LADM_COL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../toolbar.html">Barra de herramientas de LADM_COL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Guía de Instalación para el plugin</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../about.html">Acerca de</a></li>
 </ul>
@@ -152,9 +165,9 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../cadastre.html">Cadastre</a> &raquo;</li>
+          <li><a href="../cadastre.html">Catastro</a> &raquo;</li>
         
-      <li>Calidad</li>
+      <li>Revisar Reglas de Calidad</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -181,82 +194,153 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../0.6.0/cadastre/Quality.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.0.</a></p>
-<div class="section" id="quality">
-<h1>Calidad<a class="headerlink" href="#quality" title="Enlazar permanentemente con este título">¶</a></h1>
-<div class="section" id="check-too-long-boundary-segments">
-<h2>Check Too Long Boundary segments<a class="headerlink" href="#check-too-long-boundary-segments" title="Enlazar permanentemente con este título">¶</a></h2>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../0.6.1/cadastre/Quality.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.1.</a></p>
+<div class="section" id="check-quality-rules">
+<h1>Revisar Reglas de Calidad<a class="headerlink" href="#check-quality-rules" title="Enlazar permanentemente con este título">¶</a></h1>
+<div class="section" id="rules-for-points">
+<h2>Reglas para Puntos<a class="headerlink" href="#rules-for-points" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="boundary-points-should-not-overlap">
+<h3>Los Puntos de Linderos no deben superponerse<a class="headerlink" href="#boundary-points-should-not-overlap" title="Enlazar permanentemente con este título">¶</a></h3>
 <a class=""
-               data-lightbox="group-bbb4e52d-1a2f-4e0d-b3bc-d182f23f69b8"
-               href="../_images/segmentos_largos1.gif"
-               title=""
-               data-title=""
-               ><img src="../_images/segmentos_largos1.gif"
+               data-lightbox="group-06b920cc-544d-4fbb-a74f-5950fef8021b"
+               href="../_images/boundary_points_should_not_overlap1.gif"
+               title="Boundary Points Should Not Overlap"
+               data-title="Boundary Points Should Not Overlap"
+               ><img src="../_images/boundary_points_should_not_overlap1.gif"
                      class=""
                      width="800"
                      height="500"
                      alt="test logn segments fail"/>
                 </a></div>
-<div class="section" id="check-overlaps-in-boundary-points">
-<h2>Check Overlaps in Boundary Points<a class="headerlink" href="#check-overlaps-in-boundary-points" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="control-points-should-not-overlap">
+<h3>Los Puntos de Control no deben superponerse<a class="headerlink" href="#control-points-should-not-overlap" title="Enlazar permanentemente con este título">¶</a></h3>
 <a class=""
-               data-lightbox="group-da8d4d97-f191-4d9c-924c-3c7c7c2dc487"
-               href="../_images/superposicion_punto_lindero1.gif"
-               title=""
-               data-title=""
-               ><img src="../_images/superposicion_punto_lindero1.gif"
+               data-lightbox="group-b87b2e33-aaaf-4488-b672-36e66c9d8627"
+               href="../_images/control_points_should_not_overlap1.gif"
+               title="Control Points Should not Overlap"
+               data-title="Control Points Should not Overlap"
+               ><img src="../_images/control_points_should_not_overlap1.gif"
                      class=""
                      width="800"
                      height="500"
                      alt="about plugin"/>
                 </a></div>
-<div class="section" id="check-overlaps-in-boundaries">
-<h2>Check Overlaps in Boundaries<a class="headerlink" href="#check-overlaps-in-boundaries" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
+<div class="section" id="rules-for-lines">
+<h2>Reglas para Lineas<a class="headerlink" href="#rules-for-lines" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="boundary-segments-should-not-be-longer-than">
+<h3>Los segmentos de Linderos no deben ser más largos que<a class="headerlink" href="#boundary-segments-should-not-be-longer-than" title="Enlazar permanentemente con este título">¶</a></h3>
 <a class=""
-               data-lightbox="group-9ea79e4c-bb1e-4c91-83a6-31e715e1c618"
-               href="../_images/superposicion_linderos1.gif"
-               title=""
-               data-title=""
-               ><img src="../_images/superposicion_linderos1.gif"
+               data-lightbox="group-4491519c-73ba-4b42-8e5e-b3bfcdfe853b"
+               href="../_images/quality_segments_longer_than1.png"
+               title="Settings Boundary Segments Should Not Be Longer Than"
+               data-title="Settings Boundary Segments Should Not Be Longer Than"
+               ><img src="../_images/quality_segments_longer_than1.png"
+                     class=""
+                     width="509"
+                     height="503"
+                     alt="about plugin"/>
+                </a><a class=""
+               data-lightbox="group-cfc2e604-18dc-4fb0-864b-d296b5fae9d0"
+               href="../_images/boundary_segments_should_not_be_longer_than1.gif"
+               title="Boundary Segments Should Not Be Longer Than"
+               data-title="Boundary Segments Should Not Be Longer Than"
+               ><img src="../_images/boundary_segments_should_not_be_longer_than1.gif"
                      class=""
                      width="800"
                      height="500"
                      alt="about plugin"/>
                 </a></div>
-<div class="section" id="check-missing-boundary-points-in-boundaries">
-<h2>Check Missing Boundary Points in Boundaries<a class="headerlink" href="#check-missing-boundary-points-in-boundaries" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="boundaries-should-not-overlap">
+<h3>Los Linderos no deben superponerse<a class="headerlink" href="#boundaries-should-not-overlap" title="Enlazar permanentemente con este título">¶</a></h3>
 <a class=""
-               data-lightbox="group-dacd9de8-7b6f-4b40-a510-08bd59d87bfe"
-               href="../_images/nodos_lindero_sin_punto1.gif"
-               title=""
-               data-title=""
-               ><img src="../_images/nodos_lindero_sin_punto1.gif"
+               data-lightbox="group-7cfb1c61-13dd-4b38-a55f-bc6d40156862"
+               href="../_images/boundary_should_not_overlap1.gif"
+               title="Boundary Should Not Overlap"
+               data-title="Boundary Should Not Overlap"
+               ><img src="../_images/boundary_should_not_overlap1.gif"
                      class=""
                      width="800"
                      height="500"
                      alt="about plugin"/>
                 </a></div>
-<div class="section" id="check-dangles-in-boundaries">
-<h2>Check Dangles in Boundaries<a class="headerlink" href="#check-dangles-in-boundaries" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="boundary-nodes-should-be-covered-by-boundary-point">
+<h3>Los nodos de Linderos deben estar cubiertos por Putos de Lindero<a class="headerlink" href="#boundary-nodes-should-be-covered-by-boundary-point" title="Enlazar permanentemente con este título">¶</a></h3>
 <a class=""
-               data-lightbox="group-bbcf4106-538c-4bf9-b5f8-df9d8e8c6901"
-               href="../_images/linderos_no_conectados1.gif"
+               data-lightbox="group-4f0d5032-4f3d-43ac-aa9a-fa7d4dfb6929"
+               href="../_images/boundary_nodes_should_be_covered_by_boundary_point1.gif"
                title=""
                data-title=""
-               ><img src="../_images/linderos_no_conectados1.gif"
+               ><img src="../_images/boundary_nodes_should_be_covered_by_boundary_point1.gif"
                      class=""
                      width="800"
                      height="500"
                      alt="about plugin"/>
                 </a></div>
+<div class="section" id="boundaries-should-not-have-dangles">
+<h3>Los Linderos no deben tener nodos sin conectar<a class="headerlink" href="#boundaries-should-not-have-dangles" title="Enlazar permanentemente con este título">¶</a></h3>
+<a class=""
+               data-lightbox="group-251aa5f3-358d-4da6-964d-a04f1a410b7e"
+               href="../_images/boundary_should_not_have_dangles1.gif"
+               title="Boundaries Should Not Have Dangles"
+               data-title="Boundaries Should Not Have Dangles"
+               ><img src="../_images/boundary_should_not_have_dangles1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="all check"/>
+                </a></div>
+</div>
+<div class="section" id="rules-for-polygons">
+<h2>Reglas para Poligonos<a class="headerlink" href="#rules-for-polygons" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="plots-should-not-overlap">
+<h3>Los Terrenos no deben superponerse<a class="headerlink" href="#plots-should-not-overlap" title="Enlazar permanentemente con este título">¶</a></h3>
+<a class=""
+               data-lightbox="group-2100a822-769e-442c-9e4f-48f94dca5351"
+               href="../_images/plots_should_not_overlap1.gif"
+               title="Plots Should Not Overlap"
+               data-title="Plots Should Not Overlap"
+               ><img src="../_images/plots_should_not_overlap1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="all check"/>
+                </a></div>
+<div class="section" id="buildings-nodes-should-be-covered-by-survey-points">
+<h3>Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento<a class="headerlink" href="#buildings-nodes-should-be-covered-by-survey-points" title="Enlazar permanentemente con este título">¶</a></h3>
+<a class=""
+               data-lightbox="group-f0aecf0f-73c6-4be7-a022-44a768bb7dd7"
+               href="../_images/buildings_nodes_should_be_coverd_by_survey_point1.gif"
+               title="Buildings Nodes Should Be Covered By Survey Points"
+               data-title="Buildings Nodes Should Be Covered By Survey Points"
+               ><img src="../_images/buildings_nodes_should_be_coverd_by_survey_point1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="all check"/>
+                </a></div>
+<div class="section" id="right-of-way-should-not-overlap-buildings">
+<h3>Las Servidumbres no se deben superponer con Construcciones<a class="headerlink" href="#right-of-way-should-not-overlap-buildings" title="Enlazar permanentemente con este título">¶</a></h3>
+<a class=""
+               data-lightbox="group-269916ec-0dab-4792-bab8-dbc3cc2614f9"
+               href="../_images/right_of_way_should_not_overlap_buildings1.gif"
+               title="Right Of Way Should Not Overlap Buildings"
+               data-title="Right Of Way Should Not Overlap Buildings"
+               ><img src="../_images/right_of_way_should_not_overlap_buildings1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="all check"/>
+                </a></div>
+</div>
 <div class="section" id="check-all">
-<h2>Check All<a class="headerlink" href="#check-all" title="Enlazar permanentemente con este título">¶</a></h2>
+<h2>Revisar Todo<a class="headerlink" href="#check-all" title="Enlazar permanentemente con este título">¶</a></h2>
 <a class=""
-               data-lightbox="group-689d5aa5-d27c-4e2f-a2ce-6edc828cb01b"
-               href="../_images/all_mix1.gif"
-               title=""
-               data-title=""
-               ><img src="../_images/all_mix1.gif"
+               data-lightbox="group-9d081cba-344a-491d-b8f4-32462be3dddb"
+               href="../_images/test_all1.gif"
+               title="Check all rules at the same timme"
+               data-title="Check all rules at the same timme"
+               ><img src="../_images/test_all1.gif"
                      class=""
                      width="800"
                      height="500"
@@ -275,7 +359,7 @@
         <a href="../load_layers.html" class="btn btn-neutral float-right" title="Cargar capas" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Source.html" class="btn btn-neutral" title="Source" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="RRR.html" class="btn btn-neutral" title="RRR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -315,10 +399,15 @@
             <dd><a href="../0.4.0/cadastre/Quality.html">0.4.0</a></dd>
             <dd><a href="../0.5.0/cadastre/Quality.html">0.5.0</a></dd>
             <dd><a href="../0.6.0/cadastre/Quality.html">0.6.0</a></dd>
+            <dd><a href="../0.6.1/cadastre/Quality.html">0.6.1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
             <dd><a href="../master/cadastre/Quality.html">master</a></dd>
+            <dd><a href="../prepare_PR_2/cadastre/Quality.html">prepare_PR_2</a></dd>
+            <dd><a href="../update_docs/cadastre/Quality.html">update_docs</a></dd>
+            <dd><a href="../update_docs_n/cadastre/Quality.html">update_docs_n</a></dd>
+            <dd><a href="../update_quality_rules/cadastre/Quality.html">update_quality_rules</a></dd>
         </dl>
     </div>
 </div>

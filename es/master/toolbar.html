@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Toolbar LADM_COL &mdash; documentación de LADM_COL Assistant - </title>
+  <title>Barra de herramientas de LADM_COL &mdash; documentación de LADM_COL Assistant - </title>
   
 
   
@@ -83,14 +83,13 @@
             
               <p class="caption"><span class="caption-text">Contenidos:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="cadastre.html">Cadastre</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cadastre.html">Catastro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="load_layers.html">Cargar capas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settings.html">Configuración</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Toolbar LADM_COL</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#explode">Explode</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#merge">Merge</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fill-points-bfs">Fill Points BFS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fill-more-bfs-and-less">Fill More BFS and Less</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Barra de herramientas de LADM_COL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#explode-and-merge">Partir por segmento y Unir</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fill-points-bfs">Llenar PuntosCCL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fill-more-bfs-and-less">Llenar más CCL y menos</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Guía de Instalación para el plugin</a></li>
@@ -140,7 +139,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Toolbar LADM_COL</li>
+      <li>Barra de herramientas de LADM_COL</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -167,26 +166,36 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../0.6.0/toolbar.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.0.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../0.6.1/toolbar.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.1.</a></p>
 <div class="section" id="toolbar-ladm-col">
-<h1>Toolbar LADM_COL<a class="headerlink" href="#toolbar-ladm-col" title="Enlazar permanentemente con este título">¶</a></h1>
-<div class="section" id="explode">
-<h2>Explode<a class="headerlink" href="#explode" title="Enlazar permanentemente con este título">¶</a></h2>
+<h1>Barra de herramientas de LADM_COL<a class="headerlink" href="#toolbar-ladm-col" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Así es como se ve la barra de herramientas:</p>
 <a class=""
-               data-lightbox="group-b7e4df38-8ecb-467f-b52a-ff6e4ca9eff9"
-               href="_images/_UNIR_PARTIR_LINDERO2.gif"
+               data-lightbox="group-ea0fcea1-91c2-41db-b228-e26f0a026be9"
+               href="_images/ladm_col_toolbar.png"
                title=""
                data-title=""
-               ><img src="_images/_UNIR_PARTIR_LINDERO2.gif"
+               ><img src="_images/ladm_col_toolbar.png"
+                     class=""
+                     width="418"
+                     height="25"
+                     alt="LADM-COL toolbar"/>
+                </a><p>Si la barra de herramientas no aparece en la interfaz de QGIS, puedes hacer que se vea con la siguiente interacción: click derecho en la región gris en QGIS y clickeando en «Herramientas LADM-COL» o como en el siguiente gif:</p>
+<a class=""
+               data-lightbox="group-05fe4dbd-63eb-4bdf-aa08-5c05240ce758"
+               href="_images/show_ladm_col_toolbar.gif"
+               title=""
+               data-title=""
+               ><img src="_images/show_ladm_col_toolbar.gif"
                      class=""
                      width="800"
                      height="500"
-                     alt="basic settings"/>
-                </a></div>
-<div class="section" id="merge">
-<h2>Merge<a class="headerlink" href="#merge" title="Enlazar permanentemente con este título">¶</a></h2>
+                     alt="Show LADM-COL toolbar"/>
+                </a><div class="section" id="explode-and-merge">
+<h2>Partir por segmento y Unir<a class="headerlink" href="#explode-and-merge" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Si necesitas unir o explotar por segmentos los linderos puedes utilizar los botones <em>Unir</em> y <em>Partir por segmento</em> en la barra de herramientas de LADM_COL.</p>
 <a class=""
-               data-lightbox="group-6402bc09-9a86-4a1f-81fb-27db5ea77a86"
+               data-lightbox="group-484d14b3-e311-4cad-bf34-b5cc5e4b686f"
                href="_images/_UNIR_PARTIR_LINDERO2.gif"
                title=""
                data-title=""
@@ -197,9 +206,14 @@
                      alt="basic settings"/>
                 </a></div>
 <div class="section" id="fill-points-bfs">
-<h2>Fill Points BFS<a class="headerlink" href="#fill-points-bfs" title="Enlazar permanentemente con este título">¶</a></h2>
+<h2>Llenar PuntosCCL<a class="headerlink" href="#fill-points-bfs" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Puedes llenar la tabla de topología PuntosCCL usando el botón <em>Llenar PuntosCCL</em> en la barra de herramientas de LADM_COL el cual hace este trabajo de forma automática y más rápido.</p>
+<p>Estas son las tablas que se relacionan con esta función:</p>
+<ul class="simple">
+<li>puntosccl –&gt; puntolindero y lindero</li>
+</ul>
 <a class=""
-               data-lightbox="group-dbcb7936-5b2c-422d-94f5-e52c2deea9d5"
+               data-lightbox="group-379ce446-f601-42da-82ae-e223e243b1c1"
                href="_images/_LLENAR_TOPOLOGIAS_PUNTO_LINDERO.gif"
                title=""
                data-title=""
@@ -210,9 +224,15 @@
                      alt="basic settings"/>
                 </a></div>
 <div class="section" id="fill-more-bfs-and-less">
-<h2>Fill More BFS and Less<a class="headerlink" href="#fill-more-bfs-and-less" title="Enlazar permanentemente con este título">¶</a></h2>
+<h2>Llenar más CCL y menos<a class="headerlink" href="#fill-more-bfs-and-less" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Puedes llenar la tabla de topología más CCL y menos usando el botón <em>Llenar más CCL y menos</em> usando la barra de herramientas de LADM_COL el cual hace este trabajo de forma automática y más rápido.</p>
+<p>Estas son las tablas que se relacionan con esta función:</p>
+<ul class="simple">
+<li>masccl –&gt; terreno y lindero</li>
+<li>menos –&gt; terreno y lindero (agujeros o anillos internos)</li>
+</ul>
 <a class=""
-               data-lightbox="group-ace1d620-7071-4701-a8b1-d75391638df6"
+               data-lightbox="group-a575d87c-fcf1-4ed5-9481-9e8d8242dc9c"
                href="_images/_TOPOLOGIAS_TERRENO.gif"
                title=""
                data-title=""
@@ -275,10 +295,15 @@
             <dd><a href="../0.4.0/toolbar.html">0.4.0</a></dd>
             <dd><a href="../0.5.0/toolbar.html">0.5.0</a></dd>
             <dd><a href="../0.6.0/toolbar.html">0.6.0</a></dd>
+            <dd><a href="../0.6.1/toolbar.html">0.6.1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
             <dd><a href="toolbar.html">master</a></dd>
+            <dd><a href="../prepare_PR_2/toolbar.html">prepare_PR_2</a></dd>
+            <dd><a href="../update_docs/toolbar.html">update_docs</a></dd>
+            <dd><a href="../update_docs_n/toolbar.html">update_docs_n</a></dd>
+            <dd><a href="../update_quality_rules/toolbar.html">update_quality_rules</a></dd>
         </dl>
     </div>
 </div>

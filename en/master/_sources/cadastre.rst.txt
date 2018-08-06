@@ -11,6 +11,6 @@ Cadastre
     cadastre/Spatial_Unit.rst
     cadastre/Basic_Administrative_Unit.rst
     cadastre/Party.rst
-    cadastre/RRR.rst
     cadastre/Source.rst
+    cadastre/RRR.rst
     cadastre/Quality.rst

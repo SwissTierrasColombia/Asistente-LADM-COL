@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Spatial Unit &mdash; documentación de LADM_COL Assistant - </title>
+  <title>Unidad Espacial &mdash; documentación de LADM_COL Assistant - </title>
   
 
   
@@ -31,8 +31,8 @@
     <link rel="author" title="Sobre este documento" href="../about.html" />
     <link rel="index" title="Índice" href="../genindex.html" />
     <link rel="search" title="Búsqueda" href="../search.html" />
-    <link rel="next" title="Basic Administrative Unit" href="Basic_Administrative_Unit.html" />
-    <link rel="prev" title="Surveying and Representation" href="Surveying_and_Representation.html" /> 
+    <link rel="next" title="Unidad Administrativa Básica" href="Basic_Administrative_Unit.html" />
+    <link rel="prev" title="Topografía y Representación" href="Surveying_and_Representation.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -83,25 +83,25 @@
             
               <p class="caption"><span class="caption-text">Contenidos:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../cadastre.html">Cadastre</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="Preprocessing.html">Preprocessing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Surveying_and_Representation.html">Surveying and Representation</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Spatial Unit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#create-plot">Create Plot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#create-building">Create Building</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#create-building-unit">Create Building Unit</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../cadastre.html">Catastro</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Preprocessing.html">Pre-procesamiento</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Surveying_and_Representation.html">Topografía y Representación</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Unidad Espacial</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-plot">Crear Terreno</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-building">Crear Construcción</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-building-unit">Crear Unidad de Construcción</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Basic_Administrative_Unit.html">Basic Administrative Unit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Party.html">Party</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Basic_Administrative_Unit.html">Unidad Administrativa Básica</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Party.html">Interesado</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Source.html">Fuente</a></li>
 <li class="toctree-l2"><a class="reference internal" href="RRR.html">RRR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Source.html">Source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Quality.html">Calidad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Quality.html">Revisar Reglas de Calidad</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../load_layers.html">Cargar capas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../settings.html">Configuración</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../toolbar.html">Toolbar LADM_COL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../toolbar.html">Barra de herramientas de LADM_COL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Guía de Instalación para el plugin</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../about.html">Acerca de</a></li>
 </ul>
@@ -149,9 +149,9 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../cadastre.html">Cadastre</a> &raquo;</li>
+          <li><a href="../cadastre.html">Catastro</a> &raquo;</li>
         
-      <li>Spatial Unit</li>
+      <li>Unidad Espacial</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -178,15 +178,19 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../0.6.0/cadastre/Spatial_Unit.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.0.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../0.6.1/cadastre/Spatial_Unit.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.1.</a></p>
 <div class="section" id="spatial-unit">
-<h1>Spatial Unit<a class="headerlink" href="#spatial-unit" title="Enlazar permanentemente con este título">¶</a></h1>
-<p>In this process you define the new spatial objects that you want to add to the
-database with the structure of the <em>LADM_COL</em> model.</p>
+<h1>Unidad Espacial<a class="headerlink" href="#spatial-unit" title="Enlazar permanentemente con este título">¶</a></h1>
 <div class="section" id="create-plot">
-<h2>Create Plot<a class="headerlink" href="#create-plot" title="Enlazar permanentemente con este título">¶</a></h2>
+<h2>Crear Terreno<a class="headerlink" href="#create-plot" title="Enlazar permanentemente con este título">¶</a></h2>
+<ol class="arabic simple">
+<li>Seleccionando linderos existentes</li>
+</ol>
+<blockquote>
+<div><p>Elige esta opción si deseas crear un <strong>Terreno</strong> a partir de <em>Linderos</em> existentes.</p>
+<p><strong>Terreno</strong> es una porción de tierra con una extensión geográfica definida.</p>
 <a class=""
-               data-lightbox="group-a60be317-a177-4ecd-bc57-73af6363ea78"
+               data-lightbox="group-a8db95c5-6f00-4f4b-bc9d-7f78f45618eb"
                href="../_images/_CREAR_TERRENO1.gif"
                title=""
                data-title=""
@@ -195,23 +199,26 @@ database with the structure of the <em>LADM_COL</em> model.</p>
                      width="800"
                      height="500"
                      alt="Create Plot"/>
-                </a><ol class="arabic simple">
-<li>Selecting existing boundaries</li>
-</ol>
-<p>Choose this option if you want to create a <strong>Plot</strong> from existing <em>Boundaries</em>.</p>
-<p><strong>Plot</strong> is a portion of land with a defined geographical extension.</p>
+                </a></div></blockquote>
 <ol class="arabic simple" start="2">
-<li>From another QGIS Layer/table (setting a field mapping)</li>
+<li>Desde otra capa de QGIS (definiendo un mapeo de campos)</li>
 </ol>
-<p>Choose this option to open a window that allows you to import data from a source
-layer into the <em>LADM_COL</em> <strong>terreno</strong> layer.</p>
-<p>If the field structure of input and target layers differs, you can set a field
-mapping to define field transformations and correspondence.</p>
+<blockquote>
+<div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una capa fuente hacia la capa <strong>terreno</strong> de <em>LADM_COL</em>.</p>
+<p>Si la estructura de campos de las capas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
+<p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
+</div></blockquote>
 </div>
 <div class="section" id="create-building">
-<h2>Create Building<a class="headerlink" href="#create-building" title="Enlazar permanentemente con este título">¶</a></h2>
+<h2>Crear Construcción<a class="headerlink" href="#create-building" title="Enlazar permanentemente con este título">¶</a></h2>
+<ol class="arabic simple">
+<li>Digitalizando</li>
+</ol>
+<blockquote>
+<div><p>Elige esta opción si deseas crear una <strong>Construcción</strong> a partir de <em>Puntos de Levantamiento</em> existentes.</p>
+<p><strong>Construcción</strong> es un tipo de espacio jurídico de la unidad de edificación del modelo LADM que almacena datos específicos del avalúo resultante del mismo.</p>
 <a class=""
-               data-lightbox="group-c019ab50-ff6f-4368-a45c-b9d8cf9e72fe"
+               data-lightbox="group-710157b6-5e18-4e70-a5e1-54efbc078b4e"
                href="../_images/crear_construccion1.gif"
                title=""
                data-title=""
@@ -220,20 +227,44 @@ mapping to define field transformations and correspondence.</p>
                      width="800"
                      height="500"
                      alt="Create Building"/>
-                </a></div>
+                </a></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Desde otra capa de QGIS (definiendo un mapeo de campos)</li>
+</ol>
+<blockquote>
+<div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una capa fuente hacia la capa <strong>construccion</strong> de <em>LADM_COL</em>.</p>
+<p>Si la estructura de campos de las capas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
+<p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
+</div></blockquote>
+</div>
 <div class="section" id="create-building-unit">
-<h2>Create Building Unit<a class="headerlink" href="#create-building-unit" title="Enlazar permanentemente con este título">¶</a></h2>
+<h2>Crear Unidad de Construcción<a class="headerlink" href="#create-building-unit" title="Enlazar permanentemente con este título">¶</a></h2>
+<ol class="arabic simple">
+<li>Digitalizando</li>
+</ol>
+<blockquote>
+<div><p>Elige esta opción si deseas crear una <strong>Unidad de Construcción</strong> a partir de <em>Puntos de Levantamiento</em> existentes.</p>
+<p><strong>Unidad de Construcción</strong> es cada conjunto de materiales consolidados dentro de un Predio que tiene unas caracteristicas específicas en cuanto a elementos constitutivos físicos y usos de los mismos.</p>
 <a class=""
-               data-lightbox="group-b0ed563c-3c6d-4766-a62d-61120194bb27"
-               href="../_images/Create_building_unit1.gif"
+               data-lightbox="group-9fea16d1-725a-47fd-89be-6ceeb5df6db5"
+               href="../_images/create_building_unit1.gif"
                title=""
                data-title=""
-               ><img src="../_images/Create_building_unit1.gif"
+               ><img src="../_images/create_building_unit1.gif"
                      class=""
                      width="800"
                      height="500"
                      alt="Create building unit"/>
-                </a></div>
+                </a></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Desde otra capa de QGIS (definiendo un mapeo de campos)</li>
+</ol>
+<blockquote>
+<div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una capa fuente hacia la capa <strong>unidadconstruccion</strong> de <em>LADM_COL</em>.</p>
+<p>Si la estructura de campos de las capas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
+<p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
+</div></blockquote>
+</div>
 </div>
 
 
@@ -244,10 +275,10 @@ mapping to define field transformations and correspondence.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Basic_Administrative_Unit.html" class="btn btn-neutral float-right" title="Basic Administrative Unit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Basic_Administrative_Unit.html" class="btn btn-neutral float-right" title="Unidad Administrativa Básica" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Surveying_and_Representation.html" class="btn btn-neutral" title="Surveying and Representation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Surveying_and_Representation.html" class="btn btn-neutral" title="Topografía y Representación" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -287,10 +318,15 @@ mapping to define field transformations and correspondence.</p>
             <dd><a href="../../0.4.0/cadastre/Spatial_Unit.html">0.4.0</a></dd>
             <dd><a href="../../0.5.0/cadastre/Spatial_Unit.html">0.5.0</a></dd>
             <dd><a href="../../0.6.0/cadastre/Spatial_Unit.html">0.6.0</a></dd>
+            <dd><a href="../../0.6.1/cadastre/Spatial_Unit.html">0.6.1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
             <dd><a href="Spatial_Unit.html">master</a></dd>
+            <dd><a href="../../prepare_PR_2/cadastre/Spatial_Unit.html">prepare_PR_2</a></dd>
+            <dd><a href="../../update_docs/cadastre/Spatial_Unit.html">update_docs</a></dd>
+            <dd><a href="../../update_docs_n/cadastre/Spatial_Unit.html">update_docs_n</a></dd>
+            <dd><a href="../../update_quality_rules/cadastre/Spatial_Unit.html">update_quality_rules</a></dd>
         </dl>
     </div>
 </div>

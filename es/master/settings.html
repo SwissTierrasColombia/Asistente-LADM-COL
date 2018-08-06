@@ -31,7 +31,7 @@
     <link rel="author" title="Sobre este documento" href="about.html" />
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Búsqueda" href="search.html" />
-    <link rel="next" title="Toolbar LADM_COL" href="toolbar.html" />
+    <link rel="next" title="Barra de herramientas de LADM_COL" href="toolbar.html" />
     <link rel="prev" title="Cargar capas" href="load_layers.html" /> 
 
   
@@ -83,15 +83,16 @@
             
               <p class="caption"><span class="caption-text">Contenidos:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="cadastre.html">Cadastre</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cadastre.html">Catastro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="load_layers.html">Cargar capas</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Configuración</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#database-connection">Conexión a Base de Datos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#quality">Calidad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#automatic-values">Valores Automáticos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sources">Fuentes</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="toolbar.html">Toolbar LADM_COL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toolbar.html">Barra de herramientas de LADM_COL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Guía de Instalación para el plugin</a></li>
 <li class="toctree-l1"><a class="reference internal" href="about.html">Acerca de</a></li>
 </ul>
@@ -166,11 +167,11 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../0.6.0/settings.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.0.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../0.6.1/settings.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.1.</a></p>
 <div class="section" id="settings">
 <h1>Configuración<a class="headerlink" href="#settings" title="Enlazar permanentemente con este título">¶</a></h1>
 <a class=""
-               data-lightbox="group-da316a17-7a23-481a-b155-26fc791f49ce"
+               data-lightbox="group-9bbaabc2-e358-43f1-9fde-10e5998f96a7"
                href="_images/03_CONFIGURACION.gif"
                title=""
                data-title=""
@@ -181,12 +182,12 @@
                      alt="basic settings"/>
                 </a><div class="section" id="database-connection">
 <h2>Conexión a Base de Datos<a class="headerlink" href="#database-connection" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>En esta pestaña, los parámetros se definen para conectarse con la base de datos que almacena el modelo físico de LADM_COL.</p>
+<p>En esta pestaña, se definen los parámetros para conectarse con la base de datos que almacena el modelo físico de LADM_COL.</p>
 <p>Estos parámetros son:</p>
 <p><em>Parámetros comunes</em></p>
 <p><strong>Fuente</strong>: Define el origen de los datos, esta puede ser una base de datos espacial <em>PostgreSQL</em> o <em>GeoPackage</em>.</p>
 <p><em>Solo párametros de PostgreSQL/PostGIS</em></p>
-<p><strong>Host</strong>: dirección donde la base de datos es alamacenada <em>localhost</em> es equivalente a <em>127.0.0.1</em></p>
+<p><strong>Host</strong>: dirección donde la base de datos es almacenada <em>localhost</em> es equivalente a <em>127.0.0.1</em></p>
 <p><strong>Puerto</strong>: Número del puerto de escucha para la base de datos</p>
 <p><strong>Base de Datos</strong>:Nombre de la base de datos que contiene o contendrá el modelo físico de LADM_COL</p>
 <p><strong>Esquema</strong>: Nombre del esquema que almacena los objetos del modelo físico de LADM_COL</p>
@@ -198,16 +199,16 @@
 </div>
 <div class="section" id="quality">
 <h2>Calidad<a class="headerlink" href="#quality" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>Por cuestiones de calidad en esta pestaña, se etablece el límite de tolerancia permitido para segmentos de linderos demasiado largos, este debe estar definido en metros.</p>
+<p>En esta pestaña se definen parámetros para validaciones de calidad. Por ejemplo, se establece el límite de tolerancia permitido para segmentos de linderos demasiado largos, el cual debe estar definido en metros.</p>
 </div>
 <div class="section" id="automatic-values">
 <h2>Valores Automáticos<a class="headerlink" href="#automatic-values" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>La mayoría de las clases en LADM_COL tiene dos atributos que combinados deben ser únicos en todo el <code class="docutils literal notranslate"><span class="pre">esquema/base</span> <span class="pre">de</span> <span class="pre">datos</span></code>. Se denominan  <strong>espacio_de_nombres</strong> and <strong>local_id</strong>. Para hacer más fácil el llenado de estos atributos, el <em>asitente LADM_COL</em> puede configurarse con valores automáticos para ellos.</p>
+<p>La mayoría de las clases en LADM_COL tiene dos atributos que combinados deben ser únicos en todo el <code class="docutils literal notranslate"><span class="pre">esquema/base</span> <span class="pre">de</span> <span class="pre">datos</span></code>. Se denominan  <strong>espacio_de_nombres</strong> y <strong>local_id</strong>. Para hacer más fácil el llenado de estos atributos, el <em>asistente LADM_COL</em> puede configurarse con valores automáticos para ellos.</p>
 <p>Concretamente, <strong>espacio_de_nombres</strong> corresponderá a un prefijo opcional (p.e., MI_ORGANIZACION) más el nombre de la clase (p.e., LINDERO): <cite>MI_ORGANIZATION_LINDERO</cite>.</p>
 <p>Por otra parte , <strong>local_id</strong> correspondera al ID del registro en la base de datos.</p>
-<p>Si desea llenar esos valores por su cuenta desmarque las siguientes opciones en este formulario.</p>
+<p>Si deseas llenar esos valores por tu cuenta desmarca las siguientes opciones en este formulario.</p>
 <a class=""
-               data-lightbox="group-d081d742-4dac-4308-a985-29370fe791c8"
+               data-lightbox="group-bc67ed34-df53-4663-a1b9-10d26a9b37d2"
                href="_images/settings.gif"
                title=""
                data-title=""
@@ -216,6 +217,20 @@
                      width="800"
                      height="500"
                      alt="about plugin"/>
+                </a></div>
+<div class="section" id="sources">
+<h2>Fuentes<a class="headerlink" href="#sources" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Es posible configurar a través de un repositorio de datos una ruta de acceso URL para subir fuentes administrativas y fuentes espaciales asociadas a la información recolectada en LADM-COL.</p>
+<a class=""
+               data-lightbox="group-b88eaac0-46af-4a3b-b109-8b66d45fd68e"
+               href="_images/Configurar_fuentes.gif"
+               title=""
+               data-title=""
+               ><img src="_images/Configurar_fuentes.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Setting up sources"/>
                 </a></div>
 </div>
 
@@ -227,7 +242,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="toolbar.html" class="btn btn-neutral float-right" title="Toolbar LADM_COL" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="toolbar.html" class="btn btn-neutral float-right" title="Barra de herramientas de LADM_COL" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="load_layers.html" class="btn btn-neutral" title="Cargar capas" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -270,10 +285,15 @@
             <dd><a href="../0.4.0/settings.html">0.4.0</a></dd>
             <dd><a href="../0.5.0/settings.html">0.5.0</a></dd>
             <dd><a href="../0.6.0/settings.html">0.6.0</a></dd>
+            <dd><a href="../0.6.1/settings.html">0.6.1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
             <dd><a href="settings.html">master</a></dd>
+            <dd><a href="../prepare_PR_2/settings.html">prepare_PR_2</a></dd>
+            <dd><a href="../update_docs/settings.html">update_docs</a></dd>
+            <dd><a href="../update_docs_n/settings.html">update_docs_n</a></dd>
+            <dd><a href="../update_quality_rules/settings.html">update_quality_rules</a></dd>
         </dl>
     </div>
 </div>

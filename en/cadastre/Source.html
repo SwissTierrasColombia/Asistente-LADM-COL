@@ -31,8 +31,8 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Quality" href="Quality.html" />
-    <link rel="prev" title="RRR" href="RRR.html" /> 
+    <link rel="next" title="RRR" href="RRR.html" />
+    <link rel="prev" title="Party" href="Party.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -89,13 +89,13 @@
 <li class="toctree-l2"><a class="reference internal" href="Spatial_Unit.html">Spatial Unit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Basic_Administrative_Unit.html">Basic Administrative Unit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Party.html">Party</a></li>
-<li class="toctree-l2"><a class="reference internal" href="RRR.html">RRR</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Source</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#administrative-source">Administrative Source</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#spatial-source">Spatial Source</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="Quality.html">Quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RRR.html">RRR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Quality.html">Check Quality Rules</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../load_layers.html">Load Layers</a></li>
@@ -177,7 +177,7 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../0.6.0/cadastre/Source.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.0.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../0.6.1/cadastre/Source.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.6.1.</a></p>
 <div class="section" id="source">
 <h1>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="administrative-source">
@@ -185,38 +185,71 @@
 <ol class="arabic simple">
 <li>Entering data manually using a form</li>
 </ol>
-<p>Choose this option if you want to create an <strong>Administrative Source</strong> using a
+<blockquote>
+<div><p>Choose this option if you want to create an <strong>Administrative Source</strong> using a
 form.</p>
 <p><strong>Administrative Source</strong> is a specialization of the <em>COL_Fuente</em> class to store
 those sources corresponding to documents (mortgage document, notarial documents,
 historical documents, and the like) that document the relationship
 between parties and parcels.</p>
+<a class=""
+               data-lightbox="group-4fd73366-92fe-4ea9-971a-d13537511549"
+               href="../_images/crear_fuente_administrativa1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/crear_fuente_administrativa1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Administrative Source"/>
+                </a></div></blockquote>
 <ol class="arabic simple" start="2">
 <li>From another QGIS layer/table (setting a field mapping)</li>
 </ol>
-<p>Choose this option to open a window that allows you to import data from a source
+<blockquote>
+<div><p>Choose this option to open a window that allows you to import data from a source
 table into the <em>LADM_COL</em> <strong>col_fuenteadministrativa</strong> table.</p>
 <p>If the field structure of input and target tables differs, you can set a field
 mapping to define field transformations and correspondence.</p>
+<p>For use this function check this <a class="reference external" href="../mapping_fields.html">LINK</a>.</p>
+</div></blockquote>
 </div>
 <div class="section" id="spatial-source">
 <h2>Spatial Source<a class="headerlink" href="#spatial-source" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li>Entering data manually using a form</li>
 </ol>
-<p>Choose this option if you want to create a <strong>Spatial Source</strong> using a form.</p>
+<blockquote>
+<div><p>Choose this option if you want to create a <strong>Spatial Source</strong> using a form.
+(Previously you have to select objects from the table terreno, lindero,
+puntolindero, puntolevantamiento, o punto control which will be associated
+with the new <strong>Spatial Source</strong>)</p>
 <p><strong>Spatial Source</strong> is a specialization of the <em>COL_Fuente</em> class to store those
 sources corresponding to spatial data (geographic features, satellite imagery,
 photogrammetric flights, maps, coordinate listings, ancient or modern plans,
 location descriptions, and the like) that technically document the relationship
 between parties and parcels.</p>
+<a class=""
+               data-lightbox="group-0415d545-50bf-4604-bcba-d07a7765f17e"
+               href="../_images/crear_fuente_espacial1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/crear_fuente_espacial1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Spatial Source"/>
+                </a></div></blockquote>
 <ol class="arabic simple" start="2">
 <li>From another QGIS layer/table (setting a field mapping)</li>
 </ol>
-<p>Choose this option to open a window that allows you to import data from a source
+<blockquote>
+<div><p>Choose this option to open a window that allows you to import data from a source
 table into the <em>LADM_COL</em> <strong>col_fuenteespacial</strong> table.</p>
 <p>If the field structure of input and target tables differs, you can set a field
 mapping to define field transformations and correspondence.</p>
+<p>For use this function check this <a class="reference external" href="../mapping_fields.html">LINK</a>.</p>
+</div></blockquote>
 </div>
 </div>
 
@@ -228,10 +261,10 @@ mapping to define field transformations and correspondence.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Quality.html" class="btn btn-neutral float-right" title="Quality" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="RRR.html" class="btn btn-neutral float-right" title="RRR" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="RRR.html" class="btn btn-neutral" title="RRR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Party.html" class="btn btn-neutral" title="Party" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -271,10 +304,15 @@ mapping to define field transformations and correspondence.</p>
             <dd><a href="../0.4.0/cadastre/Source.html">0.4.0</a></dd>
             <dd><a href="../0.5.0/cadastre/Source.html">0.5.0</a></dd>
             <dd><a href="../0.6.0/cadastre/Source.html">0.6.0</a></dd>
+            <dd><a href="../0.6.1/cadastre/Source.html">0.6.1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
             <dd><a href="../master/cadastre/Source.html">master</a></dd>
+            <dd><a href="../prepare_PR_2/cadastre/Source.html">prepare_PR_2</a></dd>
+            <dd><a href="../update_docs/cadastre/Source.html">update_docs</a></dd>
+            <dd><a href="../update_docs_n/cadastre/Source.html">update_docs_n</a></dd>
+            <dd><a href="../update_quality_rules/cadastre/Source.html">update_quality_rules</a></dd>
         </dl>
     </div>
 </div>
