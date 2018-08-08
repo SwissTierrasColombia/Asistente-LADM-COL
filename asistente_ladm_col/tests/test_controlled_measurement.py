@@ -30,7 +30,6 @@ class TestExport(unittest.TestCase):
     def test_get_point_groups(self):
         print('\nINFO: Validating controlled measurement (Point Grouping)...')
 
-
         self.assertEqual(self.measure_layer.featureCount(), 38)
 
         bdef = [i.id() for i in self.measure_layer.getFeatures("\"def_type\"='Bien_Definido'")]
@@ -79,7 +78,6 @@ class TestExport(unittest.TestCase):
         nbdef = [i.id() for i in self.measure_layer.getFeatures("\"def_type\"='No_Bien_Definido'")]
         self.assertEqual(len(nbdef), 18)
 
-
     def test_groups_validation(self):
         print('\nINFO: Validating controlled measurement (Time Group Validation)...')
         # Test to check time validation with 0.5 meters of distance
@@ -102,7 +100,6 @@ class TestExport(unittest.TestCase):
             self.assertEqual(len([feat for feat in features]), feat[i])
             self.assertEqual(len([feat for feat in no_features]), no_feat[i])
 
-
     def test_groups_validation_second_distance(self):
         print('\nINFO: Validating controlled measurement (Time Group Validation Second Distance)...')
         # Test to check time validation with 5 meters of distance.
@@ -123,7 +120,6 @@ class TestExport(unittest.TestCase):
             no_feat = {8: 2, 4: 1, 3: 0}
             self.assertEqual(len([feat for feat in features]), feat[i])
             self.assertEqual(len([feat for feat in no_features]), no_feat[i])
-
 
     def test_distance_validation(self):
         print('\nINFO: Validating controlled measurement (Distance Validation)...')
@@ -168,8 +164,8 @@ class TestExport(unittest.TestCase):
         trustworthy_count = [i.id() for i in new_layer.getFeatures("\"{}\" = 'True'".format(TRUSTWORTHY_FIELD_NAME))]
         self.assertEqual(len(trustworthy_count), 16)
 
-    def test_time_validation_without_time(self):
-        print('\nINFO: Validating controlled measurement (Distance Validation)...')
+    def test_distance_validation_without_time(self):
+        print('\nINFO: Validating controlled measurement (Distance Validation without time)...')
         # Test to check time validation with 0.5 meters of distance
         res, msg = self.TestClass.run_group_points_model(
             self.measure_layer, 0.5, 'def_type')
@@ -211,7 +207,6 @@ class TestExport(unittest.TestCase):
 
         trustworthy_count = [i.id() for i in new_layer.getFeatures("\"{}\" = 'True'".format(TRUSTWORTHY_FIELD_NAME))]
         self.assertEqual(len(trustworthy_count), 20)
-
 
     def test_diferent_time_validation(self):
         print('\nINFO: Validating controlled measurement (Distance Validation)...')
