@@ -90,6 +90,7 @@ from ..lib.source_handler import SourceHandler
 
 class QGISUtils(QObject):
 
+    action_vertex_tool_requested = pyqtSignal()
     activate_layer_requested = pyqtSignal(QgsMapLayer)
     clear_status_bar_emitted = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
@@ -937,6 +938,50 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils", "No plot could be created. Make sure selected boundaries are closed!"),
                 Qgis.Warning)
             return
+
+    def enable_topological_editing(self, db):
+        # Enable Topological Editing
+        QgsProject.instance().setTopologicalEditing(True)
+
+        # Load Plot, Boundary and Boundary Point
+        res_layers = self.get_layers(db, {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None}}, load=True)
+
+        plot_layer = res_layers[PLOT_TABLE]
+        if plot_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "Plot layer couldn't be found... {}").format(db.get_description()),
+                Qgis.Warning)
+            return
+
+        boundary_layer = res_layers[BOUNDARY_TABLE]
+        if boundary_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "Boundary layer couldn't be found... {}").format(db.get_description()),
+                Qgis.Warning)
+            return
+
+        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
+        if boundary_point_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "Boundary Point layer couldn't be found... {}").format(db.get_description()),
+                Qgis.Warning)
+            return
+
+        # Open edit session in all layers
+        plot_layer.startEditing()
+        boundary_layer.startEditing()
+        boundary_point_layer.startEditing()
+
+        # Activate "Vertex Tool (All Layers)"
+        self.activate_layer_requested.emit(plot_layer)
+        self.action_vertex_tool_requested.emit()
+
+        self.message_emitted.emit(
+            QCoreApplication.translate("QGISUtils", "You can start moving nodes in layers Plot, Boundary and Boundary Point!"),
+            Qgis.Info)
 
     def upload_source_files(self, db):
         extfile_layer = self.get_layer(db, EXTFILE_TABLE, None, True)
