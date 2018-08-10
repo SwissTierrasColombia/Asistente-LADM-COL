@@ -62,6 +62,7 @@ from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
 from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
+from .gui.toolbar import ToolBar
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
 from .utils.quality import QualityUtils
@@ -76,6 +77,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.log = QgsApplication.messageLog()
         self.installTranslator()
         self._about_dialog = None
+        self.toolbar = None
 
     def initGui(self):
         # Set Menus
@@ -90,6 +92,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
         self.quality = QualityUtils(self.qgis_utils)
+        self.toolbar = ToolBar(self.iface, self.qgis_utils)
 
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
 
@@ -406,7 +409,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def call_topological_editing(self):
-        self.qgis_utils.enable_topological_editing(self.get_db_connection())
+        self.toolbar.enable_topological_editing(self.get_db_connection())
 
     @_project_generator_required
     @_db_connection_required
