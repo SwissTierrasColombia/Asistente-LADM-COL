@@ -1,19 +1,20 @@
 <RCC>
-    <qresource prefix="/Asistente-LADM_COL">
-        <file>resources/images/icon.png</file>
-        <file>resources/images/lines.png</file>
-        <file>resources/images/points.png</file>
-        <file>resources/images/polygons.png</file>
-        <file>resources/images/associations.png</file>
-        <file>resources/images/structures.png</file>
-        <file>resources/images/tables.png</file>
-        <file>resources/images/domains.png</file>
-        <file>resources/images/search.png</file>
-        <file>resources/csv/template_boundary_points.csv</file>
-        <file>resources/csv/template_survey_points.csv</file>
-        <file>resources/csv/template_control_points.csv</file>
-        <file>resources/csv/sample_boundary_points.csv</file>
-        <file>resources/csv/sample_survey_points.csv</file>
-        <file>resources/csv/sample_control_points.csv</file>
-    </qresource>
+  <qresource prefix="/Asistente-LADM_COL">
+    <file>resources/images/icon_about.png</file>
+    <file>resources/images/icon.png</file>
+    <file>resources/images/lines.png</file>
+    <file>resources/images/points.png</file>
+    <file>resources/images/polygons.png</file>
+    <file>resources/images/associations.png</file>
+    <file>resources/images/structures.png</file>
+    <file>resources/images/tables.png</file>
+    <file>resources/images/domains.png</file>
+    <file>resources/images/search.png</file>
+    <file>resources/csv/template_boundary_points.csv</file>
+    <file>resources/csv/template_survey_points.csv</file>
+    <file>resources/csv/template_control_points.csv</file>
+    <file>resources/csv/sample_boundary_points.csv</file>
+    <file>resources/csv/sample_survey_points.csv</file>
+    <file>resources/csv/sample_control_points.csv</file>
+  </qresource>
 </RCC>

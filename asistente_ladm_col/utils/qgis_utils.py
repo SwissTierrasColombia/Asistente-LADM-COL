@@ -779,12 +779,19 @@ class QGISUtils(QObject):
 
     def show_etl_model(self, db, input_layer, ladm_col_layer_name):
 
+        output = self.get_layer(db, ladm_col_layer_name, geometry_type=None, load=True)
+        if output.isEditable():
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "You need to close the edit session on layer '{}' before using this tool!").format(ladm_col_layer_name),
+                Qgis.Warning)
+            return
+
         model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
         if model:
             automatic_fields_definition = self.check_if_and_disable_automatic_fields(db, ladm_col_layer_name)
 
             mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
-            output = self.get_layer(db, ladm_col_layer_name, geometry_type=None, load=True)
             self.activate_layer_requested.emit(input_layer)
             params = {
                 'INPUT': input_layer.name(),

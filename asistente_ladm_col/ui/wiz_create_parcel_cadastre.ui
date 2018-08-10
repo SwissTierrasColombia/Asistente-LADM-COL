@@ -65,7 +65,8 @@
            <item row="1" column="0">
             <widget class="QRadioButton" name="rad_parcel_from_plot">
              <property name="text">
-              <string>Based on existing plot</string>
+              <string>Entering data manually using a form
+(you need to select one Plot and/or Buildings before)</string>
              </property>
              <property name="checked">
               <bool>true</bool>
