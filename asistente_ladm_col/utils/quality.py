@@ -130,7 +130,8 @@ class QualityUtils(QObject):
         error_layer.updateFields()
 
         features = []
-        differences = self.qgis_utils.geometry.get_difference_between_polygon_polyline(plot_layer, boundary_layer)
+        differences = self.qgis_utils.geometry.difference_boundary(plot_layer, boundary_layer)
+        print(differences)
 
         for difference in differences:
             new_feature = QgsVectorLayerUtils().createFeature(error_layer, difference['geometry'],

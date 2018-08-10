@@ -27,8 +27,15 @@ from qgis.core import (
     QgsVectorLayerUtils,
     QgsWkbTypes,
     QgsProcessingFeedback,
-    QgsVectorLayer
+    QgsVectorLayer,
+    QgsVertexId,
+    QgsPoint
 )
+
+from qgis.core.additions.edit import (
+    edit
+)
+
 from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
 import processing
 
@@ -352,6 +359,114 @@ class GeometryUtils(QObject):
                                            'OUTPUT': 'memory:'})['OUTPUT']
 
         for feature in difference_layer.getFeatures():
+            geomFeature = feature.geometry()
+            idFeature = feature[id_field]
+            difference_features.append({'geometry': geomFeature, 'id': idFeature})
+
+        return difference_features
+
+    def findVertexPosition(self, ring, vertex):
+        position = None
+        if type(vertex) != type(QgsGeometry()):
+            return position
+
+        if vertex.type() != QgsWkbTypes.PointGeometry:
+            return position
+
+        if len(ring) == 0 or type(ring) != type(list()):
+            return position
+
+        if vertex.asPoint() in ring:
+            return position
+
+        for pos in range(len(ring) - 1):
+            segment = QgsGeometry(QgsLineString([QgsPoint(ring[pos]), QgsPoint(ring[pos + 1])]))
+            if segment.distance(vertex) < 1e-9:
+                position = pos + 1
+                break
+        return position
+
+    def getVertexPositionGeom(self, geom, vertex):
+        positions = list()
+        if type(vertex) != type(QgsGeometry()):
+            return None
+        if vertex.type() != QgsWkbTypes.PointGeometry:
+            return None
+
+        if geom.isMultipart() is False:
+            polyg = geom.asPolygon()  # transform to list of points
+            countPart = 1
+            countRing = 0
+            for ring in polyg:
+                countRing += 1
+                posVertex = self.findVertexPosition(ring, vertex)
+                if posVertex is not None:
+                    positions.append({'part': countPart, 'ring': countRing, 'vertex': posVertex})
+
+        else:  # is multipart
+            multi = geom.asMultiPolygon()
+
+            countPart = 0
+            for polyg in multi:
+                countRing = 0
+                countPart += 1
+                for ring in polyg:
+                    countRing += 1
+                    posVertex = self.findVertexPosition(ring, vertex)
+                    if posVertex is not None:
+                        positions.append({'part': countPart, 'ring': countRing, 'vertex': posVertex})
+        return positions
+
+    def find_missing_vertices_polygon_line(self, polygons_layer, lines_layer):
+        processing_result = processing.run("model:Find_Missing_Vertices",
+                                           {'input': polygons_layer, 'inputlines': lines_layer,
+                                            'native:extractbylocation_1:vertices_to_add': 'memory:'})
+        vertices_to_add = processing_result['native:extractbylocation_1:vertices_to_add']
+        return vertices_to_add
+
+    def difference_boundary_polygons_lines(self, polygons_layer, lines_layer):
+        polygons_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': polygons_layer, 'OUTPUT': 'memory:'})[
+            'OUTPUT']
+        difference_boundary = \
+        processing.run("native:difference", {'INPUT': polygons_lines_layer, 'OVERLAY': lines_layer, 'OUTPUT': 'memory:'})[
+            'OUTPUT']
+        return difference_boundary
+
+    def difference_boundary(self, orig_polygons_layer, lines_layer, id_field=ID_FIELD):
+        difference_features = list()
+        polygons_layer = orig_polygons_layer.clone()
+        if id(orig_polygons_layer) == id(polygons_layer):
+            print("polygons layer was not cloned correctly")
+
+        layer_vertices_to_add = self.find_missing_vertices_polygon_line(polygons_layer, lines_layer)
+
+        index = QgsSpatialIndex(polygons_layer)
+
+        for vertex in layer_vertices_to_add.getFeatures():
+            vertex_geom = vertex.geometry()
+            vertex_bbx = vertex_geom.boundingBox()
+            # vertice_bbx.scale(1.001)
+
+            candidate_polygons_ids = index.intersects(vertex_bbx)
+
+            with edit(polygons_layer):
+                candidate_polygons = polygons_layer.getFeatures(candidate_polygons_ids)
+
+                for candidate_polygon in candidate_polygons:
+                    cp_geometry = candidate_polygon.geometry()
+                    cp_geometry_ref = cp_geometry.get()
+                    vertices_to_add = self.getVertexPositionGeom(cp_geometry, vertex_geom)
+                    for vertex_to_add in vertices_to_add:
+                        vertex_id = QgsVertexId(vertex_to_add['part'] - 1, vertex_to_add['ring'] - 1,
+                                                vertex_to_add['vertex'], QgsVertexId.SegmentVertex)
+                        cp_geometry_ref.insertVertex(vertex_id, QgsPoint(vertex_geom.asPoint()))
+                        clone_geometry_ref = cp_geometry_ref.clone()
+                        polygons_layer.editBuffer().changeGeometry(candidate_polygon.id(),
+                                                                   QgsGeometry(clone_geometry_ref))  # update geometry
+
+        differences_layer = self.difference_boundary_polygons_lines(polygons_layer, lines_layer)
+
+        for feature in differences_layer.getFeatures():
             geomFeature = feature.geometry()
             idFeature = feature[id_field]
             difference_features.append({'geometry': geomFeature, 'id': idFeature})
