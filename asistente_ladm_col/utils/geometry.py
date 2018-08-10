@@ -327,3 +327,33 @@ class GeometryUtils(QObject):
                                 list_overlapping.append(part)
 
         return ids, QgsGeometry.collectGeometry(list_overlapping) if len(list_overlapping) > 0 else None
+
+    def get_difference_between_polygon_polyline(self, polygon_layer, line_layer, id_field=ID_FIELD):
+        difference_features = list()
+
+        if QgsWkbTypes.PolygonGeometry != polygon_layer.geometryType() or\
+                polygon_layer.featureCount() == 0:
+            return difference_features
+
+        if QgsWkbTypes.LineGeometry != line_layer.geometryType():
+            return difference_features
+
+        singleparts_polygon_layer = processing.run("native:multiparttosingleparts",
+                                                   {'INPUT': polygon_layer,
+                                                    'OUTPUT': 'memory:'})['OUTPUT']
+
+        polylines_polygon_layer = processing.run("qgis:polygonstolines",
+                                                 {'INPUT': singleparts_polygon_layer,
+                                                  'OUTPUT': 'memory:'})['OUTPUT']
+
+        difference_layer = processing.run("native:difference",
+                                          {'INPUT': polylines_polygon_layer,
+                                           'OVERLAY': line_layer,
+                                           'OUTPUT': 'memory:'})['OUTPUT']
+
+        for feature in difference_layer.getFeatures():
+            geomFeature = feature.geometry()
+            idFeature = feature[id_field]
+            difference_features.append({'geometry': geomFeature, 'id': idFeature})
+
+        return difference_features
