@@ -31,9 +31,11 @@ from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton
 from processing.modeler.ModelerUtils import ModelerUtils
 
 from .config.table_mapping_config import (
+    ID_FIELD,
     BOUNDARY_POINT_TABLE,
     CONTROL_POINT_TABLE,
-    PLOT_TABLE
+    PLOT_TABLE,
+    NATURAL_PARTY_TABLE
 )
 from .config.general_config import (
     PROJECT_GENERATOR_MIN_REQUIRED_VERSION,
@@ -487,8 +489,15 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def show_dlg_group_party(self):
-        wiz = CreateGroupPartyCadastre(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        dlg = CreateGroupPartyCadastre(self.iface, self.get_db_connection(), self.qgis_utils)
+        layer = self.qgis_utils.get_layer(self.get_db_connection(), NATURAL_PARTY_TABLE, load=True)
+        if layer is None:
+            return
+
+        data = {f[ID_FIELD]: ["{} {} {}".format(f["documento_identidad"], f["primer_apellido"], f["primer_nombre"]), 0, 0] for f in layer.getFeatures()}
+        dlg.set_parties_data(data)
+        dlg.exec_()
+        print(dlg.parties_to_group)
 
     @_project_generator_required
     @_db_connection_required

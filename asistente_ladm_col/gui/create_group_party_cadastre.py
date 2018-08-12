@@ -16,11 +16,13 @@
  *                                                                         *
  ***************************************************************************/
 """
+import copy
+
 from qgis.core import (QgsEditFormConfig, QgsVectorLayerUtils, Qgis,
                        QgsWkbTypes, QgsMapLayerProxyModel)
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
-from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtWidgets import QDialog, QTableWidgetItem, QListWidgetItem
 
 from ..utils import get_ui_class
 from ..config.table_mapping_config import NATURAL_PARTY_TABLE
@@ -38,84 +40,166 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
 
-        #self.restore_settings()
-    #
-    #     self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
-    #     self.adjust_page_1_controls()
-    #     self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
-    #     self.button(QWizard.HelpButton).clicked.connect(self.show_help)
-    #
-    #     self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.NoGeometry)
-    #
-    # def adjust_page_1_controls(self):
-    #     if self.rad_refactor.isChecked():
-    #         self.lbl_refactor_source.setEnabled(True)
-    #         self.mMapLayerComboBox.setEnabled(True)
-    #         finish_button_text = QCoreApplication.translate("CreateNaturalPartyCadastreWizard", "Import")
-    #         self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(NATURAL_PARTY_TABLE, False))
-    #
-    #     elif self.rad_create_manually.isChecked():
-    #         self.lbl_refactor_source.setEnabled(False)
-    #         self.mMapLayerComboBox.setEnabled(False)
-    #         finish_button_text = QCoreApplication.translate("CreateNaturalPartyCadastreWizard", "Create")
-    #         self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_NATURAL_PARTY_CADASTRE_PAGE_1_OPTION_FORM)
-    #
-    #     self.wizardPage1.setButtonText(QWizard.FinishButton,
-    #                                    QCoreApplication.translate("CreateNaturalPartyCadastreWizard",
-    #                                    finish_button_text))
-    #
-    # def finished_dialog(self):
-    #     self.save_settings()
-    #
-    #     if self.rad_refactor.isChecked():
-    #         if self.mMapLayerComboBox.currentLayer() is not None:
-    #             self.qgis_utils.show_etl_model(self._db,
-    #                                            self.mMapLayerComboBox.currentLayer(),
-    #                                            NATURAL_PARTY_TABLE)
-    #         else:
-    #             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-    #                 QCoreApplication.translate("CreateNaturalPartyCadastreWizard",
-    #                                            "Select a source layer to set the field mapping to '{}'.").format(NATURAL_PARTY_TABLE),
-    #                 Qgis.Warning)
-    #
-    #     elif self.rad_create_manually.isChecked():
-    #         self.prepare_natural_party_creation()
-    #
-    # def prepare_natural_party_creation(self):
-    #     # Load layers
-    #     self._natural_party_layer = self.qgis_utils.get_layer(self._db, NATURAL_PARTY_TABLE, load=True)
-    #     if self._natural_party_layer is None:
-    #         self.iface.messageBar().pushMessage("Asistente LADM_COL",
-    #             QCoreApplication.translate("CreateNaturalPartyCadastreWizard",
-    #                                        "Natural Party layer couldn't be found... {}").format(self._db.get_description()),
-    #             Qgis.Warning)
-    #         return
-    #
-    #     # Don't suppress (i.e., show) feature form
-    #     form_config = self._natural_party_layer.editFormConfig()
-    #     form_config.setSuppress(QgsEditFormConfig.SuppressOff)
-    #     self._natural_party_layer.setEditFormConfig(form_config)
-    #
-    #     self.edit_natural_party()
-    #
-    # def edit_natural_party(self):
-    #     # Open Form
-    #     self.iface.layerTreeView().setCurrentLayer(self._natural_party_layer)
-    #     self._natural_party_layer.startEditing()
-    #     self.iface.actionAddFeature().trigger()
+        self.data = {} # {t_id: [display_text, denominator, numerator]}
+        self.current_selected_parties = [] #  [t_ids]
+        self.parties_to_group = {} # {t_id: [denominator, numerator]}
 
-    # def save_settings(self):
-    #     settings = QSettings()
-    #     settings.setValue('Asistente-LADM_COL/wizards/natural_party_load_data_type', 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
-    #
-    # def restore_settings(self):
-    #     settings = QSettings()
-    #
-    #     load_data_type = settings.value('Asistente-LADM_COL/wizards/natural_party_load_data_type') or 'create_manually'
-    #     if load_data_type == 'refactor':
-    #         self.rad_refactor.setChecked(True)
-    #     else:
-    #         self.rad_create_manually.setChecked(True)
+        self.txt_search_party.setText("")
+        self.btn_select.setEnabled(False)
+        self.btn_deselect.setEnabled(False)
+
+        self.tbl_selected_parties.setColumnCount(3)
+        self.tbl_selected_parties.setColumnWidth(0, 120)
+        self.tbl_selected_parties.setColumnWidth(1, 70)
+        self.tbl_selected_parties.setColumnWidth(2, 70)
+        self.tbl_selected_parties.sortItems(0, Qt.AscendingOrder)
+
+        self.txt_search_party.textEdited.connect(self.search)
+        self.lst_all_parties.itemSelectionChanged.connect(self.selection_changed_all)
+        self.tbl_selected_parties.itemSelectionChanged.connect(self.selection_changed_selected)
+        self.tbl_selected_parties.cellChanged.connect(self.valueEdited)
+        self.btn_select_all.clicked.connect(self.select_all)
+        self.btn_deselect_all.clicked.connect(self.deselect_all)
+        self.btn_select.clicked.connect(self.select)
+        self.btn_deselect.clicked.connect(self.deselect)
+
+    def set_parties_data(self, parties_data):
+        """
+        Initialize parties data.
+
+        :param parties_data: Dictionary {t_id: [display_text, denominator, numerator]}
+        :type parties_data: dict
+        """
+        self.data = parties_data
+        self.update_lists()
+
+    def search(self, text):
+        self.update_lists(True)
+
+    def selection_changed_all(self):
+        self.btn_select.setEnabled(len(self.lst_all_parties.selectedItems()))
+
+    def selection_changed_selected(self):
+        self.btn_deselect.setEnabled(len(self.tbl_selected_parties.selectedItems()))
+
+    def select_all(self):
+        """
+        SLOT. Select all parties listed from left list widget.
+        """
+        items_ids = []
+        for index in range(self.lst_all_parties.count()):
+             items_ids.append(self.lst_all_parties.item(index).data(Qt.UserRole))
+        self.add_parties_to_selected(items_ids)
+
+    def deselect_all(self):
+        """
+        SLOT. Remove all parties from left list widget.
+        """
+        items_ids = []
+        for index in range(self.tbl_selected_parties.rowCount()):
+             items_ids.append(self.tbl_selected_parties.item(index, 0).data(Qt.UserRole))
+        self.remove_parties_from_selected(items_ids)
+
+    def select(self):
+        """
+        SLOT. Select all parties highlighted in left list widget.
+        """
+        self.add_parties_to_selected([item.data(Qt.UserRole) for item in self.lst_all_parties.selectedItems()])
+
+    def deselect(self):
+        """
+        SLOT. Remove all parties highlighted in right list widget.
+        """
+        self.remove_parties_from_selected([item.data(Qt.UserRole) for item in self.tbl_selected_parties.selectedItems() if item.column() == 0])
+
+    def add_parties_to_selected(self, parties_ids):
+        self.current_selected_parties.extend(parties_ids)
+        self.update_lists()
+
+    def remove_parties_from_selected(self, parties_ids):
+        for party_id in parties_ids:
+            self.current_selected_parties.remove(party_id)
+            if party_id in self.parties_to_group:
+                del self.parties_to_group[party_id]
+        self.update_lists()
+
+    def update_lists(self, only_update_all_list=False):
+        """
+        Update left list widget and optionally the right one.
+
+        :param only_update_all_list: Only updat left list widget.
+        :type only_update_all_list: bool
+        """
+        # All parties
+        self.lst_all_parties.clear()
+        if self.txt_search_party.text():
+            tmp_parties = {i:d for i,d in self.data.items() if self.txt_search_party.text().lower() in d[0].lower()}
+        else:
+            tmp_parties = copy.deepcopy(self.data) # Copy all!
+
+        for party_id in self.current_selected_parties:
+            if party_id in tmp_parties:
+                del tmp_parties[party_id]
+
+        for i,d in tmp_parties.items():
+            item = QListWidgetItem(d[0])
+            item.setData(Qt.UserRole, i)
+            self.lst_all_parties.addItem(item)
+
+        if not only_update_all_list:
+            # Selected parties
+            self.tbl_selected_parties.clearContents()
+            self.tbl_selected_parties.setRowCount(len(self.current_selected_parties))
+            self.tbl_selected_parties.setColumnCount(3)
+            self.tbl_selected_parties.setSortingEnabled(False)
+
+            for row, party_id in enumerate(self.current_selected_parties):
+                item = QTableWidgetItem(self.data[party_id][0])
+                item.setFlags(item.flags() & ~Qt.ItemIsEditable)
+                item.setData(Qt.UserRole, party_id)
+                self.tbl_selected_parties.setItem(row, 0, item)
+                value_denominator = self.parties_to_group[party_id][0] if party_id in self.parties_to_group else self.data[party_id][1]
+                self.tbl_selected_parties.setItem(row, 1, QTableWidgetItem(str(value_denominator)))
+                value_numerator = self.parties_to_group[party_id][1] if party_id in self.parties_to_group else self.data[party_id][2]
+                self.tbl_selected_parties.setItem(row, 2, QTableWidgetItem(str(value_numerator)))
+
+            self.tbl_selected_parties.setSortingEnabled(True)
+
+
+    def valueEdited(self, row, column):
+        """
+        SLOT. Update either the denominator or the numerator for given row.
+
+        :param row: Edited row
+        :type row: int
+        :param column: Edited column
+        :type column: int
+        """
+        if column != 0:
+            party_id = self.tbl_selected_parties.item(row, 0).data(Qt.UserRole)
+            value_denominator = self.tbl_selected_parties.item(row, 1).text()
+
+            # While creating a row and the second column is created, the third
+            # one doesn't exist, so use the value already stored for that case
+            value_numerator = self.parties_to_group[party_id][1] if party_id in self.parties_to_group else 0
+            if self.tbl_selected_parties.item(row, 2) is not None:
+                value_numerator = self.tbl_selected_parties.item(row, 2).text()
+
+            self.parties_to_group[party_id] = [value_denominator, value_numerator]
+
+    def accept(self):
+        """ Overwrit the dialog's `accept
+        <https://doc.qt.io/qt-5/qdialog.html#accept>`_ SLOT to store
+        selected parties and denominator-numerator before closing the dialog.
+        """
+        self.parties_to_group = {}
+        for index in range(self.tbl_selected_parties.rowCount()):
+             k = self.tbl_selected_parties.item(index, 0).data(Qt.UserRole)
+             v_d = self.tbl_selected_parties.item(index, 1).text()
+             v_n = self.tbl_selected_parties.item(index, 2).text()
+             self.parties_to_group[ k ] = [v_d, v_n]
+        self.done(1)
+
 
     def show_help(self):
         self.qgis_utils.show_help("natural_party")
