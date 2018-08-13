@@ -438,7 +438,16 @@ class GeometryUtils(QObject):
         if id(orig_polygons_layer) == id(polygons_layer):
             print("polygons layer was not cloned correctly")
 
-        layer_vertices_to_add = self.find_missing_vertices_polygon_line(polygons_layer, lines_layer)
+        # drop fields
+        polygons_layer_drop_fields = processing.run("qgis:deletecolumn",
+                       {'INPUT': polygons_layer, 'COLUMN': polygons_layer.dataProvider().attributeIndexes(),
+                        'OUTPUT': 'memory:'})['OUTPUT']
+
+        lines_layer_drop_fields = processing.run("qgis:deletecolumn",
+                       {'INPUT': lines_layer, 'COLUMN': lines_layer.dataProvider().attributeIndexes(),
+                        'OUTPUT': 'memory:'})['OUTPUT']
+
+        layer_vertices_to_add = self.find_missing_vertices_polygon_line(polygons_layer_drop_fields, lines_layer_drop_fields)
 
         index = QgsSpatialIndex(polygons_layer)
 

@@ -131,7 +131,6 @@ class QualityUtils(QObject):
 
         features = []
         differences = self.qgis_utils.geometry.difference_boundary(plot_layer, boundary_layer)
-        print(differences)
 
         for difference in differences:
             new_feature = QgsVectorLayerUtils().createFeature(error_layer, difference['geometry'],
