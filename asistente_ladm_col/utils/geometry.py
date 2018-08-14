@@ -32,9 +32,7 @@ from qgis.core import (
     QgsPoint
 )
 
-from qgis.core.additions.edit import (
-    edit
-)
+from qgis.core.additions import edit
 
 from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
 import processing
