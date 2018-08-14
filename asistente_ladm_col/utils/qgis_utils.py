@@ -90,6 +90,7 @@ from ..lib.source_handler import SourceHandler
 
 class QGISUtils(QObject):
 
+    action_vertex_tool_requested = pyqtSignal()
     activate_layer_requested = pyqtSignal(QgsMapLayer)
     clear_status_bar_emitted = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
