@@ -198,6 +198,23 @@ class TesQualityValidations(unittest.TestCase):
         flat_overlapping.sort()
         self.assertEqual(flat_expected_overlaps, flat_overlapping)
 
+    def test_find_vertices(self):
+        print('\nINFO: Validating find missing vertices...')
+
+        gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
+
+        vertices_test_values = [2,2,2,6,4,0]
+
+        for i in range(len(vertices_test_values)):
+            case = "_case"+str(i+1)
+            uri_polygon = gpkg_path + '|layername={layername}'.format(layername='polygon'+case)
+            uri_lines = gpkg_path + '|layername={layername}'.format(layername='lines'+case)
+            polygon_layer = QgsVectorLayer(uri_polygon, 'polygon_layer'+case, 'ogr')
+            lines_layer = QgsVectorLayer(uri_lines, 'lines_layer'+case, 'ogr')
+            vertices = self.qgis_utils.geometry.find_missing_vertices_polygon_line(polygon_layer, lines_layer)
+            self.assertEqual(vertices.featureCount(), vertices_test_values[i])
+
+
     def test_intersection_polygons_tolerance(self):
         print('\nINFO: Validating intersection in polygons (plots)...')
 
