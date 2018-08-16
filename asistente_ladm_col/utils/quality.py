@@ -126,7 +126,7 @@ class QualityUtils(QObject):
                                      QCoreApplication.translate("QGISUtils", differences_layer_name), "memory")
 
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField(ID_FIELD, QVariant.String)])
+        data_provider.addAttributes([QgsField('plot_id', QVariant.String)])
         error_layer.updateFields()
 
         features = []
