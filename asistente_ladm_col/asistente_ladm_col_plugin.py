@@ -65,6 +65,7 @@ from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
 from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
+from .gui.toolbar import ToolBar
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
 from .utils.quality import QualityUtils
@@ -79,6 +80,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.log = QgsApplication.messageLog()
         self.installTranslator()
         self._about_dialog = None
+        self.toolbar = None
 
     def initGui(self):
         # Set Menus
@@ -93,6 +95,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
         self.quality = QualityUtils(self.qgis_utils)
+        self.toolbar = ToolBar(self.iface, self.qgis_utils)
 
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
 
@@ -190,6 +193,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._settings_action.triggered.connect(self.show_settings)
         self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
+        self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
         self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
         self.qgis_utils.clear_status_bar_emitted.connect(self.clear_status_bar)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
@@ -206,6 +210,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._boundary_explode_action.triggered.connect(self.call_explode_boundaries)
         self._boundary_merge_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Merge..."), self.iface.mainWindow())
         self._boundary_merge_action.triggered.connect(self.call_merge_boundaries)
+        self._topological_editing_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Move nodes..."), self.iface.mainWindow())
+        self._topological_editing_action.triggered.connect(self.call_topological_editing)
         self._fill_point_BFS_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Point BFS"), self.iface.mainWindow())
         self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
         self._fill_more_BFS_less_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill More BFS and Less"), self.iface.mainWindow())
@@ -214,6 +220,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._ladm_col_toolbar.setObjectName("ladmcoltools")
         self._ladm_col_toolbar.addActions([self._boundary_explode_action,
                                            self._boundary_merge_action,
+                                           self._topological_editing_action,
                                            self._fill_point_BFS_action,
                                            self._fill_more_BFS_less_action])
 
@@ -253,6 +260,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def freeze_map(self, frozen):
         self.iface.mapCanvas().freeze(frozen)
+
+    def trigger_vertex_tool(self):
+        self.iface.actionVertexTool().trigger()
 
     def activate_layer(self, layer):
         self.iface.layerTreeView().setCurrentLayer(layer)
@@ -401,6 +411,11 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def call_merge_boundaries(self):
         self.qgis_utils.merge_boundaries(self.get_db_connection())
+
+    @_project_generator_required
+    @_db_connection_required
+    def call_topological_editing(self):
+        self.toolbar.enable_topological_editing(self.get_db_connection())
 
     @_project_generator_required
     @_db_connection_required
