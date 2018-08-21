@@ -218,21 +218,23 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: validating the position of the vertices...')
 
         gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
+        vertices_test_values = [2, 2, 2, 6, 4, 0]
 
         position_vertices_polygons = [[[{'part': 1, 'ring': 1, 'vertex': 1}], [{'part': 1, 'ring': 1, 'vertex': 3}]],
-                             [[{'part': 0, 'ring': 1, 'vertex': 1}], [{'part': 0, 'ring': 1, 'vertex': 3}]],
-                             [[{'part': 0, 'ring': 3, 'vertex': 4}], [{'part': 0, 'ring': 3, 'vertex': 5}]],
-                             [[{'part': 0, 'ring': 1, 'vertex': 1}], [{'part': 0, 'ring': 1, 'vertex': 4}], [{'part': 1, 'ring': 1, 'vertex': 3}], [{'part': 1, 'ring': 1, 'vertex': 4}], [{'part': 2, 'ring': 1, 'vertex': 3}], [{'part': 2, 'ring': 1, 'vertex': 4}]],
-                             [[{'part': 0, 'ring': 1, 'vertex': 1}], [{'part': 0, 'ring': 1, 'vertex': 2}], [{'part': 0, 'ring': 3, 'vertex': 2}], [{'part': 0, 'ring': 3, 'vertex': 7}]],
+                             [[{'part': 1, 'ring': 1, 'vertex': 1}], [{'part': 1, 'ring': 1, 'vertex': 3}]],
+                             [[{'part': 1, 'ring': 3, 'vertex': 4}], [{'part': 1, 'ring': 3, 'vertex': 5}]],
+                             [[{'part': 1, 'ring': 1, 'vertex': 1}], [{'part': 1, 'ring': 1, 'vertex': 4}], [{'part': 2, 'ring': 1, 'vertex': 3}], [{'part': 2, 'ring': 1, 'vertex': 4}], [{'part': 3, 'ring': 1, 'vertex': 3}], [{'part': 3, 'ring': 1, 'vertex': 4}]],
+                             [[{'part': 1, 'ring': 1, 'vertex': 1}], [{'part': 1, 'ring': 1, 'vertex': 2}], [{'part': 1, 'ring': 3, 'vertex': 2}], [{'part': 1, 'ring': 3, 'vertex': 7}]],
                              []]
 
         for i in range(len(position_vertices_polygons)):
-            case = "_case"+str(i+1)
+            case = "_case" + str(i + 1)
             uri_polygon = gpkg_path + '|layername={layername}'.format(layername='polygon' + case)
             uri_lines = gpkg_path + '|layername={layername}'.format(layername='lines' + case)
             polygon_layer = QgsVectorLayer(uri_polygon, 'polygon_layer' + case, 'ogr')
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer' + case, 'ogr')
             vertices = self.qgis_utils.geometry.find_missing_vertices_polygon_line(polygon_layer, lines_layer)
+            self.assertEqual(vertices.featureCount(), vertices_test_values[i])
 
             position_vertices_polygon = position_vertices_polygons[i]
             polygon_geom = polygon_layer.getFeature(1).geometry()
