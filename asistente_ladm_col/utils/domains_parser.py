@@ -42,7 +42,7 @@ class DomainRelationGenerator:
         if not domains:
             return []
 
-        domainili_domaindb_mapping = self._get_domainili_domaindb_mapping(
+        domainili_domaindb_mapping = self._get_iliname_dbname_mapping(
             domains)
         domains_ili_pg = dict()
         for record in domainili_domaindb_mapping:
@@ -485,8 +485,8 @@ class DomainRelationGenerator:
 
         return all_attrs
 
-    def _get_domainili_domaindb_mapping(self, domains):
-        return self._db_connector.get_domainili_domaindb_mapping(domains)
+    def _get_iliname_dbname_mapping(self, domains):
+        return self._db_connector.get_iliname_dbname_mapping(domains)
 
     def _get_models(self):
         return self._db_connector.get_models()

@@ -49,7 +49,7 @@ class ProjectGeneratorUtils(QObject):
             generator = projectgenerator.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
                 db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             layers = generator.layers(layer_list)
-            relations = generator.relations(layers, layer_list)
+            relations, _ = generator.relations(layers, layer_list)
             legend = generator.legend(layers, ignore_node_names=[self.translatable_config_strings.ERROR_LAYER_GROUP])
             projectgenerator.create_project(layers, relations, legend, auto_transaction=False)
         else:
