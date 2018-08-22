@@ -15,6 +15,10 @@ CCLSOURCE_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 CCLSOURCE_TABLE_SOURCE_FIELD = "lfuente"
 CONTROL_POINT_TABLE = "puntocontrol"
 DOCUMENT_ID_FIELD = "documento_identidad"
+DOMAIN_KEY_FIELD = {
+    "pg": "ilicode",
+    "gpkg": "iliCode"
+}
 EXTFILE_TABLE = "extarchivo"
 EXTFILE_DATA_FIELD = "datos"
 FIRST_NAME_FIELD = "primer_nombre"
@@ -22,6 +26,7 @@ FIRST_SURNAME_FIELD = "primer_apellido"
 FMI_FIELD = "fmi"
 GENDER_TYPE_TABLE = "col_generotipo"
 LA_GROUP_PARTY_TABLE = "la_agrupacion_interesados"
+LA_GROUP_PARTY_TYPE_TABLE = "la_agrupacion_interesados_tipo"
 ID_FIELD = "t_id"
 PARCEL_TABLE = "predio"
 PLOT_TABLE = "terreno"

@@ -25,7 +25,11 @@ from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QDialog, QTableWidgetItem, QListWidgetItem
 
 from ..utils import get_ui_class
-from ..config.table_mapping_config import NATURAL_PARTY_TABLE
+from ..config.table_mapping_config import (
+    DOMAIN_KEY_FIELD,
+    NATURAL_PARTY_TABLE,
+    LA_GROUP_PARTY_TYPE_TABLE
+)
 from ..config.help_strings import HelpStrings
 
 DIALOG_UI = get_ui_class('dlg_group_party.ui')
@@ -43,6 +47,19 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         self.data = {} # {t_id: [display_text, denominator, numerator]}
         self.current_selected_parties = [] #  [t_ids]
         self.parties_to_group = {} # {t_id: [denominator, numerator]}
+
+        # Fill combo of types
+        la_group_party_type_table = self.qgis_utils.get_layer(self._db, LA_GROUP_PARTY_TYPE_TABLE, None, True)
+        if la_group_party_type_table is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateGroupPartyCadastreWizard",
+                                           "Group Party Type Table couldn't be found... {}").format(self._db.get_description()),
+                Qgis.Warning)
+            return
+
+        domain_key_index = la_group_party_type_table.fields().indexOf(DOMAIN_KEY_FIELD[self._db.mode])
+        domain_keys = la_group_party_type_table.uniqueValues(domain_key_index)
+        self.cbo_group_type.addItems(domain_keys)
 
         self.txt_search_party.setText("")
         self.btn_select.setEnabled(False)
