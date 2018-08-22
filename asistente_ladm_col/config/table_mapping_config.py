@@ -35,8 +35,6 @@ LA_POINT_TABLE = "la_punto"
 LA_POINT_TYPE_TABLE = "la_puntotipo"
 LA_SURFACE_RELATION_TYPE_TABLE = "la_relacionsuperficietipo"
 LENGTH_FIELD_BOUNDARY_TABLE = "longitud"
-LEGAL_PARTY_TABLE = "interesado_juridico"
-LEGAL_PARTY_TYPE_TABLE = "col_interesadojuridicotipo"
 LESS_TABLE = "menos"
 LESS_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 LESS_TABLE_PLOT_FIELD = "eu_terreno"
@@ -105,7 +103,6 @@ NAMESPACE_PREFIX = {
     BUILDING_UNIT_TABLE: 'su',
     CONTROL_POINT_TABLE: 'p',
     EXTFILE_TABLE: 's',
-    LEGAL_PARTY_TABLE: 'p',
     SPATIAL_SOURCE_TABLE: 's',
     NATURAL_PARTY_TABLE: 'p',
     PARCEL_TABLE: 'u',
@@ -123,7 +120,6 @@ DICT_DISPLAY_EXPRESSIONS = {
                                                                     SECOND_SURNAME_FIELD,
                                                                     FIRST_NAME_FIELD,
                                                                     SECOND_NAME_FIELD),
-    LEGAL_PARTY_TABLE: '{}+\' \'+{}'.format(NIT_NUMBER_FIELD, BUSINESS_NAME_FIELD),
     PARCEL_TABLE: '{}+\' \'+{}+\' \'+{}'.format(NUPRE_FIELD, FMI_FIELD, NAME_FIELD),
     LA_BAUNIT_TABLE: '{}+\' \'+{}+\' \'+{}'.format(ID_FIELD, NAME_FIELD, TYPE_FIELD),
     LA_GROUP_PARTY_TABLE: '{}+\' \'+{}'.format(ID_FIELD, NAME_FIELD),
