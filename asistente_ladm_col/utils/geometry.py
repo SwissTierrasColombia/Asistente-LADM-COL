@@ -327,3 +327,48 @@ class GeometryUtils(QObject):
                                 list_overlapping.append(part)
 
         return ids, QgsGeometry.collectGeometry(list_overlapping) if len(list_overlapping) > 0 else None
+
+    def get_gaps_in_continuous_layer(self, layer, include_roads=True):
+        """function to find the gaps in a continuous layer in space"""
+
+        features = layer.getFeatures()
+        featureCollection = list()
+        for feat in features:
+            if feat.geometry().isEmpty():
+                continue
+            if not feat.geometry().isGeosValid():
+                continue
+            if feat.geometry().isMultipart() and feat.geometry().wkbType() == QgsWkbTypes.MultiPolygon:
+                for pol in feat.geometry().asMultiPolygon():
+                    featureCollection.append(QgsGeometry.fromPolygonXY(pol))
+                continue
+            featureCollection.append(feat.geometry())
+        union_geom = QgsGeometry.unaryUnion(featureCollection)
+        buffer_extent = QgsGeometry.fromRect(union_geom.boundingBox()).buffer(2, 3)
+        buff_diff = QgsGeometry.fromRect(union_geom.boundingBox()).buffer(2, 3).difference(
+            QgsGeometry.fromRect(union_geom.boundingBox()))
+        diff_geoms = buffer_extent.difference(union_geom)
+        if not diff_geoms:
+            print("se detiene")
+            return
+        # canvasExtentPoly = QgsGeometry.fromWkt(iface.mapCanvas().extent().asWktPolygon())
+        canvasExtentPoly = QgsGeometry.fromWkt(layer.extent().asWktPolygon())
+        feature_error = list()
+        if not diff_geoms.isMultipart():
+            if not include_roads and diff_geoms.touches(union_geom) and diff_geoms.intersects(buff_diff):
+                print("unique value and no error")
+                return
+            feature_error.append(diff_geoms)
+            return feature_error
+        for geom in diff_geoms.asMultiPolygon():
+            conflict_geom = QgsGeometry.fromPolygonXY(geom)
+            if not include_roads and conflict_geom.touches(union_geom) and conflict_geom.intersects(buff_diff):
+                continue
+            if not union_geom.isMultipart() and conflict_geom.touches(union_geom) and conflict_geom.intersects(buff_diff):
+                continue
+            if canvasExtentPoly.disjoint(conflict_geom):
+                continue
+            if canvasExtentPoly.crosses(conflict_geom):
+                conflict_geom = geom.intersection(conflict_geom)
+            feature_error.append(conflict_geom)
+        return feature_error

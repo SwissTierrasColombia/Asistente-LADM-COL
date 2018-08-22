@@ -45,7 +45,8 @@ from ..config.table_mapping_config import (
     BUILDING_TABLE,
     RIGHT_OF_WAY_TABLE,
     SURVEY_POINT_TABLE,
-    ID_FIELD
+    ID_FIELD,
+    PLOT_TABLE
 )
 
 class QualityUtils(QObject):
@@ -587,6 +588,57 @@ class QualityUtils(QObject):
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "There are no Right of Way-Building overlaps."), Qgis.Info)
+
+    def check_gaps_in_plots(self):
+        res_layers = self.qgis_utils.get_layers(db, {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
+        }, load=True)
+
+        plot_layer = res_layers[PLOT_TABLE]
+
+        if plot_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(RIGHT_OF_WAY_TABLE,
+                                                                                  db.get_description()),
+                Qgis.Warning)
+            return
+
+
+        if plot_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no Plot features to check 'Plot not have gaps'."),
+                Qgis.Info)
+            return
+
+        error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     QCoreApplication.translate("QGISUtils",
+                                                                "Right of Way-Building overlaps"),
+                                     "memory")
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField("id", QVariant.Int)])
+        error_layer.updateFields()
+
+        gaps = self.qgis_utils.geometry.get_gaps_in_continuous_layer(plot_layer, True)
+
+        if gaps is not None:
+            for geom, id in zip(gaps, range(1, len(gaps))):
+                feature = QgsVectorLayerUtils().createFeature(error_layer, geom, {0: i})
+                data_provider.addFeatures([feature])
+
+        if error_layer.featureCount() > 0:
+            added_layer = self.add_error_layer(error_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "A memory layer with {} Plots gaps has been added to the map!").format(
+                    added_layer.featureCount()), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no Plot gaps."), Qgis.Info)
+
 
     def get_dangle_ids(self, boundary_layer):
         # 1. Run extract specific vertices
