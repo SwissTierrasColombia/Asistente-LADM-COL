@@ -44,7 +44,7 @@ MOREBFS_TABLE_BOUNDARY_FIELD = "cclp_lindero"
 MOREBFS_TABLE_PLOT_FIELD = "uep_terreno"
 NAME_FIELD = "nombre"
 NAMESPACE_FIELD = "_espacio_de_nombres"
-NATURAL_PARTY_TABLE = "interesado_natural"
+COL_PARTY_TABLE = "col_interesado"
 NIT_NUMBER_FIELD = "numero_nit"
 NUMBER_OF_FLOORS = "numero_pisos"
 NUPRE_FIELD = "nupre"
@@ -104,7 +104,7 @@ NAMESPACE_PREFIX = {
     CONTROL_POINT_TABLE: 'p',
     EXTFILE_TABLE: 's',
     SPATIAL_SOURCE_TABLE: 's',
-    NATURAL_PARTY_TABLE: 'p',
+    COL_PARTY_TABLE: 'p',
     PARCEL_TABLE: 'u',
     PLOT_TABLE: 'su',
     RESPONSIBILITY_TABLE: 'r',
@@ -115,7 +115,7 @@ NAMESPACE_PREFIX = {
 }
 
 DICT_DISPLAY_EXPRESSIONS = {
-    NATURAL_PARTY_TABLE: '{}+\' \'+{}+\' \'+{}+\' \'+{}+\' \'+{}'.format(DOCUMENT_ID_FIELD,
+    COL_PARTY_TABLE: '{}+\' \'+{}+\' \'+{}+\' \'+{}+\' \'+{}'.format(DOCUMENT_ID_FIELD,
                                                                     FIRST_SURNAME_FIELD,
                                                                     SECOND_SURNAME_FIELD,
                                                                     FIRST_NAME_FIELD,

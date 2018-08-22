@@ -25,7 +25,7 @@ from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QDialog, QTableWidgetItem, QListWidgetItem
 
 from ..utils import get_ui_class
-from ..config.table_mapping_config import NATURAL_PARTY_TABLE
+from ..config.table_mapping_config import COL_PARTY_TABLE
 from ..config.help_strings import HelpStrings
 
 DIALOG_UI = get_ui_class('dlg_group_party.ui')
@@ -35,7 +35,7 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         QDialog.__init__(self)
         self.setupUi(self)
         self.iface = iface
-        self._natural_party_layer = None
+        self._col_party_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
@@ -202,4 +202,4 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
 
 
     def show_help(self):
-        self.qgis_utils.show_help("natural_party")
+        self.qgis_utils.show_help("group_party")

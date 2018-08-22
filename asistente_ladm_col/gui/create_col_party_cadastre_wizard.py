@@ -23,17 +23,17 @@ from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-from ..config.table_mapping_config import NATURAL_PARTY_TABLE
+from ..config.table_mapping_config import COL_PARTY_TABLE
 from ..config.help_strings import HelpStrings
 
-WIZARD_UI = get_ui_class('wiz_create_natural_party_cadastre.ui')
+WIZARD_UI = get_ui_class('wiz_create_col_party_cadastre.ui')
 
-class CreateNaturalPartyCadastreWizard(QWizard, WIZARD_UI):
+class CreateColPartyCadastreWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
-        self._natural_party_layer = None
+        self._col_party_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
@@ -51,17 +51,17 @@ class CreateNaturalPartyCadastreWizard(QWizard, WIZARD_UI):
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
-            finish_button_text = QCoreApplication.translate("CreateNaturalPartyCadastreWizard", "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(NATURAL_PARTY_TABLE, False))
+            finish_button_text = QCoreApplication.translate("CreateColPartyCadastreWizard", "Import")
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(COL_PARTY_TABLE, False))
 
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
-            finish_button_text = QCoreApplication.translate("CreateNaturalPartyCadastreWizard", "Create")
-            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_NATURAL_PARTY_CADASTRE_PAGE_1_OPTION_FORM)
+            finish_button_text = QCoreApplication.translate("CreateColPartyCadastreWizard", "Create")
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_COL_PARTY_CADASTRE_PAGE_1_OPTION_FORM)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
-                                       QCoreApplication.translate("CreateNaturalPartyCadastreWizard",
+                                       QCoreApplication.translate("CreateColPartyCadastreWizard",
                                        finish_button_text))
 
     def finished_dialog(self):
@@ -71,51 +71,51 @@ class CreateNaturalPartyCadastreWizard(QWizard, WIZARD_UI):
             if self.mMapLayerComboBox.currentLayer() is not None:
                 self.qgis_utils.show_etl_model(self._db,
                                                self.mMapLayerComboBox.currentLayer(),
-                                               NATURAL_PARTY_TABLE)
+                                               COL_PARTY_TABLE)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                    QCoreApplication.translate("CreateNaturalPartyCadastreWizard",
-                                               "Select a source layer to set the field mapping to '{}'.").format(NATURAL_PARTY_TABLE),
+                    QCoreApplication.translate("CreateColPartyCadastreWizard",
+                                               "Select a source layer to set the field mapping to '{}'.").format(COL_PARTY_TABLE),
                     Qgis.Warning)
 
         elif self.rad_create_manually.isChecked():
-            self.prepare_natural_party_creation()
+            self.prepare_col_party_creation()
 
-    def prepare_natural_party_creation(self):
+    def prepare_col_party_creation(self):
         # Load layers
-        self._natural_party_layer = self.qgis_utils.get_layer(self._db, NATURAL_PARTY_TABLE, load=True)
-        if self._natural_party_layer is None:
+        self._col_party_layer = self.qgis_utils.get_layer(self._db, COL_PARTY_TABLE, load=True)
+        if self._col_party_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateNaturalPartyCadastreWizard",
-                                           "Natural Party layer couldn't be found... {}").format(self._db.get_description()),
+                QCoreApplication.translate("CreateColPartyCadastreWizard",
+                                           "Party layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 
         # Don't suppress (i.e., show) feature form
-        form_config = self._natural_party_layer.editFormConfig()
+        form_config = self._col_party_layer.editFormConfig()
         form_config.setSuppress(QgsEditFormConfig.SuppressOff)
-        self._natural_party_layer.setEditFormConfig(form_config)
+        self._col_party_layer.setEditFormConfig(form_config)
 
-        self.edit_natural_party()
+        self.edit_col_party()
 
-    def edit_natural_party(self):
+    def edit_col_party(self):
         # Open Form
-        self.iface.layerTreeView().setCurrentLayer(self._natural_party_layer)
-        self._natural_party_layer.startEditing()
+        self.iface.layerTreeView().setCurrentLayer(self._col_party_layer)
+        self._col_party_layer.startEditing()
         self.iface.actionAddFeature().trigger()
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/wizards/natural_party_load_data_type', 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
+        settings.setValue('Asistente-LADM_COL/wizards/col_party_load_data_type', 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
 
     def restore_settings(self):
         settings = QSettings()
 
-        load_data_type = settings.value('Asistente-LADM_COL/wizards/natural_party_load_data_type') or 'create_manually'
+        load_data_type = settings.value('Asistente-LADM_COL/wizards/col_party_load_data_type') or 'create_manually'
         if load_data_type == 'refactor':
             self.rad_refactor.setChecked(True)
         else:
             self.rad_create_manually.setChecked(True)
 
     def show_help(self):
-        self.qgis_utils.show_help("natural_party")
+        self.qgis_utils.show_help("col_party")

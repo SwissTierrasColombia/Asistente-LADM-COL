@@ -29,7 +29,7 @@ MODULE_HELP_MAPPING = {
     'create_restriction': 'cadastre/RRR.html#restriction',
     'create_spatial_source': 'cadastre/Source.html#spatial-source',
     'load_layers': 'load_layers.html#load-layers',
-    'natural_party': 'cadastre/Party.html#natural-party',
+    'col_party': 'cadastre/Party.html#col-party',
     'quality_rules': 'index.html', # TODO: Add this to help sections
     'settings': 'help.html#settings'
 }

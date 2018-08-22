@@ -45,16 +45,16 @@ Choose this option if you want to add an <b>Administrative Source</b> with an ex
 <b>Administrative Source</b> is a specialization of the class <i>COL_Fuente</i> to store those sources constituted by documents (mortgage document, notarial documents, historical documents, etc.) that document the relationship between instances of interested and property.\
 ")
 
-        self.WIZ_CREATE_NATURAL_PARTY_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Natural Party</b> using a form.\
+        self.WIZ_CREATE_COL_PARTY_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Party</b> using a form.\
 <br><br>\
-<b>Natural Party</b> is a natural person who has rights or who is subject to restrictions or responsibilities related to one or more <i>Parcels</i>.\
+<b>Party</b> is a natural or non-natural person who has rights or who is subject to restrictions or responsibilities related to one or more <i>Parcels</i>.\
 ")
 
-        self.WIZ_CREATE_NATURAL_PARTY_CADASTRE_PAGE_1_OPTION_ANOTHER = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to add a <b>Natural Party</b> with an external resource, such as a CSV file, a QGIS table, etc.\
+        self.WIZ_CREATE_COL_PARTY_CADASTRE_PAGE_1_OPTION_ANOTHER = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to add a <b>Party</b> with an external resource, such as a CSV file, a QGIS table, etc.\
 <br><br>\
-<b>Natural Party</b> is a natural person who has rights or who is subject to restrictions or responsibilities related to one or more <i>Parcel</i>.\
+<b>Party</b> is a natural or non-natural person who has rights or who is subject to restrictions or responsibilities related to one or more <i>Parcel</i>.\
 ")
 
         self.WIZ_CREATE_PARCEL_CADASTRE_PAGE_1_OPTION_EXISTING_PLOT = QCoreApplication.translate("HelpStrings", "\
