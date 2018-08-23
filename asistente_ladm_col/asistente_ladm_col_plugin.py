@@ -35,7 +35,7 @@ from .config.table_mapping_config import (
     BOUNDARY_POINT_TABLE,
     CONTROL_POINT_TABLE,
     PLOT_TABLE,
-    NATURAL_PARTY_TABLE
+    COL_PARTY_TABLE
 )
 from .config.general_config import (
     PROJECT_GENERATOR_MIN_REQUIRED_VERSION,
@@ -53,7 +53,7 @@ from .gui.create_plot_cadastre_wizard import CreatePlotCadastreWizard
 from .gui.create_parcel_cadastre_wizard import CreateParcelCadastreWizard
 from .gui.create_building_cadastre_wizard import CreateBuildingCadastreWizard
 from .gui.create_building_unit_cadastre_wizard import CreateBuildingUnitCadastreWizard
-from .gui.create_natural_party_cadastre_wizard import CreateNaturalPartyCadastreWizard
+from .gui.create_col_party_cadastre_wizard import CreateColPartyCadastreWizard
 from .gui.create_group_party_cadastre import CreateGroupPartyCadastre
 from .gui.create_right_cadastre_wizard import CreateRightCadastreWizard
 from .gui.create_responsibility_cadastre_wizard import CreateResponsibilityCadastreWizard
@@ -121,9 +121,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self._baunit_cadastre_menu.addActions([self._parcel_baunit_cadastre_action])
 
         self._party_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"), self._cadastre_menu)
-        self._natural_party_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Natural Party"), self._party_cadastre_menu)
+        self._col_party_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Party"), self._party_cadastre_menu)
         self._group_party_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Group Party"), self._party_cadastre_menu)
-        self._party_cadastre_menu.addActions([self._natural_party_cadastre_action,
+        self._party_cadastre_menu.addActions([self._col_party_cadastre_action,
                                               self._group_party_cadastre_action])
 
         self._source_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._cadastre_menu)
@@ -176,7 +176,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._parcel_baunit_cadastre_action.triggered.connect(self.show_wiz_parcel_cad)
         self._building_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_building_cad)
         self._building_unit_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_building_unit_cad)
-        self._natural_party_cadastre_action.triggered.connect(self.show_wiz_natural_party_cad)
+        self._col_party_cadastre_action.triggered.connect(self.show_wiz_col_party_cad)
         self._group_party_cadastre_action.triggered.connect(self.show_dlg_group_party)
         self._right_rrr_cadastre_action.triggered.connect(self.show_wiz_right_rrr_cad)
         self._responsibility_rrr_cadastre_action.triggered.connect(self.show_wiz_responsibility_rrr_cad)
@@ -487,16 +487,17 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_project_generator_required
     @_db_connection_required
-    def show_wiz_natural_party_cad(self):
-        wiz = CreateNaturalPartyCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+    def show_wiz_col_party_cad(self):
+        wiz = CreateColPartyCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     @_project_generator_required
     @_db_connection_required
     def show_dlg_group_party(self):
         dlg = CreateGroupPartyCadastre(self.iface, self.get_db_connection(), self.qgis_utils)
-        layer = self.qgis_utils.get_layer(self.get_db_connection(), NATURAL_PARTY_TABLE, load=True)
+        layer = self.qgis_utils.get_layer(self.get_db_connection(), COL_PARTY_TABLE, load=True)
         if layer is None:
+            print("Table not found in group party dialog")
             return
 
         data = {f[ID_FIELD]: ["{} {} {}".format(f["documento_identidad"], f["primer_apellido"], f["primer_nombre"]), 0, 0] for f in layer.getFeatures()}

@@ -26,8 +26,8 @@ from qgis.PyQt.QtWidgets import QDialog, QTableWidgetItem, QListWidgetItem
 
 from ..utils import get_ui_class
 from ..config.table_mapping_config import (
+    COL_PARTY_TABLE,
     DOMAIN_KEY_FIELD,
-    NATURAL_PARTY_TABLE,
     LA_GROUP_PARTY_TYPE_TABLE
 )
 from ..config.help_strings import HelpStrings
@@ -39,7 +39,7 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         QDialog.__init__(self)
         self.setupUi(self)
         self.iface = iface
-        self._natural_party_layer = None
+        self._col_party_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
@@ -58,7 +58,8 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
             return
 
         domain_key_index = la_group_party_type_table.fields().indexOf(DOMAIN_KEY_FIELD[self._db.mode])
-        domain_keys = la_group_party_type_table.uniqueValues(domain_key_index)
+        domain_keys = list(la_group_party_type_table.uniqueValues(domain_key_index))
+        domain_keys.sort()
         self.cbo_group_type.addItems(domain_keys)
 
         self.txt_search_party.setText("")
@@ -219,4 +220,4 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
 
 
     def show_help(self):
-        self.qgis_utils.show_help("natural_party")
+        self.qgis_utils.show_help("group_party")

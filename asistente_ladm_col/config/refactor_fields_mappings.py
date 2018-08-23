@@ -96,7 +96,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
-    elif layer_name == NATURAL_PARTY_TABLE:
+    elif layer_name == COL_PARTY_TABLE:
         mapping = [
             {'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'},
             {'name': 'documento_identidad', 'type': 10, 'length': 10, 'precision': -1, 'expression': '"documento_identidad"'},
