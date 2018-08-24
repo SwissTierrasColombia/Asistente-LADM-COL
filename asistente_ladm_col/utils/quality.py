@@ -130,7 +130,7 @@ class QualityUtils(QObject):
         error_layer.updateFields()
 
         features = []
-        differences = self.qgis_utils.geometry.difference_boundary(plot_layer, boundary_layer)
+        differences = self.qgis_utils.geometry.difference_plot_boundary(plot_layer, boundary_layer)
 
         for difference in differences:
             new_feature = QgsVectorLayerUtils().createFeature(error_layer, difference['geometry'],
@@ -150,6 +150,41 @@ class QualityUtils(QObject):
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                     "'{}' are covered by '{}'!").format(PLOT_TABLE,BOUNDARY_TABLE), Qgis.Info)
+
+    def check_boundaries_covered_by_plots(self, db):
+
+        plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
+        boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, QgsWkbTypes.LineGeometry, load=True)
+
+        differences_layer_name = "Differences between {} and {}".format(BOUNDARY_TABLE, PLOT_TABLE)
+        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     QCoreApplication.translate("QGISUtils", differences_layer_name), "memory")
+
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('boundary_id', QVariant.String)])
+        error_layer.updateFields()
+
+        features = []
+        differences = self.qgis_utils.geometry.difference_boundary_plot(boundary_layer, plot_layer)
+
+        for difference in differences:
+            new_feature = QgsVectorLayerUtils().createFeature(error_layer, difference['geometry'],
+                                                              {0: difference['id']})
+            features.append(new_feature)
+
+        error_layer.dataProvider().addFeatures(features)
+
+        if error_layer.featureCount() > 0:
+            added_layer = self.add_error_layer(error_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "A memory layer with {} differences multilinestrings in layer '{}' has been added to the map!").format(
+                    added_layer.featureCount(), differences_layer_name), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "'{}' are covered by '{}'!").format(BOUNDARY_TABLE, PLOT_TABLE), Qgis.Info)
 
     def check_overlapping_polygons(self, db, polygon_layer_name):
         polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, QgsWkbTypes.PolygonGeometry, load=True)
