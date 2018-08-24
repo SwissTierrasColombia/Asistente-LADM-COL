@@ -17,7 +17,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([0.6.2](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.6.2)) of the LADM_COL Assistant depends on [Project Generator v3.2.7](https://github.com/opengisch/projectgenerator/releases/tag/v3.2.7) and allows users to:
+The current version ([0.6.3](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.6.3)) of the LADM_COL Assistant depends on [Project Generator v3.2.7.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/3.2.7.1) and allows users to:
 
  - Capture data for the LADM_COL v2.2.1 model.
  - Preprocess points: Controlled Measurement.
