@@ -361,7 +361,8 @@ class GeometryUtils(QObject):
 
     def difference_plot_boundary(self, plot_layer, boundary_layer, id_field=ID_FIELD):
         difference_features = list()
-        polygons_layer = plot_layer.clone()
+        polygons_layer = self.clone_layer(plot_layer)
+
         if id(plot_layer) == id(polygons_layer):
             print("Plots layer was not cloned correctly")
 
@@ -377,7 +378,8 @@ class GeometryUtils(QObject):
 
     def difference_boundary_plot(self, boundary_layer, plot_layer, id_field=ID_FIELD):
         difference_features = list()
-        lines_layer = boundary_layer.clone()
+        lines_layer = self.clone_layer(boundary_layer)
+
         if id(boundary_layer) == id(lines_layer):
             print("Boundaries layer was not cloned correctly")
 
@@ -390,3 +392,9 @@ class GeometryUtils(QObject):
             difference_features.append({'geometry': geomFeature, 'id': idFeature})
 
         return difference_features
+
+    def clone_layer(self, layer):
+        layer.selectAll()
+        clone_layer = processing.run("native:saveselectedfeatures", {'INPUT': layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        layer.removeSelection()
+        return clone_layer
