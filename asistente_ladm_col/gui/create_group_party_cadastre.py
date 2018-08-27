@@ -22,7 +22,8 @@ from qgis.core import (QgsEditFormConfig, QgsVectorLayerUtils, Qgis,
                        QgsWkbTypes, QgsMapLayerProxyModel)
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
-from qgis.PyQt.QtWidgets import QDialog, QTableWidgetItem, QListWidgetItem
+from qgis.PyQt.QtWidgets import (QDialog, QTableWidgetItem, QListWidgetItem,
+                                 QSizePolicy, QGridLayout)
 
 from ..utils import get_ui_class
 from ..config.table_mapping_config import (
@@ -80,6 +81,11 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         self.btn_deselect_all.clicked.connect(self.deselect_all)
         self.btn_select.clicked.connect(self.select)
         self.btn_deselect.clicked.connect(self.deselect)
+
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.setLayout(QGridLayout())
+        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
     def set_parties_data(self, parties_data):
         """
@@ -213,11 +219,27 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         self.parties_to_group = {}
         for index in range(self.tbl_selected_parties.rowCount()):
              k = self.tbl_selected_parties.item(index, 0).data(Qt.UserRole)
-             v_d = self.tbl_selected_parties.item(index, 1).text()
-             v_n = self.tbl_selected_parties.item(index, 2).text()
-             self.parties_to_group[ k ] = [v_d, v_n]
+             v_n = self.tbl_selected_parties.item(index, 1).text()
+             v_d = self.tbl_selected_parties.item(index, 2).text()
+             self.parties_to_group[ k ] = [v_n, v_d]
         self.done(1)
 
+        validation = self.validate_group_party()
+        print(validation)
+        self.show_message(validation[1], validation[0])
+
+        if not validation[0] is True:
+            return
+        self.close()
+
+    def validate_group_party(self):
+        res = False
+        msg = "Aún no estoy listo para continuar"
+
+        return (res, msg)
+
+    def show_message(self, message, level):
+        self.bar.pushMessage(message, level, 10)
 
     def show_help(self):
         self.qgis_utils.show_help("group_party")
