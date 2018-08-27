@@ -352,7 +352,7 @@ class GeometryUtils(QObject):
             print("se detiene")
             return
         # canvasExtentPoly = QgsGeometry.fromWkt(iface.mapCanvas().extent().asWktPolygon())
-        canvasExtentPoly = QgsGeometry.fromWkt(layer.extent().asWktPolygon())
+        # canvasExtentPoly = QgsGeometry.fromWkt(layer.extent().asWktPolygon())
         feature_error = list()
         if not diff_geoms.isMultipart():
             if not include_roads and diff_geoms.touches(union_geom) and diff_geoms.intersects(buff_diff):
@@ -366,9 +366,9 @@ class GeometryUtils(QObject):
                 continue
             if not union_geom.isMultipart() and conflict_geom.touches(union_geom) and conflict_geom.intersects(buff_diff):
                 continue
-            if canvasExtentPoly.disjoint(conflict_geom):
-                continue
-            if canvasExtentPoly.crosses(conflict_geom):
-                conflict_geom = geom.intersection(conflict_geom)
+            # if canvasExtentPoly.disjoint(conflict_geom):
+            #     continue
+            # if canvasExtentPoly.crosses(conflict_geom):
+            #     conflict_geom = geom.intersection(conflict_geom)
             feature_error.append(conflict_geom)
         return feature_error

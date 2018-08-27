@@ -97,6 +97,9 @@ class DialogQuality(QDialog, DIALOG_UI):
                 }, {
                     'id': 'check_right_of_way_overlaps_buildings',
                     'text': QCoreApplication.translate("DialogQuality", "Right of Way should not overlap Buildings")
+                }, {
+                    'id': 'check_gaps_in_plots',
+                    'text': QCoreApplication.translate("DialogQuality", "Plots should not have gaps")
                 }]
             }
 
@@ -159,6 +162,8 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_missing_survey_points_in_buildings(self._db)
                 elif id == 'check_right_of_way_overlaps_buildings':
                     self.quality.check_right_of_way_overlaps_buildings(self._db)
+                elif id == 'check_gaps_in_plots':
+                    self.quality.check_gaps_in_plots(self._db)
 
             iterator += 1
 

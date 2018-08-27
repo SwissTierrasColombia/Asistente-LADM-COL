@@ -589,7 +589,7 @@ class QualityUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "There are no Right of Way-Building overlaps."), Qgis.Info)
 
-    def check_gaps_in_plots(self):
+    def check_gaps_in_plots(self, db):
         res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
         }, load=True)
@@ -603,7 +603,6 @@ class QualityUtils(QObject):
                                                                                   db.get_description()),
                 Qgis.Warning)
             return
-
 
         if plot_layer.featureCount() == 0:
             self.qgis_utils.message_emitted.emit(
@@ -623,8 +622,8 @@ class QualityUtils(QObject):
         gaps = self.qgis_utils.geometry.get_gaps_in_continuous_layer(plot_layer, True)
 
         if gaps is not None:
-            for geom, id in zip(gaps, range(1, len(gaps))):
-                feature = QgsVectorLayerUtils().createFeature(error_layer, geom, {0: i})
+            for geom, id in zip(gaps, range(0, len(gaps))):
+                feature = QgsVectorLayerUtils().createFeature(error_layer, geom, {0: id})
                 data_provider.addFeatures([feature])
 
         if error_layer.featureCount() > 0:
@@ -638,7 +637,6 @@ class QualityUtils(QObject):
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "There are no Plot gaps."), Qgis.Info)
-
 
     def get_dangle_ids(self, boundary_layer):
         # 1. Run extract specific vertices
