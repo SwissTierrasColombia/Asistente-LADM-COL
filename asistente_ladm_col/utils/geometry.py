@@ -29,7 +29,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerEditUtils
 )
-from qgis.core.additions.edit import edit
+from qgis.core import edit
 
 import processing
 from ..config.general_config import PLUGIN_NAME, DEFAULT_POLYGON_AREA_TOLERANCE
