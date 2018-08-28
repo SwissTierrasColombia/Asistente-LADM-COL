@@ -507,6 +507,22 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_project_generator_required
     @_db_connection_required
+    def load_dlg_group_party(self):
+        dlg = CreateGroupPartyCadastre(self.iface, self.get_db_connection(), self.qgis_utils)
+        print("dlg", dlg)
+        dlg.save_group_party(self.get_db_connection(),
+            [{
+                'nombre': 'KPC',
+                'ai_tipo': 'Familia',
+                'porcentajes': {
+                    2: [25, 100], # numerador/denominador
+                    115: [75, 100]
+                }
+            }])
+        return dlg
+
+    @_project_generator_required
+    @_db_connection_required
     def show_wiz_right_rrr_cad(self):
         wiz = CreateRightCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
