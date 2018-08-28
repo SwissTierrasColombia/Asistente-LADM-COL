@@ -238,14 +238,15 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         self.parties_to_group = {}
         for index in range(self.tbl_selected_parties.rowCount()):
              k = self.tbl_selected_parties.item(index, 0).data(Qt.UserRole)
-             v_n = self.tbl_selected_parties.item(index, 1).text()
-             v_d = self.tbl_selected_parties.item(index, 2).text()
+             v_n = int(self.tbl_selected_parties.item(index, 1).text())
+             v_d = int(self.tbl_selected_parties.item(index, 2).text())
              self.parties_to_group[ k ] = [v_n, v_d]
+
         name = self.txt_group_name.text()
-        type = self.cbo_group_type.currentText()
-        dict_params = {'LA_GROUP_PARTY_NAME_FIELD': name,
-                       'LA_GROUP_PARTY_GPTYPE_FIELD': type,
-                       'porcentajes':[self.parties_to_group]}
+        group_party_type = self.cbo_group_type.currentText()
+        dict_params = {LA_GROUP_PARTY_NAME_FIELD: name,
+                       LA_GROUP_PARTY_GPTYPE_FIELD: group_party_type,
+                       'porcentajes': self.parties_to_group}
 
         validation = self.validate_group_party()
 
@@ -253,6 +254,9 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
 
         if not validation[0]:
             return
+
+        self.save_group_party(self._db, [dict_params])
+
         self.close()
 
     def validate_group_party(self):
@@ -271,14 +275,12 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
 
         params: List of dicts, where each dict is an independent group party:
             {
-                'LA_GROUP_PARTY_NAME_FIELD': '',
-                'LA_GROUP_PARTY_GPTYPE_FIELD': '',
-                'porcentajes': [
-                    {
-                        't_id_miembro': [20, 100], # numerador/denominador
-                        't_id_miembro2': [40, 100]
-                    }
-                ]
+                LA_GROUP_PARTY_NAME_FIELD: '',
+                LA_GROUP_PARTY_GPTYPE_FIELD: '',
+                'porcentajes': {
+                    't_id_miembro': [20, 100], # numerador/denominador
+                    't_id_miembro2': [40, 100]
+                }
             }
         """
         # Get the required target layers
