@@ -241,10 +241,15 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
              v_n = self.tbl_selected_parties.item(index, 1).text()
              v_d = self.tbl_selected_parties.item(index, 2).text()
              self.parties_to_group[ k ] = [v_n, v_d]
+        name = self.txt_group_name.text()
+        type = self.cbo_group_type.currentText()
+        dict_params = {'LA_GROUP_PARTY_NAME_FIELD': name,
+                       'LA_GROUP_PARTY_GPTYPE_FIELD': type,
+                       'porcentajes':[self.parties_to_group]}
 
         validation = self.validate_group_party()
-        print(validation)
-        self.show_message(validation[1], validation[0])
+
+        self.show_message(validation[1], Qgis.Info if validation[0] else Qgis.Warning)
 
         if not validation[0]:
             return
