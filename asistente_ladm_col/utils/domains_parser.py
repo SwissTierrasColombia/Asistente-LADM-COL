@@ -91,7 +91,11 @@ class DomainRelationGenerator:
 
         # Map attr ili name and owner (pg class name) with its correspondent
         # attr pg name
-        attr_records = self._get_attrili_attrdb_mapping(models_info_with_ext)
+        all_attrs = list()
+        for c, dict_attr_domain in models_info_with_ext.items():
+            all_attrs.extend(list(dict_attr_domain.keys()))
+
+        attr_records = self._get_attrili_attrdb_mapping(all_attrs)
         attrs_ili_pg_owner = dict()
         for record in attr_records:
             if record['owner'] in attrs_ili_pg_owner:
@@ -130,7 +134,7 @@ class DomainRelationGenerator:
                             }
 
                             if self.debug:
-                                print("Relation:", relation.name)
+                                print("Relation:", relation[RELATION_NAME])
                             relations.append(relation)
 
         if self.debug:
@@ -146,15 +150,15 @@ class DomainRelationGenerator:
         re_comment = re.compile(r'\s*/\*')  # /* comment
         re_end_comment = re.compile(r'\s*\*/')  # comment */
         re_oneline_comment = re.compile(r'\s*/\*.*\*/')  # /* comment */
-        re_inline_comment = re.compile(r'^\s*!!')  # !! comment
+        re_inline_comment = re.compile(r'^\s*!!(?!@)')  # !! comment
 
         # MODEL Catastro_COL_ES_V_2_0_20170331 (es)
         re_model = re.compile(r'\s*MODEL\s*([\w\d_-]+).*')
         # TOPIC Catastro_Registro [=]
         re_topic = re.compile(r'\s*TOPIC\s*([\w\d_-]+).*')
-        re_structure = re.compile(r'\s*STRUCTURE\s*([\w\d_-]+)\s*\=.*') # STRUCTURE StructureName =
+        re_structure = re.compile(r'\s*STRUCTURE\s*([\w\d_-]+)\s*\=.*')  # STRUCTURE StructureName =
         re_class = re.compile(
-            r'\s*CLASS\s*([\w\d_-]+)\s*[EXTENDS]*\s*([\w\d_-]*).*')  # CLASS ClassName [EXTENDS] [BaseClassName] [=]
+            r'\s*CLASS\s*([\w\d_-]+)\s*[\(ABSTRACT\)]*\s*[EXTENDS]*\s*([\w\d_-]*).*')  # CLASS ClassName (ABSTRACT) [EXTENDS] [BaseClassName] [=]
         re_class_extends = re.compile(
             r'\s*EXTENDS\s*([\w\d_\-\.]+)\s*\=.*')  # EXTENDS BaseClassName =
         re_inline_enum_start = re.compile(
