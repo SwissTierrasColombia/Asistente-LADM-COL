@@ -87,9 +87,9 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         self.btn_deselect.setEnabled(False)
 
         self.tbl_selected_parties.setColumnCount(3)
-        self.tbl_selected_parties.setColumnWidth(0, 120)
-        self.tbl_selected_parties.setColumnWidth(1, 70)
-        self.tbl_selected_parties.setColumnWidth(2, 70)
+        self.tbl_selected_parties.setColumnWidth(0, 150)
+        self.tbl_selected_parties.setColumnWidth(1, 85)
+        self.tbl_selected_parties.setColumnWidth(2, 85)
         self.tbl_selected_parties.sortItems(0, Qt.AscendingOrder)
 
         self.txt_search_party.textEdited.connect(self.search)

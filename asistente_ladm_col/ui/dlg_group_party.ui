@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>605</width>
+    <width>762</width>
     <height>406</height>
    </rect>
   </property>
@@ -185,10 +185,10 @@
         <bool>true</bool>
        </property>
        <property name="columnCount">
-        <number>3</number>
+        <number>6</number>
        </property>
        <attribute name="horizontalHeaderVisible">
-        <bool>false</bool>
+        <bool>true</bool>
        </attribute>
        <attribute name="horizontalHeaderDefaultSectionSize">
         <number>60</number>
@@ -205,6 +205,21 @@
        <attribute name="verticalHeaderMinimumSectionSize">
         <number>20</number>
        </attribute>
+       <column>
+        <property name="text">
+         <string>Party</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Numerator</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Denominator</string>
+        </property>
+       </column>
        <column/>
        <column/>
        <column/>
