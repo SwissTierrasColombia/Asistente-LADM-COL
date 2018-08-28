@@ -231,9 +231,9 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
             self.parties_to_group[party_id] = [value_denominator, value_numerator]
 
     def accept(self):
-        """ Overwrit the dialog's `accept
+        """ Overwrite the dialog's `accept
         <https://doc.qt.io/qt-5/qdialog.html#accept>`_ SLOT to store
-        selected parties and denominator-numerator before closing the dialog.
+        selected parties and numerator-denominator before closing the dialog.
         """
         self.parties_to_group = {}
         for index in range(self.tbl_selected_parties.rowCount()):
@@ -241,13 +241,12 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
              v_n = self.tbl_selected_parties.item(index, 1).text()
              v_d = self.tbl_selected_parties.item(index, 2).text()
              self.parties_to_group[ k ] = [v_n, v_d]
-        self.done(1)
 
         validation = self.validate_group_party()
         print(validation)
         self.show_message(validation[1], validation[0])
 
-        if not validation[0] is True:
+        if not validation[0]:
             return
         self.close()
 
