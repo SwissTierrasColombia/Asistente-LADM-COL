@@ -17,7 +17,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([0.6.3](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.6.3)) of the LADM_COL Assistant depends on [Project Generator v3.2.7.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/3.2.7.1) and allows users to:
+The current version ([0.7.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.7.0)) of the LADM_COL Assistant depends on [Project Generator v3.2.7.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/3.2.7.1) and allows users to:
 
  - Capture data for the LADM_COL v2.2.1 model.
  - Preprocess points: Controlled Measurement.
@@ -53,6 +53,8 @@ The current version ([0.6.3](https://github.com/AgenciaImplementacion/Asistente-
  - Create `Natural Parties` and `Legal Parties`:
    - Using preconfigured forms.
    - From another table with any structure, setting a field mapping.
+ - Create `Group Party`:
+   - Using a preconfigured form.
  - Create `Spatial Sources` and `Administrative Sources`:
    - Using preconfigured forms.
      - And associating the new `Spatial Source` to selected `Plots`, `Boundaries` or `Points`.
