@@ -35,7 +35,7 @@ LA_GROUP_PARTY_TABLE = "la_agrupacion_interesados"
 LA_GROUP_PARTY_NAME_FIELD = "nombre"
 LA_GROUP_PARTY_GPTYPE_FIELD = "ai_tipo"
 LA_GROUP_PARTY_TYPE_FIELD = "tipo"
-LA_GROUP_PARTY_TYPE_TABLE = "la_agrupacion_interesados_tipo"
+LA_GROUP_PARTY_TYPE_TABLE = "col_grupointeresadotipo"
 LA_GROUP_PARTY_TYPE_VALUE = "Otro"
 LA_BAUNIT_TABLE = "la_baunit"
 LA_BAUNIT_TYPE_TABLE = "la_baunittipo"
@@ -138,7 +138,7 @@ DICT_DISPLAY_EXPRESSIONS = {
                                                                     SECOND_NAME_FIELD),
     PARCEL_TABLE: '{}+\' \'+{}+\' \'+{}'.format(NUPRE_FIELD, FMI_FIELD, NAME_FIELD),
     LA_BAUNIT_TABLE: '{}+\' \'+{}+\' \'+{}'.format(ID_FIELD, NAME_FIELD, TYPE_FIELD),
-    LA_GROUP_PARTY_TABLE: '{}+\' \'+{}'.format(ID_FIELD, NAME_FIELD),
+    LA_GROUP_PARTY_TABLE: '{} || \' \' || {}'.format(ID_FIELD, NAME_FIELD),
     BUILDING_TABLE: '"{}{}" + \' \' + "{}{}"'.format(NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
                                                                     NAMESPACE_FIELD,
                                                                     NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
