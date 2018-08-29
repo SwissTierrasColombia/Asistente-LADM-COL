@@ -383,9 +383,12 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
             new_feature.setAttribute(LA_GROUP_PARTY_GPTYPE_FIELD, group[LA_GROUP_PARTY_GPTYPE_FIELD])
             new_feature.setAttribute(LA_GROUP_PARTY_NAME_FIELD, group[LA_GROUP_PARTY_NAME_FIELD])
             new_feature.setAttribute(LA_GROUP_PARTY_TYPE_FIELD, LA_GROUP_PARTY_TYPE_VALUE)
-            new_feature.setAttribute("p_espacio_de_nombres", 'ABC')
-            new_feature.setAttribute("p_local_id", 1)
-            new_feature.setAttribute("comienzo_vida_util_version", 'now()')
+
+            # TODO: Gui should allow users to ented namespace, local_id and date values
+            #new_feature.setAttribute("p_espacio_de_nombres", LA_GROUP_PARTY_TABLE)
+            #new_feature.setAttribute("p_local_id", '0')
+            #new_feature.setAttribute("comienzo_vida_util_version", 'now()')
+
             self.log.logMessage("Saving Group Party: {}".format(group), PLUGIN_NAME, Qgis.Info)
             with edit(self._la_group_party_table):
                 self._la_group_party_table.addFeature(new_feature)
