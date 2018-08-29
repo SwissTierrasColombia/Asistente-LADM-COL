@@ -2,7 +2,7 @@
 name=Asistente LADM_COL
 description=Assistant to capture and manage data for Colombian multipurpose cadastre
 about=Plugin de QGIS que ayuda a capturar y mantener datos conformes con LADM_COL y a generar archivos de intercambio de INTERLIS (.XTF).
-version=0.6.3
+version=0.7.0
 qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 category=Database
