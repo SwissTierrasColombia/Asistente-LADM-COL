@@ -106,6 +106,42 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         self.setLayout(QGridLayout())
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
+    def validate_target_layers(self):
+        # Get the required target layers and validate if edit session is closed
+        res_layers = self.qgis_utils.get_layers(self._db, {
+            LA_GROUP_PARTY_TABLE: {'name': LA_GROUP_PARTY_TABLE, 'geometry': None},
+            MEMBERS_TABLE: {'name': MEMBERS_TABLE, 'geometry': None},
+            FRACTION_TABLE: {'name': FRACTION_TABLE, 'geometry': None}}, load=True)
+
+        self._la_group_party_table = res_layers[LA_GROUP_PARTY_TABLE]
+        if self._la_group_party_table is None:
+            return (False, QCoreApplication.translate("CreateGroupPartyCadastre",
+                                       "Group party table couldn't be found... {}").format(self._db.get_description()))
+
+        if self._la_group_party_table.isEditable():
+            return (False, QCoreApplication.translate("CreateGroupPartyCadastre",
+                "Close the edit session in table {} before creating group parties.").format(self._la_group_party_table.name()))
+
+        self._members_table = res_layers[MEMBERS_TABLE]
+        if self._members_table is None:
+            return (False, QCoreApplication.translate("CreateGroupPartyCadastre",
+                                       "Members table couldn't be found... {}").format(self._db.get_description()))
+
+        if self._members_table.isEditable():
+            return (False, QCoreApplication.translate("CreateGroupPartyCadastre",
+                "Close the edit session in table {} before creating group parties.").format(self._members_table.name()))
+
+        self._fraction_table = res_layers[FRACTION_TABLE]
+        if self._fraction_table is None:
+            return (False, QCoreApplication.translate("CreateGroupPartyCadastre",
+                                       "Fraction table couldn't be found... {}").format(self._db.get_description()))
+
+        if self._fraction_table.isEditable():
+            return (False, QCoreApplication.translate("CreateGroupPartyCadastre",
+                "Close the edit session in table {} before creating group parties.").format(self._fraction_table.name()))
+
+        return (True, None)
+
     def set_parties_data(self, parties_data):
         """
         Initialize parties data.
@@ -328,36 +364,6 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
                 }
             }
         """
-        # Get the required target layers
-        res_layers = self.qgis_utils.get_layers(db, {
-            LA_GROUP_PARTY_TABLE: {'name': LA_GROUP_PARTY_TABLE, 'geometry': None},
-            MEMBERS_TABLE: {'name': MEMBERS_TABLE, 'geometry': None},
-            FRACTION_TABLE: {'name': FRACTION_TABLE, 'geometry': None}}, load=True)
-
-        self._la_group_party_table = res_layers[LA_GROUP_PARTY_TABLE]
-        if self._la_group_party_table is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateGroupPartyCadastre",
-                                           "Group party table couldn't be found... {}").format(db.get_description()),
-                Qgis.Warning)
-            return
-
-        self._members_table = res_layers[MEMBERS_TABLE]
-        if self._members_table is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateGroupPartyCadastre",
-                                           "Members table couldn't be found... {}").format(db.get_description()),
-                Qgis.Warning)
-            return
-
-        self._fraction_table = res_layers[FRACTION_TABLE]
-        if self._fraction_table is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateGroupPartyCadastre",
-                                           "Fraction table couldn't be found... {}").format(db.get_description()),
-                Qgis.Warning)
-            return
-
         # Disconnect from previous runs
         try:
             self._la_group_party_table.committedFeaturesAdded.disconnect()

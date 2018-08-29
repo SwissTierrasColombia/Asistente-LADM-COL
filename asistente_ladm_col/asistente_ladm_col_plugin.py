@@ -496,6 +496,13 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_dlg_group_party(self):
         dlg = CreateGroupPartyCadastre(self.iface, self.get_db_connection(), self.qgis_utils)
+
+        res, msg = dlg.validate_target_layers()
+
+        if not res:
+            self.show_message(msg, Qgis.Warning, 10)
+            return
+
         layer = self.qgis_utils.get_layer(self.get_db_connection(), COL_PARTY_TABLE, load=True)
         if layer is None:
             print("Table not found in group party dialog")
@@ -504,23 +511,6 @@ class AsistenteLADMCOLPlugin(QObject):
         data = {f[ID_FIELD]: ["{} {} {}".format(f["documento_identidad"], f["primer_apellido"], f["primer_nombre"]), 0, 0] for f in layer.getFeatures()}
         dlg.set_parties_data(data)
         dlg.exec_()
-        print(dlg.parties_to_group)
-
-    @_project_generator_required
-    @_db_connection_required
-    def load_dlg_group_party(self):
-        dlg = CreateGroupPartyCadastre(self.iface, self.get_db_connection(), self.qgis_utils)
-        print("dlg", dlg)
-        dlg.save_group_party(self.get_db_connection(),
-            [{
-                'nombre': 'KPC',
-                'ai_tipo': 'Familia',
-                'porcentajes': {
-                    2: [25, 100], # numerador/denominador
-                    115: [75, 100]
-                }
-            }])
-        return dlg
 
     @_project_generator_required
     @_db_connection_required
