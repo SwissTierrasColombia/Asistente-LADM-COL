@@ -317,7 +317,8 @@ class AsistenteLADMCOLPlugin(QObject):
                 func_to_decorate(inst)
             else:
                 widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
-                             QCoreApplication.translate("AsistenteLADMCOLPlugin", "You need to set a valid connection to your DB first. Click the button to go to Settings."))
+                             QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                             "Check your database connection, since there was a problem accessing a valid Cadastre-Registry model in the database. Click the button to go to Settings."))
                 button = QPushButton(widget)
                 button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
                 button.pressed.connect(inst.show_settings)
