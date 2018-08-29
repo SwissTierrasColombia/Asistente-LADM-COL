@@ -432,6 +432,9 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
             else:
                 member_id = self._members_table.getFeature(fid)[ID_FIELD]
 
+                if fraction == [0, 0]:
+                    return
+
                 # And finally save fractions
                 new_feature = QgsVectorLayerUtils().createFeature(self._fraction_table)
                 new_feature.setAttribute(FRACTION_MEMBER_FIELD, member_id)
