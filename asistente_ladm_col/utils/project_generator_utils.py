@@ -43,6 +43,27 @@ class ProjectGeneratorUtils(QObject):
         self.log = QgsApplication.messageLog()
         self.translatable_config_strings = TranslatableConfigStrings()
 
+    def get_generator(self, db):
+        if 'projectgenerator' in qgis.utils.plugins:
+            projectgenerator = qgis.utils.plugins["projectgenerator"]
+            generator = projectgenerator.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
+                db.uri, "smart2", db.schema, pg_estimated_metadata=False)
+            return generator
+        else:
+            self.log.logMessage(
+                "El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",
+                PLUGIN_NAME,
+                Qgis.Critical
+            )
+            return None
+
+    def get_db_connection(self, db):
+        generator = self.get_generator(db)
+        if generator is not None:
+            return generator._db_connector
+
+        return None
+
     def load_layers(self, layer_list, db):
         if 'projectgenerator' in qgis.utils.plugins:
             projectgenerator = qgis.utils.plugins["projectgenerator"]
@@ -61,9 +82,7 @@ class ProjectGeneratorUtils(QObject):
 
     def get_layers_and_relations_info(self, db):
         if 'projectgenerator' in qgis.utils.plugins:
-            projectgenerator = qgis.utils.plugins["projectgenerator"]
-            generator = projectgenerator.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
-                db.uri, "smart2", db.schema, pg_estimated_metadata=False)
+            generator = self.get_generator(db)
 
             layers = generator.get_tables_info_without_ignored_tables()
             relations = generator.get_relations_info()
@@ -101,9 +120,7 @@ class ProjectGeneratorUtils(QObject):
 
     def get_tables_info_without_ignored_tables(self, db):
         if 'projectgenerator' in qgis.utils.plugins:
-            projectgenerator = qgis.utils.plugins["projectgenerator"]
-            generator = projectgenerator.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
-                db.uri, "smart2", db.schema, pg_estimated_metadata=False)
+            generator = self.get_generator(db)
             return generator.get_tables_info_without_ignored_tables()
         else:
             self.log.logMessage(

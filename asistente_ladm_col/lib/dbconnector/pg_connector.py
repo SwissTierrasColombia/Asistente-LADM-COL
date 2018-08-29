@@ -23,7 +23,12 @@ from qgis.core import QgsWkbTypes, Qgis, QgsApplication
 from qgis.PyQt.QtCore import QCoreApplication
 
 from .db_connector import DBConnector
-from ...config.general_config import PLUGIN_NAME, INTERLIS_TEST_METADATA_TABLE_PG
+from ...config.general_config import (
+    INTERLIS_TEST_METADATA_TABLE_PG,
+    PLUGIN_NAME,
+    PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO
+)
+from ... utils.model_parser import ModelParser
 
 class PGConnector(DBConnector):
     def __init__(self, uri, schema="public"):
@@ -35,6 +40,7 @@ class PGConnector(DBConnector):
         self.mode = 'pg'
         self.provider = 'postgres'
         self._tables_info = None
+        self.model_parser = None
 
     def _postgis_exists(self):
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -89,6 +95,12 @@ class PGConnector(DBConnector):
         if not self._metadata_exists():
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
+
+        if self.model_parser is None:
+            self.model_parser = ModelParser(self)
+        if not self.model_parser.validate_cadastre_model_version()[0]:
+            return (False, QCoreApplication.translate("PGConnector",
+                    "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
 
         return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS successful!"))
 

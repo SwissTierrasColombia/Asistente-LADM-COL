@@ -3,6 +3,11 @@ import os.path
 from ..utils.qt_utils import get_plugin_metadata
 from qgis.PyQt.QtCore import QLocale, QSettings, QObject, QCoreApplication
 
+CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
+CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
+# From this version on the plugin will work, a message will block prior versions
+LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION = "17.07.2018"
+
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 DEFAULT_POLYGON_AREA_TOLERANCE = 0.1 # square meters
@@ -65,6 +70,9 @@ DOMAIN_CLASS_RELATION = 'domain_class'
 CLASS_CLASS_RELATION = 'class_class'
 
 TEST_SERVER = "www.google.com"
+
+# DOWNLOAD PAGE URL IN QGIS PLUGIN REPO
+PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO = "https://plugins.qgis.org/plugins/asistente_ladm_col/"
 
 # About dialog
 RELEASE_URL = "https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/"
