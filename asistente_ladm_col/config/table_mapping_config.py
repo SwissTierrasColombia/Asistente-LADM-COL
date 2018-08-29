@@ -13,18 +13,30 @@ BUSINESS_NAME_FIELD = "razon_social"
 CCLSOURCE_TABLE = "cclfuente"
 CCLSOURCE_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 CCLSOURCE_TABLE_SOURCE_FIELD = "lfuente"
+COL_PARTY_TABLE = "col_interesado"
 CONTROL_POINT_TABLE = "puntocontrol"
 DOCUMENT_ID_FIELD = "documento_identidad"
+DOMAIN_KEY_FIELD = {
+    "pg": "ilicode",
+    "gpkg": "iliCode"
+}
 EXTFILE_TABLE = "extarchivo"
 EXTFILE_DATA_FIELD = "datos"
 FIRST_NAME_FIELD = "primer_nombre"
 FIRST_SURNAME_FIELD = "primer_apellido"
 FMI_FIELD = "fmi"
+FRACTION_TABLE = "fraccion"
+FRACTION_DENOMINATOR_FIELD = "denominador"
+FRACTION_MEMBER_FIELD = "miembros_participacion"
+FRACTION_NUMERATOR_FIELD = "numerador"
 GENDER_TYPE_TABLE = "col_generotipo"
-LA_GROUP_PARTY_TABLE = "la_agrupacion_interesados"
 ID_FIELD = "t_id"
-PARCEL_TABLE = "predio"
-PLOT_TABLE = "terreno"
+LA_GROUP_PARTY_TABLE = "la_agrupacion_interesados"
+LA_GROUP_PARTY_NAME_FIELD = "nombre"
+LA_GROUP_PARTY_GPTYPE_FIELD = "ai_tipo"
+LA_GROUP_PARTY_TYPE_FIELD = "tipo"
+LA_GROUP_PARTY_TYPE_TABLE = "la_agrupacion_interesados_tipo"
+LA_GROUP_PARTY_TYPE_VALUE = "Otro"
 LA_BAUNIT_TABLE = "la_baunit"
 LA_BAUNIT_TYPE_TABLE = "la_baunittipo"
 LA_DIMENSION_TYPE_TABLE = "la_dimensiontipo"
@@ -35,23 +47,25 @@ LA_POINT_TABLE = "la_punto"
 LA_POINT_TYPE_TABLE = "la_puntotipo"
 LA_SURFACE_RELATION_TYPE_TABLE = "la_relacionsuperficietipo"
 LENGTH_FIELD_BOUNDARY_TABLE = "longitud"
-LEGAL_PARTY_TABLE = "interesado_juridico"
-LEGAL_PARTY_TYPE_TABLE = "col_interesadojuridicotipo"
 LESS_TABLE = "menos"
 LESS_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 LESS_TABLE_PLOT_FIELD = "eu_terreno"
 LOCAL_ID_FIELD = "_local_id"
+MEMBERS_GROUP_PARTY_FIELD = "agrupacion"
+MEMBERS_PARTY_FIELD = "interesados_col_interesado"
+MEMBERS_TABLE = "miembros"
 MORE_BOUNDARY_FACE_STRING_TABLE = "masccl"
 MOREBFS_TABLE_BOUNDARY_FIELD = "cclp_lindero"
 MOREBFS_TABLE_PLOT_FIELD = "uep_terreno"
 NAME_FIELD = "nombre"
 NAMESPACE_FIELD = "_espacio_de_nombres"
-NATURAL_PARTY_TABLE = "interesado_natural"
 NIT_NUMBER_FIELD = "numero_nit"
 NUMBER_OF_FLOORS = "numero_pisos"
 NUPRE_FIELD = "nupre"
+PARCEL_TABLE = "predio"
 PARTY_DOCUMENT_TYPE_TABLE = "col_interesadodocumentotipo"
 PARTY_TYPE_TABLE = "la_interesadotipo"
+PLOT_TABLE = "terreno"
 POINT_AGREEMENT_TYPE_TABLE = "col_acuerdotipo"
 POINT_BOUNDARY_FACE_STRING_TABLE = "puntoccl"
 POINT_DESCRIPTION_TYPE_TABLE = "col_descripcionpuntotipo"
@@ -103,11 +117,10 @@ NAMESPACE_PREFIX = {
     BOUNDARY_TABLE: 'ccl',
     BUILDING_TABLE: 'su',
     BUILDING_UNIT_TABLE: 'su',
+    COL_PARTY_TABLE: 'p',
     CONTROL_POINT_TABLE: 'p',
     EXTFILE_TABLE: 's',
-    LEGAL_PARTY_TABLE: 'p',
-    SPATIAL_SOURCE_TABLE: 's',
-    NATURAL_PARTY_TABLE: 'p',
+    LA_GROUP_PARTY_TABLE: 'p',
     PARCEL_TABLE: 'u',
     PLOT_TABLE: 'su',
     RESPONSIBILITY_TABLE: 'r',
@@ -118,12 +131,11 @@ NAMESPACE_PREFIX = {
 }
 
 DICT_DISPLAY_EXPRESSIONS = {
-    NATURAL_PARTY_TABLE: '{}+\' \'+{}+\' \'+{}+\' \'+{}+\' \'+{}'.format(DOCUMENT_ID_FIELD,
+    COL_PARTY_TABLE: '{}+\' \'+{}+\' \'+{}+\' \'+{}+\' \'+{}'.format(DOCUMENT_ID_FIELD,
                                                                     FIRST_SURNAME_FIELD,
                                                                     SECOND_SURNAME_FIELD,
                                                                     FIRST_NAME_FIELD,
                                                                     SECOND_NAME_FIELD),
-    LEGAL_PARTY_TABLE: '{}+\' \'+{}'.format(NIT_NUMBER_FIELD, BUSINESS_NAME_FIELD),
     PARCEL_TABLE: '{}+\' \'+{}+\' \'+{}'.format(NUPRE_FIELD, FMI_FIELD, NAME_FIELD),
     LA_BAUNIT_TABLE: '{}+\' \'+{}+\' \'+{}'.format(ID_FIELD, NAME_FIELD, TYPE_FIELD),
     LA_GROUP_PARTY_TABLE: '{}+\' \'+{}'.format(ID_FIELD, NAME_FIELD),

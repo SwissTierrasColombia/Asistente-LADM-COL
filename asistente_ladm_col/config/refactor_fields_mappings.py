@@ -96,7 +96,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
-    elif layer_name == NATURAL_PARTY_TABLE:
+    elif layer_name == COL_PARTY_TABLE:
         mapping = [
             {'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'},
             {'name': 'documento_identidad', 'type': 10, 'length': 10, 'precision': -1, 'expression': '"documento_identidad"'},
@@ -115,18 +115,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'name': 'agrupacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"agrupacion"'},
             {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
-        ]
-    elif layer_name == LEGAL_PARTY_TABLE:
-        mapping = [
-            {'type': 4, 'precision': 0, 'name': 't_id', 'expression': '"t_id"', 'length': -1},
-            {'type': 10, 'precision': -1, 'name': 'numero_nit', 'expression': '"numero_nit"', 'length': 20},
-            {'type': 10, 'precision': -1, 'name': 'razon_social', 'expression': '"razon_social"', 'length': 100},
-            {'type': 10, 'precision': -1, 'name': 'nombre', 'expression': '"nombre"', 'length': 255},
-            {'type': 10, 'precision': -1, 'name': 'tipo', 'expression': '"tipo"', 'length': 255},
-            {'type': 10, 'precision': -1, 'name': 'p_espacio_de_nombres', 'expression': '"p_espacio_de_nombres"', 'length': 255},
-            {'type': 10, 'precision': -1, 'name': 'p_local_id', 'expression': '"p_local_id"', 'length': 255},
-            {'type': 16, 'precision': -1, 'name': 'comienzo_vida_util_version', 'expression': '"comienzo_vida_util_version"', 'length': -1},
-            {'type': 16, 'precision': -1, 'name': 'fin_vida_util_version', 'expression': '"fin_vida_util_version"', 'length': -1}
         ]
     elif layer_name == ADMINISTRATIVE_SOURCE_TABLE:
         mapping = [
