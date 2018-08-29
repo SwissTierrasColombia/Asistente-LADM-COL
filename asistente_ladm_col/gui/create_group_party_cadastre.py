@@ -241,26 +241,30 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
              try:
                  v_n = int(self.tbl_selected_parties.item(index, 1).text())
              except ValueError as e:
-                 self.show_message("Please don't insert different values of integers", Qgis.Warning)
+                 self.show_message(QCoreApplication.translate("CreateGroupPartyCadastreWizard",
+                    "There are some invalid values in the numerator column. Fix them before continuing..."), Qgis.Warning)
                  return
              try:
                  v_d = int(self.tbl_selected_parties.item(index, 2).text())
              except ValueError as e:
-                 self.show_message("Please don't insert different values of integers", Qgis.Warning)
+                 self.show_message(QCoreApplication.translate("CreateGroupPartyCadastreWizard",
+                    "There are some invalid values in the denominator column. Fix them before continuing..."), Qgis.Warning)
                  return
-             self.parties_to_group[ k ] = [v_n, v_d]
+
+             self.parties_to_group[k] = [v_n, v_d]
 
         name = self.txt_group_name.text()
         group_party_type = self.cbo_group_type.currentText()
-        dict_params = {LA_GROUP_PARTY_NAME_FIELD: name,
-                       LA_GROUP_PARTY_GPTYPE_FIELD: group_party_type,
-                       'porcentajes': self.parties_to_group}
-
+        dict_params = {
+            LA_GROUP_PARTY_NAME_FIELD: name,
+            LA_GROUP_PARTY_GPTYPE_FIELD: group_party_type,
+            'porcentajes': self.parties_to_group
+        }
 
         res, msg = self.validate_group_party(dict_params)
-        self.show_message(msg, Qgis.Info if res else Qgis.Warning)
 
         if not res:
+            self.show_message(msg, Qgis.Warning)
             return
 
         self.save_group_party(self._db, [dict_params])
@@ -268,43 +272,42 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         self.close()
 
     def validate_group_party(self, params):
-
         name = params[LA_GROUP_PARTY_NAME_FIELD]
         group_party_type = params[LA_GROUP_PARTY_GPTYPE_FIELD]
         porcentajes = params['porcentajes']
+
         if not porcentajes:
             return (False, QCoreApplication.translate("CreateGroupParty",
-                    "There are not parties in the group party"))
+                    "You need to select some parties to create a group."))
         elif len(porcentajes) == 1:
             return (False, QCoreApplication.translate("CreateGroupParty",
-                    "There is just one party, you have to add almost 2 parties"))
+                    "There is just one party, you need to add at least two parties to a group."))
+
         there_percents = False
         fraction = 0
         for t, nd in porcentajes.items():
             if porcentajes[t] != [0,0]:
                 there_percents = True
-            elif porcentajes[t][0] == None or porcentajes[t][1] == None:
-                there_percents = False
-                return (False, QCoreApplication.translate("CreateGroupParty",
-                        "Please don't insert NULL values "))
+                break
 
         if there_percents:
             for t, nd in porcentajes.items():
                 if porcentajes[t][1] == 0:
                     return (False, QCoreApplication.translate("CreateGroupParty",
-                            "There are denominators equal to zero"))
+                            "There are denominators equal to zero. You need to change those values."))
                     break
                 elif porcentajes[t][1] < porcentajes[t][0]:
                     return (False, QCoreApplication.translate("CreateGroupParty",
-                            "The denominator must be major than the numerator"))
+                            "The denominator cannot be less than the numerator."))
                     break
                 else:
                     fraction = porcentajes[t][0] / porcentajes[t][1] + fraction
             if fraction != 1.0:
                 return (False, QCoreApplication.translate("CreateGroupParty",
-                        "The sum of the fractions must be equal to one"))
+                        "The sum of the fractions must be equal to one."))
+
         return (True, QCoreApplication.translate("CreateGroupParty",
-                "The group party is ok"))
+                "Validation passed!"))
 
 
     def show_message(self, message, level):
