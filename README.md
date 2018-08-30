@@ -18,7 +18,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([0.7.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.7.0)) del Asistente LADM_COL depende del plugin [Project Generator v3.2.7.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/3.2.7.1) y permite:
+La versión actual ([0.7.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.7.1)) del Asistente LADM_COL depende del plugin [Project Generator v3.2.7.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/3.2.7.1) y permite:
 
  - Capturar datos para el modelo LADM_COL v2.2.1.
  - Preprocesar puntos: Medición controlada.
