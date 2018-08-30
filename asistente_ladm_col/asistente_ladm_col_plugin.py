@@ -508,6 +508,11 @@ class AsistenteLADMCOLPlugin(QObject):
             print("Table not found in group party dialog")
             return
 
+        if layer.isEditable():
+            self.show_message(QCoreApplication.translate("CreateGroupPartyCadastre",
+                "Close the edit session in table {} before creating group parties.").format(layer.name()), Qgis.Warning, 10)
+            return
+
         data = {f[ID_FIELD]: ["{} {} {}".format(f["documento_identidad"], f["primer_apellido"], f["primer_nombre"]), 0, 0] for f in layer.getFeatures()}
         dlg.set_parties_data(data)
         dlg.exec_()
