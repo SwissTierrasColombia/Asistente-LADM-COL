@@ -293,7 +293,7 @@
         </spacer>
        </item>
        <item row="2" column="0">
-        <widget class="QCheckBox" name="checkBox">
+        <widget class="QCheckBox" name="chk_use_roads">
          <property name="text">
           <string>Use Roads like gaps</string>
          </property>
