@@ -96,7 +96,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
-    elif layer_name == NATURAL_PARTY_TABLE:
+    elif layer_name == COL_PARTY_TABLE:
         mapping = [
             {'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'},
             {'name': 'documento_identidad', 'type': 10, 'length': 10, 'precision': -1, 'expression': '"documento_identidad"'},
@@ -110,23 +110,12 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'name': 'genero', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"genero"'},
             {'name': 'nombre', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"nombre"'},
             {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo"'},
+            {'name': 'razon_social', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"razon_social"'},
             {'name': 'p_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"p_espacio_de_nombres"'},
             {'name': 'p_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"p_local_id"'},
             {'name': 'agrupacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"agrupacion"'},
             {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
-        ]
-    elif layer_name == LEGAL_PARTY_TABLE:
-        mapping = [
-            {'type': 4, 'precision': 0, 'name': 't_id', 'expression': '"t_id"', 'length': -1},
-            {'type': 10, 'precision': -1, 'name': 'numero_nit', 'expression': '"numero_nit"', 'length': 20},
-            {'type': 10, 'precision': -1, 'name': 'razon_social', 'expression': '"razon_social"', 'length': 100},
-            {'type': 10, 'precision': -1, 'name': 'nombre', 'expression': '"nombre"', 'length': 255},
-            {'type': 10, 'precision': -1, 'name': 'tipo', 'expression': '"tipo"', 'length': 255},
-            {'type': 10, 'precision': -1, 'name': 'p_espacio_de_nombres', 'expression': '"p_espacio_de_nombres"', 'length': 255},
-            {'type': 10, 'precision': -1, 'name': 'p_local_id', 'expression': '"p_local_id"', 'length': 255},
-            {'type': 16, 'precision': -1, 'name': 'comienzo_vida_util_version', 'expression': '"comienzo_vida_util_version"', 'length': -1},
-            {'type': 16, 'precision': -1, 'name': 'fin_vida_util_version', 'expression': '"fin_vida_util_version"', 'length': -1}
         ]
     elif layer_name == ADMINISTRATIVE_SOURCE_TABLE:
         mapping = [
@@ -134,6 +123,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'name': 'texto', 'precision': -1, 'expression': '"texto"', 'type': 10, 'length': 255},
             {'name': 'tipo', 'precision': -1, 'expression': '"tipo"', 'type': 10, 'length': 255},
             {'name': 'codigo_registral_transaccion', 'precision': -1, 'expression': '"codigo_registral_transaccion"', 'type': 10, 'length': 3},
+            {'name': 'nombre', 'precision': -1, 'expression': '"nombre"', 'type': 10, 'length': 50},
             {'name': 'fecha_aceptacion', 'precision': -1, 'expression': '"fecha_aceptacion"', 'type': 16, 'length': -1},
             {'name': 'estado_disponibilidad', 'precision': -1, 'expression': '"estado_disponibilidad"', 'type': 10, 'length': 255},
             {'name': 'sello_inicio_validez', 'precision': -1, 'expression': '"sello_inicio_validez"', 'type': 16, 'length': -1},
@@ -199,13 +189,12 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"descripcion"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'descripcion'},
             {'expression': '"comprobacion_comparte"', 'precision': -1, 'type': 1, 'length': -1, 'name': 'comprobacion_comparte'},
             {'expression': '"uso_efectivo"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'uso_efectivo'},
-            {'expression': '"r_espacio_de_nombres"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'r_espacio_de_nombres'},
-            {'expression': '"r_local_id"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'r_local_id'},
-            {'expression': '"interesado_interesado_natural"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'interesado_interesado_natural'},
-            {'expression': '"interesado_interesado_juridico"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'interesado_interesado_juridico'},
+            {'expression': '"interesado_col_interesado"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'interesado_col_interesado'},
             {'expression': '"interesado_la_agrupacion_interesados"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'interesado_la_agrupacion_interesados'},
             {'expression': '"unidad_la_baunit"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'unidad_la_baunit'},
             {'expression': '"unidad_predio"', 'precision': 0, 'type': 4, 'length': -1, 'name': 'unidad_predio'},
+            {'expression': '"r_espacio_de_nombres"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'r_espacio_de_nombres'},
+            {'expression': '"r_local_id"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'r_local_id'},
             {'expression': '"comienzo_vida_util_version"', 'precision': -1, 'type': 16, 'length': -1, 'name': 'comienzo_vida_util_version'},
             {'expression': '"fin_vida_util_version"', 'precision': -1, 'type': 16, 'length': -1, 'name': 'fin_vida_util_version'}
         ]

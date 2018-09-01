@@ -1,5 +1,9 @@
 <RCC>
   <qresource prefix="/Asistente-LADM_COL">
+    <file>resources/images/select.png</file>
+    <file>resources/images/select_all.png</file>
+    <file>resources/images/deselect_all.png</file>
+    <file>resources/images/deselect.png</file>
     <file>resources/images/icon_about.png</file>
     <file>resources/images/icon.png</file>
     <file>resources/images/lines.png</file>
