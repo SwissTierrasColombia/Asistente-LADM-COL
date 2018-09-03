@@ -590,7 +590,7 @@ class QualityUtils(QObject):
                                            "There are no Right of Way-Building overlaps."), Qgis.Info)
 
     def check_gaps_in_plots(self, db):
-        use_roads = int(QSettings().value('Asistente-LADM_COL/quality/use_roads', True))
+        use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', True))
         res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
         }, load=True)

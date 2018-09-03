@@ -328,7 +328,7 @@ class GeometryUtils(QObject):
 
         return ids, QgsGeometry.collectGeometry(list_overlapping) if len(list_overlapping) > 0 else None
 
-    def get_gaps_in_continuous_layer(self, layer, include_roads=True):
+    def get_gaps_in_continuous_layer(self, layer, include_roads):
         """function to find the gaps in a continuous layer in space"""
 
         features = layer.getFeatures()
