@@ -12,7 +12,11 @@ from asistente_ladm_col.utils.quality import QualityUtils
 
 from processing.core.Processing import Processing
 from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import QgsWkbTypes
+from qgis.core import (
+    QgsWkbTypes,
+    QgsGeometry
+)
+
 import processing
 
 import_projectgenerator()
@@ -212,18 +216,68 @@ class TesQualityValidations(unittest.TestCase):
             polygon_layer = QgsVectorLayer(uri_polygon, 'polygon_layer'+case, 'ogr')
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer'+case, 'ogr')
 
-            copy_polygons = self.qgis_utils.geometry.clone_layer(polygon_layer)
+            clone_polygons = self.qgis_utils.geometry.clone_layer(polygon_layer)
 
-            geom_polygon = copy_polygons.getFeature(1).geometry()
+            geom_polygon = clone_polygons.getFeature(1).geometry()
             init_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
 
-            self.qgis_utils.geometry.addTopologicalVerteces(copy_polygons, lines_layer)
+            self.qgis_utils.geometry.addTopologicalVerteces(clone_polygons, lines_layer)
 
-            geom_polygon = copy_polygons.getFeature(1).geometry()
+            geom_polygon = clone_polygons.getFeature(1).geometry()
             ajust_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
 
             num_add_vertex = len(ajust_vertex_geom) - len(init_vertex_geom)
             self.assertEqual(num_add_vertex, vertices_test_values[i])
+
+    def test_polygons_covered_lines(self):
+        print('\nINFO: Validating difference between polygons and lines...')
+
+        gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
+
+        diff_geom = ['MultiLineString ((780300.30731518880929798 1225605.22174088703468442, 780297.95234157983213663 1225599.8581298291683197, 780292.44514157995581627 1225602.31722982972860336, 780294.34505024075042456 1225606.57437412883155048))',
+                     'MultiLineString ((780300.30731518880929798 1225605.22174088703468442, 780297.95234157983213663 1225599.8581298291683197, 780292.44514157995581627 1225602.31722982972860336, 780294.34505024075042456 1225606.57437412883155048))',
+                     'MultiLineString ((780309.73902403307147324 1225602.49830744392238557, 780308.30989155941642821 1225603.05408118362538517, 780307.64825615496374667 1225603.95390533376485109),(780310.01870060083456337 1225599.16431454825215042, 780310.03014361101668328 1225598.66082209814339876, 780311.16639214521273971 1225598.61655267467722297))',
+                     'MultiLineString ((780307.7805832359008491 1225598.39616793626919389, 780307.60049424471799284 1225599.58559290133416653),(780308.69099051796365529 1225598.27522822353057563, 780307.7805832359008491 1225598.39616793626919389),(780315.57867445563897491 1225608.45340170268900692, 780315.45555392769165337 1225607.63259818265214562, 780314.78905752801802009 1225607.92419035756029189),(780317.62428020488005131 1225603.16991792898625135, 780318.36674970726016909 1225602.84235785435885191, 780318.29131162946578115 1225603.45340628433041275))',
+                     'MultiLineString ((780306.77080396702513099 1225605.06540775927715003, 780306.64257034030742943 1225605.91234613093547523, 780307.906158416881226 1225605.63026071945205331),(780314.52926436136476696 1225599.74590416136197746, 780312.94133939070161432 1225600.03702373942360282, 780312.34155925654340535 1225600.40004855743609369),(780312.43979134678374976 1225599.65884278574958444, 780314.52926436136476696 1225599.74590416136197746),(780318.10209554550237954 1225604.98605656484141946, 780317.2287368115503341 1225605.14484906173311174, 780316.19658558059018105 1225606.12406946043483913))',
+                     ''];
+
+        for i in range(len(diff_geom)):
+            case = "_case"+str(i+1)
+            uri_polygon = gpkg_path + '|layername={layername}'.format(layername='polygon'+case)
+            uri_lines = gpkg_path + '|layername={layername}'.format(layername='lines'+case)
+            polygon_layer = QgsVectorLayer(uri_polygon, 'polygon_layer'+case, 'ogr')
+            lines_layer = QgsVectorLayer(uri_lines, 'lines_layer'+case, 'ogr')
+
+            clone_polygons = self.qgis_utils.geometry.clone_layer(polygon_layer)
+
+            self.qgis_utils.geometry.addTopologicalVerteces(clone_polygons, lines_layer)
+            diff_layer = self.qgis_utils.geometry.difference_boundaryPolygons_lines(clone_polygons, lines_layer)
+            self.assertEqual(diff_layer.getFeature(1).geometry().asWkt(), diff_geom[i])
+
+    def test_lines_covered_polygons(self):
+        print('\nINFO: Validating difference between polygons and lines...')
+
+        gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
+
+        diff_geom = ['',
+                     '',
+                     'MultiLineString ((780309.73902403307147324 1225602.49830744392238557, 780307.83351406815927476 1225602.05170354596339166, 780307.64825615496374667 1225603.95390533376485109))',
+                     '',
+                     'MultiLineString ((780318.10209554550237954 1225604.98605656484141946, 780317.50662368256598711 1225605.92888701660558581, 780316.19658558059018105 1225606.12406946043483913))',
+                     'MultiLineString ((780314.52926436136476696 1225599.74590416136197746, 780312.94133939070161432 1225600.03702373942360282, 780310.92996776115614921 1225601.25443288357928395, 780310.00367819482926279 1225599.82530040992423892, 780310.03014361101668328 1225598.66082209814339876, 780312.06798065674956888 1225598.5814258495811373, 780311.35341442003846169 1225599.61357708042487502, 780314.52926436136476696 1225599.74590416136197746))']
+
+        for i in range(len(diff_geom)):
+            case = "_case"+str(i+1)
+            uri_polygon = gpkg_path + '|layername={layername}'.format(layername='polygon'+case)
+            uri_lines = gpkg_path + '|layername={layername}'.format(layername='lines'+case)
+            polygon_layer = QgsVectorLayer(uri_polygon, 'polygon_layer'+case, 'ogr')
+            lines_layer = QgsVectorLayer(uri_lines, 'lines_layer'+case, 'ogr')
+
+            clone_polygons = self.qgis_utils.geometry.clone_layer(polygon_layer)
+
+            self.qgis_utils.geometry.addTopologicalVerteces(clone_polygons, lines_layer)
+            diff_layer = self.qgis_utils.geometry.difference_lines_boundaryPolygons(lines_layer, clone_polygons)
+            self.assertEqual(diff_layer.getFeature(1).geometry().asWkt(), diff_geom[i])
 
     def test_intersection_polygons_tolerance(self):
         print('\nINFO: Validating intersection in polygons (plots)...')

@@ -378,13 +378,13 @@ class GeometryUtils(QObject):
 
     def difference_boundary_plot(self, boundary_layer, plot_layer, id_field=ID_FIELD):
         difference_features = list()
-        lines_layer = self.clone_layer(boundary_layer)
+        polygons_layer = self.clone_layer(plot_layer)
 
-        if id(boundary_layer) == id(lines_layer):
-            print("Boundaries layer was not cloned correctly")
+        if id(plot_layer) == id(polygons_layer):
+            print("Plots layer was not cloned correctly")
 
-        self.addTopologicalVerteces(lines_layer, plot_layer)
-        differences_layer = self.difference_lines_boundaryPolygons(lines_layer, plot_layer)
+        self.addTopologicalVerteces(polygons_layer, boundary_layer)
+        differences_layer = self.difference_lines_boundaryPolygons(boundary_layer, polygons_layer)
 
         for feature in differences_layer.getFeatures():
             geomFeature = feature.geometry()
