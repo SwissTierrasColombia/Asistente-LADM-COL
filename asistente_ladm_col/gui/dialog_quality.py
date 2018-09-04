@@ -79,6 +79,9 @@ class DialogQuality(QDialog, DIALOG_UI):
                     'id': 'check_overlaps_in_boundaries',
                     'text': QCoreApplication.translate("DialogQuality", "Boundaries should not overlap")
                 }, {
+                    'id': 'check_boundaries_covered_by_plots',
+                    'text': QCoreApplication.translate("DialogQuality", "Boundaries must be covered by plots")
+                }, {
                     'id': 'check_missing_boundary_points_in_boundaries',
                     'text': QCoreApplication.translate("DialogQuality", "Boundary nodes should be covered by Boundary Points")
                 }, {
@@ -91,6 +94,9 @@ class DialogQuality(QDialog, DIALOG_UI):
                 'rules': [{
                     'id': 'check_overlaps_in_plots',
                     'text': QCoreApplication.translate("DialogQuality", "Plots should not overlap")
+                }, {
+                    'id': 'check_plots_covered_by_boundaries',
+                    'text': QCoreApplication.translate("DialogQuality", "Plots must be covered by boundaries")
                 }, {
                     'id': 'check_missing_survey_points_in_buildings',
                     'text': QCoreApplication.translate("DialogQuality", "Buildings nodes should be covered by Survey Points")
@@ -149,12 +155,16 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_too_long_segments(self._db)
                 elif id == 'check_overlaps_in_boundaries':
                     self.quality.check_overlaps_in_boundaries(self._db)
+                elif id == 'check_boundaries_covered_by_plots':
+                    self.quality.check_boundaries_covered_by_plots(self._db)
                 elif id == 'check_missing_boundary_points_in_boundaries':
                     self.quality.check_missing_boundary_points_in_boundaries(self._db)
                 elif id == 'check_dangles_in_boundaries':
                     self.quality.check_dangles_in_boundaries(self._db)
                 elif id == 'check_overlaps_in_plots':
                     self.quality.check_overlapping_polygons(self._db, PLOT_TABLE)
+                elif id == 'check_plots_covered_by_boundaries':
+                    self.quality.check_plots_covered_by_boundaries(self._db)
                 elif id == 'check_missing_survey_points_in_buildings':
                     self.quality.check_missing_survey_points_in_buildings(self._db)
                 elif id == 'check_right_of_way_overlaps_buildings':
