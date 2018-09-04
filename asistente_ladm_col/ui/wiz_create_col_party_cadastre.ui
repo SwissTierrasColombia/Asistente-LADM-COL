@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>wiz_create_natural_party_cadastre</class>
- <widget class="QWizard" name="wiz_create_natural_party_cadastre">
+ <class>wiz_create_col_party_cadastre</class>
+ <widget class="QWizard" name="wiz_create_col_party_cadastre">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Create Natural Party</string>
+   <string>Create Party</string>
   </property>
   <property name="options">
    <set>QWizard::HaveHelpButton</set>
@@ -46,7 +46,7 @@
         <item row="0" column="0">
          <widget class="QGroupBox" name="gbx_page_2">
           <property name="title">
-           <string>How would you like to create natural parties?</string>
+           <string>How would you like to create parties?</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
            <item row="0" column="0">

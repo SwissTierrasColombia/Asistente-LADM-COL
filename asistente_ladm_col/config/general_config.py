@@ -3,6 +3,11 @@ import os.path
 from ..utils.qt_utils import get_plugin_metadata
 from qgis.PyQt.QtCore import QLocale, QSettings, QObject, QCoreApplication
 
+CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
+CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
+# From this version on the plugin will work, a message will block prior versions
+LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION = "17.07.2018"
+
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 DEFAULT_POLYGON_AREA_TOLERANCE = 0.1 # square meters
@@ -28,23 +33,22 @@ MODULE_HELP_MAPPING = {
     'create_responsibility': 'cadastre/RRR.html#responsibility',
     'create_restriction': 'cadastre/RRR.html#restriction',
     'create_spatial_source': 'cadastre/Source.html#spatial-source',
-    'legal_party': 'cadastre/Party.html#legal-party',
     'load_layers': 'load_layers.html#load-layers',
-    'natural_party': 'cadastre/Party.html#natural-party',
+    'col_party': 'cadastre/Party.html#col-party',
     'quality_rules': 'index.html', # TODO: Add this to help sections
     'settings': 'help.html#settings'
 }
 # Configure Project Generator Dependency
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.2.7"
+PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.2.7.1"
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), set to True
-PROJECT_GENERATOR_EXACT_REQUIRED_VERSION = False
+PROJECT_GENERATOR_EXACT_REQUIRED_VERSION = True
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-PROJECT_GENERATOR_REQUIRED_VERSION_URL = ''
+PROJECT_GENERATOR_REQUIRED_VERSION_URL = 'https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.2.7.1/projectgenerator.zip'
 
 # Project Generator definitions
 SCHEMA_NAME = 'schemaname'
@@ -66,6 +70,9 @@ DOMAIN_CLASS_RELATION = 'domain_class'
 CLASS_CLASS_RELATION = 'class_class'
 
 TEST_SERVER = "www.google.com"
+
+# DOWNLOAD PAGE URL IN QGIS PLUGIN REPO
+PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO = "https://plugins.qgis.org/plugins/asistente_ladm_col/"
 
 # About dialog
 RELEASE_URL = "https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/"

@@ -6,9 +6,7 @@ from .table_mapping_config import *
 LAYER_SETS = {
     'Datos de Interesados': [
         GENDER_TYPE_TABLE,
-        NATURAL_PARTY_TABLE,
-        LEGAL_PARTY_TABLE,
-        LEGAL_PARTY_TYPE_TABLE,
+        COL_PARTY_TABLE,
         PARTY_DOCUMENT_TYPE_TABLE,
         PARTY_TYPE_TABLE
     ],
