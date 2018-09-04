@@ -328,8 +328,19 @@ class GeometryUtils(QObject):
 
         return ids, QgsGeometry.collectGeometry(list_overlapping) if len(list_overlapping) > 0 else None
 
-    def addTopologicalVerteces(self, layer1, layer2):
+    def add_topological_vertices(self, layer1, layer2):
+        """
+        Modify layer1 adding vertices that are in layer2 and not in layer1
 
+        Ideally, we could pass the whole layer2 as parameter for
+        addTopologicalPoints or, at least, pass one multi-geometry containing
+        all geometries from layer2. However, onthe one side, the
+        addTopologicalPoints function doesn't support a layer as parameter and,
+        on the other side, there is a bug in the function that doesn't let it
+        work with multi-geometries. That's why we need to traverse the whole
+        layer2 in search for its individual geometries. We do use a SpatialIndex
+        nonetheless, to improve efficiency.
+        """
         if QgsWkbTypes.isMultiType(layer2.wkbType()):
             layer2 = processing.run("native:multiparttosingleparts", {'INPUT': layer2, 'OUTPUT': 'memory:'})['OUTPUT']
 
@@ -337,59 +348,65 @@ class GeometryUtils(QObject):
             layer2 = processing.run("qgis:polygonstolines", {'INPUT': layer2, 'OUTPUT': 'memory:'})['OUTPUT']
 
         index = QgsSpatialIndex(layer2)
-        for feature in layer1.getFeatures():
-            bbox = feature.geometry().boundingBox()
-            intersects_ids = index.intersects(bbox)
+        with edit(layer1):
+            edit_layer = QgsVectorLayerEditUtils(layer1)
 
-            intersect_features = layer2.getFeatures(intersects_ids)
+            for feature in layer1.getFeatures():
+                bbox = feature.geometry().boundingBox()
+                intersects_ids = index.intersects(bbox)
+                intersect_features = layer2.getFeatures(intersects_ids)
 
-            for intersect_feature in intersect_features:
-                with edit(layer1):
-                    edit_layer = QgsVectorLayerEditUtils(layer1)
+                for intersect_feature in intersect_features:
                     edit_layer.addTopologicalPoints(intersect_feature.geometry())
 
-    def difference_boundaryPolygons_lines(self, polygons_layer, lines_layer):
-        polygons_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': polygons_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-        diff_layer = processing.run("native:difference", {'INPUT': polygons_lines_layer, 'OVERLAY': lines_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-        return diff_layer
-
-
-    def difference_lines_boundaryPolygons(self, lines_layer, polygons_layer):
-        polygons_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': polygons_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-        diff_layer = processing.run("native:difference", {'INPUT': lines_layer, 'OVERLAY': polygons_lines_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+    def line_polygon_layer_difference(self, input_layer_a, input_layer_b):
+        if input_layer_a.geometryType() == QgsWkbTypes.PolygonGeometry:
+            input_layer_a = processing.run("qgis:polygonstolines", {'INPUT': input_layer_a, 'OUTPUT': 'memory:'})['OUTPUT']
+        if input_layer_b.geometryType() == QgsWkbTypes.PolygonGeometry:
+            input_layer_b = processing.run("qgis:polygonstolines", {'INPUT': input_layer_b, 'OUTPUT': 'memory:'})['OUTPUT']
+        diff_layer = processing.run("native:difference", {'INPUT': input_layer_a, 'OVERLAY': input_layer_b, 'OUTPUT': 'memory:'})['OUTPUT']
         return diff_layer
 
     def difference_plot_boundary(self, plot_layer, boundary_layer, id_field=ID_FIELD):
+        """
+        Advanced difference function that, unlike the traditional function,
+        takes into account not shared vertices to build difference geometries.
+        """
         difference_features = list()
         polygons_layer = self.clone_layer(plot_layer)
 
-        if id(plot_layer) == id(polygons_layer):
+        if not polygons_layer:
             print("Plots layer was not cloned correctly")
+            return []
 
-        self.addTopologicalVerteces(polygons_layer, boundary_layer)
-        differences_layer = self.difference_boundaryPolygons_lines(polygons_layer, boundary_layer)
+        self.add_topological_vertices(polygons_layer, boundary_layer)
+        differences_layer = self.line_polygon_layer_difference(polygons_layer, boundary_layer)
 
         for feature in differences_layer.getFeatures():
-            geomFeature = feature.geometry()
-            idFeature = feature[id_field]
-            difference_features.append({'geometry': geomFeature, 'id': idFeature})
+            difference_features.append({
+                'geometry': feature.geometry(),
+                'id': feature[id_field]})
 
         return difference_features
 
     def difference_boundary_plot(self, boundary_layer, plot_layer, id_field=ID_FIELD):
+        """
+        Advanced difference function that, unlike the traditional function,
+        takes into account not shared vertices to build difference geometries.
+        """
         difference_features = list()
         polygons_layer = self.clone_layer(plot_layer)
 
         if id(plot_layer) == id(polygons_layer):
             print("Plots layer was not cloned correctly")
 
-        self.addTopologicalVerteces(polygons_layer, boundary_layer)
-        differences_layer = self.difference_lines_boundaryPolygons(boundary_layer, polygons_layer)
+        self.add_topological_vertices(polygons_layer, boundary_layer)
+        differences_layer = self.line_polygon_layer_difference(boundary_layer, polygons_layer)
 
         for feature in differences_layer.getFeatures():
-            geomFeature = feature.geometry()
-            idFeature = feature[id_field]
-            difference_features.append({'geometry': geomFeature, 'id': idFeature})
+            difference_features.append({
+                'geometry': feature.geometry(),
+                'id': feature[id_field]})
 
         return difference_features
 
@@ -397,4 +414,5 @@ class GeometryUtils(QObject):
         layer.selectAll()
         clone_layer = processing.run("native:saveselectedfeatures", {'INPUT': layer, 'OUTPUT': 'memory:'})['OUTPUT']
         layer.removeSelection()
-        return clone_layer
+
+        return clone_layer if type(clone_layer) == QgsVectorLayer else False

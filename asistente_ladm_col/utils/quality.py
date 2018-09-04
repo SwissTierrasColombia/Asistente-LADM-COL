@@ -115,15 +115,39 @@ class QualityUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "There are no overlapping points in layer '{}'!").format(point_layer_name), Qgis.Info)
 
-
     def check_plots_covered_by_boundaries(self, db):
+        res_layers = self.qgis_utils.get_layers(self._db, {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}
+        }, load=True)
 
-        plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
-        boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, QgsWkbTypes.LineGeometry, load=True)
+        plot_layer = res_layers[PLOT_TABLE]
+        boundary_layer = res_layers[BOUNDARY_TABLE]
 
-        differences_layer_name = "Differences between {} and {}".format(PLOT_TABLE, BOUNDARY_TABLE)
+        if plot_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "Layer {} not found in DB! {}").format(
+                        PLOT_TABLE, db.get_description()), Qgis.Warning)
+            return
+
+        if boundary_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "Layer {} not found in DB! {}").format(
+                        BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
+            return
+
+        if plot_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no plots to check 'plots should be covered by boundaries'."),
+                Qgis.Info)
+            return
+
+        differences_layer_name = QCoreApplication.translate("QGISUtils", "Plot lines not covered by Boundaries")
         error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     QCoreApplication.translate("QGISUtils", differences_layer_name), "memory")
+                                     differences_layer_name, "memory")
 
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('plot_id', QVariant.String)])
@@ -133,8 +157,10 @@ class QualityUtils(QObject):
         differences = self.qgis_utils.geometry.difference_plot_boundary(plot_layer, boundary_layer)
 
         for difference in differences:
-            new_feature = QgsVectorLayerUtils().createFeature(error_layer, difference['geometry'],
-                                                              {0: difference['id']})
+            new_feature = QgsVectorLayerUtils().createFeature(
+                error_layer,
+                difference['geometry'],
+                {0: difference['id']})
             features.append(new_feature)
 
         error_layer.dataProvider().addFeatures(features)
@@ -144,21 +170,46 @@ class QualityUtils(QObject):
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} differences multilinestrings in layer '{}' has been added to the map!").format(
-                    added_layer.featureCount(), differences_layer_name), Qgis.Info)
+                    "A memory layer with {} plot lines not covered by boundaries has been added to the map!").format(
+                    added_layer.featureCount()), Qgis.Info)
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                    "'{}' are covered by '{}'!").format(PLOT_TABLE,BOUNDARY_TABLE), Qgis.Info)
+                    "All Plot lines are covered by Boundarues!"), Qgis.Info)
 
     def check_boundaries_covered_by_plots(self, db):
+        res_layers = self.qgis_utils.get_layers(self._db, {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}
+        }, load=True)
 
-        plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
-        boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, QgsWkbTypes.LineGeometry, load=True)
+        plot_layer = res_layers[PLOT_TABLE]
+        boundary_layer = res_layers[BOUNDARY_TABLE]
 
-        differences_layer_name = "Differences between {} and {}".format(BOUNDARY_TABLE, PLOT_TABLE)
+        if plot_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "Layer {} not found in DB! {}").format(
+                        PLOT_TABLE, db.get_description()), Qgis.Warning)
+            return
+
+        if boundary_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "Layer {} not found in DB! {}").format(
+                        BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
+            return
+
+        if boundary_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no boundaries to check 'boundaries should be covered by plots'."),
+                Qgis.Info)
+            return
+
+        differences_layer_name = QCoreApplication.translate("QGISUtils", "Boundaries not covered by plot lines")
         error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     QCoreApplication.translate("QGISUtils", differences_layer_name), "memory")
+                                     differences_layer_name, "memory")
 
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('boundary_id', QVariant.String)])
@@ -168,8 +219,10 @@ class QualityUtils(QObject):
         differences = self.qgis_utils.geometry.difference_boundary_plot(boundary_layer, plot_layer)
 
         for difference in differences:
-            new_feature = QgsVectorLayerUtils().createFeature(error_layer, difference['geometry'],
-                                                              {0: difference['id']})
+            new_feature = QgsVectorLayerUtils().createFeature(
+                error_layer,
+                difference['geometry'],
+                {0: difference['id']})
             features.append(new_feature)
 
         error_layer.dataProvider().addFeatures(features)
@@ -179,12 +232,12 @@ class QualityUtils(QObject):
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} differences multilinestrings in layer '{}' has been added to the map!").format(
-                    added_layer.featureCount(), differences_layer_name), Qgis.Info)
+                    "A memory layer with {} boundaries not covered by plot lines has been added to the map!").format(
+                    added_layer.featureCount()), Qgis.Info)
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                    "'{}' are covered by '{}'!").format(BOUNDARY_TABLE, PLOT_TABLE), Qgis.Info)
+                    "All Boundaries are covered by Plot lines!"), Qgis.Info)
 
     def check_overlapping_polygons(self, db, polygon_layer_name):
         polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, QgsWkbTypes.PolygonGeometry, load=True)
