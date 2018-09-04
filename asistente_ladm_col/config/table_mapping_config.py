@@ -13,6 +13,7 @@ BUSINESS_NAME_FIELD = "razon_social"
 CCLSOURCE_TABLE = "cclfuente"
 CCLSOURCE_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 CCLSOURCE_TABLE_SOURCE_FIELD = "lfuente"
+COL_PARTY_NAME_FIELD = "nombre"
 COL_PARTY_TABLE = "col_interesado"
 CONTROL_POINT_TABLE = "puntocontrol"
 DOCUMENT_ID_FIELD = "documento_identidad"
@@ -37,6 +38,7 @@ LA_GROUP_PARTY_GPTYPE_FIELD = "ai_tipo"
 LA_GROUP_PARTY_TYPE_FIELD = "tipo"
 LA_GROUP_PARTY_TYPE_TABLE = "col_grupointeresadotipo"
 LA_GROUP_PARTY_TYPE_VALUE = "Otro"
+LA_BAUNIT_NAME_FIELD = "nombre"
 LA_BAUNIT_TABLE = "la_baunit"
 LA_BAUNIT_TYPE_TABLE = "la_baunittipo"
 LA_DIMENSION_TYPE_TABLE = "la_dimensiontipo"
@@ -57,7 +59,7 @@ MEMBERS_TABLE = "miembros"
 MORE_BOUNDARY_FACE_STRING_TABLE = "masccl"
 MOREBFS_TABLE_BOUNDARY_FIELD = "cclp_lindero"
 MOREBFS_TABLE_PLOT_FIELD = "uep_terreno"
-NAME_FIELD = "nombre"
+PARCEL_NAME_FIELD = "nombre"
 NAMESPACE_FIELD = "_espacio_de_nombres"
 NIT_NUMBER_FIELD = "numero_nit"
 NUMBER_OF_FLOORS = "numero_pisos"
@@ -130,16 +132,30 @@ NAMESPACE_PREFIX = {
     SURVEY_POINT_TABLE: 'p'
 }
 
+DICT_AUTOMATIC_VALUES = {
+    BOUNDARY_TABLE: "$length",
+    COL_PARTY_TABLE: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
+        DOCUMENT_ID_FIELD,
+        FIRST_SURNAME_FIELD,
+        SECOND_SURNAME_FIELD,
+        FIRST_NAME_FIELD,
+        SECOND_NAME_FIELD,
+        BUSINESS_NAME_FIELD)
+}
+
 DICT_DISPLAY_EXPRESSIONS = {
-    COL_PARTY_TABLE: '{}+\' \'+{}+\' \'+{}+\' \'+{}+\' \'+{}'.format(DOCUMENT_ID_FIELD,
-                                                                    FIRST_SURNAME_FIELD,
-                                                                    SECOND_SURNAME_FIELD,
-                                                                    FIRST_NAME_FIELD,
-                                                                    SECOND_NAME_FIELD),
-    PARCEL_TABLE: '{}+\' \'+{}+\' \'+{}'.format(NUPRE_FIELD, FMI_FIELD, NAME_FIELD),
-    LA_BAUNIT_TABLE: '{}+\' \'+{}+\' \'+{}'.format(ID_FIELD, NAME_FIELD, TYPE_FIELD),
-    LA_GROUP_PARTY_TABLE: '{} || \' \' || {}'.format(ID_FIELD, NAME_FIELD),
-    BUILDING_TABLE: '"{}{}" + \' \' + "{}{}"'.format(NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
+    #COL_PARTY_TABLE: "concat({}, {}, {}, {})".format(DOCUMENT_ID_FIELD, COL_PARTY_NAME_FIELD),
+    COL_PARTY_TABLE: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
+        DOCUMENT_ID_FIELD,
+        FIRST_SURNAME_FIELD,
+        SECOND_SURNAME_FIELD,
+        FIRST_NAME_FIELD,
+        SECOND_NAME_FIELD,
+        BUSINESS_NAME_FIELD),
+    PARCEL_TABLE: "{} || ' ' || {} || ' ' || {}".format(NUPRE_FIELD, FMI_FIELD, PARCEL_NAME_FIELD),
+    LA_BAUNIT_TABLE: "{} || ' ' || {} || ' ' || {}".format(ID_FIELD, LA_BAUNIT_NAME_FIELD, TYPE_FIELD),
+    LA_GROUP_PARTY_TABLE: "{} || ' ' || {}".format(ID_FIELD, LA_GROUP_PARTY_NAME_FIELD),
+    BUILDING_TABLE: '"{}{}"  || ' ' ||  "{}{}"'.format(NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
                                                                     NAMESPACE_FIELD,
                                                                     NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
                                                                     LOCAL_ID_FIELD)

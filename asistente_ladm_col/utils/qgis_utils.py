@@ -63,7 +63,10 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
                                            BUILDING_UNIT_TABLE,
+                                           COL_PARTY_NAME_FIELD,
+                                           COL_PARTY_TABLE,
                                            CUSTOM_WIDGET_CONFIGURATION,
+                                           DICT_AUTOMATIC_VALUES,
                                            DICT_DISPLAY_EXPRESSIONS,
                                            EXTFILE_DATA_FIELD,
                                            EXTFILE_TABLE,
@@ -408,7 +411,6 @@ class QGISUtils(QObject):
 
             layer.setEditorWidgetSetup(index, editor_widget_setup)
 
-
     def set_custom_events(self, layer):
         if layer.name() == EXTFILE_TABLE:
             self._source_handler = self.get_source_handler()
@@ -431,12 +433,10 @@ class QGISUtils(QObject):
         if layer.fields().indexFromName(VIDA_UTIL_FIELD) != -1:
             self.configure_automatic_field(layer, VIDA_UTIL_FIELD, "now()")
 
-        # centroid must be calculated automatically from geometry
-        #if layer.fields().indexFromName(REFERENCE_POINT_FIELD) != -1:
-        #    self.configure_automatic_field(layer, REFERENCE_POINT_FIELD, "centroid($geometry)")
-
-        if layer_name == BOUNDARY_TABLE:
-            self.configure_automatic_field(layer, LENGTH_FIELD_BOUNDARY_TABLE, "$length")
+        if layer_name == BOUNDARY_TABLE and BOUNDARY_TABLE in DICT_AUTOMATIC_VALUES:
+            self.configure_automatic_field(layer, LENGTH_FIELD_BOUNDARY_TABLE, DICT_AUTOMATIC_VALUES[BOUNDARY_TABLE])
+        elif layer_name == COL_PARTY_TABLE and COL_PARTY_TABLE in DICT_AUTOMATIC_VALUES:
+            self.configure_automatic_field(layer, COL_PARTY_NAME_FIELD, DICT_AUTOMATIC_VALUES[COL_PARTY_TABLE])
 
     def set_automatic_fields_namespace_local_id(self, layer):
         layer_name = layer.name()
