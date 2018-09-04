@@ -30,7 +30,6 @@ from qgis.core import (
     QgsVectorLayerEditUtils
 )
 from qgis.core import edit
-from qgis.utils import iface
 
 import processing
 from ..config.general_config import PLUGIN_NAME, DEFAULT_POLYGON_AREA_TOLERANCE
@@ -346,10 +345,7 @@ class GeometryUtils(QObject):
             if not feature.geometry().isGeosValid():
                 continue
 
-            if feature.geometry().isMultipart() and feature.geometry().wkbType() in [QgsWkbTypes.MultiPolygon,
-                                                                                     QgsWkbTypes.MultiPolygonZ,
-                                                                                     QgsWkbTypes.MultiPolygonM,
-                                                                                     QgsWkbTypes.MultiPolygonZM]:
+            if feature.geometry().isMultipart() and feature.geometry().type() == QgsWkbTypes.PolygonGeometry:
                 for polygon in feature.geometry().asMultiPolygon():
                     featureCollection.append(QgsGeometry.fromPolygonXY(polygon))
                 continue
@@ -357,6 +353,7 @@ class GeometryUtils(QObject):
             featureCollection.append(feature.geometry())
 
         union_geom = QgsGeometry.unaryUnion(featureCollection)
+        aux_convex_hull = union_geom.convexHull()
         buffer_extent = QgsGeometry.fromRect(union_geom.boundingBox()).buffer(2, 3)
         buffer_diff = buffer_extent.difference(QgsGeometry.fromRect(union_geom.boundingBox()))
         diff_geoms = buffer_extent.difference(union_geom)
@@ -380,7 +377,11 @@ class GeometryUtils(QObject):
 
             feature_error.append(conflict_geom)
 
-        return feature_error
+        unified_error = QgsGeometry.collectGeometry(feature_error)
+        feature_error.clear()
+        clean_errors = unified_error.intersection(aux_convex_hull)
+
+        return self.extract_geoms_by_type(clean_errors, [QgsWkbTypes.PolygonGeometry])
 
     def add_topological_vertices(self, layer1, layer2):
         """
@@ -470,3 +471,14 @@ class GeometryUtils(QObject):
         layer.removeSelection()
 
         return clone_layer if type(clone_layer) == QgsVectorLayer else False
+
+    def extract_geoms_by_type(self, geometry_collection, geom_type):
+        """ Function very nice for extract simple geometries from geometryCollections """
+        geom_list = list()
+        for level_1 in geometry_collection.asGeometryCollection():
+            if level_1.isMultipart():
+                for i in range(level_1.numGeoetries()):
+                    geom_list.append(level_1.geometryN(i))
+            geom_list.append(level_1)
+
+        return [geom for geom in geom_list if geom.type() in geom_type]
