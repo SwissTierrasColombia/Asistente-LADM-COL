@@ -328,40 +328,55 @@ class GeometryUtils(QObject):
 
         return ids, QgsGeometry.collectGeometry(list_overlapping) if len(list_overlapping) > 0 else None
 
-    def get_gaps_in_continuous_layer(self, layer, include_roads):
-        """function to find the gaps in a continuous layer in space"""
+    def get_gaps_in_polygon_layer(self, layer, include_roads):
+        """
+        Find gaps in a continuous layer in space.
 
+        Ported/adapted to Python from:
+        https://github.com/qgis/QGIS/blob/2c536307476e205b83d86863b903d7ea9d628f0d/src/plugins/topology/topolTest.cpp#L579-L726
+        """
         features = layer.getFeatures()
         featureCollection = list()
-        for feat in features:
-            if feat.geometry().isEmpty():
+
+        for feature in features:
+            if feature.geometry().isEmpty():
                 continue
-            if not feat.geometry().isGeosValid():
+
+            if not feature.geometry().isGeosValid():
                 continue
-            if feat.geometry().isMultipart() and feat.geometry().wkbType() == QgsWkbTypes.MultiPolygon:
-                for pol in feat.geometry().asMultiPolygon():
-                    featureCollection.append(QgsGeometry.fromPolygonXY(pol))
+
+            if feature.geometry().isMultipart() and feature.geometry().wkbType() == QgsWkbTypes.MultiPolygon:
+                for polygon in feature.geometry().asMultiPolygon():
+                    featureCollection.append(QgsGeometry.fromPolygonXY(polygon))
                 continue
-            featureCollection.append(feat.geometry())
+
+            featureCollection.append(feature.geometry())
+
         union_geom = QgsGeometry.unaryUnion(featureCollection)
         buffer_extent = QgsGeometry.fromRect(union_geom.boundingBox()).buffer(2, 3)
-        buff_diff = QgsGeometry.fromRect(union_geom.boundingBox()).buffer(2, 3).difference(
-            QgsGeometry.fromRect(union_geom.boundingBox()))
+        buffer_diff = buffer_extent.difference(QgsGeometry.fromRect(union_geom.boundingBox()))
         diff_geoms = buffer_extent.difference(union_geom)
+
         if not diff_geoms:
-            return
+            return None
+
         feature_error = list()
         if not diff_geoms.isMultipart():
-            if not include_roads and diff_geoms.touches(union_geom) and diff_geoms.intersects(buff_diff):
-                print("unique value and no error")
-                return
+            if not include_roads and diff_geoms.touches(union_geom) and diff_geoms.intersects(buffer_diff):
+                print("Unique value and no error")
+                return None
+
             feature_error.append(diff_geoms)
             return feature_error
-        for geom in diff_geoms.asMultiPolygon():
-            conflict_geom = QgsGeometry.fromPolygonXY(geom)
-            if not include_roads and conflict_geom.touches(union_geom) and conflict_geom.intersects(buff_diff):
+
+        for geometry in diff_geoms.asMultiPolygon():
+            conflict_geom = QgsGeometry.fromPolygonXY(geometry)
+            if not include_roads and conflict_geom.touches(union_geom) and conflict_geom.intersects(buffer_diff):
                 continue
-            if not union_geom.isMultipart() and conflict_geom.touches(union_geom) and conflict_geom.intersects(buff_diff):
+
+            if not union_geom.isMultipart() and conflict_geom.touches(union_geom) and conflict_geom.intersects(buffer_diff):
                 continue
+
             feature_error.append(conflict_geom)
+
         return feature_error

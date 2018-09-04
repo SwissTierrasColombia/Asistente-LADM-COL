@@ -295,7 +295,7 @@
        <item row="2" column="0">
         <widget class="QCheckBox" name="chk_use_roads">
          <property name="text">
-          <string>Use Roads like gaps</string>
+          <string>Take roads into account when checking for gaps in plots</string>
          </property>
         </widget>
        </item>
@@ -536,7 +536,7 @@
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
