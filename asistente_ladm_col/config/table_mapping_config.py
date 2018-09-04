@@ -134,7 +134,7 @@ NAMESPACE_PREFIX = {
 
 DICT_AUTOMATIC_VALUES = {
     BOUNDARY_TABLE: "$length",
-    COL_PARTY_TABLE: "regexp_replace(regexp_replace(regexp_replace({} || ' ' || {} || ' ' || {} || ' ' || {} || ' ' || {} || ' ' || {} , '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
+    COL_PARTY_TABLE: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
         DOCUMENT_ID_FIELD,
         FIRST_SURNAME_FIELD,
         SECOND_SURNAME_FIELD,
@@ -144,7 +144,14 @@ DICT_AUTOMATIC_VALUES = {
 }
 
 DICT_DISPLAY_EXPRESSIONS = {
-    COL_PARTY_TABLE: "{} || ' ' || {}".format(DOCUMENT_ID_FIELD, COL_PARTY_NAME_FIELD),
+    #COL_PARTY_TABLE: "concat({}, {}, {}, {})".format(DOCUMENT_ID_FIELD, COL_PARTY_NAME_FIELD),
+    COL_PARTY_TABLE: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
+        DOCUMENT_ID_FIELD,
+        FIRST_SURNAME_FIELD,
+        SECOND_SURNAME_FIELD,
+        FIRST_NAME_FIELD,
+        SECOND_NAME_FIELD,
+        BUSINESS_NAME_FIELD),
     PARCEL_TABLE: "{} || ' ' || {} || ' ' || {}".format(NUPRE_FIELD, FMI_FIELD, PARCEL_NAME_FIELD),
     LA_BAUNIT_TABLE: "{} || ' ' || {} || ' ' || {}".format(ID_FIELD, LA_BAUNIT_NAME_FIELD, TYPE_FIELD),
     LA_GROUP_PARTY_TABLE: "{} || ' ' || {}".format(ID_FIELD, LA_GROUP_PARTY_NAME_FIELD),

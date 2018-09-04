@@ -22,7 +22,13 @@ import glob
 from functools import partial, wraps
 
 import qgis.utils
-from qgis.core import Qgis, QgsApplication, QgsProcessingModelAlgorithm
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsProcessingModelAlgorithm,
+    QgsExpression,
+    QgsExpressionContext
+)
 from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
                               QLocale, QSettings)
 from qgis.PyQt.QtGui import QIcon
@@ -513,7 +519,14 @@ class AsistenteLADMCOLPlugin(QObject):
                 "Close the edit session in table {} before creating group parties.").format(layer.name()), Qgis.Warning, 10)
             return
 
-        data = {f[ID_FIELD]: ["{} {} {}".format(f["documento_identidad"], f["primer_apellido"], f["primer_nombre"]), 0, 0] for f in layer.getFeatures()}
+        expression = QgsExpression(layer.displayExpression())
+        context = QgsExpressionContext()
+        data = dict()
+        for feature in layer.getFeatures():
+            context.setFeature(feature)
+            expression.prepare(context)
+            data[feature[ID_FIELD]] = [expression.evaluate(context), 0, 0]
+
         dlg.set_parties_data(data)
         dlg.exec_()
 
