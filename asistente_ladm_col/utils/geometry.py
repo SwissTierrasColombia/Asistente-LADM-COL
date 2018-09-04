@@ -30,6 +30,7 @@ from qgis.core import (
     QgsVectorLayerEditUtils
 )
 from qgis.core import edit
+from qgis.utils import iface
 
 import processing
 from ..config.general_config import PLUGIN_NAME, DEFAULT_POLYGON_AREA_TOLERANCE
@@ -345,7 +346,10 @@ class GeometryUtils(QObject):
             if not feature.geometry().isGeosValid():
                 continue
 
-            if feature.geometry().isMultipart() and feature.geometry().wkbType() == QgsWkbTypes.MultiPolygon:
+            if feature.geometry().isMultipart() and feature.geometry().wkbType() in [QgsWkbTypes.MultiPolygon,
+                                                                                     QgsWkbTypes.MultiPolygonZ,
+                                                                                     QgsWkbTypes.MultiPolygonM,
+                                                                                     QgsWkbTypes.MultiPolygonZM]:
                 for polygon in feature.geometry().asMultiPolygon():
                     featureCollection.append(QgsGeometry.fromPolygonXY(polygon))
                 continue
@@ -362,12 +366,9 @@ class GeometryUtils(QObject):
 
         feature_error = list()
         if not diff_geoms.isMultipart():
-            if not include_roads and diff_geoms.touches(union_geom) and diff_geoms.intersects(buffer_diff):
+            if include_roads and diff_geoms.touches(union_geom) and diff_geoms.intersects(buffer_diff):
                 print("Unique value and no error")
                 return None
-
-            feature_error.append(diff_geoms)
-            return feature_error
 
         for geometry in diff_geoms.asMultiPolygon():
             conflict_geom = QgsGeometry.fromPolygonXY(geometry)
