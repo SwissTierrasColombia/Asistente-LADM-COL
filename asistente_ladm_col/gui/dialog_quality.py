@@ -143,6 +143,8 @@ class DialogQuality(QDialog, DIALOG_UI):
         self.trw_quality_rules.setUpdatesEnabled(True) # Now render!
 
     def accepted(self):
+        self.qgis_utils.remove_error_group_requested.emit()
+
         iterator = QTreeWidgetItemIterator(self.trw_quality_rules, QTreeWidgetItemIterator.Selectable)
         while iterator.value():
             item = iterator.value()
@@ -176,6 +178,9 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_gaps_in_plots(self._db)
 
             iterator += 1
+
+        if self.qgis_utils.error_group_exists():
+            self.qgis_utils.set_error_group_visibility(True)
 
     def rejected(self):
         pass

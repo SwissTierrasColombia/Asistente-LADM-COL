@@ -96,6 +96,7 @@ class QGISUtils(QObject):
     action_vertex_tool_requested = pyqtSignal()
     activate_layer_requested = pyqtSignal(QgsMapLayer)
     clear_status_bar_emitted = pyqtSignal()
+    remove_error_group_requested = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
     message_emitted = pyqtSignal(str, int) # Message, level
     message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
@@ -103,7 +104,7 @@ class QGISUtils(QObject):
     message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
     map_refresh_requested = pyqtSignal()
     map_freeze_requested = pyqtSignal(bool)
-    set_node_visibility_requested = pyqtSignal(QgsMapLayer, bool)
+    set_node_visibility_requested = pyqtSignal(QgsMapLayer, str, bool)
     status_bar_message_emitted = pyqtSignal(str, int) # Message, duration
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
@@ -341,7 +342,7 @@ class QGISUtils(QObject):
         self.set_automatic_fields(layer)
         if layer.isSpatial():
             self.symbology.set_layer_style_from_qml(layer)
-            self.set_layer_visibility(layer, visible)
+            self.set_node_visibility(layer, 'layer_id', visible)
 
     def configure_missing_relations(self, layer):
         layer_name = layer.dataProvider().uri().table()
@@ -517,8 +518,11 @@ class QGISUtils(QObject):
         for idx, default_definition in automatic_fields_definition.items():
             layer.setDefaultValueDefinition(idx, default_definition)
 
-    def set_layer_visibility(self, layer, visible):
-        self.set_node_visibility_requested.emit(layer, visible)
+    def set_error_group_visibility(self, visible):
+        self.set_node_visibility(self.get_error_layers_group(), 'group', visible)
+
+    def set_node_visibility(self, layer, mode, visible):
+        self.set_node_visibility_requested.emit(layer, mode, visible)
 
     def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, target_layer_name):
         if not csv_path or not os.path.exists(csv_path):
@@ -770,6 +774,10 @@ class QGISUtils(QObject):
                 Qgis.Info)
 
     def get_error_layers_group(self):
+        """
+        Get the topology errors group. If it exists but is placed in another
+        position rather than the top, it moves the group to the top.
+        """
         root = QgsProject.instance().layerTreeRoot()
         group = root.findGroup(self.translatable_config_strings.ERROR_LAYER_GROUP)
         if group is None:
@@ -781,6 +789,11 @@ class QGISUtils(QObject):
             parent.removeChildNode(group)
             group = group_clone
         return group
+
+    def error_group_exists(self):
+        root = QgsProject.instance().layerTreeRoot()
+        return root.findGroup(self.translatable_config_strings.ERROR_LAYER_GROUP) is not None
+
 
     def turn_transaction_off(self):
         QgsProject.instance().setAutoTransaction(False)

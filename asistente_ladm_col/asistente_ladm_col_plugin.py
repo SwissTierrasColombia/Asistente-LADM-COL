@@ -199,6 +199,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
         self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
         self.qgis_utils.clear_status_bar_emitted.connect(self.clear_status_bar)
+        self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
@@ -271,10 +272,20 @@ class AsistenteLADMCOLPlugin(QObject):
     def activate_layer(self, layer):
         self.iface.layerTreeView().setCurrentLayer(layer)
 
-    def set_node_visibility(self, layer, visible):
-        res = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
-        if res is not None:
-            res.setItemVisibilityChecked(visible)
+    def set_node_visibility(self, node, mode='layer_id', visible=True):
+        # Modes may eventually be layer_id, group_name, layer, group
+        if mode == 'layer_id':
+            node = QgsProject.instance().layerTreeRoot().findLayer(node.id())
+        elif mode == 'group':
+            pass # We are done
+
+        if node is not None:
+            node.setItemVisibilityChecked(visible)
+
+    def remove_error_group(self):
+        group = self.qgis_utils.get_error_layers_group()
+        parent = group.parent()
+        parent.removeChildNode(group)
 
     def clear_status_bar(self):
         self.iface.statusBarIface().clearMessage()
