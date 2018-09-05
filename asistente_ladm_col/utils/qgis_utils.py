@@ -103,6 +103,7 @@ class QGISUtils(QObject):
     message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
     map_refresh_requested = pyqtSignal()
     map_freeze_requested = pyqtSignal(bool)
+    set_node_visibility_requested = pyqtSignal(QgsMapLayer, bool)
     status_bar_message_emitted = pyqtSignal(str, int) # Message, duration
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
@@ -237,7 +238,7 @@ class QGISUtils(QObject):
                     profiler.start("load_layers")
                     self.project_generator_utils.load_layers(all_layers_to_load, db)
                     profiler.end()
-                    print("Load layers",profiler.totalTime())
+                    print("Load layers", profiler.totalTime())
                     profiler.clear()
 
                     # Now that all layers are loaded, update response dict
@@ -264,7 +265,9 @@ class QGISUtils(QObject):
                                     del missing_layers[layer_id] # Don't look for this layer anymore
                                     break
 
-                            self.post_load_configurations(layer)
+                            # Turn off layers loaded as related layers
+                            visible = layer_name in layers
+                            self.post_load_configurations(layer, visible)
 
                     profiler.end()
                     print("Post load",profiler.totalTime())
@@ -327,7 +330,7 @@ class QGISUtils(QObject):
         for layer in layers:
             self.set_automatic_fields_namespace_local_id(layer)
 
-    def post_load_configurations(self, layer):
+    def post_load_configurations(self, layer, visible):
         # Do some post-load work, such as setting styles or
         # setting automatic fields for that layer
         self.configure_missing_relations(layer)
@@ -338,6 +341,7 @@ class QGISUtils(QObject):
         self.set_automatic_fields(layer)
         if layer.isSpatial():
             self.symbology.set_layer_style_from_qml(layer)
+            self.set_layer_visibility(layer, visible)
 
     def configure_missing_relations(self, layer):
         layer_name = layer.dataProvider().uri().table()
@@ -512,6 +516,9 @@ class QGISUtils(QObject):
 
         for idx, default_definition in automatic_fields_definition.items():
             layer.setDefaultValueDefinition(idx, default_definition)
+
+    def set_layer_visibility(self, layer, visible):
+        self.set_node_visibility_requested.emit(layer, visible)
 
     def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, target_layer_name):
         if not csv_path or not os.path.exists(csv_path):

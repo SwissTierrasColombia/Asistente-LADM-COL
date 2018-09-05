@@ -25,9 +25,10 @@ import qgis.utils
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsProcessingModelAlgorithm,
     QgsExpression,
-    QgsExpressionContext
+    QgsExpressionContext,
+    QgsProcessingModelAlgorithm,
+    QgsProject
 )
 from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
                               QLocale, QSettings)
@@ -206,6 +207,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.status_bar_message_emitted.connect(self.show_status_bar_message)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
+        self.qgis_utils.set_node_visibility_requested.connect(self.set_node_visibility)
 
         # Toolbar
         self._boundary_explode_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Explode..."), self.iface.mainWindow())
@@ -268,6 +270,11 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def activate_layer(self, layer):
         self.iface.layerTreeView().setCurrentLayer(layer)
+
+    def set_node_visibility(self, layer, visible):
+        res = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
+        if res is not None:
+            res.setItemVisibilityChecked(visible)
 
     def clear_status_bar(self):
         self.iface.statusBarIface().clearMessage()
