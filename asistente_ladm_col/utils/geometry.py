@@ -328,6 +328,61 @@ class GeometryUtils(QObject):
 
         return ids, QgsGeometry.collectGeometry(list_overlapping) if len(list_overlapping) > 0 else None
 
+    def get_gaps_in_polygon_layer(self, layer, include_roads):
+        """
+        Find gaps in a continuous layer in space.
+
+        Ported/adapted to Python from:
+        https://github.com/qgis/QGIS/blob/2c536307476e205b83d86863b903d7ea9d628f0d/src/plugins/topology/topolTest.cpp#L579-L726
+        """
+        features = layer.getFeatures()
+        featureCollection = list()
+
+        for feature in features:
+            if feature.geometry().isEmpty():
+                continue
+
+            if not feature.geometry().isGeosValid():
+                continue
+
+            if feature.geometry().isMultipart() and feature.geometry().type() == QgsWkbTypes.PolygonGeometry:
+                for polygon in feature.geometry().asMultiPolygon():
+                    featureCollection.append(QgsGeometry.fromPolygonXY(polygon))
+                continue
+
+            featureCollection.append(feature.geometry())
+
+        union_geom = QgsGeometry.unaryUnion(featureCollection)
+        aux_convex_hull = union_geom.convexHull()
+        buffer_extent = QgsGeometry.fromRect(union_geom.boundingBox()).buffer(2, 3)
+        buffer_diff = buffer_extent.difference(QgsGeometry.fromRect(union_geom.boundingBox()))
+        diff_geoms = buffer_extent.difference(union_geom)
+
+        if not diff_geoms:
+            return None
+
+        feature_error = list()
+        if not diff_geoms.isMultipart():
+            if include_roads and diff_geoms.touches(union_geom) and diff_geoms.intersects(buffer_diff):
+                print("Unique value and no error")
+                return None
+
+        for geometry in diff_geoms.asMultiPolygon():
+            conflict_geom = QgsGeometry.fromPolygonXY(geometry)
+            if not include_roads and conflict_geom.touches(union_geom) and conflict_geom.intersects(buffer_diff):
+                continue
+
+            if not union_geom.isMultipart() and conflict_geom.touches(union_geom) and conflict_geom.intersects(buffer_diff):
+                continue
+
+            feature_error.append(conflict_geom)
+
+        unified_error = QgsGeometry.collectGeometry(feature_error)
+        feature_error.clear()
+        clean_errors = unified_error.intersection(aux_convex_hull)
+
+        return self.extract_geoms_by_type(clean_errors, [QgsWkbTypes.PolygonGeometry])
+
     def add_topological_vertices(self, layer1, layer2):
         """
         Modify layer1 adding vertices that are in layer2 and not in layer1
@@ -416,3 +471,18 @@ class GeometryUtils(QObject):
         layer.removeSelection()
 
         return clone_layer if type(clone_layer) == QgsVectorLayer else False
+
+    def extract_geoms_by_type(self, geometry_collection, geometry_types):
+        """
+        Get a list of geometries with type in geometry_types from a geometry
+        collection
+        """
+        geom_list = list()
+        for geometry in geometry_collection.asGeometryCollection():
+            if geometry.isMultipart():
+                for i in range(geometry.numGeometries()):
+                    geom_list.append(geometry.geometryN(i))
+            else:
+                geom_list.append(geometry)
+
+        return [geom for geom in geom_list if geom.type() in geometry_types]
