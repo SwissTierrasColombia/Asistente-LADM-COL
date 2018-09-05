@@ -472,13 +472,17 @@ class GeometryUtils(QObject):
 
         return clone_layer if type(clone_layer) == QgsVectorLayer else False
 
-    def extract_geoms_by_type(self, geometry_collection, geom_type):
-        """ Function very nice for extract simple geometries from geometryCollections """
+    def extract_geoms_by_type(self, geometry_collection, geometry_types):
+        """
+        Get a list of geometries with type in geometry_types from a geometry
+        collection
+        """
         geom_list = list()
-        for level_1 in geometry_collection.asGeometryCollection():
-            if level_1.isMultipart():
-                for i in range(level_1.numGeoetries()):
-                    geom_list.append(level_1.geometryN(i))
-            geom_list.append(level_1)
+        for geometry in geometry_collection.asGeometryCollection():
+            if geometry.isMultipart():
+                for i in range(geometry.numGeometries()):
+                    geom_list.append(geometry.geometryN(i))
+            else:
+                geom_list.append(geometry)
 
-        return [geom for geom in geom_list if geom.type() in geom_type]
+        return [geom for geom in geom_list if geom.type() in geometry_types]
