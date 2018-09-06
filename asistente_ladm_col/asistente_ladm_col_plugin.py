@@ -67,6 +67,9 @@ from .gui.create_responsibility_cadastre_wizard import CreateResponsibilityCadas
 from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWizard
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
+from .gui.create_property_record_card_prc import CreatePropertyRecordCardPRCWizard
+from .gui.create_market_research_prc import CreateMarketResearchPRCWizard
+from .gui.create_nuclear_family_prc import CreateNuclearFamilyPRCWizard
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
 from .gui.about_dialog import AboutDialog
@@ -625,17 +628,20 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def show_wiz_property_record_card(self):
-        pass
+        wiz = CreatePropertyRecordCardPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
 
     @_project_generator_required
     @_db_connection_required
     def show_wiz_market_research_prc(self):
-        pass
+        wiz = CreateMarketResearchPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
 
     @_project_generator_required
     @_db_connection_required
     def show_wiz_nuclear_family_prc(self):
-        pass
+        wiz = CreateNuclearFamilyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
 
     @_project_generator_required
     @_db_connection_required

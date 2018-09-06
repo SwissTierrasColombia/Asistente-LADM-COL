@@ -1,5 +1,8 @@
 from qgis.core import NULL
 
+"""
+CADASTRE MAPPING
+"""
 ADMINISTRATIVE_SOURCE_TABLE = "col_fuenteadministrativa"
 ADMINISTRATIVE_SOURCE_TYPE_TABLE = "col_fuenteadministrativatipo"
 AVAILABILITY_STATE_TABLE = "col_estadodisponibilidadtipo"
@@ -112,6 +115,16 @@ UESOURCE_TABLE = "uefuente"
 UESOURCE_TABLE_PLOT_FIELD = "ue_terreno"
 UESOURCE_TABLE_SOURCE_FIELD = "pfuente"
 VIDA_UTIL_FIELD = "comienzo_vida_util_version"
+
+"""
+PROPERTY RECORD CARD MAPPING
+"""
+PROPERTY_RECORD_CARD_TABLE = "predio_ficha"
+MARKET_RESEARCH_TABLE = "investigacionmercado"
+NUCLEAR_FAMILY_TABLE = "nucleofamiliar"
+NATURAL_PARTY_TABLE = "interesado_natural"
+LEGAL_PARTY_TABLE = "interesado_juridico"
+
 
 NAMESPACE_PREFIX = {
     ADMINISTRATIVE_SOURCE_TABLE: 's',
