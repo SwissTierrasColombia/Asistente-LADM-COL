@@ -70,6 +70,8 @@ from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadast
 from .gui.create_property_record_card_prc import CreatePropertyRecordCardPRCWizard
 from .gui.create_market_research_prc import CreateMarketResearchPRCWizard
 from .gui.create_nuclear_family_prc import CreateNuclearFamilyPRCWizard
+from .gui.create_natural_party_prc import CreateNaturalPartyPRCWizard
+from .gui.create_legal_party_prc import CreateLegalPartyPRCWizard
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
 from .gui.about_dialog import AboutDialog
@@ -268,7 +270,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.addMenu(self._property_record_card_menu)
 
         # Connections
-        self._property_record_card_menu.triggered.connect(self.show_wiz_property_record_card)
+        self._property_record_card_action.triggered.connect(self.show_wiz_property_record_card)
         self._market_research_property_record_card_action.triggered.connect(self.show_wiz_market_research_prc)
         self._nuclear_family_property_record_card_action.triggered.connect(self.show_wiz_nuclear_family_prc)
         self._natural_party_property_record_card_action.triggered.connect(self.show_wiz_natural_party_prc)
@@ -646,12 +648,14 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def show_wiz_natural_party_prc(self):
-        pass
+        wiz = CreateNaturalPartyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
 
     @_project_generator_required
     @_db_connection_required
     def show_wiz_legal_party_prc(self):
-        pass
+        wiz = CreateLegalPartyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
 
     def show_help(self):
         self.qgis_utils.show_help()
