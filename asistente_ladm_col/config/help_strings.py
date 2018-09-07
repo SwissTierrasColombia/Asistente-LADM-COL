@@ -107,7 +107,13 @@ Choose this option if you want to create a <b>Building Unit</b> from existing <i
 ")
 
         self.WIZ_CREATE_RIGHT_OF_WAY_CADASTRE_PAGE_1_OPTION_POINTS = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Right of Way</b> from existing <i>Survey Points</i>.\
+Choose this option if you want to create a <b>Right of Way</b> digitizing a polygon using existing <i>Survey Points</i>.\
+<br><br>\
+<b>Right of Way</b> is a type of spatial unit of the LADM model wich allows the representation of a Right of Way associated to a LA_BAUnit.\
+")
+
+        self.WIZ_CREATE_RIGHT_OF_WAY_CADASTRE_PAGE_1_OPTION2_POINTS = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Right of Way</b> digitizing centerline using existing <i>Survey Points</i> and giving a width value.\
 <br><br>\
 <b>Right of Way</b> is a type of spatial unit of the LADM model wich allows the representation of a Right of Way associated to a LA_BAUnit.\
 ")

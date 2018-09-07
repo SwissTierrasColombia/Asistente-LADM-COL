@@ -57,8 +57,18 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         elif self.rad_digitizing.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
+            self.lbl_width.setEnabled(False)
+            self.width_line_edit.setEnabled(False)
             finish_button_text = QCoreApplication.translate('CreateRightOfWayCadastreWizard', 'Start')
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_RIGHT_OF_WAY_CADASTRE_PAGE_1_OPTION_POINTS)
+
+        elif self.rad_digitizing_line.isChecked():
+            self.width_line_edit.setEnabled(True)
+            self.lbl_width.setEnabled(True)
+            self.lbl_refactor_source.setEnabled(False)
+            self.mMapLayerComboBox.setEnabled(False)
+            finish_button_text = QCoreApplication.translate('CreateRightOfWayCadastreWizard', 'Start')
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_RIGHT_OF_WAY_CADASTRE_PAGE_1_OPTION2_POINTS)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
                                        QCoreApplication.translate('CreateRightOfWayCadastreWizard',
