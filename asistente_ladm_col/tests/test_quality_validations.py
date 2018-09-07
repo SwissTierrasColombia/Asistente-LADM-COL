@@ -460,15 +460,15 @@ class TesQualityValidations(unittest.TestCase):
 
     def test_check_gaps_in_plots(self):
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        uri = gpkg_path + '|layername={layername}'.format(layername='tests_plots')
-        test_plots_layer = QgsVectorLayer(uri, 'tests_plots', 'ogr')
+        uri = gpkg_path + '|layername={layername}'.format(layername='check_gaps_in_plots')
+        test_plots_layer = QgsVectorLayer(uri, 'check_gaps_in_plots', 'ogr')
 
         print('\nINFO: Validating Gaps in Plots using roads and multiple geometries...')
         gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
         geometries = [g.asWkt() for g in gaps]
 
         expected_list = [
-            'Polygon ((1001845.19794039404951036 1013415.08188382943626493, 1001851.47861975431442261 1013424.31817700632382184, 1001833.74493685469496995 1013433.92392191023100168, 1001829.49624199338722974 1013421.7320149167208001, 1001839.42949045938439667 1013500.23419545334763825, 1001838.68766217899974436 1013479.83391774445772171, 1001839.42949045938439667 1013450.16078653128352016, 1001855.74971262644976377 1013449.78987239114940166, 1001858.3461116076214239 1013430.87325124291237444, 1001885.42284383939113468 1013430.87325124291237444, 1001901.72405463655013591 1013411.57209242216777056, 1001910.64500537037383765 1013418.26217047742102295, 1001917.32145989337004721 1013392.29818066605366766, 1001845.19794039404951036 1013415.08188382943626493))',
+            'Polygon ((1001839.42949045938439667 1013500.23419545334763825, 1001838.68766217899974436 1013479.83391774445772171, 1001839.42949045938439667 1013450.16078653128352016, 1001855.74971262644976377 1013449.78987239114940166, 1001858.3461116076214239 1013430.87325124291237444, 1001885.42284383939113468 1013430.87325124291237444, 1001901.72405463655013591 1013411.57209242216777056, 1001910.64500537037383765 1013418.26217047742102295, 1001917.32145989337004721 1013392.29818066605366766, 1001845.19794039404951036 1013415.08188382943626493, 1001851.47861975431442261 1013424.31817700632382184, 1001833.74493685469496995 1013433.92392191023100168, 1001829.49624199338722974 1013421.7320149167208001, 1001839.42949045938439667 1013500.23419545334763825))', 'Polygon ((1001935.86716690135654062 1013432.35690780356526375, 1001921.03060129494406283 1013446.08073098957538605, 1001920.28877301455941051 1013475.7538622027495876, 1001957.38018703076522797 1013429.01868054212536663, 1001935.86716690135654062 1013432.35690780356526375))',
             'Polygon ((1001935.86716690135654062 1013432.35690780356526375, 1001921.03060129494406283 1013446.08073098957538605, 1001920.28877301455941051 1013475.7538622027495876, 1001957.38018703076522797 1013429.01868054212536663, 1001935.86716690135654062 1013432.35690780356526375))',
             'Polygon ((1001920.28877301455941051 1013475.7538622027495876, 1001861.31342472892720252 1013477.9793470436707139, 1001862.05525300919543952 1013498.37962475256063044, 1001920.28877301455941051 1013475.7538622027495876))',
             'Polygon ((1001895.43752562382724136 1013467.22283697873353958, 1001907.30677810893394053 1013464.25552385742776096, 1001907.67769224906805903 1013454.2408420731080696, 1001895.43752562382724136 1013454.2408420731080696, 1001895.43752562382724136 1013467.22283697873353958))',
@@ -517,6 +517,58 @@ class TesQualityValidations(unittest.TestCase):
             geometries)
         self.assertEqual(len(geometries), 2)
         test_plots_layer.rollBack()
+
+        print('\nINFO: Validating Gaps in Plots using roads for only one geometry...')
+        test_plots_layer.startEditing()
+        test_plots_layer.deleteFeature(1)
+        test_plots_layer.deleteFeature(2)
+        test_plots_layer.deleteFeature(3)
+        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
+        geometries = [g.asWkt() for g in gaps]
+        self.assertEqual([], geometries)
+        self.assertEqual(len(geometries), 0)
+
+        test_plots_layer.rollBack()
+
+
+        print('\nINFO: Validating Gaps in Plots without using roads for only one geometry...')
+        test_plots_layer.startEditing()
+        test_plots_layer.deleteFeature(1)
+        test_plots_layer.deleteFeature(2)
+        test_plots_layer.deleteFeature(3)
+        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
+        geometries = [g.asWkt() for g in gaps]
+        self.assertEqual([], geometries)
+        self.assertEqual(len(geometries), 0)
+
+        test_plots_layer.rollBack()
+
+
+        print('\nINFO: Validating Gaps in Plots using roads for two geometries...')
+        test_plots_layer.startEditing()
+        test_plots_layer.deleteFeature(1)
+        test_plots_layer.deleteFeature(3)
+        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
+        geometries = [g.asWkt() for g in gaps]
+        self.assertIn(
+            'Polygon ((1001889.87381352134980261 1013447.93530169036239386, 1001885.42284383939113468 1013430.87325124291237444, 1001901.72405463655013591 1013411.57209242216777056, 1001845.19794039404951036 1013415.08188382943626493, 1001851.47861975431442261 1013424.31817700632382184, 1001833.74493685469496995 1013433.92392191023100168, 1001889.87381352134980261 1013447.93530169036239386))',
+            geometries)
+        self.assertEqual(len(geometries), 1)
+
+        test_plots_layer.rollBack()
+
+
+        print('\nINFO: Validating Gaps in Plots without using roads for two geometries...')
+        test_plots_layer.startEditing()
+        test_plots_layer.deleteFeature(1)
+        test_plots_layer.deleteFeature(3 )
+        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
+        geometries = [g.asWkt() for g in gaps]
+        self.assertEqual([], geometries)
+        self.assertEqual(len(geometries), 0)
+
+        test_plots_layer.rollBack()
+
 
 
     def tearDownClass():

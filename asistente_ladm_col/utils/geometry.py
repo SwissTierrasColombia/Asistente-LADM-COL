@@ -356,7 +356,7 @@ class GeometryUtils(QObject):
         aux_convex_hull = union_geom.convexHull()
         buffer_extent = QgsGeometry.fromRect(union_geom.boundingBox()).buffer(2, 3)
         buffer_diff = buffer_extent.difference(QgsGeometry.fromRect(union_geom.boundingBox()))
-        diff_geoms = buffer_extent.difference(union_geom)
+        diff_geoms = buffer_extent.difference(union_geom).difference(buffer_diff)
 
         if not diff_geoms:
             return None
