@@ -499,7 +499,8 @@ class GeometryUtils(QObject):
             geometry = feature.geometry()
             const_geom = geometry.constGet()
             if geometry.isMultipart() and const_geom.partCount() > 1:
-                for polygon in geometry.asMultiPolygon():
-                    featureCollection.append(QgsGeometry.fromPolygonXY(polygon))
+                for i in range(const_geom.numGeometries()):
+                    geom = QgsGeometry.fromWkt(const_geom.geometryN(i).asWkt())
+                    featureCollection.append(geom)
                     ids.append(feature.id())
         return featureCollection, ids
