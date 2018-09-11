@@ -570,17 +570,15 @@ class TesQualityValidations(unittest.TestCase):
         test_plots_layer.rollBack()
 
     def test_multiparts_in_right_of_way(self):
-        print('\nINFO: Validating boundary_dangles with no dangles...')
+        print('\nINFO: Validating right_of_way for no multipart geometries...')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='right_of_way')
         right_of_way = QgsVectorLayer(uri, 'right_of_way', 'ogr')
 
-        features = [feature for feature in right_of_way.getFeatures()]
-        self.assertEqual(len(features), 6)
+        self.assertEqual(right_of_way.featureCount(), 6)
 
         single_parts, single_ids = self.qgis_utils.geometry.get_multipart_geoms(right_of_way)
         unique_single_ids = set(single_ids)
-        unique_single_ids = list(unique_single_ids)
         self.assertEqual(len(single_parts), 8)
         self.assertEqual(len(unique_single_ids), 3)
 

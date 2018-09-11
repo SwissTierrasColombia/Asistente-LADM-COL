@@ -743,9 +743,12 @@ class QualityUtils(QObject):
         gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(plot_layer, use_roads)
 
         if gaps is not None:
+            new_features = list()
             for geom, id in zip(gaps, range(0, len(gaps))):
                 feature = QgsVectorLayerUtils().createFeature(error_layer, geom, {0: id})
-                data_provider.addFeatures([feature])
+                new_features.append(feature)
+
+            data_provider.addFeatures(new_features)
 
         if error_layer.featureCount() > 0:
             added_layer = self.add_error_layer(error_layer)
@@ -777,7 +780,7 @@ class QualityUtils(QObject):
                 Qgis.Info)
             return
 
-        error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
+        error_layer = QgsVectorLayer("Polygon?crs=EPSG:{}".format(DEFAULT_EPSG),
                                      QCoreApplication.translate("QGISUtils",
                                                                 "Multipart geometries in Right Of Way"),
                                      "memory")
@@ -788,9 +791,12 @@ class QualityUtils(QObject):
         multi_parts, ids = self.qgis_utils.geometry.get_multipart_geoms(right_of_way_layer)
 
         if multi_parts is not None:
+            new_features = list()
             for geom, id in zip(multi_parts, ids):
                 feature = QgsVectorLayerUtils().createFeature(error_layer, geom, {0: id})
-                data_provider.addFeatures([feature])
+                new_features.append(feature)
+
+            data_provider.addFeatures(new_features)
 
         if error_layer.featureCount() > 0:
             added_layer = self.add_error_layer(error_layer)
