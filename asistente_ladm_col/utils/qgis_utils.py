@@ -799,8 +799,14 @@ class QGISUtils(QObject):
         QgsProject.instance().setAutoTransaction(False)
 
     def show_etl_model(self, db, input_layer, ladm_col_layer_name):
-
         output = self.get_layer(db, ladm_col_layer_name, geometry_type=None, load=True)
+        if output is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "{} layer couldn't be found... {}").format(ladm_col_layer_name, db.get_description()),
+                Qgis.Warning)
+            return
+
         if output.isEditable():
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
