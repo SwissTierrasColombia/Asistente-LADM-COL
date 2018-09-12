@@ -139,11 +139,35 @@ Choose this option if you want to create a <b>Boundary</b> using QGIS digitizing
 <b>Boundary</b> is a specialization of the <i>LA_CadenaCarasLindero</i> class to store boundaries that define plots. Two boundaries must not cross or overlap.\
 ")
 
-        self.WIZ_CREATE_PROPERTY_RECORD_CARD_PRC_PAGE_1_OPTION_FORM = ''
-        self.WIZ_CREATE_MARKET_RESEARCH_PRC_PAGE_1_OPTION_FORM = ''
-        self.WIZ_CREATE_NUCLEAR_FAMILY_PRC_PAGE_1_OPTION_FORM = ''
-        self.WIZ_CREATE_NATURAL_PARTY_PRC_PAGE_1_OPTION_FORM = ''
-        self.WIZ_CREATE_LEGAL_PARTY_PRC_PAGE_1_OPTION_FORM = ''
+        self.WIZ_CREATE_PROPERTY_RECORD_CARD_PRC_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Property Record Card</b> using a form.\
+<br><br>\
+<b>Property Record Card</b> is created specifically to store the information collected for the parcels.\
+")
+
+        self.WIZ_CREATE_MARKET_RESEARCH_PRC_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Market Research</b> using a form.\
+<br><br>\
+<b>Market Research</b> is information related to the market research carried out, with the objective to obtain the most probable market values, based on real estate transactions carried out.\
+")
+
+        self.WIZ_CREATE_NUCLEAR_FAMILY_PRC_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Nuclear Family</b> using a form.\
+<br><br>\
+<b>Nuclear Family</b> allows to registry the information related to the nuclear families of the cadastral survey for the pilots of the multipurpose cadastre.\
+")
+
+        self.WIZ_CREATE_NATURAL_PARTY_PRC_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Natural Party</b> using a form.\
+<br><br>\
+<b>Natural Party</b> acting as party.\
+")
+
+        self.WIZ_CREATE_LEGAL_PARTY_PRC_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Legal Party</b> using a form.\
+<br><br>\
+<b>Legañ Party</b> acting as party.\
+")
 
     def get_refactor_help_string(self, layer_name, layer_is_spatial):
         # Abre una ventana que te permite establecer una asignación entre la entrada (fuente) {type} y el tipo {type} <b>{name}</b> de LADM_COL.
