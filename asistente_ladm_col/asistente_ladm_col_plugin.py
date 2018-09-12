@@ -45,9 +45,12 @@ from .config.table_mapping_config import (
     COL_PARTY_TABLE
 )
 from .config.general_config import (
+    CADASTRE_MENU_OBJECTNAME,
+    LADM_COL_MENU_OBJECTNAME,
     PROJECT_GENERATOR_MIN_REQUIRED_VERSION,
     PROJECT_GENERATOR_EXACT_REQUIRED_VERSION,
     PROJECT_GENERATOR_REQUIRED_VERSION_URL,
+    PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
     PLUGIN_NAME,
     PLUGIN_VERSION,
     PLUGIN_DIR,
@@ -80,9 +83,8 @@ from .gui.toolbar import ToolBar
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
 from .utils.quality import QualityUtils
+from .utils.model_parser import ModelParser
 from .utils.qt_utils import get_plugin_metadata
-
-#import resources_rc
 
 class AsistenteLADMCOLPlugin(QObject):
     def __init__(self, iface):
@@ -97,6 +99,7 @@ class AsistenteLADMCOLPlugin(QObject):
         # Set Menus
         icon = QIcon(":/Asistente-LADM_COL/resources/images/icon.png")
         self._menu = QMenu("LAD&M_COL", self.iface.mainWindow().menuBar())
+        self._menu.setObjectName(LADM_COL_MENU_OBJECTNAME)
         actions = self.iface.mainWindow().menuBar().actions()
         if len(actions) > 0:
             last_action = actions[-1]
@@ -110,7 +113,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # Menus
         self.add_cadastre_menu()
-        self.add_property_record_card_menu()
 
         self._menu.addSeparator()
         self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"), self.iface.mainWindow())
@@ -122,6 +124,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.addActions([self._settings_action,
                                self._help_action,
                                self._about_action])
+
+        self.refresh_menus(self.get_db_connection())
 
         # Connections
         self._controlled_measurement_action.triggered.connect(self.show_dlg_controlled_measurement)
@@ -135,6 +139,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.clear_status_bar_emitted.connect(self.clear_status_bar)
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
+        self.qgis_utils.refresh_menus_requested.connect(self.refresh_menus)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
@@ -173,6 +178,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def add_cadastre_menu(self):
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
+        self._cadastre_menu.setObjectName(CADASTRE_MENU_OBJECTNAME)
 
         self._preprocessing_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Preprocessing"), self._cadastre_menu)
         self._controlled_measurement_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Controlled Measurement"), self._preprocessing_menu)
@@ -253,6 +259,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def add_property_record_card_menu(self):
         self._property_record_card_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Property record card"), self._menu)
+        self._property_record_card_menu.setObjectName(PROPERTY_RECORD_CARD_MENU_OBJECTNAME)
 
         self._property_record_card_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Property Record Card"), self._property_record_card_menu)
         self._market_research_property_record_card_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Market Research"), self._property_record_card_menu)
@@ -267,7 +274,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self._property_record_card_menu.addAction(self._natural_party_property_record_card_action)
         self._property_record_card_menu.addAction(self._legal_party_property_record_card_action)
 
-        self._menu.addMenu(self._property_record_card_menu)
+        if len(self._menu.actions()) > 1:
+            self._menu.insertMenu(self._menu.actions()[1], self._property_record_card_menu)
+        else: # Just in case...
+            self._menu.addMenu(self._property_record_card_menu)
 
         # Connections
         self._property_record_card_action.triggered.connect(self.show_wiz_property_record_card)
@@ -275,6 +285,32 @@ class AsistenteLADMCOLPlugin(QObject):
         self._nuclear_family_property_record_card_action.triggered.connect(self.show_wiz_nuclear_family_prc)
         self._natural_party_property_record_card_action.triggered.connect(self.show_wiz_natural_party_prc)
         self._legal_party_property_record_card_action.triggered.connect(self.show_wiz_legal_party_prc)
+
+    def remove_property_record_card_menu(self):
+        menu = self.iface.mainWindow().findChild(QMenu, PROPERTY_RECORD_CARD_MENU_OBJECTNAME)
+        if menu is None:
+            return # Nothing to remove...
+
+        self._property_record_card_menu = None
+        self._property_record_card_action = None
+        self._market_research_property_record_card_action = None
+        self._nuclear_family_property_record_card_action = None
+        self._natural_party_property_record_card_action = None
+        self._legal_party_property_record_card_action = None
+
+        menu.deleteLater()
+
+    def refresh_menus(self, db):
+        """
+        Depending on the models avilable in the DB, some menus should appear or
+        dissapear from the GUI.
+        """
+        # The parser is specific for each new connection
+        model_parser = ModelParser(db)
+        if model_parser.property_record_card_model_exists():
+            self.add_property_record_card_menu()
+        else:
+            self.remove_property_record_card_menu()
 
     def add_processing_models(self, provider_id):
         if not (provider_id == 'model' or provider_id is None):

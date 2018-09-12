@@ -5,6 +5,7 @@ from qgis.PyQt.QtCore import QLocale, QSettings, QObject, QCoreApplication
 
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
 CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
+PROPERTY_RECORD_CARD_MODEL_PREFIX = "Ficha_Predial_"
 # From this version on the plugin will work, a message will block prior versions
 LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION = "17.07.2018"
 
@@ -84,6 +85,11 @@ INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
 DEFAULT_ENDPOINT_SOURCE_SERVICE = 'http://portal.proadmintierra.info:18888/filemanager'
 SOURCE_SERVICE_UPLOAD_SUFFIX = 'v1/file'
 SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
+
+# UI OBJECTNAMES
+CADASTRE_MENU_OBJECTNAME = "ladm_col_cadastre"
+LADM_COL_MENU_OBJECTNAME = "ladm_col"
+PROPERTY_RECORD_CARD_MENU_OBJECTNAME = "ladm_col_property_record_card"
 
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'

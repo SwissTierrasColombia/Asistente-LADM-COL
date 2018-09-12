@@ -89,6 +89,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            SURVEY_POINT_TABLE,
                                            VIDA_UTIL_FIELD)
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
+from ..lib.dbconnector.db_connector import DBConnector
 from ..lib.source_handler import SourceHandler
 
 class QGISUtils(QObject):
@@ -98,6 +99,7 @@ class QGISUtils(QObject):
     clear_status_bar_emitted = pyqtSignal()
     remove_error_group_requested = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
+    refresh_menus_requested = pyqtSignal(DBConnector)
     message_emitted = pyqtSignal(str, int) # Message, level
     message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
@@ -136,6 +138,7 @@ class QGISUtils(QObject):
         if self.__settings_dialog is None:
             self.__settings_dialog = SettingsDialog(qgis_utils=self)
             self.__settings_dialog.cache_layers_and_relations_requested.connect(self.cache_layers_and_relations)
+            self.__settings_dialog.refresh_menus_requested.connect(self.refresh_menus)
 
         return self.__settings_dialog
 
@@ -157,6 +160,12 @@ class QGISUtils(QObject):
             self._layers, self._relations = self.project_generator_utils.get_layers_and_relations_info(db)
 
         self.clear_status_bar_emitted.emit()
+
+    def refresh_menus(self, db):
+        """
+        Chain the SIGNAL request to other modules.
+        """
+        self.refresh_menus_requested.emit(db)
 
     def get_related_layers(self, layer_names, already_loaded):
         # For a given layer we load its domains, all its related layers and
