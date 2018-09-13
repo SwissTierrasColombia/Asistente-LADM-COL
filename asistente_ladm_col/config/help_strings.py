@@ -166,7 +166,7 @@ Choose this option if you want to create a <b>Natural Party</b> using a form.\
         self.WIZ_CREATE_LEGAL_PARTY_PRC_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create a <b>Legal Party</b> using a form.\
 <br><br>\
-<b>Legañ Party</b> acting as party.\
+<b>Legal Party</b> acting as party.\
 ")
 
     def get_refactor_help_string(self, layer_name, layer_is_spatial):

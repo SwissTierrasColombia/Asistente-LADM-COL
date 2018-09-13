@@ -258,6 +258,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self._quality_cadastre_action.triggered.connect(self.show_dlg_quality)
 
     def add_property_record_card_menu(self):
+        menu = self.iface.mainWindow().findChild(QMenu, PROPERTY_RECORD_CARD_MENU_OBJECTNAME)
+        if menu:
+            return # Already there!
+
         self._property_record_card_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Property record card"), self._menu)
         self._property_record_card_menu.setObjectName(PROPERTY_RECORD_CARD_MENU_OBJECTNAME)
 
@@ -306,11 +310,13 @@ class AsistenteLADMCOLPlugin(QObject):
         dissapear from the GUI.
         """
         # The parser is specific for each new connection
-        model_parser = ModelParser(db)
-        if model_parser.property_record_card_model_exists():
-            self.add_property_record_card_menu()
-        else:
-            self.remove_property_record_card_menu()
+        res, msg = db.test_connection()
+        if res:
+            model_parser = ModelParser(db)
+            if model_parser.property_record_card_model_exists():
+                self.add_property_record_card_menu()
+            else:
+                self.remove_property_record_card_menu()
 
     def add_processing_models(self, provider_id):
         if not (provider_id == 'model' or provider_id is None):
