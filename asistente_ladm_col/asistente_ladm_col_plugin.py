@@ -125,8 +125,6 @@ class AsistenteLADMCOLPlugin(QObject):
                                self._help_action,
                                self._about_action])
 
-        self.refresh_menus(self.get_db_connection())
-
         # Connections
         self._controlled_measurement_action.triggered.connect(self.show_dlg_controlled_measurement)
         self._load_layers_action.triggered.connect(self.load_layers_from_project_generator)
@@ -148,6 +146,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
         self.qgis_utils.set_node_visibility_requested.connect(self.set_node_visibility)
+
+        self.iface.initializationCompleted.connect(self.qgis_initialized)
 
         # Toolbar
         self._boundary_explode_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Explode..."), self.iface.mainWindow())
@@ -175,6 +175,9 @@ class AsistenteLADMCOLPlugin(QObject):
             self.add_processing_models(None)
         else: # We need to wait until processing is initialized
             QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_models)
+
+    def qgis_initialized(self):
+        self.refresh_menus(self.get_db_connection())
 
     def add_cadastre_menu(self):
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
