@@ -20,16 +20,30 @@ import os
 import socket
 import webbrowser
 
-from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
-                       QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri, Qgis,
-                       QgsSpatialIndex, QgsVectorLayer, QgsMultiLineString,
-                       QgsField,
-                       QgsMapLayer,
-                       QgsPointXY,
-                       QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
-                       QgsApplication, QgsProcessingFeedback, QgsRelation,
-                       QgsExpressionContextUtils, QgsEditorWidgetSetup,
-                       QgsLayerTreeGroup)
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsDataSourceUri,
+    QgsDefaultValue,
+    QgsEditorWidgetSetup,
+    QgsExpressionContextUtils,
+    QgsField,
+    QgsGeometry,
+    QgsGeometryCollection,
+    QgsLayerTreeGroup,
+    QgsLineString,
+    QgsMapLayer,
+    QgsMultiLineString,
+    QgsMultiPoint,
+    QgsPointXY,
+    QgsProcessingFeedback,
+    QgsProject,
+    QgsRelation,
+    QgsSpatialIndex,
+    QgsVectorLayer,
+    QgsVectorLayerUtils,
+    QgsWkbTypes
+)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
                               QVariant, QSettings, QLocale, QUrl, QFile)
 
@@ -123,6 +137,7 @@ class QGISUtils(QObject):
         self._source_handler = None
         self._layers = list()
         self._relations = list()
+        self._bags_of_enum = dict()
 
     def set_db_connection(self, mode, dict_conn):
         """
@@ -157,7 +172,7 @@ class QGISUtils(QObject):
         QCoreApplication.processEvents()
 
         with OverrideCursor(Qt.WaitCursor):
-            self._layers, self._relations = self.project_generator_utils.get_layers_and_relations_info(db)
+            self._layers, self._relations, self._bags_of_enum = self.project_generator_utils.get_layers_and_relations_info(db)
 
         self.clear_status_bar_emitted.emit()
 
@@ -168,8 +183,11 @@ class QGISUtils(QObject):
         self.refresh_menus_requested.emit(db)
 
     def get_related_layers(self, layer_names, already_loaded):
-        # For a given layer we load its domains, all its related layers and
-        # the domains of those related layers
+        """
+        For a given layer we load its domains, all its related layers and the
+        domains of those related layers. Additionally, we load its related
+        structures and domains to build bags_of_enum widgets.
+        """
         related_layers = list()
         for relation in self._relations:
             for layer_name in layer_names:
@@ -177,8 +195,17 @@ class QGISUtils(QObject):
                     if relation[REFERENCED_LAYER] not in already_loaded:
                         related_layers.append(relation[REFERENCED_LAYER])
 
+        related_layers_bags_of_enum = list()
+        for layer_name in layer_names:
+            if layer_name in self._bags_of_enum:
+                for k,v in self._bags_of_enum[layer_name].items():
+                    if v[2] not in already_loaded:
+                        related_layers_bags_of_enum.append(v[2]) # domain
+                    if v[3] not in already_loaded:
+                        related_layers_bags_of_enum.append(v[3]) # structure
+
         related_layers.extend(self.get_related_domains(related_layers, already_loaded))
-        return related_layers
+        return related_layers + related_layers_bags_of_enum
 
     def get_related_domains(self, layer_names, already_loaded):
         related_domains = list()
@@ -344,6 +371,7 @@ class QGISUtils(QObject):
         # Do some post-load work, such as setting styles or
         # setting automatic fields for that layer
         self.configure_missing_relations(layer)
+        self.configure_missing_bags_of_enum(layer)
         self.set_display_expressions(layer)
         self.set_layer_variables(layer)
         self.set_custom_widgets(layer)
@@ -354,6 +382,11 @@ class QGISUtils(QObject):
             self.set_node_visibility(layer, 'layer_id', visible)
 
     def configure_missing_relations(self, layer):
+        """
+        Relations between newly loaded layers and already loaded layer cannot
+        be handled by project generator (which only sets relations between
+        loaded layers), so we do it in the Asistente LADM_COL.
+        """
         layer_name = layer.dataProvider().uri().table()
 
         db_relations = list()
@@ -388,12 +421,15 @@ class QGISUtils(QObject):
                 # This relation is not configured into QGIS, let's do it
                 new_rel = QgsRelation()
                 new_rel.setReferencingLayer(layer.id())
-                referenced_layer = self.get_layer_from_layer_tree(db_relation[REFERENCED_LAYER], layer.dataProvider().uri().schema())
+                referenced_layer = self.get_layer_from_layer_tree(
+                    db_relation[REFERENCED_LAYER],
+                    layer.dataProvider().uri().schema())
                 if referenced_layer is None:
                     # Referenced_layer NOT FOUND in layer tree...
                     continue
                 new_rel.setReferencedLayer(referenced_layer.id())
-                new_rel.addFieldPair(db_relation[REFERENCING_FIELD], db_relation[REFERENCED_FIELD])
+                new_rel.addFieldPair(db_relation[REFERENCING_FIELD],
+                    db_relation[REFERENCED_FIELD])
                 new_rel.setId(db_relation[RELATION_NAME]) #generateId()
                 new_rel.setName(db_relation[RELATION_NAME])
 
@@ -402,6 +438,47 @@ class QGISUtils(QObject):
         all_qgis_relations = list(QgsProject.instance().relationManager().relations().values())
         all_qgis_relations.extend(new_relations)
         QgsProject.instance().relationManager().setRelations(all_qgis_relations)
+
+    def configure_missing_bags_of_enum(self, layer):
+        """
+        Bags of enums between newly loaded layers and already loaded layers
+        cannot be handled by project generator (which only sets relations
+        between loaded layers), so we do it in the Asistente LADM_COL.
+        """
+        layer_name = layer.dataProvider().uri().table()
+
+        if layer_name in self._bags_of_enum:
+            for k,v in self._bags_of_enum[layer_name].items():
+                # Check if bag of enum field has already a value relation
+                # configured or not
+                idx = layer.fields().indexOf(k)
+                if layer.editorWidgetSetup(idx).type() == 'ValueRelation':
+                    continue
+
+                domain = self.get_layer_from_layer_tree(v[2],
+                    layer.dataProvider().uri().schema())
+                if domain is not None:
+                    cardinality = v[1]
+                    domain_table = v[2]
+                    key_field = v[4]
+                    value_field = v[5]
+
+                    allow_null = cardinality.startswith('0')
+                    allow_multi = cardinality.endswith('*')
+
+                    field_widget_config = {
+                        'AllowMulti': allow_multi,
+                        'UseCompleter': False,
+                        'Value': value_field,
+                        'OrderByValue': False,
+                        'AllowNull': allow_null,
+                        'Layer': domain.id(),
+                        'FilterExpression': '',
+                        'Key': key_field,
+                        'NofColumns': 1
+                    }
+                    setup = QgsEditorWidgetSetup('ValueRelation', field_widget_config)
+                    layer.setEditorWidgetSetup(idx, setup)
 
     def set_display_expressions(self, layer):
         if layer.name() in DICT_DISPLAY_EXPRESSIONS:
