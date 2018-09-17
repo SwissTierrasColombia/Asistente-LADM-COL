@@ -293,8 +293,16 @@ class QGISUtils(QObject):
                         if layer_name in all_layers_to_load and layer.isSpatial():
                             remove_layer = True
                             for layer_id, layer_info in new_layers.items():
-                                if layer_info['name'] == layer_name and layer_info['geometry'] == layer.geometryType():
-                                    remove_layer = False
+                                if layer_info['name'] == layer_name:
+                                    if layer_info['geometry'] == layer.geometryType():
+                                        remove_layer = False
+                                        break
+                                    if layer_info['geometry'] is None:
+                                        # We allow loading layers that only have
+                                        # one geometry column by not specifying
+                                        # its geometry (i.e., by using None)
+                                        remove_layer = False
+                                        break
                             if remove_layer:
                                 QgsProject.instance().removeMapLayer(layer)
                                 ladm_layers.remove(layer)
