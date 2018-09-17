@@ -239,9 +239,9 @@ class QGISUtils(QObject):
         profiler = QgsApplication.profiler()
         with OverrideCursor(Qt.WaitCursor):
             profiler.start("existing_layers")
+            ladm_layers = self.get_ladm_layers_from_layer_tree(db)
             for layer_id, layer_info in layers.items():
                 layer_obj = None
-                ladm_layers = self.get_ladm_layers_from_layer_tree(db)
 
                 # If layer is in LayerTree, return it
                 for ladm_layer in ladm_layers:
@@ -255,6 +255,7 @@ class QGISUtils(QObject):
             profiler.end()
             print("Existing layers",profiler.totalTime())
             profiler.clear()
+
             if load:
                 layers_to_load = [layers[layer_id]['name'] for layer_id, layer_obj in response_layers.items() if layer_obj is None]
 
@@ -280,18 +281,47 @@ class QGISUtils(QObject):
 
                     # Now that all layers are loaded, update response dict
                     # and apply post_load_configurations to new layers
-                    missing_layers = {layer_id: {'name': layers[layer_id]['name'], 'geometry': layers[layer_id]['geometry']} for layer_id, layer_obj in response_layers.items() if layer_obj is None}
+                    new_layers = {layer_id: {'name': layers[layer_id]['name'], 'geometry': layers[layer_id]['geometry']} for layer_id, layer_obj in response_layers.items() if layer_obj is None}
+
+                    # Remove layers in two steps:
+                    # 1) Remove those spatial layers with more than one geometry
+                    #    column loaded because one geometry was requested.
+                    ladm_layers = self.get_ladm_layers_from_layer_tree(db)
+                    for layer in ladm_layers:
+                        layer_name = layer.dataProvider().uri().table()
+
+                        if layer_name in all_layers_to_load and layer.isSpatial():
+                            remove_layer = True
+                            for layer_id, layer_info in new_layers.items():
+                                if layer_info['name'] == layer_name and layer_info['geometry'] == layer.geometryType():
+                                    remove_layer = False
+                            if remove_layer:
+                                QgsProject.instance().removeMapLayer(layer)
+                                ladm_layers.remove(layer)
+
+                    # 2) Remove related spatial layers with more than one
+                    #    geometry column, which we don't prefer (i.e., points)
+                    for additional_layer_name in additional_layers_to_load:
+                        num_geometry_columns = 0
+                        for layer in ladm_layers:
+                            if layer.dataProvider().uri().table() == additional_layer_name and layer.isSpatial():
+                                num_geometry_columns += 1
+
+                        if num_geometry_columns > 1:
+                            QgsProject.instance().removeMapLayer(layer)
+                            ladm_layers.remove(layer)
 
                     profiler.start("post_load")
                     # Apply post-load configs to all just loaded layers
-                    for layer in self.get_ladm_layers_from_layer_tree(db):
+                    requested_layer_names = [v['name'] for k,v in layers.items()]
+                    for layer in ladm_layers:
                         layer_name = layer.dataProvider().uri().table()
                         layer_geometry = layer.geometryType()
 
                         if layer_name in all_layers_to_load:
                             # Discard already loaded layers
 
-                            for layer_id, layer_info in missing_layers.items():
+                            for layer_id, layer_info in new_layers.items():
                                 # This should update response_layers dict with
                                 # newly added layer objects
                                 if layer_info['name'] == layer_name:
@@ -299,11 +329,11 @@ class QGISUtils(QObject):
                                         continue
 
                                     response_layers[layer_id] = layer
-                                    del missing_layers[layer_id] # Don't look for this layer anymore
+                                    del new_layers[layer_id] # Don't look for this layer anymore
                                     break
 
                             # Turn off layers loaded as related layers
-                            visible = layer_name in layers
+                            visible = layer_name in requested_layer_names
                             self.post_load_configurations(layer, visible)
 
                     profiler.end()
@@ -315,6 +345,8 @@ class QGISUtils(QObject):
         self.map_refresh_requested.emit()
         self.activate_layer_requested.emit(list(response_layers.values())[0])
 
+        # response_layers only has data about requested layers. Other layers,
+        # i.e., those loaded as related ones, are not included
         return response_layers
 
     def get_layer_from_layer_tree(self, layer_name, schema=None, geometry_type=None):
