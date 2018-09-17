@@ -23,7 +23,13 @@ from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-from ..config.table_mapping_config import PROPERTY_RECORD_CARD_TABLE
+from ..config.table_mapping_config import (
+    PROPERTY_RECORD_CARD_TABLE,
+    PARCEL_TABLE,
+    PARCEL_PROPERTY_RECORD_CARD_TABLE,
+    PPRC_PARCEL_FIELD,
+    PPRC_PROPERTY_RECORD_CARD_FIELD)
+
 from ..config.help_strings import HelpStrings
 
 WIZARD_UI = get_ui_class('wiz_create_property_record_card_prc.ui')
@@ -34,6 +40,8 @@ class CreatePropertyRecordCardPRCWizard(QWizard, WIZARD_UI):
         self.setupUi(self)
         self.iface = iface
         self._property_record_card_table = None
+        self._parcel_layer = None
+        self._parcel_property_record_card_table = None
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
@@ -83,11 +91,26 @@ class CreatePropertyRecordCardPRCWizard(QWizard, WIZARD_UI):
 
     def prepare_property_record_card_creation(self):
         # Load layers
-        self._property_record_card_table = self.qgis_utils.get_layer(self._db, PROPERTY_RECORD_CARD_TABLE, load=True)
+        #self._property_record_card_table = self.qgis_utils.get_layer(self._db, PROPERTY_RECORD_CARD_TABLE, load=True)
+
+        # Load layers
+        res_layers = self.qgis_utils.get_layers(self._db, {
+            PROPERTY_RECORD_CARD_TABLE: {'name': PROPERTY_RECORD_CARD_TABLE, 'geometry': None},
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None}}, load=True)
+
+        self._property_record_card_table = res_layers[PROPERTY_RECORD_CARD_TABLE]
         if self._property_record_card_table is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreatePropertyRecordCardWizard",
                                            "Property record card table couldn't be found... {}").format(self._db.get_description()),
+                Qgis.Warning)
+            return
+
+        self._parcel_layer = res_layers[PARCEL_TABLE]
+        if self._parcel_layer is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreatePropertyRecordCardWizard",
+                                           "Parcel layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 
@@ -99,10 +122,64 @@ class CreatePropertyRecordCardPRCWizard(QWizard, WIZARD_UI):
         self.edit_property_record_card()
 
     def edit_property_record_card(self):
-        # Open Form
-        self.iface.layerTreeView().setCurrentLayer(self._property_record_card_table)
-        self._property_record_card_table.startEditing()
-        self.iface.actionAddFeature().trigger()
+        if self._plot_layer.selectedFeatureCount() == 1:
+
+            # Open Form
+            self.iface.layerTreeView().setCurrentLayer(self._property_record_card_table)
+            self._property_record_card_table.startEditing()
+            self.iface.actionAddFeature().trigger()
+
+            parcel_ids = [f['t_id'] for f in self._parcel_layer.selectedFeatures()]
+
+            self._property_record_card_table.featureAdded.connect(self.call_property_record_card_commit)
+            self._property_record_card_table.committedFeaturesAdded.connect(partial(self.finish_propery_record_card, plot_ids))
+
+        elif self._parcel_layer.selectedFeatureCount() == 0:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateParcelCadastreWizard",
+                                           "Please select one Parcel"),
+                Qgis.Warning)
+        else: # >1
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateParcelCadastreWizard",
+                                           "Please select only one Parcel"),
+                Qgis.Warning)
+
+    def call_property_record_card_commit(self, fid):
+        self._property_record_card_table.featureAdded.disconnect(self.call_property_record_card_commit)
+        self.log.logMessage("Propery record card's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+        res = self._property_record_card_table.commitChanges()
+
+    def finish_parcel(self, parcel_ids, layerId, features):
+        if len(features) != 1:
+            self.log.logMessage("We should have got only one property record card... We cannot do anything with {} property record cards".format(len(features)), PLUGIN_NAME, Qgis.Warning)
+        else:
+            fid = features[0].id()
+            if not self._property_record_card_table.getFeature(fid).isValid():
+                self.log.logMessage("Feature not found in layer Property record card...", PLUGIN_NAME, Qgis.Warning)
+            else:
+                prc_id = self._property_record_card_table.getFeature(fid)[ID_FIELD]
+
+                # Fill uebaunit table
+                new_features = []
+                for parcel_id in parcel_ids:
+                    new_feature = QgsVectorLayerUtils().createFeature(self._parcel_property_record_card_table)
+                    new_feature.setAttribute(PPRC_PARCEL_FIELD, parcel_id)
+                    new_feature.setAttribute(PPRC_PROPERTY_RECORD_CARD_FIELD, prc_id)
+                    self.log.logMessage("Saving Parcel-Property record card: {}-{}".format(parcel_id, prc_id), PLUGIN_NAME, Qgis.Info)
+                    new_features.append(new_feature)
+
+                self._parcel_property_record_card_table.dataProvider().addFeatures(new_features)
+
+                if parcel_ids:
+                    self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                        QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                   "The new property record card (t_id={}) was successfully created and associated with its corresponding Parcel (t_id={})!").format(prc_id, parcel_ids[0]),
+                        Qgis.Info)
+
+        self._property_record_card_table.committedFeaturesAdded.disconnect()
+        self.log.logMessage("Property record card's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+
 
     def save_settings(self):
         settings = QSettings()

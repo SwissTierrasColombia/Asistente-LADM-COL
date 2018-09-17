@@ -119,7 +119,11 @@ VIDA_UTIL_FIELD = "comienzo_vida_util_version"
 """
 PROPERTY RECORD CARD MAPPING
 """
+PARCEL_PROPERTY_RECORD_CARD_TABLE = "predioficha_predio"
 PROPERTY_RECORD_CARD_TABLE = "predio_ficha"
+PPRC_PARCEL_FIELD = "crpredio"
+PPRC_PROPERTY_RECORD_CARD_FIELD = "fichapredio"
+
 MARKET_RESEARCH_TABLE = "investigacionmercado"
 NUCLEAR_FAMILY_TABLE = "nucleofamiliar"
 NATURAL_PARTY_TABLE = "interesado_natural"
