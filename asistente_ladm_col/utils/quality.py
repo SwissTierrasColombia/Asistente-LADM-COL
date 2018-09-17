@@ -116,7 +116,7 @@ class QualityUtils(QObject):
                                            "There are no overlapping points in layer '{}'!").format(point_layer_name), Qgis.Info)
 
     def check_plots_covered_by_boundaries(self, db):
-        res_layers = self.qgis_utils.get_layers(self._db, {
+        res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}
         }, load=True)
@@ -178,7 +178,7 @@ class QualityUtils(QObject):
                     "All Plot lines are covered by Boundarues!"), Qgis.Info)
 
     def check_boundaries_covered_by_plots(self, db):
-        res_layers = self.qgis_utils.get_layers(self._db, {
+        res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}
         }, load=True)
