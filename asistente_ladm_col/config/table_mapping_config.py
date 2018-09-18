@@ -62,11 +62,11 @@ MEMBERS_TABLE = "miembros"
 MORE_BOUNDARY_FACE_STRING_TABLE = "masccl"
 MOREBFS_TABLE_BOUNDARY_FIELD = "cclp_lindero"
 MOREBFS_TABLE_PLOT_FIELD = "uep_terreno"
-PARCEL_NAME_FIELD = "nombre"
 NAMESPACE_FIELD = "_espacio_de_nombres"
 NIT_NUMBER_FIELD = "numero_nit"
 NUMBER_OF_FLOORS = "numero_pisos"
 NUPRE_FIELD = "nupre"
+PARCEL_NAME_FIELD = "nombre"
 PARCEL_TABLE = "predio"
 PARTY_DOCUMENT_TYPE_TABLE = "col_interesadodocumentotipo"
 PARTY_TYPE_TABLE = "la_interesadotipo"
@@ -120,6 +120,8 @@ VIDA_UTIL_FIELD = "comienzo_vida_util_version"
 PROPERTY RECORD CARD MAPPING
 """
 PROPERTY_RECORD_CARD_TABLE = "predio_ficha"
+PRC_PUBLIC_PARCEL_TYPE_FIELD = "tipo_predio_publico"
+PRC_PARCEL_TYPE_FIELD = "predio_tipo"
 MARKET_RESEARCH_TABLE = "investigacionmercado"
 NUCLEAR_FAMILY_TABLE = "nucleofamiliar"
 NATURAL_PARTY_TABLE = "interesado_natural"
@@ -204,6 +206,15 @@ CUSTOM_WIDGET_CONFIGURATION = {
             'DocumentViewerHeight': 0,
             'DocumentViewerWidth': 0,
             'FileWidgetFilter': ''
+        }
+    }
+}
+
+LAYER_CONSTRAINTS = {
+    PROPERTY_RECORD_CARD_TABLE: {
+        PRC_PUBLIC_PARCEL_TYPE_FIELD: {
+            'expression': 'CASE WHEN "{prc_ptf}" IS NOT NULL THEN\n(strpos("{prc_ptf}", \'Privado.\') != 0 AND "{prc_pptf}" IS NULL) OR (strpos("{prc_ptf}", \'Publico.\') != 0 AND "{prc_pptf}" IS NOT NULL)\nELSE True\nEND'.format(prc_ptf=PRC_PARCEL_TYPE_FIELD, prc_pptf=PRC_PUBLIC_PARCEL_TYPE_FIELD),
+            'description': 'Si el tipo de predio es Público, debes elegir un valor de este listado; pero si el tipo de predio es Privado, no debes seleccionar ningún valor de este listado.'
         }
     }
 }

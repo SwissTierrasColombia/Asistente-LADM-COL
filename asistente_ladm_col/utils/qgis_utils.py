@@ -85,6 +85,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            EXTFILE_DATA_FIELD,
                                            EXTFILE_TABLE,
                                            ID_FIELD,
+                                           LAYER_CONSTRAINTS,
                                            LAYER_VARIABLES,
                                            LENGTH_FIELD_BOUNDARY_TABLE,
                                            LESS_TABLE,
@@ -417,6 +418,7 @@ class QGISUtils(QObject):
         self.set_custom_widgets(layer)
         self.set_custom_events(layer)
         self.set_automatic_fields(layer)
+        self.set_layer_constraints(layer)
         if layer.isSpatial():
             self.symbology.set_layer_style_from_qml(layer)
             self.set_node_visibility(layer, 'layer_id', visible)
@@ -547,6 +549,14 @@ class QGISUtils(QObject):
             self._source_handler = self.get_source_handler()
             self._source_handler.message_with_duration_emitted.connect(self.message_with_duration_emitted)
             self._source_handler.handle_source_upload(layer, EXTFILE_DATA_FIELD)
+
+    def set_layer_constraints(self, layer):
+        if layer.name() in LAYER_CONSTRAINTS:
+            for field_name, value in LAYER_CONSTRAINTS[layer.name()].items():
+                layer.setConstraintExpression(
+                    layer.fields().indexOf(field_name),
+                    value['expression'],
+                    value['description'])
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
