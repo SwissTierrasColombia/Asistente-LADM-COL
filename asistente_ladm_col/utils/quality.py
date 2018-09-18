@@ -116,7 +116,7 @@ class QualityUtils(QObject):
                                            "There are no overlapping points in layer '{}'!").format(point_layer_name), Qgis.Info)
 
     def check_plots_covered_by_boundaries(self, db):
-        res_layers = self.qgis_utils.get_layers(self._db, {
+        res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}
         }, load=True)
@@ -178,7 +178,7 @@ class QualityUtils(QObject):
                     "All Plot lines are covered by Boundarues!"), Qgis.Info)
 
     def check_boundaries_covered_by_plots(self, db):
-        res_layers = self.qgis_utils.get_layers(self._db, {
+        res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}
         }, load=True)
@@ -743,9 +743,12 @@ class QualityUtils(QObject):
         gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(plot_layer, use_roads)
 
         if gaps is not None:
+            new_features = list()
             for geom, id in zip(gaps, range(0, len(gaps))):
                 feature = QgsVectorLayerUtils().createFeature(error_layer, geom, {0: id})
-                data_provider.addFeatures([feature])
+                new_features.append(feature)
+
+            data_provider.addFeatures(new_features)
 
         if error_layer.featureCount() > 0:
             added_layer = self.add_error_layer(error_layer)
@@ -758,6 +761,54 @@ class QualityUtils(QObject):
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "There are no gaps in layer Plot."), Qgis.Info)
+
+    def check_multiparts_in_right_of_way(self, db):
+        right_of_way_layer = self.qgis_utils.get_layer(db, RIGHT_OF_WAY_TABLE, QgsWkbTypes.PolygonGeometry, True)
+
+        if right_of_way_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Layer {} not found in DB! {}").format(RIGHT_OF_WAY_TABLE,
+                                                                                  db.get_description()),
+                Qgis.Warning)
+            return
+
+        if right_of_way_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no Right Of Way features to check 'Right Of Way should not have Multipart geometries'."),
+                Qgis.Info)
+            return
+
+        error_layer = QgsVectorLayer("Polygon?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     QCoreApplication.translate("QGISUtils",
+                                                                "Multipart geometries in Right Of Way"),
+                                     "memory")
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField("original_id", QVariant.Int)])
+        error_layer.updateFields()
+
+        multi_parts, ids = self.qgis_utils.geometry.get_multipart_geoms(right_of_way_layer)
+
+        if multi_parts is not None:
+            new_features = list()
+            for geom, id in zip(multi_parts, ids):
+                feature = QgsVectorLayerUtils().createFeature(error_layer, geom, {0: id})
+                new_features.append(feature)
+
+            data_provider.addFeatures(new_features)
+
+        if error_layer.featureCount() > 0:
+            added_layer = self.add_error_layer(error_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "A memory layer with {} multipart geometries in layer Right Of Way has been added to the map!").format(
+                    added_layer.featureCount()), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no multipart geometries in layer Right Of Way."), Qgis.Info)
 
     def get_dangle_ids(self, boundary_layer):
         # 1. Run extract specific vertices
