@@ -106,6 +106,9 @@ class DialogQuality(QDialog, DIALOG_UI):
                 }, {
                     'id': 'check_gaps_in_plots',
                     'text': QCoreApplication.translate("DialogQuality", "Plots should not have gaps")
+                }, {
+                    'id': 'check_multipart_in_right_of_way',
+                    'text': QCoreApplication.translate("DialogQuality", "Right of Way should not have multipart geometries")
                 }]
             }
 
@@ -176,6 +179,8 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_right_of_way_overlaps_buildings(self._db)
                 elif id == 'check_gaps_in_plots':
                     self.quality.check_gaps_in_plots(self._db)
+                elif id == 'check_multipart_in_right_of_way':
+                    self.quality.check_multiparts_in_right_of_way(self._db)
 
             iterator += 1
 

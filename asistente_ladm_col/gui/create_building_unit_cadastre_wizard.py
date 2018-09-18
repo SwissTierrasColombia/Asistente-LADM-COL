@@ -74,7 +74,8 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
             if self.mMapLayerComboBox.currentLayer() is not None:
                 self.qgis_utils.show_etl_model(self._db,
                                                self.mMapLayerComboBox.currentLayer(),
-                                               BUILDING_UNIT_TABLE)
+                                               BUILDING_UNIT_TABLE,
+                                               QgsWkbTypes.PolygonGeometry)
             else:
                 self.iface.messageBar().pushMessage('Asistente LADM_COL',
                     QCoreApplication.translate('CreateBuildingUnitCadastreWizard',
