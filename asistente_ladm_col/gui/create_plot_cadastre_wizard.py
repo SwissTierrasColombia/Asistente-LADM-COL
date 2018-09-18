@@ -71,7 +71,8 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
             if self.mMapLayerComboBox.currentLayer() is not None:
                 self.qgis_utils.show_etl_model(self._db,
                                                self.mMapLayerComboBox.currentLayer(),
-                                               PLOT_TABLE)
+                                               PLOT_TABLE,
+                                               QgsWkbTypes.PolygonGeometry)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreatePlotCadastreWizard",

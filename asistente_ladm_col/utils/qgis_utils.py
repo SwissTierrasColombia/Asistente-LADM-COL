@@ -798,9 +798,16 @@ class QGISUtils(QObject):
     def turn_transaction_off(self):
         QgsProject.instance().setAutoTransaction(False)
 
-    def show_etl_model(self, db, input_layer, ladm_col_layer_name):
+    def show_etl_model(self, db, input_layer, ladm_col_layer_name, geometry_type=None):
 
-        output = self.get_layer(db, ladm_col_layer_name, geometry_type=None, load=True)
+        output = self.get_layer(db, ladm_col_layer_name, geometry_type, load=True)
+        if output is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "Layer {} not found in DB! {}").format(
+                        ladm_col_layer_name, db.get_description()), Qgis.Warning)
+            return
+
         if output.isEditable():
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
