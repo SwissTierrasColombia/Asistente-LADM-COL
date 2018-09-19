@@ -21,6 +21,8 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsGeometry,
+    QgsPoint,
+    QgsFeature,
     QgsLineString,
     QgsMultiLineString,
     QgsSpatialIndex,
@@ -504,3 +506,48 @@ class GeometryUtils(QObject):
                     featureCollection.append(geom)
                     ids.append(feature.id())
         return featureCollection, ids
+
+    def get_begin_end_vertices_from_lines(self, layer):
+
+        point_layer = QgsVectorLayer("Point?crs=epsg:3116", "point_layer", "memory")
+        data_provider = point_layer.dataProvider()
+        feat = QgsFeature()
+
+        for feature in layer.getFeatures():
+            geom = feature.geometry().asPolyline()
+            begin_point = QgsPoint(geom[0])
+            end_point = QgsPoint(geom[-1])
+            feat.setGeometry(QgsGeometry(begin_point))
+            data_provider.addFeatures([feat])
+            feat.setGeometry(QgsGeometry(end_point))
+            data_provider.addFeatures([feat])
+
+        # point_layer_uniques = processing.run("native:removeduplicatevertices",
+        #                         {'INPUT': point_layer,
+        #                          'TOLERANCE': 1e-6,
+        #                          'USE_Z_VALUE': False,
+        #                          'OUTPUT': 'memory:'})['OUTPUT']
+
+        point_layer_uniques = processing.run("qgis:deleteduplicategeometries",
+                                             {'INPUT': point_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+
+        return point_layer_uniques
+
+    def validate_boundary_integraty(self, boundary_layer):
+
+        points_layer = self.get_begin_end_vertices_from_lines(boundary_layer)
+        index = QgsSpatialIndex(boundary_layer)
+        ids_boundaries_list = list()
+
+        for feature in points_layer.getFeatures():
+            bbox = feature.geometry().boundingBox()
+            # bbox.scale(1.001)
+            candidates_ids = index.intersects(bbox)
+
+            if len(candidates_ids) == 2:
+                ids_boundaries_list.extend(candidates_ids)
+
+        selected_ids = list(set(ids_boundaries_list))
+        candidates_features = boundary_layer.getFeatures(selected_ids)
+
+        return candidates_features

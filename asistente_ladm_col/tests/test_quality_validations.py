@@ -452,6 +452,22 @@ class TesQualityValidations(unittest.TestCase):
         end_points, dangle_ids = self.quality.get_dangle_ids(boundary_layer)
         self.assertEqual(len(dangle_ids), 0)
 
+    def test_boundary_integraty(self):
+        print('\nINFO: Validation of boundary integrity...')
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri_bad_boundary = gpkg_path + '|layername={layername}'.format(layername='bad_boundary')
+        uri_good_boundary = gpkg_path + '|layername={layername}'.format(layername='good_boundary')
+        bad_boundary_layer = QgsVectorLayer(uri_bad_boundary, 'bad_boundary', 'ogr')
+        good_boundary_layer = QgsVectorLayer(uri_good_boundary, 'bad_boundary', 'ogr')
+
+        bad_boundary_erros = self.qgis_utils.geometry.validate_boundary_integraty(bad_boundary_layer)
+        bad_boundary_erros_list = [item for item in bad_boundary_erros]
+        self.assertEquals(len(bad_boundary_erros_list), 4)
+
+        good_boundary_erros = self.qgis_utils.geometry.validate_boundary_integraty(good_boundary_layer)
+        good_boundary_erros_list = [item for item in good_boundary_erros]
+        self.assertEquals(len(good_boundary_erros_list), 0)
+
     def validate_segments(self, segments_info, tolerance):
         for segment_info in segments_info:
             #print(segment_info[0].asWkt(), segment_info[1])

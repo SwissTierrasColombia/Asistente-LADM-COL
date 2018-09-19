@@ -357,6 +357,51 @@ class QualityUtils(QObject):
 
             self.qgis_utils.message_emitted.emit(msg, Qgis.Info)
 
+    def check_integrity_boundaries(self, db):
+        features = []
+        boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
+
+        if boundary_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "Table {} not found in DB! {}").format(
+                        BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
+            return
+
+        bad_boundaries_layer = self.qgis_utils.geometry.validate_boundary_integraty(boundary_layer)
+
+        if bad_boundaries_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "No wrong boundaries!"), Qgis.Info)
+            return
+
+        error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG),
+                            QCoreApplication.translate("QGISUtils",
+                                "Wrong boundaries."),
+                            "memory")
+        pr = error_layer.dataProvider()
+        pr.addAttributes([QgsField("boundary_id", QVariant.Int)])
+        error_layer.updateFields()
+
+        for feature in bad_boundaries_layer:
+            new_feature = QgsVectorLayerUtils().createFeature(error_layer, feature.geometry(),
+                                                              {0: feature[ID_FIELD]})
+            features.append(new_feature)
+
+        error_layer.dataProvider().addFeatures(features)
+        if error_layer.featureCount() > 0:
+            added_layer = self.add_error_layer(error_layer)
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "A memory layer with {} wrong boundaries has been added to the map!").format(added_layer.featureCount()),
+                Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "No wrong boundaries."),
+                Qgis.Info)
+
     def check_too_long_segments(self, db):
         tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
         features = []
