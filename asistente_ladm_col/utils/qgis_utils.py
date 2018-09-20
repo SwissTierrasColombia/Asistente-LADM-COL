@@ -119,7 +119,7 @@ class QGISUtils(QObject):
     clear_status_bar_emitted = pyqtSignal()
     remove_error_group_requested = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
-    refresh_menus_requested = pyqtSignal(DBConnector)
+    refresh_menus_requested = pyqtSignal(DBConnector, bool)
     message_emitted = pyqtSignal(str, int) # Message, level
     message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
@@ -182,11 +182,11 @@ class QGISUtils(QObject):
 
         self.clear_status_bar_emitted.emit()
 
-    def refresh_menus(self, db):
+    def refresh_menus(self, db, force):
         """
         Chain the SIGNAL request to other modules.
         """
-        self.refresh_menus_requested.emit(db)
+        self.refresh_menus_requested.emit(db, force)
 
     def get_related_layers(self, layer_names, already_loaded):
         """

@@ -313,16 +313,17 @@ class AsistenteLADMCOLPlugin(QObject):
 
         menu.deleteLater()
 
-    def refresh_menus(self, db):
+    def refresh_menus(self, db, force=False):
         """
         Depending on the models avilable in the DB, some menus should appear or
         dissapear from the GUI.
         """
-        if not self._flag_menus_refreshed_at_load_time:
+        if not self._flag_menus_refreshed_at_load_time or force:
             # The parser is specific for each new connection
             res, msg = db.test_connection()
             if res:
-                self._flag_menus_refreshed_at_load_time = True
+                if not force:
+                    self._flag_menus_refreshed_at_load_time = True
                 model_parser = ModelParser(db)
                 if model_parser.property_record_card_model_exists():
                     self.add_property_record_card_menu()
