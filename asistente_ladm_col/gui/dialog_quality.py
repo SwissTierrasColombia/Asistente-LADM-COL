@@ -80,7 +80,7 @@ class DialogQuality(QDialog, DIALOG_UI):
                     'text': QCoreApplication.translate("DialogQuality", "Boundaries should not overlap")
                 }, {
                     'id': 'check_integrity_boundaries',
-                    'text': QCoreApplication.translate("DialogQuality", "Boundaries should not have multiple segments")
+                    'text': QCoreApplication.translate("DialogQuality", "Boundaries should not be split")
                 }, {
                     'id': 'check_boundaries_covered_by_plots',
                     'text': QCoreApplication.translate("DialogQuality", "Boundaries must be covered by plots")

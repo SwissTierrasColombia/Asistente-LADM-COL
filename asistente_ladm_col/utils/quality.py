@@ -368,9 +368,9 @@ class QualityUtils(QObject):
                         BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
             return
 
-        bad_boundaries_layer = self.qgis_utils.geometry.validate_boundary_integraty(boundary_layer)
+        wrong_boundaries = self.qgis_utils.geometry.validate_boundary_integraty(boundary_layer)
 
-        if bad_boundaries_layer is None:
+        if wrong_boundaries is None:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "No wrong boundaries!"), Qgis.Info)
@@ -384,7 +384,7 @@ class QualityUtils(QObject):
         pr.addAttributes([QgsField("boundary_id", QVariant.Int)])
         error_layer.updateFields()
 
-        for feature in bad_boundaries_layer:
+        for feature in wrong_boundaries:
             new_feature = QgsVectorLayerUtils().createFeature(error_layer, feature.geometry(),
                                                               {0: feature[ID_FIELD]})
             features.append(new_feature)

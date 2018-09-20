@@ -458,7 +458,7 @@ class TesQualityValidations(unittest.TestCase):
         uri_bad_boundary = gpkg_path + '|layername={layername}'.format(layername='bad_boundary')
         uri_good_boundary = gpkg_path + '|layername={layername}'.format(layername='good_boundary')
         bad_boundary_layer = QgsVectorLayer(uri_bad_boundary, 'bad_boundary', 'ogr')
-        good_boundary_layer = QgsVectorLayer(uri_good_boundary, 'bad_boundary', 'ogr')
+        good_boundary_layer = QgsVectorLayer(uri_good_boundary, 'good_boundary', 'ogr')
 
         bad_boundary_erros = self.qgis_utils.geometry.validate_boundary_integraty(bad_boundary_layer)
         bad_boundary_erros_list = [item for item in bad_boundary_erros]

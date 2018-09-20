@@ -522,12 +522,6 @@ class GeometryUtils(QObject):
             feat.setGeometry(QgsGeometry(end_point))
             data_provider.addFeatures([feat])
 
-        # point_layer_uniques = processing.run("native:removeduplicatevertices",
-        #                         {'INPUT': point_layer,
-        #                          'TOLERANCE': 1e-6,
-        #                          'USE_Z_VALUE': False,
-        #                          'OUTPUT': 'memory:'})['OUTPUT']
-
         point_layer_uniques = processing.run("qgis:deleteduplicategeometries",
                                              {'INPUT': point_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
@@ -541,13 +535,12 @@ class GeometryUtils(QObject):
 
         for feature in points_layer.getFeatures():
             bbox = feature.geometry().boundingBox()
-            # bbox.scale(1.001)
             candidates_ids = index.intersects(bbox)
 
             if len(candidates_ids) == 2:
                 ids_boundaries_list.extend(candidates_ids)
 
-        selected_ids = list(set(ids_boundaries_list))
+        selected_ids = list(set(ids_boundaries_list)) # get unique ids
         candidates_features = boundary_layer.getFeatures(selected_ids)
 
         return candidates_features
