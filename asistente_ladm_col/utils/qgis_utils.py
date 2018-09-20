@@ -23,9 +23,12 @@ import webbrowser
 from qgis.core import (
     Qgis,
     QgsApplication,
+    QgsAttributeEditorContainer,
+    QgsAttributeEditorElement,
     QgsDataSourceUri,
     QgsDefaultValue,
     QgsEditorWidgetSetup,
+    QgsExpression,
     QgsExpressionContextUtils,
     QgsField,
     QgsGeometry,
@@ -35,6 +38,7 @@ from qgis.core import (
     QgsMapLayer,
     QgsMultiLineString,
     QgsMultiPoint,
+    QgsOptionalExpression,
     QgsPointXY,
     QgsProcessingFeedback,
     QgsProject,
@@ -84,6 +88,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            DICT_DISPLAY_EXPRESSIONS,
                                            EXTFILE_DATA_FIELD,
                                            EXTFILE_TABLE,
+                                           FORM_GROUPS,
                                            ID_FIELD,
                                            LAYER_CONSTRAINTS,
                                            LAYER_VARIABLES,
@@ -419,6 +424,7 @@ class QGISUtils(QObject):
         self.set_custom_events(layer)
         self.set_automatic_fields(layer)
         self.set_layer_constraints(layer)
+        self.set_form_groups(layer)
         if layer.isSpatial():
             self.symbology.set_layer_style_from_qml(layer)
             self.set_node_visibility(layer, 'layer_id', visible)
@@ -557,6 +563,68 @@ class QGISUtils(QObject):
                     layer.fields().indexOf(field_name),
                     value['expression'],
                     value['description'])
+
+    def set_form_groups(self, layer):
+        if layer.name() in FORM_GROUPS:
+            # Preserve children, clear irc
+            irc = layer.editFormConfig().invisibleRootContainer()
+            children = list()
+            for child in irc.children():
+                children.append(child.clone(irc))
+            irc.clear()
+            aec = children[0] # General Tab
+
+            # Create new General tab
+            new_general_tab = QgsAttributeEditorContainer('General', irc)
+            new_general_tab.setIsGroupBox(False)
+            new_general_tab.setShowLabel(True)
+            new_general_tab.setColumnCount(2)
+
+            # Clone General tab elements
+            elements = [e.clone(aec) for e in aec.children()]
+
+            # Iterate group definitions
+            elements_used = list()
+            for group_name, group_def in FORM_GROUPS[layer.name()].items():
+                container = QgsAttributeEditorContainer(group_name, new_general_tab)
+                container.setIsGroupBox(True)
+                container.setShowLabel(group_def['show_label'])
+                container.setColumnCount(group_def['column_count'])
+                if group_def['visibility_expression']:
+                    container.setVisibilityExpression(
+                        QgsOptionalExpression(
+                            QgsExpression(group_def['visibility_expression'])))
+
+                for e in elements:
+                    if e.name() in group_def['attr_list']:
+                        container.addChildElement(e)
+                        elements_used.append(e)
+
+                group_def['container'] = container
+
+            # Fill new General tab with attributes and groups. It takes order
+            # of groups into account from before_attr/after_attr
+            for e in elements:
+                if e not in elements_used:
+                    element_added = False
+                    for group_name, group_def in FORM_GROUPS[layer.name()].items():
+                        if e.name() == group_def['before_attr']:
+                            new_general_tab.addChildElement(group_def['container'])
+                            new_general_tab.addChildElement(e)
+                            element_added = True
+                        elif e.name() == group_def['after_attr']:
+                            new_general_tab.addChildElement(e)
+                            new_general_tab.addChildElement(group_def['container'])
+                            element_added = True
+                    if not element_added:
+                        new_general_tab.addChildElement(e)
+
+            containers = [ele.name() for ele in new_general_tab.findElements(QgsAttributeEditorElement.AeTypeContainer)]
+            for group_name, group_def in FORM_GROUPS[layer.name()].items():
+                if group_name not in containers: # Still not added (no before/after attrs)
+                    new_general_tab.addChildElement(group_def['container'])
+
+            irc.addChildElement(new_general_tab)
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)

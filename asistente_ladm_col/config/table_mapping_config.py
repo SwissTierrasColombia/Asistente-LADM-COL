@@ -218,3 +218,30 @@ LAYER_CONSTRAINTS = {
         }
     }
 }
+
+"""
+Do not use the same before attribute for 2 differente groups. The same applies
+to after attribute.
+
+Leave before_attr/after_attr empty to add the group at the end of the form.
+"""
+FORM_GROUPS = {
+    PROPERTY_RECORD_CARD_TABLE: {
+        'Código Predial Nacional': {
+            'show_label': True,
+            'column_count': 1,
+            'attr_list': ['sector', 'barrio', 'localidad_comuna', 'manzana_vereda', 'terreno', 'condicion_propiedad', 'edificio', 'piso', 'unidad'],
+            'visibility_expression': None,
+            'before_attr': 'estado_nupre',
+            'after_attr': None
+        },
+        'Tipo predio público': {
+            'show_label': False,
+            'column_count':  1,
+            'attr_list':  ['tipo_predio_publico'],
+            'visibility_expression': '"predio_tipo" IS NOT NULL AND strpos("predio_tipo", \'Publico.\') != 0',
+            'before_attr': None,
+            'after_attr': 'predio_tipo'
+        }
+    }
+}
