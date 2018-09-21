@@ -535,12 +535,18 @@ class GeometryUtils(QObject):
 
         for feature in points_layer.getFeatures():
             bbox = feature.geometry().boundingBox()
-            candidates_ids = index.intersects(bbox)
+            candidate_ids = index.intersects(bbox)
+            candidate_features = boundary_layer.getFeatures(candidate_ids)
+            intersect_ids = list()
 
-            if len(candidates_ids) == 2:
-                ids_boundaries_list.extend(candidates_ids)
+            for candidate_feature in candidate_features:
+                if candidate_feature.geometry().intersects(feature.geometry()):
+                    intersect_ids.append(candidate_feature.id())
+
+            if len(intersect_ids) == 2:
+                ids_boundaries_list.extend(intersect_ids)
 
         selected_ids = list(set(ids_boundaries_list)) # get unique ids
-        candidates_features = boundary_layer.getFeatures(selected_ids)
+        selected_features = boundary_layer.getFeatures(selected_ids)
 
-        return candidates_features
+        return selected_features
