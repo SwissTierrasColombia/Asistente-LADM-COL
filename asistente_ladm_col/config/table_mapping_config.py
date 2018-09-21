@@ -159,7 +159,6 @@ DICT_AUTOMATIC_VALUES = {
 }
 
 DICT_DISPLAY_EXPRESSIONS = {
-    #COL_PARTY_TABLE: "concat({}, {}, {}, {})".format(DOCUMENT_ID_FIELD, COL_PARTY_NAME_FIELD),
     COL_PARTY_TABLE: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
         DOCUMENT_ID_FIELD,
         FIRST_SURNAME_FIELD,
@@ -167,7 +166,7 @@ DICT_DISPLAY_EXPRESSIONS = {
         FIRST_NAME_FIELD,
         SECOND_NAME_FIELD,
         BUSINESS_NAME_FIELD),
-    PARCEL_TABLE: "{} || ' ' || {} || ' ' || {}".format(NUPRE_FIELD, FMI_FIELD, PARCEL_NAME_FIELD),
+    PARCEL_TABLE: "concat({}, ' ', {}, ' ', {})".format(NUPRE_FIELD, FMI_FIELD, PARCEL_NAME_FIELD),
     LA_BAUNIT_TABLE: "{} || ' ' || {} || ' ' || {}".format(ID_FIELD, LA_BAUNIT_NAME_FIELD, TYPE_FIELD),
     LA_GROUP_PARTY_TABLE: "{} || ' ' || {}".format(ID_FIELD, LA_GROUP_PARTY_NAME_FIELD),
     BUILDING_TABLE: '"{}{}"  || \' \' ||  "{}{}"'.format(NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
