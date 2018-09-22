@@ -590,10 +590,11 @@ class QGISUtils(QObject):
                 container.setIsGroupBox(True)
                 container.setShowLabel(group_def['show_label'])
                 container.setColumnCount(group_def['column_count'])
-                if group_def['visibility_expression']:
-                    container.setVisibilityExpression(
-                        QgsOptionalExpression(
-                            QgsExpression(group_def['visibility_expression'])))
+                if group_def['visibility_expression'] is None:
+                    group_def['visibility_expression'] = "True"
+                container.setVisibilityExpression(
+                    QgsOptionalExpression(
+                        QgsExpression(group_def['visibility_expression'])))
 
                 for e in elements:
                     if e.name() in group_def['attr_list']:
