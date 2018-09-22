@@ -1239,7 +1239,7 @@
     <message>
         <location filename="../ui/settings_dialog.ui" line="460"/>
         <source>You can set here the URL of the service to upload source files. </source>
-        <translation>Aquí puedes definir la URL del servicio para subir archivos fuente.</translation>
+        <translation>Aquí puedes definir la URL del servicio para subir archivos fuente. </translation>
     </message>
     <message>
         <location filename="../ui/settings_dialog.ui" line="467"/>
@@ -1402,7 +1402,7 @@
     <message>
         <location filename="../gui/dialog_quality.py" line="111"/>
         <source>Right of Way should not have multipart geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>Las servidumbres de paso no deben tener geometrías multiparte</translation>
     </message>
     <message>
         <source>Boundary segments should not be longer than tolerance</source>
@@ -1555,27 +1555,27 @@
     <message>
         <location filename="../config/help_strings.py" line="142"/>
         <source>Choose this option if you want to create a &lt;b&gt;Property Record Card&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Property Record Card&lt;/b&gt; is created specifically to store the information collected for the parcels.</source>
-        <translation type="unfinished"></translation>
+        <translation>Elige esta opción si deseas agregar una &lt;b&gt;Ficha Predial&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Ficha Predial&lt;/b&gt; se crea específicamente para almacena la información recogida para los predios.</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="148"/>
         <source>Choose this option if you want to create a &lt;b&gt;Market Research&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Market Research&lt;/b&gt; is information related to the market research carried out, with the objective to obtain the most probable market values, based on real estate transactions carried out.</source>
-        <translation type="unfinished"></translation>
+        <translation>Elige esta opción si deseas agregar una &lt;b&gt;Investigación de Mercado&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Investigación de Mercado&lt;/b&gt; es información relativa a las investigaciones de mercado llevadas a cabo, con el objetivo de obtener los valores de mercado más probables, a partir de transacciones inmobiliarias reales llevadas a cabo.</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="154"/>
         <source>Choose this option if you want to create a &lt;b&gt;Nuclear Family&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Nuclear Family&lt;/b&gt; allows to registry the information related to the nuclear families of the cadastral survey for the pilots of the multipurpose cadastre.</source>
-        <translation type="unfinished"></translation>
+        <translation>Elige esta opción si deseas agregar un &lt;b&gt;Núcleo Familiar&lt;/b&gt; con un formulario.&lt;br&gt;&lt;br&gt;&lt;b&gt;Núcleo Familiar&lt;/b&gt; permite registrar la información relativa a los núcleos familiares del levantamiento catastral de los pilotos del Catastro Multipropósito.</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="160"/>
         <source>Choose this option if you want to create a &lt;b&gt;Natural Party&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Natural Party&lt;/b&gt; acting as party.</source>
-        <translation type="unfinished"></translation>
+        <translation>Elige esta opción si deseas agregar un &lt;b&gt;Interesado Natural&lt;/b&gt; con un formulario..&lt;br&gt;&lt;br&gt;&lt;b&gt;Interesado Natural&lt;/b&gt; es una persona fiscal que actúa como interesado.</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="166"/>
         <source>Choose this option if you want to create a &lt;b&gt;Legal Party&lt;/b&gt; using a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;Legal Party&lt;/b&gt; acting as party.</source>
-        <translation type="unfinished"></translation>
+        <translation>Elige esta opción si deseas agregar un &lt;b&gt;Interesado Jurídico&lt;/b&gt; con un formulario. &lt;br&gt;&lt;br&gt;&lt;b&gt;Interesado Jurídico&lt;/b&gt; que actúa como interesado.</translation>
     </message>
     <message>
         <location filename="../config/help_strings.py" line="174"/>
@@ -2239,22 +2239,22 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     <message>
         <location filename="../utils/quality.py" line="778"/>
         <source>There are no Right Of Way features to check &apos;Right Of Way should not have Multipart geometries&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>No hay servidumbres de paso para revisar que no deben tener geometrías multiparte.</translation>
     </message>
     <message>
         <location filename="../utils/quality.py" line="784"/>
         <source>Multipart geometries in Right Of Way</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrías multiparte en servidumbres de paso</translation>
     </message>
     <message>
         <location filename="../utils/quality.py" line="805"/>
         <source>A memory layer with {} multipart geometries in layer Right Of Way has been added to the map!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Una capa temporal con {} geometrías multiparte en la capa Servidumbres de paso ha sido agregada al mapa!</translation>
     </message>
     <message>
         <location filename="../utils/quality.py" line="810"/>
         <source>There are no multipart geometries in layer Right Of Way.</source>
-        <translation type="unfinished"></translation>
+        <translation>No hay geometrías multiparte en la capa servidumbres de paso.</translation>
     </message>
     <message>
         <location filename="../gui/toolbar.py" line="77"/>
