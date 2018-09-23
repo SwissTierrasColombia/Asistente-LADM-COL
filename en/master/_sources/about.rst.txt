@@ -17,7 +17,7 @@ A Project of:
 (`BSF-Swissphoto AG <http://bsf-swissphoto.com/>`_ -
 `INCIGE S.A.S <http://www.incige.com/>`_)
 
-.. image:: static/01_INSTALACION.gif
+.. image:: static/Acerca_de.gif
    :height: 500
    :width: 800
    :alt: about plugin

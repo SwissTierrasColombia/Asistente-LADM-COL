@@ -89,8 +89,8 @@
 <li class="toctree-l2"><a class="reference internal" href="Spatial_Unit.html">Unidad Espacial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Basic_Administrative_Unit.html">Unidad Administrativa Básica</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Interesado</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#natural-party">Interesado Natural</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#legal-party">Interesado Jurídico</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-party">Crear Interesado</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#group-party">Agrupación de Interesados</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="Source.html">Fuente</a></li>
@@ -98,6 +98,7 @@
 <li class="toctree-l2"><a class="reference internal" href="Quality.html">Revisar Reglas de Calidad</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../property_record_card.html">Ficha Predial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../load_layers.html">Cargar capas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../settings.html">Configuración</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../toolbar.html">Barra de herramientas de LADM_COL</a></li>
@@ -177,19 +178,19 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../0.7.1/cadastre/Party.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.7.1.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../0.8.0/cadastre/Party.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.8.0.</a></p>
 <div class="section" id="party">
 <h1>Interesado<a class="headerlink" href="#party" title="Enlazar permanentemente con este título">¶</a></h1>
-<div class="section" id="natural-party">
-<h2>Interesado Natural<a class="headerlink" href="#natural-party" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="create-party">
+<h2>Crear Interesado<a class="headerlink" href="#create-party" title="Enlazar permanentemente con este título">¶</a></h2>
 <ol class="arabic simple">
 <li>Ingresando datos manualmente en un formulario</li>
 </ol>
 <blockquote>
-<div><p>Elige esta opción si deseas agregar un <strong>Interesado Natural</strong> con un formulario.</p>
-<p><strong>Interesado Natural</strong> es una Persona natural que tiene derechos o a la que le recaen restricciones o responsabilidades referidas a uno o más <em>predios</em>.</p>
+<div><p>Elige esta opción si deseas agregar un <strong>Interesado</strong> con un formulario.</p>
+<p><strong>Interesado</strong> es una Persona natural o no natural que tiene derechos o a la que le recaen restricciones o responsabilidades referidas a uno o más <em>predios</em>.</p>
 <a class=""
-               data-lightbox="group-7d580da3-ccbf-4ed7-96fe-96a838bd56d3"
+               data-lightbox="group-1caa603c-403f-433d-8fac-344a26ea2218"
                href="../_images/crear_interesado_natural1.gif"
                title=""
                data-title=""
@@ -197,27 +198,28 @@
                      class=""
                      width="800"
                      height="500"
-                     alt="Create Natural Party"/>
+                     alt="Create Party"/>
                 </a></div></blockquote>
 <ol class="arabic simple" start="2">
 <li>Desde otra capa de QGIS (definiendo un mapeo de campos)</li>
 </ol>
 <blockquote>
-<div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>interesado_natural</strong> de <em>LADM_COL</em>.</p>
+<div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>col_interesado</strong> de <em>LADM_COL</em>.</p>
 <p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
 <p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
 </div></blockquote>
 </div>
-<div class="section" id="legal-party">
-<h2>Interesado Jurídico<a class="headerlink" href="#legal-party" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="group-party">
+<h2>Agrupación de Interesados<a class="headerlink" href="#group-party" title="Enlazar permanentemente con este título">¶</a></h2>
 <ol class="arabic simple">
 <li>Ingresando datos manualmente en un formulario</li>
 </ol>
 <blockquote>
-<div><p>Elige esta opción si deseas agregar un <strong>Interesado Jurídico</strong> con un formulario.</p>
-<p><strong>Interesado Jurídico</strong> es una Persona jurídica que tiene derechos, restricciones o responsabilidades referidas a uno o más <em>predios</em>.</p>
+<div><p>Elige esta opción si deseas agregar una <strong>Agrupación de Interesados</strong> con un formulario.</p>
+<p><strong>Agrupación de Interesados</strong> registra interesados que representan a grupos de personas. Se registra el grupo en s’i, independiente mento de las personas por separado. Es lo que ocurre, por ejemplo, con un grupo étnico o un groupo civil.</p>
+<p>Esta <strong>Agrupación de Interesados</strong> tiene derechos o a la que le recaen restricciones o responsabilidades referidas a uno o más <em>predios</em>.</p>
 <a class=""
-               data-lightbox="group-2cb35bab-cdb5-4c05-b48c-be71a667cc51"
+               data-lightbox="group-fc3b8bc0-ac58-4673-90bc-0913ca67da7a"
                href="../_images/crear_interesado_juridico1.gif"
                title=""
                data-title=""
@@ -225,16 +227,8 @@
                      class=""
                      width="800"
                      height="500"
-                     alt="Create Legal Party"/>
+                     alt="Create Group Party"/>
                 </a></div></blockquote>
-<ol class="arabic simple" start="2">
-<li>Desde otra capa de QGIS (definiendo un mapeo de campos)</li>
-</ol>
-<blockquote>
-<div><p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>interesado_juridico</strong> de <em>LADM_COL</em>.</p>
-<p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
-<p>Para usar esta función revisa este <a class="reference external" href="../mapping_fields.html">ENLACE</a>.</p>
-</div></blockquote>
 </div>
 </div>
 
@@ -294,6 +288,7 @@
             <dd><a href="../../0.6.3/cadastre/Party.html">0.6.3</a></dd>
             <dd><a href="../../0.7.0/cadastre/Party.html">0.7.0</a></dd>
             <dd><a href="../../0.7.1/cadastre/Party.html">0.7.1</a></dd>
+            <dd><a href="../../0.8.0/cadastre/Party.html">0.8.0</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>

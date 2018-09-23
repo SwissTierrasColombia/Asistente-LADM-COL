@@ -1,0 +1,447 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Surveying and Representation &mdash; LADM_COL Assistant  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/banner.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Spatial Unit" href="Spatial_Unit.html" />
+    <link rel="prev" title="Preprocessing" href="Preprocessing.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> LADM_COL Assistant
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../cadastre.html">Cadastre</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Preprocessing.html">Preprocessing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Surveying and Representation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-point">Create Point</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#boundary-point">Boundary Point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#survey-point">Survey Point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#control-point">Control Point</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#create-boundary">Create Boundary</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Spatial_Unit.html">Spatial Unit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Basic_Administrative_Unit.html">Basic Administrative Unit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Party.html">Party</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Source.html">Source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RRR.html">RRR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Quality.html">Check Quality Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../property_record_card.html">Property record card</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../load_layers.html">Load Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../settings.html">Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../toolbar.html">Toolbar LADM_COL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation guide for plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LADM_COL Assistant</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../cadastre.html">Cadastre</a> &raquo;</li>
+        
+      <li>Surveying and Representation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/cadastre/Surveying_and_Representation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+
+
+
+
+
+<div class="section" id="surveying-and-representation">
+<h1>Surveying and Representation<a class="headerlink" href="#surveying-and-representation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="create-point">
+<h2>Create Point<a class="headerlink" href="#create-point" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="boundary-point">
+<h3>Boundary Point<a class="headerlink" href="#boundary-point" title="Permalink to this headline">¶</a></h3>
+<p>Choose this option to load points to <strong>Boundary Points</strong> layer from <em>LADM_COL</em>
+model.</p>
+<p><strong>Boundary Point</strong> is a specialized class of <em>LA_Point</em> which stores points that
+define a boundary. Boundary is an instance of <em>LA_BoundaryFaceString</em> class and
+its specializations.</p>
+<ol class="arabic simple">
+<li>From a CSV file with the required structure</li>
+</ol>
+<blockquote>
+<div><p>Add a Comma Separated Values file (CSV), choosing the delimiter and fields that
+contain point coordinates.</p>
+<a class=""
+               data-lightbox="group-ad37774f-3856-4352-bb78-3dfc8ef7176f"
+               href="../_images/_CREAR_PUNTO_LINDERO_1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/_CREAR_PUNTO_LINDERO_1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Control Point"/>
+                </a></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>From another QGIS layer/table (setting a field mapping)</li>
+</ol>
+<blockquote>
+<div><p>Choose this option to open a window that allows you to import data from a source
+layer into the <em>LADM_COL</em> <strong>puntolindero</strong> layer.</p>
+<p>If the field structure of input and target layers differs, you can set a field
+mapping to define field transformations and correspondence.</p>
+<p>For use this function check this <a class="reference external" href="../mapping_fields.html">LINK</a>.</p>
+</div></blockquote>
+</div>
+<div class="section" id="survey-point">
+<h3>Survey Point<a class="headerlink" href="#survey-point" title="Permalink to this headline">¶</a></h3>
+<p>Choose this option to load points to <strong>Survey Points</strong> layer from <em>LADM_COL</em>
+model.</p>
+<p><strong>Survey Point</strong> is a specialized class of <em>LA_Point</em> which represents a
+building, right of way or auxiliary vertex.</p>
+<ol class="arabic simple">
+<li>From a CSV file with the required structure</li>
+</ol>
+<blockquote>
+<div><p>Add a Comma Separated Values file (CSV), choosing the delimiter and fields that
+contain point coordinates.</p>
+<a class=""
+               data-lightbox="group-6b5a76a7-dc68-4ffd-a75d-24dfe44789f2"
+               href="../_images/_CREAR_PUNTO_LINDERO_1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/_CREAR_PUNTO_LINDERO_1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Boundary Point"/>
+                </a></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>From another QGIS layer/table (setting a field mapping)</li>
+</ol>
+<blockquote>
+<div><p>Choose this option to open a window that allows you to import data from a source
+layer into the <em>LADM_COL</em> <strong>puntolevantamiento</strong> layer.</p>
+<p>If the field structure of input and target layers differs, you can set a field
+mapping to define field transformations and correspondence.</p>
+<p>For use this function check this <a class="reference external" href="../mapping_fields.html">LINK</a>.</p>
+</div></blockquote>
+</div>
+<div class="section" id="control-point">
+<h3>Control Point<a class="headerlink" href="#control-point" title="Permalink to this headline">¶</a></h3>
+<p>Choose this option to load points to <strong>Control Points</strong> layer from <em>LADM_COL</em>
+model.</p>
+<p><strong>Control Point</strong> is a specialized class of <em>LA_Point</em> which represents points
+belonging to the local network, used in cadastre operation for surveying
+physical information of the territorial objects.</p>
+<ol class="arabic simple">
+<li>From a CSV file with the required structure</li>
+</ol>
+<blockquote>
+<div><p>Add a Comma Separated Values file (CSV), choosing the delimiter and fields that
+contain point coordinates.</p>
+<a class=""
+               data-lightbox="group-631c33c9-ef6c-47e0-b446-965f594ff868"
+               href="../_images/crear_punto_control1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/crear_punto_control1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Boundary Point"/>
+                </a></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>From another QGIS layer/table (setting a field mapping)</li>
+</ol>
+<blockquote>
+<div><p>Choose this option to open a window that allows you to import data from a source
+layer into the <em>LADM_COL</em> <strong>puntocontrol</strong> layer.</p>
+<p>If the field structure of input and target layers differs, you can set a field
+mapping to define field transformations and correspondence.</p>
+<p>For use this function check this <a class="reference external" href="../mapping_fields.html">LINK</a>.</p>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="create-boundary">
+<h2>Create Boundary<a class="headerlink" href="#create-boundary" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Digitizing</li>
+</ol>
+<blockquote>
+<div><p>Choose this option if you want to create a <strong>Boundary</strong> using QGIS digitizing
+tools.</p>
+<p><strong>Boundary</strong> is a specialization of the <em>LA_CadenaCarasLindero</em> class to store
+boundaries that define plots. Two boundaries must not cross or overlap.</p>
+<a class=""
+               data-lightbox="group-7b6bfd7c-5429-4b8d-9656-2b7ee50d014d"
+               href="../_images/_CREAR_LINDERO1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/_CREAR_LINDERO1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Boundary Point"/>
+                </a></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>From another QGIS Layer/table (setting a field mapping)</li>
+</ol>
+<blockquote>
+<div><p>Choose this option to open a window that allows you to import data from a source
+table into the <em>LADM_COL</em> <strong>lindero</strong> table.</p>
+<p>If the field structure of input and target tables differs, you can set a field
+mapping to define field transformations and correspondence.</p>
+<p>For use this function check this <a class="reference external" href="../mapping_fields.html">LINK</a>.</p>
+<p>If you need to merge or explodes boundaries you can use the <em>merge</em> and <em>explode</em>
+buttons on Toolbar LADM_COL.</p>
+<a class=""
+               data-lightbox="group-33bd19e0-1113-445d-b94a-2a937363f1d5"
+               href="../_images/_UNIR_PARTIR_LINDERO1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/_UNIR_PARTIR_LINDERO1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Create Boundary Point"/>
+                </a></div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<blockquote>
+<div>You can fill point bfs topology table using the button <em>Fill Point BFS</em> on
+Toolbar LADM_COL which makes automatic and faster this job. For use this
+function check this <a class="reference external" href="../toolbar.html">LINK</a>.</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Spatial_Unit.html" class="btn btn-neutral float-right" title="Spatial Unit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Preprocessing.html" class="btn btn-neutral" title="Preprocessing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Agencia de Implementación.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v: 0.8.0
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="../../0.0.9/cadastre/Surveying_and_Representation.html">0.0.9</a></dd>
+            <dd><a href="../../0.1.0/cadastre/Surveying_and_Representation.html">0.1.0</a></dd>
+            <dd><a href="../../0.2.0/cadastre/Surveying_and_Representation.html">0.2.0</a></dd>
+            <dd><a href="../../0.3.0/cadastre/Surveying_and_Representation.html">0.3.0</a></dd>
+            <dd><a href="../../0.4.0/cadastre/Surveying_and_Representation.html">0.4.0</a></dd>
+            <dd><a href="../../0.5.0/cadastre/Surveying_and_Representation.html">0.5.0</a></dd>
+            <dd><a href="../../0.6.0/cadastre/Surveying_and_Representation.html">0.6.0</a></dd>
+            <dd><a href="../../0.6.1/cadastre/Surveying_and_Representation.html">0.6.1</a></dd>
+            <dd><a href="../../0.6.2/cadastre/Surveying_and_Representation.html">0.6.2</a></dd>
+            <dd><a href="../../0.6.3/cadastre/Surveying_and_Representation.html">0.6.3</a></dd>
+            <dd><a href="../../0.7.0/cadastre/Surveying_and_Representation.html">0.7.0</a></dd>
+            <dd><a href="../../0.7.1/cadastre/Surveying_and_Representation.html">0.7.1</a></dd>
+            <dd><a href="Surveying_and_Representation.html">0.8.0</a></dd>
+        </dl>
+        <dl>
+            <dt>Branches</dt>
+            <dd><a href="../../master/cadastre/Surveying_and_Representation.html">master</a></dd>
+            <dd><a href="../../prepare_PR_2/cadastre/Surveying_and_Representation.html">prepare_PR_2</a></dd>
+            <dd><a href="../../update_docs/cadastre/Surveying_and_Representation.html">update_docs</a></dd>
+            <dd><a href="../../update_docs_n/cadastre/Surveying_and_Representation.html">update_docs_n</a></dd>
+            <dd><a href="../../update_quality_rules/cadastre/Surveying_and_Representation.html">update_quality_rules</a></dd>
+        </dl>
+    </div>
+</div>
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

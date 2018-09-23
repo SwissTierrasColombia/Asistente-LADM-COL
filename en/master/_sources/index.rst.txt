@@ -14,6 +14,7 @@ Welcome to the Assistant's documentation LADM_COL!
     :caption: Contents:
 
     cadastre
+    property_record_card
     load_layers
     settings
     toolbar

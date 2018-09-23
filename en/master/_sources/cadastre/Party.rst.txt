@@ -1,25 +1,25 @@
 Party
 ======
 
-Natural Party
+Create Party
 --------------
 
 1. Entering data manually using a form
 
-  Choose this option if you want to create a **Natural Party** using a form.
+  Choose this option if you want to create a **Party** using a form.
 
-  **Natural Party** is a natural person who has rights or who is subject to
-  restrictions or responsibilities related to one or more *Parcels*.
+  **Party** is a natural or non-natural person who has rights or who is subject
+  to restrictions or responsibilities related to one or more *Parcels*.
 
   .. image:: ../static/crear_interesado_natural.gif
      :height: 500
      :width: 800
-     :alt: Create Natural Party
+     :alt: Create Party
 
 2. From another QGIS layer/table (setting a field mapping)
 
   Choose this option to open a window that allows you to import data from a source
-  table into the *LADM_COL* **interesado_natural** table.
+  table into the *LADM_COL* **col_interesado** table.
 
   If the field structure of input and target tables differs, you can set a field
   mapping to define field transformations and correspondence.
@@ -27,27 +27,21 @@ Natural Party
   For use this function check this `LINK <../mapping_fields.html>`_.
 
 
-Legal Party
---------------
+Group Party
+-----------
 
 1. Entering data manually using a form
 
-  Choose this option if you want to create a **Legal Party** using a form.
+  Choose this option if you want to create a **Group Party** using a form.
 
-  **Legal Party** is a legal entity that has rights, restrictions or
+  **Group Party** registers parties that represents groups of people.
+  The group itself is registered, independently of the persons separately.
+  This is what happens, for example, with an ethnic group or a civil group.
+
+  This **Group Party** has rights or is subject to restrictions or
   responsibilities related to one or more *Parcels*.
 
   .. image:: ../static/crear_interesado_juridico.gif
      :height: 500
      :width: 800
-     :alt: Create Legal Party
-
-2. From another QGIS layer/table (setting a field mapping)
-
-  Choose this option to open a window that allows you to import data from a source
-  table into the *LADM_COL* **interesado_juridico** table.
-
-  If the field structure of input and target tables differs, you can set a field
-  mapping to define field transformations and correspondence.
-
-  For use this function check this `LINK <../mapping_fields.html>`_.
+     :alt: Create Group Party
