@@ -20,8 +20,8 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 La versión actual ([0.8.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.8.0)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.0](https://github.com/opengisch/projectgenerator/releases/download/v3.3.0/projectgenerator.v3.3.0.zip) y permite:
 
- - Capturar datos para el modelo LADM_COL v2.2.1.
- - Capturar datos para el modelo FICHA_PREDIAL v2.2.1.
+ - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
+ - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
  - Preprocesar puntos: Medición controlada.
    - Agrupamiento de puntos por cercanía.
    - Cálculo de posición promediada para puntos del mismo grupo.
@@ -43,7 +43,7 @@ La versión actual ([0.8.0](https://github.com/AgenciaImplementacion/Asistente-L
    - `PuntosCCL` (relaciona `Punto Lindero` y `Lindero`)
    - `MasCCL`    (relaciona `Lindero` y `Terreno`)
    - `Menos`     (relaciona `Terreno` y sus anillos/huecos internos)
- - Crear `Construcciones` y `Ùnidades de Construcción`:
+ - Crear `Construcciones` y `Unidades de Construcción`:
    - Digitalizando sobre el mapa.
      - Ayudas para la digitalización:
        - Configuración automática de snapping y de valores predeterminados para campos.
@@ -83,11 +83,11 @@ La versión actual ([0.8.0](https://github.com/AgenciaImplementacion/Asistente-L
    - Revisar nodos de `Lindero` sin `Punto Lindero` asociado.
    - Revisar nodos de `Lindero` no conectados.
    - Revisar nodos de `Construcción` sin `Punto Levantamiento` asociado.
-   - Revisar superposiciones entre `Servidumbre` y `Construcción`.
+   - Revisar superposiciones entre `Servidumbre de paso` y `Construcción`.
    - Revisar que los `Terrenos` no dejen agujeros entre ellos.
    - Revisar que los límites de `Terrenos` estén cubiertos por `Linderos`.
    - Revisar que los `Linderos` estén cubiertos por límites de `Terrenos`.
-   - Revisar geometrías multiparte en `Servidumbre`.
+   - Revisar geometrías multiparte en `Servidumbre de paso`.
  - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
  - Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.
  - Visualizar GIFs ilustrativos en la ayuda online del plugin o descargarlos para trabajo offline.

@@ -2239,7 +2239,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     <message>
         <location filename="../utils/quality.py" line="778"/>
         <source>There are no Right Of Way features to check &apos;Right Of Way should not have Multipart geometries&apos;.</source>
-        <translation>No hay servidumbres de paso para revisar que no deben tener geometrías multiparte.</translation>
+        <translation>No hay servidumbres de paso para revisar &apos;las Servidumbres de paso no deben tener geometrías multiparte&apos;.</translation>
     </message>
     <message>
         <location filename="../utils/quality.py" line="784"/>

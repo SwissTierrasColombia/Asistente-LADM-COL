@@ -17,9 +17,10 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([0.7.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.7.1)) of the LADM_COL Assistant depends on [Project Generator v3.2.7.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/3.2.7.1) and allows users to:
+The current version ([0.8.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.8.0)) of the LADM_COL Assistant depends on [Project Generator v3.3.0](https://github.com/opengisch/projectgenerator/releases/download/v3.3.0/projectgenerator.v3.3.0.zip) and allows users to:
 
- - Capture data for the LADM_COL v2.2.1 model.
+ - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
+ - Capture data for the `FICHA_PREDIAL v2.2.1` model.
  - Preprocess points: Controlled Measurement.
    - Group points by nearness.
    - Average point position from points of the same group.
@@ -65,6 +66,9 @@ The current version ([0.7.1](https://github.com/AgenciaImplementacion/Asistente-
  - Create `Rights`, `Restrictions` and `Responsibilities`:
    - Using preconfigured forms (associating the new object to selected `Administrative Sources`).
    - From another table with any structure, setting a field mapping.
+ - Create `Propert Record Card`, `Market Research`, `Nuclear Family`, `Natural Party` and `Legal Party`:
+   - Using preconfigured forms.
+   - From another table with any structure, setting a field mapping.
  - Select in a dialog layers to load from any model in the database or schema:
    - Use the 'Project Generator' plugin (a prerequisite) to load layers with configured forms, relations and domains.
    - Load preconfigured layer sets.
@@ -78,6 +82,10 @@ The current version ([0.7.1](https://github.com/AgenciaImplementacion/Asistente-
    - Check dangles in `Boundary`.
    - Check missing `Survey Points` in `Buildings`.
    - Check overlaps between `Right of Way` and `Building`.
+   - Check that `Plots` have no gaps in between.
+   - Check that `Plot` boundaries are covered by `Boundaries`.
+   - Check that `Boundaries` are covered by `Plot` boundaries.
+   - Check that `Right of Way` has no multi-part geometries.
  - Configure automatic values for `namespace` and `local_id` attributes.
  - Load styles for newly added layers from preconfigured QML files.
  - View illustrative GIFs in the plugin's online help or download them for offline work.
