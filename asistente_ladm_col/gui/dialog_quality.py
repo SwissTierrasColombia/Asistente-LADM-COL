@@ -68,6 +68,9 @@ class DialogQuality(QDialog, DIALOG_UI):
                 },{
                     'id' : 'check_overlaps_in_control_points',
                     'text': QCoreApplication.translate("DialogQuality", "Control Points should not overlap")
+                },{
+                    'id' : 'check_boundary_points_covered_boundaries',
+                    'text': QCoreApplication.translate("DialogQuality", "Boundary points must be covered by boundaries")
                 }]
             }
         self.items_dict[QCoreApplication.translate("DialogQuality", "Rules for Lines")] = {
@@ -159,6 +162,8 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_overlapping_points(self._db, BOUNDARY_POINT_TABLE)
                 elif id == 'check_overlaps_in_control_points':
                     self.quality.check_overlapping_points(self._db, CONTROL_POINT_TABLE)
+                elif id == 'check_boundary_points_covered_boundaries':
+                    self.quality.check_boundary_points_covered_boundaries(self._db)
                 elif id == 'check_too_long_boundary_segments':
                     self.quality.check_too_long_segments(self._db)
                 elif id == 'check_overlaps_in_boundaries':

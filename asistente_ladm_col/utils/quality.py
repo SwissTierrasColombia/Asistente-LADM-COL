@@ -177,6 +177,59 @@ class QualityUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                     "All Plot lines are covered by Boundarues!"), Qgis.Info)
 
+    def check_boundary_points_covered_boundaries(self, db):
+        res_layers = self.qgis_utils.get_layers(db, {
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None}}, load=True)
+
+        boundary_layer = res_layers[BOUNDARY_TABLE]
+        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
+
+        if boundary_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "Layer {} not found in DB! {}").format(
+                    BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
+            return
+
+        if boundary_point_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "Layer {} not found in DB! {}").format(
+                    BOUNDARY_POINT_TABLE, db.get_description()), Qgis.Warning)
+            return
+
+        layer_name = QCoreApplication.translate("QGISUtils", "Boundary points must be covered by boundaries")
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), layer_name, "memory")
+
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('point_boundary_id', QVariant.Int)])
+        error_layer.updateFields()
+
+        features = []
+        points_selected = self.qgis_utils.geometry.get_boundary_points_no_covered_boundaries(boundary_point_layer, boundary_layer)
+
+        for point_selected in points_selected:
+            new_feature = QgsVectorLayerUtils().createFeature(
+                error_layer,
+                point_selected.geometry(),
+                {0: point_selected[ID_FIELD]})
+            features.append(new_feature)
+
+        error_layer.dataProvider().addFeatures(features)
+
+        if error_layer.featureCount() > 0:
+            added_layer = self.add_error_layer(error_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "A memory layer with {} boundary points not covered by boundaries has been added to the map!").format(
+                    added_layer.featureCount()), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "All boundaries points are covered by boundaries!"), Qgis.Info)
+
     def check_boundaries_covered_by_plots(self, db):
         res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},

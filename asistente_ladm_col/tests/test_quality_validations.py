@@ -301,6 +301,27 @@ class TesQualityValidations(unittest.TestCase):
                                                                                   overlapping_id)
         self.assertEqual(polygon_intersection, None)
 
+    def test_find_boundary_points_no_covered_boundaries(self):
+        print('\nINFO: Validating boundary points no covered by boundaries...')
+
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri_boundary = gpkg_path + '|layername={layername}'.format(layername='boundary_lamd')
+        uri_point_boundary = gpkg_path + '|layername={layername}'.format(layername='point_boundary_ladm')
+        uri_point_boundary_fixed = gpkg_path + '|layername={layername}'.format(layername='point_boundary_ladm_fixed')
+
+
+        boundary_layer = QgsVectorLayer(uri_boundary, 'boundary', 'ogr')
+        point_boundary_layer = QgsVectorLayer(uri_point_boundary, 'point_boundary', 'ogr')
+        point_boundary_fixed_layer = QgsVectorLayer(uri_point_boundary_fixed, 'point_boundary', 'ogr')
+
+        find_points = self.qgis_utils.geometry.get_boundary_points_no_covered_boundaries(point_boundary_layer, boundary_layer)
+        boundary_points = [find_point for find_point in find_points]
+        self.assertEqual(len(boundary_points), 8)
+
+        find_points = self.qgis_utils.geometry.get_boundary_points_no_covered_boundaries(point_boundary_fixed_layer, boundary_layer)
+        boundary_points= [find_point for find_point in find_points]
+        self.assertEqual(len(boundary_points), 1)
+
     def test_get_missing_boundary_points_in_boundaries(self):
         print('\nINFO: Validating missing boundary points in boundaries...')
 
