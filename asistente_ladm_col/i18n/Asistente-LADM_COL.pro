@@ -17,7 +17,12 @@ FORMS = ../ui/dlg_load_layers.ui \
         ../ui/wiz_create_responsibility_cadastre.ui \
         ../ui/wiz_create_restriction_cadastre.ui \
         ../ui/wiz_create_right_cadastre.ui \
-        ../ui/wiz_create_spatial_source_cadastre.ui
+        ../ui/wiz_create_spatial_source_cadastre.ui \
+        ../ui/wiz_create_legal_party_prc.ui \
+        ../ui/wiz_create_market_research_prc.ui \
+        ../ui/wiz_create_natural_party_prc.ui \
+        ../ui/wiz_create_nuclear_family_prc.ui \
+        ../ui/wiz_create_property_record_card_prc.ui
 
 SOURCES = ../__init__.py \
           ../asistente_ladm_col_plugin.py \
@@ -37,6 +42,11 @@ SOURCES = ../__init__.py \
           ../gui/create_points_cadastre_wizard.py \
           ../gui/create_parcel_cadastre_wizard.py \
           ../gui/create_building_cadastre_wizard.py \
+          ../gui/create_legal_party_prc.py \
+          ../gui/create_market_research_prc.py \
+          ../gui/create_natural_party_prc.py \
+          ../gui/create_nuclear_family_prc.py \
+          ../gui/create_property_record_card_prc.py \
           ../gui/about_dialog.py \
           ../gui/settings_dialog.py \
           ../gui/dialog_quality.py \

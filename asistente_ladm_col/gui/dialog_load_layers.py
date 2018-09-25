@@ -244,7 +244,10 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
             # Load selected layers
             layers_dict = {}
             for item_text, data in self.selected_items_dict.items():
-                layers_dict[data[TABLE_NAME]] = {'name': data[TABLE_NAME], 'geometry': None}
+                layers_dict[item_text] = {
+                    'name': data[TABLE_NAME],
+                    'geometry': QgsWkbTypes().geometryType(QgsWkbTypes().parseType(data[GEOMETRY_TYPE])) if data[GEOMETRY_TYPE] else None
+                }
 
             self.selected_items_dict = dict() # Reset
             self.qgis_utils.get_layers(self._db, layers_dict, load=True)

@@ -235,6 +235,99 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"comienzo_vida_util_version"', 'precision': -1, 'type': 16, 'length': -1, 'name': 'comienzo_vida_util_version'},
             {'expression': '"fin_vida_util_version"', 'precision': -1, 'type': 16, 'length': -1, 'name': 'fin_vida_util_version'}
         ]
+    elif layer_name == PROPERTY_RECORD_CARD_TABLE: # predio_ficha
+        mapping = [
+            {'expression': '"sector"', 'length': 2, 'precision': -1, 'type': 10, 'name': 'sector'},
+            {'expression': '"localidad_comuna"', 'length': 2, 'precision': -1, 'type': 10, 'name': 'localidad_comuna'},
+            {'expression': '"barrio"', 'length': 2, 'precision': -1, 'type': 10, 'name': 'barrio'},
+            {'expression': '"manzana_vereda"', 'length': 4, 'precision': -1, 'type': 10, 'name': 'manzana_vereda'},
+            {'expression': '"terreno"', 'length': 4, 'precision': -1, 'type': 10, 'name': 'terreno'},
+            {'expression': '"condicion_propiedad"', 'length': 1, 'precision': -1, 'type': 10, 'name': 'condicion_propiedad'},
+            {'expression': '"edificio"', 'length': 2, 'precision': -1, 'type': 10, 'name': 'edificio'},
+            {'expression': '"piso"', 'length': 2, 'precision': -1, 'type': 10, 'name': 'piso'},
+            {'expression': '"unidad"', 'length': 4, 'precision': -1, 'type': 10, 'name': 'unidad'},
+            {'expression': '"estado_nupre"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'estado_nupre'},
+            {'expression': '"destinacion_economica"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'destinacion_economica'},
+            {'expression': '"predio_tipo"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'predio_tipo'},
+            {'expression': '"tipo_predio_publico"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'tipo_predio_publico'},
+            {'expression': '"formalidad"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'formalidad'},
+            {'expression': '"estrato"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'estrato'},
+            {'expression': '"clase_suelo_pot"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'clase_suelo_pot'},
+            {'expression': '"categoria_suelo_pot"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'categoria_suelo_pot'},
+            {'expression': '"derecho_fmi"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'derecho_fmi'},
+            {'expression': '"inscrito_rupta"', 'length': -1, 'precision': -1, 'type': 1, 'name': 'inscrito_rupta'},
+            {'expression': '"fecha_medida_rupta"', 'length': -1, 'precision': -1, 'type': 14, 'name': 'fecha_medida_rupta'},
+            {'expression': '"anotacion_fmi_rupta"', 'length': -1, 'precision': -1, 'type': 1, 'name': 'anotacion_fmi_rupta'},
+            {'expression': '"inscrito_proteccion_colectiva"', 'length': -1, 'precision': -1, 'type': 1, 'name': 'inscrito_proteccion_colectiva'},
+            {'expression': '"fecha_proteccion_colectiva"', 'length': -1, 'precision': -1, 'type': 14, 'name': 'fecha_proteccion_colectiva'},
+            {'expression': '"anotacion_fmi_proteccion_colectiva"', 'length': -1, 'precision': -1, 'type': 1, 'name': 'anotacion_fmi_proteccion_colectiva'},
+            {'expression': '"inscrito_proteccion_ley1448"', 'length': -1, 'precision': -1, 'type': 1, 'name': 'inscrito_proteccion_ley1448'},
+            {'expression': '"fecha_proteccion_ley1448"', 'length': -1, 'precision': -1, 'type': 14, 'name': 'fecha_proteccion_ley1448'},
+            {'expression': '"anotacion_fmi_ley1448"', 'length': -1, 'precision': -1, 'type': 1, 'name': 'anotacion_fmi_ley1448'},
+            {'expression': '"inscripcion_urt"', 'length': -1, 'precision': -1, 'type': 1, 'name': 'inscripcion_urt'},
+            {'expression': '"fecha_inscripcion_urt"', 'length': -1, 'precision': -1, 'type': 14, 'name': 'fecha_inscripcion_urt'},
+            {'expression': '"anotacion_fmi_urt"', 'length': -1, 'precision': -1, 'type': 1, 'name': 'anotacion_fmi_urt'},
+            {'expression': '"vigencia_fiscal"', 'length': -1, 'precision': -1, 'type': 14, 'name': 'vigencia_fiscal'},
+            {'expression': '"observaciones"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'observaciones'},
+            {'expression': '"fecha_visita_predial"', 'length': -1, 'precision': -1, 'type': 14, 'name': 'fecha_visita_predial'},
+            {'expression': '"nombre_quien_atendio"', 'length': 40, 'precision': -1, 'type': 10, 'name': 'nombre_quien_atendio'},
+            {'expression': '"numero_documento_quien_atendio"', 'length': 10, 'precision': -1, 'type': 10, 'name': 'numero_documento_quien_atendio'},
+            {'expression': '"categoria_quien_atendio"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'categoria_quien_atendio'},
+            {'expression': '"tipo_documento_quien_atendio"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'tipo_documento_quien_atendio'},
+            {'expression': '"nombre_encuestador"', 'length': 40, 'precision': -1, 'type': 10, 'name': 'nombre_encuestador'},
+            {'expression': '"numero_documento_encuestador"', 'length': 10, 'precision': -1, 'type': 10, 'name': 'numero_documento_encuestador'},
+            {'expression': '"tipo_documento_encuestador"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'tipo_documento_encuestador'}
+        ]
+    elif layer_name == MARKET_RESEARCH_TABLE:
+        mapping = [
+            {'expression': '"disponible_mercado"', 'length': -1, 'precision': -1, 'type': 1, 'name': 'disponible_mercado'},
+            {'expression': '"tipo_oferta"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'tipo_oferta'},
+            {'expression': '"valor"', 'length': 16, 'precision': 1, 'type': 6, 'name': 'valor'},
+            {'expression': '"nombre_oferente"', 'length': 40, 'precision': -1, 'type': 10, 'name': 'nombre_oferente'},
+            {'expression': '"telefono_contacto_oferente"', 'length': 10, 'precision': -1, 'type': 10, 'name': 'telefono_contacto_oferente'},
+            {'expression': '"observaciones"', 'length': 100, 'precision': -1, 'type': 10, 'name': 'observaciones'},
+            {'expression': '"fichapredio"', 'length': -1, 'precision': 0, 'type': 4, 'name': 'fichapredio'}
+        ]
+    elif layer_name == NUCLEAR_FAMILY_TABLE:
+        mapping = [
+            {'expression': '"documento_identidad"', 'length': 10, 'precision': -1, 'type': 10, 'name': 'documento_identidad'},
+            {'expression': '"tipo_documento"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'tipo_documento'},
+            {'expression': '"organo_emisor"', 'length': 20, 'precision': -1, 'type': 10, 'name': 'organo_emisor'},
+            {'expression': '"fecha_emision"', 'length': -1, 'precision': -1, 'type': 14, 'name': 'fecha_emision'},
+            {'expression': '"primer_nombre"', 'length': 20, 'precision': -1, 'type': 10, 'name': 'primer_nombre'},
+            {'expression': '"segundo_nombre"', 'length': 20, 'precision': -1, 'type': 10, 'name': 'segundo_nombre'},
+            {'expression': '"primer_apellido"', 'length': 20, 'precision': -1, 'type': 10, 'name': 'primer_apellido'},
+            {'expression': '"segundo_apellido"', 'length': 20, 'precision': -1, 'type': 10, 'name': 'segundo_apellido'},
+            {'expression': '"fecha_nacimiento"', 'length': -1, 'precision': -1, 'type': 14, 'name': 'fecha_nacimiento'},
+            {'expression': '"lugar_nacimiento"', 'length': 100, 'precision': -1, 'type': 10, 'name': 'lugar_nacimiento'},
+            {'expression': '"nacionalidad"', 'length': 20, 'precision': -1, 'type': 10, 'name': 'nacionalidad'},
+            {'expression': '"discapacidad"', 'length': -1, 'precision': -1, 'type': 1, 'name': 'discapacidad'},
+            {'expression': '"genero"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'genero'},
+            {'expression': '"habita_predio"', 'length': -1, 'precision': -1, 'type': 1, 'name': 'habita_predio'},
+            {'expression': '"parentesco"', 'length': 20, 'precision': -1, 'type': 10, 'name': 'parentesco'},
+            {'expression': '"etnia"', 'length': 20, 'precision': -1, 'type': 10, 'name': 'etnia'},
+            {'expression': '"direccion"', 'length': 100, 'precision': -1, 'type': 10, 'name': 'direccion'},
+            {'expression': '"celular"', 'length': 10, 'precision': -1, 'type': 10, 'name': 'celular'},
+            {'expression': '"fichapredio"', 'length': -1, 'precision': 0, 'type': 4, 'name': 'fichapredio'}
+        ]
+    elif layer_name == NATURAL_PARTY_TABLE:
+        mapping = [
+            {'expression': '"nacionalidad"', 'length': 20, 'precision': -1, 'type': 10, 'name': 'nacionalidad'},
+            {'expression': '"fecha_nacimiento"', 'length': -1, 'precision': -1, 'type': 14, 'name': 'fecha_nacimiento'},
+            {'expression': '"lugar_nacimiento"', 'length': 100, 'precision': -1, 'type': 10, 'name': 'lugar_nacimiento'},
+            {'expression': '"cabeza_hogar"', 'length': -1, 'precision': -1, 'type': 1, 'name': 'cabeza_hogar'},
+            {'expression': '"discapacidad"', 'length': -1, 'precision': -1, 'type': 1, 'name': 'discapacidad'},
+            {'expression': '"etnia"', 'length': 20, 'precision': -1, 'type': 10, 'name': 'etnia'},
+            {'expression': '"interesadonaturalcatastro"', 'length': -1, 'precision': 0, 'type': 4, 'name': 'interesadonaturalcatastro'}
+        ]
+    elif layer_name == LEGAL_PARTY_TABLE:
+        mapping = [
+            {'expression': '"t_id"', 'length': -1, 'precision': 0, 'type': 4, 'name': 't_id'},
+            {'expression': '"fecha_constitucion"', 'length': -1, 'precision': -1, 'type': 14, 'name': 'fecha_constitucion'},
+            {'expression': '"lugar_inscripcion"', 'length': 500, 'precision': -1, 'type': 10, 'name': 'lugar_inscripcion'},
+            {'expression': '"nacionalidad"', 'length': 20, 'precision': -1, 'type': 10, 'name': 'nacionalidad'},
+            {'expression': '"interesadojuridicocatastro"', 'length': -1, 'precision': 0, 'type': 4, 'name': 'interesadojuridicocatastro'}
+        ]
 
     # If the user doesn't want to disable automatic fields...
     if not QSettings().value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):

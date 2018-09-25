@@ -5,6 +5,7 @@ from qgis.PyQt.QtCore import QLocale, QSettings, QObject, QCoreApplication
 
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
 CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
+PROPERTY_RECORD_CARD_MODEL_PREFIX = "Ficha_Predial_"
 # From this version on the plugin will work, a message will block prior versions
 LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION = "17.07.2018"
 
@@ -39,16 +40,16 @@ MODULE_HELP_MAPPING = {
     'settings': 'help.html#settings'
 }
 # Configure Project Generator Dependency
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.2.7.1"
+PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.0"
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), set to True
-PROJECT_GENERATOR_EXACT_REQUIRED_VERSION = True
+PROJECT_GENERATOR_EXACT_REQUIRED_VERSION = False
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-PROJECT_GENERATOR_REQUIRED_VERSION_URL = 'https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.2.7.1/projectgenerator.zip'
+PROJECT_GENERATOR_REQUIRED_VERSION_URL = '' # 'https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.2.7.2/projectgenerator.zip'
 
 # Project Generator definitions
 SCHEMA_NAME = 'schemaname'
@@ -84,6 +85,11 @@ INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
 DEFAULT_ENDPOINT_SOURCE_SERVICE = 'http://portal.proadmintierra.info:18888/filemanager'
 SOURCE_SERVICE_UPLOAD_SUFFIX = 'v1/file'
 SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
+
+# UI OBJECTNAMES
+CADASTRE_MENU_OBJECTNAME = "ladm_col_cadastre"
+LADM_COL_MENU_OBJECTNAME = "ladm_col"
+PROPERTY_RECORD_CARD_MENU_OBJECTNAME = "ladm_col_property_record_card"
 
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
