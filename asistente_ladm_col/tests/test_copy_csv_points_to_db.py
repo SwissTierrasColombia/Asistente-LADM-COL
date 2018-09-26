@@ -45,7 +45,7 @@ class TestCopy(unittest.TestCase):
                                     cbo_longitude,
                                     cbo_latitude,
                                     self.db_connection,
-                                    BOUNDARY_POINT_TABLE)
+                                    self.qgis_utils.get_layer(self.db_connection, BOUNDARY_POINT_TABLE, load=True))
         self.assertEqual(res, True)
 
     def validate_points_in_db(self):
@@ -99,7 +99,7 @@ class TestCopy(unittest.TestCase):
                                     cbo_longitude,
                                     cbo_latitude,
                                     self.db_connection,
-                                    BOUNDARY_POINT_TABLE)
+                                    self.qgis_utils.get_layer(self.db_connection, BOUNDARY_POINT_TABLE, load=True))
 
         self.assertEqual(res, False)
 
