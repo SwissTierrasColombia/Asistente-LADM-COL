@@ -34,6 +34,7 @@ from qgis.core import (
     QgsGeometry,
     QgsGeometryCollection,
     QgsLayerTreeGroup,
+    QgsLayerTreeNode,
     QgsLineString,
     QgsMapLayer,
     QgsMultiLineString,
@@ -126,7 +127,7 @@ class QGISUtils(QObject):
     message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
     map_refresh_requested = pyqtSignal()
     map_freeze_requested = pyqtSignal(bool)
-    set_node_visibility_requested = pyqtSignal(QgsMapLayer, str, bool)
+    set_node_visibility_requested = pyqtSignal(QgsLayerTreeNode, bool)
     status_bar_message_emitted = pyqtSignal(str, int) # Message, duration
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
@@ -427,7 +428,7 @@ class QGISUtils(QObject):
         self.set_form_groups(layer)
         if layer.isSpatial():
             self.symbology.set_layer_style_from_qml(layer)
-            self.set_node_visibility(layer, 'layer_id', visible)
+            self.set_layer_visibility(layer, visible)
 
     def configure_missing_relations(self, layer):
         """
@@ -724,10 +725,14 @@ class QGISUtils(QObject):
             layer.setDefaultValueDefinition(idx, default_definition)
 
     def set_error_group_visibility(self, visible):
-        self.set_node_visibility(self.get_error_layers_group(), 'group', visible)
+        self.set_node_visibility(self.get_error_layers_group(), visible)
 
-    def set_node_visibility(self, layer, mode, visible):
-        self.set_node_visibility_requested.emit(layer, mode, visible)
+    def set_layer_visibility(self, layer, visible):
+        node = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
+        self.set_node_visibility(node, visible)
+
+    def set_node_visibility(self, node, visible):
+        self.set_node_visibility_requested.emit(node, visible)
 
     def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, target_layer_name):
         if not csv_path or not os.path.exists(csv_path):

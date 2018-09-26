@@ -364,13 +364,8 @@ class AsistenteLADMCOLPlugin(QObject):
     def activate_layer(self, layer):
         self.iface.layerTreeView().setCurrentLayer(layer)
 
-    def set_node_visibility(self, node, mode='layer_id', visible=True):
+    def set_node_visibility(self, node, visible=True):
         # Modes may eventually be layer_id, group_name, layer, group
-        if mode == 'layer_id':
-            node = QgsProject.instance().layerTreeRoot().findLayer(node.id())
-        elif mode == 'group':
-            pass # We are done
-
         if node is not None:
             node.setItemVisibilityChecked(visible)
 
