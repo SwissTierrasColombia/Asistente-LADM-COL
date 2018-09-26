@@ -357,23 +357,34 @@ class QualityUtils(QObject):
 
             self.qgis_utils.message_emitted.emit(msg, Qgis.Info)
 
-    def check_integrity_boundaries(self, db):
+    def check_boundaries_are_not_split(self, db):
+        """
+        An split boundary is an incomplete boundary because it is connected to
+        a single boundary and therefore, they don't represent a change in
+        boundary (colindancia).
+        """
         features = []
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
 
         if boundary_layer is None:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                    "Table {} not found in DB! {}").format(
+                    "Layer {} not found in DB! {}").format(
                         BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
             return
 
-        wrong_boundaries = self.qgis_utils.geometry.validate_boundary_integraty(boundary_layer)
+        if boundary_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                   "There are no boundaries to check 'boundaries should not be split'!"), Qgis.Info)
+            return
+
+        wrong_boundaries = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(boundary_layer)
 
         if wrong_boundaries is None:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "No wrong boundaries!"), Qgis.Info)
+                                           "There are no wrong boundaries!"), Qgis.Info)
             return
 
         error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG),
@@ -399,7 +410,7 @@ class QualityUtils(QObject):
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "No wrong boundaries."),
+                                           "There are no wrong boundaries."),
                 Qgis.Info)
 
     def check_too_long_segments(self, db):

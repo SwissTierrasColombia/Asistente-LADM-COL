@@ -79,7 +79,7 @@ class DialogQuality(QDialog, DIALOG_UI):
                     'id': 'check_overlaps_in_boundaries',
                     'text': QCoreApplication.translate("DialogQuality", "Boundaries should not overlap")
                 }, {
-                    'id': 'check_integrity_boundaries',
+                    'id': 'check_boundaries_are_not_split',
                     'text': QCoreApplication.translate("DialogQuality", "Boundaries should not be split")
                 }, {
                     'id': 'check_boundaries_covered_by_plots',
@@ -166,8 +166,8 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_too_long_segments(self._db)
                 elif id == 'check_overlaps_in_boundaries':
                     self.quality.check_overlaps_in_boundaries(self._db)
-                elif id == 'check_integrity_boundaries':
-                    self.quality.check_integrity_boundaries(self._db)
+                elif id == 'check_boundaries_are_not_split':
+                    self.quality.check_boundaries_are_not_split(self._db)
                 elif id == 'check_boundaries_covered_by_plots':
                     self.quality.check_boundaries_covered_by_plots(self._db)
                 elif id == 'check_missing_boundary_points_in_boundaries':

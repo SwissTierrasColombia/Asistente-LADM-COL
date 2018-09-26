@@ -34,7 +34,10 @@ from qgis.core import (
 from qgis.core import edit
 
 import processing
-from ..config.general_config import PLUGIN_NAME, DEFAULT_POLYGON_AREA_TOLERANCE
+from ..config.general_config import (
+    DEFAULT_POLYGON_AREA_TOLERANCE,
+    PLUGIN_NAME
+)
 from ..config.table_mapping_config import ID_FIELD
 
 class GeometryUtils(QObject):
@@ -508,27 +511,20 @@ class GeometryUtils(QObject):
         return featureCollection, ids
 
     def get_begin_end_vertices_from_lines(self, layer):
-
-        point_layer = QgsVectorLayer("Point?crs=epsg:3116", "point_layer", "memory")
-        data_provider = point_layer.dataProvider()
-        feat = QgsFeature()
-
-        for feature in layer.getFeatures():
-            geom = feature.geometry().asPolyline()
-            begin_point = QgsPoint(geom[0])
-            end_point = QgsPoint(geom[-1])
-            feat.setGeometry(QgsGeometry(begin_point))
-            data_provider.addFeatures([feat])
-            feat.setGeometry(QgsGeometry(end_point))
-            data_provider.addFeatures([feat])
+        point_layer = processing.run("qgis:extractspecificvertices",
+                                     {'VERTICES': '0,-1', 'INPUT': layer, 'OUTPUT': 'memory:' })['OUTPUT']
 
         point_layer_uniques = processing.run("qgis:deleteduplicategeometries",
                                              {'INPUT': point_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         return point_layer_uniques
 
-    def validate_boundary_integraty(self, boundary_layer):
-
+    def get_boundaries_connected_to_single_boundary(self, boundary_layer):
+        """
+        Get all boundary lines that have an end vertex with no change in
+        boundary (colindancia), that is boundary lines that are connected with
+        just one boundary line.
+        """
         points_layer = self.get_begin_end_vertices_from_lines(boundary_layer)
         index = QgsSpatialIndex(boundary_layer)
         ids_boundaries_list = list()
@@ -544,6 +540,8 @@ class GeometryUtils(QObject):
                     intersect_ids.append(candidate_feature.id())
 
             if len(intersect_ids) == 2:
+                # For valid lines, we get more than two intersections (think
+                # about a 'Y')
                 ids_boundaries_list.extend(intersect_ids)
 
         selected_ids = list(set(ids_boundaries_list)) # get unique ids
