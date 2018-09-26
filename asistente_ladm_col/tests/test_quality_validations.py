@@ -320,7 +320,7 @@ class TesQualityValidations(unittest.TestCase):
 
         find_points = self.qgis_utils.geometry.get_boundary_points_no_covered_boundaries(point_boundary_fixed_layer, boundary_layer)
         boundary_points= [find_point for find_point in find_points]
-        self.assertEqual(len(boundary_points), 1)
+        self.assertEqual(len(boundary_points), 0)
 
     def test_get_missing_boundary_points_in_boundaries(self):
         print('\nINFO: Validating missing boundary points in boundaries...')
