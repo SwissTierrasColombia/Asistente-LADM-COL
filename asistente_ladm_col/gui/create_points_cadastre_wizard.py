@@ -19,7 +19,7 @@
 import os
 import stat
 
-from qgis.core import Qgis, QgsMapLayerProxyModel, QgsApplication
+from qgis.core import Qgis, QgsMapLayerProxyModel, QgsApplication, QgsWkbTypes
 from qgis.gui import QgsMessageBar
 
 from qgis.PyQt.QtCore import Qt, QSettings, QCoreApplication, QFile
@@ -45,6 +45,8 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
+
+        self.target_layer = None
 
         # Auxiliary data to set nonlinear next pages
         self.pages = [self.wizardPage1, self.wizardPage2, self.wizardPage3]
@@ -123,7 +125,25 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         if id == self.dict_pages_ids[self.wizardPage2]:
             self.adjust_page_2_controls()
         elif id == self.dict_pages_ids[self.wizardPage3]:
+            self.check_z_in_geomety()
             self.fill_long_lat_combos("")
+
+    def check_z_in_geomety(self):
+        self.target_layer = self.qgis_utils.get_layer(self._db, self.current_point_name(), load=True)
+
+        if not QgsWkbTypes().hasZ(self.target_layer.wkbType()):
+            self.labelZ.setEnabled(False)
+            self.cbo_elevation.setEnabled(False)
+            self.cbo_elevation.setToolTip(QCoreApplication.translate("CreatePointsCadastreWizard",
+                                                                    "The current model does not support 3D geometries"))
+            self.labelZ.setToolTip(QCoreApplication.translate("CreatePointsCadastreWizard",
+                                                                    "The current model does not support 3D geometries"))
+        else:
+            self.labelZ.setEnabled(True)
+            self.cbo_elevation.setEnabled(True)
+            self.labelZ.setToolTip("")
+            self.cbo_elevation.setToolTip("")
+
 
     def adjust_page_2_controls(self):
         if self.rad_refactor.isChecked():
@@ -202,14 +222,14 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return
 
-        target_layer = self.current_point_name()
-
         res = self.qgis_utils.copy_csv_to_db(csv_path,
                                     self.txt_delimiter.text(),
                                     self.cbo_longitude.currentText(),
                                     self.cbo_latitude.currentText(),
                                     self._db,
-                                    target_layer)
+                                    self.target_layer,
+                                    self.cbo_elevation.currentText() or None)
+
     def file_path_changed(self):
         self.autodetect_separator()
         self.fill_long_lat_combos("")
@@ -232,28 +252,40 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         csv_path = self.txt_file_path.text().strip()
         self.cbo_longitude.clear()
         self.cbo_latitude.clear()
+        self.cbo_elevation.clear()
         if os.path.exists(csv_path):
             self.button(QWizard.FinishButton).setEnabled(True)
 
             fields = self.get_fields_from_csv_file(csv_path)
+            fields_dict = {field: field.lower() for field in fields}
             if not fields:
                 self.button(QWizard.FinishButton).setEnabled(False)
                 return
 
             self.cbo_longitude.addItems(fields)
             self.cbo_latitude.addItems(fields)
+            self.cbo_elevation.addItems([""] + fields)
 
-            # Heuristics to suggest values for x and y
+            # Heuristics to suggest values for x,y and z
             x_potential_names = ['x', 'lon', 'long', 'longitud', 'longitude', 'este', 'east', 'oeste', 'west']
             y_potential_names = ['y', 'lat', 'latitud', 'latitude', 'norte', 'north']
+            z_potential_names = ['z', 'altura', 'elevacion', 'elevation', 'elevación', 'height']
             for x_potential_name in x_potential_names:
-                if x_potential_name in fields:
-                    self.cbo_longitude.setCurrentText(x_potential_name)
-                    break
+                for k,v in fields_dict.items():
+                    if x_potential_name == v:
+                        self.cbo_longitude.setCurrentText(k)
+                        break
             for y_potential_name in y_potential_names:
-                if y_potential_name in fields:
-                    self.cbo_latitude.setCurrentText(y_potential_name)
-                    break
+                for k, v in fields_dict.items():
+                    if y_potential_name == v:
+                        self.cbo_latitude.setCurrentText(k)
+                        break
+            if self.cbo_elevation.isEnabled():
+                for z_potential_name in z_potential_names:
+                    for k, v in fields_dict.items():
+                        if z_potential_name == v:
+                            self.cbo_elevation.setCurrentText(k)
+                            break
 
         else:
             self.button(QWizard.FinishButton).setEnabled(False)
