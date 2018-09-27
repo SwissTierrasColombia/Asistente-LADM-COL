@@ -4,7 +4,7 @@ import psycopg2
 import datetime
 
 from qgis.testing import unittest, start_app
-
+from processing.core.Processing import Processing
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import import_projectgenerator, get_dbconn, get_test_path, restore_schema
@@ -36,6 +36,7 @@ class TestCopy(unittest.TestCase):
         self.clean_table()
 
     def upload_points_from_csv(self):
+        print("Validating for import 2D cvs data...")
         csv_path = get_test_path('csv/puntos_fixed.csv')
         txt_delimiter = ';'
         cbo_longitude = 'x'
@@ -46,6 +47,19 @@ class TestCopy(unittest.TestCase):
                                     cbo_latitude,
                                     self.db_connection,
                                     self.qgis_utils.get_layer(self.db_connection, BOUNDARY_POINT_TABLE, load=True))
+        self.assertEqual(res, True)
+
+        print("Validating for import 3D cvs data...")
+        elevation = 'z'
+        Processing.initialize()
+        res = self.qgis_utils.copy_csv_to_db(csv_path,
+                                     txt_delimiter,
+                                     cbo_longitude,
+                                     cbo_latitude,
+                                     self.db_connection,
+                                     self.qgis_utils.get_layer(self.db_connection, BOUNDARY_POINT_TABLE, load=True),
+                                     elevation)
+        print("Ok Validation for cvs data import for 2D and 3D !!!")
         self.assertEqual(res, True)
 
     def validate_points_in_db(self):
