@@ -40,6 +40,9 @@ from ..config.general_config import (
     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE
 )
 from ..config.table_mapping_config import (
+    POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
+    POINT_BOUNDARY_FACE_STRING_TABLE,
+    CCLSOURCE_TABLE_BOUNDARY_FIELD,
     BOUNDARY_POINT_TABLE,
     BOUNDARY_TABLE,
     BUILDING_TABLE,
@@ -471,10 +474,12 @@ class QualityUtils(QObject):
     def check_missing_boundary_points_in_boundaries(self, db):
         res_layers = self.qgis_utils.get_layers(db, {
             BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None},
+            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None},
             BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}}, load=True)
 
         boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
         boundary_layer = res_layers[BOUNDARY_TABLE]
+        pointCcl_table = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
 
         if boundary_point_layer is None:
             self.qgis_utils.message_emitted.emit(
@@ -497,21 +502,58 @@ class QualityUtils(QObject):
                 Qgis.Info)
             return
 
+        if pointCcl_table is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(
+                    POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()), Qgis.Warning)
+            return
+
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
                                      QCoreApplication.translate("QGISUtils", "Missing boundary points in boundaries"),
                                      "memory")
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField("boundary_id", QVariant.Int)])
+        data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
+                                     QgsField('boundary_id', QVariant.Int),
+                                     QgsField('type_error', QVariant.String)])
+
         error_layer.updateFields()
 
+        # check missing points
         missing_points = self.get_missing_boundary_points_in_boundaries(boundary_point_layer, boundary_layer)
 
         new_features = list()
         for key, point_list in missing_points.items():
             for point in point_list:
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, point, {0: key})
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, point,
+                                                                    {0: None,
+                                                                     1: key,
+                                                                     2: "Missing boundary point in boundary"})
                 new_features.append(new_feature)
 
+
+
+        # verify that the relation between point boundary and boundary is registered in the topology table
+        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_point_layer, boundary_layer)
+
+        for point_selected in points_selected:
+            boundary_point_id = point_selected[ID_FIELD]
+            boundary_id = point_selected['{}_2'.format(ID_FIELD)]
+            expr = '"{}" = {} and "{}" = {}'.format(POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD, boundary_point_id, CCLSOURCE_TABLE_BOUNDARY_FIELD, boundary_id)
+
+            it_select_features = pointCcl_table.getFeatures(expr)
+            select_features = [select_feature for select_feature in it_select_features]
+
+            if len(select_features) < 1:
+                new_features.append(QgsVectorLayerUtils().createFeature(error_layer, point_selected.geometry(),
+                                                                  {0: boundary_point_id,
+                                                                   1: boundary_id,
+                                                                   2: "Relation without a record in the topology table"}))
+            elif len(select_features) > 1:
+                new_features.append(QgsVectorLayerUtils().createFeature(error_layer, point_selected.geometry(),
+                                                                  {0: boundary_point_id,
+                                                                   1: boundary_id,
+                                                                   2: "Relation recorded more than once in the topology table"}))
         data_provider.addFeatures(new_features)
 
         if error_layer.featureCount() > 0:
@@ -519,7 +561,7 @@ class QualityUtils(QObject):
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} boundary vertices with no associated boundary points has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
+                    "A memory layer with {} boundary vertices with no associated boundary points or not registered in the topology table has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
