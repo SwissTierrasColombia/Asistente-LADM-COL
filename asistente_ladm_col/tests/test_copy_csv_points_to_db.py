@@ -36,7 +36,7 @@ class TestCopy(unittest.TestCase):
         self.clean_table()
 
     def upload_points_from_csv(self):
-        print("Validating for import 2D cvs data...")
+        print("Copying CSV data with no elevation...")
         csv_path = get_test_path('csv/puntos_fixed.csv')
         txt_delimiter = ';'
         cbo_longitude = 'x'
@@ -49,9 +49,23 @@ class TestCopy(unittest.TestCase):
                                     self.qgis_utils.get_layer(self.db_connection, BOUNDARY_POINT_TABLE, load=True))
         self.assertEqual(res, True)
 
-        print("Validating for import 3D cvs data...")
+    def test_copy_csv_with_z_to_db(self):
+        print("\nINFO: Validating copy CSV points with Z to DB...")
+        self.clean_table()
+        self.qgis_utils.disable_automatic_fields(self.db_connection, BOUNDARY_POINT_TABLE)
+        self.upload_points_from_csv_with_elevation()
+        self.validate_points_z_in_db()
+        self.clean_table()
+
+    def upload_points_from_csv_with_elevation(self):
+        print("Copying CSV data with elevation...")
+        csv_path = get_test_path('csv/puntos_fixed.csv')
+        txt_delimiter = ';'
+        cbo_longitude = 'x'
+        cbo_latitude = 'y'
         elevation = 'z'
         Processing.initialize()
+
         res = self.qgis_utils.copy_csv_to_db(csv_path,
                                      txt_delimiter,
                                      cbo_longitude,
@@ -59,7 +73,6 @@ class TestCopy(unittest.TestCase):
                                      self.db_connection,
                                      self.qgis_utils.get_layer(self.db_connection, BOUNDARY_POINT_TABLE, load=True),
                                      elevation)
-        print("Ok Validation for cvs data import for 2D and 3D !!!")
         self.assertEqual(res, True)
 
     def validate_points_in_db(self):
@@ -124,6 +137,14 @@ class TestCopy(unittest.TestCase):
         results = cur.fetchall()
         colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
         self.assertEqual(len(results), 0)
+
+    def validate_points_z_in_db(self):
+        cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        print('Validating points Z')
+        query = cur.execute("""SELECT * FROM test_ladm_col.puntolindero;""")
+        results = cur.fetchall()
+        colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
+        self.assertEqual(len(results), 0) # TODO FIX THIS!!!
 
     def clean_table(self):
         print('Clean test_ladm_col.puntolindero table...')

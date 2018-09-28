@@ -266,7 +266,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             self.cbo_latitude.addItems(fields)
             self.cbo_elevation.addItems([""] + fields)
 
-            # Heuristics to suggest values for x,y and z
+            # Heuristics to suggest values for x, y and z
             x_potential_names = ['x', 'lon', 'long', 'longitud', 'longitude', 'este', 'east', 'oeste', 'west']
             y_potential_names = ['y', 'lat', 'latitud', 'latitude', 'norte', 'north']
             z_potential_names = ['z', 'altura', 'elevacion', 'elevation', 'elevación', 'height']

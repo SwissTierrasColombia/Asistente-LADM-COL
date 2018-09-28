@@ -780,6 +780,7 @@ class QGISUtils(QObject):
                 csv_layer.selectByIds(overlapping)
                 self.zoom_to_selected_requested.emit()
                 return False
+
         if target_layer is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
