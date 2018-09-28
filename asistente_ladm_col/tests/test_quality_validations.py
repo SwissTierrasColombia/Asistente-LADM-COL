@@ -469,6 +469,28 @@ class TesQualityValidations(unittest.TestCase):
         end_points, dangle_ids = self.quality.get_dangle_ids(boundary_layer)
         self.assertEqual(len(dangle_ids), 0)
 
+    def test_boundaries_are_not_split(self):
+        print('\nINFO: Validating boundaries are not split...')
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri_bad_boundary = gpkg_path + '|layername={layername}'.format(layername='bad_boundary')
+        uri_bbox_boundary = gpkg_path + '|layername={layername}'.format(layername='bbox_intersect_boundary')
+        uri_good_boundary = gpkg_path + '|layername={layername}'.format(layername='good_boundary')
+        bad_boundary_layer = QgsVectorLayer(uri_bad_boundary, 'bad_boundary', 'ogr')
+        bbox_boundary_layer = QgsVectorLayer(uri_bbox_boundary, 'bbox_intersect_boundary', 'ogr')
+        good_boundary_layer = QgsVectorLayer(uri_good_boundary, 'good_boundary', 'ogr')
+
+        bad_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(bad_boundary_layer)
+        bad_boundary_errors_list = [item for item in bad_boundary_errors]
+        self.assertEquals(len(bad_boundary_errors_list), 4)
+
+        bbox_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(bbox_boundary_layer)
+        bbox_boundary_errors_list = [item for item in bbox_boundary_errors]
+        self.assertEquals(len(bbox_boundary_errors_list), 9)
+
+        good_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(good_boundary_layer)
+        good_boundary_errors_list = [item for item in good_boundary_errors]
+        self.assertEquals(len(good_boundary_errors_list), 0)
+
     def validate_segments(self, segments_info, tolerance):
         for segment_info in segments_info:
             #print(segment_info[0].asWkt(), segment_info[1])
