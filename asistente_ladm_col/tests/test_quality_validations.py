@@ -301,25 +301,22 @@ class TesQualityValidations(unittest.TestCase):
                                                                                   overlapping_id)
         self.assertEqual(polygon_intersection, None)
 
-    def test_find_boundary_points_no_covered_boundaries(self):
-        print('\nINFO: Validating boundary points no covered by boundaries...')
+    def test_find_boundary_points_not_covered_by_boundaries(self):
+        print('\nINFO: Validating boundary points not covered by boundaries...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri_boundary = gpkg_path + '|layername={layername}'.format(layername='boundary_lamd')
         uri_point_boundary = gpkg_path + '|layername={layername}'.format(layername='point_boundary_ladm')
         uri_point_boundary_fixed = gpkg_path + '|layername={layername}'.format(layername='point_boundary_ladm_fixed')
 
-
         boundary_layer = QgsVectorLayer(uri_boundary, 'boundary', 'ogr')
         point_boundary_layer = QgsVectorLayer(uri_point_boundary, 'point_boundary', 'ogr')
         point_boundary_fixed_layer = QgsVectorLayer(uri_point_boundary_fixed, 'point_boundary', 'ogr')
 
-        find_points = self.qgis_utils.geometry.get_boundary_points_no_covered_boundaries(point_boundary_layer, boundary_layer)
-        boundary_points = [find_point for find_point in find_points]
+        boundary_points = self.qgis_utils.geometry.get_boundary_points_not_covered_by_boundary_nodes(point_boundary_layer, boundary_layer)
         self.assertEqual(len(boundary_points), 8)
 
-        find_points = self.qgis_utils.geometry.get_boundary_points_no_covered_boundaries(point_boundary_fixed_layer, boundary_layer)
-        boundary_points= [find_point for find_point in find_points]
+        boundary_points = self.qgis_utils.geometry.get_boundary_points_not_covered_by_boundary_nodes(point_boundary_fixed_layer, boundary_layer)
         self.assertEqual(len(boundary_points), 0)
 
     def test_get_missing_boundary_points_in_boundaries(self):
@@ -415,7 +412,6 @@ class TesQualityValidations(unittest.TestCase):
         self.assertIn('Point (1091371.58370406995527446 1121507.19097788003273308)', geometries)
         self.assertIn('Point (1091314.24563915398903191 1121448.97160633862949908)', geometries)
         self.assertIn('Point (1091213.62314918311312795 1121543.89559642062522471)', geometries)
-
 
     def test_check_right_of_way_overlaps_buildings(self):
         print('\nINFO: Validating Right of Way-Building overlaps...')
@@ -551,7 +547,6 @@ class TesQualityValidations(unittest.TestCase):
 
         test_plots_layer.rollBack()
 
-
         print('\nINFO: Validating Gaps in Plots without using roads for only one geometry...')
         test_plots_layer.startEditing()
         test_plots_layer.deleteFeature(1)
@@ -563,7 +558,6 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(len(geometries), 0)
 
         test_plots_layer.rollBack()
-
 
         print('\nINFO: Validating Gaps in Plots using roads for two geometries...')
         test_plots_layer.startEditing()
@@ -577,7 +571,6 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(len(geometries), 1)
 
         test_plots_layer.rollBack()
-
 
         print('\nINFO: Validating Gaps in Plots without using roads for two geometries...')
         test_plots_layer.startEditing()

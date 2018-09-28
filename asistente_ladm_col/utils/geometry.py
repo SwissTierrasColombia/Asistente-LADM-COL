@@ -18,7 +18,6 @@
 """
 from qgis.PyQt.QtCore import QObject
 from qgis.core import (
-    QgsProject,
     Qgis,
     QgsApplication,
     QgsGeometry,
@@ -203,11 +202,18 @@ class GeometryUtils(QObject):
             segments.extend(self.get_polyline_as_single_segments(geom.constGet()))
         return segments
 
-    def get_boundary_points_no_covered_boundaries(self, boundary_point_layer, boundary_layer):
+    def get_boundary_points_not_covered_by_boundary_nodes(self, boundary_point_layer, boundary_layer):
+        params = {
+            'INPUT': boundary_point_layer,
+            'JOIN': boundary_layer,
+            'PREDICATE': [0], # Intersects
+            'JOIN_FIELDS': [ID_FIELD],
+            'METHOD': 0,
+            'DISCARD_NONMATCHING': False,
+            'PREFIX': '',
+            'OUTPUT': 'memory:'}
         spatial_join_layer = processing.run("qgis:joinattributesbylocation",
-                                            {'INPUT': boundary_point_layer, 'JOIN': boundary_layer, 'PREDICATE': [0],
-                                             'JOIN_FIELDS': [ID_FIELD], 'METHOD': 0, 'DISCARD_NONMATCHING': False,
-                                             'PREFIX': '', 'OUTPUT': 'memory:'})['OUTPUT']
+                                            params)['OUTPUT']
 
         expr = '"{}_2" IS NULL'.format(ID_FIELD)  # loose point
         it_features_expr = spatial_join_layer.getFeatures(expr)
