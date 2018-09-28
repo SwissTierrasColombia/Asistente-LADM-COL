@@ -33,6 +33,7 @@ DB_HOSTNAME = "postgres"
 DB_PORT = "5432"
 DB_NAME = "ladm_col"
 DB_SCHEMA = "test_ladm_col"
+DB_SCHEMA_3D = "test_ladm_col_3d"
 DB_USER = "usuario_ladm_col"
 DB_PASSWORD = "clave_ladm_col"
 iface = get_iface()
@@ -46,6 +47,20 @@ def get_dbconn():
     dict_conn['port'] = DB_PORT
     dict_conn['database'] = DB_NAME
     dict_conn['schema'] = DB_SCHEMA
+    dict_conn['user'] = DB_USER
+    dict_conn['password'] = DB_PASSWORD
+    asistente_ladm_col_plugin.qgis_utils.set_db_connection('pg', dict_conn)
+
+    db = asistente_ladm_col_plugin.qgis_utils.get_db_connection()
+    return db
+
+def get_dbconn_3d():
+    #global DB_HOSTNAME DB_PORT DB_NAME DB_SCHEMA DB_USER DB_USER DB_PASSWORD
+    dict_conn = dict()
+    dict_conn['host'] = DB_HOSTNAME
+    dict_conn['port'] = DB_PORT
+    dict_conn['database'] = DB_NAME
+    dict_conn['schema'] = DB_SCHEMA_3D
     dict_conn['user'] = DB_USER
     dict_conn['password'] = DB_PASSWORD
     asistente_ladm_col_plugin.qgis_utils.set_db_connection('pg', dict_conn)
