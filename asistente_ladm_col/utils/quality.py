@@ -150,7 +150,7 @@ class QualityUtils(QObject):
                                      differences_layer_name, "memory")
 
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('plot_id', QVariant.String)])
+        data_provider.addAttributes([QgsField('plot_id', QVariant.Int)])
         error_layer.updateFields()
 
         features = []
@@ -272,7 +272,7 @@ class QualityUtils(QObject):
                                      differences_layer_name, "memory")
 
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('boundary_id', QVariant.String)])
+        data_provider.addAttributes([QgsField('boundary_id', QVariant.Int)])
         error_layer.updateFields()
 
         features = []
@@ -313,7 +313,7 @@ class QualityUtils(QObject):
                                      QCoreApplication.translate("QGISUtils", "Overlapping polygons in {}")
                                                                 .format(polygon_layer_name), "memory")
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField("polygon_id", QVariant.String),
+        data_provider.addAttributes([QgsField("polygon_id", QVariant.Int),
                                      QgsField("overlapping_ids", QVariant.String),
                                      QgsField("count_parts", QVariant.Int)])
         error_layer.updateFields()
