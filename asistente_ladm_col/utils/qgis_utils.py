@@ -751,12 +751,14 @@ class QGISUtils(QObject):
               latitude,
               DEFAULT_EPSG
            )
+        print(uri)
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
         if elevation:
-            res = processing.run("qgis:setzvalue",
-                {'INPUT': csv_layer,
-                'Z_VALUE': QgsProperty.fromExpression('\"{}\"'.format(elevation)),
-                'OUTPUT': 'memory:'})
+            z = QgsProperty.fromExpression('\"{}\"'.format(elevation.strip()))
+            parameters = {'INPUT': csv_layer,
+                          'Z_VALUE': z,
+                          'OUTPUT': 'memory:'}
+            res = processing.run("qgis:setzvalue", parameters)
             csv_layer = res['OUTPUT']
 
         if not csv_layer.isValid():

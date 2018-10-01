@@ -52,11 +52,11 @@ class TestCopy(unittest.TestCase):
 
     def test_copy_csv_with_z_to_db(self):
         print("\nINFO: Validating copy CSV points with Z to DB...")
-        self.clean_table()
-        self.qgis_utils.disable_automatic_fields(self.db_connection, BOUNDARY_POINT_TABLE)
+        self.clean_table_3d()
+        self.qgis_utils.disable_automatic_fields(self.db_connection_3d, BOUNDARY_POINT_TABLE)
         self.upload_points_from_csv_with_elevation()
         self.validate_points_z_in_db()
-        self.clean_table()
+        self.clean_table_3d()
 
     def upload_points_from_csv_with_elevation(self):
         print("Copying CSV data with elevation...")
@@ -68,12 +68,12 @@ class TestCopy(unittest.TestCase):
         Processing.initialize()
 
         res = self.qgis_utils.copy_csv_to_db(csv_path,
-                                     txt_delimiter,
-                                     cbo_longitude,
-                                     cbo_latitude,
-                                     self.db_connection_3d,
+                                             txt_delimiter,
+                                             cbo_longitude,
+                                             cbo_latitude,
+                                             self.db_connection_3d,
                                      self.qgis_utils.get_layer(self.db_connection_3d, BOUNDARY_POINT_TABLE, load=True),
-                                     elevation)
+                                             elevation)
         self.assertEqual(res, True)
 
     def validate_points_in_db(self):
@@ -111,6 +111,15 @@ class TestCopy(unittest.TestCase):
         self.assertEqual(row[colnames['fin_vida_util_version']], None)
         self.assertEqual(row[colnames['localizacion_original']], '01010000202C0C0000B01E85ABFC642D41F2D24DE20A703041')
 
+    def validate_points_z_in_db(self):
+        cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        print('Validating points Z')
+        query = cur.execute("""SELECT * FROM test_ladm_col_3d.puntolindero;""")
+        results = cur.fetchall()
+        print("Registers !!!!", results)
+        colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
+        self.assertEqual(len(results), 0) # TODO FIX THIS!!!
+
     def test_copy_csv_overlapping_to_db(self):
         self.clean_table()
         self.upload_points_from_csv_overlapping()
@@ -139,14 +148,6 @@ class TestCopy(unittest.TestCase):
         colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
         self.assertEqual(len(results), 0)
 
-    def validate_points_z_in_db(self):
-        cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        print('Validating points Z')
-        query = cur.execute("""SELECT * FROM test_ladm_col.puntolindero;""")
-        results = cur.fetchall()
-        colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
-        self.assertEqual(len(results), 0) # TODO FIX THIS!!!
-
     def clean_table(self):
         print('Clean test_ladm_col.puntolindero table...')
         cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -155,6 +156,15 @@ class TestCopy(unittest.TestCase):
         cur.close()
         if query is not None:
             print('The clean test_ladm_col.puntolindero is not working')
+
+    def clean_table_3d(self):
+        print('Clean test_ladm_col_3d.puntolindero table...')
+        cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        query = cur.execute("""DELETE FROM test_ladm_col_3d.puntolindero WHERE true;""")
+        self.db_connection.conn.commit()
+        cur.close()
+        if query is not None:
+            print('The clean test_ladm_col_3d.puntolindero is not working')
 
     @classmethod
     def tearDownClass(self):
