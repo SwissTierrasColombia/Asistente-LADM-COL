@@ -28,6 +28,8 @@ from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 # get from https://github.com/qgis/QGIS/blob/master/tests/src/python/test_qgssymbolexpressionvariables.py
 from qgis.testing.mocked import get_iface
 
+from .config.test_config import TEST_SCHEMAS_MAPPING
+
 # PostgreSQL connection to schema with a LADM_COL model from ./etl_script_uaecd.py
 DB_HOSTNAME = "postgres"
 DB_PORT = "5432"
@@ -40,13 +42,13 @@ iface = get_iface()
 asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface)
 asistente_ladm_col_plugin.initGui()
 
-def get_dbconn():
+def get_dbconn(schema):
     #global DB_HOSTNAME DB_PORT DB_NAME DB_SCHEMA DB_USER DB_USER DB_PASSWORD
     dict_conn = dict()
     dict_conn['host'] = DB_HOSTNAME
     dict_conn['port'] = DB_PORT
     dict_conn['database'] = DB_NAME
-    dict_conn['schema'] = DB_SCHEMA
+    dict_conn['schema'] = schema
     dict_conn['user'] = DB_USER
     dict_conn['password'] = DB_PASSWORD
     asistente_ladm_col_plugin.qgis_utils.set_db_connection('pg', dict_conn)
@@ -68,7 +70,8 @@ def get_dbconn_3d():
     db = asistente_ladm_col_plugin.qgis_utils.get_db_connection()
     return db
 
-def restore_schema(db_connection):
+def restore_schema(schema):
+    db_connection = get_dbconn(schema)
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("""SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'test_ladm_col';""")
     result = cur.fetchone()
@@ -85,7 +88,7 @@ def restore_schema(db_connection):
     else:
         print("Please add the test script")
 
-    process = os.popen(script_dir)
+    process = os.popen(script_dir + " {}".format(TEST_SCHEMAS_MAPPING[schema]))#replace for backup name file!!!
     output = process.readlines()
     process.close()
     print("Done restoring ladm_col database.")

@@ -19,14 +19,14 @@ class TestCopy(unittest.TestCase):
     def setUpClass(self):
         print("\nINFO: Setting up copy CSV points to DB validation...")
         self.qgis_utils = QGISUtils()
-        self.db_connection = get_dbconn()
+        self.db_connection = get_dbconn('test_ladm_col')
         self.db_connection_3d = get_dbconn_3d()
         result = self.db_connection.test_connection()
         print('test_connection', result)
         if not result[1]:
             print('The test connection is not working')
             return
-        restore_schema(self.db_connection)
+        restore_schema('test_ladm_col')
 
     def test_copy_csv_to_db(self):
         print("\nINFO: Validating copy CSV points to DB...")

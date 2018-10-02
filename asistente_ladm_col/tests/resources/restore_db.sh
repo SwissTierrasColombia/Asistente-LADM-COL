@@ -5,4 +5,5 @@
 MY_PATH="`dirname \"$0\"`"              # relative
 MY_PATH="`( cd \"$MY_PATH\" && pwd )`"  # absolutized and normalized
 cd "$MY_PATH"
-PGPASSWORD=clave_ladm_col pg_restore -h postgres -U usuario_ladm_col -d ladm_col sql/ladm_col_v2.2.1.backup
+DB_BACKUP=$1
+PGPASSWORD=clave_ladm_col pg_restore -h postgres -U usuario_ladm_col -d ladm_col sql/$DB_BACKUP
