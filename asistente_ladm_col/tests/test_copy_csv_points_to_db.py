@@ -59,7 +59,7 @@ class TestCopy(unittest.TestCase):
         self.clean_table_3d()
 
     def upload_points_from_csv_with_elevation(self):
-        print("Copying CSV data with elevation...")
+        print("\nINFO: Copying CSV data with elevation...")
         csv_path = get_test_path('csv/puntos_fixed.csv')
         txt_delimiter = ';'
         cbo_longitude = 'x'
@@ -78,7 +78,7 @@ class TestCopy(unittest.TestCase):
 
     def validate_points_in_db(self):
         cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        print('Validating points')
+        print('\nINFO: Validating points')
         query = cur.execute("""SELECT * FROM test_ladm_col.puntolindero;""")
         results = cur.fetchall()
         colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
@@ -113,12 +113,37 @@ class TestCopy(unittest.TestCase):
 
     def validate_points_z_in_db(self):
         cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        print('Validating points Z')
+        print('\nINFO: Validating points Z')
         query = cur.execute("""SELECT * FROM test_ladm_col_3d.puntolindero;""")
         results = cur.fetchall()
         print("Registers !!!!", results)
         colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
-        self.assertEqual(len(results), 0) # TODO FIX THIS!!!
+        self.assertEqual(len(results), 51) # FIXED THIS!!!
+
+        row = results[50]
+
+        self.assertEqual(row[colnames['acuerdo']], 'Acuerdo')
+        self.assertEqual(row[colnames['definicion_punto']], 'No_Bien_Definido')
+        self.assertEqual(row[colnames['descripcion_punto']], 'Otros')
+        self.assertEqual(row[colnames['exactitud_vertical']], 1)
+        self.assertEqual(row[colnames['exactitud_horizontal']], 1)
+        self.assertEqual(row[colnames['confiabilidad']], None)
+        self.assertEqual(row[colnames['nombre_punto']], None)
+        self.assertEqual(row[colnames['posicion_interpolacion']], 'Centro_Arco')
+        self.assertEqual(row[colnames['monumentacion']], None)
+        self.assertEqual(row[colnames['puntotipo']], 'Catastro')
+        self.assertEqual(row[colnames['p_espacio_de_nombres']], '-1')
+        self.assertEqual(row[colnames['p_local_id']], '-1')
+        self.assertEqual(row[colnames['ue_la_unidadespacial']], None)
+        self.assertEqual(row[colnames['ue_terreno']], None)
+        self.assertEqual(row[colnames['ue_la_espaciojuridicoredservicios']], None)
+        self.assertEqual(row[colnames['ue_la_espaciojuridicounidadedificacion']], None)
+        self.assertEqual(row[colnames['ue_servidumbrepaso']], None)
+        self.assertEqual(row[colnames['ue_unidadconstruccion']], None)
+        self.assertEqual(row[colnames['ue_construccion']], None)
+        self.assertEqual(row[colnames['comienzo_vida_util_version']], datetime.datetime(2017, 4, 19, 14, 16, 41, 221713))
+        self.assertEqual(row[colnames['fin_vida_util_version']], None)
+        self.assertEqual(row[colnames['localizacion_original']], '01010000A02C0C0000B01E85ABFC642D41F2D24DE20A7030418B6CE7FB29529740')
 
     def test_copy_csv_overlapping_to_db(self):
         self.clean_table()
@@ -142,7 +167,7 @@ class TestCopy(unittest.TestCase):
 
     def validate_points_overlapping_in_db(self):
         cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        print('Validating points')
+        print('\nINFO: Validating points')
         query = cur.execute("""SELECT * FROM test_ladm_col.puntolindero;""")
         results = cur.fetchall()
         colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
