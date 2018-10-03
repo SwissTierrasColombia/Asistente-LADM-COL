@@ -56,24 +56,11 @@ def get_dbconn(schema):
     db = asistente_ladm_col_plugin.qgis_utils.get_db_connection()
     return db
 
-def get_dbconn_3d():
-    #global DB_HOSTNAME DB_PORT DB_NAME DB_SCHEMA DB_USER DB_USER DB_PASSWORD
-    dict_conn = dict()
-    dict_conn['host'] = DB_HOSTNAME
-    dict_conn['port'] = DB_PORT
-    dict_conn['database'] = DB_NAME
-    dict_conn['schema'] = DB_SCHEMA_3D
-    dict_conn['user'] = DB_USER
-    dict_conn['password'] = DB_PASSWORD
-    asistente_ladm_col_plugin.qgis_utils.set_db_connection('pg', dict_conn)
-
-    db = asistente_ladm_col_plugin.qgis_utils.get_db_connection()
-    return db
-
 def restore_schema(schema):
     db_connection = get_dbconn(schema)
+    print("Testing Conecction...\n", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    cur.execute("""SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'test_ladm_col';""")
+    cur.execute("""SELECT schema_name FROM information_schema.schemata WHERE schema_name = '{}';""".format(schema))
     result = cur.fetchone()
     if result is not None and len(result) > 0:
         print("The schema test_ladm_col already exists")
@@ -95,10 +82,12 @@ def restore_schema(schema):
     if len(output) > 0:
         print("Warning:", output)
 
-def drop_schema(db_connection):
+def drop_schema(schema):
+    db_connection = get_dbconn(schema)
+    print("Testing Conecction...\n", db_connection.test_connection())
     print("Clean ladm_col database...")
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    query = cur.execute("""DROP SCHEMA test_ladm_col CASCADE;""")
+    query = cur.execute("""DROP SCHEMA '{}' CASCADE;""".format(schema))
     db_connection.conn.commit()
     cur.close()
     db_connection.conn.close()

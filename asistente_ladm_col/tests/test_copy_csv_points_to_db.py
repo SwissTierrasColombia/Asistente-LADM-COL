@@ -7,7 +7,7 @@ from qgis.testing import unittest, start_app
 from processing.core.Processing import Processing
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import import_projectgenerator, get_dbconn, get_dbconn_3d, get_test_path, restore_schema
+from asistente_ladm_col.tests.utils import import_projectgenerator, get_dbconn, get_test_path, restore_schema
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.config.table_mapping_config import BOUNDARY_POINT_TABLE
 
@@ -20,7 +20,7 @@ class TestCopy(unittest.TestCase):
         print("\nINFO: Setting up copy CSV points to DB validation...")
         self.qgis_utils = QGISUtils()
         self.db_connection = get_dbconn('test_ladm_col')
-        self.db_connection_3d = get_dbconn_3d()
+        self.db_connection_3d = get_dbconn('test_ladm_col_3d')
         result = self.db_connection.test_connection()
         print('test_connection', result)
         if not result[1]:
