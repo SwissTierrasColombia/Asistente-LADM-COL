@@ -125,3 +125,24 @@ docker-compose down --rmi local && docker-compose build
  `make` (esto ejecuta a su vez el comando `lrelease`, el cual genera un archivo binario con extensión .qm)
 
 NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
+
+## ¿Cómo recibir notificaciones de nuevas versiones del Asistente LADM_COL?
+
+ + Si tienes cuenta de GitHub o si puedes crear una, ve a https://github.com/AgenciaImplementacion/Asistente-LADM_COL/ y haz click en el botón `Watch` de la parte superior de la página web para seguir las novedades del repositorio.
+
+ + Si no tienes cuenta de GitHub, tienes dos opciones:
+ 
+   a) Subscríbete al *feed* de lanzamientos: https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases.atom
+   
+   b) Usa gitpunch!
+   
+      + Ve a la página https://gitpunch.com/ 
+      + Espera a que termine la animación o haz click en `Skip` (en la parte inferior de la página).
+      + Regístrate usando tu correo electrónico.
+      + Busca por "Asistente LADM_COL" y elige el repositorio `AgenciaImplementacion/Asistente-LADM_COL`.
+      + Eso es todo. Después de recibir un correo que te notifique una nueva versión del plugin, pasarán unas horas hasta que el mismo esté disponible en el repositorio oficial de plugins de QGIS. 
+
+  
+  
+  
+  
