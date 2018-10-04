@@ -7,7 +7,7 @@ from qgis.testing import unittest, start_app
 from processing.core.Processing import Processing
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import import_projectgenerator, get_dbconn, get_test_path, restore_schema
+from asistente_ladm_col.tests.utils import import_projectgenerator, get_dbconn, get_test_path, restore_schema, clean_table
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.config.table_mapping_config import BOUNDARY_POINT_TABLE
 
@@ -30,11 +30,11 @@ class TestCopy(unittest.TestCase):
 
     def test_copy_csv_to_db(self):
         print("\nINFO: Validating copy CSV points to DB...")
-        self.clean_table()
+        clean_table('test_ladm_col', 'puntolindero')
         self.qgis_utils.disable_automatic_fields(self.db_connection, BOUNDARY_POINT_TABLE)
         self.upload_points_from_csv()
         self.validate_points_in_db()
-        self.clean_table()
+        clean_table('test_ladm_col', 'puntolindero')
 
     def upload_points_from_csv(self):
         print("Copying CSV data with no elevation...")
@@ -52,11 +52,11 @@ class TestCopy(unittest.TestCase):
 
     def test_copy_csv_with_z_to_db(self):
         print("\nINFO: Validating copy CSV points with Z to DB...")
-        self.clean_table_3d()
+        clean_table('test_ladm_col_3d', 'puntolindero')
         self.qgis_utils.disable_automatic_fields(self.db_connection_3d, BOUNDARY_POINT_TABLE)
         self.upload_points_from_csv_with_elevation()
         self.validate_points_z_in_db()
-        self.clean_table_3d()
+        clean_table('test_ladm_col_3d', 'puntolindero')
 
     def upload_points_from_csv_with_elevation(self):
         print("\nINFO: Copying CSV data with elevation...")
@@ -118,7 +118,7 @@ class TestCopy(unittest.TestCase):
         results = cur.fetchall()
         print("Registers !!!!", results)
         colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
-        self.assertEqual(len(results), 51) # FIXED THIS!!!
+        self.assertEqual(len(results), 51)
 
         row = results[50]
 
@@ -146,10 +146,10 @@ class TestCopy(unittest.TestCase):
         self.assertEqual(row[colnames['localizacion_original']], '01010000A02C0C0000B01E85ABFC642D41F2D24DE20A7030418B6CE7FB29529740')
 
     def test_copy_csv_overlapping_to_db(self):
-        self.clean_table()
+        clean_table('test_ladm_col', 'puntolindero')
         self.upload_points_from_csv_overlapping()
         self.validate_points_overlapping_in_db()
-        self.clean_table()
+        clean_table('test_ladm_col', 'puntolindero')
 
     def upload_points_from_csv_overlapping(self):
         csv_path = get_test_path('csv/puntos_overlapping.csv')
@@ -172,24 +172,6 @@ class TestCopy(unittest.TestCase):
         results = cur.fetchall()
         colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
         self.assertEqual(len(results), 0)
-
-    def clean_table(self):
-        print('Clean test_ladm_col.puntolindero table...')
-        cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        query = cur.execute("""DELETE FROM test_ladm_col.puntolindero WHERE true;""")
-        self.db_connection.conn.commit()
-        cur.close()
-        if query is not None:
-            print('The clean test_ladm_col.puntolindero is not working')
-
-    def clean_table_3d(self):
-        print('Clean test_ladm_col_3d.puntolindero table...')
-        cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        query = cur.execute("""DELETE FROM test_ladm_col_3d.puntolindero WHERE true;""")
-        self.db_connection.conn.commit()
-        cur.close()
-        if query is not None:
-            print('The clean test_ladm_col_3d.puntolindero is not working')
 
     @classmethod
     def tearDownClass(self):

@@ -92,6 +92,17 @@ def drop_schema(schema):
     if query is not None:
         print("The drop schema is not working")
 
+def clean_table(schema, table):
+    db_connection = get_dbconn(schema)
+    print("Testing Conecction...\n", db_connection.test_connection())
+    print('Clean {}.{} table...'.format(schema, table))
+    cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    query = cur.execute("""DELETE FROM {}.{} WHERE true;""".format(schema, table))
+    db_connection.conn.commit()
+    cur.close()
+    if query is not None:
+        print('The clean test_ladm_col.puntolindero is not working')
+
 def get_iface():
     global iface
     def rewrite_method():
