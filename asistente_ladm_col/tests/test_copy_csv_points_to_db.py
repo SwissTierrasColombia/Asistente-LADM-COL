@@ -27,6 +27,7 @@ class TestCopy(unittest.TestCase):
             print('The test connection is not working')
             return
         restore_schema('test_ladm_col')
+        restore_schema('test_ladm_col_3d')
 
     def test_copy_csv_to_db(self):
         print("\nINFO: Validating copy CSV points to DB...")
