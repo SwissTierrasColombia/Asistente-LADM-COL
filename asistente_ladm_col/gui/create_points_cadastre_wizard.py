@@ -125,10 +125,12 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         if id == self.dict_pages_ids[self.wizardPage2]:
             self.adjust_page_2_controls()
         elif id == self.dict_pages_ids[self.wizardPage3]:
+            self.button(self.FinishButton).setEnabled(False)
             self.check_z_in_geomety()
             self.fill_long_lat_combos("")
 
     def check_z_in_geomety(self):
+        self.wizardPage3.setEnabled(False)
         self.target_layer = self.qgis_utils.get_layer(self._db, self.current_point_name(), load=True)
 
         if not QgsWkbTypes().hasZ(self.target_layer.wkbType()):
@@ -143,6 +145,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             self.cbo_elevation.setEnabled(True)
             self.labelZ.setToolTip("")
             self.cbo_elevation.setToolTip("")
+        self.wizardPage3.setEnabled(True)
 
 
     def adjust_page_2_controls(self):

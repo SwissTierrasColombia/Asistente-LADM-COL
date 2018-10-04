@@ -751,7 +751,6 @@ class QGISUtils(QObject):
               latitude,
               DEFAULT_EPSG
            )
-        print(uri)
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
         if elevation:
             z = QgsProperty.fromExpression('\"{}\"'.format(elevation.strip()))
