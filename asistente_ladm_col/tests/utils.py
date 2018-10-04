@@ -34,8 +34,6 @@ from .config.test_config import TEST_SCHEMAS_MAPPING
 DB_HOSTNAME = "postgres"
 DB_PORT = "5432"
 DB_NAME = "ladm_col"
-DB_SCHEMA = "test_ladm_col"
-DB_SCHEMA_3D = "test_ladm_col_3d"
 DB_USER = "usuario_ladm_col"
 DB_PASSWORD = "clave_ladm_col"
 iface = get_iface()
