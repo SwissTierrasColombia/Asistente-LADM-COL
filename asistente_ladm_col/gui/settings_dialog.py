@@ -251,27 +251,28 @@ class SettingsDialog(QDialog, DIALOG_UI):
         dbfile = settings.value('QgsProjectGenerator/ili2gpkg/dbfile')
 
         if self.cbo_db_source.currentData() == 'pg':
-            msg_pg = QCoreApplication.translate("SettingsDialog", "No data for getting data from the Project Generator.")
-            if host == None and port == None and database == None and schema == None and user == None and password == None:
-                self.show_message(msg_pg,1)
-            if host != None:
+            msg_pg = QCoreApplication.translate("SettingsDialog", "Connection parameters couldn't be imported from Project Generator. Are you sure there are connection parameters to import?")
+            if host is None and port is None and database is None and schema is None and user is None and password is None:
+                self.show_message(msg_pg, Qgis.Warning)
+            if host:
                 self.txt_pg_host.setText(host)
-            if port != None:
+            if port:
                 self.txt_pg_port.setText(port)
-            if database != None:
+            if database:
                 self.txt_pg_database.setText(database)
-            if schema != None:
+            if schema:
                 self.txt_pg_schema.setText(schema)
-            if user != None:
+            if user:
                 self.txt_pg_user.setText(user)
-            if password != None:
+            if password:
                 self.txt_pg_password.setText(password)
-        if self.cbo_db_source.currentData() == 'gpkg':
-            msg_gpkg = QCoreApplication.translate("SettingsDialog", "No data for getting data from the Project Generator.")
-            if dbfile != None:
-                self.txt_gpkg_file.setText(dbfile)
+
+        elif self.cbo_db_source.currentData() == 'gpkg':
+            msg_gpkg = QCoreApplication.translate("SettingsDialog", "Connection parameters couldn't be imported from Project Generator. Are you sure there are connection parameters to import?")
+            if dbfile is None:
+                self.show_message(msg_gpkg, Qgis.Warning)
             else:
-                self.show_message(msg_gpkg,1)
+                self.txt_gpkg_file.setText(dbfile)
 
     def test_service(self):
         self.setEnabled(False)
