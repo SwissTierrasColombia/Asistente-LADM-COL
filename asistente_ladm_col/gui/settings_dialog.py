@@ -79,6 +79,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.helpRequested.connect(self.show_help)
         self.btn_test_connection.clicked.connect(self.test_connection)
+        self.btn_get_from_project_generator.clicked.connect(self.get_from_project_generator)
         self.txt_pg_host.textEdited.connect(self.set_connection_dirty)
         self.txt_pg_port.textEdited.connect(self.set_connection_dirty)
         self.txt_pg_database.textEdited.connect(self.set_connection_dirty)
@@ -238,6 +239,39 @@ class SettingsDialog(QDialog, DIALOG_UI):
         res, msg = self.get_db_connection().test_connection()
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
         self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
+
+    def get_from_project_generator(self):
+        settings = QSettings()
+        host = settings.value('QgsProjectGenerator/ili2pg/host')
+        port = settings.value('QgsProjectGenerator/ili2pg/port')
+        database = settings.value('QgsProjectGenerator/ili2pg/database')
+        schema = settings.value('QgsProjectGenerator/ili2pg/schema')
+        user = settings.value('QgsProjectGenerator/ili2pg/user')
+        password = settings.value('QgsProjectGenerator/ili2pg/password')
+        dbfile = settings.value('QgsProjectGenerator/ili2gpkg/dbfile')
+
+        if self.cbo_db_source.currentData() == 'pg':
+            msg_pg = QCoreApplication.translate("SettingsDialog", "No data for getting data from the Project Generator.")
+            if host == None and port == None and database == None and schema == None and user == None and password == None:
+                self.show_message(msg_pg,1)
+            if host != None:
+                self.txt_pg_host.setText(host)
+            if port != None:
+                self.txt_pg_port.setText(port)
+            if database != None:
+                self.txt_pg_database.setText(database)
+            if schema != None:
+                self.txt_pg_schema.setText(schema)
+            if user != None:
+                self.txt_pg_user.setText(user)
+            if password != None:
+                self.txt_pg_password.setText(password)
+        if self.cbo_db_source.currentData() == 'gpkg':
+            msg_gpkg = QCoreApplication.translate("SettingsDialog", "No data for getting data from the Project Generator.")
+            if dbfile != None:
+                self.txt_gpkg_file.setText(dbfile)
+            else:
+                self.show_message(msg_gpkg,1)
 
     def test_service(self):
         self.setEnabled(False)

@@ -182,6 +182,13 @@
           </spacer>
          </item>
          <item>
+          <widget class="QPushButton" name="btn_get_from_project_generator">
+           <property name="text">
+            <string>Get from Project Generator</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="btn_test_connection">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
