@@ -77,7 +77,7 @@ from ..config.general_config import (
     HELP_DIR_NAME,
     TranslatableConfigStrings
 )
-from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
+from ..config.table_mapping_config import (POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
@@ -844,7 +844,7 @@ class QGISUtils(QObject):
         bfs_features = bfs_layer.getFeatures()
 
         # Get unique pairs id_boundary-id_boundary_point
-        existing_pairs = [(bfs_feature[BFS_TABLE_BOUNDARY_FIELD], bfs_feature[BFS_TABLE_BOUNDARY_POINT_FIELD]) for bfs_feature in bfs_features]
+        existing_pairs = [(bfs_feature[POINT_BFS_TABLE_BOUNDARY_FIELD], bfs_feature[BFS_TABLE_BOUNDARY_POINT_FIELD]) for bfs_feature in bfs_features]
         existing_pairs = set(existing_pairs)
 
         boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
@@ -857,7 +857,7 @@ class QGISUtils(QObject):
                 if not id_pair in existing_pairs: # Avoid duplicated pairs in the DB
                     # Create feature
                     feature = QgsVectorLayerUtils().createFeature(bfs_layer)
-                    feature.setAttribute(BFS_TABLE_BOUNDARY_FIELD, id_pair[0])
+                    feature.setAttribute(POINT_BFS_TABLE_BOUNDARY_FIELD, id_pair[0])
                     feature.setAttribute(BFS_TABLE_BOUNDARY_POINT_FIELD, id_pair[1])
                     features.append(feature)
             bfs_layer.addFeatures(features)
