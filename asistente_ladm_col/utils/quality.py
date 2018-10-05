@@ -37,7 +37,8 @@ import processing
 from .project_generator_utils import ProjectGeneratorUtils
 from ..config.general_config import (
     DEFAULT_EPSG,
-    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE
+    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+    DEFAULT_USE_ROADS_VALUE
 )
 from ..config.table_mapping_config import (
     BOUNDARY_POINT_TABLE,
@@ -830,7 +831,7 @@ class QualityUtils(QObject):
                                            "There are no Right of Way-Building overlaps."), Qgis.Info)
 
     def check_gaps_in_plots(self, db):
-        use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', True))
+        use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))  
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, True)
 
         if plot_layer is None:
