@@ -38,7 +38,12 @@ MODULE_HELP_MAPPING = {
     'load_layers': 'load_layers.html#load-layers',
     'col_party': 'cadastre/Party.html#col-party',
     'quality_rules': 'index.html', # TODO: Add this to help sections
-    'settings': 'help.html#settings'
+    'settings': 'help.html#settings',
+    'create_property_record_card': 'property_record_card/Property_record_card.html',
+    'create_nuclear_family': 'property_record_card/Nuclear_family.html',
+    'create_natural_party': 'property_record_card/Natural_party.html',
+    'create_legal_party': 'property_record_card/Legal_party.html',
+    'create_market_research': 'property_record_card/Market_research.html'
 }
 # Configure Project Generator Dependency
 PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.0"
