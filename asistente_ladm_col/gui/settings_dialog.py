@@ -79,6 +79,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.helpRequested.connect(self.show_help)
         self.btn_test_connection.clicked.connect(self.test_connection)
+        self.btn_get_from_project_generator.clicked.connect(self.get_from_project_generator)
         self.txt_pg_host.textEdited.connect(self.set_connection_dirty)
         self.txt_pg_port.textEdited.connect(self.set_connection_dirty)
         self.txt_pg_database.textEdited.connect(self.set_connection_dirty)
@@ -238,6 +239,40 @@ class SettingsDialog(QDialog, DIALOG_UI):
         res, msg = self.get_db_connection().test_connection()
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
         self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
+
+    def get_from_project_generator(self):
+        settings = QSettings()
+        host = settings.value('QgsProjectGenerator/ili2pg/host')
+        port = settings.value('QgsProjectGenerator/ili2pg/port')
+        database = settings.value('QgsProjectGenerator/ili2pg/database')
+        schema = settings.value('QgsProjectGenerator/ili2pg/schema')
+        user = settings.value('QgsProjectGenerator/ili2pg/user')
+        password = settings.value('QgsProjectGenerator/ili2pg/password')
+        dbfile = settings.value('QgsProjectGenerator/ili2gpkg/dbfile')
+
+        if self.cbo_db_source.currentData() == 'pg':
+            msg_pg = QCoreApplication.translate("SettingsDialog", "Connection parameters couldn't be imported from Project Generator. Are you sure there are connection parameters to import?")
+            if host is None and port is None and database is None and schema is None and user is None and password is None:
+                self.show_message(msg_pg, Qgis.Warning)
+            if host:
+                self.txt_pg_host.setText(host)
+            if port:
+                self.txt_pg_port.setText(port)
+            if database:
+                self.txt_pg_database.setText(database)
+            if schema:
+                self.txt_pg_schema.setText(schema)
+            if user:
+                self.txt_pg_user.setText(user)
+            if password:
+                self.txt_pg_password.setText(password)
+
+        elif self.cbo_db_source.currentData() == 'gpkg':
+            msg_gpkg = QCoreApplication.translate("SettingsDialog", "Connection parameters couldn't be imported from Project Generator. Are you sure there are connection parameters to import?")
+            if dbfile is None:
+                self.show_message(msg_gpkg, Qgis.Warning)
+            else:
+                self.txt_gpkg_file.setText(dbfile)
 
     def test_service(self):
         self.setEnabled(False)
