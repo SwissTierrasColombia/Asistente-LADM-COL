@@ -110,3 +110,19 @@ If you need to recreate docker image, you can use:
 ```sh
 docker-compose down --rmi local && docker-compose build
 ```
+
+## How to be notified of new relases of the LADM_COL Assistant?
+
+ + If you have a GitHub account or you can create one, go to https://github.com/AgenciaImplementacion/Asistente-LADM_COL/ and click the `Watch` button in the upper part of the web page to follow changes on the repository.
+
+ + If you do not have a GitHub account, you have two options:
+ 
+   a) Sbscribe to the release feed: https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases.atom
+   
+   b) Use gitpunch!
+   
+      + Go to https://gitpunch.com/ 
+      + Wait until the animation ends or click on `Skip` (below in the page).
+      + Sign in using your e-mail.
+      + Search for "Asistente LADM_COL" and choose the `AgenciaImplementacion/Asistente-LADM_COL` repository.
+      + That's it! After getting notifications, you will need to wait some hours until the plugin is accepted and available in the QGIS plugin repo. 

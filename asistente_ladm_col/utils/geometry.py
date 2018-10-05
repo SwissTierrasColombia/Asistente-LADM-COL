@@ -207,6 +207,25 @@ class GeometryUtils(QObject):
             segments.extend(self.get_polyline_as_single_segments(geom.constGet()))
         return segments
 
+    def get_boundary_points_not_covered_by_boundary_nodes(self, boundary_point_layer, boundary_layer):
+        params = {
+            'INPUT': boundary_point_layer,
+            'JOIN': boundary_layer,
+            'PREDICATE': [0], # Intersects
+            'JOIN_FIELDS': [ID_FIELD],
+            'METHOD': 0,
+            'DISCARD_NONMATCHING': False,
+            'PREFIX': '',
+            'OUTPUT': 'memory:'}
+        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+                                            params)['OUTPUT']
+
+        expr = '"{}_2" IS NULL'.format(ID_FIELD)  # loose point
+        it_features_expr = spatial_join_layer.getFeatures(expr)
+        features_expr = [feature_expr for feature_expr in it_features_expr]
+
+        return features_expr
+
     def get_overlapping_points(self, point_layer):
         """
         Returns a list of lists, where inner lists are ids of overlapping
@@ -413,8 +432,13 @@ class GeometryUtils(QObject):
 
             for feature in layer1.getFeatures():
                 bbox = feature.geometry().boundingBox()
-                intersects_ids = index.intersects(bbox)
-                intersect_features = layer2.getFeatures(intersects_ids)
+                candidate_ids = index.intersects(bbox)
+                candidate_features = layer2.getFeatures(candidate_ids)
+                intersect_features = list()
+
+                for candidate_feature in candidate_features:
+                    if candidate_feature.geometry().intersects(feature.geometry()):
+                        intersect_features.append(candidate_feature)
 
                 for intersect_feature in intersect_features:
                     edit_layer.addTopologicalPoints(intersect_feature.geometry())
