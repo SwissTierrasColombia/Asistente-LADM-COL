@@ -406,7 +406,7 @@ class TesQualityValidations(unittest.TestCase):
 
         dic_points_ccl = dict()
         for feature_point_ccl in points_ccl_table.getFeatures():
-            key = str(feature_point_ccl['boundary_point_id'])+"-"+str(feature_point_ccl['boundary_id'])
+            key = "{}-{}".format(feature_point_ccl['boundary_point_id'], feature_point_ccl['boundary_id'])
             if key in dic_points_ccl:
                 dic_points_ccl[key] += 1
             else:
@@ -436,7 +436,7 @@ class TesQualityValidations(unittest.TestCase):
 
         dic_points_ccl = dict()
         for feature_point_ccl in points_ccl_table.getFeatures():
-            key = str(feature_point_ccl['boundary_point_id']) + "-" + str(feature_point_ccl['boundary_id'])
+            key = "{}-{}".format(feature_point_ccl['boundary_point_id'], feature_point_ccl['boundary_id'])
             if key in dic_points_ccl:
                 dic_points_ccl[key] += 1
             else:
@@ -459,8 +459,7 @@ class TesQualityValidations(unittest.TestCase):
                 missing_topology.append([boundary_point_id, boundary_id])
 
         self.assertEquals(missing_topology, [[1, 1]])
-        self.assertEquals(duplicates_topology, [[20 ,1]])
-
+        self.assertEquals(duplicates_topology, [[20, 1]])
 
     def test_check_right_of_way_overlaps_buildings(self):
         print('\nINFO: Validating Right of Way-Building overlaps...')

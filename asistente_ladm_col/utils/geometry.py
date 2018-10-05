@@ -549,12 +549,16 @@ class GeometryUtils(QObject):
 
         return selected_features
 
-
     def join_boundary_points_with_boundary_discard_nonmatching(self, boundary_point_layer, boundary_layer, id_field=ID_FIELD):
-
         spatial_join_layer = processing.run("qgis:joinattributesbylocation",
-                                            {'INPUT': boundary_point_layer, 'JOIN': boundary_layer, 'PREDICATE': [0],
-                                             'JOIN_FIELDS': [id_field], 'METHOD': 0, 'DISCARD_NONMATCHING': True,
-                                             'PREFIX': '', 'OUTPUT': 'memory:'})['OUTPUT']
+                                            {
+                                                'INPUT': boundary_point_layer,
+                                                'JOIN': boundary_layer,
+                                                'PREDICATE': [0],
+                                                'JOIN_FIELDS': [id_field],
+                                                'METHOD': 0,
+                                                'DISCARD_NONMATCHING': True,
+                                                'PREFIX': '',
+                                                'OUTPUT': 'memory:'})['OUTPUT']
 
         return spatial_join_layer.getFeatures()
