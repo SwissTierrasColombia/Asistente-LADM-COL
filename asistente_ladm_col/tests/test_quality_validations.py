@@ -12,11 +12,7 @@ from asistente_ladm_col.utils.quality import QualityUtils
 
 from processing.core.Processing import Processing
 from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import (
-    QgsWkbTypes,
-    QgsGeometry,
-    QgsVectorLayerUtils
-)
+from qgis.core import QgsWkbTypes
 
 import processing
 
@@ -400,13 +396,21 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating that the relation between point boundary and boundary is registered in the topology table ...')
 
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        uri_boundary_points = gpkg_path + '|layername={layername}'.format(layername='good_boundary_points')
-        uri_boundary = gpkg_path + '|layername={layername}'.format(layername='good_boundary')
-        uri_pointsCcl_table = gpkg_path + '|layername={layername}'.format(layername='pointsCcl')
+        uri_boundary_points = gpkg_path + '|layername=good_boundary_points'
+        uri_boundary = gpkg_path + '|layername=good_boundary'
+        uri_points_ccl_table = gpkg_path + '|layername=pointsCcl'
 
         boundary_layer = QgsVectorLayer(uri_boundary, 'boundary_points', 'ogr')
         boundary_points_layer = QgsVectorLayer(uri_boundary_points, 'boundary', 'ogr')
-        pointsCcl_table = QgsVectorLayer(uri_pointsCcl_table, 'pointsCcl', 'ogr')
+        points_ccl_table = QgsVectorLayer(uri_points_ccl_table, 'pointsCcl', 'ogr')
+
+        dic_points_ccl = dict()
+        for feature_point_ccl in points_ccl_table.getFeatures():
+            key = str(feature_point_ccl['boundary_point_id'])+"-"+str(feature_point_ccl['boundary_id'])
+            if key in dic_points_ccl:
+                dic_points_ccl[key] += 1
+            else:
+                dic_points_ccl.update({key:1})
 
         # verify that the relation between point boundary and boundary is registered in the topology table
         missing_topology = list()
@@ -416,21 +420,27 @@ class TesQualityValidations(unittest.TestCase):
         for point_selected in points_selected:
             boundary_point_id = point_selected[ID_FIELD]
             boundary_id = point_selected['{}_2'.format(ID_FIELD)]
-            expr = '"boundary_point_id" = {} and "boundary_id" = {}'.format(boundary_point_id, boundary_id)
-            it_select_features = pointsCcl_table.getFeatures(expr)
-            select_features = [select_feature for select_feature in it_select_features]
+            key_query = "{}-{}".format(boundary_point_id, boundary_id)
 
-            if len(select_features) < 1:
-                missing_topology.append([boundary_point_id,boundary_id])
-            elif len(select_features) > 1:
-                duplicates_topology.append([boundary_point_id, boundary_id])
+            if key_query in dic_points_ccl:
+                if dic_points_ccl[key_query] > 1:
+                    duplicates_topology.append([boundary_point_id, boundary_id])
+            else:
+                missing_topology.append([boundary_point_id, boundary_id])
 
         self.assertEquals(len(missing_topology), 0)
         self.assertEquals(len(duplicates_topology), 0)
 
-        uri_pointsCcl_table = gpkg_path + '|layername={layername}'.format(layername='pointsCcl_bad')
-        pointsCcl_table = QgsVectorLayer(uri_pointsCcl_table, 'pointsCcl_bad', 'ogr')
+        uri_points_ccl_table = gpkg_path + '|layername=pointsCcl_bad'
+        points_ccl_table = QgsVectorLayer(uri_points_ccl_table, 'pointsCcl_bad', 'ogr')
 
+        dic_points_ccl = dict()
+        for feature_point_ccl in points_ccl_table.getFeatures():
+            key = str(feature_point_ccl['boundary_point_id']) + "-" + str(feature_point_ccl['boundary_id'])
+            if key in dic_points_ccl:
+                dic_points_ccl[key] += 1
+            else:
+                dic_points_ccl.update({key: 1})
 
         # verify that the relation between point boundary and boundary is registered in the topology table
         missing_topology = list()
@@ -440,14 +450,13 @@ class TesQualityValidations(unittest.TestCase):
         for point_selected in points_selected:
             boundary_point_id = point_selected[ID_FIELD]
             boundary_id = point_selected['{}_2'.format(ID_FIELD)]
-            expr = '"boundary_point_id" = {} and "boundary_id" = {}'.format(boundary_point_id, boundary_id)
-            it_select_features = pointsCcl_table.getFeatures(expr)
-            select_features = [select_feature for select_feature in it_select_features]
+            key_query = "{}-{}".format(boundary_point_id, boundary_id)
 
-            if len(select_features) < 1:
-                missing_topology.append([boundary_point_id,boundary_id])
-            elif len(select_features) > 1:
-                duplicates_topology.append([boundary_point_id, boundary_id])
+            if key_query in dic_points_ccl:
+                if dic_points_ccl[key_query] > 1: # register more that once
+                    duplicates_topology.append([boundary_point_id, boundary_id])
+            else: # no register
+                missing_topology.append([boundary_point_id, boundary_id])
 
         self.assertEquals(missing_topology, [[1, 1]])
         self.assertEquals(duplicates_topology, [[20 ,1]])

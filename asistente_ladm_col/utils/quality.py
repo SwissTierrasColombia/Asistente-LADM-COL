@@ -41,8 +41,8 @@ from ..config.general_config import (
 )
 from ..config.table_mapping_config import (
     POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
+    POINT_BFS_TABLE_BOUNDARY_FIELD,
     POINT_BOUNDARY_FACE_STRING_TABLE,
-    CCLSOURCE_TABLE_BOUNDARY_FIELD,
     BOUNDARY_POINT_TABLE,
     BOUNDARY_TABLE,
     BUILDING_TABLE,
@@ -479,7 +479,7 @@ class QualityUtils(QObject):
 
         boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
         boundary_layer = res_layers[BOUNDARY_TABLE]
-        pointCcl_table = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
+        point_ccl_table = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
 
         if boundary_point_layer is None:
             self.qgis_utils.message_emitted.emit(
@@ -502,7 +502,7 @@ class QualityUtils(QObject):
                 Qgis.Info)
             return
 
-        if pointCcl_table is None:
+        if point_ccl_table is None:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "Table {} not found in DB! {}").format(
@@ -531,7 +531,13 @@ class QualityUtils(QObject):
                                                                      2: "Missing boundary point in boundary"})
                 new_features.append(new_feature)
 
-
+        dic_points_ccl = dict()
+        for feature_point_ccl in point_ccl_table.getFeatures():
+            key = str(feature_point_ccl[POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD])+"-"+str(feature_point_ccl[POINT_BFS_TABLE_BOUNDARY_FIELD])
+            if key in dic_points_ccl:
+                dic_points_ccl[key] += 1
+            else:
+                dic_points_ccl.update({key:1})
 
         # verify that the relation between point boundary and boundary is registered in the topology table
         points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_point_layer, boundary_layer)
@@ -539,21 +545,19 @@ class QualityUtils(QObject):
         for point_selected in points_selected:
             boundary_point_id = point_selected[ID_FIELD]
             boundary_id = point_selected['{}_2'.format(ID_FIELD)]
-            expr = '"{}" = {} and "{}" = {}'.format(POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD, boundary_point_id, CCLSOURCE_TABLE_BOUNDARY_FIELD, boundary_id)
+            key_query = "{}-{}".format(boundary_point_id, boundary_id)
 
-            it_select_features = pointCcl_table.getFeatures(expr)
-            select_features = [select_feature for select_feature in it_select_features]
-
-            if len(select_features) < 1:
+            if key_query in dic_points_ccl:
+                if dic_points_ccl[key_query] > 1:
+                    new_features.append(QgsVectorLayerUtils().createFeature(error_layer, point_selected.geometry(),
+                                                                            {0: boundary_point_id,
+                                                                             1: boundary_id,
+                                                                             2: "Relation recorded more than once in the topology table"}))
+            else:
                 new_features.append(QgsVectorLayerUtils().createFeature(error_layer, point_selected.geometry(),
-                                                                  {0: boundary_point_id,
-                                                                   1: boundary_id,
-                                                                   2: "Relation without a record in the topology table"}))
-            elif len(select_features) > 1:
-                new_features.append(QgsVectorLayerUtils().createFeature(error_layer, point_selected.geometry(),
-                                                                  {0: boundary_point_id,
-                                                                   1: boundary_id,
-                                                                   2: "Relation recorded more than once in the topology table"}))
+                                                                        {0: boundary_point_id,
+                                                                         1: boundary_id,
+                                                                         2: "Relation without a record in the topology table"}))
         data_provider.addFeatures(new_features)
 
         if error_layer.featureCount() > 0:

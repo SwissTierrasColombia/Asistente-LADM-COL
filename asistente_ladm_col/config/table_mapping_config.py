@@ -6,7 +6,7 @@ CADASTRE MAPPING
 ADMINISTRATIVE_SOURCE_TABLE = "col_fuenteadministrativa"
 ADMINISTRATIVE_SOURCE_TYPE_TABLE = "col_fuenteadministrativatipo"
 AVAILABILITY_STATE_TABLE = "col_estadodisponibilidadtipo"
-BFS_TABLE_BOUNDARY_FIELD = "ccl_lindero"
+POINT_BFS_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 BFS_TABLE_BOUNDARY_POINT_FIELD = "punto_puntolindero"
 BOUNDARY_POINT_TABLE = "puntolindero"
 BOUNDARY_TABLE = "lindero"
