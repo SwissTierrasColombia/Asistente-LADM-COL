@@ -33,7 +33,33 @@ from ... utils.model_parser import ModelParser
 class PGConnector(DBConnector):
     def __init__(self, uri, schema="public"):
         DBConnector.__init__(self, uri, schema)
-        self.uri = uri
+        con = dbfin = 0
+        dbname = uri2 = ""
+
+        for uri_s in uri.split(" "):
+            if uri_s.find("=") == -1:
+                con = con + 1
+
+        if con != 0:
+            for uri_s in uri.split(" "):
+
+                if uri_s.find("dbname") == 0:
+                    dbsplit = uri_s.split("=")
+                    dbname += dbsplit[len(dbsplit)-1] + " "
+                    uri2 += dbsplit[0] + "="
+                else:
+                    if dbfin == con:
+                        uri2 += "'"+dbname.strip()+"' "
+                    if uri_s.find("=") > 0:
+                        uri2 += uri_s + " "
+                        dbfin = 0
+                    else:
+                        dbname += uri_s + " "
+                        dbfin = dbfin + 1
+        else:
+            uri2 = uri
+
+        self.uri = uri2
         self.conn = None
         self.schema = schema
         self.log = QgsApplication.messageLog()
