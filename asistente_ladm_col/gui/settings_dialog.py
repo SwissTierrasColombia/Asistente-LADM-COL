@@ -117,6 +117,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
             return db
 
     def accepted(self):
+        if self._db is not None:
+            self._db.close_connection()
+
         self._db = None # Reset db connection
         self._db = self.get_db_connection()
 
@@ -230,7 +233,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/source/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
 
     def db_source_changed(self):
-        self._db = None
+        if self._db is not None:
+            self._db.close_connection()
+
+        self._db = None # Reset db connection
         if self.cbo_db_source.currentData() == 'pg':
             self.gpkg_config.setVisible(False)
             self.pg_config.setVisible(True)
@@ -239,8 +245,16 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.gpkg_config.setVisible(True)
 
     def test_connection(self):
+        if self._db is not None:
+            self._db.close_connection()
+
         self._db = None # Reset db connection
-        res, msg = self.get_db_connection(False).test_connection()
+        db = self.get_db_connection(False)
+        res, msg = db.test_connection()
+
+        if db is not None:
+            db.close_connection()
+
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
         self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
 
