@@ -156,7 +156,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         dict_conn = dict()
         dict_conn['host'] = self.txt_pg_host.text().strip() or 'localhost'
         dict_conn['port'] = self.txt_pg_port.text().strip() or '5432'
-        dict_conn['database'] = self.txt_pg_database.text().strip()
+        dict_conn['database'] = "'" + self.txt_pg_database.text().strip() + "'"
         dict_conn['schema'] = self.txt_pg_schema.text().strip() or 'public'
         dict_conn['user'] = self.txt_pg_user.text().strip()
         dict_conn['password'] = self.txt_pg_password.text().strip()
@@ -170,7 +170,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/db_connection_source', self.cbo_db_source.currentData())
         settings.setValue('Asistente-LADM_COL/pg/host', dict_conn['host'])
         settings.setValue('Asistente-LADM_COL/pg/port', dict_conn['port'])
-        settings.setValue('Asistente-LADM_COL/pg/database', dict_conn['database'])
+        settings.setValue('Asistente-LADM_COL/pg/database', dict_conn['database'].strip("'"))
         settings.setValue('Asistente-LADM_COL/pg/schema', dict_conn['schema'])
         settings.setValue('Asistente-LADM_COL/pg/user', dict_conn['user'])
         settings.setValue('Asistente-LADM_COL/pg/password', dict_conn['password'])
