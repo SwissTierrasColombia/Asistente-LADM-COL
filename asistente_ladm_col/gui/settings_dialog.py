@@ -170,7 +170,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/db_connection_source', self.cbo_db_source.currentData())
         settings.setValue('Asistente-LADM_COL/pg/host', dict_conn['host'])
         settings.setValue('Asistente-LADM_COL/pg/port', dict_conn['port'])
-        settings.setValue('Asistente-LADM_COL/pg/database', dict_conn['database'])
+        settings.setValue('Asistente-LADM_COL/pg/database', "'"+dict_conn['database']+"''")
         settings.setValue('Asistente-LADM_COL/pg/schema', dict_conn['schema'])
         settings.setValue('Asistente-LADM_COL/pg/user', dict_conn['user'])
         settings.setValue('Asistente-LADM_COL/pg/password', dict_conn['password'])
