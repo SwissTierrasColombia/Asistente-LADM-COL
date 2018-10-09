@@ -156,7 +156,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         dict_conn = dict()
         dict_conn['host'] = self.txt_pg_host.text().strip() or 'localhost'
         dict_conn['port'] = self.txt_pg_port.text().strip() or '5432'
-        dict_conn['database'] = "'" + self.txt_pg_database.text().strip() + "'"
+        dict_conn['database'] = "'{}'".format(self.txt_pg_database.text().strip())
         dict_conn['schema'] = self.txt_pg_schema.text().strip() or 'public'
         dict_conn['user'] = self.txt_pg_user.text().strip()
         dict_conn['password'] = self.txt_pg_password.text().strip()
@@ -251,7 +251,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         dbfile = settings.value('QgsProjectGenerator/ili2gpkg/dbfile')
 
         if self.cbo_db_source.currentData() == 'pg':
-            msg_pg = QCoreApplication.translate("SettingsDialog", "Connection parameters couldn't be imported from Project Generator. Are you sure there are connection parameters to import?")
+            msg_pg = QCoreApplication.translate("SettingsDialog",
+                "Connection parameters couldn't be imported from Project Generator. Are you sure there are connection parameters to import?")
             if host is None and port is None and database is None and schema is None and user is None and password is None:
                 self.show_message(msg_pg, Qgis.Warning)
             if host:
@@ -268,7 +269,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 self.txt_pg_password.setText(password)
 
         elif self.cbo_db_source.currentData() == 'gpkg':
-            msg_gpkg = QCoreApplication.translate("SettingsDialog", "Connection parameters couldn't be imported from Project Generator. Are you sure there are connection parameters to import?")
+            msg_gpkg = QCoreApplication.translate("SettingsDialog",
+                "Connection parameters couldn't be imported from Project Generator. Are you sure there are connection parameters to import?")
             if dbfile is None:
                 self.show_message(msg_gpkg, Qgis.Warning)
             else:
