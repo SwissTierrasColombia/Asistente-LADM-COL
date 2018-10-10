@@ -99,7 +99,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         #self.tabWidget.currentWidget().layout().setContentsMargins(0, 0, 0, 0)
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
-    def get_db_connection(self):
+    def get_db_connection(self, update_connection=True):
         if self._db is not None:
             self.log.logMessage("Returning existing db connection...", PLUGIN_NAME, Qgis.Info)
             return self._db
@@ -111,9 +111,16 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 db = PGConnector(uri, dict_conn['schema'])
             else:
                 db = GPKGConnector(uri)
+
+            if update_connection:
+                self._db = db
+
             return db
 
     def accepted(self):
+        if self._db is not None:
+            self._db.close_connection()
+
         self._db = None # Reset db connection
         self._db = self.get_db_connection()
 
@@ -229,7 +236,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/source/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
 
     def db_source_changed(self):
-        self._db = None
+        if self._db is not None:
+            self._db.close_connection()
+
+        self._db = None # Reset db connection
         if self.cbo_db_source.currentData() == 'pg':
             self.gpkg_config.setVisible(False)
             self.pg_config.setVisible(True)
@@ -238,8 +248,16 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.gpkg_config.setVisible(True)
 
     def test_connection(self):
+        if self._db is not None:
+            self._db.close_connection()
+
         self._db = None # Reset db connection
-        res, msg = self.get_db_connection().test_connection()
+        db = self.get_db_connection(False)
+        res, msg = db.test_connection()
+
+        if db is not None:
+            db.close_connection()
+
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
         self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
 

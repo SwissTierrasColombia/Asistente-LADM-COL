@@ -109,6 +109,11 @@ class PGConnector(DBConnector):
             self.conn = psycopg2.connect(self.uri)
             self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
 
+    def close_connection(self):
+        if self.conn:
+            self.conn.close()
+            self.log.logMessage("Connection was closed!", PLUGIN_NAME, Qgis.Info)
+
     def validate_db(self):
         pass
 
