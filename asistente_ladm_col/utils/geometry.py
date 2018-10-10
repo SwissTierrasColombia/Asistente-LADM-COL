@@ -6,7 +6,9 @@
         begin                : 2018-04-16
         git sha              : :%H$
         copyright            : (C) 2018 by Germán Carrillo (BSF Swissphoto)
+                               (C) 2018 by Leonardo Cardona (BSF Swissphoto)
         email                : gcarrillo@linuxmail.org
+                               leocardonapiedrahita@gmail.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -16,6 +18,8 @@
  *                                                                         *
  ***************************************************************************/
 """
+import gc
+
 from qgis.PyQt.QtCore import QObject
 from qgis.core import (
     Qgis,
@@ -23,6 +27,7 @@ from qgis.core import (
     QgsGeometry,
     QgsPoint,
     QgsFeature,
+    QgsFeatureRequest,
     QgsLineString,
     QgsMultiLineString,
     QgsSpatialIndex,
@@ -39,7 +44,6 @@ from ..config.general_config import (
     PLUGIN_NAME
 )
 from ..config.table_mapping_config import ID_FIELD
-import gc
 
 class GeometryUtils(QObject):
 
@@ -48,7 +52,6 @@ class GeometryUtils(QObject):
         self.log = QgsApplication.messageLog()
 
     def get_pair_boundary_plot(self, boundary_layer, plot_layer, id_field=ID_FIELD, use_selection=True):
-        lines = boundary_layer.getFeatures()
         polygons = plot_layer.getSelectedFeatures() if use_selection else plot_layer.getFeatures()
         intersect_more_pairs = list()
         intersect_less_pairs = list()
@@ -58,15 +61,16 @@ class GeometryUtils(QObject):
 
         dict_features = {feature.id(): feature for feature in boundary_layer.getFeatures()}
         index = QgsSpatialIndex(boundary_layer)
+        candidate_features = None
 
         for polygon in polygons:
             bbox = polygon.geometry().boundingBox()
             bbox.scale(1.001)
             candidates_ids = index.intersects(bbox)
 
-            candidates_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
+            candidate_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
 
-            for candidate_feature in candidates_features:
+            for candidate_feature in candidate_features:
                 polygon_geom = polygon.geometry()
                 is_multipart = polygon_geom.isMultipart()
                 candidate_geometry = candidate_feature.geometry()
@@ -154,6 +158,7 @@ class GeometryUtils(QObject):
                                 Qgis.Warning
                             )
         # free up memory
+        del candidate_features
         del dict_features
         gc.collect()
         return (intersect_more_pairs, intersect_less_pairs)
@@ -168,13 +173,14 @@ class GeometryUtils(QObject):
 
         dict_features = {feature.id(): feature for feature in boundary_point_layer.getFeatures()}
         index = QgsSpatialIndex(boundary_point_layer)
+        candidate_features = None
 
         for line in lines:
             bbox = line.geometry().boundingBox()
             bbox.scale(1.001)
             candidates_ids = index.intersects(bbox)
-            candidates_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
-            for candidate_feature in candidates_features:
+            candidate_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
+            for candidate_feature in candidate_features:
                 #if line.geometry().intersects(candidate_feature.geometry()):
                 #    intersect_pair.append(line['t_id'], candidate_feature['t_id'])
                 candidate_point = candidate_feature.geometry().asPoint()
@@ -185,6 +191,7 @@ class GeometryUtils(QObject):
                         if pair not in intersect_pairs:
                             intersect_pairs.append(pair)
         # free up memory
+        del candidate_features
         del dict_features
         gc.collect()
         return intersect_pairs
@@ -289,14 +296,15 @@ class GeometryUtils(QObject):
 
         dict_features = {feature.id(): feature for feature in polygon_layer.getFeatures()}
         index = QgsSpatialIndex(polygon_layer)
+        candidate_features = None
 
         for feature in polygon_layer.getFeatures():
             bbox = feature.geometry().boundingBox()
             bbox.scale(1.001)
             candidates_ids = index.intersects(bbox)
-            candidates_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
+            candidate_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
 
-            for candidate_feature in candidates_features:
+            for candidate_feature in candidate_features:
                 is_overlap = feature.geometry().overlaps(candidate_feature.geometry()) or \
                              feature.geometry().contains(candidate_feature.geometry()) or \
                              feature.geometry().within(candidate_feature.geometry())
@@ -308,6 +316,7 @@ class GeometryUtils(QObject):
                             list_overlapping_polygons.append(overlapping_polygons)
 
         # free up memory
+        del candidate_features
         del dict_features
         gc.collect()
         return list_overlapping_polygons
@@ -341,13 +350,14 @@ class GeometryUtils(QObject):
         list_overlapping = list()
         dict_features = {feature.id(): feature for feature in polygon_layer_2.getFeatures()}
         index = QgsSpatialIndex(polygon_layer_2)
+        candidate_features = None
 
         for feature in polygon_layer_1.getFeatures():
             bbox = feature.geometry().boundingBox()
             candidates_ids = index.intersects(bbox)
-            candidates_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
+            candidate_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
 
-            for candidate_feature in candidates_features:
+            for candidate_feature in candidate_features:
                 candidate_feature_geo = candidate_feature.geometry()
                 if feature.geometry().intersects(candidate_feature_geo) and not feature.geometry().touches(candidate_feature_geo):
                     intersection = feature.geometry().intersection(candidate_feature_geo)
@@ -363,6 +373,7 @@ class GeometryUtils(QObject):
                                 ids.append([feature.id(), candidate_feature.id()])
                                 list_overlapping.append(part)
         # free up memory
+        del candidate_features
         del dict_features
         gc.collect()
         return ids, QgsGeometry.collectGeometry(list_overlapping) if len(list_overlapping) > 0 else None
@@ -442,11 +453,14 @@ class GeometryUtils(QObject):
             layer2 = processing.run("qgis:polygonstolines", {'INPUT': layer2, 'OUTPUT': 'memory:'})['OUTPUT']
 
         index = QgsSpatialIndex(layer2)
+        dict_features_layer2 = None
+        candidate_features = None
         with edit(layer1):
             edit_layer = QgsVectorLayerEditUtils(layer1)
             dict_features_layer2 = {feature.id(): feature for feature in layer2.getFeatures()}
 
-            for feature in layer1.getFeatures():
+            request = QgsFeatureRequest().setSubsetOfAttributes([])
+            for feature in layer1.getFeatures(request):
                 bbox = feature.geometry().boundingBox()
                 candidate_ids = index.intersects(bbox)
                 candidate_features = [dict_features_layer2[candidate_id] for candidate_id in candidate_ids]
@@ -459,9 +473,10 @@ class GeometryUtils(QObject):
                 for intersect_feature in intersect_features:
                     edit_layer.addTopologicalPoints(intersect_feature.geometry())
 
-            # free up memory
-            del dict_features_layer2
-            gc.collect()
+        # free up memory
+        del candidate_features
+        del dict_features_layer2
+        gc.collect()
 
     def line_polygon_layer_difference(self, input_layer_a, input_layer_b):
         if input_layer_a.geometryType() == QgsWkbTypes.PolygonGeometry:
@@ -573,6 +588,7 @@ class GeometryUtils(QObject):
         dict_features = {feature.id(): feature for feature in boundary_layer.getFeatures()}
         index = QgsSpatialIndex(boundary_layer)
         ids_boundaries_list = list()
+        candidate_features = None
 
         for feature in points_layer.getFeatures():
             bbox = feature.geometry().boundingBox()
@@ -593,6 +609,7 @@ class GeometryUtils(QObject):
         selected_features = [dict_features[selected_id] for selected_id in selected_ids]
 
         # free up memory
+        del candidate_features
         del dict_features
         gc.collect()
 
