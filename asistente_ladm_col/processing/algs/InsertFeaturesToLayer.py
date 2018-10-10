@@ -96,6 +96,18 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
         features = source.getFeatures()
         destType = target.geometryType()
         destIsMulti = QgsWkbTypes.isMultiType(target.wkbType())
+
+        drop_coordinates = list()
+        add_coordinates = list()
+        if target.wkbType() == source.wkbType():  # Son iguale no hace nada
+            pass
+        if QgsWkbTypes().hasM(source.wkbType()):  # Entra M, se la quitamos
+            drop_coordinates.append("M")
+        if not QgsWkbTypes().hasZ(source.wkbType()) and QgsWkbTypes().hasZ(target.wkbType()):  # No entra Z, pero debe, se agrega Z
+            add_coordinates.append("Z")
+        if QgsWkbTypes().hasZ(source.wkbType()) and not QgsWkbTypes().hasZ(target.wkbType()):  # Entra Z, se la quitamos
+            drop_coordinates.append("Z")
+
         new_features = []
         for current, in_feature in enumerate(features):
             if feedback.isCanceled():
@@ -115,6 +127,7 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
 
                     if newGeometry.isNull():
                         continue
+                    newGeometry = self.transform_geoms(newGeometry, transform)
                     geom = newGeometry
 
                 # Avoid intersection if enabled in digitize settings
@@ -155,3 +168,13 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
             ))
 
         return {self.OUTPUT: target}
+
+    def transform_geom(self, geom, drop_coordinates, add_coordinates):
+        """ This function put or remove Z and remove M value"""
+        if "Z" in drop_coordinates:
+            geom.get().dropZValue()
+        if "M" in drop_coordinates:
+            geom.get().dropMValue()
+        if "Z" in add_coordinates:
+            geom.get().addZValue()
+        return geom
