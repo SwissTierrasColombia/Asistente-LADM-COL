@@ -88,6 +88,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_pg_password.textEdited.connect(self.set_connection_dirty)
         self.txt_gpkg_file.textEdited.connect(self.set_connection_dirty)
         self.btn_test_service.clicked.connect(self.test_service)
+        self.chk_use_roads.toggled.connect(self.update_images_state)
 
         # Trigger some default behaviours
         self.restore_settings()
@@ -216,7 +217,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_gpkg_file.setText(settings.value('Asistente-LADM_COL/gpkg/dbfile'))
 
         self.txt_too_long_tolerance.setText(str(settings.value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)))
-        self.chk_use_roads.setChecked(settings.value('Asistente-LADM_COL/quality/use_roads', True, bool))
+        use_roads = settings.value('Asistente-LADM_COL/quality/use_roads', True, bool)
+        self.chk_use_roads.setChecked(use_roads)
+        self.update_images_state(use_roads)
 
         self.chk_disable_automatic_fields.setChecked(settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool))
         self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool))
@@ -357,6 +360,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def set_connection_dirty(self, text):
         if not self.connection_is_dirty:
             self.connection_is_dirty = True
+
+    def update_images_state(self, checked):
+        self.img_with_roads.setEnabled(checked)
+        self.img_without_roads.setEnabled(not checked)
 
     def show_help(self):
         self.qgis_utils.show_help("settings")
