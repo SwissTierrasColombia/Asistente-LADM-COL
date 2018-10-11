@@ -30,11 +30,12 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsLineString,
     QgsMultiLineString,
-    QgsSpatialIndex,
-    QgsWkbTypes,
+    QgsProcessingException,
     QgsProcessingFeedback,
+    QgsSpatialIndex,
     QgsVectorLayer,
-    QgsVectorLayerEditUtils
+    QgsVectorLayerEditUtils,
+    QgsWkbTypes
 )
 from qgis.core import edit
 
@@ -496,11 +497,20 @@ class GeometryUtils(QObject):
         gc.collect()
 
     def line_polygon_layer_difference(self, input_layer_a, input_layer_b):
-        if input_layer_a.geometryType() == QgsWkbTypes.PolygonGeometry:
-            input_layer_a = processing.run("qgis:polygonstolines", {'INPUT': input_layer_a, 'OUTPUT': 'memory:'})['OUTPUT']
-        if input_layer_b.geometryType() == QgsWkbTypes.PolygonGeometry:
-            input_layer_b = processing.run("qgis:polygonstolines", {'INPUT': input_layer_b, 'OUTPUT': 'memory:'})['OUTPUT']
-        diff_layer = processing.run("native:difference", {'INPUT': input_layer_a, 'OVERLAY': input_layer_b, 'OUTPUT': 'memory:'})['OUTPUT']
+        diff_layer = None
+        try:
+            if input_layer_a.geometryType() == QgsWkbTypes.PolygonGeometry:
+                input_layer_a = processing.run("qgis:polygonstolines", {'INPUT': input_layer_a, 'OUTPUT': 'memory:'})['OUTPUT']
+            if input_layer_b.geometryType() == QgsWkbTypes.PolygonGeometry:
+                input_layer_b = processing.run("qgis:polygonstolines", {'INPUT': input_layer_b, 'OUTPUT': 'memory:'})['OUTPUT']
+            diff_layer = processing.run("native:difference", {'INPUT': input_layer_a, 'OVERLAY': input_layer_b, 'OUTPUT': 'memory:'})['OUTPUT']
+        except QgsProcessingException as e:
+            self.log.logMessage(
+                "There was an error running 'polygons to lines' QGIS algorithm. The topological validation couldn't be run successfully.",
+                PLUGIN_NAME,
+                Qgis.Warning
+            )
+
         return diff_layer
 
     def difference_plot_boundary(self, plot_layer, boundary_layer, id_field=ID_FIELD):
@@ -518,12 +528,15 @@ class GeometryUtils(QObject):
         self.add_topological_vertices(polygons_layer, boundary_layer, id_field)
         differences_layer = self.line_polygon_layer_difference(polygons_layer, boundary_layer)
 
-        id_field_idx = differences_layer.fields().indexFromName(id_field)
-        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
-        for feature in differences_layer.getFeatures(request):
-            difference_features.append({
-                'geometry': feature.geometry(),
-                'id': feature[id_field]})
+        if differences_layer is not None:
+            id_field_idx = differences_layer.fields().indexFromName(id_field)
+            request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+            for feature in differences_layer.getFeatures(request):
+                difference_features.append({
+                    'geometry': feature.geometry(),
+                    'id': feature[id_field]})
+        else:
+            difference_features = None
 
         return difference_features
 
@@ -541,12 +554,15 @@ class GeometryUtils(QObject):
         self.add_topological_vertices(polygons_layer, boundary_layer, id_field)
         differences_layer = self.line_polygon_layer_difference(boundary_layer, polygons_layer)
 
-        id_field_idx = differences_layer.fields().indexFromName(id_field)
-        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
-        for feature in differences_layer.getFeatures(request):
-            difference_features.append({
-                'geometry': feature.geometry(),
-                'id': feature[id_field]})
+        if differences_layer is not None:
+            id_field_idx = differences_layer.fields().indexFromName(id_field)
+            request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+            for feature in differences_layer.getFeatures(request):
+                difference_features.append({
+                    'geometry': feature.geometry(),
+                    'id': feature[id_field]})
+        else:
+            difference_features = None
 
         return difference_features
 

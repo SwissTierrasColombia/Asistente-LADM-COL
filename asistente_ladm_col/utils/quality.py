@@ -160,26 +160,27 @@ class QualityUtils(QObject):
         features = []
         differences = self.qgis_utils.geometry.difference_plot_boundary(plot_layer, boundary_layer)
 
-        for difference in differences:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                error_layer,
-                difference['geometry'],
-                {0: difference['id']})
-            features.append(new_feature)
+        if differences is not None:
+            for difference in differences:
+                new_feature = QgsVectorLayerUtils().createFeature(
+                    error_layer,
+                    difference['geometry'],
+                    {0: difference['id']})
+                features.append(new_feature)
 
-        error_layer.dataProvider().addFeatures(features)
+            error_layer.dataProvider().addFeatures(features)
 
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
 
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} plot lines not covered by boundaries has been added to the map!").format(
-                    added_layer.featureCount()), Qgis.Info)
-        else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "All Plot lines are covered by Boundarues!"), Qgis.Info)
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                        "A memory layer with {} plot lines not covered by boundaries has been added to the map!").format(
+                        added_layer.featureCount()), Qgis.Info)
+            else:
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                        "All Plot lines are covered by Boundaries!"), Qgis.Info)
 
     def check_boundary_points_covered_by_boundary_nodes(self, db):
         res_layers = self.qgis_utils.get_layers(db, {
@@ -282,26 +283,27 @@ class QualityUtils(QObject):
         features = []
         differences = self.qgis_utils.geometry.difference_boundary_plot(boundary_layer, plot_layer)
 
-        for difference in differences:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                error_layer,
-                difference['geometry'],
-                {0: difference['id']})
-            features.append(new_feature)
+        if differences is not None:
+            for difference in differences:
+                new_feature = QgsVectorLayerUtils().createFeature(
+                    error_layer,
+                    difference['geometry'],
+                    {0: difference['id']})
+                features.append(new_feature)
 
-        error_layer.dataProvider().addFeatures(features)
+            error_layer.dataProvider().addFeatures(features)
 
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
 
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} boundaries not covered by plot lines has been added to the map!").format(
-                    added_layer.featureCount()), Qgis.Info)
-        else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "All Boundaries are covered by Plot lines!"), Qgis.Info)
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                        "A memory layer with {} boundaries not covered by plot lines has been added to the map!").format(
+                        added_layer.featureCount()), Qgis.Info)
+            else:
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                        "All Boundaries are covered by Plot lines!"), Qgis.Info)
 
     def check_overlapping_polygons(self, db, polygon_layer_name):
         polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, QgsWkbTypes.PolygonGeometry, load=True)
@@ -880,7 +882,7 @@ class QualityUtils(QObject):
                                            "There are no Right of Way-Building overlaps."), Qgis.Info)
 
     def check_gaps_in_plots(self, db):
-        use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))  
+        use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, True)
 
         if plot_layer is None:
