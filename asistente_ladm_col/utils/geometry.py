@@ -230,6 +230,21 @@ class GeometryUtils(QObject):
             segments.extend(self.get_polyline_as_single_segments(geom.constGet()))
         return segments
 
+    def get_too_long_segments_from_simple_line(self, line, tolerance):
+        segments_info = list()
+        vertices = line.vertices()
+        vertex1 = None
+        if vertices.hasNext():
+            vertex1 = vertices.next()
+        while vertices.hasNext():
+            vertex2 = vertices.next()
+            distance = vertex1.distance(vertex2)
+            if distance > tolerance:
+                segment = QgsGeometry.fromPolyline([vertex1, vertex2])
+                segments_info.append([segment, distance])
+            vertex1 = vertex2
+        return segments_info
+
     def get_boundary_points_not_covered_by_boundary_nodes(self, boundary_point_layer, boundary_layer):
         params = {
             'INPUT': boundary_point_layer,
