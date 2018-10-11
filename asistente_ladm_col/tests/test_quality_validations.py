@@ -258,6 +258,7 @@ class TesQualityValidations(unittest.TestCase):
 
             self.qgis_utils.geometry.add_topological_vertices(clone_polygons, lines_layer)
             diff_layer = self.qgis_utils.geometry.line_polygon_layer_difference(clone_polygons, lines_layer)
+            self.assertIsNotNone(diff_layer)
             self.assertEqual(diff_layer.getFeature(1).geometry().asWkt(), diff_geom[i])
 
     def test_lines_must_be_covered_by_polygons(self):

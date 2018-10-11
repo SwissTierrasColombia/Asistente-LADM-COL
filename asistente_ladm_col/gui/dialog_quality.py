@@ -149,7 +149,7 @@ class DialogQuality(QDialog, DIALOG_UI):
         self.trw_quality_rules.setUpdatesEnabled(True) # Now render!
 
     def accepted(self):
-        self.qgis_utils.remove_error_group_requested.emit()
+        #self.qgis_utils.remove_error_group_requested.emit()
 
         iterator = QTreeWidgetItemIterator(self.trw_quality_rules, QTreeWidgetItemIterator.Selectable)
         while iterator.value():
