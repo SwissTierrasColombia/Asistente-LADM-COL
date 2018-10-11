@@ -99,13 +99,14 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
 
         drop_coordinates = list()
         add_coordinates = list()
-        if target.wkbType() == source.wkbType():  # Son iguale no hace nada
+        #  Check if layer have Z or M values.
+        if target.wkbType() == source.wkbType():
             pass
-        if QgsWkbTypes().hasM(source.wkbType()):  # Entra M, se la quitamos
+        if QgsWkbTypes().hasM(source.wkbType()):
             drop_coordinates.append("M")
-        if not QgsWkbTypes().hasZ(source.wkbType()) and QgsWkbTypes().hasZ(target.wkbType()):  # No entra Z, pero debe, se agrega Z
+        if not QgsWkbTypes().hasZ(source.wkbType()) and QgsWkbTypes().hasZ(target.wkbType()):
             add_coordinates.append("Z")
-        if QgsWkbTypes().hasZ(source.wkbType()) and not QgsWkbTypes().hasZ(target.wkbType()):  # Entra Z, se la quitamos
+        if QgsWkbTypes().hasZ(source.wkbType()) and not QgsWkbTypes().hasZ(target.wkbType()):
             drop_coordinates.append("Z")
 
         new_features = []
@@ -124,10 +125,9 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
 
                 if destType != QgsWkbTypes.UnknownGeometry:
                     newGeometry = geom.convertToType(destType, destIsMulti)
-
                     if newGeometry.isNull():
                         continue
-                    newGeometry = self.transform_geoms(newGeometry, transform)
+                    newGeometry = self.transform_geom(newGeometry, drop_coordinates, add_coordinates)
                     geom = newGeometry
 
                 # Avoid intersection if enabled in digitize settings
