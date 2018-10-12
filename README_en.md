@@ -17,7 +17,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([0.9.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.9.0)) of the LADM_COL Assistant depends on [Project Generator v3.3.2.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip) and allows users to:
+The current version ([0.10.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.10.0)) of the LADM_COL Assistant depends on [Project Generator v3.3.2.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip) and allows users to:
 
  - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
  - Capture data for the `FICHA_PREDIAL v2.2.1` model.
@@ -78,6 +78,8 @@ The current version ([0.9.0](https://github.com/AgenciaImplementacion/Asistente-
    - Check overlaps in `Control Points`.
    - Check overlaps in `Boundary`.
    - Check overlaps in `Plot`.
+   - Check overlaps in `Building`.
+   - Check overlaps in `Right of Way`.
    - Check missing `Boundary Points` that do not have `Boundary` nodes associated.
    - Check missing `Boundary` nodes that do not have `Boundary Points` correctly associated.
    - Check dangles in `Boundary`.
