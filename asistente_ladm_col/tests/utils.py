@@ -23,7 +23,23 @@ import qgis.utils
 
 from sys import platform
 from shutil import copyfile
+from ..config.refactor_fields_mappings import get_refactor_fields_mapping
+from ..config.table_mapping_config import BOUNDARY_POINT_TABLE
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
+
+from qgis.core import (
+     QgsApplication,
+     QgsProcessingFeedback,
+     QgsVectorLayer
+)
+
+QgsApplication.setPrefixPath('/usr', True)
+qgs = QgsApplication([], False)
+qgs.initQgis()
+
+import processing
+from processing.core.Processing import Processing
+Processing.initialize()
 
 # get from https://github.com/qgis/QGIS/blob/master/tests/src/python/test_qgssymbolexpressionvariables.py
 from qgis.testing.mocked import get_iface
@@ -39,6 +55,7 @@ iface = get_iface()
 asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface)
 asistente_ladm_col_plugin.initGui()
 
+
 def get_dbconn():
     #global DB_HOSTNAME DB_PORT DB_NAME DB_SCHEMA DB_USER DB_USER DB_PASSWORD
     dict_conn = dict()
@@ -52,6 +69,7 @@ def get_dbconn():
 
     db = asistente_ladm_col_plugin.qgis_utils.get_db_connection()
     return db
+
 
 def restore_schema(db_connection):
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -77,6 +95,7 @@ def restore_schema(db_connection):
     if len(output) > 0:
         print("Warning:", output)
 
+
 def drop_schema(db_connection):
     print("Clean ladm_col database...")
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -87,16 +106,20 @@ def drop_schema(db_connection):
     if query is not None:
         print("The drop schema is not working")
 
+
 def get_iface():
     global iface
+
     def rewrite_method():
         return "i'm rewrited"
     iface.rewrite_method = rewrite_method
     return iface
 
+
 def get_test_path(path):
     basepath = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(basepath, "resources", path)
+
 
 def get_test_copy_path(path):
     src_path = get_test_path(path)
@@ -104,6 +127,7 @@ def get_test_copy_path(path):
     dst_path = os.path.join(dst_path[0], "_" + dst_path[1])
     copyfile(src_path, dst_path)
     return dst_path
+
 
 def import_projectgenerator():
     global iface
@@ -113,8 +137,31 @@ def import_projectgenerator():
         pg = projectgenerator.classFactory(iface)
         qgis.utils.plugins["projectgenerator"] = pg
 
+
 def unload_projectgenerator():
     global iface
     plugin_found = "projectgenerator" in qgis.utils.plugins
     if plugin_found:
         del(qgis.utils.plugins["projectgenerator"])
+
+
+def run_etl_model(input_layer, out_layer, ladm_col_layer_name=BOUNDARY_POINT_TABLE):
+
+    model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
+
+    if model:
+        automatic_fields_definition = True
+
+        mapping = get_refactor_fields_mapping(ladm_col_layer_name, qgis.utils)
+        params = {
+            'INPUT': input_layer,
+            'mapping': mapping,
+            'output': out_layer
+        }
+        res = processing.run("model:ETL-model", params)
+
+    else:
+        print("Error: Model ETL-model was not found and cannot be opened!")
+        return
+
+    return out_layer
