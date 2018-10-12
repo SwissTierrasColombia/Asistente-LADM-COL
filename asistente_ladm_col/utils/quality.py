@@ -327,6 +327,10 @@ class QualityUtils(QObject):
         error_layer_name = ''
         if polygon_layer_name == PLOT_TABLE:
             error_layer_name = self.translatable_config_strings.CHECK_OVERLAPS_IN_PLOTS
+        elif polygon_layer_name == BUILDING_TABLE:
+            error_layer_name = self.translatable_config_strings.CHECK_OVERLAPS_IN_BUILDINGS
+        elif polygon_layer_name == RIGHT_OF_WAY_TABLE:
+            error_layer_name = self.translatable_config_strings.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY
 
         error_layer = QgsVectorLayer("Polygon?crs=EPSG:{}".format(DEFAULT_EPSG),
                                      error_layer_name, "memory")
