@@ -115,6 +115,8 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_MISSING_BOUNDARY_POINTS_IN_BOUNDARIES = QCoreApplication.translate("TranslatableConfigStrings", "Boundary nodes should be covered by Boundary Points")
         self.CHECK_DANGLES_IN_BOUNDARIES = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not have dangles")
         self.CHECK_OVERLAPS_IN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Plots should not overlap")
+        self.CHECK_OVERLAPS_IN_BUILDINGS = QCoreApplication.translate("TranslatableConfigStrings", "Buildings should not overlap")
+        self.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY = QCoreApplication.translate("TranslatableConfigStrings", "Rights of Way should not overlap")
         self.CHECK_PLOTS_COVERED_BY_BOUNDARIES = QCoreApplication.translate("TranslatableConfigStrings", "Plots should be covered by Boundaries")
         self.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not overlap Buildings")
         self.CHECK_GAPS_IN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Plots should not have gaps")
