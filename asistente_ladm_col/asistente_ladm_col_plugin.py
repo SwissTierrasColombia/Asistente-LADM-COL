@@ -86,6 +86,8 @@ from .utils.quality import QualityUtils
 from .utils.model_parser import ModelParser
 from .utils.qt_utils import get_plugin_metadata
 
+from .resources_rc import *
+
 class AsistenteLADMCOLPlugin(QObject):
     def __init__(self, iface):
         QObject.__init__(self)
@@ -194,32 +196,67 @@ class AsistenteLADMCOLPlugin(QObject):
         self._preprocessing_menu.addActions([self._controlled_measurement_action])
 
         self._surveying_and_representation_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Surveying and Representation"), self._cadastre_menu)
-        self._point_surveying_and_representation_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Point"), self._surveying_and_representation_cadastre_menu)
-        self._boundary_surveying_and_representation_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Boundary"), self._surveying_and_representation_cadastre_menu)
+        self._surveying_and_representation_cadastre_menu.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/surveying.png"))
+        self._point_surveying_and_representation_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Point"),
+                self._surveying_and_representation_cadastre_menu)
+        self._boundary_surveying_and_representation_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/lines.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Boundary"),
+                self._surveying_and_representation_cadastre_menu)
         self._surveying_and_representation_cadastre_menu.addActions([self._point_surveying_and_representation_cadastre_action,
                                                        self._boundary_surveying_and_representation_cadastre_action])
 
         self._spatial_unit_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Spatial Unit"), self._cadastre_menu)
-        self._plot_spatial_unit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Plot"), self._spatial_unit_cadastre_menu)
-        self._building_spatial_unit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building"),self._spatial_unit_cadastre_menu)
-        self._building_unit_spatial_unit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit"), self._spatial_unit_cadastre_menu)
+        self._spatial_unit_cadastre_menu.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/spatial_unit.png"))
+        self._plot_spatial_unit_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Plot"),
+                self._spatial_unit_cadastre_menu)
+        self._building_spatial_unit_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building"),
+                self._spatial_unit_cadastre_menu)
+        self._building_unit_spatial_unit_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit"),
+                self._spatial_unit_cadastre_menu)
         self._spatial_unit_cadastre_menu.addActions([self._plot_spatial_unit_cadastre_action,
                                                      self._building_spatial_unit_cadastre_action,
                                                      self._building_unit_spatial_unit_cadastre_action])
 
         self._baunit_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "BA Unit"), self._cadastre_menu)
-        self._parcel_baunit_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Parcel"), self._baunit_cadastre_menu)
+        self._baunit_cadastre_menu.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/ba_unit.png"))
+        self._parcel_baunit_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Parcel"),
+                self._baunit_cadastre_menu)
         self._baunit_cadastre_menu.addActions([self._parcel_baunit_cadastre_action])
 
         self._party_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"), self._cadastre_menu)
-        self._col_party_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Party"), self._party_cadastre_menu)
-        self._group_party_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Group Party"), self._party_cadastre_menu)
+        self._party_cadastre_menu.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/party.png"))
+        self._col_party_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Party"),
+                self._party_cadastre_menu)
+        self._group_party_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Group Party"),
+                self._party_cadastre_menu)
         self._party_cadastre_menu.addActions([self._col_party_cadastre_action,
                                               self._group_party_cadastre_action])
 
         self._source_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._cadastre_menu)
-        self._administrative_source_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Administrative Source"), self._source_cadastre_menu)
-        self._spatial_source_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Spatial Source"), self._source_cadastre_menu)
+        self._source_cadastre_menu.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/source.png"))
+        self._administrative_source_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Administrative Source"),
+                self._source_cadastre_menu)
+        self._spatial_source_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Spatial Source"),
+                self._source_cadastre_menu)
         self._upload_source_files_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Upload Pending Source Files"), self._source_cadastre_menu)
         self._source_cadastre_menu.addActions([self._administrative_source_cadastre_action,
                                                self._spatial_source_cadastre_action])
@@ -227,9 +264,19 @@ class AsistenteLADMCOLPlugin(QObject):
         self._source_cadastre_menu.addAction(self._upload_source_files_cadastre_action)
 
         self._rrr_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "RRR"), self._cadastre_menu)
-        self._right_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Right"), self._rrr_cadastre_menu)
-        self._restriction_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Restriction"), self._rrr_cadastre_menu)
-        self._responsibility_rrr_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Responsibility"), self._rrr_cadastre_menu)
+        self._rrr_cadastre_menu.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/rrr.png"))
+        self._right_rrr_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Right"),
+                self._rrr_cadastre_menu)
+        self._restriction_rrr_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Restriction"),
+                self._rrr_cadastre_menu)
+        self._responsibility_rrr_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Responsibility"),
+                self._rrr_cadastre_menu)
         self._rrr_cadastre_menu.addActions([self._right_rrr_cadastre_action,
                                             self._restriction_rrr_cadastre_action,
                                             self._responsibility_rrr_cadastre_action])
@@ -274,11 +321,26 @@ class AsistenteLADMCOLPlugin(QObject):
         self._property_record_card_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Property record card"), self._menu)
         self._property_record_card_menu.setObjectName(PROPERTY_RECORD_CARD_MENU_OBJECTNAME)
 
-        self._property_record_card_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Property Record Card"), self._property_record_card_menu)
-        self._market_research_property_record_card_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Market Research"), self._property_record_card_menu)
-        self._nuclear_family_property_record_card_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Nuclear Family"), self._property_record_card_menu)
-        self._natural_party_property_record_card_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Natural Party"), self._property_record_card_menu)
-        self._legal_party_property_record_card_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Legal Party"), self._property_record_card_menu)
+        self._property_record_card_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Property Record Card"),
+                self._property_record_card_menu)
+        self._market_research_property_record_card_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Market Research"),
+                self._property_record_card_menu)
+        self._nuclear_family_property_record_card_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Nuclear Family"),
+                self._property_record_card_menu)
+        self._natural_party_property_record_card_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Natural Party"),
+                self._property_record_card_menu)
+        self._legal_party_property_record_card_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Legal Party"),
+                self._property_record_card_menu)
 
         self._property_record_card_menu.addAction(self._property_record_card_action)
         self._property_record_card_menu.addAction(self._market_research_property_record_card_action)
