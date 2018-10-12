@@ -384,7 +384,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def update_images_state(self, checked):
         self.img_with_roads.setEnabled(checked)
+        self.img_with_roads.setToolTip(QCoreApplication.translate(
+            "SettingsDialog", "Missing roads will be marked as errors.")
+            if checked else '')
         self.img_without_roads.setEnabled(not checked)
+        self.img_without_roads.setToolTip('' if checked else QCoreApplication.translate(
+            "SettingsDialog", "Missing roads will not be marked as errors."))
 
     def show_help(self):
         self.qgis_utils.show_help("settings")

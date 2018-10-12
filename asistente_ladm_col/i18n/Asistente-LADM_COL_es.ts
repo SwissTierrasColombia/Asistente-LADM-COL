@@ -2383,6 +2383,11 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <source>Not valid service URL to test!</source>
         <translation>¡La URL del servicio no es válida!</translation>
     </message>
+    <message>
+        <location filename="../gui/settings_dialog.py" line="387"/>
+        <source>Missing roads will be marked as errors.</source>
+        <translation>Las vías faltantes serán marcadas como errores.</translation>
+    </message>
 </context>
 <context>
     <name>SourceHandler</name>
