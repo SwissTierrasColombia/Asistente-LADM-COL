@@ -45,22 +45,22 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(lines.constGet().numGeometries(), 4)
 
         line = lines.constGet().geometryN(0)
-        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 2)
         self.validate_segments(segments_info, tolerance)
 
         line = lines.constGet().geometryN(1)
-        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 1)
         self.validate_segments(segments_info, tolerance)
 
         line = lines.constGet().geometryN(2)
-        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 0)
         self.validate_segments(segments_info, tolerance)
 
         line = lines.constGet().geometryN(3)
-        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 1)
         self.validate_segments(segments_info, tolerance)
 
@@ -71,7 +71,7 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(lines.constGet().numGeometries(), 1)
 
         line = lines.constGet().geometryN(0)
-        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 1)
         self.validate_segments(segments_info, tolerance)
 
@@ -259,7 +259,6 @@ class TesQualityValidations(unittest.TestCase):
                 self.assertEqual(diff_plot_boundary[0]['geometry'].asWkt(), diff_geom[i], 'case_{}'.format(i + 1))
             else:
                 self.assertEqual('', diff_geom[i], 'case_{}'.format(i + 1))
-
 
     def test_lines_must_be_covered_by_polygons(self):
         print('\nINFO: Validating lines must be covered by polygons...')

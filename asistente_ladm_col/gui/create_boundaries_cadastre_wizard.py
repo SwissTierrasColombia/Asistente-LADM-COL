@@ -18,12 +18,12 @@
 """
 from qgis.core import (QgsProject, QgsVectorLayer, QgsEditFormConfig,
                        QgsSnappingConfig, QgsTolerance, QgsFeature, Qgis,
-                       QgsMapLayerProxyModel)
+                       QgsMapLayerProxyModel, QgsWkbTypes)
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-from ..config.table_mapping_config import BOUNDARY_TABLE
+from ..config.table_mapping_config import BOUNDARY_TABLE, BOUNDARY_POINT_TABLE
 from ..config.help_strings import HelpStrings
 
 WIZARD_UI = get_ui_class('wiz_create_boundaries_cadastre.ui')
@@ -33,7 +33,6 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
-        self._boundary_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
@@ -83,11 +82,23 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
 
     def prepare_boundary_creation(self):
         # Load layers
-        self._boundary_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_TABLE, load=True)
-        if self._boundary_layer is None:
+        res_layers = self.qgis_utils.get_layers(self._db, {
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': QgsWkbTypes.LineGeometry},
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': QgsWkbTypes.PointGeometry}}, load=True)
+
+        boundary_layer = res_layers[BOUNDARY_TABLE]
+        if boundary_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateBoundariesCadastreWizard",
                                            "Boundary layer couldn't be found... {}").format(self._db.get_description()),
+                Qgis.Warning)
+            return
+
+        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
+        if boundary_point_layer is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateBoundariesCadastreWizard",
+                                           "Boundary point layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 
@@ -97,20 +108,24 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         # Configure Snapping
         snapping = QgsProject.instance().snappingConfig()
         snapping.setEnabled(True)
-        snapping.setMode(QgsSnappingConfig.AllLayers)
-        snapping.setType(QgsSnappingConfig.Vertex)
-        snapping.setUnits(QgsTolerance.Pixels)
-        snapping.setTolerance(9)
+        snapping.setMode(QgsSnappingConfig.AdvancedConfiguration)
+        snapping.setIndividualLayerSettings(boundary_point_layer,
+                                            QgsSnappingConfig.IndividualLayerSettings(True,
+                                                QgsSnappingConfig.Vertex, 15, QgsTolerance.Pixels))
+        snapping.setIndividualLayerSettings(boundary_layer,
+                                            QgsSnappingConfig.IndividualLayerSettings(True,
+                                                QgsSnappingConfig.Vertex, 15, QgsTolerance.Pixels))
+
         QgsProject.instance().setSnappingConfig(snapping)
 
         # Suppress feature form
-        form_config = self._boundary_layer.editFormConfig()
+        form_config = boundary_layer.editFormConfig()
         form_config.setSuppress(QgsEditFormConfig.SuppressOn)
-        self._boundary_layer.setEditFormConfig(form_config)
+        boundary_layer.setEditFormConfig(form_config)
 
         # Enable edition mode
-        self.iface.layerTreeView().setCurrentLayer(self._boundary_layer)
-        self._boundary_layer.startEditing()
+        self.iface.layerTreeView().setCurrentLayer(boundary_layer)
+        boundary_layer.startEditing()
         self.iface.actionAddFeature().trigger()
 
         self.iface.messageBar().pushMessage("Asistente LADM_COL",

@@ -26,13 +26,13 @@ from qgis.PyQt.QtWidgets import (
     QTreeWidgetItem,
     QTreeWidgetItemIterator
 )
-from ..config.general_config import (
-    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE
-)
+from ..config.general_config import TranslatableConfigStrings
 from ..config.table_mapping_config import (
     BOUNDARY_POINT_TABLE,
     CONTROL_POINT_TABLE,
-    PLOT_TABLE
+    PLOT_TABLE,
+    BUILDING_TABLE,
+    RIGHT_OF_WAY_TABLE
 )
 from ..utils import get_ui_class
 
@@ -47,8 +47,7 @@ class DialogQuality(QDialog, DIALOG_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.quality = quality
-
-        too_long_tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
+        self.translatable_config_strings = TranslatableConfigStrings()
 
         self.trw_quality_rules.setItemsExpandable(False)
 
@@ -64,57 +63,63 @@ class DialogQuality(QDialog, DIALOG_UI):
                 'icon': 'points',
                 'rules': [{
                     'id' : 'check_overlaps_in_boundary_points',
-                    'text': QCoreApplication.translate("DialogQuality", "Boundary Points should not overlap")
+                    'text': self.translatable_config_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS
                 },{
                     'id' : 'check_overlaps_in_control_points',
-                    'text': QCoreApplication.translate("DialogQuality", "Control Points should not overlap")
+                    'text': self.translatable_config_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS
                 },{
                     'id' : 'check_boundary_points_covered_by_boundary_nodes',
-                    'text': QCoreApplication.translate("DialogQuality", "Boundary points should be covered by boundary nodes")
+                    'text': self.translatable_config_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES
                 }]
             }
         self.items_dict[QCoreApplication.translate("DialogQuality", "Rules for Lines")] = {
                 'icon' : 'lines',
                 'rules': [{
                     'id': 'check_too_long_boundary_segments',
-                    'text': QCoreApplication.translate("DialogQuality", "Boundary segments should not be longer than {}m.").format(too_long_tolerance)
+                    'text': self.translatable_config_strings.CHECK_TOO_LONG_BOUNDARY_SEGMENTS
                 }, {
                     'id': 'check_overlaps_in_boundaries',
-                    'text': QCoreApplication.translate("DialogQuality", "Boundaries should not overlap")
+                    'text': self.translatable_config_strings.CHECK_OVERLAPS_IN_BOUNDARIES
                 }, {
                     'id': 'check_boundaries_are_not_split',
-                    'text': QCoreApplication.translate("DialogQuality", "Boundaries should not be split")
+                    'text': self.translatable_config_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT
                 }, {
                     'id': 'check_boundaries_covered_by_plots',
-                    'text': QCoreApplication.translate("DialogQuality", "Boundaries should be covered by plots")
+                    'text': self.translatable_config_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS
                 }, {
                     'id': 'check_missing_boundary_points_in_boundaries',
-                    'text': QCoreApplication.translate("DialogQuality", "Boundary nodes should be covered by Boundary Points")
+                    'text': self.translatable_config_strings.CHECK_MISSING_BOUNDARY_POINTS_IN_BOUNDARIES
                 }, {
                     'id': 'check_dangles_in_boundaries',
-                    'text': QCoreApplication.translate("DialogQuality", "Boundaries should not have dangles")
+                    'text': self.translatable_config_strings.CHECK_DANGLES_IN_BOUNDARIES
                 }]
             }
         self.items_dict[QCoreApplication.translate("DialogQuality", "Rules for Polygons")] = {
                 'icon': 'polygons',
                 'rules': [{
                     'id': 'check_overlaps_in_plots',
-                    'text': QCoreApplication.translate("DialogQuality", "Plots should not overlap")
-                }, {
+                    'text': self.translatable_config_strings.CHECK_OVERLAPS_IN_PLOTS
+                },{
+                    'id': 'check_overlaps_in_buildings',
+                    'text': self.translatable_config_strings.CHECK_OVERLAPS_IN_BUILDINGS
+                },{
+                    'id': 'check_overlaps_in_rights_of_way',
+                    'text': self.translatable_config_strings.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY
+                },{
                     'id': 'check_plots_covered_by_boundaries',
-                    'text': QCoreApplication.translate("DialogQuality", "Plots should be covered by boundaries")
+                    'text': self.translatable_config_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES
                 #}, {
                 #    'id': 'check_missing_survey_points_in_buildings',
                 #    'text': QCoreApplication.translate("DialogQuality", "Buildings nodes should be covered by Survey Points")
                 }, {
                     'id': 'check_right_of_way_overlaps_buildings',
-                    'text': QCoreApplication.translate("DialogQuality", "Right of Way should not overlap Buildings")
+                    'text': self.translatable_config_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS
                 }, {
                     'id': 'check_gaps_in_plots',
-                    'text': QCoreApplication.translate("DialogQuality", "Plots should not have gaps")
+                    'text': self.translatable_config_strings.CHECK_GAPS_IN_PLOTS
                 }, {
                     'id': 'check_multipart_in_right_of_way',
-                    'text': QCoreApplication.translate("DialogQuality", "Right of Way should not have multipart geometries")
+                    'text': self.translatable_config_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY
                 }]
             }
 
@@ -152,7 +157,7 @@ class DialogQuality(QDialog, DIALOG_UI):
         self.trw_quality_rules.setUpdatesEnabled(True) # Now render!
 
     def accepted(self):
-        self.qgis_utils.remove_error_group_requested.emit()
+        #self.qgis_utils.remove_error_group_requested.emit()
 
         iterator = QTreeWidgetItemIterator(self.trw_quality_rules, QTreeWidgetItemIterator.Selectable)
         while iterator.value():
@@ -181,6 +186,10 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_dangles_in_boundaries(self._db)
                 elif id == 'check_overlaps_in_plots':
                     self.quality.check_overlapping_polygons(self._db, PLOT_TABLE)
+                elif id == 'check_overlaps_in_buildings':
+                    self.quality.check_overlapping_polygons(self._db, BUILDING_TABLE)
+                elif id == 'check_overlaps_in_rights_of_way':
+                    self.quality.check_overlapping_polygons(self._db, RIGHT_OF_WAY_TABLE)
                 elif id == 'check_plots_covered_by_boundaries':
                     self.quality.check_plots_covered_by_boundaries(self._db)
                 #elif id == 'check_missing_survey_points_in_buildings':
