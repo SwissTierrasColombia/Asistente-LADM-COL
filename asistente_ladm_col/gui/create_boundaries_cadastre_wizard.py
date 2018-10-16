@@ -18,7 +18,7 @@
 """
 from qgis.core import (QgsProject, QgsVectorLayer, QgsEditFormConfig,
                        QgsSnappingConfig, QgsTolerance, QgsFeature, Qgis,
-                       QgsMapLayerProxyModel)
+                       QgsMapLayerProxyModel, QgsWkbTypes)
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
@@ -33,8 +33,6 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
-        self._boundary_layer = None
-        self._boundary_point_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
@@ -84,18 +82,18 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
 
     def prepare_boundary_creation(self):
         # Load layers
-        self._boundary_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_TABLE, load=True)
+        boundary_layers = self.qgis_utils.get_layers(self._db, {
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': QgsWkbTypes.LineGeometry},
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': QgsWkbTypes.PointGeometry}}, load=True)
 
-        if self._boundary_layer is None:
+        if boundary_layers[BOUNDARY_TABLE] is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateBoundariesCadastreWizard",
                                            "Boundary layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 
-        self._boundary_point_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_POINT_TABLE, load=True)
-
-        if self._boundary_point_layer is None:
+        if boundary_layers[BOUNDARY_POINT_TABLE] is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateBoundariesCadastreWizard",
                                            "Boundary point layer couldn't be found... {}").format(self._db.get_description()),
@@ -109,26 +107,23 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         snapping = QgsProject.instance().snappingConfig()
         snapping.setEnabled(True)
         snapping.setMode(QgsSnappingConfig.AdvancedConfiguration)
-        snapping.setType(QgsSnappingConfig.Vertex)
-        snapping.setUnits(QgsTolerance.Pixels)
-        snapping.setTolerance(15)
-        snapping.setIndividualLayerSettings(self._boundary_layer,
+        snapping.setIndividualLayerSettings(boundary_layers[BOUNDARY_TABLE],
                                             QgsSnappingConfig.IndividualLayerSettings(True,
                                                 QgsSnappingConfig.Vertex, 15, QgsTolerance.Pixels))
-        snapping.setIndividualLayerSettings(self._boundary_point_layer,
+        snapping.setIndividualLayerSettings(boundary_layers[BOUNDARY_POINT_TABLE],
                                             QgsSnappingConfig.IndividualLayerSettings(True,
                                                 QgsSnappingConfig.Vertex, 15, QgsTolerance.Pixels))
 
         QgsProject.instance().setSnappingConfig(snapping)
 
         # Suppress feature form
-        form_config = self._boundary_layer.editFormConfig()
+        form_config = boundary_layers[BOUNDARY_TABLE].editFormConfig()
         form_config.setSuppress(QgsEditFormConfig.SuppressOn)
-        self._boundary_layer.setEditFormConfig(form_config)
+        boundary_layers[BOUNDARY_TABLE].setEditFormConfig(form_config)
 
         # Enable edition mode
-        self.iface.layerTreeView().setCurrentLayer(self._boundary_layer)
-        self._boundary_layer.startEditing()
+        self.iface.layerTreeView().setCurrentLayer(boundary_layers[BOUNDARY_TABLE])
+        boundary_layers[BOUNDARY_TABLE].startEditing()
         self.iface.actionAddFeature().trigger()
 
         self.iface.messageBar().pushMessage("Asistente LADM_COL",
