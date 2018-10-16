@@ -82,18 +82,20 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
 
     def prepare_boundary_creation(self):
         # Load layers
-        boundary_layers = self.qgis_utils.get_layers(self._db, {
+        res_layers = self.qgis_utils.get_layers(self._db, {
             BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': QgsWkbTypes.LineGeometry},
             BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': QgsWkbTypes.PointGeometry}}, load=True)
 
-        if boundary_layers[BOUNDARY_TABLE] is None:
+        boundary_layer = res_layers[BOUNDARY_TABLE]
+        if boundary_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateBoundariesCadastreWizard",
                                            "Boundary layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 
-        if boundary_layers[BOUNDARY_POINT_TABLE] is None:
+        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
+        if boundary_point_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateBoundariesCadastreWizard",
                                            "Boundary point layer couldn't be found... {}").format(self._db.get_description()),
@@ -107,23 +109,23 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         snapping = QgsProject.instance().snappingConfig()
         snapping.setEnabled(True)
         snapping.setMode(QgsSnappingConfig.AdvancedConfiguration)
-        snapping.setIndividualLayerSettings(boundary_layers[BOUNDARY_TABLE],
+        snapping.setIndividualLayerSettings(boundary_point_layer,
                                             QgsSnappingConfig.IndividualLayerSettings(True,
                                                 QgsSnappingConfig.Vertex, 15, QgsTolerance.Pixels))
-        snapping.setIndividualLayerSettings(boundary_layers[BOUNDARY_POINT_TABLE],
+        snapping.setIndividualLayerSettings(boundary_layer,
                                             QgsSnappingConfig.IndividualLayerSettings(True,
                                                 QgsSnappingConfig.Vertex, 15, QgsTolerance.Pixels))
 
         QgsProject.instance().setSnappingConfig(snapping)
 
         # Suppress feature form
-        form_config = boundary_layers[BOUNDARY_TABLE].editFormConfig()
+        form_config = boundary_layer.editFormConfig()
         form_config.setSuppress(QgsEditFormConfig.SuppressOn)
-        boundary_layers[BOUNDARY_TABLE].setEditFormConfig(form_config)
+        boundary_layer.setEditFormConfig(form_config)
 
         # Enable edition mode
-        self.iface.layerTreeView().setCurrentLayer(boundary_layers[BOUNDARY_TABLE])
-        boundary_layers[BOUNDARY_TABLE].startEditing()
+        self.iface.layerTreeView().setCurrentLayer(boundary_layer)
+        boundary_layer.startEditing()
         self.iface.actionAddFeature().trigger()
 
         self.iface.messageBar().pushMessage("Asistente LADM_COL",
