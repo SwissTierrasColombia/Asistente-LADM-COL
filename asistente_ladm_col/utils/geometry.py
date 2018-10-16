@@ -481,6 +481,7 @@ class GeometryUtils(QObject):
         if layer2.geometryType() == QgsWkbTypes.PolygonGeometry:
             layer2 = processing.run("qgis:polygonstolines", {'INPUT': layer2, 'OUTPUT': 'memory:'})['OUTPUT']
 
+        geom_added = list()
         index = QgsSpatialIndex(layer2)
         dict_features_layer2 = None
         candidate_features = None
@@ -504,54 +505,32 @@ class GeometryUtils(QObject):
                         intersect_features.append(candidate_feature)
 
                 for intersect_feature in intersect_features:
-                    edit_layer.addTopologicalPoints(intersect_feature.geometry())
+                    if intersect_feature.id() not in geom_added:
+                        edit_layer.addTopologicalPoints(intersect_feature.geometry())
+                        geom_added.append(intersect_feature.id())
 
         # free up memory
         del candidate_features
         del dict_features_layer2
         gc.collect()
 
-    def line_polygon_layer_difference(self, input_layer_a, input_layer_b):
-        diff_layer = None
-        try:
-            if input_layer_a.geometryType() == QgsWkbTypes.PolygonGeometry:
-                input_layer_a = processing.run("qgis:polygonstolines", {'INPUT': input_layer_a, 'OUTPUT': 'memory:'})['OUTPUT']
-            if input_layer_b.geometryType() == QgsWkbTypes.PolygonGeometry:
-                input_layer_b = processing.run("qgis:polygonstolines", {'INPUT': input_layer_b, 'OUTPUT': 'memory:'})['OUTPUT']
-            diff_layer = processing.run("native:difference", {'INPUT': input_layer_a, 'OVERLAY': input_layer_b, 'OUTPUT': 'memory:'})['OUTPUT']
-        except QgsProcessingException as e:
-            self.log.logMessage(
-                "There was an error running 'polygons to lines' QGIS algorithm. The topological validation couldn't be run successfully.",
-                PLUGIN_NAME,
-                Qgis.Warning
-            )
-
-        return diff_layer
-
     def difference_plot_boundary(self, plot_layer, boundary_layer, id_field=ID_FIELD):
         """
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
-        difference_features = list()
-        polygons_layer = self.clone_layer(plot_layer)
+        plots_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        approx_diff_layer = processing.run("native:difference",
+                       {'INPUT': plots_as_lines_layer,
+                        'OVERLAY': boundary_layer,
+                        'OUTPUT': 'memory:'})['OUTPUT']
+        self.add_topological_vertices(approx_diff_layer, boundary_layer)
 
-        if not polygons_layer:
-            print("Plots layer was not cloned correctly")
-            return []
-
-        self.add_topological_vertices(polygons_layer, boundary_layer, id_field)
-        differences_layer = self.line_polygon_layer_difference(polygons_layer, boundary_layer)
-
-        if differences_layer is not None:
-            id_field_idx = differences_layer.fields().indexFromName(id_field)
-            request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
-            for feature in differences_layer.getFeatures(request):
-                difference_features.append({
-                    'geometry': feature.geometry(),
-                    'id': feature[id_field]})
-        else:
-            difference_features = None
+        diff_layer = processing.run("native:difference",
+                                    {'INPUT': approx_diff_layer,
+                                     'OVERLAY': boundary_layer,
+                                     'OUTPUT': 'memory:'})['OUTPUT']
+        difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]} for feature in diff_layer.getFeatures()]
 
         return difference_features
 
@@ -560,24 +539,16 @@ class GeometryUtils(QObject):
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
-        difference_features = list()
-        polygons_layer = self.clone_layer(plot_layer)
+        plots_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        approx_diff_layer = processing.run("native:difference",
+                                           {'INPUT': boundary_layer,
+                                            'OVERLAY': plots_as_lines_layer,
+                                            'OUTPUT': 'memory:'})['OUTPUT']
+        self.add_topological_vertices(plots_as_lines_layer, approx_diff_layer)
 
-        if id(plot_layer) == id(polygons_layer):
-            print("Plots layer was not cloned correctly")
-
-        self.add_topological_vertices(polygons_layer, boundary_layer, id_field)
-        differences_layer = self.line_polygon_layer_difference(boundary_layer, polygons_layer)
-
-        if differences_layer is not None:
-            id_field_idx = differences_layer.fields().indexFromName(id_field)
-            request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
-            for feature in differences_layer.getFeatures(request):
-                difference_features.append({
-                    'geometry': feature.geometry(),
-                    'id': feature[id_field]})
-        else:
-            difference_features = None
+        diff_layer = processing.run("native:difference",
+                       {'INPUT': approx_diff_layer, 'OVERLAY': plots_as_lines_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]} for feature in diff_layer.getFeatures()]
 
         return difference_features
 
