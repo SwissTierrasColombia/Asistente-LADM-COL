@@ -23,7 +23,7 @@ from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
-from ..config.table_mapping_config import BOUNDARY_TABLE
+from ..config.table_mapping_config import BOUNDARY_TABLE, BOUNDARY_POINT_TABLE
 from ..config.help_strings import HelpStrings
 
 WIZARD_UI = get_ui_class('wiz_create_boundaries_cadastre.ui')
@@ -34,6 +34,7 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         self.setupUi(self)
         self.iface = iface
         self._boundary_layer = None
+        self._boundary_point_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
@@ -84,10 +85,20 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
     def prepare_boundary_creation(self):
         # Load layers
         self._boundary_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_TABLE, load=True)
+
         if self._boundary_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateBoundariesCadastreWizard",
                                            "Boundary layer couldn't be found... {}").format(self._db.get_description()),
+                Qgis.Warning)
+            return
+
+        self._boundary_point_layer = self.qgis_utils.get_layer(self._db, BOUNDARY_POINT_TABLE, load=True)
+
+        if self._boundary_point_layer is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateBoundariesCadastreWizard",
+                                           "Boundary point layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 
@@ -97,10 +108,17 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         # Configure Snapping
         snapping = QgsProject.instance().snappingConfig()
         snapping.setEnabled(True)
-        snapping.setMode(QgsSnappingConfig.AllLayers)
+        snapping.setMode(QgsSnappingConfig.AdvancedConfiguration)
         snapping.setType(QgsSnappingConfig.Vertex)
         snapping.setUnits(QgsTolerance.Pixels)
-        snapping.setTolerance(9)
+        snapping.setTolerance(15)
+        snapping.setIndividualLayerSettings(self._boundary_layer,
+                                            QgsSnappingConfig.IndividualLayerSettings(True,
+                                                QgsSnappingConfig.Vertex, 15, QgsTolerance.Pixels))
+        snapping.setIndividualLayerSettings(self._boundary_point_layer,
+                                            QgsSnappingConfig.IndividualLayerSettings(True,
+                                                QgsSnappingConfig.Vertex, 15, QgsTolerance.Pixels))
+
         QgsProject.instance().setSnappingConfig(snapping)
 
         # Suppress feature form
