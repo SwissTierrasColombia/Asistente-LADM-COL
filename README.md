@@ -18,7 +18,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([0.8.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.8.0)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.0](https://github.com/opengisch/projectgenerator/releases/download/v3.3.0/projectgenerator.v3.3.0.zip) y permite:
+La versión actual ([0.9.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.9.0)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.2.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip) y permite:
 
  - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
  - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
@@ -80,9 +80,10 @@ La versión actual ([0.8.0](https://github.com/AgenciaImplementacion/Asistente-L
    - Revisar superposiciones en `Punto de Control`.
    - Revisar superposiciones en `Lindero`.
    - Revisar superposiciones en `Terreno`.
-   - Revisar nodos de `Lindero` sin `Punto Lindero` asociado.
+   - Revisar `Punto Lindero` sin nodo de `Lindero` asociado.
+   - Revisar nodos de `Lindero` sin `Punto Lindero` asociado o con `Punto Lindero` asociado pero relacionado de forma incorrecta en tabla `PuntoCCL`.
    - Revisar nodos de `Lindero` no conectados.
-   - Revisar nodos de `Construcción` sin `Punto Levantamiento` asociado.
+   - Revisar que los `Linderos` siempre terminen en cambio de colindancia.
    - Revisar superposiciones entre `Servidumbre de paso` y `Construcción`.
    - Revisar que los `Terrenos` no dejen agujeros entre ellos.
    - Revisar que los límites de `Terrenos` estén cubiertos por `Linderos`.
@@ -125,3 +126,19 @@ docker-compose down --rmi local && docker-compose build
  `make` (esto ejecuta a su vez el comando `lrelease`, el cual genera un archivo binario con extensión .qm)
 
 NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
+
+## ¿Cómo recibir notificaciones de nuevas versiones del Asistente LADM_COL?
+
+ + Si tienes cuenta de GitHub o si puedes crear una, ve a https://github.com/AgenciaImplementacion/Asistente-LADM_COL/ y haz click en el botón `Watch` de la parte superior de la página web para seguir las novedades del repositorio.
+
+ + Si no tienes cuenta de GitHub, tienes dos opciones:
+
+   a) Subscríbete al *feed* de lanzamientos: https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases.atom
+
+   b) Usa gitpunch!
+
+      + Ve a la página https://gitpunch.com/
+      + Espera a que termine la animación o haz click en `Skip` (en la parte inferior de la página).
+      + Regístrate usando tu correo electrónico.
+      + Busca por "Asistente LADM_COL" y elige el repositorio `AgenciaImplementacion/Asistente-LADM_COL`.
+      + Eso es todo. Después de recibir un correo que te notifique una nueva versión del plugin, pasarán unas horas hasta que el mismo esté disponible en el repositorio oficial de plugins de QGIS.

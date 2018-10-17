@@ -432,8 +432,13 @@ class GeometryUtils(QObject):
 
             for feature in layer1.getFeatures():
                 bbox = feature.geometry().boundingBox()
-                intersects_ids = index.intersects(bbox)
-                intersect_features = layer2.getFeatures(intersects_ids)
+                candidate_ids = index.intersects(bbox)
+                candidate_features = layer2.getFeatures(candidate_ids)
+                intersect_features = list()
+
+                for candidate_feature in candidate_features:
+                    if candidate_feature.geometry().intersects(feature.geometry()):
+                        intersect_features.append(candidate_feature)
 
                 for intersect_feature in intersect_features:
                     edit_layer.addTopologicalPoints(intersect_feature.geometry())
@@ -567,3 +572,17 @@ class GeometryUtils(QObject):
         selected_features = boundary_layer.getFeatures(selected_ids)
 
         return selected_features
+
+    def join_boundary_points_with_boundary_discard_nonmatching(self, boundary_point_layer, boundary_layer, id_field=ID_FIELD):
+        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+                                            {
+                                                'INPUT': boundary_point_layer,
+                                                'JOIN': boundary_layer,
+                                                'PREDICATE': [0],
+                                                'JOIN_FIELDS': [id_field],
+                                                'METHOD': 0,
+                                                'DISCARD_NONMATCHING': True,
+                                                'PREFIX': '',
+                                                'OUTPUT': 'memory:'})['OUTPUT']
+
+        return spatial_join_layer.getFeatures()

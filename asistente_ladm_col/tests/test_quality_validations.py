@@ -12,10 +12,7 @@ from asistente_ladm_col.utils.quality import QualityUtils
 
 from processing.core.Processing import Processing
 from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import (
-    QgsWkbTypes,
-    QgsGeometry
-)
+from qgis.core import QgsWkbTypes
 
 import processing
 
@@ -412,6 +409,75 @@ class TesQualityValidations(unittest.TestCase):
         self.assertIn('Point (1091371.58370406995527446 1121507.19097788003273308)', geometries)
         self.assertIn('Point (1091314.24563915398903191 1121448.97160633862949908)', geometries)
         self.assertIn('Point (1091213.62314918311312795 1121543.89559642062522471)', geometries)
+
+    def test_validate_topology_relation_between_point_boundary_boundary(self):
+        print('\nINFO: Validating that the relation between point boundary and boundary is registered in the topology table ...')
+
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri_boundary_points = gpkg_path + '|layername=good_boundary_points'
+        uri_boundary = gpkg_path + '|layername=good_boundary'
+        uri_points_ccl_table = gpkg_path + '|layername=pointsCcl'
+
+        boundary_layer = QgsVectorLayer(uri_boundary, 'boundary_points', 'ogr')
+        boundary_points_layer = QgsVectorLayer(uri_boundary_points, 'boundary', 'ogr')
+        points_ccl_table = QgsVectorLayer(uri_points_ccl_table, 'pointsCcl', 'ogr')
+
+        dic_points_ccl = dict()
+        for feature_point_ccl in points_ccl_table.getFeatures():
+            key = "{}-{}".format(feature_point_ccl['boundary_point_id'], feature_point_ccl['boundary_id'])
+            if key in dic_points_ccl:
+                dic_points_ccl[key] += 1
+            else:
+                dic_points_ccl.update({key:1})
+
+        # verify that the relation between point boundary and boundary is registered in the topology table
+        missing_topology = list()
+        duplicates_topology = list()
+        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer)
+
+        for point_selected in points_selected:
+            boundary_point_id = point_selected[ID_FIELD]
+            boundary_id = point_selected['{}_2'.format(ID_FIELD)]
+            key_query = "{}-{}".format(boundary_point_id, boundary_id)
+
+            if key_query in dic_points_ccl:
+                if dic_points_ccl[key_query] > 1:
+                    duplicates_topology.append([boundary_point_id, boundary_id])
+            else:
+                missing_topology.append([boundary_point_id, boundary_id])
+
+        self.assertEquals(len(missing_topology), 0)
+        self.assertEquals(len(duplicates_topology), 0)
+
+        uri_points_ccl_table = gpkg_path + '|layername=pointsCcl_bad'
+        points_ccl_table = QgsVectorLayer(uri_points_ccl_table, 'pointsCcl_bad', 'ogr')
+
+        dic_points_ccl = dict()
+        for feature_point_ccl in points_ccl_table.getFeatures():
+            key = "{}-{}".format(feature_point_ccl['boundary_point_id'], feature_point_ccl['boundary_id'])
+            if key in dic_points_ccl:
+                dic_points_ccl[key] += 1
+            else:
+                dic_points_ccl.update({key: 1})
+
+        # verify that the relation between point boundary and boundary is registered in the topology table
+        missing_topology = list()
+        duplicates_topology = list()
+        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer)
+
+        for point_selected in points_selected:
+            boundary_point_id = point_selected[ID_FIELD]
+            boundary_id = point_selected['{}_2'.format(ID_FIELD)]
+            key_query = "{}-{}".format(boundary_point_id, boundary_id)
+
+            if key_query in dic_points_ccl:
+                if dic_points_ccl[key_query] > 1: # register more that once
+                    duplicates_topology.append([boundary_point_id, boundary_id])
+            else: # no register
+                missing_topology.append([boundary_point_id, boundary_id])
+
+        self.assertEquals(missing_topology, [[1, 1]])
+        self.assertEquals(duplicates_topology, [[20, 1]])
 
     def test_check_right_of_way_overlaps_buildings(self):
         print('\nINFO: Validating Right of Way-Building overlaps...')

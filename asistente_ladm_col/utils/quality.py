@@ -37,9 +37,13 @@ import processing
 from .project_generator_utils import ProjectGeneratorUtils
 from ..config.general_config import (
     DEFAULT_EPSG,
-    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE
+    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+    DEFAULT_USE_ROADS_VALUE
 )
 from ..config.table_mapping_config import (
+    POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
+    POINT_BFS_TABLE_BOUNDARY_FIELD,
+    POINT_BOUNDARY_FACE_STRING_TABLE,
     BOUNDARY_POINT_TABLE,
     BOUNDARY_TABLE,
     BUILDING_TABLE,
@@ -150,7 +154,7 @@ class QualityUtils(QObject):
                                      differences_layer_name, "memory")
 
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('plot_id', QVariant.String)])
+        data_provider.addAttributes([QgsField('plot_id', QVariant.Int)])
         error_layer.updateFields()
 
         features = []
@@ -272,7 +276,7 @@ class QualityUtils(QObject):
                                      differences_layer_name, "memory")
 
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('boundary_id', QVariant.String)])
+        data_provider.addAttributes([QgsField('boundary_id', QVariant.Int)])
         error_layer.updateFields()
 
         features = []
@@ -313,7 +317,7 @@ class QualityUtils(QObject):
                                      QCoreApplication.translate("QGISUtils", "Overlapping polygons in {}")
                                                                 .format(polygon_layer_name), "memory")
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField("polygon_id", QVariant.String),
+        data_provider.addAttributes([QgsField("polygon_id", QVariant.Int),
                                      QgsField("overlapping_ids", QVariant.String),
                                      QgsField("count_parts", QVariant.Int)])
         error_layer.updateFields()
@@ -531,10 +535,12 @@ class QualityUtils(QObject):
     def check_missing_boundary_points_in_boundaries(self, db):
         res_layers = self.qgis_utils.get_layers(db, {
             BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None},
+            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None},
             BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}}, load=True)
 
         boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
         boundary_layer = res_layers[BOUNDARY_TABLE]
+        point_ccl_table = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
 
         if boundary_point_layer is None:
             self.qgis_utils.message_emitted.emit(
@@ -557,21 +563,65 @@ class QualityUtils(QObject):
                 Qgis.Info)
             return
 
+        if point_ccl_table is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(
+                    POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()), Qgis.Warning)
+            return
+
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
                                      QCoreApplication.translate("QGISUtils", "Missing boundary points in boundaries"),
                                      "memory")
         data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField("boundary_id", QVariant.Int)])
+        data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
+                                     QgsField('boundary_id', QVariant.Int),
+                                     QgsField('error_type', QVariant.String)])
+
         error_layer.updateFields()
 
+        # check missing points
         missing_points = self.get_missing_boundary_points_in_boundaries(boundary_point_layer, boundary_layer)
 
         new_features = list()
         for key, point_list in missing_points.items():
             for point in point_list:
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, point, {0: key})
+                new_feature = QgsVectorLayerUtils().createFeature(
+                    error_layer,
+                    point,
+                    {
+                        0: None,
+                        1: key,
+                        2: QCoreApplication.translate("QGISUtils", "Missing boundary point in boundary")})
                 new_features.append(new_feature)
 
+        dic_points_ccl = dict()
+        for feature_point_ccl in point_ccl_table.getFeatures():
+            key = "{}-{}".format(feature_point_ccl[POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD], feature_point_ccl[POINT_BFS_TABLE_BOUNDARY_FIELD])
+            if key in dic_points_ccl:
+                dic_points_ccl[key] += 1
+            else:
+                dic_points_ccl.update({key:1})
+
+        # verify that the relation between boundary point and boundary is registered in the topology table
+        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_point_layer, boundary_layer)
+
+        for point_selected in points_selected:
+            boundary_point_id = point_selected[ID_FIELD]
+            boundary_id = point_selected['{}_2'.format(ID_FIELD)]
+            key_query = "{}-{}".format(boundary_point_id, boundary_id)
+
+            if key_query in dic_points_ccl:
+                if dic_points_ccl[key_query] > 1:
+                    new_features.append(QgsVectorLayerUtils().createFeature(error_layer, point_selected.geometry(),
+                        {0: boundary_point_id,
+                         1: boundary_id,
+                         2: QCoreApplication.translate("QGISUtils", "Relation found more than once in the PointBFS table")}))
+            else:
+                new_features.append(QgsVectorLayerUtils().createFeature(error_layer, point_selected.geometry(),
+                    {0: boundary_point_id,
+                     1: boundary_id,
+                     2: QCoreApplication.translate("QGISUtils", "Relation not found in the PointBFS table")}))
         data_provider.addFeatures(new_features)
 
         if error_layer.featureCount() > 0:
@@ -579,7 +629,7 @@ class QualityUtils(QObject):
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} boundary vertices with no associated boundary points has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
+                    "A memory layer with {} boundary vertices with no associated boundary points or with boundary points wrongly registered in the PointBFS table been added to the map!").format(added_layer.featureCount()), Qgis.Info)
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -830,7 +880,7 @@ class QualityUtils(QObject):
                                            "There are no Right of Way-Building overlaps."), Qgis.Info)
 
     def check_gaps_in_plots(self, db):
-        use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', True))
+        use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))  
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, True)
 
         if plot_layer is None:

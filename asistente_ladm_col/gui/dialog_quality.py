@@ -103,9 +103,9 @@ class DialogQuality(QDialog, DIALOG_UI):
                 }, {
                     'id': 'check_plots_covered_by_boundaries',
                     'text': QCoreApplication.translate("DialogQuality", "Plots should be covered by boundaries")
-                }, {
-                    'id': 'check_missing_survey_points_in_buildings',
-                    'text': QCoreApplication.translate("DialogQuality", "Buildings nodes should be covered by Survey Points")
+                #}, {
+                #    'id': 'check_missing_survey_points_in_buildings',
+                #    'text': QCoreApplication.translate("DialogQuality", "Buildings nodes should be covered by Survey Points")
                 }, {
                     'id': 'check_right_of_way_overlaps_buildings',
                     'text': QCoreApplication.translate("DialogQuality", "Right of Way should not overlap Buildings")
@@ -183,8 +183,8 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_overlapping_polygons(self._db, PLOT_TABLE)
                 elif id == 'check_plots_covered_by_boundaries':
                     self.quality.check_plots_covered_by_boundaries(self._db)
-                elif id == 'check_missing_survey_points_in_buildings':
-                    self.quality.check_missing_survey_points_in_buildings(self._db)
+                #elif id == 'check_missing_survey_points_in_buildings':
+                #    self.quality.check_missing_survey_points_in_buildings(self._db)
                 elif id == 'check_right_of_way_overlaps_buildings':
                     self.quality.check_right_of_way_overlaps_buildings(self._db)
                 elif id == 'check_gaps_in_plots':
