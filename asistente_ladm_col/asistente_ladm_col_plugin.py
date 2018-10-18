@@ -80,6 +80,7 @@ from .gui.dialog_quality import DialogQuality
 from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .gui.toolbar import ToolBar
+from .gui.reports import ReportGenerator
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
 from .utils.quality import QualityUtils
@@ -113,6 +114,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
         self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
+        self.report_generator = ReportGenerator(self.get_db_connection(), self.qgis_utils)
 
         # Menus
         self.add_cadastre_menu()
@@ -168,13 +170,16 @@ class AsistenteLADMCOLPlugin(QObject):
         self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
         self._fill_more_BFS_less_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill More BFS and Less"), self.iface.mainWindow())
         self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
+        self._report_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Generate Annex 17"), self.iface.mainWindow())
+        self._report_action.triggered.connect(self.call_report_generation)
         self._ladm_col_toolbar = self.iface.addToolBar(QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"))
         self._ladm_col_toolbar.setObjectName("ladmcoltools")
         self._ladm_col_toolbar.addActions([self._boundary_explode_action,
                                            self._boundary_merge_action,
                                            self._topological_editing_action,
                                            self._fill_point_BFS_action,
-                                           self._fill_more_BFS_less_action])
+                                           self._fill_more_BFS_less_action,
+                                           self._report_action])
 
         # Add LADM_COL provider and models to QGIS
         self.ladm_col_provider = LADMCOLAlgorithmProvider()
@@ -596,6 +601,11 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def call_fill_topology_tables_morebfs_less(self):
         self.qgis_utils.fill_topology_tables_morebfs_less(self.get_db_connection())
+
+    @_project_generator_required
+    @_db_connection_required
+    def call_report_generation(self):
+        self.report_generator.generate_report()
 
     def unload(self):
         # remove the plugin menu item and icon
