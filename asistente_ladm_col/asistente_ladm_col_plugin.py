@@ -152,6 +152,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
+        self.qgis_utils.message_with_button_download_report_dependency_emitted.connect(self.show_message_to_download_report_dependency)
         self.qgis_utils.status_bar_message_emitted.connect(self.show_status_bar_message)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
@@ -475,6 +476,15 @@ class AsistenteLADMCOLPlugin(QObject):
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
 
+    def show_message_to_download_report_dependency(self, msg):
+        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        button = QPushButton(widget)
+        button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+            "Download and install dependency"))
+        button.pressed.connect(self.download_report_dependency)
+        widget.layout().addWidget(button)
+        self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
+
     def show_status_bar_message(self, msg, duration):
         self.iface.statusBarIface().showMessage(msg, duration)
 
@@ -605,7 +615,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def call_report_generation(self):
-        self.report_generator.generate_report()
+        self.report_generator.generate_report(self._report_action)
 
     def unload(self):
         # remove the plugin menu item and icon
@@ -777,6 +787,10 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_wiz_legal_party_prc(self):
         wiz = CreateLegalPartyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
+
+    def download_report_dependency(self):
+        print("Downloading")
+        self.report_generator.download_report_dependency()
 
     def show_help(self):
         self.qgis_utils.show_help()
