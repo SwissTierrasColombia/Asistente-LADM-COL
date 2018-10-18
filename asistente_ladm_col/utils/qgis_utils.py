@@ -25,6 +25,8 @@ from qgis.core import (
     QgsApplication,
     QgsAttributeEditorContainer,
     QgsAttributeEditorElement,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
     QgsDataSourceUri,
     QgsDefaultValue,
     QgsEditorWidgetSetup,
@@ -734,7 +736,7 @@ class QGISUtils(QObject):
     def set_node_visibility(self, node, visible):
         self.set_node_visibility_requested.emit(node, visible)
 
-    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, target_layer_name):
+    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, epsg, target_layer_name):
         if not csv_path or not os.path.exists(csv_path):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -748,9 +750,16 @@ class QGISUtils(QObject):
               delimiter,
               longitude,
               latitude,
-              DEFAULT_EPSG
+              epsg,
            )
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
+
+        if not epsg == 3116:
+            crsDest = QgsCoordinateReferenceSystem('EPSG:' + str(DEFAULT_EPSG))
+            csv_layer = processing.run("native:reprojectlayer", {'INPUT':csv_layer,
+                                        'TARGET_CRS':crsDest,'OUTPUT':'memory:'})['OUTPUT']
+            print ("ejecutado")
+
         if not csv_layer.isValid():
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
