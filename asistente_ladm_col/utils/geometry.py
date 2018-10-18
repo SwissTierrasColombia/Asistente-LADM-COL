@@ -40,6 +40,7 @@ from qgis.core import (
 from qgis.core import edit
 
 import processing
+from ..config.general_config import TranslatableConfigStrings
 from ..config.general_config import (
     DEFAULT_POLYGON_AREA_TOLERANCE,
     PLUGIN_NAME
@@ -51,6 +52,7 @@ class GeometryUtils(QObject):
     def __init__(self):
         QObject.__init__(self)
         self.log = QgsApplication.messageLog()
+        self.translatable_config_strings = TranslatableConfigStrings()
 
     def get_pair_boundary_plot(self, boundary_layer, plot_layer, id_field=ID_FIELD, use_selection=True):
         id_field_idx = plot_layer.fields().indexFromName(id_field)
@@ -519,18 +521,25 @@ class GeometryUtils(QObject):
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
-        plots_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-        approx_diff_layer = processing.run("native:difference",
-                       {'INPUT': plots_as_lines_layer,
-                        'OVERLAY': boundary_layer,
-                        'OUTPUT': 'memory:'})['OUTPUT']
-        self.add_topological_vertices(approx_diff_layer, boundary_layer)
+        try:
+            plots_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+            approx_diff_layer = processing.run("native:difference",
+                                               {'INPUT': plots_as_lines_layer,
+                                                'OVERLAY': boundary_layer,
+                                                'OUTPUT': 'memory:'})['OUTPUT']
+            self.add_topological_vertices(approx_diff_layer, boundary_layer)
 
-        diff_layer = processing.run("native:difference",
-                                    {'INPUT': approx_diff_layer,
-                                     'OVERLAY': boundary_layer,
-                                     'OUTPUT': 'memory:'})['OUTPUT']
-        difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]} for feature in diff_layer.getFeatures()]
+            diff_layer = processing.run("native:difference",
+                                        {'INPUT': approx_diff_layer,
+                                         'OVERLAY': boundary_layer,
+                                         'OUTPUT': 'memory:'})['OUTPUT']
+            difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]}
+                                   for feature in diff_layer.getFeatures()]
+        except QgsProcessingException as e:
+            self.log.logMessage(self.translatable_config_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES + ': ' + str(e),
+                                PLUGIN_NAME,
+                                Qgis.Critical)
+            difference_features = None
 
         return difference_features
 
@@ -539,16 +548,24 @@ class GeometryUtils(QObject):
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
-        plots_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-        approx_diff_layer = processing.run("native:difference",
-                                           {'INPUT': boundary_layer,
-                                            'OVERLAY': plots_as_lines_layer,
-                                            'OUTPUT': 'memory:'})['OUTPUT']
-        self.add_topological_vertices(plots_as_lines_layer, approx_diff_layer)
+        try:
+            plots_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+            approx_diff_layer = processing.run("native:difference",
+                                               {'INPUT': boundary_layer,
+                                                'OVERLAY': plots_as_lines_layer,
+                                                'OUTPUT': 'memory:'})['OUTPUT']
+            self.add_topological_vertices(plots_as_lines_layer, approx_diff_layer)
 
-        diff_layer = processing.run("native:difference",
-                       {'INPUT': approx_diff_layer, 'OVERLAY': plots_as_lines_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-        difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]} for feature in diff_layer.getFeatures()]
+            diff_layer = processing.run("native:difference",
+                                        {'INPUT': approx_diff_layer, 'OVERLAY': plots_as_lines_layer,
+                                         'OUTPUT': 'memory:'})['OUTPUT']
+            difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]}
+                                   for feature in diff_layer.getFeatures()]
+        except QgsProcessingException as e:
+            self.log.logMessage(self.translatable_config_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS + ': ' + str(e),
+                                PLUGIN_NAME,
+                                Qgis.Critical)
+            difference_features = None
 
         return difference_features
 

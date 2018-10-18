@@ -255,10 +255,11 @@ class TesQualityValidations(unittest.TestCase):
 
             diff_plot_boundary = self.qgis_utils.geometry.difference_plot_boundary(polygon_layer, lines_layer, 'fid')
 
-            if len(diff_plot_boundary) > 0:
-                self.assertEqual(diff_plot_boundary[0]['geometry'].asWkt(), diff_geom[i], 'case_{}'.format(i + 1))
-            else:
-                self.assertEqual('', diff_geom[i], 'case_{}'.format(i + 1))
+            if diff_plot_boundary is not None:
+                if len(diff_plot_boundary) > 0:
+                    self.assertEqual(diff_plot_boundary[0]['geometry'].asWkt(), diff_geom[i], 'case_{}'.format(i + 1))
+                else:
+                    self.assertEqual('', diff_geom[i], 'case_{}'.format(i + 1))
 
     def test_lines_must_be_covered_by_polygons(self):
         print('\nINFO: Validating lines must be covered by polygons...')
@@ -280,10 +281,11 @@ class TesQualityValidations(unittest.TestCase):
 
             diff_boundary_plot = self.qgis_utils.geometry.difference_boundary_plot(lines_layer, polygon_layer, 'fid')
 
-            if len(diff_boundary_plot) > 0:
-                self.assertEqual(diff_boundary_plot[0]['geometry'].asWkt(), diff_geom[i], 'case_{}'.format(i + 1))
-            else:
-                self.assertEqual('', diff_geom[i], 'case_{}'.format(i + 1))
+            if diff_boundary_plot is not None:
+                if len(diff_boundary_plot) > 0:
+                    self.assertEqual(diff_boundary_plot[0]['geometry'].asWkt(), diff_geom[i], 'case_{}'.format(i + 1))
+                else:
+                    self.assertEqual('', diff_geom[i], 'case_{}'.format(i + 1))
 
     def test_intersection_polygons_tolerance(self):
         print('\nINFO: Validating intersection in polygons (plots)...')
