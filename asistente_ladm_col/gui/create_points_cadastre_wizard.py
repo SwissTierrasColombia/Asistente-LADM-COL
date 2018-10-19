@@ -19,7 +19,7 @@
 import os
 import stat
 
-from qgis.core import Qgis, QgsMapLayerProxyModel, QgsApplication
+from qgis.core import Qgis, QgsMapLayerProxyModel, QgsApplication, QgsCoordinateReferenceSystem
 from qgis.gui import QgsMessageBar
 
 from qgis.PyQt.QtCore import Qt, QSettings, QCoreApplication, QFile
@@ -32,7 +32,7 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE,
                                            CONTROL_POINT_TABLE)
 from ..config.help_strings import HelpStrings
-from ..config.general_config import PLUGIN_NAME
+from ..config.general_config import PLUGIN_NAME, DEFAULT_EPSG
 
 WIZARD_UI = get_ui_class('wiz_create_points_cadastre.ui')
 
@@ -55,6 +55,8 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             make_file_selector(self.txt_file_path,
                                file_filter=QCoreApplication.translate("CreatePointsCadastreWizard",'CSV File (*.csv *.txt)')))
         self.txt_file_path.textChanged.connect(self.file_path_changed)
+        self.crsSelector.crsChanged.connect(self.crs_changed)
+        self.crs = QgsCoordinateReferenceSystem()
         self.txt_delimiter.textChanged.connect(self.fill_long_lat_combos)
 
         self.known_delimiters = [
@@ -209,10 +211,12 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                                     self.cbo_longitude.currentText(),
                                     self.cbo_latitude.currentText(),
                                     self._db,
+                                    self.epsg,
                                     target_layer)
     def file_path_changed(self):
         self.autodetect_separator()
         self.fill_long_lat_combos("")
+        self.cbo_delimiter.currentTextChanged.connect(self.separator_changed)
 
     def autodetect_separator(self):
         csv_path = self.txt_file_path.text().strip()
@@ -227,6 +231,13 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                     if len(first_line.split(delimiter['value'])) > 1:
                         self.cbo_delimiter.setCurrentText(delimiter['name'])
                         return
+
+    def update_crs_info(self):
+        self.crsSelector.setCrs(self.crs)
+
+    def crs_changed(self):
+        authid = self.crsSelector.crs().authid()
+        self.epsg = int(authid[5:])
 
     def fill_long_lat_combos(self, text):
         csv_path = self.txt_file_path.text().strip()
@@ -360,6 +371,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         settings.setValue('Asistente-LADM_COL/wizards/points_load_data_type', 'csv' if self.rad_csv.isChecked() else 'refactor')
         settings.setValue('Asistente-LADM_COL/wizards/points_add_points_csv_file', self.txt_file_path.text().strip())
         settings.setValue('Asistente-LADM_COL/wizards/points_csv_file_delimiter', self.txt_delimiter.text().strip())
+        settings.setValue('Asistente-LADM_COL/wizards/points_csv_epsg', self.epsg)
 
     def restore_settings(self):
         settings = QSettings()
@@ -379,6 +391,10 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
         self.txt_file_path.setText(settings.value('Asistente-LADM_COL/wizards/points_add_points_csv_file'))
         self.txt_delimiter.setText(settings.value('Asistente-LADM_COL/wizards/points_csv_file_delimiter'))
+
+        self.crs = QgsCoordinateReferenceSystem(
+            settings.value('Asistente-LADM_COL/wizards/points_csv_epsg', DEFAULT_EPSG, int))
+        self.update_crs_info()
 
     def show_help(self):
         self.qgis_utils.show_help("create_points")
