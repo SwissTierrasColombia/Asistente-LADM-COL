@@ -18,7 +18,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([0.10.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.10.0)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.2.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip) y permite:
+La versión actual ([0.11.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.11.0)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.2.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip) y permite:
 
  - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
  - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
@@ -91,6 +91,7 @@ La versión actual ([0.10.0](https://github.com/AgenciaImplementacion/Asistente-
    - Revisar que los límites de `Terrenos` estén cubiertos por `Linderos`.
    - Revisar que los `Linderos` estén cubiertos por límites de `Terrenos`.
    - Revisar geometrías multiparte en `Servidumbre de paso`.
+ - Generar Informes de Colindancia con base en `Terrenos` seleccionados (Anexo 17).
  - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
  - Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.
  - Visualizar GIFs ilustrativos en la ayuda online del plugin o descargarlos para trabajo offline.

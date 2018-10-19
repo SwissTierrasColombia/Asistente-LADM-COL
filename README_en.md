@@ -17,7 +17,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([0.10.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.10.0)) of the LADM_COL Assistant depends on [Project Generator v3.3.2.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip) and allows users to:
+The current version ([0.11.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.11.0)) of the LADM_COL Assistant depends on [Project Generator v3.3.2.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip) and allows users to:
 
  - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
  - Capture data for the `FICHA_PREDIAL v2.2.1` model.
@@ -89,6 +89,7 @@ The current version ([0.10.0](https://github.com/AgenciaImplementacion/Asistente
    - Check that `Plot` boundaries are covered by `Boundaries`.
    - Check that `Boundaries` are covered by `Plot` boundaries.
    - Check that `Right of Way` has no multi-part geometries.
+ - Generate reports based on selected `Plots` (Annex 17).
  - Configure automatic values for `namespace` and `local_id` attributes.
  - Load styles for newly added layers from preconfigured QML files.
  - View illustrative GIFs in the plugin's online help or download them for offline work.
