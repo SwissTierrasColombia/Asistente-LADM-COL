@@ -49,13 +49,14 @@ class TestGeomsLoad(unittest.TestCase):
 
         # Layer in LADM for test
         test_layer = self.qgis_utils.get_layer(self.db_connection, BOUNDARY_POINT_TABLE, load=True)
-        test_layer.startEditing()
+
         # Point To Point
         print("Validating Point to Point")
         uri = self.gpkg_path + '|layername={layername}'.format(layername='points')
         point_layer = QgsVectorLayer(uri, 'points', 'ogr')
         print("Is Valid layer :", point_layer.isValid())
         run_etl_model(point_layer, out_layer=test_layer)
+        test_layer.startEditing()
         print("Info: Validating geometry Point...")
         self.assertEqual(QgsWkbTypes.PointGeometry, test_layer.type())
         self.assertEqual(QgsWkbTypes.Point, point_layer.wkbType())
@@ -174,7 +175,7 @@ class TestGeomsLoad(unittest.TestCase):
         print('\nUSING POSTGRESQL SCHEMA')
 
         test_layer = self.qgis_utils.get_layer(self.db_connection, BOUNDARY_POINT_TABLE, load=True)
-        test_layer.startEditing()
+
 
 
         # Point To Point
@@ -182,6 +183,7 @@ class TestGeomsLoad(unittest.TestCase):
         point_layer = self.qgis_utils.get_layer(self.test_connection, 'points', load=True)
         print("Is Valid layer :", point_layer.isValid())
         run_etl_model(point_layer, out_layer=test_layer)
+        test_layer.startEditing()
         print("Info: Validating geometry Point...")
         self.assertEqual(QgsWkbTypes.PointGeometry, test_layer.type())
         self.assertEqual(QgsWkbTypes.Point, test_layer.wkbType())
