@@ -41,13 +41,12 @@ class TestCopy(unittest.TestCase):
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
-        epsg = DEFAULT_EPSG
         res = self.qgis_utils.copy_csv_to_db(csv_path,
                                     txt_delimiter,
                                     cbo_longitude,
                                     cbo_latitude,
                                     self.db_connection,
-                                    epsg,
+                                    DEFAULT_EPSG,
                                     BOUNDARY_POINT_TABLE)
         self.assertEqual(res, True)
 
@@ -97,13 +96,12 @@ class TestCopy(unittest.TestCase):
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
-        epsg = DEFAULT_EPSG
         res = self.qgis_utils.copy_csv_to_db(csv_path,
                                     txt_delimiter,
                                     cbo_longitude,
                                     cbo_latitude,
                                     self.db_connection,
-                                    epsg,
+                                    DEFAULT_EPSG,
                                     BOUNDARY_POINT_TABLE)
 
         self.assertEqual(res, False)
