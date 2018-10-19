@@ -430,27 +430,32 @@
 <context>
     <name>CreateBoundariesCadastreWizard</name>
     <message>
-        <location filename="../gui/create_boundaries_cadastre_wizard.py" line="54"/>
+        <location filename="../gui/create_boundaries_cadastre_wizard.py" line="53"/>
         <source>Import</source>
         <translation>Importar</translation>
     </message>
     <message>
-        <location filename="../gui/create_boundaries_cadastre_wizard.py" line="60"/>
+        <location filename="../gui/create_boundaries_cadastre_wizard.py" line="59"/>
         <source>Start</source>
         <translation>Comenzar</translation>
     </message>
     <message>
-        <location filename="../gui/create_boundaries_cadastre_wizard.py" line="77"/>
+        <location filename="../gui/create_boundaries_cadastre_wizard.py" line="76"/>
         <source>Select a source layer to set the field mapping to &apos;{}&apos;.</source>
         <translation>Selecciona una capa fuente para definir el mapeo de campos a &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../gui/create_boundaries_cadastre_wizard.py" line="89"/>
+        <location filename="../gui/create_boundaries_cadastre_wizard.py" line="92"/>
         <source>Boundary layer couldn&apos;t be found... {}</source>
         <translation>No se encontró la capa Lindero... {}</translation>
     </message>
     <message>
-        <location filename="../gui/create_boundaries_cadastre_wizard.py" line="117"/>
+        <location filename="../gui/create_boundaries_cadastre_wizard.py" line="100"/>
+        <source>Boundary point layer couldn&apos;t be found... {}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/create_boundaries_cadastre_wizard.py" line="132"/>
         <source>You can now start capturing boundaries clicking on the map...</source>
         <translation>Ahora puedes empezar a capturar linderos dando clic sobre el mapa...</translation>
     </message>
@@ -2531,6 +2536,11 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <location filename="../config/general_config.py" line="108"/>
         <source>Boundary Points should be covered by Boundary nodes</source>
         <translation>Los Puntos de Lindero deben estar cubiertos por nodos de Lindero</translation>
+    </message>
+    <message>
+        <location filename="../config/general_config.py" line="111"/>
+        <source>Boundary segments should not be longer than {}m.</source>
+        <translation>Los segmentos de Linderos no deben ser más largos que {}m.</translation>
     </message>
     <message>
         <location filename="../config/general_config.py" line="112"/>

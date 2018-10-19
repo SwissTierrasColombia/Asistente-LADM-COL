@@ -108,7 +108,7 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by Boundary nodes")
 
         too_long_tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
-        self.CHECK_TOO_LONG_BOUNDARY_SEGMENTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundary segments should not be longer than {}m.".format(too_long_tolerance))
+        self.CHECK_TOO_LONG_BOUNDARY_SEGMENTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundary segments should not be longer than {}m.").format(too_long_tolerance)
         self.CHECK_OVERLAPS_IN_BOUNDARIES = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not overlap")
         self.CHECK_BOUNDARIES_ARE_NOT_SPLIT = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not be split")
         self.CHECK_BOUNDARIES_COVERED_BY_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should be covered by Plots")
