@@ -80,6 +80,7 @@ from .gui.dialog_quality import DialogQuality
 from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .gui.toolbar import ToolBar
+from .gui.reports import ReportGenerator
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
 from .utils.quality import QualityUtils
@@ -113,6 +114,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
         self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
+        self.report_generator = ReportGenerator(self.get_db_connection(), self.qgis_utils)
 
         # Menus
         self.add_cadastre_menu()
@@ -143,6 +145,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
         self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
         self.qgis_utils.clear_status_bar_emitted.connect(self.clear_status_bar)
+        self.qgis_utils.clear_message_bar_emitted.connect(self.clear_message_bar)
+        self.qgis_utils.create_progress_message_bar_emitted.connect(self.create_progress_message_bar)
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.qgis_utils.refresh_menus_requested.connect(self.refresh_menus)
@@ -150,6 +154,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
+        self.qgis_utils.message_with_button_download_report_dependency_emitted.connect(self.show_message_to_download_report_dependency)
         self.qgis_utils.status_bar_message_emitted.connect(self.show_status_bar_message)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
@@ -168,13 +173,16 @@ class AsistenteLADMCOLPlugin(QObject):
         self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
         self._fill_more_BFS_less_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill More BFS and Less"), self.iface.mainWindow())
         self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
+        self._report_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Generate Annex 17"), self.iface.mainWindow())
+        self._report_action.triggered.connect(self.call_report_generation)
         self._ladm_col_toolbar = self.iface.addToolBar(QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"))
         self._ladm_col_toolbar.setObjectName("ladmcoltools")
         self._ladm_col_toolbar.addActions([self._boundary_explode_action,
                                            self._boundary_merge_action,
                                            self._topological_editing_action,
                                            self._fill_point_BFS_action,
-                                           self._fill_more_BFS_less_action])
+                                           self._fill_more_BFS_less_action,
+                                           self._report_action])
 
         # Add LADM_COL provider and models to QGIS
         self.ladm_col_provider = LADMCOLAlgorithmProvider()
@@ -439,6 +447,14 @@ class AsistenteLADMCOLPlugin(QObject):
     def clear_status_bar(self):
         self.iface.statusBarIface().clearMessage()
 
+    def clear_message_bar(self):
+        self.iface.messageBar().clearWidgets()
+
+    def create_progress_message_bar(self, text, progress):
+        progressMessageBar = self.iface.messageBar().createMessage(PLUGIN_NAME, text)
+        progressMessageBar.layout().addWidget(progress)
+        self.iface.messageBar().pushWidget(progressMessageBar, Qgis.Info)
+
     def refresh_layer_symbology(self, layer_id):
         self.iface.layerTreeView().refreshLayerSymbology(layer_id)
 
@@ -467,6 +483,15 @@ class AsistenteLADMCOLPlugin(QObject):
         button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
             "Open About Dialog"))
         button.pressed.connect(self.show_about_dialog)
+        widget.layout().addWidget(button)
+        self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
+
+    def show_message_to_download_report_dependency(self, msg):
+        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        button = QPushButton(widget)
+        button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+            "Download and install dependency"))
+        button.pressed.connect(self.download_report_dependency)
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
 
@@ -596,6 +621,11 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def call_fill_topology_tables_morebfs_less(self):
         self.qgis_utils.fill_topology_tables_morebfs_less(self.get_db_connection())
+
+    @_project_generator_required
+    @_db_connection_required
+    def call_report_generation(self):
+        self.report_generator.generate_report(self._report_action)
 
     def unload(self):
         # remove the plugin menu item and icon
@@ -767,6 +797,9 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_wiz_legal_party_prc(self):
         wiz = CreateLegalPartyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
+
+    def download_report_dependency(self):
+        self.report_generator.download_report_dependency()
 
     def show_help(self):
         self.qgis_utils.show_help()
