@@ -31,11 +31,11 @@ class TestCopy(unittest.TestCase):
 
     def test_copy_csv_to_db(self):
         print("\nINFO: Validating copy CSV points to DB...")
-        clean_table('test_ladm_col', 'puntolindero')
+        clean_table('test_ladm_col', BOUNDARY_POINT_TABLE)
         self.qgis_utils.disable_automatic_fields(self.db_connection, BOUNDARY_POINT_TABLE)
         self.upload_points_from_csv()
         self.validate_points_in_db()
-        clean_table('test_ladm_col', 'puntolindero')
+        clean_table('test_ladm_col', BOUNDARY_POINT_TABLE)
 
     def upload_points_from_csv(self):
         print("Copying CSV data with no elevation...")
@@ -53,11 +53,11 @@ class TestCopy(unittest.TestCase):
 
     def test_copy_csv_with_z_to_db(self):
         print("\nINFO: Validating copy CSV points with Z to DB...")
-        clean_table('test_ladm_col_3d', 'puntolindero')
+        clean_table('test_ladm_col_3d', BOUNDARY_POINT_TABLE)
         self.qgis_utils.disable_automatic_fields(self.db_connection_3d, BOUNDARY_POINT_TABLE)
         self.upload_points_from_csv_with_elevation()
         self.validate_points_z_in_db()
-        clean_table('test_ladm_col_3d', 'puntolindero')
+        clean_table('test_ladm_col_3d', BOUNDARY_POINT_TABLE)
 
     def upload_points_from_csv_with_elevation(self):
         print("\nINFO: Copying CSV data with elevation...")

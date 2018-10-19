@@ -56,6 +56,7 @@ iface = get_iface()
 asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface)
 asistente_ladm_col_plugin.initGui()
 
+
 def get_dbconn(schema):
     #global DB_HOSTNAME DB_PORT DB_NAME DB_SCHEMA DB_USER DB_USER DB_PASSWORD
     dict_conn = dict()
@@ -69,6 +70,7 @@ def get_dbconn(schema):
 
     db = asistente_ladm_col_plugin.qgis_utils.get_db_connection()
     return db
+
 
 def restore_schema(schema):
     db_connection = get_dbconn(schema)
@@ -96,6 +98,7 @@ def restore_schema(schema):
     if len(output) > 0:
         print("Warning:", output)
 
+
 def drop_schema(schema):
     db_connection = get_dbconn(schema)
     print("Testing Conecction...\n", db_connection.test_connection())
@@ -108,16 +111,18 @@ def drop_schema(schema):
     if query is not None:
         print("The drop schema is not working")
 
+
 def clean_table(schema, table):
     db_connection = get_dbconn(schema)
     print("Testing Conecction...\n", db_connection.test_connection())
     print('Clean {}.{} table...'.format(schema, table))
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    query = cur.execute("""DELETE FROM {}.{} WHERE true;""".format(schema, table))
+    query = cur.execute("""DELETE FROM {}.{} WHERE True;""".format(schema, table))
     db_connection.conn.commit()
     cur.close()
     if query is not None:
-        print('The clean test_ladm_col.puntolindero is not working')
+        print('The clean {}.{} is not working'.format(schema, table))
+
 
 def get_iface():
     global iface
