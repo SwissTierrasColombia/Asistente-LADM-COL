@@ -68,6 +68,9 @@ class ReportGenerator():
         self.db = db
         self.qgis_utils = qgis_utils
         self.encoding = locale.getlocale()[1]
+        self.log = QgsApplication.messageLog()
+        self.LOG_TAB = 'Anexo_17'
+        self._downloading = False
 
     def validate_bin_exists(self, path):
         if os.path.exists(path):
@@ -85,11 +88,13 @@ class ReportGenerator():
     #            self.__done_pattern = re.compile(r"Info: \.\.\.done")
     #    if self.__done_pattern.search(text):
     #        self.__result = Importer.SUCCESS
-        print("err", text)
+        #print("err", text)
+        self.log.logMessage(text, self.LOG_TAB, Qgis.Critical)
 
     def stdout_ready(self, proc):
         text = bytes(proc.readAllStandardOutput()).decode(self.encoding)
-        print("out", text)
+        #print("out", text)
+        self.log.logMessage(text, self.LOG_TAB, Qgis.Info)
 
     def update_yaml_config(self, config_path):
         text = ''
@@ -147,8 +152,6 @@ class ReportGenerator():
         return "{}_{}.{}".format(basename, str(time.time()).replace(".",""), extension)
 
     def generate_report(self, button):
-        # Check if JAVA is installed, otherwise stop
-
         # Check if mapfish and Jasper are installed, otherwise show where to
         # download them from and return
         base_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'impresion')
@@ -209,10 +212,12 @@ class ReportGenerator():
         yaml_config_path = self.update_yaml_config(config_path)
         print("CONFIG FILE:", yaml_config_path)
 
+        total = len(selected_plots)
+        count = 0
+        tmp_dir = self.get_tmp_dir()
+
         for selected_plot in selected_plots:
             plot_id = selected_plot[ID_FIELD]
-
-            tmp_dir = self.get_tmp_dir()
 
             # Generate data file
             json_file = self.update_json_data(json_spec_file, plot_id, tmp_dir)
@@ -225,12 +230,13 @@ class ReportGenerator():
             proc.readyReadStandardOutput.connect(
                 functools.partial(self.stdout_ready, proc=proc))
 
-            proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', os.path.join(save_into_folder, 'annex_17_{}.pdf'.format(plot_id))])
+            current_report_path = os.path.join(save_into_folder, 'anexo_17_{}.pdf'.format(plot_id))
+            proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', current_report_path])
 
             if not proc.waitForStarted():
                 # Grant execution permissions
                 os.chmod(script_path, stat.S_IXOTH | stat.S_IXGRP | stat.S_IXUSR | stat.S_IRUSR | stat.S_IRGRP)
-                proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', os.path.join(save_into_folder, 'annex_17_{}.pdf'.format(plot_id))])
+                proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', current_report_path])
 
             if not proc.waitForStarted():
                 proc = None
@@ -241,9 +247,30 @@ class ReportGenerator():
                 loop.exec()
 
                 print(plot_id, ':', proc.exitCode())
+                if proc.exitCode() == 0:
+                    count += 1
 
         os.remove(yaml_config_path)
         button.setEnabled(True)
+
+        if total == count:
+            if total == 1:
+                msg = QCoreApplication.translate('ReportGenerator', 'The report <a href="file://{}">anexo_17_{}.pdf</a> was successfully generated!').format(save_into_folder, plot_id)
+            else:
+                msg = QCoreApplication.translate('ReportGenerator', 'All reports were successfully generated in folder <a href="file://{path}">{path}</a>!').format(path=save_into_folder)
+
+            self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Success, 0)
+        else:
+            if total == 1:
+                msg = QCoreApplication.translate('ReportGenerator', "The report for plot {} couldn't be generated! See QGIS log (tab 'Anexo_17') for details.").format(plot_id)
+            else:
+                if count == 0:
+                    msg = QCoreApplication.translate('ReportGenerator', "No report could be generated! See QGIS log (tab 'Anexo_17') for details.")
+                else:
+                    msg = QCoreApplication.translate('ReportGenerator', "At least one report couldn't be generated! See QGIS log (tab 'Anexo_17') for details. Go to <a href='file://{path}'>{path}</a> to see the reports that were generated.").format(path=save_into_folder)
+
+            self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Warning, 0)
+
 
     def save_dependency_file(self, fetcher_task):
         if fetcher_task.reply() is not None:
@@ -264,30 +291,36 @@ class ReportGenerator():
                     zip_ref.extractall(dependency_base_path)
 
             except zipfile.BadZipFile as e:
-                self.qgis_utils.message_emitted.emit(
+                self.qgis_utils.message_with_duration_emitted.emit(
                     QCoreApplication.translate("ReportGenerator", "There was an error with the download. The downloaded file is invalid."),
-                    Qgis.Warning)
+                    Qgis.Warning,
+                    0)
             else:
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again in the button to generate reports in the toolbar."),
-                    Qgis.Info)
+                self.qgis_utils.message_with_duration_emitted.emit(
+                    QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports."),
+                    Qgis.Info,
+                    0)
 
             try:
                 os.remove(tmp_file)
             except:
                 pass
 
+        self._downloading = False
+
     def download_report_dependency(self):
-        if self.qgis_utils.is_connected(TEST_SERVER):
-            #self.btn_download_help.setEnabled(False)
-            #url = 'http://downloads.tuxfamily.org/tuxgis/tmp/impresion.zip'
-            #url = 'http://downloads.tuxfamily.org/tuxgis/tmp/borrar/impresion.zip'
-            url = 'https://owncloud.proadmintierra.info/owncloud/index.php/s/mrUcc2ugGJoB8pk/download'
-            fetcher_task = QgsNetworkContentFetcherTask(QUrl(url))
-            # fetcher_task.taskCompleted.connect(self.enable_download_button)
-            fetcher_task.fetched.connect(functools.partial(self.save_dependency_file, fetcher_task))
-            QgsApplication.taskManager().addTask(fetcher_task)
+        self.qgis_utils.clear_message_bar_emitted.emit()
+        if not self._downloading:
+            if self.qgis_utils.is_connected(TEST_SERVER):
+                self._downloading = True
+                url = 'https://owncloud.proadmintierra.info/owncloud/index.php/s/mrUcc2ugGJoB8pk/download'
+                fetcher_task = QgsNetworkContentFetcherTask(QUrl(url))
+                fetcher_task.fetched.connect(functools.partial(self.save_dependency_file, fetcher_task))
+                QgsApplication.taskManager().addTask(fetcher_task)
+            else:
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("AboutDialog", "There was a problem connecting to Internet."),
+                    Qgis.Warning)
+                self._downloading = False
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("AboutDialog", "There was a problem connecting to Internet."),
-                Qgis.Warning)
+            print("Already downloading report dependency...")

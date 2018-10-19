@@ -112,6 +112,7 @@ class PGConnector(DBConnector):
     def close_connection(self):
         if self.conn:
             self.conn.close()
+            self.conn = None
             self.log.logMessage("Connection was closed!", PLUGIN_NAME, Qgis.Info)
 
     def validate_db(self):
@@ -186,6 +187,11 @@ class PGConnector(DBConnector):
         return (True, cur)
 
     def get_annex17_plot_data(self, plot_id):
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
+
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         query = """SELECT array_to_json(array_agg(features)) AS features
                     FROM (
@@ -208,6 +214,11 @@ class PGConnector(DBConnector):
         return cur.fetchone()[0]
 
     def get_annex17_point_data(self, plot_id):
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
+
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         query = """WITH parametros
                     AS (
