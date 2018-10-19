@@ -51,6 +51,7 @@ SOURCES = ../__init__.py \
           ../gui/settings_dialog.py \
           ../gui/dialog_quality.py \
           ../gui/toolbar.py \
+          ../gui/reports.py \
           ../gui/controlled_measurement_dialog.py \
           ../gui/upload_progress_dialog.py \
           ../lib/dbconnector/gpkg_connector.py \
