@@ -32,7 +32,7 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE,
                                            CONTROL_POINT_TABLE)
 from ..config.help_strings import HelpStrings
-from ..config.general_config import PLUGIN_NAME
+from ..config.general_config import PLUGIN_NAME, DEFAULT_EPSG
 
 WIZARD_UI = get_ui_class('wiz_create_points_cadastre.ui')
 
@@ -393,7 +393,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         self.txt_delimiter.setText(settings.value('Asistente-LADM_COL/wizards/points_csv_file_delimiter'))
 
         self.crs = QgsCoordinateReferenceSystem(
-            settings.value('Asistente-LADM_COL/wizards/points_csv_epsg', 3116, int))
+            settings.value('Asistente-LADM_COL/wizards/points_csv_epsg', DEFAULT_EPSG, int))
         self.update_crs_info()
 
     def show_help(self):

@@ -754,11 +754,10 @@ class QGISUtils(QObject):
            )
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
 
-        if not epsg == 3116:
+        if not epsg == DEFAULT_EPSG:
             crsDest = QgsCoordinateReferenceSystem('EPSG:' + str(DEFAULT_EPSG))
             csv_layer = processing.run("native:reprojectlayer", {'INPUT':csv_layer,
                                         'TARGET_CRS':crsDest,'OUTPUT':'memory:'})['OUTPUT']
-            print ("ejecutado")
 
         if not csv_layer.isValid():
             self.message_emitted.emit(

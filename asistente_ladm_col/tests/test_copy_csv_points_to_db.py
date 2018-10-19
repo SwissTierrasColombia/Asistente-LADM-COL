@@ -10,6 +10,7 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.tests.utils import import_projectgenerator, get_dbconn, get_test_path, restore_schema
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.config.table_mapping_config import BOUNDARY_POINT_TABLE
+from ..config.general_config import DEFAULT_EPSG
 
 import_projectgenerator()
 
@@ -40,7 +41,7 @@ class TestCopy(unittest.TestCase):
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
-        epsg = '3116'
+        epsg = DEFAULT_EPSG
         res = self.qgis_utils.copy_csv_to_db(csv_path,
                                     txt_delimiter,
                                     cbo_longitude,
@@ -96,7 +97,7 @@ class TestCopy(unittest.TestCase):
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
-        epsg = '3116'
+        epsg = DEFAULT_EPSG
         res = self.qgis_utils.copy_csv_to_db(csv_path,
                                     txt_delimiter,
                                     cbo_longitude,
