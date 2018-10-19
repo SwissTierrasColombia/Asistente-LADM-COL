@@ -50,7 +50,7 @@ from qgis.PyQt.QtCore import (
     QEventLoop,
     QIODevice
 )
-from qgis.PyQt.QtWidgets import QDialog, QFileDialog
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QProgressBar
 
 from ..utils.qt_utils import OverrideCursor
 from ..utils.symbology import SymbologyUtils
@@ -213,8 +213,20 @@ class ReportGenerator():
         print("CONFIG FILE:", yaml_config_path)
 
         total = len(selected_plots)
+        step = 0
         count = 0
         tmp_dir = self.get_tmp_dir()
+
+        # Progress bar setup
+        progress = QProgressBar()
+        if total == 1:
+            progress.setRange(0, 0)
+        else:
+            progress.setRange(0, 100)
+        progress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.qgis_utils.create_progress_message_bar_emitted.emit(
+            QCoreApplication.translate("ReportGenerator", "Generating {} report{}...").format(total, '' if total == 1 else 's'),
+            progress)
 
         for selected_plot in selected_plots:
             plot_id = selected_plot[ID_FIELD]
@@ -250,8 +262,12 @@ class ReportGenerator():
                 if proc.exitCode() == 0:
                     count += 1
 
+                step += 1
+                progress.setValue(step * 100 / total)
+
         os.remove(yaml_config_path)
         button.setEnabled(True)
+        self.qgis_utils.clear_message_bar_emitted.emit()
 
         if total == count:
             if total == 1:

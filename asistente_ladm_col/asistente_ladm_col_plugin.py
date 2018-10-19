@@ -146,6 +146,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
         self.qgis_utils.clear_status_bar_emitted.connect(self.clear_status_bar)
         self.qgis_utils.clear_message_bar_emitted.connect(self.clear_message_bar)
+        self.qgis_utils.create_progress_message_bar_emitted.connect(self.create_progress_message_bar)
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.qgis_utils.refresh_menus_requested.connect(self.refresh_menus)
@@ -448,6 +449,11 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def clear_message_bar(self):
         self.iface.messageBar().clearWidgets()
+
+    def create_progress_message_bar(self, text, progress):
+        progressMessageBar = self.iface.messageBar().createMessage(PLUGIN_NAME, text)
+        progressMessageBar.layout().addWidget(progress)
+        self.iface.messageBar().pushWidget(progressMessageBar, Qgis.Info)
 
     def refresh_layer_symbology(self, layer_id):
         self.iface.layerTreeView().refreshLayerSymbology(layer_id)

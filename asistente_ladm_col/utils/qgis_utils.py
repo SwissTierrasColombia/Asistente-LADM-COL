@@ -51,6 +51,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
                               QVariant, QSettings, QLocale, QUrl, QFile)
+from qgis.PyQt.QtWidgets import QProgressBar
 
 import processing
 
@@ -119,6 +120,7 @@ class QGISUtils(QObject):
     activate_layer_requested = pyqtSignal(QgsMapLayer)
     clear_status_bar_emitted = pyqtSignal()
     clear_message_bar_emitted = pyqtSignal()
+    create_progress_message_bar_emitted = pyqtSignal(str, QProgressBar)
     remove_error_group_requested = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
     refresh_menus_requested = pyqtSignal(DBConnector, bool)
