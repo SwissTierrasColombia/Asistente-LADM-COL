@@ -420,12 +420,12 @@
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QCheckBox" name="chk_disable_automatic_fields">
+          <widget class="QCheckBox" name="chk_automatic_values_in_batch_mode">
            <property name="toolTip">
             <string>For instance, when loading data from CSV or from another QGIS table/layer</string>
            </property>
            <property name="text">
-            <string>Disable automatic fields while batch loading/importing data</string>
+            <string>Calculate automatic fields when loading/importing data in batch mode</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -458,7 +458,7 @@
             </size>
            </property>
            <property name="title">
-            <string>Namespace</string>
+            <string>Calculate Namespace automatically</string>
            </property>
            <property name="flat">
             <bool>true</bool>
@@ -515,7 +515,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Local ID</string>
+            <string>Calculate Local ID automatically</string>
            </property>
            <property name="checked">
             <bool>true</bool>

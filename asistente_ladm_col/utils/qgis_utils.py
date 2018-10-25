@@ -699,9 +699,14 @@ class QGISUtils(QObject):
         return (local_id_enabled, local_id_field, local_id_value)
 
     def check_if_and_disable_automatic_fields(self, db, layer_name, geometry_type=None):
+        """
+        Check settings to see if the user wants to calculate automatic values
+        when in batch mode. If not, disable automatic fields and return
+        expressions so that they can be restored after the batch load.
+        """
         settings = QSettings()
         automatic_fields_definition = {}
-        if settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
+        if not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
             automatic_fields_definition = self.disable_automatic_fields(db, layer_name, geometry_type)
 
         return automatic_fields_definition
@@ -716,9 +721,14 @@ class QGISUtils(QObject):
         return automatic_fields_definition
 
     def check_if_and_enable_automatic_fields(self, db, automatic_fields_definition, layer_name, geometry_type=None):
+        """
+        Once the batch load is done, check whether the user wanted to calculate
+        automatic values in batch mode or not. If not, restore the expressions
+        we saved before running the batch load.
+        """
         if automatic_fields_definition:
             settings = QSettings()
-            if settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
+            if not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
                 self.enable_automatic_fields(db,
                                              automatic_fields_definition,
                                              layer_name,

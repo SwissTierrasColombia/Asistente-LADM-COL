@@ -5,7 +5,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
     mapping = []
     if layer_name == BOUNDARY_POINT_TABLE:
          mapping = [
-            {'length': -1, 'precision': 0, 'expression': '"t_id"', 'name': 't_id', 'type': 4},
             {'length': 255, 'precision': -1, 'expression': '"acuerdo"', 'name': 'acuerdo', 'type': 10},
             {'length': 255, 'precision': -1, 'expression': '"definicion_punto"', 'name': 'definicion_punto', 'type': 10},
             {'length': 255, 'precision': -1, 'expression': '"descripcion_punto"', 'name': 'descripcion_punto', 'type': 10},
@@ -23,7 +22,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == SURVEY_POINT_TABLE:
         mapping = [
-            {'type': 4, 'length': -1, 'name': 't_id', 'precision': 0, 'expression': '"t_id"'},
             {'type': 10, 'length': 255, 'name': 'tipo_punto_levantamiento', 'precision': -1, 'expression': '"tipo_punto_levantamiento"'},
             {'type': 10, 'length': 255, 'name': 'definicion_punto', 'precision': -1, 'expression': '"definicion_punto"'},
             {'type': 2, 'length': -1, 'name': 'exactitud_vertical', 'precision': 0, 'expression': '"exactitud_vertical"'},
@@ -39,7 +37,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == CONTROL_POINT_TABLE:
         mapping = [
-            {'name': 't_id', 'precision': 0, 'type': 4, 'length': -1, 'expression': '"t_id"'},
             {'name': 'nombre_punto', 'precision': -1, 'type': 10, 'length': 20, 'expression': '"nombre_punto"'},
             {'name': 'exactitud_vertical', 'precision': 0, 'type': 2, 'length': -1, 'expression': '"exactitud_vertical"'},
             {'name': 'exactitud_horizontal', 'precision': 0, 'type': 2, 'length': -1, 'expression': '"exactitud_horizontal"'},
@@ -55,7 +52,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == BOUNDARY_TABLE:
         mapping = [
-            {'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'},
             {'name': 'longitud', 'type': 6, 'length': 6, 'precision': 1, 'expression': '"longitud"'},
             {'name': 'localizacion_textual', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"localizacion_textual"'},
             {'name': 'ccl_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"ccl_espacio_de_nombres"'},
@@ -65,7 +61,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == PLOT_TABLE:
         mapping = [
-            {'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'},
             {'name': 'area_registral', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"area_registral"'},
             {'name': 'area_calculada', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"area_calculada"'},
             {'name': 'avaluo_terreno', 'type': 6, 'length': 13, 'precision': 1, 'expression': '"avaluo_terreno"'},
@@ -80,7 +75,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == PARCEL_TABLE:
         mapping = [
-            {'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'},
             {'name': 'departamento', 'type': 10, 'length': 2, 'precision': -1, 'expression': '"departamento"'},
             {'name': 'municipio', 'type': 10, 'length': 3, 'precision': -1, 'expression': '"municipio"'},
             {'name': 'zona', 'type': 10, 'length': 2, 'precision': -1, 'expression': '"zona"'},
@@ -98,7 +92,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == COL_PARTY_TABLE:
         mapping = [
-            {'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'},
             {'name': 'documento_identidad', 'type': 10, 'length': 10, 'precision': -1, 'expression': '"documento_identidad"'},
             {'name': 'tipo_documento', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo_documento"'},
             {'name': 'organo_emisor', 'type': 10, 'length': 20, 'precision': -1, 'expression': '"organo_emisor"'},
@@ -119,7 +112,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == ADMINISTRATIVE_SOURCE_TABLE:
         mapping = [
-            {'name': 't_id', 'precision': 0, 'expression': '"t_id"', 'type': 4, 'length': -1},
             {'name': 'texto', 'precision': -1, 'expression': '"texto"', 'type': 10, 'length': 255},
             {'name': 'tipo', 'precision': -1, 'expression': '"tipo"', 'type': 10, 'length': 255},
             {'name': 'codigo_registral_transaccion', 'precision': -1, 'expression': '"codigo_registral_transaccion"', 'type': 10, 'length': 3},
@@ -136,7 +128,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == SPATIAL_SOURCE_TABLE:
         mapping = [
-            {'type': 4, 'length': -1, 'name': 't_id', 'precision': 0, 'expression': '"t_id"'},
             {'type': 10, 'length': 255, 'name': 'tipo', 'precision': -1, 'expression': '"tipo"'},
             {'type': 16, 'length': -1, 'name': 'fecha_aceptacion', 'precision': -1, 'expression': '"fecha_aceptacion"'},
             {'type': 10, 'length': 255, 'name': 'estado_disponibilidad', 'precision': -1, 'expression': '"estado_disponibilidad"'},
@@ -150,7 +141,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == BUILDING_TABLE:
         mapping = [
-            {'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'},
             {'name': 'avaluo_construccion', 'type': 6, 'length': 13, 'precision': 1, 'expression': '"avaluo_construccion"'},
             {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo"'},
             {'name': 'dimension', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"dimension"'},
@@ -164,7 +154,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == BUILDING_UNIT_TABLE:
         mapping = [
-            {'name': 't_id', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"t_id"'},
             {'name': 'avaluo_unidad_construccion', 'type': 6, 'length': 15, 'precision': 1, 'expression': '"avaluo_unidad_construccion"'},
             {'name': 'numero_pisos', 'type': 2, 'length': -1, 'precision': 0, 'expression': '"numero_pisos"'},
             {'name': 'tipo_construccion', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo_construccion"'},
@@ -183,7 +172,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == RIGHT_TABLE:
         mapping = [
-            {'expression': '"t_id"', 'precision': 0, 'type': 4, 'length': -1, 'name': 't_id'},
             {'expression': '"tipo"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'tipo'},
             {'expression': '"codigo_registral_derecho"', 'precision': -1, 'type': 10, 'length': 3, 'name': 'codigo_registral_derecho'},
             {'expression': '"descripcion"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'descripcion'},
@@ -200,7 +188,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == RESPONSIBILITY_TABLE:
         mapping = [
-            {'expression': '"t_id"', 'precision': 0, 'type': 4, 'length': -1, 'name': 't_id'},
             {'expression': '"tipo"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'tipo'},
             {'expression': '"codigo_registral_responsabilidad"', 'precision': -1, 'type': 10, 'length': 3, 'name': 'codigo_registral_responsabilidad'},
             {'expression': '"descripcion"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'descripcion'},
@@ -218,7 +205,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == RESTRICTION_TABLE:
         mapping = [
-            {'expression': '"t_id"', 'precision': 0, 'type': 4, 'length': -1, 'name': 't_id'},
             {'expression': '"interesado_requerido"', 'precision': -1, 'type': 1, 'length': -1, 'name': 'interesado_requerido'},
             {'expression': '"tipo"', 'precision': -1, 'type': 10, 'length': 255, 'name': 'tipo'},
             {'expression': '"codigo_registral_restriccion"', 'precision': -1, 'type': 10, 'length': 3, 'name': 'codigo_registral_restriccion'},
@@ -322,15 +308,14 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == LEGAL_PARTY_TABLE:
         mapping = [
-            {'expression': '"t_id"', 'length': -1, 'precision': 0, 'type': 4, 'name': 't_id'},
             {'expression': '"fecha_constitucion"', 'length': -1, 'precision': -1, 'type': 14, 'name': 'fecha_constitucion'},
             {'expression': '"lugar_inscripcion"', 'length': 500, 'precision': -1, 'type': 10, 'name': 'lugar_inscripcion'},
             {'expression': '"nacionalidad"', 'length': 20, 'precision': -1, 'type': 10, 'name': 'nacionalidad'},
             {'expression': '"interesadojuridicocatastro"', 'length': -1, 'precision': 0, 'type': 4, 'name': 'interesadojuridicocatastro'}
         ]
 
-    # If the user doesn't want to disable automatic fields...
-    if not QSettings().value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
+    # If the user wants to enable automatic fields...
+    if QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
         # Now see if we can adjust the mapping depending on user settings
         ns_enabled, ns_field, ns_value = qgis_utils.get_namespace_field_and_value(layer_name)
 
