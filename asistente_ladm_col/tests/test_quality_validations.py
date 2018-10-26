@@ -253,7 +253,8 @@ class TesQualityValidations(unittest.TestCase):
             polygon_layer = QgsVectorLayer(uri_polygon, 'polygon_layer_{}'.format(i+1), 'ogr')
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
-            diff_plot_boundary = self.qgis_utils.geometry.difference_plot_boundary(polygon_layer, lines_layer, 'fid')
+            polygon_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+            diff_plot_boundary = self.qgis_utils.geometry.difference_plot_boundary(polygon_as_lines_layer, lines_layer, 'fid')
 
             if diff_plot_boundary is not None:
                 if len(diff_plot_boundary) > 0:

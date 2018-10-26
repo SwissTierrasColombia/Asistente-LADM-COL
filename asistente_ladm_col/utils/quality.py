@@ -50,6 +50,9 @@ from ..config.table_mapping_config import (
     POINT_BFS_TABLE_BOUNDARY_FIELD,
     POINT_BOUNDARY_FACE_STRING_TABLE,
     POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
+    MORE_BOUNDARY_FACE_STRING_TABLE,
+    MOREBFS_TABLE_PLOT_FIELD,
+    MOREBFS_TABLE_BOUNDARY_FIELD,
     PLOT_TABLE,
     RIGHT_OF_WAY_TABLE,
     SURVEY_POINT_TABLE
@@ -130,11 +133,13 @@ class QualityUtils(QObject):
     def check_plots_covered_by_boundaries(self, db):
         res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
+            MORE_BOUNDARY_FACE_STRING_TABLE: {'name': MORE_BOUNDARY_FACE_STRING_TABLE, 'geometry': None}
         }, load=True)
 
         plot_layer = res_layers[PLOT_TABLE]
         boundary_layer = res_layers[BOUNDARY_TABLE]
+        more_boundary_face_string_table = res_layers[MORE_BOUNDARY_FACE_STRING_TABLE]
 
         if plot_layer is None:
             self.qgis_utils.message_emitted.emit(
@@ -157,6 +162,13 @@ class QualityUtils(QObject):
                 Qgis.Info)
             return
 
+        if more_boundary_face_string_table.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table "+MORE_BOUNDARY_FACE_STRING_TABLE+" is empty, topology cannot be verified."),
+                Qgis.Info)
+            return
+
         error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
                                      self.translatable_config_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES,
                                      "memory")
@@ -165,8 +177,88 @@ class QualityUtils(QObject):
         data_provider.addAttributes([QgsField('plot_id', QVariant.Int)])
         error_layer.updateFields()
 
+        plot_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+
+        id_field_idx = boundary_layer.fields().indexFromName(ID_FIELD)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        dict_boundary = {feature[ID_FIELD]: feature for feature in boundary_layer.getFeatures(request)}
+
+        id_field_idx = plot_as_lines_layer.fields().indexFromName(ID_FIELD)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        dict_plot_as_lines = {feature[ID_FIELD]: feature for feature in plot_as_lines_layer.getFeatures(request)}
+
+        # Difference or Difference that no intersect completelly
         features = []
-        differences = self.qgis_utils.geometry.difference_plot_boundary(plot_layer, boundary_layer)
+        plot_boundary_diffs = self.qgis_utils.geometry.difference_plot_boundary(plot_as_lines_layer, boundary_layer)
+        id_plot_diffs = [item_plot_boundary_diff['id'] for item_plot_boundary_diff in plot_boundary_diffs]
+        differences = plot_boundary_diffs ## TODO: AJUST difference
+
+        exp = '"cclp_lindero" is not null and  "uep_terreno" is not null'
+        more_plot_boundary_table = [{'plot_id': feature[MOREBFS_TABLE_PLOT_FIELD],
+                                     'boundary_id': feature[MOREBFS_TABLE_BOUNDARY_FIELD]}
+                                    for feature in more_boundary_face_string_table.getFeatures(exp)]
+
+        spatial_join_plot_boundary_layer = processing.run("qgis:joinattributesbylocation",
+                                                    {'INPUT': plot_as_lines_layer,
+                                                     'JOIN': boundary_layer,
+                                                     'PREDICATE': [0],
+                                                     'JOIN_FIELDS': [ID_FIELD],
+                                                     'METHOD': 0,
+                                                     'DISCARD_NONMATCHING': False,
+                                                     'PREFIX': '',
+                                                     'OUTPUT': 'memory:'})['OUTPUT']
+        # Spatial join between plot as lines and boundary
+        spatial_join_plot_boundary = [{'plot_id': feature[ID_FIELD],
+                                       'boundary_id': feature[ID_FIELD + '_2']}
+                                      for feature in spatial_join_plot_boundary_layer.getFeatures()]
+        id_plots_without_boundary_sj = []
+
+        for item_sj in spatial_join_plot_boundary.copy():
+            boundary_id = item_sj['boundary_id']
+            plot_id = item_sj['plot_id']
+
+            if str(boundary_id) != 'NULL':
+                plot_geom = dict_plot_as_lines[plot_id].geometry()
+                boundary_geom = dict_boundary[boundary_id].geometry()
+
+                if plot_geom.intersection(boundary_geom).type() == QgsWkbTypes.PointGeometry:
+                    # Remove point intersections plot-boundary
+                    spatial_join_plot_boundary.remove(item_sj)
+            else:
+                # Remove plot without boundary
+                spatial_join_plot_boundary.remove(item_sj)
+                id_plots_without_boundary_sj.append(item_sj['plot_id'])
+
+        # remove plot without boundary from differences
+        [plot_boundary_diffs.remove(plot_boundary_diff) for plot_boundary_diff in plot_boundary_diffs.copy() if plot_boundary_diff['id'] in id_plots_without_boundary_sj]
+        id_plot_diffs = [plot_boundary_diff['id'] for plot_boundary_diff in plot_boundary_diffs]
+
+        # Check differences spatial join with diff (some segment are seleted by are okay)
+        for id_plot_diff in id_plot_diffs:
+            ids_boundary_sj_diff = [record_sj['boundary_id'] for record_sj in spatial_join_plot_boundary if
+                                    record_sj['plot_id'] == id_plot_diff]
+            # print(id_plot_diff, len(ids_boundary_sj_diff))
+            for id_boundary_sj_diff in ids_boundary_sj_diff:
+                if id_boundary_sj_diff in dict_boundary:
+                    geom_plot = dict_plot_as_lines[id_plot_diff].geometry()
+                    geom_boundary = dict_boundary[id_boundary_sj_diff].geometry()
+
+                    # Check no cover plot boundary
+                    if not geom_plot.contains(geom_boundary):
+                        if geom_plot.intersection(geom_boundary).type() == QgsWkbTypes.LineGeometry:
+                            # Update topological geoms and check again contains and remove
+                            tmp_layer = self.qgis_utils.geometry.create_temp_layer(geom_plot)
+                            self.qgis_utils.geometry.add_topological_vertices_geom(tmp_layer, geom_boundary)
+                            feature_update = [f for f in tmp_layer.getFeatures()][0]
+                            geom_plot_update = feature_update.geometry()
+                            if not geom_plot_update.contains(geom_boundary):
+                                spatial_join_plot_boundary.remove({'plot_id': id_plot_diff, 'boundary_id': id_boundary_sj_diff})
+
+        # Check topology no register
+        no_register_topology_plot_boundary = [item_sj_pb for item_sj_pb in spatial_join_plot_boundary
+                                              if item_sj_pb not in more_plot_boundary_table]
+        print('ERRORS:')
+        print(no_register_topology_plot_boundary)
 
         if differences is not None:
             for difference in differences:

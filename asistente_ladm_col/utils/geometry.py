@@ -43,6 +43,7 @@ import processing
 from ..config.general_config import TranslatableConfigStrings
 from ..config.general_config import (
     DEFAULT_POLYGON_AREA_TOLERANCE,
+    DEFAULT_EPSG,
     PLUGIN_NAME
 )
 from ..config.table_mapping_config import ID_FIELD
@@ -516,13 +517,22 @@ class GeometryUtils(QObject):
         del dict_features_layer2
         gc.collect()
 
-    def difference_plot_boundary(self, plot_layer, boundary_layer, id_field=ID_FIELD):
+    def add_topological_vertices_geom(self, layer, geom):
+        """
+                Modify layer1 adding vertices that are in geom
+                Only work with simple geometries
+        """
+        if not geom.isMultipart():
+            with edit(layer):
+                edit_layer = QgsVectorLayerEditUtils(layer)
+                edit_layer.addTopologicalPoints(geom)
+
+    def difference_plot_boundary(self, plots_as_lines_layer, boundary_layer, id_field=ID_FIELD):
         """
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
         try:
-            plots_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
             approx_diff_layer = processing.run("native:difference",
                                                {'INPUT': plots_as_lines_layer,
                                                 'OVERLAY': boundary_layer,
@@ -672,3 +682,12 @@ class GeometryUtils(QObject):
         id_field_idx = spatial_join_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         return spatial_join_layer.getFeatures(request)
+
+    def create_temp_layer(self, geom):
+        f = QgsFeature()
+        f.setGeometry(geom)
+        layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG), "temporal", "memory")
+        layer.dataProvider().addFeatures([f])
+        layer.updateExtents()
+        layer.reload()
+        return layer
