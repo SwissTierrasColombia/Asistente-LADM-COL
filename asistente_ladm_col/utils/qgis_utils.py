@@ -16,8 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 """
+import ast
 import os
 import socket
+import datetime
 import webbrowser
 
 from qgis.core import (
@@ -64,6 +66,7 @@ from .geometry import GeometryUtils
 from ..gui.settings_dialog import SettingsDialog
 from ..config.general_config import (
     DEFAULT_EPSG,
+    FIELD_MAPPING_PATH,
     MODULE_HELP_MAPPING,
     TEST_SERVER,
     HELP_URL,
@@ -1020,7 +1023,7 @@ class QGISUtils(QObject):
     def turn_transaction_off(self):
         QgsProject.instance().setAutoTransaction(False)
 
-    def show_etl_model(self, db, input_layer, ladm_col_layer_name, geometry_type=None):
+    def show_etl_model(self, db, input_layer, ladm_col_layer_name, save_field_mapping, geometry_type=None):
 
         output = self.get_layer(db, ladm_col_layer_name, geometry_type, load=True)
         if output is None:
@@ -1041,7 +1044,31 @@ class QGISUtils(QObject):
         if model:
             automatic_fields_definition = self.check_if_and_disable_automatic_fields(db, ladm_col_layer_name)
 
-            mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
+            if save_field_mapping is not None:
+                path_file_field_mapping = os.path.join(FIELD_MAPPING_PATH,'{}.{}'.format(save_field_mapping,
+                                                        "txt"))
+
+                field_mapping_list = []
+
+                with open(path_file_field_mapping) as file_field_mapping:
+                    file_field_mapping = file_field_mapping.read()
+                    list_field_mapping = file_field_mapping.split("},")
+
+                    for line_field_mapping in list_field_mapping:
+                        line_field_mapping = line_field_mapping.strip("[")
+                        line_field_mapping = line_field_mapping.strip("]")
+                        if not line_field_mapping.endswith("}"):
+                            line_field_mapping = '{}{}'.format(line_field_mapping, "}")
+                            line_field_mapping = ast.literal_eval(line_field_mapping.strip())
+                            field_mapping_list.append(line_field_mapping)
+                        else:
+                            line_field_mapping = ast.literal_eval(line_field_mapping.strip())
+                            field_mapping_list.append(line_field_mapping)
+
+                    mapping = field_mapping_list
+            else:
+                mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
+
             self.activate_layer_requested.emit(input_layer)
             params = {
                 'INPUT': input_layer.name(),
@@ -1049,6 +1076,38 @@ class QGISUtils(QObject):
                 'output': output.name()
             }
             processing.execAlgorithmDialog("model:ETL-model", params)
+
+            files_mapping_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'field_mapping')
+            if not os.path.exists(files_mapping_path):
+                os.makedirs(files_mapping_path)
+
+            log_path = os.path.join(processing.tools.system.userFolder(),
+                        'processing.log')
+
+            if not os.path.exists(FIELD_MAPPING_PATH):
+                os.makedirs(FIELD_MAPPING_PATH)
+
+            log_path =  os.path.join(processing.tools.system.userFolder(),
+                        'processing.log')
+
+            with open(log_path) as log_file:
+                log_file = log_file.read().split("ALGORITHM")
+                log_file = log_file[len(log_file)-1]
+                log_file = log_file.split("mapping")
+                log_file = log_file[len(log_file)-1]
+                log_file = log_file.split("output")
+                log_file = log_file[0]
+                log_file = log_file.strip("':")
+                log_file = log_file.strip(",'")
+
+            txt_field_mapping_path = os.path.join(FIELD_MAPPING_PATH,
+							"{}_{}.{}".format(ladm_col_layer_name,
+                            datetime.datetime.now().strftime("%Y%m%d_%H:%M:%S"),
+							"txt"))
+
+            with open(txt_field_mapping_path,"w+") as file:
+            	file.write(log_file)
+            	file.close()
 
             self.check_if_and_enable_automatic_fields(db,
                                                       automatic_fields_definition,

@@ -300,8 +300,6 @@ class ReportGenerator():
             if not os.path.exists(dependency_base_path):
                 os.makedirs(dependency_base_path)
 
-            print(dependency_base_path)
-
             try:
                 with zipfile.ZipFile(tmp_file, "r") as zip_ref:
                     zip_ref.extractall(dependency_base_path)

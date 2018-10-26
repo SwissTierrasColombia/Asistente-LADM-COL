@@ -18,6 +18,7 @@
 """
 import os
 import stat
+import glob
 
 from qgis.core import Qgis, QgsMapLayerProxyModel, QgsApplication, QgsCoordinateReferenceSystem
 from qgis.gui import QgsMessageBar
@@ -32,7 +33,7 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE,
                                            CONTROL_POINT_TABLE)
 from ..config.help_strings import HelpStrings
-from ..config.general_config import PLUGIN_NAME, DEFAULT_EPSG
+from ..config.general_config import PLUGIN_NAME, DEFAULT_EPSG, FIELD_MAPPING_PATH
 
 WIZARD_UI = get_ui_class('wiz_create_points_cadastre.ui')
 
@@ -128,6 +129,9 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             self.fill_long_lat_combos("")
 
     def adjust_page_2_controls(self):
+
+        self.fields_mapping()
+
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
@@ -161,16 +165,29 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             self.gbx_page_3.setTitle(QCoreApplication.translate("CreatePointsCadastreWizard", "Configure CSV data source for Control Points..."))
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_CP)
 
+    def fields_mapping(self):
+        self.cbo_mapping.clear()
+        self.cbo_mapping.addItem("")
+
+        for filename in glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(self.current_point_name(), '[0-9]'*8, "*"))):
+	           self.cbo_mapping.addItem(os.path.basename(filename).strip(".txt"))
+
     def finished_dialog(self):
         self.save_settings()
 
         if self.rad_refactor.isChecked():
             output_layer_name = self.current_point_name()
 
+            if self.cbo_mapping.currentText() is not "":
+                save_field_mapping = self.cbo_mapping.currentText()
+            else:
+                save_field_mapping = None
+
             if self.mMapLayerComboBox.currentLayer() is not None:
                 self.qgis_utils.show_etl_model(self._db,
                                                self.mMapLayerComboBox.currentLayer(),
-                                               output_layer_name)
+                                               output_layer_name,
+                                               save_field_mapping)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreatePointsCadastreWizard",
