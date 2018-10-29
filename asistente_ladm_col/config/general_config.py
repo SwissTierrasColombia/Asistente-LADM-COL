@@ -18,8 +18,15 @@ PLUGIN_DIR = os.path.dirname(os.path.dirname(__file__))
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
 HELP_DIR_NAME = 'help'
-QGIS_LANG = QLocale(QSettings().value('locale/userLocale')).name()[:2]
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'styles')
+
+try:
+    # Errors here could happen if the value cannot be converted to string or
+    # if it is not subscriptable (see https://github.com/gacarrillor/loadthemall/issues/11)
+    locale = QSettings().value("locale/userLocale", type=str)
+    QGIS_LANG = str( locale[:2] )
+except TypeError as e:
+    QGIS_LANG = 'en'
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html

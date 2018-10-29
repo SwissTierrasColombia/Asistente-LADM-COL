@@ -816,7 +816,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._about_dialog.exec_()
 
     def installTranslator(self):
-        qgis_locale = QLocale(QSettings().value('locale/userLocale'))
+        qgis_locale = QLocale(QGIS_LANG)
         locale_path = os.path.join(PLUGIN_DIR, 'i18n')
         self.translator = QTranslator()
         self.translator.load(qgis_locale, 'Asistente-LADM_COL', '_', locale_path)
