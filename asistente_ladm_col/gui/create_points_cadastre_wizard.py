@@ -169,8 +169,18 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
 
-        for filename in glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(self.current_point_name(), '[0-9]'*8, "*"))):
-	           self.cbo_mapping.addItem(os.path.basename(filename).strip(".txt"))
+        files = glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(self.current_point_name(), '[0-9]'*8, "*")))
+        files.sort(key=lambda x: os.path.getmtime(x))
+
+        if (len(files) > 10):
+            for x in files[0:len(files)-10]:
+                os.remove(x)
+                files = glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(self.current_point_name(), '[0-9]'*8, "*")))
+                files.sort(key=lambda x: os.path.getmtime(x))
+
+        files.reverse()
+        for file in files:
+            self.cbo_mapping.addItem(os.path.basename(file).strip(".txt"))
 
     def finished_dialog(self):
         self.save_settings()
