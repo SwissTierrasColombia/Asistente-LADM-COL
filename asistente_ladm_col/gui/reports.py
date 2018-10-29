@@ -57,7 +57,10 @@ from ..utils.symbology import SymbologyUtils
 from ..utils.geometry import GeometryUtils
 from .dlg_topological_edition import LayersForTopologicalEdition
 
-from ..config.general_config import TEST_SERVER
+from ..config.general_config import (
+    TEST_SERVER,
+    PLUGIN_NAME
+)
 from ..config.table_mapping_config import (
     ID_FIELD,
     PLOT_TABLE
@@ -151,6 +154,12 @@ class ReportGenerator():
     def get_tmp_filename(self, basename, extension='gpkg'):
         return "{}_{}.{}".format(basename, str(time.time()).replace(".",""), extension)
 
+    def get_java_path_from_project_generator(self):
+        settings = QSettings()
+        path = settings.value('QgsProjectGenerator/ili2db/JavaPath')
+        java_path = os.path.dirname(os.path.dirname(path or ''))
+        return java_path
+
     def generate_report(self, button):
         # Check if mapfish and Jasper are installed, otherwise show where to
         # download them from and return
@@ -161,6 +170,21 @@ class ReportGenerator():
                 QCoreApplication.translate("ReportGenerator",
                    "The dependency library to generate reports is not installed. Click on the button to download and install it."))
             return
+
+        # Check if JAVA_HOME path is set, otherwise use path from project Generator
+        if 'JAVA_HOME' not in os.environ:
+            java_path = self.get_java_path_from_project_generator()
+            if not java_path:
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("ReportGenerator",
+                                               "Please set JAVA_HOME path in Project Generator Settings or in Environmental Variables for your OS"),
+                    Qgis.Warning)
+                return
+            else:
+                os.environ["JAVA_HOME"] = java_path
+                self.log.logMessage("The JAVA_HOME path have been set using Project Generator Settings for reports", PLUGIN_NAME, Qgis.Info)
+
+
 
         plot_layer = self.qgis_utils.get_layer(self.db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
         if plot_layer is None:
