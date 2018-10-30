@@ -1,5 +1,13 @@
 <RCC>
   <qresource prefix="/Asistente-LADM_COL">
+    <file>resources/images/source.png</file>
+    <file>resources/images/ba_unit.png</file>
+    <file>resources/images/rrr.png</file>
+    <file>resources/images/spatial_unit.png</file>
+    <file>resources/images/surveying.png</file>
+    <file>resources/images/party.png</file>
+    <file>resources/images/with_roads.png</file>
+    <file>resources/images/without_roads.png</file>
     <file>resources/images/select.png</file>
     <file>resources/images/select_all.png</file>
     <file>resources/images/deselect_all.png</file>

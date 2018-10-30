@@ -162,7 +162,7 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
                 target.name()
             ))
         else:
-            feedback.reportError("\nERROR: The {} features from input layer could not be copied into '{}'. This is likely due to NOT NULL constraints that are not met.".format(
+            feedback.reportError("\nERROR: The {} features from input layer could not be copied into '{}'. This is likely due to constraints that are not met (such as NOT NULL, LENGTH or MAX-MIN values). Check that your input data meets your target layer constraints.".format(
                 source.featureCount(),
                 target.name()
             ))

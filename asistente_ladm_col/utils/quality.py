@@ -38,19 +38,21 @@ from .project_generator_utils import ProjectGeneratorUtils
 from ..config.general_config import (
     DEFAULT_EPSG,
     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-    DEFAULT_USE_ROADS_VALUE
+    DEFAULT_USE_ROADS_VALUE,
+    TranslatableConfigStrings
 )
 from ..config.table_mapping_config import (
-    POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
-    POINT_BFS_TABLE_BOUNDARY_FIELD,
-    POINT_BOUNDARY_FACE_STRING_TABLE,
     BOUNDARY_POINT_TABLE,
     BOUNDARY_TABLE,
     BUILDING_TABLE,
-    RIGHT_OF_WAY_TABLE,
-    SURVEY_POINT_TABLE,
+    CONTROL_POINT_TABLE,
     ID_FIELD,
-    PLOT_TABLE
+    POINT_BFS_TABLE_BOUNDARY_FIELD,
+    POINT_BOUNDARY_FACE_STRING_TABLE,
+    POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
+    PLOT_TABLE,
+    RIGHT_OF_WAY_TABLE,
+    SURVEY_POINT_TABLE
 )
 
 class QualityUtils(QObject):
@@ -59,6 +61,7 @@ class QualityUtils(QObject):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
         self.project_generator_utils = ProjectGeneratorUtils()
+        self.translatable_config_strings = TranslatableConfigStrings()
 
     def check_overlapping_points(self, db, point_layer_name):
         """
@@ -83,9 +86,14 @@ class QualityUtils(QObject):
                    "There are no points in layer '{}' to check for overlaps!").format(point_layer_name), Qgis.Info)
             return
 
+        error_layer_name = ''
+        if point_layer_name == BOUNDARY_POINT_TABLE:
+            error_layer_name = self.translatable_config_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS
+        elif point_layer_name == CONTROL_POINT_TABLE:
+            error_layer_name = self.translatable_config_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS
+
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     QCoreApplication.translate("QGISUtils", "Overlapping points in {}")
-                                                                .format(point_layer_name), "memory")
+                                     error_layer_name, "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("point_count", QVariant.Int), QgsField("intersecting_ids", QVariant.String) ])
         error_layer.updateFields()
@@ -149,9 +157,9 @@ class QualityUtils(QObject):
                 Qgis.Info)
             return
 
-        differences_layer_name = QCoreApplication.translate("QGISUtils", "Plot lines not covered by Boundaries")
         error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     differences_layer_name, "memory")
+                                     self.translatable_config_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES,
+                                     "memory")
 
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('plot_id', QVariant.Int)])
@@ -160,26 +168,27 @@ class QualityUtils(QObject):
         features = []
         differences = self.qgis_utils.geometry.difference_plot_boundary(plot_layer, boundary_layer)
 
-        for difference in differences:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                error_layer,
-                difference['geometry'],
-                {0: difference['id']})
-            features.append(new_feature)
+        if differences is not None:
+            for difference in differences:
+                new_feature = QgsVectorLayerUtils().createFeature(
+                    error_layer,
+                    difference['geometry'],
+                    {0: difference['id']})
+                features.append(new_feature)
 
-        error_layer.dataProvider().addFeatures(features)
+            error_layer.dataProvider().addFeatures(features)
 
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
 
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} plot lines not covered by boundaries has been added to the map!").format(
-                    added_layer.featureCount()), Qgis.Info)
-        else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "All Plot lines are covered by Boundarues!"), Qgis.Info)
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                        "A memory layer with {} plot lines not covered by boundaries has been added to the map!").format(
+                        added_layer.featureCount()), Qgis.Info)
+            else:
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                        "All Plot lines are covered by Boundaries!"), Qgis.Info)
 
     def check_boundary_points_covered_by_boundary_nodes(self, db):
         res_layers = self.qgis_utils.get_layers(db, {
@@ -210,8 +219,9 @@ class QualityUtils(QObject):
                 Qgis.Info)
             return
 
-        layer_name = QCoreApplication.translate("QGISUtils", "Boundary points should be covered by boundary nodes")
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), layer_name, "memory")
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     self.translatable_config_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
+                                     "memory")
 
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('point_boundary_id', QVariant.Int)])
@@ -271,9 +281,9 @@ class QualityUtils(QObject):
                 Qgis.Info)
             return
 
-        differences_layer_name = QCoreApplication.translate("QGISUtils", "Boundaries not covered by plot lines")
         error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     differences_layer_name, "memory")
+                                     self.translatable_config_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS,
+                                     "memory")
 
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('boundary_id', QVariant.Int)])
@@ -282,26 +292,27 @@ class QualityUtils(QObject):
         features = []
         differences = self.qgis_utils.geometry.difference_boundary_plot(boundary_layer, plot_layer)
 
-        for difference in differences:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                error_layer,
-                difference['geometry'],
-                {0: difference['id']})
-            features.append(new_feature)
+        if differences is not None:
+            for difference in differences:
+                new_feature = QgsVectorLayerUtils().createFeature(
+                    error_layer,
+                    difference['geometry'],
+                    {0: difference['id']})
+                features.append(new_feature)
 
-        error_layer.dataProvider().addFeatures(features)
+            error_layer.dataProvider().addFeatures(features)
 
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
 
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} boundaries not covered by plot lines has been added to the map!").format(
-                    added_layer.featureCount()), Qgis.Info)
-        else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "All Boundaries are covered by Plot lines!"), Qgis.Info)
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                        "A memory layer with {} boundaries not covered by plot lines has been added to the map!").format(
+                        added_layer.featureCount()), Qgis.Info)
+            else:
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                        "All Boundaries are covered by Plot lines!"), Qgis.Info)
 
     def check_overlapping_polygons(self, db, polygon_layer_name):
         polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, QgsWkbTypes.PolygonGeometry, load=True)
@@ -313,9 +324,16 @@ class QualityUtils(QObject):
                 Qgis.Warning)
             return
 
+        error_layer_name = ''
+        if polygon_layer_name == PLOT_TABLE:
+            error_layer_name = self.translatable_config_strings.CHECK_OVERLAPS_IN_PLOTS
+        elif polygon_layer_name == BUILDING_TABLE:
+            error_layer_name = self.translatable_config_strings.CHECK_OVERLAPS_IN_BUILDINGS
+        elif polygon_layer_name == RIGHT_OF_WAY_TABLE:
+            error_layer_name = self.translatable_config_strings.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY
+
         error_layer = QgsVectorLayer("Polygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     QCoreApplication.translate("QGISUtils", "Overlapping polygons in {}")
-                                                                .format(polygon_layer_name), "memory")
+                                     error_layer_name, "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("polygon_id", QVariant.Int),
                                      QgsField("overlapping_ids", QVariant.String),
@@ -387,9 +405,13 @@ class QualityUtils(QObject):
         error_point_layer = overlapping['native:saveselectedfeatures_3:Intersected_Points']
         error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
         if type(error_point_layer) is QgsVectorLayer:
-            error_point_layer.setName("Overlapping boundaries (point intersections)")
+            error_point_layer.setName("{} (point intersections)".format(
+                self.translatable_config_strings.CHECK_OVERLAPS_IN_BOUNDARIES
+            ))
         if type(error_line_layer) is QgsVectorLayer:
-            error_line_layer.setName("Overlapping boundaries (line intersections)")
+            error_line_layer.setName("{} (line intersections)".format(
+                self.translatable_config_strings.CHECK_OVERLAPS_IN_BOUNDARIES
+            ))
 
         if (type(error_point_layer) is not QgsVectorLayer and \
            type(error_line_layer) is not QgsVectorLayer) or \
@@ -452,9 +474,8 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                            QCoreApplication.translate("QGISUtils",
-                                "Wrong boundaries."),
-                            "memory")
+                        self.translatable_config_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT,
+                        "memory")
         pr = error_layer.dataProvider()
         pr.addAttributes([QgsField("boundary_id", QVariant.Int)])
         error_layer.updateFields()
@@ -496,9 +517,8 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                            QCoreApplication.translate("QGISUtils",
-                                "Boundary segments longer than {}m.").format(tolerance),
-                            "memory")
+                        self.translatable_config_strings.CHECK_TOO_LONG_BOUNDARY_SEGMENTS,
+                        "memory")
         pr = error_layer.dataProvider()
         pr.addAttributes([QgsField("boundary_id", QVariant.Int),
                           QgsField("distance", QVariant.Double)])
@@ -509,12 +529,12 @@ class QualityUtils(QObject):
             if lines.isMultipart():
                 for part in range(lines.constGet().numGeometries()):
                     line = lines.constGet().geometryN(part)
-                    segments_info = self.get_too_long_segments_from_simple_line(line, tolerance)
+                    segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
                     for segment_info in segments_info:
                         new_feature = QgsVectorLayerUtils().createFeature(error_layer, segment_info[0], {0:feature.id(), 1:segment_info[1]})
                         features.append(new_feature)
             else:
-                segments_info = self.get_too_long_segments_from_simple_line(lines.constGet(), tolerance)
+                segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(lines.constGet(), tolerance)
                 for segment_info in segments_info:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, segment_info[0], {0:feature.id(), 1:segment_info[1]})
                     features.append(new_feature)
@@ -571,7 +591,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     QCoreApplication.translate("QGISUtils", "Missing boundary points in boundaries"),
+                                     self.translatable_config_strings.CHECK_MISSING_BOUNDARY_POINTS_IN_BOUNDARIES,
                                      "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
@@ -636,6 +656,9 @@ class QualityUtils(QObject):
                                            "There are no missing boundary points in boundaries."), Qgis.Info)
 
     def check_missing_survey_points_in_buildings(self, db):
+        """
+        Not used anymore but kept for reference.
+        """
         res_layers = self.qgis_utils.get_layers(db, {
             SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None},
             BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}}, load=True)
@@ -710,8 +733,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                            QCoreApplication.translate("QGISUtils",
-                                "Dangles in boundaries"),
+                            self.translatable_config_strings.CHECK_DANGLES_IN_BOUNDARIES,
                             "memory")
         pr = error_layer.dataProvider()
         pr.addAttributes([QgsField("boundary_id", QVariant.Int)])
@@ -738,21 +760,6 @@ class QualityUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "Boundaries have no dangles!"),
                 Qgis.Info)
-
-    def get_too_long_segments_from_simple_line(self, line, tolerance):
-        segments_info = list()
-        vertices = line.vertices()
-        vertex1 = None
-        if vertices.hasNext():
-            vertex1 = vertices.next()
-        while vertices.hasNext():
-            vertex2 = vertices.next()
-            distance = vertex1.distance(vertex2)
-            if distance > tolerance:
-                segment = QgsGeometry.fromPolyline([vertex1, vertex2])
-                segments_info.append([segment, distance])
-            vertex1 = vertex2
-        return segments_info
 
     def get_missing_boundary_points_in_boundaries(self, boundary_point_layer, boundary_layer):
         res = dict()
@@ -849,8 +856,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     QCoreApplication.translate("QGISUtils",
-                                        "Right of Way-Building overlaps"),
+                                     self.translatable_config_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS,
                                      "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("right_of_way_id", QVariant.Int)])
@@ -880,7 +886,7 @@ class QualityUtils(QObject):
                                            "There are no Right of Way-Building overlaps."), Qgis.Info)
 
     def check_gaps_in_plots(self, db):
-        use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))  
+        use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, True)
 
         if plot_layer is None:
@@ -899,8 +905,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     QCoreApplication.translate("QGISUtils",
-                                                                "Gaps in plots"),
+                                     self.translatable_config_strings.CHECK_GAPS_IN_PLOTS,
                                      "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("id", QVariant.Int)])
@@ -947,8 +952,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("Polygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     QCoreApplication.translate("QGISUtils",
-                                                                "Multipart geometries in Right Of Way"),
+                                     self.translatable_config_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY,
                                      "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("original_id", QVariant.Int)])

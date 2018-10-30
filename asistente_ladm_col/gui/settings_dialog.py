@@ -88,6 +88,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_pg_password.textEdited.connect(self.set_connection_dirty)
         self.txt_gpkg_file.textEdited.connect(self.set_connection_dirty)
         self.btn_test_service.clicked.connect(self.test_service)
+        self.chk_use_roads.toggled.connect(self.update_images_state)
 
         # Trigger some default behaviours
         self.restore_settings()
@@ -98,7 +99,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         #self.tabWidget.currentWidget().layout().setContentsMargins(0, 0, 0, 0)
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
-    def get_db_connection(self):
+    def get_db_connection(self, update_connection=True):
         if self._db is not None:
             self.log.logMessage("Returning existing db connection...", PLUGIN_NAME, Qgis.Info)
             return self._db
@@ -110,9 +111,16 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 db = PGConnector(uri, dict_conn['schema'])
             else:
                 db = GPKGConnector(uri)
+
+            if update_connection:
+                self._db = db
+
             return db
 
     def accepted(self):
+        if self._db is not None:
+            self._db.close_connection()
+
         self._db = None # Reset db connection
         self._db = self.get_db_connection()
 
@@ -156,7 +164,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         dict_conn = dict()
         dict_conn['host'] = self.txt_pg_host.text().strip() or 'localhost'
         dict_conn['port'] = self.txt_pg_port.text().strip() or '5432'
-        dict_conn['database'] = self.txt_pg_database.text().strip()
+        dict_conn['database'] = "'{}'".format(self.txt_pg_database.text().strip())
         dict_conn['schema'] = self.txt_pg_schema.text().strip() or 'public'
         dict_conn['user'] = self.txt_pg_user.text().strip()
         dict_conn['password'] = self.txt_pg_password.text().strip()
@@ -170,7 +178,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/db_connection_source', self.cbo_db_source.currentData())
         settings.setValue('Asistente-LADM_COL/pg/host', dict_conn['host'])
         settings.setValue('Asistente-LADM_COL/pg/port', dict_conn['port'])
-        settings.setValue('Asistente-LADM_COL/pg/database', dict_conn['database'])
+        settings.setValue('Asistente-LADM_COL/pg/database', dict_conn['database'].strip("'"))
         settings.setValue('Asistente-LADM_COL/pg/schema', dict_conn['schema'])
         settings.setValue('Asistente-LADM_COL/pg/user', dict_conn['user'])
         settings.setValue('Asistente-LADM_COL/pg/password', dict_conn['password'])
@@ -179,7 +187,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/quality/too_long_tolerance', int(self.txt_too_long_tolerance.text()) or DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)
         settings.setValue('Asistente-LADM_COL/quality/use_roads', self.chk_use_roads.isChecked())
 
-        settings.setValue('Asistente-LADM_COL/automatic_values/disable_automatic_fields', self.chk_disable_automatic_fields.isChecked())
+        settings.setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
 
         endpoint = self.txt_service_endpoint.text().strip()
         settings.setValue('Asistente-LADM_COL/source/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
@@ -216,9 +224,11 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_gpkg_file.setText(settings.value('Asistente-LADM_COL/gpkg/dbfile'))
 
         self.txt_too_long_tolerance.setText(str(settings.value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)))
-        self.chk_use_roads.setChecked(settings.value('Asistente-LADM_COL/quality/use_roads', True, bool))
+        use_roads = settings.value('Asistente-LADM_COL/quality/use_roads', True, bool)
+        self.chk_use_roads.setChecked(use_roads)
+        self.update_images_state(use_roads)
 
-        self.chk_disable_automatic_fields.setChecked(settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool))
+        self.chk_automatic_values_in_batch_mode.setChecked(settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool))
         self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool))
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
@@ -226,7 +236,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/source/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
 
     def db_source_changed(self):
-        self._db = None
+        if self._db is not None:
+            self._db.close_connection()
+
+        self._db = None # Reset db connection
         if self.cbo_db_source.currentData() == 'pg':
             self.gpkg_config.setVisible(False)
             self.pg_config.setVisible(True)
@@ -235,8 +248,16 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.gpkg_config.setVisible(True)
 
     def test_connection(self):
+        if self._db is not None:
+            self._db.close_connection()
+
         self._db = None # Reset db connection
-        res, msg = self.get_db_connection().test_connection()
+        db = self.get_db_connection(False)
+        res, msg = db.test_connection()
+
+        if db is not None:
+            db.close_connection()
+
         self.show_message(msg, Qgis.Info if res else Qgis.Warning)
         self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
 
@@ -251,27 +272,32 @@ class SettingsDialog(QDialog, DIALOG_UI):
         dbfile = settings.value('QgsProjectGenerator/ili2gpkg/dbfile')
 
         if self.cbo_db_source.currentData() == 'pg':
-            msg_pg = QCoreApplication.translate("SettingsDialog", "Connection parameters couldn't be imported from Project Generator. Are you sure there are connection parameters to import?")
+            msg_pg = QCoreApplication.translate("SettingsDialog",
+                "Connection parameters couldn't be imported from Project Generator. Are you sure there are connection parameters to import?")
             if host is None and port is None and database is None and schema is None and user is None and password is None:
                 self.show_message(msg_pg, Qgis.Warning)
-            if host:
-                self.txt_pg_host.setText(host)
-            if port:
-                self.txt_pg_port.setText(port)
-            if database:
-                self.txt_pg_database.setText(database)
-            if schema:
-                self.txt_pg_schema.setText(schema)
-            if user:
-                self.txt_pg_user.setText(user)
-            if password:
-                self.txt_pg_password.setText(password)
+            else:
+                self.connection_is_dirty = True
+                if host:
+                    self.txt_pg_host.setText(host)
+                if port:
+                    self.txt_pg_port.setText(port)
+                if database:
+                    self.txt_pg_database.setText(database)
+                if schema:
+                    self.txt_pg_schema.setText(schema)
+                if user:
+                    self.txt_pg_user.setText(user)
+                if password:
+                    self.txt_pg_password.setText(password)
 
         elif self.cbo_db_source.currentData() == 'gpkg':
-            msg_gpkg = QCoreApplication.translate("SettingsDialog", "Connection parameters couldn't be imported from Project Generator. Are you sure there are connection parameters to import?")
+            msg_gpkg = QCoreApplication.translate("SettingsDialog",
+                "Connection parameters couldn't be imported from Project Generator. Are you sure there are connection parameters to import?")
             if dbfile is None:
                 self.show_message(msg_gpkg, Qgis.Warning)
             else:
+                self.connection_is_dirty = True
                 self.txt_gpkg_file.setText(dbfile)
 
     def test_service(self):
@@ -355,6 +381,15 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def set_connection_dirty(self, text):
         if not self.connection_is_dirty:
             self.connection_is_dirty = True
+
+    def update_images_state(self, checked):
+        self.img_with_roads.setEnabled(checked)
+        self.img_with_roads.setToolTip(QCoreApplication.translate(
+            "SettingsDialog", "Missing roads will be marked as errors.")
+            if checked else '')
+        self.img_without_roads.setEnabled(not checked)
+        self.img_without_roads.setToolTip('' if checked else QCoreApplication.translate(
+            "SettingsDialog", "Missing roads will not be marked as errors."))
 
     def show_help(self):
         self.qgis_utils.show_help("settings")

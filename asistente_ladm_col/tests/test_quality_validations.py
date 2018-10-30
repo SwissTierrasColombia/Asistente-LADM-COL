@@ -45,22 +45,22 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(lines.constGet().numGeometries(), 4)
 
         line = lines.constGet().geometryN(0)
-        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 2)
         self.validate_segments(segments_info, tolerance)
 
         line = lines.constGet().geometryN(1)
-        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 1)
         self.validate_segments(segments_info, tolerance)
 
         line = lines.constGet().geometryN(2)
-        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 0)
         self.validate_segments(segments_info, tolerance)
 
         line = lines.constGet().geometryN(3)
-        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 1)
         self.validate_segments(segments_info, tolerance)
 
@@ -71,7 +71,7 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(lines.constGet().numGeometries(), 1)
 
         line = lines.constGet().geometryN(0)
-        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 1)
         self.validate_segments(segments_info, tolerance)
 
@@ -253,12 +253,13 @@ class TesQualityValidations(unittest.TestCase):
             polygon_layer = QgsVectorLayer(uri_polygon, 'polygon_layer_{}'.format(i+1), 'ogr')
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
-            # We don't want to overwrite the original layer
-            clone_polygons = self.qgis_utils.geometry.clone_layer(polygon_layer)
+            diff_plot_boundary = self.qgis_utils.geometry.difference_plot_boundary(polygon_layer, lines_layer, 'fid')
 
-            self.qgis_utils.geometry.add_topological_vertices(clone_polygons, lines_layer)
-            diff_layer = self.qgis_utils.geometry.line_polygon_layer_difference(clone_polygons, lines_layer)
-            self.assertEqual(diff_layer.getFeature(1).geometry().asWkt(), diff_geom[i])
+            if diff_plot_boundary is not None:
+                if len(diff_plot_boundary) > 0:
+                    self.assertEqual(diff_plot_boundary[0]['geometry'].asWkt(), diff_geom[i], 'case_{}'.format(i + 1))
+                else:
+                    self.assertEqual('', diff_geom[i], 'case_{}'.format(i + 1))
 
     def test_lines_must_be_covered_by_polygons(self):
         print('\nINFO: Validating lines must be covered by polygons...')
@@ -278,11 +279,13 @@ class TesQualityValidations(unittest.TestCase):
             polygon_layer = QgsVectorLayer(uri_polygon, 'polygon_layer_{}'.format(i+1), 'ogr')
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
-            clone_polygons = self.qgis_utils.geometry.clone_layer(polygon_layer)
+            diff_boundary_plot = self.qgis_utils.geometry.difference_boundary_plot(lines_layer, polygon_layer, 'fid')
 
-            self.qgis_utils.geometry.add_topological_vertices(clone_polygons, lines_layer)
-            diff_layer = self.qgis_utils.geometry.line_polygon_layer_difference(lines_layer, clone_polygons)
-            self.assertEqual(diff_layer.getFeature(1).geometry().asWkt(), diff_geom[i])
+            if diff_boundary_plot is not None:
+                if len(diff_boundary_plot) > 0:
+                    self.assertEqual(diff_boundary_plot[0]['geometry'].asWkt(), diff_geom[i], 'case_{}'.format(i + 1))
+                else:
+                    self.assertEqual('', diff_geom[i], 'case_{}'.format(i + 1))
 
     def test_intersection_polygons_tolerance(self):
         print('\nINFO: Validating intersection in polygons (plots)...')

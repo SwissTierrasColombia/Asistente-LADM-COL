@@ -10,6 +10,7 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.tests.utils import import_projectgenerator, get_dbconn, get_test_path, restore_schema, clean_table
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.config.table_mapping_config import BOUNDARY_POINT_TABLE
+from asistente_ladm_col.config.general_config import DEFAULT_EPSG
 
 import_projectgenerator()
 
@@ -48,7 +49,8 @@ class TestCopy(unittest.TestCase):
                                     cbo_longitude,
                                     cbo_latitude,
                                     self.db_connection,
-                                    self.qgis_utils.get_layer(self.db_connection, BOUNDARY_POINT_TABLE, load=True))
+                                    DEFAULT_EPSG,
+                                    BOUNDARY_POINT_TABLE)
         self.assertEqual(res, True)
 
     def test_copy_csv_with_z_to_db(self):
@@ -73,8 +75,10 @@ class TestCopy(unittest.TestCase):
                                              cbo_longitude,
                                              cbo_latitude,
                                              self.db_connection_3d,
-                                     self.qgis_utils.get_layer(self.db_connection_3d, BOUNDARY_POINT_TABLE, load=True),
+                                             DEFAULT_EPSG,
+                                             BOUNDARY_POINT_TABLE,
                                              elevation)
+
         self.assertEqual(res, True)
 
     def validate_points_in_db(self):
@@ -117,7 +121,6 @@ class TestCopy(unittest.TestCase):
         print('\nINFO: Validating points Z')
         query = cur.execute("""SELECT * FROM test_ladm_col_3d.puntolindero;""")
         results = cur.fetchall()
-        print("Registers !!!!", results)
         colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
         self.assertEqual(len(results), 51)
 
@@ -162,7 +165,8 @@ class TestCopy(unittest.TestCase):
                                     cbo_longitude,
                                     cbo_latitude,
                                     self.db_connection,
-                                    self.qgis_utils.get_layer(self.db_connection, BOUNDARY_POINT_TABLE, load=True))
+                                    DEFAULT_EPSG,
+                                    BOUNDARY_POINT_TABLE)
 
         self.assertEqual(res, False)
 

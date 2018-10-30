@@ -169,7 +169,7 @@ def run_etl_model(input_layer, out_layer, ladm_col_layer_name=BOUNDARY_POINT_TAB
     if model:
         automatic_fields_definition = True
 
-        mapping = get_refactor_fields_mapping(ladm_col_layer_name, qgis.utils)
+        mapping = get_refactor_fields_mapping(ladm_col_layer_name, asistente_ladm_col_plugin.qgis_utils)
         params = {
             'INPUT': input_layer,
             'mapping': mapping,
