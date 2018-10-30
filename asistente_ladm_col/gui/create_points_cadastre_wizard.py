@@ -125,12 +125,30 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         if id == self.dict_pages_ids[self.wizardPage2]:
             self.adjust_page_2_controls()
         elif id == self.dict_pages_ids[self.wizardPage3]:
-            self.button(self.FinishButton).setEnabled(False)
-            self.check_z_in_geomety()
-            self.fill_long_lat_combos("")
+            self.set_buttons_visible(False)
+            self.set_buttons_enabled(False)
 
-    def check_z_in_geomety(self):
-        self.wizardPage3.setEnabled(False)
+            QCoreApplication.processEvents()
+            self.check_z_in_geometry()
+            QCoreApplication.processEvents()
+            self.fill_long_lat_combos("")
+            QCoreApplication.processEvents()
+
+            self.set_buttons_visible(True)
+            self.set_buttons_enabled(True)
+
+    def set_buttons_visible(self, visible):
+        self.button(self.BackButton).setVisible(visible)
+        self.button(self.FinishButton).setVisible(visible)
+        self.button(self.CancelButton).setVisible(visible)
+
+    def set_buttons_enabled(self, enabled):
+        self.wizardPage3.setEnabled(enabled)
+        self.button(self.BackButton).setEnabled(enabled)
+        self.button(self.FinishButton).setEnabled(enabled)
+        self.button(self.CancelButton).setEnabled(enabled)
+
+    def check_z_in_geometry(self):
         self.target_layer = self.qgis_utils.get_layer(self._db, self.current_point_name(), load=True)
 
         if not QgsWkbTypes().hasZ(self.target_layer.wkbType()):
@@ -145,8 +163,6 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             self.cbo_elevation.setEnabled(True)
             self.labelZ.setToolTip("")
             self.cbo_elevation.setToolTip("")
-        self.wizardPage3.setEnabled(True)
-
 
     def adjust_page_2_controls(self):
         if self.rad_refactor.isChecked():
