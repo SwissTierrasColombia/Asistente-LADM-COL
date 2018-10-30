@@ -20,10 +20,11 @@
 """
 import gc
 
-from qgis.PyQt.QtCore import QObject
+from qgis.PyQt.QtCore import (QObject, QVariant)
 from qgis.core import (
     Qgis,
     QgsApplication,
+    QgsField,
     QgsGeometry,
     QgsPoint,
     QgsFeature,
@@ -35,6 +36,7 @@ from qgis.core import (
     QgsSpatialIndex,
     QgsVectorLayer,
     QgsVectorLayerEditUtils,
+    QgsVectorLayerUtils,
     QgsWkbTypes
 )
 from qgis.core import edit
@@ -517,16 +519,6 @@ class GeometryUtils(QObject):
         del dict_features_layer2
         gc.collect()
 
-    def add_topological_vertices_geom(self, layer, geom):
-        """
-                Modify layer1 adding vertices that are in geom
-                Only work with simple geometries
-        """
-        if not geom.isMultipart():
-            with edit(layer):
-                edit_layer = QgsVectorLayerEditUtils(layer)
-                edit_layer.addTopologicalPoints(geom)
-
     def difference_plot_boundary(self, plots_as_lines_layer, boundary_layer, id_field=ID_FIELD):
         """
         Advanced difference function that, unlike the traditional function,
@@ -683,11 +675,55 @@ class GeometryUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         return spatial_join_layer.getFeatures(request)
 
-    def create_temp_layer(self, geom):
-        f = QgsFeature()
-        f.setGeometry(geom)
-        layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG), "temporal", "memory")
-        layer.dataProvider().addFeatures([f])
+    def get_inner_rings_layer(self, plot_layer, id_field=ID_FIELD, use_selection=False):
+        id_field_idx = plot_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        polygons = plot_layer.getSelectedFeatures(request) if use_selection else plot_layer.getFeatures(request)
+
+        layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG), "rings", "memory")
+        data_provider = layer.dataProvider()
+        data_provider.addAttributes([QgsField(ID_FIELD, QVariant.Int)])
+        layer.updateFields()
+
+        features = []
+
+        for polygon in polygons:
+            polygon_geom = polygon.geometry()
+            is_multipart = polygon_geom.isMultipart()
+
+            # Does the current multipolygon have inner rings?
+            has_inner_rings = False
+            multi_polygon = None
+            single_polygon = None
+
+            if is_multipart:
+                multi_polygon = polygon_geom.get()
+                for part in range(multi_polygon.numGeometries()):
+                    if multi_polygon.ringCount(part) > 1:
+                        has_inner_rings = True
+                        break
+            else:
+                single_polygon = polygon_geom.get()
+                if single_polygon.numInteriorRings() > 0:
+                    has_inner_rings = True
+
+            if has_inner_rings:
+
+                if is_multipart and multi_polygon:
+                    for i in range(multi_polygon.numGeometries()):
+                        temp_polygon = multi_polygon.geometryN(i)
+                        for j in range(temp_polygon.numInteriorRings()):
+                            new_feature = QgsVectorLayerUtils().createFeature(layer, QgsGeometry(
+                                temp_polygon.interiorRing(j).clone()), {0: polygon[id_field]})
+                            features.append(new_feature)
+
+                elif not is_multipart and single_polygon:
+                    for j in range(single_polygon.numInteriorRings()):
+                        new_feature = QgsVectorLayerUtils().createFeature(layer, QgsGeometry(
+                            single_polygon.interiorRing(j).clone()), {0: polygon[id_field]})
+                        features.append(new_feature)
+
+        layer.dataProvider().addFeatures(features)
         layer.updateExtents()
         layer.reload()
         return layer

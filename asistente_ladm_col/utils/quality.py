@@ -29,6 +29,7 @@ from qgis.core import (
     QgsVectorLayerUtils,
     QgsWkbTypes,
     QgsFeatureRequest,
+    NULL,
     QgsRectangle
 )
 from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
@@ -51,6 +52,9 @@ from ..config.table_mapping_config import (
     POINT_BOUNDARY_FACE_STRING_TABLE,
     POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
     MORE_BOUNDARY_FACE_STRING_TABLE,
+    LESS_TABLE,
+    LESS_TABLE_BOUNDARY_FIELD,
+    LESS_TABLE_PLOT_FIELD,
     MOREBFS_TABLE_PLOT_FIELD,
     MOREBFS_TABLE_BOUNDARY_FIELD,
     PLOT_TABLE,
@@ -134,12 +138,19 @@ class QualityUtils(QObject):
         res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
+            LESS_TABLE: {'name': LESS_TABLE, 'geometry': None},
             MORE_BOUNDARY_FACE_STRING_TABLE: {'name': MORE_BOUNDARY_FACE_STRING_TABLE, 'geometry': None}
         }, load=True)
 
+        typeTplgError = {0: "Plot is not covered by the boundary",
+                         1: "Topological relationship not recorded in the table "+MORE_BOUNDARY_FACE_STRING_TABLE,
+                         2: "Topological relationship not recorded in the table "+LESS_TABLE,
+                         3: "Plot is not completely covered by the boundary"}
+
         plot_layer = res_layers[PLOT_TABLE]
         boundary_layer = res_layers[BOUNDARY_TABLE]
-        more_boundary_face_string_table = res_layers[MORE_BOUNDARY_FACE_STRING_TABLE]
+        more_bfs_layer = res_layers[MORE_BOUNDARY_FACE_STRING_TABLE]
+        less_layer = res_layers[LESS_TABLE]
 
         if plot_layer is None:
             self.qgis_utils.message_emitted.emit(
@@ -162,42 +173,58 @@ class QualityUtils(QObject):
                 Qgis.Info)
             return
 
-        if more_boundary_face_string_table.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table "+MORE_BOUNDARY_FACE_STRING_TABLE+" is empty, topology cannot be verified."),
-                Qgis.Info)
+        if more_bfs_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(
+                    MORE_BOUNDARY_FACE_STRING_TABLE, db.get_description()),
+                Qgis.Warning)
             return
 
-        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     self.translatable_config_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES,
-                                     "memory")
+        if less_layer is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(LESS_TABLE, db.get_description()), Qgis.Warning)
+            return
 
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('plot_id', QVariant.Int)])
-        error_layer.updateFields()
+
 
         plot_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+
+        # create dict with layer data
+        id_field_idx = plot_as_lines_layer.fields().indexFromName(ID_FIELD)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        dict_plot_as_lines = {feature[ID_FIELD]: feature for feature in plot_as_lines_layer.getFeatures(request)}
 
         id_field_idx = boundary_layer.fields().indexFromName(ID_FIELD)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_boundary = {feature[ID_FIELD]: feature for feature in boundary_layer.getFeatures(request)}
 
-        id_field_idx = plot_as_lines_layer.fields().indexFromName(ID_FIELD)
-        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
-        dict_plot_as_lines = {feature[ID_FIELD]: feature for feature in plot_as_lines_layer.getFeatures(request)}
+        exp_more = '"{}" is not null and  "{}" is not null'.format(MOREBFS_TABLE_BOUNDARY_FIELD, MOREBFS_TABLE_PLOT_FIELD)
+        dict_more_bfs = [{'plot_id': feature[MOREBFS_TABLE_PLOT_FIELD], 'boundary_id': feature[MOREBFS_TABLE_BOUNDARY_FIELD]}
+                         for feature in more_bfs_layer.getFeatures(exp_more)]
 
-        # Difference or Difference that no intersect completelly
-        features = []
-        plot_boundary_diffs = self.qgis_utils.geometry.difference_plot_boundary(plot_as_lines_layer, boundary_layer)
-        id_plot_diffs = [item_plot_boundary_diff['id'] for item_plot_boundary_diff in plot_boundary_diffs]
-        differences = plot_boundary_diffs ## TODO: AJUST difference
 
-        exp = '"cclp_lindero" is not null and  "uep_terreno" is not null'
-        more_plot_boundary_table = [{'plot_id': feature[MOREBFS_TABLE_PLOT_FIELD],
-                                     'boundary_id': feature[MOREBFS_TABLE_BOUNDARY_FIELD]}
-                                    for feature in more_boundary_face_string_table.getFeatures(exp)]
+        exp_less = '"{}" is not null and  "{}" is not null'.format(LESS_TABLE_BOUNDARY_FIELD, LESS_TABLE_PLOT_FIELD)
+        dict_less = [{'plot_id': feature[LESS_TABLE_PLOT_FIELD], 'boundary_id': feature[LESS_TABLE_BOUNDARY_FIELD]}
+                     for feature in less_layer.getFeatures(exp_less)]
 
+        inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(plot_layer)
+        dict_inner_rings = {feature[ID_FIELD]: feature for feature in inner_rings_layer.getFeatures(request)}
+
+        # spatial joins between inner rings and boundary
+        spatial_join_inner_rings_boundary_layer = processing.run("qgis:joinattributesbylocation",
+                                                                 {'INPUT': inner_rings_layer,
+                                                                  'JOIN': boundary_layer,
+                                                                  'PREDICATE': [0], # Intersects
+                                                                  'JOIN_FIELDS': [ID_FIELD],
+                                                                  'METHOD': 0,
+                                                                  'DISCARD_NONMATCHING': False,
+                                                                  'PREFIX': '',
+                                                                  'OUTPUT': 'memory:'})['OUTPUT']
+
+        dict_spatial_join_inner_rings_boundary = [{'plot_id': feature[ID_FIELD], 'boundary_id': feature[ID_FIELD + '_2']}
+                                     for feature in spatial_join_inner_rings_boundary_layer.getFeatures()]
+
+        # Spatial join between plot as lines and boundary
         spatial_join_plot_boundary_layer = processing.run("qgis:joinattributesbylocation",
                                                     {'INPUT': plot_as_lines_layer,
                                                      'JOIN': boundary_layer,
@@ -207,80 +234,137 @@ class QualityUtils(QObject):
                                                      'DISCARD_NONMATCHING': False,
                                                      'PREFIX': '',
                                                      'OUTPUT': 'memory:'})['OUTPUT']
-        # Spatial join between plot as lines and boundary
-        spatial_join_plot_boundary = [{'plot_id': feature[ID_FIELD],
-                                       'boundary_id': feature[ID_FIELD + '_2']}
+
+
+        dict_spatial_join_plot_boundary = [{'plot_id': feature[ID_FIELD], 'boundary_id': feature[ID_FIELD + '_2']}
                                       for feature in spatial_join_plot_boundary_layer.getFeatures()]
-        id_plots_without_boundary_sj = []
 
-        for item_sj in spatial_join_plot_boundary.copy():
-            boundary_id = item_sj['boundary_id']
-            plot_id = item_sj['plot_id']
+        plots_without_boundary = []
 
-            if str(boundary_id) != 'NULL':
-                plot_geom = dict_plot_as_lines[plot_id].geometry()
+        # more bfs topology check
+        for item_sj in dict_spatial_join_plot_boundary.copy():
+            if item_sj not in dict_spatial_join_inner_rings_boundary:
+                boundary_id = item_sj['boundary_id']
+                plot_id = item_sj['plot_id']
+
+                if boundary_id != NULL:
+                    plot_geom = dict_plot_as_lines[plot_id].geometry()
+                    boundary_geom = dict_boundary[boundary_id].geometry()
+
+                    if plot_geom.intersection(boundary_geom).type() != QgsWkbTypes.LineGeometry:
+                        # Remove point intersections plot-boundary
+                        dict_spatial_join_plot_boundary.remove(item_sj)
+                else:
+                    # Remove plot without boundary
+                    dict_spatial_join_plot_boundary.remove(item_sj)
+                    plots_without_boundary.append(item_sj['plot_id'])
+            else:
+                boundary_id = item_sj['boundary_id']
+
+                if str(boundary_id) == 'NULL':
+                    plots_without_boundary.append(item_sj['plot_id'])
+
+                dict_spatial_join_plot_boundary.remove(item_sj)
+
+        # start less table topology check
+        no_register_less = []
+        plots_without_inner_rings = []
+
+        # plot inner ring no covered by boundary
+        for inner_ring in dict_spatial_join_inner_rings_boundary:
+            boundary_id = inner_ring['boundary_id']
+            plot_id_inner_ring = inner_ring['plot_id']
+
+            if boundary_id != NULL:
+
+                inner_ring_geom = dict_inner_rings[plot_id_inner_ring].geometry()
                 boundary_geom = dict_boundary[boundary_id].geometry()
 
-                if plot_geom.intersection(boundary_geom).type() == QgsWkbTypes.PointGeometry:
-                    # Remove point intersections plot-boundary
-                    spatial_join_plot_boundary.remove(item_sj)
+                if inner_ring_geom.intersection(boundary_geom).type() == QgsWkbTypes.LineGeometry:
+                    # Remove point intersections inner ring - boundary
+                    if inner_ring not in dict_less:
+                        no_register_less.append((inner_ring['plot_id'], inner_ring['boundary_id'])) # no register less table
             else:
-                # Remove plot without boundary
-                spatial_join_plot_boundary.remove(item_sj)
-                id_plots_without_boundary_sj.append(item_sj['plot_id'])
+                # if plot_id_inner_ring not in plots_without_boundary:
+                #     plots_without_boundary.append(plot_id_inner_ring) # Plot without boundary
+                if plot_id_inner_ring not in plots_without_inner_rings:
+                    plots_without_inner_rings.append(plot_id_inner_ring) # Plot without inner ring boundary
+        # finish less table topology check
 
         # remove plot without boundary from differences
-        [plot_boundary_diffs.remove(plot_boundary_diff) for plot_boundary_diff in plot_boundary_diffs.copy() if plot_boundary_diff['id'] in id_plots_without_boundary_sj]
-        id_plot_diffs = [plot_boundary_diff['id'] for plot_boundary_diff in plot_boundary_diffs]
-
-        # Check differences spatial join with diff (some segment are seleted by are okay)
-        for id_plot_diff in id_plot_diffs:
-            ids_boundary_sj_diff = [record_sj['boundary_id'] for record_sj in spatial_join_plot_boundary if
-                                    record_sj['plot_id'] == id_plot_diff]
-            # print(id_plot_diff, len(ids_boundary_sj_diff))
-            for id_boundary_sj_diff in ids_boundary_sj_diff:
-                if id_boundary_sj_diff in dict_boundary:
-                    geom_plot = dict_plot_as_lines[id_plot_diff].geometry()
-                    geom_boundary = dict_boundary[id_boundary_sj_diff].geometry()
-
-                    # Check no cover plot boundary
-                    if not geom_plot.contains(geom_boundary):
-                        if geom_plot.intersection(geom_boundary).type() == QgsWkbTypes.LineGeometry:
-                            # Update topological geoms and check again contains and remove
-                            tmp_layer = self.qgis_utils.geometry.create_temp_layer(geom_plot)
-                            self.qgis_utils.geometry.add_topological_vertices_geom(tmp_layer, geom_boundary)
-                            feature_update = [f for f in tmp_layer.getFeatures()][0]
-                            geom_plot_update = feature_update.geometry()
-                            if not geom_plot_update.contains(geom_boundary):
-                                spatial_join_plot_boundary.remove({'plot_id': id_plot_diff, 'boundary_id': id_boundary_sj_diff})
+        plot_boundary_diffs = self.qgis_utils.geometry.difference_plot_boundary(plot_as_lines_layer,boundary_layer)
+        [plot_boundary_diffs.remove(plot_boundary_diff) for plot_boundary_diff in plot_boundary_diffs.copy()
+                                                        if plot_boundary_diff['id'] in plots_without_boundary]
 
         # Check topology no register
-        no_register_topology_plot_boundary = [item_sj_pb for item_sj_pb in spatial_join_plot_boundary
-                                              if item_sj_pb not in more_plot_boundary_table]
-        print('ERRORS:')
-        print(no_register_topology_plot_boundary)
+        no_register_more_bfs = [(item_sj_pb['plot_id'], item_sj_pb['boundary_id']) for item_sj_pb in dict_spatial_join_plot_boundary if item_sj_pb not in dict_more_bfs]
 
-        if differences is not None:
-            for difference in differences:
-                new_feature = QgsVectorLayerUtils().createFeature(
-                    error_layer,
-                    difference['geometry'],
-                    {0: difference['id']})
+
+        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     self.translatable_config_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES,
+                                     "memory")
+
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
+                                     QgsField('boundary_id', QVariant.Int),
+                                     QgsField('error_type', QVariant.String)])
+        error_layer.updateFields()
+        features = []
+
+        # No register more bfs
+        if no_register_more_bfs is not None:
+            for error_more_bfs in set(no_register_more_bfs):
+                plot_id = error_more_bfs[0] # plot_id
+                boundary_id = error_more_bfs[1] #boundary_id
+                geom_plot = dict_plot_as_lines[plot_id].geometry()
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer,geom_plot,
+                                                                  {0: plot_id,1: boundary_id, 2: typeTplgError[1]})
                 features.append(new_feature)
 
-            error_layer.dataProvider().addFeatures(features)
+        # No register less
+        if no_register_less is not None:
+            for error_less in set(no_register_less):
+                plot_id_inner_ring = error_less[0] # plot_id
+                boundary_id = error_less[1] # boundary_id
+                inner_ring_geom = dict_inner_rings[plot_id_inner_ring].geometry()
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer,inner_ring_geom,
+                                                                  {0: plot_id_inner_ring,1: boundary_id, 2: typeTplgError[2]})
+                features.append(new_feature)
 
-            if error_layer.featureCount() > 0:
-                added_layer = self.add_error_layer(error_layer)
+        # plot not covered by boundary
+        for plot_without_boundary_id in set(plots_without_boundary):
+            geom_plot = dict_plot_as_lines[plot_without_boundary_id].geometry()
+            new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_plot,
+                                                              {0: plot_without_boundary_id, 1: None, 2: typeTplgError[0]})
+            features.append(new_feature)
 
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate("QGISUtils",
-                        "A memory layer with {} plot lines not covered by boundaries has been added to the map!").format(
-                        added_layer.featureCount()), Qgis.Info)
-            else:
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate("QGISUtils",
-                        "All Plot lines are covered by Boundaries!"), Qgis.Info)
+        # plot not completelly covered by boundary
+        for plot_boundary_diff in plot_boundary_diffs:
+            plot_id = plot_boundary_diff['id']
+            plot_geom = plot_boundary_diff['geometry']
+            new_feature = QgsVectorLayerUtils().createFeature(error_layer, plot_geom,
+                                                              {0: plot_id, 1: None, 2: typeTplgError[3]})
+            features.append(new_feature)
+
+        for plot_without_inner_ring in plots_without_inner_rings:
+            inner_ring = dict_inner_rings[plot_without_inner_ring].geometry()
+            new_feature = QgsVectorLayerUtils().createFeature(error_layer, inner_ring,
+                                                              {0: plot_without_inner_ring, 1: None, 2: typeTplgError[3]})
+            features.append(new_feature)
+
+        error_layer.dataProvider().addFeatures(features)
+
+        if error_layer.featureCount() > 0:
+            added_layer = self.add_error_layer(error_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "A memory layer with {} plot lines not covered by boundaries has been added to the map!").format(
+                    added_layer.featureCount()), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "All Plot lines are covered by Boundaries!"), Qgis.Info)
 
     def check_boundary_points_covered_by_boundary_nodes(self, db):
         res_layers = self.qgis_utils.get_layers(db, {
