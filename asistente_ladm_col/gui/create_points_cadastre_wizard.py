@@ -170,17 +170,27 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         self.cbo_mapping.addItem("")
 
         files = glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(self.current_point_name(), '[0-9]'*8, "*")))
-        files.sort(key=lambda x: os.path.getmtime(x))
+        files.sort(key=lambda path: os.path.getmtime(path))
 
         if (len(files) > 10):
-            for x in files[0:len(files)-10]:
-                os.remove(x)
+            for path in files[0:len(files)-10]:
+                os.remove(path)
                 files = glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(self.current_point_name(), '[0-9]'*8, "*")))
-                files.sort(key=lambda x: os.path.getmtime(x))
+                files.sort(key=lambda path: os.path.getmtime(path))
 
         files.reverse()
         for file in files:
             self.cbo_mapping.addItem(os.path.basename(file).strip(".txt"))
+
+
+    def replace_field_mapping(self, name):
+        files = glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(self.current_point_name(), '[0-9]'*8, "*")))
+        files.sort(key=lambda path: os.path.getmtime(path))
+        name = "{}.{}".format(name, "txt")
+
+        for path in files:
+            if path.endswith(name):
+                os.remove(path)
 
     def finished_dialog(self):
         self.save_settings()
@@ -198,6 +208,10 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                                                self.mMapLayerComboBox.currentLayer(),
                                                output_layer_name,
                                                save_field_mapping)
+
+            if save_field_mapping is not None:
+                self.replace_field_mapping(save_field_mapping)
+
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreatePointsCadastreWizard",
