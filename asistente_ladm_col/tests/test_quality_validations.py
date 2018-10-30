@@ -12,10 +12,7 @@ from asistente_ladm_col.utils.quality import QualityUtils
 
 from processing.core.Processing import Processing
 from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import (
-    QgsWkbTypes,
-    QgsGeometry
-)
+from qgis.core import QgsWkbTypes
 
 import processing
 
@@ -48,22 +45,22 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(lines.constGet().numGeometries(), 4)
 
         line = lines.constGet().geometryN(0)
-        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 2)
         self.validate_segments(segments_info, tolerance)
 
         line = lines.constGet().geometryN(1)
-        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 1)
         self.validate_segments(segments_info, tolerance)
 
         line = lines.constGet().geometryN(2)
-        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 0)
         self.validate_segments(segments_info, tolerance)
 
         line = lines.constGet().geometryN(3)
-        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 1)
         self.validate_segments(segments_info, tolerance)
 
@@ -74,7 +71,7 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(lines.constGet().numGeometries(), 1)
 
         line = lines.constGet().geometryN(0)
-        segments_info = self.quality.get_too_long_segments_from_simple_line(line, tolerance)
+        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
         self.assertEqual(len(segments_info), 1)
         self.validate_segments(segments_info, tolerance)
 
@@ -256,12 +253,13 @@ class TesQualityValidations(unittest.TestCase):
             polygon_layer = QgsVectorLayer(uri_polygon, 'polygon_layer_{}'.format(i+1), 'ogr')
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
-            # We don't want to overwrite the original layer
-            clone_polygons = self.qgis_utils.geometry.clone_layer(polygon_layer)
+            diff_plot_boundary = self.qgis_utils.geometry.difference_plot_boundary(polygon_layer, lines_layer, 'fid')
 
-            self.qgis_utils.geometry.add_topological_vertices(clone_polygons, lines_layer)
-            diff_layer = self.qgis_utils.geometry.line_polygon_layer_difference(clone_polygons, lines_layer)
-            self.assertEqual(diff_layer.getFeature(1).geometry().asWkt(), diff_geom[i])
+            if diff_plot_boundary is not None:
+                if len(diff_plot_boundary) > 0:
+                    self.assertEqual(diff_plot_boundary[0]['geometry'].asWkt(), diff_geom[i], 'case_{}'.format(i + 1))
+                else:
+                    self.assertEqual('', diff_geom[i], 'case_{}'.format(i + 1))
 
     def test_lines_must_be_covered_by_polygons(self):
         print('\nINFO: Validating lines must be covered by polygons...')
@@ -281,11 +279,13 @@ class TesQualityValidations(unittest.TestCase):
             polygon_layer = QgsVectorLayer(uri_polygon, 'polygon_layer_{}'.format(i+1), 'ogr')
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
-            clone_polygons = self.qgis_utils.geometry.clone_layer(polygon_layer)
+            diff_boundary_plot = self.qgis_utils.geometry.difference_boundary_plot(lines_layer, polygon_layer, 'fid')
 
-            self.qgis_utils.geometry.add_topological_vertices(clone_polygons, lines_layer)
-            diff_layer = self.qgis_utils.geometry.line_polygon_layer_difference(lines_layer, clone_polygons)
-            self.assertEqual(diff_layer.getFeature(1).geometry().asWkt(), diff_geom[i])
+            if diff_boundary_plot is not None:
+                if len(diff_boundary_plot) > 0:
+                    self.assertEqual(diff_boundary_plot[0]['geometry'].asWkt(), diff_geom[i], 'case_{}'.format(i + 1))
+                else:
+                    self.assertEqual('', diff_geom[i], 'case_{}'.format(i + 1))
 
     def test_intersection_polygons_tolerance(self):
         print('\nINFO: Validating intersection in polygons (plots)...')
@@ -300,6 +300,24 @@ class TesQualityValidations(unittest.TestCase):
                                                                                   polygon_id,
                                                                                   overlapping_id)
         self.assertEqual(polygon_intersection, None)
+
+    def test_find_boundary_points_not_covered_by_boundaries(self):
+        print('\nINFO: Validating boundary points not covered by boundaries...')
+
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri_boundary = gpkg_path + '|layername={layername}'.format(layername='boundary_lamd')
+        uri_point_boundary = gpkg_path + '|layername={layername}'.format(layername='point_boundary_ladm')
+        uri_point_boundary_fixed = gpkg_path + '|layername={layername}'.format(layername='point_boundary_ladm_fixed')
+
+        boundary_layer = QgsVectorLayer(uri_boundary, 'boundary', 'ogr')
+        point_boundary_layer = QgsVectorLayer(uri_point_boundary, 'point_boundary', 'ogr')
+        point_boundary_fixed_layer = QgsVectorLayer(uri_point_boundary_fixed, 'point_boundary', 'ogr')
+
+        boundary_points = self.qgis_utils.geometry.get_boundary_points_not_covered_by_boundary_nodes(point_boundary_layer, boundary_layer)
+        self.assertEqual(len(boundary_points), 8)
+
+        boundary_points = self.qgis_utils.geometry.get_boundary_points_not_covered_by_boundary_nodes(point_boundary_fixed_layer, boundary_layer)
+        self.assertEqual(len(boundary_points), 0)
 
     def test_get_missing_boundary_points_in_boundaries(self):
         print('\nINFO: Validating missing boundary points in boundaries...')
@@ -395,6 +413,74 @@ class TesQualityValidations(unittest.TestCase):
         self.assertIn('Point (1091314.24563915398903191 1121448.97160633862949908)', geometries)
         self.assertIn('Point (1091213.62314918311312795 1121543.89559642062522471)', geometries)
 
+    def test_validate_topology_relation_between_point_boundary_boundary(self):
+        print('\nINFO: Validating that the relation between point boundary and boundary is registered in the topology table ...')
+
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri_boundary_points = gpkg_path + '|layername=good_boundary_points'
+        uri_boundary = gpkg_path + '|layername=good_boundary'
+        uri_points_ccl_table = gpkg_path + '|layername=pointsCcl'
+
+        boundary_layer = QgsVectorLayer(uri_boundary, 'boundary_points', 'ogr')
+        boundary_points_layer = QgsVectorLayer(uri_boundary_points, 'boundary', 'ogr')
+        points_ccl_table = QgsVectorLayer(uri_points_ccl_table, 'pointsCcl', 'ogr')
+
+        dic_points_ccl = dict()
+        for feature_point_ccl in points_ccl_table.getFeatures():
+            key = "{}-{}".format(feature_point_ccl['boundary_point_id'], feature_point_ccl['boundary_id'])
+            if key in dic_points_ccl:
+                dic_points_ccl[key] += 1
+            else:
+                dic_points_ccl.update({key:1})
+
+        # verify that the relation between point boundary and boundary is registered in the topology table
+        missing_topology = list()
+        duplicates_topology = list()
+        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer)
+
+        for point_selected in points_selected:
+            boundary_point_id = point_selected[ID_FIELD]
+            boundary_id = point_selected['{}_2'.format(ID_FIELD)]
+            key_query = "{}-{}".format(boundary_point_id, boundary_id)
+
+            if key_query in dic_points_ccl:
+                if dic_points_ccl[key_query] > 1:
+                    duplicates_topology.append([boundary_point_id, boundary_id])
+            else:
+                missing_topology.append([boundary_point_id, boundary_id])
+
+        self.assertEquals(len(missing_topology), 0)
+        self.assertEquals(len(duplicates_topology), 0)
+
+        uri_points_ccl_table = gpkg_path + '|layername=pointsCcl_bad'
+        points_ccl_table = QgsVectorLayer(uri_points_ccl_table, 'pointsCcl_bad', 'ogr')
+
+        dic_points_ccl = dict()
+        for feature_point_ccl in points_ccl_table.getFeatures():
+            key = "{}-{}".format(feature_point_ccl['boundary_point_id'], feature_point_ccl['boundary_id'])
+            if key in dic_points_ccl:
+                dic_points_ccl[key] += 1
+            else:
+                dic_points_ccl.update({key: 1})
+
+        # verify that the relation between point boundary and boundary is registered in the topology table
+        missing_topology = list()
+        duplicates_topology = list()
+        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer)
+
+        for point_selected in points_selected:
+            boundary_point_id = point_selected[ID_FIELD]
+            boundary_id = point_selected['{}_2'.format(ID_FIELD)]
+            key_query = "{}-{}".format(boundary_point_id, boundary_id)
+
+            if key_query in dic_points_ccl:
+                if dic_points_ccl[key_query] > 1: # register more that once
+                    duplicates_topology.append([boundary_point_id, boundary_id])
+            else: # no register
+                missing_topology.append([boundary_point_id, boundary_id])
+
+        self.assertEquals(missing_topology, [[1, 1]])
+        self.assertEquals(duplicates_topology, [[20, 1]])
 
     def test_check_right_of_way_overlaps_buildings(self):
         print('\nINFO: Validating Right of Way-Building overlaps...')
@@ -452,6 +538,28 @@ class TesQualityValidations(unittest.TestCase):
         end_points, dangle_ids = self.quality.get_dangle_ids(boundary_layer)
         self.assertEqual(len(dangle_ids), 0)
 
+    def test_boundaries_are_not_split(self):
+        print('\nINFO: Validating boundaries are not split...')
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri_bad_boundary = gpkg_path + '|layername={layername}'.format(layername='bad_boundary')
+        uri_bbox_boundary = gpkg_path + '|layername={layername}'.format(layername='bbox_intersect_boundary')
+        uri_good_boundary = gpkg_path + '|layername={layername}'.format(layername='good_boundary')
+        bad_boundary_layer = QgsVectorLayer(uri_bad_boundary, 'bad_boundary', 'ogr')
+        bbox_boundary_layer = QgsVectorLayer(uri_bbox_boundary, 'bbox_intersect_boundary', 'ogr')
+        good_boundary_layer = QgsVectorLayer(uri_good_boundary, 'good_boundary', 'ogr')
+
+        bad_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(bad_boundary_layer)
+        bad_boundary_errors_list = [item for item in bad_boundary_errors]
+        self.assertEquals(len(bad_boundary_errors_list), 4)
+
+        bbox_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(bbox_boundary_layer)
+        bbox_boundary_errors_list = [item for item in bbox_boundary_errors]
+        self.assertEquals(len(bbox_boundary_errors_list), 9)
+
+        good_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(good_boundary_layer)
+        good_boundary_errors_list = [item for item in good_boundary_errors]
+        self.assertEquals(len(good_boundary_errors_list), 0)
+
     def validate_segments(self, segments_info, tolerance):
         for segment_info in segments_info:
             #print(segment_info[0].asWkt(), segment_info[1])
@@ -460,15 +568,15 @@ class TesQualityValidations(unittest.TestCase):
 
     def test_check_gaps_in_plots(self):
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        uri = gpkg_path + '|layername={layername}'.format(layername='tests_plots')
-        test_plots_layer = QgsVectorLayer(uri, 'tests_plots', 'ogr')
+        uri = gpkg_path + '|layername={layername}'.format(layername='check_gaps_in_plots')
+        test_plots_layer = QgsVectorLayer(uri, 'check_gaps_in_plots', 'ogr')
 
         print('\nINFO: Validating Gaps in Plots using roads and multiple geometries...')
         gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
         geometries = [g.asWkt() for g in gaps]
 
         expected_list = [
-            'Polygon ((1001845.19794039404951036 1013415.08188382943626493, 1001851.47861975431442261 1013424.31817700632382184, 1001833.74493685469496995 1013433.92392191023100168, 1001829.49624199338722974 1013421.7320149167208001, 1001839.42949045938439667 1013500.23419545334763825, 1001838.68766217899974436 1013479.83391774445772171, 1001839.42949045938439667 1013450.16078653128352016, 1001855.74971262644976377 1013449.78987239114940166, 1001858.3461116076214239 1013430.87325124291237444, 1001885.42284383939113468 1013430.87325124291237444, 1001901.72405463655013591 1013411.57209242216777056, 1001910.64500537037383765 1013418.26217047742102295, 1001917.32145989337004721 1013392.29818066605366766, 1001845.19794039404951036 1013415.08188382943626493))',
+            'Polygon ((1001839.42949045938439667 1013500.23419545334763825, 1001838.68766217899974436 1013479.83391774445772171, 1001839.42949045938439667 1013450.16078653128352016, 1001855.74971262644976377 1013449.78987239114940166, 1001858.3461116076214239 1013430.87325124291237444, 1001885.42284383939113468 1013430.87325124291237444, 1001901.72405463655013591 1013411.57209242216777056, 1001910.64500537037383765 1013418.26217047742102295, 1001917.32145989337004721 1013392.29818066605366766, 1001845.19794039404951036 1013415.08188382943626493, 1001851.47861975431442261 1013424.31817700632382184, 1001833.74493685469496995 1013433.92392191023100168, 1001829.49624199338722974 1013421.7320149167208001, 1001839.42949045938439667 1013500.23419545334763825))', 'Polygon ((1001935.86716690135654062 1013432.35690780356526375, 1001921.03060129494406283 1013446.08073098957538605, 1001920.28877301455941051 1013475.7538622027495876, 1001957.38018703076522797 1013429.01868054212536663, 1001935.86716690135654062 1013432.35690780356526375))',
             'Polygon ((1001935.86716690135654062 1013432.35690780356526375, 1001921.03060129494406283 1013446.08073098957538605, 1001920.28877301455941051 1013475.7538622027495876, 1001957.38018703076522797 1013429.01868054212536663, 1001935.86716690135654062 1013432.35690780356526375))',
             'Polygon ((1001920.28877301455941051 1013475.7538622027495876, 1001861.31342472892720252 1013477.9793470436707139, 1001862.05525300919543952 1013498.37962475256063044, 1001920.28877301455941051 1013475.7538622027495876))',
             'Polygon ((1001895.43752562382724136 1013467.22283697873353958, 1001907.30677810893394053 1013464.25552385742776096, 1001907.67769224906805903 1013454.2408420731080696, 1001895.43752562382724136 1013454.2408420731080696, 1001895.43752562382724136 1013467.22283697873353958))',
@@ -518,6 +626,82 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(len(geometries), 2)
         test_plots_layer.rollBack()
 
+        print('\nINFO: Validating Gaps in Plots using roads for only one geometry...')
+        test_plots_layer.startEditing()
+        test_plots_layer.deleteFeature(1)
+        test_plots_layer.deleteFeature(2)
+        test_plots_layer.deleteFeature(3)
+        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
+        geometries = [g.asWkt() for g in gaps]
+        self.assertEqual([], geometries)
+        self.assertEqual(len(geometries), 0)
+
+        test_plots_layer.rollBack()
+
+        print('\nINFO: Validating Gaps in Plots without using roads for only one geometry...')
+        test_plots_layer.startEditing()
+        test_plots_layer.deleteFeature(1)
+        test_plots_layer.deleteFeature(2)
+        test_plots_layer.deleteFeature(3)
+        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
+        geometries = [g.asWkt() for g in gaps]
+        self.assertEqual([], geometries)
+        self.assertEqual(len(geometries), 0)
+
+        test_plots_layer.rollBack()
+
+        print('\nINFO: Validating Gaps in Plots using roads for two geometries...')
+        test_plots_layer.startEditing()
+        test_plots_layer.deleteFeature(1)
+        test_plots_layer.deleteFeature(3)
+        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
+        geometries = [g.asWkt() for g in gaps]
+        self.assertIn(
+            'Polygon ((1001889.87381352134980261 1013447.93530169036239386, 1001885.42284383939113468 1013430.87325124291237444, 1001901.72405463655013591 1013411.57209242216777056, 1001845.19794039404951036 1013415.08188382943626493, 1001851.47861975431442261 1013424.31817700632382184, 1001833.74493685469496995 1013433.92392191023100168, 1001889.87381352134980261 1013447.93530169036239386))',
+            geometries)
+        self.assertEqual(len(geometries), 1)
+
+        test_plots_layer.rollBack()
+
+        print('\nINFO: Validating Gaps in Plots without using roads for two geometries...')
+        test_plots_layer.startEditing()
+        test_plots_layer.deleteFeature(1)
+        test_plots_layer.deleteFeature(3 )
+        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
+        geometries = [g.asWkt() for g in gaps]
+        self.assertEqual([], geometries)
+        self.assertEqual(len(geometries), 0)
+
+        test_plots_layer.rollBack()
+
+    def test_multiparts_in_right_of_way(self):
+        print('\nINFO: Validating right_of_way for no multipart geometries...')
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='right_of_way')
+        right_of_way = QgsVectorLayer(uri, 'right_of_way', 'ogr')
+
+        self.assertEqual(right_of_way.featureCount(), 6)
+
+        single_parts, single_ids = self.qgis_utils.geometry.get_multipart_geoms(right_of_way)
+        unique_single_ids = set(single_ids)
+        self.assertEqual(len(single_parts), 8)
+        self.assertEqual(len(unique_single_ids), 3)
+
+        geometries = [g.asWkt() for g in single_parts]
+
+        expected_list = [
+            'Polygon ((1091145.85694021754898131 1121724.4278288041241467, 1091173.73775773262605071 1121765.70312499976716936, 1091206.17259239125996828 1121797.18358423886820674, 1091254.27673969138413668 1121818.85067654610611498, 1091289.43588917586021125 1121819.66833118535578251, 1091291.07119845412671566 1121759.97954252548515797, 1091260.00032216543331742 1121759.97954252548515797, 1091223.61469072219915688 1121742.80879510287195444, 1091197.44974226853810251 1121710.92026417492888868, 1091175.37306701089255512 1121673.30815077293664217, 1091177.00837628915905952 1121614.43701675231568515, 1091122.48462500004097819 1121616.61360054323449731, 1091119.46884239139035344 1121678.4371440215036273, 1091145.85694021754898131 1121724.4278288041241467))',
+            'Polygon ((1091336.04220360890030861 1121821.30364046362228692, 1091432.52545103151351213 1121818.85067654610611498, 1091433.34310567076317966 1121757.52657860796898603, 1091336.04220360890030861 1121762.4325064430013299, 1091336.04220360890030861 1121821.30364046362228692))',
+            'Polygon ((1091123.04317010380327702 1121561.28946520597673953, 1091175.37306701089255512 1121560.471810566727072, 1091172.10244845412671566 1121306.18121778313070536, 1091121.40786082530394197 1121307.81652706163004041, 1091123.04317010380327702 1121561.28946520597673953))',
+            'Polygon ((1091487.30831185611896217 1121755.89126932970248163, 1091747.3224871139973402 1121750.16768685542047024, 1091747.3224871139973402 1121813.94474871107377112, 1091487.30831185611896217 1121818.85067654610611498, 1091487.30831185611896217 1121755.89126932970248163))',
+            'Polygon ((1091747.3224871139973402 1121813.94474871107377112, 1091751.00193299050442874 1121954.58134664944373071, 1091806.6024484543595463 1121951.31072809267789125, 1091804.9671391760930419 1121217.05686211329884827, 1091749.36662371223792434 1121218.69217139179818332, 1091036.37177835148759186 1121226.86871778359636664, 1091039.64239690802060068 1121298.8223260308150202, 1091041.27770618651993573 1121310.26949097937904298, 1091121.40786082530394197 1121307.81652706163004041, 1091172.10244845412671566 1121306.18121778313070536, 1091425.57538659870624542 1121310.26949097937904298, 1091474.63466494926251471 1121316.81072809267789125, 1091749.36662371223792434 1121300.45763530931435525, 1091747.3224871139973402 1121750.16768685542047024, 1091747.3224871139973402 1121813.94474871107377112))',
+            'Polygon ((1091041.27770618651993573 1121310.26949097937904298, 1091039.64239690802060068 1121298.8223260308150202, 1091036.37177835148759186 1121226.86871778359636664, 1090936.91814493527635932 1121227.28393303113989532, 1090936.91814493527635932 1122080.91537633049301803, 1091813.44391813105903566 1122080.91537633049301803, 1091806.6024484543595463 1121951.31072809267789125, 1091751.00193299050442874 1121954.58134664944373071, 1091754.57278410973958671 1122030.62961602141149342, 1090996.1981062744744122 1122030.62961602141149342, 1090996.1981062744744122 1121309.86705158883705735, 1091033.88846642058342695 1121310.19713682751171291, 1091038.64362105960026383 1121310.19713682751171291, 1091041.27770618651993573 1121310.26949097937904298))',
+            'Polygon ((1090495.31252119154669344 1121959.44378872332163155, 1090784.3099831254221499 1121950.85970569564960897, 1090784.3099831254221499 1121676.16904880781657994, 1090501.03524321014992893 1121679.03040981711819768, 1090495.31252119154669344 1121959.44378872332163155),(1090604.04423954291269183 1121859.29615339962765574, 1090698.46915284800343215 1121856.434792390326038, 1090701.3305138573050499 1121753.4257960575632751, 1090615.48968357988633215 1121756.28715706686489284, 1090604.04423954291269183 1121859.29615339962765574))',
+            'Polygon ((1090592.59879550593905151 1121550.26916440110653639, 1090724.22140193125233054 1121547.40780339180491865, 1090724.22140193125233054 1121398.61703091091476381, 1090592.59879550593905151 1121407.20111393858678639, 1090592.59879550593905151 1121550.26916440110653639))'
+            ]
+
+        for expected in expected_list:
+            self.assertIn(expected, geometries)
 
     def tearDownClass():
         print('tearDown test_boundaries_digitizing')

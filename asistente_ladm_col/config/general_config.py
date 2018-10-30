@@ -5,19 +5,28 @@ from qgis.PyQt.QtCore import QLocale, QSettings, QObject, QCoreApplication
 
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
 CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
+PROPERTY_RECORD_CARD_MODEL_PREFIX = "Ficha_Predial_"
 # From this version on the plugin will work, a message will block prior versions
 LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION = "17.07.2018"
 
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
+DEFAULT_USE_ROADS_VALUE = False
 DEFAULT_POLYGON_AREA_TOLERANCE = 0.1 # square meters
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
 PLUGIN_DIR = os.path.dirname(os.path.dirname(__file__))
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
 HELP_DIR_NAME = 'help'
-QGIS_LANG = QLocale(QSettings().value('locale/userLocale')).name()[:2]
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'styles')
+
+try:
+    # Errors here could happen if the value cannot be converted to string or
+    # if it is not subscriptable (see https://github.com/gacarrillor/loadthemall/issues/11)
+    locale = QSettings().value("locale/userLocale", type=str)
+    QGIS_LANG = str( locale[:2] )
+except TypeError as e:
+    QGIS_LANG = 'en'
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
@@ -36,19 +45,24 @@ MODULE_HELP_MAPPING = {
     'load_layers': 'load_layers.html#load-layers',
     'col_party': 'cadastre/Party.html#col-party',
     'quality_rules': 'index.html', # TODO: Add this to help sections
-    'settings': 'help.html#settings'
+    'settings': 'help.html#settings',
+    'create_property_record_card': 'property_record_card/Property_record_card.html',
+    'create_nuclear_family': 'property_record_card/Nuclear_family.html',
+    'create_natural_party': 'property_record_card/Natural_party.html',
+    'create_legal_party': 'property_record_card/Legal_party.html',
+    'create_market_research': 'property_record_card/Market_research.html'
 }
 # Configure Project Generator Dependency
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.2.7.1"
+PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.3"
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), set to True
-PROJECT_GENERATOR_EXACT_REQUIRED_VERSION = True
+PROJECT_GENERATOR_EXACT_REQUIRED_VERSION = False
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-PROJECT_GENERATOR_REQUIRED_VERSION_URL = 'https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.2.7.1/projectgenerator.zip'
+PROJECT_GENERATOR_REQUIRED_VERSION_URL = '' #'https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip'
 
 # Project Generator definitions
 SCHEMA_NAME = 'schemaname'
@@ -85,9 +99,32 @@ DEFAULT_ENDPOINT_SOURCE_SERVICE = 'http://portal.proadmintierra.info:18888/filem
 SOURCE_SERVICE_UPLOAD_SUFFIX = 'v1/file'
 SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
 
+# UI OBJECTNAMES
+CADASTRE_MENU_OBJECTNAME = "ladm_col_cadastre"
+LADM_COL_MENU_OBJECTNAME = "ladm_col"
+PROPERTY_RECORD_CARD_MENU_OBJECTNAME = "ladm_col_property_record_card"
+
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
 
 class TranslatableConfigStrings(QObject):
     def __init__(self):
         self.ERROR_LAYER_GROUP = QCoreApplication.translate("TranslatableConfigStrings", "Validation errors")
+        self.CHECK_OVERLAPS_IN_BOUNDARY_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should not overlap")
+        self.CHECK_OVERLAPS_IN_CONTROL_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Control Points should not overlap")
+        self.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by Boundary nodes")
+
+        too_long_tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
+        self.CHECK_TOO_LONG_BOUNDARY_SEGMENTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundary segments should not be longer than {}m.").format(too_long_tolerance)
+        self.CHECK_OVERLAPS_IN_BOUNDARIES = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not overlap")
+        self.CHECK_BOUNDARIES_ARE_NOT_SPLIT = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not be split")
+        self.CHECK_BOUNDARIES_COVERED_BY_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should be covered by Plots")
+        self.CHECK_MISSING_BOUNDARY_POINTS_IN_BOUNDARIES = QCoreApplication.translate("TranslatableConfigStrings", "Boundary nodes should be covered by Boundary Points")
+        self.CHECK_DANGLES_IN_BOUNDARIES = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not have dangles")
+        self.CHECK_OVERLAPS_IN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Plots should not overlap")
+        self.CHECK_OVERLAPS_IN_BUILDINGS = QCoreApplication.translate("TranslatableConfigStrings", "Buildings should not overlap")
+        self.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY = QCoreApplication.translate("TranslatableConfigStrings", "Rights of Way should not overlap")
+        self.CHECK_PLOTS_COVERED_BY_BOUNDARIES = QCoreApplication.translate("TranslatableConfigStrings", "Plots should be covered by Boundaries")
+        self.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not overlap Buildings")
+        self.CHECK_GAPS_IN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Plots should not have gaps")
+        self.CHECK_MULTIPART_IN_RIGHT_OF_WAY = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not have multipart geometries")

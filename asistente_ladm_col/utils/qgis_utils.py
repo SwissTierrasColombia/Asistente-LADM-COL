@@ -20,18 +20,40 @@ import os
 import socket
 import webbrowser
 
-from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
-                       QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri, Qgis,
-                       QgsSpatialIndex, QgsVectorLayer, QgsMultiLineString,
-                       QgsField,
-                       QgsMapLayer,
-                       QgsPointXY,
-                       QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
-                       QgsApplication, QgsProcessingFeedback, QgsRelation,
-                       QgsExpressionContextUtils, QgsEditorWidgetSetup,
-                       QgsLayerTreeGroup)
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsAttributeEditorContainer,
+    QgsAttributeEditorElement,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsDataSourceUri,
+    QgsDefaultValue,
+    QgsEditorWidgetSetup,
+    QgsExpression,
+    QgsExpressionContextUtils,
+    QgsField,
+    QgsGeometry,
+    QgsGeometryCollection,
+    QgsLayerTreeGroup,
+    QgsLayerTreeNode,
+    QgsLineString,
+    QgsMapLayer,
+    QgsMultiLineString,
+    QgsMultiPoint,
+    QgsOptionalExpression,
+    QgsPointXY,
+    QgsProcessingFeedback,
+    QgsProject,
+    QgsRelation,
+    QgsSpatialIndex,
+    QgsVectorLayer,
+    QgsVectorLayerUtils,
+    QgsWkbTypes
+)
 from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
                               QVariant, QSettings, QLocale, QUrl, QFile)
+from qgis.PyQt.QtWidgets import QProgressBar
 
 import processing
 
@@ -58,7 +80,7 @@ from ..config.general_config import (
     HELP_DIR_NAME,
     TranslatableConfigStrings
 )
-from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
+from ..config.table_mapping_config import (POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
@@ -70,7 +92,9 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            DICT_DISPLAY_EXPRESSIONS,
                                            EXTFILE_DATA_FIELD,
                                            EXTFILE_TABLE,
+                                           FORM_GROUPS,
                                            ID_FIELD,
+                                           LAYER_CONSTRAINTS,
                                            LAYER_VARIABLES,
                                            LENGTH_FIELD_BOUNDARY_TABLE,
                                            LESS_TABLE,
@@ -89,6 +113,7 @@ from ..config.table_mapping_config import (BFS_TABLE_BOUNDARY_FIELD,
                                            SURVEY_POINT_TABLE,
                                            VIDA_UTIL_FIELD)
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
+from ..lib.dbconnector.db_connector import DBConnector
 from ..lib.source_handler import SourceHandler
 
 class QGISUtils(QObject):
@@ -96,15 +121,19 @@ class QGISUtils(QObject):
     action_vertex_tool_requested = pyqtSignal()
     activate_layer_requested = pyqtSignal(QgsMapLayer)
     clear_status_bar_emitted = pyqtSignal()
+    clear_message_bar_emitted = pyqtSignal()
+    create_progress_message_bar_emitted = pyqtSignal(str, QProgressBar)
     remove_error_group_requested = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
+    refresh_menus_requested = pyqtSignal(DBConnector, bool)
     message_emitted = pyqtSignal(str, int) # Message, level
     message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
     message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
+    message_with_button_download_report_dependency_emitted = pyqtSignal(str) # Message
     map_refresh_requested = pyqtSignal()
     map_freeze_requested = pyqtSignal(bool)
-    set_node_visibility_requested = pyqtSignal(QgsMapLayer, str, bool)
+    set_node_visibility_requested = pyqtSignal(QgsLayerTreeNode, bool)
     status_bar_message_emitted = pyqtSignal(str, int) # Message, duration
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
@@ -121,6 +150,7 @@ class QGISUtils(QObject):
         self._source_handler = None
         self._layers = list()
         self._relations = list()
+        self._bags_of_enum = dict()
 
     def set_db_connection(self, mode, dict_conn):
         """
@@ -136,6 +166,7 @@ class QGISUtils(QObject):
         if self.__settings_dialog is None:
             self.__settings_dialog = SettingsDialog(qgis_utils=self)
             self.__settings_dialog.cache_layers_and_relations_requested.connect(self.cache_layers_and_relations)
+            self.__settings_dialog.refresh_menus_requested.connect(self.refresh_menus)
 
         return self.__settings_dialog
 
@@ -154,13 +185,22 @@ class QGISUtils(QObject):
         QCoreApplication.processEvents()
 
         with OverrideCursor(Qt.WaitCursor):
-            self._layers, self._relations = self.project_generator_utils.get_layers_and_relations_info(db)
+            self._layers, self._relations, self._bags_of_enum = self.project_generator_utils.get_layers_and_relations_info(db)
 
         self.clear_status_bar_emitted.emit()
 
+    def refresh_menus(self, db, force):
+        """
+        Chain the SIGNAL request to other modules.
+        """
+        self.refresh_menus_requested.emit(db, force)
+
     def get_related_layers(self, layer_names, already_loaded):
-        # For a given layer we load its domains, all its related layers and
-        # the domains of those related layers
+        """
+        For a given layer we load its domains, all its related layers and the
+        domains of those related layers. Additionally, we load its related
+        structures and domains to build bags_of_enum widgets.
+        """
         related_layers = list()
         for relation in self._relations:
             for layer_name in layer_names:
@@ -168,8 +208,17 @@ class QGISUtils(QObject):
                     if relation[REFERENCED_LAYER] not in already_loaded:
                         related_layers.append(relation[REFERENCED_LAYER])
 
+        related_layers_bags_of_enum = list()
+        for layer_name in layer_names:
+            if layer_name in self._bags_of_enum:
+                for k,v in self._bags_of_enum[layer_name].items():
+                    if v[2] not in already_loaded:
+                        related_layers_bags_of_enum.append(v[2]) # domain
+                    if v[3] not in already_loaded:
+                        related_layers_bags_of_enum.append(v[3]) # structure
+
         related_layers.extend(self.get_related_domains(related_layers, already_loaded))
-        return related_layers
+        return related_layers + related_layers_bags_of_enum
 
     def get_related_domains(self, layer_names, already_loaded):
         related_domains = list()
@@ -203,9 +252,9 @@ class QGISUtils(QObject):
         profiler = QgsApplication.profiler()
         with OverrideCursor(Qt.WaitCursor):
             profiler.start("existing_layers")
+            ladm_layers = self.get_ladm_layers_from_layer_tree(db)
             for layer_id, layer_info in layers.items():
                 layer_obj = None
-                ladm_layers = self.get_ladm_layers_from_layer_tree(db)
 
                 # If layer is in LayerTree, return it
                 for ladm_layer in ladm_layers:
@@ -219,6 +268,7 @@ class QGISUtils(QObject):
             profiler.end()
             print("Existing layers",profiler.totalTime())
             profiler.clear()
+
             if load:
                 layers_to_load = [layers[layer_id]['name'] for layer_id, layer_obj in response_layers.items() if layer_obj is None]
 
@@ -244,18 +294,55 @@ class QGISUtils(QObject):
 
                     # Now that all layers are loaded, update response dict
                     # and apply post_load_configurations to new layers
-                    missing_layers = {layer_id: {'name': layers[layer_id]['name'], 'geometry': layers[layer_id]['geometry']} for layer_id, layer_obj in response_layers.items() if layer_obj is None}
+                    new_layers = {layer_id: {'name': layers[layer_id]['name'], 'geometry': layers[layer_id]['geometry']} for layer_id, layer_obj in response_layers.items() if layer_obj is None}
+
+                    # Remove layers in two steps:
+                    # 1) Remove those spatial layers with more than one geometry
+                    #    column loaded because one geometry was requested.
+                    ladm_layers = self.get_ladm_layers_from_layer_tree(db)
+                    for layer in ladm_layers:
+                        layer_name = layer.dataProvider().uri().table()
+
+                        if layer_name in all_layers_to_load and layer.isSpatial():
+                            remove_layer = True
+                            for layer_id, layer_info in new_layers.items():
+                                if layer_info['name'] == layer_name:
+                                    if layer_info['geometry'] == layer.geometryType():
+                                        remove_layer = False
+                                        break
+                                    if layer_info['geometry'] is None:
+                                        # We allow loading layers that only have
+                                        # one geometry column by not specifying
+                                        # its geometry (i.e., by using None)
+                                        remove_layer = False
+                                        break
+                            if remove_layer:
+                                QgsProject.instance().removeMapLayer(layer)
+                                ladm_layers.remove(layer)
+
+                    # 2) Remove related spatial layers with more than one
+                    #    geometry column, which we don't prefer (i.e., points)
+                    for additional_layer_name in additional_layers_to_load:
+                        num_geometry_columns = 0
+                        for layer in ladm_layers:
+                            if layer.dataProvider().uri().table() == additional_layer_name and layer.isSpatial():
+                                num_geometry_columns += 1
+
+                        if num_geometry_columns > 1:
+                            QgsProject.instance().removeMapLayer(layer)
+                            ladm_layers.remove(layer)
 
                     profiler.start("post_load")
                     # Apply post-load configs to all just loaded layers
-                    for layer in self.get_ladm_layers_from_layer_tree(db):
+                    requested_layer_names = [v['name'] for k,v in layers.items()]
+                    for layer in ladm_layers:
                         layer_name = layer.dataProvider().uri().table()
                         layer_geometry = layer.geometryType()
 
                         if layer_name in all_layers_to_load:
                             # Discard already loaded layers
 
-                            for layer_id, layer_info in missing_layers.items():
+                            for layer_id, layer_info in new_layers.items():
                                 # This should update response_layers dict with
                                 # newly added layer objects
                                 if layer_info['name'] == layer_name:
@@ -263,11 +350,11 @@ class QGISUtils(QObject):
                                         continue
 
                                     response_layers[layer_id] = layer
-                                    del missing_layers[layer_id] # Don't look for this layer anymore
+                                    del new_layers[layer_id] # Don't look for this layer anymore
                                     break
 
                             # Turn off layers loaded as related layers
-                            visible = layer_name in layers
+                            visible = layer_name in requested_layer_names
                             self.post_load_configurations(layer, visible)
 
                     profiler.end()
@@ -279,6 +366,8 @@ class QGISUtils(QObject):
         self.map_refresh_requested.emit()
         self.activate_layer_requested.emit(list(response_layers.values())[0])
 
+        # response_layers only has data about requested layers. Other layers,
+        # i.e., those loaded as related ones, are not included
         return response_layers
 
     def get_layer_from_layer_tree(self, layer_name, schema=None, geometry_type=None):
@@ -335,16 +424,24 @@ class QGISUtils(QObject):
         # Do some post-load work, such as setting styles or
         # setting automatic fields for that layer
         self.configure_missing_relations(layer)
+        self.configure_missing_bags_of_enum(layer)
         self.set_display_expressions(layer)
         self.set_layer_variables(layer)
         self.set_custom_widgets(layer)
         self.set_custom_events(layer)
         self.set_automatic_fields(layer)
+        self.set_layer_constraints(layer)
+        self.set_form_groups(layer)
         if layer.isSpatial():
             self.symbology.set_layer_style_from_qml(layer)
-            self.set_node_visibility(layer, 'layer_id', visible)
+            self.set_layer_visibility(layer, visible)
 
     def configure_missing_relations(self, layer):
+        """
+        Relations between newly loaded layers and already loaded layer cannot
+        be handled by project generator (which only sets relations between
+        loaded layers), so we do it in the Asistente LADM_COL.
+        """
         layer_name = layer.dataProvider().uri().table()
 
         db_relations = list()
@@ -379,12 +476,15 @@ class QGISUtils(QObject):
                 # This relation is not configured into QGIS, let's do it
                 new_rel = QgsRelation()
                 new_rel.setReferencingLayer(layer.id())
-                referenced_layer = self.get_layer_from_layer_tree(db_relation[REFERENCED_LAYER], layer.dataProvider().uri().schema())
+                referenced_layer = self.get_layer_from_layer_tree(
+                    db_relation[REFERENCED_LAYER],
+                    layer.dataProvider().uri().schema())
                 if referenced_layer is None:
                     # Referenced_layer NOT FOUND in layer tree...
                     continue
                 new_rel.setReferencedLayer(referenced_layer.id())
-                new_rel.addFieldPair(db_relation[REFERENCING_FIELD], db_relation[REFERENCED_FIELD])
+                new_rel.addFieldPair(db_relation[REFERENCING_FIELD],
+                    db_relation[REFERENCED_FIELD])
                 new_rel.setId(db_relation[RELATION_NAME]) #generateId()
                 new_rel.setName(db_relation[RELATION_NAME])
 
@@ -393,6 +493,47 @@ class QGISUtils(QObject):
         all_qgis_relations = list(QgsProject.instance().relationManager().relations().values())
         all_qgis_relations.extend(new_relations)
         QgsProject.instance().relationManager().setRelations(all_qgis_relations)
+
+    def configure_missing_bags_of_enum(self, layer):
+        """
+        Bags of enums between newly loaded layers and already loaded layers
+        cannot be handled by project generator (which only sets relations
+        between loaded layers), so we do it in the Asistente LADM_COL.
+        """
+        layer_name = layer.dataProvider().uri().table()
+
+        if layer_name in self._bags_of_enum:
+            for k,v in self._bags_of_enum[layer_name].items():
+                # Check if bag of enum field has already a value relation
+                # configured or not
+                idx = layer.fields().indexOf(k)
+                if layer.editorWidgetSetup(idx).type() == 'ValueRelation':
+                    continue
+
+                domain = self.get_layer_from_layer_tree(v[2],
+                    layer.dataProvider().uri().schema())
+                if domain is not None:
+                    cardinality = v[1]
+                    domain_table = v[2]
+                    key_field = v[4]
+                    value_field = v[5]
+
+                    allow_null = cardinality.startswith('0')
+                    allow_multi = cardinality.endswith('*')
+
+                    field_widget_config = {
+                        'AllowMulti': allow_multi,
+                        'UseCompleter': False,
+                        'Value': value_field,
+                        'OrderByValue': False,
+                        'AllowNull': allow_null,
+                        'Layer': domain.id(),
+                        'FilterExpression': '',
+                        'Key': key_field,
+                        'NofColumns': 1
+                    }
+                    setup = QgsEditorWidgetSetup('ValueRelation', field_widget_config)
+                    layer.setEditorWidgetSetup(idx, setup)
 
     def set_display_expressions(self, layer):
         if layer.name() in DICT_DISPLAY_EXPRESSIONS:
@@ -421,6 +562,77 @@ class QGISUtils(QObject):
             self._source_handler = self.get_source_handler()
             self._source_handler.message_with_duration_emitted.connect(self.message_with_duration_emitted)
             self._source_handler.handle_source_upload(layer, EXTFILE_DATA_FIELD)
+
+    def set_layer_constraints(self, layer):
+        if layer.name() in LAYER_CONSTRAINTS:
+            for field_name, value in LAYER_CONSTRAINTS[layer.name()].items():
+                layer.setConstraintExpression(
+                    layer.fields().indexOf(field_name),
+                    value['expression'],
+                    value['description'])
+
+    def set_form_groups(self, layer):
+        if layer.name() in FORM_GROUPS:
+            # Preserve children, clear irc
+            irc = layer.editFormConfig().invisibleRootContainer()
+            children = list()
+            for child in irc.children():
+                children.append(child.clone(irc))
+            irc.clear()
+            aec = children[0] # General Tab
+
+            # Create new General tab
+            new_general_tab = QgsAttributeEditorContainer('General', irc)
+            new_general_tab.setIsGroupBox(False)
+            new_general_tab.setShowLabel(True)
+            new_general_tab.setColumnCount(2)
+
+            # Clone General tab elements
+            elements = [e.clone(aec) for e in aec.children()]
+
+            # Iterate group definitions
+            elements_used = list()
+            for group_name, group_def in FORM_GROUPS[layer.name()].items():
+                container = QgsAttributeEditorContainer(group_name, new_general_tab)
+                container.setIsGroupBox(True)
+                container.setShowLabel(group_def['show_label'])
+                container.setColumnCount(group_def['column_count'])
+                if group_def['visibility_expression'] is None:
+                    group_def['visibility_expression'] = "True"
+                container.setVisibilityExpression(
+                    QgsOptionalExpression(
+                        QgsExpression(group_def['visibility_expression'])))
+
+                for e in elements:
+                    if e.name() in group_def['attr_list']:
+                        container.addChildElement(e)
+                        elements_used.append(e)
+
+                group_def['container'] = container
+
+            # Fill new General tab with attributes and groups. It takes order
+            # of groups into account from before_attr/after_attr
+            for e in elements:
+                if e not in elements_used:
+                    element_added = False
+                    for group_name, group_def in FORM_GROUPS[layer.name()].items():
+                        if e.name() == group_def['before_attr']:
+                            new_general_tab.addChildElement(group_def['container'])
+                            new_general_tab.addChildElement(e)
+                            element_added = True
+                        elif e.name() == group_def['after_attr']:
+                            new_general_tab.addChildElement(e)
+                            new_general_tab.addChildElement(group_def['container'])
+                            element_added = True
+                    if not element_added:
+                        new_general_tab.addChildElement(e)
+
+            containers = [ele.name() for ele in new_general_tab.findElements(QgsAttributeEditorElement.AeTypeContainer)]
+            for group_name, group_def in FORM_GROUPS[layer.name()].items():
+                if group_name not in containers: # Still not added (no before/after attrs)
+                    new_general_tab.addChildElement(group_def['container'])
+
+            irc.addChildElement(new_general_tab)
 
     def configure_automatic_field(self, layer, field, expression):
         index = layer.fields().indexFromName(field)
@@ -487,9 +699,14 @@ class QGISUtils(QObject):
         return (local_id_enabled, local_id_field, local_id_value)
 
     def check_if_and_disable_automatic_fields(self, db, layer_name, geometry_type=None):
+        """
+        Check settings to see if the user wants to calculate automatic values
+        when in batch mode. If not, disable automatic fields and return
+        expressions so that they can be restored after the batch load.
+        """
         settings = QSettings()
         automatic_fields_definition = {}
-        if settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
+        if not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
             automatic_fields_definition = self.disable_automatic_fields(db, layer_name, geometry_type)
 
         return automatic_fields_definition
@@ -504,9 +721,14 @@ class QGISUtils(QObject):
         return automatic_fields_definition
 
     def check_if_and_enable_automatic_fields(self, db, automatic_fields_definition, layer_name, geometry_type=None):
+        """
+        Once the batch load is done, check whether the user wanted to calculate
+        automatic values in batch mode or not. If not, restore the expressions
+        we saved before running the batch load.
+        """
         if automatic_fields_definition:
             settings = QSettings()
-            if settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
+            if not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
                 self.enable_automatic_fields(db,
                                              automatic_fields_definition,
                                              layer_name,
@@ -519,12 +741,16 @@ class QGISUtils(QObject):
             layer.setDefaultValueDefinition(idx, default_definition)
 
     def set_error_group_visibility(self, visible):
-        self.set_node_visibility(self.get_error_layers_group(), 'group', visible)
+        self.set_node_visibility(self.get_error_layers_group(), visible)
 
-    def set_node_visibility(self, layer, mode, visible):
-        self.set_node_visibility_requested.emit(layer, mode, visible)
+    def set_layer_visibility(self, layer, visible):
+        node = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
+        self.set_node_visibility(node, visible)
 
-    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, target_layer_name):
+    def set_node_visibility(self, node, visible):
+        self.set_node_visibility_requested.emit(node, visible)
+
+    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, epsg, target_layer_name):
         if not csv_path or not os.path.exists(csv_path):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -538,9 +764,15 @@ class QGISUtils(QObject):
               delimiter,
               longitude,
               latitude,
-              DEFAULT_EPSG
+              epsg,
            )
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
+
+        if not epsg == DEFAULT_EPSG:
+            crsDest = QgsCoordinateReferenceSystem('EPSG:' + str(DEFAULT_EPSG))
+            csv_layer = processing.run("native:reprojectlayer", {'INPUT':csv_layer,
+                                        'TARGET_CRS':crsDest,'OUTPUT':'memory:'})['OUTPUT']
+
         if not csv_layer.isValid():
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -634,7 +866,7 @@ class QGISUtils(QObject):
         bfs_features = bfs_layer.getFeatures()
 
         # Get unique pairs id_boundary-id_boundary_point
-        existing_pairs = [(bfs_feature[BFS_TABLE_BOUNDARY_FIELD], bfs_feature[BFS_TABLE_BOUNDARY_POINT_FIELD]) for bfs_feature in bfs_features]
+        existing_pairs = [(bfs_feature[POINT_BFS_TABLE_BOUNDARY_FIELD], bfs_feature[BFS_TABLE_BOUNDARY_POINT_FIELD]) for bfs_feature in bfs_features]
         existing_pairs = set(existing_pairs)
 
         boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
@@ -647,7 +879,7 @@ class QGISUtils(QObject):
                 if not id_pair in existing_pairs: # Avoid duplicated pairs in the DB
                     # Create feature
                     feature = QgsVectorLayerUtils().createFeature(bfs_layer)
-                    feature.setAttribute(BFS_TABLE_BOUNDARY_FIELD, id_pair[0])
+                    feature.setAttribute(POINT_BFS_TABLE_BOUNDARY_FIELD, id_pair[0])
                     feature.setAttribute(BFS_TABLE_BOUNDARY_POINT_FIELD, id_pair[1])
                     features.append(feature)
             bfs_layer.addFeatures(features)
@@ -798,9 +1030,16 @@ class QGISUtils(QObject):
     def turn_transaction_off(self):
         QgsProject.instance().setAutoTransaction(False)
 
-    def show_etl_model(self, db, input_layer, ladm_col_layer_name):
+    def show_etl_model(self, db, input_layer, ladm_col_layer_name, geometry_type=None):
 
-        output = self.get_layer(db, ladm_col_layer_name, geometry_type=None, load=True)
+        output = self.get_layer(db, ladm_col_layer_name, geometry_type, load=True)
+        if output is None:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "Layer {} not found in DB! {}").format(
+                        ladm_col_layer_name, db.get_description()), Qgis.Warning)
+            return
+
         if output.isEditable():
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",

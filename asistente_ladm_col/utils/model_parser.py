@@ -23,28 +23,34 @@ from qgis.PyQt.QtCore import QCoreApplication
 from ..config.general_config import (
     CADASTRE_MODEL_PREFIX,
     CADASTRE_MODEL_PREFIX_LEGACY,
-    LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION
+    LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION,
+    PROPERTY_RECORD_CARD_MODEL_PREFIX
 )
 from ..utils.project_generator_utils import ProjectGeneratorUtils
 
 class ModelParser:
     def __init__(self, db_connector):
-        self._db_connector = db_connector
-        project_generator_utils = ProjectGeneratorUtils()
-        self._pro_gen_db_connector = project_generator_utils.get_db_connection(self._db_connector)
         self.debug = False
         self.cadastre_model = None
         self.cadastre_model_legacy = None
+        self.property_record_card_model = None
 
-        model_records = self._get_models()
-        if self.debug:
-            print("Models:", model_records)
-        for record in model_records:
-            current_model_name = record['modelname'].split("{")[0]
-            if current_model_name.startswith(CADASTRE_MODEL_PREFIX):
-                self.cadastre_model = record['content']
-            if current_model_name.startswith(CADASTRE_MODEL_PREFIX_LEGACY):
-                self.cadastre_model_legacy = record['content']
+        self._db_connector = db_connector
+        project_generator_utils = ProjectGeneratorUtils()
+        self._pro_gen_db_connector = project_generator_utils.get_db_connection(self._db_connector)
+
+        if self._pro_gen_db_connector:
+            model_records = self._get_models()
+            if self.debug:
+                print("Models:", model_records)
+            for record in model_records:
+                current_model_name = record['modelname'].split("{")[0]
+                if current_model_name.startswith(CADASTRE_MODEL_PREFIX):
+                    self.cadastre_model = record['content']
+                if current_model_name.startswith(CADASTRE_MODEL_PREFIX_LEGACY):
+                    self.cadastre_model_legacy = record['content']
+                if current_model_name.startswith(PROPERTY_RECORD_CARD_MODEL_PREFIX):
+                    self.property_record_card_model = record['content']
 
     def validate_cadastre_model_version(self):
         if self.debug:
@@ -142,6 +148,9 @@ class ModelParser:
 
         # Model parsed, no update date could be found
         return latest_update_date
+
+    def property_record_card_model_exists(self):
+        return self.property_record_card_model is not None
 
     def _get_models(self):
         return self._pro_gen_db_connector.get_models()

@@ -33,7 +33,10 @@ from ..config.general_config import (
     CLASS_CLASS_RELATION,
     TranslatableConfigStrings
 )
-from ..config.table_mapping_config import TABLE_PROP_DOMAIN
+from ..config.table_mapping_config import (
+    TABLE_PROP_DOMAIN,
+    TABLE_PROP_STRUCTURE
+)
 from .domains_parser import DomainRelationGenerator
 
 class ProjectGeneratorUtils(QObject):
@@ -65,14 +68,23 @@ class ProjectGeneratorUtils(QObject):
         return None
 
     def load_layers(self, layer_list, db):
+        """
+        Load a selected list of layers from project generator.
+        This call should configure relations and bag of enums
+        between layers being loaded, but not when a layer already
+        loaded has a relation or is part of a bag of enum. For
+        that case, we use a cached set of relations and bags of
+        enums that we get only once per session and configure in
+        the Asistente LADM_COL.
+        """
         if 'projectgenerator' in qgis.utils.plugins:
             projectgenerator = qgis.utils.plugins["projectgenerator"]
             generator = projectgenerator.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
                 db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             layers = generator.layers(layer_list)
-            relations, _ = generator.relations(layers, layer_list)
+            relations, bags_of_enum = generator.relations(layers, layer_list)
             legend = generator.legend(layers, ignore_node_names=[self.translatable_config_strings.ERROR_LAYER_GROUP])
-            projectgenerator.create_project(layers, relations, legend, auto_transaction=False)
+            projectgenerator.create_project(layers, relations, bags_of_enum, legend, auto_transaction=False)
         else:
             self.log.logMessage(
                 "El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",
@@ -81,6 +93,11 @@ class ProjectGeneratorUtils(QObject):
             )
 
     def get_layers_and_relations_info(self, db):
+        """
+        Called once per session, this is used to get information
+        of all relations and bags of enums in the DB and cache it
+        in the Asistente LADM_COL.
+        """
         if 'projectgenerator' in qgis.utils.plugins:
             generator = self.get_generator(db)
 
@@ -91,9 +108,10 @@ class ProjectGeneratorUtils(QObject):
             domain_generator = DomainRelationGenerator(generator._db_connector, "smart2")
             layer_names = [record[TABLE_NAME] for record in layers]
             domain_names = [record[TABLE_NAME] for record in layers if record[KIND_SETTINGS] == TABLE_PROP_DOMAIN]
-            domains = domain_generator.get_domain_relations_info(layer_names, domain_names)
+            structure_names = [record[TABLE_NAME] for record in layers if record[KIND_SETTINGS] == TABLE_PROP_STRUCTURE]
+            domains, bags_of_enum = domain_generator.get_domain_relations_info(layer_names, domain_names, structure_names)
 
-            return (layers, relations + domains)
+            return (layers, relations + domains, bags_of_enum)
         else:
             self.log.logMessage(
                 "El plugin Project Generator es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",

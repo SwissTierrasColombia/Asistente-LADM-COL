@@ -6,7 +6,9 @@
         begin                : 2018-04-16
         git sha              : :%H$
         copyright            : (C) 2018 by Germán Carrillo (BSF Swissphoto)
+                               (C) 2018 by Leonardo Cardona (BSF Swissphoto)
         email                : gcarrillo@linuxmail.org
+                               leocardonapiedrahita@gmail.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -16,23 +18,33 @@
  *                                                                         *
  ***************************************************************************/
 """
+import gc
+
 from qgis.PyQt.QtCore import QObject
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsGeometry,
+    QgsPoint,
+    QgsFeature,
+    QgsFeatureRequest,
     QgsLineString,
     QgsMultiLineString,
-    QgsSpatialIndex,
-    QgsWkbTypes,
+    QgsProcessingException,
     QgsProcessingFeedback,
+    QgsSpatialIndex,
     QgsVectorLayer,
-    QgsVectorLayerEditUtils
+    QgsVectorLayerEditUtils,
+    QgsWkbTypes
 )
 from qgis.core import edit
 
 import processing
-from ..config.general_config import PLUGIN_NAME, DEFAULT_POLYGON_AREA_TOLERANCE
+from ..config.general_config import TranslatableConfigStrings
+from ..config.general_config import (
+    DEFAULT_POLYGON_AREA_TOLERANCE,
+    PLUGIN_NAME
+)
 from ..config.table_mapping_config import ID_FIELD
 
 class GeometryUtils(QObject):
@@ -40,26 +52,32 @@ class GeometryUtils(QObject):
     def __init__(self):
         QObject.__init__(self)
         self.log = QgsApplication.messageLog()
+        self.translatable_config_strings = TranslatableConfigStrings()
 
     def get_pair_boundary_plot(self, boundary_layer, plot_layer, id_field=ID_FIELD, use_selection=True):
-        lines = boundary_layer.getFeatures()
-        polygons = plot_layer.getSelectedFeatures() if use_selection else plot_layer.getFeatures()
+        id_field_idx = plot_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        polygons = plot_layer.getSelectedFeatures(request) if use_selection else plot_layer.getFeatures(request)
         intersect_more_pairs = list()
         intersect_less_pairs = list()
 
         if boundary_layer.featureCount() == 0:
             return (intersect_more_pairs, intersect_less_pairs)
 
+        id_field_idx = boundary_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        dict_features = {feature.id(): feature for feature in boundary_layer.getFeatures(request)}
         index = QgsSpatialIndex(boundary_layer)
+        candidate_features = None
 
         for polygon in polygons:
             bbox = polygon.geometry().boundingBox()
             bbox.scale(1.001)
             candidates_ids = index.intersects(bbox)
 
-            candidates_features = boundary_layer.getFeatures(candidates_ids)
+            candidate_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
 
-            for candidate_feature in candidates_features:
+            for candidate_feature in candidate_features:
                 polygon_geom = polygon.geometry()
                 is_multipart = polygon_geom.isMultipart()
                 candidate_geometry = candidate_feature.geometry()
@@ -146,25 +164,33 @@ class GeometryUtils(QObject):
                                 PLUGIN_NAME,
                                 Qgis.Warning
                             )
-
+        # free up memory
+        del candidate_features
+        del dict_features
+        gc.collect()
         return (intersect_more_pairs, intersect_less_pairs)
 
     def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer, id_field=ID_FIELD, use_selection=True):
-        lines = boundary_layer.getSelectedFeatures() if use_selection else boundary_layer.getFeatures()
-        points = boundary_point_layer.getFeatures()
+        id_field_idx = boundary_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        lines = boundary_layer.getSelectedFeatures(request) if use_selection else boundary_layer.getFeatures(request)
         intersect_pairs = list()
 
         if boundary_point_layer.featureCount() == 0:
             return intersect_pairs
 
+        id_field_idx = boundary_point_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        dict_features = {feature.id(): feature for feature in boundary_point_layer.getFeatures(request)}
         index = QgsSpatialIndex(boundary_point_layer)
+        candidate_features = None
 
         for line in lines:
             bbox = line.geometry().boundingBox()
             bbox.scale(1.001)
             candidates_ids = index.intersects(bbox)
-            candidates_features = boundary_point_layer.getFeatures(candidates_ids)
-            for candidate_feature in candidates_features:
+            candidate_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
+            for candidate_feature in candidate_features:
                 #if line.geometry().intersects(candidate_feature.geometry()):
                 #    intersect_pair.append(line['t_id'], candidate_feature['t_id'])
                 candidate_point = candidate_feature.geometry().asPoint()
@@ -174,6 +200,10 @@ class GeometryUtils(QObject):
                         pair = (line[id_field], candidate_feature[id_field])
                         if pair not in intersect_pairs:
                             intersect_pairs.append(pair)
+        # free up memory
+        del candidate_features
+        del dict_features
+        gc.collect()
         return intersect_pairs
 
     def get_polyline_as_single_segments(self, polyline):
@@ -202,6 +232,42 @@ class GeometryUtils(QObject):
             segments.extend(self.get_polyline_as_single_segments(geom.constGet()))
         return segments
 
+    def get_too_long_segments_from_simple_line(self, line, tolerance):
+        segments_info = list()
+        vertices = line.vertices()
+        vertex1 = None
+        if vertices.hasNext():
+            vertex1 = vertices.next()
+        while vertices.hasNext():
+            vertex2 = vertices.next()
+            distance = vertex1.distance(vertex2)
+            if distance > tolerance:
+                segment = QgsGeometry.fromPolyline([vertex1, vertex2])
+                segments_info.append([segment, distance])
+            vertex1 = vertex2
+        return segments_info
+
+    def get_boundary_points_not_covered_by_boundary_nodes(self, boundary_point_layer, boundary_layer):
+        params = {
+            'INPUT': boundary_point_layer,
+            'JOIN': boundary_layer,
+            'PREDICATE': [0], # Intersects
+            'JOIN_FIELDS': [ID_FIELD],
+            'METHOD': 0,
+            'DISCARD_NONMATCHING': False,
+            'PREFIX': '',
+            'OUTPUT': 'memory:'}
+        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+                                            params)['OUTPUT']
+
+        id_field_idx = spatial_join_layer.fields().indexFromName(ID_FIELD)
+        expr = '"{}_2" IS NULL'.format(ID_FIELD)  # loose point
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx]).setFilterExpression(expr)
+        it_features_expr = spatial_join_layer.getFeatures(request)
+        features_expr = [feature_expr for feature_expr in it_features_expr]
+
+        return features_expr
+
     def get_overlapping_points(self, point_layer):
         """
         Returns a list of lists, where inner lists are ids of overlapping
@@ -212,9 +278,10 @@ class GeometryUtils(QObject):
             return res
 
         set_points = set()
-        index = QgsSpatialIndex(point_layer.getFeatures())
+        index = QgsSpatialIndex(point_layer)
 
-        for feature in point_layer.getFeatures():
+        request = QgsFeatureRequest().setSubsetOfAttributes([])
+        for feature in point_layer.getFeatures(request):
             if not feature.id() in set_points:
                 ids = index.intersects(feature.geometry().boundingBox())
 
@@ -255,15 +322,18 @@ class GeometryUtils(QObject):
             polygon_layer.featureCount() == 0:
             return list_overlapping_polygons
 
+        request = QgsFeatureRequest().setSubsetOfAttributes([])
+        dict_features = {feature.id(): feature for feature in polygon_layer.getFeatures(request)}
         index = QgsSpatialIndex(polygon_layer)
+        candidate_features = None
 
-        for feature in polygon_layer.getFeatures():
+        for feature in polygon_layer.getFeatures(request):
             bbox = feature.geometry().boundingBox()
             bbox.scale(1.001)
             candidates_ids = index.intersects(bbox)
-            candidates_features = polygon_layer.getFeatures(candidates_ids)
+            candidate_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
 
-            for candidate_feature in candidates_features:
+            for candidate_feature in candidate_features:
                 is_overlap = feature.geometry().overlaps(candidate_feature.geometry()) or \
                              feature.geometry().contains(candidate_feature.geometry()) or \
                              feature.geometry().within(candidate_feature.geometry())
@@ -274,6 +344,10 @@ class GeometryUtils(QObject):
                         if overlapping_polygons not in list_overlapping_polygons:
                             list_overlapping_polygons.append(overlapping_polygons)
 
+        # free up memory
+        del candidate_features
+        del dict_features
+        gc.collect()
         return list_overlapping_polygons
 
     def get_intersection_polygons(self, polygon_layer, polygon_id, overlapping_id):
@@ -303,14 +377,17 @@ class GeometryUtils(QObject):
         """
         ids = list()
         list_overlapping = list()
+        request = QgsFeatureRequest().setSubsetOfAttributes([])
+        dict_features = {feature.id(): feature for feature in polygon_layer_2.getFeatures(request)}
         index = QgsSpatialIndex(polygon_layer_2)
+        candidate_features = None
 
-        for feature in polygon_layer_1.getFeatures():
+        for feature in polygon_layer_1.getFeatures(request):
             bbox = feature.geometry().boundingBox()
             candidates_ids = index.intersects(bbox)
-            candidates_features = polygon_layer_2.getFeatures(candidates_ids)
+            candidate_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
 
-            for candidate_feature in candidates_features:
+            for candidate_feature in candidate_features:
                 candidate_feature_geo = candidate_feature.geometry()
                 if feature.geometry().intersects(candidate_feature_geo) and not feature.geometry().touches(candidate_feature_geo):
                     intersection = feature.geometry().intersection(candidate_feature_geo)
@@ -325,7 +402,10 @@ class GeometryUtils(QObject):
                             if part.type() == QgsWkbTypes.PolygonGeometry and intersection.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
                                 ids.append([feature.id(), candidate_feature.id()])
                                 list_overlapping.append(part)
-
+        # free up memory
+        del candidate_features
+        del dict_features
+        gc.collect()
         return ids, QgsGeometry.collectGeometry(list_overlapping) if len(list_overlapping) > 0 else None
 
     def get_gaps_in_polygon_layer(self, layer, include_roads):
@@ -335,7 +415,8 @@ class GeometryUtils(QObject):
         Ported/adapted to Python from:
         https://github.com/qgis/QGIS/blob/2c536307476e205b83d86863b903d7ea9d628f0d/src/plugins/topology/topolTest.cpp#L579-L726
         """
-        features = layer.getFeatures()
+        request = QgsFeatureRequest().setSubsetOfAttributes([])
+        features = layer.getFeatures(request)
         featureCollection = list()
 
         for feature in features:
@@ -356,7 +437,7 @@ class GeometryUtils(QObject):
         aux_convex_hull = union_geom.convexHull()
         buffer_extent = QgsGeometry.fromRect(union_geom.boundingBox()).buffer(2, 3)
         buffer_diff = buffer_extent.difference(QgsGeometry.fromRect(union_geom.boundingBox()))
-        diff_geoms = buffer_extent.difference(union_geom)
+        diff_geoms = buffer_extent.difference(union_geom).difference(buffer_diff)
 
         if not diff_geoms:
             return None
@@ -383,7 +464,7 @@ class GeometryUtils(QObject):
 
         return self.extract_geoms_by_type(clean_errors, [QgsWkbTypes.PolygonGeometry])
 
-    def add_topological_vertices(self, layer1, layer2):
+    def add_topological_vertices(self, layer1, layer2, id_field=ID_FIELD):
         """
         Modify layer1 adding vertices that are in layer2 and not in layer1
 
@@ -402,45 +483,63 @@ class GeometryUtils(QObject):
         if layer2.geometryType() == QgsWkbTypes.PolygonGeometry:
             layer2 = processing.run("qgis:polygonstolines", {'INPUT': layer2, 'OUTPUT': 'memory:'})['OUTPUT']
 
+        geom_added = list()
         index = QgsSpatialIndex(layer2)
+        dict_features_layer2 = None
+        candidate_features = None
+        id_field_idx1 = layer1.fields().indexFromName(id_field)
+        request1 = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx1])
+        id_field_idx2 = layer2.fields().indexFromName(id_field)
+        request2 = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx2])
+
         with edit(layer1):
             edit_layer = QgsVectorLayerEditUtils(layer1)
+            dict_features_layer2 = {feature.id(): feature for feature in layer2.getFeatures(request2)}
 
-            for feature in layer1.getFeatures():
+            for feature in layer1.getFeatures(request1):
                 bbox = feature.geometry().boundingBox()
-                intersects_ids = index.intersects(bbox)
-                intersect_features = layer2.getFeatures(intersects_ids)
+                candidate_ids = index.intersects(bbox)
+                candidate_features = [dict_features_layer2[candidate_id] for candidate_id in candidate_ids]
+                intersect_features = list()
+
+                for candidate_feature in candidate_features:
+                    if candidate_feature.geometry().intersects(feature.geometry()):
+                        intersect_features.append(candidate_feature)
 
                 for intersect_feature in intersect_features:
-                    edit_layer.addTopologicalPoints(intersect_feature.geometry())
+                    if intersect_feature.id() not in geom_added:
+                        edit_layer.addTopologicalPoints(intersect_feature.geometry())
+                        geom_added.append(intersect_feature.id())
 
-    def line_polygon_layer_difference(self, input_layer_a, input_layer_b):
-        if input_layer_a.geometryType() == QgsWkbTypes.PolygonGeometry:
-            input_layer_a = processing.run("qgis:polygonstolines", {'INPUT': input_layer_a, 'OUTPUT': 'memory:'})['OUTPUT']
-        if input_layer_b.geometryType() == QgsWkbTypes.PolygonGeometry:
-            input_layer_b = processing.run("qgis:polygonstolines", {'INPUT': input_layer_b, 'OUTPUT': 'memory:'})['OUTPUT']
-        diff_layer = processing.run("native:difference", {'INPUT': input_layer_a, 'OVERLAY': input_layer_b, 'OUTPUT': 'memory:'})['OUTPUT']
-        return diff_layer
+        # free up memory
+        del candidate_features
+        del dict_features_layer2
+        gc.collect()
 
     def difference_plot_boundary(self, plot_layer, boundary_layer, id_field=ID_FIELD):
         """
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
-        difference_features = list()
-        polygons_layer = self.clone_layer(plot_layer)
+        try:
+            plots_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+            approx_diff_layer = processing.run("native:difference",
+                                               {'INPUT': plots_as_lines_layer,
+                                                'OVERLAY': boundary_layer,
+                                                'OUTPUT': 'memory:'})['OUTPUT']
+            self.add_topological_vertices(approx_diff_layer, boundary_layer)
 
-        if not polygons_layer:
-            print("Plots layer was not cloned correctly")
-            return []
-
-        self.add_topological_vertices(polygons_layer, boundary_layer)
-        differences_layer = self.line_polygon_layer_difference(polygons_layer, boundary_layer)
-
-        for feature in differences_layer.getFeatures():
-            difference_features.append({
-                'geometry': feature.geometry(),
-                'id': feature[id_field]})
+            diff_layer = processing.run("native:difference",
+                                        {'INPUT': approx_diff_layer,
+                                         'OVERLAY': boundary_layer,
+                                         'OUTPUT': 'memory:'})['OUTPUT']
+            difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]}
+                                   for feature in diff_layer.getFeatures()]
+        except QgsProcessingException as e:
+            self.log.logMessage(self.translatable_config_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES + ': ' + str(e),
+                                PLUGIN_NAME,
+                                Qgis.Critical)
+            difference_features = None
 
         return difference_features
 
@@ -449,19 +548,24 @@ class GeometryUtils(QObject):
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
-        difference_features = list()
-        polygons_layer = self.clone_layer(plot_layer)
+        try:
+            plots_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+            approx_diff_layer = processing.run("native:difference",
+                                               {'INPUT': boundary_layer,
+                                                'OVERLAY': plots_as_lines_layer,
+                                                'OUTPUT': 'memory:'})['OUTPUT']
+            self.add_topological_vertices(plots_as_lines_layer, approx_diff_layer)
 
-        if id(plot_layer) == id(polygons_layer):
-            print("Plots layer was not cloned correctly")
-
-        self.add_topological_vertices(polygons_layer, boundary_layer)
-        differences_layer = self.line_polygon_layer_difference(boundary_layer, polygons_layer)
-
-        for feature in differences_layer.getFeatures():
-            difference_features.append({
-                'geometry': feature.geometry(),
-                'id': feature[id_field]})
+            diff_layer = processing.run("native:difference",
+                                        {'INPUT': approx_diff_layer, 'OVERLAY': plots_as_lines_layer,
+                                         'OUTPUT': 'memory:'})['OUTPUT']
+            difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]}
+                                   for feature in diff_layer.getFeatures()]
+        except QgsProcessingException as e:
+            self.log.logMessage(self.translatable_config_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS + ': ' + str(e),
+                                PLUGIN_NAME,
+                                Qgis.Critical)
+            difference_features = None
 
         return difference_features
 
@@ -486,3 +590,85 @@ class GeometryUtils(QObject):
                 geom_list.append(geometry)
 
         return [geom for geom in geom_list if geom.type() in geometry_types]
+
+    def get_multipart_geoms(self, layer):
+        """
+        Get a list of geometries and ids with geometry type multipart and multiple
+        geometries
+        """
+        request = QgsFeatureRequest().setSubsetOfAttributes([])
+        features = layer.getFeatures(request)
+        featureCollection = list()
+        ids = list()
+        for feature in features:
+            geometry = feature.geometry()
+            const_geom = geometry.constGet()
+            if geometry.isMultipart() and const_geom.partCount() > 1:
+                for i in range(const_geom.numGeometries()):
+                    geom = QgsGeometry.fromWkt(const_geom.geometryN(i).asWkt())
+                    featureCollection.append(geom)
+                    ids.append(feature.id())
+        return featureCollection, ids
+
+    def get_begin_end_vertices_from_lines(self, layer):
+        point_layer = processing.run("qgis:extractspecificvertices",
+                                     {'VERTICES': '0,-1', 'INPUT': layer, 'OUTPUT': 'memory:' })['OUTPUT']
+
+        point_layer_uniques = processing.run("qgis:deleteduplicategeometries",
+                                             {'INPUT': point_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+
+        return point_layer_uniques
+
+    def get_boundaries_connected_to_single_boundary(self, boundary_layer):
+        """
+        Get all boundary lines that have an end vertex with no change in
+        boundary (colindancia), that is boundary lines that are connected with
+        just one boundary line.
+        """
+        points_layer = self.get_begin_end_vertices_from_lines(boundary_layer)
+        request = QgsFeatureRequest().setSubsetOfAttributes([])
+        dict_features = {feature.id(): feature for feature in boundary_layer.getFeatures(request)}
+        index = QgsSpatialIndex(boundary_layer)
+        ids_boundaries_list = list()
+        candidate_features = None
+
+        for feature in points_layer.getFeatures(request):
+            bbox = feature.geometry().boundingBox()
+            candidate_ids = index.intersects(bbox)
+            candidate_features = [dict_features[candidate_id] for candidate_id in candidate_ids]
+            intersect_ids = list()
+
+            for candidate_feature in candidate_features:
+                if candidate_feature.geometry().intersects(feature.geometry()):
+                    intersect_ids.append(candidate_feature.id())
+
+            if len(intersect_ids) == 2:
+                # For valid lines, we get more than two intersections (think
+                # about a 'Y')
+                ids_boundaries_list.extend(intersect_ids)
+
+        selected_ids = list(set(ids_boundaries_list)) # get unique ids
+        selected_features = [dict_features[selected_id] for selected_id in selected_ids]
+
+        # free up memory
+        del candidate_features
+        del dict_features
+        gc.collect()
+
+        return selected_features
+
+    def join_boundary_points_with_boundary_discard_nonmatching(self, boundary_point_layer, boundary_layer, id_field=ID_FIELD):
+        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+                                            {
+                                                'INPUT': boundary_point_layer,
+                                                'JOIN': boundary_layer,
+                                                'PREDICATE': [0],
+                                                'JOIN_FIELDS': [id_field],
+                                                'METHOD': 0,
+                                                'DISCARD_NONMATCHING': True,
+                                                'PREFIX': '',
+                                                'OUTPUT': 'memory:'})['OUTPUT']
+
+        id_field_idx = spatial_join_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        return spatial_join_layer.getFeatures(request)

@@ -10,6 +10,7 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.tests.utils import import_projectgenerator, get_dbconn, get_test_path, restore_schema
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.config.table_mapping_config import BOUNDARY_POINT_TABLE
+from asistente_ladm_col.config.general_config import DEFAULT_EPSG
 
 import_projectgenerator()
 
@@ -45,6 +46,7 @@ class TestCopy(unittest.TestCase):
                                     cbo_longitude,
                                     cbo_latitude,
                                     self.db_connection,
+                                    DEFAULT_EPSG,
                                     BOUNDARY_POINT_TABLE)
         self.assertEqual(res, True)
 
@@ -99,6 +101,7 @@ class TestCopy(unittest.TestCase):
                                     cbo_longitude,
                                     cbo_latitude,
                                     self.db_connection,
+                                    DEFAULT_EPSG,
                                     BOUNDARY_POINT_TABLE)
 
         self.assertEqual(res, False)

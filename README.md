@@ -18,9 +18,10 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([0.7.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.7.1)) del Asistente LADM_COL depende del plugin [Project Generator v3.2.7.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/3.2.7.1) y permite:
+La versión actual ([0.11.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.11.0)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.2.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip) y permite:
 
- - Capturar datos para el modelo LADM_COL v2.2.1.
+ - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
+ - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
  - Preprocesar puntos: Medición controlada.
    - Agrupamiento de puntos por cercanía.
    - Cálculo de posición promediada para puntos del mismo grupo.
@@ -42,7 +43,7 @@ La versión actual ([0.7.1](https://github.com/AgenciaImplementacion/Asistente-L
    - `PuntosCCL` (relaciona `Punto Lindero` y `Lindero`)
    - `MasCCL`    (relaciona `Lindero` y `Terreno`)
    - `Menos`     (relaciona `Terreno` y sus anillos/huecos internos)
- - Crear `Construcciones` y `Ùnidades de Construcción`:
+ - Crear `Construcciones` y `Unidades de Construcción`:
    - Digitalizando sobre el mapa.
      - Ayudas para la digitalización:
        - Configuración automática de snapping y de valores predeterminados para campos.
@@ -67,6 +68,9 @@ La versión actual ([0.7.1](https://github.com/AgenciaImplementacion/Asistente-L
  - Crear `Derechos`, `Restricciones` y `Responsabilidades` (`RRR`):
    - Usando formularios preconfigurados (relacionando el nuevo objeto a `Fuentes Administrativas` previamente seleccionadas).
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
+ - Crear `Ficha Predial`, `Investigación de Mercado`, `Núcleo Familiar`, `Interesado Natural` e `Interesado Jurídico`:
+   - Usando formularios preconfigurados.
+   - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
  - Seleccionar en un diálogo las capas a cargar de cualquier modelo de la base de datos o esquema:
    - Usar el plugin 'Project Generator' para cargar capas con formularios, relaciones y dominios configurados.
    - Cargar conjuntos de capas preconfigurados.
@@ -76,10 +80,18 @@ La versión actual ([0.7.1](https://github.com/AgenciaImplementacion/Asistente-L
    - Revisar superposiciones en `Punto de Control`.
    - Revisar superposiciones en `Lindero`.
    - Revisar superposiciones en `Terreno`.
-   - Revisar nodos de `Lindero` sin `Punto Lindero` asociado.
+   - Revisar superposiciones en `Construcción`.
+   - Revisar superposiciones en `Servidumbre de Paso`.
+   - Revisar `Punto Lindero` sin nodo de `Lindero` asociado.
+   - Revisar nodos de `Lindero` sin `Punto Lindero` asociado o con `Punto Lindero` asociado pero relacionado de forma incorrecta en tabla `PuntoCCL`.
    - Revisar nodos de `Lindero` no conectados.
-   - Revisar nodos de `Construcción` sin `Punto Levantamiento` asociado.
-   - Revisar superposiciones entre `Servidumbre` y `Construcción`.
+   - Revisar que los `Linderos` siempre terminen en cambio de colindancia.
+   - Revisar superposiciones entre `Servidumbre de paso` y `Construcción`.
+   - Revisar que los `Terrenos` no dejen agujeros entre ellos.
+   - Revisar que los límites de `Terrenos` estén cubiertos por `Linderos`.
+   - Revisar que los `Linderos` estén cubiertos por límites de `Terrenos`.
+   - Revisar geometrías multiparte en `Servidumbre de paso`.
+ - Generar Informes de Colindancia con base en `Terrenos` seleccionados (Anexo 17).
  - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
  - Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.
  - Visualizar GIFs ilustrativos en la ayuda online del plugin o descargarlos para trabajo offline.
@@ -117,3 +129,19 @@ docker-compose down --rmi local && docker-compose build
  `make` (esto ejecuta a su vez el comando `lrelease`, el cual genera un archivo binario con extensión .qm)
 
 NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
+
+## ¿Cómo recibir notificaciones de nuevas versiones del Asistente LADM_COL?
+
+ + Si tienes cuenta de GitHub o si puedes crear una, ve a https://github.com/AgenciaImplementacion/Asistente-LADM_COL/ y haz click en el botón `Watch` de la parte superior de la página web para seguir las novedades del repositorio.
+
+ + Si no tienes cuenta de GitHub, tienes dos opciones:
+
+   a) Subscríbete al *feed* de lanzamientos: https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases.atom
+
+   b) Usa gitpunch!
+
+      + Ve a la página https://gitpunch.com/
+      + Espera a que termine la animación o haz click en `Skip` (en la parte inferior de la página).
+      + Regístrate usando tu correo electrónico.
+      + Busca por "Asistente LADM_COL" y elige el repositorio `AgenciaImplementacion/Asistente-LADM_COL`.
+      + Eso es todo. Después de recibir un correo que te notifique una nueva versión del plugin, pasarán unas horas hasta que el mismo esté disponible en el repositorio oficial de plugins de QGIS.

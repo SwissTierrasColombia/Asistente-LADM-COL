@@ -17,9 +17,10 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([0.7.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.7.1)) of the LADM_COL Assistant depends on [Project Generator v3.2.7.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/tag/3.2.7.1) and allows users to:
+The current version ([0.11.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.11.0)) of the LADM_COL Assistant depends on [Project Generator v3.3.2.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip) and allows users to:
 
- - Capture data for the LADM_COL v2.2.1 model.
+ - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
+ - Capture data for the `FICHA_PREDIAL v2.2.1` model.
  - Preprocess points: Controlled Measurement.
    - Group points by nearness.
    - Average point position from points of the same group.
@@ -65,6 +66,9 @@ The current version ([0.7.1](https://github.com/AgenciaImplementacion/Asistente-
  - Create `Rights`, `Restrictions` and `Responsibilities`:
    - Using preconfigured forms (associating the new object to selected `Administrative Sources`).
    - From another table with any structure, setting a field mapping.
+ - Create `Propert Record Card`, `Market Research`, `Nuclear Family`, `Natural Party` and `Legal Party`:
+   - Using preconfigured forms.
+   - From another table with any structure, setting a field mapping.
  - Select in a dialog layers to load from any model in the database or schema:
    - Use the 'Project Generator' plugin (a prerequisite) to load layers with configured forms, relations and domains.
    - Load preconfigured layer sets.
@@ -74,10 +78,18 @@ The current version ([0.7.1](https://github.com/AgenciaImplementacion/Asistente-
    - Check overlaps in `Control Points`.
    - Check overlaps in `Boundary`.
    - Check overlaps in `Plot`.
-   - Check missing `Boundary Points` in `Boundaries`.
+   - Check overlaps in `Building`.
+   - Check overlaps in `Right of Way`.
+   - Check missing `Boundary Points` that do not have `Boundary` nodes associated.
+   - Check missing `Boundary` nodes that do not have `Boundary Points` correctly associated.
    - Check dangles in `Boundary`.
-   - Check missing `Survey Points` in `Buildings`.
+   - Check that `Boundaries` are not split.
    - Check overlaps between `Right of Way` and `Building`.
+   - Check that `Plots` have no gaps in between.
+   - Check that `Plot` boundaries are covered by `Boundaries`.
+   - Check that `Boundaries` are covered by `Plot` boundaries.
+   - Check that `Right of Way` has no multi-part geometries.
+ - Generate reports based on selected `Plots` (Annex 17).
  - Configure automatic values for `namespace` and `local_id` attributes.
  - Load styles for newly added layers from preconfigured QML files.
  - View illustrative GIFs in the plugin's online help or download them for offline work.
@@ -102,3 +114,19 @@ If you need to recreate docker image, you can use:
 ```sh
 docker-compose down --rmi local && docker-compose build
 ```
+
+## How to be notified of new relases of the LADM_COL Assistant?
+
+ + If you have a GitHub account or you can create one, go to https://github.com/AgenciaImplementacion/Asistente-LADM_COL/ and click the `Watch` button in the upper part of the web page to follow changes on the repository.
+
+ + If you do not have a GitHub account, you have two options:
+
+   a) Sbscribe to the release feed: https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases.atom
+
+   b) Use gitpunch!
+
+      + Go to https://gitpunch.com/
+      + Wait until the animation ends or click on `Skip` (below in the page).
+      + Sign in using your e-mail.
+      + Search for "Asistente LADM_COL" and choose the `AgenciaImplementacion/Asistente-LADM_COL` repository.
+      + That's it! After getting notifications, you will need to wait some hours until the plugin is accepted and available in the QGIS plugin repo.
