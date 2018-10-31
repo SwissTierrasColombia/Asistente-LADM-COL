@@ -44,7 +44,6 @@ class TestGeomsLoad(unittest.TestCase):
         restore_schema('test_ladm_col_3d')
 
     def test_valid_import_geom_2d_to_db_gpkg(self):
-
         print('\nINFO: Validating ETL-Model from [ Point, PointZ, PointM, PointZM ] to Point geometries...')
 
         # Layer in LADM for test
@@ -64,7 +63,6 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(test_layer.featureCount(), 51)
         clean_table('test_ladm_col', BOUNDARY_POINT_TABLE)
         test_layer.dataProvider().truncate()
-
 
         # PointZ To Point
         print("Validating PointZ to Point")
@@ -110,7 +108,6 @@ class TestGeomsLoad(unittest.TestCase):
 
 
     def test_valid_import_geom_3d_to_db_gpkg(self):
-
         print('\nINFO: Validating ETL-Model from [ Point, PointZ, PointM, PointZM ] to PointZ geometries...')
 
         test_layer_3d = self.qgis_utils.get_layer(self.db_connection_3d, BOUNDARY_POINT_TABLE, load=True)
@@ -170,13 +167,10 @@ class TestGeomsLoad(unittest.TestCase):
         test_layer_3d.dataProvider().truncate()
 
     def test_valid_import_geom_2d_to_db_postgres(self):
-
         print('\nINFO: Validating ETL-Model from [ Point, PointZ, PointM, PointZM ] to Point (Postgres) geometries...')
         print('\nUSING POSTGRESQL SCHEMA')
 
         test_layer = self.qgis_utils.get_layer(self.db_connection, BOUNDARY_POINT_TABLE, load=True)
-
-
 
         # Point To Point
         print("Validating Point to Point")
@@ -199,7 +193,6 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.PointGeometry, test_layer.type())
         self.assertEqual(QgsWkbTypes.Point, test_layer.wkbType())
         self.assertEqual(test_layer.featureCount(), 51)
-
 
         # PointM To Point
         print("Validating PointM To Point")
@@ -224,7 +217,6 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(test_layer.featureCount(), 51)
 
     def test_valid_import_geom_3d_to_db_postgres(self):
-
         print('\nINFO: Validating ETL-Model from [ Point, PointZ, PointM, PointZM ] to PointZ (Postgres) geometries...')
 
         test_layer_3d = self.qgis_utils.get_layer(self.db_connection_3d, BOUNDARY_POINT_TABLE, load=True)
@@ -270,11 +262,9 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.PointZ, test_layer_3d.wkbType())
         self.assertEqual(test_layer_3d.featureCount(), 51)
 
-
     @classmethod
     def tearDownClass(self):
         print('tearDown test_change_geometries_in_load')
-
 
 if __name__ == '__main__':
     nose2.main()

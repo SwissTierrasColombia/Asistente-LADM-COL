@@ -97,12 +97,11 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
         destType = target.geometryType()
         destIsMulti = QgsWkbTypes.isMultiType(target.wkbType())
 
+        #  Check if layer has Z or M values.
         drop_coordinates = list()
         add_coordinates = list()
-        #  Check if layer have Z or M values.
-        if target.wkbType() == source.wkbType():
-            pass
         if QgsWkbTypes().hasM(source.wkbType()):
+            # In ladm we don't use M values, so drop them if present
             drop_coordinates.append("M")
         if not QgsWkbTypes().hasZ(source.wkbType()) and QgsWkbTypes().hasZ(target.wkbType()):
             add_coordinates.append("Z")
@@ -170,7 +169,7 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
         return {self.OUTPUT: target}
 
     def transform_geom(self, geom, drop_coordinates, add_coordinates):
-        """ This function put or remove Z and remove M value"""
+        """Add/remove Z and remove M values"""
         if "Z" in drop_coordinates:
             geom.get().dropZValue()
         if "M" in drop_coordinates:

@@ -71,10 +71,9 @@ def get_dbconn(schema):
     db = asistente_ladm_col_plugin.qgis_utils.get_db_connection()
     return db
 
-
 def restore_schema(schema):
     db_connection = get_dbconn(schema)
-    print("Testing Conecction...\n", db_connection.test_connection())
+    print("Testing Connection...\n", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("""SELECT schema_name FROM information_schema.schemata WHERE schema_name = '{}';""".format(schema))
     result = cur.fetchone()
@@ -91,17 +90,16 @@ def restore_schema(schema):
     else:
         print("Please add the test script")
 
-    process = os.popen(script_dir + " {}".format(TEST_SCHEMAS_MAPPING[schema]))#replace for backup name file!!!
+    process = os.popen("{} {}".format(script_dir, TEST_SCHEMAS_MAPPING[schema]))
     output = process.readlines()
     process.close()
     print("Done restoring ladm_col database.")
     if len(output) > 0:
         print("Warning:", output)
 
-
 def drop_schema(schema):
     db_connection = get_dbconn(schema)
-    print("Testing Conecction...\n", db_connection.test_connection())
+    print("Testing Connection...\n", db_connection.test_connection())
     print("Clean ladm_col database...")
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     query = cur.execute("""DROP SCHEMA '{}' CASCADE;""".format(schema))
@@ -111,10 +109,9 @@ def drop_schema(schema):
     if query is not None:
         print("The drop schema is not working")
 
-
 def clean_table(schema, table):
     db_connection = get_dbconn(schema)
-    print("Testing Conecction...\n", db_connection.test_connection())
+    print("Testing Connection...\n", db_connection.test_connection())
     print('Clean {}.{} table...'.format(schema, table))
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     query = cur.execute("""DELETE FROM {}.{} WHERE True;""".format(schema, table))
@@ -122,7 +119,6 @@ def clean_table(schema, table):
     cur.close()
     if query is not None:
         print('The clean {}.{} is not working'.format(schema, table))
-
 
 def get_iface():
     global iface
@@ -132,11 +128,9 @@ def get_iface():
     iface.rewrite_method = rewrite_method
     return iface
 
-
 def get_test_path(path):
     basepath = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(basepath, "resources", path)
-
 
 def get_test_copy_path(path):
     src_path = get_test_path(path)
@@ -144,7 +138,6 @@ def get_test_copy_path(path):
     dst_path = os.path.join(dst_path[0], "_" + dst_path[1])
     copyfile(src_path, dst_path)
     return dst_path
-
 
 def import_projectgenerator():
     global iface
@@ -154,13 +147,11 @@ def import_projectgenerator():
         pg = projectgenerator.classFactory(iface)
         qgis.utils.plugins["projectgenerator"] = pg
 
-
 def unload_projectgenerator():
     global iface
     plugin_found = "projectgenerator" in qgis.utils.plugins
     if plugin_found:
         del(qgis.utils.plugins["projectgenerator"])
-
 
 def run_etl_model(input_layer, out_layer, ladm_col_layer_name=BOUNDARY_POINT_TABLE):
 

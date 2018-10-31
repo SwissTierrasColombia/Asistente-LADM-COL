@@ -162,10 +162,10 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         if not QgsWkbTypes().hasZ(self.target_layer.wkbType()):
             self.labelZ.setEnabled(False)
             self.cbo_elevation.setEnabled(False)
-            self.cbo_elevation.setToolTip(QCoreApplication.translate("CreatePointsCadastreWizard",
-                                                                    "The current model does not support 3D geometries"))
-            self.labelZ.setToolTip(QCoreApplication.translate("CreatePointsCadastreWizard",
-                                                                    "The current model does not support 3D geometries"))
+            msg = QCoreApplication.translate("CreatePointsCadastreWizard",
+                                             "The current model does not support 3D geometries")
+            self.cbo_elevation.setToolTip(msg)
+            self.labelZ.setToolTip(msg)
         else:
             self.labelZ.setEnabled(True)
             self.cbo_elevation.setEnabled(True)
