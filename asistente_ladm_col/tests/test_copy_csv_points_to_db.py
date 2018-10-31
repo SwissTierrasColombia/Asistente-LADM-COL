@@ -53,6 +53,25 @@ class TestCopy(unittest.TestCase):
                                     BOUNDARY_POINT_TABLE)
         self.assertEqual(res, True)
 
+    def test_upload_points_from_csv_crs_wgs84(self):
+        print("Copying CSV data with crs 4326...")
+        csv_path = get_test_path('csv/puntos_fixed.csv')
+        txt_delimiter = ';'
+        cbo_longitude = 'x'
+        cbo_latitude = 'y'
+        epsg =  '4326'
+
+        res = self.qgis_utils.copy_csv_to_db(csv_path,
+                                    txt_delimiter,
+                                    cbo_longitude,
+                                    cbo_latitude,
+                                    self.db_connection,
+                                    epsg,
+                                    BOUNDARY_POINT_TABLE)
+
+        self.assertEqual(res, True)
+        #self.assertEqual(DEFAULT_EPSG, BOUNDARY_POINT_TABLE.postgisSrid())
+
     def test_copy_csv_with_z_to_db(self):
         print("\nINFO: Validating copy CSV points with Z to DB...")
         clean_table('test_ladm_col_3d', BOUNDARY_POINT_TABLE)
