@@ -54,8 +54,16 @@ class TestCopy(unittest.TestCase):
         self.assertEqual(res, True)
 
     def test_upload_points_from_csv_crs_wgs84(self):
-        print("Copying CSV data with crs 4326...")
-        csv_path = get_test_path('csv/puntos_fixed.csv')
+        print("\nINFO: Copying CSV data with EPSG:4326...")
+        clean_table('test_ladm_col', BOUNDARY_POINT_TABLE)
+        self.qgis_utils.disable_automatic_fields(self.db_connection, BOUNDARY_POINT_TABLE)
+        self.upload_points_from_csv_crs_wgs84()
+        self.validate_points_in_db_from_wgs84()
+        clean_table('test_ladm_col', BOUNDARY_POINT_TABLE)
+
+    def upload_points_from_csv_crs_wgs84(self):
+        print("Copying CSV data in WGS84...")
+        csv_path = get_test_path('csv/puntos_crs_4326_wgs84.csv')
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
@@ -70,7 +78,14 @@ class TestCopy(unittest.TestCase):
                                     BOUNDARY_POINT_TABLE)
 
         self.assertEqual(res, True)
-        #self.assertEqual(DEFAULT_EPSG, BOUNDARY_POINT_TABLE.postgisSrid())
+
+    def validate_points_in_db_from_wgs84(self):
+        cur = self.db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        print('\nINFO: Validating points')
+        query = cur.execute("""SELECT st_x(localizacion_original), st_y(localizacion_original) FROM test_ladm_col.puntolindero;""")
+        results = cur.fetchall()
+        self.assertEqual(len(results), 3)
+        self.assertEqual(results, [[963052.433292674, 1077370.54548811], [963056.711416816, 1077286.71929338], [963056.670399835, 1077210.30465577]])
 
     def test_copy_csv_with_z_to_db(self):
         print("\nINFO: Validating copy CSV points with Z to DB...")
