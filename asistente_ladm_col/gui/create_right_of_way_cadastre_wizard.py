@@ -24,6 +24,10 @@ from qgis.PyQt.QtWidgets import QAction, QWizard
 
 from ..utils import get_ui_class
 from ..config.table_mapping_config import RIGHT_OF_WAY_TABLE, SURVEY_POINT_TABLE
+from ..config.general_config import (
+    DEFAULT_EPSG,
+    TranslatableConfigStrings
+)
 from ..config.help_strings import HelpStrings
 
 WIZARD_UI = get_ui_class('wiz_create_right_of_way_cadastre.ui')
@@ -37,10 +41,12 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
+        self.translatable_config_strings = TranslatableConfigStrings()
 
         self.restore_settings()
 
         self.rad_digitizing.toggled.connect(self.adjust_page_1_controls)
+        self.rad_digitizing_line.toggled.connect(self.adjust_page_1_controls)
         self.adjust_page_1_controls()
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
@@ -49,6 +55,8 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
 
     def adjust_page_1_controls(self):
         if self.rad_refactor.isChecked():
+            self.lbl_width.setEnabled(False)
+            self.width_line_edit.setEnabled(False)
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
             finish_button_text = 'Import'
@@ -91,7 +99,10 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         elif self.rad_digitizing.isChecked():
             self.prepare_right_of_way_creation()
 
-    def prepare_right_of_way_creation(self):
+        elif self.rad_digitizing_line.isChecked():
+            self.prepare_right_if_way_line_creation()
+
+    def add_db_required_layers(self):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, {
             RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
@@ -115,6 +126,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return
 
+    def set_layers_settings(self):
         # Disable transactions groups
         QgsProject.instance().setAutoTransaction(False)
 
@@ -126,6 +138,13 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         snapping.setUnits(QgsTolerance.Pixels)
         snapping.setTolerance(9)
         QgsProject.instance().setSnappingConfig(snapping)
+
+    def prepare_right_of_way_creation(self):
+        # Load layers
+        self.add_db_required_layers()
+
+        # Disable transactions groups and configure Snapping
+        self.set_layers_settings()
 
         # Don't suppress feature form
         form_config = self._right_of_way_layer.editFormConfig()
@@ -141,6 +160,34 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             QCoreApplication.translate('CreateRightOfWayCadastreWizard',
                                        "You can now start capturing right of way digitizing on the map..."),
             Qgis.Info)
+
+    def prepare_right_if_way_line_creation(self):
+        # Load layers
+        self.add_db_required_layers()
+
+        # Add Memory line layer
+        right_of_way_line_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                    self.translatable_config_strings.RIGHT_OF_WAY_LINE_LAYER, "memory")
+        QgsProject.instance().addMapLayer(right_of_way_line_layer, True)
+
+        # Disable transactions groups and configure Snapping
+        self.set_layers_settings()
+
+        # Suppress feature form
+        form_config = right_of_way_line_layer.editFormConfig()
+        form_config.setSuppress(QgsEditFormConfig.SuppressOn)
+        right_of_way_line_layer.setEditFormConfig(form_config)
+
+        # Enable edition mode
+        self.iface.layerTreeView().setCurrentLayer(right_of_way_line_layer)
+        right_of_way_line_layer.startEditing()
+        self.iface.actionAddFeature().trigger()
+
+        self.iface.messageBar().pushMessage('Asistente LADM_COL',
+            QCoreApplication.translate('CreateRightOfWayCadastreWizard',
+                                       "You can now start capturing line right of way digitizing on the map..."),
+            Qgis.Info)
+
 
     def save_settings(self):
         settings = QSettings()
