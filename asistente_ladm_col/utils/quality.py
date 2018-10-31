@@ -347,10 +347,11 @@ class QualityUtils(QObject):
             features.append(new_feature)
 
         for plot_without_inner_ring in plots_without_inner_rings:
-            inner_ring = dict_inner_rings[plot_without_inner_ring].geometry()
-            new_feature = QgsVectorLayerUtils().createFeature(error_layer, inner_ring,
-                                                              {0: plot_without_inner_ring, 1: None, 2: typeTplgError[3]})
-            features.append(new_feature)
+            if plot_without_inner_ring not in plots_without_boundary:
+                inner_ring = dict_inner_rings[plot_without_inner_ring].geometry()
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, inner_ring,
+                                                                  {0: plot_without_inner_ring, 1: None, 2: typeTplgError[3]})
+                features.append(new_feature)
 
         error_layer.dataProvider().addFeatures(features)
 

@@ -1,5 +1,6 @@
 from qgis.core import QgsWkbTypes
 
+from .general_config import TranslatableConfigStrings
 from .table_mapping_config import (
     BOUNDARY_TABLE,
     BOUNDARY_POINT_TABLE,
@@ -48,3 +49,7 @@ LAYER_QML_STYLE = {
         QgsWkbTypes.PolygonGeometry: 'style_polygon_error'
     }
 }
+
+CUSTOM_ERROR_LAYERS = {
+    TranslatableConfigStrings().CHECK_PLOTS_COVERED_BY_BOUNDARIES: 'style_plots_should_be_covered_by_boundary'
+    }
