@@ -762,10 +762,10 @@ class QGISUtils(QObject):
         # Create QGIS vector layer
         uri = "file:///{}?delimiter={}&xField={}&yField={}&crs=EPSG:{}".format(
               csv_path,
-              delimiter,
+              delimiter if delimiter != '\t' else '%5Ct',
               longitude,
               latitude,
-              DEFAULT_EPSG
+              epsg
            )
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
 
