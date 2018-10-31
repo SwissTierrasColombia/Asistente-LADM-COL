@@ -51,5 +51,6 @@ LAYER_QML_STYLE = {
 }
 
 CUSTOM_ERROR_LAYERS = {
-    TranslatableConfigStrings().CHECK_PLOTS_COVERED_BY_BOUNDARIES: 'style_plots_should_be_covered_by_boundary'
+    TranslatableConfigStrings().CHECK_BOUNDARIES_COVERED_BY_PLOTS: 'style_boundary_should_be_covered_by_plot',
+    TranslatableConfigStrings().CHECK_PLOTS_COVERED_BY_BOUNDARIES: 'style_plot_should_be_covered_by_boundary'
     }

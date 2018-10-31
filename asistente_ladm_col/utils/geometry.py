@@ -545,21 +545,20 @@ class GeometryUtils(QObject):
 
         return difference_features
 
-    def difference_boundary_plot(self, boundary_layer, plot_layer, id_field=ID_FIELD):
+    def difference_boundary_plot(self, boundary_layer, plot_as_lines_layer, id_field=ID_FIELD):
         """
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
         try:
-            plots_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
             approx_diff_layer = processing.run("native:difference",
                                                {'INPUT': boundary_layer,
-                                                'OVERLAY': plots_as_lines_layer,
+                                                'OVERLAY': plot_as_lines_layer,
                                                 'OUTPUT': 'memory:'})['OUTPUT']
-            self.add_topological_vertices(plots_as_lines_layer, approx_diff_layer)
+            self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer)
 
             diff_layer = processing.run("native:difference",
-                                        {'INPUT': approx_diff_layer, 'OVERLAY': plots_as_lines_layer,
+                                        {'INPUT': approx_diff_layer, 'OVERLAY': plot_as_lines_layer,
                                          'OUTPUT': 'memory:'})['OUTPUT']
             difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]}
                                    for feature in diff_layer.getFeatures()]
