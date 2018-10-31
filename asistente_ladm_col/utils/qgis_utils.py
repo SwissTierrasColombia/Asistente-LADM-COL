@@ -778,9 +778,13 @@ class QGISUtils(QObject):
             csv_layer = res['OUTPUT']
 
         if not epsg == DEFAULT_EPSG:
-            crs_dest = QgsCoordinateReferenceSystem('EPSG:{}'.format(DEFAULT_EPSG))
-            csv_layer = processing.run("native:reprojectlayer", {'INPUT':csv_layer,
-                                        'TARGET_CRS':crs_dest,'OUTPUT':'memory:'})['OUTPUT']
+            crs_dest = 'EPSG:{}'.format(DEFAULT_EPSG)
+            parameters = {'INPUT': csv_layer,
+                          'TARGET_CRS': crs_dest,
+                          'OUTPUT': 'memory:'}
+
+            res = processing.run("native:reprojectlayer", parameters)
+            csv_layer = res['OUTPUT']
 
         if not csv_layer.isValid():
             self.message_emitted.emit(
