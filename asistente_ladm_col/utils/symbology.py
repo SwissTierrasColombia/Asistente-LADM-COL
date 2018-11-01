@@ -26,7 +26,10 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QObject, pyqtSignal, QFile, QIODevice
 from qgis.PyQt.QtXml import QDomDocument
 
-from ..config.general_config import STYLES_DIR
+from ..config.general_config import (
+    QGIS_LANG,
+    STYLES_DIR
+)
 from ..config.symbology import (
     LAYER_QML_STYLE,
     ERROR_LAYER,
@@ -44,7 +47,8 @@ class SymbologyUtils(QObject):
         qml_name = None
         if is_error_layer:
             if layer.name() in CUSTOM_ERROR_LAYERS:
-                qml_name = CUSTOM_ERROR_LAYERS[layer.name()]
+                # Symbology is selected according to the language
+                qml_name = CUSTOM_ERROR_LAYERS[layer.name()][QGIS_LANG]
             else:
                 qml_name = LAYER_QML_STYLE[ERROR_LAYER][layer.geometryType()]
         else:

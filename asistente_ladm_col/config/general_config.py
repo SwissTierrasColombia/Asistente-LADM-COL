@@ -3,6 +3,11 @@ import os.path
 from ..utils.qt_utils import get_plugin_metadata
 from qgis.PyQt.QtCore import QLocale, QSettings, QObject, QCoreApplication
 
+from .table_mapping_config import (
+    MORE_BOUNDARY_FACE_STRING_TABLE,
+    LESS_TABLE
+)
+
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
 CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
 PROPERTY_RECORD_CARD_MODEL_PREFIX = "Ficha_Predial_"
@@ -121,3 +126,9 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not overlap Buildings")
         self.CHECK_GAPS_IN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Plots should not have gaps")
         self.CHECK_MULTIPART_IN_RIGHT_OF_WAY = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not have multipart geometries")
+
+        # Type topologycal errors
+        self.TPLG_ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY = QCoreApplication.translate("TranslatableConfigStrings", "Plot is not covered by the boundary")
+        self.TPLG_ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT = QCoreApplication.translate("TranslatableConfigStrings", "Boundary is not covered by the plot")
+        self.TPLG_ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot not recorded in the table {}").format(MORE_BOUNDARY_FACE_STRING_TABLE)
+        self.TPLG_ERROR_NO_LESS_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot not recorded in the table {}").format(LESS_TABLE)

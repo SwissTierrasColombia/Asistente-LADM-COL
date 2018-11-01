@@ -31,7 +31,6 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsLineString,
     QgsMultiLineString,
-    QgsProcessingException,
     QgsProcessingFeedback,
     QgsSpatialIndex,
     QgsVectorLayer,
@@ -524,24 +523,17 @@ class GeometryUtils(QObject):
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
-        try:
-            approx_diff_layer = processing.run("native:difference",
-                                               {'INPUT': plots_as_lines_layer,
-                                                'OVERLAY': boundary_layer,
-                                                'OUTPUT': 'memory:'})['OUTPUT']
-            self.add_topological_vertices(approx_diff_layer, boundary_layer)
+        approx_diff_layer = processing.run("native:difference",
+                                           {'INPUT': plots_as_lines_layer,
+                                            'OVERLAY': boundary_layer,
+                                            'OUTPUT': 'memory:'})['OUTPUT']
+        self.add_topological_vertices(approx_diff_layer, boundary_layer)
 
-            diff_layer = processing.run("native:difference",
-                                        {'INPUT': approx_diff_layer,
-                                         'OVERLAY': boundary_layer,
-                                         'OUTPUT': 'memory:'})['OUTPUT']
-            difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]}
-                                   for feature in diff_layer.getFeatures()]
-        except QgsProcessingException as e:
-            self.log.logMessage(self.translatable_config_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES + ': ' + str(e),
-                                PLUGIN_NAME,
-                                Qgis.Critical)
-            difference_features = None
+        diff_layer = processing.run("native:difference",
+                                    {'INPUT': approx_diff_layer,
+                                     'OVERLAY': boundary_layer,
+                                     'OUTPUT': 'memory:'})['OUTPUT']
+        difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]} for feature in diff_layer.getFeatures()]
 
         return difference_features
 
@@ -550,23 +542,17 @@ class GeometryUtils(QObject):
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
-        try:
-            approx_diff_layer = processing.run("native:difference",
-                                               {'INPUT': boundary_layer,
-                                                'OVERLAY': plot_as_lines_layer,
-                                                'OUTPUT': 'memory:'})['OUTPUT']
-            self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer)
+        approx_diff_layer = processing.run("native:difference",
+                                           {'INPUT': boundary_layer,
+                                            'OVERLAY': plot_as_lines_layer,
+                                            'OUTPUT': 'memory:'})['OUTPUT']
+        self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer)
 
-            diff_layer = processing.run("native:difference",
-                                        {'INPUT': approx_diff_layer, 'OVERLAY': plot_as_lines_layer,
-                                         'OUTPUT': 'memory:'})['OUTPUT']
-            difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]}
-                                   for feature in diff_layer.getFeatures()]
-        except QgsProcessingException as e:
-            self.log.logMessage(self.translatable_config_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS + ': ' + str(e),
-                                PLUGIN_NAME,
-                                Qgis.Critical)
-            difference_features = None
+        diff_layer = processing.run("native:difference",
+                                    {'INPUT': approx_diff_layer, 'OVERLAY': plot_as_lines_layer,
+                                     'OUTPUT': 'memory:'})['OUTPUT']
+
+        difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]} for feature in diff_layer.getFeatures()]
 
         return difference_features
 
