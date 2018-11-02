@@ -313,6 +313,21 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"nacionalidad"', 'length': 20, 'precision': -1, 'type': 10, 'name': 'nacionalidad'},
             {'expression': '"interesadojuridicocatastro"', 'length': -1, 'precision': 0, 'type': 4, 'name': 'interesadojuridicocatastro'}
         ]
+    elif layer_name == RIGHT_OF_WAY_TABLE:
+        mapping = [
+            {'expression': '"t_id"', 'length': -1, 'name': 't_id', 'precision': 0, 'type': 4},
+            {'expression': '"identificador"', 'length': 20, 'name': 'identificador', 'precision': -1, 'type': 10},
+            {'expression': '"fecha_inscripcion_catastral"', 'length': -1, 'name': 'fecha_inscripcion_catastral', 'precision': -1, 'type': 14},
+            {'expression': '"dimension"', 'length': 255, 'name': 'dimension', 'precision': -1, 'type': 10},
+            {'expression': '"etiqueta"', 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}, 
+            {'expression': '"relacion_superficie"', 'length': 255, 'name': 'relacion_superficie', 'precision': -1, 'type': 10},
+            {'expression': '"su_espacio_de_nombres"', 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10},
+            {'expression': '"su_local_id"', 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10},
+            {'expression': '"nivel"', 'length': -1, 'name': 'nivel', 'precision': 0, 'type': 4},
+            {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
+            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16},
+            {'expression': '"punto_referencia"', 'length': -1, 'name': 'punto_referencia', 'precision': -1, 'type': 10}
+        ]
 
     # If the user wants to enable automatic fields...
     if QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
