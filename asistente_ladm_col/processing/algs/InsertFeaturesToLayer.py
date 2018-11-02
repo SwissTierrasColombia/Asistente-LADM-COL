@@ -40,6 +40,9 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
+    def share_output_processAlgorithm(self):
+        return self.salida
+
     def createInstance(self):
         return type(self)()
 
@@ -54,6 +57,7 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
 
     def __init__(self):
         super().__init__()
+        self.salida = []
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
@@ -81,6 +85,7 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
             feedback.reportError("\nWARNING: You need to close the edit session on layer '{}' before running this algorithm.".format(
                 target.name()
             ))
+            self.salida = None
             return {self.OUTPUT: None}
 
         # Define a mapping between source and target layer
@@ -140,6 +145,7 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
                 target.name(),
                 repr(e)
             ))
+            self.salida = None
             return {self.OUTPUT: None}
 
         if res:
@@ -154,4 +160,5 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
                 target.name()
             ))
 
+        self.salida = target
         return {self.OUTPUT: target}

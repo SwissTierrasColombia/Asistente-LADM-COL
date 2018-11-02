@@ -34,6 +34,7 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            CONTROL_POINT_TABLE)
 from ..config.help_strings import HelpStrings
 from ..config.general_config import PLUGIN_NAME, DEFAULT_EPSG, FIELD_MAPPING_PATH
+from ..processing.algs.InsertFeaturesToLayer import InsertFeaturesToLayer
 
 WIZARD_UI = get_ui_class('wiz_create_points_cadastre.ui')
 
@@ -46,6 +47,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
+        self.insert_features_to_layer = InsertFeaturesToLayer()
 
         # Auxiliary data to set nonlinear next pages
         self.pages = [self.wizardPage1, self.wizardPage2, self.wizardPage3]
@@ -209,8 +211,10 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                                                output_layer_name,
                                                save_field_mapping)
 
-            if save_field_mapping is not None:
-                self.replace_field_mapping(save_field_mapping)
+                if self.insert_features_to_layer.share_output_processAlgorithm() is not None:
+                    self.qgis_utils.func_save_field_mapping(output_layer_name)
+                    if save_field_mapping is not None:
+                        self.replace_field_mapping(save_field_mapping)
 
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
