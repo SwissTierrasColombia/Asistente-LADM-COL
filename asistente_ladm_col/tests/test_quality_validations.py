@@ -14,7 +14,6 @@ from qgis.testing import unittest, start_app
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.general_config import QGIS_LANG
 from asistente_ladm_col.config.table_mapping_config import ID_FIELD
 from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_copy_path, get_dbconn, restore_schema
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
@@ -87,41 +86,26 @@ class TesQualityValidations(unittest.TestCase):
         features = self.quality.get_features_plots_covered_by_boundaries(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
 
         # this error can occur because an error occurred when executing the algorithm
-        self.assertNotEqual(features, None)
+        self.assertIsNotNone(features, 'An error was generated when executing the algorithm')
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 45)
 
         error_layer.dataProvider().addFeatures(features)
 
-        if QGIS_LANG == 'es':
-            exp = "\"error_type\" = 'El terreno no esta cubierto por el lindero'"
-            error_layer.selectByExpression(exp)
-            self.assertEqual(error_layer.selectedFeatureCount(), 19)
+        # English language is set as default for validations
+        exp = "\"error_type\" = 'Plot is not covered by the boundary'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 19)
 
-            exp = "\"error_type\" = 'La relación topológica entre el lindero y el terreno no esta registrada en la tabla masccl'"
-            error_layer.selectByExpression(exp)
-            self.assertEqual(error_layer.selectedFeatureCount(), 24)
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the table masccl'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 24)
 
-            exp = "\"error_type\" = 'La relación topológica entre el lindero y el terreno no esta registrada en la tabla menos'"
-            error_layer.selectByExpression(exp)
-            self.assertEqual(error_layer.selectedFeatureCount(), 2)
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the table menos'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 2)
 
-        elif QGIS_LANG == 'en':
-            exp = "\"error_type\" = 'Plot is not covered by the boundary'"
-            error_layer.selectByExpression(exp)
-            self.assertEqual(error_layer.selectedFeatureCount(), 19)
-
-            exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the table masccl'"
-            error_layer.selectByExpression(exp)
-            self.assertEqual(error_layer.selectedFeatureCount(), 24)
-
-            exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the table menos'"
-            error_layer.selectByExpression(exp)
-            self.assertEqual(error_layer.selectedFeatureCount(), 2)
-
-        else:
-            print('the language is not supported, the tests are not executed')
 
     def test_topology_boundary_must_be_covered_by_plot(self):
 
@@ -168,40 +152,25 @@ class TesQualityValidations(unittest.TestCase):
         features = self.quality.get_features_boundaries_covered_by_plots(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
 
         # this error can occur because an error occurred when executing the algorithm
-        self.assertNotEqual(features, None)
+        self.assertIsNotNone(features, 'An error was generated when executing the algorithm')
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 29)
 
         error_layer.dataProvider().addFeatures(features)
 
+        # English language is set as default for validations
+        exp = "\"error_type\" = 'Boundary is not covered by the plot'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 3)
 
-        if QGIS_LANG == 'es':
-            exp = "\"error_type\" = 'El lindero no esta cubierta por el terreno'"
-            error_layer.selectByExpression(exp)
-            self.assertEqual(error_layer.selectedFeatureCount(), 3)
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the table masccl'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 24)
 
-            exp = "\"error_type\" = 'La relación topológica entre el lindero y el terreno no esta registrada en la tabla masccl'"
-            error_layer.selectByExpression(exp)
-            self.assertEqual(error_layer.selectedFeatureCount(), 24)
-
-            exp = "\"error_type\" = 'La relación topológica entre el lindero y el terreno no esta registrada en la tabla menos'"
-            error_layer.selectByExpression(exp)
-            self.assertEqual(error_layer.selectedFeatureCount(), 2)
-        elif QGIS_LANG == 'en':
-            exp = "\"error_type\" = 'Boundary is not covered by the plot'"
-            error_layer.selectByExpression(exp)
-            self.assertEqual(error_layer.selectedFeatureCount(), 3)
-
-            exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the table masccl'"
-            error_layer.selectByExpression(exp)
-            self.assertEqual(error_layer.selectedFeatureCount(), 24)
-
-            exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the table menos'"
-            error_layer.selectByExpression(exp)
-            self.assertEqual(error_layer.selectedFeatureCount(), 2)
-        else:
-            print('the language is not supported, the tests are not executed fully')
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the table menos'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 2)
 
     def test_get_too_long_segments_from_simple_line(self):
         print('\nINFO: Validating too long segments...')

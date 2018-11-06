@@ -35,15 +35,8 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton
 
 from processing.modeler.ModelerUtils import ModelerUtils
-from .config.translator import ( # Should be imported before other configs
-    QGIS_LANG,
-    PLUGIN_DIR
-)
 from .config.table_mapping_config import (
     ID_FIELD,
-    BOUNDARY_POINT_TABLE,
-    CONTROL_POINT_TABLE,
-    PLOT_TABLE,
     COL_PARTY_TABLE
 )
 from .config.general_config import (
