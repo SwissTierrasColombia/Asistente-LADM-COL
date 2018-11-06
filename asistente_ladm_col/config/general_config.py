@@ -1,7 +1,8 @@
 import os.path
 
+from .translator import PLUGIN_DIR
 from ..utils.qt_utils import get_plugin_metadata
-from qgis.PyQt.QtCore import QLocale, QSettings, QObject, QCoreApplication
+from qgis.PyQt.QtCore import QSettings, QObject, QCoreApplication
 
 from .table_mapping_config import (
     MORE_BOUNDARY_FACE_STRING_TABLE,
@@ -19,19 +20,10 @@ DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 DEFAULT_USE_ROADS_VALUE = False
 DEFAULT_POLYGON_AREA_TOLERANCE = 0.1 # square meters
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
-PLUGIN_DIR = os.path.dirname(os.path.dirname(__file__))
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
 HELP_DIR_NAME = 'help'
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'styles')
-
-try:
-    # Errors here could happen if the value cannot be converted to string or
-    # if it is not subscriptable (see https://github.com/gacarrillor/loadthemall/issues/11)
-    locale = QSettings().value("locale/userLocale", type=str)
-    QGIS_LANG = str( locale[:2] )
-except TypeError as e:
-    QGIS_LANG = 'en'
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
@@ -139,3 +131,5 @@ class TranslatableConfigStrings(QObject):
         self.TPLG_ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT = QCoreApplication.translate("TranslatableConfigStrings", "Boundary is not covered by the plot")
         self.TPLG_ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot not recorded in the table {}").format(MORE_BOUNDARY_FACE_STRING_TABLE)
         self.TPLG_ERROR_NO_LESS_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot not recorded in the table {}").format(LESS_TABLE)
+
+translated_strings = TranslatableConfigStrings()

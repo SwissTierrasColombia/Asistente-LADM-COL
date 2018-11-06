@@ -30,13 +30,15 @@ from qgis.core import (
     QgsProcessingModelAlgorithm,
     QgsProject
 )
-from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
-                              QLocale, QSettings)
+from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QSettings)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton
 
 from processing.modeler.ModelerUtils import ModelerUtils
-
+from .config.translator import ( # Should be imported before other configs
+    QGIS_LANG,
+    PLUGIN_DIR
+)
 from .config.table_mapping_config import (
     ID_FIELD,
     BOUNDARY_POINT_TABLE,
@@ -53,8 +55,6 @@ from .config.general_config import (
     PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
     PLUGIN_NAME,
     PLUGIN_VERSION,
-    PLUGIN_DIR,
-    QGIS_LANG,
     RELEASE_URL
 )
 from .gui.create_points_cadastre_wizard import CreatePointsCadastreWizard
@@ -94,7 +94,6 @@ class AsistenteLADMCOLPlugin(QObject):
         QObject.__init__(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
-        self.installTranslator()
         self._about_dialog = None
         self.toolbar = None
         self._flag_menus_refreshed_at_load_time = False
@@ -814,10 +813,3 @@ class AsistenteLADMCOLPlugin(QObject):
         rich_text = '<html><head/><body><p align="center"><a href="{release_url}{version}"><span style=" font-size:10pt; text-decoration: underline; color:#0000ff;">v{version}</span></a></p></body></html>'
         self._about_dialog.lbl_version.setText(rich_text.format(release_url=RELEASE_URL, version=PLUGIN_VERSION))
         self._about_dialog.exec_()
-
-    def installTranslator(self):
-        qgis_locale = QLocale(QGIS_LANG)
-        locale_path = os.path.join(PLUGIN_DIR, 'i18n')
-        self.translator = QTranslator()
-        self.translator.load(qgis_locale, 'Asistente-LADM_COL', '_', locale_path)
-        QCoreApplication.installTranslator(self.translator)

@@ -26,8 +26,11 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QObject, pyqtSignal, QFile, QIODevice
 from qgis.PyQt.QtXml import QDomDocument
 
-from ..config.general_config import (
+from ..config.translator import (
     QGIS_LANG,
+    PLUGIN_DIR
+)
+from ..config.general_config import (
     STYLES_DIR
 )
 from ..config.symbology import (

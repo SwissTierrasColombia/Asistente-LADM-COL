@@ -38,12 +38,14 @@ from qgis.PyQt.QtCore import (
 )
 from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
 
+from ..config.translator import (
+    QGIS_LANG,
+    PLUGIN_DIR
+)
 from ..config.general_config import (
     HELP_DIR_NAME,
     HELP_DOWNLOAD,
-    PLUGIN_DIR,
     PLUGIN_VERSION,
-    QGIS_LANG,
     TEST_SERVER
 )
 
