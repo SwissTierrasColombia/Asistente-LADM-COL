@@ -21,7 +21,7 @@ class TestTopology(unittest.TestCase):
         self.qgis_utils = QGISUtils()
 
     def test_pair_boundary_plot(self):
-        print('Validating boundaries plots')
+        print('\nValidating boundaries plots')
         # extracted with: iface.activeLayer().dataProvider().dataSourceUri() in qgis console
         # and type is: layer.providerType()
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')

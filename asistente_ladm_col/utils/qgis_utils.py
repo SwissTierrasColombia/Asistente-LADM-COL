@@ -45,6 +45,7 @@ from qgis.core import (
     QgsPointXY,
     QgsProcessingFeedback,
     QgsProject,
+    QgsProperty,
     QgsRelation,
     QgsSpatialIndex,
     QgsVectorLayer,
@@ -750,7 +751,7 @@ class QGISUtils(QObject):
     def set_node_visibility(self, node, visible):
         self.set_node_visibility_requested.emit(node, visible)
 
-    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, epsg, target_layer_name):
+    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, epsg, target_layer_name, elevation=None):
         if not csv_path or not os.path.exists(csv_path):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -761,17 +762,29 @@ class QGISUtils(QObject):
         # Create QGIS vector layer
         uri = "file:///{}?delimiter={}&xField={}&yField={}&crs=EPSG:{}".format(
               csv_path,
-              delimiter,
+              delimiter if delimiter != '\t' else '%5Ct',
               longitude,
               latitude,
-              epsg,
+              epsg
            )
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
 
+        if elevation:
+            z = QgsProperty.fromExpression('\"{}\"'.format(elevation.strip()))
+            parameters = {'INPUT': csv_layer,
+                          'Z_VALUE': z,
+                          'OUTPUT': 'memory:'}
+            res = processing.run("qgis:setzvalue", parameters)
+            csv_layer = res['OUTPUT']
+
         if not epsg == DEFAULT_EPSG:
-            crsDest = QgsCoordinateReferenceSystem('EPSG:' + str(DEFAULT_EPSG))
-            csv_layer = processing.run("native:reprojectlayer", {'INPUT':csv_layer,
-                                        'TARGET_CRS':crsDest,'OUTPUT':'memory:'})['OUTPUT']
+            crs_dest = 'EPSG:{}'.format(DEFAULT_EPSG)
+            parameters = {'INPUT': csv_layer,
+                          'TARGET_CRS': crs_dest,
+                          'OUTPUT': 'memory:'}
+
+            res = processing.run("native:reprojectlayer", parameters)
+            csv_layer = res['OUTPUT']
 
         if not csv_layer.isValid():
             self.message_emitted.emit(

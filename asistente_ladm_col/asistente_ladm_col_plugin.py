@@ -114,7 +114,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
         self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
-        self.report_generator = ReportGenerator(self.get_db_connection(), self.qgis_utils)
+        self.report_generator = ReportGenerator(self.qgis_utils)
 
         # Menus
         self.add_cadastre_menu()
@@ -625,7 +625,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def call_report_generation(self):
-        self.report_generator.generate_report(self._report_action)
+        self.report_generator.generate_report(self.get_db_connection(), self._report_action)
 
     def unload(self):
         # remove the plugin menu item and icon
@@ -816,7 +816,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._about_dialog.exec_()
 
     def installTranslator(self):
-        qgis_locale = QLocale(QSettings().value('locale/userLocale'))
+        qgis_locale = QLocale(QGIS_LANG)
         locale_path = os.path.join(PLUGIN_DIR, 'i18n')
         self.translator = QTranslator()
         self.translator.load(qgis_locale, 'Asistente-LADM_COL', '_', locale_path)

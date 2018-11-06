@@ -57,15 +57,17 @@ from ..utils.symbology import SymbologyUtils
 from ..utils.geometry import GeometryUtils
 from .dlg_topological_edition import LayersForTopologicalEdition
 
-from ..config.general_config import TEST_SERVER
+from ..config.general_config import (
+    TEST_SERVER,
+    PLUGIN_NAME
+)
 from ..config.table_mapping_config import (
     ID_FIELD,
     PLOT_TABLE
 )
 
 class ReportGenerator():
-    def __init__(self, db, qgis_utils):
-        self.db = db
+    def __init__(self, qgis_utils):
         self.qgis_utils = qgis_utils
         self.encoding = locale.getlocale()[1]
         self.log = QgsApplication.messageLog()
@@ -96,9 +98,9 @@ class ReportGenerator():
         #print("out", text)
         self.log.logMessage(text, self.LOG_TAB, Qgis.Info)
 
-    def update_yaml_config(self, config_path):
+    def update_yaml_config(self, db, config_path):
         text = ''
-        qgs_uri = QgsDataSourceUri(self.db.uri)
+        qgs_uri = QgsDataSourceUri(db.uri)
 
         with open(os.path.join(config_path, 'config_template.yaml')) as f:
             text = f.read()
@@ -117,22 +119,22 @@ class ReportGenerator():
 
         return new_file_path
 
-    def get_layer_geojson(self, layer_name, plot_id):
+    def get_layer_geojson(self, db, layer_name, plot_id):
         if layer_name == 'terreno':
-            return self.db.get_annex17_plot_data(plot_id)
+            return db.get_annex17_plot_data(plot_id)
         else:
-            return self.db.get_annex17_point_data(plot_id)
+            return db.get_annex17_point_data(plot_id)
 
-    def update_json_data(self, json_spec_file, plot_id, tmp_dir):
+    def update_json_data(self, db, json_spec_file, plot_id, tmp_dir):
         json_data = dict()
         with open(json_spec_file) as f:
             json_data = json.load(f)
 
         json_data['attributes']['id'] = plot_id
-        json_data['attributes']['datasetName'] = self.db.schema
+        json_data['attributes']['datasetName'] = db.schema
         layers = json_data['attributes']['map']['layers']
         for layer in layers:
-            layer['geoJson'] = self.get_layer_geojson(layer['name'], plot_id)
+            layer['geoJson'] = self.get_layer_geojson(db, layer['name'], plot_id)
 
         #print(json_data)
 
@@ -151,7 +153,13 @@ class ReportGenerator():
     def get_tmp_filename(self, basename, extension='gpkg'):
         return "{}_{}.{}".format(basename, str(time.time()).replace(".",""), extension)
 
-    def generate_report(self, button):
+    def get_java_path_from_project_generator(self):
+        settings = QSettings()
+        path = settings.value('QgsProjectGenerator/ili2db/JavaPath')
+        java_path = os.path.dirname(os.path.dirname(path or ''))
+        return java_path
+
+    def generate_report(self, db, button):
         # Check if mapfish and Jasper are installed, otherwise show where to
         # download them from and return
         base_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'impresion')
@@ -162,7 +170,22 @@ class ReportGenerator():
                    "The dependency library to generate reports is not installed. Click on the button to download and install it."))
             return
 
-        plot_layer = self.qgis_utils.get_layer(self.db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
+        # Check if JAVA_HOME path is set, otherwise use path from project Generator
+        if 'JAVA_HOME' not in os.environ:
+            java_path = self.get_java_path_from_project_generator()
+            if not java_path:
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("ReportGenerator",
+                                               "Please set JAVA_HOME path in Project Generator Settings or in Environmental Variables for your OS"),
+                    Qgis.Warning)
+                return
+            else:
+                os.environ["JAVA_HOME"] = java_path
+                self.log.logMessage("The JAVA_HOME path have been set using Project Generator Settings for reports", PLUGIN_NAME, Qgis.Info)
+
+
+
+        plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
         if plot_layer is None:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("ReportGenerator",
@@ -209,7 +232,7 @@ class ReportGenerator():
         button.setEnabled(False)
 
         # Update config file
-        yaml_config_path = self.update_yaml_config(config_path)
+        yaml_config_path = self.update_yaml_config(db, config_path)
         print("CONFIG FILE:", yaml_config_path)
 
         total = len(selected_plots)
@@ -232,7 +255,7 @@ class ReportGenerator():
             plot_id = selected_plot[ID_FIELD]
 
             # Generate data file
-            json_file = self.update_json_data(json_spec_file, plot_id, tmp_dir)
+            json_file = self.update_json_data(db, json_spec_file, plot_id, tmp_dir)
             print("JSON FILE:", json_file)
 
             # Run sh/bat passing config and data files

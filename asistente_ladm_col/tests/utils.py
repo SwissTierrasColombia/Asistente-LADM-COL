@@ -23,29 +23,47 @@ import qgis.utils
 
 from sys import platform
 from shutil import copyfile
+from ..config.refactor_fields_mappings import get_refactor_fields_mapping
+from ..config.table_mapping_config import BOUNDARY_POINT_TABLE
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
+
+from qgis.core import (
+     QgsApplication,
+     QgsProcessingFeedback,
+     QgsVectorLayer
+)
+
+QgsApplication.setPrefixPath('/usr', True)
+qgs = QgsApplication([], False)
+qgs.initQgis()
+
+import processing
+from processing.core.Processing import Processing
+Processing.initialize()
 
 # get from https://github.com/qgis/QGIS/blob/master/tests/src/python/test_qgssymbolexpressionvariables.py
 from qgis.testing.mocked import get_iface
+
+from .config.test_config import TEST_SCHEMAS_MAPPING
 
 # PostgreSQL connection to schema with a LADM_COL model from ./etl_script_uaecd.py
 DB_HOSTNAME = "postgres"
 DB_PORT = "5432"
 DB_NAME = "ladm_col"
-DB_SCHEMA = "test_ladm_col"
 DB_USER = "usuario_ladm_col"
 DB_PASSWORD = "clave_ladm_col"
 iface = get_iface()
 asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface)
 asistente_ladm_col_plugin.initGui()
 
-def get_dbconn():
+
+def get_dbconn(schema):
     #global DB_HOSTNAME DB_PORT DB_NAME DB_SCHEMA DB_USER DB_USER DB_PASSWORD
     dict_conn = dict()
     dict_conn['host'] = DB_HOSTNAME
     dict_conn['port'] = DB_PORT
     dict_conn['database'] = DB_NAME
-    dict_conn['schema'] = DB_SCHEMA
+    dict_conn['schema'] = schema
     dict_conn['user'] = DB_USER
     dict_conn['password'] = DB_PASSWORD
     asistente_ladm_col_plugin.qgis_utils.set_db_connection('pg', dict_conn)
@@ -53,9 +71,11 @@ def get_dbconn():
     db = asistente_ladm_col_plugin.qgis_utils.get_db_connection()
     return db
 
-def restore_schema(db_connection):
+def restore_schema(schema):
+    db_connection = get_dbconn(schema)
+    print("Testing Connection...\n", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    cur.execute("""SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'test_ladm_col';""")
+    cur.execute("""SELECT schema_name FROM information_schema.schemata WHERE schema_name = '{}';""".format(schema))
     result = cur.fetchone()
     if result is not None and len(result) > 0:
         print("The schema test_ladm_col already exists")
@@ -70,25 +90,39 @@ def restore_schema(db_connection):
     else:
         print("Please add the test script")
 
-    process = os.popen(script_dir)
+    process = os.popen("{} {}".format(script_dir, TEST_SCHEMAS_MAPPING[schema]))
     output = process.readlines()
     process.close()
     print("Done restoring ladm_col database.")
     if len(output) > 0:
         print("Warning:", output)
 
-def drop_schema(db_connection):
+def drop_schema(schema):
+    db_connection = get_dbconn(schema)
+    print("Testing Connection...\n", db_connection.test_connection())
     print("Clean ladm_col database...")
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    query = cur.execute("""DROP SCHEMA test_ladm_col CASCADE;""")
+    query = cur.execute("""DROP SCHEMA '{}' CASCADE;""".format(schema))
     db_connection.conn.commit()
     cur.close()
     db_connection.conn.close()
     if query is not None:
         print("The drop schema is not working")
 
+def clean_table(schema, table):
+    db_connection = get_dbconn(schema)
+    print("Testing Connection...\n", db_connection.test_connection())
+    print('Clean {}.{} table...'.format(schema, table))
+    cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    query = cur.execute("""DELETE FROM {}.{} WHERE True;""".format(schema, table))
+    db_connection.conn.commit()
+    cur.close()
+    if query is not None:
+        print('The clean {}.{} is not working'.format(schema, table))
+
 def get_iface():
     global iface
+
     def rewrite_method():
         return "i'm rewrited"
     iface.rewrite_method = rewrite_method
@@ -118,3 +152,24 @@ def unload_projectgenerator():
     plugin_found = "projectgenerator" in qgis.utils.plugins
     if plugin_found:
         del(qgis.utils.plugins["projectgenerator"])
+
+def run_etl_model(input_layer, out_layer, ladm_col_layer_name=BOUNDARY_POINT_TABLE):
+
+    model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
+
+    if model:
+        automatic_fields_definition = True
+
+        mapping = get_refactor_fields_mapping(ladm_col_layer_name, asistente_ladm_col_plugin.qgis_utils)
+        params = {
+            'INPUT': input_layer,
+            'mapping': mapping,
+            'output': out_layer
+        }
+        res = processing.run("model:ETL-model", params)
+
+    else:
+        print("Error: Model ETL-model was not found and cannot be opened!")
+        return
+
+    return out_layer
