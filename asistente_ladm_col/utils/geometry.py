@@ -41,7 +41,6 @@ from qgis.core import (
 from qgis.core import edit
 
 import processing
-from ..config.general_config import TranslatableConfigStrings
 from ..config.general_config import (
     DEFAULT_POLYGON_AREA_TOLERANCE,
     DEFAULT_EPSG,
@@ -54,7 +53,6 @@ class GeometryUtils(QObject):
     def __init__(self):
         QObject.__init__(self)
         self.log = QgsApplication.messageLog()
-        self.translatable_config_strings = TranslatableConfigStrings()
 
     def get_pair_boundary_plot(self, boundary_layer, plot_layer, id_field=ID_FIELD, use_selection=True):
         id_field_idx = plot_layer.fields().indexFromName(id_field)

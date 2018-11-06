@@ -1,6 +1,6 @@
 from qgis.core import QgsWkbTypes
 
-from .general_config import TranslatableConfigStrings
+from .general_config import translated_strings
 from .table_mapping_config import (
     BOUNDARY_TABLE,
     BOUNDARY_POINT_TABLE,
@@ -11,7 +11,6 @@ from .table_mapping_config import (
     BUILDING_UNIT_TABLE,
     RIGHT_OF_WAY_TABLE
 )
-translatable_config_strings = TranslatableConfigStrings()
 ERROR_LAYER = 'error_layer'
 
 LAYER_QML_STYLE = {
@@ -51,11 +50,11 @@ LAYER_QML_STYLE = {
 }
 
 CUSTOM_ERROR_LAYERS = {
-    translatable_config_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS: {
+    translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS: {
         'es': 'style_boundary_should_be_covered_by_plot_es',
         'en': 'style_boundary_should_be_covered_by_plot_en'
     },
-    translatable_config_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES: {
+    translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES: {
         'es': 'style_plot_should_be_covered_by_boundary_es',
         'en': 'style_plot_should_be_covered_by_boundary_en'
     }

@@ -43,7 +43,7 @@ from ..config.general_config import (
     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
     DEFAULT_USE_ROADS_VALUE,
     PLUGIN_NAME,
-    TranslatableConfigStrings
+    translated_strings
 )
 from ..config.table_mapping_config import (
     BOUNDARY_POINT_TABLE,
@@ -71,7 +71,6 @@ class QualityUtils(QObject):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
         self.project_generator_utils = ProjectGeneratorUtils()
-        self.translatable_config_strings = TranslatableConfigStrings()
         self.log = QgsApplication.messageLog()
 
     def check_overlapping_points(self, db, point_layer_name):
@@ -99,9 +98,9 @@ class QualityUtils(QObject):
 
         error_layer_name = ''
         if point_layer_name == BOUNDARY_POINT_TABLE:
-            error_layer_name = self.translatable_config_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS
+            error_layer_name = translated_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS
         elif point_layer_name == CONTROL_POINT_TABLE:
-            error_layer_name = self.translatable_config_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS
+            error_layer_name = translated_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS
 
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
                                      error_layer_name, "memory")
@@ -188,7 +187,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     self.translatable_config_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES,
+                                     translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES,
                                      "memory")
 
         data_provider = error_layer.dataProvider()
@@ -217,13 +216,13 @@ class QualityUtils(QObject):
 
     def get_features_plots_covered_by_boundaries(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
         # Error types set statically because the symbology is static (qml: Symbology categorized)
-        typeTplgError = {0: self.translatable_config_strings.TPLG_ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY,
-                         1: self.translatable_config_strings.TPLG_ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
-                         2: self.translatable_config_strings.TPLG_ERROR_NO_LESS_TABLE}
+        typeTplgError = {0: translated_strings.TPLG_ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY,
+                         1: translated_strings.TPLG_ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
+                         2: translated_strings.TPLG_ERROR_NO_LESS_TABLE}
         try:
             plot_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
         except QgsProcessingException as e:
-            self.log.logMessage(self.translatable_config_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES+ ': ' + str(e),
+            self.log.logMessage(translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES+ ': ' + str(e),
                                 PLUGIN_NAME,
                                 Qgis.Critical)
             # the execution ends because an error has been generated when executing the algorithm
@@ -419,7 +418,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     self.translatable_config_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
+                                     translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
                                      "memory")
 
         data_provider = error_layer.dataProvider()
@@ -501,7 +500,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     self.translatable_config_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS,
+                                     translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS,
                                      "memory")
 
         data_provider = error_layer.dataProvider()
@@ -529,14 +528,14 @@ class QualityUtils(QObject):
 
     def get_features_boundaries_covered_by_plots(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
         # Error types set statically because the symbology is static (qml: Symbology categorized)
-        typeTplgError = {0: self.translatable_config_strings.TPLG_ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT,
-                         1: self.translatable_config_strings.TPLG_ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
-                         2: self.translatable_config_strings.TPLG_ERROR_NO_LESS_TABLE}
+        typeTplgError = {0: translated_strings.TPLG_ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT,
+                         1: translated_strings.TPLG_ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
+                         2: translated_strings.TPLG_ERROR_NO_LESS_TABLE}
 
         try:
             plot_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
         except QgsProcessingException as e:
-            self.log.logMessage(self.translatable_config_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS + ': ' + str(e),
+            self.log.logMessage(translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS + ': ' + str(e),
                                 PLUGIN_NAME,
                                 Qgis.Critical)
             # the execution ends because an error has been generated when executing the algorithm
@@ -700,11 +699,11 @@ class QualityUtils(QObject):
 
         error_layer_name = ''
         if polygon_layer_name == PLOT_TABLE:
-            error_layer_name = self.translatable_config_strings.CHECK_OVERLAPS_IN_PLOTS
+            error_layer_name = translated_strings.CHECK_OVERLAPS_IN_PLOTS
         elif polygon_layer_name == BUILDING_TABLE:
-            error_layer_name = self.translatable_config_strings.CHECK_OVERLAPS_IN_BUILDINGS
+            error_layer_name = translated_strings.CHECK_OVERLAPS_IN_BUILDINGS
         elif polygon_layer_name == RIGHT_OF_WAY_TABLE:
-            error_layer_name = self.translatable_config_strings.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY
+            error_layer_name = translated_strings.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY
 
         error_layer = QgsVectorLayer("Polygon?crs=EPSG:{}".format(DEFAULT_EPSG),
                                      error_layer_name, "memory")
@@ -780,11 +779,11 @@ class QualityUtils(QObject):
         error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
         if type(error_point_layer) is QgsVectorLayer:
             error_point_layer.setName("{} (point intersections)".format(
-                self.translatable_config_strings.CHECK_OVERLAPS_IN_BOUNDARIES
+                translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES
             ))
         if type(error_line_layer) is QgsVectorLayer:
             error_line_layer.setName("{} (line intersections)".format(
-                self.translatable_config_strings.CHECK_OVERLAPS_IN_BOUNDARIES
+                translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES
             ))
 
         if (type(error_point_layer) is not QgsVectorLayer and \
@@ -848,7 +847,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                        self.translatable_config_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT,
+                        translated_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT,
                         "memory")
         pr = error_layer.dataProvider()
         pr.addAttributes([QgsField("boundary_id", QVariant.Int)])
@@ -891,7 +890,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                        self.translatable_config_strings.CHECK_TOO_LONG_BOUNDARY_SEGMENTS,
+                        translated_strings.CHECK_TOO_LONG_BOUNDARY_SEGMENTS,
                         "memory")
         pr = error_layer.dataProvider()
         pr.addAttributes([QgsField("boundary_id", QVariant.Int),
@@ -965,7 +964,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     self.translatable_config_strings.CHECK_MISSING_BOUNDARY_POINTS_IN_BOUNDARIES,
+                                     translated_strings.CHECK_MISSING_BOUNDARY_POINTS_IN_BOUNDARIES,
                                      "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
@@ -1107,7 +1106,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                            self.translatable_config_strings.CHECK_DANGLES_IN_BOUNDARIES,
+                            translated_strings.CHECK_DANGLES_IN_BOUNDARIES,
                             "memory")
         pr = error_layer.dataProvider()
         pr.addAttributes([QgsField("boundary_id", QVariant.Int)])
@@ -1230,7 +1229,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     self.translatable_config_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS,
+                                     translated_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS,
                                      "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("right_of_way_id", QVariant.Int)])
@@ -1279,7 +1278,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     self.translatable_config_strings.CHECK_GAPS_IN_PLOTS,
+                                     translated_strings.CHECK_GAPS_IN_PLOTS,
                                      "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("id", QVariant.Int)])
@@ -1326,7 +1325,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("Polygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     self.translatable_config_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY,
+                                     translated_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY,
                                      "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField("original_id", QVariant.Int)])
