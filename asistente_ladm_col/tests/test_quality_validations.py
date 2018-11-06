@@ -1,18 +1,24 @@
 import nose2
 
-from qgis.core import QgsVectorLayer, QgsApplication
+from qgis.core import (
+    QgsVectorLayer,
+    QgsApplication,
+    QgsDataSourceUri,
+    QgsField,
+    QgsWkbTypes
+)
+from qgis.PyQt.QtCore import QVariant
+from processing.core.Processing import Processing
+from qgis.analysis import QgsNativeAlgorithms
 from qgis.testing import unittest, start_app
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
+from asistente_ladm_col.config.general_config import QGIS_LANG
 from asistente_ladm_col.config.table_mapping_config import ID_FIELD
-from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_copy_path
+from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_copy_path, get_dbconn, restore_schema
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.quality import QualityUtils
-
-from processing.core.Processing import Processing
-from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import QgsWkbTypes
 
 import processing
 
@@ -26,6 +32,176 @@ class TesQualityValidations(unittest.TestCase):
         self.quality = QualityUtils(self.qgis_utils)
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
+
+        # Test connection DB
+        self.db_connection = get_dbconn('test_ladm_col_topology')
+        result = self.db_connection.test_connection()
+        print('test_connection', result)
+        if not result[1]:
+            print('The test connection is not working')
+            return
+        restore_schema('test_ladm_col_topology')
+
+    def test_topology_plot_must_be_covered_by_boundary(self):
+
+        DB_HOSTNAME = "postgres"
+        DB_PORT = "5432"
+        DB_NAME = "ladm_col"
+        DB_USER = "usuario_ladm_col"
+        DB_PASSWORD = "clave_ladm_col"
+        SCHEMA_NAME = 'test_ladm_col_topology'
+
+        # Read data
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'lindero', "geometria", "", "gid")
+        boundary_layer = QgsVectorLayer(uri.uri(), 'lindero', "postgres")
+        self.assertEqual(boundary_layer.featureCount(), 1619)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'terreno', "poligono_creado", "", "gid")
+        plot_layer = QgsVectorLayer(uri.uri(), 'terreno', "postgres")
+        self.assertEqual(plot_layer.featureCount(), 441)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'masccl', None, "", None)
+        more_bfs_layer = QgsVectorLayer(uri.uri(), 'masccl', "postgres")
+        self.assertEqual(more_bfs_layer.featureCount(), 3186)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'menos', None, "", None)
+        less_layer = QgsVectorLayer(uri.uri(), 'less', "postgres")
+        self.assertEqual(less_layer.featureCount(), 180)
+
+        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:3116", 'error layer', "memory")
+
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
+                                     QgsField('boundary_id', QVariant.Int),
+                                     QgsField('error_type', QVariant.String)])
+        error_layer.updateFields()
+
+        features = self.quality.get_features_plots_covered_by_boundaries(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
+
+        # this error can occur because an error occurred when executing the algorithm
+        self.assertNotEqual(features, None)
+
+        # the algorithm was successfully executed
+        self.assertEqual(len(features), 45)
+
+        error_layer.dataProvider().addFeatures(features)
+
+        if QGIS_LANG == 'es':
+            exp = "\"error_type\" = 'El terreno no esta cubierto por el lindero'"
+            error_layer.selectByExpression(exp)
+            self.assertEqual(error_layer.selectedFeatureCount(), 19)
+
+            exp = "\"error_type\" = 'La relación topológica entre el lindero y el terreno no esta registrada en la tabla masccl'"
+            error_layer.selectByExpression(exp)
+            self.assertEqual(error_layer.selectedFeatureCount(), 24)
+
+            exp = "\"error_type\" = 'La relación topológica entre el lindero y el terreno no esta registrada en la tabla menos'"
+            error_layer.selectByExpression(exp)
+            self.assertEqual(error_layer.selectedFeatureCount(), 2)
+
+        elif QGIS_LANG == 'en':
+            exp = "\"error_type\" = 'Plot is not covered by the boundary'"
+            error_layer.selectByExpression(exp)
+            self.assertEqual(error_layer.selectedFeatureCount(), 19)
+
+            exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the table masccl'"
+            error_layer.selectByExpression(exp)
+            self.assertEqual(error_layer.selectedFeatureCount(), 24)
+
+            exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the table menos'"
+            error_layer.selectByExpression(exp)
+            self.assertEqual(error_layer.selectedFeatureCount(), 2)
+
+        else:
+            print('the language is not supported, the tests are not executed')
+
+    def test_topology_boundary_must_be_covered_by_plot(self):
+
+        DB_HOSTNAME = "postgres"
+        DB_PORT = "5432"
+        DB_NAME = "ladm_col"
+        DB_USER = "usuario_ladm_col"
+        DB_PASSWORD = "clave_ladm_col"
+        SCHEMA_NAME = 'test_ladm_col_topology'
+
+        # Read data
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'lindero', "geometria", "", "gid")
+        boundary_layer = QgsVectorLayer(uri.uri(), 'lindero', "postgres")
+        self.assertEqual(boundary_layer.featureCount(), 1619)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'terreno', "poligono_creado", "", "gid")
+        plot_layer = QgsVectorLayer(uri.uri(), 'terreno', "postgres")
+        self.assertEqual(plot_layer.featureCount(), 441)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'masccl', None, "", None)
+        more_bfs_layer = QgsVectorLayer(uri.uri(), 'masccl', "postgres")
+        self.assertEqual(more_bfs_layer.featureCount(), 3186)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'menos', None, "", None)
+        less_layer = QgsVectorLayer(uri.uri(), 'less', "postgres")
+        self.assertEqual(less_layer.featureCount(), 180)
+
+        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:3116", 'error layer', "memory")
+
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
+                                     QgsField('boundary_id', QVariant.Int),
+                                     QgsField('error_type', QVariant.String)])
+        error_layer.updateFields()
+
+        features = self.quality.get_features_boundaries_covered_by_plots(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
+
+        # this error can occur because an error occurred when executing the algorithm
+        self.assertNotEqual(features, None)
+
+        # the algorithm was successfully executed
+        self.assertEqual(len(features), 29)
+
+        error_layer.dataProvider().addFeatures(features)
+
+
+        if QGIS_LANG == 'es':
+            exp = "\"error_type\" = 'El lindero no esta cubierta por el terreno'"
+            error_layer.selectByExpression(exp)
+            self.assertEqual(error_layer.selectedFeatureCount(), 3)
+
+            exp = "\"error_type\" = 'La relación topológica entre el lindero y el terreno no esta registrada en la tabla masccl'"
+            error_layer.selectByExpression(exp)
+            self.assertEqual(error_layer.selectedFeatureCount(), 24)
+
+            exp = "\"error_type\" = 'La relación topológica entre el lindero y el terreno no esta registrada en la tabla menos'"
+            error_layer.selectByExpression(exp)
+            self.assertEqual(error_layer.selectedFeatureCount(), 2)
+        elif QGIS_LANG == 'en':
+            exp = "\"error_type\" = 'Boundary is not covered by the plot'"
+            error_layer.selectByExpression(exp)
+            self.assertEqual(error_layer.selectedFeatureCount(), 3)
+
+            exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the table masccl'"
+            error_layer.selectByExpression(exp)
+            self.assertEqual(error_layer.selectedFeatureCount(), 24)
+
+            exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the table menos'"
+            error_layer.selectByExpression(exp)
+            self.assertEqual(error_layer.selectedFeatureCount(), 2)
+        else:
+            print('the language is not supported, the tests are not executed fully')
 
     def test_get_too_long_segments_from_simple_line(self):
         print('\nINFO: Validating too long segments...')
