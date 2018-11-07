@@ -206,15 +206,14 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                 save_field_mapping = None
 
             if self.mMapLayerComboBox.currentLayer() is not None:
-                self.qgis_utils.show_etl_model(self._db,
+                etl_model_feature_count = self.qgis_utils.show_etl_model(self._db,
                                                self.mMapLayerComboBox.currentLayer(),
                                                output_layer_name,
                                                save_field_mapping)
 
-                if self.insert_features_to_layer.share_output_processAlgorithm() is not None:
+                if etl_model_feature_count[0] != etl_model_feature_count[1]:
                     self.qgis_utils.func_save_field_mapping(output_layer_name)
-                    if save_field_mapping is not None:
-                        self.replace_field_mapping(save_field_mapping)
+
 
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",

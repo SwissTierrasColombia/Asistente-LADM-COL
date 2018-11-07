@@ -1045,7 +1045,7 @@ class QGISUtils(QObject):
             automatic_fields_definition = self.check_if_and_disable_automatic_fields(db, ladm_col_layer_name)
 
             if save_field_mapping is not None:
-                mapping = func_load_field_mapping(self,ladm_col_layer_name)
+                mapping = self.func_load_field_mapping(ladm_col_layer_name, save_field_mapping)
             else:
                 mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
 
@@ -1055,18 +1055,23 @@ class QGISUtils(QObject):
                 'mapping': mapping,
                 'output': output.name()
             }
+
+            start_feature_count = output.featureCount()
             processing.execAlgorithmDialog("model:ETL-model", params)
+            finish_feature_count = output.featureCount()
 
             self.check_if_and_enable_automatic_fields(db,
                                                       automatic_fields_definition,
                                                       ladm_col_layer_name)
+
+            return start_feature_count, finish_feature_count
         else:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "Model ETL-model was not found and cannot be opened!"),
                 Qgis.Info)
 
-    def func_load_field_mapping(self,ladm_col_layer_name):
+    def func_load_field_mapping(self,ladm_col_layer_name, save_field_mapping):
         path_file_field_mapping = os.path.join(FIELD_MAPPING_PATH,'{}.{}'.format(save_field_mapping,
                                                 "txt"))
 
@@ -1088,6 +1093,8 @@ class QGISUtils(QObject):
                     field_mapping_list.append(line_field_mapping)
 
             mapping = field_mapping_list
+
+        return mapping
 
     def func_save_field_mapping(self,ladm_col_layer_name):
         files_mapping_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'field_mapping')
