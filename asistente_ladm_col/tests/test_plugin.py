@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 import nose2
 
-from qgis.testing import start_app, unittest
+from qgis.testing import (
+    start_app,
+    unittest
+)
 start_app()
 
-from asistente_ladm_col.tests.utils import get_iface, import_projectgenerator, unload_projectgenerator
+from asistente_ladm_col.tests.utils import (
+    get_iface,
+    import_projectgenerator,
+    unload_projectgenerator
+)
 
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 asistente_ladm_col = AsistenteLADMCOLPlugin(get_iface())

@@ -18,14 +18,21 @@
 """
 from functools import partial
 
-from qgis.core import (QgsEditFormConfig, QgsVectorLayerUtils, Qgis,
-                       QgsWkbTypes, QgsMapLayerProxyModel, QgsApplication)
-from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
-from ..config.general_config import PLUGIN_NAME
-from qgis.PyQt.QtWidgets import QAction, QWizard
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QSettings
+)
+from qgis.PyQt.QtWidgets import QWizard
+from qgis.core import (
+    QgsEditFormConfig,
+    QgsVectorLayerUtils,
+    Qgis,
+    QgsMapLayerProxyModel,
+    QgsApplication
+)
 
-from ..utils import get_ui_class
+from ..config.general_config import PLUGIN_NAME
+from ..config.help_strings import HelpStrings
 from ..config.table_mapping_config import (
     ID_FIELD,
     RESPONSIBILITY_TABLE,
@@ -34,7 +41,7 @@ from ..config.table_mapping_config import (
     RRR_SOURCE_RESPONSIBILITY_FIELD,
     RRR_SOURCE_SOURCE_FIELD
 )
-from ..config.help_strings import HelpStrings
+from ..utils import get_ui_class
 
 WIZARD_UI = get_ui_class('wiz_create_responsibility_cadastre.ui')
 

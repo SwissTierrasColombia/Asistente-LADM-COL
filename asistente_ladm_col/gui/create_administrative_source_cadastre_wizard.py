@@ -16,19 +16,23 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.core import (QgsEditFormConfig, QgsVectorLayerUtils, Qgis,
-                       QgsWkbTypes, QgsMapLayerProxyModel)
-from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
-from qgis.PyQt.QtWidgets import QAction, QWizard
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QSettings
+)
+from qgis.PyQt.QtWidgets import QWizard
+from qgis.core import (
+    QgsEditFormConfig,
+    Qgis,
+    QgsMapLayerProxyModel
+)
 
-from ..utils import get_ui_class
+from ..config.help_strings import HelpStrings
 from ..config.table_mapping_config import (
     ADMINISTRATIVE_SOURCE_TABLE,
     EXTFILE_TABLE
 )
-
-from ..config.help_strings import HelpStrings
+from ..utils import get_ui_class
 
 WIZARD_UI = get_ui_class('wiz_create_administrative_source_cadastre.ui')
 

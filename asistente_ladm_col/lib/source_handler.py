@@ -16,17 +16,15 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os.path
 import json
+import os.path
 
-from qgis.core import QgsProject, QgsDataSourceUri, Qgis, QgsApplication
-from qgis.gui import QgsMessageBar
+from qgis.PyQt.Qt import QNetworkRequest
 from qgis.PyQt.QtCore import (
     QEventLoop,
     QUrl,
     pyqtSignal,
     QObject,
-    Qt,
     QTextStream,
     QIODevice,
     QCoreApplication,
@@ -35,9 +33,17 @@ from qgis.PyQt.QtCore import (
     QByteArray,
     QSettings
 )
-from qgis.PyQt.QtWidgets import QDialog, QProgressBar, QSizePolicy, QGridLayout
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkAccessManager, QHttpMultiPart, QHttpPart
-from qgis.PyQt.Qt import QNetworkRequest
+from qgis.PyQt.QtNetwork import (
+    QNetworkAccessManager,
+    QHttpMultiPart,
+    QHttpPart
+)
+from qgis.core import (
+    QgsProject,
+    QgsDataSourceUri,
+    Qgis,
+    QgsApplication
+)
 
 from ..config.general_config import (
     DEFAULT_ENDPOINT_SOURCE_SERVICE,
@@ -45,6 +51,7 @@ from ..config.general_config import (
     SOURCE_SERVICE_UPLOAD_SUFFIX
 )
 from ..gui.upload_progress_dialog import UploadProgressDialog
+
 
 class SourceHandler(QObject):
     """

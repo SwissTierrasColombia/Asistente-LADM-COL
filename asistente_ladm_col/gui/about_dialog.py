@@ -16,27 +16,26 @@
  *                                                                         *
  ***************************************************************************/
 """
-from ..utils import get_ui_class
-from ..utils import qgis_utils
-
-import os
 import glob
+import os
 import shutil
-import zipfile
 import tempfile
+import zipfile
 from functools import partial
 
-from qgis.core import QgsNetworkContentFetcherTask, QgsApplication, Qgis
 from qgis.PyQt.QtCore import (
     QUrl,
     QFile,
     QIODevice,
     QCoreApplication,
-    QLocale,
-    QSettings,
     pyqtSignal
 )
-from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
+from qgis.PyQt.QtWidgets import QDialog
+from qgis.core import (
+    QgsNetworkContentFetcherTask,
+    QgsApplication,
+    Qgis
+)
 
 from ..config.general_config import (
     HELP_DIR_NAME,
@@ -46,6 +45,7 @@ from ..config.general_config import (
     QGIS_LANG,
     TEST_SERVER
 )
+from ..utils import get_ui_class
 
 DIALOG_UI = get_ui_class('about_dialog.ui')
 

@@ -16,16 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os, json
+import json
 
-from qgis.core import (
-    QgsProject,
-    QgsVectorLayer,
-    Qgis,
-    QgsApplication,
-    QgsNetworkContentFetcherTask
+from qgis.PyQt.Qt import (
+    QNetworkRequest,
+    QNetworkAccessManager
 )
-from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import (
     Qt,
     QSettings,
@@ -36,8 +32,16 @@ from qgis.PyQt.QtCore import (
     QIODevice,
     QEventLoop
 )
-from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
-from qgis.PyQt.Qt import QNetworkRequest, QNetworkAccessManager
+from qgis.PyQt.QtWidgets import (
+    QDialog,
+    QSizePolicy,
+    QGridLayout
+)
+from qgis.core import (
+    Qgis,
+    QgsApplication
+)
+from qgis.gui import QgsMessageBar
 
 from ..config.general_config import (
     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
@@ -51,7 +55,6 @@ from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
 from ..utils import get_ui_class
 from ..utils.qt_utils import OverrideCursor
-from functools import partial
 
 DIALOG_UI = get_ui_class('settings_dialog.ui')
 

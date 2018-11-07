@@ -17,9 +17,14 @@
  ***************************************************************************/
 """
 import qgis
-from qgis.core import QgsProject, Qgis, QgsApplication
 from qgis.PyQt.QtCore import QObject
+from qgis.core import (
+    QgsProject,
+    Qgis,
+    QgsApplication
+)
 
+from .domains_parser import DomainRelationGenerator
 from ..config.general_config import (
     PLUGIN_NAME,
     KIND_SETTINGS,
@@ -37,7 +42,7 @@ from ..config.table_mapping_config import (
     TABLE_PROP_DOMAIN,
     TABLE_PROP_STRUCTURE
 )
-from .domains_parser import DomainRelationGenerator
+
 
 class ProjectGeneratorUtils(QObject):
 

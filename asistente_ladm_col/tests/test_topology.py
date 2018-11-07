@@ -1,15 +1,17 @@
-import qgis
 import nose2
-import psycopg2
-import os
 
-from sys import platform
 from qgis.core import QgsVectorLayer
-from qgis.testing import unittest, start_app
+from qgis.testing import (
+    unittest,
+    start_app
+)
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_copy_path
+from asistente_ladm_col.tests.utils import (
+    import_projectgenerator,
+    get_test_copy_path
+)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
 import_projectgenerator()

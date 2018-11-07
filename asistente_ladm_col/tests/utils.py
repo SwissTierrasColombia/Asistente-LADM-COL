@@ -18,20 +18,18 @@
 """
 
 import os
+from shutil import copyfile
+from sys import platform
+
 import psycopg2
 import qgis.utils
+from qgis.core import (
+    QgsApplication
+)
 
-from sys import platform
-from shutil import copyfile
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 from ..config.table_mapping_config import BOUNDARY_POINT_TABLE
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
-
-from qgis.core import (
-     QgsApplication,
-     QgsProcessingFeedback,
-     QgsVectorLayer
-)
 
 QgsApplication.setPrefixPath('/usr', True)
 qgs = QgsApplication([], False)

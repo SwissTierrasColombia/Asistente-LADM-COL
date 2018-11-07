@@ -1,20 +1,28 @@
 import nose2
 
-from qgis.core import QgsVectorLayer, QgsApplication
-from qgis.testing import unittest, start_app
+from qgis.core import (
+    QgsVectorLayer,
+    QgsWkbTypes,
+    QgsApplication
+)
+from qgis.testing import (
+    unittest,
+    start_app
+)
+
+import processing
+from processing.core.Processing import Processing
+from qgis.analysis import QgsNativeAlgorithms
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.config.table_mapping_config import ID_FIELD
-from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_copy_path
+from asistente_ladm_col.tests.utils import (
+    import_projectgenerator,
+    get_test_copy_path
+)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.quality import QualityUtils
-
-from processing.core.Processing import Processing
-from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import QgsWkbTypes
-
-import processing
 
 import_projectgenerator()
 

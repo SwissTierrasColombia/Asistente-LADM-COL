@@ -16,24 +16,22 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
 
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QVariant, QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.core import (
-                       edit,
-                       QgsEditError,
-                       QgsGeometry,
-                       QgsWkbTypes,
-                       QgsProcessing,
-                       QgsProcessingAlgorithm,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterVectorLayer,
-                       QgsProcessingOutputVectorLayer,
-                       QgsProject,
-                       QgsVectorLayerUtils
-                       )
+    edit,
+    QgsEditError,
+    QgsGeometry,
+    QgsWkbTypes,
+    QgsProcessing,
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterVectorLayer,
+    QgsProcessingOutputVectorLayer,
+    QgsProject,
+    QgsVectorLayerUtils
+)
 
 class InsertFeaturesToLayer(QgsProcessingAlgorithm):
 

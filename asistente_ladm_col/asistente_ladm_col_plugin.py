@@ -16,34 +16,36 @@
  *                                                                         *
  ***************************************************************************/
 """
+import glob
 import os.path
 import shutil
-import glob
-from functools import partial, wraps
+from functools import (
+    partial,
+    wraps
+)
 
 import qgis.utils
+from processing.modeler.ModelerUtils import ModelerUtils
+from qgis.PyQt.QtCore import (
+    QObject,
+    QCoreApplication,
+    QTranslator,
+    QLocale
+)
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QMenu,
+    QPushButton
+)
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsExpression,
     QgsExpressionContext,
-    QgsProcessingModelAlgorithm,
-    QgsProject
+    QgsProcessingModelAlgorithm
 )
-from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
-                              QLocale, QSettings)
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton
 
-from processing.modeler.ModelerUtils import ModelerUtils
-
-from .config.table_mapping_config import (
-    ID_FIELD,
-    BOUNDARY_POINT_TABLE,
-    CONTROL_POINT_TABLE,
-    PLOT_TABLE,
-    COL_PARTY_TABLE
-)
 from .config.general_config import (
     CADASTRE_MENU_OBJECTNAME,
     LADM_COL_MENU_OBJECTNAME,
@@ -57,35 +59,39 @@ from .config.general_config import (
     QGIS_LANG,
     RELEASE_URL
 )
-from .gui.create_points_cadastre_wizard import CreatePointsCadastreWizard
+from .config.table_mapping_config import (
+    ID_FIELD,
+    COL_PARTY_TABLE
+)
+from .gui.about_dialog import AboutDialog
+from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
+from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
-from .gui.create_plot_cadastre_wizard import CreatePlotCadastreWizard
-from .gui.create_parcel_cadastre_wizard import CreateParcelCadastreWizard
 from .gui.create_building_cadastre_wizard import CreateBuildingCadastreWizard
 from .gui.create_building_unit_cadastre_wizard import CreateBuildingUnitCadastreWizard
 from .gui.create_col_party_cadastre_wizard import CreateColPartyCadastreWizard
 from .gui.create_group_party_cadastre import CreateGroupPartyCadastre
-from .gui.create_right_cadastre_wizard import CreateRightCadastreWizard
+from .gui.create_legal_party_prc import CreateLegalPartyPRCWizard
+from .gui.create_market_research_prc import CreateMarketResearchPRCWizard
+from .gui.create_natural_party_prc import CreateNaturalPartyPRCWizard
+from .gui.create_nuclear_family_prc import CreateNuclearFamilyPRCWizard
+from .gui.create_parcel_cadastre_wizard import CreateParcelCadastreWizard
+from .gui.create_plot_cadastre_wizard import CreatePlotCadastreWizard
+from .gui.create_points_cadastre_wizard import CreatePointsCadastreWizard
+from .gui.create_property_record_card_prc import CreatePropertyRecordCardPRCWizard
 from .gui.create_responsibility_cadastre_wizard import CreateResponsibilityCadastreWizard
 from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWizard
-from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
+from .gui.create_right_cadastre_wizard import CreateRightCadastreWizard
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
-from .gui.create_property_record_card_prc import CreatePropertyRecordCardPRCWizard
-from .gui.create_market_research_prc import CreateMarketResearchPRCWizard
-from .gui.create_nuclear_family_prc import CreateNuclearFamilyPRCWizard
-from .gui.create_natural_party_prc import CreateNaturalPartyPRCWizard
-from .gui.create_legal_party_prc import CreateLegalPartyPRCWizard
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
-from .gui.about_dialog import AboutDialog
-from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
-from .gui.toolbar import ToolBar
 from .gui.reports import ReportGenerator
+from .gui.toolbar import ToolBar
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
-from .utils.qgis_utils import QGISUtils
-from .utils.quality import QualityUtils
 from .utils.model_parser import ModelParser
+from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_metadata
+from .utils.quality import QualityUtils
 
 from .resources_rc import *
 

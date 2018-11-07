@@ -28,6 +28,7 @@ from ..config.general_config import (
     DOMAIN_CLASS_RELATION
 )
 
+
 class DomainRelationGenerator:
     """TODO: remove when ili2db issue #19 is solved"""
 

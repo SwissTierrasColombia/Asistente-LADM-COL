@@ -16,12 +16,17 @@
  *                                                                         *
  ***************************************************************************/
 """
+from qgis.PyQt.QtCore import (
+    QObject,
+    QCoreApplication,
+    QVariant,
+    QSettings
+)
 from qgis.core import (
     Qgis,
     QgsField,
     QgsGeometry,
     QgsPointXY,
-    QgsFeedback,
     QgsProcessingFeedback,
     QgsProject,
     QgsSpatialIndex,
@@ -31,9 +36,8 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsRectangle
 )
-from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
-import processing
 
+import processing
 from .project_generator_utils import ProjectGeneratorUtils
 from ..config.general_config import (
     DEFAULT_EPSG,
@@ -54,6 +58,7 @@ from ..config.table_mapping_config import (
     RIGHT_OF_WAY_TABLE,
     SURVEY_POINT_TABLE
 )
+
 
 class QualityUtils(QObject):
 

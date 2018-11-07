@@ -28,6 +28,7 @@ from ..config.general_config import (
 )
 from ..utils.project_generator_utils import ProjectGeneratorUtils
 
+
 class ModelParser:
     def __init__(self, db_connector):
         self.debug = False

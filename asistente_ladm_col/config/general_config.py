@@ -1,7 +1,12 @@
 import os.path
 
+from qgis.PyQt.QtCore import (
+    QSettings,
+    QObject,
+    QCoreApplication
+)
+
 from ..utils.qt_utils import get_plugin_metadata
-from qgis.PyQt.QtCore import QLocale, QSettings, QObject, QCoreApplication
 
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
 CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"

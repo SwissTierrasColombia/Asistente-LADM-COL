@@ -25,8 +25,6 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsGeometry,
-    QgsPoint,
-    QgsFeature,
     QgsFeatureRequest,
     QgsLineString,
     QgsMultiLineString,
@@ -40,12 +38,13 @@ from qgis.core import (
 from qgis.core import edit
 
 import processing
-from ..config.general_config import TranslatableConfigStrings
 from ..config.general_config import (
     DEFAULT_POLYGON_AREA_TOLERANCE,
     PLUGIN_NAME
 )
+from ..config.general_config import TranslatableConfigStrings
 from ..config.table_mapping_config import ID_FIELD
+
 
 class GeometryUtils(QObject):
 
