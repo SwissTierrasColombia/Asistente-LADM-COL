@@ -83,14 +83,6 @@ class ReportGenerator():
 
     def stderr_ready(self, proc):
         text = bytes(proc.readAllStandardError()).decode(self.encoding)
-    #    if not self.__done_pattern:
-    #        if self.dataImport:
-    #            self.__done_pattern = re.compile(r"Info: \.\.\.import done")
-    #        else:
-    #            self.__done_pattern = re.compile(r"Info: \.\.\.done")
-    #    if self.__done_pattern.search(text):
-    #        self.__result = Importer.SUCCESS
-        #print("err", text)
         self.log.logMessage(text, self.LOG_TAB, Qgis.Critical)
 
     def stdout_ready(self, proc):
@@ -121,7 +113,13 @@ class ReportGenerator():
 
     def get_layer_geojson(self, db, layer_name, plot_id):
         if layer_name == 'terreno':
-            return db.get_annex17_plot_data(plot_id)
+            return db.get_annex17_plot_data(plot_id, 'only_id')
+        elif layer_name == 'terrenos':
+            return db.get_annex17_plot_data(plot_id, 'all_but_id')
+        elif layer_name == 'terrenos_all':
+            return db.get_annex17_plot_data(plot_id, 'all')
+        elif layer_name == 'construcciones':
+            return db.get_annex17_building_data()
         else:
             return db.get_annex17_point_data(plot_id)
 
@@ -136,7 +134,9 @@ class ReportGenerator():
         for layer in layers:
             layer['geoJson'] = self.get_layer_geojson(db, layer['name'], plot_id)
 
-        #print(json_data)
+        overview_layers = json_data['attributes']['overviewMap']['layers']
+        for layer in overview_layers:
+            layer['geoJson'] = self.get_layer_geojson(db, layer['name'], plot_id)
 
         new_json_file_path = os.path.join(tmp_dir, self.get_tmp_filename('json_data_{}'.format(plot_id), 'json'))
         with open(new_json_file_path, 'w') as new_json:
@@ -171,19 +171,18 @@ class ReportGenerator():
             return
 
         # Check if JAVA_HOME path is set, otherwise use path from project Generator
-        if 'JAVA_HOME' not in os.environ:
-            java_path = self.get_java_path_from_project_generator()
-            if not java_path:
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate("ReportGenerator",
-                                               "Please set JAVA_HOME path in Project Generator Settings or in Environmental Variables for your OS"),
-                    Qgis.Warning)
-                return
-            else:
-                os.environ["JAVA_HOME"] = java_path
-                self.log.logMessage("The JAVA_HOME path have been set using Project Generator Settings for reports", PLUGIN_NAME, Qgis.Info)
-
-
+        if os.name == 'nt':
+            if 'JAVA_HOME' not in os.environ:
+                java_path = self.get_java_path_from_project_generator()
+                if not java_path:
+                    self.qgis_utils.message_emitted.emit(
+                        QCoreApplication.translate("ReportGenerator",
+                                                   "Please set JAVA_HOME path in Project Generator Settings or in Environmental Variables for your OS"),
+                        Qgis.Warning)
+                    return
+                else:
+                    os.environ["JAVA_HOME"] = java_path
+                    self.log.logMessage("The JAVA_HOME path have been set using Project Generator Settings for reports", PLUGIN_NAME, Qgis.Info)
 
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
         if plot_layer is None:
