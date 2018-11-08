@@ -25,36 +25,26 @@ import tempfile
 import time
 import zipfile
 
-from qgis.PyQt.QtCore import (
-    Qt,
-    QCoreApplication,
-    QSettings,
-    QUrl,
-    QFile,
-    QProcess,
-    QEventLoop,
-    QIODevice
-)
-from qgis.PyQt.QtWidgets import (
-    QFileDialog,
-    QProgressBar
-)
-from qgis.core import (
-    QgsWkbTypes,
-    QgsDataSourceUri,
-    Qgis,
-    QgsNetworkContentFetcherTask,
-    QgsApplication
-)
+from qgis.PyQt.QtCore import (Qt,
+                              QCoreApplication,
+                              QSettings,
+                              QUrl,
+                              QFile,
+                              QProcess,
+                              QEventLoop,
+                              QIODevice)
+from qgis.PyQt.QtWidgets import (QFileDialog,
+                                 QProgressBar)
+from qgis.core import (QgsWkbTypes,
+                       QgsDataSourceUri,
+                       Qgis,
+                       QgsNetworkContentFetcherTask,
+                       QgsApplication)
 
-from ..config.general_config import (
-    TEST_SERVER,
-    PLUGIN_NAME
-)
-from ..config.table_mapping_config import (
-    ID_FIELD,
-    PLOT_TABLE
-)
+from ..config.general_config import (TEST_SERVER,
+                                     PLUGIN_NAME)
+from ..config.table_mapping_config import (ID_FIELD,
+                                           PLOT_TABLE)
 
 
 class ReportGenerator():

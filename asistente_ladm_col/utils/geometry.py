@@ -21,27 +21,24 @@
 import gc
 
 from qgis.PyQt.QtCore import QObject
-from qgis.core import (
-    Qgis,
-    QgsApplication,
-    QgsGeometry,
-    QgsFeatureRequest,
-    QgsLineString,
-    QgsMultiLineString,
-    QgsProcessingException,
-    QgsProcessingFeedback,
-    QgsSpatialIndex,
-    QgsVectorLayer,
-    QgsVectorLayerEditUtils,
-    QgsWkbTypes
+from qgis.core import (Qgis,
+                       QgsApplication,
+                       QgsGeometry,
+                       QgsFeatureRequest,
+                       QgsLineString,
+                       QgsMultiLineString,
+                       QgsProcessingException,
+                       QgsProcessingFeedback,
+                       QgsSpatialIndex,
+                       QgsVectorLayer,
+                       QgsVectorLayerEditUtils,
+                       QgsWkbTypes
 )
 from qgis.core import edit
 
 import processing
-from ..config.general_config import (
-    DEFAULT_POLYGON_AREA_TOLERANCE,
-    PLUGIN_NAME
-)
+from ..config.general_config import (DEFAULT_POLYGON_AREA_TOLERANCE,
+                                     PLUGIN_NAME)
 from ..config.general_config import TranslatableConfigStrings
 from ..config.table_mapping_config import ID_FIELD
 

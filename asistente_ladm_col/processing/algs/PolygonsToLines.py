@@ -28,15 +28,13 @@
 #     rings.append(geometry.exteriorRing().clone())
 # AttributeError: 'QgsPoint' object has no attribute 'exteriorRing
 
-from qgis.core import (
-    QgsGeometry,
-    QgsPoint,
-    QgsGeometryCollection,
-    QgsMultiLineString,
-    QgsMultiCurve,
-    QgsWkbTypes,
-    QgsProcessing
-)
+from qgis.core import (QgsGeometry,
+                       QgsPoint,
+                       QgsGeometryCollection,
+                       QgsMultiLineString,
+                       QgsMultiCurve,
+                       QgsWkbTypes,
+                       QgsProcessing)
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 

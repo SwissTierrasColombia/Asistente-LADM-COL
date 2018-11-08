@@ -18,38 +18,29 @@
 """
 import json
 
-from qgis.PyQt.Qt import (
-    QNetworkRequest,
-    QNetworkAccessManager
-)
-from qgis.PyQt.QtCore import (
-    Qt,
-    QSettings,
-    pyqtSignal,
-    QUrl,
-    QCoreApplication,
-    QTextStream,
-    QIODevice,
-    QEventLoop
-)
-from qgis.PyQt.QtWidgets import (
-    QDialog,
-    QSizePolicy,
-    QGridLayout
-)
-from qgis.core import (
-    Qgis,
-    QgsApplication
-)
+from qgis.PyQt.Qt import (QNetworkRequest,
+                          QNetworkAccessManager)
+from qgis.PyQt.QtCore import (Qt,
+                              QSettings,
+                              pyqtSignal,
+                              QUrl,
+                              QCoreApplication,
+                              QTextStream,
+                              QIODevice,
+                              QEventLoop
+                              )
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QSizePolicy,
+                                 QGridLayout)
+from qgis.core import (Qgis,
+                       QgsApplication)
 from qgis.gui import QgsMessageBar
 
-from ..config.general_config import (
-    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-    PLUGIN_NAME,
-    TEST_SERVER,
-    DEFAULT_ENDPOINT_SOURCE_SERVICE,
-    SOURCE_SERVICE_EXPECTED_ID
-)
+from ..config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+                                     PLUGIN_NAME,
+                                     TEST_SERVER,
+                                     DEFAULT_ENDPOINT_SOURCE_SERVICE,
+                                     SOURCE_SERVICE_EXPECTED_ID)
 from ..lib.dbconnector.db_connector import DBConnector
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector

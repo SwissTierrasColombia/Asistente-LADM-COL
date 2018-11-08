@@ -1,10 +1,8 @@
 import os.path
 
-from qgis.PyQt.QtCore import (
-    QSettings,
-    QObject,
-    QCoreApplication
-)
+from qgis.PyQt.QtCore import (QSettings,
+                              QObject,
+                              QCoreApplication)
 
 from ..utils.qt_utils import get_plugin_metadata
 

@@ -16,16 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QSettings
-)
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QSettings)
 from qgis.PyQt.QtWidgets import QWizard
-from qgis.core import (
-    QgsMapLayerProxyModel,
-    QgsWkbTypes,
-    Qgis
-)
+from qgis.core import (QgsMapLayerProxyModel,
+                       QgsWkbTypes,
+                       Qgis)
 
 from ..config.help_strings import HelpStrings
 from ..config.table_mapping_config import PLOT_TABLE

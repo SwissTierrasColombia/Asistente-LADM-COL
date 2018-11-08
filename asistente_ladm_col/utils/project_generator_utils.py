@@ -18,30 +18,24 @@
 """
 import qgis
 from qgis.PyQt.QtCore import QObject
-from qgis.core import (
-    QgsProject,
-    Qgis,
-    QgsApplication
-)
+from qgis.core import (QgsProject,
+                       Qgis,
+                       QgsApplication)
 
 from .domains_parser import DomainRelationGenerator
-from ..config.general_config import (
-    PLUGIN_NAME,
-    KIND_SETTINGS,
-    TABLE_NAME,
-    RELATION_NAME,
-    REFERENCED_LAYER,
-    REFERENCED_FIELD,
-    REFERENCING_LAYER,
-    REFERENCING_FIELD,
-    RELATION_TYPE,
-    CLASS_CLASS_RELATION,
-    TranslatableConfigStrings
-)
-from ..config.table_mapping_config import (
-    TABLE_PROP_DOMAIN,
-    TABLE_PROP_STRUCTURE
-)
+from ..config.general_config import (PLUGIN_NAME,
+                                     KIND_SETTINGS,
+                                     TABLE_NAME,
+                                     RELATION_NAME,
+                                     REFERENCED_LAYER,
+                                     REFERENCED_FIELD,
+                                     REFERENCING_LAYER,
+                                     REFERENCING_FIELD,
+                                     RELATION_TYPE,
+                                     CLASS_CLASS_RELATION,
+                                     TranslatableConfigStrings)
+from ..config.table_mapping_config import (TABLE_PROP_DOMAIN,
+                                           TABLE_PROP_STRUCTURE)
 
 
 class ProjectGeneratorUtils(QObject):

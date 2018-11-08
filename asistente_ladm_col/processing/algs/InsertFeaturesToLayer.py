@@ -19,19 +19,17 @@
 
 from qgis.PyQt.QtCore import QCoreApplication
 
-from qgis.core import (
-    edit,
-    QgsEditError,
-    QgsGeometry,
-    QgsWkbTypes,
-    QgsProcessing,
-    QgsProcessingAlgorithm,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterVectorLayer,
-    QgsProcessingOutputVectorLayer,
-    QgsProject,
-    QgsVectorLayerUtils
-)
+from qgis.core import (edit,
+                       QgsEditError,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsProcessing,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProject,
+                       QgsVectorLayerUtils)
 
 class InsertFeaturesToLayer(QgsProcessingAlgorithm):
 

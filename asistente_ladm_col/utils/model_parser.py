@@ -20,12 +20,10 @@ import re
 
 from qgis.PyQt.QtCore import QCoreApplication
 
-from ..config.general_config import (
-    CADASTRE_MODEL_PREFIX,
-    CADASTRE_MODEL_PREFIX_LEGACY,
-    LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION,
-    PROPERTY_RECORD_CARD_MODEL_PREFIX
-)
+from ..config.general_config import (CADASTRE_MODEL_PREFIX,
+                                     CADASTRE_MODEL_PREFIX_LEGACY,
+                                     LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION,
+                                     PROPERTY_RECORD_CARD_MODEL_PREFIX)
 from ..utils.project_generator_utils import ProjectGeneratorUtils
 
 

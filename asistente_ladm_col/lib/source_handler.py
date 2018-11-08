@@ -20,36 +20,28 @@ import json
 import os.path
 
 from qgis.PyQt.Qt import QNetworkRequest
-from qgis.PyQt.QtCore import (
-    QEventLoop,
-    QUrl,
-    pyqtSignal,
-    QObject,
-    QTextStream,
-    QIODevice,
-    QCoreApplication,
-    QFile,
-    QVariant,
-    QByteArray,
-    QSettings
-)
-from qgis.PyQt.QtNetwork import (
-    QNetworkAccessManager,
-    QHttpMultiPart,
-    QHttpPart
-)
-from qgis.core import (
-    QgsProject,
-    QgsDataSourceUri,
-    Qgis,
-    QgsApplication
-)
+from qgis.PyQt.QtCore import (QEventLoop,
+                              QUrl,
+                              pyqtSignal,
+                              QObject,
+                              QTextStream,
+                              QIODevice,
+                              QCoreApplication,
+                              QFile,
+                              QVariant,
+                              QByteArray,
+                              QSettings)
+from qgis.PyQt.QtNetwork import (QNetworkAccessManager,
+                                 QHttpMultiPart,
+                                 QHttpPart)
+from qgis.core import (QgsProject,
+                       QgsDataSourceUri,
+                       Qgis,
+                       QgsApplication)
 
-from ..config.general_config import (
-    DEFAULT_ENDPOINT_SOURCE_SERVICE,
-    PLUGIN_NAME,
-    SOURCE_SERVICE_UPLOAD_SUFFIX
-)
+from ..config.general_config import (DEFAULT_ENDPOINT_SOURCE_SERVICE,
+                                     PLUGIN_NAME,
+                                     SOURCE_SERVICE_UPLOAD_SUFFIX)
 from ..gui.upload_progress_dialog import UploadProgressDialog
 
 

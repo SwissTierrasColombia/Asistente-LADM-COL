@@ -18,32 +18,26 @@
 """
 from functools import partial
 
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QSettings
-)
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QSettings)
 from qgis.PyQt.QtWidgets import QWizard
-from qgis.core import (
-    QgsEditFormConfig,
-    QgsVectorLayerUtils,
-    Qgis,
-    QgsWkbTypes,
-    QgsMapLayerProxyModel,
-    QgsApplication
-)
+from qgis.core import (QgsEditFormConfig,
+                       QgsVectorLayerUtils,
+                       Qgis,
+                       QgsWkbTypes,
+                       QgsMapLayerProxyModel,
+                       QgsApplication)
 
 from ..config.general_config import PLUGIN_NAME
 from ..config.help_strings import HelpStrings
-from ..config.table_mapping_config import (
-    BUILDING_TABLE,
-    ID_FIELD,
-    PARCEL_TABLE,
-    PLOT_TABLE,
-    UEBAUNIT_TABLE,
-    UEBAUNIT_TABLE_BUILDING_FIELD,
-    UEBAUNIT_TABLE_PARCEL_FIELD,
-    UEBAUNIT_TABLE_PLOT_FIELD
-)
+from ..config.table_mapping_config import (BUILDING_TABLE,
+                                           ID_FIELD,
+                                           PARCEL_TABLE,
+                                           PLOT_TABLE,
+                                           UEBAUNIT_TABLE,
+                                           UEBAUNIT_TABLE_BUILDING_FIELD,
+                                           UEBAUNIT_TABLE_PARCEL_FIELD,
+                                           UEBAUNIT_TABLE_PLOT_FIELD)
 from ..utils import get_ui_class
 
 WIZARD_UI = get_ui_class('wiz_create_parcel_cadastre.ui')

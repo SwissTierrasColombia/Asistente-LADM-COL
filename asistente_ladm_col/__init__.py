@@ -17,10 +17,8 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (
-    QgsApplication,
-    Qgis
-)
+from qgis.core import (QgsApplication,
+                       Qgis)
 
 from .config.general_config import PLUGIN_NAME
 

@@ -18,45 +18,37 @@
 """
 from functools import partial
 
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QSettings
-)
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QSettings)
 from qgis.PyQt.QtWidgets import QWizard
-from qgis.core import (
-    QgsEditFormConfig,
-    QgsVectorLayerUtils,
-    Qgis,
-    QgsWkbTypes,
-    QgsMapLayerProxyModel,
-    QgsApplication
-)
+from qgis.core import (QgsEditFormConfig,
+                       QgsVectorLayerUtils,
+                       Qgis,
+                       QgsWkbTypes,
+                       QgsMapLayerProxyModel,
+                       QgsApplication)
 
-from ..config.general_config import (
-    PLUGIN_NAME
-)
+from ..config.general_config import PLUGIN_NAME
 from ..config.help_strings import HelpStrings
-from ..config.table_mapping_config import (
-    BOUNDARY_POINT_TABLE,
-    BOUNDARY_TABLE,
-    CCLSOURCE_TABLE,
-    CCLSOURCE_TABLE_BOUNDARY_FIELD,
-    CCLSOURCE_TABLE_SOURCE_FIELD,
-    CONTROL_POINT_TABLE,
-    EXTFILE_TABLE,
-    ID_FIELD,
-    PLOT_TABLE,
-    POINTSOURCE_TABLE,
-    POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
-    POINTSOURCE_TABLE_SURVEYPOINT_FIELD,
-    POINTSOURCE_TABLE_CONTROLPOINT_FIELD,
-    POINTSOURCE_TABLE_SOURCE_FIELD,
-    SPATIAL_SOURCE_TABLE,
-    SURVEY_POINT_TABLE,
-    UESOURCE_TABLE,
-    UESOURCE_TABLE_PLOT_FIELD,
-    UESOURCE_TABLE_SOURCE_FIELD
-)
+from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
+                                           BOUNDARY_TABLE,
+                                           CCLSOURCE_TABLE,
+                                           CCLSOURCE_TABLE_BOUNDARY_FIELD,
+                                           CCLSOURCE_TABLE_SOURCE_FIELD,
+                                           CONTROL_POINT_TABLE,
+                                           EXTFILE_TABLE,
+                                           ID_FIELD,
+                                           PLOT_TABLE,
+                                           POINTSOURCE_TABLE,
+                                           POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
+                                           POINTSOURCE_TABLE_SURVEYPOINT_FIELD,
+                                           POINTSOURCE_TABLE_CONTROLPOINT_FIELD,
+                                           POINTSOURCE_TABLE_SOURCE_FIELD,
+                                           SPATIAL_SOURCE_TABLE,
+                                           SURVEY_POINT_TABLE,
+                                           UESOURCE_TABLE,
+                                           UESOURCE_TABLE_PLOT_FIELD,
+                                           UESOURCE_TABLE_SOURCE_FIELD)
 from ..utils import get_ui_class
 
 WIZARD_UI = get_ui_class('wiz_create_spatial_source_cadastre.ui')

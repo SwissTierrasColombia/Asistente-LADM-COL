@@ -18,29 +18,23 @@
 """
 from functools import partial
 
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QSettings
-)
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QSettings)
 from qgis.PyQt.QtWidgets import QWizard
-from qgis.core import (
-    QgsEditFormConfig,
-    QgsVectorLayerUtils,
-    Qgis,
-    QgsMapLayerProxyModel,
-    QgsApplication
-)
+from qgis.core import (QgsEditFormConfig,
+                       QgsVectorLayerUtils,
+                       Qgis,
+                       QgsMapLayerProxyModel,
+                       QgsApplication)
 
 from ..config.general_config import PLUGIN_NAME
 from ..config.help_strings import HelpStrings
-from ..config.table_mapping_config import (
-    ID_FIELD,
-    RIGHT_TABLE,
-    ADMINISTRATIVE_SOURCE_TABLE,
-    RRR_SOURCE_RELATION_TABLE,
-    RRR_SOURCE_RIGHT_FIELD,
-    RRR_SOURCE_SOURCE_FIELD
-)
+from ..config.table_mapping_config import (ID_FIELD,
+                                           RIGHT_TABLE,
+                                           ADMINISTRATIVE_SOURCE_TABLE,
+                                           RRR_SOURCE_RELATION_TABLE,
+                                           RRR_SOURCE_RIGHT_FIELD,
+                                           RRR_SOURCE_SOURCE_FIELD)
 from ..utils import get_ui_class
 
 WIZARD_UI = get_ui_class('wiz_create_right_cadastre.ui')

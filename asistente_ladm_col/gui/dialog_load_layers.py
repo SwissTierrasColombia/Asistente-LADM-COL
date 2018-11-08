@@ -17,39 +17,29 @@
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import (
-    Qt,
-    QSettings,
-    QCoreApplication
-)
-from qgis.PyQt.QtGui import (
-    QBrush,
-    QFont,
-    QIcon
-)
-from qgis.PyQt.QtWidgets import (
-    QDialog,
-    QTreeWidgetItem,
-    QLineEdit,
-    QTreeWidgetItemIterator,
-    QComboBox
-)
+from qgis.PyQt.QtCore import (Qt,
+                              QSettings,
+                              QCoreApplication)
+from qgis.PyQt.QtGui import (QBrush,
+                             QFont,
+                             QIcon)
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QTreeWidgetItem,
+                                 QLineEdit,
+                                 QTreeWidgetItemIterator,
+                                 QComboBox)
 from qgis.core import QgsWkbTypes
 
-from ..config.general_config import (
-    TABLE_NAME,
-    GEOMETRY_COLUMN,
-    GEOMETRY_TYPE,
-    KIND_SETTINGS,
-    TABLE_ALIAS,
-    MODEL
-)
+from ..config.general_config import (TABLE_NAME,
+                                     GEOMETRY_COLUMN,
+                                     GEOMETRY_TYPE,
+                                     KIND_SETTINGS,
+                                     TABLE_ALIAS,
+                                     MODEL)
 from ..config.layer_sets import LAYER_SETS
-from ..config.table_mapping_config import (
-    TABLE_PROP_ASSOCIATION,
-    TABLE_PROP_DOMAIN,
-    TABLE_PROP_STRUCTURE
-)
+from ..config.table_mapping_config import (TABLE_PROP_ASSOCIATION,
+                                           TABLE_PROP_DOMAIN,
+                                           TABLE_PROP_STRUCTURE)
 from ..utils import get_ui_class
 from ..resources_rc import *
 

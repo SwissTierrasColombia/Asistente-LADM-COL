@@ -17,10 +17,8 @@
  ***************************************************************************/
 """
 from qgis.core import QgsProcessingProvider
-from processing.core.ProcessingConfig import (
-    Setting,
-    ProcessingConfig
-)
+from processing.core.ProcessingConfig import (Setting,
+                                              ProcessingConfig)
 from asistente_ladm_col.processing.algs.InsertFeaturesToLayer import InsertFeaturesToLayer
 from asistente_ladm_col.processing.algs.PolygonsToLines import PolygonsToLines
 

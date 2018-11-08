@@ -16,16 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QSettings
-)
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QSettings)
 from qgis.PyQt.QtWidgets import QWizard
-from qgis.core import (
-    QgsEditFormConfig,
-    Qgis,
-    QgsMapLayerProxyModel
-)
+from qgis.core import (QgsEditFormConfig,
+                       Qgis,
+                       QgsMapLayerProxyModel)
 
 from ..config.help_strings import HelpStrings
 from ..config.table_mapping_config import COL_PARTY_TABLE

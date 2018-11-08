@@ -19,10 +19,8 @@
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog
-from qgis.core import (
-    QgsProject,
-    Qgis
-)
+from qgis.core import (QgsProject,
+                       Qgis)
 
 from .dlg_topological_edition import LayersForTopologicalEdition
 

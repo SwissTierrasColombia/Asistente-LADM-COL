@@ -16,26 +16,20 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QSettings
-)
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QSettings)
 from qgis.PyQt.QtWidgets import QWizard
-from qgis.core import (
-    QgsProject,
-    QgsEditFormConfig,
-    QgsSnappingConfig,
-    QgsTolerance,
-    Qgis,
-    QgsMapLayerProxyModel,
-    QgsWkbTypes
-)
+from qgis.core import (QgsProject,
+                       QgsEditFormConfig,
+                       QgsSnappingConfig,
+                       QgsTolerance,
+                       Qgis,
+                       QgsMapLayerProxyModel,
+                       QgsWkbTypes)
 
 from ..config.help_strings import HelpStrings
-from ..config.table_mapping_config import (
-    BUILDING_UNIT_TABLE,
-    SURVEY_POINT_TABLE
-)
+from ..config.table_mapping_config import (BUILDING_UNIT_TABLE,
+                                           SURVEY_POINT_TABLE)
 from ..utils import get_ui_class
 
 WIZARD_UI = get_ui_class('wiz_create_building_unit_cadastre.ui')

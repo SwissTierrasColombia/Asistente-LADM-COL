@@ -19,50 +19,38 @@
 import glob
 import os.path
 import shutil
-from functools import (
-    partial,
-    wraps
-)
+from functools import (partial,
+                       wraps)
 
 import qgis.utils
 from processing.modeler.ModelerUtils import ModelerUtils
-from qgis.PyQt.QtCore import (
-    QObject,
-    QCoreApplication,
-    QTranslator,
-    QLocale
-)
+from qgis.PyQt.QtCore import (QObject,
+                              QCoreApplication,
+                              QTranslator,
+                              QLocale)
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import (
-    QAction,
-    QMenu,
-    QPushButton
-)
-from qgis.core import (
-    Qgis,
-    QgsApplication,
-    QgsExpression,
-    QgsExpressionContext,
-    QgsProcessingModelAlgorithm
-)
+from qgis.PyQt.QtWidgets import (QAction,
+                                 QMenu,
+                                 QPushButton)
+from qgis.core import (Qgis,
+                       QgsApplication,
+                       QgsExpression,
+                       QgsExpressionContext,
+                       QgsProcessingModelAlgorithm)
 
-from .config.general_config import (
-    CADASTRE_MENU_OBJECTNAME,
-    LADM_COL_MENU_OBJECTNAME,
-    PROJECT_GENERATOR_MIN_REQUIRED_VERSION,
-    PROJECT_GENERATOR_EXACT_REQUIRED_VERSION,
-    PROJECT_GENERATOR_REQUIRED_VERSION_URL,
-    PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
-    PLUGIN_NAME,
-    PLUGIN_VERSION,
-    PLUGIN_DIR,
-    QGIS_LANG,
-    RELEASE_URL
-)
-from .config.table_mapping_config import (
-    ID_FIELD,
-    COL_PARTY_TABLE
-)
+from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
+                                    LADM_COL_MENU_OBJECTNAME,
+                                    PROJECT_GENERATOR_MIN_REQUIRED_VERSION,
+                                    PROJECT_GENERATOR_EXACT_REQUIRED_VERSION,
+                                    PROJECT_GENERATOR_REQUIRED_VERSION_URL,
+                                    PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
+                                    PLUGIN_NAME,
+                                    PLUGIN_VERSION,
+                                    PLUGIN_DIR,
+                                    QGIS_LANG,
+                                    RELEASE_URL)
+from .config.table_mapping_config import (ID_FIELD,
+                                          COL_PARTY_TABLE)
 from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard

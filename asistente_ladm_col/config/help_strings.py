@@ -1,7 +1,5 @@
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QObject
-)
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QObject)
 
 # For this module use multiline "\" instead of triple double quotes
 
