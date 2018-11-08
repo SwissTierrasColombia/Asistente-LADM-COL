@@ -61,6 +61,8 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
 
+        self.width_line_edit.setValue(1.0)
+
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PolygonLayer)
 
     def adjust_page_1_controls(self):
@@ -210,7 +212,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         self._right_of_way_line_layer.committedFeaturesAdded.disconnect()
         self.log.logMessage("RigthOfWayLine's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         params = {'INPUT':self._right_of_way_line_layer,
-                  'DISTANCE':self.width_line_edit.text(),
+                  'DISTANCE':self.width_line_edit.value(),
                   'SEGMENTS':5,
                   'END_CAP_STYLE':1,
                   'JOIN_STYLE':2,
