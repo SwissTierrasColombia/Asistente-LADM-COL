@@ -21,7 +21,8 @@ from functools import partial
 from qgis.core import (QgsProject, QgsVectorLayer, QgsEditFormConfig,
                        QgsSnappingConfig, QgsTolerance, QgsFeature, Qgis,
                        QgsMapLayerProxyModel, QgsWkbTypes, QgsApplication,
-                       QgsProcessingException, QgsProcessingFeedback)
+                       QgsProcessingException, QgsProcessingFeedback,
+                       QgsVectorLayerUtils)
 
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtWidgets import QAction, QWizard
@@ -39,6 +40,9 @@ from ..config.help_strings import HelpStrings
 WIZARD_UI = get_ui_class('wiz_create_right_of_way_cadastre.ui')
 
 class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
+
+    #map_refresh_requested = pyqtSignal()
+
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
@@ -51,7 +55,6 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
-
 
         self.restore_settings()
 
@@ -220,7 +223,17 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
                   'DISSOLVE':False,
                   'OUTPUT':'memory:'}
         buffered_right_of_way_layer = processing.run("native:buffer", params)['OUTPUT']
-        QgsProject.instance().addMapLayer(buffered_right_of_way_layer, True)
+        ##QgsProject.instance().addMapLayer(buffered_right_of_way_layer, True)
+        #QgsProject.instance().removeMapLayer(self._right_of_way_line_layer)
+
+        serv = buffered_right_of_way_layer.getFeature(1).geometry()
+        feature = QgsVectorLayerUtils().createFeature(self._right_of_way_layer, serv)
+        print(feature.geometry().asWkt())
+
+        if feature:
+            self._right_of_way_layer.startEditing()
+            self._right_of_way_layer.addFeature(feature)
+            ##self.map_refresh_requested.emit()
 
 
     def save_settings(self):
