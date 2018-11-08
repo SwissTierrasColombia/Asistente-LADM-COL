@@ -480,7 +480,7 @@ class GeometryUtils(QObject):
             layer2 = processing.run("native:multiparttosingleparts", {'INPUT': layer2, 'OUTPUT': 'memory:'})['OUTPUT']
 
         if layer2.geometryType() == QgsWkbTypes.PolygonGeometry:
-            layer2 = processing.run("qgis:polygonstolines", {'INPUT': layer2, 'OUTPUT': 'memory:'})['OUTPUT']
+            layer2 = processing.run("ladm_col:polygonstolines", {'INPUT': layer2, 'OUTPUT': 'memory:'})['OUTPUT']
 
         geom_added = list()
         index = QgsSpatialIndex(layer2)
@@ -521,7 +521,7 @@ class GeometryUtils(QObject):
         takes into account not shared vertices to build difference geometries.
         """
         try:
-            plots_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+            plots_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
             approx_diff_layer = processing.run("native:difference",
                                                {'INPUT': plots_as_lines_layer,
                                                 'OVERLAY': boundary_layer,
@@ -548,7 +548,7 @@ class GeometryUtils(QObject):
         takes into account not shared vertices to build difference geometries.
         """
         try:
-            plots_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+            plots_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
             approx_diff_layer = processing.run("native:difference",
                                                {'INPUT': boundary_layer,
                                                 'OVERLAY': plots_as_lines_layer,
