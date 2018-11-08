@@ -28,6 +28,7 @@
 #     rings.append(geometry.exteriorRing().clone())
 # AttributeError: 'QgsPoint' object has no attribute 'exteriorRing
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsGeometry,
                        QgsPoint,
                        QgsGeometryCollection,
@@ -42,10 +43,10 @@ from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 class PolygonsToLines(QgisFeatureBasedAlgorithm):
 
     def tags(self):
-        return self.tr('line,polygon,convert').split(',')
+        return (QCoreApplication.translate("PolygonsToLines", 'line,polygon,convert')).split(',')
 
     def group(self):
-        return self.tr('Vector geometry')
+        return QCoreApplication.translate("PolygonsToLines", 'Vector geometry')
 
     def groupId(self):
         return 'vectorgeometry'
@@ -57,10 +58,10 @@ class PolygonsToLines(QgisFeatureBasedAlgorithm):
         return 'polygonstolines'
 
     def displayName(self):
-        return self.tr('Polygons to lines')
+        return QCoreApplication.translate("PolygonsToLines", 'Polygons to lines')
 
     def outputName(self):
-        return self.tr('Lines')
+        return QCoreApplication.translate("PolygonsToLines", 'Lines')
 
     def outputType(self):
         return QgsProcessing.TypeVectorLine
