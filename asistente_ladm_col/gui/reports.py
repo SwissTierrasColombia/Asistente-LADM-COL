@@ -70,6 +70,10 @@ class ReportGenerator():
     def __init__(self, qgis_utils):
         self.qgis_utils = qgis_utils
         self.encoding = locale.getlocale()[1]
+        # This might be unset
+        if not self.encoding:
+            self.encoding = 'UTF8'
+
         self.log = QgsApplication.messageLog()
         self.LOG_TAB = 'Anexo_17'
         self._downloading = False
