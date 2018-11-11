@@ -20,6 +20,11 @@ PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
 HELP_DIR_NAME = 'help'
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'styles')
 
+# Version to be installed when creating reports (annex 17)
+# (Other versions, if found, will be dropped in favor of this one)
+REPORTS_REQUIRED_VERSION = '0.1'
+URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/annex_17/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
+
 try:
     # Errors here could happen if the value cannot be converted to string or
     # if it is not subscriptable (see https://github.com/gacarrillor/loadthemall/issues/11)

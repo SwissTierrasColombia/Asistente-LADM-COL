@@ -18,8 +18,9 @@
  ***************************************************************************/
 """
 
-import os.path
+import os
 import sys
+import stat
 
 import qgis.utils
 from qgis.PyQt.QtWidgets import (
@@ -96,6 +97,15 @@ def get_plugin_metadata(plugin_name, key):
                 if line_array[0] == key:
                     return line_array[1].strip()
     return None
+
+
+def remove_readonly(func, path, _):
+    "Clear the readonly bit and reattempt the removal"
+    try:
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
+    except (TypeError, PermissionError, OSError) as e:
+        pass
 
 
 class NetworkError(RuntimeError):
