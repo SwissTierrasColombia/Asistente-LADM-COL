@@ -155,6 +155,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
         self.qgis_utils.message_with_button_download_report_dependency_emitted.connect(self.show_message_to_download_report_dependency)
+        self.qgis_utils.message_with_button_remove_report_dependency_emitted.connect(self.show_message_to_remove_report_dependency)
         self.qgis_utils.status_bar_message_emitted.connect(self.show_status_bar_message)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
@@ -495,6 +496,15 @@ class AsistenteLADMCOLPlugin(QObject):
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
 
+    def show_message_to_remove_report_dependency(self, msg):
+        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        button = QPushButton(widget)
+        button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+            "Remove dependency"))
+        button.pressed.connect(self.remove_report_dependency)
+        widget.layout().addWidget(button)
+        self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
+
     def show_status_bar_message(self, msg, duration):
         self.iface.statusBarIface().showMessage(msg, duration)
 
@@ -800,6 +810,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def download_report_dependency(self):
         self.report_generator.download_report_dependency()
+
+    def remove_report_dependency(self):
+        self.report_generator.remove_report_dependency()
 
     def show_help(self):
         self.qgis_utils.show_help()
