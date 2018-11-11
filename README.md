@@ -18,7 +18,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([0.11.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.11.1)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.2.1](https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip) y permite:
+La versión actual ([0.11.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.11.1)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.5](https://github.com/opengisch/projectgenerator/releases/download/v3.3.5/projectgenerator.v3.3.5.zip) y permite:
 
  - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
  - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
