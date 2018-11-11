@@ -1,0 +1,457 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Check Quality Rules &mdash; LADM_COL Assistant  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/banner.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Property record card" href="../property_record_card.html" />
+    <link rel="prev" title="RRR" href="RRR.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> LADM_COL Assistant
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../cadastre.html">Cadastre</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Preprocessing.html">Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Surveying_and_Representation.html">Surveying and Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spatial_Unit.html">Spatial Unit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Basic_Administrative_Unit.html">Basic Administrative Unit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Party.html">Party</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Source.html">Source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RRR.html">RRR</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Check Quality Rules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#rules-for-points">Rules for Points</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#boundary-points-should-not-overlap">Boundary Points Should Not Overlap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#control-points-should-not-overlap">Control Points Should not Overlap</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#rules-for-lines">Rules for Lines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#boundary-segments-should-not-be-longer-than">Boundary Segments Should Not Be Longer Than</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#boundaries-should-not-overlap">Boundaries Should Not Overlap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#boundary-nodes-should-be-covered-by-boundary-point">Boundary Nodes Should Be Covered By Boundary Point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#boundaries-should-not-have-dangles">Boundaries Should Not Have Dangles</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#rules-for-polygons">Rules for Polygons</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#plots-should-not-overlap">Plots Should Not Overlap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#buildings-nodes-should-be-covered-by-survey-points">Buildings Nodes Should Be Covered By Survey Points</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#right-of-way-should-not-overlap-buildings">Right Of Way Should Not Overlap Buildings</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#check-all">Check All</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../property_record_card.html">Property record card</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../load_layers.html">Load Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../settings.html">Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../toolbar.html">Toolbar LADM_COL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation guide for plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LADM_COL Assistant</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../cadastre.html">Cadastre</a> &raquo;</li>
+        
+      <li>Check Quality Rules</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/cadastre/Quality.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+
+
+
+
+
+<div class="section" id="check-quality-rules">
+<h1>Check Quality Rules<a class="headerlink" href="#check-quality-rules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="rules-for-points">
+<h2>Rules for Points<a class="headerlink" href="#rules-for-points" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="boundary-points-should-not-overlap">
+<h3>Boundary Points Should Not Overlap<a class="headerlink" href="#boundary-points-should-not-overlap" title="Permalink to this headline">¶</a></h3>
+<a class=""
+               data-lightbox="group-4c208e8b-bb0c-4196-bc59-f4ce88a799f1"
+               href="../_images/boundary_points_should_not_overlap1.gif"
+               title="Boundary Points Should Not Overlap"
+               data-title="Boundary Points Should Not Overlap"
+               ><img src="../_images/boundary_points_should_not_overlap1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="test logn segments fail"/>
+                </a></div>
+<div class="section" id="control-points-should-not-overlap">
+<h3>Control Points Should not Overlap<a class="headerlink" href="#control-points-should-not-overlap" title="Permalink to this headline">¶</a></h3>
+<a class=""
+               data-lightbox="group-090f4af2-cf8f-43f6-b6ce-150011d83298"
+               href="../_images/control_points_should_not_overlap1.gif"
+               title="Control Points Should not Overlap"
+               data-title="Control Points Should not Overlap"
+               ><img src="../_images/control_points_should_not_overlap1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="about plugin"/>
+                </a></div>
+</div>
+<div class="section" id="rules-for-lines">
+<h2>Rules for Lines<a class="headerlink" href="#rules-for-lines" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="boundary-segments-should-not-be-longer-than">
+<h3>Boundary Segments Should Not Be Longer Than<a class="headerlink" href="#boundary-segments-should-not-be-longer-than" title="Permalink to this headline">¶</a></h3>
+<a class=""
+               data-lightbox="group-21a9f5e5-77c6-4c20-ad58-d8724461e494"
+               href="../_images/quality_segments_longer_than1.png"
+               title="Settings Boundary Segments Should Not Be Longer Than"
+               data-title="Settings Boundary Segments Should Not Be Longer Than"
+               ><img src="../_images/quality_segments_longer_than1.png"
+                     class=""
+                     width="509"
+                     height="503"
+                     alt="about plugin"/>
+                </a><a class=""
+               data-lightbox="group-90e9a2c3-db68-4f23-80aa-2db23273bc5f"
+               href="../_images/boundary_segments_should_not_be_longer_than1.gif"
+               title="Boundary Segments Should Not Be Longer Than"
+               data-title="Boundary Segments Should Not Be Longer Than"
+               ><img src="../_images/boundary_segments_should_not_be_longer_than1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="about plugin"/>
+                </a></div>
+<div class="section" id="boundaries-should-not-overlap">
+<h3>Boundaries Should Not Overlap<a class="headerlink" href="#boundaries-should-not-overlap" title="Permalink to this headline">¶</a></h3>
+<a class=""
+               data-lightbox="group-dfac3ff9-98a8-4adf-b57d-5f404daac843"
+               href="../_images/boundary_should_not_overlap1.gif"
+               title="Boundary Should Not Overlap"
+               data-title="Boundary Should Not Overlap"
+               ><img src="../_images/boundary_should_not_overlap1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="about plugin"/>
+                </a></div>
+<div class="section" id="boundary-nodes-should-be-covered-by-boundary-point">
+<h3>Boundary Nodes Should Be Covered By Boundary Point<a class="headerlink" href="#boundary-nodes-should-be-covered-by-boundary-point" title="Permalink to this headline">¶</a></h3>
+<a class=""
+               data-lightbox="group-f88cc822-b0ea-45ba-80a4-e9fd28a6fb1f"
+               href="../_images/boundary_nodes_should_be_covered_by_boundary_point1.gif"
+               title=""
+               data-title=""
+               ><img src="../_images/boundary_nodes_should_be_covered_by_boundary_point1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="about plugin"/>
+                </a></div>
+<div class="section" id="boundaries-should-not-have-dangles">
+<h3>Boundaries Should Not Have Dangles<a class="headerlink" href="#boundaries-should-not-have-dangles" title="Permalink to this headline">¶</a></h3>
+<a class=""
+               data-lightbox="group-52d813bb-5ede-476b-b879-ca30e51c4740"
+               href="../_images/boundary_should_not_have_dangles1.gif"
+               title="Boundaries Should Not Have Dangles"
+               data-title="Boundaries Should Not Have Dangles"
+               ><img src="../_images/boundary_should_not_have_dangles1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="all check"/>
+                </a></div>
+</div>
+<div class="section" id="rules-for-polygons">
+<h2>Rules for Polygons<a class="headerlink" href="#rules-for-polygons" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="plots-should-not-overlap">
+<h3>Plots Should Not Overlap<a class="headerlink" href="#plots-should-not-overlap" title="Permalink to this headline">¶</a></h3>
+<a class=""
+               data-lightbox="group-848faff5-01e5-4cbd-aebd-900ca72262d9"
+               href="../_images/plots_should_not_overlap1.gif"
+               title="Plots Should Not Overlap"
+               data-title="Plots Should Not Overlap"
+               ><img src="../_images/plots_should_not_overlap1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="all check"/>
+                </a></div>
+<div class="section" id="buildings-nodes-should-be-covered-by-survey-points">
+<h3>Buildings Nodes Should Be Covered By Survey Points<a class="headerlink" href="#buildings-nodes-should-be-covered-by-survey-points" title="Permalink to this headline">¶</a></h3>
+<a class=""
+               data-lightbox="group-2bf1e01f-9802-441a-8f4c-29cbb831f5ae"
+               href="../_images/buildings_nodes_should_be_coverd_by_survey_point1.gif"
+               title="Buildings Nodes Should Be Covered By Survey Points"
+               data-title="Buildings Nodes Should Be Covered By Survey Points"
+               ><img src="../_images/buildings_nodes_should_be_coverd_by_survey_point1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="all check"/>
+                </a></div>
+<div class="section" id="right-of-way-should-not-overlap-buildings">
+<h3>Right Of Way Should Not Overlap Buildings<a class="headerlink" href="#right-of-way-should-not-overlap-buildings" title="Permalink to this headline">¶</a></h3>
+<a class=""
+               data-lightbox="group-b9821d5d-cc58-4b72-a0a4-d66f0064bf1a"
+               href="../_images/right_of_way_should_not_overlap_buildings1.gif"
+               title="Right Of Way Should Not Overlap Buildings"
+               data-title="Right Of Way Should Not Overlap Buildings"
+               ><img src="../_images/right_of_way_should_not_overlap_buildings1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="all check"/>
+                </a></div>
+</div>
+<div class="section" id="check-all">
+<h2>Check All<a class="headerlink" href="#check-all" title="Permalink to this headline">¶</a></h2>
+<a class=""
+               data-lightbox="group-e4a6a67a-e7f5-4fa4-b1e2-720cd4570b0d"
+               href="../_images/test_all1.gif"
+               title="Check all rules at the same timme"
+               data-title="Check all rules at the same timme"
+               ><img src="../_images/test_all1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="all check"/>
+                </a></div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../property_record_card.html" class="btn btn-neutral float-right" title="Property record card" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="RRR.html" class="btn btn-neutral" title="RRR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Agencia de Implementación
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v: 0.11.1
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="../../0.0.9/cadastre/Quality.html">0.0.9</a></dd>
+            <dd><a href="../../0.1.0/cadastre/Quality.html">0.1.0</a></dd>
+            <dd><a href="../../0.10.0/cadastre/Quality.html">0.10.0</a></dd>
+            <dd><a href="../../0.11.0/cadastre/Quality.html">0.11.0</a></dd>
+            <dd><a href="Quality.html">0.11.1</a></dd>
+            <dd><a href="../../0.2.0/cadastre/Quality.html">0.2.0</a></dd>
+            <dd><a href="../../0.3.0/cadastre/Quality.html">0.3.0</a></dd>
+            <dd><a href="../../0.4.0/cadastre/Quality.html">0.4.0</a></dd>
+            <dd><a href="../../0.5.0/cadastre/Quality.html">0.5.0</a></dd>
+            <dd><a href="../../0.6.0/cadastre/Quality.html">0.6.0</a></dd>
+            <dd><a href="../../0.6.1/cadastre/Quality.html">0.6.1</a></dd>
+            <dd><a href="../../0.6.2/cadastre/Quality.html">0.6.2</a></dd>
+            <dd><a href="../../0.6.3/cadastre/Quality.html">0.6.3</a></dd>
+            <dd><a href="../../0.7.0/cadastre/Quality.html">0.7.0</a></dd>
+            <dd><a href="../../0.7.1/cadastre/Quality.html">0.7.1</a></dd>
+            <dd><a href="../../0.8.0/cadastre/Quality.html">0.8.0</a></dd>
+            <dd><a href="../../0.9.0/cadastre/Quality.html">0.9.0</a></dd>
+        </dl>
+        <dl>
+            <dt>Branches</dt>
+            <dd><a href="../../master/cadastre/Quality.html">master</a></dd>
+            <dd><a href="../../prepare_PR_2/cadastre/Quality.html">prepare_PR_2</a></dd>
+            <dd><a href="../../update_docs/cadastre/Quality.html">update_docs</a></dd>
+            <dd><a href="../../update_docs_n/cadastre/Quality.html">update_docs_n</a></dd>
+            <dd><a href="../../update_quality_rules/cadastre/Quality.html">update_quality_rules</a></dd>
+        </dl>
+    </div>
+</div>
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'',
+              LANGUAGE:'en',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
