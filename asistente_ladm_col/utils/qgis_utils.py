@@ -20,67 +20,55 @@ import os
 import socket
 import webbrowser
 
-from qgis.core import (
-    Qgis,
-    QgsApplication,
-    QgsAttributeEditorContainer,
-    QgsAttributeEditorElement,
-    QgsCoordinateReferenceSystem,
-    QgsCoordinateTransform,
-    QgsDataSourceUri,
-    QgsDefaultValue,
-    QgsEditorWidgetSetup,
-    QgsExpression,
-    QgsExpressionContextUtils,
-    QgsField,
-    QgsGeometry,
-    QgsGeometryCollection,
-    QgsLayerTreeGroup,
-    QgsLayerTreeNode,
-    QgsLineString,
-    QgsMapLayer,
-    QgsMultiLineString,
-    QgsMultiPoint,
-    QgsOptionalExpression,
-    QgsPointXY,
-    QgsProcessingFeedback,
-    QgsProject,
-    QgsProperty,
-    QgsRelation,
-    QgsSpatialIndex,
-    QgsVectorLayer,
-    QgsVectorLayerUtils,
-    QgsWkbTypes
-)
-from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
-                              QVariant, QSettings, QLocale, QUrl, QFile)
+from qgis.PyQt.QtCore import (Qt,
+                              QObject,
+                              pyqtSignal,
+                              QCoreApplication,
+                              QSettings)
 from qgis.PyQt.QtWidgets import QProgressBar
+from qgis.core import (Qgis,
+                       QgsApplication,
+                       QgsAttributeEditorContainer,
+                       QgsAttributeEditorElement,
+                       QgsDataSourceUri,
+                       QgsDefaultValue,
+                       QgsEditorWidgetSetup,
+                       QgsExpression,
+                       QgsExpressionContextUtils,
+                       QgsGeometry,
+                       QgsLayerTreeGroup,
+                       QgsLayerTreeNode,
+                       QgsMapLayer,
+                       QgsOptionalExpression,
+                       QgsProject,
+                       QgsProperty,
+                       QgsRelation,
+                       QgsVectorLayer,
+                       QgsVectorLayerUtils,
+                       QgsWkbTypes)
 
 import processing
-
+from .geometry import GeometryUtils
 from .project_generator_utils import ProjectGeneratorUtils
 from .qt_utils import OverrideCursor
 from .symbology import SymbologyUtils
-from .geometry import GeometryUtils
-from ..gui.settings_dialog import SettingsDialog
-from ..config.general_config import (
-    DEFAULT_EPSG,
-    MODULE_HELP_MAPPING,
-    TEST_SERVER,
-    HELP_URL,
-    PLUGIN_VERSION,
-    REFERENCING_LAYER,
-    REFERENCING_FIELD,
-    RELATION_NAME,
-    REFERENCED_LAYER,
-    REFERENCED_FIELD,
-    RELATION_TYPE,
-    DOMAIN_CLASS_RELATION,
-    PLUGIN_DIR,
-    QGIS_LANG,
-    HELP_DIR_NAME,
-    TranslatableConfigStrings
-)
+from ..config.general_config import (DEFAULT_EPSG,
+                                     MODULE_HELP_MAPPING,
+                                     TEST_SERVER,
+                                     HELP_URL,
+                                     PLUGIN_VERSION,
+                                     REFERENCING_LAYER,
+                                     REFERENCING_FIELD,
+                                     RELATION_NAME,
+                                     REFERENCED_LAYER,
+                                     REFERENCED_FIELD,
+                                     RELATION_TYPE,
+                                     DOMAIN_CLASS_RELATION,
+                                     PLUGIN_DIR,
+                                     QGIS_LANG,
+                                     HELP_DIR_NAME,
+                                     TranslatableConfigStrings)
+from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 from ..config.table_mapping_config import (POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
@@ -110,12 +98,12 @@ from ..config.table_mapping_config import (POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            NUMBER_OF_FLOORS,
                                            PLOT_TABLE,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
-                                           REFERENCE_POINT_FIELD,
                                            SURVEY_POINT_TABLE,
                                            VIDA_UTIL_FIELD)
-from ..config.refactor_fields_mappings import get_refactor_fields_mapping
+from ..gui.settings_dialog import SettingsDialog
 from ..lib.dbconnector.db_connector import DBConnector
 from ..lib.source_handler import SourceHandler
+
 
 class QGISUtils(QObject):
 

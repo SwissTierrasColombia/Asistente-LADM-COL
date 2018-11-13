@@ -16,44 +16,41 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.core import (
-    Qgis,
-    QgsField,
-    QgsGeometry,
-    QgsPointXY,
-    QgsFeedback,
-    QgsProcessingFeedback,
-    QgsProject,
-    QgsSpatialIndex,
-    QgsVectorLayer,
-    QgsVectorLayerUtils,
-    QgsWkbTypes,
-    QgsFeatureRequest,
-    QgsRectangle
-)
-from qgis.PyQt.QtCore import QObject, QCoreApplication, QVariant, QSettings
-import processing
+from qgis.PyQt.QtCore import (QObject,
+                              QCoreApplication,
+                              QVariant,
+                              QSettings)
+from qgis.core import (Qgis,
+                       QgsField,
+                       QgsGeometry,
+                       QgsPointXY,
+                       QgsProcessingFeedback,
+                       QgsProject,
+                       QgsSpatialIndex,
+                       QgsVectorLayer,
+                       QgsVectorLayerUtils,
+                       QgsWkbTypes,
+                       QgsFeatureRequest,
+                       QgsRectangle)
 
+import processing
 from .project_generator_utils import ProjectGeneratorUtils
-from ..config.general_config import (
-    DEFAULT_EPSG,
-    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-    DEFAULT_USE_ROADS_VALUE,
-    TranslatableConfigStrings
-)
-from ..config.table_mapping_config import (
-    BOUNDARY_POINT_TABLE,
-    BOUNDARY_TABLE,
-    BUILDING_TABLE,
-    CONTROL_POINT_TABLE,
-    ID_FIELD,
-    POINT_BFS_TABLE_BOUNDARY_FIELD,
-    POINT_BOUNDARY_FACE_STRING_TABLE,
-    POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
-    PLOT_TABLE,
-    RIGHT_OF_WAY_TABLE,
-    SURVEY_POINT_TABLE
-)
+from ..config.general_config import (DEFAULT_EPSG,
+                                     DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+                                     DEFAULT_USE_ROADS_VALUE,
+                                     TranslatableConfigStrings)
+from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
+                                           BOUNDARY_TABLE,
+                                           BUILDING_TABLE,
+                                           CONTROL_POINT_TABLE,
+                                           ID_FIELD,
+                                           POINT_BFS_TABLE_BOUNDARY_FIELD,
+                                           POINT_BOUNDARY_FACE_STRING_TABLE,
+                                           POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
+                                           PLOT_TABLE,
+                                           RIGHT_OF_WAY_TABLE,
+                                           SURVEY_POINT_TABLE)
+
 
 class QualityUtils(QObject):
 

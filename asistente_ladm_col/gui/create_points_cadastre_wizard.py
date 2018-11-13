@@ -19,26 +19,31 @@
 import os
 import stat
 
-from qgis.core import (
-    Qgis,
-    QgsMapLayerProxyModel,
-    QgsApplication,
-    QgsCoordinateReferenceSystem,
-    QgsWkbTypes
-)
+from qgis.PyQt.QtCore import (Qt,
+                              QSettings,
+                              QCoreApplication,
+                              QFile)
+from qgis.PyQt.QtWidgets import (QWizard,
+                                 QFileDialog,
+                                 QSizePolicy,
+                                 QGridLayout)
+from qgis.core import (Qgis,
+                       QgsMapLayerProxyModel,
+                       QgsApplication,
+                       QgsCoordinateReferenceSystem,
+                       QgsWkbTypes)
 from qgis.gui import QgsMessageBar
 
-from qgis.PyQt.QtCore import Qt, QSettings, QCoreApplication, QFile
-from qgis.PyQt.QtWidgets import QWizard, QFileDialog, QSizePolicy, QGridLayout
-
-from ..utils.qt_utils import (make_file_selector, enable_next_wizard,
-                              disable_next_wizard)
-from ..utils import get_ui_class
+from ..config.general_config import (PLUGIN_NAME,
+                                     DEFAULT_EPSG)
+from ..config.help_strings import HelpStrings
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE,
                                            CONTROL_POINT_TABLE)
-from ..config.help_strings import HelpStrings
-from ..config.general_config import PLUGIN_NAME, DEFAULT_EPSG
+from ..utils import get_ui_class
+from ..utils.qt_utils import (make_file_selector,
+                              enable_next_wizard,
+                              disable_next_wizard)
 
 WIZARD_UI = get_ui_class('wiz_create_points_cadastre.ui')
 

@@ -18,15 +18,14 @@
 """
 import re
 
-from ..config.general_config import (
-    REFERENCING_LAYER,
-    REFERENCING_FIELD,
-    RELATION_NAME,
-    REFERENCED_LAYER,
-    REFERENCED_FIELD,
-    RELATION_TYPE,
-    DOMAIN_CLASS_RELATION
-)
+from ..config.general_config import (REFERENCING_LAYER,
+                                     REFERENCING_FIELD,
+                                     RELATION_NAME,
+                                     REFERENCED_LAYER,
+                                     REFERENCED_FIELD,
+                                     RELATION_TYPE,
+                                     DOMAIN_CLASS_RELATION)
+
 
 class DomainRelationGenerator:
     """TODO: remove when ili2db issue #19 is solved"""

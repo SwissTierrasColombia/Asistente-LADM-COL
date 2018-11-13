@@ -18,16 +18,19 @@
 """
 import os.path
 
-from qgis.core import (
-    QgsFeatureRenderer,
-    QgsAbstractVectorLayerLabeling,
-    QgsReadWriteContext
-)
-from qgis.PyQt.QtCore import QObject, pyqtSignal, QFile, QIODevice
+from qgis.PyQt.QtCore import (QObject,
+                              pyqtSignal,
+                              QFile,
+                              QIODevice)
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (QgsFeatureRenderer,
+                       QgsAbstractVectorLayerLabeling,
+                       QgsReadWriteContext)
 
 from ..config.general_config import STYLES_DIR
-from ..config.symbology import LAYER_QML_STYLE, ERROR_LAYER
+from ..config.symbology import (LAYER_QML_STYLE,
+                                ERROR_LAYER)
+
 
 class SymbologyUtils(QObject):
 

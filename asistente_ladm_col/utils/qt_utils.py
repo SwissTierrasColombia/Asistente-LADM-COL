@@ -17,30 +17,26 @@
  *                                                                         *
  ***************************************************************************/
 """
-
+import fnmatch
 import os
-import sys
 import stat
+import sys
+from functools import partial
 
 import qgis.utils
-from qgis.PyQt.QtWidgets import (
-    QFileDialog,
-    QApplication,
-    QWizard
-)
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QObject,
-    QFile,
-    QIODevice,
-    QEventLoop,
-    QUrl
-)
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QObject,
+                              QFile,
+                              QIODevice,
+                              QEventLoop,
+                              QUrl)
 from qgis.PyQt.QtGui import QValidator
 from qgis.PyQt.QtNetwork import QNetworkRequest
+from qgis.PyQt.QtWidgets import (QFileDialog,
+                                 QApplication,
+                                 QWizard)
 from qgis.core import QgsNetworkAccessManager
-from functools import partial
-import fnmatch
+
 
 def selectFileName(line_edit_widget, title, file_filter, parent):
     filename, matched_filter = QFileDialog.getOpenFileName(parent, title, line_edit_widget.text(), file_filter)

@@ -18,17 +18,17 @@
 """
 import psycopg2
 import psycopg2.extras
-
-from qgis.core import QgsWkbTypes, Qgis, QgsApplication
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import (QgsWkbTypes,
+                       Qgis,
+                       QgsApplication)
 
 from .db_connector import DBConnector
-from ...config.general_config import (
-    INTERLIS_TEST_METADATA_TABLE_PG,
-    PLUGIN_NAME,
-    PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO
-)
-from ... utils.model_parser import ModelParser
+from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
+                                      PLUGIN_NAME,
+                                      PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO)
+from ...utils.model_parser import ModelParser
+
 
 class PGConnector(DBConnector):
     def __init__(self, uri, schema="public"):

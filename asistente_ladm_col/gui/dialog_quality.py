@@ -16,26 +16,25 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
 import collections
 
-from qgis.PyQt.QtCore import Qt, QSettings, QCoreApplication
-from qgis.PyQt.QtGui import QBrush, QFont, QIcon, QColor
-from qgis.PyQt.QtWidgets import (
-    QDialog,
-    QTreeWidgetItem,
-    QTreeWidgetItemIterator
-)
-from ..config.general_config import TranslatableConfigStrings
-from ..config.table_mapping_config import (
-    BOUNDARY_POINT_TABLE,
-    CONTROL_POINT_TABLE,
-    PLOT_TABLE,
-    BUILDING_TABLE,
-    RIGHT_OF_WAY_TABLE
-)
-from ..utils import get_ui_class
+from qgis.PyQt.QtCore import (Qt,
+                              QCoreApplication)
+from qgis.PyQt.QtGui import (QBrush,
+                             QFont,
+                             QIcon,
+                             QColor)
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QTreeWidgetItem,
+                                 QTreeWidgetItemIterator)
 
+from ..config.general_config import TranslatableConfigStrings
+from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
+                                           CONTROL_POINT_TABLE,
+                                           PLOT_TABLE,
+                                           BUILDING_TABLE,
+                                           RIGHT_OF_WAY_TABLE)
+from ..utils import get_ui_class
 from ..resources_rc import *
 
 DIALOG_UI = get_ui_class('dlg_quality.ui')

@@ -2,6 +2,7 @@ import os
 
 from qgis.PyQt.uic import loadUiType
 
+
 def get_ui_class(ui_file):
     """Get UI Python class from .ui file.
        Can be filename.ui or subdirectory/filename.ui

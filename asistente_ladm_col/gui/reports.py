@@ -16,60 +16,39 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
-import locale
 import functools
-import shutil
-import zipfile
 import json
+import locale
+import os
 import stat
 import tempfile
 import time
+import zipfile
 
-from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
-                       QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri, Qgis,
-                       QgsSpatialIndex, QgsVectorLayer, QgsMultiLineString,
-                       QgsField,
-                       QgsMapLayer,
-                       QgsPointXY, QgsNetworkContentFetcherTask,
-                       QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
-                       QgsApplication, QgsProcessingFeedback, QgsRelation,
-                       QgsExpressionContextUtils, QgsEditorWidgetSetup,
-                       QgsLayerTreeGroup, QgsApplication)
-from qgis.PyQt.QtCore import (
-    Qt,
-    QObject,
-    pyqtSignal,
-    QCoreApplication,
-    QVariant,
-    QSettings,
-    QLocale,
-    QUrl,
-    QFile,
-    QProcess,
-    QEventLoop,
-    QIODevice
-)
-from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QProgressBar
+from qgis.PyQt.QtCore import (Qt,
+                              QCoreApplication,
+                              QSettings,
+                              QUrl,
+                              QFile,
+                              QProcess,
+                              QEventLoop,
+                              QIODevice)
+from qgis.PyQt.QtWidgets import (QFileDialog,
+                                 QProgressBar)
+from qgis.core import (QgsWkbTypes,
+                       QgsDataSourceUri,
+                       Qgis,
+                       QgsNetworkContentFetcherTask,
+                       QgsApplication)
 
-from ..utils.qt_utils import (
-    OverrideCursor,
-    remove_readonly
-)
-from ..utils.symbology import SymbologyUtils
-from ..utils.geometry import GeometryUtils
-from .dlg_topological_edition import LayersForTopologicalEdition
-
-from ..config.general_config import (
-    TEST_SERVER,
-    PLUGIN_NAME,
-    URL_REPORTS_LIBRARIES,
-    REPORTS_REQUIRED_VERSION
-)
-from ..config.table_mapping_config import (
-    ID_FIELD,
-    PLOT_TABLE
-)
+from ..config.general_config import (TEST_SERVER,
+                                     PLUGIN_NAME,
+                                     REPORTS_REQUIRED_VERSION,
+                                     URL_REPORTS_LIBRARIES)
+from ..config.table_mapping_config import (ID_FIELD,
+                                           PLOT_TABLE)
+from ..utils.qt_utils import (OverrideCursor,
+                              remove_readonly)
 
 class ReportGenerator():
     def __init__(self, qgis_utils):
