@@ -42,36 +42,28 @@ from qgis.core import (QgsWkbTypes,
                        QgsApplication)
 
 from ..config.general_config import (TEST_SERVER,
-                                     PLUGIN_NAME)
+                                     PLUGIN_NAME,
+                                     REPORTS_REQUIRED_VERSION,
+                                     URL_REPORTS_LIBRARIES)
 from ..config.table_mapping_config import (ID_FIELD,
                                            PLOT_TABLE)
-
+from ..utils.qt_utils import (OverrideCursor,
+                              remove_readonly)
 
 class ReportGenerator():
     def __init__(self, qgis_utils):
         self.qgis_utils = qgis_utils
         self.encoding = locale.getlocale()[1]
+        # This might be unset
+        if not self.encoding:
+            self.encoding = 'UTF8'
+
         self.log = QgsApplication.messageLog()
         self.LOG_TAB = 'Anexo_17'
         self._downloading = False
 
-    def validate_bin_exists(self, path):
-        if os.path.exists(path):
-            return True
-        else:
-            print("Prerequisite wasn't found")
-            return False
-
     def stderr_ready(self, proc):
         text = bytes(proc.readAllStandardError()).decode(self.encoding)
-    #    if not self.__done_pattern:
-    #        if self.dataImport:
-    #            self.__done_pattern = re.compile(r"Info: \.\.\.import done")
-    #        else:
-    #            self.__done_pattern = re.compile(r"Info: \.\.\.done")
-    #    if self.__done_pattern.search(text):
-    #        self.__result = Importer.SUCCESS
-        #print("err", text)
         self.log.logMessage(text, self.LOG_TAB, Qgis.Critical)
 
     def stdout_ready(self, proc):
@@ -102,7 +94,13 @@ class ReportGenerator():
 
     def get_layer_geojson(self, db, layer_name, plot_id):
         if layer_name == 'terreno':
-            return db.get_annex17_plot_data(plot_id)
+            return db.get_annex17_plot_data(plot_id, 'only_id')
+        elif layer_name == 'terrenos':
+            return db.get_annex17_plot_data(plot_id, 'all_but_id')
+        elif layer_name == 'terrenos_all':
+            return db.get_annex17_plot_data(plot_id, 'all')
+        elif layer_name == 'construcciones':
+            return db.get_annex17_building_data()
         else:
             return db.get_annex17_point_data(plot_id)
 
@@ -117,7 +115,9 @@ class ReportGenerator():
         for layer in layers:
             layer['geoJson'] = self.get_layer_geojson(db, layer['name'], plot_id)
 
-        #print(json_data)
+        overview_layers = json_data['attributes']['overviewMap']['layers']
+        for layer in overview_layers:
+            layer['geoJson'] = self.get_layer_geojson(db, layer['name'], plot_id)
 
         new_json_file_path = os.path.join(tmp_dir, self.get_tmp_filename('json_data_{}'.format(plot_id), 'json'))
         with open(new_json_file_path, 'w') as new_json:
@@ -135,8 +135,7 @@ class ReportGenerator():
         return "{}_{}.{}".format(basename, str(time.time()).replace(".",""), extension)
 
     def get_java_path_from_project_generator(self):
-        settings = QSettings()
-        path = settings.value('QgsProjectGenerator/ili2db/JavaPath')
+        path = QSettings().value('QgsProjectGenerator/ili2db/JavaPath')
         java_path = os.path.dirname(os.path.dirname(path or ''))
         return java_path
 
@@ -145,26 +144,43 @@ class ReportGenerator():
         # download them from and return
         base_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'impresion')
         bin_path = os.path.join(base_path, 'bin')
-        if not self.validate_bin_exists(bin_path):
+        if not os.path.exists(bin_path):
             self.qgis_utils.message_with_button_download_report_dependency_emitted.emit(
                 QCoreApplication.translate("ReportGenerator",
                    "The dependency library to generate reports is not installed. Click on the button to download and install it."))
             return
 
+        # Check version
+        required_version_found = True
+        version_path = os.path.join(base_path, 'version')
+        if not os.path.exists(version_path):
+            required_version_found = False
+        else:
+            version_found = ''
+            with open(version_path) as f:
+                version_found = f.read()
+            if version_found != REPORTS_REQUIRED_VERSION:
+                required_version_found = False
+
+        if not required_version_found:
+            self.qgis_utils.message_with_button_remove_report_dependency_emitted.emit(
+                QCoreApplication.translate("ReportGenerator",
+                    "The dependency library to generate reports was found, but does not match with the version required. Click the button to remove the installed version and try again."))
+            return
+
         # Check if JAVA_HOME path is set, otherwise use path from project Generator
-        if 'JAVA_HOME' not in os.environ:
-            java_path = self.get_java_path_from_project_generator()
-            if not java_path:
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate("ReportGenerator",
-                                               "Please set JAVA_HOME path in Project Generator Settings or in Environmental Variables for your OS"),
-                    Qgis.Warning)
-                return
-            else:
-                os.environ["JAVA_HOME"] = java_path
-                self.log.logMessage("The JAVA_HOME path have been set using Project Generator Settings for reports", PLUGIN_NAME, Qgis.Info)
-
-
+        if os.name == 'nt':
+            if 'JAVA_HOME' not in os.environ:
+                java_path = self.get_java_path_from_project_generator()
+                if not java_path:
+                    self.qgis_utils.message_emitted.emit(
+                        QCoreApplication.translate("ReportGenerator",
+                                                   "Please set JAVA_HOME path in Project Generator Settings or in Environmental Variables for your OS"),
+                        Qgis.Warning)
+                    return
+                else:
+                    os.environ["JAVA_HOME"] = java_path
+                    self.log.logMessage("The JAVA_HOME path has been set using Project Generator Settings for reports.", PLUGIN_NAME, Qgis.Info)
 
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
         if plot_layer is None:
@@ -294,6 +310,7 @@ class ReportGenerator():
 
     def save_dependency_file(self, fetcher_task):
         if fetcher_task.reply() is not None:
+            # Write response to tmp file
             tmp_file = tempfile.mktemp()
             out_file = QFile(tmp_file)
             out_file.open(QIODevice.WriteOnly)
@@ -304,15 +321,17 @@ class ReportGenerator():
             if not os.path.exists(dependency_base_path):
                 os.makedirs(dependency_base_path)
 
-            print(dependency_base_path)
-
             try:
                 with zipfile.ZipFile(tmp_file, "r") as zip_ref:
                     zip_ref.extractall(dependency_base_path)
-
             except zipfile.BadZipFile as e:
                 self.qgis_utils.message_with_duration_emitted.emit(
                     QCoreApplication.translate("ReportGenerator", "There was an error with the download. The downloaded file is invalid."),
+                    Qgis.Warning,
+                    0)
+            except PermissionError as e:
+                self.qgis_utils.message_with_duration_emitted.emit(
+                    QCoreApplication.translate("ReportGenerator", "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file://{path}'>{path}</a>").format(path=os.path.join(dependency_base_path, 'impresion')),
                     Qgis.Warning,
                     0)
             else:
@@ -330,17 +349,32 @@ class ReportGenerator():
 
     def download_report_dependency(self):
         self.qgis_utils.clear_message_bar_emitted.emit()
-        if not self._downloading:
+        if not self._downloading: # Already downloading report dependency?
             if self.qgis_utils.is_connected(TEST_SERVER):
                 self._downloading = True
-                url = 'https://owncloud.proadmintierra.info/owncloud/index.php/s/mrUcc2ugGJoB8pk/download'
-                fetcher_task = QgsNetworkContentFetcherTask(QUrl(url))
+                fetcher_task = QgsNetworkContentFetcherTask(QUrl(URL_REPORTS_LIBRARIES))
                 fetcher_task.fetched.connect(functools.partial(self.save_dependency_file, fetcher_task))
                 QgsApplication.taskManager().addTask(fetcher_task)
             else:
                 self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate("AboutDialog", "There was a problem connecting to Internet."),
+                    QCoreApplication.translate("ReportGenerator", "There was a problem connecting to Internet."),
                     Qgis.Warning)
                 self._downloading = False
-        else:
-            print("Already downloading report dependency...")
+
+    def remove_report_dependency(self):
+        """
+        We need to get rid of dependencies when they don't match the version
+        that should be installed for this version of the plugin.
+        """
+        base_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'impresion')
+
+        # Since folders might contain read only files, we need to delete them
+        # using a callback (see https://docs.python.org/3/library/shutil.html#rmtree-example)
+        shutil.rmtree(base_path, onerror=remove_readonly)
+        self.qgis_utils.clear_message_bar_emitted.emit()
+
+        if os.path.exists(base_path):
+            self.qgis_utils.message_with_duration_emitted.emit(
+                QCoreApplication.translate("ReportGenerator", "It wasn't possible to remove the dependency folder. You need to remove this folder yourself to generate reports: <a href='file://{path}'>{path}</a>").format(path=base_path),
+                Qgis.Warning,
+                0)
