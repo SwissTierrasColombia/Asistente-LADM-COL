@@ -50,7 +50,7 @@ from qgis.core import (Qgis,
 import processing
 from .geometry import GeometryUtils
 from .project_generator_utils import ProjectGeneratorUtils
-from .qt_utils import OverrideCursor
+from .qt_utils import OverrideCursor, show_question_message
 from .symbology import SymbologyUtils
 from ..config.general_config import (DEFAULT_EPSG,
                                      MODULE_HELP_MAPPING,
@@ -853,9 +853,20 @@ class QGISUtils(QObject):
                     [BOUNDARY_TABLE, None],
                     Qgis.Warning)
             else:
+                a = show_question_message(
+                    QCoreApplication.translate("QGISUtils", "Continue?"),
+                    QCoreApplication.translate("QGISUtils",
+                                               "Don't have selected features, "
+                                               "do you like run this for all elements ({}) in {}"
+                                               .format(boundary_layer.featureCount(),boundary_layer.name())))
+                print(a)
                 self.message_emitted.emit(
                     QCoreApplication.translate("QGISUtils", "First select at least one boundary!"),
                     Qgis.Warning)
+                if a is True:
+                    boundary_layer.selectAll()
+                else:
+                    return
             return
 
         bfs_layer = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]

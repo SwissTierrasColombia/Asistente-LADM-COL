@@ -34,6 +34,8 @@ from qgis.PyQt.QtGui import QValidator
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QApplication,
+                                 QMessageBox,
+                                 QWidget,
                                  QWizard)
 from qgis.core import QgsNetworkAccessManager
 
@@ -158,6 +160,16 @@ def download_file(url, filename, on_progress=None, on_finished=None, on_error=No
             raise NetworkError(reply.error(), reply.errorString())
         else:
             return filename
+
+
+def show_question_message(title, question):
+    reply = QMessageBox.question(None, title,
+                                 question,
+                                 QMessageBox.Yes, QMessageBox.No)
+    if reply == QMessageBox.Yes:
+        return True
+    else:
+        return False
 
 
 class Validators(QObject):
