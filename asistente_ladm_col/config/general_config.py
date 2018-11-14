@@ -61,7 +61,7 @@ MODULE_HELP_MAPPING = {
     'create_market_research': 'property_record_card/Market_research.html'
 }
 # Configure Project Generator Dependency
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.5"
+PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.6"
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), set to True
