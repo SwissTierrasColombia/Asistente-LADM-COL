@@ -25,6 +25,7 @@ from qgis.PyQt.QtWidgets import QAction, QWizard
 from ..utils import get_ui_class
 from ..config.table_mapping_config import BUILDING_TABLE, SURVEY_POINT_TABLE
 from ..config.help_strings import HelpStrings
+from ..config.general_config import FIELD_MAPPING_PATH
 
 WIZARD_UI = get_ui_class('wiz_create_building_cadastre.ui')
 
@@ -48,15 +49,27 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PolygonLayer)
 
     def adjust_page_1_controls(self):
+
+        combox_data = self.qgis_utils.fields_mapping(BUILDING_TABLE)
+
+        self.cbo_mapping.clear()
+        self.cbo_mapping.addItem("")
+
+        self.cbo_mapping.addItems(combox_data)
+
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
+            self.lbl_field_mapping.setEnabled(True)
+            self.cbo_mapping.setEnabled(True)
             finish_button_text = 'Import'
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(BUILDING_TABLE, True))
 
         elif self.rad_digitizing.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
+            self.lbl_field_mapping.setEnabled(False)
+            self.cbo_mapping.setEnabled(False)
             finish_button_text = QCoreApplication.translate('CreateBuildingCadastreWizard', 'Start')
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_BUILDING_CADASTRE_PAGE_1_OPTION_POINTS)
 
@@ -68,11 +81,24 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
         self.save_settings()
 
         if self.rad_refactor.isChecked():
+
+            if self.cbo_mapping.currentText() is not "":
+                save_field_mapping = self.cbo_mapping.currentText()
+            else:
+                save_field_mapping = None
+
             if self.mMapLayerComboBox.currentLayer() is not None:
-                self.qgis_utils.show_etl_model(self._db,
+                etl_model_feature_count = self.qgis_utils.show_etl_model(self._db,
                                                self.mMapLayerComboBox.currentLayer(),
                                                BUILDING_TABLE,
+                                               save_field_mapping,
                                                QgsWkbTypes.PolygonGeometry)
+
+                if etl_model_feature_count[0] != etl_model_feature_count[1]:
+                    self.qgis_utils.func_save_field_mapping(BUILDING_TABLE)
+                    if save_field_mapping != None:
+                        self.qgis_utils.replace_field_mapping(save_field_mapping, BUILDING_TABLE)
+
             else:
                 self.iface.messageBar().pushMessage('Asistente LADM_COL',
                     QCoreApplication.translate('CreateBuildingCadastreWizard',

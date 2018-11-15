@@ -17,6 +17,7 @@
  ***************************************************************************/
 """
 import ast
+import glob
 import os
 import socket
 import datetime
@@ -1060,6 +1061,9 @@ class QGISUtils(QObject):
             processing.execAlgorithmDialog("model:ETL-model", params)
             finish_feature_count = output.featureCount()
 
+            print (start_feature_count)
+            print (finish_feature_count)
+
             self.check_if_and_enable_automatic_fields(db,
                                                       automatic_fields_definition,
                                                       ladm_col_layer_name)
@@ -1128,6 +1132,34 @@ class QGISUtils(QObject):
         with open(txt_field_mapping_path,"w+") as file:
         	file.write(log_file)
         	file.close()
+
+    def fields_mapping(self, layer_name):
+
+        combox_data = []
+
+        files = glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(layer_name, '[0-9]'*8, "*")))
+        files.sort(key=lambda path: os.path.getmtime(path))
+
+        if (len(files) > 10):
+            for path in files[0:len(files)-10]:
+                os.remove(path)
+                files = glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(layer_name, '[0-9]'*8, "*")))
+                files.sort(key=lambda path: os.path.getmtime(path))
+
+        files.reverse()
+        for file in files:
+            combox_data.append(os.path.basename(file).strip(".txt"))
+
+        return combox_data
+
+    def replace_field_mapping(self, name, layer_name):
+        files = glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(layer_name, '[0-9]'*8, "*")))
+        files.sort(key=lambda path: os.path.getmtime(path))
+        name = "{}.{}".format(name, "txt")
+
+        for path in files:
+            if path.endswith(name):
+                os.remove(path)
 
     def explode_boundaries(self, db):
         self.turn_transaction_off()

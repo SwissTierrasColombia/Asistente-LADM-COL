@@ -71,7 +71,8 @@ class CreateLegalPartyPRCWizard(QWizard, WIZARD_UI):
             if self.mMapLayerComboBox.currentLayer() is not None:
                 self.qgis_utils.show_etl_model(self._db,
                                                self.mMapLayerComboBox.currentLayer(),
-                                               LEGAL_PARTY_TABLE)
+                                               LEGAL_PARTY_TABLE,
+                                               None)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreateLegalPartyWizard",

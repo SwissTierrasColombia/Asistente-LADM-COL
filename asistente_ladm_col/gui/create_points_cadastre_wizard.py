@@ -18,7 +18,6 @@
 """
 import os
 import stat
-import glob
 
 from qgis.core import Qgis, QgsMapLayerProxyModel, QgsApplication, QgsCoordinateReferenceSystem
 from qgis.gui import QgsMessageBar
@@ -132,11 +131,18 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
     def adjust_page_2_controls(self):
 
-        self.fields_mapping()
+        combox_data = self.qgis_utils.fields_mapping(self.current_point_name())
+
+        self.cbo_mapping.clear()
+        self.cbo_mapping.addItem("")
+
+        self.cbo_mapping.addItems(combox_data)
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
+            self.lbl_field_mapping.setEnabled(True)
+            self.cbo_mapping.setEnabled(True)
 
             disable_next_wizard(self)
             self.wizardPage2.setFinalPage(True)
@@ -148,6 +154,8 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         elif self.rad_csv.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
+            self.lbl_field_mapping.setEnabled(False)
+            self.cbo_mapping.setEnabled(False)
 
             enable_next_wizard(self)
             self.wizardPage2.setFinalPage(False)
@@ -166,33 +174,6 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             self.gbx_page_2.setTitle(QCoreApplication.translate("CreatePointsCadastreWizard", "Load data to Control Points..."))
             self.gbx_page_3.setTitle(QCoreApplication.translate("CreatePointsCadastreWizard", "Configure CSV data source for Control Points..."))
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_1_OPTION_CP)
-
-    def fields_mapping(self):
-        self.cbo_mapping.clear()
-        self.cbo_mapping.addItem("")
-
-        files = glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(self.current_point_name(), '[0-9]'*8, "*")))
-        files.sort(key=lambda path: os.path.getmtime(path))
-
-        if (len(files) > 10):
-            for path in files[0:len(files)-10]:
-                os.remove(path)
-                files = glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(self.current_point_name(), '[0-9]'*8, "*")))
-                files.sort(key=lambda path: os.path.getmtime(path))
-
-        files.reverse()
-        for file in files:
-            self.cbo_mapping.addItem(os.path.basename(file).strip(".txt"))
-
-
-    def replace_field_mapping(self, name):
-        files = glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(self.current_point_name(), '[0-9]'*8, "*")))
-        files.sort(key=lambda path: os.path.getmtime(path))
-        name = "{}.{}".format(name, "txt")
-
-        for path in files:
-            if path.endswith(name):
-                os.remove(path)
 
     def finished_dialog(self):
         self.save_settings()
@@ -213,7 +194,8 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
                 if etl_model_feature_count[0] != etl_model_feature_count[1]:
                     self.qgis_utils.func_save_field_mapping(output_layer_name)
-
+                    if save_field_mapping != None:
+                        self.qgis_utils.replace_field_mapping(save_field_mapping, self.current_point_name())
 
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",

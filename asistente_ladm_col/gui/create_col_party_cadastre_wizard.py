@@ -25,6 +25,7 @@ from qgis.PyQt.QtWidgets import QAction, QWizard
 from ..utils import get_ui_class
 from ..config.table_mapping_config import COL_PARTY_TABLE
 from ..config.help_strings import HelpStrings
+from ..config.general_config import FIELD_MAPPING_PATH
 
 WIZARD_UI = get_ui_class('wiz_create_col_party_cadastre.ui')
 
@@ -48,15 +49,27 @@ class CreateColPartyCadastreWizard(QWizard, WIZARD_UI):
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.NoGeometry)
 
     def adjust_page_1_controls(self):
+
+        combox_data = self.qgis_utils.fields_mapping(COL_PARTY_TABLE)
+
+        self.cbo_mapping.clear()
+        self.cbo_mapping.addItem("")
+
+        self.cbo_mapping.addItems(combox_data)
+
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
+            self.lbl_field_mapping.setEnabled(True)
+            self.cbo_mapping.setEnabled(True)
             finish_button_text = QCoreApplication.translate("CreateColPartyCadastreWizard", "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(COL_PARTY_TABLE, False))
 
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
+            self.lbl_field_mapping.setEnabled(False)
+            self.cbo_mapping.setEnabled(False)
             finish_button_text = QCoreApplication.translate("CreateColPartyCadastreWizard", "Create")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_COL_PARTY_CADASTRE_PAGE_1_OPTION_FORM)
 
@@ -68,10 +81,24 @@ class CreateColPartyCadastreWizard(QWizard, WIZARD_UI):
         self.save_settings()
 
         if self.rad_refactor.isChecked():
+
+            if self.cbo_mapping.currentText() is not "":
+                save_field_mapping = self.cbo_mapping.currentText()
+            else:
+                save_field_mapping = None
+
+
             if self.mMapLayerComboBox.currentLayer() is not None:
-                self.qgis_utils.show_etl_model(self._db,
+                etl_model_feature_count = self.qgis_utils.show_etl_model(self._db,
                                                self.mMapLayerComboBox.currentLayer(),
-                                               COL_PARTY_TABLE)
+                                               COL_PARTY_TABLE,
+                                               save_field_mapping)
+
+                if etl_model_feature_count[0] != etl_model_feature_count[1]:
+                    self.qgis_utils.func_save_field_mapping(COL_PARTY_TABLE)
+                    if save_field_mapping != None:
+                        self.qgis_utils.replace_field_mapping(save_field_mapping, COL_PARTY_TABLE)
+
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreateColPartyCadastreWizard",

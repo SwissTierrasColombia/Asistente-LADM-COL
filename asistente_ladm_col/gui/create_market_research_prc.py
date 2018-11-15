@@ -71,7 +71,8 @@ class CreateMarketResearchPRCWizard(QWizard, WIZARD_UI):
             if self.mMapLayerComboBox.currentLayer() is not None:
                 self.qgis_utils.show_etl_model(self._db,
                                                self.mMapLayerComboBox.currentLayer(),
-                                               MARKET_RESEARCH_TABLE)
+                                               MARKET_RESEARCH_TABLE,
+                                               None)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreateMarketResearchWizard",

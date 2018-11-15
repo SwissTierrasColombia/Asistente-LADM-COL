@@ -71,7 +71,8 @@ class CreatePropertyRecordCardPRCWizard(QWizard, WIZARD_UI):
             if self.mMapLayerComboBox.currentLayer() is not None:
                 self.qgis_utils.show_etl_model(self._db,
                                                self.mMapLayerComboBox.currentLayer(),
-                                               PROPERTY_RECORD_CARD_TABLE)
+                                               PROPERTY_RECORD_CARD_TABLE,
+                                               None)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreatePropertyRecordCardWizard",
