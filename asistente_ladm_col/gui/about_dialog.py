@@ -35,10 +35,12 @@ from qgis.core import (QgsNetworkContentFetcherTask,
 
 from ..config.general_config import (HELP_DIR_NAME,
                                      HELP_DOWNLOAD,
-                                     PLUGIN_DIR,
                                      PLUGIN_VERSION,
-                                     QGIS_LANG,
                                      TEST_SERVER)
+from ..config.translator import (
+    QGIS_LANG,
+    PLUGIN_DIR
+)
 from ..utils import get_ui_class
 
 DIALOG_UI = get_ui_class('about_dialog.ui')
