@@ -80,6 +80,7 @@ from ..config.general_config import (
     RELATION_TYPE,
     DOMAIN_CLASS_RELATION,
     PLUGIN_DIR,
+    PLUGIN_NAME,
     QGIS_LANG,
     HELP_DIR_NAME,
     TranslatableConfigStrings
@@ -1046,7 +1047,14 @@ class QGISUtils(QObject):
             automatic_fields_definition = self.check_if_and_disable_automatic_fields(db, ladm_col_layer_name)
 
             if save_field_mapping is not None:
-                mapping = self.func_load_field_mapping(ladm_col_layer_name, save_field_mapping)
+                if self.func_load_field_mapping(ladm_col_layer_name, save_field_mapping) is not None:
+                    mapping = self.func_load_field_mapping(ladm_col_layer_name, save_field_mapping)
+                else:
+                    self.message_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                                   "Field mapping was not found and cannot be charged!"),
+                        Qgis.Info)
+                    mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
             else:
                 mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
 
@@ -1060,9 +1068,6 @@ class QGISUtils(QObject):
             start_feature_count = output.featureCount()
             processing.execAlgorithmDialog("model:ETL-model", params)
             finish_feature_count = output.featureCount()
-
-            print (start_feature_count)
-            print (finish_feature_count)
 
             self.check_if_and_enable_automatic_fields(db,
                                                       automatic_fields_definition,
@@ -1082,21 +1087,10 @@ class QGISUtils(QObject):
         field_mapping_list = []
 
         with open(path_file_field_mapping) as file_field_mapping:
-            file_field_mapping = file_field_mapping.read()
-            list_field_mapping = file_field_mapping.split("},")
-
-            for line_field_mapping in list_field_mapping:
-                line_field_mapping = line_field_mapping.strip("[")
-                line_field_mapping = line_field_mapping.strip("]")
-                if not line_field_mapping.endswith("}"):
-                    line_field_mapping = '{}{}'.format(line_field_mapping, "}")
-                    line_field_mapping = ast.literal_eval(line_field_mapping.strip())
-                    field_mapping_list.append(line_field_mapping)
-                else:
-                    line_field_mapping = ast.literal_eval(line_field_mapping.strip())
-                    field_mapping_list.append(line_field_mapping)
-
-            mapping = field_mapping_list
+            try:
+                mapping = ast.literal_eval(file_field_mapping.read())
+            except:
+                mapping = None
 
         return mapping
 
@@ -1124,10 +1118,13 @@ class QGISUtils(QObject):
             log_file = log_file.strip("':")
             log_file = log_file.strip(",'")
 
+        name_field_mapping = "{}_{}.{}".format(ladm_col_layer_name,
+        datetime.datetime.now().strftime("%Y%m%d_%H_%M_%S"),
+        "txt")
         txt_field_mapping_path = os.path.join(FIELD_MAPPING_PATH,
-						"{}_{}.{}".format(ladm_col_layer_name,
-                        datetime.datetime.now().strftime("%Y%m%d_%H:%M:%S"),
-						"txt"))
+						                          name_field_mapping)
+
+        QgsApplication.messageLog().logMessage("Save recent mapping: {}".format(name_field_mapping), PLUGIN_NAME, Qgis.Info)
 
         with open(txt_field_mapping_path,"w+") as file:
         	file.write(log_file)
