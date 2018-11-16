@@ -858,16 +858,15 @@ class QGISUtils(QObject):
                     QCoreApplication.translate("QGISUtils",
                                                "Don't have selected features, "
                                                "do you like run this for all elements ({}) in {}"
-                                               .format(boundary_layer.featureCount(),boundary_layer.name())))
-                print(a)
-                self.message_emitted.emit(
-                    QCoreApplication.translate("QGISUtils", "First select at least one boundary!"),
-                    Qgis.Warning)
+                                               .format(boundary_layer.featureCount(), boundary_layer.name())))
                 if a is True:
                     boundary_layer.selectAll()
                 else:
+                    self.message_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                                   "Nothing to do in {} table!".format(boundary_layer.name())),
+                        Qgis.Warning)
                     return
-            return
 
         bfs_layer = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
         if bfs_layer is None:
@@ -935,10 +934,20 @@ class QGISUtils(QObject):
                     [PLOT_TABLE, None],
                     Qgis.Warning)
             else:
-                self.message_emitted.emit(
-                    QCoreApplication.translate("QGISUtils", "First select at least one plot!"),
-                    Qgis.Warning)
-            return
+                a = show_question_message(
+                    QCoreApplication.translate("QGISUtils", "Continue?"),
+                    QCoreApplication.translate("QGISUtils",
+                                               "Don't have selected features, "
+                                               "do you like run this for all elements ({}) in {}"
+                                               .format(plot_layer.featureCount(), plot_layer.name())))
+                if a is True:
+                    plot_layer.selectAll()
+                else:
+                    self.message_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                                   "Nothing to do in {} table!".format(plot_layer.name())),
+                        Qgis.Warning)
+                    return
 
         more_bfs_layer = res_layers[MORE_BOUNDARY_FACE_STRING_TABLE]
         if more_bfs_layer is None:
