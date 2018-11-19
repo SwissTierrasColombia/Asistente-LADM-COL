@@ -853,14 +853,14 @@ class QGISUtils(QObject):
                     [BOUNDARY_TABLE, None],
                     Qgis.Warning)
             else:
-                a = show_question_message(
+                msg_res = show_question_message(
                     QCoreApplication.translate("QGISUtils", "Continue?"),
                     QCoreApplication.translate("QGISUtils",
                                                "Don't have selected features, "
                                                "do you like run this for all elements ({}) in {}"
                                                .format(boundary_layer.featureCount(), boundary_layer.name())))
-                if a is True:
-                    boundary_layer.selectAll()
+                if msg_res:
+                    use_selection = False
                 else:
                     self.message_emitted.emit(
                         QCoreApplication.translate("QGISUtils",
@@ -934,14 +934,14 @@ class QGISUtils(QObject):
                     [PLOT_TABLE, None],
                     Qgis.Warning)
             else:
-                a = show_question_message(
+                msg_res = show_question_message(
                     QCoreApplication.translate("QGISUtils", "Continue?"),
                     QCoreApplication.translate("QGISUtils",
                                                "Don't have selected features, "
                                                "do you like run this for all elements ({}) in {}"
                                                .format(plot_layer.featureCount(), plot_layer.name())))
-                if a is True:
-                    plot_layer.selectAll()
+                if msg_res:
+                    use_selection = False
                 else:
                     self.message_emitted.emit(
                         QCoreApplication.translate("QGISUtils",
