@@ -497,16 +497,11 @@ class GeometryUtils(QObject):
                 bbox = feature.geometry().boundingBox()
                 candidate_ids = index.intersects(bbox)
                 candidate_features = [dict_features_layer2[candidate_id] for candidate_id in candidate_ids]
-                intersect_features = list()
 
                 for candidate_feature in candidate_features:
-                    if candidate_feature.geometry().intersects(feature.geometry()):
-                        intersect_features.append(candidate_feature)
-
-                for intersect_feature in intersect_features:
-                    if intersect_feature.id() not in geom_added:
-                        edit_layer.addTopologicalPoints(intersect_feature.geometry())
-                        geom_added.append(intersect_feature.id())
+                    if candidate_feature.id() not in geom_added:
+                        edit_layer.addTopologicalPoints(candidate_feature.geometry())
+                        geom_added.append(candidate_feature.id())
 
         # free up memory
         del candidate_features

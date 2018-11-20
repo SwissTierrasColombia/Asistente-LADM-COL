@@ -24,7 +24,6 @@ from qgis.core import (Qgis,
                        QgsApplication,
                        QgsField,
                        QgsGeometry,
-                       NULL,
                        QgsPointXY,
                        QgsProcessingFeedback,
                        QgsProcessingException,
@@ -39,7 +38,6 @@ from qgis.core import (Qgis,
 import processing
 from .project_generator_utils import ProjectGeneratorUtils
 from ..config.general_config import (DEFAULT_EPSG,
-                                     PLUGIN_NAME,
                                      DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
                                      DEFAULT_USE_ROADS_VALUE,
                                      translated_strings)
@@ -214,14 +212,8 @@ class QualityUtils(QObject):
                            2: translated_strings.TPLG_ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE,
                            3: translated_strings.TPLG_ERROR_NO_LESS_TABLE,
                            4: translated_strings.TPLG_ERROR_DUPLICATE_LESS_TABLE}
-        try:
-            plot_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-        except QgsProcessingException as e:
-            self.log.logMessage(translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES+ ': ' + str(e),
-                                PLUGIN_NAME,
-                                Qgis.Critical)
-            # the execution ends because an error has been generated when executing the algorithm
-            return None
+
+        plot_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # create dict with layer data
         id_field_idx = plot_as_lines_layer.fields().indexFromName(id_field)
@@ -264,12 +256,17 @@ class QualityUtils(QObject):
                                                                   'PREDICATE': [0],  # Intersects
                                                                   'JOIN_FIELDS': [id_field],
                                                                   'METHOD': 0,
-                                                                  'DISCARD_NONMATCHING': False,
+                                                                  'DISCARD_NONMATCHING': True,
                                                                   'PREFIX': '',
                                                                   'OUTPUT': 'memory:'})['OUTPUT']
         # The id field has the same name for both layers
         # This list is only used to check plots innters rings without boundaries
         dict_spatial_join_inner_rings_boundary = [{'plot_ring_id': '{}-{}'.format(feature[id_field], feature['AUTO']), 'boundary_id': feature[id_field + '_2']}
+                                                  for feature in spatial_join_inner_rings_boundary_layer.getFeatures()]
+
+        # list create for filter inner rings from spatial join with between plot and boundary
+        list_spatial_join_plot_ring_boundary = [{'plot_id': feature[id_field],
+                                                   'boundary_id': feature[id_field + '_2']}
                                                   for feature in spatial_join_inner_rings_boundary_layer.getFeatures()]
 
         # Spatial join between plot as lines and boundary
@@ -279,7 +276,7 @@ class QualityUtils(QObject):
                                                            'PREDICATE': [0],
                                                            'JOIN_FIELDS': [id_field],
                                                            'METHOD': 0,
-                                                           'DISCARD_NONMATCHING': False,
+                                                           'DISCARD_NONMATCHING': True,
                                                            'PREFIX': '',
                                                            'OUTPUT': 'memory:'})['OUTPUT']
         # The id field has the same name for both layers
@@ -318,37 +315,43 @@ class QualityUtils(QObject):
             boundary_id = item_sj['boundary_id']
             plot_id = item_sj['plot_id']
 
-            plot_geom = dict_plot_as_lines[plot_id].geometry()
-            boundary_geom = dict_boundary[boundary_id].geometry()
-            intersection = plot_geom.intersection(boundary_geom)
+            if item_sj in list_spatial_join_plot_ring_boundary:
+                # it is removed because it is registered in the spatial join between rings and boundaries
+                # and it shouldn't be registered in the topology table of more_bfs
+                dict_spatial_join_plot_boundary.remove(item_sj)
+            else:
+                plot_geom = dict_plot_as_lines[plot_id].geometry()
+                boundary_geom = dict_boundary[boundary_id].geometry()
+                intersection = plot_geom.intersection(boundary_geom)
 
-            if intersection.type() != QgsWkbTypes.LineGeometry:
-                if intersection.type() == QgsWkbTypes.UnknownGeometry:
-                    has_line = False
-                    for part in intersection.asGeometryCollection():
-                        if part.isMultipart():
-                            for i in range(part.numGeometries()):
-                                if QgsWkbTypes.geometryType(
-                                        part.geometryN(i).wkbType()) == QgsWkbTypes.LineGeometry:
+                if intersection.type() != QgsWkbTypes.LineGeometry:
+                    if intersection.type() == QgsWkbTypes.UnknownGeometry:
+                        has_line = False
+                        for part in intersection.asGeometryCollection():
+                            if part.isMultipart():
+                                for i in range(part.numGeometries()):
+                                    if QgsWkbTypes.geometryType(
+                                            part.geometryN(i).wkbType()) == QgsWkbTypes.LineGeometry:
+                                        has_line = True
+                                        break
+                            else:
+                                if part.type() == QgsWkbTypes.LineGeometry:
                                     has_line = True
                                     break
-                        else:
-                            if part.type() == QgsWkbTypes.LineGeometry:
-                                has_line = True
-                                break
-                    if not has_line:
-                        # Remove point intersections plot-boundary
+                        if not has_line:
+                            # Remove point intersections plot-boundary
+                            dict_spatial_join_plot_boundary.remove(item_sj)
+                    else:
                         dict_spatial_join_plot_boundary.remove(item_sj)
-                else:
-                    dict_spatial_join_plot_boundary.remove(item_sj)
 
         # Check relation between plot and boundary no register in more_bfs
         errors_not_in_more_bfs = list()
         errors_duplicate_in_more_bfs = list()
         for item_sj_pb in dict_spatial_join_plot_boundary:
-            if list_more_bfs.count(item_sj_pb) > 1:
+            count_more_bfs = list_more_bfs.count(item_sj_pb)
+            if count_more_bfs > 1:
                 errors_duplicate_in_more_bfs.append((item_sj_pb['plot_id'], item_sj_pb['boundary_id']))
-            elif list_more_bfs.count(item_sj_pb) == 0:
+            elif count_more_bfs == 0:
                 errors_not_in_more_bfs.append((item_sj_pb['plot_id'], item_sj_pb['boundary_id']))
 
         # finalize topological validation for more_bfs
@@ -387,10 +390,11 @@ class QualityUtils(QObject):
 
             if has_line:
                 tmp_dict_plot_boundary = {'plot_id': int(plot_ring_id.split('-')[0]), 'boundary_id': boundary_id}
+                count_less = list_less.count(tmp_dict_plot_boundary)
 
-                if list_less.count(tmp_dict_plot_boundary) >1:
+                if count_less >1:
                     errors_duplicate_in_less.append((plot_ring_id, boundary_id))  # duplicate in less table
-                elif list_less.count(tmp_dict_plot_boundary) == 0:
+                elif count_less == 0:
                     errors_not_in_less.append((plot_ring_id, boundary_id))  # no register less table
         # finalize topological validation for less
 
@@ -530,14 +534,7 @@ class QualityUtils(QObject):
                            3: translated_strings.TPLG_ERROR_NO_LESS_TABLE,
                            4: translated_strings.TPLG_ERROR_DUPLICATE_LESS_TABLE}
 
-        try:
-            plot_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-        except QgsProcessingException as e:
-            self.log.logMessage(translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS + ': ' + str(e),
-                                PLUGIN_NAME,
-                                Qgis.Critical)
-            # the execution ends because an error has been generated when executing the algorithm
-            return None
+        plot_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # create dict with layer data
         id_field_idx = plot_as_lines_layer.fields().indexFromName(id_field)
@@ -576,28 +573,33 @@ class QualityUtils(QObject):
         # we use as input layer the rings because it is the existing information
         # in the terrain polygons and filters better because they are less records
         spatial_join_inner_rings_boundary_layer = processing.run("qgis:joinattributesbylocation",
-                                                                 {'INPUT': inner_rings_layer,
-                                                                  'JOIN': boundary_layer,
+                                                                 {'INPUT': boundary_layer,
+                                                                  'JOIN': inner_rings_layer,
                                                                   'PREDICATE': [0],  # Intersects
-                                                                  'JOIN_FIELDS': [id_field],
+                                                                  'JOIN_FIELDS': [id_field, 'AUTO'],
                                                                   'METHOD': 0,
-                                                                  'DISCARD_NONMATCHING': False,
+                                                                  'DISCARD_NONMATCHING': True,
                                                                   'PREFIX': '',
                                                                   'OUTPUT': 'memory:'})['OUTPUT']
 
         # The id field has the same name for both layers
         # This list is only used to check plots innters rings without boundaries
-        list_spatial_join_boundary_inner_rings = [{'plot_ring_id': '{}-{}'.format(feature[id_field], feature['AUTO']), 'boundary_id': feature[id_field + '_2']}
+        list_spatial_join_boundary_inner_rings = [{'plot_ring_id': '{}-{}'.format(feature[id_field + '_2'], feature['AUTO']), 'boundary_id': feature[id_field]}
                                                   for feature in spatial_join_inner_rings_boundary_layer.getFeatures()]
 
-        # Spatial join between plot as boundary and lines
+        # list create for filter inner rings from spatial join with between plot and boundary
+        list_spatial_join_boundary_plot_ring = [{'plot_id': feature[id_field + '_2'],
+                                                 'boundary_id': feature[id_field]}
+                                                for feature in spatial_join_inner_rings_boundary_layer.getFeatures()]
+
+        # Spatial join between boundary and plots as lines
         spatial_join_boundary_plot_layer = processing.run("qgis:joinattributesbylocation",
                                                           {'INPUT': boundary_layer,
                                                            'JOIN': plot_as_lines_layer,
                                                            'PREDICATE': [0],
                                                            'JOIN_FIELDS': [id_field],
                                                            'METHOD': 0,
-                                                           'DISCARD_NONMATCHING': False,
+                                                           'DISCARD_NONMATCHING': True,
                                                            'PREFIX': '',
                                                            'OUTPUT': 'memory:'})['OUTPUT']
 
@@ -638,37 +640,43 @@ class QualityUtils(QObject):
             boundary_id = item_sj['boundary_id']
             plot_id = item_sj['plot_id']
 
-            boundary_geom = dict_boundary[boundary_id].geometry()
-            plot_geom = dict_plot_as_lines[plot_id].geometry()
-            intersection = boundary_geom.intersection(plot_geom)
+            if item_sj in list_spatial_join_boundary_plot_ring:
+                # it is removed because it is registered in the spatial join between rings and boundaries
+                # and it shouldn't be registered in the topology table of more_bfs
+                list_spatial_join_boundary_plot.remove(item_sj)
+            else:
+                boundary_geom = dict_boundary[boundary_id].geometry()
+                plot_geom = dict_plot_as_lines[plot_id].geometry()
+                intersection = boundary_geom.intersection(plot_geom)
 
-            if intersection.type() != QgsWkbTypes.LineGeometry:
-                if intersection.type() == QgsWkbTypes.UnknownGeometry:
-                    has_line = False
-                    for part in intersection.asGeometryCollection():
-                        if part.isMultipart():
-                            for i in range(part.numGeometries()):
-                                if QgsWkbTypes.geometryType(
-                                        part.geometryN(i).wkbType()) == QgsWkbTypes.LineGeometry:
+                if intersection.type() != QgsWkbTypes.LineGeometry:
+                    if intersection.type() == QgsWkbTypes.UnknownGeometry:
+                        has_line = False
+                        for part in intersection.asGeometryCollection():
+                            if part.isMultipart():
+                                for i in range(part.numGeometries()):
+                                    if QgsWkbTypes.geometryType(
+                                            part.geometryN(i).wkbType()) == QgsWkbTypes.LineGeometry:
+                                        has_line = True
+                                        break
+                            else:
+                                if part.type() == QgsWkbTypes.LineGeometry:
                                     has_line = True
                                     break
-                        else:
-                            if part.type() == QgsWkbTypes.LineGeometry:
-                                has_line = True
-                                break
-                    if not has_line:
-                        # Remove point intersections plot-boundary
+                        if not has_line:
+                            # Remove point intersections plot-boundary
+                            list_spatial_join_boundary_plot.remove(item_sj)
+                    else:
                         list_spatial_join_boundary_plot.remove(item_sj)
-                else:
-                    list_spatial_join_boundary_plot.remove(item_sj)
 
         # Check relation between plot and boundary no register in more_bfs
         errors_not_in_more_bfs = list()
         errors_duplicate_in_more_bfs = list()
         for item_sj_bp in list_spatial_join_boundary_plot:
-            if list_more_bfs.count(item_sj_bp) > 1:
+            count_more_bfs = list_more_bfs.count(item_sj_bp)
+            if count_more_bfs > 1:
                 errors_duplicate_in_more_bfs.append((item_sj_bp['plot_id'], item_sj_bp['boundary_id']))
-            elif list_more_bfs.count(item_sj_bp) == 0:
+            elif count_more_bfs == 0:
                 errors_not_in_more_bfs.append((item_sj_bp['plot_id'], item_sj_bp['boundary_id']))
 
         # finalize topological validation for more_bfs
@@ -683,37 +691,35 @@ class QualityUtils(QObject):
             boundary_id = inner_ring['boundary_id']
             plot_ring_id = inner_ring['plot_ring_id']
 
-            # spatial join capture rings that intersection with boundary,
-            #  but this information it isn't  important for us
-            if boundary_id != NULL:
-                boundary_geom = dict_boundary[boundary_id].geometry()
-                inner_ring_geom = dict_inner_rings[plot_ring_id].geometry()
+            boundary_geom = dict_boundary[boundary_id].geometry()
+            inner_ring_geom = dict_inner_rings[plot_ring_id].geometry()
 
-                # check intersections difference to line, we check that collections dont have lines parts
-                intersection = boundary_geom.intersection(inner_ring_geom)
-                has_line = False
-                if intersection.type() != QgsWkbTypes.LineGeometry:
-                    if intersection.type() == QgsWkbTypes.UnknownGeometry:
-                        for part in intersection.asGeometryCollection():
-                            if part.isMultipart():
-                                for i in range(part.numGeometries()):
-                                    if QgsWkbTypes.geometryType(part.geometryN(i).wkbType()) == QgsWkbTypes.LineGeometry:
-                                        has_line = True
-                                        break
-                            else:
-                                if part.type() == QgsWkbTypes.LineGeometry:
+            # check intersections difference to line, we check that collections dont have lines parts
+            intersection = boundary_geom.intersection(inner_ring_geom)
+            has_line = False
+            if intersection.type() != QgsWkbTypes.LineGeometry:
+                if intersection.type() == QgsWkbTypes.UnknownGeometry:
+                    for part in intersection.asGeometryCollection():
+                        if part.isMultipart():
+                            for i in range(part.numGeometries()):
+                                if QgsWkbTypes.geometryType(part.geometryN(i).wkbType()) == QgsWkbTypes.LineGeometry:
                                     has_line = True
                                     break
-                else:
-                    has_line = True
+                        else:
+                            if part.type() == QgsWkbTypes.LineGeometry:
+                                has_line = True
+                                break
+            else:
+                has_line = True
 
-                if has_line:
-                    tmp_dict_plot_boundary = {'plot_id': int(plot_ring_id.split('-')[0]), 'boundary_id': boundary_id}
+            if has_line:
+                tmp_dict_plot_boundary = {'plot_id': int(plot_ring_id.split('-')[0]), 'boundary_id': boundary_id}
+                count_less = list_less.count(tmp_dict_plot_boundary)
 
-                    if list_less.count(tmp_dict_plot_boundary) >1:
-                        errors_duplicate_in_less.append((plot_ring_id, boundary_id))  # duplicate in less table
-                    elif list_less.count(tmp_dict_plot_boundary) == 0:
-                        errors_not_in_less.append((plot_ring_id, boundary_id))  # no register less table
+                if count_less >1:
+                    errors_duplicate_in_less.append((plot_ring_id, boundary_id))  # duplicate in less table
+                elif count_less == 0:
+                    errors_not_in_less.append((plot_ring_id, boundary_id))  # no register less table
         # finalize topological validation for less
 
         features = list()
