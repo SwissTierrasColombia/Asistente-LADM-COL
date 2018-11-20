@@ -18,22 +18,20 @@
 """
 import statistics
 
-from qgis.core import (
-    Qgis,
-    QgsApplication,
-    QgsProject,
-    QgsGeometry,
-    QgsPointXY,
-    QgsVectorLayer,
-    QgsField,
-    QgsVectorLayerUtils,
-    QgsMapLayerProxyModel
-)
-from qgis.PyQt.QtCore import QVariant, QCoreApplication
+from qgis.PyQt.QtCore import (QVariant,
+                              QCoreApplication)
 from qgis.PyQt.QtWidgets import QDialog
+from qgis.core import (Qgis,
+                       QgsApplication,
+                       QgsProject,
+                       QgsGeometry,
+                       QgsPointXY,
+                       QgsVectorLayer,
+                       QgsField,
+                       QgsVectorLayerUtils,
+                       QgsMapLayerProxyModel)
 
 import processing
-
 from ..utils import get_ui_class
 
 DIALOG_UI = get_ui_class('controlled_measurement_dialog.ui')

@@ -23,8 +23,10 @@ import os
 import socket
 import webbrowser
 
-import processing
-from qgis.PyQt.QtCore import (Qt, QObject, pyqtSignal, QCoreApplication,
+from qgis.PyQt.QtCore import (Qt,
+                              QObject,
+                              pyqtSignal,
+                              QCoreApplication,
                               QSettings)
 from qgis.PyQt.QtWidgets import QProgressBar
 from qgis.core import (Qgis,
@@ -48,6 +50,8 @@ from qgis.core import (Qgis,
                        QgsVectorLayerUtils,
                        QgsWkbTypes)
 
+import processing
+
 from .geometry import GeometryUtils
 from .project_generator_utils import ProjectGeneratorUtils
 from .qt_utils import OverrideCursor
@@ -58,6 +62,9 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      TEST_SERVER,
                                      HELP_URL,
                                      MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE,
+                                     MODULE_HELP_MAPPING,
+                                     TEST_SERVER,
+                                     HELP_URL,
                                      PLUGIN_VERSION,
                                      REFERENCING_LAYER,
                                      REFERENCING_FIELD,
@@ -109,7 +116,6 @@ from ..lib.source_handler import SourceHandler
 
 
 class QGISUtils(QObject):
-
     action_vertex_tool_requested = pyqtSignal()
     activate_layer_requested = pyqtSignal(QgsMapLayer)
     clear_status_bar_emitted = pyqtSignal()
@@ -123,6 +129,7 @@ class QGISUtils(QObject):
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
     message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
     message_with_button_download_report_dependency_emitted = pyqtSignal(str) # Message
+    message_with_button_remove_report_dependency_emitted = pyqtSignal(str) # Message
     map_refresh_requested = pyqtSignal()
     map_freeze_requested = pyqtSignal(bool)
     set_node_visibility_requested = pyqtSignal(QgsLayerTreeNode, bool)
@@ -691,9 +698,14 @@ class QGISUtils(QObject):
         return (local_id_enabled, local_id_field, local_id_value)
 
     def check_if_and_disable_automatic_fields(self, db, layer_name, geometry_type=None):
+        """
+        Check settings to see if the user wants to calculate automatic values
+        when in batch mode. If not, disable automatic fields and return
+        expressions so that they can be restored after the batch load.
+        """
         settings = QSettings()
         automatic_fields_definition = {}
-        if settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
+        if not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
             automatic_fields_definition = self.disable_automatic_fields(db, layer_name, geometry_type)
 
         return automatic_fields_definition
@@ -708,9 +720,14 @@ class QGISUtils(QObject):
         return automatic_fields_definition
 
     def check_if_and_enable_automatic_fields(self, db, automatic_fields_definition, layer_name, geometry_type=None):
+        """
+        Once the batch load is done, check whether the user wanted to calculate
+        automatic values in batch mode or not. If not, restore the expressions
+        we saved before running the batch load.
+        """
         if automatic_fields_definition:
             settings = QSettings()
-            if settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool):
+            if not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
                 self.enable_automatic_fields(db,
                                              automatic_fields_definition,
                                              layer_name,
@@ -732,7 +749,7 @@ class QGISUtils(QObject):
     def set_node_visibility(self, node, visible):
         self.set_node_visibility_requested.emit(node, visible)
 
-    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, epsg, target_layer_name):
+    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, epsg, target_layer_name, elevation=None):
         if not csv_path or not os.path.exists(csv_path):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -743,17 +760,29 @@ class QGISUtils(QObject):
         # Create QGIS vector layer
         uri = "file:///{}?delimiter={}&xField={}&yField={}&crs=EPSG:{}".format(
               csv_path,
-              delimiter,
+              delimiter if delimiter != '\t' else '%5Ct',
               longitude,
               latitude,
-              epsg,
+              epsg
            )
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
 
+        if elevation:
+            z = QgsProperty.fromExpression('\"{}\"'.format(elevation.strip()))
+            parameters = {'INPUT': csv_layer,
+                          'Z_VALUE': z,
+                          'OUTPUT': 'memory:'}
+            res = processing.run("qgis:setzvalue", parameters)
+            csv_layer = res['OUTPUT']
+
         if not epsg == DEFAULT_EPSG:
-            crsDest = QgsCoordinateReferenceSystem('EPSG:' + str(DEFAULT_EPSG))
-            csv_layer = processing.run("native:reprojectlayer", {'INPUT':csv_layer,
-                                        'TARGET_CRS':crsDest,'OUTPUT':'memory:'})['OUTPUT']
+            crs_dest = 'EPSG:{}'.format(DEFAULT_EPSG)
+            parameters = {'INPUT': csv_layer,
+                          'TARGET_CRS': crs_dest,
+                          'OUTPUT': 'memory:'}
+
+            res = processing.run("native:reprojectlayer", parameters)
+            csv_layer = res['OUTPUT']
 
         if not csv_layer.isValid():
             self.message_emitted.emit(

@@ -16,42 +16,36 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os, json
+import json
 
-from qgis.core import (
-    QgsProject,
-    QgsVectorLayer,
-    Qgis,
-    QgsApplication,
-    QgsNetworkContentFetcherTask
-)
+from qgis.PyQt.Qt import (QNetworkRequest,
+                          QNetworkAccessManager)
+from qgis.PyQt.QtCore import (Qt,
+                              QSettings,
+                              pyqtSignal,
+                              QUrl,
+                              QCoreApplication,
+                              QTextStream,
+                              QIODevice,
+                              QEventLoop
+                              )
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QSizePolicy,
+                                 QGridLayout)
+from qgis.core import (Qgis,
+                       QgsApplication)
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import (
-    Qt,
-    QSettings,
-    pyqtSignal,
-    QUrl,
-    QCoreApplication,
-    QTextStream,
-    QIODevice,
-    QEventLoop
-)
-from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QGridLayout
-from qgis.PyQt.Qt import QNetworkRequest, QNetworkAccessManager
 
-from ..config.general_config import (
-    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-    PLUGIN_NAME,
-    TEST_SERVER,
-    DEFAULT_ENDPOINT_SOURCE_SERVICE,
-    SOURCE_SERVICE_EXPECTED_ID
-)
+from ..config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+                                     PLUGIN_NAME,
+                                     TEST_SERVER,
+                                     DEFAULT_ENDPOINT_SOURCE_SERVICE,
+                                     SOURCE_SERVICE_EXPECTED_ID)
 from ..lib.dbconnector.db_connector import DBConnector
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
 from ..utils import get_ui_class
 from ..utils.qt_utils import OverrideCursor
-from functools import partial
 
 DIALOG_UI = get_ui_class('settings_dialog.ui')
 
@@ -187,7 +181,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/quality/too_long_tolerance', int(self.txt_too_long_tolerance.text()) or DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)
         settings.setValue('Asistente-LADM_COL/quality/use_roads', self.chk_use_roads.isChecked())
 
-        settings.setValue('Asistente-LADM_COL/automatic_values/disable_automatic_fields', self.chk_disable_automatic_fields.isChecked())
+        settings.setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
 
         endpoint = self.txt_service_endpoint.text().strip()
         settings.setValue('Asistente-LADM_COL/source/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
@@ -228,7 +222,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.chk_use_roads.setChecked(use_roads)
         self.update_images_state(use_roads)
 
-        self.chk_disable_automatic_fields.setChecked(settings.value('Asistente-LADM_COL/automatic_values/disable_automatic_fields', True, bool))
+        self.chk_automatic_values_in_batch_mode.setChecked(settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool))
         self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool))
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))

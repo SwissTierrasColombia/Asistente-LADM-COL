@@ -1,7 +1,10 @@
 import os.path
 
+from qgis.PyQt.QtCore import (QSettings,
+                              QObject,
+                              QCoreApplication)
+
 from ..utils.qt_utils import get_plugin_metadata
-from qgis.PyQt.QtCore import QLocale, QSettings, QObject, QCoreApplication
 
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
 CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
@@ -20,8 +23,20 @@ PLUGIN_DIR = os.path.dirname(os.path.dirname(__file__))
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
 HELP_DIR_NAME = 'help'
-QGIS_LANG = QLocale(QSettings().value('locale/userLocale')).name()[:2]
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'styles')
+
+# Version to be installed when creating reports (annex 17)
+# (Other versions, if found, will be dropped in favor of this one)
+REPORTS_REQUIRED_VERSION = '0.1'
+URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/annex_17/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
+
+try:
+    # Errors here could happen if the value cannot be converted to string or
+    # if it is not subscriptable (see https://github.com/gacarrillor/loadthemall/issues/11)
+    locale = QSettings().value("locale/userLocale", type=str)
+    QGIS_LANG = str( locale[:2] )
+except TypeError as e:
+    QGIS_LANG = 'en'
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
@@ -48,16 +63,16 @@ MODULE_HELP_MAPPING = {
     'create_market_research': 'property_record_card/Market_research.html'
 }
 # Configure Project Generator Dependency
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.2.1"
+PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.6"
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), set to True
-PROJECT_GENERATOR_EXACT_REQUIRED_VERSION = True
+PROJECT_GENERATOR_EXACT_REQUIRED_VERSION = False
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-PROJECT_GENERATOR_REQUIRED_VERSION_URL = 'https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip'
+PROJECT_GENERATOR_REQUIRED_VERSION_URL = '' #'https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip'
 
 # Project Generator definitions
 SCHEMA_NAME = 'schemaname'

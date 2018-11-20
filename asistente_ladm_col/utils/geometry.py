@@ -21,31 +21,27 @@
 import gc
 
 from qgis.PyQt.QtCore import QObject
-from qgis.core import (
-    Qgis,
-    QgsApplication,
-    QgsGeometry,
-    QgsPoint,
-    QgsFeature,
-    QgsFeatureRequest,
-    QgsLineString,
-    QgsMultiLineString,
-    QgsProcessingException,
-    QgsProcessingFeedback,
-    QgsSpatialIndex,
-    QgsVectorLayer,
-    QgsVectorLayerEditUtils,
-    QgsWkbTypes
+from qgis.core import (Qgis,
+                       QgsApplication,
+                       QgsGeometry,
+                       QgsFeatureRequest,
+                       QgsLineString,
+                       QgsMultiLineString,
+                       QgsProcessingException,
+                       QgsProcessingFeedback,
+                       QgsSpatialIndex,
+                       QgsVectorLayer,
+                       QgsVectorLayerEditUtils,
+                       QgsWkbTypes
 )
 from qgis.core import edit
 
 import processing
+from ..config.general_config import (DEFAULT_POLYGON_AREA_TOLERANCE,
+                                     PLUGIN_NAME)
 from ..config.general_config import TranslatableConfigStrings
-from ..config.general_config import (
-    DEFAULT_POLYGON_AREA_TOLERANCE,
-    PLUGIN_NAME
-)
 from ..config.table_mapping_config import ID_FIELD
+
 
 class GeometryUtils(QObject):
 
@@ -481,7 +477,7 @@ class GeometryUtils(QObject):
             layer2 = processing.run("native:multiparttosingleparts", {'INPUT': layer2, 'OUTPUT': 'memory:'})['OUTPUT']
 
         if layer2.geometryType() == QgsWkbTypes.PolygonGeometry:
-            layer2 = processing.run("qgis:polygonstolines", {'INPUT': layer2, 'OUTPUT': 'memory:'})['OUTPUT']
+            layer2 = processing.run("ladm_col:polygonstolines", {'INPUT': layer2, 'OUTPUT': 'memory:'})['OUTPUT']
 
         geom_added = list()
         index = QgsSpatialIndex(layer2)
@@ -522,7 +518,7 @@ class GeometryUtils(QObject):
         takes into account not shared vertices to build difference geometries.
         """
         try:
-            plots_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+            plots_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
             approx_diff_layer = processing.run("native:difference",
                                                {'INPUT': plots_as_lines_layer,
                                                 'OVERLAY': boundary_layer,
@@ -549,7 +545,7 @@ class GeometryUtils(QObject):
         takes into account not shared vertices to build difference geometries.
         """
         try:
-            plots_as_lines_layer = processing.run("qgis:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+            plots_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
             approx_diff_layer = processing.run("native:difference",
                                                {'INPUT': boundary_layer,
                                                 'OVERLAY': plots_as_lines_layer,

@@ -17,12 +17,12 @@
  ***************************************************************************/
 """
 import os
-import sqlite3
 
 import qgis.utils
 from qgis.PyQt.QtCore import QCoreApplication
 
 from .db_connector import DBConnector
+
 
 class GPKGConnector(DBConnector):
     def __init__(self, uri, schema=None):

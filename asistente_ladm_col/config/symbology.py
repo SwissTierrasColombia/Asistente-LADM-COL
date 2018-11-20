@@ -1,15 +1,13 @@
 from qgis.core import QgsWkbTypes
 
-from .table_mapping_config import (
-    BOUNDARY_TABLE,
-    BOUNDARY_POINT_TABLE,
-    CONTROL_POINT_TABLE,
-    SURVEY_POINT_TABLE,
-    PLOT_TABLE,
-    BUILDING_TABLE,
-    BUILDING_UNIT_TABLE,
-    RIGHT_OF_WAY_TABLE
-)
+from .table_mapping_config import (BOUNDARY_TABLE,
+                                   BOUNDARY_POINT_TABLE,
+                                   CONTROL_POINT_TABLE,
+                                   SURVEY_POINT_TABLE,
+                                   PLOT_TABLE,
+                                   BUILDING_TABLE,
+                                   BUILDING_UNIT_TABLE,
+                                   RIGHT_OF_WAY_TABLE)
 
 ERROR_LAYER = 'error_layer'
 

@@ -19,34 +19,37 @@
 import copy
 from functools import partial
 
-from qgis.core import (QgsEditFormConfig, QgsVectorLayerUtils, Qgis, edit,
-                       QgsWkbTypes, QgsMapLayerProxyModel, QgsApplication)
+from qgis.PyQt.QtCore import (Qt,
+                              QCoreApplication)
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QTableWidgetItem,
+                                 QListWidgetItem,
+                                 QSizePolicy,
+                                 QGridLayout)
+from qgis.core import (QgsVectorLayerUtils,
+                       Qgis,
+                       edit,
+                       QgsApplication)
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
-from qgis.PyQt.QtWidgets import (QDialog, QTableWidgetItem, QListWidgetItem,
-                                 QSizePolicy, QGridLayout)
 
-from ..utils import get_ui_class
 from ..config.general_config import PLUGIN_NAME
-from ..config.table_mapping_config import (
-    COL_PARTY_TABLE,
-    DOMAIN_KEY_FIELD,
-    FRACTION_DENOMINATOR_FIELD,
-    FRACTION_MEMBER_FIELD,
-    FRACTION_NUMERATOR_FIELD,
-    FRACTION_TABLE,
-    ID_FIELD,
-    LA_GROUP_PARTY_NAME_FIELD,
-    LA_GROUP_PARTY_GPTYPE_FIELD,
-    LA_GROUP_PARTY_TABLE,
-    LA_GROUP_PARTY_TYPE_FIELD,
-    LA_GROUP_PARTY_TYPE_TABLE,
-    LA_GROUP_PARTY_TYPE_VALUE,
-    MEMBERS_GROUP_PARTY_FIELD,
-    MEMBERS_PARTY_FIELD,
-    MEMBERS_TABLE
-)
 from ..config.help_strings import HelpStrings
+from ..config.table_mapping_config import (DOMAIN_KEY_FIELD,
+                                           FRACTION_DENOMINATOR_FIELD,
+                                           FRACTION_MEMBER_FIELD,
+                                           FRACTION_NUMERATOR_FIELD,
+                                           FRACTION_TABLE,
+                                           ID_FIELD,
+                                           LA_GROUP_PARTY_NAME_FIELD,
+                                           LA_GROUP_PARTY_GPTYPE_FIELD,
+                                           LA_GROUP_PARTY_TABLE,
+                                           LA_GROUP_PARTY_TYPE_FIELD,
+                                           LA_GROUP_PARTY_TYPE_TABLE,
+                                           LA_GROUP_PARTY_TYPE_VALUE,
+                                           MEMBERS_GROUP_PARTY_FIELD,
+                                           MEMBERS_PARTY_FIELD,
+                                           MEMBERS_TABLE)
+from ..utils import get_ui_class
 
 DIALOG_UI = get_ui_class('dlg_group_party.ui')
 

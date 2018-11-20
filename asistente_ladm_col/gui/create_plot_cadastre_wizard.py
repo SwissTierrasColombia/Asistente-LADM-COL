@@ -16,16 +16,17 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.core import (QgsProject, QgsVectorLayer, QgsVectorLayerUtils,
-                       QgsFeature, QgsMapLayerProxyModel, QgsWkbTypes, Qgis)
-from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
-from qgis.PyQt.QtWidgets import QAction, QWizard
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QSettings)
+from qgis.PyQt.QtWidgets import QWizard
+from qgis.core import (QgsMapLayerProxyModel,
+                       QgsWkbTypes,
+                       Qgis)
 
-from ..utils import get_ui_class
-from ..utils.qt_utils import enable_next_wizard, disable_next_wizard
-from ..config.table_mapping_config import PLOT_TABLE
 from ..config.help_strings import HelpStrings
 from ..config.general_config import FIELD_MAPPING_PATH
+from ..config.table_mapping_config import PLOT_TABLE
+from ..utils import get_ui_class
 
 WIZARD_UI = get_ui_class('wiz_create_plot_cadastre.ui')
 

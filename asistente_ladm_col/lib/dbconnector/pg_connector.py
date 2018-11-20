@@ -18,17 +18,17 @@
 """
 import psycopg2
 import psycopg2.extras
-
-from qgis.core import QgsWkbTypes, Qgis, QgsApplication
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import (QgsWkbTypes,
+                       Qgis,
+                       QgsApplication)
 
 from .db_connector import DBConnector
-from ...config.general_config import (
-    INTERLIS_TEST_METADATA_TABLE_PG,
-    PLUGIN_NAME,
-    PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO
-)
-from ... utils.model_parser import ModelParser
+from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
+                                      PLUGIN_NAME,
+                                      PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO)
+from ...utils.model_parser import ModelParser
+
 
 class PGConnector(DBConnector):
     def __init__(self, uri, schema="public"):
@@ -186,7 +186,44 @@ class PGConnector(DBConnector):
                     """.format(self.schema))
         return (True, cur)
 
-    def get_annex17_plot_data(self, plot_id):
+    def get_annex17_plot_data(self, plot_id, mode='only_id'):
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
+
+        where_id = ""
+        if mode != 'all':
+            where_id = "WHERE l.t_id {} {}".format('=' if mode=='only_id' else '!=', plot_id)
+
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        query = """SELECT array_to_json(array_agg(features)) AS features
+                    FROM (
+                        SELECT f AS features
+                        FROM (
+                            SELECT 'Feature' AS type
+                                ,row_to_json((
+                                    SELECT l
+                                    FROM (
+                                        SELECT left(right(numero_predial,15),6) AS predio
+                                        ) AS l
+                                    )) AS properties
+                                ,ST_AsGeoJSON(poligono_creado)::json AS geometry
+                            FROM {schema}.terreno AS l
+                            LEFT JOIN {schema}.uebaunit ON l.t_id = ue_terreno
+                            LEFT JOIN {schema}.predio ON predio.t_id = baunit_predio
+                            {where_id}
+                            ) AS f
+                        ) AS ff;""".format(schema=self.schema, where_id=where_id)
+        cur.execute(query)
+
+        if mode == 'only_id':
+            return cur.fetchone()[0]
+        else:
+            return cur.fetchall()[0][0]
+
+    def get_annex17_building_data(self):
         if self.conn is None:
             res, msg = self.test_connection()
             if not res:
@@ -205,13 +242,12 @@ class PGConnector(DBConnector):
                     						SELECT t_id AS t_id
                     						) AS l
                     					)) AS properties
-                    		FROM {schema}.terreno AS l
-                    		WHERE l.t_id = {id}
+                            FROM {schema}.construccion AS c
                     		) AS f
-                    	) AS ff;""".format(schema=self.schema, id=plot_id)
+                        ) AS ff;""".format(schema=self.schema)
         cur.execute(query)
 
-        return cur.fetchone()[0]
+        return cur.fetchall()[0][0]
 
     def get_annex17_point_data(self, plot_id):
         if self.conn is None:
