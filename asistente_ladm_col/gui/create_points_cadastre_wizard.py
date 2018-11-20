@@ -263,12 +263,24 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                                     self._db,
                                     self.epsg,
                                     target_layer,
-                                    self.cbo_elevation.currentText() or None)
+                                    self.cbo_elevation.currentText() or None,
+                                    self.detect_decimal_point(csv_path))
 
     def file_path_changed(self):
         self.autodetect_separator()
         self.fill_long_lat_combos("")
         self.cbo_delimiter.currentTextChanged.connect(self.separator_changed)
+
+    def detect_decimal_point(self, csv_path):
+        if os.path.exists(csv_path):
+            with open(csv_path) as file:
+                no_head_line = file.readlines()[1]
+                fields = self.get_fields_from_csv_file(csv_path)
+                if self.cbo_latitude.currentText() in fields:
+                    num_col = no_head_line.split(self.cbo_delimiter.currentText())[fields.index(self.cbo_latitude.currentText())]
+                    for decimal_point in ['.', ',']:
+                        if decimal_point in num_col:
+                            return decimal_point
 
     def autodetect_separator(self):
         csv_path = self.txt_file_path.text().strip()
