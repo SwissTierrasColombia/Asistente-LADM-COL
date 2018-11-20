@@ -130,13 +130,9 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             self.fill_long_lat_combos("")
 
     def adjust_page_2_controls(self):
-
-        combox_data = self.qgis_utils.fields_mapping(self.current_point_name())
-
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-
-        self.cbo_mapping.addItems(combox_data)
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.current_point_name()))
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -181,21 +177,18 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         if self.rad_refactor.isChecked():
             output_layer_name = self.current_point_name()
 
-            if self.cbo_mapping.currentText() is not "":
-                save_field_mapping = self.cbo_mapping.currentText()
-            else:
-                save_field_mapping = None
-
             if self.mMapLayerComboBox.currentLayer() is not None:
-                etl_model_feature_count = self.qgis_utils.show_etl_model(self._db,
-                                               self.mMapLayerComboBox.currentLayer(),
-                                               output_layer_name,
-                                               save_field_mapping)
+                field_mapping = self.cbo_mapping.currentText()
+                res_etl_model = self.qgis_utils.show_etl_model(self._db,
+                                                               self.mMapLayerComboBox.currentLayer(),
+                                                               output_layer_name,
+                                                               field_mapping=field_mapping)
 
-                if etl_model_feature_count[0] != etl_model_feature_count[1]:
-                    self.qgis_utils.func_save_field_mapping(output_layer_name)
-                    if save_field_mapping != None:
-                        self.qgis_utils.replace_field_mapping(save_field_mapping, self.current_point_name())
+                if res_etl_model:
+                    if field_mapping:
+                        self.qgis_utils.delete_old_field_mapping(field_mapping)
+
+                    self.qgis_utils.save_field_mapping(output_layer_name)
 
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",

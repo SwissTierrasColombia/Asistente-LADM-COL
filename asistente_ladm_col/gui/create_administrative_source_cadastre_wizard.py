@@ -53,13 +53,9 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.NoGeometry)
 
     def adjust_page_1_controls(self):
-
-        combox_data = self.qgis_utils.fields_mapping(ADMINISTRATIVE_SOURCE_TABLE)
-
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-
-        self.cbo_mapping.addItems(combox_data)
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(ADMINISTRATIVE_SOURCE_TABLE))
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -85,23 +81,20 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
         self.save_settings()
 
         if self.rad_refactor.isChecked():
-
-            if self.cbo_mapping.currentText() is not "":
-                save_field_mapping = self.cbo_mapping.currentText()
-            else:
-                save_field_mapping = None
-
             if self.mMapLayerComboBox.currentLayer() is not None:
-                etl_model_feature_count = self.qgis_utils.show_etl_model(self._db,
-                                               self.mMapLayerComboBox.currentLayer(),
-                                               ADMINISTRATIVE_SOURCE_TABLE,
-                                               save_field_mapping)
+                field_mapping = self.cbo_mapping.currentText()
+                res_etl_model = self.qgis_utils.show_etl_model(self._db,
+                                                               self.mMapLayerComboBox.currentLayer(),
+                                                               ADMINISTRATIVE_SOURCE_TABLE,
+                                                               field_mapping=field_mapping)
 
-                if etl_model_feature_count[0] != etl_model_feature_count[1]:
-                    self.qgis_utils.func_save_field_mapping(ADMINISTRATIVE_SOURCE_TABLE)
-                    if save_field_mapping != None:
-                        self.qgis_utils.replace_field_mapping(save_field_mapping, ADMINISTRATIVE_SOURCE_TABLE)
+                if res_etl_model: # Features were added?
+                    # If the result of the etl_model is successful and we used a stored recent mapping, we delete the
+                    # previous mapping used (we give preference to the latest used mapping)
+                    if field_mapping:
+                        self.qgis_utils.delete_old_field_mapping(field_mapping)
 
+                    self.qgis_utils.save_field_mapping(ADMINISTRATIVE_SOURCE_TABLE)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreateAdministrativeSourceCadastreWizard",
@@ -110,7 +103,6 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
 
         elif self.rad_create_manually.isChecked():
             self.prepare_administrative_source_creation()
-
 
     def prepare_administrative_source_creation(self):
         # Load layers

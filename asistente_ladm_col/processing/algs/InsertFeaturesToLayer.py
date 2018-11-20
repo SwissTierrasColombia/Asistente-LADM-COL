@@ -141,6 +141,7 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
                 repr(e)
             ))
             return {self.OUTPUT: None}
+
         if res:
             feedback.pushInfo("\nSUCCESS: {} out of {} features from input layer were successfully copied into '{}'!".format(
                 len(new_features),

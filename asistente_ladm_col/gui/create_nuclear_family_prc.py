@@ -71,8 +71,7 @@ class CreateNuclearFamilyPRCWizard(QWizard, WIZARD_UI):
             if self.mMapLayerComboBox.currentLayer() is not None:
                 self.qgis_utils.show_etl_model(self._db,
                                                self.mMapLayerComboBox.currentLayer(),
-                                               NUCLEAR_FAMILY_TABLE,
-                                               None)
+                                               NUCLEAR_FAMILY_TABLE)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreateNuclearFamilyWizard",
