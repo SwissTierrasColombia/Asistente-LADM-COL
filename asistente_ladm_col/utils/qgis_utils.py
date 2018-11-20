@@ -16,6 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 """
+import ast
+import datetime
+import glob
 import os
 import socket
 import webbrowser
@@ -48,11 +51,17 @@ from qgis.core import (Qgis,
                        QgsWkbTypes)
 
 import processing
+
 from .geometry import GeometryUtils
 from .project_generator_utils import ProjectGeneratorUtils
 from .qt_utils import OverrideCursor
 from .symbology import SymbologyUtils
 from ..config.general_config import (DEFAULT_EPSG,
+                                     FIELD_MAPPING_PATH,
+                                     MODULE_HELP_MAPPING,
+                                     TEST_SERVER,
+                                     HELP_URL,
+                                     MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE,
                                      MODULE_HELP_MAPPING,
                                      TEST_SERVER,
                                      HELP_URL,
@@ -65,6 +74,7 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      RELATION_TYPE,
                                      DOMAIN_CLASS_RELATION,
                                      PLUGIN_DIR,
+                                     PLUGIN_NAME,
                                      QGIS_LANG,
                                      HELP_DIR_NAME,
                                      TranslatableConfigStrings)
@@ -106,7 +116,6 @@ from ..lib.source_handler import SourceHandler
 
 
 class QGISUtils(QObject):
-
     action_vertex_tool_requested = pyqtSignal()
     activate_layer_requested = pyqtSignal(QgsMapLayer)
     clear_status_bar_emitted = pyqtSignal()
@@ -1028,48 +1037,115 @@ class QGISUtils(QObject):
         root = QgsProject.instance().layerTreeRoot()
         return root.findGroup(self.translatable_config_strings.ERROR_LAYER_GROUP) is not None
 
-
     def turn_transaction_off(self):
         QgsProject.instance().setAutoTransaction(False)
 
-    def show_etl_model(self, db, input_layer, ladm_col_layer_name, geometry_type=None):
-
+    def show_etl_model(self, db, input_layer, ladm_col_layer_name, geometry_type=None, field_mapping=''):
         output = self.get_layer(db, ladm_col_layer_name, geometry_type, load=True)
         if output is None:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                     "Layer {} not found in DB! {}").format(
                         ladm_col_layer_name, db.get_description()), Qgis.Warning)
-            return
+            return False
 
         if output.isEditable():
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                     "You need to close the edit session on layer '{}' before using this tool!").format(ladm_col_layer_name),
                 Qgis.Warning)
-            return
+            return False
 
         model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
         if model:
             automatic_fields_definition = self.check_if_and_disable_automatic_fields(db, ladm_col_layer_name)
 
-            mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
+            # Get the mapping we'll use, it might come from stored recent mappings or from the default mapping
+            mapping = None
+            if field_mapping:
+                mapping = self.load_field_mapping(field_mapping)
+
+                if mapping is None: # If the mapping couldn't be parsed for any reason
+                    QgsApplication.messageLog().logMessage("Field mapping '{}' was not found and couldn't be loadded. The default mapping is used instead!".format(field_mapping),
+                                                           PLUGIN_NAME, Qgis.Warning)
+
+            if mapping is None:
+                mapping = get_refactor_fields_mapping(ladm_col_layer_name, self)
+
             self.activate_layer_requested.emit(input_layer)
             params = {
                 'INPUT': input_layer.name(),
                 'mapping': mapping,
                 'output': output.name()
             }
+
+            start_feature_count = output.featureCount()
             processing.execAlgorithmDialog("model:ETL-model", params)
+            finish_feature_count = output.featureCount()
 
             self.check_if_and_enable_automatic_fields(db,
                                                       automatic_fields_definition,
                                                       ladm_col_layer_name)
+
+            return finish_feature_count > start_feature_count
         else:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "Model ETL-model was not found and cannot be opened!"),
                 Qgis.Info)
+            return False
+
+    def load_field_mapping(self, field_mapping):
+        path_file_field_mapping = os.path.join(FIELD_MAPPING_PATH, '{}.{}'.format(field_mapping, "txt"))
+
+        with open(path_file_field_mapping) as file_field_mapping:
+            try:
+                mapping = ast.literal_eval(file_field_mapping.read())
+            except:
+                mapping = None
+
+        return mapping
+
+    def save_field_mapping(self, ladm_col_layer_name):
+        if not os.path.exists(FIELD_MAPPING_PATH):
+            os.makedirs(FIELD_MAPPING_PATH)
+
+        log_path =  os.path.join(processing.tools.system.userFolder(), 'processing.log')
+
+        with open(log_path) as log_file: # TODO, review this!!!
+            contents = log_file.read().split("ALGORITHM")[-1]
+            contents = contents.split('processing.run("model:ETL-model",')[-1]
+            params = ast.literal_eval(contents.strip().strip(')'))
+
+        name_field_mapping = "{}_{}.{}".format(ladm_col_layer_name,
+                                               datetime.datetime.now().strftime("%Y%m%d_%H_%M_%S"),
+                                               "txt")
+
+        txt_field_mapping_path = os.path.join(FIELD_MAPPING_PATH, name_field_mapping)
+
+        QgsApplication.messageLog().logMessage("Field mapping saved: {}".format(name_field_mapping), PLUGIN_NAME, Qgis.Info)
+
+        with open(txt_field_mapping_path, "w+") as file:
+            file.write(str(params['mapping']))
+
+    def get_field_mappings_file_names(self, layer_name):
+        files = glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(layer_name, '[0-9]'*8, "*")))
+        files.sort(key=lambda path: os.path.getmtime(path))
+
+        # If there are more files than the expected for the same table, just drop the surplus
+        if len(files) > MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE:
+            for path in files[0:len(files)-MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE]:
+                os.remove(path)
+
+        files = files[len(files) - MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE:]
+        files.reverse()
+
+        return [os.path.basename(file).strip(".txt") for file in files]
+
+    def delete_old_field_mapping(self, field_mapping_name):
+        file_path = os.path(FIELD_MAPPING_PATH, field_mapping_name, ".txt")
+        if os.exists(file_path):
+            os.remove(file_path)
 
     def explode_boundaries(self, db):
         self.turn_transaction_off()

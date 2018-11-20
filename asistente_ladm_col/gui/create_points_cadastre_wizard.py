@@ -35,17 +35,21 @@ from qgis.core import (Qgis,
 from qgis.gui import QgsMessageBar
 
 from ..config.general_config import (PLUGIN_NAME,
-                                     DEFAULT_EPSG)
+                                     DEFAULT_EPSG,
+                                     FIELD_MAPPING_PATH)
 from ..config.help_strings import HelpStrings
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE,
                                            CONTROL_POINT_TABLE)
+
+from ..processing.algs.InsertFeaturesToLayer import InsertFeaturesToLayer
 from ..utils import get_ui_class
 from ..utils.qt_utils import (make_file_selector,
                               enable_next_wizard,
                               disable_next_wizard)
 
 WIZARD_UI = get_ui_class('wiz_create_points_cadastre.ui')
+
 
 class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
@@ -56,6 +60,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
+        self.insert_features_to_layer = InsertFeaturesToLayer()
 
         self.target_layer = None
 
@@ -178,9 +183,15 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             self.cbo_elevation.setToolTip("")
 
     def adjust_page_2_controls(self):
+        self.cbo_mapping.clear()
+        self.cbo_mapping.addItem("")
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.current_point_name()))
+
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
+            self.lbl_field_mapping.setEnabled(True)
+            self.cbo_mapping.setEnabled(True)
 
             disable_next_wizard(self)
             self.wizardPage2.setFinalPage(True)
@@ -192,6 +203,8 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         elif self.rad_csv.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
+            self.lbl_field_mapping.setEnabled(False)
+            self.cbo_mapping.setEnabled(False)
 
             enable_next_wizard(self)
             self.wizardPage2.setFinalPage(False)
@@ -218,9 +231,18 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             output_layer_name = self.current_point_name()
 
             if self.mMapLayerComboBox.currentLayer() is not None:
-                self.qgis_utils.show_etl_model(self._db,
-                                               self.mMapLayerComboBox.currentLayer(),
-                                               output_layer_name)
+                field_mapping = self.cbo_mapping.currentText()
+                res_etl_model = self.qgis_utils.show_etl_model(self._db,
+                                                               self.mMapLayerComboBox.currentLayer(),
+                                                               output_layer_name,
+                                                               field_mapping=field_mapping)
+
+                if res_etl_model:
+                    if field_mapping:
+                        self.qgis_utils.delete_old_field_mapping(field_mapping)
+
+                    self.qgis_utils.save_field_mapping(output_layer_name)
+
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreatePointsCadastreWizard",
