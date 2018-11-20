@@ -31,6 +31,7 @@
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsGeometry,
                        QgsPoint,
+                       QgsPolygon,
                        QgsGeometryCollection,
                        QgsMultiLineString,
                        QgsMultiCurve,
@@ -109,15 +110,26 @@ class PolygonsToLines(QgisFeatureBasedAlgorithm):
 
     def getRings(self, geometry):
         rings = []
-        if type(geometry) != type(QgsPoint()):
-            if isinstance(geometry, QgsGeometryCollection):
-                # collection
-                for i in range(geometry.numGeometries()):
-                    rings.extend(self.getRings(geometry.geometryN(i)))
-            else:
-                # not collection
-                rings.append(geometry.exteriorRing().clone())
-                for i in range(geometry.numInteriorRings()):
-                    rings.append(geometry.interiorRing(i).clone())
+
+        # Error: The expected object type is a QgsCurvePolygon but it receive a QgsPoint, conversion performed
+        # QgsPoint have the wkt geometry from a QgsPolygon or QgsMultiPolygon
+        if type(geometry) == type(QgsPoint()):
+            geom = QgsGeometry().fromWkt(geometry.asWkt())
+            geometry = geom.toCurveType()
+
+        if isinstance(geometry, QgsGeometryCollection):
+            # collection
+            for i in range(geometry.numGeometries()):
+                rings.extend(self.getRings(geometry.geometryN(i)))
+        else:
+            # Converts geometry to curve, because it cannot operate geometries only curves
+            if isinstance(geometry, QgsPolygon):
+                geom = geometry.toCurveType()
+                geometry = geom
+
+            # not collection
+            rings.append(geometry.exteriorRing().clone())
+            for i in range(geometry.numInteriorRings()):
+                rings.append(geometry.interiorRing(i).clone())
 
         return rings
