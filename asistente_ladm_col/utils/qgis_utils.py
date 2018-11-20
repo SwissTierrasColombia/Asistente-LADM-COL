@@ -1113,24 +1113,20 @@ class QGISUtils(QObject):
         log_path =  os.path.join(processing.tools.system.userFolder(), 'processing.log')
 
         with open(log_path) as log_file: # TODO, review this!!!
-            log_file = log_file.read().split("ALGORITHM")
-            log_file = log_file[len(log_file)-1]
-            log_file = log_file.split("mapping")
-            log_file = log_file[len(log_file)-1]
-            log_file = log_file.split("output")
-            log_file = log_file[0]
-            log_file = log_file.strip("':")
-            log_file = log_file.strip(",'")
+            contents = log_file.read().split("ALGORITHM")[-1]
+            contents = contents.split('processing.run("model:ETL-model",')[-1]
+            params = ast.literal_eval(contents.strip().strip(')'))
 
         name_field_mapping = "{}_{}.{}".format(ladm_col_layer_name,
                                                datetime.datetime.now().strftime("%Y%m%d_%H_%M_%S"),
                                                "txt")
+
         txt_field_mapping_path = os.path.join(FIELD_MAPPING_PATH, name_field_mapping)
 
         QgsApplication.messageLog().logMessage("Field mapping saved: {}".format(name_field_mapping), PLUGIN_NAME, Qgis.Info)
 
         with open(txt_field_mapping_path, "w+") as file:
-            file.write(log_file)
+            file.write(str(params['mapping']))
 
     def get_field_mappings_file_names(self, layer_name):
         files = glob.glob(os.path.join(FIELD_MAPPING_PATH, "{}_{}{}".format(layer_name, '[0-9]'*8, "*")))
@@ -1141,6 +1137,7 @@ class QGISUtils(QObject):
             for path in files[0:len(files)-MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE]:
                 os.remove(path)
 
+        files = files[len(files) - MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE:]
         files.reverse()
 
         return [os.path.basename(file).strip(".txt") for file in files]
