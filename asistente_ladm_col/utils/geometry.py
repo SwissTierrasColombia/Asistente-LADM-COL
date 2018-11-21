@@ -26,6 +26,9 @@ from qgis.core import (Qgis,
                        QgsApplication,
                        QgsField,
                        QgsGeometry,
+                       QgsPoint,
+                       QgsPolygon,
+                       QgsMultiPolygon,
                        QgsFeatureRequest,
                        QgsLineString,
                        QgsMultiLineString,
@@ -674,14 +677,28 @@ class GeometryUtils(QObject):
             single_polygon = None
 
             if is_multipart:
-                multi_polygon = polygon_geom.get()
-                print(multi_polygon.asWkt())
+
+                multi_polygon = polygon_geom.constGet()
+
+                # TODO: remove when the error is resolved
+                if type(multi_polygon) != type(QgsMultiPolygon()):
+                    geom = QgsMultiPolygon()
+                    geom.fromWkt(polygon_geom.asWkt())
+                    multi_polygon = geom
+
                 for part in range(multi_polygon.numGeometries()):
                     if multi_polygon.ringCount(part) > 1:
                         has_inner_rings = True
                         break
             else:
-                single_polygon = polygon_geom.get()
+                single_polygon = polygon_geom.constGet()
+
+                # TODO: remove when the error is resolved
+                if type(single_polygon) != type(QgsPolygon()):
+                    geom = QgsPolygon()
+                    geom.fromWkt(polygon_geom.asWkt())
+                    single_polygon = geom
+                    
                 if single_polygon.numInteriorRings() > 0:
                     has_inner_rings = True
 
