@@ -675,6 +675,7 @@ class GeometryUtils(QObject):
 
             if is_multipart:
                 multi_polygon = polygon_geom.get()
+                print(multi_polygon.asWkt())
                 for part in range(multi_polygon.numGeometries()):
                     if multi_polygon.ringCount(part) > 1:
                         has_inner_rings = True

@@ -134,13 +134,13 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_GAPS_IN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Plots should not have gaps")
         self.CHECK_MULTIPART_IN_RIGHT_OF_WAY = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not have multipart geometries")
 
-        # Type topologycal errors
-        self.TPLG_ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY = QCoreApplication.translate("TranslatableConfigStrings", "Plot is not covered by the boundary")
-        self.TPLG_ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT = QCoreApplication.translate("TranslatableConfigStrings", "Boundary is not covered by the plot")
-        self.TPLG_ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot not recorded in the {} table").format(MORE_BOUNDARY_FACE_STRING_TABLE)
-        self.TPLG_ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE = QCoreApplication.translate("TranslatableConfigStrings","Topological relationship between boundary and plot is duplicated in the {} table").format(MORE_BOUNDARY_FACE_STRING_TABLE)
-        self.TPLG_ERROR_NO_LESS_TABLE = QCoreApplication.translate("TranslatableConfigStrings","Topological relationship between boundary and plot not recorded in the {} table").format(LESS_TABLE)
-        self.TPLG_ERROR_DUPLICATE_LESS_TABLE = QCoreApplication.translate("TranslatableConfigStrings","Topological relationship between boundary and plot is duplicated in the {} table").format(LESS_TABLE)
+        # Specific topology errors
+        self.ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY = QCoreApplication.translate("TranslatableConfigStrings", "Plot is not covered by boundary")
+        self.ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT = QCoreApplication.translate("TranslatableConfigStrings", "Boundary is not covered by plot")
+        self.ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the {} table").format(MORE_BOUNDARY_FACE_STRING_TABLE)
+        self.ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the {} table").format(MORE_BOUNDARY_FACE_STRING_TABLE)
+        self.ERROR_NO_LESS_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the {} table").format(LESS_TABLE)
+        self.ERROR_DUPLICATE_LESS_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the {} table").format(LESS_TABLE)
 
 
 translated_strings = TranslatableConfigStrings()

@@ -2,11 +2,11 @@
 <qgis version="3.4.1-Madeira" styleCategories="Symbology">
   <renderer-v2 forceraster="0" enableorderby="0" symbollevels="0" type="categorizedSymbol" attr="error_type">
     <categories>
-      <category symbol="0" render="true" label="Plot is not covered by the boundary" value="Plot is not covered by the boundary"/>
+      <category symbol="0" render="true" label="Plot is not covered by boundary" value="Plot is not covered by boundary"/>
       <category symbol="1" render="true" label="Topological relationship between boundary and plot is duplicated in the masccl table" value="Topological relationship between boundary and plot is duplicated in the masccl table"/>
       <category symbol="2" render="true" label="Topological relationship between boundary and plot is duplicated in the menos table" value="Topological relationship between boundary and plot is duplicated in the menos table"/>
-      <category symbol="3" render="true" label="Topological relationship between boundary and plot not recorded in the masccl table" value="Topological relationship between boundary and plot not recorded in the masccl table"/>
-      <category symbol="4" render="true" label="Topological relationship between boundary and plot not recorded in the menos table" value="Topological relationship between boundary and plot not recorded in the menos table"/>
+      <category symbol="3" render="true" label="Topological relationship between boundary and plot is not recorded in the masccl table" value="Topological relationship between boundary and plot is not recorded in the masccl table"/>
+      <category symbol="4" render="true" label="Topological relationship between boundary and plot is not recorded in the menos table" value="Topological relationship between boundary and plot is not recorded in the menos table"/>
     </categories>
     <symbols>
       <symbol name="0" alpha="1" clip_to_extent="1" type="line">

@@ -2,11 +2,11 @@
 <qgis styleCategories="Symbology" version="3.4.1-Madeira">
   <renderer-v2 symbollevels="0" forceraster="0" enableorderby="0" type="categorizedSymbol" attr="error_type">
     <categories>
-      <category value="El lindero no esta cubierta por el terreno" label="El lindero no esta cubierta por el terreno" render="true" symbol="0"/>
-      <category value="La relación topológica entre el lindero y el terreno no esta registrada en la tabla masccl" label="La relación topológica entre el lindero y el terreno no esta registrada en la tabla masccl" render="true" symbol="1"/>
-      <category value="La relación topológica entre el lindero y el terreno no esta registrada en la tabla menos" label="La relación topológica entre el lindero y el terreno no esta registrada en la tabla menos" render="true" symbol="2"/>
-      <category value="La relación topológica entre el lindero y el terreno esta duplicada en la tabla masccl" label="La relación topológica entre el lindero y el terreno esta duplicada en la tabla masccl" render="true" symbol="3"/>
-      <category value="La relación topológica entre el lindero y el terreno esta duplicada en la tabla menos" label="La relación topológica entre el lindero y el terreno esta duplicada en la tabla menos" render="true" symbol="4"/>
+      <category value="El lindero no está cubierto por terrenos" label="El lindero no está cubierto por terrenos" render="true" symbol="0"/>
+      <category value="La relación topológica entre el lindero y el terreno no está registrada en la tabla masccl" label="La relación topológica entre el lindero y el terreno no está registrada en la tabla masccl" render="true" symbol="1"/>
+      <category value="La relación topológica entre el lindero y el terreno no está registrada en la tabla menos" label="La relación topológica entre el lindero y el terreno no está registrada en la tabla menos" render="true" symbol="2"/>
+      <category value="La relación topológica entre el lindero y el terreno está duplicada en la tabla masccl" label="La relación topológica entre el lindero y el terreno está duplicada en la tabla masccl" render="true" symbol="3"/>
+      <category value="La relación topológica entre el lindero y el terreno está duplicada en la tabla menos" label="La relación topológica entre el lindero y el terreno está duplicada en la tabla menos" render="true" symbol="4"/>
     </categories>
     <symbols>
       <symbol alpha="1" clip_to_extent="1" name="0" type="line">

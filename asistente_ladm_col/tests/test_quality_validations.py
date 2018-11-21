@@ -35,13 +35,13 @@ class TesQualityValidations(unittest.TestCase):
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
 
         # Test connection DB
-        self.db_connection = get_dbconn('test_ladm_col_topology')
+        self.db_connection = get_dbconn('test_ladm_col_validations_against_topology_tables')
         result = self.db_connection.test_connection()
         print('test_connection', result)
         if not result[1]:
             print('The test connection is not working')
             return
-        restore_schema('test_ladm_col_topology')
+        restore_schema('test_ladm_col_validations_against_topology_tables')
 
     def test_topology_plot_must_be_covered_by_boundary(self):
         DB_HOSTNAME = "postgres"
@@ -84,7 +84,7 @@ class TesQualityValidations(unittest.TestCase):
                                      QgsField('error_type', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.quality.get_features_plots_covered_by_boundaries(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
+        features = self.quality.get_plot_features_not_covered_by_boundaries(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 15)
@@ -92,7 +92,7 @@ class TesQualityValidations(unittest.TestCase):
         error_layer.dataProvider().addFeatures(features)
 
         # English language is set as default for validations
-        exp = "\"error_type\" = 'Plot is not covered by the boundary'"
+        exp = "\"error_type\" = 'Plot is not covered by boundary'"
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 11)
 
@@ -129,19 +129,19 @@ class TesQualityValidations(unittest.TestCase):
         test_result = [{'plot_id': 41, 'boundary_id': 51}]
         self.assertEqual(result, test_result, 'Error in: Topological relationship between boundary and plot is duplicated in the menos table')
 
-        exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the masccl table'"
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot is not recorded in the masccl table'"
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 1)
         result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
         test_result = [{'plot_id': 47, 'boundary_id': 48}]
-        self.assertEqual(result, test_result, 'Error in: Topological relationship between boundary and plot not recorded in the masccl table')
+        self.assertEqual(result, test_result, 'Error in: Topological relationship between boundary and plot is not recorded in the masccl table')
 
-        exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the menos table'"
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot is not recorded in the menos table'"
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 1)
         result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
         test_result = [{'plot_id': 16, 'boundary_id': 18}]
-        self.assertEqual(result, test_result, 'Error in: Topological relationship between boundary and plot not recorded in the menos table')
+        self.assertEqual(result, test_result, 'Error in: Topological relationship between boundary and plot is not recorded in the menos table')
 
 
     def test_topology_boundary_must_be_covered_by_plot(self):
@@ -185,7 +185,7 @@ class TesQualityValidations(unittest.TestCase):
                                      QgsField('error_type', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.quality.get_features_boundaries_covered_by_plots(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
+        features = self.quality.get_boundary_features_not_covered_by_plots(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 10)
@@ -193,7 +193,7 @@ class TesQualityValidations(unittest.TestCase):
         error_layer.dataProvider().addFeatures(features)
 
         # English language is set as default for validations
-        exp = "\"error_type\" = 'Boundary is not covered by the plot'"
+        exp = "\"error_type\" = 'Boundary is not covered by plot'"
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 2)
 
@@ -223,23 +223,23 @@ class TesQualityValidations(unittest.TestCase):
         for item in test_result:
             self.assertIn(item, result, 'Error in: Topological relationship between boundary and plot is duplicated in the menos table')
 
-        exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the masccl table'"
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot is not recorded in the masccl table'"
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 2)
         result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
         test_result = [{'plot_id': 19, 'boundary_id': 20}, {'plot_id': 47, 'boundary_id': 48}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in: Topological relationship between boundary and plot not recorded in the masccl table')
+            self.assertIn(item, result, 'Error in: Topological relationship between boundary and plot is not recorded in the masccl table')
 
-        exp = "\"error_type\" = 'Topological relationship between boundary and plot not recorded in the menos table'"
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot is not recorded in the menos table'"
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 2)
         result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
         test_result = [{'plot_id': 4, 'boundary_id': 7}, {'plot_id': 16, 'boundary_id': 18}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in: Topological relationship between boundary and plot not recorded in the menos table')
+            self.assertIn(item, result, 'Error in: Topological relationship between boundary and plot is not recorded in the menos table')
 
 
     def test_get_too_long_segments_from_simple_line(self):

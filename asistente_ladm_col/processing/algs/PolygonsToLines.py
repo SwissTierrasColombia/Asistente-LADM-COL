@@ -111,8 +111,8 @@ class PolygonsToLines(QgisFeatureBasedAlgorithm):
     def getRings(self, geometry):
         rings = []
 
-        # Error: The expected object type is a QgsCurvePolygon but it receive a QgsPoint, conversion performed
-        # QgsPoint have the wkt geometry from a QgsPolygon or QgsMultiPolygon
+        # Error: The expected object type is a QgsCurvePolygon but it receives a QgsPoint, however the WKT of the
+        #        QgsPoint corresponds to either a QgsPolygon or QgsMultiPolygon (yeap, it must be a bug in QGIS)
         if type(geometry) == type(QgsPoint()):
             geom = QgsGeometry().fromWkt(geometry.asWkt())
             geometry = geom.toCurveType()
@@ -122,7 +122,7 @@ class PolygonsToLines(QgisFeatureBasedAlgorithm):
             for i in range(geometry.numGeometries()):
                 rings.extend(self.getRings(geometry.geometryN(i)))
         else:
-            # Converts geometry to curve, because it cannot operate geometries only curves
+            # Converts geometry to curve, because exteriorRing is a method from curve polygons
             if isinstance(geometry, QgsPolygon):
                 geom = geometry.toCurveType()
                 geometry = geom

@@ -168,14 +168,14 @@ class QualityUtils(QObject):
             return
 
         if more_bfs_layer is None:
-            self.message_emitted.emit(
+            self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(
                     MORE_BOUNDARY_FACE_STRING_TABLE, db.get_description()),
                 Qgis.Warning)
             return
 
         if less_layer is None:
-            self.message_emitted.emit(
+            self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(LESS_TABLE,
                                                                                                    db.get_description()),
                 Qgis.Warning)
@@ -191,7 +191,7 @@ class QualityUtils(QObject):
                                      QgsField('error_type', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.get_features_plots_covered_by_boundaries(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
+        features = self.get_plot_features_not_covered_by_boundaries(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
 
         if features:
             error_layer.dataProvider().addFeatures(features)
@@ -199,19 +199,22 @@ class QualityUtils(QObject):
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} plot lines not covered by boundaries has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
+                                           "A memory layer with {} plots not covered by boundaries has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "All Plot lines are covered by Boundaries!"), Qgis.Info)
+                                           "All plots are covered by boundaries!"), Qgis.Info)
 
-    def get_features_plots_covered_by_boundaries(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
-
-        type_tplg_error = {0: translated_strings.TPLG_ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY,
-                           1: translated_strings.TPLG_ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
-                           2: translated_strings.TPLG_ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE,
-                           3: translated_strings.TPLG_ERROR_NO_LESS_TABLE,
-                           4: translated_strings.TPLG_ERROR_DUPLICATE_LESS_TABLE}
+    def get_plot_features_not_covered_by_boundaries(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
+        """
+        Returns all plot features that have errors when checking if they are covered by boundaries.
+        That is both geometric and alphanumeric (topology table) errors.
+        """
+        type_tplg_error = {0: translated_strings.ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY,
+                           1: translated_strings.ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
+                           2: translated_strings.ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE,
+                           3: translated_strings.ERROR_NO_LESS_TABLE,
+                           4: translated_strings.ERROR_DUPLICATE_LESS_TABLE}
 
         plot_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
@@ -260,7 +263,7 @@ class QualityUtils(QObject):
                                                                   'PREFIX': '',
                                                                   'OUTPUT': 'memory:'})['OUTPUT']
         # The id field has the same name for both layers
-        # This list is only used to check plots innters rings without boundaries
+        # This list is only used to check plot's inner rings without boundaries
         dict_spatial_join_inner_rings_boundary = [{'plot_ring_id': '{}-{}'.format(feature[id_field], feature['AUTO']), 'boundary_id': feature[id_field + '_2']}
                                                   for feature in spatial_join_inner_rings_boundary_layer.getFeatures()]
 
@@ -293,24 +296,24 @@ class QualityUtils(QObject):
         errors_plot_boundary_diffs = self.qgis_utils.geometry.difference_plot_boundary(plot_as_lines_layer, boundary_layer)
         for error_diff in errors_plot_boundary_diffs:
             plot_id = error_diff['id']
-            # All plots with geometric errors are eliminated. It is not necesary check more
+            # All plots with geometric errors are eliminated. It is not necessary check more
             # in spatial join between plot as line and boundary
             for item_sj in dict_spatial_join_plot_boundary.copy():
                 if item_sj['plot_id'] == plot_id:
                     dict_spatial_join_plot_boundary.remove(item_sj)
 
-            # All plots with geometric errors are eliminated. It is not necesary check more
+            # All plots with geometric errors are eliminated. It is not necessary check more
             # in spatial join between inner_rings and boundary
             for item_sj in dict_spatial_join_inner_rings_boundary.copy():
                 if int(item_sj['plot_ring_id'].split('-')[0]) == plot_id:
                     dict_spatial_join_inner_rings_boundary.remove(item_sj)
 
-        #####################################################
-        # Validation of topological errors
-        #####################################################
+        ######################################################
+        # Validation of errors in alphanumeric topology tables
+        ######################################################
 
-        # start topological validation for more_bfs
-        # remove spatial join intersection with geometries that no contain lines. Because it is not necesary to check
+        # start validation for more_bfs table
+        # remove spatial join intersection with geometries that no contain lines. Because it is not necessary to check
         for item_sj in dict_spatial_join_plot_boundary.copy():
             boundary_id = item_sj['boundary_id']
             plot_id = item_sj['plot_id']
@@ -344,7 +347,7 @@ class QualityUtils(QObject):
                     else:
                         dict_spatial_join_plot_boundary.remove(item_sj)
 
-        # Check relation between plot and boundary no register in more_bfs
+        # Check relation between plot and boundary not registered in more_bfs
         errors_not_in_more_bfs = list()
         errors_duplicate_in_more_bfs = list()
         for item_sj_pb in dict_spatial_join_plot_boundary:
@@ -354,15 +357,15 @@ class QualityUtils(QObject):
             elif count_more_bfs == 0:
                 errors_not_in_more_bfs.append((item_sj_pb['plot_id'], item_sj_pb['boundary_id']))
 
-        # finalize topological validation for more_bfs
+        # finalize validation for more_bfs table
 
-        # start topological validation for less
+        # start validation for less table
 
         errors_not_in_less = list()
         errors_duplicate_in_less = list()
-        # start topological validation for more_bfs
+        # start validation for more_bfs table
         # remove spatial join intersection with geometries that no contain lines.
-        # Because it is not necesary to check topology register
+        # Because it is not necessary to check topology register
         for inner_ring in dict_spatial_join_inner_rings_boundary:
             boundary_id = inner_ring['boundary_id']
             plot_ring_id = inner_ring['plot_ring_id']
@@ -395,8 +398,8 @@ class QualityUtils(QObject):
                 if count_less >1:
                     errors_duplicate_in_less.append((plot_ring_id, boundary_id))  # duplicate in less table
                 elif count_less == 0:
-                    errors_not_in_less.append((plot_ring_id, boundary_id))  # no register less table
-        # finalize topological validation for less
+                    errors_not_in_less.append((plot_ring_id, boundary_id))  # not registered less table
+        # finalize validation for less table
 
         features = list()
 
@@ -408,7 +411,7 @@ class QualityUtils(QObject):
                                                               {0: plot_id, 1: None, 2: type_tplg_error[0]})
             features.append(new_feature)
 
-        # No register more bfs
+        # not registered more bfs
         if errors_not_in_more_bfs:
             for error_more_bfs in set(errors_not_in_more_bfs):
                 plot_id = error_more_bfs[0]  # plot_id
@@ -428,7 +431,7 @@ class QualityUtils(QObject):
                                                                   {0: plot_id, 1: boundary_id, 2: type_tplg_error[2]})
                 features.append(new_feature)
 
-        # No register less
+        # not registered less
         if errors_not_in_less:
             for error_less in set(errors_not_in_less):
                 plot_ring_id = error_less[0]  # plot_ring_id
@@ -489,13 +492,13 @@ class QualityUtils(QObject):
             return
 
         if more_bfs_layer is None:
-            self.message_emitted.emit(
+            self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(MORE_BOUNDARY_FACE_STRING_TABLE, db.get_description()),
                 Qgis.Warning)
             return
 
         if less_layer is None:
-            self.message_emitted.emit(
+            self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "Table {} not found in the DB! {}").format(LESS_TABLE, db.get_description()),
                 Qgis.Warning)
@@ -511,7 +514,7 @@ class QualityUtils(QObject):
                                      QgsField('error_type', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.get_features_boundaries_covered_by_plots(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
+        features = self.get_boundary_features_not_covered_by_plots(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
 
         if features:
             error_layer.dataProvider().addFeatures(features)
@@ -520,19 +523,22 @@ class QualityUtils(QObject):
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate(
                     "QGISUtils",
-                    "A memory layer with {} boundaries not covered by plot lines has been added to the map!")
+                    "A memory layer with {} boundaries not covered by plots has been added to the map!")
                     .format(added_layer.featureCount()), Qgis.Info)
         else:
             self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "All Boundaries are covered by Plot lines!"), Qgis.Info)
+                QCoreApplication.translate("QGISUtils", "All boundaries are covered by plots!"), Qgis.Info)
 
-    def get_features_boundaries_covered_by_plots(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
-
-        type_tplg_error = {0: translated_strings.TPLG_ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT,
-                           1: translated_strings.TPLG_ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
-                           2: translated_strings.TPLG_ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE,
-                           3: translated_strings.TPLG_ERROR_NO_LESS_TABLE,
-                           4: translated_strings.TPLG_ERROR_DUPLICATE_LESS_TABLE}
+    def get_boundary_features_not_covered_by_plots(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
+        """
+        Return all boundary features that have errors when checking if they are covered by plots.
+        That is both geometric and alphanumeric (topology table) errors.
+        """
+        type_tplg_error = {0: translated_strings.ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT,
+                           1: translated_strings.ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
+                           2: translated_strings.ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE,
+                           3: translated_strings.ERROR_NO_LESS_TABLE,
+                           4: translated_strings.ERROR_DUPLICATE_LESS_TABLE}
 
         plot_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
@@ -583,7 +589,7 @@ class QualityUtils(QObject):
                                                                   'OUTPUT': 'memory:'})['OUTPUT']
 
         # The id field has the same name for both layers
-        # This list is only used to check plots innters rings without boundaries
+        # This list is only used to check plot's inner rings without boundaries
         list_spatial_join_boundary_inner_rings = [{'plot_ring_id': '{}-{}'.format(feature[id_field + '_2'], feature['AUTO']), 'boundary_id': feature[id_field]}
                                                   for feature in spatial_join_inner_rings_boundary_layer.getFeatures()]
 
@@ -613,29 +619,30 @@ class QualityUtils(QObject):
         #####################################################
 
         # Identify plots with geometry problems and remove coincidence in spatial join between plot as line and boundary
-        # and inner_rings and boundary. No need to check further topological rules for plots
+        # and inner_rings and boundary. If the geometry fails, there is no need to check further topological rules for
+        # plots
 
         errors_boundary_plot_diffs = self.qgis_utils.geometry.difference_boundary_plot(boundary_layer, plot_as_lines_layer)
         for error_diff in errors_boundary_plot_diffs:
             boundary_id = error_diff['id']
-            # All boundaries with geometric errors are eliminated. It is not necesary check more
+            # All boundaries with geometric errors are eliminated. It is not necessary check more
             # in spatial join between boundary and plot as line
             for item_sj in list_spatial_join_boundary_plot.copy():
                 if item_sj['boundary_id'] == boundary_id:
                     list_spatial_join_boundary_plot.remove(item_sj)
 
-            # All boundaries with geometric errors are eliminated. It is not necesary check more
+            # All boundaries with geometric errors are eliminated. It is not necessary check more
             # in spatial join between boundary and inner_rings
             for item_sj in list_spatial_join_boundary_inner_rings.copy():
                 if item_sj['boundary_id'] == boundary_id:
                     list_spatial_join_boundary_inner_rings.remove(item_sj)
 
-        #####################################################
-        # Validation of topological errors
-        #####################################################
+        ######################################################
+        # Validation of errors in alphanumeric topology tables
+        ######################################################
 
-        # start topological validation for more_bfs
-        # remove spatial join intersection with geometries that no contain lines. Because it is not necesary to check
+        # start validation in alphanumeric topology tables for more_bfs
+        # remove spatial join intersection with geometries that no contain lines. Because it is not necessary to check
         for item_sj in list_spatial_join_boundary_plot.copy():
             boundary_id = item_sj['boundary_id']
             plot_id = item_sj['plot_id']
@@ -669,7 +676,7 @@ class QualityUtils(QObject):
                     else:
                         list_spatial_join_boundary_plot.remove(item_sj)
 
-        # Check relation between plot and boundary no register in more_bfs
+        # Check relation between plot and boundary not registered in more_bfs
         errors_not_in_more_bfs = list()
         errors_duplicate_in_more_bfs = list()
         for item_sj_bp in list_spatial_join_boundary_plot:
@@ -679,14 +686,14 @@ class QualityUtils(QObject):
             elif count_more_bfs == 0:
                 errors_not_in_more_bfs.append((item_sj_bp['plot_id'], item_sj_bp['boundary_id']))
 
-        # finalize topological validation for more_bfs
+        # finalize validation in more_bfs table
 
-        # start topological validation for less
+        # start validation in less table
         errors_not_in_less = list()
         errors_duplicate_in_less = list()
-        # start topological validation for more_bfs
-        # remove spatial join intersection with geometries that no contain lines.
-        # Because it is not necesary to check topology register
+        # start validation in alphanumeric topology tables for less
+        # remove spatial join intersection with geometries that do not contain lines.
+        # Because it is not necessary to check topology register
         for inner_ring in list_spatial_join_boundary_inner_rings:
             boundary_id = inner_ring['boundary_id']
             plot_ring_id = inner_ring['plot_ring_id']
@@ -694,7 +701,7 @@ class QualityUtils(QObject):
             boundary_geom = dict_boundary[boundary_id].geometry()
             inner_ring_geom = dict_inner_rings[plot_ring_id].geometry()
 
-            # check intersections difference to line, we check that collections dont have lines parts
+            # check intersections difference to line, we check that collections do not have lines parts
             intersection = boundary_geom.intersection(inner_ring_geom)
             has_line = False
             if intersection.type() != QgsWkbTypes.LineGeometry:
@@ -719,8 +726,8 @@ class QualityUtils(QObject):
                 if count_less >1:
                     errors_duplicate_in_less.append((plot_ring_id, boundary_id))  # duplicate in less table
                 elif count_less == 0:
-                    errors_not_in_less.append((plot_ring_id, boundary_id))  # no register less table
-        # finalize topological validation for less
+                    errors_not_in_less.append((plot_ring_id, boundary_id))  # no registered less table
+        # finalize validation for less table
 
         features = list()
 
@@ -732,7 +739,7 @@ class QualityUtils(QObject):
                                                               {0: None, 1: boundary_id, 2: type_tplg_error[0]})
             features.append(new_feature)
 
-        # No register more bfs
+        # No registered more bfs
         if errors_not_in_more_bfs:
             for error_more_bfs in set(errors_not_in_more_bfs):
                 plot_id = error_more_bfs[0]  # plot_id
@@ -752,7 +759,7 @@ class QualityUtils(QObject):
                                                                   {0: plot_id, 1: boundary_id, 2: type_tplg_error[2]})
                 features.append(new_feature)
 
-        # No register less
+        # No registered less
         if errors_not_in_less:
             for error_less in set(errors_not_in_less):
                 plot_ring_id = error_less[0]  # plot_ring_id
