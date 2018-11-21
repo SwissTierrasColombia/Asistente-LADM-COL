@@ -73,11 +73,9 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      REFERENCED_FIELD,
                                      RELATION_TYPE,
                                      DOMAIN_CLASS_RELATION,
-                                     PLUGIN_DIR,
                                      PLUGIN_NAME,
-                                     QGIS_LANG,
                                      HELP_DIR_NAME,
-                                     TranslatableConfigStrings)
+                                     translated_strings)
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 from ..config.table_mapping_config import (POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
@@ -110,6 +108,10 @@ from ..config.table_mapping_config import (POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
                                            SURVEY_POINT_TABLE,
                                            VIDA_UTIL_FIELD)
+from ..config.translator import (
+    QGIS_LANG,
+    PLUGIN_DIR
+)
 from ..gui.settings_dialog import SettingsDialog
 from ..lib.dbconnector.db_connector import DBConnector
 from ..lib.source_handler import SourceHandler
@@ -142,7 +144,6 @@ class QGISUtils(QObject):
         self.project_generator_utils = ProjectGeneratorUtils()
         self.symbology = SymbologyUtils()
         self.geometry = GeometryUtils()
-        self.translatable_config_strings = TranslatableConfigStrings()
         self.layer_tree_view = layer_tree_view
 
         self.__settings_dialog = None
@@ -1022,9 +1023,9 @@ class QGISUtils(QObject):
         position rather than the top, it moves the group to the top.
         """
         root = QgsProject.instance().layerTreeRoot()
-        group = root.findGroup(self.translatable_config_strings.ERROR_LAYER_GROUP)
+        group = root.findGroup(translated_strings.ERROR_LAYER_GROUP)
         if group is None:
-            group = root.insertGroup(0, self.translatable_config_strings.ERROR_LAYER_GROUP)
+            group = root.insertGroup(0, translated_strings.ERROR_LAYER_GROUP)
         elif not self.layer_tree_view.layerTreeModel().node2index(group).row() == 0 or type(group.parent()) is QgsLayerTreeGroup:
             group_clone = group.clone()
             root.insertChildNode(0, group_clone)
@@ -1035,7 +1036,7 @@ class QGISUtils(QObject):
 
     def error_group_exists(self):
         root = QgsProject.instance().layerTreeRoot()
-        return root.findGroup(self.translatable_config_strings.ERROR_LAYER_GROUP) is not None
+        return root.findGroup(translated_strings.ERROR_LAYER_GROUP) is not None
 
     def turn_transaction_off(self):
         QgsProject.instance().setAutoTransaction(False)

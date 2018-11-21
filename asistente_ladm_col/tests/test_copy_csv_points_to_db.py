@@ -2,6 +2,8 @@ import datetime
 
 import nose2
 import psycopg2
+from qgis.core import QgsApplication
+from qgis.analysis import QgsNativeAlgorithms
 from processing.core.Processing import Processing
 from qgis.testing import (unittest,
                           start_app)
@@ -23,6 +25,8 @@ class TestCopy(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
+        Processing.initialize()
+        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         print("\nINFO: Setting up copy CSV points to DB validation...")
         self.qgis_utils = QGISUtils()
         self.db_connection = get_dbconn('test_ladm_col')
@@ -107,7 +111,6 @@ class TestCopy(unittest.TestCase):
         cbo_longitude = 'x'
         cbo_latitude = 'y'
         elevation = 'z'
-        Processing.initialize()
 
         res = self.qgis_utils.copy_csv_to_db(csv_path,
                                              txt_delimiter,

@@ -25,9 +25,7 @@ from functools import (partial,
 import qgis.utils
 from processing.modeler.ModelerUtils import ModelerUtils
 from qgis.PyQt.QtCore import (QObject,
-                              QCoreApplication,
-                              QTranslator,
-                              QLocale)
+                              QCoreApplication)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QAction,
                                  QMenu,
@@ -46,8 +44,6 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
                                     PLUGIN_NAME,
                                     PLUGIN_VERSION,
-                                    PLUGIN_DIR,
-                                    QGIS_LANG,
                                     RELEASE_URL)
 from .config.table_mapping_config import (ID_FIELD,
                                           COL_PARTY_TABLE)
@@ -81,14 +77,12 @@ from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
 
-from .resources_rc import *
 
 class AsistenteLADMCOLPlugin(QObject):
     def __init__(self, iface):
         QObject.__init__(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
-        self.installTranslator()
         self._about_dialog = None
         self.toolbar = None
         self._flag_menus_refreshed_at_load_time = False
@@ -821,10 +815,3 @@ class AsistenteLADMCOLPlugin(QObject):
         rich_text = '<html><head/><body><p align="center"><a href="{release_url}{version}"><span style=" font-size:10pt; text-decoration: underline; color:#0000ff;">v{version}</span></a></p></body></html>'
         self._about_dialog.lbl_version.setText(rich_text.format(release_url=RELEASE_URL, version=PLUGIN_VERSION))
         self._about_dialog.exec_()
-
-    def installTranslator(self):
-        qgis_locale = QLocale(QGIS_LANG)
-        locale_path = os.path.join(PLUGIN_DIR, 'i18n')
-        self.translator = QTranslator()
-        self.translator.load(qgis_locale, 'Asistente-LADM_COL', '_', locale_path)
-        QCoreApplication.installTranslator(self.translator)
