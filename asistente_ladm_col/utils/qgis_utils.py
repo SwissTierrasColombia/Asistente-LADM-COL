@@ -883,9 +883,9 @@ class QGISUtils(QObject):
                 reply = QMessageBox.question(None,
                              QCoreApplication.translate("QGISUtils", "Continue?"),
                              QCoreApplication.translate("QGISUtils",
-                                                        "There are {selected} selected boundaries, do you like to fill the '{table}' table just for the selected boundaries?\n\nIf you say 'No', the '{table}' table will be filled for all boundaries in the database.")
-                                                        .format(selected=boundary_layer.selectedFeatureCount(),
-                                                                table=POINT_BOUNDARY_FACE_STRING_TABLE),
+                                 "There are {selected} boundaries selected, do you like to fill the '{table}' table just for the selected boundaries?\n\nIf you say 'No', the '{table}' table will be filled for all boundaries in the database.")
+                                 .format(selected=boundary_layer.selectedFeatureCount(),
+                                     table=POINT_BOUNDARY_FACE_STRING_TABLE),
                              QMessageBox.Yes, QMessageBox.No)
                 if reply == QMessageBox.No:
                     use_selection = False
@@ -947,19 +947,42 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return
 
-        if use_selection and plot_layer.selectedFeatureCount() == 0:
-            if self.get_layer_from_layer_tree(PLOT_TABLE, schema=db.schema, geometry_type=QgsWkbTypes.PolygonGeometry) is None:
-                self.message_with_button_load_layer_emitted.emit(
-                    QCoreApplication.translate("QGISUtils",
-                                               "First load the layer {} into QGIS and select at least one plot!").format(PLOT_TABLE),
-                    QCoreApplication.translate("QGISUtils", "Load layer {} now").format(PLOT_TABLE),
-                    [PLOT_TABLE, None],
-                    Qgis.Warning)
+        if use_selection:
+            if plot_layer.selectedFeatureCount() == 0:
+                if self.get_layer_from_layer_tree(PLOT_TABLE, schema=db.schema, geometry_type=QgsWkbTypes.PolygonGeometry) is None:
+                    self.message_with_button_load_layer_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                                   "First load the layer {} into QGIS and select at least one plot!").format(PLOT_TABLE),
+                        QCoreApplication.translate("QGISUtils", "Load layer {} now").format(PLOT_TABLE),
+                        [PLOT_TABLE, None],
+                        Qgis.Warning)
+                else:
+                    reply = QMessageBox.question(None,
+                                 QCoreApplication.translate("QGISUtils", "Continue?"),
+                                 QCoreApplication.translate("QGISUtils",
+                                      "There are no selected plots, do you like to fill the '{more}' and '{less}' tables for all the {all} plots in the data base?")
+                                 .format(more=MORE_BOUNDARY_FACE_STRING_TABLE,
+                                         less=LESS_TABLE,
+                                         all=plot_layer.featureCount()),
+                                 QMessageBox.Yes, QMessageBox.No)
+                    if reply == QMessageBox.Yes:
+                        use_selection = False
+                    else:
+                        self.message_emitted.emit(
+                            QCoreApplication.translate("QGISUtils", "First select at least one plot!"),
+                            Qgis.Warning)
+                        return
             else:
-                self.message_emitted.emit(
-                    QCoreApplication.translate("QGISUtils", "First select at least one plot!"),
-                    Qgis.Warning)
-            return
+                reply = QMessageBox.question(None,
+                             QCoreApplication.translate("QGISUtils", "Continue?"),
+                             QCoreApplication.translate("QGISUtils",
+                                 "There are {selected} plots selected, do you like to fill the '{more}' and '{less}' tables just for the selected plots?\n\nIf you say 'No', the '{more}' and '{less}' tables will be filled for all plots in the database.")
+                             .format(selected=plot_layer.selectedFeatureCount(),
+                                     more=MORE_BOUNDARY_FACE_STRING_TABLE,
+                                     less=LESS_TABLE),
+                             QMessageBox.Yes, QMessageBox.No)
+                if reply == QMessageBox.No:
+                    use_selection = False
 
         more_bfs_layer = res_layers[MORE_BOUNDARY_FACE_STRING_TABLE]
         if more_bfs_layer is None:
