@@ -56,5 +56,13 @@ CUSTOM_ERROR_LAYERS = {
     translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES: {
         'es': 'style_plot_should_be_covered_by_boundary_es',
         'en': 'style_plot_should_be_covered_by_boundary_en'
-    }
+    },
+    translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES: {
+        'es': 'style_plot_should_be_covered_by_boundary_es',
+        'en': 'style_boundary_points_should_be_covered_by_boundary_nodes_en'
+    },
+    translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS: {
+        'es': 'style_plot_should_be_covered_by_boundary_es',
+        'en': 'style_boundary_nodes_should_be_covered_by_boundary_points_en'
+     }
 }
