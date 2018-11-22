@@ -257,14 +257,14 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         target_layer = self.current_point_name()
 
         res = self.qgis_utils.copy_csv_to_db(csv_path,
-                                    self.txt_delimiter.text(),
-                                    self.cbo_longitude.currentText(),
-                                    self.cbo_latitude.currentText(),
-                                    self._db,
-                                    self.epsg,
-                                    target_layer,
-                                    self.cbo_elevation.currentText() or None,
-                                    self.detect_decimal_point(csv_path))
+                                             self.txt_delimiter.text(),
+                                             self.cbo_longitude.currentText(),
+                                             self.cbo_latitude.currentText(),
+                                             self._db,
+                                             self.epsg,
+                                             target_layer,
+                                             self.cbo_elevation.currentText() or None,
+                                             self.detect_decimal_point(csv_path))
 
     def file_path_changed(self):
         self.autodetect_separator()
@@ -274,13 +274,17 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
     def detect_decimal_point(self, csv_path):
         if os.path.exists(csv_path):
             with open(csv_path) as file:
-                no_head_line = file.readlines()[1]
-                fields = self.get_fields_from_csv_file(csv_path)
-                if self.cbo_latitude.currentText() in fields:
-                    num_col = no_head_line.split(self.cbo_delimiter.currentText())[fields.index(self.cbo_latitude.currentText())]
-                    for decimal_point in ['.', ',']:
-                        if decimal_point in num_col:
-                            return decimal_point
+                file.readline() # headers
+                data = file.readline().strip() # 1st line with data
+
+            fields = self.get_fields_from_csv_file(csv_path)
+            if self.cbo_latitude.currentText() in fields:
+                num_col = data.split(self.cbo_delimiter.currentText())[fields.index(self.cbo_latitude.currentText())]
+                for decimal_point in ['.', ',']:
+                    if decimal_point in num_col:
+                        return decimal_point
+
+        return '.' # just use the default one
 
     def autodetect_separator(self):
         csv_path = self.txt_file_path.text().strip()
@@ -349,19 +353,19 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         if not self.txt_delimiter.text():
             return []
 
-        errorReading = False
+        error_reading = False
         try:
             reader  = open(csv_path, "r")
         except IOError:
-            errorReading = True
+            error_reading = True
         line = reader.readline().replace("\n", "")
         reader.close()
         if not line:
-            errorReading = True
+            error_reading = True
         else:
             return line.split(self.txt_delimiter.text())
 
-        if errorReading:
+        if error_reading:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreatePointsCadastreWizard",
                                            "It was not possible to read field names from the CSV. Check the file and try again."),
