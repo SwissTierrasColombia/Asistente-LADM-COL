@@ -28,7 +28,7 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
                               QCoreApplication,
                               QSettings)
-from qgis.PyQt.QtWidgets import QProgressBar
+from qgis.PyQt.QtWidgets import QProgressBar, QMessageBox
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsAttributeEditorContainer,
@@ -854,19 +854,41 @@ class QGISUtils(QObject):
                                            "Table {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()),
                 Qgis.Warning)
             return
-        if use_selection and boundary_layer.selectedFeatureCount() == 0:
-            if self.get_layer_from_layer_tree(BOUNDARY_TABLE, schema=db.schema) is None:
-                self.message_with_button_load_layer_emitted.emit(
-                    QCoreApplication.translate("QGISUtils",
-                                               "First load the layer {} into QGIS and select at least one boundary!").format(BOUNDARY_TABLE),
-                    QCoreApplication.translate("QGISUtils", "Load layer {} now").format(BOUNDARY_TABLE),
-                    [BOUNDARY_TABLE, None],
-                    Qgis.Warning)
+
+        if use_selection:
+            if boundary_layer.selectedFeatureCount() == 0:
+                if self.get_layer_from_layer_tree(BOUNDARY_TABLE, schema=db.schema) is None:
+                    self.message_with_button_load_layer_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                                   "First load the layer {} into QGIS and select at least one boundary!").format(BOUNDARY_TABLE),
+                        QCoreApplication.translate("QGISUtils", "Load layer {} now").format(BOUNDARY_TABLE),
+                        [BOUNDARY_TABLE, None],
+                        Qgis.Warning)
+                else:
+                    reply = QMessageBox.question(None,
+                                 QCoreApplication.translate("QGISUtils", "Continue?"),
+                                 QCoreApplication.translate("QGISUtils",
+                                     "There are no selected boundaries, do you like to fill the '{}' table for all the {} boundaries in the data base?")
+                                     .format(POINT_BOUNDARY_FACE_STRING_TABLE,
+                                         boundary_layer.featureCount()),
+                                 QMessageBox.Yes, QMessageBox.No)
+                    if reply == QMessageBox.Yes:
+                        use_selection = False
+                    else:
+                        self.message_emitted.emit(
+                            QCoreApplication.translate("QGISUtils", "First select at least one boundary!"),
+                            Qgis.Warning)
+                        return
             else:
-                self.message_emitted.emit(
-                    QCoreApplication.translate("QGISUtils", "First select at least one boundary!"),
-                    Qgis.Warning)
-            return
+                reply = QMessageBox.question(None,
+                             QCoreApplication.translate("QGISUtils", "Continue?"),
+                             QCoreApplication.translate("QGISUtils",
+                                                        "There are {selected} selected boundaries, do you like to fill the '{table}' table just for the selected boundaries?\n\nIf you say 'No', the '{table}' table will be filled for all boundaries in the database.")
+                                                        .format(selected=boundary_layer.selectedFeatureCount(),
+                                                                table=POINT_BOUNDARY_FACE_STRING_TABLE),
+                             QMessageBox.Yes, QMessageBox.No)
+                if reply == QMessageBox.No:
+                    use_selection = False
 
         bfs_layer = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
         if bfs_layer is None:
