@@ -750,7 +750,7 @@ class QGISUtils(QObject):
     def set_node_visibility(self, node, visible):
         self.set_node_visibility_requested.emit(node, visible)
 
-    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, epsg, target_layer_name, elevation=None):
+    def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, epsg, target_layer_name, elevation=None, decimal_point='.'):
         if not csv_path or not os.path.exists(csv_path):
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -759,8 +759,9 @@ class QGISUtils(QObject):
             return False
 
         # Create QGIS vector layer
-        uri = "file:///{}?delimiter={}&xField={}&yField={}&crs=EPSG:{}".format(
+        uri = "file:///{}?decimalPoint={}&delimiter={}&xField={}&yField={}&crs=EPSG:{}".format(
               csv_path,
+              decimal_point,
               delimiter if delimiter != '\t' else '%5Ct',
               longitude,
               latitude,
