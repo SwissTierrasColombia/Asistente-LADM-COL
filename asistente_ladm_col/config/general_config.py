@@ -12,6 +12,7 @@ from ..utils.qt_utils import get_plugin_metadata
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
 CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
 PROPERTY_RECORD_CARD_MODEL_PREFIX = "Ficha_Predial_"
+VALUATION_MODEL_PREFIX = "Avaluos_"
 # From this version on the plugin will work, a message will block prior versions
 LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION = "17.07.2018"
 
@@ -107,6 +108,7 @@ SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
 CADASTRE_MENU_OBJECTNAME = "ladm_col_cadastre"
 LADM_COL_MENU_OBJECTNAME = "ladm_col"
 PROPERTY_RECORD_CARD_MENU_OBJECTNAME = "ladm_col_property_record_card"
+VALUATION_MENU_OBJECTNAME = "ladm_col_valuation"
 
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'

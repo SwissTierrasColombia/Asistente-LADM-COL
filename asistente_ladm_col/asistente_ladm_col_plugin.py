@@ -44,7 +44,8 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
                                     PLUGIN_NAME,
                                     PLUGIN_VERSION,
-                                    RELEASE_URL)
+                                    RELEASE_URL,
+                                    VALUATION_MENU_OBJECTNAME)
 from .config.table_mapping_config import (ID_FIELD,
                                           COL_PARTY_TABLE)
 from .gui.about_dialog import AboutDialog
@@ -315,29 +316,30 @@ class AsistenteLADMCOLPlugin(QObject):
         if menu:
             return # Already there!
 
-        self._property_record_card_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Property record card"), self._menu)
+        self._property_record_card_menu = QMenu(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Property record card"), self._menu)
         self._property_record_card_menu.setObjectName(PROPERTY_RECORD_CARD_MENU_OBJECTNAME)
 
         self._property_record_card_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Property Record Card"),
-                self._property_record_card_menu)
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Property Record Card"),
+            self._property_record_card_menu)
         self._market_research_property_record_card_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Market Research"),
-                self._property_record_card_menu)
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Market Research"),
+            self._property_record_card_menu)
         self._nuclear_family_property_record_card_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Nuclear Family"),
-                self._property_record_card_menu)
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Nuclear Family"),
+            self._property_record_card_menu)
         self._natural_party_property_record_card_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Natural Party"),
-                self._property_record_card_menu)
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Natural Party"),
+            self._property_record_card_menu)
         self._legal_party_property_record_card_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Legal Party"),
-                self._property_record_card_menu)
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Legal Party"),
+            self._property_record_card_menu)
 
         self._property_record_card_menu.addAction(self._property_record_card_action)
         self._property_record_card_menu.addAction(self._market_research_property_record_card_action)
@@ -372,6 +374,82 @@ class AsistenteLADMCOLPlugin(QObject):
 
         menu.deleteLater()
 
+    def add_valuation_menu(self):
+        menu = self.iface.mainWindow().findChild(QMenu, VALUATION_MENU_OBJECTNAME)
+        if menu:
+            return  # Already there!
+
+        self._valuation_menu = QMenu(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Valuation"), self._menu)
+        self._valuation_menu.setObjectName(VALUATION_MENU_OBJECTNAME)
+
+        self._parcel_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Parcel"),
+            self._valuation_menu)
+        self._horizontal_property_parcel_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Horizontal Property Parcel"),
+            self._valuation_menu)
+        self._comunal_equipment_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Communal Equipment"),
+            self._valuation_menu)
+        self._building_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building"),
+            self._valuation_menu)
+        self._building_unit_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit"),
+            self._valuation_menu)
+        self._qualification_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create qualification"),
+            self._valuation_menu)
+        self._homogeneous_geoeconomic_zone_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Homogeneous Geoeconomic Zone"),
+            self._valuation_menu)
+        self._homogeneous_physical_zone_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Homogeneous Physical Zone"),
+            self._valuation_menu)
+
+        self._valuation_menu.addAction(self._parcel_valuation_action)
+        self._valuation_menu.addAction(self._horizontal_property_parcel_valuation_action)
+        self._valuation_menu.addAction(self._comunal_equipment_valuation_action)
+        self._valuation_menu.addAction(self._building_valuation_action)
+        self._valuation_menu.addAction(self._building_unit_valuation_action)
+        self._valuation_menu.addAction(self._qualification_valuation_action)
+        self._valuation_menu.addSeparator()
+        self._valuation_menu.addAction(self._homogeneous_geoeconomic_zone_valuation_action)
+        self._valuation_menu.addAction(self._homogeneous_physical_zone_valuation_action)
+
+        if len(self._menu.actions()) > 1:
+            self._menu.insertMenu(self._menu.actions()[2], self._valuation_menu)
+        else: # Just in case...
+            self._menu.addMenu(self._valuation_menu)
+
+        # Connections
+
+    def remove_valuation_menu(self):
+        menu = self.iface.mainWindow().findChild(QMenu, VALUATION_MENU_OBJECTNAME)
+        if menu is None:
+            return # Nothing to remove...
+
+        self._valuation_menu = None
+        self._parcel_valuation_action = None
+        self._horizontal_property_parcel_valuation_action = None
+        self._comunal_equipment_valuation_action = None
+        self._building_valuation_action = None
+        self._building_unit_valuation_action = None
+        self._qualification_valuation_action = None
+        self._homogeneous_geoeconomic_zone_valuation_action = None
+        self._homogeneous_physical_zone_valuation_action = None
+
+        menu.deleteLater()
+
     def refresh_menus(self, db, force=False):
         """
         Depending on the models avilable in the DB, some menus should appear or
@@ -388,6 +466,11 @@ class AsistenteLADMCOLPlugin(QObject):
                     self.add_property_record_card_menu()
                 else:
                     self.remove_property_record_card_menu()
+
+                if model_parser.valuation_model_exists():
+                    self.add_valuation_menu()
+                else:
+                    self.remove_valuation_menu()
 
     def add_processing_models(self, provider_id):
         if not (provider_id == 'model' or provider_id is None):
