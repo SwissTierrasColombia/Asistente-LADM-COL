@@ -965,32 +965,6 @@ class QGISUtils(QObject):
         boundary_layer = res_layers[BOUNDARY_TABLE]
         id_more_pairs, id_less_pairs = self.geometry.get_pair_boundary_plot(boundary_layer, plot_layer, use_selection=use_selection)
 
-        if id_more_pairs:
-            more_bfs_layer.startEditing()
-            features = list()
-            for id_pair in id_more_pairs:
-                if not id_pair in existing_more_pairs: # Avoid duplicated pairs in the DB
-                    # Create feature
-                    feature = QgsVectorLayerUtils().createFeature(more_bfs_layer)
-                    feature.setAttribute(MOREBFS_TABLE_PLOT_FIELD, id_pair[0])
-                    feature.setAttribute(MOREBFS_TABLE_BOUNDARY_FIELD, id_pair[1])
-                    features.append(feature)
-            more_bfs_layer.addFeatures(features)
-            more_bfs_layer.commitChanges()
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "{} out of {} records were saved into '{}'! {} out of {} records already existed in the database.").format(
-                    len(features),
-                    len(id_more_pairs),
-                    MORE_BOUNDARY_FACE_STRING_TABLE,
-                    len(id_more_pairs) - len(features),
-                    len(id_more_pairs)
-                ),
-                Qgis.Info)
-        else:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.".format(MORE_BOUNDARY_FACE_STRING_TABLE)),
-                Qgis.Info)
-
         if id_less_pairs:
             less_layer.startEditing()
             features = list()
@@ -1015,6 +989,32 @@ class QGISUtils(QObject):
         else:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.".format(LESS_TABLE)),
+                Qgis.Info)
+
+        if id_more_pairs:
+            more_bfs_layer.startEditing()
+            features = list()
+            for id_pair in id_more_pairs:
+                if not id_pair in existing_more_pairs: # Avoid duplicated pairs in the DB
+                    # Create feature
+                    feature = QgsVectorLayerUtils().createFeature(more_bfs_layer)
+                    feature.setAttribute(MOREBFS_TABLE_PLOT_FIELD, id_pair[0])
+                    feature.setAttribute(MOREBFS_TABLE_BOUNDARY_FIELD, id_pair[1])
+                    features.append(feature)
+            more_bfs_layer.addFeatures(features)
+            more_bfs_layer.commitChanges()
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "{} out of {} records were saved into '{}'! {} out of {} records already existed in the database.").format(
+                    len(features),
+                    len(id_more_pairs),
+                    MORE_BOUNDARY_FACE_STRING_TABLE,
+                    len(id_more_pairs) - len(features),
+                    len(id_more_pairs)
+                ),
+                Qgis.Info)
+        else:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.".format(MORE_BOUNDARY_FACE_STRING_TABLE)),
                 Qgis.Info)
 
     def get_error_layers_group(self):
