@@ -830,15 +830,22 @@ class QGISUtils(QObject):
             attrs = {target_idx: in_feature[csv_idx] for target_idx, csv_idx in mapping.items()}
             new_feature = QgsVectorLayerUtils().createFeature(target_point_layer, in_feature.geometry(), attrs)
             new_features.append(new_feature)
-
+        initial_features = target_point_layer.featureCount()
         target_point_layer.dataProvider().addFeatures(new_features)
-
-        QgsProject.instance().addMapLayer(target_point_layer)
-        self.zoom_full_requested.emit()
-        self.message_emitted.emit(
-            QCoreApplication.translate("QGISUtils",
-                                       "{} points were added succesfully to '{}'.").format(len(new_features), target_layer_name),
-            Qgis.Info)
+        final_features = target_point_layer.featureCount()
+        if final_features - initial_features > 0:
+            QgsProject.instance().addMapLayer(target_point_layer)
+            self.zoom_full_requested.emit()
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "{} points were added succesfully to '{}'.").format(len(new_features), target_layer_name),
+                Qgis.Info)
+        else:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Nothing points were added to '{}'.").format(len(new_features),
+                                                                                               target_layer_name),
+                Qgis.Info)
 
         return True
 
