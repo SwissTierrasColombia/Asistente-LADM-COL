@@ -142,7 +142,6 @@ class TranslatableConfigStrings(QObject):
         self.ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the {} table").format(MORE_BOUNDARY_FACE_STRING_TABLE)
         self.ERROR_NO_LESS_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the {} table").format(LESS_TABLE)
         self.ERROR_DUPLICATE_LESS_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the {} table").format(LESS_TABLE)
-
         self.ERROR_NO_FOUND_POINT_BFS = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary point and boundary node is not recorded in the {} table").format(POINT_BOUNDARY_FACE_STRING_TABLE)
         self.ERROR_DUPLICATE_POINT_BFS = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary point and boundary node is duplicated in the {} table").format(POINT_BOUNDARY_FACE_STRING_TABLE)
         self.ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE = QCoreApplication.translate("TranslatableConfigStrings", "Boundary point is not covered by boundary node")
