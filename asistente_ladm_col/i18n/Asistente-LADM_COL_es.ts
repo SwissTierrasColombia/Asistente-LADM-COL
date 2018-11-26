@@ -836,7 +836,7 @@
         <translation>No se especificó un archivo CSV o el archivo no existe.</translation>
     </message>
     <message>
-        <location filename="../gui/create_points_cadastre_wizard.py" line="392"/>
+        <location filename="../gui/create_points_cadastre_wizard.py" line="393"/>
         <source>It was not possible to read field names from the CSV. Check the file and try again.</source>
         <translation>No se pudieron leer los nombres de los campos del archivo CSV. Revisa el archivo e intenta de nuevo.</translation>
     </message>
@@ -1753,7 +1753,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <source>Choose this option if you want to create a &lt;b&gt;Building Unit&lt;/b&gt; from existing &lt;i&gt;Survey Points&lt;/i&gt;.&lt;br&gt;&lt;br&gt;&lt;b&gt;Building Unit&lt;/b&gt; is a group of consolidated materials within a &lt;i&gt;Parcel&lt;/i&gt; that has specific characteristics in terms of physical constituent elements and their usage.</source>
         <translation>Elige esta opción si deseas crear una &lt;b&gt;Unidad de Construcción&lt;/b&gt; a partir de &lt;i&gt;Puntosde Levantamiento&lt;/i&gt; existentes.
 &lt;br&gt;&lt;br&gt;
-&lt;b&gt;Unidad de Construcción&lt;b&gt; es cada conjunto de materiales consolidados dentro de un &lt;i&gt;Predio&lt;/i&gt; que tiene unas caracteristicas específicas en cuanto a elementos constitutivos físicos y usos de los mismos.</translation>
+&lt;b&gt;Unidad de Construcción&lt;/b&gt; es cada conjunto de materiales consolidados dentro de un &lt;i&gt;Predio&lt;/i&gt; que tiene unas caracteristicas específicas en cuanto a elementos constitutivos físicos y usos de los mismos.</translation>
     </message>
     <message>
         <source>Choose this option if you want to add a &lt;b&gt;Responsibility&lt;/b&gt; with a form.&lt;br&gt;&lt;br&gt;&lt;b&gt;COL_Responsibility&lt;/b&gt; is a class of type &lt;i&gt;LA_RRR&lt;/i&gt; that records the responsibilities that stakeholders have on the premises.</source>
@@ -1886,16 +1886,16 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation>No se encontró la capa de puntos &apos;{}&apos; en la base de datos... {}</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1203"/>
-        <location filename="../utils/qgis_utils.py" line="1246"/>
+        <location filename="../utils/qgis_utils.py" line="1204"/>
+        <location filename="../utils/qgis_utils.py" line="1247"/>
         <source>First load the layer {} into QGIS!</source>
         <translation>¡Primero carga la capa {} a QGIS!</translation>
     </message>
     <message>
         <location filename="../utils/qgis_utils.py" line="865"/>
         <location filename="../utils/qgis_utils.py" line="957"/>
-        <location filename="../utils/qgis_utils.py" line="1205"/>
-        <location filename="../utils/qgis_utils.py" line="1248"/>
+        <location filename="../utils/qgis_utils.py" line="1206"/>
+        <location filename="../utils/qgis_utils.py" line="1249"/>
         <source>Load layer {} now</source>
         <translation>Cargar la capa {} ahora</translation>
     </message>
@@ -1905,24 +1905,24 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation>Extrayendo relaciones y dominios de la base de datos... ¡Esto se realiza solo una vez por sesión!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1236"/>
+        <location filename="../utils/qgis_utils.py" line="1237"/>
         <source>{} feature(s) was/were exploded generating {} feature(s).</source>
         <translation>{} objeto(s) espacial(es) fue(ron) partido(s) generando {} objeto(s) espacial(es).</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1255"/>
+        <location filename="../utils/qgis_utils.py" line="1256"/>
         <source>First select at least 2 boundaries!</source>
         <translation>¡Primero selecciona por lo menos 2 linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1277"/>
+        <location filename="../utils/qgis_utils.py" line="1278"/>
         <source>{} features were merged!</source>
         <translation>¡Se unieron {} objetos espaciales!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1289"/>
-        <location filename="../utils/qgis_utils.py" line="1302"/>
-        <location filename="../utils/qgis_utils.py" line="1330"/>
+        <location filename="../utils/qgis_utils.py" line="1290"/>
+        <location filename="../utils/qgis_utils.py" line="1303"/>
+        <location filename="../utils/qgis_utils.py" line="1331"/>
         <source>Layer {} not found in the DB! {}</source>
         <translation>¡No se encontró la capa {} en la base de datos! {}</translation>
     </message>
@@ -1944,7 +1944,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     </message>
     <message>
         <location filename="../utils/qgis_utils.py" line="880"/>
-        <location filename="../utils/qgis_utils.py" line="1214"/>
+        <location filename="../utils/qgis_utils.py" line="1215"/>
         <source>First select at least one boundary!</source>
         <translation>¡Primero selecciona por lo menos un lindero!</translation>
     </message>
@@ -2049,32 +2049,38 @@ If you say &apos;No&apos;, the &apos;{more}&apos; and &apos;{less}&apos; tables 
 Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{less}&apos; para todos los terrenos en la base de datos.</translation>
     </message>
     <message>
+        <location filename="../utils/qgis_utils.py" line="1037"/>
+        <location filename="../utils/qgis_utils.py" line="1063"/>
+        <source>No pairs id_boundary-id_plot found for &apos;{}&apos; table.</source>
+        <translation>No se encontraron parejas id_lindero-id_terreno para la tabla &apos;{}&apos;.</translation>
+    </message>
+    <message>
         <location filename="../utils/qgis_utils.py" line="1101"/>
         <source>You need to close the edit session on layer &apos;{}&apos; before using this tool!</source>
         <translation>¡Necesitas cerrar la sesión de edición sobre la capa {} antes de usar esta herramienta!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1295"/>
+        <location filename="../utils/qgis_utils.py" line="1296"/>
         <source>First select boundaries!</source>
         <translation>¡Primero selecciona linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1318"/>
+        <location filename="../utils/qgis_utils.py" line="1319"/>
         <source>{} new plot(s) has(have) been created!</source>
         <translation>¡{} nuevo(s) terreno(s) ha(n) sido creado(s)!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1322"/>
+        <location filename="../utils/qgis_utils.py" line="1323"/>
         <source>No plot could be created. Make sure selected boundaries are closed!</source>
         <translation>No se pudieron crear terrenos. ¡Asegúrate que los linderos seleccionados formen polígonos cerrados!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1378"/>
+        <location filename="../utils/qgis_utils.py" line="1379"/>
         <source>The local help could not be found in &apos;{}&apos; and cannot be open.</source>
         <translation>No se encontró la ayuda local en &apos;{}&apos; y por lo tanto no se pudo abrir.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1384"/>
+        <location filename="../utils/qgis_utils.py" line="1385"/>
         <source>Is your computer connected to Internet? If so, go to &lt;a href=&quot;{}&quot;&gt;online help&lt;/a&gt;.</source>
         <translation>¿Está tu computador conectado a Internet? Si es así, ve a la&lt;a href=&quot;{}&quot;&gt;ayuda en línea&lt;/a&gt;.</translation>
     </message>

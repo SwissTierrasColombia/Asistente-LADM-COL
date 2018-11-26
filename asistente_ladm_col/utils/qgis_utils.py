@@ -1034,7 +1034,7 @@ class QGISUtils(QObject):
                 Qgis.Info)
         else:
             self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.".format(LESS_TABLE)),
+                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.").format(LESS_TABLE),
                 Qgis.Info)
 
         if id_more_pairs:
@@ -1060,7 +1060,7 @@ class QGISUtils(QObject):
                 Qgis.Info)
         else:
             self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.".format(MORE_BOUNDARY_FACE_STRING_TABLE)),
+                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.").format(MORE_BOUNDARY_FACE_STRING_TABLE),
                 Qgis.Info)
 
     def get_error_layers_group(self):
