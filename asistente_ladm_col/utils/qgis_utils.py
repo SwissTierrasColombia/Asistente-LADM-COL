@@ -838,13 +838,13 @@ class QGISUtils(QObject):
             self.zoom_full_requested.emit()
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "{} points were added succesfully to '{}'.").format(len(new_features), target_layer_name),
+                                           "{} points were added succesfully to '{}'.").format(len(new_features),
+                                                                                               target_layer_name),
                 Qgis.Info)
         else:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "Nothing points were added to '{}'.").format(len(new_features),
-                                                                                               target_layer_name),
+                                           "Nothing points were added to '{}'.").format(target_layer_name),
                 Qgis.Info)
 
         return True
