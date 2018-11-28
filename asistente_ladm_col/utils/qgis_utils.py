@@ -831,7 +831,12 @@ class QGISUtils(QObject):
             new_feature = QgsVectorLayerUtils().createFeature(target_point_layer, in_feature.geometry(), attrs)
             new_features.append(new_feature)
         initial_features = target_point_layer.featureCount()
-        target_point_layer.dataProvider().addFeatures(new_features)
+        try:
+            #print("No carga...")
+            target_point_layer.dataProvider().addFeatures(new_features)
+            target_point_layer.dataProvider().commitChanges()
+        except:
+            print("Error no se cargan los datos")
         final_features = target_point_layer.featureCount()
         if final_features - initial_features > 0:
             QgsProject.instance().addMapLayer(target_point_layer)
@@ -846,6 +851,7 @@ class QGISUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "Nothing points were added to '{}'.").format(target_layer_name),
                 Qgis.Info)
+            return False
 
         return True
 
