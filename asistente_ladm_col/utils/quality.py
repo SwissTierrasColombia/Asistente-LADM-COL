@@ -36,6 +36,7 @@ from qgis.core import (Qgis,
                        QgsRectangle)
 
 import processing
+from .logic_checks import LogicChecks
 from .project_generator_utils import ProjectGeneratorUtils
 from ..config.general_config import (DEFAULT_EPSG,
                                      DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
@@ -46,6 +47,7 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            BUILDING_TABLE,
                                            CONTROL_POINT_TABLE,
                                            ID_FIELD,
+                                           PARCEL_TABLE,
                                            POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            MOREBFS_TABLE_PLOT_FIELD,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
@@ -65,6 +67,7 @@ class QualityUtils(QObject):
     def __init__(self, qgis_utils):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
+        self.logic = LogicChecks()
         self.project_generator_utils = ProjectGeneratorUtils()
         self.log = QgsApplication.messageLog()
 
@@ -1510,6 +1513,41 @@ class QualityUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "There are no multipart geometries in layer Right Of Way."), Qgis.Info)
 
+    def check_parcel_right_relationship(self, db):
+        error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG),
+                            PARCEL_TABLE,
+                            "memory")
+        pr = error_layer.dataProvider()
+        pr.addAttributes([QgsField("parcel_id", QVariant.Int),
+                          QgsField("error_type", QVariant.String)])
+        error_layer.updateFields()
+
+        parcel_ids = self.logic.get_parcel_right_relationship_errors(db)
+
+        new_features = []
+        for parcel_id in parcel_ids:
+            new_feature = QgsVectorLayerUtils().createFeature(
+                error_layer,
+                QgsGeometry(),
+                {0: parcel_id,
+                 1: translated_strings.CHECK_PARCEL_RIGHT_RELATIONSHIP})
+            new_features.append(new_feature)
+
+        error_layer.dataProvider().addFeatures(new_features)
+
+        if error_layer.featureCount() > 0:
+            added_layer = self.add_error_layer(error_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "A memory layer with {} parcel errors has been added to the map!").format(added_layer.featureCount()),
+                Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Parcel-Right relationships are correct!"),
+                Qgis.Info)
+
     def get_dangle_ids(self, boundary_layer):
         # 1. Run extract specific vertices
         # 2. Call to get_overlapping_points
@@ -1544,5 +1582,6 @@ class QualityUtils(QObject):
         added_layer = QgsProject.instance().addMapLayer(error_layer, False)
         index = self.project_generator_utils.get_suggested_index_for_layer(added_layer, group)
         added_layer = group.insertLayer(index, added_layer).layer()
-        self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
+        if added_layer.isSpatial():
+            self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
         return added_layer

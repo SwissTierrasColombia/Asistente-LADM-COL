@@ -547,3 +547,19 @@ class PGConnector(DBConnector):
         cur.execute(query)
 
         return cur.fetchone()[0]
+
+
+    def get_parcels_with_no_right(self):
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
+
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        query = """SELECT p.t_id
+                   FROM {schema}.predio p
+                   WHERE p.t_id NOT IN (
+                        SELECT unidad_predio FROM {schema}.col_derecho)""".format(schema=self.schema)
+        cur.execute(query)
+
+        return cur.fetchall()
