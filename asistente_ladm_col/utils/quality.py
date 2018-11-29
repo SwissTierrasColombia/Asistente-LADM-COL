@@ -68,6 +68,36 @@ class QualityUtils(QObject):
         self.project_generator_utils = ProjectGeneratorUtils()
         self.log = QgsApplication.messageLog()
 
+    def fix_boundaries(self, layer, id_field=ID_FIELD):
+        tmp_segments_layer = processing.run("native:explodelines", {'INPUT': layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        # remove duplicate segments (algorithm don't with duplicate geometries)
+        segments_layer = processing.run("qgis:deleteduplicategeometries", {'INPUT': tmp_segments_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        id_field_idx = segments_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        dict_features = {feature.id(): feature for feature in segments_layer.getFeatures(request)}
+        index = QgsSpatialIndex(segments_layer)
+
+        process_sc = list()
+        total_sc = list()
+
+        for id in dict_features:
+            if id not in total_sc:
+                segment = dict_features[id]
+                try:
+                    segments_connected = self.qgis_utils.geometry.get_boundary(segment, index, dict_features)
+                    total_sc.extend(segments_connected)
+                    process_sc.append(segments_connected)
+                except RecursionError as re:
+                    print('Error: {}'.format(re.args[0]))
+
+        merge_geometries = list()
+        for sc_ids in process_sc:
+            selected_features = [dict_features[sc_id] for sc_id in sc_ids]
+            merge_geom = self.qgis_utils.geometry.merge_geometries(selected_features)
+            merge_geometries.append(merge_geom)
+
+        return process_sc, merge_geometries
+
     def check_overlapping_points(self, db, point_layer_name):
         """
         Shows which points are overlapping

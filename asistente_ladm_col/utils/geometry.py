@@ -722,3 +722,63 @@ class GeometryUtils(QObject):
         layer.updateExtents()
         layer.reload()
         return layer
+
+    def get_connected_segments(self, segment, direction, index, dict_features, items=list(), count_d=0):
+        vertex = None
+        geom = segment.geometry()
+        if direction == 1:
+            vertex = QgsGeometry(geom.vertexAt(0))
+        elif direction == -1:
+            vertex = QgsGeometry(geom.vertexAt(len(geom.asPolyline()) - 1))
+
+        geom = segment.geometry()
+        bbox = vertex.boundingBox()
+        candidates_ids = index.intersects(bbox)
+        candidate_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
+
+        touches = list()
+        for candidate_feature in candidate_features:
+            if candidate_feature.id() != segment.id():
+                if candidate_feature.geometry().touches(vertex):
+                    touches.append(candidate_feature)
+
+        if len(touches) == 1:
+            if touches[0].id() not in items:
+                items.append(touches[0].id())
+                return self.get_connected_segments(touches[0], direction, index, dict_features, items, count_d)
+            else:
+                if count_d <= 1:
+                    # the direction is changed due to the direction of digitization
+                    direction *= -1
+                    # in circular geometries it can happen that the condition of exit is not satisfied, reason for
+                    # which the number of consecutive iterations is counted not to stay in an infinite cycle.
+                    count_d += 1
+                    return self.get_connected_segments(touches[0], direction, index, dict_features, items, count_d)
+                else:
+                    return items
+        else:
+            return items
+
+    def get_boundary(self, segment, index, dict_features):
+        id = segment.id()
+        segments_connected = list()
+
+        way = 1
+        start_sc = self.get_connected_segments(segment, way, index, dict_features, items=list())
+        segments_connected.extend(start_sc)
+
+        way = -1
+        end_sc = self.get_connected_segments(segment, way, index, dict_features, items=list())
+        segments_connected.extend(end_sc)
+
+        if id not in segments_connected:
+            segments_connected.append(id)
+        # segments_connected.sort() # sort items
+        segments_of_the_boundary = list(set(segments_connected))
+        return segments_of_the_boundary
+
+    def merge_geometries(self, features):
+        geoms = QgsGeometry.fromWkt('GEOMETRYCOLLECTION()')
+        for feature in features:
+            geoms = geoms.combine(feature.geometry())
+        return geoms
