@@ -16,43 +16,14 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
 
-from qgis.core import (QgsGeometry, QgsLineString, QgsDefaultValue, QgsProject,
-                       QgsWkbTypes, QgsVectorLayerUtils, QgsDataSourceUri, Qgis,
-                       QgsSpatialIndex, QgsVectorLayer, QgsMultiLineString,
-                       QgsField,
-                       QgsMapLayer,
-                       QgsPointXY,
-                       QgsMultiPoint, QgsMultiLineString, QgsGeometryCollection,
-                       QgsApplication, QgsProcessingFeedback, QgsRelation,
-                       QgsExpressionContextUtils, QgsEditorWidgetSetup,
-                       QgsLayerTreeGroup)
-from qgis.PyQt.QtCore import (
-    Qt,
-    QObject,
-    pyqtSignal,
-    QCoreApplication,
-    QVariant,
-    QSettings,
-    QLocale,
-    QUrl,
-    QFile
-)
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog
+from qgis.core import (QgsProject,
+                       Qgis)
 
-from ..utils.qt_utils import OverrideCursor
-from ..utils.symbology import SymbologyUtils
-from ..utils.geometry import GeometryUtils
 from .dlg_topological_edition import LayersForTopologicalEdition
 
-from ..config.table_mapping_config import (
-    BOUNDARY_POINT_TABLE,
-    BOUNDARY_TABLE,
-    BUILDING_TABLE,
-    BUILDING_UNIT_TABLE,
-    PLOT_TABLE
-)
 
 class ToolBar():
     def __init__(self, iface, qgis_utils):

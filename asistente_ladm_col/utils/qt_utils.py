@@ -17,29 +17,26 @@
  *                                                                         *
  ***************************************************************************/
 """
-
-import os.path
+import fnmatch
+import os
+import stat
 import sys
+from functools import partial
 
 import qgis.utils
-from qgis.PyQt.QtWidgets import (
-    QFileDialog,
-    QApplication,
-    QWizard
-)
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QObject,
-    QFile,
-    QIODevice,
-    QEventLoop,
-    QUrl
-)
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QObject,
+                              QFile,
+                              QIODevice,
+                              QEventLoop,
+                              QUrl)
 from qgis.PyQt.QtGui import QValidator
 from qgis.PyQt.QtNetwork import QNetworkRequest
+from qgis.PyQt.QtWidgets import (QFileDialog,
+                                 QApplication,
+                                 QWizard)
 from qgis.core import QgsNetworkAccessManager
-from functools import partial
-import fnmatch
+
 
 def selectFileName(line_edit_widget, title, file_filter, parent):
     filename, matched_filter = QFileDialog.getOpenFileName(parent, title, line_edit_widget.text(), file_filter)
@@ -96,6 +93,15 @@ def get_plugin_metadata(plugin_name, key):
                 if line_array[0] == key:
                     return line_array[1].strip()
     return None
+
+
+def remove_readonly(func, path, _):
+    "Clear the readonly bit and reattempt the removal"
+    try:
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
+    except (TypeError, PermissionError, OSError) as e:
+        pass
 
 
 class NetworkError(RuntimeError):

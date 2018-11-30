@@ -16,17 +16,25 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.core import (QgsProject, QgsVectorLayer, QgsEditFormConfig,
-                       QgsSnappingConfig, QgsTolerance, QgsFeature, Qgis,
-                       QgsMapLayerProxyModel, QgsWkbTypes)
-from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
-from qgis.PyQt.QtWidgets import QAction, QWizard
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QSettings)
+from qgis.PyQt.QtWidgets import QWizard
+from qgis.core import (QgsProject,
+                       QgsEditFormConfig,
+                       QgsSnappingConfig,
+                       QgsTolerance,
+                       Qgis,
+                       QgsMapLayerProxyModel,
+                       QgsWkbTypes)
 
-from ..utils import get_ui_class
-from ..config.table_mapping_config import BUILDING_TABLE, SURVEY_POINT_TABLE
+from ..config.general_config import FIELD_MAPPING_PATH
 from ..config.help_strings import HelpStrings
+from ..config.table_mapping_config import (BUILDING_TABLE,
+                                           SURVEY_POINT_TABLE)
+from ..utils import get_ui_class
 
 WIZARD_UI = get_ui_class('wiz_create_building_cadastre.ui')
+
 
 class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
@@ -48,15 +56,23 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PolygonLayer)
 
     def adjust_page_1_controls(self):
+        self.cbo_mapping.clear()
+        self.cbo_mapping.addItem("")
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(BUILDING_TABLE))
+
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
+            self.lbl_field_mapping.setEnabled(True)
+            self.cbo_mapping.setEnabled(True)
             finish_button_text = 'Import'
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(BUILDING_TABLE, True))
 
         elif self.rad_digitizing.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
+            self.lbl_field_mapping.setEnabled(False)
+            self.cbo_mapping.setEnabled(False)
             finish_button_text = QCoreApplication.translate('CreateBuildingCadastreWizard', 'Start')
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_BUILDING_CADASTRE_PAGE_1_OPTION_POINTS)
 
@@ -69,10 +85,18 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
 
         if self.rad_refactor.isChecked():
             if self.mMapLayerComboBox.currentLayer() is not None:
-                self.qgis_utils.show_etl_model(self._db,
-                                               self.mMapLayerComboBox.currentLayer(),
-                                               BUILDING_TABLE,
-                                               QgsWkbTypes.PolygonGeometry)
+                field_mapping = self.cbo_mapping.currentText()
+                res_etl_model = self.qgis_utils.show_etl_model(self._db,
+                                                               self.mMapLayerComboBox.currentLayer(),
+                                                               BUILDING_TABLE,
+                                                               QgsWkbTypes.PolygonGeometry,
+                                                               field_mapping)
+
+                if res_etl_model:
+                    if field_mapping:
+                        self.qgis_utils.delete_old_field_mapping(field_mapping)
+
+                    self.qgis_utils.save_field_mapping(BUILDING_TABLE)
             else:
                 self.iface.messageBar().pushMessage('Asistente LADM_COL',
                     QCoreApplication.translate('CreateBuildingCadastreWizard',

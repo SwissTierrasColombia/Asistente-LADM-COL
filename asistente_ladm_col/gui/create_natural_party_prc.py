@@ -16,15 +16,16 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.core import (QgsEditFormConfig, QgsVectorLayerUtils, Qgis,
-                       QgsWkbTypes, QgsMapLayerProxyModel)
-from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
-from qgis.PyQt.QtWidgets import QAction, QWizard
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QSettings)
+from qgis.PyQt.QtWidgets import QWizard
+from qgis.core import (QgsEditFormConfig,
+                       Qgis,
+                       QgsMapLayerProxyModel)
 
-from ..utils import get_ui_class
-from ..config.table_mapping_config import NATURAL_PARTY_TABLE
 from ..config.help_strings import HelpStrings
+from ..config.table_mapping_config import NATURAL_PARTY_TABLE
+from ..utils import get_ui_class
 
 WIZARD_UI = get_ui_class('wiz_create_natural_party_prc.ui')
 
@@ -71,7 +72,8 @@ class CreateNaturalPartyPRCWizard(QWizard, WIZARD_UI):
             if self.mMapLayerComboBox.currentLayer() is not None:
                 self.qgis_utils.show_etl_model(self._db,
                                                self.mMapLayerComboBox.currentLayer(),
-                                               NATURAL_PARTY_TABLE)
+                                               NATURAL_PARTY_TABLE,
+                                               None)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreateNaturalPartyWizard",

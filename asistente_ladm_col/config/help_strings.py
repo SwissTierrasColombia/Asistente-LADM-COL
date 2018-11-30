@@ -1,4 +1,5 @@
-from qgis.PyQt.QtCore import QCoreApplication, QObject
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QObject)
 
 # For this module use multiline "\" instead of triple double quotes
 
@@ -187,6 +188,8 @@ Choose this option if you want to create a <b>Legal Party</b> using a form.\
                Choose this option to open a window that allows you to import data from a source {type} into the LADM_COL <b>{name}</b> {type}. \
                <br><br>\
                If the field structure of input and target {type}s differs, you can set a field mapping to define field transformations and correspondence.\
+               <br><br>\
+               You can select previous mappings in the <b>Recent mappings</b> list, which can save you time taking advantage of mappings that you already used.\
                 ").format(
                     name=layer_name,
                     type=QCoreApplication.translate("HelpStrings", "layer") if layer_is_spatial else QCoreApplication.translate(

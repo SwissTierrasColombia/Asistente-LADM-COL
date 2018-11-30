@@ -16,34 +16,31 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
 
-from qgis.core import QgsProject, QgsVectorLayer, Qgis, QgsWkbTypes
-from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import Qt, QSettings, QCoreApplication
-from qgis.PyQt.QtGui import QBrush, QFont, QIcon
-from qgis.PyQt.QtWidgets import (QAction, QDialog, QTreeWidgetItem, QLineEdit,
-                                 QTreeWidgetItemIterator, QComboBox)
+from qgis.PyQt.QtCore import (Qt,
+                              QSettings,
+                              QCoreApplication)
+from qgis.PyQt.QtGui import (QBrush,
+                             QFont,
+                             QIcon)
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QTreeWidgetItem,
+                                 QLineEdit,
+                                 QTreeWidgetItemIterator,
+                                 QComboBox)
+from qgis.core import QgsWkbTypes
 
-from ..config.general_config import (
-    TABLE_NAME,
-    GEOMETRY_COLUMN,
-    GEOMETRY_TYPE,
-    KIND_SETTINGS,
-    TABLE_ALIAS,
-    MODEL
-)
-from ..config.table_mapping_config import (
-    TABLE_PROP_ASSOCIATION,
-    TABLE_PROP_DOMAIN,
-    TABLE_PROP_STRUCTURE
-)
+from ..config.general_config import (TABLE_NAME,
+                                     GEOMETRY_COLUMN,
+                                     GEOMETRY_TYPE,
+                                     KIND_SETTINGS,
+                                     TABLE_ALIAS,
+                                     MODEL)
 from ..config.layer_sets import LAYER_SETS
-from ..lib.dbconnector.gpkg_connector import GPKGConnector
-from ..lib.dbconnector.pg_connector import PGConnector
+from ..config.table_mapping_config import (TABLE_PROP_ASSOCIATION,
+                                           TABLE_PROP_DOMAIN,
+                                           TABLE_PROP_STRUCTURE)
 from ..utils import get_ui_class
-from ..utils.qt_utils import make_file_selector
-
 from ..resources_rc import *
 
 DIALOG_UI = get_ui_class('dlg_load_layers.ui')

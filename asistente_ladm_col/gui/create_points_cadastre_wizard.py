@@ -19,28 +19,37 @@
 import os
 import stat
 
-from qgis.core import (
-    Qgis,
-    QgsMapLayerProxyModel,
-    QgsApplication,
-    QgsCoordinateReferenceSystem,
-    QgsWkbTypes
-)
+from qgis.PyQt.QtCore import (Qt,
+                              QSettings,
+                              QCoreApplication,
+                              QFile)
+from qgis.PyQt.QtWidgets import (QWizard,
+                                 QFileDialog,
+                                 QSizePolicy,
+                                 QGridLayout)
+from qgis.core import (Qgis,
+                       QgsMapLayerProxyModel,
+                       QgsApplication,
+                       QgsCoordinateReferenceSystem,
+                       QgsWkbTypes)
 from qgis.gui import QgsMessageBar
 
-from qgis.PyQt.QtCore import Qt, QSettings, QCoreApplication, QFile
-from qgis.PyQt.QtWidgets import QWizard, QFileDialog, QSizePolicy, QGridLayout
-
-from ..utils.qt_utils import (make_file_selector, enable_next_wizard,
-                              disable_next_wizard)
-from ..utils import get_ui_class
+from ..config.general_config import (PLUGIN_NAME,
+                                     DEFAULT_EPSG,
+                                     FIELD_MAPPING_PATH)
+from ..config.help_strings import HelpStrings
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE,
                                            CONTROL_POINT_TABLE)
-from ..config.help_strings import HelpStrings
-from ..config.general_config import PLUGIN_NAME, DEFAULT_EPSG
+
+from ..processing.algs.InsertFeaturesToLayer import InsertFeaturesToLayer
+from ..utils import get_ui_class
+from ..utils.qt_utils import (make_file_selector,
+                              enable_next_wizard,
+                              disable_next_wizard)
 
 WIZARD_UI = get_ui_class('wiz_create_points_cadastre.ui')
+
 
 class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
@@ -51,6 +60,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
+        self.insert_features_to_layer = InsertFeaturesToLayer()
 
         self.target_layer = None
 
@@ -173,9 +183,15 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             self.cbo_elevation.setToolTip("")
 
     def adjust_page_2_controls(self):
+        self.cbo_mapping.clear()
+        self.cbo_mapping.addItem("")
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.current_point_name()))
+
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
+            self.lbl_field_mapping.setEnabled(True)
+            self.cbo_mapping.setEnabled(True)
 
             disable_next_wizard(self)
             self.wizardPage2.setFinalPage(True)
@@ -187,6 +203,8 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         elif self.rad_csv.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
+            self.lbl_field_mapping.setEnabled(False)
+            self.cbo_mapping.setEnabled(False)
 
             enable_next_wizard(self)
             self.wizardPage2.setFinalPage(False)
@@ -213,9 +231,18 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             output_layer_name = self.current_point_name()
 
             if self.mMapLayerComboBox.currentLayer() is not None:
-                self.qgis_utils.show_etl_model(self._db,
-                                               self.mMapLayerComboBox.currentLayer(),
-                                               output_layer_name)
+                field_mapping = self.cbo_mapping.currentText()
+                res_etl_model = self.qgis_utils.show_etl_model(self._db,
+                                                               self.mMapLayerComboBox.currentLayer(),
+                                                               output_layer_name,
+                                                               field_mapping=field_mapping)
+
+                if res_etl_model:
+                    if field_mapping:
+                        self.qgis_utils.delete_old_field_mapping(field_mapping)
+
+                    self.qgis_utils.save_field_mapping(output_layer_name)
+
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreatePointsCadastreWizard",
@@ -252,18 +279,35 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         target_layer = self.current_point_name()
 
         res = self.qgis_utils.copy_csv_to_db(csv_path,
-                                    self.txt_delimiter.text(),
-                                    self.cbo_longitude.currentText(),
-                                    self.cbo_latitude.currentText(),
-                                    self._db,
-                                    self.epsg,
-                                    target_layer,
-                                    self.cbo_elevation.currentText() or None)
+                                             self.txt_delimiter.text(),
+                                             self.cbo_longitude.currentText(),
+                                             self.cbo_latitude.currentText(),
+                                             self._db,
+                                             self.epsg,
+                                             target_layer,
+                                             self.cbo_elevation.currentText() or None,
+                                             self.detect_decimal_point(csv_path))
 
     def file_path_changed(self):
         self.autodetect_separator()
         self.fill_long_lat_combos("")
         self.cbo_delimiter.currentTextChanged.connect(self.separator_changed)
+
+    def detect_decimal_point(self, csv_path):
+        if os.path.exists(csv_path):
+            with open(csv_path) as file:
+                file.readline() # headers
+                data = file.readline().strip() # 1st line with data
+
+            if data:
+                fields = self.get_fields_from_csv_file(csv_path)
+                if self.cbo_latitude.currentText() in fields:
+                    num_col = data.split(self.cbo_delimiter.currentText())[fields.index(self.cbo_latitude.currentText())]
+                    for decimal_point in ['.', ',']:
+                        if decimal_point in num_col:
+                            return decimal_point
+
+        return '.' # just use the default one
 
     def autodetect_separator(self):
         csv_path = self.txt_file_path.text().strip()
@@ -332,19 +376,19 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         if not self.txt_delimiter.text():
             return []
 
-        errorReading = False
+        error_reading = False
         try:
             reader  = open(csv_path, "r")
         except IOError:
-            errorReading = True
+            error_reading = True
         line = reader.readline().replace("\n", "")
         reader.close()
         if not line:
-            errorReading = True
+            error_reading = True
         else:
             return line.split(self.txt_delimiter.text())
 
-        if errorReading:
+        if error_reading:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreatePointsCadastreWizard",
                                            "It was not possible to read field names from the CSV. Check the file and try again."),

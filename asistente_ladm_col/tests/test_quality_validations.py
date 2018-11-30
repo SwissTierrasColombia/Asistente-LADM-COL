@@ -1,20 +1,27 @@
 import nose2
 
-from qgis.core import QgsVectorLayer, QgsApplication
-from qgis.testing import unittest, start_app
+from qgis.core import (QgsVectorLayer,
+                       QgsApplication,
+                       QgsDataSourceUri,
+                       QgsField,
+                       QgsWkbTypes)
+from qgis.testing import (unittest,
+                          start_app)
+
+from qgis.PyQt.QtCore import QVariant
+import processing
+from processing.core.Processing import Processing
+from qgis.analysis import QgsNativeAlgorithms
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.config.table_mapping_config import ID_FIELD
-from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_copy_path
+from asistente_ladm_col.tests.utils import (import_projectgenerator,
+                                            get_test_copy_path,
+                                            get_dbconn,
+                                            restore_schema)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.quality import QualityUtils
-
-from processing.core.Processing import Processing
-from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import QgsWkbTypes
-
-import processing
 
 import_projectgenerator()
 
@@ -26,6 +33,214 @@ class TesQualityValidations(unittest.TestCase):
         self.quality = QualityUtils(self.qgis_utils)
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
+
+        # Test connection DB
+        self.db_connection = get_dbconn('test_ladm_col_validations_against_topology_tables')
+        result = self.db_connection.test_connection()
+        print('test_connection', result)
+        if not result[1]:
+            print('The test connection is not working')
+            return
+        restore_schema('test_ladm_col_validations_against_topology_tables')
+
+    def test_topology_plot_must_be_covered_by_boundary(self):
+        DB_HOSTNAME = "postgres"
+        DB_PORT = "5432"
+        DB_NAME = "ladm_col"
+        DB_USER = "usuario_ladm_col"
+        DB_PASSWORD = "clave_ladm_col"
+        SCHEMA_NAME = 'validaciones'
+
+        # Read data
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'lindero', "geometria", "", "gid")
+        boundary_layer = QgsVectorLayer(uri.uri(), 'lindero', "postgres")
+        self.assertEqual(boundary_layer.featureCount(), 19)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'terreno', "poligono_creado", "", "gid")
+        plot_layer = QgsVectorLayer(uri.uri(), 'terreno', "postgres")
+        self.assertEqual(plot_layer.featureCount(), 15)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'masccl', None, "", None)
+        more_bfs_layer = QgsVectorLayer(uri.uri(), 'masccl', "postgres")
+        self.assertEqual(more_bfs_layer.featureCount(), 15)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'menos', None, "", None)
+        less_layer = QgsVectorLayer(uri.uri(), 'less', "postgres")
+        self.assertEqual(less_layer.featureCount(), 6)
+
+        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:3116", 'error layer', "memory")
+
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
+                                     QgsField('boundary_id', QVariant.Int),
+                                     QgsField('error_type', QVariant.String)])
+        error_layer.updateFields()
+
+        features = self.quality.get_plot_features_not_covered_by_boundaries(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
+
+        # the algorithm was successfully executed
+        self.assertEqual(len(features), 15)
+
+        error_layer.dataProvider().addFeatures(features)
+
+        # English language is set as default for validations
+        exp = "\"error_type\" = 'Plot is not covered by boundary'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 11)
+
+        result = [{'id': f['plot_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
+
+        test_result = [{'id': 1, 'geom': 'MultiLineString ((894639.00421297014690936 1544574.38610569201409817, 894648.56400672777090222 1544485.16136395325884223, 894723.67667196702677757 1544488.34796187235042453, 894715.02733475773129612 1544590.31909528817050159, 894639.00421297014690936 1544574.38610569201409817))'},
+                       {'id': 2, 'geom': 'MultiLineString ((894715.02733475773129612 1544590.31909528817050159, 894732.8430670362431556 1544594.12277876189909875),(894770.40772755595389754 1544602.14288571989163756, 894779.66068397834897041 1544604.11840470926836133),(894788.15784672915469855 1544496.48767653340473771, 894723.67667196702677757 1544488.34796187235042453, 894715.02733475773129612 1544590.31909528817050159))'},
+                       {'id': 4, 'geom': 'MultiLineString ((894856.60721333208493888 1544597.50950034754350781, 894860.85579470742959529 1544572.9621412898413837, 894879.26631400070618838 1544575.79452887340448797, 894882.57076618145219982 1544602.70221091737039387, 894856.60721333208493888 1544597.50950034754350781),(894810.34488280047662556 1544519.14677720214240253, 894837.25256484432611614 1544520.56297099380753934, 894833.94811266358010471 1544542.75000706524588168, 894822.14029542286880314 1544541.38756661443039775))'},
+                       {'id': 8, 'geom': 'MultiLineString ((894634.73685261909849942 1544430.39863291662186384, 894638.04130479984451085 1544358.17274953541345894, 894773.52384421403985471 1544367.14197688340209424, 894768.33113364421296865 1544443.61644163983874023, 894634.73685261909849942 1544430.39863291662186384))'},
+                       {'id': 9, 'geom': 'MultiLineString ((894768.33113364421296865 1544443.61644163983874023, 894696.62536594981793314 1544436.52187805180437863, 894702.99202395498286933 1544362.47262292890809476, 894773.52384421403985471 1544367.14197688340209424, 894768.33113364421296865 1544443.61644163983874023))'},
+                       {'id': 10, 'geom': 'MultiLineString ((894702.99202395498286933 1544362.47262292890809476, 894696.62536594981793314 1544436.52187805180437863, 894634.73685261909849942 1544430.39863291662186384, 894638.04130479984451085 1544358.17274953541345894, 894702.99202395498286933 1544362.47262292890809476))'},
+                       {'id': 11, 'geom': 'MultiLineString ((894847.40195368567947298 1544448.57311991089954972, 894852.59466425550635904 1544369.26626757089979947),(894986.66100987792015076 1544377.2913657242897898, 894972.97113655728753656 1544459.43060564785264432, 894904.21943272789940238 1544453.48590945219621062),(894904.21943272789940238 1544453.48590945219621062, 894847.40195368567947298 1544448.57311991089954972))'},
+                       {'id': 12, 'geom': 'MultiLineString ((894847.40195368567947298 1544448.57311991089954972, 894852.59466425550635904 1544369.26626757089979947),(894914.05367824051063508 1544372.94515221077017486, 894911.74524271208792925 1544391.85083696991205215),(894904.21943272789940238 1544453.48590945219621062, 894847.40195368567947298 1544448.57311991089954972))'},
+                       {'id': 13, 'geom': 'MultiLineString ((894904.21943272789940238 1544453.48590945219621062, 894972.97113655728753656 1544459.43060564785264432, 894986.66100987792015076 1544377.2913657242897898),(894914.05367824051063508 1544372.94515221077017486, 894911.74524271208792925 1544391.85083696991205215))'},
+                       {'id': 19, 'geom': 'MultiLineString ((894863.92421458975877613 1544306.00961153814569116, 894862.50802079797722399 1544287.59909224486909807, 894910.65860971866641194 1544288.07115684216842055, 894905.93796374613884836 1544314.50677428883500397, 894863.92421458975877613 1544306.00961153814569116))'},
+                       {'id': 22, 'geom': 'MultiLineString ((895053.22211809176951647 1544435.35531118814833462, 895076.2805417146300897 1544438.87918988126330078),(895126.55513874720782042 1544446.56235088966786861, 895150.11316665716003627 1544450.16258106869645417))'}]
+
+
+        for item in test_result:
+            self.assertIn(item, result, 'geometrical error in the polygon with id {}'.format(item['id']))
+
+
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot is duplicated in the masccl table'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 1)
+        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+        test_result = [{'plot_id': 41, 'boundary_id': 50}]
+        self.assertEqual(result, test_result, 'Error in: Topological relationship between boundary and plot is duplicated in the masccl table')
+
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot is duplicated in the menos table'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 1)
+        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+        test_result = [{'plot_id': 41, 'boundary_id': 51}]
+        self.assertEqual(result, test_result, 'Error in: Topological relationship between boundary and plot is duplicated in the menos table')
+
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot is not recorded in the masccl table'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 1)
+        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+        test_result = [{'plot_id': 47, 'boundary_id': 48}]
+        self.assertEqual(result, test_result, 'Error in: Topological relationship between boundary and plot is not recorded in the masccl table')
+
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot is not recorded in the menos table'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 1)
+        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+        test_result = [{'plot_id': 16, 'boundary_id': 18}]
+        self.assertEqual(result, test_result, 'Error in: Topological relationship between boundary and plot is not recorded in the menos table')
+
+
+    def test_topology_boundary_must_be_covered_by_plot(self):
+        DB_HOSTNAME = "postgres"
+        DB_PORT = "5432"
+        DB_NAME = "ladm_col"
+        DB_USER = "usuario_ladm_col"
+        DB_PASSWORD = "clave_ladm_col"
+        SCHEMA_NAME = 'validaciones'
+
+        # Read data
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'lindero', "geometria", "", "gid")
+        boundary_layer = QgsVectorLayer(uri.uri(), 'lindero', "postgres")
+        self.assertEqual(boundary_layer.featureCount(), 19)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'terreno', "poligono_creado", "", "gid")
+        plot_layer = QgsVectorLayer(uri.uri(), 'terreno', "postgres")
+        self.assertEqual(plot_layer.featureCount(), 15)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'masccl', None, "", None)
+        more_bfs_layer = QgsVectorLayer(uri.uri(), 'masccl', "postgres")
+        self.assertEqual(more_bfs_layer.featureCount(), 15)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'menos', None, "", None)
+        less_layer = QgsVectorLayer(uri.uri(), 'less', "postgres")
+        self.assertEqual(less_layer.featureCount(), 6)
+
+        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:3116", 'error layer', "memory")
+
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
+                                     QgsField('boundary_id', QVariant.Int),
+                                     QgsField('error_type', QVariant.String)])
+        error_layer.updateFields()
+
+        features = self.quality.get_boundary_features_not_covered_by_plots(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
+
+        # the algorithm was successfully executed
+        self.assertEqual(len(features), 10)
+
+        error_layer.dataProvider().addFeatures(features)
+
+        # English language is set as default for validations
+        exp = "\"error_type\" = 'Boundary is not covered by plot'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 2)
+
+        result = [{'id': f['boundary_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
+
+        test_result = [{'id': 23, 'geom': 'MultiLineString ((895053.22211809176951647 1544435.35531118814833462, 895065.96786221780348569 1544460.84679944021627307, 895076.2805417146300897 1544438.87918988126330078),(895126.55513874720782042 1544446.56235088966786861, 895138.19374559889547527 1544479.25731873349286616, 895150.11316665716003627 1544450.16258106869645417))'},
+                       {'id': 46, 'geom': 'MultiLineString ((895120.17207429651170969 1544364.95636973413638771, 895070.07765273051336408 1544331.15500104054808617, 895121.96658773790113628 1544243.82460397086106241, 895178.79977707355283201 1544283.71215808903798461, 895120.17207429651170969 1544364.95636973413638771))'}]
+
+        for item in test_result:
+            self.assertIn(item, result, 'Error: Boundary is not covered by the plot.  boundary_id = {}'.format(item['id']))
+
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot is duplicated in the masccl table'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 2)
+        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+        test_result = [{'plot_id': 2, 'boundary_id': 3}, {'plot_id': 41, 'boundary_id': 50}]
+
+        for item in test_result:
+            self.assertIn(item, result, 'Error in: Topological relationship between boundary and plot is duplicated in the masccl table')
+
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot is duplicated in the menos table'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 2)
+        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+        test_result = [{'plot_id': 4, 'boundary_id': 5}, {'plot_id': 41, 'boundary_id': 51}]
+
+        for item in test_result:
+            self.assertIn(item, result, 'Error in: Topological relationship between boundary and plot is duplicated in the menos table')
+
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot is not recorded in the masccl table'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 2)
+        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+        test_result = [{'plot_id': 19, 'boundary_id': 20}, {'plot_id': 47, 'boundary_id': 48}]
+
+        for item in test_result:
+            self.assertIn(item, result, 'Error in: Topological relationship between boundary and plot is not recorded in the masccl table')
+
+        exp = "\"error_type\" = 'Topological relationship between boundary and plot is not recorded in the menos table'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 2)
+        result = [{'plot_id': f['plot_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+        test_result = [{'plot_id': 4, 'boundary_id': 7}, {'plot_id': 16, 'boundary_id': 18}]
+
+        for item in test_result:
+            self.assertIn(item, result, 'Error in: Topological relationship between boundary and plot is not recorded in the menos table')
+
 
     def test_get_too_long_segments_from_simple_line(self):
         print('\nINFO: Validating too long segments...')
@@ -253,7 +468,8 @@ class TesQualityValidations(unittest.TestCase):
             polygon_layer = QgsVectorLayer(uri_polygon, 'polygon_layer_{}'.format(i+1), 'ogr')
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
-            diff_plot_boundary = self.qgis_utils.geometry.difference_plot_boundary(polygon_layer, lines_layer, 'fid')
+            polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+            diff_plot_boundary = self.qgis_utils.geometry.difference_plot_boundary(polygon_as_lines_layer, lines_layer, 'fid')
 
             if diff_plot_boundary is not None:
                 if len(diff_plot_boundary) > 0:
@@ -279,7 +495,8 @@ class TesQualityValidations(unittest.TestCase):
             polygon_layer = QgsVectorLayer(uri_polygon, 'polygon_layer_{}'.format(i+1), 'ogr')
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
-            diff_boundary_plot = self.qgis_utils.geometry.difference_boundary_plot(lines_layer, polygon_layer, 'fid')
+            polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+            diff_boundary_plot = self.qgis_utils.geometry.difference_boundary_plot(lines_layer, polygon_as_lines_layer, 'fid')
 
             if diff_boundary_plot is not None:
                 if len(diff_boundary_plot) > 0:

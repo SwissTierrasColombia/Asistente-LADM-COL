@@ -1,13 +1,20 @@
-import qgis
-import nose2
-import psycopg2
 import datetime
 
-from qgis.testing import unittest, start_app
+import nose2
+import psycopg2
+from qgis.core import QgsApplication
+from qgis.analysis import QgsNativeAlgorithms
 from processing.core.Processing import Processing
+from qgis.testing import (unittest,
+                          start_app)
+
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import import_projectgenerator, get_dbconn, get_test_path, restore_schema, clean_table
+from asistente_ladm_col.tests.utils import (import_projectgenerator,
+                                            get_dbconn,
+                                            get_test_path,
+                                            restore_schema,
+                                            clean_table)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.config.table_mapping_config import BOUNDARY_POINT_TABLE
 from asistente_ladm_col.config.general_config import DEFAULT_EPSG
@@ -18,6 +25,8 @@ class TestCopy(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
+        Processing.initialize()
+        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         print("\nINFO: Setting up copy CSV points to DB validation...")
         self.qgis_utils = QGISUtils()
         self.db_connection = get_dbconn('test_ladm_col')
@@ -102,7 +111,6 @@ class TestCopy(unittest.TestCase):
         cbo_longitude = 'x'
         cbo_latitude = 'y'
         elevation = 'z'
-        Processing.initialize()
 
         res = self.qgis_utils.copy_csv_to_db(csv_path,
                                              txt_delimiter,

@@ -16,86 +16,74 @@
  *                                                                         *
  ***************************************************************************/
 """
+import glob
 import os.path
 import shutil
-import glob
-from functools import partial, wraps
+from functools import (partial,
+                       wraps)
 
 import qgis.utils
-from qgis.core import (
-    Qgis,
-    QgsApplication,
-    QgsExpression,
-    QgsExpressionContext,
-    QgsProcessingModelAlgorithm,
-    QgsProject
-)
-from qgis.PyQt.QtCore import (QObject, Qt, QCoreApplication, QTranslator,
-                              QLocale, QSettings)
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QMenu, QPushButton
-
 from processing.modeler.ModelerUtils import ModelerUtils
+from qgis.PyQt.QtCore import (QObject,
+                              QCoreApplication)
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import (QAction,
+                                 QMenu,
+                                 QPushButton)
+from qgis.core import (Qgis,
+                       QgsApplication,
+                       QgsExpression,
+                       QgsExpressionContext,
+                       QgsProcessingModelAlgorithm)
 
-from .config.table_mapping_config import (
-    ID_FIELD,
-    BOUNDARY_POINT_TABLE,
-    CONTROL_POINT_TABLE,
-    PLOT_TABLE,
-    COL_PARTY_TABLE
-)
-from .config.general_config import (
-    CADASTRE_MENU_OBJECTNAME,
-    LADM_COL_MENU_OBJECTNAME,
-    PROJECT_GENERATOR_MIN_REQUIRED_VERSION,
-    PROJECT_GENERATOR_EXACT_REQUIRED_VERSION,
-    PROJECT_GENERATOR_REQUIRED_VERSION_URL,
-    PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
-    PLUGIN_NAME,
-    PLUGIN_VERSION,
-    PLUGIN_DIR,
-    QGIS_LANG,
-    RELEASE_URL
-)
-from .gui.create_points_cadastre_wizard import CreatePointsCadastreWizard
+from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
+                                    LADM_COL_MENU_OBJECTNAME,
+                                    PROJECT_GENERATOR_MIN_REQUIRED_VERSION,
+                                    PROJECT_GENERATOR_EXACT_REQUIRED_VERSION,
+                                    PROJECT_GENERATOR_REQUIRED_VERSION_URL,
+                                    PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
+                                    PLUGIN_NAME,
+                                    PLUGIN_VERSION,
+                                    RELEASE_URL)
+from .config.table_mapping_config import (ID_FIELD,
+                                          COL_PARTY_TABLE)
+from .gui.about_dialog import AboutDialog
+from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
+from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
-from .gui.create_plot_cadastre_wizard import CreatePlotCadastreWizard
-from .gui.create_parcel_cadastre_wizard import CreateParcelCadastreWizard
 from .gui.create_building_cadastre_wizard import CreateBuildingCadastreWizard
 from .gui.create_building_unit_cadastre_wizard import CreateBuildingUnitCadastreWizard
 from .gui.create_right_of_way_cadastre_wizard import CreateRightOfWayCadastreWizard
 from .gui.create_col_party_cadastre_wizard import CreateColPartyCadastreWizard
 from .gui.create_group_party_cadastre import CreateGroupPartyCadastre
-from .gui.create_right_cadastre_wizard import CreateRightCadastreWizard
+from .gui.create_legal_party_prc import CreateLegalPartyPRCWizard
+from .gui.create_market_research_prc import CreateMarketResearchPRCWizard
+from .gui.create_natural_party_prc import CreateNaturalPartyPRCWizard
+from .gui.create_nuclear_family_prc import CreateNuclearFamilyPRCWizard
+from .gui.create_parcel_cadastre_wizard import CreateParcelCadastreWizard
+from .gui.create_plot_cadastre_wizard import CreatePlotCadastreWizard
+from .gui.create_points_cadastre_wizard import CreatePointsCadastreWizard
+from .gui.create_property_record_card_prc import CreatePropertyRecordCardPRCWizard
 from .gui.create_responsibility_cadastre_wizard import CreateResponsibilityCadastreWizard
 from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWizard
-from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
+from .gui.create_right_cadastre_wizard import CreateRightCadastreWizard
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
-from .gui.create_property_record_card_prc import CreatePropertyRecordCardPRCWizard
-from .gui.create_market_research_prc import CreateMarketResearchPRCWizard
-from .gui.create_nuclear_family_prc import CreateNuclearFamilyPRCWizard
-from .gui.create_natural_party_prc import CreateNaturalPartyPRCWizard
-from .gui.create_legal_party_prc import CreateLegalPartyPRCWizard
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
-from .gui.about_dialog import AboutDialog
-from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
-from .gui.toolbar import ToolBar
 from .gui.reports import ReportGenerator
+from .gui.toolbar import ToolBar
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
-from .utils.qgis_utils import QGISUtils
-from .utils.quality import QualityUtils
 from .utils.model_parser import ModelParser
+from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_metadata
+from .utils.quality import QualityUtils
 
-from .resources_rc import *
 
 class AsistenteLADMCOLPlugin(QObject):
     def __init__(self, iface):
         QObject.__init__(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
-        self.installTranslator()
         self._about_dialog = None
         self.toolbar = None
         self._flag_menus_refreshed_at_load_time = False
@@ -156,6 +144,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
         self.qgis_utils.message_with_button_download_report_dependency_emitted.connect(self.show_message_to_download_report_dependency)
+        self.qgis_utils.message_with_button_remove_report_dependency_emitted.connect(self.show_message_to_remove_report_dependency)
         self.qgis_utils.status_bar_message_emitted.connect(self.show_status_bar_message)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
@@ -503,6 +492,15 @@ class AsistenteLADMCOLPlugin(QObject):
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
 
+    def show_message_to_remove_report_dependency(self, msg):
+        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        button = QPushButton(widget)
+        button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+            "Remove dependency"))
+        button.pressed.connect(self.remove_report_dependency)
+        widget.layout().addWidget(button)
+        self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
+
     def show_status_bar_message(self, msg, duration):
         self.iface.statusBarIface().showMessage(msg, duration)
 
@@ -815,6 +813,9 @@ class AsistenteLADMCOLPlugin(QObject):
     def download_report_dependency(self):
         self.report_generator.download_report_dependency()
 
+    def remove_report_dependency(self):
+        self.report_generator.remove_report_dependency()
+
     def show_help(self):
         self.qgis_utils.show_help()
 
@@ -828,10 +829,3 @@ class AsistenteLADMCOLPlugin(QObject):
         rich_text = '<html><head/><body><p align="center"><a href="{release_url}{version}"><span style=" font-size:10pt; text-decoration: underline; color:#0000ff;">v{version}</span></a></p></body></html>'
         self._about_dialog.lbl_version.setText(rich_text.format(release_url=RELEASE_URL, version=PLUGIN_VERSION))
         self._about_dialog.exec_()
-
-    def installTranslator(self):
-        qgis_locale = QLocale(QGIS_LANG)
-        locale_path = os.path.join(PLUGIN_DIR, 'i18n')
-        self.translator = QTranslator()
-        self.translator.load(qgis_locale, 'Asistente-LADM_COL', '_', locale_path)
-        QCoreApplication.installTranslator(self.translator)

@@ -1,7 +1,13 @@
 import os.path
 
+from qgis.PyQt.QtCore import (QSettings,
+                              QObject,
+                              QCoreApplication)
+
+from .translator import PLUGIN_DIR
+from .table_mapping_config import (MORE_BOUNDARY_FACE_STRING_TABLE,
+                                   LESS_TABLE)
 from ..utils.qt_utils import get_plugin_metadata
-from qgis.PyQt.QtCore import QLocale, QSettings, QObject, QCoreApplication
 
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
 CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
@@ -14,19 +20,17 @@ DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 DEFAULT_USE_ROADS_VALUE = False
 DEFAULT_POLYGON_AREA_TOLERANCE = 0.1 # square meters
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
-PLUGIN_DIR = os.path.dirname(os.path.dirname(__file__))
+FIELD_MAPPING_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'field_mappings')
+MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE = 10
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
 HELP_DIR_NAME = 'help'
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'styles')
 
-try:
-    # Errors here could happen if the value cannot be converted to string or
-    # if it is not subscriptable (see https://github.com/gacarrillor/loadthemall/issues/11)
-    locale = QSettings().value("locale/userLocale", type=str)
-    QGIS_LANG = str( locale[:2] )
-except TypeError as e:
-    QGIS_LANG = 'en'
+# Version to be installed when creating reports (annex 17)
+# (Other versions, if found, will be dropped in favor of this one)
+REPORTS_REQUIRED_VERSION = '0.1'
+URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/annex_17/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
@@ -53,7 +57,7 @@ MODULE_HELP_MAPPING = {
     'create_market_research': 'property_record_card/Market_research.html'
 }
 # Configure Project Generator Dependency
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.3"
+PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.6"
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), set to True
@@ -107,6 +111,7 @@ PROPERTY_RECORD_CARD_MENU_OBJECTNAME = "ladm_col_property_record_card"
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
 
+
 class TranslatableConfigStrings(QObject):
     def __init__(self):
         self.ERROR_LAYER_GROUP = QCoreApplication.translate("TranslatableConfigStrings", "Validation errors")
@@ -129,3 +134,14 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not overlap Buildings")
         self.CHECK_GAPS_IN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Plots should not have gaps")
         self.CHECK_MULTIPART_IN_RIGHT_OF_WAY = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not have multipart geometries")
+
+        # Specific topology errors
+        self.ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY = QCoreApplication.translate("TranslatableConfigStrings", "Plot is not covered by boundary")
+        self.ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT = QCoreApplication.translate("TranslatableConfigStrings", "Boundary is not covered by plot")
+        self.ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the {} table").format(MORE_BOUNDARY_FACE_STRING_TABLE)
+        self.ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the {} table").format(MORE_BOUNDARY_FACE_STRING_TABLE)
+        self.ERROR_NO_LESS_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the {} table").format(LESS_TABLE)
+        self.ERROR_DUPLICATE_LESS_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the {} table").format(LESS_TABLE)
+
+
+translated_strings = TranslatableConfigStrings()

@@ -18,16 +18,21 @@
 """
 import os.path
 
-from qgis.core import (
-    QgsFeatureRenderer,
-    QgsAbstractVectorLayerLabeling,
-    QgsReadWriteContext
-)
-from qgis.PyQt.QtCore import QObject, pyqtSignal, QFile, QIODevice
+from qgis.PyQt.QtCore import (QObject,
+                              pyqtSignal,
+                              QFile,
+                              QIODevice)
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (QgsFeatureRenderer,
+                       QgsAbstractVectorLayerLabeling,
+                       QgsReadWriteContext)
 
+from ..config.translator import QGIS_LANG, DEFAULT_LANGUAGE
 from ..config.general_config import STYLES_DIR
-from ..config.symbology import LAYER_QML_STYLE, ERROR_LAYER
+from ..config.symbology import (LAYER_QML_STYLE,
+                                CUSTOM_ERROR_LAYERS,
+                                ERROR_LAYER)
+
 
 class SymbologyUtils(QObject):
 
@@ -39,7 +44,14 @@ class SymbologyUtils(QObject):
     def set_layer_style_from_qml(self, layer, is_error_layer=False, emit=False):
         qml_name = None
         if is_error_layer:
-            qml_name = LAYER_QML_STYLE[ERROR_LAYER][layer.geometryType()]
+            if layer.name() in CUSTOM_ERROR_LAYERS:
+                # Symbology is selected according to the language
+                if QGIS_LANG in CUSTOM_ERROR_LAYERS[layer.name()]:
+                    qml_name = CUSTOM_ERROR_LAYERS[layer.name()][QGIS_LANG]
+                else:
+                    qml_name = CUSTOM_ERROR_LAYERS[layer.name()][DEFAULT_LANGUAGE]
+            else:
+                qml_name = LAYER_QML_STYLE[ERROR_LAYER][layer.geometryType()]
         else:
             if layer.name() in LAYER_QML_STYLE:
                 qml_name = LAYER_QML_STYLE[layer.name()][layer.geometryType()]

@@ -1,15 +1,14 @@
 from qgis.core import QgsWkbTypes
 
-from .table_mapping_config import (
-    BOUNDARY_TABLE,
-    BOUNDARY_POINT_TABLE,
-    CONTROL_POINT_TABLE,
-    SURVEY_POINT_TABLE,
-    PLOT_TABLE,
-    BUILDING_TABLE,
-    BUILDING_UNIT_TABLE,
-    RIGHT_OF_WAY_TABLE
-)
+from .general_config import translated_strings
+from .table_mapping_config import (BOUNDARY_TABLE,
+                                   BOUNDARY_POINT_TABLE,
+                                   CONTROL_POINT_TABLE,
+                                   SURVEY_POINT_TABLE,
+                                   PLOT_TABLE,
+                                   BUILDING_TABLE,
+                                   BUILDING_UNIT_TABLE,
+                                   RIGHT_OF_WAY_TABLE)
 
 ERROR_LAYER = 'error_layer'
 
@@ -46,5 +45,16 @@ LAYER_QML_STYLE = {
         QgsWkbTypes.PointGeometry: 'style_point_error',
         QgsWkbTypes.LineGeometry: 'style_line_error',
         QgsWkbTypes.PolygonGeometry: 'style_polygon_error'
+    }
+}
+
+CUSTOM_ERROR_LAYERS = {
+    translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS: {
+        'es': 'style_boundary_should_be_covered_by_plot_es',
+        'en': 'style_boundary_should_be_covered_by_plot_en'
+    },
+    translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES: {
+        'es': 'style_plot_should_be_covered_by_boundary_es',
+        'en': 'style_plot_should_be_covered_by_boundary_en'
     }
 }
