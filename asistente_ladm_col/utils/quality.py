@@ -127,10 +127,6 @@ class QualityUtils(QObject):
 
     def get_boundary_points_features_not_covered_by_boundary_nodes(self, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field=ID_FIELD):
 
-        typeTplgError = {0: translated_strings.ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE,
-                         1: translated_strings.ERROR_DUPLICATE_POINT_BFS,
-                         2: translated_strings.ERROR_NO_FOUND_POINT_BFS}
-
         tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # layer is created with unique vertices
@@ -147,9 +143,10 @@ class QualityUtils(QObject):
         fs = []
         for f in tmp_boundary_nodes_layer.getFeatures(request):
             item = [f[id_field], f.geometry().asWkt()]
-            if filter_fs.count(item) == 0:
+            if item not in filter_fs:
                 filter_fs.append(item)
                 fs.append(f)
+        del filter_fs
         boundary_nodes_layer.dataProvider().addFeatures(fs)
 
         # Spatial Join between boundary_points and boundary_nodes
@@ -181,7 +178,7 @@ class QualityUtils(QObject):
         duplicate_in_point_bfs = list()
 
         # point_bfs topology check
-        for item_sj in spatial_join_boundary_point_boundary_node.copy():
+        for item_sj in spatial_join_boundary_point_boundary_node:
             boundary_point_id = item_sj['boundary_point_id']
             boundary_id = item_sj['boundary_id']
 
@@ -203,7 +200,7 @@ class QualityUtils(QObject):
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_point_geom,
                                                                   {0: boundary_point_id,
                                                                    1: None,
-                                                                   2: typeTplgError[0]})
+                                                                   2: translated_strings.ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE})
                 features.append(new_feature)
 
 
@@ -216,7 +213,7 @@ class QualityUtils(QObject):
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_point_geom,
                                                                   {0: boundary_point_id,
                                                                    1: boundary_id,
-                                                                   2: typeTplgError[2]})
+                                                                   2: translated_strings.ERROR_NO_FOUND_POINT_BFS})
                 features.append(new_feature)
 
         # Duplicate in point_bfs
@@ -228,7 +225,7 @@ class QualityUtils(QObject):
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_point_geom,
                                                                   {0: boundary_point_id,
                                                                    1: boundary_id,
-                                                                   2: typeTplgError[1]})
+                                                                   2: translated_strings.ERROR_DUPLICATE_POINT_BFS})
                 features.append(new_feature)
 
         return features
@@ -296,10 +293,6 @@ class QualityUtils(QObject):
 
     def get_boundary_nodes_features_not_covered_by_boundary_points(self, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field=ID_FIELD):
 
-        typeTplgError = {0: translated_strings.ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT,
-                         1: translated_strings.ERROR_DUPLICATE_POINT_BFS,
-                         2: translated_strings.ERROR_NO_FOUND_POINT_BFS}
-
         tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # layer is created with unique vertices, it is neceary because remove duplicate vertices method does not filter the data
@@ -315,7 +308,7 @@ class QualityUtils(QObject):
         fs = list()
         for f in tmp_boundary_nodes_layer.getFeatures(request):
             item = [f[id_field], f.geometry().asWkt()]
-            if filter_fs.count(item) == 0:
+            if item not in filter_fs:
                 filter_fs.append(item)
                 fs.append(f)
         boundary_nodes_unique_layer.dataProvider().addFeatures(fs)
@@ -323,7 +316,7 @@ class QualityUtils(QObject):
         # Create an autoincremental field to have an identifying field
         boundary_nodes_layer = processing.run("native:addautoincrementalfield",
                                               {'INPUT': boundary_nodes_unique_layer,
-                                               'FIELD_NAME': 'TMP_AUTO',
+                                               'FIELD_NAME': 'AUTO',
                                                'START': 0,
                                                'GROUP_FIELDS': [],
                                                'SORT_EXPRESSION': '',
@@ -345,14 +338,15 @@ class QualityUtils(QObject):
         # create dict with layer data
         id_field_idx = boundary_nodes_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
-        dict_boundary_nodes = {feature['TMP_AUTO']: feature for feature in boundary_nodes_layer.getFeatures(request)}
+        dict_boundary_nodes = {feature['AUTO']: feature for feature in boundary_nodes_layer.getFeatures(request)}
 
         exp_point_bfs = '"{}" is not null and "{}" is not null'.format(BFS_TABLE_BOUNDARY_POINT_FIELD, POINT_BFS_TABLE_BOUNDARY_FIELD)
         dict_point_bfs = [{'boundary_point_id': feature[BFS_TABLE_BOUNDARY_POINT_FIELD], 'boundary_id': feature[POINT_BFS_TABLE_BOUNDARY_FIELD]}
                           for feature in point_bfs_layer.getFeatures(exp_point_bfs)]
 
-        dict_spatial_join_boundary_node_boundary_point = [{'boundary_point_id': feature[id_field + '_2'], 'boundary_node_id': feature['TMP_AUTO']}
-            for feature in spatial_join_layer.getFeatures()]
+        dict_spatial_join_boundary_node_boundary_point = [{'boundary_point_id': feature[id_field + '_2'],
+                                                           'boundary_node_id': feature['AUTO']}
+                                                          for feature in spatial_join_layer.getFeatures()]
 
         boundary_node_without_boundary_point = list()
         no_register_point_bfs = list()
@@ -384,7 +378,7 @@ class QualityUtils(QObject):
                 boundary_node_geom = dict_boundary_nodes[boundary_node_id].geometry()
                 boundary_id = dict_boundary_nodes[boundary_node_id][id_field]  # get boundary id
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_node_geom,
-                                                                  {0: None,  1: boundary_id, 2: typeTplgError[0]})
+                                                                  {0: None,  1: boundary_id, 2: translated_strings.ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT})
                 features.append(new_feature)
 
         # Duplicate in point_bfs
@@ -395,7 +389,7 @@ class QualityUtils(QObject):
                 boundary_node_geom = dict_boundary_nodes[boundary_node_id].geometry()
                 boundary_id = dict_boundary_nodes[boundary_node_id][id_field]  # get boundary id
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_node_geom,
-                                                                  {0: boundary_point_id, 1: boundary_id, 2: typeTplgError[1]})
+                                                                  {0: boundary_point_id, 1: boundary_id, 2: translated_strings.ERROR_DUPLICATE_POINT_BFS})
                 features.append(new_feature)
 
         # No register in point_bfs
@@ -406,7 +400,7 @@ class QualityUtils(QObject):
                 boundary_node_geom = dict_boundary_nodes[boundary_node_id].geometry()
                 boundary_id = dict_boundary_nodes[boundary_node_id][id_field]  # get boundary id
                 new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_node_geom,
-                                                                  {0: boundary_point_id, 1: boundary_id, 2: typeTplgError[2]})
+                                                                  {0: boundary_point_id, 1: boundary_id, 2: translated_strings.ERROR_NO_FOUND_POINT_BFS})
                 features.append(new_feature)
 
         return features
