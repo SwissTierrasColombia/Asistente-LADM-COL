@@ -1522,15 +1522,23 @@ class QualityUtils(QObject):
                           QgsField("error_type", QVariant.String)])
         error_layer.updateFields()
 
-        parcel_ids = self.logic.get_parcel_right_relationship_errors(db)
+        parcel_no_right_ids, parcel_duplicated_domain_right_ids  = self.logic.get_parcel_right_relationship_errors(db)
 
         new_features = []
-        for parcel_id in parcel_ids:
+        for parcel_id in parcel_no_right_ids:
             new_feature = QgsVectorLayerUtils().createFeature(
                 error_layer,
                 QgsGeometry(),
                 {0: parcel_id,
-                 1: translated_strings.CHECK_PARCEL_RIGHT_RELATIONSHIP})
+                 1: translated_strings.ERROR_PARCEL_WITH_NO_RIGHT})
+            new_features.append(new_feature)
+
+        for parcel_id in parcel_duplicated_domain_right_ids:
+            new_feature = QgsVectorLayerUtils().createFeature(
+                error_layer,
+                QgsGeometry(),
+                {0: parcel_id,
+                 1: translated_strings.ERROR_PARCEL_WITH_REPEATED_DOMAIN_RIGHT})
             new_features.append(new_feature)
 
         error_layer.dataProvider().addFeatures(new_features)

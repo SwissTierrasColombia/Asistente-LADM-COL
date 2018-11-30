@@ -9,4 +9,5 @@ class LogicChecks(QObject):
 
     def get_parcel_right_relationship_errors(self, db):
         parcels_no_right = db.get_parcels_with_no_right()
-        return [sublist[0] for sublist in parcels_no_right]
+        parcels_repeated_domain_right = db.get_parcels_with_repeated_domain_right()
+        return ([sublist[0] for sublist in parcels_no_right], [sublist[0] for sublist in parcels_repeated_domain_right])
