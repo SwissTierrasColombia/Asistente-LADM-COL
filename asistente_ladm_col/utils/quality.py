@@ -181,7 +181,7 @@ class QualityUtils(QObject):
         fs = list()
         for f in tmp_plot_nodes_layer.getFeatures(request):
             item = [f[id_field], f.geometry().asWkt()]
-            if filter_fs.count(item) == 0:
+            if item not in filter_fs:
                 filter_fs.append(item)
                 fs.append(f)
         plot_nodes_layer.dataProvider().addFeatures(fs)
