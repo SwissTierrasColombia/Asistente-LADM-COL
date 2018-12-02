@@ -768,7 +768,7 @@ class QGISUtils(QObject):
               epsg
            )
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
-
+        self.set_automatic_fields(csv_layer)
         if elevation:
             z = QgsProperty.fromExpression('\"{}\"'.format(elevation.strip()))
             parameters = {'INPUT': csv_layer,
@@ -841,21 +841,24 @@ class QGISUtils(QObject):
         settings = QSettings()
         ns_enabled, ns_field, ns_value = self.get_namespace_field_and_value(target_layer_name)
         lid_enabled, lid_field, lid_value = self.get_local_id_field_and_value(target_layer_name)
+        print(lid_enabled, lid_field, lid_value)
         for in_feature in csv_layer.getFeatures():
-            if settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
-                if ns_enabled:
-                    in_feature[csv_layer.fields().indexOf(ns_field)] = QgsExpression("{}".format(ns_value)).evaluate()
-                if lid_enabled:
-                    in_feature[csv_layer.fields().indexOf(lid_field)] = QgsExpression("\'{}\' = '$id'".format(lid_value)).evaluate()
-            elif not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
-                if not (in_feature[csv_layer.fields().indexOf(ns_field)] \
-                         or in_feature[csv_layer.fields().indexOf(lid_field)]):
+            if not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
+                if not in_feature[csv_layer.fields().indexOf(ns_field)]:
                     self.message_emitted.emit(
                         QCoreApplication.translate("QGISUtils",
-                                                   "Null values in points were added to '{}'.").format(len(new_features),
-                                                                                                   target_layer_name),
+                        "Null values in {} field, not add anything to '{}'. "
+                        "Fill these or enable calculate automatic values").format(ns_field, target_layer_name),
+                        Qgis.Info)
+
+                if not in_feature[csv_layer.fields().indexOf(lid_field)]:
+                    self.message_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                        "Null values in {} field, not add anything to '{}'. "
+                        "Fill these or enable calculate automatic values").format(lid_field, target_layer_name),
                         Qgis.Info)
                 return
+
             attrs = {target_idx: in_feature[csv_idx] for target_idx, csv_idx in mapping.items()}
             new_feature = QgsVectorLayerUtils().createFeature(target_point_layer, in_feature.geometry(), attrs)
             new_features.append(new_feature)
