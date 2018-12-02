@@ -768,6 +768,7 @@ class QGISUtils(QObject):
               epsg
            )
         csv_layer = QgsVectorLayer(uri, os.path.basename(csv_path), "delimitedtext")
+        # Enabled automatic Values for temporal layer before load this in database.
         self.set_automatic_fields(csv_layer)
         if elevation:
             z = QgsProperty.fromExpression('\"{}\"'.format(elevation.strip()))
@@ -816,19 +817,6 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return False
 
-        # # self.set_automatic_fields(target_point_layer)
-        # automatic_fields_definition = self.disable_automatic_fields(db, target_layer_name)
-        # print("Automatic Fields", automatic_fields_definition)
-        # self.check_if_and_enable_automatic_fields(db, automatic_fields_definition, target_layer_name)
-        # [print(automatic_fields_definition[i].expression) for i in automatic_fields_definition]
-        # self.set_automatic_fields(target_point_layer)
-        # self.set_automatic_fields_namespace_local_id(target_point_layer)
-        # #
-        # # self.check_if_and_enable_automatic_fields(db,
-        # #                                           automatic_fields_definition,
-        # #                                           target_layer_name)
-        #
-        # # Define a mapping between CSV and target layer
         mapping = dict()
         for target_idx in target_point_layer.fields().allAttributesList():
             target_field = target_point_layer.fields().field(target_idx)
@@ -843,20 +831,25 @@ class QGISUtils(QObject):
         lid_enabled, lid_field, lid_value = self.get_local_id_field_and_value(target_layer_name)
         print(lid_enabled, lid_field, lid_value)
         for in_feature in csv_layer.getFeatures():
-            if not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
+            # Check if is enable Calculate Automatic Values, if not print warning and return function
+            if settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
+                if ns_enabled and not in_feature[csv_layer.fields().indexOf(ns_field)]:
+                    in_feature[csv_layer.fields().indexOf(ns_field)] = QgsExpression("{}".format(ns_value)).evaluate()
+                if lid_enabled and not in_feature[csv_layer.fields().indexOf(lid_field)]:
+                    in_feature[csv_layer.fields().indexOf(lid_field)] = \
+                        QgsExpression("\'{}\' = '$id'".format(lid_field)).evaluate()
+            elif not settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
                 if not in_feature[csv_layer.fields().indexOf(ns_field)]:
                     self.message_emitted.emit(
-                        QCoreApplication.translate("QGISUtils",
-                        "Null values in {} field, not add anything to '{}'. "
-                        "Fill these or enable calculate automatic values").format(ns_field, target_layer_name),
-                        Qgis.Info)
+                        QCoreApplication.translate("QGISUtils", "Null values in {} field, not add anything to '{}'. "
+                            "Fill these or enable calculate automatic values").format(ns_field, target_layer_name),
+                        Qgis.Warning)
 
                 if not in_feature[csv_layer.fields().indexOf(lid_field)]:
                     self.message_emitted.emit(
-                        QCoreApplication.translate("QGISUtils",
-                        "Null values in {} field, not add anything to '{}'. "
-                        "Fill these or enable calculate automatic values").format(lid_field, target_layer_name),
-                        Qgis.Info)
+                        QCoreApplication.translate("QGISUtils", "Null values in {} field, not add anything to '{}'. "
+                            "Fill these or enable calculate automatic values").format(lid_field, target_layer_name),
+                        Qgis.Warning)
                 return
 
             attrs = {target_idx: in_feature[csv_idx] for target_idx, csv_idx in mapping.items()}
