@@ -36,6 +36,7 @@ from ..config.general_config import (
     TranslatableConfigStrings
 )
 from ..config.help_strings import HelpStrings
+from .right_of_way import RightOfWay
 
 WIZARD_UI = get_ui_class('wiz_create_right_of_way_cadastre.ui')
 
@@ -53,6 +54,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         self._survey_point_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
+        self.right_of_way = RightOfWay(self.iface, self.qgis_utils)
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
 
@@ -115,51 +117,16 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             self.prepare_right_of_way_creation()
 
         elif self.rad_digitizing_line.isChecked():
-            self.prepare_right_if_way_line_creation()
-
-    def add_db_required_layers(self):
-        # Load layers
-        res_layers = self.qgis_utils.get_layers(self._db, {
-            RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None}
-        }, load=True)
-
-        self._right_of_way_layer = res_layers[RIGHT_OF_WAY_TABLE]
-        self._survey_point_layer = res_layers[SURVEY_POINT_TABLE]
-
-        if self._right_of_way_layer is None:
-            self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                QCoreApplication.translate('CreateRightOfWayCadastreWizard',
-                                           "Right of Way layer couldn't be found... {}").format(self._db.get_description()),
-                Qgis.Warning)
-            return
-
-        if self._survey_point_layer is None:
-            self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                QCoreApplication.translate('CreateRightOfWayCadastreWizard',
-                                           "Survey Point layer couldn't be found... {}").format(self._db.get_description()),
-                Qgis.Warning)
-            return
-
-    def set_layers_settings(self):
-        # Disable transactions groups
-        QgsProject.instance().setAutoTransaction(False)
-
-        # Configure Snapping
-        snapping = QgsProject.instance().snappingConfig()
-        snapping.setEnabled(True)
-        snapping.setMode(QgsSnappingConfig.AllLayers)
-        snapping.setType(QgsSnappingConfig.Vertex)
-        snapping.setUnits(QgsTolerance.Pixels)
-        snapping.setTolerance(9)
-        QgsProject.instance().setSnappingConfig(snapping)
+            width_value = self.width_line_edit.value()
+            print(width_value)
+            self.right_of_way.prepare_right_of_way_line_creation(self._db, self._right_of_way_layer, self.translatable_config_strings, self.iface, width_value)
 
     def prepare_right_of_way_creation(self):
         # Load layers
-        self.add_db_required_layers()
+        self.right_of_way.add_db_required_layers(self._db, self.iface)
 
         # Disable transactions groups and configure Snapping
-        self.set_layers_settings()
+        self.right_of_way.set_layers_settings()
 
         # Don't suppress feature form
         form_config = self._right_of_way_layer.editFormConfig()
@@ -175,66 +142,6 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             QCoreApplication.translate('CreateRightOfWayCadastreWizard',
                                        "You can now start capturing right of way digitizing on the map..."),
             Qgis.Info)
-
-    def prepare_right_if_way_line_creation(self):
-        # Load layers
-        self.add_db_required_layers()
-
-        # Add Memory line layer
-        self._right_of_way_line_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                    self.translatable_config_strings.RIGHT_OF_WAY_LINE_LAYER, "memory")
-        QgsProject.instance().addMapLayer(self._right_of_way_line_layer, True)
-
-        # Disable transactions groups and configure Snapping
-        self.set_layers_settings()
-
-        # Suppress feature form
-        form_config = self._right_of_way_line_layer.editFormConfig()
-        form_config.setSuppress(QgsEditFormConfig.SuppressOn)
-        self._right_of_way_line_layer.setEditFormConfig(form_config)
-
-        # Enable edition mode
-        self.iface.layerTreeView().setCurrentLayer(self._right_of_way_line_layer)
-        self._right_of_way_line_layer.startEditing()
-        self.iface.actionAddFeature().trigger()
-
-        self._right_of_way_line_layer.featureAdded.connect(self.call_right_of_way_line_commit)
-        self._right_of_way_line_layer.committedFeaturesAdded.connect(partial(self.finish_right_of_way_line))
-
-        self.iface.messageBar().pushMessage('Asistente LADM_COL',
-            QCoreApplication.translate('CreateRightOfWayCadastreWizard',
-                                       "You can now start capturing line right of way digitizing on the map..."),
-            Qgis.Info)
-
-    def call_right_of_way_line_commit(self, fid):
-        self._right_of_way_line_layer.featureAdded.disconnect(self.call_right_of_way_line_commit)
-        self.log.logMessage("RigthOfWayLine's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
-        res = self._right_of_way_line_layer.commitChanges()
-
-    def finish_right_of_way_line(self, layerId, features):
-        self._right_of_way_line_layer.committedFeaturesAdded.disconnect()
-        self.log.logMessage("RigthOfWayLine's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
-        params = {'INPUT':self._right_of_way_line_layer,
-                  'DISTANCE':self.width_line_edit.value(),
-                  'SEGMENTS':5,
-                  'END_CAP_STYLE':1,
-                  'JOIN_STYLE':2,
-                  'MITER_LIMIT':2,
-                  'DISSOLVE':False,
-                  'OUTPUT':'memory:'}
-        buffered_right_of_way_layer = processing.run("native:buffer", params)['OUTPUT']
-        ##QgsProject.instance().addMapLayer(buffered_right_of_way_layer, True)
-        #QgsProject.instance().removeMapLayer(self._right_of_way_line_layer)
-
-        serv = buffered_right_of_way_layer.getFeature(1).geometry()
-        feature = QgsVectorLayerUtils().createFeature(self._right_of_way_layer, serv)
-        print(feature.geometry().asWkt())
-
-        if feature:
-            self._right_of_way_layer.startEditing()
-            self._right_of_way_layer.addFeature(feature)
-            ##self.map_refresh_requested.emit()
-
 
     def save_settings(self):
         settings = QSettings()
