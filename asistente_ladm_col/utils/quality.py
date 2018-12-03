@@ -102,7 +102,7 @@ class QualityUtils(QObject):
         error_layer.updateFields()
 
         topology_rule = 'plot_nodes_covered_by_boundary_points'
-        features = self.get_boundary_points_features_not_covered_by_plot_nodes_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule)
+        features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule)
         error_layer.dataProvider().addFeatures(features)
 
         if error_layer.featureCount() > 0:
@@ -149,7 +149,7 @@ class QualityUtils(QObject):
         error_layer.updateFields()
 
         topology_rule = 'boundary_points_covered_by_plot_nodes'
-        features = self.get_boundary_points_features_not_covered_by_plot_nodes_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule)
+        features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule)
         error_layer.dataProvider().addFeatures(features)
 
         if error_layer.featureCount() > 0:
@@ -164,7 +164,7 @@ class QualityUtils(QObject):
                 QCoreApplication.translate("QGISUtils", "All boundary points are covered by plot nodes!"), Qgis.Info)
 
     @staticmethod
-    def get_boundary_points_features_not_covered_by_plot_nodes_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule, id_field=ID_FIELD):
+    def get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule, id_field=ID_FIELD):
         tmp_plot_nodes_layer = processing.run("native:extractvertices", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # layer is created with unique vertices

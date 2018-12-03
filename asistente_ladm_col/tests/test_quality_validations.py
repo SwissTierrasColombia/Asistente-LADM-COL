@@ -61,9 +61,9 @@ class TesQualityValidations(unittest.TestCase):
         error_layer.updateFields()
 
         topology_rule = 'boundary_points_covered_by_plot_nodes'
-        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_viceversa(boundary_point_layer,
-                                                                                         plot_layer, error_layer,
-                                                                                         topology_rule)
+        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer,
+                                                                                                     plot_layer, error_layer,
+                                                                                                     topology_rule)
         error_layer.dataProvider().addFeatures(features)
         self.assertEqual(error_layer.featureCount(), 14)
 
@@ -105,9 +105,9 @@ class TesQualityValidations(unittest.TestCase):
         error_layer.updateFields()
 
         topology_rule = 'plot_nodes_covered_by_boundary_points'
-        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_viceversa(boundary_point_layer,
-                                                                                         plot_layer, error_layer,
-                                                                                         topology_rule)
+        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer,
+                                                                                                     plot_layer, error_layer,
+                                                                                                     topology_rule)
         error_layer.dataProvider().addFeatures(features)
         self.assertEqual(error_layer.featureCount(), 10)
 
