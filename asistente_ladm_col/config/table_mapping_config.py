@@ -127,6 +127,18 @@ NUCLEAR_FAMILY_TABLE = "nucleofamiliar"
 NATURAL_PARTY_TABLE = "interesado_natural"
 LEGAL_PARTY_TABLE = "interesado_juridico"
 
+"""
+VALUATION MAPPING
+"""
+VALUATION_PARCEL_TABLE = "avaluos_v2_2_1avaluos_predio"
+VALUATION_HORIZONTAL_PROPERTY_TABLE = "predio_matriz_ph"
+VALUATION_COMMON_EQUIPMENT_TABLE = "equipamiento_comunal"
+VALUATION_BUILDING_TABLE = "avaluos_v2_2_1avaluos_construccion"
+VALUATION_BUILDING_UNIT_TABLE = "avaluounidadconstruccion"
+VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE = "calificacion_no_convencional"
+VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE = "calificacion_convencional"
+VALUATION_GEOECONOMIC_ZONE_TABLE = "zona_homogenea_geoeconomica"
+VALUATION_PHYSICAL_ZONE_TABLE = "zona_homogenea_fisica"
 
 NAMESPACE_PREFIX = {
     ADMINISTRATIVE_SOURCE_TABLE: 's',

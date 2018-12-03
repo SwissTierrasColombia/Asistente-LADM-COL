@@ -68,6 +68,14 @@ from .gui.create_responsibility_cadastre_wizard import CreateResponsibilityCadas
 from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWizard
 from .gui.create_right_cadastre_wizard import CreateRightCadastreWizard
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
+from .gui.create_parcel_valuation_wizard import CreateParcelValuationWizard
+from .gui.create_horizontal_property_valuation_wizard import CreateHorizontalPropertyValuationWizard
+from .gui.create_common_equipment_valuation_wizard import CreateCommonEquipmentValuationWizard
+from .gui.create_building_valuation_wizard import CreateBuildingValuationWizard
+from .gui.create_building_unit_valuation_wizard import CreateBuildingUnitValuationWizard
+from .gui.create_building_unit_qualification_valuation_wizard import CreateBuildingUnitQualificationValuationWizard
+from .gui.create_geoeconomic_zone_valuation_wizard import CreateGeoeconomicZoneValuationWizard
+from .gui.create_physical_zone_valuation_wizard import CreatePhysicalZoneValuationWizard
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
 from .gui.reports import ReportGenerator
@@ -387,13 +395,13 @@ class AsistenteLADMCOLPlugin(QObject):
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Parcel"),
             self._valuation_menu)
-        self._horizontal_property_parcel_valuation_action = QAction(
+        self._horizontal_property_main_parcel_valuation_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Horizontal Property Parcel"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Horizontal Property main Parcel"),
             self._valuation_menu)
-        self._comunal_equipment_valuation_action = QAction(
+        self._common_equipment_valuation_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Communal Equipment"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Common Equipment"),
             self._valuation_menu)
         self._building_valuation_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
@@ -403,35 +411,46 @@ class AsistenteLADMCOLPlugin(QObject):
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit"),
             self._valuation_menu)
-        self._qualification_valuation_action = QAction(
+        self._building_unit_qualification_valuation_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create qualification"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit Qualification"),
             self._valuation_menu)
-        self._homogeneous_geoeconomic_zone_valuation_action = QAction(
+        self._geoeconomic_zone_valuation_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Homogeneous Geoeconomic Zone"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Geoeconomic Zone"),
             self._valuation_menu)
-        self._homogeneous_physical_zone_valuation_action = QAction(
+        self._physical_zone_valuation_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Homogeneous Physical Zone"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Physical Zone"),
             self._valuation_menu)
 
         self._valuation_menu.addAction(self._parcel_valuation_action)
-        self._valuation_menu.addAction(self._horizontal_property_parcel_valuation_action)
-        self._valuation_menu.addAction(self._comunal_equipment_valuation_action)
+        self._valuation_menu.addAction(self._horizontal_property_main_parcel_valuation_action)
+        self._valuation_menu.addAction(self._common_equipment_valuation_action)
         self._valuation_menu.addAction(self._building_valuation_action)
         self._valuation_menu.addAction(self._building_unit_valuation_action)
-        self._valuation_menu.addAction(self._qualification_valuation_action)
+        self._valuation_menu.addAction(self._building_unit_qualification_valuation_action)
         self._valuation_menu.addSeparator()
-        self._valuation_menu.addAction(self._homogeneous_geoeconomic_zone_valuation_action)
-        self._valuation_menu.addAction(self._homogeneous_physical_zone_valuation_action)
+        self._valuation_menu.addAction(self._geoeconomic_zone_valuation_action)
+        self._valuation_menu.addAction(self._physical_zone_valuation_action)
 
         if len(self._menu.actions()) > 1:
-            self._menu.insertMenu(self._menu.actions()[2], self._valuation_menu)
+            self._menu.insertMenu(self._menu.actions()[1], self._valuation_menu)
         else: # Just in case...
             self._menu.addMenu(self._valuation_menu)
 
         # Connections
+
+        self._parcel_valuation_action.triggered.connect(self.show_wiz_parcel_valuation)
+        self._horizontal_property_main_parcel_valuation_action.triggered.connect(
+            self.show_wiz_horizontal_property_main_parcel_valuation)
+        self._common_equipment_valuation_action.triggered.connect(self.show_wiz_common_equipment_valuation)
+        self._building_valuation_action.triggered.connect(self.show_wiz_building_valuation)
+        self._building_unit_valuation_action.triggered.connect(self.show_wiz_building_unit_valuation)
+        self._building_unit_qualification_valuation_action.triggered.connect(
+            self.show_wiz_building_unit_qualification_valuation)
+        self._geoeconomic_zone_valuation_action.triggered.connect(self.show_wiz_geoeconomic_zone_valuation)
+        self._physical_zone_valuation_action.triggered.connect(self.show_wiz_physical_zone_valuation_action)
 
     def remove_valuation_menu(self):
         menu = self.iface.mainWindow().findChild(QMenu, VALUATION_MENU_OBJECTNAME)
@@ -440,13 +459,13 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._valuation_menu = None
         self._parcel_valuation_action = None
-        self._horizontal_property_parcel_valuation_action = None
-        self._comunal_equipment_valuation_action = None
+        self._horizontal_property_main_parcel_valuation_action = None
+        self._common_equipment_valuation_action = None
         self._building_valuation_action = None
         self._building_unit_valuation_action = None
-        self._qualification_valuation_action = None
-        self._homogeneous_geoeconomic_zone_valuation_action = None
-        self._homogeneous_physical_zone_valuation_action = None
+        self._building_unit_qualification_valuation_action = None
+        self._geoeconomic_zone_valuation_action = None
+        self._physical_zone_valuation_action = None
 
         menu.deleteLater()
 
@@ -877,6 +896,54 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_wiz_legal_party_prc(self):
         wiz = CreateLegalPartyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_parcel_valuation(self):
+        wiz = CreateParcelValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_horizontal_property_main_parcel_valuation(self):
+        wiz = CreateHorizontalPropertyValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_common_equipment_valuation(self):
+        wiz = CreateCommonEquipmentValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_building_valuation(self):
+        wiz = CreateBuildingValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_building_unit_valuation(self):
+        wiz = CreateBuildingUnitValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_building_unit_qualification_valuation(self):
+        wiz = CreateBuildingUnitQualificationValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_geoeconomic_zone_valuation(self):
+        wiz = CreateGeoeconomicZoneValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_physical_zone_valuation_action(self):
+        wiz = CreatePhysicalZoneValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     def download_report_dependency(self):
