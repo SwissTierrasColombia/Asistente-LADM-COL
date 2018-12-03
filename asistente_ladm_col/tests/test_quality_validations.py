@@ -67,7 +67,7 @@ class TesQualityValidations(unittest.TestCase):
         error_layer.dataProvider().addFeatures(features)
         self.assertEqual(error_layer.featureCount(), 14)
 
-        result = [{'geom': f.geometry().asWkt(), 'id': f['id']} for f in error_layer.selectedFeatures()]
+        result = [{'geom': f.geometry().asWkt(), 'id': f['id']} for f in error_layer.getFeatures()]
 
         test_result = [{'geom': 'Point (895168.40587982360739261 1544541.0977809748146683)', 'id': 223},
                        {'geom': 'Point (894720.88864161947276443 1544285.23876925860531628)', 'id': 210},
@@ -111,18 +111,18 @@ class TesQualityValidations(unittest.TestCase):
         error_layer.dataProvider().addFeatures(features)
         self.assertEqual(error_layer.featureCount(), 10)
 
-        result = [{'geom': f.geometry().asWkt(), 'id': f['id']} for f in error_layer.selectedFeatures()]
+        result = [{'geom': f.geometry().asWkt(), 'id': f['id']} for f in error_layer.getFeatures()]
 
-        test_result = [{'geom': 'Point (894533.21481920615769923 1544601.79047751193866134)', 'id': 41},
-                       {'geom': 'Point (894484.66213072568643838 1544624.06759340292774141)', 'id': 41},
-                       {'geom': 'Point (894505.22562231740448624 1544589.22389931697398424)', 'id': 41},
-                       {'geom': 'Point (894852.59466425550635904 1544369.26626757089979947)', 'id': 11},
-                       {'geom': 'Point (894833.94811266358010471 1544542.75000706524588168)', 'id': 4},
-                       {'geom': 'Point (894934.73390417906921357 1544264.93999157636426389)', 'id': 19},
-                       {'geom': 'Point (894852.59466425550635904 1544369.26626757089979947)', 'id': 12},
-                       {'geom': 'Point (894809.40075360587798059 1544539.9176194816827774)', 'id': 4},
-                       {'geom': 'Point (894837.25256484432611614 1544520.56297099380753934)', 'id': 4},
-                       {'geom': 'Point (894810.34488280047662556 1544519.14677720214240253)', 'id': 4}]
+        test_result = [{'geom': 'Point (894809.40075360587798059 1544539.9176194816827774)', 'id': 2},
+                       {'geom': 'Point (894810.34488280047662556 1544519.14677720214240253)', 'id': 2},
+                       {'geom': 'Point (894837.25256484432611614 1544520.56297099380753934)', 'id': 2},
+                       {'geom': 'Point (894833.94811266358010471 1544542.75000706524588168)', 'id': 2},
+                       {'geom': 'Point (894852.59466425550635904 1544369.26626757089979947)', 'id': 6},
+                       {'geom': 'Point (894852.59466425550635904 1544369.26626757089979947)', 'id': 7},
+                       {'geom': 'Point (894934.73390417906921357 1544264.93999157636426389)', 'id': 9},
+                       {'geom': 'Point (894484.66213072568643838 1544624.06759340292774141)', 'id': 11},
+                       {'geom': 'Point (894533.21481920615769923 1544601.79047751193866134)', 'id': 11},
+                       {'geom': 'Point (894505.22562231740448624 1544589.22389931697398424)', 'id': 11}]
 
         for item in test_result:
             self.assertIn(item, result,
