@@ -341,10 +341,10 @@ class QualityUtils(QObject):
         dict_boundary_nodes = {feature['AUTO']: feature for feature in boundary_nodes_layer.getFeatures(request)}
 
         exp_point_bfs = '"{}" is not null and "{}" is not null'.format(BFS_TABLE_BOUNDARY_POINT_FIELD, POINT_BFS_TABLE_BOUNDARY_FIELD)
-        dict_point_bfs = [{'boundary_point_id': feature[BFS_TABLE_BOUNDARY_POINT_FIELD], 'boundary_id': feature[POINT_BFS_TABLE_BOUNDARY_FIELD]}
+        list_point_bfs = [{'boundary_point_id': feature[BFS_TABLE_BOUNDARY_POINT_FIELD], 'boundary_id': feature[POINT_BFS_TABLE_BOUNDARY_FIELD]}
                           for feature in point_bfs_layer.getFeatures(exp_point_bfs)]
 
-        dict_spatial_join_boundary_node_boundary_point = [{'boundary_point_id': feature[id_field + '_2'],
+        list_spatial_join_boundary_node_boundary_point = [{'boundary_point_id': feature[id_field + '_2'],
                                                            'boundary_node_id': feature['AUTO']}
                                                           for feature in spatial_join_layer.getFeatures()]
 
@@ -353,7 +353,7 @@ class QualityUtils(QObject):
         duplicate_in_point_bfs = list()
 
         # point_bfs topology check
-        for item_sj in dict_spatial_join_boundary_node_boundary_point.copy():
+        for item_sj in list_spatial_join_boundary_node_boundary_point:
             boundary_node_id = item_sj['boundary_node_id']
             boundary_point_id = item_sj['boundary_point_id']
 
@@ -362,9 +362,9 @@ class QualityUtils(QObject):
                 boundary_id = dict_boundary_nodes[boundary_node_id][id_field]  # get boundary id
                 item_sj_check = {'boundary_point_id': boundary_point_id, 'boundary_id': boundary_id}  # dict to check
 
-                if item_sj_check not in dict_point_bfs:
+                if item_sj_check not in list_point_bfs:
                     no_register_point_bfs.append((boundary_point_id, boundary_node_id))  # no register in point bfs
-                elif dict_point_bfs.count(item_sj_check) > 1:
+                elif list_point_bfs.count(item_sj_check) > 1:
                     duplicate_in_point_bfs.append((boundary_point_id, boundary_node_id))  # duplicate in point bfs
             else:
                 boundary_node_without_boundary_point.append(boundary_node_id)  # boundary node without boundary point
