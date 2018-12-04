@@ -247,27 +247,6 @@ class GeometryUtils(QObject):
             vertex1 = vertex2
         return segments_info
 
-    def get_boundary_points_not_covered_by_boundary_nodes(self, boundary_point_layer, boundary_layer):
-        params = {
-            'INPUT': boundary_point_layer,
-            'JOIN': boundary_layer,
-            'PREDICATE': [0], # Intersects
-            'JOIN_FIELDS': [ID_FIELD],
-            'METHOD': 0,
-            'DISCARD_NONMATCHING': False,
-            'PREFIX': '',
-            'OUTPUT': 'memory:'}
-        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
-                                            params)['OUTPUT']
-
-        id_field_idx = spatial_join_layer.fields().indexFromName(ID_FIELD)
-        expr = '"{}_2" IS NULL'.format(ID_FIELD)  # loose point
-        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx]).setFilterExpression(expr)
-        it_features_expr = spatial_join_layer.getFeatures(request)
-        features_expr = [feature_expr for feature_expr in it_features_expr]
-
-        return features_expr
-
     def get_overlapping_points(self, point_layer):
         """
         Returns a list of lists, where inner lists are ids of overlapping

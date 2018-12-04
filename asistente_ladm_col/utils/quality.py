@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication,
                               QVariant,
@@ -32,6 +33,7 @@ from qgis.core import (Qgis,
                        QgsVectorLayerUtils,
                        QgsWkbTypes,
                        QgsFeatureRequest,
+                       NULL,
                        QgsRectangle)
 
 import processing
@@ -51,6 +53,7 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            LESS_TABLE_BOUNDARY_FIELD,
                                            LESS_TABLE_PLOT_FIELD,
                                            POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
+                                           BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            MOREBFS_TABLE_BOUNDARY_FIELD,
                                            MORE_BOUNDARY_FACE_STRING_TABLE,
                                            LESS_TABLE,
@@ -1264,67 +1267,6 @@ class QualityUtils(QObject):
 
         return features
 
-    def check_boundary_points_covered_by_boundary_nodes(self, db):
-        res_layers = self.qgis_utils.get_layers(db, {
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None}}, load=True)
-
-        boundary_layer = res_layers[BOUNDARY_TABLE]
-        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
-
-        if boundary_point_layer is None:
-            self.qgis_utils.message_emitted.emit(
-            QCoreApplication.translate("QGISUtils",
-            "Layer {} not found in DB! {}").format(
-            BOUNDARY_POINT_TABLE, db.get_description()), Qgis.Warning)
-            return
-
-        if boundary_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "Layer {} not found in DB! {}").format(
-                    BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
-            return
-
-        if boundary_point_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no boundary points to check 'boundary points should be covered by boundary nodes'."),
-                Qgis.Info)
-            return
-
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
-                                     "memory")
-
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('point_boundary_id', QVariant.Int)])
-        error_layer.updateFields()
-
-        features = []
-        points_selected = self.qgis_utils.geometry.get_boundary_points_not_covered_by_boundary_nodes(boundary_point_layer, boundary_layer)
-
-        for point_selected in points_selected:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                error_layer,
-                point_selected.geometry(),
-                {0: point_selected[ID_FIELD]})
-            features.append(new_feature)
-
-        error_layer.dataProvider().addFeatures(features)
-
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} boundary points not covered by boundary nodes has been added to the map!").format(
-                    added_layer.featureCount()), Qgis.Info)
-        else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "All boundary points are covered by boundary nodes!"), Qgis.Info)
-
     def check_overlapping_polygons(self, db, polygon_layer_name):
         polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, QgsWkbTypes.PolygonGeometry, load=True)
 
@@ -1602,7 +1544,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_MISSING_BOUNDARY_POINTS_IN_BOUNDARIES,
+                                     translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
                                      "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),

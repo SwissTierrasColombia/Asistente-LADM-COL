@@ -318,11 +318,16 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
     if QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
         # Now see if we can adjust the mapping depending on user settings
         ns_enabled, ns_field, ns_value = qgis_utils.get_namespace_field_and_value(layer_name)
+        lid_enabled, lid_field, lid_value = qgis_utils.get_local_id_field_and_value(layer_name)
 
         for field in mapping:
             if ns_enabled and ns_field:
                 if field['name'] == ns_field:
                     field['expression'] = '{}'.format(ns_value)
+
+            if lid_enabled and lid_field:
+                if field['name'] == lid_field:
+                    field['expression'] = '{}'.format(lid_value)
 
             if field['name'] == VIDA_UTIL_FIELD:
                 field['expression'] = 'now()'

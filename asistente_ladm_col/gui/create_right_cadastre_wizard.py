@@ -97,7 +97,7 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
                 res_etl_model = self.qgis_utils.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
                                                                RIGHT_TABLE,
-                                                               field_mapping)
+                                                               field_mapping=field_mapping)
 
                 if res_etl_model:
                     if field_mapping:

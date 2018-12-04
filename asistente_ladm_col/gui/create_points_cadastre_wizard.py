@@ -299,12 +299,13 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                 file.readline() # headers
                 data = file.readline().strip() # 1st line with data
 
-            fields = self.get_fields_from_csv_file(csv_path)
-            if self.cbo_latitude.currentText() in fields:
-                num_col = data.split(self.cbo_delimiter.currentText())[fields.index(self.cbo_latitude.currentText())]
-                for decimal_point in ['.', ',']:
-                    if decimal_point in num_col:
-                        return decimal_point
+            if data:
+                fields = self.get_fields_from_csv_file(csv_path)
+                if self.cbo_latitude.currentText() in fields:
+                    num_col = data.split(self.cbo_delimiter.currentText())[fields.index(self.cbo_latitude.currentText())]
+                    for decimal_point in ['.', ',']:
+                        if decimal_point in num_col:
+                            return decimal_point
 
         return '.' # just use the default one
 

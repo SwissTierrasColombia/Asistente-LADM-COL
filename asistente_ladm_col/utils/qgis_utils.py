@@ -692,7 +692,7 @@ class QGISUtils(QObject):
         local_id_field = field_prefix + LOCAL_ID_FIELD if field_prefix else None
 
         if local_id_field is not None:
-            local_id_value = '"{}"'.format(ID_FIELD)
+            local_id_value = "$id"
         else:
             local_id_value = None
 
@@ -1034,7 +1034,7 @@ class QGISUtils(QObject):
                 Qgis.Info)
         else:
             self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.".format(LESS_TABLE)),
+                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.").format(LESS_TABLE),
                 Qgis.Info)
 
         if id_more_pairs:
@@ -1060,7 +1060,7 @@ class QGISUtils(QObject):
                 Qgis.Info)
         else:
             self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.".format(MORE_BOUNDARY_FACE_STRING_TABLE)),
+                QCoreApplication.translate("QGISUtils", "No pairs id_boundary-id_plot found for '{}' table.").format(MORE_BOUNDARY_FACE_STRING_TABLE),
                 Qgis.Info)
 
     def get_error_layers_group(self):
@@ -1184,14 +1184,15 @@ class QGISUtils(QObject):
             for path in files[0:len(files)-MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE]:
                 os.remove(path)
 
-        files = files[len(files) - MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE:]
+            files = files[len(files) - MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE:]
+
         files.reverse()
 
         return [os.path.basename(file).strip(".txt") for file in files]
 
     def delete_old_field_mapping(self, field_mapping_name):
-        file_path = os.path(FIELD_MAPPING_PATH, field_mapping_name, ".txt")
-        if os.exists(file_path):
+        file_path = os.path.join(FIELD_MAPPING_PATH, "{}.txt".format(field_mapping_name))
+        if os.path.exists(file_path):
             os.remove(file_path)
 
     def explode_boundaries(self, db):
