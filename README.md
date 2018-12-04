@@ -18,7 +18,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([0.11.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.11.1)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.5](https://github.com/opengisch/projectgenerator/releases/download/v3.3.5/projectgenerator.v3.3.5.zip) y permite:
+La versión actual ([0.11.2](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.11.2)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.6](https://github.com/opengisch/projectgenerator/releases/download/v3.3.6/projectgenerator.v3.3.6.zip) y permite:
 
  - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
  - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
@@ -88,8 +88,8 @@ La versión actual ([0.11.1](https://github.com/AgenciaImplementacion/Asistente-
    - Revisar que los `Linderos` siempre terminen en cambio de colindancia.
    - Revisar superposiciones entre `Servidumbre de paso` y `Construcción`.
    - Revisar que los `Terrenos` no dejen agujeros entre ellos.
-   - Revisar que los límites de `Terrenos` estén cubiertos por `Linderos`.
-   - Revisar que los `Linderos` estén cubiertos por límites de `Terrenos`.
+   - Revisar que los límites de `Terrenos` estén cubiertos por `Linderos` y que sus relaciones estén correctamente registradas en las tablas de topología (`MasCCL` y `Menos`).
+   - Revisar que los `Linderos` estén cubiertos por límites de `Terrenos` y que sus relaciones estén correctamente registradas en las tablas de topología (`MasCCL` y `Menos`).
    - Revisar geometrías multiparte en `Servidumbre de paso`.
  - Generar Informes de Colindancia con base en `Terrenos` seleccionados (Anexo 17).
  - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
