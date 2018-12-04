@@ -21,6 +21,7 @@ import json
 import locale
 import os
 import stat
+import shutil
 import tempfile
 import time
 import zipfile
