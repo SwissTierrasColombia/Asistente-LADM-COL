@@ -43,6 +43,91 @@ class TesQualityValidations(unittest.TestCase):
             return
         restore_schema('test_ladm_col_validations_against_topology_tables')
 
+    def test_check_boundary_points_covered_by_plot_nodes(self):
+        print('\nINFO: Validating boundary points are covered by plot nodes...')
+
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
+        boundary_point_layer = QgsVectorLayer(uri, 'puntolindero', 'ogr')
+        self.assertEqual(boundary_point_layer.featureCount(), 82)
+
+        uri = gpkg_path + '|layername={layername}'.format(layername='terreno')
+        plot_layer = QgsVectorLayer(uri, 'terreno', 'ogr')
+        self.assertEqual(plot_layer.featureCount(), 12)
+
+        error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('id', QVariant.Int)])
+        error_layer.updateFields()
+
+        topology_rule = 'boundary_points_covered_by_plot_nodes'
+        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer,
+                                                                                                     plot_layer, error_layer,
+                                                                                                     topology_rule)
+        error_layer.dataProvider().addFeatures(features)
+        self.assertEqual(error_layer.featureCount(), 14)
+
+        result = [{'geom': f.geometry().asWkt(), 'id': f['id']} for f in error_layer.getFeatures()]
+
+        test_result = [{'geom': 'Point (895168.40587982360739261 1544541.0977809748146683)', 'id': 223},
+                       {'geom': 'Point (894720.88864161947276443 1544285.23876925860531628)', 'id': 210},
+                       {'geom': 'Point (894682.65140924125444144 1544280.9901878833770752)', 'id': 209},
+                       {'geom': 'Point (895038.58811557665467262 1544506.16500077745877206)', 'id': 220},
+                       {'geom': 'Point (894718.52831863309256732 1544310.25819291360676289)', 'id': 211},
+                       {'geom': 'Point (894748.2683882606215775 1544266.82824996509589255)', 'id': 206},
+                       {'geom': 'Point (894655.27166260010562837 1544261.16347479773685336)', 'id': 205},
+                       {'geom': 'Point (894681.70728004665579647 1544310.25819291360676289)', 'id': 208},
+                       {'geom': 'Point (894745.43600067705847323 1544332.91729358164593577)', 'id': 207},
+                       {'geom': 'Point (894639.00421297014690936 1544574.38610569201409817)', 'id': 152},
+                       {'geom': 'Point (894655.27166260010562837 1544329.14077680348418653)', 'id': 204},
+                       {'geom': 'Point (894648.56400672777090222 1544485.16136395325884223)', 'id': 153},
+                       {'geom': 'Point (895195.31356186757329851 1544457.07028266228735447)', 'id': 222},
+                       {'geom': 'Point (895053.22211809176951647 1544435.35531118814833462)', 'id': 221}]
+
+        for item in test_result:
+            self.assertIn(item, result, 'Error in: Boundary point {} is not covered by plot node'.format(item['id']))
+
+    def test_check_plot_nodes_covered_by_boundary_points(self):
+        print('\nINFO: Validating plot nodes are covered by boundary points...')
+
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
+        boundary_point_layer = QgsVectorLayer(uri, 'puntolindero', 'ogr')
+        self.assertEqual(boundary_point_layer.featureCount(), 82)
+
+        uri = gpkg_path + '|layername={layername}'.format(layername='terreno')
+        plot_layer = QgsVectorLayer(uri, 'terreno', 'ogr')
+        self.assertEqual(plot_layer.featureCount(), 12)
+
+        error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('id', QVariant.Int)])
+        error_layer.updateFields()
+
+        topology_rule = 'plot_nodes_covered_by_boundary_points'
+        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer,
+                                                                                                     plot_layer, error_layer,
+                                                                                                     topology_rule)
+        error_layer.dataProvider().addFeatures(features)
+        self.assertEqual(error_layer.featureCount(), 10)
+
+        result = [{'geom': f.geometry().asWkt(), 'id': f['id']} for f in error_layer.getFeatures()]
+
+        test_result = [{'geom': 'Point (894809.40075360587798059 1544539.9176194816827774)', 'id': 2},
+                       {'geom': 'Point (894810.34488280047662556 1544519.14677720214240253)', 'id': 2},
+                       {'geom': 'Point (894837.25256484432611614 1544520.56297099380753934)', 'id': 2},
+                       {'geom': 'Point (894833.94811266358010471 1544542.75000706524588168)', 'id': 2},
+                       {'geom': 'Point (894852.59466425550635904 1544369.26626757089979947)', 'id': 6},
+                       {'geom': 'Point (894852.59466425550635904 1544369.26626757089979947)', 'id': 7},
+                       {'geom': 'Point (894934.73390417906921357 1544264.93999157636426389)', 'id': 9},
+                       {'geom': 'Point (894484.66213072568643838 1544624.06759340292774141)', 'id': 11},
+                       {'geom': 'Point (894533.21481920615769923 1544601.79047751193866134)', 'id': 11},
+                       {'geom': 'Point (894505.22562231740448624 1544589.22389931697398424)', 'id': 11}]
+
+        for item in test_result:
+            self.assertIn(item, result,
+                          'Error in: Plot node {} is not covered by boundary point'.format(item['id']))
+
     def test_topology_boundary_nodes_must_be_covered_by_boundary_points(self):
         DB_HOSTNAME = "postgres"
         DB_PORT = "5432"

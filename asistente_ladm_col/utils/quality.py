@@ -405,6 +405,153 @@ class QualityUtils(QObject):
 
         return features
 
+    def check_plot_nodes_covered_by_boundary_points(self, db):
+        res_layers = self.qgis_utils.get_layers(db, {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None}}, load=True)
+
+        plot_layer = res_layers[PLOT_TABLE]
+        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
+
+        if boundary_point_layer is None:
+            self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils", "Layer {} not found in DB! {}")
+                                                 .format(BOUNDARY_POINT_TABLE, db.get_description()), Qgis.Warning)
+            return
+
+        if plot_layer is None:
+            self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils","Layer {} not found in DB! {}")
+                                                 .format(PLOT_TABLE, db.get_description()), Qgis.Warning)
+            return
+
+        if plot_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "There are no plots to check 'Plots should be covered by boundary points'."),
+                Qgis.Info)
+            return
+
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     translated_strings.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS,
+                                     "memory")
+
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('plot_id', QVariant.Int)])
+        error_layer.updateFields()
+
+        topology_rule = 'plot_nodes_covered_by_boundary_points'
+        features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule)
+        error_layer.dataProvider().addFeatures(features)
+
+        if error_layer.featureCount() > 0:
+            added_layer = self.add_error_layer(error_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate(
+                    "QGISUtils", "A memory layer with {} plot nodes not covered by boundary points has been added to the map!")
+                    .format(added_layer.featureCount()), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "All plot nodes are covered by boundary points!"), Qgis.Info)
+
+    def check_boundary_points_covered_by_plot_nodes(self, db):
+        res_layers = self.qgis_utils.get_layers(db, {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None}}, load=True)
+
+        plot_layer = res_layers[PLOT_TABLE]
+        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
+
+        if boundary_point_layer is None:
+            self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils", "Layer {} not found in DB! {}")
+                                                 .format(BOUNDARY_POINT_TABLE, db.get_description()), Qgis.Warning)
+            return
+
+        if plot_layer is None:
+            self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils","Layer {} not found in DB! {}")
+                                                 .format(PLOT_TABLE, db.get_description()), Qgis.Warning)
+            return
+
+        if boundary_point_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "There are no boundary points to check 'boundary points should be covered by Plot nodes'."),
+                Qgis.Info)
+            return
+
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
+                                     "memory")
+
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int)])
+        error_layer.updateFields()
+
+        topology_rule = 'boundary_points_covered_by_plot_nodes'
+        features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule)
+        error_layer.dataProvider().addFeatures(features)
+
+        if error_layer.featureCount() > 0:
+            added_layer = self.add_error_layer(error_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate(
+                    "QGISUtils", "A memory layer with {} boundary points not covered by plot nodes has been added to the map!")
+                    .format(added_layer.featureCount()), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "All boundary points are covered by plot nodes!"), Qgis.Info)
+
+    @staticmethod
+    def get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule, id_field=ID_FIELD):
+        tmp_plot_nodes_layer = processing.run("native:extractvertices", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+
+        # layer is created with unique vertices
+        # It is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as wee need them
+        plot_nodes_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), 'unique boundary nodes', "memory")
+        data_provider = plot_nodes_layer.dataProvider()
+        data_provider.addAttributes([QgsField(id_field, QVariant.Int)])
+        plot_nodes_layer.updateFields()
+
+        id_field_idx = tmp_plot_nodes_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+
+        filter_fs = list()
+        fs = list()
+        for f in tmp_plot_nodes_layer.getFeatures(request):
+            item = [f[id_field], f.geometry().asWkt()]
+            if item not in filter_fs:
+                filter_fs.append(item)
+                fs.append(f)
+        plot_nodes_layer.dataProvider().addFeatures(fs)
+
+        input_layer = None
+        join_layer = None
+
+        if topology_rule == 'boundary_points_covered_by_plot_nodes':
+            input_layer = boundary_point_layer
+            join_layer = plot_nodes_layer
+        elif topology_rule == 'plot_nodes_covered_by_boundary_points':
+            input_layer = plot_nodes_layer
+            join_layer = boundary_point_layer
+
+        # get non matching features between boundary point and plot node
+        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+                                                   {'INPUT': input_layer,
+                                                    'JOIN': join_layer,
+                                                    'PREDICATE': [0], # Intersects
+                                                    'JOIN_FIELDS': [ID_FIELD],
+                                                    'METHOD': 0,
+                                                    'DISCARD_NONMATCHING': False,
+                                                    'PREFIX': '',
+                                                    'NON_MATCHING': 'memory:'})['NON_MATCHING']
+        features = list()
+
+        for feature in spatial_join_layer.getFeatures():
+            feature_id = feature[ID_FIELD]
+            feature_geom = feature.geometry()
+            new_feature = QgsVectorLayerUtils().createFeature(error_layer, feature_geom, {0: feature_id})
+            features.append(new_feature)
+
+        return features
+
     def check_overlapping_points(self, db, point_layer_name):
         """
         Shows which points are overlapping

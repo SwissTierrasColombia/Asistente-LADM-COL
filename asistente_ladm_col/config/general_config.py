@@ -119,6 +119,7 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_OVERLAPS_IN_BOUNDARY_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should not overlap")
         self.CHECK_OVERLAPS_IN_CONTROL_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Control Points should not overlap")
         self.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by Boundary nodes")
+        self.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by plot nodes")
 
         too_long_tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
         self.CHECK_TOO_LONG_BOUNDARY_SEGMENTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundary segments should not be longer than {}m.").format(too_long_tolerance)
@@ -136,6 +137,7 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_MULTIPART_IN_RIGHT_OF_WAY = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not have multipart geometries")
 
         # Specific topology errors
+        self.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Plot nodes should be covered by boundary points")
         self.ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY = QCoreApplication.translate("TranslatableConfigStrings", "Plot is not covered by boundary")
         self.ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT = QCoreApplication.translate("TranslatableConfigStrings", "Boundary is not covered by plot")
         self.ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the {} table").format(MORE_BOUNDARY_FACE_STRING_TABLE)
