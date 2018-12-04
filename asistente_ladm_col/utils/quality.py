@@ -26,14 +26,12 @@ from qgis.core import (Qgis,
                        QgsGeometry,
                        QgsPointXY,
                        QgsProcessingFeedback,
-                       QgsProcessingException,
                        QgsProject,
                        QgsSpatialIndex,
                        QgsVectorLayer,
                        QgsVectorLayerUtils,
                        QgsWkbTypes,
                        QgsFeatureRequest,
-                       NULL,
                        QgsRectangle)
 
 import processing
@@ -168,7 +166,7 @@ class QualityUtils(QObject):
         tmp_plot_nodes_layer = processing.run("native:extractvertices", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # layer is created with unique vertices
-        # it is neceary because remove duplicate vertices algorithm does not filter the data
+        # It is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as wee need them
         plot_nodes_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), 'unique boundary nodes', "memory")
         data_provider = plot_nodes_layer.dataProvider()
         data_provider.addAttributes([QgsField(id_field, QVariant.Int)])
