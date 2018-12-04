@@ -587,7 +587,8 @@ class GeometryUtils(QObject):
         just one boundary line.
         """
         points_layer = self.get_begin_end_vertices_from_lines(boundary_layer)
-        request = QgsFeatureRequest().setSubsetOfAttributes([])
+        id_field_idx = boundary_layer.fields().indexFromName(ID_FIELD)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_features = {feature.id(): feature for feature in boundary_layer.getFeatures(request)}
         index = QgsSpatialIndex(boundary_layer)
         ids_boundaries_list = list()
