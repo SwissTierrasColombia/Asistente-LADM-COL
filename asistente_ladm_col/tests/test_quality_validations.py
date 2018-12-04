@@ -108,7 +108,7 @@ class TesQualityValidations(unittest.TestCase):
         for item in test_result:
             self.assertIn(item, result, 'Error: Boundary node {} is not covered by boundary boundary point'.format(item['id']))
 
-        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary node is duplicated in the puntoccl table'"
+        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary is duplicated in the puntoccl table'"
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 8)
         result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
@@ -122,9 +122,9 @@ class TesQualityValidations(unittest.TestCase):
                        {'boundary_point_id': 239, 'boundary_id': 52}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary node is duplicated in the puntoccl table'.format(item))
+            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary is duplicated in the puntoccl table'.format(item))
 
-        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary node is not recorded in the puntoccl table'"
+        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary is not recorded in the puntoccl table'"
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 12)
         result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
@@ -142,7 +142,7 @@ class TesQualityValidations(unittest.TestCase):
                        {'boundary_point_id': 204, 'boundary_id': 17}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary node is not recorded in the puntoccl table'.format(item))
+            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary is not recorded in the puntoccl table'.format(item))
 
     def test_topology_boundary_points_must_be_covered_by_boundary_nodes(self):
         DB_HOSTNAME = "postgres"
@@ -231,7 +231,7 @@ class TesQualityValidations(unittest.TestCase):
         for item in test_result:
             self.assertIn(item, result, 'Error: Boundary point {} is not covered by boundary node'.format(item['id']))
 
-        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary node is duplicated in the puntoccl table'"
+        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary is duplicated in the puntoccl table'"
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 8)
         result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
@@ -245,9 +245,9 @@ class TesQualityValidations(unittest.TestCase):
                        {'boundary_point_id': 233, 'boundary_id': 48}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary node is duplicated in the puntoccl table'.format(item))
+            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary is duplicated in the puntoccl table'.format(item))
 
-        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary node is not recorded in the puntoccl table'"
+        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary is not recorded in the puntoccl table'"
         error_layer.selectByExpression(exp)
         self.assertEqual(error_layer.selectedFeatureCount(), 12)
         result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
@@ -265,7 +265,7 @@ class TesQualityValidations(unittest.TestCase):
                        {'boundary_point_id': 208, 'boundary_id': 18}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary node is not recorded in the puntoccl table'.format(item))
+            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary is not recorded in the puntoccl table'.format(item))
 
     def test_topology_plot_must_be_covered_by_boundary(self):
         DB_HOSTNAME = "postgres"

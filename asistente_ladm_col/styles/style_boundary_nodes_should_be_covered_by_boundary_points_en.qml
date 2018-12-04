@@ -3,8 +3,8 @@
   <renderer-v2 symbollevels="0" type="categorizedSymbol" forceraster="0" attr="error_type" enableorderby="0">
     <categories>
       <category symbol="0" label="Boundary node is not covered by boundary point" value="Boundary node is not covered by boundary point" render="true"/>
-      <category symbol="1" label="Topological relationship between boundary point and boundary node is duplicated in the puntoccl table" value="Topological relationship between boundary point and boundary node is duplicated in the puntoccl table" render="true"/>
-      <category symbol="2" label="Topological relationship between boundary point and boundary node is not recorded in the puntoccl table" value="Topological relationship between boundary point and boundary node is not recorded in the puntoccl table" render="true"/>
+      <category symbol="1" label="Topological relationship between boundary point and boundary is duplicated in the puntoccl table" value="Topological relationship between boundary point and boundary is duplicated in the puntoccl table" render="true"/>
+      <category symbol="2" label="Topological relationship between boundary point and boundary is not recorded in the puntoccl table" value="Topological relationship between boundary point and boundary is not recorded in the puntoccl table" render="true"/>
     </categories>
     <symbols>
       <symbol clip_to_extent="1" type="marker" name="0" alpha="1">

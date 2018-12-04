@@ -130,7 +130,7 @@ class QualityUtils(QObject):
         tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # layer is created with unique vertices
-        # it is neceary because remove duplicate vertices algorithm does not filter the data
+        # It is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as we need them
         boundary_nodes_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), 'unique boundary nodes', "memory")
         data_provider = boundary_nodes_layer.dataProvider()
         data_provider.addAttributes([QgsField(id_field, QVariant.Int)])
@@ -184,7 +184,7 @@ class QualityUtils(QObject):
 
             if boundary_id != NULL:
                 if item_sj not in list_point_bfs:
-                    no_register_point_bfs.append((boundary_point_id, boundary_id))  # no register in point bfs
+                    no_register_point_bfs.append((boundary_point_id, boundary_id))  # no registered in point bfs
                 elif list_point_bfs.count(item_sj) > 1:
                     duplicate_in_point_bfs.append((boundary_point_id, boundary_id))  # duplicate in point bfs
             else:
@@ -204,7 +204,7 @@ class QualityUtils(QObject):
                 features.append(new_feature)
 
 
-        # No register in point_bfs
+        # No registered in point_bfs
         if no_register_point_bfs is not None:
             for error_no_register in set(no_register_point_bfs):
                 boundary_point_id = error_no_register[0]  # boundary_point_id
@@ -295,7 +295,7 @@ class QualityUtils(QObject):
 
         tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
-        # layer is created with unique vertices, it is neceary because remove duplicate vertices method does not filter the data
+        # layer is created with unique vertices, it is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as we need them
         boundary_nodes_unique_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), 'unique boundary nodes', "memory")
         data_provider = boundary_nodes_unique_layer.dataProvider()
         data_provider.addAttributes([QgsField(id_field, QVariant.Int)])
@@ -363,7 +363,7 @@ class QualityUtils(QObject):
                 item_sj_check = {'boundary_point_id': boundary_point_id, 'boundary_id': boundary_id}  # dict to check
 
                 if item_sj_check not in list_point_bfs:
-                    no_register_point_bfs.append((boundary_point_id, boundary_node_id))  # no register in point bfs
+                    no_register_point_bfs.append((boundary_point_id, boundary_node_id))  # no registered in point bfs
                 elif list_point_bfs.count(item_sj_check) > 1:
                     duplicate_in_point_bfs.append((boundary_point_id, boundary_node_id))  # duplicate in point bfs
             else:
@@ -392,7 +392,7 @@ class QualityUtils(QObject):
                                                                   {0: boundary_point_id, 1: boundary_id, 2: translated_strings.ERROR_DUPLICATE_POINT_BFS})
                 features.append(new_feature)
 
-        # No register in point_bfs
+        # No registered in point_bfs
         if no_register_point_bfs is not None:
             for error_no_register in set(no_register_point_bfs):
                 boundary_point_id = error_no_register[0]

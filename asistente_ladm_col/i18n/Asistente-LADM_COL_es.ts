@@ -2697,12 +2697,12 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     </message>
     <message>
         <location filename="../config/general_config.py" line="145"/>
-        <source>Topological relationship between boundary point and boundary node is not recorded in the {} table</source>
+        <source>Topological relationship between boundary point and boundary is not recorded in the {} table</source>
         <translation>La relación topológica entre el punto lindero y el nodo de un lindero no esta registra en la tabla de {}</translation>
     </message>
     <message>
         <location filename="../config/general_config.py" line="146"/>
-        <source>Topological relationship between boundary point and boundary node is duplicated in the {} table</source>
+        <source>Topological relationship between boundary point and boundary is duplicated in the {} table</source>
         <translation>La relación topológica entre el punto lindero y el nodo de un lindero esta duplica en la tabla de {}</translation>
     </message>
     <message>
