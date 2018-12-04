@@ -148,14 +148,14 @@ NAMESPACE_PREFIX = {
 }
 
 DICT_AUTOMATIC_VALUES = {
-    BOUNDARY_TABLE: "$length",
-    COL_PARTY_TABLE: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
+    BOUNDARY_TABLE: [{LENGTH_FIELD_BOUNDARY_TABLE: "$length"}],
+    COL_PARTY_TABLE: [{COL_PARTY_NAME_FIELD: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
         DOCUMENT_ID_FIELD,
         FIRST_SURNAME_FIELD,
         SECOND_SURNAME_FIELD,
         FIRST_NAME_FIELD,
         SECOND_NAME_FIELD,
-        BUSINESS_NAME_FIELD)
+        BUSINESS_NAME_FIELD)}]
 }
 
 DICT_DISPLAY_EXPRESSIONS = {
