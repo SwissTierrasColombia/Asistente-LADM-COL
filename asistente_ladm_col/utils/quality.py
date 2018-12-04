@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication,
                               QVariant,
@@ -26,13 +27,13 @@ from qgis.core import (Qgis,
                        QgsGeometry,
                        QgsPointXY,
                        QgsProcessingFeedback,
-                       QgsProcessingException,
                        QgsProject,
                        QgsSpatialIndex,
                        QgsVectorLayer,
                        QgsVectorLayerUtils,
                        QgsWkbTypes,
                        QgsFeatureRequest,
+                       NULL,
                        QgsRectangle)
 
 import processing
@@ -52,6 +53,7 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            LESS_TABLE_BOUNDARY_FIELD,
                                            LESS_TABLE_PLOT_FIELD,
                                            POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
+                                           BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            MOREBFS_TABLE_BOUNDARY_FIELD,
                                            MORE_BOUNDARY_FACE_STRING_TABLE,
                                            LESS_TABLE,
@@ -67,6 +69,341 @@ class QualityUtils(QObject):
         self.qgis_utils = qgis_utils
         self.project_generator_utils = ProjectGeneratorUtils()
         self.log = QgsApplication.messageLog()
+
+    def check_boundary_points_covered_by_boundary_nodes(self, db):
+        res_layers = self.qgis_utils.get_layers(db, {
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
+            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None},
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None}}, load=True)
+
+        boundary_layer = res_layers[BOUNDARY_TABLE]
+        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
+        point_bfs_layer = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
+
+        if boundary_point_layer is None:
+            self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils", "Layer {} not found in DB! {}")
+                                                 .format(BOUNDARY_POINT_TABLE, db.get_description()), Qgis.Warning)
+            return
+
+        if boundary_layer is None:
+            self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils","Layer {} not found in DB! {}")
+                                                 .format(BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
+            return
+
+        if point_bfs_layer is None:
+            self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils","Table {} not found in DB! {}")
+                                                 .format(POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()), Qgis.Warning)
+            return
+
+        if boundary_point_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "There are no boundary points to check 'boundary points should be covered by boundary nodes'."),
+                Qgis.Info)
+            return
+
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
+                                     "memory")
+
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
+                                     QgsField('boundary_id', QVariant.Int),
+                                     QgsField('error_type', QVariant.String)])
+        error_layer.updateFields()
+
+        features = self.get_boundary_points_features_not_covered_by_boundary_nodes(boundary_point_layer, boundary_layer, point_bfs_layer, error_layer)
+        error_layer.dataProvider().addFeatures(features)
+
+        if error_layer.featureCount() > 0:
+            added_layer = self.add_error_layer(error_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate(
+                    "QGISUtils", "A memory layer with {} boundary points not covered by boundary nodes has been added to the map!")
+                    .format(added_layer.featureCount()), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "All boundary points are covered by boundary nodes!"), Qgis.Info)
+
+    def get_boundary_points_features_not_covered_by_boundary_nodes(self, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field=ID_FIELD):
+
+        tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+
+        # layer is created with unique vertices
+        # It is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as we need them
+        boundary_nodes_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), 'unique boundary nodes', "memory")
+        data_provider = boundary_nodes_layer.dataProvider()
+        data_provider.addAttributes([QgsField(id_field, QVariant.Int)])
+        boundary_nodes_layer.updateFields()
+
+        id_field_idx = tmp_boundary_nodes_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+
+        filter_fs = []
+        fs = []
+        for f in tmp_boundary_nodes_layer.getFeatures(request):
+            item = [f[id_field], f.geometry().asWkt()]
+            if item not in filter_fs:
+                filter_fs.append(item)
+                fs.append(f)
+        del filter_fs
+        boundary_nodes_layer.dataProvider().addFeatures(fs)
+
+        # Spatial Join between boundary_points and boundary_nodes
+        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+                       {'INPUT': boundary_point_layer,
+                        'JOIN': boundary_nodes_layer,
+                        'PREDICATE': [0], # Intersects
+                        'JOIN_FIELDS': [ID_FIELD],
+                        'METHOD': 0,
+                        'DISCARD_NONMATCHING': False,
+                        'PREFIX': '',
+                        'OUTPUT': 'memory:'})['OUTPUT']
+
+        # create dict with layer data
+        id_field_idx = boundary_point_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        dict_boundary_point = {feature[id_field]: feature for feature in boundary_point_layer.getFeatures(request)}
+
+        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(BFS_TABLE_BOUNDARY_POINT_FIELD, POINT_BFS_TABLE_BOUNDARY_FIELD)
+        list_point_bfs = [{'boundary_point_id': feature[BFS_TABLE_BOUNDARY_POINT_FIELD], 'boundary_id': feature[POINT_BFS_TABLE_BOUNDARY_FIELD]}
+                     for feature in point_bfs_layer.getFeatures(exp_point_bfs)]
+
+        spatial_join_boundary_point_boundary_node = [{'boundary_point_id': feature[id_field],
+                                                           'boundary_id': feature[id_field + '_2']}
+                                                          for feature in spatial_join_layer.getFeatures()]
+
+        boundary_point_without_boundary_node = list()
+        no_register_point_bfs = list()
+        duplicate_in_point_bfs = list()
+
+        # point_bfs topology check
+        for item_sj in spatial_join_boundary_point_boundary_node:
+            boundary_point_id = item_sj['boundary_point_id']
+            boundary_id = item_sj['boundary_id']
+
+            if boundary_id != NULL:
+                if item_sj not in list_point_bfs:
+                    no_register_point_bfs.append((boundary_point_id, boundary_id))  # no registered in point bfs
+                elif list_point_bfs.count(item_sj) > 1:
+                    duplicate_in_point_bfs.append((boundary_point_id, boundary_id))  # duplicate in point bfs
+            else:
+                boundary_point_without_boundary_node.append(boundary_point_id) # boundary point without boundary node
+
+        features = list()
+
+        # boundary point without boundary node
+        if boundary_point_without_boundary_node is not None:
+            for item in boundary_point_without_boundary_node:
+                boundary_point_id = item  # boundary_point_id
+                boundary_point_geom = dict_boundary_point[boundary_point_id].geometry()
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_point_geom,
+                                                                  {0: boundary_point_id,
+                                                                   1: None,
+                                                                   2: translated_strings.ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE})
+                features.append(new_feature)
+
+
+        # No registered in point_bfs
+        if no_register_point_bfs is not None:
+            for error_no_register in set(no_register_point_bfs):
+                boundary_point_id = error_no_register[0]  # boundary_point_id
+                boundary_id = error_no_register[1]  # boundary_id
+                boundary_point_geom = dict_boundary_point[boundary_point_id].geometry()
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_point_geom,
+                                                                  {0: boundary_point_id,
+                                                                   1: boundary_id,
+                                                                   2: translated_strings.ERROR_NO_FOUND_POINT_BFS})
+                features.append(new_feature)
+
+        # Duplicate in point_bfs
+        if duplicate_in_point_bfs is not None:
+            for error_duplicate in set(duplicate_in_point_bfs):
+                boundary_point_id = error_duplicate[0]  # boundary_point_id
+                boundary_id = error_duplicate[1]  # boundary_id
+                boundary_point_geom = dict_boundary_point[boundary_point_id].geometry()
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_point_geom,
+                                                                  {0: boundary_point_id,
+                                                                   1: boundary_id,
+                                                                   2: translated_strings.ERROR_DUPLICATE_POINT_BFS})
+                features.append(new_feature)
+
+        return features
+
+    def check_boundary_nodes_covered_by_boundary_points(self, db):
+        res_layers = self.qgis_utils.get_layers(db, {
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None},
+            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None},
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}}, load=True)
+
+        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
+        boundary_layer = res_layers[BOUNDARY_TABLE]
+        point_bfs = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
+
+        if boundary_point_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        if boundary_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        if boundary_layer.featureCount() == 0:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no boundaries to check 'missing boundary points in boundaries'."),
+                Qgis.Info)
+            return
+
+        if point_bfs is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(
+                    POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()), Qgis.Warning)
+            return
+
+        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                     translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
+                                     "memory")
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
+                                     QgsField('boundary_id', QVariant.Int),
+                                     QgsField('error_type', QVariant.String)])
+
+        error_layer.updateFields()
+
+        features = self.get_boundary_nodes_features_not_covered_by_boundary_points(boundary_point_layer, boundary_layer, point_bfs, error_layer)
+        data_provider.addFeatures(features)
+
+        if error_layer.featureCount() > 0:
+            added_layer = self.add_error_layer(error_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "A memory layer with {} boundary vertices with no associated boundary points or with boundary points wrongly registered in the PointBFS table been added to the map!").format(added_layer.featureCount()), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "There are no missing boundary points in boundaries."), Qgis.Info)
+
+    def get_boundary_nodes_features_not_covered_by_boundary_points(self, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field=ID_FIELD):
+
+        tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+
+        # layer is created with unique vertices, it is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as we need them
+        boundary_nodes_unique_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG), 'unique boundary nodes', "memory")
+        data_provider = boundary_nodes_unique_layer.dataProvider()
+        data_provider.addAttributes([QgsField(id_field, QVariant.Int)])
+        boundary_nodes_unique_layer.updateFields()
+
+        id_field_idx = tmp_boundary_nodes_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+
+        filter_fs = list()
+        fs = list()
+        for f in tmp_boundary_nodes_layer.getFeatures(request):
+            item = [f[id_field], f.geometry().asWkt()]
+            if item not in filter_fs:
+                filter_fs.append(item)
+                fs.append(f)
+        boundary_nodes_unique_layer.dataProvider().addFeatures(fs)
+
+        # Create an autoincremental field to have an identifying field
+        boundary_nodes_layer = processing.run("native:addautoincrementalfield",
+                                              {'INPUT': boundary_nodes_unique_layer,
+                                               'FIELD_NAME': 'AUTO',
+                                               'START': 0,
+                                               'GROUP_FIELDS': [],
+                                               'SORT_EXPRESSION': '',
+                                               'SORT_ASCENDING': True,
+                                               'SORT_NULLS_FIRST': False,
+                                               'OUTPUT': 'memory:'})['OUTPUT']
+
+        # Spatial Join between boundary_nodes and boundary_points
+        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+                                            {'INPUT': boundary_nodes_layer,
+                                             'JOIN': boundary_point_layer,
+                                             'PREDICATE': [0],  # Intersects
+                                             'JOIN_FIELDS': [ID_FIELD],
+                                             'METHOD': 0,
+                                             'DISCARD_NONMATCHING': False,
+                                             'PREFIX': '',
+                                             'OUTPUT': 'memory:'})['OUTPUT']
+
+        # create dict with layer data
+        id_field_idx = boundary_nodes_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        dict_boundary_nodes = {feature['AUTO']: feature for feature in boundary_nodes_layer.getFeatures(request)}
+
+        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(BFS_TABLE_BOUNDARY_POINT_FIELD, POINT_BFS_TABLE_BOUNDARY_FIELD)
+        list_point_bfs = [{'boundary_point_id': feature[BFS_TABLE_BOUNDARY_POINT_FIELD], 'boundary_id': feature[POINT_BFS_TABLE_BOUNDARY_FIELD]}
+                          for feature in point_bfs_layer.getFeatures(exp_point_bfs)]
+
+        list_spatial_join_boundary_node_boundary_point = [{'boundary_point_id': feature[id_field + '_2'],
+                                                           'boundary_node_id': feature['AUTO']}
+                                                          for feature in spatial_join_layer.getFeatures()]
+
+        boundary_node_without_boundary_point = list()
+        no_register_point_bfs = list()
+        duplicate_in_point_bfs = list()
+
+        # point_bfs topology check
+        for item_sj in list_spatial_join_boundary_node_boundary_point:
+            boundary_node_id = item_sj['boundary_node_id']
+            boundary_point_id = item_sj['boundary_point_id']
+
+            if boundary_point_id != NULL:
+
+                boundary_id = dict_boundary_nodes[boundary_node_id][id_field]  # get boundary id
+                item_sj_check = {'boundary_point_id': boundary_point_id, 'boundary_id': boundary_id}  # dict to check
+
+                if item_sj_check not in list_point_bfs:
+                    no_register_point_bfs.append((boundary_point_id, boundary_node_id))  # no registered in point bfs
+                elif list_point_bfs.count(item_sj_check) > 1:
+                    duplicate_in_point_bfs.append((boundary_point_id, boundary_node_id))  # duplicate in point bfs
+            else:
+                boundary_node_without_boundary_point.append(boundary_node_id)  # boundary node without boundary point
+
+        features = list()
+
+        # boundary node without boundary point
+        if boundary_node_without_boundary_point is not None:
+            for item in boundary_node_without_boundary_point:
+                boundary_node_id = item
+                boundary_node_geom = dict_boundary_nodes[boundary_node_id].geometry()
+                boundary_id = dict_boundary_nodes[boundary_node_id][id_field]  # get boundary id
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_node_geom,
+                                                                  {0: None,  1: boundary_id, 2: translated_strings.ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT})
+                features.append(new_feature)
+
+        # Duplicate in point_bfs
+        if duplicate_in_point_bfs is not None:
+            for error_duplicate in set(duplicate_in_point_bfs):
+                boundary_point_id = error_duplicate[0]
+                boundary_node_id = error_duplicate[1]
+                boundary_node_geom = dict_boundary_nodes[boundary_node_id].geometry()
+                boundary_id = dict_boundary_nodes[boundary_node_id][id_field]  # get boundary id
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_node_geom,
+                                                                  {0: boundary_point_id, 1: boundary_id, 2: translated_strings.ERROR_DUPLICATE_POINT_BFS})
+                features.append(new_feature)
+
+        # No registered in point_bfs
+        if no_register_point_bfs is not None:
+            for error_no_register in set(no_register_point_bfs):
+                boundary_point_id = error_no_register[0]
+                boundary_node_id = error_no_register[1]
+                boundary_node_geom = dict_boundary_nodes[boundary_node_id].geometry()
+                boundary_id = dict_boundary_nodes[boundary_node_id][id_field]  # get boundary id
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_node_geom,
+                                                                  {0: boundary_point_id, 1: boundary_id, 2: translated_strings.ERROR_NO_FOUND_POINT_BFS})
+                features.append(new_feature)
+
+        return features
 
     def check_overlapping_points(self, db, point_layer_name):
         """
@@ -783,67 +1120,6 @@ class QualityUtils(QObject):
 
         return features
 
-    def check_boundary_points_covered_by_boundary_nodes(self, db):
-        res_layers = self.qgis_utils.get_layers(db, {
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None}}, load=True)
-
-        boundary_layer = res_layers[BOUNDARY_TABLE]
-        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
-
-        if boundary_point_layer is None:
-            self.qgis_utils.message_emitted.emit(
-            QCoreApplication.translate("QGISUtils",
-            "Layer {} not found in DB! {}").format(
-            BOUNDARY_POINT_TABLE, db.get_description()), Qgis.Warning)
-            return
-
-        if boundary_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "Layer {} not found in DB! {}").format(
-                    BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
-            return
-
-        if boundary_point_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no boundary points to check 'boundary points should be covered by boundary nodes'."),
-                Qgis.Info)
-            return
-
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
-                                     "memory")
-
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('point_boundary_id', QVariant.Int)])
-        error_layer.updateFields()
-
-        features = []
-        points_selected = self.qgis_utils.geometry.get_boundary_points_not_covered_by_boundary_nodes(boundary_point_layer, boundary_layer)
-
-        for point_selected in points_selected:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                error_layer,
-                point_selected.geometry(),
-                {0: point_selected[ID_FIELD]})
-            features.append(new_feature)
-
-        error_layer.dataProvider().addFeatures(features)
-
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} boundary points not covered by boundary nodes has been added to the map!").format(
-                    added_layer.featureCount()), Qgis.Info)
-        else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "All boundary points are covered by boundary nodes!"), Qgis.Info)
-
     def check_overlapping_polygons(self, db, polygon_layer_name):
         polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, QgsWkbTypes.PolygonGeometry, load=True)
 
@@ -1121,7 +1397,7 @@ class QualityUtils(QObject):
             return
 
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_MISSING_BOUNDARY_POINTS_IN_BOUNDARIES,
+                                     translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
                                      "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
