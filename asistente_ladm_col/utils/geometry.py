@@ -26,7 +26,6 @@ from qgis.core import (Qgis,
                        QgsApplication,
                        QgsField,
                        QgsGeometry,
-                       QgsPoint,
                        QgsPolygon,
                        QgsMultiPolygon,
                        QgsFeatureRequest,
@@ -37,9 +36,8 @@ from qgis.core import (Qgis,
                        QgsVectorLayer,
                        QgsVectorLayerEditUtils,
                        QgsVectorLayerUtils,
-                       QgsWkbTypes
-)
-from qgis.core import edit
+                       QgsWkbTypes,
+                       edit)
 
 import processing
 from ..config.general_config import (DEFAULT_POLYGON_AREA_TOLERANCE,
@@ -608,7 +606,8 @@ class GeometryUtils(QObject):
         just one boundary line.
         """
         points_layer = self.get_begin_end_vertices_from_lines(boundary_layer)
-        request = QgsFeatureRequest().setSubsetOfAttributes([])
+        id_field_idx = boundary_layer.fields().indexFromName(ID_FIELD)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_features = {feature.id(): feature for feature in boundary_layer.getFeatures(request)}
         index = QgsSpatialIndex(boundary_layer)
         ids_boundaries_list = list()
@@ -777,8 +776,132 @@ class GeometryUtils(QObject):
         segments_of_the_boundary = list(set(segments_connected))
         return segments_of_the_boundary
 
+    def get_connected_segments_by_selection(self, segment, direction, index, dict_features, items=list(), count_d=0, vertex=None):
+        geom = segment.geometry()
+
+        if vertex is None:
+            if direction == 1:
+                vertex = QgsGeometry(geom.vertexAt(0))
+            elif direction == -1:
+                vertex = QgsGeometry(geom.vertexAt(len(geom.asPolyline()) - 1))
+
+        bbox = vertex.boundingBox()
+        candidates_ids = index.intersects(bbox)
+        candidate_features = [dict_features[candidate_id] for candidate_id in candidates_ids]
+
+        touches = list()
+        for candidate_feature in candidate_features:
+            if candidate_feature.id() != segment.id():
+                if candidate_feature.geometry().touches(vertex):
+                    touches.append(candidate_feature)
+
+        if len(touches) == 1:
+
+            # select next vertex
+            next_geom = touches[0].geometry()
+            start_vertex = QgsGeometry(next_geom.vertexAt(0))
+            end_vertex = QgsGeometry(next_geom.vertexAt(len(next_geom.asPolyline()) - 1))
+            next_vertex = None
+
+            if vertex.asWkt() == start_vertex.asWkt():
+                next_vertex = end_vertex
+            else:
+                next_vertex = start_vertex
+
+            if touches[0].id() not in items:
+                items.append(touches[0].id())
+                return self.get_connected_segments_by_selection(touches[0], direction, index, dict_features, items, count_d, next_vertex)
+            else:
+                if count_d < 1:
+                    # in circular geometries it can happen that the condition of exit is not satisfied,
+                    # reason for which the number of consecutive iterations is counted not to stay in an infinite cycle.
+                    count_d += 1
+                    return self.get_connected_segments_by_selection(touches[0], direction, index, dict_features, items, count_d, next_vertex)
+                else:
+                    return items
+        else:
+            return items
+
+    def get_boundary_by_selection(self, segment, index, dict_features):
+        id = segment.id()
+        segments_connected = list()
+
+        direction = 1
+        start_sc = self.get_connected_segments_by_selection(segment, direction, index, dict_features, items=list(), vertex=None)
+        segments_connected.extend(start_sc)
+
+        direction = -1
+        end_sc = self.get_connected_segments_by_selection(segment, direction, index, dict_features, items=list(), vertex=None)
+        segments_connected.extend(end_sc)
+
+        if id not in segments_connected:
+            segments_connected.append(id)
+
+        segments_of_the_boundary = list(set(segments_connected))
+        segments_of_the_boundary.sort()
+        return segments_of_the_boundary
+
     def merge_geometries(self, features):
         geoms = QgsGeometry.fromWkt('GEOMETRYCOLLECTION()')
         for feature in features:
             geoms = geoms.combine(feature.geometry())
         return geoms
+
+    def fix_selected_boundaries(self, layer, id_field=ID_FIELD):
+
+        selected_features = [feature for feature in layer.selectedFeatures()]
+        tmp_segments_layer = processing.run("native:explodelines", {'INPUT': layer, 'OUTPUT': 'memory:'})['OUTPUT']
+
+        # remove duplicate segments (algorithm don't work with duplicate geometries)
+        segments_layer = processing.run("qgis:deleteduplicategeometries", {'INPUT': tmp_segments_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+
+        id_field_idx = segments_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        dict_segments = {feature.id(): feature for feature in segments_layer.getFeatures(request)}
+        index = QgsSpatialIndex(segments_layer)
+
+        # create relation between feature and yours segments
+        boundary_segments = dict()
+        for feature in layer.getFeatures():
+            exp = '"{id_field}" = {id_field_value}'.format(id_field=ID_FIELD, id_field_value=feature[ID_FIELD])
+            segment_ids = [f.id() for f in segments_layer.getFeatures(exp)]
+            if segment_ids:
+                boundary_segments[feature.id()] = segment_ids
+
+        process_sc = list()
+        total_sc = list()
+        for feature in selected_features:
+            segment_sf_ids = boundary_segments[feature.id()]
+            for segment_sf_id in segment_sf_ids:
+                if segment_sf_id not in total_sc:
+                    segment_sf = dict_segments[segment_sf_id]
+                    segments_connected = self.get_boundary_by_selection(segment_sf, index, dict_segments)
+                    total_sc.extend(segments_connected)
+                    process_sc.append(segments_connected)
+
+        boundaries_to_del_ids = list()
+        candidate_segments = list()
+        for segments_connected in process_sc:
+            for boundary_id in boundary_segments:
+                if boundary_id not in boundaries_to_del_ids:
+                    if len(set(boundary_segments[boundary_id]).intersection(set(segments_connected))) > 0:
+                        boundaries_to_del_ids.append(boundary_id)
+                        candidate_segments.extend(boundary_segments[boundary_id])
+
+        segments_to_include = list(set(candidate_segments) - set(total_sc))
+
+        new_geometries = list()
+        # new boundaries result of merge segments
+        for sc_ids in process_sc:
+            selected_features = [dict_segments[sc_id] for sc_id in sc_ids]
+            merge_geom = self.merge_geometries(selected_features)
+            new_geometries.append(merge_geom)
+
+        # segments to include due to division of lines in segments
+        for segment_id in segments_to_include:
+            segment_geom = dict_segments[segment_id].geometry()
+            new_geometries.append(segment_geom)
+
+        boundaries_to_del_unique_ids = list(set(boundaries_to_del_ids))
+
+        return new_geometries, boundaries_to_del_unique_ids

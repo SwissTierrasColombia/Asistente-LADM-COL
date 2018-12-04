@@ -23,6 +23,7 @@ import os
 import socket
 import webbrowser
 
+import processing
 from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               pyqtSignal,
@@ -48,9 +49,8 @@ from qgis.core import (Qgis,
                        QgsRelation,
                        QgsVectorLayer,
                        QgsVectorLayerUtils,
-                       QgsWkbTypes)
-
-import processing
+                       QgsWkbTypes,
+                       edit)
 
 from .geometry import GeometryUtils
 from .project_generator_utils import ProjectGeneratorUtils
@@ -58,9 +58,6 @@ from .qt_utils import OverrideCursor
 from .symbology import SymbologyUtils
 from ..config.general_config import (DEFAULT_EPSG,
                                      FIELD_MAPPING_PATH,
-                                     MODULE_HELP_MAPPING,
-                                     TEST_SERVER,
-                                     HELP_URL,
                                      MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE,
                                      MODULE_HELP_MAPPING,
                                      TEST_SERVER,
@@ -1217,25 +1214,23 @@ class QGISUtils(QObject):
                 Qgis.Warning)
             return
 
-        segments = list()
-        for f in layer.selectedFeatures():
-            segments.extend(self.geometry.extract_as_single_segments(f.geometry()))
+        new_boundary_geoms, boundaries_to_del_ids = self.geometry.fix_selected_boundaries(layer)
 
         layer.startEditing() # Safe, even if layer is already on editing state
 
-        # Remove the selected lines, we'll add exploded segments in a while
-        layer.deleteFeatures([sf.id() for sf in layer.selectedFeatures()])
+        # the boundaries that are to be replaced are removed
+        layer.deleteFeatures(boundaries_to_del_ids)
 
         # Create features based on segment geometries
-        exploded_features = list()
-        for segment in segments:
-            feature = QgsVectorLayerUtils().createFeature(layer, segment)
-            exploded_features.append(feature)
+        new_fix_boundary_features = list()
+        for boundary_geom in new_boundary_geoms:
+            feature = QgsVectorLayerUtils().createFeature(layer, boundary_geom)
+            new_fix_boundary_features.append(feature)
 
-        layer.addFeatures(exploded_features)
+        layer.addFeatures(new_fix_boundary_features)
         self.message_emitted.emit(
             QCoreApplication.translate("QGISUtils",
-                                       "{} feature(s) was/were exploded generating {} feature(s).").format(num_boundaries, len(exploded_features)),
+                                       "{} feature(s) was/were exploded generating {} feature(s).").format(num_boundaries, len(new_fix_boundary_features)),
             Qgis.Info)
         self.map_refresh_requested.emit()
 
