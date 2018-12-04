@@ -68,6 +68,9 @@ class DialogQuality(QDialog, DIALOG_UI):
                 },{
                     'id' : 'check_boundary_points_covered_by_boundary_nodes',
                     'text': translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES
+                },{
+                    'id' : 'check_boundary_points_covered_by_plot_nodes',
+                    'text': translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES
                 }]
             }
         self.items_dict[QCoreApplication.translate("DialogQuality", "Rules for Lines")] = {
@@ -85,8 +88,8 @@ class DialogQuality(QDialog, DIALOG_UI):
                     'id': 'check_boundaries_covered_by_plots',
                     'text': translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS
                 }, {
-                    'id': 'check_missing_boundary_points_in_boundaries',
-                    'text': translated_strings.CHECK_MISSING_BOUNDARY_POINTS_IN_BOUNDARIES
+                    'id': 'check_boundary_nodes_covered_by_boundary_points',
+                    'text': translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS
                 }, {
                     'id': 'check_dangles_in_boundaries',
                     'text': translated_strings.CHECK_DANGLES_IN_BOUNDARIES
@@ -118,6 +121,9 @@ class DialogQuality(QDialog, DIALOG_UI):
                 }, {
                     'id': 'check_multipart_in_right_of_way',
                     'text': translated_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY
+                }, {
+                    'id': 'check_plot_nodes_covered_by_boundary_points',
+                    'text': translated_strings.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS
                 }]
             }
 
@@ -170,6 +176,8 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_overlapping_points(self._db, CONTROL_POINT_TABLE)
                 elif id == 'check_boundary_points_covered_by_boundary_nodes':
                     self.quality.check_boundary_points_covered_by_boundary_nodes(self._db)
+                elif id == 'check_boundary_points_covered_by_plot_nodes':
+                    self.quality.check_boundary_points_covered_by_plot_nodes(self._db)
                 elif id == 'check_too_long_boundary_segments':
                     self.quality.check_too_long_segments(self._db)
                 elif id == 'check_overlaps_in_boundaries':
@@ -178,8 +186,8 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_boundaries_are_not_split(self._db)
                 elif id == 'check_boundaries_covered_by_plots':
                     self.quality.check_boundaries_covered_by_plots(self._db)
-                elif id == 'check_missing_boundary_points_in_boundaries':
-                    self.quality.check_missing_boundary_points_in_boundaries(self._db)
+                elif id == 'check_boundary_nodes_covered_by_boundary_points':
+                    self.quality.check_boundary_nodes_covered_by_boundary_points(self._db)
                 elif id == 'check_dangles_in_boundaries':
                     self.quality.check_dangles_in_boundaries(self._db)
                 elif id == 'check_overlaps_in_plots':
@@ -198,6 +206,8 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_gaps_in_plots(self._db)
                 elif id == 'check_multipart_in_right_of_way':
                     self.quality.check_multiparts_in_right_of_way(self._db)
+                elif id == 'check_plot_nodes_covered_by_boundary_points':
+                    self.quality.check_plot_nodes_covered_by_boundary_points(self._db)
 
             iterator += 1
 
