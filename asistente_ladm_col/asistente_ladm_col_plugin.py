@@ -152,10 +152,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.initializationCompleted.connect(self.qgis_initialized)
 
         # Toolbar
-        self._boundary_explode_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Explode..."), self.iface.mainWindow())
-        self._boundary_explode_action.triggered.connect(self.call_explode_boundaries)
-        self._boundary_merge_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Merge..."), self.iface.mainWindow())
-        self._boundary_merge_action.triggered.connect(self.call_merge_boundaries)
+        self._build_boundary_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Build boundary..."), self.iface.mainWindow())
+        self._build_boundary_action.triggered.connect(self.call_explode_boundaries)
         self._topological_editing_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Move nodes..."), self.iface.mainWindow())
         self._topological_editing_action.triggered.connect(self.call_topological_editing)
         self._fill_point_BFS_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Point BFS"), self.iface.mainWindow())
@@ -166,8 +164,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._report_action.triggered.connect(self.call_report_generation)
         self._ladm_col_toolbar = self.iface.addToolBar(QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"))
         self._ladm_col_toolbar.setObjectName("ladmcoltools")
-        self._ladm_col_toolbar.addActions([self._boundary_explode_action,
-                                           self._boundary_merge_action,
+        self._ladm_col_toolbar.addActions([self._build_boundary_action,
                                            self._topological_editing_action,
                                            self._fill_point_BFS_action,
                                            self._fill_more_BFS_less_action,
@@ -598,12 +595,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def call_explode_boundaries(self):
-        self.qgis_utils.explode_boundaries(self.get_db_connection())
-
-    @_project_generator_required
-    @_db_connection_required
-    def call_merge_boundaries(self):
-        self.qgis_utils.merge_boundaries(self.get_db_connection())
+        self.qgis_utils.build_boundary(self.get_db_connection())
 
     @_project_generator_required
     @_db_connection_required

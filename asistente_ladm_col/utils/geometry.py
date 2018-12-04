@@ -847,10 +847,16 @@ class GeometryUtils(QObject):
             geoms = geoms.combine(feature.geometry())
         return geoms
 
-    def fix_selected_boundaries(self, layer, id_field=ID_FIELD):
+    def fix_selected_boundaries(self, boundary_layer, selected_ids=list(), id_field=ID_FIELD):
 
-        selected_features = [feature for feature in layer.selectedFeatures()]
-        tmp_segments_layer = processing.run("native:explodelines", {'INPUT': layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        selected_features = list()
+        if len(selected_ids) == 0:
+            selected_features = [feature for feature in boundary_layer.selectedFeatures()]
+        else:
+            boundary_layer.selectByIds(selected_ids)
+            selected_features = [feature for feature in boundary_layer.selectedFeatures()]
+
+        tmp_segments_layer = processing.run("native:explodelines", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # remove duplicate segments (algorithm don't work with duplicate geometries)
         segments_layer = processing.run("qgis:deleteduplicategeometries", {'INPUT': tmp_segments_layer, 'OUTPUT': 'memory:'})['OUTPUT']
@@ -862,7 +868,7 @@ class GeometryUtils(QObject):
 
         # create relation between feature and yours segments
         boundary_segments = dict()
-        for feature in layer.getFeatures():
+        for feature in boundary_layer.getFeatures():
             exp = '"{id_field}" = {id_field_value}'.format(id_field=ID_FIELD, id_field_value=feature[ID_FIELD])
             segment_ids = [f.id() for f in segments_layer.getFeatures(exp)]
             if segment_ids:

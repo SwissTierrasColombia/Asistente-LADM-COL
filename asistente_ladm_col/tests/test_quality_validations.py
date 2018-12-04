@@ -62,9 +62,9 @@ class TesQualityValidations(unittest.TestCase):
         for i in range(len(test_result)):
             uri = gpkg_path + '|layername=boundary_case_{case}'.format(case=i+1)
             boundary_layer = QgsVectorLayer(uri, 'boundary_layer_{case}'.format(case=i+1), 'ogr')
-            selected_ids = test_result[i]['selected_ids']
-            boundary_layer.selectByIds(selected_ids)
-            new_geometries, boundaries_to_del_unique_ids = self.qgis_utils.geometry.fix_selected_boundaries(boundary_layer)
+            test_selected_ids = test_result[i]['selected_ids']
+            #boundary_layer.selectByIds(selected_ids)
+            new_geometries, boundaries_to_del_unique_ids = self.qgis_utils.geometry.fix_selected_boundaries(boundary_layer, selected_ids=test_selected_ids)
             self.assertEqual(boundaries_to_del_unique_ids, test_result[i]['boundaries_to_del'], 'Boundaries to be deleted are not valid: case {case}'.format(case=i + 1))
 
             for new_geom in new_geometries:

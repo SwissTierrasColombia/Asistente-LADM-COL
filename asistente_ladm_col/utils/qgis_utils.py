@@ -1192,7 +1192,7 @@ class QGISUtils(QObject):
         if os.path.exists(file_path):
             os.remove(file_path)
 
-    def explode_boundaries(self, db):
+    def build_boundary(self, db):
         self.turn_transaction_off()
         layer = self.get_layer_from_layer_tree(BOUNDARY_TABLE, db.schema)
 
@@ -1230,47 +1230,7 @@ class QGISUtils(QObject):
         layer.addFeatures(new_fix_boundary_features)
         self.message_emitted.emit(
             QCoreApplication.translate("QGISUtils",
-                                       "{} feature(s) was/were exploded generating {} feature(s).").format(num_boundaries, len(new_fix_boundary_features)),
-            Qgis.Info)
-        self.map_refresh_requested.emit()
-
-    def merge_boundaries(self, db):
-        self.turn_transaction_off()
-        layer = self.get_layer_from_layer_tree(BOUNDARY_TABLE, db.schema)
-        if layer is None:
-            self.message_with_button_load_layer_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "First load the layer {} into QGIS!").format(BOUNDARY_TABLE),
-                QCoreApplication.translate("QGISUtils", "Load layer {} now").format(BOUNDARY_TABLE),
-                [BOUNDARY_TABLE, None],
-                Qgis.Warning)
-            return
-
-        if len(layer.selectedFeatures()) < 2:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "First select at least 2 boundaries!"),
-                Qgis.Warning)
-            return
-
-        num_boundaries = len(layer.selectedFeatures())
-        unionGeom = layer.selectedFeatures()[0].geometry()
-        for f in layer.selectedFeatures()[1:]:
-            if not f.geometry().isNull():
-                unionGeom = unionGeom.combine(f.geometry())
-
-        layer.startEditing() # Safe, even if layer is already on editing state
-
-        # Remove the selected lines, we'll add exploded segments in a while
-        layer.deleteFeatures([sf.id() for sf in layer.selectedFeatures()])
-
-        # Convert to multipart geometry if needed
-        if QgsWkbTypes.isMultiType(layer.wkbType()) and not unionGeom.isMultipart():
-            unionGeom.convertToMultiType()
-
-        feature = QgsVectorLayerUtils().createFeature(layer, unionGeom)
-        layer.addFeature(feature)
-        self.message_emitted.emit(
-            QCoreApplication.translate("QGISUtils", "{} features were merged!").format(num_boundaries),
+                                       "{} feature(s) was/were adjusted generating {} boundary(ies).").format(num_boundaries, len(new_fix_boundary_features)),
             Qgis.Info)
         self.map_refresh_requested.emit()
 
