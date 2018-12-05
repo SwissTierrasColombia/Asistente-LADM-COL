@@ -103,15 +103,24 @@ class CreateBuildingUnitQualificationValuationWizard(QWizard, WIZARD_UI):
         self.button(self.CancelButton).setEnabled(enabled)
 
     def adjust_page_2_controls(self):
+
+        self.cbo_mapping.clear()
+        self.cbo_mapping.addItem("")
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.current_building_unit_qualification_valuation_name()))
+
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
+            self.lbl_field_mapping.setEnabled(True)
+            self.cbo_mapping.setEnabled(True)
             finish_button_text = QCoreApplication.translate("create_building_unit_qualification_valuation_wizard", "Import")
             self.txt_help_page_2.setHtml(self.help_strings.get_refactor_help_string(self.current_building_unit_qualification_valuation_name(), False))
 
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
+            self.lbl_field_mapping.setEnabled(False)
+            self.cbo_mapping.setEnabled(False)
             finish_button_text = QCoreApplication.translate("create_building_unit_qualification_valuation_wizard", "Create")
 
             output_layer_name = self.current_building_unit_qualification_valuation_name()
@@ -142,9 +151,19 @@ class CreateBuildingUnitQualificationValuationWizard(QWizard, WIZARD_UI):
 
         if self.rad_refactor.isChecked():
             if self.mMapLayerComboBox.currentLayer() is not None:
-                self.qgis_utils.show_etl_model(self._db,
-                                               self.mMapLayerComboBox.currentLayer(),
-                                               output_layer_name)
+                field_mapping = self.cbo_mapping.currentText()
+                res_etl_model = self.qgis_utils.show_etl_model(self._db,
+                                                               self.mMapLayerComboBox.currentLayer(),
+                                                               output_layer_name,
+                                                               field_mapping=field_mapping)
+
+                if res_etl_model:
+                    if field_mapping:
+                        self.qgis_utils.delete_old_field_mapping(field_mapping)
+
+                    self.qgis_utils.save_field_mapping(output_layer_name)
+
+
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("create_building_unit_qualification_valuation_wizard",

@@ -49,15 +49,24 @@ class CreateHorizontalPropertyValuationWizard(QWizard, WIZARD_UI):
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.NoGeometry)
 
     def adjust_page_1_controls(self):
+
+        self.cbo_mapping.clear()
+        self.cbo_mapping.addItem("")
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(VALUATION_HORIZONTAL_PROPERTY_TABLE))
+
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
+            self.lbl_field_mapping.setEnabled(True)
+            self.cbo_mapping.setEnabled(True)
             finish_button_text = QCoreApplication.translate("CreateHorizontalPropertyValuationWizard", "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(VALUATION_HORIZONTAL_PROPERTY_TABLE, False))
 
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
+            self.lbl_field_mapping.setEnabled(False)
+            self.cbo_mapping.setEnabled(False)
             finish_button_text = QCoreApplication.translate("CreateHorizontalPropertyValuationWizard", "Create")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_HORIZONTAL_PROPERTY_VALUATION_PAGE_1_OPTION_FORM)
 
@@ -70,9 +79,17 @@ class CreateHorizontalPropertyValuationWizard(QWizard, WIZARD_UI):
 
         if self.rad_refactor.isChecked():
             if self.mMapLayerComboBox.currentLayer() is not None:
-                self.qgis_utils.show_etl_model(self._db,
-                                               self.mMapLayerComboBox.currentLayer(),
-                                               VALUATION_HORIZONTAL_PROPERTY_TABLE)
+                field_mapping = self.cbo_mapping.currentText()
+                res_etl_model = self.qgis_utils.show_etl_model(self._db,
+                                                               self.mMapLayerComboBox.currentLayer(),
+                                                               VALUATION_HORIZONTAL_PROPERTY_TABLE,
+                                                               field_mapping=field_mapping)
+
+                if res_etl_model:
+                    if field_mapping:
+                        self.qgis_utils.delete_old_field_mapping(field_mapping)
+
+                    self.qgis_utils.save_field_mapping(VALUATION_HORIZONTAL_PROPERTY_TABLE)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreateHorizontalPropertyValuationWizard",

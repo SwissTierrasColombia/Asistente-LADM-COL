@@ -1138,14 +1138,15 @@ class QGISUtils(QObject):
             for path in files[0:len(files)-MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE]:
                 os.remove(path)
 
-        files = files[len(files) - MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE:]
+            files = files[len(files) - MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE:]
         files.reverse()
 
         return [os.path.basename(file).strip(".txt") for file in files]
 
     def delete_old_field_mapping(self, field_mapping_name):
-        file_path = os.path(FIELD_MAPPING_PATH, field_mapping_name, ".txt")
-        if os.exists(file_path):
+        file_path = "{}.{}".format(os.path.join(FIELD_MAPPING_PATH, field_mapping_name), "txt")
+
+        if os.path.exists(file_path):
             os.remove(file_path)
 
     def explode_boundaries(self, db):

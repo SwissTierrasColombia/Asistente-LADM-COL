@@ -416,11 +416,11 @@ class AsistenteLADMCOLPlugin(QObject):
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit Qualification"),
             self._valuation_menu)
         self._geoeconomic_zone_valuation_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Geoeconomic Zone"),
             self._valuation_menu)
         self._physical_zone_valuation_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Physical Zone"),
             self._valuation_menu)
 
@@ -435,7 +435,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self._valuation_menu.addAction(self._physical_zone_valuation_action)
 
         if len(self._menu.actions()) > 1:
-            self._menu.insertMenu(self._menu.actions()[1], self._valuation_menu)
+            if len(self._menu.actions()[2].text()) == 0:
+                self._menu.insertMenu(self._menu.actions()[2], self._valuation_menu)
+            else:
+                self._menu.insertMenu(self._menu.actions()[1], self._valuation_menu)
         else: # Just in case...
             self._menu.addMenu(self._valuation_menu)
 
