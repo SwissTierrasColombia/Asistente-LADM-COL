@@ -292,9 +292,9 @@ class ReportGenerator():
 
         if total == count:
             if total == 1:
-                msg = QCoreApplication.translate("ReportGenerator", "The report <a href='file://{}'>anexo_17_{}.pdf</a> was successfully generated!").format(save_into_folder, plot_id)
+                msg = QCoreApplication.translate("ReportGenerator", "The report <a href='file:///{}'>anexo_17_{}.pdf</a> was successfully generated!").format(self.qgis_utils.clean_url(save_into_folder), plot_id)
             else:
-                msg = QCoreApplication.translate("ReportGenerator", "All reports were successfully generated in folder <a href='file://{path}'>{path}</a>!").format(path=save_into_folder)
+                msg = QCoreApplication.translate("ReportGenerator", "All reports were successfully generated in folder <a href='file:///{path}'>{path}</a>!").format(path=self.qgis_utils.clean_url(save_into_folder))
 
             self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Success, 0)
         else:
@@ -304,7 +304,7 @@ class ReportGenerator():
                 if count == 0:
                     msg = QCoreApplication.translate("ReportGenerator", "No report could be generated! See QGIS log (tab 'Anexo_17') for details.")
                 else:
-                    msg = QCoreApplication.translate("ReportGenerator", "At least one report couldn't be generated! See QGIS log (tab 'Anexo_17') for details. Go to <a href='file://{path}'>{path}</a> to see the reports that were generated.").format(path=save_into_folder)
+                    msg = QCoreApplication.translate("ReportGenerator", "At least one report couldn't be generated! See QGIS log (tab 'Anexo_17') for details. Go to <a href='file:///{path}'>{path}</a> to see the reports that were generated.").format(path=self.qgis_utils.clean_url(save_into_folder))
 
             self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Warning, 0)
 
@@ -332,7 +332,7 @@ class ReportGenerator():
                     0)
             except PermissionError as e:
                 self.qgis_utils.message_with_duration_emitted.emit(
-                    QCoreApplication.translate("ReportGenerator", "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file://{path}'>{path}</a>").format(path=os.path.join(dependency_base_path, 'impresion')),
+                    QCoreApplication.translate("ReportGenerator", "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=self.qgis_utils.clean_url(os.path.join(dependency_base_path), 'impresion')),
                     Qgis.Warning,
                     0)
             else:
@@ -376,6 +376,6 @@ class ReportGenerator():
 
         if os.path.exists(base_path):
             self.qgis_utils.message_with_duration_emitted.emit(
-                QCoreApplication.translate("ReportGenerator", "It wasn't possible to remove the dependency folder. You need to remove this folder yourself to generate reports: <a href='file://{path}'>{path}</a>").format(path=base_path),
+                QCoreApplication.translate("ReportGenerator", "It wasn't possible to remove the dependency folder. You need to remove this folder yourself to generate reports: <a href='file:///{path}'>{path}</a>").format(path=base_path),
                 Qgis.Warning,
                 0)

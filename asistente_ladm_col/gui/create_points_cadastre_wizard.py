@@ -450,7 +450,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
             if template_file.copy(new_filename):
                 os.chmod(new_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
-                msg = QCoreApplication.translate('CreatePointsCadastreWizard', 'The file <a href="file://{}">{}</a> was successfully saved!').format(new_filename, os.path.basename(new_filename))
+                msg = QCoreApplication.translate('CreatePointsCadastreWizard', 'The file <a href="file:///{}">{}</a> was successfully saved!').format(self.qgis_utils.clean_url(new_filename), os.path.basename(new_filename))
                 self.show_message(msg, Qgis.Info)
             else:
                 self.log.logMessage('There was an error copying the CSV file {}!'.format(new_filename), PLUGIN_NAME, Qgis.Info)
