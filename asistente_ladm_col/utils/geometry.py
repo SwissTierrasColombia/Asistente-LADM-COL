@@ -758,7 +758,7 @@ class GeometryUtils(QObject):
         else:
             return items
 
-    def get_boundary(self, segment, index, dict_features):
+    def get_boundary_to_build(self, segment, index, dict_features):
         id = segment.id()
         segments_connected = list()
 
@@ -822,7 +822,7 @@ class GeometryUtils(QObject):
         else:
             return items
 
-    def get_boundary_by_selection(self, segment, index, dict_features):
+    def get_boundary_to_build_by_selection(self, segment, index, dict_features):
         id = segment.id()
         segments_connected = list()
 
@@ -871,6 +871,7 @@ class GeometryUtils(QObject):
         for feature in boundary_layer.getFeatures():
             exp = '"{id_field}" = {id_field_value}'.format(id_field=ID_FIELD, id_field_value=feature[ID_FIELD])
             segment_ids = [f.id() for f in segments_layer.getFeatures(exp)]
+            segment_ids.sort()
             if segment_ids:
                 boundary_segments[feature.id()] = segment_ids
 
@@ -881,9 +882,16 @@ class GeometryUtils(QObject):
             for segment_sf_id in segment_sf_ids:
                 if segment_sf_id not in total_sc:
                     segment_sf = dict_segments[segment_sf_id]
-                    segments_connected = self.get_boundary_by_selection(segment_sf, index, dict_segments)
+                    segments_connected = self.get_boundary_to_build_by_selection(segment_sf, index, dict_segments)
                     total_sc.extend(segments_connected)
                     process_sc.append(segments_connected)
+
+        # It isn't necessary fix the boundaries that are okay.
+        for sc_check in process_sc.copy():
+            sc_check.sort()
+            for boundary_segment_id in boundary_segments:
+                if sc_check == boundary_segments[boundary_segment_id]:
+                    process_sc.remove(sc_check)
 
         boundaries_to_del_ids = list()
         candidate_segments = list()
@@ -911,3 +919,36 @@ class GeometryUtils(QObject):
         boundaries_to_del_unique_ids = list(set(boundaries_to_del_ids))
 
         return new_geometries, boundaries_to_del_unique_ids
+
+    def fix_boundaries(self, layer, id_field=ID_FIELD):
+        tmp_segments_layer = processing.run("native:explodelines", {'INPUT': layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        # remove duplicate segments (algorithm don't with duplicate geometries)
+        segments_layer = processing.run("qgis:deleteduplicategeometries", {'INPUT': tmp_segments_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        id_field_idx = segments_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        dict_features = {feature.id(): feature for feature in segments_layer.getFeatures(request)}
+        index = QgsSpatialIndex(segments_layer)
+
+        process_sc = list()
+        total_sc = list()
+        boundaries_to_del_ids = list()
+
+        for id in dict_features:
+            if id not in total_sc:
+                segment = dict_features[id]
+                try:
+                    segments_connected = self.get_boundary_to_build(segment, index, dict_features)
+                    total_sc.extend(segments_connected)
+                    process_sc.append(segments_connected)
+                except RecursionError as re:
+                    print('Error: {}'.format(re.args[0]))
+
+        merge_geometries = list()
+        for sc_ids in process_sc:
+            selected_features = [dict_features[sc_id] for sc_id in sc_ids]
+            merge_geom = self.merge_geometries(selected_features)
+            merge_geometries.append(merge_geom)
+
+        boundaries_to_del = [f.id() for f in layer.getFeatures()]
+
+        return merge_geometries, boundaries_to_del

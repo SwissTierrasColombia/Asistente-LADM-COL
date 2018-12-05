@@ -1195,44 +1195,56 @@ class QGISUtils(QObject):
     def build_boundary(self, db):
         self.turn_transaction_off()
         layer = self.get_layer_from_layer_tree(BOUNDARY_TABLE, db.schema)
+        use_selection = True
 
         if layer is None:
             self.message_with_button_load_layer_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "First load the layer {} into QGIS!").format(BOUNDARY_TABLE),
-                QCoreApplication.translate("QGISUtils",
-                                           "Load layer {} now").format(BOUNDARY_TABLE),
-                [BOUNDARY_TABLE, None],
-                Qgis.Warning)
+                QCoreApplication.translate("QGISUtils", "First load the layer {} into QGIS!").format(BOUNDARY_TABLE),
+                QCoreApplication.translate("QGISUtils", "Load layer {} now").format(BOUNDARY_TABLE), [BOUNDARY_TABLE, None],Qgis.Warning)
             return
+        else:
+            if layer.selectedFeatureCount() == 0:
+                reply = QMessageBox.question(None,
+                                             QCoreApplication.translate("QGISUtils", "Continue?"),
+                                             QCoreApplication.translate("QGISUtils",
+                                                                        "There are no selected boundaries, do you like to check all boundaries in the data base?"),
+                                             QMessageBox.Yes, QMessageBox.No)
+                if reply == QMessageBox.Yes:
+                    use_selection = False
+                else:
+                    self.message_emitted.emit(
+                        QCoreApplication.translate("QGISUtils", "First select at least one boundary!"),
+                        Qgis.Warning)
+                    return
 
-        num_boundaries = len(layer.selectedFeatures())
-        if num_boundaries == 0:
+        if use_selection:
+            new_boundary_geoms, boundaries_to_del_ids = self.geometry.fix_selected_boundaries(layer)
+            num_boundaries = layer.selectedFeatureCount()
+        else:
+            new_boundary_geoms, boundaries_to_del_ids = self.geometry.fix_boundaries(layer)
+            num_boundaries = layer.featureCount()
+
+        if len(new_boundary_geoms)  > 0:
+
+            layer.startEditing()  # Safe, even if layer is already on editing state
+
+            # the boundaries that are to be replaced are removed
+            layer.deleteFeatures(boundaries_to_del_ids)
+
+            # Create features based on segment geometries
+            new_fix_boundary_features = list()
+            for boundary_geom in new_boundary_geoms:
+                feature = QgsVectorLayerUtils().createFeature(layer, boundary_geom)
+                new_fix_boundary_features.append(feature)
+
+            layer.addFeatures(new_fix_boundary_features)
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "First select at least one boundary!"),
-                Qgis.Warning)
-            return
-
-        new_boundary_geoms, boundaries_to_del_ids = self.geometry.fix_selected_boundaries(layer)
-
-        layer.startEditing() # Safe, even if layer is already on editing state
-
-        # the boundaries that are to be replaced are removed
-        layer.deleteFeatures(boundaries_to_del_ids)
-
-        # Create features based on segment geometries
-        new_fix_boundary_features = list()
-        for boundary_geom in new_boundary_geoms:
-            feature = QgsVectorLayerUtils().createFeature(layer, boundary_geom)
-            new_fix_boundary_features.append(feature)
-
-        layer.addFeatures(new_fix_boundary_features)
-        self.message_emitted.emit(
-            QCoreApplication.translate("QGISUtils",
-                                       "{} feature(s) was/were adjusted generating {} boundary(ies).").format(num_boundaries, len(new_fix_boundary_features)),
-            Qgis.Info)
-        self.map_refresh_requested.emit()
+                                           "{} feature(s) was/were adjusted generating {} boundary(ies).").format(num_boundaries, len(new_fix_boundary_features)),
+                Qgis.Info)
+            self.map_refresh_requested.emit()
+        else:
+            self.message_emitted.emit(QCoreApplication.translate("QGISUtils", "There are no boundaries to build"), Qgis.Info)
 
     def polygonize_boundaries(self, db):
         res_layers = self.get_layers(db, {
