@@ -195,8 +195,6 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             self._parcel_layer.featureAdded.connect(self.call_parcel_commit)
             self._parcel_layer.committedFeaturesAdded.connect(partial(self.finish_parcel, None, None, building_unit_ids))
 
-
-            pass
         elif self._plot_layer.selectedFeatureCount() == 1 or self._building_layer.selectedFeatureCount() > 0:
             # Open Form
             self.iface.layerTreeView().setCurrentLayer(self._parcel_layer)
