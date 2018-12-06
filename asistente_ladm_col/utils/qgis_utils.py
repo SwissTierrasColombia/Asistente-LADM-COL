@@ -1395,9 +1395,3 @@ class QGISUtils(QObject):
             url = web_url
 
         webbrowser.open("{}/{}".format(url, section))
-    
-    def clean_url(self, url):
-        if url[0] == "/":
-            url = url[1:]
-        return url
-        
