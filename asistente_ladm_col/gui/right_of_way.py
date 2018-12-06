@@ -27,6 +27,8 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.core import (
                        Qgis,
                        QgsApplication,
+                       QgsExpression,
+                       QgsFeatureRequest,
                        QgsProject,
                        QgsVectorLayer,
                        QgsEditFormConfig,
@@ -38,7 +40,14 @@ from qgis.core import (
 
 import processing
 
-from ..config.table_mapping_config import RIGHT_OF_WAY_TABLE, SURVEY_POINT_TABLE
+from ..config.table_mapping_config import (
+                                        PARCEL_TABLE,
+                                        PLOT_TABLE,
+                                        UEBAUNIT_TABLE,
+                                        RESTRICTION_TABLE,
+                                        RIGHT_OF_WAY_TABLE,
+                                        SURVEY_POINT_TABLE,
+)
 
 from ..config.general_config import (
     DEFAULT_EPSG,
@@ -46,16 +55,15 @@ from ..config.general_config import (
     TranslatableConfigStrings
 )
 
-from ..utils.qgis_utils import QGISUtils
 
 class RightOfWay(QObject):
 
     def __init__(self, iface, qgis_utils):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
+        self.iface = iface
 
         self._right_of_way_layer = None
-        self.iface = iface
         self.addedFeatures = None
 
     def prepare_right_of_way_line_creation(self, db, _right_of_way_layer, tb_strings, iface, width_value):
@@ -166,3 +174,62 @@ class RightOfWay(QObject):
             self._right_of_way_layer.addFeature(feature)
             form = iface.getFeatureForm(self._right_of_way_layer, feature)
             form.show()
+
+    def fill_right_of_way_relations(self, db, use_selection = True):
+        print("Hey voy a empezar a llenar relaciones")
+        # Load layers
+        res_layers = self.qgis_utils.get_layers(db, {
+            PARCEL_TABLE: {'name': RESTRICTION_TABLE, 'geometry': None},
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            RESTRICTION_TABLE: {'name': RESTRICTION_TABLE, 'geometry': None},
+            RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}
+        }, load=True)
+
+        self._parcel_layer = res_layers[PARCEL_TABLE]
+        self._plot_layer = res_layers[PLOT_TABLE]
+        self._restriction_layer = res_layers[RESTRICTION_TABLE]
+        self._right_of_way_layer = res_layers[RIGHT_OF_WAY_TABLE]
+        self._survey_point_layer = res_layers[SURVEY_POINT_TABLE]
+        self._uebaunit_layer = res_layers[UEBAUNIT_TABLE]
+
+        if self._parcel_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(PARCEL_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        if self._right_of_way_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(RIGHT_OF_WAY_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        if use_selection:
+            if self._plot_layer.selectedFeatureCount() == 0 or self._right_of_way_layer.selectedFeatureCount() == 0:
+                print("Entro a la seleccion")
+                if self.qgis_utils.get_layer_from_layer_tree(PLOT_TABLE, schema=db.schema, geometry_type=QgsWkbTypes.PolygonGeometry) is None:
+                    print("Entro al primer condicional")
+                    self.qgis_utils.message_with_button_load_layer_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                                   "First load the layer {} into QGIS and select at least one plot!").format(PLOT_TABLE),
+                        QCoreApplication.translate("QGISUtils", "Load layer {} now").format(PLOT_TABLE),
+                        [PLOT_TABLE, None],
+                        Qgis.Warning)
+                else:
+                    print("Entro al segundo condicional")
+                    self.qgis_utils.message_emitted.emit(
+                        QCoreApplication.translate("QGISUtils", "You have select at least one benefited plot and a right of way to create relations!"),
+                        Qgis.Warning)
+                    return
+            else:
+                plot_ids = [f['t_id'] for f in self._plot_layer.selectedFeatures()]
+                # plots =
+                # for plot in plot_ids:
+                #     plots.append(plot.attribute("t_id"))
+                for plot in plot_ids:
+                    exp = QgsExpression("\"ue_terreno\" = {}".format(plot))
+                    parcels = self._uebaunit_layer.getFeatures(QgsFeatureRequest(exp))
+                    for parcel in parcels:
+                        print(parcel.attribute("baunit_predio"))

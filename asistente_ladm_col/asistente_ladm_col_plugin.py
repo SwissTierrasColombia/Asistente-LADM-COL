@@ -70,6 +70,7 @@ from .gui.create_right_cadastre_wizard import CreateRightCadastreWizard
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
+from .gui.right_of_way import RightOfWay
 from .gui.reports import ReportGenerator
 from .gui.toolbar import ToolBar
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
@@ -101,6 +102,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.iface.mainWindow().menuBar().addMenu(self._menu)
 
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
+        self.right_of_way = RightOfWay(self.iface, self.qgis_utils)
         self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
         self.report_generator = ReportGenerator(self.qgis_utils)
@@ -163,6 +165,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
         self._fill_more_BFS_less_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill More BFS and Less"), self.iface.mainWindow())
         self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
+        self._fill_right_of_way_relations_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Right of Way Relations"), self.iface.mainWindow())
+        self._fill_right_of_way_relations_action.triggered.connect(self.call_fill_right_of_way_relations)
         self._report_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Generate Annex 17"), self.iface.mainWindow())
         self._report_action.triggered.connect(self.call_report_generation)
         self._ladm_col_toolbar = self.iface.addToolBar(QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"))
@@ -172,6 +176,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                            self._topological_editing_action,
                                            self._fill_point_BFS_action,
                                            self._fill_more_BFS_less_action,
+                                           self._fill_right_of_way_relations_action,
                                            self._report_action])
 
         # Add LADM_COL provider and models to QGIS
@@ -627,6 +632,11 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def call_fill_topology_tables_morebfs_less(self):
         self.qgis_utils.fill_topology_tables_morebfs_less(self.get_db_connection())
+
+    @_project_generator_required
+    @_db_connection_required
+    def call_fill_right_of_way_relations(self):
+        self.right_of_way.fill_right_of_way_relations(self.get_db_connection())
 
     @_project_generator_required
     @_db_connection_required
