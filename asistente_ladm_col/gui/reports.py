@@ -376,6 +376,6 @@ class ReportGenerator():
 
         if os.path.exists(base_path):
             self.qgis_utils.message_with_duration_emitted.emit(
-                QCoreApplication.translate("ReportGenerator", "It wasn't possible to remove the dependency folder. You need to remove this folder yourself to generate reports: <a href='file:///{path}'>{path}</a>").format(path=base_path),
+                QCoreApplication.translate("ReportGenerator", "It wasn't possible to remove the dependency folder. You need to remove this folder yourself to generate reports: <a href='file:///{path}'>{path}</a>").format(path=self.qgis_utils.clean_url(base_path)),
                 Qgis.Warning,
                 0)
