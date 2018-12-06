@@ -634,13 +634,19 @@ class QGISUtils(QObject):
 
             irc.addChildElement(new_general_tab)
 
-    def configure_automatic_field(self, layer, field, expression):
-        index = layer.fields().indexFromName(field)
-        default_value = QgsDefaultValue(expression, True) # Calculate on update
-        layer.setDefaultValueDefinition(index, default_value)
+    def configure_automatic_fields(self, layer, list_dicts_field_expression):
+        for dict_field_expression in list_dicts_field_expression:
+            for field, expression in dict_field_expression.items(): # There should be one key and one value
+                index = layer.fields().indexFromName(field)
+                default_value = QgsDefaultValue(expression, True) # Calculate on update
+                layer.setDefaultValueDefinition(index, default_value)
+                QgsApplication.messageLog().logMessage(
+                    "Automatic value configured: Layer '{}', field '{}', expression '{}'.".format(
+                        layer.name(), field, expression),
+                    PLUGIN_NAME, Qgis.Info)
 
     def reset_automatic_field(self, layer, field):
-        self.configure_automatic_field(layer, field, "")
+        self.configure_automatic_fields(layer, [{field: ""}])
 
     def set_automatic_fields(self, layer):
         layer_name = layer.name()
@@ -648,12 +654,10 @@ class QGISUtils(QObject):
         self.set_automatic_fields_namespace_local_id(layer)
 
         if layer.fields().indexFromName(VIDA_UTIL_FIELD) != -1:
-            self.configure_automatic_field(layer, VIDA_UTIL_FIELD, "now()")
+            self.configure_automatic_fields(layer, [{VIDA_UTIL_FIELD: "now()"}])
 
-        if layer_name == BOUNDARY_TABLE and BOUNDARY_TABLE in DICT_AUTOMATIC_VALUES:
-            self.configure_automatic_field(layer, LENGTH_FIELD_BOUNDARY_TABLE, DICT_AUTOMATIC_VALUES[BOUNDARY_TABLE])
-        elif layer_name == COL_PARTY_TABLE and COL_PARTY_TABLE in DICT_AUTOMATIC_VALUES:
-            self.configure_automatic_field(layer, COL_PARTY_NAME_FIELD, DICT_AUTOMATIC_VALUES[COL_PARTY_TABLE])
+        if layer_name in DICT_AUTOMATIC_VALUES:
+            self.configure_automatic_fields(layer, DICT_AUTOMATIC_VALUES[layer_name])
 
     def set_automatic_fields_namespace_local_id(self, layer):
         layer_name = layer.name()
@@ -662,12 +666,12 @@ class QGISUtils(QObject):
         lid_enabled, lid_field, lid_value = self.get_local_id_field_and_value(layer_name)
 
         if ns_enabled and ns_field:
-            self.configure_automatic_field(layer, ns_field, ns_value)
+            self.configure_automatic_fields(layer, [{ns_field: ns_value}])
         elif not ns_enabled and ns_field:
             self.reset_automatic_field(layer, ns_field)
 
         if lid_enabled and lid_field:
-            self.configure_automatic_field(layer, lid_field, lid_value)
+            self.configure_automatic_fields(layer, [{lid_field: lid_value}])
         elif not lid_enabled and lid_field:
             self.reset_automatic_field(layer, lid_field)
 
@@ -1113,7 +1117,7 @@ class QGISUtils(QObject):
                 mapping = self.load_field_mapping(field_mapping)
 
                 if mapping is None: # If the mapping couldn't be parsed for any reason
-                    QgsApplication.messageLog().logMessage("Field mapping '{}' was not found and couldn't be loadded. The default mapping is used instead!".format(field_mapping),
+                    QgsApplication.messageLog().logMessage("Field mapping '{}' was not found and couldn't be loaded. The default mapping is used instead!".format(field_mapping),
                                                            PLUGIN_NAME, Qgis.Warning)
 
             if mapping is None:

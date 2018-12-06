@@ -957,8 +957,8 @@ class TesQualityValidations(unittest.TestCase):
             else:
                 missing_topology.append([boundary_point_id, boundary_id])
 
-        self.assertEquals(len(missing_topology), 0)
-        self.assertEquals(len(duplicates_topology), 0)
+        self.assertEqual(len(missing_topology), 0)
+        self.assertEqual(len(duplicates_topology), 0)
 
         uri_points_ccl_table = gpkg_path + '|layername=pointsCcl_bad'
         points_ccl_table = QgsVectorLayer(uri_points_ccl_table, 'pointsCcl_bad', 'ogr')
@@ -987,8 +987,8 @@ class TesQualityValidations(unittest.TestCase):
             else: # no register
                 missing_topology.append([boundary_point_id, boundary_id])
 
-        self.assertEquals(missing_topology, [[1, 1]])
-        self.assertEquals(duplicates_topology, [[20, 1]])
+        self.assertEqual(missing_topology, [[1, 1]])
+        self.assertEqual(duplicates_topology, [[20, 1]])
 
     def test_check_right_of_way_overlaps_buildings(self):
         print('\nINFO: Validating Right of Way-Building overlaps...')
@@ -1058,15 +1058,17 @@ class TesQualityValidations(unittest.TestCase):
 
         bad_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(bad_boundary_layer)
         bad_boundary_errors_list = [item for item in bad_boundary_errors]
-        self.assertEquals(len(bad_boundary_errors_list), 4)
+        self.assertEqual(len(bad_boundary_errors_list), 4)
+        self.assertEqual([2, 3, 6, 7], [f['t_id'] for f in bad_boundary_errors])
 
         bbox_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(bbox_boundary_layer)
         bbox_boundary_errors_list = [item for item in bbox_boundary_errors]
-        self.assertEquals(len(bbox_boundary_errors_list), 9)
+        self.assertEqual(len(bbox_boundary_errors_list), 9)
+        self.assertEqual([39185, 39193, 39207, 39209, 39210, 39231, 39232, 48767, 48768], [f['t_id'] for f in bbox_boundary_errors_list])
 
         good_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(good_boundary_layer)
         good_boundary_errors_list = [item for item in good_boundary_errors]
-        self.assertEquals(len(good_boundary_errors_list), 0)
+        self.assertEqual(len(good_boundary_errors_list), 0)
 
     def validate_segments(self, segments_info, tolerance):
         for segment_info in segments_info:

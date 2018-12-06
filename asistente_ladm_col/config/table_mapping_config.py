@@ -19,6 +19,7 @@ CCLSOURCE_TABLE_SOURCE_FIELD = "lfuente"
 COL_PARTY_NAME_FIELD = "nombre"
 COL_PARTY_TABLE = "col_interesado"
 CONTROL_POINT_TABLE = "puntocontrol"
+DEPARTMENT_FIELD = "departamento"
 DOCUMENT_ID_FIELD = "documento_identidad"
 DOMAIN_KEY_FIELD = {
     "pg": "ilicode",
@@ -62,6 +63,7 @@ MEMBERS_TABLE = "miembros"
 MORE_BOUNDARY_FACE_STRING_TABLE = "masccl"
 MOREBFS_TABLE_BOUNDARY_FIELD = "cclp_lindero"
 MOREBFS_TABLE_PLOT_FIELD = "uep_terreno"
+MUNICIPALITY_FIELD = "municipio"
 NAMESPACE_FIELD = "_espacio_de_nombres"
 NIT_NUMBER_FIELD = "numero_nit"
 NUMBER_OF_FLOORS = "numero_pisos"
@@ -115,6 +117,7 @@ UESOURCE_TABLE = "uefuente"
 UESOURCE_TABLE_PLOT_FIELD = "ue_terreno"
 UESOURCE_TABLE_SOURCE_FIELD = "pfuente"
 VIDA_UTIL_FIELD = "comienzo_vida_util_version"
+ZONE_FIELD = "zona"
 
 """
 PROPERTY RECORD CARD MAPPING
@@ -149,14 +152,17 @@ NAMESPACE_PREFIX = {
 }
 
 DICT_AUTOMATIC_VALUES = {
-    BOUNDARY_TABLE: "$length",
-    COL_PARTY_TABLE: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
+    BOUNDARY_TABLE: [{LENGTH_FIELD_BOUNDARY_TABLE: "$length"}],
+    COL_PARTY_TABLE: [{COL_PARTY_NAME_FIELD: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
         DOCUMENT_ID_FIELD,
         FIRST_SURNAME_FIELD,
         SECOND_SURNAME_FIELD,
         FIRST_NAME_FIELD,
         SECOND_NAME_FIELD,
-        BUSINESS_NAME_FIELD)
+        BUSINESS_NAME_FIELD)}],
+    PARCEL_TABLE: [{DEPARTMENT_FIELD: 'substr("numero_predial", 0, 2)'},
+                   {MUNICIPALITY_FIELD: 'substr("numero_predial", 3, 3)'},
+                   {ZONE_FIELD: 'substr("numero_predial", 6, 2)'}]
 }
 
 DICT_DISPLAY_EXPRESSIONS = {
