@@ -41,9 +41,12 @@ from qgis.core import (
 import processing
 
 from ..config.table_mapping_config import (
+                                        ID_FIELD,
                                         PARCEL_TABLE,
                                         PLOT_TABLE,
                                         UEBAUNIT_TABLE,
+                                        UEBAUNIT_TABLE_PARCEL_FIELD,
+                                        UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD,
                                         RESTRICTION_TABLE,
                                         RIGHT_OF_WAY_TABLE,
                                         SURVEY_POINT_TABLE,
@@ -62,6 +65,7 @@ class RightOfWay(QObject):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
         self.iface = iface
+        self.log = QgsApplication.messageLog()
 
         self._right_of_way_layer = None
         self.addedFeatures = None
@@ -192,7 +196,7 @@ class RightOfWay(QObject):
         self._restriction_layer = res_layers[RESTRICTION_TABLE]
         self._right_of_way_layer = res_layers[RIGHT_OF_WAY_TABLE]
         self._survey_point_layer = res_layers[SURVEY_POINT_TABLE]
-        self._uebaunit_layer = res_layers[UEBAUNIT_TABLE]
+        self._uebaunit_table = res_layers[UEBAUNIT_TABLE]
 
         if self._parcel_layer is None:
             self.qgis_utils.message_emitted.emit(
@@ -203,6 +207,14 @@ class RightOfWay(QObject):
         if self._right_of_way_layer is None:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(RIGHT_OF_WAY_TABLE, db.get_description()),
+                Qgis.Warning)
+            return
+
+        self._uebaunit_table = res_layers[UEBAUNIT_TABLE]
+        if self._uebaunit_table is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateParcelCadastreWizard",
+                                           "UEBAUNIT table couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 
@@ -224,12 +236,45 @@ class RightOfWay(QObject):
                         Qgis.Warning)
                     return
             else:
+                ue_baunit_features = self._uebaunit_table.getFeatures()
+                # Get unique pairs id_right_of_way-id_parcel
+                existing_pairs = [(ue_baunit_feature[UEBAUNIT_TABLE_PARCEL_FIELD], ue_baunit_feature[UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD]) for ue_baunit_feature in ue_baunit_features]
+                existing_pairs = set(existing_pairs)
+
                 plot_ids = [f['t_id'] for f in self._plot_layer.selectedFeatures()]
-                # plots =
-                # for plot in plot_ids:
-                #     plots.append(plot.attribute("t_id"))
+
+                right_of_way_id = self._right_of_way_layer.selectedFeatures()[0].attribute(ID_FIELD)
+                id_pairs = list()
                 for plot in plot_ids:
                     exp = QgsExpression("\"ue_terreno\" = {}".format(plot))
-                    parcels = self._uebaunit_layer.getFeatures(QgsFeatureRequest(exp))
+                    parcels = self._uebaunit_table.getFeatures(QgsFeatureRequest(exp))
                     for parcel in parcels:
-                        print(parcel.attribute("baunit_predio"))
+                        id_pair = (parcel.attribute("baunit_predio"), right_of_way_id)
+                        id_pairs.append(id_pair)
+
+                if id_pairs:
+                    new_features = list()
+                    for id_pair in id_pairs:
+                        if not id_pair in existing_pairs:
+                            #Create feature
+                            new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
+                            new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, id_pair[0])
+                            new_feature.setAttribute(UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD, id_pair[1])
+                            self.log.logMessage("Saving RightOfWay-Parcel: {}-{}".format(id_pair[1], id_pair[0]), PLUGIN_NAME, Qgis.Info)
+                            new_features.append(new_feature)
+
+                    self._uebaunit_table.dataProvider().addFeatures(new_features)
+                    self.qgis_utils.message_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                           "{} out of {} records were saved into {}! {} out of {} records already existed in the database.").format(
+                            len(new_features),
+                            len(id_pairs),
+                            UEBAUNIT_TABLE,
+                            len(id_pairs) - len(new_features),
+                            len(id_pairs)
+                            ),
+                            Qgis.Info)
+                else:
+                    self.message_emitted.emit(
+                        QCoreApplication.translate("QGISUtils", "No pairs id_right_of_way-id_parcel benefited found."),
+                        Qgis.Info)
