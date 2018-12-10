@@ -195,8 +195,7 @@ class GeometryUtils(QObject):
                 #    intersect_pair.append(line['t_id'], candidate_feature['t_id'])
                 candidate_point = candidate_feature.geometry().asPoint()
                 for line_vertex in line.geometry().asPolyline():
-                    if abs(line_vertex.x() - candidate_point.x()) < 0.001 \
-                       and abs(line_vertex.y() - candidate_point.y()) < 0.001:
+                    if line_vertex.x() == candidate_point.x() and line_vertex.y() == candidate_point.y():
                         pair = (line[id_field], candidate_feature[id_field])
                         if pair not in intersect_pairs:
                             intersect_pairs.append(pair)
