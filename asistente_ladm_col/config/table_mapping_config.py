@@ -134,6 +134,7 @@ LEGAL_PARTY_TABLE = "interesado_juridico"
 PROPERTY PARCEL TABLE
 """
 PARCEL_TYPE_FIELD = "tipo"
+PARCEL_TYPE_PH_OPTION = "PropiedadHorizontal.UnidadPredial"
 
 
 NAMESPACE_PREFIX = {
@@ -233,7 +234,7 @@ LAYER_CONSTRAINTS = {
                           'WHEN "{parcel_type}" IS NOT NULL AND num_selected(\'{layer}\') = 0 THEN \n("{parcel_type}" != \'PropiedadHorizontal.UnidadPredial\')\n'
                           'ELSE True\n'
                           'END'.format(parcel_type=PARCEL_TYPE_FIELD, layer=BUILDING_UNIT_TABLE),
-            'description': ''
+            'description': 'Si el tipo de predio es Propiedad Horizontal, debes elegir unicamente la opción {parcel_type_field}; en otro caso puedes seleccionar cualquier otra opción del listado.'.format(parcel_type_field=PARCEL_TYPE_PH_OPTION)
         }
     }
 }

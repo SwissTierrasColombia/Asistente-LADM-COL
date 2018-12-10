@@ -177,48 +177,41 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
 
     def edit_parcel(self):
 
-        if self._building_unit_layer.selectedFeatureCount() > 0:
-
-            # If building units are selected, there should be no plots or buildings.
-            self._plot_layer.removeSelection()
-            self._building_layer.removeSelection()
-
-            # Open Form
-            self.iface.layerTreeView().setCurrentLayer(self._parcel_layer)
-            self._parcel_layer.startEditing()
-            self.iface.actionAddFeature().trigger()
-
-            building_unit_ids = [f[ID_FIELD] for f in self._building_unit_layer.selectedFeatures()]
-
-            # Create connections to react when a feature is added to buffer and
-            # when it gets stored into the DB
-            self._parcel_layer.featureAdded.connect(self.call_parcel_commit)
-            self._parcel_layer.committedFeaturesAdded.connect(partial(self.finish_parcel, None, None, building_unit_ids))
-
-        elif self._plot_layer.selectedFeatureCount() == 1 or self._building_layer.selectedFeatureCount() > 0:
-            # Open Form
-            self.iface.layerTreeView().setCurrentLayer(self._parcel_layer)
-            self._parcel_layer.startEditing()
-            self.iface.actionAddFeature().trigger()
-
-            plot_ids = [f['t_id'] for f in self._plot_layer.selectedFeatures()]
-            building_ids = [f['t_id'] for f in self._building_layer.selectedFeatures()]
-
-            # Create connections to react when a feature is added to buffer and
-            # when it gets stored into the DB
-            self._parcel_layer.featureAdded.connect(self.call_parcel_commit)
-            self._parcel_layer.committedFeaturesAdded.connect(partial(self.finish_parcel, plot_ids, building_ids, None))
-
-        elif self._plot_layer.selectedFeatureCount() == 0 and self._building_layer.selectedFeatureCount() == 0:
+        if self._plot_layer.selectedFeatureCount() == 0 and self._building_layer.selectedFeatureCount() == 0 and self._building_unit_layer.selectedFeatureCount() == 0 :
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
                                            "Please select one Plot or at least one Building or at least one Building unit"),
                 Qgis.Warning)
-        else: # >1
+            return
+        elif self._plot_layer.selectedFeatureCount() > 1:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
                                            "Please select only one Plot"),
                 Qgis.Warning)
+            return
+
+        # Open Form
+        self.iface.layerTreeView().setCurrentLayer(self._parcel_layer)
+        self._parcel_layer.startEditing()
+        self.iface.actionAddFeature().trigger()
+
+        ## TODO: Show selection page when all three layers have selections
+        if self._building_unit_layer.selectedFeatureCount() > 0:
+            # If building units are selected, there should be no plots or buildings.
+            self._plot_layer.removeSelection()
+            self._building_layer.removeSelection()
+            building_unit_ids = [f[ID_FIELD] for f in self._building_unit_layer.selectedFeatures()]
+            plot_ids = building_ids = None
+
+        elif self._plot_layer.selectedFeatureCount() == 1 or self._building_layer.selectedFeatureCount() > 0:
+            plot_ids = [f['t_id'] for f in self._plot_layer.selectedFeatures()]
+            building_ids = [f['t_id'] for f in self._building_layer.selectedFeatures()]
+            building_unit_ids = None
+
+        # Create connections to react when a feature is added to buffer and
+        # when it gets stored into the DB
+        self._parcel_layer.featureAdded.connect(self.call_parcel_commit)
+        self._parcel_layer.committedFeaturesAdded.connect(partial(self.finish_parcel, plot_ids, building_ids, building_unit_ids))
 
     def call_parcel_commit(self, fid):
         self._parcel_layer.featureAdded.disconnect(self.call_parcel_commit)
@@ -239,23 +232,19 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                 new_features = []
 
                 if building_unit_ids:
-
                     for building_unit_id in building_unit_ids:
                         new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
                         new_feature.setAttribute(UEBAUNIT_TABLE_BUILDING_UNIT_FIELD, building_unit_id)
                         new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
-                        self.log.logMessage("Saving Building-Parcel: {}-{}".format(building_unit_id, parcel_id), PLUGIN_NAME, Qgis.Info)
+                        self.log.logMessage("Saving Building Unit-Parcel: {}-{}".format(building_unit_id, parcel_id), PLUGIN_NAME, Qgis.Info)
                         new_features.append(new_feature)
 
                     self._uebaunit_table.dataProvider().addFeatures(new_features)
-
-                    if plot_ids and building_ids:
-                        self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                            QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                       "The new parcel (t_id={}) was successfully created and associated with its corresponding Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_unit_ids])),
-                            Qgis.Info)
+                    self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                        QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_unit_ids])),
+                        Qgis.Info)
                 else:
-
                     for plot_id in plot_ids:
                         new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
                         new_feature.setAttribute(UEBAUNIT_TABLE_PLOT_FIELD, plot_id)
