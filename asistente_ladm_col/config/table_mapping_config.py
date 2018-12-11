@@ -130,6 +130,12 @@ NUCLEAR_FAMILY_TABLE = "nucleofamiliar"
 NATURAL_PARTY_TABLE = "interesado_natural"
 LEGAL_PARTY_TABLE = "interesado_juridico"
 
+"""
+PROPERTY PARCEL TABLE
+"""
+PARCEL_TYPE_FIELD = "tipo"
+PARCEL_TYPE_PH_OPTION = "PropiedadHorizontal.UnidadPredial"
+
 
 NAMESPACE_PREFIX = {
     ADMINISTRATIVE_SOURCE_TABLE: 's',
@@ -219,6 +225,16 @@ LAYER_CONSTRAINTS = {
         PRC_PUBLIC_PARCEL_TYPE_FIELD: {
             'expression': 'CASE WHEN "{prc_ptf}" IS NOT NULL THEN\n(strpos("{prc_ptf}", \'Privado.\') != 0 AND "{prc_pptf}" IS NULL) OR (strpos("{prc_ptf}", \'Publico.\') != 0 AND "{prc_pptf}" IS NOT NULL)\nELSE True\nEND'.format(prc_ptf=PRC_PARCEL_TYPE_FIELD, prc_pptf=PRC_PUBLIC_PARCEL_TYPE_FIELD),
             'description': 'Si el tipo de predio es Público, debes elegir un valor de este listado; pero si el tipo de predio es Privado, no debes seleccionar ningún valor de este listado.'
+        }
+    },
+    PARCEL_TABLE: {
+        PARCEL_TYPE_FIELD: {
+            'expression': 'CASE\n'
+                          'WHEN "{parcel_type}" IS NOT NULL AND num_selected(\'{layer}\') > 0 THEN \n("{parcel_type}" = \'PropiedadHorizontal.UnidadPredial\')\n'
+                          'WHEN "{parcel_type}" IS NOT NULL AND num_selected(\'{layer}\') = 0 THEN \n("{parcel_type}" != \'PropiedadHorizontal.UnidadPredial\')\n'
+                          'ELSE True\n'
+                          'END'.format(parcel_type=PARCEL_TYPE_FIELD, layer=BUILDING_UNIT_TABLE),
+            'description': 'Si el tipo de predio es Propiedad Horizontal, debes elegir únicamente la opción {parcel_type_field}; en otro caso puedes seleccionar cualquier otra opción del listado.'.format(parcel_type_field=PARCEL_TYPE_PH_OPTION)
         }
     }
 }
