@@ -835,22 +835,32 @@ class QGISUtils(QObject):
             new_feature = QgsVectorLayerUtils().createFeature(target_point_layer, in_feature.geometry(), attrs)
             new_features.append(new_feature)
 
+        # Improve message for import from csv
+        initial_feature_count = target_point_layer.featureCount()
         target_point_layer.dataProvider().addFeatures(new_features)
-
         QgsProject.instance().addMapLayer(target_point_layer)
-        self.zoom_full_requested.emit()
-        self.message_emitted.emit(
-            QCoreApplication.translate("QGISUtils",
-                                       "{} points were added succesfully to '{}'.").format(len(new_features), target_layer_name),
-            Qgis.Info)
+
+        if target_point_layer.featureCount() > initial_feature_count:
+            self.zoom_full_requested.emit()
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "{} points were added succesfully to '{}'.").format(len(new_features),
+                                                                                               target_layer_name),
+                Qgis.Info)
+        else:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "No point was added to '{}'.").format(target_layer_name),
+                Qgis.Warning)
+            return False
 
         return True
 
     def fill_topology_table_pointbfs(self, db, use_selection=True):
         res_layers = self.get_layers(db, {
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry':None},
-            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry':None},
-            BOUNDARY_POINT_TABLE: {'name':BOUNDARY_POINT_TABLE, 'geometry':None}}, load=True)
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
+            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None},
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None}}, load=True)
 
         boundary_layer = res_layers[BOUNDARY_TABLE]
         if boundary_layer is None:
