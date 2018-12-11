@@ -832,15 +832,11 @@ class QGISUtils(QObject):
             new_features.append(new_feature)
 
         # Improve message for import from csv
-        initial_features = target_point_layer.featureCount()
-        try:
-            target_point_layer.dataProvider().addFeatures(new_features)
-        except:
-            print("Error: Data load failed")
-            return
-        final_features = target_point_layer.featureCount()
-        if final_features > initial_features:
-            QgsProject.instance().addMapLayer(target_point_layer)
+        initial_feature_count = target_point_layer.featureCount()
+        target_point_layer.dataProvider().addFeatures(new_features)
+        QgsProject.instance().addMapLayer(target_point_layer)
+
+        if target_point_layer.featureCount() > initial_feature_count:
             self.zoom_full_requested.emit()
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -850,8 +846,8 @@ class QGISUtils(QObject):
         else:
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "Nothing points were added to '{}'.").format(target_layer_name),
-                Qgis.Info)
+                                           "No point was added to '{}'.").format(target_layer_name),
+                Qgis.Warning)
             return False
 
         return True
