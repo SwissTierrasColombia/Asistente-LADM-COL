@@ -85,7 +85,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.log = QgsApplication.messageLog()
         self._about_dialog = None
         self.toolbar = None
-        self._flag_menus_refreshed_at_load_time = False
 
     def initGui(self):
         # Set Menus
