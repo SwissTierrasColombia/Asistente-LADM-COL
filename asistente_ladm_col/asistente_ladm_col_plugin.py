@@ -366,7 +366,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         menu.deleteLater()
 
-    def refresh_menus(self, db, force=False):
+    def refresh_menus(self, db):
         """
         Depending on the models avilable in the DB, some menus should appear or
         dissapear from the GUI.
