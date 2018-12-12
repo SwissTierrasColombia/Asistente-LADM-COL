@@ -122,7 +122,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.connection_is_dirty = False
             if self._db.test_connection()[0]:
                 self.cache_layers_and_relations_requested.emit(self._db)
-                self.refresh_menus_requested.emit(self._db, True) # force=True
+                self.refresh_menus_requested.emit(self._db) # force=True
 
         self.save_settings()
 
