@@ -86,7 +86,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.log = QgsApplication.messageLog()
         self._about_dialog = None
         self.toolbar = None
-        self._flag_menus_refreshed_at_load_time = False
 
     def initGui(self):
         # Set Menus
@@ -118,11 +117,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.addActions([self._settings_action,
                                self._help_action,
                                self._about_action])
-
-        # If project generator was loaded before Asistente
-        # LADM_COL, this call does its job, otherwise it won't and
-        # we will have to wait for the initializationCompleted
-        self.refresh_menus(self.get_db_connection())
 
         # Connections
         self._controlled_measurement_action.triggered.connect(self.show_dlg_controlled_measurement)
@@ -373,22 +367,18 @@ class AsistenteLADMCOLPlugin(QObject):
 
         menu.deleteLater()
 
-    def refresh_menus(self, db, force=False):
+    def refresh_menus(self, db):
         """
         Depending on the models avilable in the DB, some menus should appear or
-        dissapear from the GUI.
+        disappear from the GUI.
         """
-        if not self._flag_menus_refreshed_at_load_time or force:
-            # The parser is specific for each new connection
-            res, msg = db.test_connection()
-            if res:
-                if not force:
-                    self._flag_menus_refreshed_at_load_time = True
-                model_parser = ModelParser(db)
-                if model_parser.property_record_card_model_exists():
-                    self.add_property_record_card_menu()
-                else:
-                    self.remove_property_record_card_menu()
+        res, msg = db.test_connection() # The parser is specific for each new connection
+        if res:
+            model_parser = ModelParser(db)
+            if model_parser.property_record_card_model_exists():
+                self.add_property_record_card_menu()
+            else:
+                self.remove_property_record_card_menu()
 
     def add_processing_models(self, provider_id):
         if not (provider_id == 'model' or provider_id is None):
