@@ -183,12 +183,6 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                                            "Please select one Plot or at least one Building or at least one Building unit"),
                 Qgis.Warning)
             return
-        elif self._plot_layer.selectedFeatureCount() > 1:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateParcelCadastreWizard",
-                                           "Please select only one Plot"),
-                Qgis.Warning)
-            return
 
         # Open Form
         self.iface.layerTreeView().setCurrentLayer(self._parcel_layer)
@@ -196,17 +190,9 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.iface.actionAddFeature().trigger()
 
         ## TODO: Show selection page when all three layers have selections
-        if self._building_unit_layer.selectedFeatureCount() > 0:
-            # If building units are selected, there should be no plots or buildings.
-            self._plot_layer.removeSelection()
-            self._building_layer.removeSelection()
-            building_unit_ids = [f[ID_FIELD] for f in self._building_unit_layer.selectedFeatures()]
-            plot_ids = building_ids = None
-
-        elif self._plot_layer.selectedFeatureCount() == 1 or self._building_layer.selectedFeatureCount() > 0:
-            plot_ids = [f['t_id'] for f in self._plot_layer.selectedFeatures()]
-            building_ids = [f['t_id'] for f in self._building_layer.selectedFeatures()]
-            building_unit_ids = None
+        plot_ids = [f['t_id'] for f in self._plot_layer.selectedFeatures()]
+        building_ids = [f['t_id'] for f in self._building_layer.selectedFeatures()]
+        building_unit_ids = [f[ID_FIELD] for f in self._building_unit_layer.selectedFeatures()]
 
         # Create connections to react when a feature is added to buffer and
         # when it gets stored into the DB
@@ -230,52 +216,67 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
 
                 # Fill uebaunit table
                 new_features = []
+                for plot_id in plot_ids:
+                    new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
+                    new_feature.setAttribute(UEBAUNIT_TABLE_PLOT_FIELD, plot_id)
+                    new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
+                    self.log.logMessage("Saving Plot-Parcel: {}-{}".format(plot_id, parcel_id), PLUGIN_NAME, Qgis.Info)
+                    new_features.append(new_feature)
 
-                if building_unit_ids:
-                    for building_unit_id in building_unit_ids:
-                        new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
-                        new_feature.setAttribute(UEBAUNIT_TABLE_BUILDING_UNIT_FIELD, building_unit_id)
-                        new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
-                        self.log.logMessage("Saving Building Unit-Parcel: {}-{}".format(building_unit_id, parcel_id), PLUGIN_NAME, Qgis.Info)
-                        new_features.append(new_feature)
+                for building_id in building_ids:
+                    new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
+                    new_feature.setAttribute(UEBAUNIT_TABLE_BUILDING_FIELD, building_id)
+                    new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
+                    self.log.logMessage("Saving Building-Parcel: {}-{}".format(building_id, parcel_id), PLUGIN_NAME,
+                                        Qgis.Info)
+                    new_features.append(new_feature)
 
-                    self._uebaunit_table.dataProvider().addFeatures(new_features)
+                for building_unit_id in building_unit_ids:
+                    new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
+                    new_feature.setAttribute(UEBAUNIT_TABLE_BUILDING_UNIT_FIELD, building_unit_id)
+                    new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
+                    self.log.logMessage("Saving Building Unit-Parcel: {}-{}".format(building_unit_id, parcel_id),
+                                        PLUGIN_NAME, Qgis.Info)
+                    new_features.append(new_feature)
+
+                self._uebaunit_table.dataProvider().addFeatures(new_features)
+
+
+                if plot_ids and building_ids and building_unit_ids:
+                    self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                        QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={}) and Building(s) (t_id={}) and Building Unit(s) (t_id={})!").format(parcel_id, plot_ids[0], ", ".join([str(b) for b in building_ids]), ", ".join([str(b) for b in building_unit_ids])),
+                        Qgis.Info)
+                elif plot_ids and building_ids and not building_unit_ids:
+                    self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                        QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={}) and Building(s) (t_id={})!").format(parcel_id, plot_ids[0], ", ".join([str(b) for b in building_ids])),
+                        Qgis.Info)
+                elif plot_ids and not building_ids and building_unit_ids:
+                    self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                        QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={}) and Building Unit(s) (t_id={})!").format(parcel_id, plot_ids[0], ", ".join([str(b) for b in building_unit_ids])),
+                        Qgis.Info)
+                elif plot_ids and not building_ids and not building_unit_ids:
+                    self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                        QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={})!").format(parcel_id, plot_ids[0]),
+                        Qgis.Info)
+                elif not plot_ids and building_ids and not building_unit_ids:
+                    self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                        QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Building(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_ids])),
+                        Qgis.Info)
+                elif not plot_ids and building_ids and building_unit_ids:
+                    self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                        QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Building(s) (t_id={}) and Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_ids]), ", ".join([str(b) for b in building_unit_ids])),
+                        Qgis.Info)
+                elif not plot_ids and not building_ids and building_unit_ids:
                     self.iface.messageBar().pushMessage("Asistente LADM_COL",
                         QCoreApplication.translate("CreateParcelCadastreWizard",
                                                    "The new parcel (t_id={}) was successfully created and associated with its corresponding Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_unit_ids])),
                         Qgis.Info)
-                else:
-                    for plot_id in plot_ids:
-                        new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
-                        new_feature.setAttribute(UEBAUNIT_TABLE_PLOT_FIELD, plot_id)
-                        new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
-                        self.log.logMessage("Saving Plot-Parcel: {}-{}".format(plot_id, parcel_id), PLUGIN_NAME, Qgis.Info)
-                        new_features.append(new_feature)
-
-                    for building_id in building_ids:
-                        new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
-                        new_feature.setAttribute(UEBAUNIT_TABLE_BUILDING_FIELD, building_id)
-                        new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
-                        self.log.logMessage("Saving Building-Parcel: {}-{}".format(building_id, parcel_id), PLUGIN_NAME, Qgis.Info)
-                        new_features.append(new_feature)
-
-                    self._uebaunit_table.dataProvider().addFeatures(new_features)
-
-                    if plot_ids and building_ids:
-                        self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                            QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                       "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={}) and Building(s) (t_id={})!").format(parcel_id, plot_ids[0], ", ".join([str(b) for b in building_ids])),
-                            Qgis.Info)
-                    elif plot_ids and not building_ids:
-                        self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                            QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                       "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={})!").format(parcel_id, plot_ids[0]),
-                            Qgis.Info)
-                    elif not plot_ids and building_ids:
-                        self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                            QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                       "The new parcel (t_id={}) was successfully created and associated with its corresponding Building(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_ids])),
-                            Qgis.Info)
 
         self._parcel_layer.committedFeaturesAdded.disconnect()
         self.log.logMessage("Parcel's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
