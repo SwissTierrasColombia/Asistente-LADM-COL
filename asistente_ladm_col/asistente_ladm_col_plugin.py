@@ -45,7 +45,8 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     PLUGIN_NAME,
                                     PLUGIN_VERSION,
                                     RELEASE_URL)
-from .config.table_mapping_config import (ID_FIELD,
+from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
+                                          ID_FIELD,
                                           COL_PARTY_TABLE)
 from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
@@ -728,6 +729,19 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def show_wiz_right_rrr_cad(self):
+        layer = self.qgis_utils.get_layer(self.get_db_connection(), ADMINISTRATIVE_SOURCE_TABLE, load=True)
+        if layer is None:
+            self.show_message(QCoreApplication.translate("CreateRightCadastreWizard",
+                                                         "Administrative Source table couldn't be found... {}").format(
+                self.get_db_connection().get_description()), Qgis.Warning, 10)
+            return
+
+        if layer.isEditable():
+            self.show_message(QCoreApplication.translate("CreateRightCadastreWizard",
+                                                         "Close the edit session in table {} before creating rights.").format(
+                ADMINISTRATIVE_SOURCE_TABLE), Qgis.Warning, 10)
+            return
+
         wiz = CreateRightCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
