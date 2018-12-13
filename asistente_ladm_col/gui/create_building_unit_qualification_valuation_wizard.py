@@ -227,4 +227,7 @@ class CreateBuildingUnitQualificationValuationWizard(QWizard, WIZARD_UI):
             self.rad_unconventional.setChecked(True)
 
     def show_help(self):
-        self.qgis_utils.show_help("create_building_unit_qualification_valuation")
+        if self.current_building_unit_qualification_valuation_name() == VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE:
+            self.qgis_utils.show_help("create_building_unit_qualification_valuation_conventional")
+        else:
+            self.qgis_utils.show_help("create_building_unit_qualification_valuation_unconventional")

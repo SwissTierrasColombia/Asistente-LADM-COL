@@ -171,4 +171,4 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
             self.rad_digitizing.setChecked(True)
 
     def show_help(self):
-        self.qgis_utils.show_help("create_building_unit")
+        self.qgis_utils.show_help("create_building_unit_valuation")
