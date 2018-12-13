@@ -369,9 +369,9 @@ class AsistenteLADMCOLPlugin(QObject):
     def refresh_menus(self, db):
         """
         Depending on the models avilable in the DB, some menus should appear or
-        dissapear from the GUI.
+        disappear from the GUI.
         """
-        res, msg = db.test_connection()
+        res, msg = db.test_connection() # The parser is specific for each new connection
         if res:
             model_parser = ModelParser(db)
             if model_parser.property_record_card_model_exists():
