@@ -26,7 +26,6 @@ from qgis.core import (Qgis,
                        QgsGeometry,
                        QgsPointXY,
                        QgsProcessingFeedback,
-                       QgsProcessingException,
                        QgsProject,
                        QgsSpatialIndex,
                        QgsVectorLayer,
@@ -60,6 +59,7 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            PLOT_TABLE,
                                            RIGHT_OF_WAY_TABLE,
                                            SURVEY_POINT_TABLE)
+from ..config.logic_consistency_tables import LOGIC_CONSISTENCY_TABLES
 
 
 class QualityUtils(QObject):
@@ -1593,3 +1593,42 @@ class QualityUtils(QObject):
         if added_layer.isSpatial():
             self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
         return added_layer
+
+    def find_duplicate_records_in_a_table(self, db):
+
+        for table in LOGIC_CONSISTENCY_TABLES:
+            fields = LOGIC_CONSISTENCY_TABLES[table]
+            error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                'Duplicate records in {table}'.format(table=table),
+                                "memory")
+            pr = error_layer.dataProvider()
+            pr.addAttributes([QgsField("duplicate_ids", QVariant.String),
+                              QgsField("count", QVariant.Int)])
+            error_layer.updateFields()
+
+            duplicate_records = self.logic.get_duplicate_records_in_a_table(db, table, fields)
+
+            new_features = []
+            for duplicate_record in duplicate_records:
+                new_feature = QgsVectorLayerUtils().createFeature(
+                    error_layer,
+                    QgsGeometry(),
+                    {0: duplicate_record[0], # duplicate_ids
+                     1: duplicate_record[1] # count
+                     })
+                new_features.append(new_feature)
+
+            error_layer.dataProvider().addFeatures(new_features)
+
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
+
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                                               "A memory layer with {error_count} duplicate records from {table} has been added to the map!").format(error_count=added_layer.featureCount(), table=table),
+                    Qgis.Info)
+            else:
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                                               "There are no repeated records in {table}!".format(table=table)),
+                    Qgis.Info)

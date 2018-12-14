@@ -27,6 +27,7 @@ from .db_connector import DBConnector
 from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
                                       PLUGIN_NAME,
                                       PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO)
+from ...config.table_mapping_config import ID_FIELD
 from ...utils.model_parser import ModelParser
 
 
@@ -560,6 +561,31 @@ class PGConnector(DBConnector):
                    FROM {schema}.predio p
                    WHERE p.t_id NOT IN (
                         SELECT unidad_predio FROM {schema}.col_derecho)""".format(schema=self.schema)
+        cur.execute(query)
+
+        return cur.fetchall()
+
+    def duplicate_records_in_a_table(self, table, fields, id_field=ID_FIELD):
+
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
+
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        query = """
+                    SELECT array_to_string(duplicate_ids, ','), duplicate_total
+                    FROM (
+                        SELECT unique_concat,  array_agg({id}) duplicate_ids, array_length(array_agg({id}), 1) duplicate_total
+                        FROM (
+                            SELECT concat({fields}) unique_concat, {id}, 
+                            row_number() OVER(PARTITION BY {fields} ORDER BY {id} asc) AS row
+                            FROM {schema}.{table}
+                        ) AS count_rows
+                        GROUP BY unique_concat
+                    ) report
+                    WHERE duplicate_total > 1""".format(schema=self.schema, table=table, fields=", ".join(fields), id=id_field)
         cur.execute(query)
 
         return cur.fetchall()
