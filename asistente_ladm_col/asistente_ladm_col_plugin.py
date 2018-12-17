@@ -45,7 +45,8 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     PLUGIN_NAME,
                                     PLUGIN_VERSION,
                                     RELEASE_URL)
-from .config.table_mapping_config import (ID_FIELD,
+from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
+                                          ID_FIELD,
                                           COL_PARTY_TABLE)
 from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
@@ -87,7 +88,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.log = QgsApplication.messageLog()
         self._about_dialog = None
         self.toolbar = None
-        self._flag_menus_refreshed_at_load_time = False
 
     def initGui(self):
         # Set Menus
@@ -120,11 +120,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.addActions([self._settings_action,
                                self._help_action,
                                self._about_action])
-
-        # If project generator was loaded before Asistente
-        # LADM_COL, this call does its job, otherwise it won't and
-        # we will have to wait for the initializationCompleted
-        self.refresh_menus(self.get_db_connection())
 
         # Connections
         self._controlled_measurement_action.triggered.connect(self.show_dlg_controlled_measurement)
@@ -385,22 +380,18 @@ class AsistenteLADMCOLPlugin(QObject):
 
         menu.deleteLater()
 
-    def refresh_menus(self, db, force=False):
+    def refresh_menus(self, db):
         """
         Depending on the models avilable in the DB, some menus should appear or
-        dissapear from the GUI.
+        disappear from the GUI.
         """
-        if not self._flag_menus_refreshed_at_load_time or force:
-            # The parser is specific for each new connection
-            res, msg = db.test_connection()
-            if res:
-                if not force:
-                    self._flag_menus_refreshed_at_load_time = True
-                model_parser = ModelParser(db)
-                if model_parser.property_record_card_model_exists():
-                    self.add_property_record_card_menu()
-                else:
-                    self.remove_property_record_card_menu()
+        res, msg = db.test_connection() # The parser is specific for each new connection
+        if res:
+            model_parser = ModelParser(db)
+            if model_parser.property_record_card_model_exists():
+                self.add_property_record_card_menu()
+            else:
+                self.remove_property_record_card_menu()
 
     def add_processing_models(self, provider_id):
         if not (provider_id == 'model' or provider_id is None):
@@ -752,6 +743,19 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def show_wiz_right_rrr_cad(self):
+        layer = self.qgis_utils.get_layer(self.get_db_connection(), ADMINISTRATIVE_SOURCE_TABLE, load=True)
+        if layer is None:
+            self.show_message(QCoreApplication.translate("CreateRightCadastreWizard",
+                                                         "Administrative Source table couldn't be found... {}").format(
+                self.get_db_connection().get_description()), Qgis.Warning, 10)
+            return
+
+        if layer.isEditable():
+            self.show_message(QCoreApplication.translate("CreateRightCadastreWizard",
+                                                         "Close the edit session in table {} before creating rights.").format(
+                ADMINISTRATIVE_SOURCE_TABLE), Qgis.Warning, 10)
+            return
+
         wiz = CreateRightCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 

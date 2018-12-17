@@ -19,7 +19,6 @@ LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION = "17.07.2018"
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 DEFAULT_USE_ROADS_VALUE = False
-DEFAULT_POLYGON_AREA_TOLERANCE = 0.1 # square meters
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
 FIELD_MAPPING_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'field_mappings')
 MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE = 10

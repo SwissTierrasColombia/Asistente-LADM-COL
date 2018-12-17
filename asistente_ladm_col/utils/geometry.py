@@ -42,8 +42,7 @@ from qgis.core import (Qgis,
 from qgis.core import edit
 
 import processing
-from ..config.general_config import (DEFAULT_POLYGON_AREA_TOLERANCE,
-                                     DEFAULT_EPSG,
+from ..config.general_config import (DEFAULT_EPSG,
                                      PLUGIN_NAME)
 from ..config.table_mapping_config import ID_FIELD
 
@@ -195,8 +194,7 @@ class GeometryUtils(QObject):
                 #    intersect_pair.append(line['t_id'], candidate_feature['t_id'])
                 candidate_point = candidate_feature.geometry().asPoint()
                 for line_vertex in line.geometry().asPolyline():
-                    if abs(line_vertex.x() - candidate_point.x()) < 0.001 \
-                       and abs(line_vertex.y() - candidate_point.y()) < 0.001:
+                    if line_vertex.x() == candidate_point.x() and line_vertex.y() == candidate_point.y():
                         pair = (line[id_field], candidate_feature[id_field])
                         if pair not in intersect_pairs:
                             intersect_pairs.append(pair)
@@ -337,15 +335,13 @@ class GeometryUtils(QObject):
         intersection = feature_polygon.geometry().intersection(feature_overlap.geometry())
 
         if intersection.type() == QgsWkbTypes.PolygonGeometry:
-            if intersection.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
-                listGeoms.append(intersection)
+            listGeoms.append(intersection)
         elif intersection.wkbType() in [QgsWkbTypes.GeometryCollection,
             QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
             QgsWkbTypes.GeometryCollectionZM]:
             for part in intersection.asGeometryCollection():
                 if part.type() == QgsWkbTypes.PolygonGeometry:
-                    if part.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
-                        listGeoms.append(part)
+                    listGeoms.append(part)
 
         return QgsGeometry.collectGeometry(listGeoms) if len(listGeoms) > 0 else None
 
@@ -371,14 +367,14 @@ class GeometryUtils(QObject):
                 if feature.geometry().intersects(candidate_feature_geo) and not feature.geometry().touches(candidate_feature_geo):
                     intersection = feature.geometry().intersection(candidate_feature_geo)
 
-                    if intersection.type() == QgsWkbTypes.PolygonGeometry and intersection.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
+                    if intersection.type() == QgsWkbTypes.PolygonGeometry:
                         ids.append([feature.id(), candidate_feature.id()])
                         list_overlapping.append(intersection)
                     elif intersection.wkbType() in [QgsWkbTypes.GeometryCollection,
                                                     QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
                                                     QgsWkbTypes.GeometryCollectionZM]:
                         for part in intersection.asGeometryCollection():
-                            if part.type() == QgsWkbTypes.PolygonGeometry and intersection.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
+                            if part.type() == QgsWkbTypes.PolygonGeometry:
                                 ids.append([feature.id(), candidate_feature.id()])
                                 list_overlapping.append(part)
         # free up memory
