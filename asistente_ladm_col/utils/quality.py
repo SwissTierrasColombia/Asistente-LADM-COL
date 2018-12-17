@@ -46,6 +46,7 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            BUILDING_TABLE,
                                            CONTROL_POINT_TABLE,
                                            ID_FIELD,
+                                           LOGIC_CONSISTENCY_TABLES,
                                            PARCEL_TABLE,
                                            POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            MOREBFS_TABLE_PLOT_FIELD,
@@ -59,8 +60,6 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            PLOT_TABLE,
                                            RIGHT_OF_WAY_TABLE,
                                            SURVEY_POINT_TABLE)
-from ..config.logic_consistency_tables import LOGIC_CONSISTENCY_TABLES
-
 
 class QualityUtils(QObject):
 
@@ -1599,11 +1598,11 @@ class QualityUtils(QObject):
         for table in LOGIC_CONSISTENCY_TABLES:
             fields = LOGIC_CONSISTENCY_TABLES[table]
             error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                'Duplicate records in {table}'.format(table=table),
+                                QCoreApplication.translate("QualityConfigStrings", 'Duplicate records in {table}').format(table=table),
                                 "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField("duplicate_ids", QVariant.String),
-                              QgsField("count", QVariant.Int)])
+            pr.addAttributes([QgsField(QCoreApplication.translate("QualityConfigStrings", "duplicate_ids"), QVariant.String),
+                              QgsField(QCoreApplication.translate("QualityConfigStrings","count"), QVariant.Int)])
             error_layer.updateFields()
 
             duplicate_records = self.logic.get_duplicate_records_in_a_table(db, table, fields)
