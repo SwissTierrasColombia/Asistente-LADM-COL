@@ -15,13 +15,22 @@ from qgis.analysis import QgsNativeAlgorithms
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.table_mapping_config import ID_FIELD
+from asistente_ladm_col.config.table_mapping_config import (ID_FIELD,
+                                                            BOUNDARY_POINT_TABLE,
+                                                            SURVEY_POINT_TABLE,
+                                                            BOUNDARY_TABLE,
+                                                            PLOT_TABLE,
+                                                            BUILDING_TABLE,
+                                                            BUILDING_UNIT_TABLE,
+                                                            COL_PARTY_TABLE,
+                                                            LOGIC_CONSISTENCY_TABLES)
 from asistente_ladm_col.tests.utils import (import_projectgenerator,
                                             get_test_copy_path,
                                             get_dbconn,
                                             restore_schema)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.quality import QualityUtils
+from asistente_ladm_col.utils.logic_checks import LogicChecks
 
 import_projectgenerator()
 
@@ -31,17 +40,44 @@ class TesQualityValidations(unittest.TestCase):
     def setUpClass(self):
         self.qgis_utils = QGISUtils()
         self.quality = QualityUtils(self.qgis_utils)
+        self.logic_checks = LogicChecks()
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
 
-        # Test connection DB
-        self.db_connection = get_dbconn('test_ladm_col_validations_against_topology_tables')
-        result = self.db_connection.test_connection()
-        print('test_connection', result)
-        if not result[1]:
-            print('The test connection is not working')
-            return
-        restore_schema('test_ladm_col_validations_against_topology_tables')
+        test_connection_dbs = ['test_ladm_col_validations_against_topology_tables', 'test_ladm_col_logic_checks']
+
+        for test_connection_db in test_connection_dbs:
+            # Test connection DB
+            self.db_connection = get_dbconn(test_connection_db)
+            result = self.db_connection.test_connection()
+            print('test_connection', result)
+            if not result[1]:
+                print('The test connection is not working')
+                return
+            restore_schema(test_connection_db)
+
+    def test_find_duplicate_records(self):
+
+        schema_name = 'test_ladm_col_logic_checks'
+        self.db_connection = get_dbconn(schema_name)
+        db = self.db_connection
+
+        test_results = {
+            COL_PARTY_TABLE: [('1,4', 2), ('3,6', 2), ('2,5', 2)],
+            BUILDING_UNIT_TABLE: [('40,49', 2)],
+            BUILDING_TABLE: [('39,50', 2), ('37,51', 2)],
+            PLOT_TABLE: [('36,53', 2), ('33,52', 2)],
+            BOUNDARY_TABLE: [('30,48', 2), ('25,46', 2), ('24,47', 2)],
+            SURVEY_POINT_TABLE: [('10,45', 2), ('9,44', 2)],
+            BOUNDARY_POINT_TABLE: [('20,41', 2), ('13,43', 2), ('14,17', 2), ('19,42', 2), ('12,15', 2), ('11,16', 2)]}
+
+        for table in test_results:
+            test_result = test_results[table]
+            fields = LOGIC_CONSISTENCY_TABLES[table]
+            result = self.logic_checks.get_duplicate_records_in_a_table(db, table, fields)
+
+            for item in test_result:
+                self.assertIn(item, result, 'the record {error_item} is not duplicated in the table {table}'.format(error_item=item,table=table))
 
     def test_topology_plot_must_be_covered_by_boundary(self):
         DB_HOSTNAME = "postgres"
