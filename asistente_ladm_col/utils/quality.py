@@ -1515,11 +1515,12 @@ class QualityUtils(QObject):
 
     def check_parcel_right_relationship(self, db):
         error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG),
-                            PARCEL_TABLE,
-                            "memory")
+                                     QCoreApplication.translate("QGISUtils",
+                                        "Logic Consistency Errors in table '{}'").format(PARCEL_TABLE),
+                                     "memory")
         pr = error_layer.dataProvider()
-        pr.addAttributes([QgsField("parcel_id", QVariant.Int),
-                          QgsField("error_type", QVariant.String)])
+        pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "parcel_id"), QVariant.Int),
+                          QgsField(QCoreApplication.translate("QGISUtils", "error_type"), QVariant.String)])
         error_layer.updateFields()
 
         parcel_no_right_ids, parcel_duplicated_domain_right_ids  = self.logic.get_parcel_right_relationship_errors(db)
@@ -1554,6 +1555,44 @@ class QualityUtils(QObject):
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "Parcel-Right relationships are correct!"),
+                Qgis.Info)
+
+    def check_fraction_sum_for_party_groups(self, db):
+        error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG),
+                            QCoreApplication.translate("QGISUtils", "Fractions do not sum 1").format(PARCEL_TABLE),
+                            "memory")
+        pr = error_layer.dataProvider()
+        pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "party_group"), QVariant.Int),
+                          QgsField(QCoreApplication.translate("QGISUtils", "members"), QVariant.String),
+                          QgsField(QCoreApplication.translate("QGISUtils", "fraction_sum"), QVariant.Double)])
+        error_layer.updateFields()
+
+        incomplete_fractions = self.logic.get_fractions_which_sum_is_not_one(db)
+
+        new_features = []
+        for incomplete_fraction in incomplete_fractions:
+            new_feature = QgsVectorLayerUtils().createFeature(
+                error_layer,
+                QgsGeometry(),
+                {0: incomplete_fraction[0],
+                 1: ",".join([str(f) for f in incomplete_fraction[1]]),
+                 2: incomplete_fraction[2]})
+            new_features.append(new_feature)
+
+        error_layer.dataProvider().addFeatures(new_features)
+
+        if error_layer.featureCount() > 0:
+            added_layer = self.add_error_layer(error_layer)
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                    "A memory layer with {} fractions which do not sum 1 has been added to the map!").format(
+                        added_layer.featureCount()),
+                Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "Group Party Fractions are correct!"),
                 Qgis.Info)
 
     def get_dangle_ids(self, boundary_layer):
