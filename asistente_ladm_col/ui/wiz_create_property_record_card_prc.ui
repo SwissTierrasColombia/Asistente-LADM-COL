@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>650</width>
-    <height>375</height>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -130,10 +130,10 @@
                  <height>16777215</height>
                 </size>
                </property>
-               <property name="allowEmptyLayer" stdset="0">
+               <property name="allowEmptyLayer">
                 <bool>true</bool>
                </property>
-               <property name="showCrs" stdset="0">
+               <property name="showCrs">
                 <bool>false</bool>
                </property>
               </widget>
@@ -181,7 +181,7 @@
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

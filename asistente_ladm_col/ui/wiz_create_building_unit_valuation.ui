@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>650</width>
-    <height>375</height>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,6 +49,29 @@
            <string>How would you like to create buildings units?</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
+           <item row="3" column="0" colspan="2">
+            <widget class="QRadioButton" name="rad_refactor">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>From another QGIS layer/table (setting a field mapping)</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <spacer name="verticalSpacer_8">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
            <item row="0" column="0">
             <spacer name="verticalSpacer_6">
              <property name="orientation">
@@ -61,39 +84,6 @@
               </size>
              </property>
             </spacer>
-           </item>
-           <item row="1" column="0" colspan="2">
-            <widget class="QRadioButton" name="rad_create_manually">
-             <property name="text">
-              <string>Entering data manually using a form</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <spacer name="verticalSpacer_7">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="3" column="0" colspan="2">
-            <widget class="QRadioButton" name="rad_refactor">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="text">
-              <string>From another QGIS layer/table (setting a field mapping)</string>
-             </property>
-            </widget>
            </item>
            <item row="4" column="0" colspan="2">
             <layout class="QGridLayout" name="gridLayout_2">
@@ -144,8 +134,8 @@
              </item>
             </layout>
            </item>
-           <item row="5" column="1">
-            <spacer name="verticalSpacer_8">
+           <item row="2" column="0">
+            <spacer name="verticalSpacer_7">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
@@ -156,6 +146,17 @@
               </size>
              </property>
             </spacer>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QRadioButton" name="rad_create_manually">
+             <property name="text">
+              <string>Entering data manually using a form
+(you need to select one building unit before)</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>

@@ -179,13 +179,13 @@ Choose this option if you want to create a <b>Parcel</b> using a form.\
         self.WIZ_CREATE_HORIZONTAL_PROPERTY_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create a <b>Horizontal Property Valuation</b> using a form.\
 <br><br>\
-<b>Horizontal Property Valuation</b> is to record the information related to the property, or basic unit of the land, which serves as a matrix to a horizontal property element.\
+<b>Horizontal Property Valuation</b> is to record the information related to the property, or basic unit of the plot, which serves as a matrix to a horizontal property element.\
 ")
 
         self.WIZ_CREATE_COMMON_EQUIPMENT_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create a <b>Common Equipment</b> using a form.\
 <br><br>\
-<b>Common Equipment</b> class is to record the information relative to the property, or basic unit of the plot, which serves as a matrix to a horizontal property element.\
+<b>Common Equipment</b> Class to record the information relative to the common equipment property matrix of the horizontal property.\
 ")
 
         self.WIZ_CREATE_BUILDING_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
