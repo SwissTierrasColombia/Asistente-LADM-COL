@@ -17,3 +17,6 @@ class LogicChecks(QObject):
     def get_duplicate_records_in_a_table(self, db, table, fields, id_field=ID_FIELD):
         duplicate_records = db.duplicate_records_in_a_table(table, fields)
         return [(sublist[0], sublist[1]) for sublist in duplicate_records]
+
+    def get_fractions_which_sum_is_not_one(self, db):
+        return db.get_fractions_which_sum_is_not_one()

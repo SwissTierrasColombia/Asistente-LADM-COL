@@ -608,3 +608,28 @@ class PGConnector(DBConnector):
         cur.execute(query)
 
         return cur.fetchall()
+
+    def get_fractions_which_sum_is_not_one(self):
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
+
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        query = """WITH grupos AS (
+                        SELECT array_agg(t_id) AS tids, agrupacion
+                        FROM {schema}.miembros
+                        GROUP BY agrupacion
+                    ),
+                     sumas AS (
+                        SELECT grupos.agrupacion, grupos.tids as miembros, SUM(fraccion.numerador::float/fraccion.denominador) as suma_fracciones
+                        FROM {schema}.fraccion, grupos
+                        WHERE miembros_participacion = ANY(grupos.tids)
+                        GROUP BY agrupacion, tids
+                    )
+                    SELECT sumas.*
+                    FROM sumas
+                    WHERE sumas.suma_fracciones != 1""".format(schema=self.schema)
+        cur.execute(query)
+
+        return cur.fetchall()

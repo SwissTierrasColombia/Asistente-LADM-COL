@@ -134,10 +134,17 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_GAPS_IN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Plots should not have gaps")
         self.CHECK_MULTIPART_IN_RIGHT_OF_WAY = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not have multipart geometries")
 
+        # Logic consistency checks
+        self.CHECK_PARCEL_RIGHT_RELATIONSHIP = QCoreApplication.translate("TranslatableConfigStrings", "Parcel should have one and only one Right")
+        self.CHECK_FRACTION_SUM_FOR_PARTY_GROUPS = QCoreApplication.translate("TranslatableConfigStrings", "Group Party Fractions should sum 1")
         self.FIND_DUPLICATE_RECORDS_IN_A_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Find duplicate records in a table")
         self.CHECK_PARCEL_RIGHT_RELATIONSHIP = QCoreApplication.translate("TranslatableConfigStrings", "Parcel should have one and only one Right")
-        self.ERROR_PARCEL_WITH_NO_RIGHT = QCoreApplication.translate("TranslatableConfigStrings", "Parcel does not have any Right associated")
-        self.ERROR_PARCEL_WITH_REPEATED_DOMAIN_RIGHT = QCoreApplication.translate("TranslatableConfigStrings", "Parcel has more than one domain right associated")
+
+        # Logic consistency errors
+        self.ERROR_PARCEL_WITH_NO_RIGHT = QCoreApplication.translate("TranslatableConfigStrings",
+                                                                          "Parcel does not have any Right associated")
+        self.ERROR_PARCEL_WITH_REPEATED_DOMAIN_RIGHT = QCoreApplication.translate("TranslatableConfigStrings",
+                                                                     "Parcel has more than one domain right associated")
 
         # Specific topology errors
         self.ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY = QCoreApplication.translate("TranslatableConfigStrings", "Plot is not covered by boundary")
