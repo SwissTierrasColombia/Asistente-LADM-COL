@@ -18,7 +18,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([0.11.2](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.11.2)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.6](https://github.com/opengisch/projectgenerator/releases/download/v3.3.6/projectgenerator.v3.3.6.zip) y permite:
+La versión actual ([0.11.3](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.11.3)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.7](https://github.com/opengisch/projectgenerator/releases/download/v3.3.7/projectgenerator.v3.3.7.zip) y permite:
 
  - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
  - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
@@ -82,7 +82,7 @@ La versión actual ([0.11.2](https://github.com/AgenciaImplementacion/Asistente-
    - Revisar superposiciones en `Terreno`.
    - Revisar superposiciones en `Construcción`.
    - Revisar superposiciones en `Servidumbre de Paso`.
-   - Revisar `Punto Lindero` sin nodo de `Lindero` asociado.
+   - Revisar `Punto Lindero` sin nodo de `Lindero` asociado o con `Lindero` asociado pero relacionado de forma incorrecta en tabla `PuntoCCL`.
    - Revisar nodos de `Lindero` sin `Punto Lindero` asociado o con `Punto Lindero` asociado pero relacionado de forma incorrecta en tabla `PuntoCCL`.
    - Revisar nodos de `Lindero` no conectados.
    - Revisar que los `Linderos` siempre terminen en cambio de colindancia.
