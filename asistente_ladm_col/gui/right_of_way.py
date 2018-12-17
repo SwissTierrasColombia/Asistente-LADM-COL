@@ -32,6 +32,7 @@ from qgis.core import (
                        QgsProject,
                        QgsVectorLayer,
                        QgsEditFormConfig,
+                       QgsProcessingFeatureSourceDefinition,
                        QgsWkbTypes,
                        QgsSnappingConfig,
                        QgsTolerance,
@@ -278,3 +279,31 @@ class RightOfWay(QObject):
                     self.message_emitted.emit(
                         QCoreApplication.translate("QGISUtils", "No pairs id_right_of_way-id_parcel benefited found."),
                         Qgis.Info)
+
+                spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+                                                    {
+                                                        'INPUT': self._plot_layer,
+                                                        'JOIN': QgsProcessingFeatureSourceDefinition(self._right_of_way_layer.id(), True),
+                                                        'PREDICATE': [0],
+                                                        'JOIN_FIELDS': [ID_FIELD, 'identificador'],
+                                                        'METHOD': 0,
+                                                        'DISCARD_NONMATCHING': True,
+                                                        'PREFIX': '',
+                                                        'OUTPUT': 'memory:'})['OUTPUT']
+                print(spatial_join_layer)
+
+                restriction_features = self._restriction_layer.getFeatures()
+
+                existing_restriction_pairs = [(restriction_feature["unidad_predio"], restriction_feature["descripcion"]) for restriction_feature in restriction_features]
+                existing_restriction_pairs = set(existing_restriction_pairs)
+                id_pairs_restriction = list()
+                plot_ids = spatial_join_layer.getFeatures()
+
+                for plot in plot_ids:
+                    exp = QgsExpression("\"ue_terreno\" = {}".format(plot.attribute("t_id")))
+                    parcels = self._uebaunit_table.getFeatures(QgsFeatureRequest(exp))
+                    for parcel in parcels:
+                        id_pair_restriction = (parcel.attribute("baunit_predio"), plot.attribute("t_id_2"), plot.attribute("identificador"))
+                        id_pairs_restriction.append(id_pair_restriction)
+
+                print(id_pairs_restriction)
