@@ -126,7 +126,10 @@ class DialogQuality(QDialog, DIALOG_UI):
                 'rules': [{
                     'id': 'check_parcel_right_relationship',
                     'text': translated_strings.CHECK_PARCEL_RIGHT_RELATIONSHIP
-                },{
+                }, {
+                    'id': 'find_duplicate_records_in_a_table',
+                    'text': translated_strings.FIND_DUPLICATE_RECORDS_IN_A_TABLE
+                }, {
                     'id': 'check_fraction_sum_for_party_groups',
                     'text': translated_strings.CHECK_FRACTION_SUM_FOR_PARTY_GROUPS
                 }]
@@ -211,6 +214,8 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_multiparts_in_right_of_way(self._db)
                 elif id == 'check_parcel_right_relationship':
                     self.quality.check_parcel_right_relationship(self._db)
+                elif id == 'find_duplicate_records_in_a_table':
+                    self.quality.find_duplicate_records_in_a_table(self._db)
                 elif id == 'check_fraction_sum_for_party_groups':
                     self.quality.check_fraction_sum_for_party_groups(self._db)
 

@@ -1,6 +1,8 @@
 from qgis.core import QgsApplication
 from qgis.PyQt.QtCore import QObject
 
+from ..config.table_mapping_config import ID_FIELD
+
 class LogicChecks(QObject):
 
     def __init__(self):
@@ -12,7 +14,9 @@ class LogicChecks(QObject):
         parcels_repeated_domain_right = db.get_parcels_with_repeated_domain_right()
         return ([sublist[0] for sublist in parcels_no_right], [sublist[0] for sublist in parcels_repeated_domain_right])
 
+    def get_duplicate_records_in_a_table(self, db, table, fields, id_field=ID_FIELD):
+        duplicate_records = db.duplicate_records_in_a_table(table, fields)
+        return [(sublist[0], sublist[1]) for sublist in duplicate_records]
+
     def get_fractions_which_sum_is_not_one(self, db):
-        incomplete_fractions = db.get_fractions_which_sum_is_not_one()
-        print(incomplete_fractions)
-        return [sublist for sublist in incomplete_fractions]
+        return db.get_fractions_which_sum_is_not_one()
