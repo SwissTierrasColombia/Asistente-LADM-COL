@@ -11,14 +11,27 @@ BFS_TABLE_BOUNDARY_POINT_FIELD = "punto_puntolindero"
 BOUNDARY_POINT_TABLE = "puntolindero"
 BOUNDARY_TABLE = "lindero"
 BUILDING_TABLE = "construccion"
+BUILDING_AREA_FIELD = "area_construccion"
+BUILDING_VALUATION_FIELD = "avaluo_construccion"
+BUILDING_UNIT_AREA_FIELD = "area_construida"
+BUILDING_UNIT_PRIVATE_AREA_FIELD = "area_privada_construida"
+BUILDING_UNIT_VALUATION_FIELD = "avaluo_unidad_construccion"
 BUILDING_UNIT_TABLE = "unidadconstruccion"
 BUSINESS_NAME_FIELD = "razon_social"
 CCLSOURCE_TABLE = "cclfuente"
 CCLSOURCE_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 CCLSOURCE_TABLE_SOURCE_FIELD = "lfuente"
-COL_PARTY_NAME_FIELD = "nombre"
+COL_PARTY_DOCUMENT_ID_FIELD = "documento_identidad"
 COL_PARTY_TABLE = "col_interesado"
+COL_PARTY_TYPE_FIELD = "tipo"
+COL_PARTY_DOC_TYPE_FIELD = "tipo_documento"
+COL_PARTY_FIRST_NAME_FIELD = "primer_nombre"
+COL_PARTY_SURNAME_FIELD = "primer_apellido"
+COL_PARTY_BUSINESS_NAME_FIELD = "razon_social"
+COL_PARTY_LEGAL_PARTY_FIELD = "tipo_interesado_juridico"
+COL_PARTY_NAME_FIELD = "nombre"
 CONTROL_POINT_TABLE = "puntocontrol"
+DEPARTMENT_FIELD = "departamento"
 DOCUMENT_ID_FIELD = "documento_identidad"
 DOMAIN_KEY_FIELD = {
     "pg": "ilicode",
@@ -62,15 +75,23 @@ MEMBERS_TABLE = "miembros"
 MORE_BOUNDARY_FACE_STRING_TABLE = "masccl"
 MOREBFS_TABLE_BOUNDARY_FIELD = "cclp_lindero"
 MOREBFS_TABLE_PLOT_FIELD = "uep_terreno"
+MUNICIPALITY_FIELD = "municipio"
 NAMESPACE_FIELD = "_espacio_de_nombres"
 NIT_NUMBER_FIELD = "numero_nit"
 NUMBER_OF_FLOORS = "numero_pisos"
 NUPRE_FIELD = "nupre"
 PARCEL_NAME_FIELD = "nombre"
+PARCEL_NUMBER_FIELD = "numero_predial"
+PARCEL_NUMBER_BEFORE_FIELD = "numero_predial_anterior"
 PARCEL_TABLE = "predio"
+PARCEL_TYPE_FIELD = "tipo"
+PARCEL_TYPE_PH_OPTION = "PropiedadHorizontal.UnidadPredial"
+PARCEL_VALUATION_FIELD = "avaluo_predio"
 PARTY_DOCUMENT_TYPE_TABLE = "col_interesadodocumentotipo"
 PARTY_TYPE_TABLE = "la_interesadotipo"
 PLOT_TABLE = "terreno"
+PLOT_CALCULATED_AREA_FIELD = "area_calculada"
+PLOT_VALUATION_FIELD = "avaluo_terreno"
 POINT_AGREEMENT_TYPE_TABLE = "col_acuerdotipo"
 POINT_BOUNDARY_FACE_STRING_TABLE = "puntoccl"
 POINT_DESCRIPTION_TYPE_TABLE = "col_descripcionpuntotipo"
@@ -79,7 +100,7 @@ POINT_INTERPOLATION_TYPE_TABLE = "col_interpolaciontipo"
 POINT_MONUMENTATION_TYPE_TABLE = "col_monumentaciontipo"
 POINTSOURCE_TABLE = "puntofuente"
 POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD = "punto_puntolindero"
-POINTSOURCE_TABLE_SURVEYPOINT_FIELD = "punto_puntolevantamiento"
+9POINTSOURCE_TABLE_SURVEYPOINT_FIELD = "punto_puntolevantamiento"
 POINTSOURCE_TABLE_CONTROLPOINT_FIELD = "punto_puntocontrol"
 POINTSOURCE_TABLE_SOURCE_FIELD = "pfuente"
 RESPONSIBILITY_TABLE = "col_responsabilidad"
@@ -115,6 +136,7 @@ UESOURCE_TABLE = "uefuente"
 UESOURCE_TABLE_PLOT_FIELD = "ue_terreno"
 UESOURCE_TABLE_SOURCE_FIELD = "pfuente"
 VIDA_UTIL_FIELD = "comienzo_vida_util_version"
+ZONE_FIELD = "zona"
 
 """
 PROPERTY RECORD CARD MAPPING
@@ -127,46 +149,6 @@ NUCLEAR_FAMILY_TABLE = "nucleofamiliar"
 NATURAL_PARTY_TABLE = "interesado_natural"
 LEGAL_PARTY_TABLE = "interesado_juridico"
 
-"""
-PROPERTY PARCEL TABLE
-"""
-PARCEL_VALUATION_FIELD = "avaluo_predio"
-PARCEL_NUMBER_FIELD = "numero_predial"
-PARCEL_NUMBER_BEFORE_FIELD = "numero_predial_anterior"
-PARCEL_TYPE_FIELD = "tipo"
-PARCEL_TYPE_PH_OPTION = "PropiedadHorizontal.UnidadPredial"
-
-
-"""
-PROPERTY COL_PARTY TABLE
-"""
-COL_PARTY_DOCUMENT_ID_FIELD = "documento_identidad"
-COL_PARTY_TYPE_FIELD = "tipo"
-COL_PARTY_DOC_TYPE_FIELD = "tipo_documento"
-COL_PARTY_FIRST_NAME_FIELD = "primer_nombre"
-COL_PARTY_SURNAME_FIELD = "primer_apellido"
-COL_PARTY_BUSINESS_NAME_FIELD = "razon_social"
-COL_PARTY_LEGAL_PARTY_FIELD = "tipo_interesado_juridico"
-
-
-"""
-PROPERTY PLOT TABLE
-"""
-PLOT_CALCULATED_AREA_FIELD = "area_calculada"
-PLOT_VALUATION_FIELD = "avaluo_terreno"
-
-"""
-PROPERTY BUILDING TABLE
-"""
-BUILDING_AREA_FIELD = "area_construccion"
-BUILDING_VALUATION_FIELD = "avaluo_construccion"
-
-"""
-PROPERTY BUILDING TABLE
-"""
-BUILDING_UNIT_AREA_FIELD = "area_construida"
-BUILDING_UNIT_PRIVATE_AREA_FIELD = "area_privada_construida"
-BUILDING_UNIT_VALUATION_FIELD = "avaluo_unidad_construccion"
 
 NAMESPACE_PREFIX = {
     ADMINISTRATIVE_SOURCE_TABLE: 's',
@@ -188,14 +170,17 @@ NAMESPACE_PREFIX = {
 }
 
 DICT_AUTOMATIC_VALUES = {
-    BOUNDARY_TABLE: "$length",
-    COL_PARTY_TABLE: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
+    BOUNDARY_TABLE: [{LENGTH_FIELD_BOUNDARY_TABLE: "$length"}],
+    COL_PARTY_TABLE: [{COL_PARTY_NAME_FIELD: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
         DOCUMENT_ID_FIELD,
         FIRST_SURNAME_FIELD,
         SECOND_SURNAME_FIELD,
         FIRST_NAME_FIELD,
         SECOND_NAME_FIELD,
-        BUSINESS_NAME_FIELD)
+        BUSINESS_NAME_FIELD)}],
+    PARCEL_TABLE: [{DEPARTMENT_FIELD: 'substr("numero_predial", 0, 2)'},
+                   {MUNICIPALITY_FIELD: 'substr("numero_predial", 3, 3)'},
+                   {ZONE_FIELD: 'substr("numero_predial", 6, 2)'}]
 }
 
 DICT_DISPLAY_EXPRESSIONS = {
@@ -256,6 +241,14 @@ LAYER_CONSTRAINTS = {
         }
     },
     PARCEL_TABLE: {
+        PARCEL_TYPE_FIELD: {
+            'expression': 'CASE\n'
+                          'WHEN "{parcel_type}" IS NOT NULL AND num_selected(\'{layer}\') > 0 THEN \n("{parcel_type}" = \'PropiedadHorizontal.UnidadPredial\')\n'
+                          'WHEN "{parcel_type}" IS NOT NULL AND num_selected(\'{layer}\') = 0 THEN \n("{parcel_type}" != \'PropiedadHorizontal.UnidadPredial\')\n'
+                          'ELSE True\n'
+                          'END'.format(parcel_type=PARCEL_TYPE_FIELD, layer=BUILDING_UNIT_TABLE),
+            'description': 'Si el tipo de predio es Propiedad Horizontal, debes elegir únicamente la opción {parcel_type_field}; en otro caso puedes seleccionar cualquier otra opción del listado.'.format(parcel_type_field=PARCEL_TYPE_PH_OPTION)
+        },
         PARCEL_NUMBER_FIELD: {
             'expression': """CASE
                                 WHEN  "{parcel_number}" IS NOT NULL THEN
