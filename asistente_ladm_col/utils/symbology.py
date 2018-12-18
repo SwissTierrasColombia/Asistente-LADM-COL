@@ -27,7 +27,7 @@ from qgis.core import (QgsFeatureRenderer,
                        QgsAbstractVectorLayerLabeling,
                        QgsReadWriteContext)
 
-from ..config.translator import QGIS_LANG
+from ..config.translator import QGIS_LANG, DEFAULT_LANGUAGE
 from ..config.general_config import STYLES_DIR
 from ..config.symbology import (LAYER_QML_STYLE,
                                 CUSTOM_ERROR_LAYERS,
@@ -46,7 +46,10 @@ class SymbologyUtils(QObject):
         if is_error_layer:
             if layer.name() in CUSTOM_ERROR_LAYERS:
                 # Symbology is selected according to the language
-                qml_name = CUSTOM_ERROR_LAYERS[layer.name()][QGIS_LANG]
+                if QGIS_LANG in CUSTOM_ERROR_LAYERS[layer.name()]:
+                    qml_name = CUSTOM_ERROR_LAYERS[layer.name()][QGIS_LANG]
+                else:
+                    qml_name = CUSTOM_ERROR_LAYERS[layer.name()][DEFAULT_LANGUAGE]
             else:
                 qml_name = LAYER_QML_STYLE[ERROR_LAYER][layer.geometryType()]
         else:

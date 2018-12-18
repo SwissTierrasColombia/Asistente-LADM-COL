@@ -42,8 +42,7 @@ from qgis.core import (Qgis,
 from qgis.core import edit
 
 import processing
-from ..config.general_config import (DEFAULT_POLYGON_AREA_TOLERANCE,
-                                     DEFAULT_EPSG,
+from ..config.general_config import (DEFAULT_EPSG,
                                      PLUGIN_NAME)
 from ..config.table_mapping_config import ID_FIELD
 
@@ -195,8 +194,7 @@ class GeometryUtils(QObject):
                 #    intersect_pair.append(line['t_id'], candidate_feature['t_id'])
                 candidate_point = candidate_feature.geometry().asPoint()
                 for line_vertex in line.geometry().asPolyline():
-                    if abs(line_vertex.x() - candidate_point.x()) < 0.001 \
-                       and abs(line_vertex.y() - candidate_point.y()) < 0.001:
+                    if line_vertex.x() == candidate_point.x() and line_vertex.y() == candidate_point.y():
                         pair = (line[id_field], candidate_feature[id_field])
                         if pair not in intersect_pairs:
                             intersect_pairs.append(pair)
@@ -246,27 +244,6 @@ class GeometryUtils(QObject):
                 segments_info.append([segment, distance])
             vertex1 = vertex2
         return segments_info
-
-    def get_boundary_points_not_covered_by_boundary_nodes(self, boundary_point_layer, boundary_layer):
-        params = {
-            'INPUT': boundary_point_layer,
-            'JOIN': boundary_layer,
-            'PREDICATE': [0], # Intersects
-            'JOIN_FIELDS': [ID_FIELD],
-            'METHOD': 0,
-            'DISCARD_NONMATCHING': False,
-            'PREFIX': '',
-            'OUTPUT': 'memory:'}
-        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
-                                            params)['OUTPUT']
-
-        id_field_idx = spatial_join_layer.fields().indexFromName(ID_FIELD)
-        expr = '"{}_2" IS NULL'.format(ID_FIELD)  # loose point
-        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx]).setFilterExpression(expr)
-        it_features_expr = spatial_join_layer.getFeatures(request)
-        features_expr = [feature_expr for feature_expr in it_features_expr]
-
-        return features_expr
 
     def get_overlapping_points(self, point_layer):
         """
@@ -358,15 +335,13 @@ class GeometryUtils(QObject):
         intersection = feature_polygon.geometry().intersection(feature_overlap.geometry())
 
         if intersection.type() == QgsWkbTypes.PolygonGeometry:
-            if intersection.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
-                listGeoms.append(intersection)
+            listGeoms.append(intersection)
         elif intersection.wkbType() in [QgsWkbTypes.GeometryCollection,
             QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
             QgsWkbTypes.GeometryCollectionZM]:
             for part in intersection.asGeometryCollection():
                 if part.type() == QgsWkbTypes.PolygonGeometry:
-                    if part.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
-                        listGeoms.append(part)
+                    listGeoms.append(part)
 
         return QgsGeometry.collectGeometry(listGeoms) if len(listGeoms) > 0 else None
 
@@ -392,14 +367,14 @@ class GeometryUtils(QObject):
                 if feature.geometry().intersects(candidate_feature_geo) and not feature.geometry().touches(candidate_feature_geo):
                     intersection = feature.geometry().intersection(candidate_feature_geo)
 
-                    if intersection.type() == QgsWkbTypes.PolygonGeometry and intersection.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
+                    if intersection.type() == QgsWkbTypes.PolygonGeometry:
                         ids.append([feature.id(), candidate_feature.id()])
                         list_overlapping.append(intersection)
                     elif intersection.wkbType() in [QgsWkbTypes.GeometryCollection,
                                                     QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
                                                     QgsWkbTypes.GeometryCollectionZM]:
                         for part in intersection.asGeometryCollection():
-                            if part.type() == QgsWkbTypes.PolygonGeometry and intersection.area() > DEFAULT_POLYGON_AREA_TOLERANCE:
+                            if part.type() == QgsWkbTypes.PolygonGeometry:
                                 ids.append([feature.id(), candidate_feature.id()])
                                 list_overlapping.append(part)
         # free up memory
@@ -608,7 +583,8 @@ class GeometryUtils(QObject):
         just one boundary line.
         """
         points_layer = self.get_begin_end_vertices_from_lines(boundary_layer)
-        request = QgsFeatureRequest().setSubsetOfAttributes([])
+        id_field_idx = boundary_layer.fields().indexFromName(ID_FIELD)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_features = {feature.id(): feature for feature in boundary_layer.getFeatures(request)}
         index = QgsSpatialIndex(boundary_layer)
         ids_boundaries_list = list()
