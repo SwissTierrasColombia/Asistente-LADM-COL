@@ -129,6 +129,7 @@ class ToolBar():
 
         uri = '{vrtfilepath}|layername={filename}-{sheetname}'.format(vrtfilepath=group_party_file_path, sheetname=sheetname, filename=filename)
         layer_group_party = QgsVectorLayer(uri, '{}-{}'.format('excel', sheetname), 'ogr')
+        layer_group_party.setProviderEncoding('UTF-8')
         print(uri, layer_group_party.isValid())
 
         # COL_PARTY
@@ -144,8 +145,8 @@ class ToolBar():
             <OGRVRTDataSource>
                 <OGRVRTLayer name="{filename}-interesado">
                     <SrcDataSource relativeToVRT="1">{basename}</SrcDataSource>
-                    <!--Header=True-->
-                    <SrcSql dialect="sqlite">SELECT * FROM 'interesado' LIMIT {count} OFFSET 1</SrcSql>
+                    <!--Header=False-->
+                    <SrcLayer>interesado</SrcLayer>
                     <Field name="nombre1" src="Field1" type="String"/>
                     <Field name="nombre2" src="Field2" type="String"/>
                     <Field name="apellido1" src="Field3" type="String"/>
@@ -160,7 +161,7 @@ class ToolBar():
                     <Field name="numero predial nuevo" src="Field12" type="String"/>
                 </OGRVRTLayer>
             </OGRVRTDataSource>
-        """.format(filename=filename, basename=basename, count=count)
+        """.format(filename=filename, basename=basename)
 
         party_file_path = os.path.join(dirname, '{}.{}.vrt'.format(basename, sheetname))
         with open(party_file_path, 'w') as sheet:
@@ -168,6 +169,7 @@ class ToolBar():
 
         uri = '{vrtfilepath}|layername={filename}-{sheetname}'.format(vrtfilepath=party_file_path, sheetname=sheetname, filename=filename)
         layer_party = QgsVectorLayer(uri, '{}-{}'.format('excel', sheetname), 'ogr')
+        layer_party.setProviderEncoding('UTF-8')
         print(uri, layer_party.isValid())
 
         # PARCEL
@@ -204,6 +206,7 @@ class ToolBar():
 
         uri = '{vrtfilepath}|layername={filename}-{sheetname}'.format(vrtfilepath=parcel_file_path, sheetname=sheetname, filename=filename)
         layer_parcel = QgsVectorLayer(uri, '{}-{}'.format('excel', sheetname), 'ogr')
+        layer_parcel.setProviderEncoding('UTF-8')
         print(uri, layer_parcel.isValid())
 
         # RIGHT
@@ -240,6 +243,7 @@ class ToolBar():
 
         uri = '{vrtfilepath}|layername={filename}-{sheetname}'.format(vrtfilepath=right_file_path, sheetname=sheetname, filename=filename)
         layer_right = QgsVectorLayer(uri, '{}-{}'.format('excel', sheetname), 'ogr')
+        layer_right.setProviderEncoding('UTF-8')
         print(uri, layer_right.isValid())
         QgsProject.instance().addMapLayers([layer_group_party, layer_party, layer_parcel, layer_right])
 
@@ -544,7 +548,6 @@ class ToolBar():
                                                                   'METHOD': 1,
                                                                   'OUTPUT': 'memory:',
                                                                   'PREFIX': 'predio_' })['OUTPUT']
-        QgsProject.instance().addMapLayer(source_party_group_parcel_tid_layer)
 
         print('15. Load Rights')
         processing.run("model:ETL-model",
