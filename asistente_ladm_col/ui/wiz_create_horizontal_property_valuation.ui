@@ -48,8 +48,8 @@
           <property name="title">
            <string>How would you like to create horizontal properties?</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout_3">
-           <item row="0" column="0">
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="0" column="0" colspan="3">
             <spacer name="verticalSpacer_6">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -62,7 +62,7 @@
              </property>
             </spacer>
            </item>
-           <item row="1" column="0" colspan="2">
+           <item row="1" column="0" colspan="4">
             <widget class="QRadioButton" name="rad_create_manually">
              <property name="text">
               <string>Entering data manually using a form</string>
@@ -72,7 +72,7 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
+           <item row="2" column="0" colspan="3">
             <spacer name="verticalSpacer_7">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -85,7 +85,7 @@
              </property>
             </spacer>
            </item>
-           <item row="3" column="0" colspan="2">
+           <item row="3" column="0" colspan="4">
             <widget class="QRadioButton" name="rad_refactor">
              <property name="enabled">
               <bool>true</bool>
@@ -95,56 +95,68 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="0" colspan="2">
-            <layout class="QGridLayout" name="gridLayout_2">
-             <item row="0" column="0">
-              <widget class="QLabel" name="lbl_refactor_source">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Source:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QgsMapLayerComboBox" name="mMapLayerComboBox">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>300</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="allowEmptyLayer">
-                <bool>true</bool>
-               </property>
-               <property name="showCrs">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="lbl_field_mapping">
-               <property name="text">
-                <string>Recent mappings:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QComboBox" name="cbo_mapping"/>
-             </item>
-            </layout>
+           <item row="4" column="0" rowspan="2">
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>13</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="4" column="1">
+            <widget class="QLabel" name="lbl_refactor_source">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Source:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="2" colspan="2">
+            <widget class="QgsMapLayerComboBox" name="mMapLayerComboBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>300</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="allowEmptyLayer" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="showCrs" stdset="0">
+              <bool>false</bool>
+             </property>
+            </widget>
            </item>
            <item row="5" column="1">
+            <widget class="QLabel" name="lbl_field_mapping">
+             <property name="text">
+              <string>Recent mappings:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="2" colspan="2">
+            <widget class="QComboBox" name="cbo_mapping"/>
+           </item>
+           <item row="6" column="3">
             <spacer name="verticalSpacer_8">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
