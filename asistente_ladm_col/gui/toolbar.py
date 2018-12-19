@@ -103,7 +103,7 @@ class ToolBar():
         if count is None:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "It was not possible to get the number or rows in sheet '{sheet}' from file '{file}'.".format(sheet=sheetname, file=save_into_file)),
+                                           "It was not possible to get the number or rows in sheet '{sheet}' from file '{file}'.").format(sheet=sheetname, file=save_into_file),
                 Qgis.Warning)
             return
 
@@ -135,7 +135,7 @@ class ToolBar():
         if count is None:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "It was not possible to get the number or rows in sheet '{sheet}' from file '{file}'.".format(sheet=sheetname, file=save_into_file)),
+                                           "It was not possible to get the number or rows in sheet '{sheet}' from file '{file}'.").format(sheet=sheetname, file=save_into_file),
                 Qgis.Warning)
             return
         xml_text_party = """<?xml version="1.0" encoding="UTF-8"?>
@@ -174,7 +174,7 @@ class ToolBar():
         if count is None:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "It was not possible to get the number or rows in sheet '{sheet}' from file '{file}'.".format(sheet=sheetname, file=save_into_file)),
+                                           "It was not possible to get the number or rows in sheet '{sheet}' from file '{file}'.").format(sheet=sheetname, file=save_into_file),
                 Qgis.Warning)
             return
         xml_text_parcel = """<?xml version="1.0" encoding="UTF-8"?>
@@ -210,7 +210,7 @@ class ToolBar():
         if count is None:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "It was not possible to get the number or rows in sheet '{sheet}' from file '{file}'.".format(sheet=sheetname, file=save_into_file)),
+                                           "It was not possible to get the number or rows in sheet '{sheet}' from file '{file}'.").format(sheet=sheetname, file=save_into_file),
                 Qgis.Warning)
             return
         xml_text_right = """<?xml version="1.0" encoding="UTF-8"?>
@@ -324,3 +324,12 @@ class ToolBar():
                                                     db.get_description()),
                                                 Qgis.Warning)
             return
+
+
+        # Run the ETL
+
+        self.qgis_utils.message_emitted.emit(
+            QCoreApplication.translate("QGISUtils",
+                                       "Data successfully imported to LADM_COL from intermediate structure (Excel file: '{}')!!!").format(
+                                            save_into_file),
+            Qgis.Success)
