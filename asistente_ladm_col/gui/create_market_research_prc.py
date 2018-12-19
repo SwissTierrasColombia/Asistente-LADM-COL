@@ -81,7 +81,8 @@ class CreateMarketResearchPRCWizard(QWizard, WIZARD_UI):
                 field_mapping = self.cbo_mapping.currentText()
                 res_etl_model = self.qgis_utils.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
-                                                               MARKET_RESEARCH_TABLE)
+                                                               MARKET_RESEARCH_TABLE,
+                                                               field_mapping=field_mapping)
 
                 if res_etl_model:
                     if field_mapping:

@@ -81,7 +81,8 @@ class CreateLegalPartyPRCWizard(QWizard, WIZARD_UI):
                 field_mapping = self.cbo_mapping.currentText()
                 res_etl_model = self.qgis_utils.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
-                                                               LEGAL_PARTY_TABLE)
+                                                               LEGAL_PARTY_TABLE,
+                                                               field_mapping=field_mapping)
                 if res_etl_model:
                     if field_mapping:
                         self.qgis_utils.delete_old_field_mapping(field_mapping)
