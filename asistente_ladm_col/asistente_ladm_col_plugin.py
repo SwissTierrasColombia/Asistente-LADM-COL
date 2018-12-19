@@ -479,10 +479,10 @@ class AsistenteLADMCOLPlugin(QObject):
             else:
                 self.remove_property_record_card_menu()
 
-                if model_parser.valuation_model_exists():
-                    self.add_valuation_menu()
-                else:
-                    self.remove_valuation_menu()
+            if model_parser.valuation_model_exists():
+                self.add_valuation_menu()
+            else:
+                self.remove_valuation_menu()
 
     def add_processing_models(self, provider_id):
         if not (provider_id == 'model' or provider_id is None):
