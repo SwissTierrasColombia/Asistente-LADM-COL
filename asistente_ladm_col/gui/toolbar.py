@@ -24,6 +24,8 @@ from qgis.core import (QgsProject,
                        Qgis,
                        QgsVectorLayer)
 
+import processing
+
 from ..config.table_mapping_config import (COL_PARTY_TABLE,
                                            PARCEL_TABLE,
                                            RIGHT_TABLE,
@@ -217,17 +219,17 @@ class ToolBar():
             <OGRVRTDataSource>
                 <OGRVRTLayer name="{filename}-derecho">
                     <SrcDataSource relativeToVRT="1">{basename}</SrcDataSource>
-                    <!--Header=True-->
-                    <SrcSql dialect="sqlite">SELECT * FROM 'derecho' LIMIT {count} OFFSET 1</SrcSql>
-                    <Field name="tipo" src="Field1" type="String"/>
-                    <Field name="número documento Interesado" src="Field2" type="String"/>
-                    <Field name="agrupación" src="Field3" type="String"/>
-                    <Field name="numero predial nuevo" src="Field4" type="String"/>
-                    <Field name="tipo de fuente" src="Field5" type="String"/>
-                    <Field name="Descripción de la fuente" src="Field6" type="String"/>
-                    <Field name="estado_disponibilidad de la fuente" src="Field7" type="String"/>
-                    <Field name="Es oficial la fuente" src="Field8" type="String"/>
-                    <Field name="Ruta de Almacenamiento de la fuente" src="Field9" type="String"/>
+                    <!--Header=False-->
+                    <SrcLayer>derecho</SrcLayer>
+                    <Field name="tipo" src="tipo" type="String"/>
+                    <Field name="número documento Interesado" src="número documento Interesado" type="String"/>
+                    <Field name="agrupación" src="agrupación" type="String"/>
+                    <Field name="numero predial nuevo" src="numero predial nuevo" type="String"/>
+                    <Field name="tipo de fuente" src="tipo de fuente" type="String"/>
+                    <Field name="Descripción de la fuente" src="Descripción de la fuente" type="Integer"/>
+                    <Field name="estado_disponibilidad de la fuente" src="estado_disponibilidad de la fuente" type="String"/>
+                    <Field name="Es oficial la fuente" src="Es oficial la fuente" type="String"/>
+                    <Field name="Ruta de Almacenamiento de la fuente" src="Ruta de Almacenamiento de la fuente" type="String"/>
                 </OGRVRTLayer>
             </OGRVRTDataSource>
         """.format(filename=filename, basename=basename, count=count)
@@ -316,8 +318,8 @@ class ToolBar():
                                                 Qgis.Warning)
             return
 
-        administrtive_source_table = res_layers[ADMINISTRATIVE_SOURCE_TABLE]
-        if administrtive_source_table is None:
+        administrative_source_table = res_layers[ADMINISTRATIVE_SOURCE_TABLE]
+        if administrative_source_table is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                                                 QCoreApplication.translate("QGISUtils",
                                                                            "Administrative Source table couldn't be found... {}").format(
@@ -327,6 +329,269 @@ class ToolBar():
 
 
         # Run the ETL
+
+        print('1. Load col_interesado data')
+        processing.run("model:ETL-model",
+                       {
+                           'INPUT': layer_party,
+                           'mapping': [
+                               {'expression': '"numero de documento"', 'length': 12, 'name': 'documento_identidad',
+                                'precision': -1, 'type': 10},
+                               {'expression': '"tipo documento"', 'length': 255, 'name': 'tipo_documento',
+                                'precision': -1, 'type': 10},
+                               {'expression': '"organo_emisor"', 'length': 20, 'name': 'organo_emisor', 'precision': -1,
+                                'type': 10},
+                               {'expression': '"fecha_emision"', 'length': -1, 'name': 'fecha_emision', 'precision': -1,
+                                'type': 14},
+                               {'expression': '"apellido1"', 'length': 100, 'name': 'primer_apellido', 'precision': -1,
+                                'type': 10},
+                               {'expression': '"nombre1"', 'length': 100, 'name': 'primer_nombre', 'precision': -1,
+                                'type': 10},
+                               {'expression': '"apellido2"', 'length': 100, 'name': 'segundo_apellido', 'precision': -1,
+                                'type': 10},
+                               {'expression': '"nombre2"', 'length': 100, 'name': 'segundo_nombre', 'precision': -1,
+                                'type': 10},
+                               {'expression': '"razon_social"', 'length': 250, 'name': 'razon_social', 'precision': -1,
+                                'type': 10},
+                               {'expression': '"sexo persona"', 'length': 255, 'name': 'genero', 'precision': -1,
+                                'type': 10},
+                               {'expression': '"tipo_interesado_juridico"', 'length': 255,
+                                'name': 'tipo_interesado_juridico', 'precision': -1, 'type': 10},
+                               {'expression': '"nombre"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10},
+                               {'expression': '"tipo persona"', 'length': 255, 'name': 'tipo', 'precision': -1,
+                                'type': 10},
+                               {'expression': "'ANT_COL_INTERESADO'", 'length': 255, 'name': 'p_espacio_de_nombres',
+                                'precision': -1, 'type': 10},
+                               {'expression': '$id', 'length': 255, 'name': 'p_local_id', 'precision': -1, 'type': 10},
+                               {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version',
+                                'precision': -1, 'type': 16},
+                               {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version',
+                                'precision': -1, 'type': 16}],
+                           'output': col_party_table
+                       })
+
+        print('2. Define group parties')
+        pre_group_party_layer = processing.run("qgis:statisticsbycategories",
+                                   { 'CATEGORIES_FIELD_NAME': 'id agrupación',
+                                      'INPUT': layer_group_party,
+                                     'OUTPUT': 'memory:',
+                                     'VALUES_FIELD_NAME': None })['OUTPUT']
+
+        print('3. Load group parties')
+        processing.run("model:ETL-model",
+                       {
+                           'INPUT': pre_group_party_layer,
+                           'mapping': [
+                               {'expression': "'Grupo_Civil'", 'length': 255, 'name': 'ai_tipo', 'precision': -1, 'type': 10},
+                               {'expression': '"nombre"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10},
+                               {'expression': "'Otro'", 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10},
+                               {'expression': "'ANT_Agrupacion_Interesados'", 'length': 255, 'name': 'p_espacio_de_nombres', 'precision': -1, 'type': 10},
+                               {'expression': '"id agrupación"', 'length': 255, 'name': 'p_local_id', 'precision': -1, 'type': 10},
+                               {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
+                               {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}],
+                           'output': group_party_table
+                       })
+
+        print('4. Join group parties t_id')
+        group_party_tid_layer = processing.run("native:joinattributestable",
+                                               {  'DISCARD_NONMATCHING': False,
+                                                  'FIELD': 'id agrupación',
+                                                  'FIELDS_TO_COPY': 't_id',
+                                                  'FIELD_2': 'p_local_id',
+                                                  'INPUT': layer_group_party,
+                                                  'INPUT_2': group_party_table,
+                                                  'METHOD': 1,
+                                                  'OUTPUT': 'memory:',
+                                                  'PREFIX': 'agrupacion_' })['OUTPUT']
+
+        print('5. Join group parties with parties')
+        group_party_party_tid_layer = processing.run("native:joinattributestable",
+                                                     { 	'DISCARD_NONMATCHING': False,
+                                                          'FIELD': 'numero de documento',
+                                                          'FIELDS_TO_COPY': 't_id',
+                                                          'FIELD_2': 'documento_identidad',
+                                                          'INPUT': group_party_tid_layer,
+                                                          'INPUT_2': col_party_table,
+                                                          'METHOD': 1,
+                                                          'OUTPUT': 'memory:',
+                                                          'PREFIX': 'interesado_' })['OUTPUT']
+
+        print('6. Load group party members')
+        processing.run("model:ETL-model",
+                       {
+                           'INPUT': group_party_party_tid_layer,
+                           'mapping': [
+                               {'expression': '"interesado_t_id"', 'length': -1, 'name': 'interesados_col_interesado', 'precision': 0, 'type': 4},
+                               {'expression': '"agrupacion_t_id"', 'length': -1, 'name': 'agrupacion', 'precision': 0, 'type': 4}],
+                           'output': members_table
+                       })
+
+        print('7. Load parcels')
+        processing.run("model:ETL-model",
+                       {
+                           'INPUT': layer_parcel,
+                           'mapping': [
+                               {'expression': '"departamento"', 'length': 2, 'name': 'departamento', 'precision': -1, 'type': 10},
+                               {'expression': '"municipio"', 'length': 3, 'name': 'municipio', 'precision': -1, 'type': 10},
+                               {'expression': '"zona"', 'length': 2, 'name': 'zona', 'precision': -1, 'type': 10},
+                               {'expression': '$id', 'length': 20, 'name': 'nupre', 'precision': -1, 'type': 10},
+                               {'expression': '"matricula predio"', 'length': 80, 'name': 'fmi', 'precision': -1, 'type': 10},
+                               {'expression': '"numero predial nuevo"', 'length': 30, 'name': 'numero_predial', 'precision': -1, 'type': 10},
+                               {'expression': '"numero predial viejo"', 'length': 20, 'name': 'numero_predial_anterior', 'precision': -1, 'type': 10},
+                               {'expression': '"avaluo"', 'length': 16, 'name': 'avaluo_predio', 'precision': 1, 'type': 6},
+                               {'expression': '"copropiedad"', 'length': -1, 'name': 'copropiedad', 'precision': 0, 'type': 4},
+                               {'expression': '"nombre predio"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10},
+                               {'expression': '"tipo predio"', 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10},
+                               {'expression': "'ANT_PREDIO'", 'length': 255, 'name': 'u_espacio_de_nombres', 'precision': -1, 'type': 10},
+                               {'expression': '$id', 'length': 255, 'name': 'u_local_id', 'precision': -1, 'type': 10},
+                               {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}],
+                           'output': parcel_table
+                       })
+
+        print('8. Concatenate Rights and Sources fields')
+        concat_right_source_layer = processing.run("qgis:fieldcalculator",
+                                                   { 	'FIELD_LENGTH': 100,
+                                                        'FIELD_NAME': 'concat_',
+                                                        'FIELD_PRECISION': 3,
+                                                        'FIELD_TYPE': 2,
+                                                        'FORMULA': 'concat( \"número documento interesado\" , \"agrupacion\" , \"numero predial nuevo\" , \"tipo de fuente\" , \"Descricpión de la fuente\")',
+                                                        'INPUT': layer_right,
+                                                        'NEW_FIELD': True,
+                                                        'OUTPUT': 'memory:' })['OUTPUT']
+
+        print('9. Load Administrative sources')
+        processing.run("model:ETL-model",
+                       {
+                           'INPUT': concat_right_source_layer,
+                           'mapping': [
+                               {'expression': '"descripcion de la fuente"', 'length': 255, 'name': 'texto', 'precision': -1, 'type': 10},
+                               {'expression': '"tipo de fuente"', 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10},
+                               {'expression': '"codigo_registral_transaccion"', 'length': 5, 'name': 'codigo_registral_transaccion', 'precision': -1, 'type': 10},
+                               {'expression': '"nombre"', 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10},
+                               {'expression': '"fecha_aceptacion"', 'length': -1, 'name': 'fecha_aceptacion', 'precision': -1, 'type': 16},
+                               {'expression': '"estado_disponibilidad de la fuente"', 'length': 255, 'name': 'estado_disponibilidad', 'precision': -1, 'type': 10},
+                               {'expression': '"sello_inicio_validez"', 'length': -1, 'name': 'sello_inicio_validez', 'precision': -1, 'type': 16},
+                               {'expression': '"tipo_principal"', 'length': 255, 'name': 'tipo_principal', 'precision': -1, 'type': 10},
+                               {'expression': '"fecha_grabacion"', 'length': -1, 'name': 'fecha_grabacion', 'precision': -1, 'type': 16},
+                               {'expression': '"fecha_entrega"', 'length': -1, 'name': 'fecha_entrega', 'precision': -1, 'type': 16},
+                               {'expression': "'ANT_COLFUENTEADMINISTRATIVA'", 'length': 255, 'name': 's_espacio_de_nombres', 'precision': -1, 'type': 10},
+                               {'expression': '"concat_"', 'length': 255, 'name': 's_local_id', 'precision': -1, 'type': 10},
+                               {'expression': '"oficialidad"', 'length': -1, 'name': 'oficialidad', 'precision': -1, 'type': 1}],
+                           'output': administrative_source_table
+                       })
+
+        print('10. Join concatenate source to administrative source t_id')
+        source_tid_layer = processing.run("native:joinattributestable",
+                                          {	'DISCARD_NONMATCHING': False,
+                                               'FIELD': 'concat_',
+                                               'FIELDS_TO_COPY': 't_id',
+                                               'FIELD_2': 's_local_id',
+                                               'INPUT': concat_right_source_layer,
+                                               'INPUT_2': administrative_source_table,
+                                               'METHOD': 1,
+                                               'OUTPUT': 'memory:',
+                                               'PREFIX': 'fuente_' })['OUTPUT']
+
+        print('11. Load extarchivo')
+        processing.run("model:ETL-model",
+                       {
+                           'INPUT': source_tid_layer,
+                           'mapping': [
+                               {'expression': '"fecha_aceptacion"', 'length': -1, 'name': 'fecha_aceptacion', 'precision': -1, 'type': 14},
+                               {'expression': '"Ruta de Almacenamiento de la fuente"', 'length': 255, 'name': 'datos', 'precision': -1, 'type': 10},
+                               {'expression': '"extraccion"', 'length': -1, 'name': 'extraccion', 'precision': -1, 'type': 14},
+                               {'expression': '"fecha_grabacion"', 'length': -1, 'name': 'fecha_grabacion', 'precision': -1, 'type': 14},
+                               {'expression': '"fecha_entrega"', 'length': -1, 'name': 'fecha_entrega', 'precision': -1, 'type': 14},
+                               {'expression': "'ANT_EXTARCHIVO'", 'length': 255, 'name': 's_espacio_de_nombres', 'precision': -1, 'type': 10},
+                               {'expression': '$id', 'length': 255, 'name': 's_local_id', 'precision': -1, 'type': 10},
+                               {'expression': '"fuente_t_id"', 'length': -1, 'name': 'col_fuenteadminstrtiva_ext_archivo_id', 'precision': 0, 'type': 4},
+                               {'expression': '"col_fuenteespacial_ext_archivo_id"', 'length': -1, 'name': 'col_fuenteespacial_ext_archivo_id', 'precision': 0, 'type': 4}],
+                           'output': EXTFILE_TABLE
+                       })
+
+        print('12. Join source and party t_id')
+        source_party_tid_layer = processing.run("native:joinattributestable",
+                                                { 	'DISCARD_NONMATCHING': False,
+                                                     'FIELD': 'número documento Interesado',
+                                                     'FIELDS_TO_COPY': 't_id',
+                                                     'FIELD_2': 'documento_identidad',
+                                                     'INPUT': source_tid_layer,
+                                                     'INPUT_2': col_party_table,
+                                                     'METHOD': 1,
+                                                     'OUTPUT': 'memory:',
+                                                     'PREFIX': 'interesado_'})['OUTPUT']
+
+        print('13. Join source, party, group party t_id')
+        source_party_group_tid_layer = processing.run("native:joinattributestable",
+                                                      {    'DISCARD_NONMATCHING': False,
+                                                           'FIELD': 'agrupación',
+                                                           'FIELDS_TO_COPY': 't_id',
+                                                           'FIELD_2': 'p_local_id',
+                                                           'INPUT': source_party_tid_layer,
+                                                           'INPUT_2': group_party_table,
+                                                           'METHOD': 1,
+                                                           'OUTPUT': 'memory:',
+                                                           'PREFIX': 'agrupacion_' })['OUTPUT']
+
+        print('14. Join source, party, group party, parcel t_id')
+        source_party_group_parcel_tid_layer = processing.run("native:joinattributestable",
+                                                             { 	'DISCARD_NONMATCHING': False,
+                                                                  'FIELD': 'numero predial nuevo',
+                                                                  'FIELDS_TO_COPY': 't_id',
+                                                                  'FIELD_2': 'numero_predial',
+                                                                  'INPUT': source_party_group_tid_layer,
+                                                                  'INPUT_2': parcel_table,
+                                                                  'METHOD': 1,
+                                                                  'OUTPUT': 'memory:',
+                                                                  'PREFIX': 'predio_' })['OUTPUT']
+        QgsProject.instance().addMapLayer(source_party_group_parcel_tid_layer)
+
+        print('15. Load Rights')
+        processing.run("model:ETL-model",
+                       {
+                           'INPUT': source_party_group_parcel_tid_layer,
+                           'mapping': [
+                               {'expression': '"tipo"', 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10},
+                               {'expression': '"codigo_registral_derecho"', 'length': 5, 'name': 'codigo_registral_derecho', 'precision': -1, 'type': 10},
+                               {'expression': '"descripcion"', 'length': 255, 'name': 'descripcion', 'precision': -1, 'type': 10},
+                               {'expression': '"comprobacion_comparte"', 'length': -1, 'name': 'comprobacion_comparte', 'precision': -1, 'type': 1},
+                               {'expression': '"uso_efectivo"', 'length': 255, 'name': 'uso_efectivo', 'precision': -1, 'type': 10},
+                               {'expression': "'ANT_Col_Derecho'", 'length': 255, 'name': 'r_espacio_de_nombres', 'precision': -1, 'type': 10},
+                               {'expression': '"concat_"', 'length': 255, 'name': 'r_local_id', 'precision': -1, 'type': 10},
+                               {'expression': '"agrupacion_t_id"', 'length': -1, 'name': 'interesado_la_agrupacion_interesados', 'precision': 0, 'type': 4},
+                               {'expression': '"interesado_t_id"', 'length': -1, 'name': 'interesado_col_interesado', 'precision': 0, 'type': 4},
+                               {'expression': '"unidad_la_baunit"', 'length': -1, 'name': 'unidad_la_baunit', 'precision': 0, 'type': 4},
+                               {'expression': '"predio_t_id"', 'length': -1, 'name': 'unidad_predio', 'precision': 0, 'type': 4},
+                               {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
+                               {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}],
+                           'output': right_table
+                       })
+
+        print('16. Join source, party, group party, parcel, right t_id')
+        source_party_group_parcel_right_tid_layer = processing.run("native:joinattributestable",
+                                                                   { 	'DISCARD_NONMATCHING': False,
+                                                                        'FIELD': 'concat_',
+                                                                        'FIELDS_TO_COPY': 't_id',
+                                                                        'FIELD_2': 'r_local_id',
+                                                                        'INPUT': source_party_group_parcel_tid_layer,
+                                                                        'INPUT_2': right_table,
+                                                                        'METHOD': 1,
+                                                                        'OUTPUT': 'memory:',
+                                                                        'PREFIX': 'derecho_' })['OUTPUT']
+
+        print('17. Load rrrfuente')
+        processing.run("model:ETL-model",
+                       {
+                           'INPUT': source_party_group_parcel_right_tid_layer,
+                           'mapping': [
+                               {'expression': '"fuente_t_id"', 'length': -1, 'name': 'rfuente', 'precision': 0, 'type': 4},
+                               {'expression': '"rrr_col_responsabilidad"', 'length': -1, 'name': 'rrr_col_responsabilidad', 'precision': 0, 'type': 4},
+                               {'expression': '"derecho_t_id"', 'length': -1, 'name': 'rrr_col_derecho', 'precision': 0, 'type': 4},
+                               {'expression': '"rrr_col_restriccion"', 'length': -1, 'name': 'rrr_col_restriccion', 'precision': 0, 'type': 4},
+                               {'expression': '"rrr_col_hipoteca"', 'length': -1, 'name': 'rrr_col_hipoteca', 'precision': 0, 'type': 4}],
+                           'output': rrr_source_table
+                       })
+
 
         self.qgis_utils.message_emitted.emit(
             QCoreApplication.translate("QGISUtils",
