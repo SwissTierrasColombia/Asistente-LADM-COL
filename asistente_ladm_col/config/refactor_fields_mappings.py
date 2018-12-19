@@ -262,7 +262,8 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"tipo_documento_quien_atendio"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'tipo_documento_quien_atendio'},
             {'expression': '"nombre_encuestador"', 'length': 40, 'precision': -1, 'type': 10, 'name': 'nombre_encuestador'},
             {'expression': '"numero_documento_encuestador"', 'length': 10, 'precision': -1, 'type': 10, 'name': 'numero_documento_encuestador'},
-            {'expression': '"tipo_documento_encuestador"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'tipo_documento_encuestador'}
+            {'expression': '"tipo_documento_encuestador"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'tipo_documento_encuestador'},
+            {'expression': '"crpredio"', 'length': -1, 'name': 'crpredio', 'precision': 0, 'type': 4}
         ]
     elif layer_name == MARKET_RESEARCH_TABLE:
         mapping = [
