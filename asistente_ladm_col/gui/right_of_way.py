@@ -50,7 +50,11 @@ from ..config.table_mapping_config import (
                                         UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD,
                                         RESTRICTION_TABLE,
                                         RIGHT_OF_WAY_TABLE,
-                                        SURVEY_POINT_TABLE,
+                                        ADMINISTRATIVE_SOURCE_TABLE,
+                                        RRR_SOURCE_RELATION_TABLE,
+                                        RRR_SOURCE_RESTRICTION_FIELD,
+                                        RRR_SOURCE_SOURCE_FIELD,
+                                        SURVEY_POINT_TABLE
 )
 
 from ..config.general_config import (
@@ -184,10 +188,12 @@ class RightOfWay(QObject):
         print("Hey voy a empezar a llenar relaciones")
         # Load layers
         res_layers = self.qgis_utils.get_layers(db, {
-            PARCEL_TABLE: {'name': RESTRICTION_TABLE, 'geometry': None},
+            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None},
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             RESTRICTION_TABLE: {'name': RESTRICTION_TABLE, 'geometry': None},
             RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None},
             SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None},
             UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}
         }, load=True)
@@ -211,7 +217,6 @@ class RightOfWay(QObject):
                 Qgis.Warning)
             return
 
-        self._uebaunit_table = res_layers[UEBAUNIT_TABLE]
         if self._uebaunit_table is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
@@ -303,7 +308,35 @@ class RightOfWay(QObject):
                     exp = QgsExpression("\"ue_terreno\" = {}".format(plot.attribute("t_id")))
                     parcels = self._uebaunit_table.getFeatures(QgsFeatureRequest(exp))
                     for parcel in parcels:
-                        id_pair_restriction = (parcel.attribute("baunit_predio"), plot.attribute("t_id_2"), plot.attribute("identificador"))
+                        id_pair_restriction = (parcel.attribute("baunit_predio"), plot.attribute("identificador"))
                         id_pairs_restriction.append(id_pair_restriction)
 
                 print(id_pairs_restriction)
+
+                if id_pairs_restriction:
+                    new_restriction_features = list()
+                    for id_pair in id_pairs_restriction:
+                        #Create feature
+                        new_feature = QgsVectorLayerUtils().createFeature(self._restriction_layer)
+                        new_feature.setAttribute("unidad_predio", id_pair[0])
+                        new_feature.setAttribute("descripcion", "Asociada a la servidumbre {}".format(id_pair[1]))
+                        new_feature.setAttribute("tipo", "Servidumbre")
+                        self.log.logMessage("Saving RightOfWay-Restriction: {}-{}".format(id_pair[1], id_pair[0]), PLUGIN_NAME, Qgis.Info)
+                        new_restriction_features.append(new_feature)
+
+                    self._restriction_layer.dataProvider().addFeatures(new_restriction_features)
+                    self.qgis_utils.message_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                           "{} out of {} records were saved into {}! {} out of {} records already existed in the database.").format(
+                            len(new_restriction_features),
+                            len(id_pairs_restriction),
+                            RESTRICTION_TABLE,
+                            len(id_pairs_restriction) - len(new_restriction_features),
+                            len(id_pairs_restriction)
+                            ),
+                            Qgis.Info)
+
+                else:
+                    self.message_emitted.emit(
+                        QCoreApplication.translate("QGISUtils", "No pairs id_right_of_way-restriction found."),
+                        Qgis.Info)
