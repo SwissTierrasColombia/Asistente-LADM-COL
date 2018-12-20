@@ -136,12 +136,12 @@ class CreateBuildingUnitQualificationValuationWizard(QWizard, WIZARD_UI):
     def building_unit_qualification_option_changed(self):
         if self.rad_conventional.isChecked():
             self.gbx_page_2.setTitle(QCoreApplication.translate("CreateBuildingUnitQualificationValuationWizard",
-                                                                "Load data to building unit conventional..."))
+                                                                "Load data to conventional building unit qualification..."))
             self.txt_help_page_1.setHtml(
                 self.help_strings.WIZ_CREATE_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_VALUATION_PAGE_1_OPTION_FORM)
-        elif self.rad_unconventional.isChecked():  # self.rad_survey_point is checked1
+        elif self.rad_unconventional.isChecked():
             self.gbx_page_2.setTitle(QCoreApplication.translate("CreateBuildingUnitQualificationValuationWizard",
-                                                                "Load data to building unit unconventional..."))
+                                                                "Load data to unconventional building unit qualification..."))
             self.txt_help_page_1.setHtml(
                 self.help_strings.WIZ_CREATE_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_VALUATION_PAGE_1_OPTION_FORM)
 
@@ -185,7 +185,7 @@ class CreateBuildingUnitQualificationValuationWizard(QWizard, WIZARD_UI):
         if self._building_unit_qualification_valuation is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("create_building_unit_qualification_valuation_wizard",
-                                           "building unit qualification table couldn't be found... {}").format(self._db.get_description()),
+                                           "Building unit qualification table couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 

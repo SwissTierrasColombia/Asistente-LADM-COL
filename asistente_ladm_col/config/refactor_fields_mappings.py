@@ -490,7 +490,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"identificador"', 'length': 20, 'name': 'identificador', 'precision': -1, 'type': 10}
         ]
 
-        # If the user wants to enable automatic fields...
+    # If the user wants to enable automatic fields...
     if QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
         # Now see if we can adjust the mapping depending on user settings
         ns_enabled, ns_field, ns_value = qgis_utils.get_namespace_field_and_value(layer_name)

@@ -58,7 +58,7 @@ MODULE_HELP_MAPPING = {
     'create_market_research': 'property_record_card/Market_research.html',
     'create_parcel_valuation': 'valuation/Create_parcel.html',
     'create_horizontal_property_valuation': 'valuation/Create_Horizontal_property_main_parcel.html',
-    'create_common_equipment_valuation': 'valuation.Create_common_equipment.html/',
+    'create_common_equipment_valuation': 'valuation.Create_common_equipment.html',
     'create_building_valuation': 'valuation/Create_building.html',
     'create_building_unit_valuation': 'valuation/Create_building_unit.html',
     'create_building_unit_qualification_valuation_unconventional': 'valuation/Create_building_unit_qualification_unconventional.html',

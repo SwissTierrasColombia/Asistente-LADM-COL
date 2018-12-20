@@ -281,7 +281,7 @@ FORM_GROUPS = {
     },
     VALUATION_PARCEL_TABLE: {
         ' ': {
-            'show_label': False,
+            'show_label': True,
             'column_count':  1,
             'attr_list':  ['num_balcones', 'num_terrazas', 'num_mezanines'],
             'visibility_expression': None,
@@ -289,7 +289,7 @@ FORM_GROUPS = {
             'after_attr': None
         },
         '  ': {
-            'show_label': False,
+            'show_label': True,
             'column_count':  1,
             'attr_list':  ['frente', 'fondo'],
             'visibility_expression': None,

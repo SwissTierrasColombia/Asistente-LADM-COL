@@ -24,16 +24,7 @@
     <string/>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="leftMargin">
-     <number>9</number>
-    </property>
-    <property name="topMargin">
-     <number>9</number>
-    </property>
-    <property name="rightMargin">
-     <number>9</number>
-    </property>
-    <property name="bottomMargin">
+    <property name="margin">
      <number>9</number>
     </property>
     <item row="0" column="0">
@@ -129,7 +120,7 @@
            <item row="4" column="0">
             <widget class="QRadioButton" name="rad_unconventional">
              <property name="text">
-              <string>unconventional</string>
+              <string>Unconventional</string>
              </property>
             </widget>
            </item>
@@ -158,16 +149,7 @@
   </widget>
   <widget class="QWizardPage" name="wizardPage2">
    <layout class="QGridLayout" name="gridLayout_10">
-    <property name="leftMargin">
-     <number>9</number>
-    </property>
-    <property name="topMargin">
-     <number>9</number>
-    </property>
-    <property name="rightMargin">
-     <number>9</number>
-    </property>
-    <property name="bottomMargin">
+    <property name="margin">
      <number>9</number>
     </property>
     <item row="0" column="0">
@@ -292,10 +274,10 @@
                  <height>16777215</height>
                 </size>
                </property>
-               <property name="allowEmptyLayer">
+               <property name="allowEmptyLayer" stdset="0">
                 <bool>true</bool>
                </property>
-               <property name="showCrs">
+               <property name="showCrs" stdset="0">
                 <bool>false</bool>
                </property>
               </widget>
@@ -353,7 +335,7 @@
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsmaplayercombobox.h</header>
+   <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
  <resources/>
