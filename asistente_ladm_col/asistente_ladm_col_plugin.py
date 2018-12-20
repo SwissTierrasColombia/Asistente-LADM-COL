@@ -44,8 +44,10 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
                                     PLUGIN_NAME,
                                     PLUGIN_VERSION,
-                                    RELEASE_URL)
-from .config.table_mapping_config import (ID_FIELD,
+                                    RELEASE_URL,
+                                    VALUATION_MENU_OBJECTNAME)
+from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
+                                          ID_FIELD,
                                           COL_PARTY_TABLE)
 from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
@@ -67,6 +69,14 @@ from .gui.create_responsibility_cadastre_wizard import CreateResponsibilityCadas
 from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWizard
 from .gui.create_right_cadastre_wizard import CreateRightCadastreWizard
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
+from .gui.create_parcel_valuation_wizard import CreateParcelValuationWizard
+from .gui.create_horizontal_property_valuation_wizard import CreateHorizontalPropertyValuationWizard
+from .gui.create_common_equipment_valuation_wizard import CreateCommonEquipmentValuationWizard
+from .gui.create_building_valuation_wizard import CreateBuildingValuationWizard
+from .gui.create_building_unit_valuation_wizard import CreateBuildingUnitValuationWizard
+from .gui.create_building_unit_qualification_valuation_wizard import CreateBuildingUnitQualificationValuationWizard
+from .gui.create_geoeconomic_zone_valuation_wizard import CreateGeoeconomicZoneValuationWizard
+from .gui.create_physical_zone_valuation_wizard import CreatePhysicalZoneValuationWizard
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
 from .gui.reports import ReportGenerator
@@ -85,7 +95,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.log = QgsApplication.messageLog()
         self._about_dialog = None
         self.toolbar = None
-        self._flag_menus_refreshed_at_load_time = False
 
     def initGui(self):
         # Set Menus
@@ -117,11 +126,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.addActions([self._settings_action,
                                self._help_action,
                                self._about_action])
-
-        # If project generator was loaded before Asistente
-        # LADM_COL, this call does its job, otherwise it won't and
-        # we will have to wait for the initializationCompleted
-        self.refresh_menus(self.get_db_connection())
 
         # Connections
         self._controlled_measurement_action.triggered.connect(self.show_dlg_controlled_measurement)
@@ -312,29 +316,30 @@ class AsistenteLADMCOLPlugin(QObject):
         if menu:
             return # Already there!
 
-        self._property_record_card_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Property record card"), self._menu)
+        self._property_record_card_menu = QMenu(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Property record card"), self._menu)
         self._property_record_card_menu.setObjectName(PROPERTY_RECORD_CARD_MENU_OBJECTNAME)
 
         self._property_record_card_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Property Record Card"),
-                self._property_record_card_menu)
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Property Record Card"),
+            self._property_record_card_menu)
         self._market_research_property_record_card_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Market Research"),
-                self._property_record_card_menu)
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Market Research"),
+            self._property_record_card_menu)
         self._nuclear_family_property_record_card_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Nuclear Family"),
-                self._property_record_card_menu)
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Nuclear Family"),
+            self._property_record_card_menu)
         self._natural_party_property_record_card_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Natural Party"),
-                self._property_record_card_menu)
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Natural Party"),
+            self._property_record_card_menu)
         self._legal_party_property_record_card_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Legal Party"),
-                self._property_record_card_menu)
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Legal Party"),
+            self._property_record_card_menu)
 
         self._property_record_card_menu.addAction(self._property_record_card_action)
         self._property_record_card_menu.addAction(self._market_research_property_record_card_action)
@@ -369,22 +374,112 @@ class AsistenteLADMCOLPlugin(QObject):
 
         menu.deleteLater()
 
-    def refresh_menus(self, db, force=False):
+    def add_valuation_menu(self):
+        menu = self.iface.mainWindow().findChild(QMenu, VALUATION_MENU_OBJECTNAME)
+        if menu:
+            return  # Already there!
+
+        self._valuation_menu = QMenu(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Valuation"), self._menu)
+        self._valuation_menu.setObjectName(VALUATION_MENU_OBJECTNAME)
+
+        self._parcel_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Parcel"),
+            self._valuation_menu)
+        self._horizontal_property_main_parcel_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Horizontal Property main Parcel"),
+            self._valuation_menu)
+        self._common_equipment_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Common Equipment"),
+            self._valuation_menu)
+        self._building_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building"),
+            self._valuation_menu)
+        self._building_unit_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit"),
+            self._valuation_menu)
+        self._building_unit_qualification_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit Qualification"),
+            self._valuation_menu)
+        self._geoeconomic_zone_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Geoeconomic Zone"),
+            self._valuation_menu)
+        self._physical_zone_valuation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Physical Zone"),
+            self._valuation_menu)
+
+        self._valuation_menu.addAction(self._parcel_valuation_action)
+        self._valuation_menu.addAction(self._horizontal_property_main_parcel_valuation_action)
+        self._valuation_menu.addAction(self._common_equipment_valuation_action)
+        self._valuation_menu.addAction(self._building_valuation_action)
+        self._valuation_menu.addAction(self._building_unit_valuation_action)
+        self._valuation_menu.addAction(self._building_unit_qualification_valuation_action)
+        self._valuation_menu.addSeparator()
+        self._valuation_menu.addAction(self._geoeconomic_zone_valuation_action)
+        self._valuation_menu.addAction(self._physical_zone_valuation_action)
+
+        if len(self._menu.actions()) > 1:
+            if len(self._menu.actions()[2].text()) == 0:
+                self._menu.insertMenu(self._menu.actions()[2], self._valuation_menu)
+            else:
+                self._menu.insertMenu(self._menu.actions()[1], self._valuation_menu)
+        else: # Just in case...
+            self._menu.addMenu(self._valuation_menu)
+
+        # Connections
+        self._parcel_valuation_action.triggered.connect(self.show_wiz_parcel_valuation)
+        self._horizontal_property_main_parcel_valuation_action.triggered.connect(
+            self.show_wiz_horizontal_property_main_parcel_valuation)
+        self._common_equipment_valuation_action.triggered.connect(self.show_wiz_common_equipment_valuation)
+        self._building_valuation_action.triggered.connect(self.show_wiz_building_valuation)
+        self._building_unit_valuation_action.triggered.connect(self.show_wiz_building_unit_valuation)
+        self._building_unit_qualification_valuation_action.triggered.connect(
+            self.show_wiz_building_unit_qualification_valuation)
+        self._geoeconomic_zone_valuation_action.triggered.connect(self.show_wiz_geoeconomic_zone_valuation)
+        self._physical_zone_valuation_action.triggered.connect(self.show_wiz_physical_zone_valuation_action)
+
+    def remove_valuation_menu(self):
+        menu = self.iface.mainWindow().findChild(QMenu, VALUATION_MENU_OBJECTNAME)
+        if menu is None:
+            return # Nothing to remove...
+
+        self._valuation_menu = None
+        self._parcel_valuation_action = None
+        self._horizontal_property_main_parcel_valuation_action = None
+        self._common_equipment_valuation_action = None
+        self._building_valuation_action = None
+        self._building_unit_valuation_action = None
+        self._building_unit_qualification_valuation_action = None
+        self._geoeconomic_zone_valuation_action = None
+        self._physical_zone_valuation_action = None
+
+        menu.deleteLater()
+
+    def refresh_menus(self, db):
         """
         Depending on the models avilable in the DB, some menus should appear or
-        dissapear from the GUI.
+        disappear from the GUI.
         """
-        if not self._flag_menus_refreshed_at_load_time or force:
-            # The parser is specific for each new connection
-            res, msg = db.test_connection()
-            if res:
-                if not force:
-                    self._flag_menus_refreshed_at_load_time = True
-                model_parser = ModelParser(db)
-                if model_parser.property_record_card_model_exists():
-                    self.add_property_record_card_menu()
-                else:
-                    self.remove_property_record_card_menu()
+        res, msg = db.test_connection() # The parser is specific for each new connection
+        if res:
+            model_parser = ModelParser(db)
+            if model_parser.property_record_card_model_exists():
+                self.add_property_record_card_menu()
+            else:
+                self.remove_property_record_card_menu()
+
+            if model_parser.valuation_model_exists():
+                self.add_valuation_menu()
+            else:
+                self.remove_valuation_menu()
 
     def add_processing_models(self, provider_id):
         if not (provider_id == 'model' or provider_id is None):
@@ -720,6 +815,19 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def show_wiz_right_rrr_cad(self):
+        layer = self.qgis_utils.get_layer(self.get_db_connection(), ADMINISTRATIVE_SOURCE_TABLE, load=True)
+        if layer is None:
+            self.show_message(QCoreApplication.translate("CreateRightCadastreWizard",
+                                                         "Administrative Source table couldn't be found... {}").format(
+                self.get_db_connection().get_description()), Qgis.Warning, 10)
+            return
+
+        if layer.isEditable():
+            self.show_message(QCoreApplication.translate("CreateRightCadastreWizard",
+                                                         "Close the edit session in table {} before creating rights.").format(
+                ADMINISTRATIVE_SOURCE_TABLE), Qgis.Warning, 10)
+            return
+
         wiz = CreateRightCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
@@ -786,6 +894,54 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_wiz_legal_party_prc(self):
         wiz = CreateLegalPartyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_parcel_valuation(self):
+        wiz = CreateParcelValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_horizontal_property_main_parcel_valuation(self):
+        wiz = CreateHorizontalPropertyValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_common_equipment_valuation(self):
+        wiz = CreateCommonEquipmentValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_building_valuation(self):
+        wiz = CreateBuildingValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_building_unit_valuation(self):
+        wiz = CreateBuildingUnitValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_building_unit_qualification_valuation(self):
+        wiz = CreateBuildingUnitQualificationValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_geoeconomic_zone_valuation(self):
+        wiz = CreateGeoeconomicZoneValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_physical_zone_valuation_action(self):
+        wiz = CreatePhysicalZoneValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     def download_report_dependency(self):

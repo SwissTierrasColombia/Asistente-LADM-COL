@@ -6,19 +6,20 @@ from qgis.PyQt.QtCore import (QSettings,
 
 from .translator import PLUGIN_DIR
 from .table_mapping_config import (MORE_BOUNDARY_FACE_STRING_TABLE,
+                                   POINT_BOUNDARY_FACE_STRING_TABLE,
                                    LESS_TABLE)
 from ..utils.qt_utils import get_plugin_metadata
 
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
 CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
 PROPERTY_RECORD_CARD_MODEL_PREFIX = "Ficha_Predial_"
+VALUATION_MODEL_PREFIX = "Avaluos_"
 # From this version on the plugin will work, a message will block prior versions
 LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION = "17.07.2018"
 
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 DEFAULT_USE_ROADS_VALUE = False
-DEFAULT_POLYGON_AREA_TOLERANCE = 0.1 # square meters
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
 FIELD_MAPPING_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'field_mappings')
 MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE = 10
@@ -54,10 +55,19 @@ MODULE_HELP_MAPPING = {
     'create_nuclear_family': 'property_record_card/Nuclear_family.html',
     'create_natural_party': 'property_record_card/Natural_party.html',
     'create_legal_party': 'property_record_card/Legal_party.html',
-    'create_market_research': 'property_record_card/Market_research.html'
+    'create_market_research': 'property_record_card/Market_research.html',
+    'create_parcel_valuation': 'valuation/Create_parcel.html',
+    'create_horizontal_property_valuation': 'valuation/Create_Horizontal_property_main_parcel.html',
+    'create_common_equipment_valuation': 'valuation.Create_common_equipment.html',
+    'create_building_valuation': 'valuation/Create_building.html',
+    'create_building_unit_valuation': 'valuation/Create_building_unit.html',
+    'create_building_unit_qualification_valuation_unconventional': 'valuation/Create_building_unit_qualification_unconventional.html',
+    'create_building_unit_qualification_valuation_conventional': 'valuation/Create_building_unit_qualification_conventional.html',
+    'create_geoeconomic_zone_valuation': 'valuation/Create_geoeconomic_zone.html',
+    'create_physical_zone_valuation': 'valuation/Create_physical_zone.html'
 }
 # Configure Project Generator Dependency
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.6"
+PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.7"
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), set to True
@@ -107,6 +117,7 @@ SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
 CADASTRE_MENU_OBJECTNAME = "ladm_col_cadastre"
 LADM_COL_MENU_OBJECTNAME = "ladm_col"
 PROPERTY_RECORD_CARD_MENU_OBJECTNAME = "ladm_col_property_record_card"
+VALUATION_MENU_OBJECTNAME = "ladm_col_valuation"
 
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
@@ -118,13 +129,14 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_OVERLAPS_IN_BOUNDARY_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should not overlap")
         self.CHECK_OVERLAPS_IN_CONTROL_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Control Points should not overlap")
         self.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by Boundary nodes")
+        self.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by plot nodes")
 
         too_long_tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
         self.CHECK_TOO_LONG_BOUNDARY_SEGMENTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundary segments should not be longer than {}m.").format(too_long_tolerance)
         self.CHECK_OVERLAPS_IN_BOUNDARIES = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not overlap")
         self.CHECK_BOUNDARIES_ARE_NOT_SPLIT = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not be split")
         self.CHECK_BOUNDARIES_COVERED_BY_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should be covered by Plots")
-        self.CHECK_MISSING_BOUNDARY_POINTS_IN_BOUNDARIES = QCoreApplication.translate("TranslatableConfigStrings", "Boundary nodes should be covered by Boundary Points")
+        self.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundary nodes should be covered by Boundary Points")
         self.CHECK_DANGLES_IN_BOUNDARIES = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not have dangles")
         self.CHECK_OVERLAPS_IN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Plots should not overlap")
         self.CHECK_OVERLAPS_IN_BUILDINGS = QCoreApplication.translate("TranslatableConfigStrings", "Buildings should not overlap")
@@ -135,12 +147,17 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_MULTIPART_IN_RIGHT_OF_WAY = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not have multipart geometries")
 
         # Specific topology errors
+        self.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Plot nodes should be covered by boundary points")
         self.ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY = QCoreApplication.translate("TranslatableConfigStrings", "Plot is not covered by boundary")
         self.ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT = QCoreApplication.translate("TranslatableConfigStrings", "Boundary is not covered by plot")
         self.ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the {} table").format(MORE_BOUNDARY_FACE_STRING_TABLE)
         self.ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the {} table").format(MORE_BOUNDARY_FACE_STRING_TABLE)
         self.ERROR_NO_LESS_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the {} table").format(LESS_TABLE)
         self.ERROR_DUPLICATE_LESS_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the {} table").format(LESS_TABLE)
+        self.ERROR_NO_FOUND_POINT_BFS = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary point and boundary is not recorded in the {} table").format(POINT_BOUNDARY_FACE_STRING_TABLE)
+        self.ERROR_DUPLICATE_POINT_BFS = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary point and boundary is duplicated in the {} table").format(POINT_BOUNDARY_FACE_STRING_TABLE)
+        self.ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE = QCoreApplication.translate("TranslatableConfigStrings", "Boundary point is not covered by boundary node")
+        self.ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT = QCoreApplication.translate("TranslatableConfigStrings", "Boundary node is not covered by boundary point")
 
 
 translated_strings = TranslatableConfigStrings()

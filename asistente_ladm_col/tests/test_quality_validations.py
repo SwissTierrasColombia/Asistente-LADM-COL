@@ -98,6 +98,315 @@ class TesQualityValidations(unittest.TestCase):
                 self.assertIn(merge_geom.asWkt(), test_result[i]['geoms'],
                                  'The geometries are invalid: case {case}'.format(case=i + 1))
 
+    def test_check_boundary_points_covered_by_plot_nodes(self):
+        print('\nINFO: Validating boundary points are covered by plot nodes...')
+
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
+        boundary_point_layer = QgsVectorLayer(uri, 'puntolindero', 'ogr')
+        self.assertEqual(boundary_point_layer.featureCount(), 82)
+
+        uri = gpkg_path + '|layername={layername}'.format(layername='terreno')
+        plot_layer = QgsVectorLayer(uri, 'terreno', 'ogr')
+        self.assertEqual(plot_layer.featureCount(), 12)
+
+        error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('id', QVariant.Int)])
+        error_layer.updateFields()
+
+        topology_rule = 'boundary_points_covered_by_plot_nodes'
+        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer,
+                                                                                                     plot_layer, error_layer,
+                                                                                                     topology_rule)
+        error_layer.dataProvider().addFeatures(features)
+        self.assertEqual(error_layer.featureCount(), 14)
+
+        result = [{'geom': f.geometry().asWkt(), 'id': f['id']} for f in error_layer.getFeatures()]
+
+        test_result = [{'geom': 'Point (895168.40587982360739261 1544541.0977809748146683)', 'id': 223},
+                       {'geom': 'Point (894720.88864161947276443 1544285.23876925860531628)', 'id': 210},
+                       {'geom': 'Point (894682.65140924125444144 1544280.9901878833770752)', 'id': 209},
+                       {'geom': 'Point (895038.58811557665467262 1544506.16500077745877206)', 'id': 220},
+                       {'geom': 'Point (894718.52831863309256732 1544310.25819291360676289)', 'id': 211},
+                       {'geom': 'Point (894748.2683882606215775 1544266.82824996509589255)', 'id': 206},
+                       {'geom': 'Point (894655.27166260010562837 1544261.16347479773685336)', 'id': 205},
+                       {'geom': 'Point (894681.70728004665579647 1544310.25819291360676289)', 'id': 208},
+                       {'geom': 'Point (894745.43600067705847323 1544332.91729358164593577)', 'id': 207},
+                       {'geom': 'Point (894639.00421297014690936 1544574.38610569201409817)', 'id': 152},
+                       {'geom': 'Point (894655.27166260010562837 1544329.14077680348418653)', 'id': 204},
+                       {'geom': 'Point (894648.56400672777090222 1544485.16136395325884223)', 'id': 153},
+                       {'geom': 'Point (895195.31356186757329851 1544457.07028266228735447)', 'id': 222},
+                       {'geom': 'Point (895053.22211809176951647 1544435.35531118814833462)', 'id': 221}]
+
+        for item in test_result:
+            self.assertIn(item, result, 'Error in: Boundary point {} is not covered by plot node'.format(item['id']))
+
+    def test_check_plot_nodes_covered_by_boundary_points(self):
+        print('\nINFO: Validating plot nodes are covered by boundary points...')
+
+        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
+        boundary_point_layer = QgsVectorLayer(uri, 'puntolindero', 'ogr')
+        self.assertEqual(boundary_point_layer.featureCount(), 82)
+
+        uri = gpkg_path + '|layername={layername}'.format(layername='terreno')
+        plot_layer = QgsVectorLayer(uri, 'terreno', 'ogr')
+        self.assertEqual(plot_layer.featureCount(), 12)
+
+        error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('id', QVariant.Int)])
+        error_layer.updateFields()
+
+        topology_rule = 'plot_nodes_covered_by_boundary_points'
+        features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer,
+                                                                                                     plot_layer, error_layer,
+                                                                                                     topology_rule)
+        error_layer.dataProvider().addFeatures(features)
+        self.assertEqual(error_layer.featureCount(), 10)
+
+        result = [{'geom': f.geometry().asWkt(), 'id': f['id']} for f in error_layer.getFeatures()]
+
+        test_result = [{'geom': 'Point (894809.40075360587798059 1544539.9176194816827774)', 'id': 2},
+                       {'geom': 'Point (894810.34488280047662556 1544519.14677720214240253)', 'id': 2},
+                       {'geom': 'Point (894837.25256484432611614 1544520.56297099380753934)', 'id': 2},
+                       {'geom': 'Point (894833.94811266358010471 1544542.75000706524588168)', 'id': 2},
+                       {'geom': 'Point (894852.59466425550635904 1544369.26626757089979947)', 'id': 6},
+                       {'geom': 'Point (894852.59466425550635904 1544369.26626757089979947)', 'id': 7},
+                       {'geom': 'Point (894934.73390417906921357 1544264.93999157636426389)', 'id': 9},
+                       {'geom': 'Point (894484.66213072568643838 1544624.06759340292774141)', 'id': 11},
+                       {'geom': 'Point (894533.21481920615769923 1544601.79047751193866134)', 'id': 11},
+                       {'geom': 'Point (894505.22562231740448624 1544589.22389931697398424)', 'id': 11}]
+
+        for item in test_result:
+            self.assertIn(item, result,
+                          'Error in: Plot node {} is not covered by boundary point'.format(item['id']))
+
+    def test_topology_boundary_nodes_must_be_covered_by_boundary_points(self):
+        DB_HOSTNAME = "postgres"
+        DB_PORT = "5432"
+        DB_NAME = "ladm_col"
+        DB_USER = "usuario_ladm_col"
+        DB_PASSWORD = "clave_ladm_col"
+        SCHEMA_NAME = 'validaciones'
+
+        # Read data
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'puntolindero', "localizacion_original", "", "gid")
+        boundary_point_layer = QgsVectorLayer(uri.uri(), 'puntolindero', "postgres")
+        self.assertEqual(boundary_point_layer.featureCount(), 92)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'lindero', "geometria", "", "gid")
+        boundary_layer = QgsVectorLayer(uri.uri(), 'lindero', "postgres")
+        self.assertEqual(boundary_layer.featureCount(), 19)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'puntoccl', None, "", None)
+        point_bfs_layer = QgsVectorLayer(uri.uri(), 'puntoccl', "postgres")
+        self.assertEqual(point_bfs_layer.featureCount(), 60)
+
+        error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
+
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
+                                     QgsField('boundary_id', QVariant.Int),
+                                     QgsField('error_type', QVariant.String)])
+        error_layer.updateFields()
+
+        features = self.quality.get_boundary_nodes_features_not_covered_by_boundary_points(boundary_point_layer, boundary_layer, point_bfs_layer, error_layer)
+
+        # the algorithm was successfully executed
+        self.assertEqual(len(features), 33)
+        error_layer.dataProvider().addFeatures(features)
+
+        # English language is set as default for validations
+        exp = "\"error_type\" = 'Boundary node is not covered by boundary point'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 13)
+
+        result = [{'id': f['boundary_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
+
+        test_result = [{'id': 46, 'geom': 'Point (895070.07765273051336408 1544331.15500104054808617)'},
+                       {'id': 6, 'geom': 'Point (894822.14029542286880314 1544541.38756661443039775)'},
+                       {'id': 15, 'geom': 'Point (894911.74524271208792925 1544391.85083696991205215)'},
+                       {'id': 46, 'geom': 'Point (895121.96658773790113628 1544243.82460397086106241)'},
+                       {'id': 46, 'geom': 'Point (895178.79977707355283201 1544283.71215808903798461)'},
+                       {'id': 23, 'geom': 'Point (895076.2805417146300897 1544438.87918988126330078)'},
+                       {'id': 23, 'geom': 'Point (895126.55513874720782042 1544446.56235088966786861)'},
+                       {'id': 23, 'geom': 'Point (895065.96786221780348569 1544460.84679944021627307)'},
+                       {'id': 43, 'geom': 'Point (894732.8430670362431556 1544594.12277876189909875)'},
+                       {'id': 43, 'geom': 'Point (894770.40772755595389754 1544602.14288571989163756)'},
+                       {'id': 23, 'geom': 'Point (895138.19374559889547527 1544479.25731873349286616)'},
+                       {'id': 23, 'geom': 'Point (895150.11316665716003627 1544450.16258106869645417)'},
+                       {'id': 46, 'geom': 'Point (895120.17207429651170969 1544364.95636973413638771)'}]
+
+        for item in test_result:
+            self.assertIn(item, result, 'Error: Boundary node {} is not covered by boundary boundary point'.format(item['id']))
+
+        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary is duplicated in the puntoccl table'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 8)
+        result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+        test_result = [{'boundary_point_id': 229, 'boundary_id': 51},
+                       {'boundary_point_id': 240, 'boundary_id': 42},
+                       {'boundary_point_id': 233, 'boundary_id': 48},
+                       {'boundary_point_id': 227, 'boundary_id': 50},
+                       {'boundary_point_id': 231, 'boundary_id': 51},
+                       {'boundary_point_id': 225, 'boundary_id': 50},
+                       {'boundary_point_id': 242, 'boundary_id': 42},
+                       {'boundary_point_id': 239, 'boundary_id': 52}]
+
+        for item in test_result:
+            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary is duplicated in the puntoccl table'.format(item))
+
+        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary is not recorded in the puntoccl table'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 12)
+        result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+        test_result = [{'boundary_point_id': 176, 'boundary_id': 7},
+                       {'boundary_point_id': 179, 'boundary_id': 7},
+                       {'boundary_point_id': 211, 'boundary_id': 18},
+                       {'boundary_point_id': 177, 'boundary_id': 7},
+                       {'boundary_point_id': 208, 'boundary_id': 18},
+                       {'boundary_point_id': 205, 'boundary_id': 17},
+                       {'boundary_point_id': 206, 'boundary_id': 17},
+                       {'boundary_point_id': 178, 'boundary_id': 7},
+                       {'boundary_point_id': 210, 'boundary_id': 18},
+                       {'boundary_point_id': 209, 'boundary_id': 18},
+                       {'boundary_point_id': 207, 'boundary_id': 17},
+                       {'boundary_point_id': 204, 'boundary_id': 17}]
+
+        for item in test_result:
+            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary is not recorded in the puntoccl table'.format(item))
+
+    def test_topology_boundary_points_must_be_covered_by_boundary_nodes(self):
+        DB_HOSTNAME = "postgres"
+        DB_PORT = "5432"
+        DB_NAME = "ladm_col"
+        DB_USER = "usuario_ladm_col"
+        DB_PASSWORD = "clave_ladm_col"
+        SCHEMA_NAME = 'validaciones'
+
+        # Read data
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'puntolindero', "localizacion_original", "", "gid")
+        boundary_point_layer = QgsVectorLayer(uri.uri(), 'puntolindero', "postgres")
+        self.assertEqual(boundary_point_layer.featureCount(), 92)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'lindero', "geometria", "", "gid")
+        boundary_layer = QgsVectorLayer(uri.uri(), 'lindero', "postgres")
+        self.assertEqual(boundary_layer.featureCount(), 19)
+
+        uri = QgsDataSourceUri()
+        uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+        uri.setDataSource(SCHEMA_NAME, 'puntoccl', None, "", None)
+        point_bfs_layer = QgsVectorLayer(uri.uri(), 'puntoccl', "postgres")
+        self.assertEqual(point_bfs_layer.featureCount(), 60)
+
+        error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
+
+        data_provider = error_layer.dataProvider()
+        data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
+                                     QgsField('boundary_id', QVariant.Int),
+                                     QgsField('error_type', QVariant.String)])
+        error_layer.updateFields()
+
+        features = self.quality.get_boundary_points_features_not_covered_by_boundary_nodes(boundary_point_layer, boundary_layer, point_bfs_layer, error_layer)
+
+        # the algorithm was successfully executed
+        self.assertEqual(len(features), 54)
+
+        error_layer.dataProvider().addFeatures(features)
+
+        # English language is set as default for validations
+        exp = "\"error_type\" = 'Boundary point is not covered by boundary node'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 34)
+
+        result = [{'id': f['boundary_point_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
+
+        test_result = [{'id': 219, 'geom': 'Point (894905.93796374613884836 1544314.50677428883500397)'},
+                       {'id': 218, 'geom': 'Point (894910.65860971866641194 1544288.07115684216842055)'},
+                       {'id': 217, 'geom': 'Point (894862.50802079797722399 1544287.59909224486909807)'},
+                       {'id': 186, 'geom': 'Point (894702.99202395498286933 1544362.47262292890809476)'},
+                       {'id': 185, 'geom': 'Point (894696.62536594981793314 1544436.52187805180437863)'},
+                       {'id': 184, 'geom': 'Point (894768.33113364421296865 1544443.61644163983874023)'},
+                       {'id': 183, 'geom': 'Point (894768.33113364421296865 1544443.61644163983874023)'},
+                       {'id': 190, 'geom': 'Point (894634.73685261909849942 1544430.39863291662186384)'},
+                       {'id': 189, 'geom': 'Point (894696.62536594981793314 1544436.52187805180437863)'},
+                       {'id': 188, 'geom': 'Point (894702.99202395498286933 1544362.47262292890809476)'},
+                       {'id': 187, 'geom': 'Point (894773.52384421403985471 1544367.14197688340209424)'},
+                       {'id': 196, 'geom': 'Point (894847.40195368567947298 1544448.57311991089954972)'},
+                       {'id': 195, 'geom': 'Point (894972.97113655728753656 1544459.43060564785264432)'},
+                       {'id': 192, 'geom': 'Point (894847.40195368567947298 1544448.57311991089954972)'},
+                       {'id': 191, 'geom': 'Point (894638.04130479984451085 1544358.17274953541345894)'},
+                       {'id': 216, 'geom': 'Point (894863.92421458975877613 1544306.00961153814569116)'},
+                       {'id': 203, 'geom': 'Point (894914.05367824051063508 1544372.94515221077017486)'},
+                       {'id': 201, 'geom': 'Point (894972.97113655728753656 1544459.43060564785264432)'},
+                       {'id': 198, 'geom': 'Point (894914.05367824051063508 1544372.94515221077017486)'},
+                       {'id': 154, 'geom': 'Point (894723.67667196702677757 1544488.34796187235042453)'},
+                       {'id': 153, 'geom': 'Point (894648.56400672777090222 1544485.16136395325884223)'},
+                       {'id': 152, 'geom': 'Point (894639.00421297014690936 1544574.38610569201409817)'},
+                       {'id': 168, 'geom': 'Point (894856.60721333208493888 1544597.50950034754350781)'},
+                       {'id': 159, 'geom': 'Point (894723.67667196702677757 1544488.34796187235042453)'},
+                       {'id': 156, 'geom': 'Point (894715.02733475773129612 1544590.31909528817050159)'},
+                       {'id': 155, 'geom': 'Point (894715.02733475773129612 1544590.31909528817050159)'},
+                       {'id': 174, 'geom': 'Point (894837.25256484432611614 1544520.56297099380753934)'},
+                       {'id': 171, 'geom': 'Point (894882.57076618145219982 1544602.70221091737039387)'},
+                       {'id': 170, 'geom': 'Point (894879.26631400070618838 1544575.79452887340448797)'},
+                       {'id': 169, 'geom': 'Point (894860.85579470742959529 1544572.9621412898413837)'},
+                       {'id': 182, 'geom': 'Point (894773.52384421403985471 1544367.14197688340209424)'},
+                       {'id': 181, 'geom': 'Point (894638.04130479984451085 1544358.17274953541345894)'},
+                       {'id': 180, 'geom': 'Point (894634.73685261909849942 1544430.39863291662186384)'},
+                       {'id': 175, 'geom': 'Point (894833.94811266358010471 1544542.75000706524588168)'}]
+
+        for item in test_result:
+            self.assertIn(item, result, 'Error: Boundary point {} is not covered by boundary node'.format(item['id']))
+
+        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary is duplicated in the puntoccl table'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 8)
+        result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+        test_result = [{'boundary_point_id': 240, 'boundary_id': 42},
+                       {'boundary_point_id': 231, 'boundary_id': 51},
+                       {'boundary_point_id': 225, 'boundary_id': 50},
+                       {'boundary_point_id': 229, 'boundary_id': 51},
+                       {'boundary_point_id': 239, 'boundary_id': 52},
+                       {'boundary_point_id': 242, 'boundary_id': 42},
+                       {'boundary_point_id': 227, 'boundary_id': 50},
+                       {'boundary_point_id': 233, 'boundary_id': 48}]
+
+        for item in test_result:
+            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary is duplicated in the puntoccl table'.format(item))
+
+        exp = "\"error_type\" = 'Topological relationship between boundary point and boundary is not recorded in the puntoccl table'"
+        error_layer.selectByExpression(exp)
+        self.assertEqual(error_layer.selectedFeatureCount(), 12)
+        result = [{'boundary_point_id': f['boundary_point_id'], 'boundary_id': f['boundary_id']} for f in error_layer.selectedFeatures()]
+        test_result = [{'boundary_point_id': 209, 'boundary_id': 18},
+                       {'boundary_point_id': 179, 'boundary_id': 7},
+                       {'boundary_point_id': 177, 'boundary_id': 7},
+                       {'boundary_point_id': 211, 'boundary_id': 18},
+                       {'boundary_point_id': 206, 'boundary_id': 17},
+                       {'boundary_point_id': 210, 'boundary_id': 18},
+                       {'boundary_point_id': 204, 'boundary_id': 17},
+                       {'boundary_point_id': 205, 'boundary_id': 17},
+                       {'boundary_point_id': 178, 'boundary_id': 7},
+                       {'boundary_point_id': 207, 'boundary_id': 17},
+                       {'boundary_point_id': 176, 'boundary_id': 7},
+                       {'boundary_point_id': 208, 'boundary_id': 18}]
+
+        for item in test_result:
+            self.assertIn(item, result, 'Error in {}: Topological relationship between boundary point and boundary is not recorded in the puntoccl table'.format(item))
+
     def test_topology_plot_must_be_covered_by_boundary(self):
         DB_HOSTNAME = "postgres"
         DB_PORT = "5432"
@@ -573,24 +882,6 @@ class TesQualityValidations(unittest.TestCase):
                                                                                   overlapping_id)
         self.assertEqual(polygon_intersection, None)
 
-    def test_find_boundary_points_not_covered_by_boundaries(self):
-        print('\nINFO: Validating boundary points not covered by boundaries...')
-
-        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        uri_boundary = gpkg_path + '|layername={layername}'.format(layername='boundary_lamd')
-        uri_point_boundary = gpkg_path + '|layername={layername}'.format(layername='point_boundary_ladm')
-        uri_point_boundary_fixed = gpkg_path + '|layername={layername}'.format(layername='point_boundary_ladm_fixed')
-
-        boundary_layer = QgsVectorLayer(uri_boundary, 'boundary', 'ogr')
-        point_boundary_layer = QgsVectorLayer(uri_point_boundary, 'point_boundary', 'ogr')
-        point_boundary_fixed_layer = QgsVectorLayer(uri_point_boundary_fixed, 'point_boundary', 'ogr')
-
-        boundary_points = self.qgis_utils.geometry.get_boundary_points_not_covered_by_boundary_nodes(point_boundary_layer, boundary_layer)
-        self.assertEqual(len(boundary_points), 8)
-
-        boundary_points = self.qgis_utils.geometry.get_boundary_points_not_covered_by_boundary_nodes(point_boundary_fixed_layer, boundary_layer)
-        self.assertEqual(len(boundary_points), 0)
-
     def test_get_missing_boundary_points_in_boundaries(self):
         print('\nINFO: Validating missing boundary points in boundaries...')
 
@@ -721,8 +1012,8 @@ class TesQualityValidations(unittest.TestCase):
             else:
                 missing_topology.append([boundary_point_id, boundary_id])
 
-        self.assertEquals(len(missing_topology), 0)
-        self.assertEquals(len(duplicates_topology), 0)
+        self.assertEqual(len(missing_topology), 0)
+        self.assertEqual(len(duplicates_topology), 0)
 
         uri_points_ccl_table = gpkg_path + '|layername=pointsCcl_bad'
         points_ccl_table = QgsVectorLayer(uri_points_ccl_table, 'pointsCcl_bad', 'ogr')
@@ -751,8 +1042,8 @@ class TesQualityValidations(unittest.TestCase):
             else: # no register
                 missing_topology.append([boundary_point_id, boundary_id])
 
-        self.assertEquals(missing_topology, [[1, 1]])
-        self.assertEquals(duplicates_topology, [[20, 1]])
+        self.assertEqual(missing_topology, [[1, 1]])
+        self.assertEqual(duplicates_topology, [[20, 1]])
 
     def test_check_right_of_way_overlaps_buildings(self):
         print('\nINFO: Validating Right of Way-Building overlaps...')
@@ -822,15 +1113,17 @@ class TesQualityValidations(unittest.TestCase):
 
         bad_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(bad_boundary_layer)
         bad_boundary_errors_list = [item for item in bad_boundary_errors]
-        self.assertEquals(len(bad_boundary_errors_list), 4)
+        self.assertEqual(len(bad_boundary_errors_list), 4)
+        self.assertEqual([2, 3, 6, 7], [f['t_id'] for f in bad_boundary_errors])
 
         bbox_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(bbox_boundary_layer)
         bbox_boundary_errors_list = [item for item in bbox_boundary_errors]
-        self.assertEquals(len(bbox_boundary_errors_list), 9)
+        self.assertEqual(len(bbox_boundary_errors_list), 9)
+        self.assertEqual([39185, 39193, 39207, 39209, 39210, 39231, 39232, 48767, 48768], [f['t_id'] for f in bbox_boundary_errors_list])
 
         good_boundary_errors = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(good_boundary_layer)
         good_boundary_errors_list = [item for item in good_boundary_errors]
-        self.assertEquals(len(good_boundary_errors_list), 0)
+        self.assertEqual(len(good_boundary_errors_list), 0)
 
     def validate_segments(self, segments_info, tolerance):
         for segment_info in segments_info:

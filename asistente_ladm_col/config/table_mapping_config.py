@@ -19,6 +19,7 @@ CCLSOURCE_TABLE_SOURCE_FIELD = "lfuente"
 COL_PARTY_NAME_FIELD = "nombre"
 COL_PARTY_TABLE = "col_interesado"
 CONTROL_POINT_TABLE = "puntocontrol"
+DEPARTMENT_FIELD = "departamento"
 DOCUMENT_ID_FIELD = "documento_identidad"
 DOMAIN_KEY_FIELD = {
     "pg": "ilicode",
@@ -62,6 +63,7 @@ MEMBERS_TABLE = "miembros"
 MORE_BOUNDARY_FACE_STRING_TABLE = "masccl"
 MOREBFS_TABLE_BOUNDARY_FIELD = "cclp_lindero"
 MOREBFS_TABLE_PLOT_FIELD = "uep_terreno"
+MUNICIPALITY_FIELD = "municipio"
 NAMESPACE_FIELD = "_espacio_de_nombres"
 NIT_NUMBER_FIELD = "numero_nit"
 NUMBER_OF_FLOORS = "numero_pisos"
@@ -115,6 +117,7 @@ UESOURCE_TABLE = "uefuente"
 UESOURCE_TABLE_PLOT_FIELD = "ue_terreno"
 UESOURCE_TABLE_SOURCE_FIELD = "pfuente"
 VIDA_UTIL_FIELD = "comienzo_vida_util_version"
+ZONE_FIELD = "zona"
 
 """
 PROPERTY RECORD CARD MAPPING
@@ -127,6 +130,27 @@ NUCLEAR_FAMILY_TABLE = "nucleofamiliar"
 NATURAL_PARTY_TABLE = "interesado_natural"
 LEGAL_PARTY_TABLE = "interesado_juridico"
 
+"""
+VALUATION MAPPING
+"""
+AVALUOUNIDADCONSTRUCCION_TABLE = "avaluounidadconstruccion"
+AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_VALUATION_FIELD = "aucons"
+AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_FIELD = "ucons"
+VALUATION_PARCEL_TABLE = "avaluos_v2_2_1avaluos_predio"
+VALUATION_HORIZONTAL_PROPERTY_TABLE = "predio_matriz_ph"
+VALUATION_COMMON_EQUIPMENT_TABLE = "equipamiento_comunal"
+VALUATION_BUILDING_TABLE = "avaluos_v2_2_1avaluos_construccion"
+VALUATION_BUILDING_UNIT_TABLE = "unidad_construccion"
+VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE = "calificacion_no_convencional"
+VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE = "calificacion_convencional"
+VALUATION_GEOECONOMIC_ZONE_TABLE = "zona_homogenea_geoeconomica"
+VALUATION_PHYSICAL_ZONE_TABLE = "zona_homogenea_fisica"
+
+"""
+PROPERTY PARCEL TABLE
+"""
+PARCEL_TYPE_FIELD = "tipo"
+PARCEL_TYPE_PH_OPTION = "PropiedadHorizontal.UnidadPredial"
 
 NAMESPACE_PREFIX = {
     ADMINISTRATIVE_SOURCE_TABLE: 's',
@@ -148,14 +172,17 @@ NAMESPACE_PREFIX = {
 }
 
 DICT_AUTOMATIC_VALUES = {
-    BOUNDARY_TABLE: "$length",
-    COL_PARTY_TABLE: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
+    BOUNDARY_TABLE: [{LENGTH_FIELD_BOUNDARY_TABLE: "$length"}],
+    COL_PARTY_TABLE: [{COL_PARTY_NAME_FIELD: "regexp_replace(regexp_replace(regexp_replace(concat({}, ' ', {}, ' ', {}, ' ', {}, ' ', {}, ' ', {}), '\\\\s+', ' '), '^\\\\s+', ''), '\\\\s+$', '')".format(
         DOCUMENT_ID_FIELD,
         FIRST_SURNAME_FIELD,
         SECOND_SURNAME_FIELD,
         FIRST_NAME_FIELD,
         SECOND_NAME_FIELD,
-        BUSINESS_NAME_FIELD)
+        BUSINESS_NAME_FIELD)}],
+    PARCEL_TABLE: [{DEPARTMENT_FIELD: 'substr("numero_predial", 0, 2)'},
+                   {MUNICIPALITY_FIELD: 'substr("numero_predial", 3, 3)'},
+                   {ZONE_FIELD: 'substr("numero_predial", 6, 2)'}]
 }
 
 DICT_DISPLAY_EXPRESSIONS = {
@@ -214,6 +241,16 @@ LAYER_CONSTRAINTS = {
             'expression': 'CASE WHEN "{prc_ptf}" IS NOT NULL THEN\n(strpos("{prc_ptf}", \'Privado.\') != 0 AND "{prc_pptf}" IS NULL) OR (strpos("{prc_ptf}", \'Publico.\') != 0 AND "{prc_pptf}" IS NOT NULL)\nELSE True\nEND'.format(prc_ptf=PRC_PARCEL_TYPE_FIELD, prc_pptf=PRC_PUBLIC_PARCEL_TYPE_FIELD),
             'description': 'Si el tipo de predio es Público, debes elegir un valor de este listado; pero si el tipo de predio es Privado, no debes seleccionar ningún valor de este listado.'
         }
+    },
+    PARCEL_TABLE: {
+        PARCEL_TYPE_FIELD: {
+            'expression': 'CASE\n'
+                          'WHEN "{parcel_type}" IS NOT NULL AND num_selected(\'{layer}\') > 0 THEN \n("{parcel_type}" = \'PropiedadHorizontal.UnidadPredial\')\n'
+                          'WHEN "{parcel_type}" IS NOT NULL AND num_selected(\'{layer}\') = 0 THEN \n("{parcel_type}" != \'PropiedadHorizontal.UnidadPredial\')\n'
+                          'ELSE True\n'
+                          'END'.format(parcel_type=PARCEL_TYPE_FIELD, layer=BUILDING_UNIT_TABLE),
+            'description': 'Si el tipo de predio es Propiedad Horizontal, debes elegir únicamente la opción {parcel_type_field}; en otro caso puedes seleccionar cualquier otra opción del listado.'.format(parcel_type_field=PARCEL_TYPE_PH_OPTION)
+        }
     }
 }
 
@@ -240,6 +277,99 @@ FORM_GROUPS = {
             'visibility_expression': '"predio_tipo" IS NOT NULL AND strpos("predio_tipo", \'Publico.\') != 0',
             'before_attr': None,
             'after_attr': 'predio_tipo'
+        }
+    },
+    VALUATION_PARCEL_TABLE: {
+        ' ': {
+            'show_label': True,
+            'column_count':  1,
+            'attr_list':  ['num_balcones', 'num_terrazas', 'num_mezanines'],
+            'visibility_expression': None,
+            'before_attr': None,
+            'after_attr': None
+        },
+        '  ': {
+            'show_label': True,
+            'column_count':  1,
+            'attr_list':  ['frente', 'fondo'],
+            'visibility_expression': None,
+            'before_attr': None,
+            'after_attr': 'comun_uso_exclusivo'
+        }
+        },
+    VALUATION_HORIZONTAL_PROPERTY_TABLE: {
+        '': {
+            'show_label': True,
+            'column_count': 1,
+            'attr_list': ['tipologia_constructiva_copropiedad', 'anio_construccion_etapa',
+                          'estado_conservacion_copropiedad', 'materiales_construccion_areas_comunes',
+                          'disenio_funcionalidad_copropiedad'],
+            'visibility_expression': None,
+            'before_attr': None,
+            'after_attr': None
+        },
+        ' ': {
+            'show_label': True,
+            'column_count': 1,
+            'attr_list': ['num_etapas', 'num_interiores', 'num_torres', 'num_pisos_por_torre', 'num_unidades_privadas',
+                          'num_sotanos'],
+            'visibility_expression': None,
+            'before_attr': None,
+            'after_attr': None
+        }
+    },
+    VALUATION_BUILDING_UNIT_TABLE: {
+        '': {
+            'show_label': True,
+            'column_count': 1,
+            'attr_list': ['num_habitaciones', 'num_banios', 'num_cocinas', 'num_oficinas', 'num_estudios',
+                          'num_bodegas', 'num_locales', 'num_salas', 'num_comedores'],
+            'visibility_expression': None,
+            'before_attr': None,
+            'after_attr': None
+        },
+        ' ': {
+            'show_label': True,
+            'column_count': 1,
+            'attr_list': ['anio_construction', 'uso', 'destino_econo', 'puntuacion', 'tipologia',
+                          'estado_conservacion', 'construccion_tipo'],
+            'visibility_expression': None,
+            'before_attr': None,
+            'after_attr': None
+        },
+    },
+    VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE: {
+        ' ': {
+            'show_label': True,
+            'column_count': 1,
+            'attr_list': ['sub_total_estructura', 'sub_total_acabados', 'sub_total_banio', 'sub_total_cocina',
+                          'total_residencial_y_comercial', 'total_industrial'],
+            'visibility_expression': None,
+            'before_attr': None,
+            'after_attr': None
+        },
+        '  ': {
+            'show_label': True,
+            'column_count': 1,
+            'attr_list': ['armazon', 'muros', 'cubierta', 'conservacion_estructura', 'fachada', 'cubrimiento_muros',
+                          'piso', 'conservacion_acabados', 'tamanio_banio', 'enchape_banio', 'mobiliario_banio',
+                          'conservacion_banio', 'tamanio_cocina', 'enchape_cocina', 'mobiliario_cocina',
+                          'conservacion_cocina', 'cerchas'],
+            'visibility_expression': None,
+            'before_attr': ' ',
+            'after_attr': None
+        },
+        '   ': {
+            'show_label': True,
+            'column_count': 1,
+            'attr_list': ['puntos_armazon', 'puntos_muro', 'puntos_cubierta', 'puntos_estructura_conservacion',
+                          'puntos_fachada', 'puntos_cubrimiento_muros', 'puntos_piso', 'puntos_conservacion_acabados',
+                          'puntos_tamanio_banio', 'puntos_enchape_banio', 'puntos_mobiliario_banio',
+                          'puntos_conservacion_banio', 'puntos_tamanio_cocina', 'puntos_enchape_cocina',
+                          'puntos_mobiliario_cocina', 'puntos_conservacion_cocina', 'puntos_cerchas'],
+            'visibility_expression': None,
+            'before_attr': '  ',
+            'after_attr': None
         }
     }
 }

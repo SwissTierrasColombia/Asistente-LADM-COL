@@ -66,7 +66,8 @@
             <widget class="QRadioButton" name="rad_parcel_from_plot">
              <property name="text">
               <string>Entering data manually using a form
-(you need to select one Plot and/or Buildings before)</string>
+(you need to select one Plot and/or Buildings or 
+Building units before)</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -141,10 +142,10 @@
                  <height>16777215</height>
                 </size>
                </property>
-               <property name="allowEmptyLayer">
+               <property name="allowEmptyLayer" stdset="0">
                 <bool>true</bool>
                </property>
-               <property name="showCrs">
+               <property name="showCrs" stdset="0">
                 <bool>false</bool>
                </property>
               </widget>
