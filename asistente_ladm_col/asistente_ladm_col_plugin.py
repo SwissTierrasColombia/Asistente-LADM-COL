@@ -152,7 +152,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.initializationCompleted.connect(self.qgis_initialized)
 
         # Toolbar
-        self._build_boundary_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Build boundary..."), self.iface.mainWindow())
+        self._build_boundary_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Build boundaries..."), self.iface.mainWindow())
         self._build_boundary_action.triggered.connect(self.call_explode_boundaries)
         self._topological_editing_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Move nodes..."), self.iface.mainWindow())
         self._topological_editing_action.triggered.connect(self.call_topological_editing)

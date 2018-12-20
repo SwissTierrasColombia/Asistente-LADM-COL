@@ -1207,7 +1207,7 @@ class QGISUtils(QObject):
                 reply = QMessageBox.question(None,
                                              QCoreApplication.translate("QGISUtils", "Continue?"),
                                              QCoreApplication.translate("QGISUtils",
-                                                                        "There are no selected boundaries, do you like to check all boundaries in the data base?"),
+                                                                        "There are no selected boundaries, do you like to use all the {} boundaries in the data base?").format(layer.featureCount()),
                                              QMessageBox.Yes, QMessageBox.No)
                 if reply == QMessageBox.Yes:
                     use_selection = False
@@ -1240,11 +1240,11 @@ class QGISUtils(QObject):
             layer.addFeatures(new_fix_boundary_features)
             self.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "{} feature(s) was/were adjusted generating {} boundary(ies).").format(num_boundaries, len(new_fix_boundary_features)),
+                                           "{} feature(s) was(were) analyzed generating {} boundary(ies)!").format(num_boundaries, len(new_fix_boundary_features)),
                 Qgis.Info)
             self.map_refresh_requested.emit()
         else:
-            self.message_emitted.emit(QCoreApplication.translate("QGISUtils", "There are no boundaries to build"), Qgis.Info)
+            self.message_emitted.emit(QCoreApplication.translate("QGISUtils", "There are no boundaries to build."), Qgis.Info)
 
     def polygonize_boundaries(self, db):
         res_layers = self.get_layers(db, {
