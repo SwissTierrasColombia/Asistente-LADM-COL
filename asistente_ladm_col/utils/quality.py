@@ -2094,3 +2094,100 @@ class QualityUtils(QObject):
                     QCoreApplication.translate("QGISUtils",
                                                "There are no repeated records in {table}!".format(table=table)),
                     Qgis.Info)
+
+    def basic_logic_validations(self, db, rule):
+
+        query = db.logic_validation_queries[rule]['query']
+        table_name = db.logic_validation_queries[rule]['table_name']
+        table = db.logic_validation_queries[rule]['table']
+        desc_error = db.logic_validation_queries[rule]['desc_error']
+
+        error_layer = None
+        error_layer_exist = False
+
+        # Check if error layer exist
+        group = self.qgis_utils.get_error_layers_group()
+
+        # Check if layer is loaded
+        layers = group.findLayers()
+        for layer in layers:
+            if layer.name() == table_name:
+                error_layer = layer.layer()
+                error_layer_exist = True
+                break
+
+        if error_layer_exist is False:
+            error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
+            pr = error_layer.dataProvider()
+            pr.addAttributes([QgsField(QCoreApplication.translate("QualityConfigStrings", "id"), QVariant.Int),
+                              QgsField(QCoreApplication.translate("QualityConfigStrings", "desc_error"), QVariant.String)])
+            error_layer.updateFields()
+
+        records = db.execute_sql_query(query)
+
+        new_features = []
+        for record in records:
+            new_feature = QgsVectorLayerUtils().createFeature(error_layer,QgsGeometry(), {0: record[ID_FIELD], 1:desc_error})
+            new_features.append(new_feature)
+
+        error_layer.dataProvider().addFeatures(new_features)
+
+        if error_layer.featureCount() > 0:
+            if error_layer_exist is False:
+                added_layer = self.add_error_layer(error_layer)
+            else:
+                added_layer = error_layer
+
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "A memory layer with {error_count} error record(s) from {table} has been added to the map!").format(error_count=len(new_features), table=table),
+                Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no repeated records in {table}!".format(table=table)),
+                Qgis.Info)
+
+    def advance_logic_validations(self, db, rule):
+        table_name = db.logic_validation_queries[rule]['table_name']
+        table = db.logic_validation_queries[rule]['table']
+
+        error_layer = None
+        error_layer_exist = False
+
+        # Check if error layer exist
+        group = self.qgis_utils.get_error_layers_group()
+
+        # Check if layer is loaded
+        layers = group.findLayers()
+        for layer in layers:
+            if layer.name() == table_name:
+                error_layer = layer.layer()
+                error_layer_exist = True
+                break
+
+        if rule == 'COL_PARTY_TYPE_NATURAL_VALIDATION':
+            errors_append, error_layer = self.logic.col_party_type_natural_validation(db, rule, error_layer)
+        elif rule == 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION':
+            errors_append, error_layer = self.logic.col_party_type_no_natural_validation(db, rule, error_layer)
+        elif rule == 'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION':
+            errors_append, error_layer = self.logic.parcel_type_and_22_position_of_parcel_number_validation(db, rule, error_layer)
+        elif rule == 'UEBAUNIT_PARCEL_VALIDATION':
+            errors_append, error_layer = self.logic.uebaunit_parcel_validation(db, rule, error_layer)
+
+        if errors_append > 0:
+            if error_layer_exist is False:
+                added_layer = self.add_error_layer(error_layer)
+            else:
+                added_layer = error_layer
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils", "A memory layer with {error_count} error record(s) from {table} has been added to the map!").format(
+                    error_count=errors_append, table=table),
+                Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "There are no repeated records in {table}!".format(table=table)),
+                Qgis.Info)
