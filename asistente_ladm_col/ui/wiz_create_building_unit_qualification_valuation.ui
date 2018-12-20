@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>wiz_create_plot_cadastre</class>
- <widget class="QWizard" name="wiz_create_plot_cadastre">
+ <class>wiz_create_building_unit_qualification_valuation</class>
+ <widget class="QWizard" name="wiz_create_building_unit_qualification_valuation">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>650</width>
+    <width>681</width>
     <height>375</height>
    </rect>
   </property>
@@ -14,7 +14,7 @@
    <cursorShape>ArrowCursor</cursorShape>
   </property>
   <property name="windowTitle">
-   <string>Create plots</string>
+   <string>Create building unit qualification (Valuation)</string>
   </property>
   <property name="options">
    <set>QWizard::HaveHelpButton</set>
@@ -24,6 +24,9 @@
     <string/>
    </property>
    <layout class="QGridLayout" name="gridLayout">
+    <property name="margin">
+     <number>9</number>
+    </property>
     <item row="0" column="0">
      <widget class="QSplitter" name="splitter">
       <property name="sizePolicy">
@@ -45,15 +48,140 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <layout class="QGridLayout" name="gridLayout_2">
+       <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0">
          <widget class="QGroupBox" name="gbx_page_1">
           <property name="title">
-           <string>How would you like to create plots?</string>
+           <string>Building unit qualification type</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout_4">
+          <layout class="QGridLayout" name="gridLayout_3">
            <item row="0" column="0">
-            <spacer name="verticalSpacer_4">
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="5" column="0">
+            <spacer name="verticalSpacer_9">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="2" column="0">
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="1" column="0">
+            <widget class="QRadioButton" name="rad_conventional">
+             <property name="text">
+              <string>Conventional</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="4" column="0">
+            <widget class="QRadioButton" name="rad_unconventional">
+             <property name="text">
+              <string>Unconventional</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QTextBrowser" name="txt_help_page_1">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="accessibleName">
+        <string/>
+       </property>
+       <property name="openLinks">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage2">
+   <layout class="QGridLayout" name="gridLayout_10">
+    <property name="margin">
+     <number>9</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QSplitter" name="splitter_3">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="handleWidth">
+       <number>16</number>
+      </property>
+      <widget class="QFrame" name="frame_3">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>2</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_8">
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="gbx_page_2">
+          <property name="title">
+           <string>Load data</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_12">
+           <item row="0" column="0">
+            <spacer name="verticalSpacer_6">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
@@ -66,9 +194,9 @@
             </spacer>
            </item>
            <item row="1" column="0" colspan="2">
-            <widget class="QRadioButton" name="rad_plot_from_boundaries">
+            <widget class="QRadioButton" name="rad_create_manually">
              <property name="text">
-              <string>Selecting existing boundaries</string>
+              <string>Entering data manually using a form</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -76,7 +204,7 @@
             </widget>
            </item>
            <item row="2" column="0">
-            <spacer name="verticalSpacer_5">
+            <spacer name="verticalSpacer_7">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
@@ -96,6 +224,9 @@
              <property name="text">
               <string>From another QGIS layer/table (setting a field mapping)</string>
              </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
             </widget>
            </item>
            <item row="4" column="0">
@@ -108,14 +239,14 @@
              </property>
              <property name="sizeHint" stdset="0">
               <size>
-               <width>17</width>
+               <width>13</width>
                <height>20</height>
               </size>
              </property>
             </spacer>
            </item>
            <item row="4" column="1">
-            <layout class="QGridLayout" name="gridLayout_3">
+            <layout class="QGridLayout" name="gridLayout_9">
              <item row="0" column="0">
               <widget class="QLabel" name="lbl_refactor_source">
                <property name="sizePolicy">
@@ -143,10 +274,10 @@
                  <height>16777215</height>
                 </size>
                </property>
-               <property name="allowEmptyLayer">
+               <property name="allowEmptyLayer" stdset="0">
                 <bool>true</bool>
                </property>
-               <property name="showCrs">
+               <property name="showCrs" stdset="0">
                 <bool>false</bool>
                </property>
               </widget>
@@ -163,8 +294,8 @@
              </item>
             </layout>
            </item>
-           <item row="5" column="1">
-            <spacer name="verticalSpacer_6">
+           <item row="5" column="0">
+            <spacer name="verticalSpacer_8">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
@@ -181,7 +312,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QTextBrowser" name="txt_help_page_1">
+      <widget class="QTextBrowser" name="txt_help_page_2">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>

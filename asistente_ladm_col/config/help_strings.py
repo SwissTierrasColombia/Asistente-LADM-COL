@@ -170,6 +170,60 @@ Choose this option if you want to create a <b>Legal Party</b> using a form.\
 <b>Legal Party</b> acting as party.\
 ")
 
+        self.WIZ_CREATE_PARCEL_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Parcel</b> using a form.\
+<br><br>\
+<b>Parcel</b> is a grouping of specific attributes that are needed to appraise the parcel.\
+")
+
+        self.WIZ_CREATE_HORIZONTAL_PROPERTY_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Horizontal Property Valuation</b> using a form.\
+<br><br>\
+<b>Horizontal Property Valuation</b> stores information related to the property, or basic unit of the plot, which serves as a main parcel to a horizontal property element.\
+")
+
+        self.WIZ_CREATE_COMMON_EQUIPMENT_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Common Equipment</b> using a form.\
+<br><br>\
+<b>Common Equipment</b> stores information relative to the common equipment of the horizontal property main parcel.\
+")
+
+        self.WIZ_CREATE_BUILDING_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Building</b> using a form.\
+<br><br>\
+<b>Building</b> (valuation model) is a grouping of specific attributes that are needed to appraise the building.\
+")
+
+        self.WIZ_CREATE_BUILDING_UNIT_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Building Unit</b> using a form.\
+<br><br>\
+<b>Building Unit</b> (valuation model) is a grouping of specific attributes that are needed to appraise the building.\
+")
+
+        self.WIZ_CREATE_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+<b>Building Unit Qualification (unconventional)</b> is a class to store data for the valuation of the building unit.")
+
+        self.WIZ_CREATE_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+<b>Building Unit Qualification (conventional)</b> is a class to store data for the valuation of the building unit.")
+
+        self.WIZ_CREATE_GEOECONOMIC_ZONE_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Geoeconomic Zone</b> using a form.\
+<br><br>\
+<b>Geoeconomic Zone</b> allows you to manage areas with similar economic and geographical characteristics.\
+")
+
+        self.WIZ_CREATE_PHYSICAL_ZONE_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Physical Zone</b> using a form.\
+<br><br>\
+<b>Physical Zone</b> allows you to manage regions with similar physic characteristics.\
+")
+
+        self.WIZ_USING_FORM_BUILDING_UNIT_QUALIFICATION_PAGE_2_OPTION = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create a <b>Conventional Building Unit Qualification</b> using a form.")
+
+        self.WIZ_USING_FORM_BUILDING_UNIT_NO_QUALIFICATION_PAGE_2_OPTION = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to create an <b>Unconventional Building Unit Qualification</b> using a form.")
+
     def get_refactor_help_string(self, layer_name, layer_is_spatial):
         # Abre una ventana que te permite establecer una asignación entre la entrada (fuente) {type} y el tipo {type} <b>{name}</b> de LADM_COL.
         return QCoreApplication.translate("HelpStrings", "\

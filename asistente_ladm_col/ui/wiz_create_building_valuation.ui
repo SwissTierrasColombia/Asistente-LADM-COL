@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>wiz_create_plot_cadastre</class>
- <widget class="QWizard" name="wiz_create_plot_cadastre">
+ <class>wiz_create_building_valuation</class>
+ <widget class="QWizard" name="wiz_create_building_valuation">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -10,11 +10,8 @@
     <height>375</height>
    </rect>
   </property>
-  <property name="cursor">
-   <cursorShape>ArrowCursor</cursorShape>
-  </property>
   <property name="windowTitle">
-   <string>Create plots</string>
+   <string>Create building (Valuation)</string>
   </property>
   <property name="options">
    <set>QWizard::HaveHelpButton</set>
@@ -25,7 +22,7 @@
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QSplitter" name="splitter">
+     <widget class="QSplitter" name="splitter_3">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -38,22 +35,22 @@
       <property name="handleWidth">
        <number>16</number>
       </property>
-      <widget class="QFrame" name="frame">
+      <widget class="QFrame" name="frame_3">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>2</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <layout class="QGridLayout" name="gridLayout_2">
+       <layout class="QGridLayout" name="gridLayout_8">
         <item row="0" column="0">
-         <widget class="QGroupBox" name="gbx_page_1">
+         <widget class="QGroupBox" name="gbx_page_2">
           <property name="title">
-           <string>How would you like to create plots?</string>
+           <string>How would you like to buildings?</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout_4">
+          <layout class="QGridLayout" name="gridLayout_3">
            <item row="0" column="0">
-            <spacer name="verticalSpacer_4">
+            <spacer name="verticalSpacer_6">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
@@ -66,9 +63,9 @@
             </spacer>
            </item>
            <item row="1" column="0" colspan="2">
-            <widget class="QRadioButton" name="rad_plot_from_boundaries">
+            <widget class="QRadioButton" name="rad_create_manually">
              <property name="text">
-              <string>Selecting existing boundaries</string>
+              <string>Entering data manually using a form</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -76,7 +73,7 @@
             </widget>
            </item>
            <item row="2" column="0">
-            <spacer name="verticalSpacer_5">
+            <spacer name="verticalSpacer_7">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
@@ -104,18 +101,18 @@
               <enum>Qt::Horizontal</enum>
              </property>
              <property name="sizeType">
-              <enum>QSizePolicy::Minimum</enum>
+              <enum>QSizePolicy::Fixed</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
-               <width>17</width>
+               <width>13</width>
                <height>20</height>
               </size>
              </property>
             </spacer>
            </item>
            <item row="4" column="1">
-            <layout class="QGridLayout" name="gridLayout_3">
+            <layout class="QGridLayout" name="gridLayout_2">
              <item row="0" column="0">
               <widget class="QLabel" name="lbl_refactor_source">
                <property name="sizePolicy">
@@ -143,10 +140,10 @@
                  <height>16777215</height>
                 </size>
                </property>
-               <property name="allowEmptyLayer">
+               <property name="allowEmptyLayer" stdset="0">
                 <bool>true</bool>
                </property>
-               <property name="showCrs">
+               <property name="showCrs" stdset="0">
                 <bool>false</bool>
                </property>
               </widget>
@@ -164,7 +161,7 @@
             </layout>
            </item>
            <item row="5" column="1">
-            <spacer name="verticalSpacer_6">
+            <spacer name="verticalSpacer_8">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
