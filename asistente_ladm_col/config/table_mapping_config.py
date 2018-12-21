@@ -272,13 +272,13 @@ LAYER_CONSTRAINTS = {
                                 ELSE
                                     TRUE
                             END""".format(parcel_type=PARCEL_TYPE_FIELD, plot_layer=PLOT_TABLE, building_layer=BUILDING_TABLE, building_unit_layer=BUILDING_UNIT_TABLE),
-            'description': 'Parcel must have one or more spatial units associated with it. Check the rules.'
+            'description': 'La parcela debe tener una o varias unidades espaciales asociadas. Verifique las reglas ' #''Parcel must have one or more spatial units associated with it. Check the rules.'
         },
         PARCEL_NUMBER_FIELD: {
             'expression': """CASE
                                 WHEN  "{parcel_number}" IS NOT NULL THEN
                                     CASE
-                                        WHEN length("{parcel_number}") != 30 OR "{parcel_type}" IS NULL OR regexp_match(to_string("{parcel_number}"), '^[0-9]*$') = 0  THEN
+                                        WHEN length("{parcel_number}") != 30 OR regexp_match(to_string("{parcel_number}"), '^[0-9]*$') = 0  THEN
                                             FALSE
                                         WHEN "{parcel_type}" = 'NPH' THEN
                                             substr("{parcel_number}", 22,1) = 0 
@@ -328,8 +328,6 @@ LAYER_CONSTRAINTS = {
         COL_PARTY_DOC_TYPE_FIELD: {
             'expression': """
                             CASE
-                                WHEN "{col_party_type}" IS NULL THEN
-                                    FALSE
                                 WHEN  "{col_party_type}" = 'Persona_Natural' THEN
                                      "{col_party_doc_type}" !=  'NIT'
                                 WHEN  "{col_party_type}" = 'Persona_No_Natural' THEN
