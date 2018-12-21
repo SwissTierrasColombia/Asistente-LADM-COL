@@ -23,7 +23,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from ..config.general_config import (CADASTRE_MODEL_PREFIX,
                                      CADASTRE_MODEL_PREFIX_LEGACY,
                                      LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION,
-                                     PROPERTY_RECORD_CARD_MODEL_PREFIX)
+                                     PROPERTY_RECORD_CARD_MODEL_PREFIX, VALUATION_MODEL_PREFIX)
 from ..utils.project_generator_utils import ProjectGeneratorUtils
 
 
@@ -33,6 +33,7 @@ class ModelParser:
         self.cadastre_model = None
         self.cadastre_model_legacy = None
         self.property_record_card_model = None
+        self.valuation_model = None
 
         self._db_connector = db_connector
         project_generator_utils = ProjectGeneratorUtils()
@@ -50,6 +51,8 @@ class ModelParser:
                     self.cadastre_model_legacy = record['content']
                 if current_model_name.startswith(PROPERTY_RECORD_CARD_MODEL_PREFIX):
                     self.property_record_card_model = record['content']
+                if current_model_name.startswith(VALUATION_MODEL_PREFIX):
+                    self.valuation_model = record['content']
 
     def validate_cadastre_model_version(self):
         if self.debug:
@@ -150,6 +153,9 @@ class ModelParser:
 
     def property_record_card_model_exists(self):
         return self.property_record_card_model is not None
+
+    def valuation_model_exists(self):
+        return self.valuation_model is not None
 
     def _get_models(self):
         return self._pro_gen_db_connector.get_models()

@@ -21,6 +21,7 @@ from processing.core.ProcessingConfig import (Setting,
                                               ProcessingConfig)
 from asistente_ladm_col.processing.algs.InsertFeaturesToLayer import InsertFeaturesToLayer
 from asistente_ladm_col.processing.algs.PolygonsToLines import PolygonsToLines
+from asistente_ladm_col.processing.algs.FieldCalculator import FieldsCalculator
 
 class LADMCOLAlgorithmProvider(QgsProcessingProvider):
 
@@ -84,5 +85,5 @@ class LADMCOLAlgorithmProvider(QgsProcessingProvider):
         even if the list does not change, since the self.algs list is
         cleared before calling this method.
         """
-        for alg in [InsertFeaturesToLayer(), PolygonsToLines()]:
+        for alg in [InsertFeaturesToLayer(), PolygonsToLines(), FieldsCalculator()]:
             self.addAlgorithm(alg)

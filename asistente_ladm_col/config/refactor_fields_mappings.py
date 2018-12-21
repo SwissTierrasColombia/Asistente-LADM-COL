@@ -262,7 +262,8 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"tipo_documento_quien_atendio"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'tipo_documento_quien_atendio'},
             {'expression': '"nombre_encuestador"', 'length': 40, 'precision': -1, 'type': 10, 'name': 'nombre_encuestador'},
             {'expression': '"numero_documento_encuestador"', 'length': 10, 'precision': -1, 'type': 10, 'name': 'numero_documento_encuestador'},
-            {'expression': '"tipo_documento_encuestador"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'tipo_documento_encuestador'}
+            {'expression': '"tipo_documento_encuestador"', 'length': 255, 'precision': -1, 'type': 10, 'name': 'tipo_documento_encuestador'},
+            {'expression': '"crpredio"', 'length': -1, 'name': 'crpredio', 'precision': 0, 'type': 4}
         ]
     elif layer_name == MARKET_RESEARCH_TABLE:
         mapping = [
@@ -313,13 +314,188 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"nacionalidad"', 'length': 20, 'precision': -1, 'type': 10, 'name': 'nacionalidad'},
             {'expression': '"interesadojuridicocatastro"', 'length': -1, 'precision': 0, 'type': 4, 'name': 'interesadojuridicocatastro'}
         ]
+    elif layer_name == VALUATION_PARCEL_TABLE:
+        mapping = [
+            {'expression': '"area_calculada_plano_local"', 'length': 15, 'name': 'area_calculada_plano_local',
+             'precision': 1, 'type': 6},
+            {'expression': '"aprovechamiento"', 'length': 255, 'name': 'aprovechamiento', 'precision': -1, 'type': 10},
+            {'expression': '"disponibilidad_agua"', 'length': 255, 'name': 'disponibilidad_agua', 'precision': -1,
+             'type': 10},
+            {'expression': '"distancia_fuentes_agua"', 'length': -1, 'name': 'distancia_fuentes_agua', 'precision': 0,
+             'type': 2},
+            {'expression': '"obra_al_interior"', 'length': 255, 'name': 'obra_al_interior', 'precision': -1,
+             'type': 10},
+            {'expression': '"capa_vegetal"', 'length': 255, 'name': 'capa_vegetal', 'precision': -1, 'type': 10},
+            {'expression': '"pendiente"', 'length': 255, 'name': 'pendiente', 'precision': -1, 'type': 10},
+            {'expression': '"tipo_desarrollo"', 'length': 255, 'name': 'tipo_desarrollo', 'precision': -1, 'type': 10},
+            {'expression': '"forma"', 'length': 255, 'name': 'forma', 'precision': -1, 'type': 10},
+            {'expression': '"num_balcones"', 'length': -1, 'name': 'num_balcones', 'precision': 0, 'type': 2},
+            {'expression': '"num_terrazas"', 'length': -1, 'name': 'num_terrazas', 'precision': 0, 'type': 2},
+            {'expression': '"num_mezanines"', 'length': -1, 'name': 'num_mezanines', 'precision': 0, 'type': 2},
+            {'expression': '"comun_uso_exclusivo"', 'length': 255, 'name': 'comun_uso_exclusivo', 'precision': -1,
+             'type': 10},
+            {'expression': '"cercania_hitos"', 'length': 50, 'name': 'cercania_hitos', 'precision': -1, 'type': 10},
+            {'expression': '"ubicacion_manzana"', 'length': 20, 'name': 'ubicacion_manzana', 'precision': -1,
+             'type': 10},
+            {'expression': '"frente"', 'length': 12, 'name': 'frente', 'precision': 3, 'type': 6},
+            {'expression': '"fondo"', 'length': 12, 'name': 'fondo', 'precision': 3, 'type': 6},
+            {'expression': '"avpredmatrizph"', 'length': -1, 'name': 'avpredmatrizph', 'precision': 0, 'type': 4}
+        ]
+    elif layer_name == VALUATION_HORIZONTAL_PROPERTY_TABLE:
+        mapping = [
+            {'expression': '"num_etapas"', 'length': -1, 'name': 'num_etapas', 'precision': 0, 'type': 2},
+            {'expression': '"num_interiores"', 'length': -1, 'name': 'num_interiores', 'precision': 0, 'type': 2},
+            {'expression': '"num_torres"', 'length': -1, 'name': 'num_torres', 'precision': 0, 'type': 2},
+            {'expression': '"num_pisos_por_torre"', 'length': -1, 'name': 'num_pisos_por_torre', 'precision': 0,
+             'type': 2},
+            {'expression': '"num_unidades_privadas"', 'length': -1, 'name': 'num_unidades_privadas', 'precision': 0,
+             'type': 2},
+            {'expression': '"num_sotanos"', 'length': -1, 'name': 'num_sotanos', 'precision': 0, 'type': 2},
+            {'expression': '"tipologia_constructiva_copropiedad"', 'length': 20,
+             'name': 'tipologia_constructiva_copropiedad', 'precision': -1, 'type': 10},
+            {'expression': '"anio_construccion_etapa"', 'length': -1, 'name': 'anio_construccion_etapa',
+             'precision': -1, 'type': 14},
+            {'expression': '"estado_conservacion_copropiedad"', 'length': 255,
+             'name': 'estado_conservacion_copropiedad', 'precision': -1, 'type': 10},
+            {'expression': '"materiales_construccion_areas_comunes"', 'length': 100,
+             'name': 'materiales_construccion_areas_comunes', 'precision': -1, 'type': 10},
+            {'expression': '"disenio_funcionalidad_copropiedad"', 'length': 100,
+             'name': 'disenio_funcionalidad_copropiedad', 'precision': -1, 'type': 10}
+        ]
+    elif layer_name == VALUATION_COMMON_EQUIPMENT_TABLE:
+        mapping = [
+            {'expression': '"tipo_equipamiento_comunal"', 'length': 255, 'name': 'tipo_equipamiento_comunal',
+             'precision': -1, 'type': 10},
+            {'expression': '"categoria"', 'length': 100, 'name': 'categoria', 'precision': -1, 'type': 10},
+            {'expression': '"avpredmatrizph"', 'length': -1, 'name': 'avpredmatrizph', 'precision': 0, 'type': 4}
+        ]
+    elif layer_name == VALUATION_BUILDING_TABLE:
+        mapping = [
+            {'expression': '"numero_pisos"', 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2}
+        ]
+    elif layer_name == VALUATION_BUILDING_UNIT_TABLE:
+        mapping = [
+            {'expression': '"construccion_tipo"', 'length': 255, 'name': 'construccion_tipo', 'precision': -1,
+             'type': 10},
+            {'expression': '"uso"', 'length': 255, 'name': 'uso', 'precision': -1, 'type': 10},
+            {'expression': '"destino_econo"', 'length': 255, 'name': 'destino_econo', 'precision': -1, 'type': 10},
+            {'expression': '"tipologia"', 'length': 255, 'name': 'tipologia', 'precision': -1, 'type': 10},
+            {'expression': '"puntuacion"', 'length': -1, 'name': 'puntuacion', 'precision': 0, 'type': 2},
+            {'expression': '"valor_m2_construccion"', 'length': 16, 'name': 'valor_m2_construccion', 'precision': 1,
+             'type': 6},
+            {'expression': '"anio_construction"', 'length': -1, 'name': 'anio_construction', 'precision': -1,
+             'type': 14},
+            {'expression': '"estado_conservacion"', 'length': 255, 'name': 'estado_conservacion', 'precision': -1,
+             'type': 10},
+            {'expression': '"num_habitaciones"', 'length': -1, 'name': 'num_habitaciones', 'precision': 0, 'type': 2},
+            {'expression': '"num_banios"', 'length': -1, 'name': 'num_banios', 'precision': 0, 'type': 2},
+            {'expression': '"num_cocinas"', 'length': -1, 'name': 'num_cocinas', 'precision': 0, 'type': 2},
+            {'expression': '"num_oficinas"', 'length': -1, 'name': 'num_oficinas', 'precision': 0, 'type': 2},
+            {'expression': '"num_estudios"', 'length': -1, 'name': 'num_estudios', 'precision': 0, 'type': 2},
+            {'expression': '"num_bodegas"', 'length': -1, 'name': 'num_bodegas', 'precision': 0, 'type': 2},
+            {'expression': '"num_locales"', 'length': -1, 'name': 'num_locales', 'precision': 0, 'type': 2},
+            {'expression': '"num_salas"', 'length': -1, 'name': 'num_salas', 'precision': 0, 'type': 2},
+            {'expression': '"num_comedores"', 'length': -1, 'name': 'num_comedores', 'precision': 0, 'type': 2},
+            {'expression': '"material"', 'length': 255, 'name': 'material', 'precision': -1, 'type': 10},
+            {'expression': '"estilo"', 'length': 255, 'name': 'estilo', 'precision': -1, 'type': 10},
+            {'expression': '"acceso"', 'length': 255, 'name': 'acceso', 'precision': -1, 'type': 10},
+            {'expression': '"nivel_de_acceso"', 'length': -1, 'name': 'nivel_de_acceso', 'precision': 0, 'type': 2},
+            {'expression': '"ubicacion_en_copropiedad"', 'length': 255, 'name': 'ubicacion_en_copropiedad',
+             'precision': -1, 'type': 10},
+            {'expression': '"disposicion"', 'length': 255, 'name': 'disposicion', 'precision': -1, 'type': 10},
+            {'expression': '"funcionalidad"', 'length': 255, 'name': 'funcionalidad', 'precision': -1, 'type': 10}
+        ]
+    elif layer_name == VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE:
+        mapping = [
+            {'expression': '"tipo_anexo"', 'length': 255, 'name': 'tipo_anexo', 'precision': -1, 'type': 10},
+            {'expression': '"descripcion_anexo"', 'length': 256, 'name': 'descripcion_anexo', 'precision': -1,
+             'type': 10},
+            {'expression': '"puntaje_anexo"', 'length': 2, 'name': 'puntaje_anexo', 'precision': -1, 'type': 10},
+            {'expression': '"unidadconstruccion"', 'length': -1, 'name': 'unidadconstruccion', 'precision': 0,
+             'type': 4}
+        ]
+    elif layer_name == VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE:
+        mapping = [
+            {'expression': '"tipo_calificar"', 'length': 255, 'name': 'tipo_calificar', 'precision': -1, 'type': 10},
+            {'expression': '"armazon"', 'length': 255, 'name': 'armazon', 'precision': -1, 'type': 10},
+            {'expression': '"puntos_armazon"', 'length': -1, 'name': 'puntos_armazon', 'precision': 0, 'type': 2},
+            {'expression': '"muros"', 'length': 255, 'name': 'muros', 'precision': -1, 'type': 10},
+            {'expression': '"puntos_muro"', 'length': -1, 'name': 'puntos_muro', 'precision': 0, 'type': 2},
+            {'expression': '"cubierta"', 'length': 255, 'name': 'cubierta', 'precision': -1, 'type': 10},
+            {'expression': '"puntos_cubierta"', 'length': -1, 'name': 'puntos_cubierta', 'precision': 0, 'type': 2},
+            {'expression': '"conservacion_estructura"', 'length': 255, 'name': 'conservacion_estructura',
+             'precision': -1, 'type': 10},
+            {'expression': '"puntos_estructura_conservacion"', 'length': -1, 'name': 'puntos_estructura_conservacion',
+             'precision': 0, 'type': 2},
+            {'expression': '"sub_total_estructura"', 'length': -1, 'name': 'sub_total_estructura', 'precision': 0,
+             'type': 2},
+            {'expression': '"fachada"', 'length': 255, 'name': 'fachada', 'precision': -1, 'type': 10},
+            {'expression': '"puntos_fachada"', 'length': -1, 'name': 'puntos_fachada', 'precision': 0, 'type': 2},
+            {'expression': '"cubrimiento_muros"', 'length': 255, 'name': 'cubrimiento_muros', 'precision': -1,
+             'type': 10},
+            {'expression': '"puntos_cubrimiento_muros"', 'length': -1, 'name': 'puntos_cubrimiento_muros',
+             'precision': 0, 'type': 2},
+            {'expression': '"piso"', 'length': 255, 'name': 'piso', 'precision': -1, 'type': 10},
+            {'expression': '"puntos_piso"', 'length': -1, 'name': 'puntos_piso', 'precision': 0, 'type': 2},
+            {'expression': '"conservacion_acabados"', 'length': 255, 'name': 'conservacion_acabados', 'precision': -1,
+             'type': 10},
+            {'expression': '"puntos_conservacion_acabados"', 'length': -1, 'name': 'puntos_conservacion_acabados',
+             'precision': 0, 'type': 2},
+            {'expression': '"sub_total_acabados"', 'length': -1, 'name': 'sub_total_acabados', 'precision': 0,
+             'type': 2},
+            {'expression': '"tamanio_banio"', 'length': 255, 'name': 'tamanio_banio', 'precision': -1, 'type': 10},
+            {'expression': '"puntos_tamanio_banio"', 'length': -1, 'name': 'puntos_tamanio_banio', 'precision': 0,
+             'type': 2},
+            {'expression': '"enchape_banio"', 'length': 255, 'name': 'enchape_banio', 'precision': -1, 'type': 10},
+            {'expression': '"puntos_enchape_banio"', 'length': -1, 'name': 'puntos_enchape_banio', 'precision': 0,
+             'type': 2},
+            {'expression': '"mobiliario_banio"', 'length': 255, 'name': 'mobiliario_banio', 'precision': -1,
+             'type': 10},
+            {'expression': '"puntos_mobiliario_banio"', 'length': -1, 'name': 'puntos_mobiliario_banio', 'precision': 0,
+             'type': 2},
+            {'expression': '"conservacion_banio"', 'length': 255, 'name': 'conservacion_banio', 'precision': -1,
+             'type': 10},
+            {'expression': '"puntos_conservacion_banio"', 'length': -1, 'name': 'puntos_conservacion_banio',
+             'precision': 0, 'type': 2},
+            {'expression': '"sub_total_banio"', 'length': -1, 'name': 'sub_total_banio', 'precision': 0, 'type': 2},
+            {'expression': '"tamanio_cocina"', 'length': 255, 'name': 'tamanio_cocina', 'precision': -1, 'type': 10},
+            {'expression': '"puntos_tamanio_cocina"', 'length': -1, 'name': 'puntos_tamanio_cocina', 'precision': 0,
+             'type': 2},
+            {'expression': '"enchape_cocina"', 'length': 255, 'name': 'enchape_cocina', 'precision': -1, 'type': 10},
+            {'expression': '"puntos_enchape_cocina"', 'length': -1, 'name': 'puntos_enchape_cocina', 'precision': 0,
+             'type': 2},
+            {'expression': '"mobiliario_cocina"', 'length': 255, 'name': 'mobiliario_cocina', 'precision': -1,
+             'type': 10},
+            {'expression': '"puntos_mobiliario_cocina"', 'length': -1, 'name': 'puntos_mobiliario_cocina',
+             'precision': 0, 'type': 2},
+            {'expression': '"conservacion_cocina"', 'length': 255, 'name': 'conservacion_cocina', 'precision': -1,
+             'type': 10},
+            {'expression': '"puntos_conservacion_cocina"', 'length': -1, 'name': 'puntos_conservacion_cocina',
+             'precision': 0, 'type': 2},
+            {'expression': '"sub_total_cocina"', 'length': -1, 'name': 'sub_total_cocina', 'precision': 0, 'type': 2},
+            {'expression': '"total_residencial_y_comercial"', 'length': -1, 'name': 'total_residencial_y_comercial',
+             'precision': 0, 'type': 2},
+            {'expression': '"cerchas"', 'length': 255, 'name': 'cerchas', 'precision': -1, 'type': 10},
+            {'expression': '"puntos_cerchas"', 'length': -1, 'name': 'puntos_cerchas', 'precision': 0, 'type': 2},
+            {'expression': '"total_industrial"', 'length': -1, 'name': 'total_industrial', 'precision': 0, 'type': 2},
+            {'expression': '"unidadconstruccion"', 'length': -1, 'name': 'unidadconstruccion', 'precision': 0,
+             'type': 4}
+        ]
+    elif layer_name == VALUATION_GEOECONOMIC_ZONE_TABLE:
+        mapping = [
+            {'expression': '"identificador"', 'length': 20, 'name': 'identificador', 'precision': -1, 'type': 10},
+            {'expression': '"valor"', 'length': -1, 'name': 'valor', 'precision': 0, 'type': 2}
+        ]
+    elif layer_name == VALUATION_PHYSICAL_ZONE_TABLE:
+        mapping = [
+            {'expression': '"identificador"', 'length': 20, 'name': 'identificador', 'precision': -1, 'type': 10}
     elif layer_name == RIGHT_OF_WAY_TABLE:
         mapping = [
             {'expression': '"t_id"', 'length': -1, 'name': 't_id', 'precision': 0, 'type': 4},
             {'expression': '"identificador"', 'length': 20, 'name': 'identificador', 'precision': -1, 'type': 10},
             {'expression': '"fecha_inscripcion_catastral"', 'length': -1, 'name': 'fecha_inscripcion_catastral', 'precision': -1, 'type': 14},
             {'expression': '"dimension"', 'length': 255, 'name': 'dimension', 'precision': -1, 'type': 10},
-            {'expression': '"etiqueta"', 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}, 
+            {'expression': '"etiqueta"', 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10},
             {'expression': '"relacion_superficie"', 'length': 255, 'name': 'relacion_superficie', 'precision': -1, 'type': 10},
             {'expression': '"su_espacio_de_nombres"', 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10},
             {'expression': '"su_local_id"', 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10},

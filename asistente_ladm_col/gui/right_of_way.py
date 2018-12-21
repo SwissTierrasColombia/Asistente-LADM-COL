@@ -198,6 +198,7 @@ class RightOfWay(QObject):
             UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}
         }, load=True)
 
+        self._administrative_source_layer = res_layers[ADMINISTRATIVE_SOURCE_TABLE]
         self._parcel_layer = res_layers[PARCEL_TABLE]
         self._plot_layer = res_layers[PLOT_TABLE]
         self._restriction_layer = res_layers[RESTRICTION_TABLE]

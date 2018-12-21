@@ -132,11 +132,26 @@ NATURAL_PARTY_TABLE = "interesado_natural"
 LEGAL_PARTY_TABLE = "interesado_juridico"
 
 """
+VALUATION MAPPING
+"""
+AVALUOUNIDADCONSTRUCCION_TABLE = "avaluounidadconstruccion"
+AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_VALUATION_FIELD = "aucons"
+AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_FIELD = "ucons"
+VALUATION_PARCEL_TABLE = "avaluos_v2_2_1avaluos_predio"
+VALUATION_HORIZONTAL_PROPERTY_TABLE = "predio_matriz_ph"
+VALUATION_COMMON_EQUIPMENT_TABLE = "equipamiento_comunal"
+VALUATION_BUILDING_TABLE = "avaluos_v2_2_1avaluos_construccion"
+VALUATION_BUILDING_UNIT_TABLE = "unidad_construccion"
+VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE = "calificacion_no_convencional"
+VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE = "calificacion_convencional"
+VALUATION_GEOECONOMIC_ZONE_TABLE = "zona_homogenea_geoeconomica"
+VALUATION_PHYSICAL_ZONE_TABLE = "zona_homogenea_fisica"
+
+"""
 PROPERTY PARCEL TABLE
 """
 PARCEL_TYPE_FIELD = "tipo"
 PARCEL_TYPE_PH_OPTION = "PropiedadHorizontal.UnidadPredial"
-
 
 NAMESPACE_PREFIX = {
     ADMINISTRATIVE_SOURCE_TABLE: 's',
@@ -264,6 +279,99 @@ FORM_GROUPS = {
             'visibility_expression': '"predio_tipo" IS NOT NULL AND strpos("predio_tipo", \'Publico.\') != 0',
             'before_attr': None,
             'after_attr': 'predio_tipo'
+        }
+    },
+    VALUATION_PARCEL_TABLE: {
+        ' ': {
+            'show_label': True,
+            'column_count':  1,
+            'attr_list':  ['num_balcones', 'num_terrazas', 'num_mezanines'],
+            'visibility_expression': None,
+            'before_attr': None,
+            'after_attr': None
+        },
+        '  ': {
+            'show_label': True,
+            'column_count':  1,
+            'attr_list':  ['frente', 'fondo'],
+            'visibility_expression': None,
+            'before_attr': None,
+            'after_attr': 'comun_uso_exclusivo'
+        }
+        },
+    VALUATION_HORIZONTAL_PROPERTY_TABLE: {
+        '': {
+            'show_label': True,
+            'column_count': 1,
+            'attr_list': ['tipologia_constructiva_copropiedad', 'anio_construccion_etapa',
+                          'estado_conservacion_copropiedad', 'materiales_construccion_areas_comunes',
+                          'disenio_funcionalidad_copropiedad'],
+            'visibility_expression': None,
+            'before_attr': None,
+            'after_attr': None
+        },
+        ' ': {
+            'show_label': True,
+            'column_count': 1,
+            'attr_list': ['num_etapas', 'num_interiores', 'num_torres', 'num_pisos_por_torre', 'num_unidades_privadas',
+                          'num_sotanos'],
+            'visibility_expression': None,
+            'before_attr': None,
+            'after_attr': None
+        }
+    },
+    VALUATION_BUILDING_UNIT_TABLE: {
+        '': {
+            'show_label': True,
+            'column_count': 1,
+            'attr_list': ['num_habitaciones', 'num_banios', 'num_cocinas', 'num_oficinas', 'num_estudios',
+                          'num_bodegas', 'num_locales', 'num_salas', 'num_comedores'],
+            'visibility_expression': None,
+            'before_attr': None,
+            'after_attr': None
+        },
+        ' ': {
+            'show_label': True,
+            'column_count': 1,
+            'attr_list': ['anio_construction', 'uso', 'destino_econo', 'puntuacion', 'tipologia',
+                          'estado_conservacion', 'construccion_tipo'],
+            'visibility_expression': None,
+            'before_attr': None,
+            'after_attr': None
+        },
+    },
+    VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE: {
+        ' ': {
+            'show_label': True,
+            'column_count': 1,
+            'attr_list': ['sub_total_estructura', 'sub_total_acabados', 'sub_total_banio', 'sub_total_cocina',
+                          'total_residencial_y_comercial', 'total_industrial'],
+            'visibility_expression': None,
+            'before_attr': None,
+            'after_attr': None
+        },
+        '  ': {
+            'show_label': True,
+            'column_count': 1,
+            'attr_list': ['armazon', 'muros', 'cubierta', 'conservacion_estructura', 'fachada', 'cubrimiento_muros',
+                          'piso', 'conservacion_acabados', 'tamanio_banio', 'enchape_banio', 'mobiliario_banio',
+                          'conservacion_banio', 'tamanio_cocina', 'enchape_cocina', 'mobiliario_cocina',
+                          'conservacion_cocina', 'cerchas'],
+            'visibility_expression': None,
+            'before_attr': ' ',
+            'after_attr': None
+        },
+        '   ': {
+            'show_label': True,
+            'column_count': 1,
+            'attr_list': ['puntos_armazon', 'puntos_muro', 'puntos_cubierta', 'puntos_estructura_conservacion',
+                          'puntos_fachada', 'puntos_cubrimiento_muros', 'puntos_piso', 'puntos_conservacion_acabados',
+                          'puntos_tamanio_banio', 'puntos_enchape_banio', 'puntos_mobiliario_banio',
+                          'puntos_conservacion_banio', 'puntos_tamanio_cocina', 'puntos_enchape_cocina',
+                          'puntos_mobiliario_cocina', 'puntos_conservacion_cocina', 'puntos_cerchas'],
+            'visibility_expression': None,
+            'before_attr': '  ',
+            'after_attr': None
         }
     }
 }
