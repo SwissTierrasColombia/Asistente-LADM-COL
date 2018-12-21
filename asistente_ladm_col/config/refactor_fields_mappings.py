@@ -489,6 +489,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
     elif layer_name == VALUATION_PHYSICAL_ZONE_TABLE:
         mapping = [
             {'expression': '"identificador"', 'length': 20, 'name': 'identificador', 'precision': -1, 'type': 10}
+        ]
     elif layer_name == RIGHT_OF_WAY_TABLE:
         mapping = [
             {'expression': '"t_id"', 'length': -1, 'name': 't_id', 'precision': 0, 'type': 4},
