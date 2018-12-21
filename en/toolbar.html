@@ -85,12 +85,16 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="cadastre.html">Cadastre</a></li>
 <li class="toctree-l1"><a class="reference internal" href="property_record_card.html">Property record card</a></li>
+<li class="toctree-l1"><a class="reference internal" href="valuation.html">Valuation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="load_layers.html">Load Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mapping_fields.html">Using Mapping Fields</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settings.html">Settings</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Toolbar LADM_COL</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#explode-and-merge">Explode and Merge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fill-points-bfs">Fill Points BFS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fill-more-bfs-and-less">Fill More BFS and Less</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generate-annex-17">Generate Annex 17</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#import-from-intermediate-structure">Import from intermediate structure</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation guide for plugin</a></li>
@@ -167,12 +171,12 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="0.11.3/toolbar.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.11.3.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="1.0.0/toolbar.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 1.0.0.</a></p>
 <div class="section" id="toolbar-ladm-col">
 <h1>Toolbar LADM_COL<a class="headerlink" href="#toolbar-ladm-col" title="Permalink to this headline">¶</a></h1>
 <p>This is how toolbar looks like:</p>
 <a class=""
-               data-lightbox="group-02664f90-1050-4d9e-89d6-d467eaaa246e"
+               data-lightbox="group-87015258-84e0-4dbb-8ffb-7f3f4fa18447"
                href="_images/ladm_col_toolbar.png"
                title=""
                data-title=""
@@ -185,7 +189,7 @@
 the next interaction: right click on the gray region in QGIS and clicking in
 “LADM-COL Toolbar” or like in the following gif:</p>
 <a class=""
-               data-lightbox="group-1d6a8d86-5468-4e30-9007-de68a50eacaf"
+               data-lightbox="group-06b6e0dc-f74c-4af6-9897-aa8ff0671538"
                href="_images/show_ladm_col_toolbar.gif"
                title=""
                data-title=""
@@ -199,7 +203,7 @@ the next interaction: right click on the gray region in QGIS and clicking in
 <p>If you need to merge or explodes boundaries you can use the <em>merge</em> and <em>explode</em>
 buttons on Toolbar LADM_COL.</p>
 <a class=""
-               data-lightbox="group-cdcabf18-2c09-4fd4-bbaa-d6fcdc5ecb34"
+               data-lightbox="group-55864209-94d8-41cb-b9e3-99020eed8f9c"
                href="_images/_UNIR_PARTIR_LINDERO2.gif"
                title=""
                data-title=""
@@ -218,7 +222,7 @@ Toolbar LADM_COL which makes automatic and faster this job.</p>
 <li>puntosccl –&gt; puntolindero and lindero</li>
 </ul>
 <a class=""
-               data-lightbox="group-c721cdba-1996-472e-8950-864901a5da52"
+               data-lightbox="group-2f901cca-9520-4fc1-9db5-c45b5237814c"
                href="_images/_LLENAR_TOPOLOGIAS_PUNTO_LINDERO.gif"
                title=""
                data-title=""
@@ -238,11 +242,155 @@ and Less</em> on Toolbar LADM_COL which makes automatic and faster this job.</p>
 <li>menos –&gt; terreno and lindero (holes or intern rings)</li>
 </ul>
 <a class=""
-               data-lightbox="group-112f8af9-9d03-41cb-90f1-f41a6835c285"
+               data-lightbox="group-b6e948bb-1116-4da4-bd93-0cff4692c444"
                href="_images/_TOPOLOGIAS_TERRENO.gif"
                title=""
                data-title=""
                ><img src="_images/_TOPOLOGIAS_TERRENO.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="basic settings"/>
+                </a></div>
+<div class="section" id="generate-annex-17">
+<h2>Generate Annex 17<a class="headerlink" href="#generate-annex-17" title="Permalink to this headline">¶</a></h2>
+<p>This option allows generating a document associated with the selected plots,
+which corresponds to Annex 17, this contain a report of adjoining.</p>
+<p>The adjoining report corresponds to the document where they will be identified
+by property (with formal or informal tenure relations) each of the boundaries
+that constitute it and its corresponding physical and legal relationship with
+the properties surrounding it.</p>
+<p>To generate the report of annex 17, follow these steps:</p>
+<ol class="arabic simple">
+<li>Select the plot (s) for which you want to generate the report.</li>
+<li>Go to the toolbar and click on the button “Generate Annex 17”</li>
+</ol>
+<p>Download dependencies. This step is done only once.</p>
+<a class=""
+               data-lightbox="group-25b85769-47d3-43d3-92a9-ce3a5c05e219"
+               href="_images/annex_17_1.gif"
+               title=""
+               data-title=""
+               ><img src="_images/annex_17_1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="basic settings"/>
+                </a><ol class="arabic simple" start="3">
+<li>You must indicate the directory where you want to store the generated documents.</li>
+<li>Press ok should show a progress bar at the top.</li>
+<li>You will obtain the validation of the generated reports with a message bar in green and inside it a link to the route where the files are located.</li>
+<li>Go to the directory that you selected in step 3 to verify the result, which should look like this in the following image:</li>
+</ol>
+<a class=""
+               data-lightbox="group-c395f918-63f5-45eb-b9e4-1b305eb9ae6d"
+               href="_images/annex_17_2.gif"
+               title=""
+               data-title=""
+               ><img src="_images/annex_17_2.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="basic settings"/>
+                </a></div>
+<div class="section" id="import-from-intermediate-structure">
+<h2>Import from intermediate structure<a class="headerlink" href="#import-from-intermediate-structure" title="Permalink to this headline">¶</a></h2>
+<p>This section exposes the procedure to be followed in order to be able to massively import data from spreadsheet format files to a database with the structure of the LADM_COL model.</p>
+<p>Previous requirements:</p>
+<ol class="arabic simple">
+<li>Data coinciding with the intermediate structure, as shown in the images:</li>
+</ol>
+<ul class="simple">
+<li>Structure of Grouping:</li>
+</ul>
+<a class=""
+               data-lightbox="group-c83feaee-839c-4989-9cdd-9c2a5a7b191b"
+               href="_images/agrupacion.png"
+               title=""
+               data-title=""
+               ><img src="_images/agrupacion.png"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="basic settings"/>
+                </a><ul class="simple">
+<li>Structure of Law:</li>
+</ul>
+<a class=""
+               data-lightbox="group-dc1e442a-130c-4f6d-b30f-d4a8041fe1ea"
+               href="_images/derecho.PNG"
+               title=""
+               data-title=""
+               ><img src="_images/derecho.PNG"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="basic settings"/>
+                </a><ul class="simple">
+<li>Structure of Party:</li>
+</ul>
+<a class=""
+               data-lightbox="group-b0dc1206-d3e3-47a3-9a14-f476aae67a29"
+               href="_images/interesado.PNG"
+               title=""
+               data-title=""
+               ><img src="_images/interesado.PNG"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="basic settings"/>
+                </a><ul class="simple">
+<li>Structure of Plot:</li>
+</ul>
+<a class=""
+               data-lightbox="group-d44c79d5-c77a-4f92-8760-aafa7e0b5d21"
+               href="_images/predio.PNG"
+               title=""
+               data-title=""
+               ><img src="_images/predio.PNG"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="basic settings"/>
+                </a><p><a class="reference external" href="static/data_templates/estructura_vacia.xlsx">Blank template of intermediate structure.</a></p>
+<p><a class="reference external" href="static/data_templates/estructura.xlsx">Example data according to the intermediate structure.</a></p>
+<p>The procedure is the next:</p>
+<ol class="arabic simple">
+<li>In the toolbar click on the button that says: “Import from intermediate structure”</li>
+<li>In the toolbar click on the button that says: Select the file with spreadsheet format where the information to be loaded is stored.</li>
+<li>Accept the dialogue and wait for the result.</li>
+<li>Confirm that in QGIS the intermediate tables were created and that the model tables involved were left with new data.</li>
+</ol>
+<p>The execution of the model with the sample data should generate the following result:</p>
+<p>Intermediate tables:</p>
+<a class=""
+               data-lightbox="group-24cea5e7-8e63-4227-ad4c-fa7b21d0f325"
+               href="_images/tablas_intermed.PNG"
+               title=""
+               data-title=""
+               ><img src="_images/tablas_intermed.PNG"
+                     class=""
+                     width="400"
+                     height="250"
+                     alt="basic settings"/>
+                </a><p>Model tables involved:</p>
+<a class=""
+               data-lightbox="group-afb26f9f-f107-434b-8d99-ab81b19a0f1d"
+               href="_images/tabla_implicadas.PNG"
+               title=""
+               data-title=""
+               ><img src="_images/tabla_implicadas.PNG"
+                     class=""
+                     width="400"
+                     height="250"
+                     alt="basic settings"/>
+                </a><p>An example of the procedure making use of the example data:</p>
+<a class=""
+               data-lightbox="group-2cb6c882-82a4-4e19-8ced-7822a697b228"
+               href="_images/import_intermediate_structure.gif"
+               title=""
+               data-title=""
+               ><img src="_images/import_intermediate_structure.gif"
                      class=""
                      width="800"
                      height="500"
@@ -313,9 +461,12 @@ and Less</em> on Toolbar LADM_COL which makes automatic and faster this job.</p>
             <dd><a href="0.7.1/toolbar.html">0.7.1</a></dd>
             <dd><a href="0.8.0/toolbar.html">0.8.0</a></dd>
             <dd><a href="0.9.0/toolbar.html">0.9.0</a></dd>
+            <dd><a href="1.0.0/toolbar.html">1.0.0</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
+            <dd><a href="Documentation_for_annex_17/toolbar.html">Documentation_for_annex_17</a></dd>
+            <dd><a href="Documentation_valuation_asistente_ladm_col/toolbar.html">Documentation_valuation_asistente_ladm_col</a></dd>
             <dd><a href="master/toolbar.html">master</a></dd>
             <dd><a href="prepare_PR_2/toolbar.html">prepare_PR_2</a></dd>
             <dd><a href="update_docs/toolbar.html">update_docs</a></dd>

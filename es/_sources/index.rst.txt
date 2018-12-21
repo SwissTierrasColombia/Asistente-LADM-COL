@@ -15,7 +15,9 @@ Welcome to the Assistant's documentation LADM_COL!
 
     cadastre
     property_record_card
+    valuation
     load_layers
+    mapping_fields
     settings
     toolbar
     installation

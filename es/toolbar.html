@@ -85,12 +85,16 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="cadastre.html">Catastro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="property_record_card.html">Ficha Predial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="valuation.html">Valuation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="load_layers.html">Cargar capas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mapping_fields.html">Usando Mapeo de Campos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settings.html">Configuración</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Barra de herramientas de LADM_COL</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#explode-and-merge">Partir por segmento y Unir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fill-points-bfs">Llenar PuntosCCL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fill-more-bfs-and-less">Llenar más CCL y menos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generate-annex-17">Generar Anexo 17</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#import-from-intermediate-structure">Importar desde estructura intermedia</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Guía de Instalación para el plugin</a></li>
@@ -167,12 +171,12 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="0.11.3/toolbar.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 0.11.3.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="1.0.0/toolbar.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 1.0.0.</a></p>
 <div class="section" id="toolbar-ladm-col">
 <h1>Barra de herramientas de LADM_COL<a class="headerlink" href="#toolbar-ladm-col" title="Enlazar permanentemente con este título">¶</a></h1>
 <p>Así es como se ve la barra de herramientas:</p>
 <a class=""
-               data-lightbox="group-6059689a-9bf6-459b-b6e3-2aba7ec7cba9"
+               data-lightbox="group-13f55b45-0ffa-416a-92c2-6952f1fca6d3"
                href="_images/ladm_col_toolbar.png"
                title=""
                data-title=""
@@ -183,7 +187,7 @@
                      alt="LADM-COL toolbar"/>
                 </a><p>Si la barra de herramientas no aparece en la interfaz de QGIS, puedes hacer que se vea con la siguiente interacción: click derecho en la región gris en QGIS y clickeando en «Herramientas LADM-COL» o como en el siguiente gif:</p>
 <a class=""
-               data-lightbox="group-8624444b-0631-4a8f-b196-bcb9537573fd"
+               data-lightbox="group-295e4bce-f69a-47bd-b579-a0d2e536681c"
                href="_images/show_ladm_col_toolbar.gif"
                title=""
                data-title=""
@@ -196,7 +200,7 @@
 <h2>Partir por segmento y Unir<a class="headerlink" href="#explode-and-merge" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Si necesitas unir o explotar por segmentos los linderos puedes utilizar los botones <em>Unir</em> y <em>Partir por segmento</em> en la barra de herramientas de LADM_COL.</p>
 <a class=""
-               data-lightbox="group-875d321e-fdb4-4429-8f57-f4ba6ee6dc79"
+               data-lightbox="group-8b14ff74-61ff-4ab1-80e8-f13ad4db3a7b"
                href="_images/_UNIR_PARTIR_LINDERO2.gif"
                title=""
                data-title=""
@@ -214,7 +218,7 @@
 <li>puntosccl –&gt; puntolindero y lindero</li>
 </ul>
 <a class=""
-               data-lightbox="group-a82d22a2-6365-400b-9d6a-a65468f45fc2"
+               data-lightbox="group-6ad89100-c500-40e2-806a-a6fa48b5f751"
                href="_images/_LLENAR_TOPOLOGIAS_PUNTO_LINDERO.gif"
                title=""
                data-title=""
@@ -233,11 +237,151 @@
 <li>menos –&gt; terreno y lindero (agujeros o anillos internos)</li>
 </ul>
 <a class=""
-               data-lightbox="group-d6642beb-5e59-487e-9d1c-3d1420477cc0"
+               data-lightbox="group-301abcd7-b060-4ff8-9cf8-bc0a1c1aa285"
                href="_images/_TOPOLOGIAS_TERRENO.gif"
                title=""
                data-title=""
                ><img src="_images/_TOPOLOGIAS_TERRENO.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="basic settings"/>
+                </a></div>
+<div class="section" id="generate-annex-17">
+<h2>Generar Anexo 17<a class="headerlink" href="#generate-annex-17" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Esta opción permite generar un documento asociado a los terrenos seleccionados, el cual corresponde al Anexo 17, este contiene un reporte de contigüidad.</p>
+<p>El informe de colindancia corresponde al documento donde se identificarán por predio (con relaciones formales o informales de tenencia) cada uno de los linderos que lo constituyen y su correspondiente relación física y jurídica con los predios circundantes al mismo.</p>
+<p>Para generar el informe del anexo 17, siga estos pasos:</p>
+<ol class="arabic simple">
+<li>Selecciones el o los terrenos los cuales quiere generar el reporte.</li>
+<li>Vaya a la barra de herramientas y haga clic en el botón «Generar Anexo 17»</li>
+</ol>
+<p>Descargar dependencias. Este paso se realiza una sola vez.</p>
+<a class=""
+               data-lightbox="group-7d775648-d01b-41fb-ac0e-b37461efe7c5"
+               href="_images/annex_17_1.gif"
+               title=""
+               data-title=""
+               ><img src="_images/annex_17_1.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="basic settings"/>
+                </a><ol class="arabic simple" start="3">
+<li>Debe indicar el directorio donde desea almacenar los documentos generados.</li>
+<li>Press ok should show a progress bar at the top.</li>
+<li>Obtendrá la validación de los informes generados con una barra de mensajes en verde y dentro de ella un enlace a la ruta donde se encuentran los archivos.</li>
+<li>Vaya al directorio que seleccionó en el paso 3 para verificar el resultado, que debería verse así en la siguiente imagen:</li>
+</ol>
+<a class=""
+               data-lightbox="group-f749581a-9b58-46aa-bb5f-d91af97460cd"
+               href="_images/annex_17_2.gif"
+               title=""
+               data-title=""
+               ><img src="_images/annex_17_2.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="basic settings"/>
+                </a></div>
+<div class="section" id="import-from-intermediate-structure">
+<h2>Importar desde estructura intermedia<a class="headerlink" href="#import-from-intermediate-structure" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Esta seccion exponen el procedimiento a seguir para poder realizar la importación de datos masivamente desde archivos con formato de hoja de calculo a una base de datos con la estructura del modelo LADM_COL.</p>
+<p>Requerimientos previos:</p>
+<ol class="arabic simple">
+<li>Datos coincidentes con la estructura intermedia, como se muestra en las imagenes:</li>
+</ol>
+<ul class="simple">
+<li>Estructura de Agrupación:</li>
+</ul>
+<a class=""
+               data-lightbox="group-9560f850-6257-4a10-aac2-4ec83a5e7ff9"
+               href="_images/agrupacion.png"
+               title=""
+               data-title=""
+               ><img src="_images/agrupacion.png"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="basic settings"/>
+                </a><ul class="simple">
+<li>Estructura de Predio:</li>
+</ul>
+<a class=""
+               data-lightbox="group-4cdeeb0e-0621-42c9-a4b9-2e4f5157ee4d"
+               href="_images/derecho.PNG"
+               title=""
+               data-title=""
+               ><img src="_images/derecho.PNG"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="basic settings"/>
+                </a><ul class="simple">
+<li>Estructura de Predio:</li>
+</ul>
+<a class=""
+               data-lightbox="group-a9063087-f6be-4ab2-946c-7adcd31477f5"
+               href="_images/interesado.PNG"
+               title=""
+               data-title=""
+               ><img src="_images/interesado.PNG"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="basic settings"/>
+                </a><ul class="simple">
+<li>Estructura de Predio:</li>
+</ul>
+<a class=""
+               data-lightbox="group-12738eb8-823e-430d-8445-79a0e56a4877"
+               href="_images/predio.PNG"
+               title=""
+               data-title=""
+               ><img src="_images/predio.PNG"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="basic settings"/>
+                </a><p><a class="reference external" href="static/data_templates/estructura_vacia.xlsx">Plantilla en blanco de con estructura intermedia.</a></p>
+<p><a class="reference external" href="static/data_templates/estructura.xlsx">Datos de ejemplo conformes con la estructura intermedia.</a></p>
+<p>El procedimiento es el siguiente:</p>
+<ol class="arabic simple">
+<li>En la barra de herramientas dar click en el boton que dice: «Importar desde estructura intermedia»</li>
+<li>Seleccione el archivo con formato de hoja de calculo donde se encuentra almacenada la información a ser cargada.</li>
+<li>Aceptar el diálogo y esperar por el resultado.</li>
+<li>Confirmar que en QGIS se crearon las tablas intermedias y que las tablas del modelo implicadas quedaron con nuevos datos.</li>
+</ol>
+<p>La ejecución del modelo con los datos de ejemplo debe genberar el siguiente resultado:</p>
+<p>Tablas intermedias:</p>
+<a class=""
+               data-lightbox="group-3728f340-c182-4cf2-abc9-36f632d42b15"
+               href="_images/tablas_intermed.PNG"
+               title=""
+               data-title=""
+               ><img src="_images/tablas_intermed.PNG"
+                     class=""
+                     width="400"
+                     height="250"
+                     alt="basic settings"/>
+                </a><p>Tablas del modelo implicadas:</p>
+<a class=""
+               data-lightbox="group-35ccab7c-6b72-45c3-9c3f-2fa1ded348f1"
+               href="_images/tabla_implicadas.PNG"
+               title=""
+               data-title=""
+               ><img src="_images/tabla_implicadas.PNG"
+                     class=""
+                     width="400"
+                     height="250"
+                     alt="basic settings"/>
+                </a><p>Un ejemplo del procedimiento haciendo uso de los datos de ejemplo:</p>
+<a class=""
+               data-lightbox="group-77e07b1a-bead-4f4f-83ac-aee13d9256c9"
+               href="_images/import_intermediate_structure.gif"
+               title=""
+               data-title=""
+               ><img src="_images/import_intermediate_structure.gif"
                      class=""
                      width="800"
                      height="500"
@@ -308,9 +452,12 @@
             <dd><a href="0.7.1/toolbar.html">0.7.1</a></dd>
             <dd><a href="0.8.0/toolbar.html">0.8.0</a></dd>
             <dd><a href="0.9.0/toolbar.html">0.9.0</a></dd>
+            <dd><a href="1.0.0/toolbar.html">1.0.0</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
+            <dd><a href="Documentation_for_annex_17/toolbar.html">Documentation_for_annex_17</a></dd>
+            <dd><a href="Documentation_valuation_asistente_ladm_col/toolbar.html">Documentation_valuation_asistente_ladm_col</a></dd>
             <dd><a href="master/toolbar.html">master</a></dd>
             <dd><a href="prepare_PR_2/toolbar.html">prepare_PR_2</a></dd>
             <dd><a href="update_docs/toolbar.html">update_docs</a></dd>
