@@ -12,7 +12,7 @@ License: [GNU General Public License v3.0](https://github.com/AgenciaImplementac
 A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE SAS](http://www.incige.com/))
 
 
-:arrow_right: We suggest you to use a very recent QGIS version, available at https://qgis.org/downloads/weekly/
+:arrow_right: We suggest you to use QGIS v3.4.x, available at https://qgis.org/downloads/
 
 
 ## Functionalities
@@ -21,6 +21,7 @@ The current version ([0.11.3](https://github.com/AgenciaImplementacion/Asistente
 
  - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
  - Capture data for the `FICHA_PREDIAL v2.2.1` model.
+ - Capture data for the `AVALÚOS v2.2.1` model.
  - Preprocess points: Controlled Measurement.
    - Group points by nearness.
    - Average point position from points of the same group.
@@ -32,8 +33,7 @@ The current version ([0.11.3](https://github.com/AgenciaImplementacion/Asistente
    - By digitizing on the map.
      - Aids for digitization:
        - Automatic snapping configuration and default field values.
-       - Explode selected lines (split per segment).
-       - Merge selected lines.
+       - Build boundaries from selected lines.
    - From another layer with any structure, setting a field mapping.
  - Create `Plot`:
    - From selected boundaries.
@@ -72,7 +72,7 @@ The current version ([0.11.3](https://github.com/AgenciaImplementacion/Asistente
  - Select in a dialog layers to load from any model in the database or schema:
    - Use the 'Project Generator' plugin (a prerequisite) to load layers with configured forms, relations and domains.
    - Load preconfigured layer sets.
- - Check quality:
+ - Check quality rules (topology):
    - Check too long `Boundary` segments (exceeding a given tolerance).
    - Check overlaps in `Boundary Points`.
    - Check overlaps in `Control Points`.
