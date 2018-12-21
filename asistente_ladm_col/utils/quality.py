@@ -1937,38 +1937,29 @@ class QualityUtils(QObject):
                                            "There are no multipart geometries in layer Right Of Way."), Qgis.Info)
 
     def check_parcel_right_relationship(self, db):
-        error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     QCoreApplication.translate("QGISUtils",
-                                        "Logic Consistency Errors in table '{}'").format(PARCEL_TABLE),
-                                     "memory")
-        pr = error_layer.dataProvider()
-        pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "parcel_id"), QVariant.Int),
-                          QgsField(QCoreApplication.translate("QGISUtils", "error_type"), QVariant.String)])
-        error_layer.updateFields()
 
-        parcel_no_right_ids, parcel_duplicated_domain_right_ids  = self.logic.get_parcel_right_relationship_errors(db)
+        table_name = QCoreApplication.translate("LogicChecksConfigStrings","Logic Consistency Errors in table '{}'").format(PARCEL_TABLE)
+        error_layer = None
+        error_layer_exist = False
 
-        new_features = []
-        for parcel_id in parcel_no_right_ids:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                error_layer,
-                QgsGeometry(),
-                {0: parcel_id,
-                 1: translated_strings.ERROR_PARCEL_WITH_NO_RIGHT})
-            new_features.append(new_feature)
+        # Check if error layer exist
+        group = self.qgis_utils.get_error_layers_group()
 
-        for parcel_id in parcel_duplicated_domain_right_ids:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                error_layer,
-                QgsGeometry(),
-                {0: parcel_id,
-                 1: translated_strings.ERROR_PARCEL_WITH_REPEATED_DOMAIN_RIGHT})
-            new_features.append(new_feature)
+        # Check if layer is loaded
+        layers = group.findLayers()
+        for layer in layers:
+            if layer.name() == table_name:
+                error_layer = layer.layer()
+                error_layer_exist = True
+                break
 
-        error_layer.dataProvider().addFeatures(new_features)
+        errors_count, error_layer = self.logic.get_parcel_right_relationship_errors(db, error_layer, table_name)
 
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
+        if errors_count > 0:
+            if error_layer_exist is False:
+                added_layer = self.add_error_layer(error_layer)
+            else:
+                added_layer = error_layer
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
@@ -1981,28 +1972,9 @@ class QualityUtils(QObject):
                 Qgis.Info)
 
     def check_fraction_sum_for_party_groups(self, db):
-        error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG),
-                            QCoreApplication.translate("QGISUtils", "Fractions do not sum 1").format(PARCEL_TABLE),
-                            "memory")
-        pr = error_layer.dataProvider()
-        pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "party_group"), QVariant.Int),
-                          QgsField(QCoreApplication.translate("QGISUtils", "members"), QVariant.String),
-                          QgsField(QCoreApplication.translate("QGISUtils", "fraction_sum"), QVariant.Double)])
-        error_layer.updateFields()
 
-        incomplete_fractions = self.logic.get_fractions_which_sum_is_not_one(db)
-
-        new_features = []
-        for incomplete_fraction in incomplete_fractions:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                error_layer,
-                QgsGeometry(),
-                {0: incomplete_fraction[0],
-                 1: ",".join([str(f) for f in incomplete_fraction[1]]),
-                 2: incomplete_fraction[2]})
-            new_features.append(new_feature)
-
-        error_layer.dataProvider().addFeatures(new_features)
+        error_layer = None
+        error_layer = self.logic.get_fractions_which_sum_is_not_one(db, error_layer)
 
         if error_layer.featureCount() > 0:
             added_layer = self.add_error_layer(error_layer)
@@ -2060,27 +2032,9 @@ class QualityUtils(QObject):
 
         for table in LOGIC_CONSISTENCY_TABLES:
             fields = LOGIC_CONSISTENCY_TABLES[table]
-            error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                QCoreApplication.translate("QualityConfigStrings", 'Duplicate records in {table}').format(table=table),
-                                "memory")
-            pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField(QCoreApplication.translate("QualityConfigStrings", "duplicate_ids"), QVariant.String),
-                              QgsField(QCoreApplication.translate("QualityConfigStrings","count"), QVariant.Int)])
-            error_layer.updateFields()
 
-            duplicate_records = self.logic.get_duplicate_records_in_a_table(db, table, fields)
-
-            new_features = []
-            for duplicate_record in duplicate_records:
-                new_feature = QgsVectorLayerUtils().createFeature(
-                    error_layer,
-                    QgsGeometry(),
-                    {0: duplicate_record[0], # duplicate_ids
-                     1: duplicate_record[1] # count
-                     })
-                new_features.append(new_feature)
-
-            error_layer.dataProvider().addFeatures(new_features)
+            error_layer = None
+            error_layer = self.logic.get_duplicate_records_in_a_table(db, table, fields, error_layer)
 
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
@@ -2168,15 +2122,15 @@ class QualityUtils(QObject):
                 break
 
         if rule == 'COL_PARTY_TYPE_NATURAL_VALIDATION':
-            errors_append, error_layer = self.logic.col_party_type_natural_validation(db, rule, error_layer)
+            errors_count, error_layer = self.logic.col_party_type_natural_validation(db, rule, error_layer)
         elif rule == 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION':
-            errors_append, error_layer = self.logic.col_party_type_no_natural_validation(db, rule, error_layer)
+            errors_count, error_layer = self.logic.col_party_type_no_natural_validation(db, rule, error_layer)
         elif rule == 'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION':
-            errors_append, error_layer = self.logic.parcel_type_and_22_position_of_parcel_number_validation(db, rule, error_layer)
+            errors_count, error_layer = self.logic.parcel_type_and_22_position_of_parcel_number_validation(db, rule, error_layer)
         elif rule == 'UEBAUNIT_PARCEL_VALIDATION':
-            errors_append, error_layer = self.logic.uebaunit_parcel_validation(db, rule, error_layer)
+            errors_count, error_layer = self.logic.uebaunit_parcel_validation(db, rule, error_layer)
 
-        if errors_append > 0:
+        if errors_count > 0:
             if error_layer_exist is False:
                 added_layer = self.add_error_layer(error_layer)
             else:
@@ -2184,7 +2138,7 @@ class QualityUtils(QObject):
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "A memory layer with {error_count} error record(s) from {table} has been added to the map!").format(
-                    error_count=errors_append, table=table),
+                    error_count=errors_count, table=table),
                 Qgis.Info)
         else:
             self.qgis_utils.message_emitted.emit(

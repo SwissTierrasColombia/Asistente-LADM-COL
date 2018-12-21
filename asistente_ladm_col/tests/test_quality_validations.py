@@ -74,7 +74,9 @@ class TesQualityValidations(unittest.TestCase):
         for table in test_results:
             test_result = test_results[table]
             fields = LOGIC_CONSISTENCY_TABLES[table]
-            result = self.logic_checks.get_duplicate_records_in_a_table(db, table, fields)
+            error_layer = None
+            error_layer = self.logic_checks.get_duplicate_records_in_a_table(db, table, fields, error_layer)
+            result = [(f['duplicate_ids'],f['count']) for f in error_layer.getFeatures()]
 
             for item in test_result:
                 self.assertIn(item, result, 'the record {error_item} is not duplicated in the table {table}'.format(error_item=item,table=table))

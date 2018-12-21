@@ -14,7 +14,8 @@ from ..config.table_mapping_config import (ID_FIELD,
                                            COL_PARTY_DOC_TYPE_FIELD,
                                            PARCEL_TYPE_FIELD,
                                            PARCEL_TABLE)
-from ..config.general_config import DEFAULT_EPSG
+from ..config.general_config import (DEFAULT_EPSG,
+                                     translated_strings)
 
 class LogicChecks(QObject):
 
@@ -22,17 +23,102 @@ class LogicChecks(QObject):
         QObject.__init__(self)
         self.log = QgsApplication.messageLog()
 
-    def get_parcel_right_relationship_errors(self, db):
-        parcels_no_right = db.get_parcels_with_no_right()
-        parcels_repeated_domain_right = db.get_parcels_with_repeated_domain_right()
-        return ([sublist[0] for sublist in parcels_no_right], [sublist[0] for sublist in parcels_repeated_domain_right])
+    def get_parcel_right_relationship_errors(self, db, error_layer, table_name):
 
-    def get_duplicate_records_in_a_table(self, db, table, fields, id_field=ID_FIELD):
-        duplicate_records = db.duplicate_records_in_a_table(table, fields)
-        return [(sublist[0], sublist[1]) for sublist in duplicate_records]
+        query_parcels_with_no_right = db.logic_validation_queries['PARCELS_WITH_NO_RIGHT']['query']
+        parcels_no_right = db.execute_sql_query_dict_cursor(query_parcels_with_no_right)
 
-    def get_fractions_which_sum_is_not_one(self, db):
-        return db.get_fractions_which_sum_is_not_one()
+        query_parcels_with_repeated_domain_right = db.logic_validation_queries['PARCELS_WITH_REPEATED_DOMAIN_RIGHT']['query']
+        parcels_repeated_domain_right = db.execute_sql_query_dict_cursor(query_parcels_with_repeated_domain_right)
+
+        parcel_no_right_ids = [sublist[0] for sublist in parcels_no_right]
+        parcel_duplicated_domain_right_ids = [sublist[0] for sublist in parcels_repeated_domain_right]
+
+        if error_layer is None:
+            error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
+            pr = error_layer.dataProvider()
+            pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "parcel_id"), QVariant.Int),
+                              QgsField(QCoreApplication.translate("QGISUtils", "desc_error"), QVariant.String)])
+            error_layer.updateFields()
+
+        new_features = []
+        for parcel_id in parcel_no_right_ids:
+            new_feature = QgsVectorLayerUtils().createFeature(
+                error_layer,
+                QgsGeometry(),
+                {0: parcel_id,
+                 1: translated_strings.ERROR_PARCEL_WITH_NO_RIGHT})
+            new_features.append(new_feature)
+
+        for parcel_id in parcel_duplicated_domain_right_ids:
+            new_feature = QgsVectorLayerUtils().createFeature(
+                error_layer,
+                QgsGeometry(),
+                {0: parcel_id,
+                 1: translated_strings.ERROR_PARCEL_WITH_REPEATED_DOMAIN_RIGHT})
+            new_features.append(new_feature)
+
+        error_layer.dataProvider().addFeatures(new_features)
+
+        return len(new_features), error_layer
+
+    def get_duplicate_records_in_a_table(self, db, table, fields, error_layer,  id_field=ID_FIELD):
+        rule = 'DUPLICATE_RECORDS_IN_TABLE'
+        query = db.logic_validation_queries[rule]['query']
+        table_name = 'duplicate_records_in_{table}'.format(table=table)
+
+        # config query
+        query = query.format(schema=db.schema, table=table, fields=", ".join(fields), id=id_field)
+
+        if error_layer is None:
+            error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
+            pr = error_layer.dataProvider()
+            pr.addAttributes([QgsField(QCoreApplication.translate("QualityConfigStrings", "duplicate_ids"), QVariant.String),
+                              QgsField(QCoreApplication.translate("QualityConfigStrings", "count"), QVariant.Int)])
+            error_layer.updateFields()
+
+        records = db.execute_sql_query(query)
+
+        new_features = []
+        for record in records:
+            new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(), {0: record['duplicate_ids'], 1: record['duplicate_total']})
+            new_features.append(new_feature)
+
+        error_layer.dataProvider().addFeatures(new_features)
+
+        return error_layer
+
+
+    def get_fractions_which_sum_is_not_one(self, db, error_layer):
+        rule = 'GROUP_PARTY_FRACTIONS_SHOULD_SUM_1'
+        query = db.logic_validation_queries[rule]['query']
+        table_name = db.logic_validation_queries[rule]['table_name']
+
+        if error_layer is None:
+            error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
+            pr = error_layer.dataProvider()
+            pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "party_group"), QVariant.Int),
+                              QgsField(QCoreApplication.translate("QGISUtils", "members"), QVariant.String),
+                              QgsField(QCoreApplication.translate("QGISUtils", "fraction_sum"), QVariant.Double)])
+            error_layer.updateFields()
+
+        records = db.execute_sql_query(query)
+
+
+
+        new_features = []
+        for record in records:
+            new_feature = QgsVectorLayerUtils().createFeature(
+                error_layer,
+                QgsGeometry(),
+                {0: record['agrupacion'],
+                 1: ",".join([str(f) for f in record['miembros']]),
+                 2: record['suma_fracciones']})
+            new_features.append(new_feature)
+
+        error_layer.dataProvider().addFeatures(new_features)
+
+        return error_layer
 
     def col_party_type_natural_validation(self, db, rule, error_layer):
 
