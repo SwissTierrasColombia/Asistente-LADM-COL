@@ -125,7 +125,7 @@ class QGISUtils(QObject):
     create_progress_message_bar_emitted = pyqtSignal(str, QProgressBar)
     remove_error_group_requested = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
-    refresh_menus_requested = pyqtSignal(DBConnector, bool)
+    refresh_menus_requested = pyqtSignal(DBConnector)
     message_emitted = pyqtSignal(str, int) # Message, level
     message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
@@ -189,11 +189,11 @@ class QGISUtils(QObject):
 
         self.clear_status_bar_emitted.emit()
 
-    def refresh_menus(self, db, force):
+    def refresh_menus(self, db):
         """
         Chain the SIGNAL request to other modules.
         """
-        self.refresh_menus_requested.emit(db, force)
+        self.refresh_menus_requested.emit(db)
 
     def get_related_layers(self, layer_names, already_loaded):
         """
@@ -835,22 +835,32 @@ class QGISUtils(QObject):
             new_feature = QgsVectorLayerUtils().createFeature(target_point_layer, in_feature.geometry(), attrs)
             new_features.append(new_feature)
 
+        # Improve message for import from csv
+        initial_feature_count = target_point_layer.featureCount()
         target_point_layer.dataProvider().addFeatures(new_features)
-
         QgsProject.instance().addMapLayer(target_point_layer)
-        self.zoom_full_requested.emit()
-        self.message_emitted.emit(
-            QCoreApplication.translate("QGISUtils",
-                                       "{} points were added succesfully to '{}'.").format(len(new_features), target_layer_name),
-            Qgis.Info)
+
+        if target_point_layer.featureCount() > initial_feature_count:
+            self.zoom_full_requested.emit()
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "{} points were added succesfully to '{}'.").format(len(new_features),
+                                                                                               target_layer_name),
+                Qgis.Info)
+        else:
+            self.message_emitted.emit(
+                QCoreApplication.translate("QGISUtils",
+                                           "No point was added to '{}'.").format(target_layer_name),
+                Qgis.Warning)
+            return False
 
         return True
 
     def fill_topology_table_pointbfs(self, db, use_selection=True):
         res_layers = self.get_layers(db, {
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry':None},
-            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry':None},
-            BOUNDARY_POINT_TABLE: {'name':BOUNDARY_POINT_TABLE, 'geometry':None}}, load=True)
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
+            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None},
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None}}, load=True)
 
         boundary_layer = res_layers[BOUNDARY_TABLE]
         if boundary_layer is None:

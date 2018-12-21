@@ -7,7 +7,16 @@ from qgis.PyQt.QtCore import (QSettings,
 from .translator import PLUGIN_DIR
 from .table_mapping_config import (MORE_BOUNDARY_FACE_STRING_TABLE,
                                    POINT_BOUNDARY_FACE_STRING_TABLE,
-                                   LESS_TABLE)
+                                   LESS_TABLE,
+                                   PARCEL_TABLE,
+                                   DEPARTMENT_FIELD,
+                                   MUNICIPALITY_FIELD,
+                                   ZONE_FIELD,
+                                   PARCEL_NUMBER_FIELD,
+                                   PARCEL_NUMBER_BEFORE_FIELD,
+                                   COL_PARTY_TABLE,
+                                   COL_PARTY_TYPE_FIELD,
+                                   PARCEL_TYPE_FIELD)
 from ..utils.qt_utils import get_plugin_metadata
 
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
@@ -19,7 +28,6 @@ LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION = "17.07.2018"
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 DEFAULT_USE_ROADS_VALUE = False
-DEFAULT_POLYGON_AREA_TOLERANCE = 0.1 # square meters
 HELP_URL = "https://agenciaimplementacion.github.io/Asistente-LADM_COL"
 FIELD_MAPPING_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'field_mappings')
 MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE = 10
@@ -58,7 +66,7 @@ MODULE_HELP_MAPPING = {
     'create_market_research': 'property_record_card/Market_research.html'
 }
 # Configure Project Generator Dependency
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.6"
+PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.7"
 
 # If Asistente LADM_COL depends on a specific version of Project Generator
 #  (and only on that one), set to True
@@ -135,6 +143,26 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not overlap Buildings")
         self.CHECK_GAPS_IN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Plots should not have gaps")
         self.CHECK_MULTIPART_IN_RIGHT_OF_WAY = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not have multipart geometries")
+
+        # Logic consistency checks
+        self.CHECK_PARCEL_RIGHT_RELATIONSHIP = QCoreApplication.translate("TranslatableConfigStrings", "Parcel should have one and only one Right")
+        self.CHECK_FRACTION_SUM_FOR_PARTY_GROUPS = QCoreApplication.translate("TranslatableConfigStrings", "Group Party Fractions should sum 1")
+        self.FIND_DUPLICATE_RECORDS_IN_A_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Find duplicate records in a table")
+        self.CHECK_PARCEL_RIGHT_RELATIONSHIP = QCoreApplication.translate("TranslatableConfigStrings", "Parcel should have one and only one Right")
+
+        self.CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {department} field of the {parcel} table has two numerical character").format(department=DEPARTMENT_FIELD, parcel=PARCEL_TABLE)
+        self.CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings","Check that the {municipality} field of the {parcel} table has three numerical character").format(municipality=MUNICIPALITY_FIELD, parcel=PARCEL_TABLE)
+        self.CHECK_ZONE_CODE_HAS_TWO_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {zone} field of the {parcel} table has two numerical character").format(zone=ZONE_FIELD, parcel=PARCEL_TABLE)
+        self.CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_number} has 30 numerical characters").format(parcel_number=PARCEL_NUMBER_FIELD)
+        self.CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_number_before} has 20 numerical characters").format(parcel_number_before=PARCEL_NUMBER_BEFORE_FIELD)
+        self.CHECK_COL_PARTY_TYPE_NATURAL = QCoreApplication.translate("TranslatableConfigStrings", "Check {party_type} party in {table} with type 'Persona_Natural'").format(table=COL_PARTY_TABLE, party_type=COL_PARTY_TYPE_FIELD)
+        self.CHECK_COL_PARTY_TYPE_NO_NATURAL = QCoreApplication.translate("TranslatableConfigStrings", "Check {party_type} party in {table} with type 'Persona_No_Natural'").format(table=COL_PARTY_TABLE, party_type=COL_PARTY_TYPE_FIELD)
+        self.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_type} of {table} coincides with position 22 of the {parcel_number}").format(table=PARCEL_TABLE, parcel_number=PARCEL_NUMBER_FIELD, parcel_type=PARCEL_TYPE_FIELD)
+        self.CHECK_UEBAUNIT_PARCEL = QCoreApplication.translate("TranslatableConfigStrings", "Check that the Spatial Units associated with the {table} correspond according to the {parcel_type} of {table}").format(table=PARCEL_TABLE, parcel_type=PARCEL_TYPE_FIELD)
+
+        # Logic consistency errors
+        self.ERROR_PARCEL_WITH_NO_RIGHT = QCoreApplication.translate("TranslatableConfigStrings", "Parcel does not have any Right associated")
+        self.ERROR_PARCEL_WITH_REPEATED_DOMAIN_RIGHT = QCoreApplication.translate("TranslatableConfigStrings", "Parcel has more than one domain right associated")
 
         # Specific topology errors
         self.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Plot nodes should be covered by boundary points")

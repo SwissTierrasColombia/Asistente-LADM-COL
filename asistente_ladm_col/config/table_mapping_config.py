@@ -11,13 +11,25 @@ BFS_TABLE_BOUNDARY_POINT_FIELD = "punto_puntolindero"
 BOUNDARY_POINT_TABLE = "puntolindero"
 BOUNDARY_TABLE = "lindero"
 BUILDING_TABLE = "construccion"
+BUILDING_AREA_FIELD = "area_construccion"
+BUILDING_VALUATION_FIELD = "avaluo_construccion"
+BUILDING_UNIT_AREA_FIELD = "area_construida"
+BUILDING_UNIT_PRIVATE_AREA_FIELD = "area_privada_construida"
+BUILDING_UNIT_VALUATION_FIELD = "avaluo_unidad_construccion"
 BUILDING_UNIT_TABLE = "unidadconstruccion"
 BUSINESS_NAME_FIELD = "razon_social"
 CCLSOURCE_TABLE = "cclfuente"
 CCLSOURCE_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 CCLSOURCE_TABLE_SOURCE_FIELD = "lfuente"
-COL_PARTY_NAME_FIELD = "nombre"
+COL_PARTY_DOCUMENT_ID_FIELD = "documento_identidad"
 COL_PARTY_TABLE = "col_interesado"
+COL_PARTY_TYPE_FIELD = "tipo"
+COL_PARTY_DOC_TYPE_FIELD = "tipo_documento"
+COL_PARTY_FIRST_NAME_FIELD = "primer_nombre"
+COL_PARTY_SURNAME_FIELD = "primer_apellido"
+COL_PARTY_BUSINESS_NAME_FIELD = "razon_social"
+COL_PARTY_LEGAL_PARTY_FIELD = "tipo_interesado_juridico"
+COL_PARTY_NAME_FIELD = "nombre"
 CONTROL_POINT_TABLE = "puntocontrol"
 DEPARTMENT_FIELD = "departamento"
 DOCUMENT_ID_FIELD = "documento_identidad"
@@ -69,10 +81,17 @@ NIT_NUMBER_FIELD = "numero_nit"
 NUMBER_OF_FLOORS = "numero_pisos"
 NUPRE_FIELD = "nupre"
 PARCEL_NAME_FIELD = "nombre"
+PARCEL_NUMBER_FIELD = "numero_predial"
+PARCEL_NUMBER_BEFORE_FIELD = "numero_predial_anterior"
 PARCEL_TABLE = "predio"
+PARCEL_TYPE_FIELD = "tipo"
+PARCEL_TYPE_PH_OPTION = "PropiedadHorizontal.UnidadPredial"
+PARCEL_VALUATION_FIELD = "avaluo_predio"
 PARTY_DOCUMENT_TYPE_TABLE = "col_interesadodocumentotipo"
 PARTY_TYPE_TABLE = "la_interesadotipo"
 PLOT_TABLE = "terreno"
+PLOT_CALCULATED_AREA_FIELD = "area_calculada"
+PLOT_VALUATION_FIELD = "avaluo_terreno"
 POINT_AGREEMENT_TYPE_TABLE = "col_acuerdotipo"
 POINT_BOUNDARY_FACE_STRING_TABLE = "puntoccl"
 POINT_DESCRIPTION_TYPE_TABLE = "col_descripcionpuntotipo"
@@ -129,12 +148,6 @@ MARKET_RESEARCH_TABLE = "investigacionmercado"
 NUCLEAR_FAMILY_TABLE = "nucleofamiliar"
 NATURAL_PARTY_TABLE = "interesado_natural"
 LEGAL_PARTY_TABLE = "interesado_juridico"
-
-"""
-PROPERTY PARCEL TABLE
-"""
-PARCEL_TYPE_FIELD = "tipo"
-PARCEL_TYPE_PH_OPTION = "PropiedadHorizontal.UnidadPredial"
 
 
 NAMESPACE_PREFIX = {
@@ -245,6 +258,215 @@ LAYER_CONSTRAINTS = {
                                     TRUE
                             END""".format(parcel_type=PARCEL_TYPE_FIELD, plot_layer=PLOT_TABLE, building_layer=BUILDING_TABLE, building_unit_layer=BUILDING_UNIT_TABLE),
             'description': 'Parcel must have one or more spatial units associated with it. Check the rules.'
+        },
+        PARCEL_NUMBER_FIELD: {
+            'expression': """CASE
+                                WHEN  "{parcel_number}" IS NOT NULL THEN
+                                    CASE
+                                        WHEN length("{parcel_number}") != 30 OR "{parcel_type}" IS NULL OR regexp_match(to_string("{parcel_number}"), '^[0-9]*$') = 0  THEN
+                                            FALSE
+                                        WHEN "{parcel_type}" = 'NPH' THEN
+                                            substr("{parcel_number}", 22,1) = 0 
+                                        WHEN strpos( "{parcel_type}", 'PropiedadHorizontal.') != 0 THEN
+                                            substr("{parcel_number}", 22,1) = 9
+                                        WHEN strpos( "{parcel_type}", 'Condominio.') != 0 THEN
+                                            substr("{parcel_number}", 22,1) = 8
+                                        WHEN strpos("{parcel_type}", 'ParqueCementerio.') != 0 THEN
+                                            substr("{parcel_number}", 22,1) = 7
+                                        WHEN "{parcel_type}" = 'Mejora' THEN
+                                            substr("{parcel_number}", 22,1) = 5
+                                        WHEN "{parcel_type}" = 'Via' THEN
+                                            substr("{parcel_number}", 22,1) = 4
+                                        WHEN "{parcel_type}" = 'BienUsoPublico' THEN
+                                            substr("{parcel_number}", 22,1) = 3
+                                        ELSE
+                                            TRUE
+                                    END
+                                ELSE
+                                    TRUE
+                            END""".format(parcel_type=PARCEL_TYPE_FIELD, parcel_number=PARCEL_NUMBER_FIELD),
+            'description': 'El campo debe tener 30 caracteres numéricos y la posición 22 debe coincidir con el tipo de predio.'
+        }, PARCEL_NUMBER_BEFORE_FIELD: {
+            'expression': """CASE
+                                WHEN  "{parcel_number_before}" IS NULL THEN
+                                    TRUE
+                                WHEN length("{parcel_number_before}") != 20 OR regexp_match(to_string("{parcel_number_before}"), '^[0-9]*$') = 0 THEN
+                                    FALSE
+                                ELSE
+                                    TRUE
+                            END""".format(parcel_number_before=PARCEL_NUMBER_BEFORE_FIELD),
+            'description': 'El campo debe tener 20 caracteres numéricos.'
+        }, PARCEL_VALUATION_FIELD:{
+            'expression': """
+                            CASE
+                                WHEN  "{parcel_valuation}" IS NULL THEN
+                                    TRUE
+                                WHEN  "{parcel_valuation}" = 0 THEN
+                                    FALSE
+                                ELSE
+                                    TRUE
+                            END""".format(parcel_valuation=PARCEL_VALUATION_FIELD),
+            'description': 'El valor debe ser mayor a cero (0).'
+        }
+    },
+    COL_PARTY_TABLE: {
+        COL_PARTY_DOC_TYPE_FIELD: {
+            'expression': """
+                            CASE
+                                WHEN "{col_party_type}" IS NULL THEN
+                                    FALSE
+                                WHEN  "{col_party_type}" = 'Persona_Natural' THEN
+                                     "{col_party_doc_type}" !=  'NIT'
+                                WHEN  "{col_party_type}" = 'Persona_No_Natural' THEN
+                                     "{col_party_doc_type}" = 'NIT' OR "{col_party_doc_type}" = 'Secuencial_IGAC' OR "{col_party_doc_type}" = 'Secuencial_SNR' 
+                                ELSE
+                                    TRUE
+                            END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_doc_type=COL_PARTY_DOC_TYPE_FIELD),
+            'description': 'Si el tipo de interesado es "Persona Natural" entonces el tipo de documento debe ser diferente de \'NIT\'. Pero si el tipo de interesado es "Persona No Natural" entonces el tipo de documento debe ser \'NIT\' o \'Secuencial IGAC\' o \'Secuencial SNR\'. '
+        }, COL_PARTY_FIRST_NAME_FIELD:{
+            'expression': """
+                        CASE
+                            WHEN  "{col_party_type}" = 'Persona_Natural'  THEN
+                                 "{col_party_first_name}" IS NOT NULL AND length(trim("{col_party_first_name}")) != 0
+                            WHEN  "{col_party_type}" = 'Persona_No_Natural'  THEN
+                                 "{col_party_first_name}" IS NULL
+                            ELSE
+                                TRUE
+                        END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_first_name=COL_PARTY_FIRST_NAME_FIELD),
+            'description': 'Si el tipo de interesado es "Persona Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona No Natural" este campo debe ser NULL.'
+        }, COL_PARTY_SURNAME_FIELD: {
+            'expression': """
+                CASE
+                    WHEN  "{col_party_type}" = 'Persona_Natural' THEN
+                         "{col_party_surname}" IS NOT NULL AND length(trim("{col_party_surname}")) != 0
+                    WHEN  "{col_party_type}" = 'Persona_No_Natural' THEN
+                         "{col_party_surname}" IS NULL
+                    ELSE
+                        TRUE
+                END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_surname=COL_PARTY_SURNAME_FIELD),
+            'description': 'Si el tipo de interesado es "Persona Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona No Natural" este campo debe ser NULL.'
+        }, COL_PARTY_BUSINESS_NAME_FIELD:{
+            'expression': """
+                            CASE
+                                WHEN  "{col_party_type}" =  'Persona_No_Natural' THEN
+                                     "{col_party_business_name}" IS NOT NULL AND  length(trim( "{col_party_business_name}")) != 0
+                                WHEN  "{col_party_type}" =  'Persona_Natural' THEN
+                                     "{col_party_business_name}" IS NULL
+                                ELSE
+                                    TRUE
+                            END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_business_name=COL_PARTY_BUSINESS_NAME_FIELD),
+            'description': 'Si el tipo de interesado es "Persona No Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona Natural" este campo debe ser NULL.'
+
+        }, COL_PARTY_LEGAL_PARTY_FIELD:{
+            'expression': """
+                            CASE
+                                WHEN  "{col_party_type}" =  'Persona_No_Natural' THEN
+                                     "{col_party_legal_party}" IS NOT NULL
+                                WHEN  "{col_party_type}" =  'Persona_Natural' THEN
+                                     "{col_party_legal_party}" IS NULL                                     
+                                ELSE
+                                    TRUE
+                            END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_legal_party=COL_PARTY_LEGAL_PARTY_FIELD),
+            'description': 'Si el tipo de interesado es "Persona No Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona Natural" este campo debe ser NULL.'
+
+        }, COL_PARTY_DOCUMENT_ID_FIELD:{
+            'expression': """
+                            CASE
+                                WHEN  "{col_party_document_id}"  IS NULL THEN
+                                    FALSE
+                                WHEN length(trim("{col_party_document_id}")) = 0 THEN
+                                    FALSE
+                                ELSE
+                                    TRUE
+                            END""".format(col_party_document_id=COL_PARTY_DOCUMENT_ID_FIELD),
+            'description': 'El campo es obligatorio.'
+
+        }
+    },
+    PLOT_TABLE: {
+        PLOT_CALCULATED_AREA_FIELD: {
+            'expression': """
+                            CASE
+                                WHEN  "{plot_calculated_area}" IS NULL THEN
+                                    FALSE
+                                WHEN  "{plot_calculated_area}" = 0 THEN
+                                    FALSE
+                                ELSE
+                                    TRUE
+                            END""".format(plot_calculated_area = PLOT_CALCULATED_AREA_FIELD),
+            'description': 'El valor debe ser mayor a cero (0).'
+        }, PLOT_VALUATION_FIELD: {
+            'expression': """
+                            CASE
+                                WHEN  "{plot_valuation_field}" IS NULL THEN
+                                    FALSE
+                                WHEN  "{plot_valuation_field}" = 0 THEN
+                                    FALSE
+                                ELSE
+                                    TRUE
+                            END""".format(plot_valuation_field = PLOT_VALUATION_FIELD),
+            'description': 'El valor debe ser mayor a cero (0).'
+        }
+    },
+    BUILDING_TABLE: {
+        BUILDING_AREA_FIELD: {
+            'expression': """
+                    CASE
+                        WHEN  "{building_area}" IS NULL THEN
+                            TRUE
+                        WHEN  "{building_area}" = 0 THEN
+                            FALSE
+                        ELSE
+                            TRUE
+                    END""".format(building_area=BUILDING_AREA_FIELD),
+            'description': 'El valor debe ser mayor a cero (0).'
+        }, BUILDING_VALUATION_FIELD: {
+            'expression': """
+                    CASE
+                        WHEN  "{building_valuation_field}" IS NULL THEN
+                            FALSE
+                        WHEN  "{building_valuation_field}" = 0 THEN
+                            FALSE
+                        ELSE
+                            TRUE
+                    END""".format(building_valuation_field=BUILDING_VALUATION_FIELD),
+            'description': 'El valor debe ser mayor a cero (0).'
+        }
+    },
+    BUILDING_UNIT_TABLE: {
+        BUILDING_UNIT_AREA_FIELD: {
+            'expression': """
+                    CASE
+                        WHEN  "{building_unit_area}" IS NULL THEN
+                            TRUE
+                        WHEN  "{building_unit_area}" = 0 THEN
+                            FALSE
+                        ELSE
+                            TRUE
+                    END""".format(building_unit_area=BUILDING_UNIT_AREA_FIELD),
+            'description': 'El valor debe ser mayor a cero (0).'
+        }, BUILDING_UNIT_PRIVATE_AREA_FIELD: {
+            'expression': """
+                    CASE
+                        WHEN  "{building_unit_private_area}" IS NULL THEN
+                            TRUE
+                        WHEN  "{building_unit_private_area}" = 0 THEN
+                            FALSE
+                        ELSE
+                            TRUE
+                    END""".format(building_unit_private_area=BUILDING_UNIT_PRIVATE_AREA_FIELD),
+            'description': 'El valor debe ser mayor a cero (0).'
+        }, BUILDING_UNIT_VALUATION_FIELD: {
+            'expression': """
+                    CASE
+                        WHEN  "{building_unit_valuation_field}" IS NULL THEN
+                            TRUE
+                        WHEN  "{building_unit_valuation_field}" = 0 THEN
+                            FALSE
+                        ELSE
+                            TRUE
+                    END""".format(building_unit_valuation_field=BUILDING_UNIT_VALUATION_FIELD),
+            'description': 'El valor debe ser mayor a cero (0).'
         }
     }
 }
@@ -274,4 +496,128 @@ FORM_GROUPS = {
             'after_attr': 'predio_tipo'
         }
     }
+}
+
+
+"""
+we define the minimum structure of a table to validate that there are no repeated records
+"""
+LOGIC_CONSISTENCY_TABLES = {
+    # Geometric tables
+    BOUNDARY_POINT_TABLE: ['acuerdo',
+                           'definicion_punto',
+                           'descripcion_punto',
+                           'exactitud_vertical',
+                           'exactitud_horizontal',
+                           'confiabilidad',
+                           'nombre_punto',
+                           'posicion_interpolacion',
+                           'monumentacion',
+                           'puntotipo',
+                           'localizacion_original'],
+    SURVEY_POINT_TABLE: ['tipo_punto_levantamiento',
+                         'definicion_punto',
+                         'exactitud_vertical',
+                         'exactitud_horizontal',
+                         'nombre_punto',
+                         'posicion_interpolacion',
+                         'monumentacion',
+                         'puntotipo',
+                         'localizacion_original'],
+    CONTROL_POINT_TABLE: ['nombre_punto',
+                          'exactitud_vertical',
+                          'exactitud_horizontal',
+                          'tipo_punto_control',
+                          'confiabilidad',
+                          'posicion_interpolacion',
+                          'monumentacion',
+                          'puntotipo',
+                          'localizacion_original'],
+    BOUNDARY_TABLE: [LENGTH_FIELD_BOUNDARY_TABLE,
+                     'localizacion_textual',
+                     'geometria'],
+    PLOT_TABLE: ['area_registral',
+                 'area_calculada',
+                 'avaluo_terreno',
+                 'dimension',
+                 'etiqueta',
+                 'relacion_superficie',
+                 'nivel',
+                 'punto_referencia',
+                 'poligono_creado'],
+    BUILDING_TABLE: ['avaluo_construccion',
+                     'area_construccion',
+                     'tipo',
+                     'dimension',
+                     'etiqueta',
+                     'relacion_superficie',
+                     'nivel',
+                     'punto_referencia',
+                     'poligono_creado'],
+    BUILDING_UNIT_TABLE: ['avaluo_unidad_construccion',
+                          'numero_pisos',
+                          'area_construida',
+                          'area_privada_construida',
+                          'construccion',
+                          'tipo',
+                          'dimension',
+                          'etiqueta',
+                          'relacion_superficie',
+                          'nivel',
+                          'punto_referencia',
+                          'poligono_creado'],
+    # Alphanumeric tables
+    COL_PARTY_TABLE: ['documento_identidad',
+                      'tipo_documento'],
+    PARCEL_TABLE: ['departamento',
+                   'municipio',
+                   'zona',
+                   'nupre',
+                   'fmi',
+                   'numero_predial',
+                   'numero_predial_anterior',
+                   'avaluo_predio',
+                   'copropiedad',
+                   'nombre',
+                   'tipo'],
+    RIGHT_TABLE: ['tipo',
+                  'codigo_registral_derecho',
+                  'descripcion',
+                  'comprobacion_comparte',
+                  'uso_efectivo',
+                  'r_espacio_de_nombres',
+                  'interesado_la_agrupacion_interesados',
+                  'interesado_col_interesado',
+                  'unidad_la_baunit',
+                  'unidad_predio'],
+    RESTRICTION_TABLE: ['interesado_requerido',
+                        'tipo',
+                        'codigo_registral_restriccion',
+                        'descripcion',
+                        'comprobacion_comparte',
+                        'uso_efectivo',
+                        'interesado_la_agrupacion_interesados',
+                        'interesado_col_interesado',
+                        'unidad_la_baunit',
+                        'unidad_predio'],
+    RESPONSIBILITY_TABLE: ['tipo',
+                           'codigo_registral_responsabilidad',
+                           'descripcion',
+                           'comprobacion_comparte',
+                           'uso_efectivo',
+                           'interesado_la_agrupacion_interesados',
+                           'interesado_col_interesado',
+                           'unidad_la_baunit',
+                           'unidad_predio'],
+    ADMINISTRATIVE_SOURCE_TABLE: ['texto',
+                                  'tipo',
+                                  'codigo_registral_transaccion',
+                                  'nombre',
+                                  'fecha_aceptacion',
+                                  'estado_disponibilidad',
+                                  'sello_inicio_validez',
+                                  'tipo_principal',
+                                  'fecha_grabacion',
+                                  'fecha_entrega',
+                                  'oficialidad']
 }

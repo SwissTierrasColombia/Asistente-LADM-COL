@@ -176,11 +176,16 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.edit_parcel()
 
     def edit_parcel(self):
-
         if self._plot_layer.selectedFeatureCount() == 0 and self._building_layer.selectedFeatureCount() == 0 and self._building_unit_layer.selectedFeatureCount() == 0 :
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
-                                           "Please select one Plot or at least one Building or at least one Building unit"),
+                                           "First select at least one Plot, one Building or one Building unit"),
+                Qgis.Warning)
+            return
+        elif self._plot_layer.selectedFeatureCount() > 1:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("CreateParcelCadastreWizard",
+                                           "First select only one Plot"),
                 Qgis.Warning)
             return
 

@@ -104,6 +104,11 @@ def remove_readonly(func, path, _):
         pass
 
 
+def normalize_local_url(url):
+    return url[1:] if url.startswith("/") else url
+
+
+
 class NetworkError(RuntimeError):
     def __init__(self, error_code, msg):
         self.msg = msg
