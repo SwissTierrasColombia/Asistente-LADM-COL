@@ -26,6 +26,7 @@ class LogicChecks(QObject):
     def get_parcel_right_relationship_errors(self, db, error_layer, table_name):
 
         query_parcels_with_no_right = db.logic_validation_queries['PARCELS_WITH_NO_RIGHT']['query']
+        table = db.logic_validation_queries['PARCELS_WITH_NO_RIGHT']['table']
         parcels_no_right = db.execute_sql_query_dict_cursor(query_parcels_with_no_right)
 
         query_parcels_with_repeated_domain_right = db.logic_validation_queries['PARCELS_WITH_REPEATED_DOMAIN_RIGHT']['query']
@@ -37,11 +38,11 @@ class LogicChecks(QObject):
         if error_layer is None:
             error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "parcel_id"), QVariant.Int),
-                              QgsField(QCoreApplication.translate("QGISUtils", "desc_error"), QVariant.String)])
+            pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "{table}_id").format(table=table), QVariant.Int),
+                              QgsField(QCoreApplication.translate("QGISUtils", "error_type"), QVariant.String)])
             error_layer.updateFields()
 
-        new_features = []
+        new_features = list()
         for parcel_id in parcel_no_right_ids:
             new_feature = QgsVectorLayerUtils().createFeature(
                 error_layer,
@@ -65,7 +66,7 @@ class LogicChecks(QObject):
     def get_duplicate_records_in_a_table(self, db, table, fields, error_layer,  id_field=ID_FIELD):
         rule = 'DUPLICATE_RECORDS_IN_TABLE'
         query = db.logic_validation_queries[rule]['query']
-        table_name = 'duplicate_records_in_{table}'.format(table=table)
+        table_name = QCoreApplication.translate("LogicChecksConfigStrings", "Duplicate records in '{table}'").format(table=table)
 
         # config query
         query = query.format(schema=db.schema, table=table, fields=", ".join(fields), id=id_field)
@@ -73,13 +74,13 @@ class LogicChecks(QObject):
         if error_layer is None:
             error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField(QCoreApplication.translate("QualityConfigStrings", "duplicate_ids"), QVariant.String),
-                              QgsField(QCoreApplication.translate("QualityConfigStrings", "count"), QVariant.Int)])
+            pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "duplicate_ids"), QVariant.String),
+                              QgsField(QCoreApplication.translate("QGISUtils", "count"), QVariant.Int)])
             error_layer.updateFields()
 
         records = db.execute_sql_query(query)
 
-        new_features = []
+        new_features = list()
         for record in records:
             new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(), {0: record['duplicate_ids'], 1: record['duplicate_total']})
             new_features.append(new_feature)
@@ -103,10 +104,7 @@ class LogicChecks(QObject):
             error_layer.updateFields()
 
         records = db.execute_sql_query(query)
-
-
-
-        new_features = []
+        new_features = list()
         for record in records:
             new_feature = QgsVectorLayerUtils().createFeature(
                 error_layer,
@@ -121,20 +119,20 @@ class LogicChecks(QObject):
         return error_layer
 
     def col_party_type_natural_validation(self, db, rule, error_layer):
-
         query = db.logic_validation_queries[rule]['query']
         table_name = db.logic_validation_queries[rule]['table_name']
+        table = db.logic_validation_queries[rule]['table']
 
         if error_layer is None:
             error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField(QCoreApplication.translate("QualityConfigStrings", "id"), QVariant.Int),
-                              QgsField(QCoreApplication.translate("QualityConfigStrings", "desc_error"), QVariant.String)])
+            pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "{table}_id").format(table=table), QVariant.Int),
+                              QgsField(QCoreApplication.translate("QGISUtils", "error_type"), QVariant.String)])
             error_layer.updateFields()
 
         records = db.execute_sql_query(query)
 
-        new_features = []
+        new_features = list()
         for record in records:
             errors_list = list()
             if record[COL_PARTY_BUSINESS_NAME_FIELD] > 0:
@@ -160,17 +158,18 @@ class LogicChecks(QObject):
 
         query = db.logic_validation_queries[rule]['query']
         table_name = db.logic_validation_queries[rule]['table_name']
+        table = db.logic_validation_queries[rule]['table']
 
         if error_layer is None:
             error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField(QCoreApplication.translate("QualityConfigStrings", "id"), QVariant.Int),
-                              QgsField(QCoreApplication.translate("QualityConfigStrings", "desc_error"), QVariant.String)])
+            pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "{table}_id").format(table=table), QVariant.Int),
+                              QgsField(QCoreApplication.translate("QGISUtils", "error_type"), QVariant.String)])
             error_layer.updateFields()
 
         records = db.execute_sql_query(query)
 
-        new_features = []
+        new_features = list()
         for record in records:
             errors_list = list()
             if record[COL_PARTY_BUSINESS_NAME_FIELD] > 0:
@@ -196,17 +195,18 @@ class LogicChecks(QObject):
 
         query = db.logic_validation_queries[rule]['query']
         table_name = db.logic_validation_queries[rule]['table_name']
+        table = db.logic_validation_queries[rule]['table']
 
         if error_layer is None:
             error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField(QCoreApplication.translate("QualityConfigStrings", "id"), QVariant.Int),
-                              QgsField(QCoreApplication.translate("QualityConfigStrings", "desc_error"), QVariant.String)])
+            pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "{table}_id").format(table=table), QVariant.Int),
+                              QgsField(QCoreApplication.translate("QGISUtils", "error_type"), QVariant.String)])
             error_layer.updateFields()
 
         records = db.execute_sql_query(query)
 
-        new_features = []
+        new_features = list()
         for record in records:
             mgs_error =  None
             if record[PARCEL_TYPE_FIELD] == 'NPH':
@@ -234,22 +234,22 @@ class LogicChecks(QObject):
     def uebaunit_parcel_validation(self, db, rule, error_layer):
         query = db.logic_validation_queries[rule]['query']
         table_name = db.logic_validation_queries[rule]['table_name']
+        table = db.logic_validation_queries[rule]['table']
 
         if error_layer is None:
             error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField(QCoreApplication.translate("QualityConfigStrings", "id"), QVariant.Int),
-                              QgsField(QCoreApplication.translate("QualityConfigStrings", "associated_parcels"), QVariant.Int),
-                              QgsField(QCoreApplication.translate("QualityConfigStrings", "associated_buildings"), QVariant.Int),
-                              QgsField(QCoreApplication.translate("QualityConfigStrings", "associated_building_units"), QVariant.Int),
-                              QgsField(QCoreApplication.translate("QualityConfigStrings", "desc_error"), QVariant.String)])
+            pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "{table}_id").format(table=table), QVariant.Int),
+                              QgsField(QCoreApplication.translate("QGISUtils", "associated_parcels"), QVariant.Int),
+                              QgsField(QCoreApplication.translate("QGISUtils", "associated_buildings"), QVariant.Int),
+                              QgsField(QCoreApplication.translate("QGISUtils", "associated_building_units"), QVariant.Int),
+                              QgsField(QCoreApplication.translate("QGISUtils", "error_type"), QVariant.String)])
             error_layer.updateFields()
 
         records = db.execute_sql_query(query)
 
-        new_features = []
+        new_features = list()
         for record in records:
-            errors_list = list()
             mgs_error = None
 
             plot_count = record['sum_t'] # count of plots associated to the parcel

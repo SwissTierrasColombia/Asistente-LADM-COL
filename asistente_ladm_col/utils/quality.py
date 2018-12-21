@@ -2073,8 +2073,8 @@ class QualityUtils(QObject):
         if error_layer_exist is False:
             error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
             pr = error_layer.dataProvider()
-            pr.addAttributes([QgsField(QCoreApplication.translate("QualityConfigStrings", "id"), QVariant.Int),
-                              QgsField(QCoreApplication.translate("QualityConfigStrings", "desc_error"), QVariant.String)])
+            pr.addAttributes([QgsField(QCoreApplication.translate("QualityConfigStrings", "{table}_id".format(table=table)), QVariant.Int),
+                              QgsField(QCoreApplication.translate("QualityConfigStrings", "error_type"), QVariant.String)])
             error_layer.updateFields()
 
         records = db.execute_sql_query(query)
@@ -2091,7 +2091,6 @@ class QualityUtils(QObject):
                 added_layer = self.add_error_layer(error_layer)
             else:
                 added_layer = error_layer
-
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
