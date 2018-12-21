@@ -202,7 +202,7 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
 
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreateRestrictionCadastreWizard",
-                                               "The new restriction (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!".format(restriction_id, administrative_source_ids[0])),
+                                               "The new restriction (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!").format(restriction_id, administrative_source_ids[0]),
                     Qgis.Info)
 
         self._restriction_layer.committedFeaturesAdded.disconnect()

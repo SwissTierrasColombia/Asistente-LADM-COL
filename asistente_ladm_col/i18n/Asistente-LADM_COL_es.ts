@@ -14,6 +14,7 @@
     </message>
     <message>
         <location filename="../ui/about_dialog.ui" line="29"/>
+        <location filename="../gui/about_dialog.py" line="75"/>
         <source>Download help for offline access</source>
         <translation>Descargar ayuda para acceso offline</translation>
     </message>
@@ -39,6 +40,11 @@
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://qgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS&lt;/span&gt;&lt;/a&gt; plugin to capture and maintain data according to &lt;a href=&quot;https://github.com/AgenciaImplementacion/LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;LADM_COL&lt;/span&gt;&lt;/a&gt; as well as to generate &lt;a href=&quot;http://www.interlis.ch/index_e.htm&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INTERLIS&lt;/span&gt;&lt;/a&gt; transfer files (.XTF).&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Licence: &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License v3.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Source code repository at &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;A project by&lt;br/&gt;&lt;a href=&quot;https://www.proadmintierra.info/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Agencia de Implementación&lt;/span&gt;&lt;/a&gt; (&lt;a href=&quot;http://bsf-swissphoto.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;BSF-Swissphoto AG&lt;/span&gt;&lt;/a&gt; - &lt;a href=&quot;http://www.incige.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INCIGE S.A.S&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Plugin de &lt;a href=&quot;http://qgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS&lt;/span&gt;&lt;/a&gt; para capturar y mantener datos conformes con &lt;a href=&quot;https://github.com/AgenciaImplementacion/LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;LADM_COL&lt;/span&gt;&lt;/a&gt; y para generar archivos de intercambio de &lt;a href=&quot;http://www.interlis.ch/index_e.htm&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INTERLIS&lt;/span&gt;&lt;/a&gt; (.XTF).&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Licencia: &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License v3.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Repositorio de código fuente en &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Un proyecto de&lt;br/&gt;&lt;a href=&quot;https://www.proadmintierra.info/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Agencia de Implementación&lt;/span&gt;&lt;/a&gt; (&lt;a href=&quot;http://bsf-swissphoto.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;BSF-Swissphoto AG&lt;/span&gt;&lt;/a&gt; - &lt;a href=&quot;http://www.incige.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INCIGE S.A.S&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../gui/about_dialog.py" line="72"/>
+        <source>Open help from local folder</source>
+        <translation>Abrir ayuda desde carpeta local</translation>
     </message>
     <message>
         <location filename="../gui/about_dialog.py" line="97"/>
@@ -991,6 +997,11 @@
         <source>Please select an Administrative source</source>
         <translation>Primero selecciona una Fuente Administrativa</translation>
     </message>
+    <message>
+        <location filename="../gui/create_responsibility_cadastre_wizard.py" line="204"/>
+        <source>The new responsibility (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!</source>
+        <translation>¡La nueva responsabilidad (t_id={}) se creó exitosamente y fue asociada con su fuente administrativa correspondiente (t_id={})!</translation>
+    </message>
 </context>
 <context>
     <name>CreateRestrictionCadastreWizard</name>
@@ -1029,6 +1040,11 @@
         <source>Please select an Administrative source</source>
         <translation>Primero selecciona una Fuente Administrativa</translation>
     </message>
+    <message>
+        <location filename="../gui/create_restriction_cadastre_wizard.py" line="204"/>
+        <source>The new restriction (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!</source>
+        <translation>¡La nueva restricción (t_id={}) se creó exitosamente y fue asociada con su fuente administrativa correspondiente (t_id={})!</translation>
+    </message>
 </context>
 <context>
     <name>CreateRightCadastreWizard</name>
@@ -1066,6 +1082,11 @@
         <location filename="../gui/create_right_cadastre_wizard.py" line="173"/>
         <source>Please select an Administrative source</source>
         <translation>Primero selecciona una Fuente Administrativa</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_right_cadastre_wizard.py" line="204"/>
+        <source>The new right (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!</source>
+        <translation>¡El nuevo derecho (t_id={}) se creó exitosamente y fue asociado con su fuente administrativa correspondiente (t_id={})!</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="831"/>
