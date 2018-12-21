@@ -153,8 +153,8 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
         self.iface.actionAddFeature().trigger()
 
         self.iface.messageBar().pushMessage('Asistente LADM_COL',
-            QCoreApplication.translate('CreateBuildingUnitCadastreWizard',
-                                       'You can now start capturing building units digitizing on the map...'),
+            QCoreApplication.translate("CreateBuildingUnitCadastreWizard",
+                                       "You can now start capturing building units digitizing on the map..."),
             Qgis.Info)
 
     def save_settings(self):

@@ -127,6 +127,47 @@ class DialogQuality(QDialog, DIALOG_UI):
                 }]
             }
 
+        self.items_dict[QCoreApplication.translate("DialogQuality", "Logic consistency rules")] = {
+                'icon': 'tables',
+                'rules': [{
+                    'id': 'check_parcel_right_relationship',
+                    'text': translated_strings.CHECK_PARCEL_RIGHT_RELATIONSHIP
+                }, {
+                    'id': 'find_duplicate_records_in_a_table',
+                    'text': translated_strings.FIND_DUPLICATE_RECORDS_IN_A_TABLE
+                }, {
+                    'id': 'check_fraction_sum_for_party_groups',
+                    'text': translated_strings.CHECK_FRACTION_SUM_FOR_PARTY_GROUPS
+                }, {
+                    'id': 'check_department_code_has_two_numerical_characters',
+                    'text': translated_strings.CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS
+                }, {
+                    'id': 'check_municipality_code_has_three_numerical_characters',
+                    'text': translated_strings.CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS
+                }, {
+                    'id': 'check_zone_code_has_two_numerical_characters',
+                    'text': translated_strings.CHECK_ZONE_CODE_HAS_TWO_NUMERICAL_CHARACTERS
+                }, {
+                    'id': 'check_parcel_number_has_30_numerical_characters',
+                    'text': translated_strings.CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS
+                }, {
+                    'id': 'check_parcel_number_before_has_20_numerical_characters',
+                    'text': translated_strings.CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS
+                }, {
+                    'id': 'check_col_party_natural_type',
+                    'text': translated_strings.CHECK_COL_PARTY_NATURAL_TYPE
+                }, {
+                    'id': 'check_col_party_legal_type',
+                    'text': translated_strings.CHECK_COL_PARTY_LEGAL_TYPE
+                }, {
+                    'id': 'check_parcel_type_and_22_position_of_parcel_number',
+                    'text': translated_strings.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER
+                }, {
+                    'id': 'check_uebaunit_parcel',
+                    'text': translated_strings.CHECK_UEBAUNIT_PARCEL
+                }]
+            }
+
         self.load_items()
 
     def load_items(self):
@@ -208,6 +249,30 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_multiparts_in_right_of_way(self._db)
                 elif id == 'check_plot_nodes_covered_by_boundary_points':
                     self.quality.check_plot_nodes_covered_by_boundary_points(self._db)
+                elif id == 'check_parcel_right_relationship':
+                    self.quality.check_parcel_right_relationship(self._db)
+                elif id == 'find_duplicate_records_in_a_table':
+                    self.quality.find_duplicate_records_in_a_table(self._db)
+                elif id == 'check_fraction_sum_for_party_groups':
+                    self.quality.check_fraction_sum_for_party_groups(self._db)
+                elif id == 'check_department_code_has_two_numerical_characters':
+                    self.quality.basic_logic_validations(self._db, 'DEPARTMENT_CODE_VALIDATION')
+                elif id == 'check_municipality_code_has_three_numerical_characters':
+                    self.quality.basic_logic_validations(self._db, 'MUNICIPALITY_CODE_VALIDATION')
+                elif id == 'check_zone_code_has_two_numerical_characters':
+                    self.quality.basic_logic_validations(self._db, 'ZONE_CODE_VALIDATION')
+                elif id == 'check_parcel_number_has_30_numerical_characters':
+                    self.quality.basic_logic_validations(self._db, 'PARCEL_NUMBER_VALIDATION')
+                elif id == 'check_parcel_number_before_has_20_numerical_characters':
+                    self.quality.basic_logic_validations(self._db, 'PARCEL_NUMBER_BEFORE_VALIDATION')
+                elif id == 'check_col_party_natural_type':
+                    self.quality.advance_logic_validations(self._db, 'COL_PARTY_TYPE_NATURAL_VALIDATION')
+                elif id == 'check_col_party_legal_type':
+                    self.quality.advance_logic_validations(self._db, 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION')
+                elif id == 'check_parcel_type_and_22_position_of_parcel_number':
+                    self.quality.advance_logic_validations(self._db, 'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION')
+                elif id == 'check_uebaunit_parcel':
+                    self.quality.advance_logic_validations(self._db, 'UEBAUNIT_PARCEL_VALIDATION')
 
             iterator += 1
 

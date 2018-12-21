@@ -70,7 +70,7 @@ class SourceHandler(QObject):
         res, msg = dlg.is_source_service_valid()
         if not res:
             msg['text'] = QCoreApplication.translate("SourceHandler",
-                "No file could be uploaded to the server. You can do it later from the 'Upload Pending Source Files' menu. Reason: {}".format(msg['text']))
+                "No file could be uploaded to the server. You can do it later from the 'Upload Pending Source Files' menu. Reason: {}").format(msg['text'])
             self.message_with_duration_emitted.emit(
                 msg['text'],
                 msg['level'],

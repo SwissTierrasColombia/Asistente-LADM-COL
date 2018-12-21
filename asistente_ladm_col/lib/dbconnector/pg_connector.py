@@ -27,6 +27,28 @@ from .db_connector import DBConnector
 from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
                                       PLUGIN_NAME,
                                       PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO)
+from ...config.table_mapping_config import (ID_FIELD,
+                                            PARCEL_TABLE,
+                                            DEPARTMENT_FIELD,
+                                            MUNICIPALITY_FIELD,
+                                            ZONE_FIELD,
+                                            PARCEL_NUMBER_FIELD,
+                                            PARCEL_NUMBER_BEFORE_FIELD,
+                                            PARCEL_TYPE_FIELD,
+                                            COL_PARTY_TABLE,
+                                            COL_PARTY_TYPE_FIELD,
+                                            COL_PARTY_BUSINESS_NAME_FIELD,
+                                            COL_PARTY_LEGAL_PARTY_FIELD,
+                                            COL_PARTY_SURNAME_FIELD,
+                                            COL_PARTY_FIRST_NAME_FIELD,
+                                            COL_PARTY_DOC_TYPE_FIELD,
+                                            UEBAUNIT_TABLE,
+                                            UEBAUNIT_TABLE_PARCEL_FIELD,
+                                            UEBAUNIT_TABLE_PLOT_FIELD,
+                                            UEBAUNIT_TABLE_BUILDING_FIELD,
+                                            UEBAUNIT_TABLE_BUILDING_UNIT_FIELD,
+                                            FRACTION_TABLE,
+                                            MEMBERS_TABLE)
 from ...utils.model_parser import ModelParser
 
 
@@ -41,6 +63,177 @@ class PGConnector(DBConnector):
         self.provider = 'postgres'
         self._tables_info = None
         self.model_parser = None
+
+        # Logical validations queries
+        self.logic_validation_queries = {
+            'DEPARTMENT_CODE_VALIDATION': {
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=2 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=DEPARTMENT_FIELD),
+                'desc_error': 'Deparment code must have two numerical characters.',
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
+                'table': PARCEL_TABLE},
+            'MUNICIPALITY_CODE_VALIDATION': {
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=3 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=MUNICIPALITY_FIELD),
+                'desc_error': 'Municipality code must have three numerical characters.',
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
+                'table': PARCEL_TABLE},
+            'ZONE_CODE_VALIDATION': {
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=2 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=ZONE_FIELD),
+                'desc_error': 'Zone code must have two numerical characters.',
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
+                'table': PARCEL_TABLE},
+            'PARCEL_NUMBER_VALIDATION': {
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=30 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=PARCEL_NUMBER_FIELD),
+                'desc_error': 'Parcel number must have 30 numerical characters.',
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
+                'table': PARCEL_TABLE},
+            'PARCEL_NUMBER_BEFORE_VALIDATION': {
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=20 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=PARCEL_NUMBER_BEFORE_FIELD),
+                'desc_error': 'Parcel number before must have 20 numerical characters.',
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings","Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
+                'table': PARCEL_TABLE},
+            'COL_PARTY_TYPE_NATURAL_VALIDATION': {
+                'query': """
+                        SELECT p.{id},
+                               CASE WHEN p.{business_name} IS NOT NULL THEN 1 ELSE 0 END AS "{business_name}",
+                               CASE WHEN p.{col_party_legal_party} IS NOT NULL THEN 1 ELSE 0 END "{col_party_legal_party}",
+                               CASE WHEN p.{col_party_surname} IS NULL OR length(trim(p.{col_party_surname})) > 0 is False THEN 1 ELSE 0 END "{col_party_surname}",
+                               CASE WHEN p.{col_party_first_name} IS NULL OR length(trim(p.{col_party_first_name})) > 0 is False THEN 1 ELSE 0 END "{col_party_first_name}",
+                               CASE WHEN p.{col_party_doc_type} = 'NIT' THEN 1 ELSE 0 END "{col_party_doc_type}"
+                        FROM {schema}.{table} p
+                        WHERE p.{col_party_type} = 'Persona_Natural' AND (
+                            p.{business_name} IS NOT NULL OR
+                            p.{col_party_legal_party} IS NOT NULL OR
+                            p.{col_party_surname} IS NULL OR
+                            length(trim(p.{col_party_surname})) > 0 is False OR
+                            p.{col_party_first_name} IS NULL OR 
+                            length(trim(p.{col_party_first_name})) > 0 is False OR
+                            p.{col_party_doc_type} = 'NIT')
+                """.format(schema=schema, table=COL_PARTY_TABLE, id=ID_FIELD, col_party_type=COL_PARTY_TYPE_FIELD,
+                           business_name=COL_PARTY_BUSINESS_NAME_FIELD,
+                           col_party_legal_party=COL_PARTY_LEGAL_PARTY_FIELD, col_party_surname=COL_PARTY_SURNAME_FIELD,
+                           col_party_first_name=COL_PARTY_FIRST_NAME_FIELD,
+                           col_party_doc_type=COL_PARTY_DOC_TYPE_FIELD),
+                'desc_error': 'Party with type \'Persona_Natural\' is invalid.',
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=COL_PARTY_TABLE),
+                'table': COL_PARTY_TABLE},
+            'COL_PARTY_TYPE_NO_NATURAL_VALIDATION': {
+                'query': """
+                            SELECT p.t_id,
+                                   CASE WHEN p.{business_name} IS NULL OR length(trim(p.{business_name})) > 0 is False THEN 1 ELSE 0 END AS "{business_name}",
+                                   CASE WHEN p.{col_party_legal_party} IS NULL THEN 1 ELSE 0 END AS "{col_party_legal_party}",
+                                   CASE WHEN p.{col_party_surname} IS NOT NULL THEN 1 ELSE 0 END AS "{col_party_surname}",
+                                   CASE WHEN p.{col_party_first_name} IS NOT NULL THEN 1 ELSE 0 END AS "{col_party_first_name}",
+                                   CASE WHEN p.{col_party_doc_type} NOT IN ('NIT', 'Secuencial_IGAC', 'Secuencial_SNR') THEN 1 ELSE 0 END AS "{col_party_doc_type}"
+                            FROM {schema}.{table} p
+                            WHERE p.{col_party_type} = 'Persona_No_Natural' AND (
+                                p.{business_name} IS NULL OR
+                                length(trim(p.{business_name})) > 0 is False OR
+                                p.{col_party_legal_party} IS NULL OR
+                                p.{col_party_surname} IS NOT NULL OR
+                                p.{col_party_first_name} IS NOT NULL OR
+                                p.{col_party_doc_type} NOT IN ('NIT', 'Secuencial_IGAC', 'Secuencial_SNR'))
+                        """.format(schema=schema, table=COL_PARTY_TABLE, id=ID_FIELD,
+                                   col_party_type=COL_PARTY_TYPE_FIELD, business_name=COL_PARTY_BUSINESS_NAME_FIELD,
+                                   col_party_legal_party=COL_PARTY_LEGAL_PARTY_FIELD,
+                                   col_party_surname=COL_PARTY_SURNAME_FIELD,
+                                   col_party_first_name=COL_PARTY_FIRST_NAME_FIELD,
+                                   col_party_doc_type=COL_PARTY_DOC_TYPE_FIELD),
+                'desc_error': 'Party with type \'Persona_No_Natural\' is invalid.',
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=COL_PARTY_TABLE),
+                'table': COL_PARTY_TABLE},
+            'UEBAUNIT_PARCEL_VALIDATION': {
+                'query': """
+                    SELECT * FROM (
+                        SELECT {id}, {parcel_type}, sum(count_terreno) sum_t, sum(count_construccion) sum_c, sum(count_unidadconstruccion) sum_uc FROM (
+                            SELECT p.{id},
+                                    p.{parcel_type},
+                                    (CASE WHEN ue.{ueb_plot} IS NOT NULL THEN 1 ELSE 0 END) count_terreno,
+                                    (CASE WHEN ue.{ueb_building} IS NOT NULL THEN 1 ELSE 0 END) count_construccion,
+                                    (CASE WHEN ue.{ueb_building_unit} IS NOT NULL THEN 1 ELSE 0 END) count_unidadconstruccion
+                            FROM {schema}.{input_table} p left join {schema}.{join_table} ue on p.{id} = ue.{join_field}
+                        ) AS p_ue GROUP BY {id}, {parcel_type}
+                    ) AS report WHERE
+                               ({parcel_type}='NPH' AND (sum_t !=1 OR sum_uc != 0)) OR 
+                               ({parcel_type} in ('PropiedadHorizontal.Matriz', 'Condominio.Matriz', 'ParqueCementerio.Matriz', 'BienUsoPublico', 'Condominio.UnidadPredial') AND (sum_t!=1 OR sum_uc > 0)) OR 
+                               ({parcel_type} in ('Via', 'ParqueCementerio.UnidadPrivada') AND (sum_t !=1 OR sum_uc > 0 OR sum_c > 0)) OR 
+                               ({parcel_type}='PropiedadHorizontal.UnidadPredial' AND (sum_t !=0 OR sum_c != 0 OR sum_uc = 0 )) OR 
+                               ({parcel_type}='Mejora' AND (sum_t !=0 OR sum_c != 1 OR sum_uc != 0))
+                """.format(schema=schema, input_table=PARCEL_TABLE, join_table=UEBAUNIT_TABLE, join_field=UEBAUNIT_TABLE_PARCEL_FIELD, id=ID_FIELD, parcel_type=PARCEL_TYPE_FIELD,
+                           ueb_plot=UEBAUNIT_TABLE_PLOT_FIELD, ueb_building=UEBAUNIT_TABLE_BUILDING_FIELD, ueb_building_unit=UEBAUNIT_TABLE_BUILDING_UNIT_FIELD),
+                'desc_error': 'Parcel must have one or more spatial units associated with it.',
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Errors in relationships between Spatial Units and Parcels"),
+                'table': PARCEL_TABLE},
+            'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION': {
+                'query': """
+                        SELECT p.{id}, p.{parcel_type} FROM {schema}.{table} p
+                        WHERE (p.{parcel_number} IS NOT NULL AND 
+                               (substring(p.{parcel_number},22,1) != '0' AND p.{parcel_type}='NPH') OR
+                               (substring(p.{parcel_number},22,1) != '9' AND strpos(p.{parcel_type}, 'PropiedadHorizontal.') != 0) OR
+                               (substring(p.{parcel_number},22,1) != '8' AND strpos(p.{parcel_type}, 'Condominio.') != 0) OR
+                               (substring(p.{parcel_number},22,1) != '7' AND strpos(p.{parcel_type}, 'ParqueCementerio.') != 0) OR
+                               (substring(p.{parcel_number},22,1) != '5' AND p.{parcel_type}='Mejora') OR
+                               (substring(p.{parcel_number},22,1) != '4' AND p.{parcel_type}='Via') OR
+                               (substring(p.{parcel_number},22,1) != '3' AND p.{parcel_type}='BienUsoPublico')
+                        )""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, parcel_number=PARCEL_NUMBER_FIELD, parcel_type=PARCEL_TYPE_FIELD),
+                'desc_error': 'The position 22 of the parcel number must correspond to the type of parcel.',
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
+                'table': PARCEL_TABLE},
+            'DUPLICATE_RECORDS_IN_TABLE': {
+                'query': """
+                    SELECT array_to_string(duplicate_ids, ',') AS "duplicate_ids", duplicate_total
+                    FROM (
+                        SELECT unique_concat,  array_agg({id}) duplicate_ids, array_length(array_agg({id}), 1) duplicate_total
+                        FROM (
+                            SELECT concat({fields}) unique_concat, {id}, 
+                            row_number() OVER(PARTITION BY {fields} ORDER BY {id} asc) AS row
+                            FROM {schema}.{table}
+                        ) AS count_rows
+                        GROUP BY unique_concat
+                    ) report
+                    WHERE duplicate_total > 1
+                """,
+                'desc_error': 'Check duplicate records in a table',
+                'table_name': '',
+                'table': ''},
+            'GROUP_PARTY_FRACTIONS_SHOULD_SUM_1': {
+                'query': """WITH grupos AS (
+                        SELECT array_agg(t_id) AS tids, agrupacion
+                        FROM {schema}.{members}
+                        GROUP BY agrupacion
+                    ),
+                     sumas AS (
+                        SELECT grupos.agrupacion, grupos.tids as miembros, SUM(fraccion.numerador::float/fraccion.denominador) as suma_fracciones
+                        FROM {schema}.{fraction}, grupos
+                        WHERE miembros_participacion = ANY(grupos.tids)
+                        GROUP BY agrupacion, tids
+                    )
+                    SELECT sumas.*
+                    FROM sumas
+                    WHERE sumas.suma_fracciones != 1""".format(schema=self.schema, fraction=FRACTION_TABLE, members=MEMBERS_TABLE),
+                'desc_error': 'Group Party Fractions should sum 1',
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Fractions do not sum 1").format(PARCEL_TABLE),
+                'table': '{fraction}_and_{members}'.format(fraction=FRACTION_TABLE, members=MEMBERS_TABLE)},
+            'PARCELS_WITH_NO_RIGHT': {
+                'query': """SELECT p.t_id
+                   FROM {schema}.predio p
+                   WHERE p.t_id NOT IN (
+                        SELECT unidad_predio FROM {schema}.col_derecho)""".format(schema=self.schema),
+                'desc_error': 'Get parcels with no right',
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", 'Parcels with no right'),
+                'table': PARCEL_TABLE},
+            'PARCELS_WITH_REPEATED_DOMAIN_RIGHT': {
+                'query': """SELECT conteo.unidad_predio
+                    FROM {schema}.predio p, (
+                        SELECT unidad_predio, count(tipo) as dominios
+                        FROM {schema}.col_derecho
+                        WHERE tipo='Dominio'
+                        GROUP BY unidad_predio
+                    ) as conteo
+                    WHERE p.t_id = conteo.unidad_predio and conteo.dominios > 1""".format(schema=self.schema),
+                'desc_error': 'Get parcels with duplicate rights',
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", 'Parcels with repeated domain right'),
+                'table': PARCEL_TABLE}
+        }
 
     def _postgis_exists(self):
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -547,3 +740,31 @@ class PGConnector(DBConnector):
         cur.execute(query)
 
         return cur.fetchone()[0]
+
+    def execute_sql_query(self, query):
+        """
+        Generic function for executing SQL statements
+        :param query: SQL Statement
+        :return: List of RealDictRow
+        """
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(query)
+        return cur.fetchall()
+
+    def execute_sql_query_dict_cursor(self, query):
+        """
+        Generic function for executing SQL statements
+        :param query: SQL Statement
+        :return: List of DictRow
+        """
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(query)
+        return cur.fetchall()

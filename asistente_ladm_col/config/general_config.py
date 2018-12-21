@@ -7,7 +7,16 @@ from qgis.PyQt.QtCore import (QSettings,
 from .translator import PLUGIN_DIR
 from .table_mapping_config import (MORE_BOUNDARY_FACE_STRING_TABLE,
                                    POINT_BOUNDARY_FACE_STRING_TABLE,
-                                   LESS_TABLE)
+                                   LESS_TABLE,
+                                   PARCEL_TABLE,
+                                   DEPARTMENT_FIELD,
+                                   MUNICIPALITY_FIELD,
+                                   ZONE_FIELD,
+                                   PARCEL_NUMBER_FIELD,
+                                   PARCEL_NUMBER_BEFORE_FIELD,
+                                   COL_PARTY_TABLE,
+                                   COL_PARTY_TYPE_FIELD,
+                                   PARCEL_TYPE_FIELD)
 from ..utils.qt_utils import get_plugin_metadata
 
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
@@ -146,6 +155,25 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not overlap Buildings")
         self.CHECK_GAPS_IN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Plots should not have gaps")
         self.CHECK_MULTIPART_IN_RIGHT_OF_WAY = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not have multipart geometries")
+
+        # Logic consistency checks
+        self.CHECK_PARCEL_RIGHT_RELATIONSHIP = QCoreApplication.translate("TranslatableConfigStrings", "Parcel should have one and only one Right")
+        self.CHECK_FRACTION_SUM_FOR_PARTY_GROUPS = QCoreApplication.translate("TranslatableConfigStrings", "Group Party Fractions should sum 1")
+        self.FIND_DUPLICATE_RECORDS_IN_A_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Table records should not be repeated")
+
+        self.CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {department} field of the {parcel} table has two numerical characters").format(department=DEPARTMENT_FIELD, parcel=PARCEL_TABLE)
+        self.CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings","Check that the {municipality} field of the {parcel} table has three numerical characters").format(municipality=MUNICIPALITY_FIELD, parcel=PARCEL_TABLE)
+        self.CHECK_ZONE_CODE_HAS_TWO_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {zone} field of the {parcel} table has two numerical characters").format(zone=ZONE_FIELD, parcel=PARCEL_TABLE)
+        self.CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_number} has 30 numerical characters").format(parcel_number=PARCEL_NUMBER_FIELD)
+        self.CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_number_before} has 20 numerical characters").format(parcel_number_before=PARCEL_NUMBER_BEFORE_FIELD)
+        self.CHECK_COL_PARTY_NATURAL_TYPE = QCoreApplication.translate("TranslatableConfigStrings", "Check that attributes are appropriate for parties of type natural")
+        self.CHECK_COL_PARTY_LEGAL_TYPE = QCoreApplication.translate("TranslatableConfigStrings", "Check that attributes are appropriate for parties of type legal")
+        self.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER = QCoreApplication.translate("TranslatableConfigStrings", "Check that the type of parcel corresponds to position 22 of the {parcel_number}").format(parcel_number=PARCEL_NUMBER_FIELD)
+        self.CHECK_UEBAUNIT_PARCEL = QCoreApplication.translate("TranslatableConfigStrings", "Check that Spatial Units associated with Parcels correspond to the parcel type")
+
+        # Logic consistency errors
+        self.ERROR_PARCEL_WITH_NO_RIGHT = QCoreApplication.translate("TranslatableConfigStrings", "Parcel does not have any Right associated")
+        self.ERROR_PARCEL_WITH_REPEATED_DOMAIN_RIGHT = QCoreApplication.translate("TranslatableConfigStrings", "Parcel has more than one domain right associated")
 
         # Specific topology errors
         self.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Plot nodes should be covered by boundary points")
