@@ -112,9 +112,9 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
         # Where to store the reports?
-        save_into_file = self.txt_excel_path.text()
+        excel_path = self.txt_excel_path.text()
 
-        if not save_into_file:
+        if not excel_path:
             self.show_message(
                 QCoreApplication.translate("DialogImportFromExcel", "You need to select an Excel file before continuing with the import."),
                 Qgis.Warning)
@@ -122,7 +122,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
             return
 
-        if not os.path.exists(save_into_file):
+        if not os.path.exists(excel_path):
             self.show_message(
                 QCoreApplication.translate("DialogImportFromExcel", "The specified Excel file does not exist!"),
                 Qgis.Warning)
@@ -130,138 +130,23 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
             return
 
-        basename = os.path.basename(save_into_file)
-        filename = os.path.splitext(basename)[0]
-        dirname = os.path.dirname(save_into_file)
-
         self.progress.setVisible(True)
-        self.txt_log.setText(QCoreApplication.translate("DialogImportFromExcel", "Loading LADM_COL tables..."))
+        self.txt_log.setText(QCoreApplication.translate("DialogImportFromExcel", "Loading tables from the Excel file..."))
 
         # Now that we have the Excel file, build vrts to load its sheets appropriately
+        layer_group_party = self.get_layer_from_excel_sheet(excel_path, 'agrupacion')
+        layer_party = self.get_layer_from_excel_sheet(excel_path, 'interesado')
+        layer_parcel = self.get_layer_from_excel_sheet(excel_path, 'predio')
+        layer_right = self.get_layer_from_excel_sheet(excel_path, 'derecho')
 
-        # GROUP PARTY
-        sheetname = 'agrupacion'
-        header_in_first_row, count = self.get_excel_info(save_into_file, sheetname)
-        layer_definition = "<SrcLayer>{sheetname}</SrcLayer>".format(sheetname=sheetname)
-        if header_in_first_row:
-            layer_definition = """<SrcSql dialect="sqlite">SELECT * FROM '{sheetname}' LIMIT {count} OFFSET 1</SrcSql>""".format(sheetname=sheetname, count=count)
-        xml_text_group_party = """<?xml version="1.0" encoding="UTF-8"?>
-                    <OGRVRTDataSource>
-                        <OGRVRTLayer name="{filename}-agrupacion">
-                            <SrcDataSource relativeToVRT="1">{basename}</SrcDataSource>
-                            <!--Header={header}-->
-                            {layer_definition}
-                            {fields}
-                        </OGRVRTLayer>            
-                    </OGRVRTDataSource>
-                """.format(filename=filename,
-                           basename=basename,
-                           header=header_in_first_row,
-                           layer_definition=layer_definition,
-                           sheetname=sheetname,
-                           fields=self.get_vrt_fields(sheetname, header_in_first_row))
+        if not layer_group_party.isValid() or not layer_party.isValid() or not layer_parcel.isValid() or not layer_right.isValid():
+            self.show_message(
+                QCoreApplication.translate("DialogImportFromExcel", "One of the sheets of the Excel file couldn't be loaded! Check the format again."),
+                Qgis.Warning)
+            self.progress.setVisible(False)
+            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+            return
 
-        group_party_file_path = os.path.join(dirname, '{}.{}.vrt'.format(basename, sheetname))
-        with open(group_party_file_path, 'w') as sheet:
-            sheet.write(xml_text_group_party)
-
-        uri = '{vrtfilepath}|layername={filename}-{sheetname}'.format(vrtfilepath=group_party_file_path,
-                                                                      sheetname=sheetname, filename=filename)
-        layer_group_party = QgsVectorLayer(uri, '{}-{}'.format('excel', sheetname), 'ogr')
-        print(uri, layer_group_party.isValid())
-
-        # COL_PARTY
-        sheetname = 'interesado'
-        header_in_first_row, count = self.get_excel_info(save_into_file, sheetname)
-        layer_definition = "<SrcLayer>{sheetname}</SrcLayer>".format(sheetname=sheetname)
-        if header_in_first_row:
-            layer_definition = """<SrcSql dialect="sqlite">SELECT * FROM '{sheetname}' LIMIT {count} OFFSET 1</SrcSql>""".format(sheetname=sheetname, count=count)
-        xml_text_party = """<?xml version="1.0" encoding="UTF-8"?>
-                    <OGRVRTDataSource>
-                        <OGRVRTLayer name="{filename}-interesado">
-                            <SrcDataSource relativeToVRT="1">{basename}</SrcDataSource>
-                            <!--Header={header}-->
-                            {layer_definition}                            
-                            {fields}
-                        </OGRVRTLayer>
-                    </OGRVRTDataSource>
-                """.format(filename=filename,
-                           basename=basename,
-                           header=header_in_first_row,
-                           layer_definition=layer_definition,
-                           sheetname=sheetname,
-                           fields=self.get_vrt_fields(sheetname, header_in_first_row))
-
-        party_file_path = os.path.join(dirname, '{}.{}.vrt'.format(basename, sheetname))
-        with open(party_file_path, 'w') as sheet:
-            sheet.write(xml_text_party)
-
-        uri = '{vrtfilepath}|layername={filename}-{sheetname}'.format(vrtfilepath=party_file_path, sheetname=sheetname,
-                                                                      filename=filename)
-        layer_party = QgsVectorLayer(uri, '{}-{}'.format('excel', sheetname), 'ogr')
-        print(uri, layer_party.isValid())
-
-        # PARCEL
-        sheetname = 'predio'
-        header_in_first_row, count = self.get_excel_info(save_into_file, sheetname)
-        layer_definition = "<SrcLayer>{sheetname}</SrcLayer>".format(sheetname=sheetname)
-        if header_in_first_row:
-            layer_definition = """<SrcSql dialect="sqlite">SELECT * FROM '{sheetname}' LIMIT {count} OFFSET 1</SrcSql>""".format(sheetname=sheetname, count=count)
-        xml_text_parcel = """<?xml version="1.0" encoding="UTF-8"?>
-                    <OGRVRTDataSource>
-                        <OGRVRTLayer name="{filename}-predio">
-                            <SrcDataSource relativeToVRT="1">{basename}</SrcDataSource>
-                            <!--Header={header}-->
-                            {layer_definition}
-                            {fields}
-                        </OGRVRTLayer>
-                    </OGRVRTDataSource>
-                """.format(filename=filename,
-                           basename=basename,
-                           header=header_in_first_row,
-                           layer_definition=layer_definition,
-                           sheetname=sheetname,
-                           fields=self.get_vrt_fields(sheetname, header_in_first_row))
-
-        parcel_file_path = os.path.join(dirname, '{}.{}.vrt'.format(basename, sheetname))
-        with open(parcel_file_path, 'w') as sheet:
-            sheet.write(xml_text_parcel)
-
-        uri = '{vrtfilepath}|layername={filename}-{sheetname}'.format(vrtfilepath=parcel_file_path, sheetname=sheetname,
-                                                                      filename=filename)
-        layer_parcel = QgsVectorLayer(uri, '{}-{}'.format('excel', sheetname), 'ogr')
-        print(uri, layer_parcel.isValid())
-
-        # RIGHT
-        sheetname = 'derecho'
-        header_in_first_row, count = self.get_excel_info(save_into_file, sheetname)
-        layer_definition = "<SrcLayer>{sheetname}</SrcLayer>".format(sheetname=sheetname)
-        if header_in_first_row:
-            layer_definition = """<SrcSql dialect="sqlite">SELECT * FROM '{sheetname}' LIMIT {count} OFFSET 1</SrcSql>""".format(sheetname=sheetname, count=count)
-        xml_text_right = """<?xml version="1.0" encoding="UTF-8"?>
-                    <OGRVRTDataSource>
-                        <OGRVRTLayer name="{filename}-derecho">
-                            <SrcDataSource relativeToVRT="1">{basename}</SrcDataSource>
-                            <!--Header={header}-->
-                            {layer_definition}
-                            {fields}
-                        </OGRVRTLayer>
-                    </OGRVRTDataSource>
-                """.format(filename=filename,
-                           basename=basename,
-                           header=header_in_first_row,
-                           layer_definition=layer_definition,
-                           sheetname=sheetname,
-                           fields=self.get_vrt_fields(sheetname, header_in_first_row))
-
-        right_file_path = os.path.join(dirname, '{}.{}.vrt'.format(basename, sheetname))
-        with open(right_file_path, 'w') as sheet:
-            sheet.write(xml_text_right)
-
-        uri = '{vrtfilepath}|layername={filename}-{sheetname}'.format(vrtfilepath=right_file_path, sheetname=sheetname,
-                                                                      filename=filename)
-        layer_right = QgsVectorLayer(uri, '{}-{}'.format('excel', sheetname), 'ogr')
-        print(uri, layer_right.isValid())
         QgsProject.instance().addMapLayers([layer_group_party, layer_party, layer_parcel, layer_right])
 
 
@@ -456,6 +341,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                                   'METHOD': 1,
                                                   'OUTPUT': 'memory:',
                                                   'PREFIX': 'agrupacion_' })['OUTPUT']
+        QgsProject.instance().addMapLayer(group_party_tid_layer)
 
         # 5
         self.txt_log.setText(
@@ -472,6 +358,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                                           'METHOD': 1,
                                                           'OUTPUT': 'memory:',
                                                           'PREFIX': 'interesado_' })['OUTPUT']
+        QgsProject.instance().addMapLayer(group_party_party_tid_layer)
 
         # 6
         self.txt_log.setText(
@@ -721,9 +608,46 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         self.qgis_utils.message_with_duration_emitted.emit(
             QCoreApplication.translate("QGISUtils",
                                        "Data successfully imported to LADM_COL from intermediate structure (Excel file: '{}')!!!").format(
-                save_into_file),
+                excel_path),
             Qgis.Success,
             0)
+
+    def get_layer_from_excel_sheet(self, excel_path, sheetname):
+        basename = os.path.basename(excel_path)
+        filename = os.path.splitext(basename)[0]
+        dirname = os.path.dirname(excel_path)
+
+        header_in_first_row, count = self.get_excel_info(excel_path, sheetname)
+        layer_definition = "<SrcLayer>{sheetname}</SrcLayer>".format(sheetname=sheetname)
+        if header_in_first_row:
+            layer_definition = """<SrcSql dialect="sqlite">SELECT * FROM '{sheetname}' LIMIT {count} OFFSET 1</SrcSql>""".format(sheetname=sheetname, count=count)
+        xml_text_group_party = """<?xml version="1.0" encoding="UTF-8"?>
+                    <OGRVRTDataSource>
+                        <OGRVRTLayer name="{filename}-{sheetname}">
+                            <SrcDataSource relativeToVRT="1">{basename}</SrcDataSource>
+                            <!--Header={header}-->
+                            {layer_definition}
+                            {fields}
+                        </OGRVRTLayer>            
+                    </OGRVRTDataSource>
+                """.format(filename=filename,
+                           basename=basename,
+                           header=header_in_first_row,
+                           layer_definition=layer_definition,
+                           sheetname=sheetname,
+                           fields=self.get_vrt_fields(sheetname, header_in_first_row))
+
+        group_party_file_path = os.path.join(dirname, '{}.{}.vrt'.format(basename, sheetname))
+        with open(group_party_file_path, 'w') as sheet:
+            sheet.write(xml_text_group_party)
+
+        uri = '{vrtfilepath}|layername={filename}-{sheetname}'.format(vrtfilepath=group_party_file_path,
+                                                                      sheetname=sheetname, filename=filename)
+
+        self.log.logMessage("Loading layer from excel with uri='{}'".format(uri), PLUGIN_NAME, Qgis.Info)
+        layer = QgsVectorLayer(uri, '{}-{}'.format('excel', sheetname), 'ogr')
+        layer.setProviderEncoding('UTF-8')
+        return layer
 
 
     def get_excel_info(self, path, sheetname):
