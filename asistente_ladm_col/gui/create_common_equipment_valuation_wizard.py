@@ -3,10 +3,10 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2018-09-06
+        begin                : 2018-11-23
         git sha              : :%H$
-        copyright            : (C) 2018 by Germán Carrillo
-        email                : gcarrillo@linuxmail.com
+        copyright            : (C) 2018 by Jhon Galindo
+        email                : jhonsigpjc@gmail.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -24,17 +24,17 @@ from qgis.core import (QgsEditFormConfig,
                        QgsMapLayerProxyModel)
 
 from ..config.help_strings import HelpStrings
-from ..config.table_mapping_config import LEGAL_PARTY_TABLE
+from ..config.table_mapping_config import VALUATION_COMMON_EQUIPMENT_TABLE
 from ..utils import get_ui_class
 
-WIZARD_UI = get_ui_class('wiz_create_legal_party_prc.ui')
+WIZARD_UI = get_ui_class('wiz_create_common_equipment_valuation.ui')
 
-class CreateLegalPartyPRCWizard(QWizard, WIZARD_UI):
+class CreateCommonEquipmentValuationWizard(QWizard, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
-        self._legal_party = None
+        self._common_equipment_valuation = None
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
@@ -49,28 +49,29 @@ class CreateLegalPartyPRCWizard(QWizard, WIZARD_UI):
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.NoGeometry)
 
     def adjust_page_1_controls(self):
+
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(LEGAL_PARTY_TABLE))
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(VALUATION_COMMON_EQUIPMENT_TABLE))
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
-            finish_button_text = QCoreApplication.translate("CreateLegalPartyWizard", "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(LEGAL_PARTY_TABLE, False))
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
+            finish_button_text = QCoreApplication.translate("CreateCommonEquipmentValuationWizard", "Import")
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(VALUATION_COMMON_EQUIPMENT_TABLE, False))
 
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
-            finish_button_text = QCoreApplication.translate("CreateLegalPartyWizard", "Create")
-            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_LEGAL_PARTY_PRC_PAGE_1_OPTION_FORM)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
+            finish_button_text = QCoreApplication.translate("CreateCommonEquipmentValuationWizard", "Create")
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_COMMON_EQUIPMENT_VALUATION_PAGE_1_OPTION_FORM)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
-                                       QCoreApplication.translate("CreateLegalPartyWizard",
+                                       QCoreApplication.translate("CreateCommonEquipmentValuationWizard",
                                        finish_button_text))
 
     def finished_dialog(self):
@@ -81,58 +82,59 @@ class CreateLegalPartyPRCWizard(QWizard, WIZARD_UI):
                 field_mapping = self.cbo_mapping.currentText()
                 res_etl_model = self.qgis_utils.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
-                                                               LEGAL_PARTY_TABLE,
+                                                               VALUATION_COMMON_EQUIPMENT_TABLE,
                                                                field_mapping=field_mapping)
+
                 if res_etl_model:
                     if field_mapping:
                         self.qgis_utils.delete_old_field_mapping(field_mapping)
 
-                    self.qgis_utils.save_field_mapping(LEGAL_PARTY_TABLE)
+                    self.qgis_utils.save_field_mapping(VALUATION_COMMON_EQUIPMENT_TABLE)
 
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                    QCoreApplication.translate("CreateLegalPartyWizard",
-                                               "Select a source layer to set the field mapping to '{}'.").format(LEGAL_PARTY_TABLE),
+                    QCoreApplication.translate("CreateCommonEquipmentValuationWizard",
+                                               "Select a source layer to set the field mapping to '{}'.").format(VALUATION_COMMON_EQUIPMENT_TABLE),
                     Qgis.Warning)
 
         elif self.rad_create_manually.isChecked():
-            self.prepare_legal_party_creation()
+            self.prepare_common_equipment_valuation_creation()
 
-    def prepare_legal_party_creation(self):
+    def prepare_common_equipment_valuation_creation(self):
         # Load layers
-        self._legal_party = self.qgis_utils.get_layer(self._db, LEGAL_PARTY_TABLE, load=True)
-        if self._legal_party is None:
+        self._common_equipment_valuation = self.qgis_utils.get_layer(self._db, VALUATION_COMMON_EQUIPMENT_TABLE, load=True)
+        if self._common_equipment_valuation is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateLegalPartyWizard",
-                                           "Legal party table couldn't be found... {}").format(self._db.get_description()),
+                QCoreApplication.translate("CreateCommonEquipmentValuationWizard",
+                                           "Common equipment valuation table couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 
         # Don't suppress (i.e., show) feature form
-        form_config = self._legal_party.editFormConfig()
+        form_config = self._common_equipment_valuation.editFormConfig()
         form_config.setSuppress(QgsEditFormConfig.SuppressOff)
-        self._legal_party.setEditFormConfig(form_config)
+        self._common_equipment_valuation.setEditFormConfig(form_config)
 
-        self.edit_legal_party()
+        self.edit_common_equipment_valuation()
 
-    def edit_legal_party(self):
+    def edit_common_equipment_valuation(self):
         # Open Form
-        self.iface.layerTreeView().setCurrentLayer(self._legal_party)
-        self._legal_party.startEditing()
+        self.iface.layerTreeView().setCurrentLayer(self._common_equipment_valuation)
+        self._common_equipment_valuation.startEditing()
         self.iface.actionAddFeature().trigger()
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/wizards/legal_party_load_data_type', 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
+        settings.setValue('Asistente-LADM_COL/wizards/valuation_common_equipment_load_data_type', 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
 
     def restore_settings(self):
         settings = QSettings()
 
-        load_data_type = settings.value('Asistente-LADM_COL/wizards/legal_party_load_data_type') or 'create_manually'
+        load_data_type = settings.value('Asistente-LADM_COL/wizards/valuation_common_equipment_load_data_type') or 'create_manually'
         if load_data_type == 'refactor':
             self.rad_refactor.setChecked(True)
         else:
             self.rad_create_manually.setChecked(True)
 
     def show_help(self):
-        self.qgis_utils.show_help("create_legal_party")
+        self.qgis_utils.show_help("create_common_equipment_valuation")
