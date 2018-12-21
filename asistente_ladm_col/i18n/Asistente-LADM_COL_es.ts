@@ -2886,6 +2886,11 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>SourceHandler</name>
     <message>
+        <location filename="../lib/source_handler.py" line="72"/>
+        <source>No file could be uploaded to the server. You can do it later from the &apos;Upload Pending Source Files&apos; menu. Reason: {}</source>
+        <translation>No se pudieron subir los archivos fuente al servidor remoto. Puedes hacerlo después desde el menú &apos;Subir Archivos Fuente Pendientes&apos;. Detalles: {}</translation>
+    </message>
+    <message>
         <location filename="../lib/source_handler.py" line="168"/>
         <source>{} out of {} records {} ignored because {} file path couldn&apos;t be found in the local disk!</source>
         <translation>¡{} de {} registros {} ignorado(s) porque {} ruta(s) no se encontró(encontraron) en el disco local!</translation>
