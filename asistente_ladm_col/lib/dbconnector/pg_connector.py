@@ -161,7 +161,7 @@ class PGConnector(DBConnector):
                 """.format(schema=schema, input_table=PARCEL_TABLE, join_table=UEBAUNIT_TABLE, join_field=UEBAUNIT_TABLE_PARCEL_FIELD, id=ID_FIELD, parcel_type=PARCEL_TYPE_FIELD,
                            ueb_plot=UEBAUNIT_TABLE_PLOT_FIELD, ueb_building=UEBAUNIT_TABLE_BUILDING_FIELD, ueb_building_unit=UEBAUNIT_TABLE_BUILDING_UNIT_FIELD),
                 'desc_error': 'Parcel must have one or more spatial units associated with it.',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings","Logic Consistency Errors in table '{table}' and '{join_table}'").format(table=PARCEL_TABLE, join_table=UEBAUNIT_TABLE),
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Errors in relationships between Spatial Units and Parcels"),
                 'table': PARCEL_TABLE},
             'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION': {
                 'query': """
