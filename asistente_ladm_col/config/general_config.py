@@ -158,18 +158,17 @@ class TranslatableConfigStrings(QObject):
         # Logic consistency checks
         self.CHECK_PARCEL_RIGHT_RELATIONSHIP = QCoreApplication.translate("TranslatableConfigStrings", "Parcel should have one and only one Right")
         self.CHECK_FRACTION_SUM_FOR_PARTY_GROUPS = QCoreApplication.translate("TranslatableConfigStrings", "Group Party Fractions should sum 1")
-        self.FIND_DUPLICATE_RECORDS_IN_A_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Find duplicate records in a table")
-        self.CHECK_PARCEL_RIGHT_RELATIONSHIP = QCoreApplication.translate("TranslatableConfigStrings", "Parcel should have one and only one Right")
+        self.FIND_DUPLICATE_RECORDS_IN_A_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Table records should not be repeated")
 
-        self.CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {department} field of the {parcel} table has two numerical character").format(department=DEPARTMENT_FIELD, parcel=PARCEL_TABLE)
-        self.CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings","Check that the {municipality} field of the {parcel} table has three numerical character").format(municipality=MUNICIPALITY_FIELD, parcel=PARCEL_TABLE)
-        self.CHECK_ZONE_CODE_HAS_TWO_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {zone} field of the {parcel} table has two numerical character").format(zone=ZONE_FIELD, parcel=PARCEL_TABLE)
+        self.CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {department} field of the {parcel} table has two numerical characters").format(department=DEPARTMENT_FIELD, parcel=PARCEL_TABLE)
+        self.CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings","Check that the {municipality} field of the {parcel} table has three numerical characters").format(municipality=MUNICIPALITY_FIELD, parcel=PARCEL_TABLE)
+        self.CHECK_ZONE_CODE_HAS_TWO_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {zone} field of the {parcel} table has two numerical characters").format(zone=ZONE_FIELD, parcel=PARCEL_TABLE)
         self.CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_number} has 30 numerical characters").format(parcel_number=PARCEL_NUMBER_FIELD)
         self.CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_number_before} has 20 numerical characters").format(parcel_number_before=PARCEL_NUMBER_BEFORE_FIELD)
-        self.CHECK_COL_PARTY_TYPE_NATURAL = QCoreApplication.translate("TranslatableConfigStrings", "Check {party_type} party in {table} with type 'Persona_Natural'").format(table=COL_PARTY_TABLE, party_type=COL_PARTY_TYPE_FIELD)
-        self.CHECK_COL_PARTY_TYPE_NO_NATURAL = QCoreApplication.translate("TranslatableConfigStrings", "Check {party_type} party in {table} with type 'Persona_No_Natural'").format(table=COL_PARTY_TABLE, party_type=COL_PARTY_TYPE_FIELD)
-        self.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_type} of {table} coincides with position 22 of the {parcel_number}").format(table=PARCEL_TABLE, parcel_number=PARCEL_NUMBER_FIELD, parcel_type=PARCEL_TYPE_FIELD)
-        self.CHECK_UEBAUNIT_PARCEL = QCoreApplication.translate("TranslatableConfigStrings", "Check that the Spatial Units associated with the {table} correspond according to the {parcel_type} of {table}").format(table=PARCEL_TABLE, parcel_type=PARCEL_TYPE_FIELD)
+        self.CHECK_COL_PARTY_NATURAL_TYPE = QCoreApplication.translate("TranslatableConfigStrings", "Check that attributes are appropriate for parties of type natural")
+        self.CHECK_COL_PARTY_LEGAL_TYPE = QCoreApplication.translate("TranslatableConfigStrings", "Check that attributes are appropriate for parties of type legal")
+        self.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER = QCoreApplication.translate("TranslatableConfigStrings", "Check that the type of parcel corresponds to position 22 of the {parcel_number}").format(parcel_number=PARCEL_NUMBER_FIELD)
+        self.CHECK_UEBAUNIT_PARCEL = QCoreApplication.translate("TranslatableConfigStrings", "Check that Spatial Units associated with Parcels correspond to the parcel type")
 
         # Logic consistency errors
         self.ERROR_PARCEL_WITH_NO_RIGHT = QCoreApplication.translate("TranslatableConfigStrings", "Parcel does not have any Right associated")

@@ -154,11 +154,11 @@ class DialogQuality(QDialog, DIALOG_UI):
                     'id': 'check_parcel_number_before_has_20_numerical_characters',
                     'text': translated_strings.CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS
                 }, {
-                    'id': 'check_col_party_type_natural',
-                    'text': translated_strings.CHECK_COL_PARTY_TYPE_NATURAL
+                    'id': 'check_col_party_natural_type',
+                    'text': translated_strings.CHECK_COL_PARTY_NATURAL_TYPE
                 }, {
-                    'id': 'check_col_party_type_no_natural',
-                    'text': translated_strings.CHECK_COL_PARTY_TYPE_NO_NATURAL
+                    'id': 'check_col_party_legal_type',
+                    'text': translated_strings.CHECK_COL_PARTY_LEGAL_TYPE
                 }, {
                     'id': 'check_parcel_type_and_22_position_of_parcel_number',
                     'text': translated_strings.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER
@@ -265,9 +265,9 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.basic_logic_validations(self._db, 'PARCEL_NUMBER_VALIDATION')
                 elif id == 'check_parcel_number_before_has_20_numerical_characters':
                     self.quality.basic_logic_validations(self._db, 'PARCEL_NUMBER_BEFORE_VALIDATION')
-                elif id == 'check_col_party_type_natural':
+                elif id == 'check_col_party_natural_type':
                     self.quality.advance_logic_validations(self._db, 'COL_PARTY_TYPE_NATURAL_VALIDATION')
-                elif id == 'check_col_party_type_no_natural':
+                elif id == 'check_col_party_legal_type':
                     self.quality.advance_logic_validations(self._db, 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION')
                 elif id == 'check_parcel_type_and_22_position_of_parcel_number':
                     self.quality.advance_logic_validations(self._db, 'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION')
