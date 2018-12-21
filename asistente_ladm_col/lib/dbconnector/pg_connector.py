@@ -230,7 +230,7 @@ class PGConnector(DBConnector):
                         GROUP BY unidad_predio
                     ) as conteo
                     WHERE p.t_id = conteo.unidad_predio and conteo.dominios > 1""".format(schema=self.schema),
-                'desc_error': 'Get parcels with no right',
+                'desc_error': 'Get parcels with duplicate rights',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", 'Parcels with repeated domain right'),
                 'table': PARCEL_TABLE}
         }
