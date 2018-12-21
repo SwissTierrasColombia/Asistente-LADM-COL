@@ -70,6 +70,7 @@ from .gui.create_right_cadastre_wizard import CreateRightCadastreWizard
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
+from .gui.dialog_import_from_excel import DialogImportFromExcel
 from .gui.reports import ReportGenerator
 from .gui.toolbar import ToolBar
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
@@ -623,7 +624,8 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def call_import_from_intermediate_structure(self):
-        self.toolbar.import_from_intermediate_structure(self.get_db_connection())
+        dlg = DialogImportFromExcel(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg.exec_()
 
     def unload(self):
         # remove the plugin menu item and icon
