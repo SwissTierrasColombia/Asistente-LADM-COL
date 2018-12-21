@@ -170,6 +170,10 @@ Choose this option if you want to create a <b>Legal Party</b> using a form.\
 <b>Legal Party</b> acting as party.\
 ")
 
+        self.DLG_IMPORT_FROM_EXCEL = QCoreApplication.translate("HelpStrings", "\
+Use an intermediate Excel structure to import legal (all alphanumeric) data into LADM_COL.<br><br><a href='#template'>Click to download Excel template</a><br><br><a href='#data'>Click to download Excel sample data</a>\
+")
+
         self.WIZ_CREATE_PARCEL_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create a <b>Parcel</b> using a form.\
 <br><br>\

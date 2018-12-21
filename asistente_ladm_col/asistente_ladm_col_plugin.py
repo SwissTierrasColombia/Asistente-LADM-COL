@@ -79,6 +79,7 @@ from .gui.create_geoeconomic_zone_valuation_wizard import CreateGeoeconomicZoneV
 from .gui.create_physical_zone_valuation_wizard import CreatePhysicalZoneValuationWizard
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
+from .gui.dialog_import_from_excel import DialogImportFromExcel
 from .gui.reports import ReportGenerator
 from .gui.toolbar import ToolBar
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
@@ -166,13 +167,17 @@ class AsistenteLADMCOLPlugin(QObject):
         self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
         self._report_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Generate Annex 17"), self.iface.mainWindow())
         self._report_action.triggered.connect(self.call_report_generation)
+        self._import_from_intermediate_structure_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import from intermediate structure"),
+                                      self.iface.mainWindow())
+        self._import_from_intermediate_structure_action.triggered.connect(self.call_import_from_intermediate_structure)
         self._ladm_col_toolbar = self.iface.addToolBar(QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"))
         self._ladm_col_toolbar.setObjectName("ladmcoltools")
         self._ladm_col_toolbar.addActions([self._build_boundary_action,
                                            self._topological_editing_action,
                                            self._fill_point_BFS_action,
                                            self._fill_more_BFS_less_action,
-                                           self._report_action])
+                                           self._report_action,
+                                           self._import_from_intermediate_structure_action])
 
         # Add LADM_COL provider and models to QGIS
         self.ladm_col_provider = LADMCOLAlgorithmProvider()
@@ -711,6 +716,12 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def call_report_generation(self):
         self.report_generator.generate_report(self.get_db_connection(), self._report_action)
+
+    @_project_generator_required
+    @_db_connection_required
+    def call_import_from_intermediate_structure(self):
+        dlg = DialogImportFromExcel(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg.exec_()
 
     def unload(self):
         # remove the plugin menu item and icon
