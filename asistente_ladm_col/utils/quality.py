@@ -2086,7 +2086,7 @@ class QualityUtils(QObject):
 
         error_layer.dataProvider().addFeatures(new_features)
 
-        if error_layer.featureCount() > 0:
+        if len(new_features) > 0:
             if error_layer_exist is False:
                 added_layer = self.add_error_layer(error_layer)
             else:

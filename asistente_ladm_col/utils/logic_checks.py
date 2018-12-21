@@ -152,7 +152,7 @@ class LogicChecks(QObject):
 
         error_layer.dataProvider().addFeatures(new_features)
 
-        return len(records), error_layer
+        return len(new_features), error_layer
 
     def col_party_type_no_natural_validation(self, db, rule, error_layer):
 
@@ -189,7 +189,7 @@ class LogicChecks(QObject):
 
         error_layer.dataProvider().addFeatures(new_features)
 
-        return len(records), error_layer
+        return len(new_features), error_layer
 
     def parcel_type_and_22_position_of_parcel_number_validation(self, db, rule, error_layer):
 
@@ -229,7 +229,7 @@ class LogicChecks(QObject):
 
         error_layer.dataProvider().addFeatures(new_features)
 
-        return len(records), error_layer
+        return len(new_features), error_layer
 
     def uebaunit_parcel_validation(self, db, rule, error_layer):
         query = db.logic_validation_queries[rule]['query']
@@ -287,4 +287,4 @@ class LogicChecks(QObject):
 
         error_layer.dataProvider().addFeatures(new_features)
 
-        return len(records), error_layer
+        return len(new_features), error_layer
