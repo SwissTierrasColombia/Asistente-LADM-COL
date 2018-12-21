@@ -64,6 +64,20 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         self.log = QgsApplication.messageLog()
         self.help_strings = HelpStrings()
 
+        self.fields = {'interesado': ['nombre1', 'nombre2', 'apellido1', 'apellido2', 'razon social', 'sexo persona',
+                                 'tipo documento', 'numero de documento', 'tipo persona', 'organo emisor del documento',
+                                 'fecha emision del documento'
+                                 ],
+                  'predio': ['departamento', 'municipio', 'zona', 'matricula predio', 'numero predial nuevo',
+                             'numero predial viejo', 'nombre predio', 'avaluo', 'tipo predio'
+                             ],
+                  'agrupacion': ['numero predial nuevo', 'tipo documento', 'numero de documento', 'id agrupación'
+                                 ],
+                  'derecho': ['tipo', 'número documento Interesado', 'agrupación', 'numero predial nuevo',
+                              'tipo de fuente', 'Descripción de la fuente', 'estado_disponibilidad de la fuente',
+                              'Es oficial la fuente', 'Ruta de Almacenamiento de la fuente'
+                              ]}
+
         self.txt_help_page.setHtml(self.help_strings.DLG_IMPORT_FROM_EXCEL)
         self.txt_help_page.anchorClicked.connect(self.save_template)
 
@@ -137,13 +151,15 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                             <SrcDataSource relativeToVRT="1">{basename}</SrcDataSource>
                             <!--Header={header}-->
                             {layer_definition}
-                            <Field name="numero predial nuevo" src="Field1" type="String"/>
-                            <Field name="tipo documento" src="Field2" type="String"/>
-                            <Field name="numero de documento" src="Field3" type="String"/>
-                            <Field name="id agrupación" src="Field4" type="String"/>               
+                            {fields}
                         </OGRVRTLayer>            
                     </OGRVRTDataSource>
-                """.format(filename=filename, basename=basename, header=header_in_first_row, layer_definition=layer_definition, sheetname=sheetname)
+                """.format(filename=filename,
+                           basename=basename,
+                           header=header_in_first_row,
+                           layer_definition=layer_definition,
+                           sheetname=sheetname,
+                           fields=self.get_vrt_fields(sheetname, header_in_first_row))
 
         group_party_file_path = os.path.join(dirname, '{}.{}.vrt'.format(basename, sheetname))
         with open(group_party_file_path, 'w') as sheet:
@@ -166,21 +182,15 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                             <SrcDataSource relativeToVRT="1">{basename}</SrcDataSource>
                             <!--Header={header}-->
                             {layer_definition}                            
-                            <Field name="nombre1" src="Field1" type="String"/>
-                            <Field name="nombre2" src="Field2" type="String"/>
-                            <Field name="apellido1" src="Field3" type="String"/>
-                            <Field name="apellido2" src="Field4" type="String"/>
-                            <Field name="razon social" src="Field5" type="String"/>
-                            <Field name="sexo persona" src="Field6" type="String"/>
-                            <Field name="tipo documento" src="Field7" type="String"/>
-                            <Field name="numero de documento" src="Field8" type="String"/>
-                            <Field name="tipo persona" src="Field9" type="String"/>
-                            <Field name="organo emisor del documento" src="Field10" type="String"/>
-                            <Field name="fecha emision del documento" src="Field11" type="String"/>
-                            <Field name="numero predial nuevo" src="Field12" type="String"/>
+                            {fields}
                         </OGRVRTLayer>
                     </OGRVRTDataSource>
-                """.format(filename=filename, basename=basename, header=header_in_first_row, layer_definition=layer_definition, sheetname=sheetname)
+                """.format(filename=filename,
+                           basename=basename,
+                           header=header_in_first_row,
+                           layer_definition=layer_definition,
+                           sheetname=sheetname,
+                           fields=self.get_vrt_fields(sheetname, header_in_first_row))
 
         party_file_path = os.path.join(dirname, '{}.{}.vrt'.format(basename, sheetname))
         with open(party_file_path, 'w') as sheet:
@@ -203,18 +213,15 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                             <SrcDataSource relativeToVRT="1">{basename}</SrcDataSource>
                             <!--Header={header}-->
                             {layer_definition}
-                            <Field name="departamento" src="departamento" type="Integer"/>
-                            <Field name="municipio" src="municipio" type="Integer"/>
-                            <Field name="zona" src="zona" type="String"/>
-                            <Field name="matricula predio" src="matricula predio" type="String"/>
-                            <Field name="numero predial nuevo" src="numero predial nuevo" type="String"/>
-                            <Field name="numero predial viejo" src="numero predial viejo" type="String"/>
-                            <Field name="nombre predio" src="nombre predio" type="String"/>
-                            <Field name="avaluo" src="avaluo" type="String"/>
-                            <Field name="tipo predio" src="tipo predio" type="String"/>
+                            {fields}
                         </OGRVRTLayer>
                     </OGRVRTDataSource>
-                """.format(filename=filename, basename=basename, header=header_in_first_row, layer_definition=layer_definition, sheetname=sheetname)
+                """.format(filename=filename,
+                           basename=basename,
+                           header=header_in_first_row,
+                           layer_definition=layer_definition,
+                           sheetname=sheetname,
+                           fields=self.get_vrt_fields(sheetname, header_in_first_row))
 
         parcel_file_path = os.path.join(dirname, '{}.{}.vrt'.format(basename, sheetname))
         with open(parcel_file_path, 'w') as sheet:
@@ -237,18 +244,15 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                             <SrcDataSource relativeToVRT="1">{basename}</SrcDataSource>
                             <!--Header={header}-->
                             {layer_definition}
-                            <Field name="tipo" src="tipo" type="String"/>
-                            <Field name="número documento Interesado" src="número documento Interesado" type="String"/>
-                            <Field name="agrupación" src="agrupación" type="String"/>
-                            <Field name="numero predial nuevo" src="numero predial nuevo" type="String"/>
-                            <Field name="tipo de fuente" src="tipo de fuente" type="String"/>
-                            <Field name="Descripción de la fuente" src="Descripción de la fuente" type="Integer"/>
-                            <Field name="estado_disponibilidad de la fuente" src="estado_disponibilidad de la fuente" type="String"/>
-                            <Field name="Es oficial la fuente" src="Es oficial la fuente" type="String"/>
-                            <Field name="Ruta de Almacenamiento de la fuente" src="Ruta de Almacenamiento de la fuente" type="String"/>
+                            {fields}
                         </OGRVRTLayer>
                     </OGRVRTDataSource>
-                """.format(filename=filename, basename=basename, header=header_in_first_row, layer_definition=layer_definition, sheetname=sheetname)
+                """.format(filename=filename,
+                           basename=basename,
+                           header=header_in_first_row,
+                           layer_definition=layer_definition,
+                           sheetname=sheetname,
+                           fields=self.get_vrt_fields(sheetname, header_in_first_row))
 
         right_file_path = os.path.join(dirname, '{}.{}.vrt'.format(basename, sheetname))
         with open(right_file_path, 'w') as sheet:
@@ -259,6 +263,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         layer_right = QgsVectorLayer(uri, '{}-{}'.format('excel', sheetname), 'ogr')
         print(uri, layer_right.isValid())
         QgsProject.instance().addMapLayers([layer_group_party, layer_party, layer_parcel, layer_right])
+
 
         self.txt_log.setText(QCoreApplication.translate("DialogImportFromExcel", "Loading LADM_COL tables..."))
         step += 1
@@ -346,6 +351,18 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                                     self._db.get_description()),
                                                 Qgis.Warning)
             return
+
+
+        # Get feature counts to compare after the ETL and know how many records were imported to each ladm_col table
+        ladm_tables = [parcel_table,
+                       col_party_table,
+                       right_table,
+                       administrative_source_table,
+                       rrr_source_table,
+                       group_party_table,
+                       members_table]
+        ladm_tables_feature_count_before = {t.name(): t.featureCount() for t in ladm_tables}
+
 
         # Run the ETL
         # 1
@@ -690,12 +707,16 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
 
         # Print summary getting feature count in involved LADM_COL tables...
-        summary = QCoreApplication.translate("DialogImportFromExcel", "Import done!!!\n")
-        for table in [parcel_table, col_party_table, right_table, administrative_source_table, rrr_source_table, group_party_table, members_table]:
+        summary = """<html><head/><body><p>"""
+        summary += QCoreApplication.translate("DialogImportFromExcel", "Import done!!!<br/>")
+        for table in ladm_tables:
             summary += QCoreApplication.translate(
                         "DialogImportFromExcel",
-                        "\n{count} records loaded intto table {table}").format(count=table.featureCount(), table=table.name())
+                        "<br/><b>{count}</b> records loaded into table <b>{table}</b>").format(
+                            count=table.featureCount() - ladm_tables_feature_count_before[table.name()],
+                            table=table.name())
 
+        summary += """</body></html>"""
         self.txt_log.setText(summary)
         self.qgis_utils.message_with_duration_emitted.emit(
             QCoreApplication.translate("QGISUtils",
@@ -706,20 +727,6 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
 
     def get_excel_info(self, path, sheetname):
-        fields = {'interesado': ['nombre1', 'nombre2', 'apellido1', 'apellido2', 'razon social', 'sexo persona',
-                                 'tipo documento', 'numero de documento', 'tipo persona', 'organo emisor del documento',
-                                 'fecha emision del documento'
-                                 ],
-                  'predio': ['departamento', 'municipio', 'zona', 'matricula predio', 'numero predial nuevo',
-                             'numero predial viejo', 'nombre predio', 'avaluo', 'tipo predio'
-                             ],
-                  'agrupacion': ['numero predial nuevo', 'tipo documento', 'numero de documento', 'id agrupación'
-                                 ],
-                  'derecho': ['tipo', 'número documento Interesado', 'agrupación', 'numero predial nuevo',
-                              'tipo de fuente	Descripción de la fuente	estado_disponibilidad de la fuente',
-                              'Es oficial la fuente', 'Ruta de Almacenamiento de la fuente'
-                              ]}
-
         data_source = ogr.Open(path, 0)
         layer = data_source.GetLayer(sheetname)
 
@@ -731,13 +738,22 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # If ogr recognizes the header, the first row will contain data, otherwise it'll contain field names
         header_in_first_row = True
-        for field in fields[sheetname]:
-            print(field, feature.GetField(fields[sheetname].index(field)) == field)
-            if feature.GetField(fields[sheetname].index(field)) != field:
+        for field in self.fields[sheetname]:
+            print(field, feature.GetField(self.fields[sheetname].index(field)) == field)
+            if feature.GetField(self.fields[sheetname].index(field)) != field:
                 header_in_first_row = False
 
         num_rows = layer.GetFeatureCount()
         return header_in_first_row, num_rows - 1 if header_in_first_row else num_rows
+
+    def get_vrt_fields(self, sheetname, header_in_first_row):
+        vrt_fields = ""
+        for index, field in enumerate(self.fields[sheetname]):
+            vrt_fields += """<Field name="{field}" src="{src}" type="String"/>\n""".format(
+                field=field,
+                src='Field{}'.format(index+1) if header_in_first_row else field)
+
+        return vrt_fields.strip()
 
     def save_template(self, url):
         link = url.url()
