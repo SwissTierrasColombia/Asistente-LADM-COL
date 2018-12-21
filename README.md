@@ -13,7 +13,7 @@ Licencia: [GNU General Public License v3.0](https://github.com/AgenciaImplementa
 
 Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
 
- :arrow_right: Se recomienda utilizar la versión de QGIS más reciente, disponible en https://qgis.org/downloads/weekly/
+ :arrow_right: Se recomienda utilizar la versión 3.4.x de QGIS, disponible en https://qgis.org/downloads/
 
 
 ## Funcionalidades
@@ -22,6 +22,7 @@ La versión actual ([0.11.3](https://github.com/AgenciaImplementacion/Asistente-
 
  - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
  - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
+ - Capturar datos para el modelo `AVALÚOS v2.2.1`.
  - Preprocesar puntos: Medición controlada.
    - Agrupamiento de puntos por cercanía.
    - Cálculo de posición promediada para puntos del mismo grupo.
@@ -33,8 +34,7 @@ La versión actual ([0.11.3](https://github.com/AgenciaImplementacion/Asistente-
    - Digitalizando sobre el mapa.
      - Ayudas para la digitalización:
        - Configuración automática de snapping y de valores predeterminados para campos.
-       - Partir líneas seleccionadas por segmento.
-       - Unir líneas seleccionadas.
+       - Construir linderos a partir de líneas seleccionadas (partiéndolas automáticamente por cambio de colindancia).
    - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
  - Crear `Terrenos`:
    - A partir de linderos seleccionados.
@@ -74,7 +74,7 @@ La versión actual ([0.11.3](https://github.com/AgenciaImplementacion/Asistente-
  - Seleccionar en un diálogo las capas a cargar de cualquier modelo de la base de datos o esquema:
    - Usar el plugin 'Project Generator' para cargar capas con formularios, relaciones y dominios configurados.
    - Cargar conjuntos de capas preconfigurados.
- - Realizar revisiones de calidad:
+ - Realizar revisiones de calidad (topología):
    - Revisar segmentos de linderos muy largos (que superen una tolerancia dada).
    - Revisar superposiciones en `Punto Lindero`.
    - Revisar superposiciones en `Punto de Control`.

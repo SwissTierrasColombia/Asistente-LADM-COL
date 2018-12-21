@@ -6,4 +6,6 @@ MY_PATH="`dirname \"$0\"`"              # relative
 MY_PATH="`( cd \"$MY_PATH\" && pwd )`"  # absolutized and normalized
 cd "$MY_PATH"
 DB_BACKUP=$1
-PGPASSWORD=clave_ladm_col pg_restore -h postgres -U usuario_ladm_col -d ladm_col sql/$DB_BACKUP
+# rationale: Standard output is silenced and only error occurrences are shown
+# link: https://unix.stackexchange.com/questions/119648/redirecting-to-dev-null
+PGPASSWORD=clave_ladm_col pg_restore -h postgres -U usuario_ladm_col -d ladm_col sql/$DB_BACKUP > /dev/null 2>&1
