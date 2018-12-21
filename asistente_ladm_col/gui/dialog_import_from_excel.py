@@ -84,6 +84,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.rejected.connect(self.rejected)
+        self.buttonBox.helpRequested.connect(self.show_help)
         self.btn_browse_file.clicked.connect(
             make_file_selector(self.txt_excel_path,
                                QCoreApplication.translate("DialogImportFromExcel",

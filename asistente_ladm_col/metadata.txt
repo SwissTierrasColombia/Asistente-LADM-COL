@@ -12,6 +12,6 @@ tags=catastro,ladm,ladm_col,interlis,iso19152,registro,catastro-registro,cadastr
 homepage=https://github.com/AgenciaImplementacion/Asistente-LADM_COL
 tracker=https://github.com/AgenciaImplementacion/Asistente-LADM_COL/issues
 repository=https://github.com/AgenciaImplementacion/Asistente-LADM_COL
-icon=images/icon.png
+icon=resources/images/icon.png
 experimental=True
 deprecated=False
