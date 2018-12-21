@@ -42,6 +42,7 @@ SOURCES = ../__init__.py \
           ../gui/create_points_cadastre_wizard.py \
           ../gui/create_parcel_cadastre_wizard.py \
           ../gui/create_building_cadastre_wizard.py \
+          ../gui/create_building_unit_cadastre_wizard.py \
           ../gui/create_legal_party_prc.py \
           ../gui/create_market_research_prc.py \
           ../gui/create_natural_party_prc.py \

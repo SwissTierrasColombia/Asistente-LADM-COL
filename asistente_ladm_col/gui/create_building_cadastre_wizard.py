@@ -153,7 +153,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
         self.iface.actionAddFeature().trigger()
 
         self.iface.messageBar().pushMessage('Asistente LADM_COL',
-            QCoreApplication.translate('CreateBuildingCadastreWizard',
+            QCoreApplication.translate("CreateBuildingCadastreWizard",
                                        "You can now start capturing buildings digitizing on the map..."),
             Qgis.Info)
 

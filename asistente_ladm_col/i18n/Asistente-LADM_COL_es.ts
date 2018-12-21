@@ -506,6 +506,22 @@
     </message>
 </context>
 <context>
+    <name>CreateBuildingCadastreWizard</name>
+    <message>
+        <location filename="../gui/create_building_cadastre_wizard.py" line="156"/>
+        <source>You can now start capturing buildings digitizing on the map...</source>
+        <translation>Ahora puedes empezar a capturar construcciones dando clic sobre el mapa...</translation>
+    </message>
+</context>
+<context>
+    <name>CreateBuildingUnitCadastreWizard</name>
+    <message>
+        <location filename="../gui/create_building_unit_cadastre_wizard.py" line="156"/>
+        <source>You can now start capturing building units digitizing on the map...</source>
+        <translation>Ahora puedes empezar a capturar unidades de construcción dando clic sobre el mapa...</translation>
+    </message>
+</context>
+<context>
     <name>CreateColPartyCadastreWizard</name>
     <message>
         <location filename="../gui/create_col_party_cadastre_wizard.py" line="63"/>
