@@ -90,6 +90,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                                           "Select the Excel file with data in the intermediate structure"),
                                QCoreApplication.translate("DialogImportFromExcel",
                                                                       'Excel File (*.xlsx *.xls)')))
+        self.buttonBox.button(QDialogButtonBox.Help).clicked.connect(self.show_help)
         self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("DialogImportFromExcel", "Import"))
 
         self.progress.setVisible(False)
