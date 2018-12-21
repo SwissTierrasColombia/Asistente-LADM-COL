@@ -242,12 +242,22 @@ LAYER_CONSTRAINTS = {
     },
     PARCEL_TABLE: {
         PARCEL_TYPE_FIELD: {
-            'expression': 'CASE\n'
-                          'WHEN "{parcel_type}" IS NOT NULL AND num_selected(\'{layer}\') > 0 THEN \n("{parcel_type}" = \'PropiedadHorizontal.UnidadPredial\')\n'
-                          'WHEN "{parcel_type}" IS NOT NULL AND num_selected(\'{layer}\') = 0 THEN \n("{parcel_type}" != \'PropiedadHorizontal.UnidadPredial\')\n'
-                          'ELSE True\n'
-                          'END'.format(parcel_type=PARCEL_TYPE_FIELD, layer=BUILDING_UNIT_TABLE),
-            'description': 'Si el tipo de predio es Propiedad Horizontal, debes elegir únicamente la opción {parcel_type_field}; en otro caso puedes seleccionar cualquier otra opción del listado.'.format(parcel_type_field=PARCEL_TYPE_PH_OPTION)
+            'expression': """
+                            CASE 
+                                WHEN  "{parcel_type}" =  'NPH' THEN
+                                    num_selected('{plot_layer}') = 1 AND num_selected('{building_unit_layer}') = 0
+                                WHEN  "{parcel_type}" IN  ('PropiedadHorizontal.Matriz', 'Condominio.Matriz', 'ParqueCementerio.Matriz', 'BienUsoPublico', 'Condominio.UnidadPredial') THEN
+                                    num_selected('{plot_layer}') = 1 AND num_selected('{building_unit_layer}') = 0
+                                WHEN  "{parcel_type}" IN  ('Via', 'ParqueCementerio.UnidadPrivada') THEN
+                                    num_selected('{plot_layer}') = 1 AND num_selected('{building_unit_layer}') = 0 AND num_selected('{building_layer}') = 0
+                                WHEN  "{parcel_type}" =   'PropiedadHorizontal.UnidadPredial' THEN
+                                    num_selected('{plot_layer}') = 0 AND num_selected('{building_unit_layer}') != 0 AND num_selected('{building_layer}') = 0
+                                WHEN  "{parcel_type}" =  'Mejora' THEN
+                                    num_selected('{plot_layer}') = 0 AND num_selected('{building_unit_layer}') = 0 AND num_selected('{building_layer}') = 1
+                                ELSE
+                                    TRUE
+                            END""".format(parcel_type=PARCEL_TYPE_FIELD, plot_layer=PLOT_TABLE, building_layer=BUILDING_TABLE, building_unit_layer=BUILDING_UNIT_TABLE),
+            'description': 'Parcel must have one or more spatial units associated with it. Check the rules.'
         },
         PARCEL_NUMBER_FIELD: {
             'expression': """CASE
