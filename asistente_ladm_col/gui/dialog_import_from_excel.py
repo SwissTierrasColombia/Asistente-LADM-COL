@@ -341,7 +341,6 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                                   'METHOD': 1,
                                                   'OUTPUT': 'memory:',
                                                   'PREFIX': 'agrupacion_' })['OUTPUT']
-        QgsProject.instance().addMapLayer(group_party_tid_layer)
 
         # 5
         self.txt_log.setText(
@@ -358,7 +357,6 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                                           'METHOD': 1,
                                                           'OUTPUT': 'memory:',
                                                           'PREFIX': 'interesado_' })['OUTPUT']
-        QgsProject.instance().addMapLayer(group_party_party_tid_layer)
 
         # 6
         self.txt_log.setText(
