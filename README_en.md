@@ -17,7 +17,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([0.11.3](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.11.3)) of the LADM_COL Assistant depends on [Project Generator v3.3.7](https://github.com/opengisch/projectgenerator/releases/download/v3.3.7/projectgenerator.v3.3.7.zip) and allows users to:
+The current version ([1.0.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.0.0)) of the LADM_COL Assistant depends on [Project Generator v3.3.7](https://github.com/opengisch/projectgenerator/releases/download/v3.3.7/projectgenerator.v3.3.7.zip) and allows users to:
 
  - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
  - Capture data for the `FICHA_PREDIAL v2.2.1` model.
@@ -89,7 +89,21 @@ The current version ([0.11.3](https://github.com/AgenciaImplementacion/Asistente
    - Check that `Plot` boundaries are covered by `Boundaries` and their relations are correctly recorded in topology tables (`MoreBFS` and `Less`).
    - Check that `Boundaries` are covered by `Plot` boundaries and their relations are correctly recorded in topology tables (`MoreBFS` and `Less`).
    - Check that `Right of Way` has no multi-part geometries.
+ - Check quality rules (consistency):
+   - Parcel should hace one and only one Right
+   - Table records should not be repeated
+   - Group Party Fractions should sum 1
+   - Check that the departamento field of the predio table has two numerical characters
+   - Check that the municipality field of the predio table has three numerical characters
+   - Check that the zona field of the predio table has two numerical characters
+   - Check that the numero_predial has 30 numerical characters
+   - Check that the numero_predial_anterior has 20 numerical characters
+   - Check that attributes are appropriate for parties of type natural
+   - Check that attributes are appropriate for parties of type legal
+   - Check that the type of parcel corresponds to position 22 of the numero_predial
+   - Check that Spatial Units associated with Parcels correspond to the parcel type
  - Generate reports based on selected `Plots` (Annex 17).
+ - Import data from [intermediate structure in Excel](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
  - Configure automatic values for `namespace` and `local_id` attributes.
  - Load styles for newly added layers from preconfigured QML files.
  - View illustrative GIFs in the plugin's online help or download them for offline work.

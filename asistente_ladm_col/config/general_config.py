@@ -73,7 +73,8 @@ MODULE_HELP_MAPPING = {
     'create_building_unit_qualification_valuation_unconventional': 'valuation/Create_building_unit_qualification_unconventional.html',
     'create_building_unit_qualification_valuation_conventional': 'valuation/Create_building_unit_qualification_conventional.html',
     'create_geoeconomic_zone_valuation': 'valuation/Create_geoeconomic_zone.html',
-    'create_physical_zone_valuation': 'valuation/Create_physical_zone.html'
+    'create_physical_zone_valuation': 'valuation/Create_physical_zone.html',
+    'import_from_excel': 'toolbar.html#import-from-intermediate-structure'
 }
 # Configure Project Generator Dependency
 PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.7"

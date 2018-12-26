@@ -202,7 +202,7 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
 
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate("CreateRightCadastreWizard",
-                                               "The new right (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!".format(right_id, administrative_source_ids[0])),
+                                               "The new right (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!").format(right_id, administrative_source_ids[0]),
                     Qgis.Info)
 
         self._right_layer.committedFeaturesAdded.disconnect()

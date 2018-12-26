@@ -69,10 +69,10 @@ class AboutDialog(QDialog, DIALOG_UI):
                                        HELP_DIR_NAME,
                                        QGIS_LANG,
                                        'index.html')):
-            self.btn_download_help.setText(QCoreApplication.translate("AboutDialog", 'Open help from local folder'))
+            self.btn_download_help.setText(QCoreApplication.translate("AboutDialog", "Open help from local folder"))
             self.btn_download_help.clicked.connect(self.show_help)
         else:
-            self.btn_download_help.setText(QCoreApplication.translate("AboutDialog", 'Download help for offline access'))
+            self.btn_download_help.setText(QCoreApplication.translate("AboutDialog", "Download help for offline access"))
             self.btn_download_help.clicked.connect(self.download_help)
 
     def save_file(self, fetcher_task):

@@ -18,7 +18,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([0.11.3](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/0.11.3)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.7](https://github.com/opengisch/projectgenerator/releases/download/v3.3.7/projectgenerator.v3.3.7.zip) y permite:
+La versión actual ([1.0.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.0.0)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.7](https://github.com/opengisch/projectgenerator/releases/download/v3.3.7/projectgenerator.v3.3.7.zip) y permite:
 
  - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
  - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
@@ -91,7 +91,21 @@ La versión actual ([0.11.3](https://github.com/AgenciaImplementacion/Asistente-
    - Revisar que los límites de `Terrenos` estén cubiertos por `Linderos` y que sus relaciones estén correctamente registradas en las tablas de topología (`MasCCL` y `Menos`).
    - Revisar que los `Linderos` estén cubiertos por límites de `Terrenos` y que sus relaciones estén correctamente registradas en las tablas de topología (`MasCCL` y `Menos`).
    - Revisar geometrías multiparte en `Servidumbre de paso`.
+ - Realizar revisiones de calidad (consistencia lógica):
+   - Los predios deben tener derecho asociado y pueden tener máximo un derecho de tipo Dominio asociado
+   - No deben haber registros duplicados
+   - Las fracciones de las agrupaciones de interesados deben sumar uno (1)
+   - Revisar que el campo departamento de la tabla predio tiene dos caracteres numéricos
+   - Revisar que el campo municipio de la tabla predio tiene tres caracteres numéricos
+   - Revisar que el campo zona de la tabla predio tiene dos caracteres numéricos
+   - Revisar que el número_predial tiene 30 caracteres numéricos
+   - Revisar que el número_predial_anterior tiene 20 caracteres numéricos
+   - Revisar que los atributos son apropiados para interesados naturales
+   - Revisar que los atributos son apropiados para interesados jurídicos
+   - Revisar que el tipo de Predio corresponde a la posición 22 del número_predial
+   - Revisar que las Unidades Espaciales asociadas a Predios correspondan al tipo de predio
  - Generar Informes de Colindancia con base en `Terrenos` seleccionados (Anexo 17).
+ - Importar datos alfanuméricos desde [estructura intermedia en Excel](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
  - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
  - Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.
  - Visualizar GIFs ilustrativos en la ayuda online del plugin o descargarlos para trabajo offline.
