@@ -492,7 +492,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == RIGHT_OF_WAY_TABLE:
         mapping = [
-            {'expression': '"t_id"', 'length': -1, 'name': 't_id', 'precision': 0, 'type': 4},
             {'expression': '"identificador"', 'length': 20, 'name': 'identificador', 'precision': -1, 'type': 10},
             {'expression': '"fecha_inscripcion_catastral"', 'length': -1, 'name': 'fecha_inscripcion_catastral', 'precision': -1, 'type': 14},
             {'expression': '"dimension"', 'length': 255, 'name': 'dimension', 'precision': -1, 'type': 10},
