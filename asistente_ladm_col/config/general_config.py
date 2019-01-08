@@ -52,6 +52,7 @@ MODULE_HELP_MAPPING = {
     'create_plot': 'cadastre/Spatial_Unit.html#create-plot',
     'create_building': 'cadastre/Spatial_Unit.html#create-building',
     'create_building_unit': 'cadastre/Spatial_Unit.html#create-building-unit',
+    'create_right_of_way':'cadastre/Spatial_Unit.html#create-right-of-way',
     'create_right': 'cadastre/RRR.html#right',
     'create_responsibility': 'cadastre/RRR.html#responsibility',
     'create_restriction': 'cadastre/RRR.html#restriction',
