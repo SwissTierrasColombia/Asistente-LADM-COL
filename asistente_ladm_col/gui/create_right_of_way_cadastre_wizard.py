@@ -49,9 +49,6 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
-        self._right_of_way_layer = None
-        self._right_of_way_line_layer = None
-        self._survey_point_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
         self.right_of_way = RightOfWay(self.iface, self.qgis_utils)
@@ -92,7 +89,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             self.width_line_edit.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
-            finish_button_text = QCoreApplication.translate('CreateRightOfWayCadastreWizard', 'Start')
+            finish_button_text = QCoreApplication.translate("CreateRightOfWayCadastreWizard", "Start")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_RIGHT_OF_WAY_CADASTRE_PAGE_1_OPTION_POINTS)
 
         elif self.rad_digitizing_line.isChecked():
@@ -102,7 +99,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             self.mMapLayerComboBox.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
-            finish_button_text = QCoreApplication.translate('CreateRightOfWayCadastreWizard', 'Start')
+            finish_button_text = QCoreApplication.translate("CreateRightOfWayCadastreWizard", "Start")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_RIGHT_OF_WAY_CADASTRE_PAGE_1_OPTION2_POINTS)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
@@ -128,39 +125,16 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
 
             else:
                 self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                    QCoreApplication.translate('CreateRightOfWayCadastreWizard',
+                    QCoreApplication.translate("CreateRightOfWayCadastreWizard",
                                                "Select a source layer to set the field mapping to '{}'.").format(RIGHT_OF_WAY_TABLE),
                     Qgis.Warning)
 
         elif self.rad_digitizing.isChecked():
-            self.prepare_right_of_way_creation()
+            self.right_of_way.prepare_right_of_way_creation(self._db, self.iface)
 
         elif self.rad_digitizing_line.isChecked():
             width_value = self.width_line_edit.value()
-            print(width_value)
-            self.right_of_way.prepare_right_of_way_line_creation(self._db, self._right_of_way_layer, self.translatable_config_strings, self.iface, width_value)
-
-    def prepare_right_of_way_creation(self):
-        # Load layers
-        self.right_of_way.add_db_required_layers(self._db, self.iface)
-
-        # Disable transactions groups and configure Snapping
-        self.right_of_way.set_layers_settings()
-
-        # Don't suppress feature form
-        form_config = self._right_of_way_layer.editFormConfig()
-        form_config.setSuppress(QgsEditFormConfig.SuppressOff)
-        self._right_of_way_layer.setEditFormConfig(form_config)
-
-        # Enable edition mode
-        self.iface.layerTreeView().setCurrentLayer(self._right_of_way_layer)
-        self._right_of_way_layer.startEditing()
-        self.iface.actionAddFeature().trigger()
-
-        self.iface.messageBar().pushMessage('Asistente LADM_COL',
-            QCoreApplication.translate('CreateRightOfWayCadastreWizard',
-                                       "You can now start capturing right of way digitizing on the map..."),
-            Qgis.Info)
+            self.right_of_way.prepare_right_of_way_line_creation(self._db, self.translatable_config_strings, self.iface, width_value)
 
     def save_settings(self):
         settings = QSettings()

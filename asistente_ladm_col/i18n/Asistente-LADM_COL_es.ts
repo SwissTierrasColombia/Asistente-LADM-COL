@@ -806,7 +806,7 @@
     </message>
     <message>
         <location filename="../gui/create_parcel_cadastre_wizard.py" line="166"/>
-        <location filename="../gui/right_of_way.py" line="227"/>
+        <location filename="../gui/right_of_way.py" line="236"/>
         <source>UEBAUNIT table couldn&apos;t be found... {}</source>
         <translation>No se encontró la tabla UEBAUNIT... {}</translation>
     </message>
@@ -1108,6 +1108,41 @@
         <location filename="../asistente_ladm_col_plugin.py" line="861"/>
         <source>Close the edit session in table {} before creating rights.</source>
         <translation>Cierra la sesión de edición en la tabla {} antes de continuar creando derechos.</translation>
+    </message>
+</context>
+<context>
+    <name>CreateRightOfWayCadastreWizard</name>
+    <message>
+        <location filename="../gui/create_right_of_way_cadastre_wizard.py" line="95"/>
+        <location filename="../gui/create_right_of_way_cadastre_wizard.py" line="105"/>
+        <source>Start</source>
+        <translation>Comenzar</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_right_of_way_cadastre_wizard.py" line="131"/>
+        <source>Select a source layer to set the field mapping to &apos;{}&apos;.</source>
+        <translation>Selecciona una capa fuente para definir el mapeo de campos a &apos;{}&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../gui/create_right_of_way_cadastre_wizard.py" line="161"/>
+        <source>You can now start capturing right of way digitizing on the map...</source>
+        <translation>Ahora puedes empezar a capturar servidumbres de paso dando clic sobre el mapa...</translation>
+    </message>
+    <message>
+        <location filename="../gui/right_of_way.py" line="108"/>
+        <source>You can now start capturing line right of way digitizing on the map...</source>
+        <translation>Ahora puedes empezar a capturar líneas de servidumbre de paso dando clic sobre el mapa...</translation>
+    </message>
+    <message>
+        <location filename="../gui/right_of_way.py" line="139"/>
+        <location filename="../gui/right_of_way.py" line="146"/>
+        <source>Right of Way layer couldn&apos;t be found... {}</source>
+        <translation>La capa Servidumbre de paso no pudo ser encontrada... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/right_of_way.py" line="153"/>
+        <source>Survey Point layer couldn&apos;t be found... {}</source>
+        <translation>No se encontró la tabla Punto Levantamiento... {}</translation>
     </message>
 </context>
 <context>
@@ -2884,50 +2919,50 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>RightOfWay</name>
     <message>
-        <location filename="../gui/right_of_way.py" line="215"/>
-        <location filename="../gui/right_of_way.py" line="221"/>
+        <location filename="../gui/right_of_way.py" line="224"/>
+        <location filename="../gui/right_of_way.py" line="230"/>
         <source>Table {} not found in the DB! {}</source>
         <translation>¡No se encontró la tabla {} en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../gui/right_of_way.py" line="236"/>
+        <location filename="../gui/right_of_way.py" line="245"/>
         <source>First load the layer {} into QGIS and select at least one plot!</source>
         <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un terreno!</translation>
     </message>
     <message>
-        <location filename="../gui/right_of_way.py" line="238"/>
+        <location filename="../gui/right_of_way.py" line="247"/>
         <source>Load layer {} now</source>
         <translation>Cargar la capa {} ahora</translation>
     </message>
     <message>
-        <location filename="../gui/right_of_way.py" line="243"/>
+        <location filename="../gui/right_of_way.py" line="252"/>
         <source>You have select at least one or more benefited plot and one more right of way and one or more administrative source to create relations!</source>
         <translation>Debes seleccionar al menos uno o más terrenos beneficiados, una servidumbre de paso y una o mas fuentes administrativas para crear relaciones!</translation>
     </message>
     <message>
-        <location filename="../gui/right_of_way.py" line="265"/>
+        <location filename="../gui/right_of_way.py" line="274"/>
         <source>One or more pairs id_plot-id_parcel weren&apos;t found, this is needed for make benefited and restriction relations.</source>
         <translation>Uno o más pares de id_terreno-id_predio no fueron encontrados, esto es necesario para crear relaciones de restricciones y beneficiados.</translation>
     </message>
     <message>
-        <location filename="../gui/right_of_way.py" line="281"/>
-        <location filename="../gui/right_of_way.py" line="334"/>
-        <location filename="../gui/right_of_way.py" line="375"/>
+        <location filename="../gui/right_of_way.py" line="290"/>
+        <location filename="../gui/right_of_way.py" line="343"/>
+        <location filename="../gui/right_of_way.py" line="384"/>
         <source>{} out of {} records were saved into {}! {} out of {} records already existed in the database.</source>
         <translation>¡{} de {} registros fueron guardados en {}! {} de {} registros ya existían en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../gui/right_of_way.py" line="292"/>
+        <location filename="../gui/right_of_way.py" line="301"/>
         <source>No pairs id_right_of_way-id_parcel benefited found.</source>
         <translation>No fueron encontrados pares de id_servidumbre de paso-id_predio.</translation>
     </message>
     <message>
-        <location filename="../gui/right_of_way.py" line="346"/>
+        <location filename="../gui/right_of_way.py" line="355"/>
         <source>No pairs id_right_of_way-restriction found.</source>
         <translation>No fueron encontrados pares de id_servidumbre de paso-id_restriccion.</translation>
     </message>
     <message>
-        <location filename="../gui/right_of_way.py" line="387"/>
+        <location filename="../gui/right_of_way.py" line="396"/>
         <source>No pairs source_relation-restriction found.</source>
         <translation>No fueron encontrados pares de rrr_fuente-restriccion.</translation>
     </message>
@@ -3524,12 +3559,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../ui/wiz_create_building_cadastre.ui" line="143"/>
-        <location filename="../ui/wiz_create_right_of_way_cadastre.ui" line="87"/>
+        <location filename="../ui/wiz_create_right_of_way_cadastre.ui" line="190"/>
         <source>Source:</source>
         <translation>Fuente:</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_building_cadastre.ui" line="172"/>
+        <location filename="../ui/wiz_create_right_of_way_cadastre.ui" line="219"/>
         <source>Recent mappings:</source>
         <translation>Mapeos recientes:</translation>
     </message>
@@ -3540,7 +3576,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../ui/wiz_create_building_cadastre.ui" line="112"/>
-        <location filename="../ui/wiz_create_right_of_way_cadastre.ui" line="134"/>
+        <location filename="../ui/wiz_create_right_of_way_cadastre.ui" line="159"/>
         <source>From another QGIS layer/table (setting a field mapping)</source>
         <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
     </message>
@@ -3555,17 +3591,17 @@ p, li { white-space: pre-wrap; }
         <translation>Cómo deseas crear servidumbres de paso?</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_right_of_way_cadastre.ui" line="180"/>
+        <location filename="../ui/wiz_create_right_of_way_cadastre.ui" line="86"/>
         <source>Digitizing centerline</source>
         <translation>Digitalizando el eje</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_right_of_way_cadastre.ui" line="187"/>
+        <location filename="../ui/wiz_create_right_of_way_cadastre.ui" line="133"/>
         <source>Digitizing Polygon</source>
         <translation>Digitalizando polígono</translation>
     </message>
     <message>
-        <location filename="../ui/wiz_create_right_of_way_cadastre.ui" line="205"/>
+        <location filename="../ui/wiz_create_right_of_way_cadastre.ui" line="101"/>
         <source>Right of way width</source>
         <translation>Ancho de la servidumbre de paso</translation>
     </message>

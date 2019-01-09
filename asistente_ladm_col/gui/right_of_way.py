@@ -79,12 +79,34 @@ class RightOfWay(QObject):
         self._right_of_way_layer = None
         self.addedFeatures = None
 
-    def prepare_right_of_way_line_creation(self, db, _right_of_way_layer, tb_strings, iface, width_value):
+    def prepare_right_of_way_creation(self, db, iface):
+        # Load layers
+        self.add_db_required_layers(db, iface)
+
+        # Disable transactions groups and configure Snapping
+        self.set_layers_settings()
+
+        # Don't suppress feature form
+        form_config = self._right_of_way_layer.editFormConfig()
+        form_config.setSuppress(QgsEditFormConfig.SuppressOff)
+        self._right_of_way_layer.setEditFormConfig(form_config)
+
+        # Enable edition mode
+        iface.layerTreeView().setCurrentLayer(self._right_of_way_layer)
+        self._right_of_way_layer.startEditing()
+        iface.actionAddFeature().trigger()
+
+        iface.messageBar().pushMessage('Asistente LADM_COL',
+            QCoreApplication.translate("CreateRightOfWayCadastreWizard",
+                                       "You can now start capturing right of way digitizing on the map..."),
+            Qgis.Info)
+
+    def prepare_right_of_way_line_creation(self, db, translatable_config_strings, iface, width_value):
         # Load layers
         self.add_db_required_layers(db, iface)
         # Add Memory line layer
         self._right_of_way_line_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                    tb_strings.RIGHT_OF_WAY_LINE_LAYER, "memory")
+                                    translatable_config_strings.RIGHT_OF_WAY_LINE_LAYER, "memory")
         QgsProject.instance().addMapLayer(self._right_of_way_line_layer, True)
 
         # Disable transactions groups and configure Snapping
@@ -105,7 +127,7 @@ class RightOfWay(QObject):
         self._right_of_way_line_layer.committedFeaturesAdded.connect(partial(self.finish_right_of_way_line, width_value, iface))
 
         iface.messageBar().pushMessage('Asistente LADM_COL',
-            QCoreApplication.translate('CreateRightOfWayCadastreWizard',
+            QCoreApplication.translate("CreateRightOfWayCadastreWizard",
                                        "You can now start capturing line right of way digitizing on the map..."),
             Qgis.Info)
 
@@ -125,23 +147,32 @@ class RightOfWay(QObject):
     def add_db_required_layers(self, db, iface):
         # Load layers
         res_layers = self.qgis_utils.get_layers(db, {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None}
         }, load=True)
 
+        self._plot_layer = res_layers[PLOT_TABLE]
         self._right_of_way_layer = res_layers[RIGHT_OF_WAY_TABLE]
         self._survey_point_layer = res_layers[SURVEY_POINT_TABLE]
 
+        if self._plot_layer is None:
+            iface.messageBar().pushMessage('Asistente LADM_COL',
+                QCoreApplication.translate("CreateRightOfWayCadastreWizard",
+                                           "Right of Way layer couldn't be found... {}").format(db.get_description()),
+                Qgis.Warning)
+            return
+
         if self._right_of_way_layer is None:
             iface.messageBar().pushMessage('Asistente LADM_COL',
-                QCoreApplication.translate('CreateRightOfWayCadastreWizard',
+                QCoreApplication.translate("CreateRightOfWayCadastreWizard",
                                            "Right of Way layer couldn't be found... {}").format(db.get_description()),
                 Qgis.Warning)
             return
 
         if self._survey_point_layer is None:
             iface.messageBar().pushMessage('Asistente LADM_COL',
-                QCoreApplication.translate('CreateRightOfWayCadastreWizard',
+                QCoreApplication.translate("CreateRightOfWayCadastreWizard",
                                            "Survey Point layer couldn't be found... {}").format(db.get_description()),
                 Qgis.Warning)
             return
