@@ -65,9 +65,18 @@ class SourceHandler(QObject):
         formatted as changeAttributeValues expects to update 'datos' attribute
         to a remote location.
         """
-        # First test if we have Internet connection and a valid service
-        dlg = self.qgis_utils.get_settings_dialog()
-        res, msg = dlg.is_source_service_valid()
+        # First test if we have Internet connection and a valid service}
+
+        if not QSettings().value('Asistente-LADM_COL/sources/documentary_repository'):
+
+            self.message_with_duration_emitted.emit( QCoreApplication.translate("SourceHandler",
+                   "You do not use documentary repository, activate to upload pending source files, You can do it later from the 'Upload Pending Source Files' menu"),
+                Qgis.Warning, 10)
+            return dict()
+        else:
+            dlg = self.qgis_utils.get_settings_dialog()
+            res, msg = dlg.is_source_service_valid()
+
         if not res:
             msg['text'] = QCoreApplication.translate("SourceHandler",
                 "No file could be uploaded to the server. You can do it later from the 'Upload Pending Source Files' menu. Reason: {}").format(msg['text'])
