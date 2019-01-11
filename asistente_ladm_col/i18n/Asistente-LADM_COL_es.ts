@@ -3602,8 +3602,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../ui/wiz_create_right_of_way_cadastre.ui" line="101"/>
-        <source>Right of way width</source>
-        <translation>Ancho de la servidumbre de paso</translation>
+        <source>Right of way width [m.]</source>
+        <translation>Ancho de la servidumbre de paso [m.]</translation>
     </message>
 </context>
 <context>

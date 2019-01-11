@@ -98,7 +98,7 @@
              <item>
               <widget class="QLabel" name="lbl_width">
                <property name="text">
-                <string>Right of way width</string>
+                <string>Right of way width [m.]</string>
                </property>
               </widget>
              </item>
