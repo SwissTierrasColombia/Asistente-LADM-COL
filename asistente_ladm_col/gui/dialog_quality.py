@@ -18,15 +18,19 @@
 """
 import collections
 
+from qgis.core import Qgis
+
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication)
+
 from qgis.PyQt.QtGui import (QBrush,
                              QFont,
                              QIcon,
                              QColor)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QTreeWidgetItem,
-                                 QTreeWidgetItemIterator)
+                                 QTreeWidgetItemIterator,
+                                 QProgressBar)
 
 from ..config.general_config import translated_strings
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
@@ -40,12 +44,13 @@ from ..resources_rc import *
 DIALOG_UI = get_ui_class('dlg_quality.ui')
 
 class DialogQuality(QDialog, DIALOG_UI):
-    def __init__(self, db, qgis_utils, quality, parent=None):
+    def __init__(self, db, qgis_utils, quality, iface, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self._db = db
         self.qgis_utils = qgis_utils
         self.quality = quality
+        self.iface = iface
 
         self.trw_quality_rules.setItemsExpandable(False)
 
@@ -204,7 +209,27 @@ class DialogQuality(QDialog, DIALOG_UI):
     def accepted(self):
         #self.qgis_utils.remove_error_group_requested.emit()
 
+        iterator_topology = QTreeWidgetItemIterator(self.trw_quality_rules, QTreeWidgetItemIterator.Selectable)
+        count_topology = 0
+
+        while iterator_topology.value():
+            item_topology = iterator_topology.value()
+
+            if item_topology.isSelected():
+                count_topology = count_topology + 1
+
+            iterator_topology += 1
+
         iterator = QTreeWidgetItemIterator(self.trw_quality_rules, QTreeWidgetItemIterator.Selectable)
+
+        progressMessageBar = self.iface.messageBar().createMessage("<h1>Topologia1</h1>")
+        progress = QProgressBar()
+        progress.setMaximum(count_topology)
+        progress.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+        progressMessageBar.layout().addWidget(progress)
+        self.iface.messageBar().pushWidget(progressMessageBar, Qgis.Info)
+        progress_count = 0
+
         while iterator.value():
             item = iterator.value()
 
@@ -213,10 +238,22 @@ class DialogQuality(QDialog, DIALOG_UI):
 
                 if id == 'check_overlaps_in_boundary_points':
                     self.quality.check_overlapping_points(self._db, BOUNDARY_POINT_TABLE)
+                    progressMessageBar.setText("1")
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_overlaps_in_control_points':
                     self.quality.check_overlapping_points(self._db, CONTROL_POINT_TABLE)
+                    progressMessageBar.setText("2")
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_boundary_points_covered_by_boundary_nodes':
                     self.quality.check_boundary_points_covered_by_boundary_nodes(self._db)
+                    progressMessageBar.setText("Jhon")
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_boundary_points_covered_by_plot_nodes':
                     self.quality.check_boundary_points_covered_by_plot_nodes(self._db)
                 elif id == 'check_too_long_boundary_segments':

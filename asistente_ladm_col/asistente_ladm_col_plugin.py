@@ -874,7 +874,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def show_dlg_quality(self):
-        dlg = DialogQuality(self.get_db_connection(), self.qgis_utils, self.quality)
+        dlg = DialogQuality(self.get_db_connection(), self.qgis_utils, self.quality, self.iface)
         dlg.exec_()
 
     @_project_generator_required
