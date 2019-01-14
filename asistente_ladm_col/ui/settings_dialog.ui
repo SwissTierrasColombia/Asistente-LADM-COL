@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>545</width>
-    <height>476</height>
+    <height>486</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -33,7 +33,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_db_connection">
       <attribute name="title">
@@ -534,7 +534,7 @@
        <item row="0" column="0">
         <widget class="QgsCollapsibleGroupBox" name="connexion_box">
          <property name="title">
-          <string>Use documentary repository</string>
+          <string>Use document repository</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
