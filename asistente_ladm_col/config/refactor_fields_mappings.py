@@ -501,8 +501,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"su_local_id"', 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10},
             {'expression': '"nivel"', 'length': -1, 'name': 'nivel', 'precision': 0, 'type': 4},
             {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"punto_referencia"', 'length': -1, 'name': 'punto_referencia', 'precision': -1, 'type': 10}
+            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
         ]
 
     # If the user wants to enable automatic fields...

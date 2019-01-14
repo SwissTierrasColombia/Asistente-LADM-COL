@@ -42,8 +42,6 @@ WIZARD_UI = get_ui_class('wiz_create_right_of_way_cadastre.ui')
 
 class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
 
-    #map_refresh_requested = pyqtSignal()
-
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
@@ -79,7 +77,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             self.mMapLayerComboBox.setEnabled(True)
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
-            finish_button_text = 'Import'
+            finish_button_text = QCoreApplication.translate("CreateRightOfWayCadastreWizard", "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(RIGHT_OF_WAY_TABLE, True))
 
         elif self.rad_digitizing.isChecked():
@@ -138,16 +136,25 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/wizards/right_of_way_load_data_type', 'digitizing' if self.rad_digitizing.isChecked() else 'refactor')
+
+        load_data_type = 'refactor'
+        if self.rad_digitizing.isChecked():
+            load_data_type = 'digitizing'
+        elif self.rad_digitizing_line.isChecked():
+            load_data_type = 'digitizing_line'
+
+        settings.setValue('Asistente-LADM_COL/wizards/right_of_way_load_data_type', load_data_type)
 
     def restore_settings(self):
         settings = QSettings()
 
-        load_data_type = settings.value('Asistente-LADM_COL/wizards/right_of_way_load_data_type') or 'digitizing'
+        load_data_type = settings.value('Asistente-LADM_COL/wizards/right_of_way_load_data_type') or 'digitizing_line'
         if load_data_type == 'refactor':
             self.rad_refactor.setChecked(True)
-        else:
+        elif load_data_type == 'digitizing':
             self.rad_digitizing.setChecked(True)
+        else:
+            self.rad_digitizing_line.setChecked(True)
 
     def show_help(self):
         self.qgis_utils.show_help("create_right_of_way")
