@@ -30,6 +30,7 @@ COL_PARTY_SURNAME_FIELD = "primer_apellido"
 COL_PARTY_BUSINESS_NAME_FIELD = "razon_social"
 COL_PARTY_LEGAL_PARTY_FIELD = "tipo_interesado_juridico"
 COL_PARTY_NAME_FIELD = "nombre"
+COL_RESTRICTION_TYPE_RIGHT_OF_WAY_VALUE = "Servidumbre"
 CONTROL_POINT_TABLE = "puntocontrol"
 DEPARTMENT_FIELD = "departamento"
 DOCUMENT_ID_FIELD = "documento_identidad"
@@ -105,7 +106,9 @@ POINTSOURCE_TABLE_CONTROLPOINT_FIELD = "punto_puntocontrol"
 POINTSOURCE_TABLE_SOURCE_FIELD = "pfuente"
 RESPONSIBILITY_TABLE = "col_responsabilidad"
 RESPONSIBILITY_TYPE_TABLE = "col_responsabilidadtipo"
+RESTRICTION_TABLE_DESCRIPTION_FIELD = "descripcion"
 RESTRICTION_TABLE = "col_restriccion"
+RESTRICTION_TABLE_PARCEL_FIELD = "unidad_predio"
 RESTRICTION_TYPE_TABLE = "col_restricciontipo"
 RRR_SOURCE_RELATION_TABLE = "rrrfuente"
 RRR_SOURCE_RESPONSIBILITY_FIELD = "rrr_col_responsabilidad"
@@ -115,6 +118,7 @@ RRR_SOURCE_SOURCE_FIELD = "rfuente"
 RIGHT_TABLE = "col_derecho"
 RIGHT_TYPE_TABLE = "col_derechotipo"
 RIGHT_OF_WAY_TABLE="servidumbrepaso"
+RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD = "identificador"
 REFERENCE_POINT_FIELD = "punto_referencia"
 SECOND_NAME_FIELD = "segundo_nombre"
 SECOND_SURNAME_FIELD = "segundo_apellido"
@@ -132,6 +136,7 @@ UEBAUNIT_TABLE_BUILDING_FIELD = "ue_construccion"
 UEBAUNIT_TABLE_BUILDING_UNIT_FIELD = "ue_unidadconstruccion"
 UEBAUNIT_TABLE_PARCEL_FIELD = "baunit_predio"
 UEBAUNIT_TABLE_PLOT_FIELD = "ue_terreno"
+UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD = "ue_servidumbrepaso"
 UESOURCE_TABLE = "uefuente"
 UESOURCE_TABLE_PLOT_FIELD = "ue_terreno"
 UESOURCE_TABLE_SOURCE_FIELD = "pfuente"
@@ -179,6 +184,7 @@ NAMESPACE_PREFIX = {
     PLOT_TABLE: 'su',
     RESPONSIBILITY_TABLE: 'r',
     RESTRICTION_TABLE: 'r',
+    RIGHT_OF_WAY_TABLE: 'su',
     RIGHT_TABLE: 'r',
     SPATIAL_SOURCE_TABLE: 's',
     SURVEY_POINT_TABLE: 'p'

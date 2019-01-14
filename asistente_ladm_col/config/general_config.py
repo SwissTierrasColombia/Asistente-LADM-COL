@@ -52,6 +52,7 @@ MODULE_HELP_MAPPING = {
     'create_plot': 'cadastre/Spatial_Unit.html#create-plot',
     'create_building': 'cadastre/Spatial_Unit.html#create-building',
     'create_building_unit': 'cadastre/Spatial_Unit.html#create-building-unit',
+    'create_right_of_way':'cadastre/Spatial_Unit.html#create-right-of-way',
     'create_right': 'cadastre/RRR.html#right',
     'create_responsibility': 'cadastre/RRR.html#responsibility',
     'create_restriction': 'cadastre/RRR.html#restriction',
@@ -139,6 +140,7 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_OVERLAPS_IN_BOUNDARY_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should not overlap")
         self.CHECK_OVERLAPS_IN_CONTROL_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Control Points should not overlap")
         self.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by Boundary nodes")
+        self.RIGHT_OF_WAY_LINE_LAYER = QCoreApplication.translate("TranslatableConfigStrings", "Right of way line")
         self.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by plot nodes")
 
         too_long_tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters

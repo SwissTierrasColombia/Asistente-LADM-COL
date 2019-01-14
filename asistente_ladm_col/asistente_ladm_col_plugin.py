@@ -55,6 +55,7 @@ from .gui.create_administrative_source_cadastre_wizard import CreateAdministrati
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
 from .gui.create_building_cadastre_wizard import CreateBuildingCadastreWizard
 from .gui.create_building_unit_cadastre_wizard import CreateBuildingUnitCadastreWizard
+from .gui.create_right_of_way_cadastre_wizard import CreateRightOfWayCadastreWizard
 from .gui.create_col_party_cadastre_wizard import CreateColPartyCadastreWizard
 from .gui.create_group_party_cadastre import CreateGroupPartyCadastre
 from .gui.create_legal_party_prc import CreateLegalPartyPRCWizard
@@ -80,6 +81,7 @@ from .gui.create_physical_zone_valuation_wizard import CreatePhysicalZoneValuati
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
 from .gui.dialog_import_from_excel import DialogImportFromExcel
+from .gui.right_of_way import RightOfWay
 from .gui.reports import ReportGenerator
 from .gui.toolbar import ToolBar
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
@@ -110,6 +112,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.iface.mainWindow().menuBar().addMenu(self._menu)
 
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
+        self.right_of_way = RightOfWay(self.iface, self.qgis_utils)
         self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
         self.report_generator = ReportGenerator(self.qgis_utils)
@@ -165,6 +168,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
         self._fill_more_BFS_less_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill More BFS and Less"), self.iface.mainWindow())
         self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
+        self._fill_right_of_way_relations_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Right of Way Relations"), self.iface.mainWindow())
+        self._fill_right_of_way_relations_action.triggered.connect(self.call_fill_right_of_way_relations)
         self._report_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Generate Annex 17"), self.iface.mainWindow())
         self._report_action.triggered.connect(self.call_report_generation)
         self._import_from_intermediate_structure_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import from intermediate structure"),
@@ -176,8 +181,9 @@ class AsistenteLADMCOLPlugin(QObject):
                                            self._topological_editing_action,
                                            self._fill_point_BFS_action,
                                            self._fill_more_BFS_less_action,
-                                           self._report_action,
-                                           self._import_from_intermediate_structure_action])
+                                           self._fill_right_of_way_relations_action,
+                                           self._import_from_intermediate_structure_action,
+                                           self._report_action])
 
         # Add LADM_COL provider and models to QGIS
         self.ladm_col_provider = LADMCOLAlgorithmProvider()
@@ -225,9 +231,15 @@ class AsistenteLADMCOLPlugin(QObject):
                 QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit"),
                 self._spatial_unit_cadastre_menu)
+        self._right_of_way_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Right of Way"),
+                self._spatial_unit_cadastre_menu)
+
         self._spatial_unit_cadastre_menu.addActions([self._plot_spatial_unit_cadastre_action,
                                                      self._building_spatial_unit_cadastre_action,
-                                                     self._building_unit_spatial_unit_cadastre_action])
+                                                     self._building_unit_spatial_unit_cadastre_action,
+                                                     self._right_of_way_cadastre_action])
 
         self._baunit_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "BA Unit"), self._cadastre_menu)
         self._baunit_cadastre_menu.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/ba_unit.png"))
@@ -306,6 +318,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._parcel_baunit_cadastre_action.triggered.connect(self.show_wiz_parcel_cad)
         self._building_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_building_cad)
         self._building_unit_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_building_unit_cad)
+        self._right_of_way_cadastre_action.triggered.connect(self.show_wiz_right_of_way_cad)
         self._col_party_cadastre_action.triggered.connect(self.show_wiz_col_party_cad)
         self._group_party_cadastre_action.triggered.connect(self.show_dlg_group_party)
         self._right_rrr_cadastre_action.triggered.connect(self.show_wiz_right_rrr_cad)
@@ -714,6 +727,11 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_project_generator_required
     @_db_connection_required
+    def call_fill_right_of_way_relations(self):
+        self.right_of_way.fill_right_of_way_relations(self.get_db_connection())
+
+    @_project_generator_required
+    @_db_connection_required
     def call_report_generation(self):
         self.report_generator.generate_report(self.get_db_connection(), self._report_action)
 
@@ -777,6 +795,12 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_wiz_building_unit_cad(self):
         wiz = CreateBuildingUnitCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
+
+    @_project_generator_required
+    @_db_connection_required
+    def show_wiz_right_of_way_cad(self):
+        wiz = CreateRightOfWayCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
     @_project_generator_required
