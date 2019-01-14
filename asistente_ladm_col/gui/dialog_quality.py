@@ -21,23 +21,33 @@ import collections
 from qgis.core import Qgis
 
 from qgis.PyQt.QtCore import (Qt,
-                              QCoreApplication)
+                              QCoreApplication,
+                              QSettings)
 
 from qgis.PyQt.QtGui import (QBrush,
                              QFont,
                              QIcon,
                              QColor)
+
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QTreeWidgetItem,
                                  QTreeWidgetItemIterator,
                                  QProgressBar)
 
-from ..config.general_config import translated_strings
+from ..config.general_config import (translated_strings,
+                                    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)
+
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            CONTROL_POINT_TABLE,
                                            PLOT_TABLE,
                                            BUILDING_TABLE,
-                                           RIGHT_OF_WAY_TABLE)
+                                           RIGHT_OF_WAY_TABLE,
+                                           PARCEL_TABLE,
+                                           DEPARTMENT_FIELD,
+                                           MUNICIPALITY_FIELD,
+                                           ZONE_FIELD,
+                                           PARCEL_NUMBER_FIELD,
+                                           PARCEL_NUMBER_BEFORE_FIELD)
 from ..utils import get_ui_class
 from ..resources_rc import *
 
@@ -222,13 +232,14 @@ class DialogQuality(QDialog, DIALOG_UI):
 
         iterator = QTreeWidgetItemIterator(self.trw_quality_rules, QTreeWidgetItemIterator.Selectable)
 
-        progressMessageBar = self.iface.messageBar().createMessage("<h1>Topologia1</h1>")
+        progressMessageBar = self.iface.messageBar().createMessage("Asistente LADM_COL", "")
         progress = QProgressBar()
         progress.setMaximum(count_topology)
         progress.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
         progressMessageBar.layout().addWidget(progress)
         self.iface.messageBar().pushWidget(progressMessageBar, Qgis.Info)
         progress_count = 0
+        message_topology_rules = "Updating progress bar"
 
         while iterator.value():
             item = iterator.value()
@@ -238,78 +249,186 @@ class DialogQuality(QDialog, DIALOG_UI):
 
                 if id == 'check_overlaps_in_boundary_points':
                     self.quality.check_overlapping_points(self._db, BOUNDARY_POINT_TABLE)
-                    progressMessageBar.setText("1")
+                    progressMessageBar.setText("{} ({}/{}) running 'Boundary Points should not overlap'".format(message_topology_rules, progress_count+1, count_topology))
                     QCoreApplication.processEvents()
                     progress_count += 1
                     progress.setValue(progress_count)
                 elif id == 'check_overlaps_in_control_points':
                     self.quality.check_overlapping_points(self._db, CONTROL_POINT_TABLE)
-                    progressMessageBar.setText("2")
+                    progressMessageBar.setText("{} ({}/{}) running 'Control Points should not overlap'".format(message_topology_rules, progress_count+1, count_topology))
                     QCoreApplication.processEvents()
                     progress_count += 1
                     progress.setValue(progress_count)
                 elif id == 'check_boundary_points_covered_by_boundary_nodes':
                     self.quality.check_boundary_points_covered_by_boundary_nodes(self._db)
-                    progressMessageBar.setText("Jhon")
+                    progressMessageBar.setText("{} ({}/{}) running 'Boundary Points should be covered by Boundary nodes'".format(message_topology_rules, progress_count+1, count_topology))
                     QCoreApplication.processEvents()
                     progress_count += 1
                     progress.setValue(progress_count)
                 elif id == 'check_boundary_points_covered_by_plot_nodes':
                     self.quality.check_boundary_points_covered_by_plot_nodes(self._db)
+                    progressMessageBar.setText("{} ({}/{}) running 'Boundary Points should be covered by plot nodes'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_too_long_boundary_segments':
                     self.quality.check_too_long_segments(self._db)
+                    progressMessageBar.setText("{} ({}/{}) running 'Boundary segments should not be longer than {}m.''".format(message_topology_rules, progress_count+1, count_topology, QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_overlaps_in_boundaries':
                     self.quality.check_overlaps_in_boundaries(self._db)
+                    progressMessageBar.setText("{} ({}/{}) running 'Boundaries should not overlap'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_boundaries_are_not_split':
                     self.quality.check_boundaries_are_not_split(self._db)
+                    progressMessageBar.setText("{} ({}/{}) running 'Boundaries should not be split'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_boundaries_covered_by_plots':
                     self.quality.check_boundaries_covered_by_plots(self._db)
+                    progressMessageBar.setText("{} ({}/{}) running 'Boundaries should be covered by Plots'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_boundary_nodes_covered_by_boundary_points':
                     self.quality.check_boundary_nodes_covered_by_boundary_points(self._db)
+                    progressMessageBar.setText("{} ({}/{}) running 'Boundary nodes should be covered by Boundary Points'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_dangles_in_boundaries':
                     self.quality.check_dangles_in_boundaries(self._db)
+                    progressMessageBar.setText("{} ({}/{}) running 'Boundaries should not have dangles'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_overlaps_in_plots':
                     self.quality.check_overlapping_polygons(self._db, PLOT_TABLE)
+                    progressMessageBar.setText("{} ({}/{}) running 'Plots should not overlap'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_overlaps_in_buildings':
                     self.quality.check_overlapping_polygons(self._db, BUILDING_TABLE)
+                    progressMessageBar.setText("{} ({}/{}) running 'Buildings should not overlap'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_overlaps_in_rights_of_way':
                     self.quality.check_overlapping_polygons(self._db, RIGHT_OF_WAY_TABLE)
+                    progressMessageBar.setText("{} ({}/{}) running 'Rights of Way should not overlap'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_plots_covered_by_boundaries':
                     self.quality.check_plots_covered_by_boundaries(self._db)
+                    progressMessageBar.setText("{} ({}/{}) running 'Plots should be covered by Boundaries'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 #elif id == 'check_missing_survey_points_in_buildings':
                 #    self.quality.check_missing_survey_points_in_buildings(self._db)
                 elif id == 'check_right_of_way_overlaps_buildings':
                     self.quality.check_right_of_way_overlaps_buildings(self._db)
+                    progressMessageBar.setText("{} ({}/{}) running 'Right of Way should not overlap Buildings'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_gaps_in_plots':
                     self.quality.check_gaps_in_plots(self._db)
+                    progressMessageBar.setText("{} ({}/{}) running 'Plots should not have gaps'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_multipart_in_right_of_way':
                     self.quality.check_multiparts_in_right_of_way(self._db)
+                    progressMessageBar.setText("{} ({}/{}) running 'Right of Way should not have multipart geometries'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_plot_nodes_covered_by_boundary_points':
                     self.quality.check_plot_nodes_covered_by_boundary_points(self._db)
+                    progressMessageBar.setText("{} ({}/{}) running 'Plot nodes should be covered by boundary points'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_parcel_right_relationship':
                     self.quality.check_parcel_right_relationship(self._db)
+                    progressMessageBar.setText("{} ({}/{}) running 'Parcel should have one and only one Right'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'find_duplicate_records_in_a_table':
                     self.quality.find_duplicate_records_in_a_table(self._db)
+                    progressMessageBar.setText("{} ({}/{}) running 'Table records should not be repeated'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_fraction_sum_for_party_groups':
                     self.quality.check_fraction_sum_for_party_groups(self._db)
+                    progressMessageBar.setText("{} ({}/{}) running 'Group Party Fractions should sum 1'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_department_code_has_two_numerical_characters':
                     self.quality.basic_logic_validations(self._db, 'DEPARTMENT_CODE_VALIDATION')
+                    progressMessageBar.setText("{} ({}/{}) running 'Check that the {department} field of the {parcel} table has two numerical characters'".format(message_topology_rules, progress_count+1, count_topology, department=DEPARTMENT_FIELD, parcel=PARCEL_TABLE))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_municipality_code_has_three_numerical_characters':
                     self.quality.basic_logic_validations(self._db, 'MUNICIPALITY_CODE_VALIDATION')
+                    progressMessageBar.setText("{} ({}/{}) running 'Check that the {municipality} field of the {parcel} table has three numerical characters'".format(message_topology_rules, progress_count+1, count_topology, municipality=MUNICIPALITY_FIELD, parcel=PARCEL_TABLE))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_zone_code_has_two_numerical_characters':
                     self.quality.basic_logic_validations(self._db, 'ZONE_CODE_VALIDATION')
+                    progressMessageBar.setText("{} ({}/{}) running 'Check that the {zone} field of the {parcel} table has two numerical characters'".format(message_topology_rules, progress_count+1, count_topology, zone=ZONE_FIELD, parcel=PARCEL_TABLE))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_parcel_number_has_30_numerical_characters':
                     self.quality.basic_logic_validations(self._db, 'PARCEL_NUMBER_VALIDATION')
+                    progressMessageBar.setText("{} ({}/{}) running 'Check that the {parcel_number} has 30 numerical characters'".format(message_topology_rules, progress_count+1, count_topology, parcel_number=PARCEL_NUMBER_FIELD))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_parcel_number_before_has_20_numerical_characters':
                     self.quality.basic_logic_validations(self._db, 'PARCEL_NUMBER_BEFORE_VALIDATION')
+                    progressMessageBar.setText("{} ({}/{}) running 'Check that the {parcel_number_before} has 20 numerical characters'".format(message_topology_rules, progress_count+1, count_topology, parcel_number_before=PARCEL_NUMBER_BEFORE_FIELD))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_col_party_natural_type':
                     self.quality.advance_logic_validations(self._db, 'COL_PARTY_TYPE_NATURAL_VALIDATION')
+                    progressMessageBar.setText("{} ({}/{}) running 'Check that attributes are appropriate for parties of type natural'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_col_party_legal_type':
                     self.quality.advance_logic_validations(self._db, 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION')
+                    progressMessageBar.setText("{} ({}/{}) running 'Check that attributes are appropriate for parties of type legal'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_parcel_type_and_22_position_of_parcel_number':
                     self.quality.advance_logic_validations(self._db, 'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION')
+                    progressMessageBar.setText("{} ({}/{}) running 'Check that the type of parcel corresponds to position 22 of the {parcel_number}'".format(message_topology_rules, progress_count+1, count_topology, parcel_number=PARCEL_NUMBER_FIELD))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
                 elif id == 'check_uebaunit_parcel':
                     self.quality.advance_logic_validations(self._db, 'UEBAUNIT_PARCEL_VALIDATION')
+                    progressMessageBar.setText("{} ({}/{}) running 'Check that Spatial Units associated with Parcels correspond to the parcel type'".format(message_topology_rules, progress_count+1, count_topology))
+                    QCoreApplication.processEvents()
+                    progress_count += 1
+                    progress.setValue(progress_count)
 
             iterator += 1
 

@@ -616,9 +616,9 @@ class QualityUtils(QObject):
                     added_layer.featureCount(), point_layer_name), Qgis.Info)
         else:
             print ("Prueba")
-            """self.qgis_utils.message_emitted.emit(
+            self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "There are no overlapping points in layer '{}'!").format(point_layer_name), Qgis.Info)"""
+                                           "There are no overlapping points in layer '{}'!").format(point_layer_name), Qgis.Info)
 
     def check_plots_covered_by_boundaries(self, db):
         # read data
