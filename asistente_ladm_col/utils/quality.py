@@ -1019,7 +1019,7 @@ class QualityUtils(QObject):
     def get_boundary_features_not_covered_by_plots(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
         """
         Return all boundary features that have errors when checking if they are covered by plots.
-        That is both geometric and alphanumeric (topology table) errors.
+        This takes into account both geometric and alphanumeric (topology table) errors.
         """
         type_tplg_error = {0: translated_strings.ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT,
                            1: translated_strings.ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
@@ -1171,7 +1171,21 @@ class QualityUtils(QObject):
             if count_more_bfs > 1:
                 errors_duplicate_in_more_bfs.append((item_sj_bp['plot_id'], item_sj_bp['boundary_id']))
             elif count_more_bfs == 0:
-                errors_not_in_more_bfs.append((item_sj_bp['plot_id'], item_sj_bp['boundary_id']))
+                # Check for the special case of two contiguous plots, one of them covers the common boundary, but the
+                # other one does not! This should be still a geometry error but is not captured by the code above. Only
+                # in this point of the whole checks we can validate between the individual boundary and the individual
+                # plot.
+                boundary_geom = dict_boundary[item_sj_bp['boundary_id']].geometry()
+                plot_geom = dict_plot_as_lines[item_sj_bp['plot_id']].geometry()
+                intersection = boundary_geom.intersection(plot_geom)
+
+                if intersection.isGeosEqual(boundary_geom):
+                    errors_not_in_more_bfs.append((item_sj_bp['plot_id'], item_sj_bp['boundary_id']))
+                else:
+                    errors_boundary_plot_diffs.append({
+                        'id': item_sj_bp['boundary_id'],
+                        'id_plot': item_sj_bp['plot_id'],
+                        'geometry': boundary_geom})
 
         # finalize validation in more_bfs table
 
@@ -1218,12 +1232,13 @@ class QualityUtils(QObject):
 
         features = list()
 
-        # plot not covered by boundary
+        # boundary not covered by plot
         for boundary_plot_diff in errors_boundary_plot_diffs:
             boundary_id = boundary_plot_diff['id']
             boundary_geom = boundary_plot_diff['geometry']
+            plot_id = boundary_plot_diff['id_plot'] if 'id_plot' in boundary_plot_diff else None
             new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_geom,
-                                                              {0: None, 1: boundary_id, 2: type_tplg_error[0]})
+                                                              {0: plot_id, 1: boundary_id, 2: type_tplg_error[0]})
             features.append(new_feature)
 
         # No registered more bfs
@@ -1231,8 +1246,8 @@ class QualityUtils(QObject):
             for error_more_bfs in set(errors_not_in_more_bfs):
                 plot_id = error_more_bfs[0]  # plot_id
                 boundary_id = error_more_bfs[1]  # boundary_id
-                geom_plot = dict_plot_as_lines[plot_id].geometry()
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_plot,
+                geom_boundary = dict_boundary[boundary_id].geometry()
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_boundary,
                                                                   {0: plot_id, 1: boundary_id, 2: type_tplg_error[1]})
                 features.append(new_feature)
 
@@ -1241,8 +1256,8 @@ class QualityUtils(QObject):
             for error_more_bfs in set(errors_duplicate_in_more_bfs):
                 plot_id = error_more_bfs[0]  # plot_id
                 boundary_id = error_more_bfs[1]  # boundary_id
-                geom_plot = dict_plot_as_lines[plot_id].geometry()
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_plot,
+                geom_boundary = dict_boundary[boundary_id].geometry()
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_boundary,
                                                                   {0: plot_id, 1: boundary_id, 2: type_tplg_error[2]})
                 features.append(new_feature)
 
