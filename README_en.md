@@ -116,8 +116,8 @@ Unit tests are automatically executed after every commit made to the repository.
 - Windows: http://portal.proadmintierra.info:18000/
 
 To run the tests locally you need to have *docker* and *docker-compose* installed. We suggest to:
-- Download *docker* from the [official site](https://www.docker.com/community-edition#/download). For instance, for Ubuntu / Linux_Mint follow the steps in [Install using the convenience script](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
-- Install *docker-compose* using the [binaries](https://github.com/docker/compose/releases/tag/1.18.0).
+- Download *docker* from the [official site](https://hub.docker.com/search/?type=edition&offering=community). For instance, for Ubuntu / Linux_Mint follow the steps in [Install using the convenience script](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
+- Install *docker-compose* using the [binaries](https://github.com/docker/compose/releases).
 
 The command to execute unit tests is (execute from the repository's root folder):
 ```sh
