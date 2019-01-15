@@ -119,6 +119,24 @@ Choose this option if you want to create a <b>Right of Way</b> digitizing center
 <b>Right of Way</b> is a type of spatial unit of the LADM model which allows the representation of a Right of Way associated to a LA_BAUnit.\
 ")
 
+        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_POINTS = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to associate an <b>ExtAddress</b> to an existing <i>Plot</i>.\
+<br><br>\
+Add more text...\
+")
+
+        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION2_POINTS = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to associate an <b>ExtAddress</b> to an existing <i>Building</i>.\
+<br><br>\
+Add more text...\
+")
+
+        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION3_POINTS = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to associate an <b>ExtAddress</b> to an existing <i>Building Unit</i>.\
+<br><br>\
+Add more text...\
+")
+
 # Clase de tipo LA_RRR que registra las responsabilidades que las instancias de los interesados tienen sobre los predios.
         self.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you have selected at least one <i>Administrative Source</i> and want to link such selected sources to a new <b>Responsibility</b> that you will create using a form.\
