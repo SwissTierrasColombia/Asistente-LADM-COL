@@ -119,8 +119,8 @@ La versión actual ([1.0.0](https://github.com/AgenciaImplementacion/Asistente-L
 
 Para ejecutar las pruebas localmente se necesita tener instalado *docker* y *docker-compose*.
 Se recomienda:
-- Descargar *docker* desde el [sitio oficial](https://www.docker.com/community-edition#/download). Por ejemplo, para Ubuntu/Linux_Mint pueden seguirse los pasos descritos en [Install using the convenience script](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
-- Instalar *docker-compose* usando los [binarios](https://github.com/docker/compose/releases/tag/1.18.0).
+- Descargar *docker* desde el [sitio oficial](https://hub.docker.com/search/?type=edition&offering=community). Por ejemplo, para Ubuntu/Linux_Mint pueden seguirse los pasos descritos en [Install using the convenience script](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
+- Instalar *docker-compose* usando los [binarios](https://github.com/docker/compose/releases).
 
 El comando para ejecutar las pruebas es (ejecutar desde la raíz del repositorio):
 ```sh
