@@ -110,7 +110,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.iface.mainWindow().menuBar().addMenu(self._menu)
 
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
-        self.quality = QualityUtils(self.qgis_utils)
+        self.quality = QualityUtils(self.qgis_utils, self.iface)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
         self.report_generator = ReportGenerator(self.qgis_utils)
 
