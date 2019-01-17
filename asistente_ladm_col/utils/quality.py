@@ -2044,7 +2044,6 @@ class QualityUtils(QObject):
         return added_layer
 
     def find_duplicate_records_in_a_table(self, db):
-
         for table in LOGIC_CONSISTENCY_TABLES:
             fields = LOGIC_CONSISTENCY_TABLES[table]
 
@@ -2065,7 +2064,6 @@ class QualityUtils(QObject):
                     Qgis.Info)
 
     def basic_logic_validations(self, db, rule):
-
         query = db.logic_validation_queries[rule]['query']
         table_name = db.logic_validation_queries[rule]['table_name']
         table = db.logic_validation_queries[rule]['table']
@@ -2114,7 +2112,7 @@ class QualityUtils(QObject):
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "There are no repeated records in {table}!".format(table=table)),
+                                           "No errors found when checking '{rule}' for '{table}'!".format(rule=db.logic_validation_queries[rule]['desc_error'], table=table)),
                 Qgis.Info)
 
     def advance_logic_validations(self, db, rule):
@@ -2139,7 +2137,7 @@ class QualityUtils(QObject):
             errors_count, error_layer = self.logic.col_party_type_natural_validation(db, rule, error_layer)
         elif rule == 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION':
             errors_count, error_layer = self.logic.col_party_type_no_natural_validation(db, rule, error_layer)
-        elif rule == 'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION':
+        elif rule == 'PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER_VALIDATION':
             errors_count, error_layer = self.logic.parcel_type_and_22_position_of_parcel_number_validation(db, rule, error_layer)
         elif rule == 'UEBAUNIT_PARCEL_VALIDATION':
             errors_count, error_layer = self.logic.uebaunit_parcel_validation(db, rule, error_layer)
@@ -2157,5 +2155,5 @@ class QualityUtils(QObject):
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
-                                           "There are no repeated records in {table}!".format(table=table)),
+                                           "No errors found when checking '{rule}' for '{table}'!".format(rule=db.logic_validation_queries[rule]['desc_error'], table=table)),
                 Qgis.Info)
