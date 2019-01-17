@@ -17,7 +17,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([1.0.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.0.0)) of the LADM_COL Assistant depends on [Project Generator v3.3.7](https://github.com/opengisch/projectgenerator/releases/download/v3.3.7/projectgenerator.v3.3.7.zip) and allows users to:
+The current version ([1.1.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.1.0)) of the LADM_COL Assistant depends on [Project Generator v3.3.7](https://github.com/opengisch/projectgenerator/releases/download/v3.3.7/projectgenerator.v3.3.7.zip) and allows users to:
 
  - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
  - Capture data for the `FICHA_PREDIAL v2.2.1` model.
@@ -42,6 +42,12 @@ The current version ([1.0.0](https://github.com/AgenciaImplementacion/Asistente-
    - `BFS Points` (relates `Boundary Points` to `Boundary`)
    - `More BFS` (relates `Boundaries` to `Plot`)
    - `Less` (relates `Plots` to their inner rings)
+ - Create `Right of Way`:
+   - By digitizing on the map the polygon or a centerline with width.
+     - Aids for digitization:
+       - Automatic snapping configuration and default field values.
+   - From another layer with any structure, setting a field mapping.
+   - Create relations of benefited and restricted `Parcels`.
  - Create `Parcels`:
    - Using preconfigured forms.
      - And associating the new `Parcel` to selected `Plots` and/or `Buildings`.

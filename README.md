@@ -18,7 +18,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([1.0.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.0.0)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.7](https://github.com/opengisch/projectgenerator/releases/download/v3.3.7/projectgenerator.v3.3.7.zip) y permite:
+La versión actual ([1.1.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.1.0)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.7](https://github.com/opengisch/projectgenerator/releases/download/v3.3.7/projectgenerator.v3.3.7.zip) y permite:
 
  - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
  - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
@@ -48,6 +48,12 @@ La versión actual ([1.0.0](https://github.com/AgenciaImplementacion/Asistente-L
      - Ayudas para la digitalización:
        - Configuración automática de snapping y de valores predeterminados para campos.
    - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
+ - Crear `Servidumbres de Paso`:
+   - Digitalizando sobre el mapa el polígono de la servidumbre o el eje de la misma con un ancho.
+     - Ayudas para la digitalización:
+       - Configuración automática de snapping y de valores predeterminados para campos.
+   - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
+   - Crear relaciones de restricciones y beneficiados.
  - Crear `Predios`:
    - Usando formularios preconfigurados.
      - Y relacionando el nuevo `Predio` con un `Terreno` y/o una o varias `Construcciones` previamente seleccionadas.
