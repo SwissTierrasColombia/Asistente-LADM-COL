@@ -2,6 +2,7 @@ import os.path
 
 from qgis.PyQt.QtCore import (QSettings,
                               QObject,
+                              Qt,
                               QCoreApplication)
 
 from .translator import PLUGIN_DIR
@@ -26,6 +27,13 @@ VALUATION_MODEL_PREFIX = "Avaluos_"
 # From this version on the plugin will work, a message will block prior versions
 LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION = "17.07.2018"
 
+DEFAULT_MODEL_NAMES_CHECKED = {'Avaluos_V2_2_1': Qt.Unchecked,
+                     'Cartografia_Referencia_V2_2_1': Qt.Unchecked,
+                     'Catastro_Registro_Nucleo_V2_2_1': Qt.Checked,
+                     'Diagnostico_Juridico_V2_2_1': Qt.Unchecked,
+                     'Ficha_Predial_V2_2_1':Qt.Unchecked}
+
+DEFAULT_INHERITANCE ='smart2'
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 DEFAULT_USE_ROADS_VALUE = False
@@ -76,19 +84,19 @@ MODULE_HELP_MAPPING = {
     'create_physical_zone_valuation': 'valuation/Create_physical_zone.html',
     'import_from_excel': 'toolbar.html#import-from-intermediate-structure'
 }
-# Configure Project Generator Dependency
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.7"
+# Configure QGIS Model Baker Dependency
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.0.0"
 
-# If Asistente LADM_COL depends on a specific version of Project Generator
+# If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
-PROJECT_GENERATOR_EXACT_REQUIRED_VERSION = False
+QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = False
 
-# If Asistente LADM_COL depends on a specific version of Project Generator
+# If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-PROJECT_GENERATOR_REQUIRED_VERSION_URL = '' #'https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip'
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = '' #'https://github.com/AgenciaImplementacion/qgismodelbaker/releases/download/3.3.2.1/qgismodelbaker.zip'
 
-# Project Generator definitions
+# QGIS Model Baker definitions
 SCHEMA_NAME = 'schemaname'
 TABLE_NAME = 'tablename'
 PRIMARY_KEY = 'primary_key'

@@ -28,6 +28,18 @@ class DBConnector(QObject):
         self.schema = schema
         self.conn = None
 
+        for part in self.uri.split(' '):
+            if 'host=' in part:
+                self.host = part.split('host=')[1]
+            elif 'port=' in part:
+                self.port = part.split('port=')[1]
+            elif 'dbname=' in part:
+                self.dbname = part.split('dbname=')[1]
+            elif 'user=' in part:
+                self.user = part.split('user=')[1]
+            elif 'password=' in part:
+                self.password = part.split('password=')[1]
+
     def test_connection(self):
         pass
 
@@ -45,3 +57,11 @@ class DBConnector(QObject):
             self.mode,
             self.uri,
             'schema:{}'.format(self.schema) if self.schema else '')
+
+    def get_uri_without_password(self):
+        uri_hide = [ part for part in self.uri.split(' ') if 'password' not in part]
+        return ' '.join(uri_hide)
+
+    def get_uri_without_schema(self):
+        uri_hide = [ part for part in self.uri.split(' ') if 'schema' not in part]
+        return ' '.join(uri_hide)

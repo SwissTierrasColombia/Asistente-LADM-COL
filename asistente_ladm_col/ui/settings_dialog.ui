@@ -182,9 +182,9 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="btn_get_from_project_generator">
+          <widget class="QPushButton" name="btn_get_from_qgis_model_baker">
            <property name="text">
-            <string>Get from Project Generator</string>
+            <string>Get from QGIS Model Baker</string>
            </property>
           </widget>
          </item>

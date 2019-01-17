@@ -9,10 +9,10 @@ from qgis.testing import start_app, unittest
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 #from asistente_ladm_col.gui.point_spa_uni_cadastre_wizard import PointsSpatialUnitCadastreWizard
-#from asistente_ladm_col.tests.utils import import_projectgenerator, get_test_path
+#from asistente_ladm_col.tests.utils import import_qgismodelbaker, get_test_path
 #from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
-#import_projectgenerator()
+#import_qgismodelbaker()
 
 class TestExample(unittest.TestCase):
 

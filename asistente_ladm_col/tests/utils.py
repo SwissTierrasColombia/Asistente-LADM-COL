@@ -135,19 +135,19 @@ def get_test_copy_path(path):
     copyfile(src_path, dst_path)
     return dst_path
 
-def import_projectgenerator():
+def import_qgismodelbaker():
     global iface
-    plugin_found = "projectgenerator" in qgis.utils.plugins
+    plugin_found = "QgisModelBaker" in qgis.utils.plugins
     if not plugin_found:
-        import projectgenerator
-        pg = projectgenerator.classFactory(iface)
-        qgis.utils.plugins["projectgenerator"] = pg
+        import qgismodelbaker
+        pg = qgismodelbaker.classFactory(iface)
+        qgis.utils.plugins["QgisModelBaker"] = pg
 
-def unload_projectgenerator():
+def unload_qgismodelbaker():
     global iface
-    plugin_found = "projectgenerator" in qgis.utils.plugins
+    plugin_found = "QgisModelBaker" in qgis.utils.plugins
     if plugin_found:
-        del(qgis.utils.plugins["projectgenerator"])
+        del(qgis.utils.plugins["QgisModelBaker"])
 
 def run_etl_model(input_layer, out_layer, ladm_col_layer_name=BOUNDARY_POINT_TABLE):
 

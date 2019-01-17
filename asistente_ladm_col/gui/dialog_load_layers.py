@@ -85,7 +85,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.load_available_layers()
 
     def load_available_layers(self):
-        # Call project generator tables_info and fill the tree
+        # Call qgis model baker tables_info and fill the tree
         tables_info = self.qgis_utils._layers
         self.models_tree = dict()
 
