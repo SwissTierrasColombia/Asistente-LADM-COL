@@ -32,14 +32,17 @@ from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.quality import QualityUtils
 from asistente_ladm_col.utils.logic_checks import LogicChecks
 
+from qgis.testing.mocked import get_iface
+
 import_projectgenerator()
 
 class TesQualityValidations(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
+        iface = get_iface()
         self.qgis_utils = QGISUtils()
-        self.quality = QualityUtils(self.qgis_utils)
+        self.quality = QualityUtils(self.qgis_utils, iface)
         self.logic_checks = LogicChecks()
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
