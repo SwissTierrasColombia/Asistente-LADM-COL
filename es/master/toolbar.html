@@ -85,7 +85,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="cadastre.html">Catastro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="property_record_card.html">Ficha Predial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="valuation.html">Valuation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="valuation.html">Avalúos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="load_layers.html">Cargar capas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mapping_fields.html">Usando Mapeo de Campos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settings.html">Configuración</a></li>
@@ -93,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#explode-and-merge">Partir por segmento y Unir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fill-points-bfs">Llenar PuntosCCL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fill-more-bfs-and-less">Llenar más CCL y menos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fill-right-of-way-relations">Llenar relaciones de Servidumbre de paso</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#generate-annex-17">Generar Anexo 17</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#import-from-intermediate-structure">Importar desde estructura intermedia</a></li>
 </ul>
@@ -171,12 +172,12 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../1.0.0/toolbar.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 1.0.0.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../1.1.0/toolbar.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 1.1.0.</a></p>
 <div class="section" id="toolbar-ladm-col">
 <h1>Barra de herramientas de LADM_COL<a class="headerlink" href="#toolbar-ladm-col" title="Enlazar permanentemente con este título">¶</a></h1>
 <p>Así es como se ve la barra de herramientas:</p>
 <a class=""
-               data-lightbox="group-60caf6d2-13f1-47fa-9133-c44ae52bfe5e"
+               data-lightbox="group-315607fc-2ff6-42a3-942b-eff947561cc0"
                href="_images/ladm_col_toolbar.png"
                title=""
                data-title=""
@@ -187,7 +188,7 @@
                      alt="LADM-COL toolbar"/>
                 </a><p>Si la barra de herramientas no aparece en la interfaz de QGIS, puedes hacer que se vea con la siguiente interacción: click derecho en la región gris en QGIS y clickeando en «Herramientas LADM-COL» o como en el siguiente gif:</p>
 <a class=""
-               data-lightbox="group-cfd70d2e-b7e6-4c26-b767-4184d4d708ce"
+               data-lightbox="group-2d53b44d-af90-4f3c-8966-07e089b82435"
                href="_images/show_ladm_col_toolbar.gif"
                title=""
                data-title=""
@@ -200,7 +201,7 @@
 <h2>Partir por segmento y Unir<a class="headerlink" href="#explode-and-merge" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Si necesitas unir o explotar por segmentos los linderos puedes utilizar los botones <em>Unir</em> y <em>Partir por segmento</em> en la barra de herramientas de LADM_COL.</p>
 <a class=""
-               data-lightbox="group-1473853d-510d-4ee0-9d3e-da9d4e3149f1"
+               data-lightbox="group-dc77b2ad-5b89-4deb-9e20-76e23722eb28"
                href="_images/_UNIR_PARTIR_LINDERO2.gif"
                title=""
                data-title=""
@@ -218,7 +219,7 @@
 <li>puntosccl –&gt; puntolindero y lindero</li>
 </ul>
 <a class=""
-               data-lightbox="group-de8d3034-e994-4a98-b53d-bd9619bb235b"
+               data-lightbox="group-52e7a150-014c-44f6-9cd2-1149b18311c1"
                href="_images/_LLENAR_TOPOLOGIAS_PUNTO_LINDERO.gif"
                title=""
                data-title=""
@@ -237,7 +238,7 @@
 <li>menos –&gt; terreno y lindero (agujeros o anillos internos)</li>
 </ul>
 <a class=""
-               data-lightbox="group-88fb35d4-6955-49ce-a1f1-965efdc17029"
+               data-lightbox="group-118d59a2-f36a-4a73-a33f-1d5fd9e3217d"
                href="_images/_TOPOLOGIAS_TERRENO.gif"
                title=""
                data-title=""
@@ -246,6 +247,20 @@
                      width="800"
                      height="500"
                      alt="basic settings"/>
+                </a></div>
+<div class="section" id="fill-right-of-way-relations">
+<h2>Llenar relaciones de Servidumbre de paso<a class="headerlink" href="#fill-right-of-way-relations" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Debes seleccionar una <strong>Servidumbre de Paso</strong>, uno o más <strong>Terreno(s)</strong> que serán beneficiados con la servidumbre de paso, y una o más <strong>Fuentes Administrativa(s)</strong> que soporte(n) la servidumbre de paso. El plugin automáticamente crea la relación entre los predios beneficados y las relaciones. Es importante saber que debes tener las relaciones entre los predios y los terrenos para evitar inconvenientes con esta función</p>
+<a class=""
+               data-lightbox="group-1e097618-6a9f-4adc-8e01-539a50c92a4d"
+               href="_images/fill_relations_right_of_way.gif"
+               title=""
+               data-title=""
+               ><img src="_images/fill_relations_right_of_way.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Fill right of way relations"/>
                 </a></div>
 <div class="section" id="generate-annex-17">
 <h2>Generar Anexo 17<a class="headerlink" href="#generate-annex-17" title="Enlazar permanentemente con este título">¶</a></h2>
@@ -258,7 +273,7 @@
 </ol>
 <p>Descargar dependencias. Este paso se realiza una sola vez.</p>
 <a class=""
-               data-lightbox="group-0fa12e9a-c9a2-4cc8-b221-68640c116577"
+               data-lightbox="group-2b59e8be-33e7-4b5e-8123-231778a5661f"
                href="_images/annex_17_1.gif"
                title=""
                data-title=""
@@ -274,7 +289,7 @@
 <li>Vaya al directorio que seleccionó en el paso 3 para verificar el resultado, que debería verse así en la siguiente imagen:</li>
 </ol>
 <a class=""
-               data-lightbox="group-01aee919-029a-4cfd-b527-32cd14353ab0"
+               data-lightbox="group-b8484710-f833-4e77-8937-d5feae2ad3a5"
                href="_images/annex_17_2.gif"
                title=""
                data-title=""
@@ -295,7 +310,7 @@
 <li>Estructura de Agrupación:</li>
 </ul>
 <a class=""
-               data-lightbox="group-9df15a0f-cbcb-47ed-9722-efdd831c9a71"
+               data-lightbox="group-1f0c0017-c826-4fec-9d0d-6d667a8911f6"
                href="_images/agrupacion.png"
                title=""
                data-title=""
@@ -308,7 +323,7 @@
 <li>Estructura de Predio:</li>
 </ul>
 <a class=""
-               data-lightbox="group-29bcbc0c-b693-4e6d-a7e2-85311c4bfe9f"
+               data-lightbox="group-d0c47360-c794-4b72-86f0-ea61e37c2525"
                href="_images/derecho.PNG"
                title=""
                data-title=""
@@ -321,7 +336,7 @@
 <li>Estructura de Predio:</li>
 </ul>
 <a class=""
-               data-lightbox="group-c0f47c46-0e79-48bf-95de-b688bab569be"
+               data-lightbox="group-3ee0617d-051e-4b47-b49c-51e6105f4022"
                href="_images/interesado.PNG"
                title=""
                data-title=""
@@ -334,7 +349,7 @@
 <li>Estructura de Predio:</li>
 </ul>
 <a class=""
-               data-lightbox="group-11d7d613-154e-43cb-9cff-50fe7b4ec67e"
+               data-lightbox="group-b6718637-3b26-40f9-af72-8996138fc08a"
                href="_images/predio.PNG"
                title=""
                data-title=""
@@ -355,7 +370,7 @@
 <p>La ejecución del modelo con los datos de ejemplo debe genberar el siguiente resultado:</p>
 <p>Tablas intermedias:</p>
 <a class=""
-               data-lightbox="group-cfe74acb-d065-4977-a1bf-fa9da0815606"
+               data-lightbox="group-e0902df0-7ba2-4eac-b1a1-b509a2fa9c3a"
                href="_images/tablas_intermed.PNG"
                title=""
                data-title=""
@@ -366,7 +381,7 @@
                      alt="basic settings"/>
                 </a><p>Tablas del modelo implicadas:</p>
 <a class=""
-               data-lightbox="group-a24d178b-9dc1-4550-9f08-6b93a1a1a6f3"
+               data-lightbox="group-bacae63e-712b-4ce4-ad44-59b6e1faa6d6"
                href="_images/tabla_implicadas.PNG"
                title=""
                data-title=""
@@ -377,7 +392,7 @@
                      alt="basic settings"/>
                 </a><p>Un ejemplo del procedimiento haciendo uso de los datos de ejemplo:</p>
 <a class=""
-               data-lightbox="group-9584a585-a848-48ce-8c3b-431daa3e4e19"
+               data-lightbox="group-22be8918-090a-4857-8281-ff726c17b42e"
                href="_images/import_intermediate_structure.gif"
                title=""
                data-title=""
@@ -453,11 +468,13 @@
             <dd><a href="../0.8.0/toolbar.html">0.8.0</a></dd>
             <dd><a href="../0.9.0/toolbar.html">0.9.0</a></dd>
             <dd><a href="../1.0.0/toolbar.html">1.0.0</a></dd>
+            <dd><a href="../1.1.0/toolbar.html">1.1.0</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
             <dd><a href="../Documentation_for_annex_17/toolbar.html">Documentation_for_annex_17</a></dd>
             <dd><a href="../Documentation_valuation_asistente_ladm_col/toolbar.html">Documentation_valuation_asistente_ladm_col</a></dd>
+            <dd><a href="../images_of_valuation/toolbar.html">images_of_valuation</a></dd>
             <dd><a href="toolbar.html">master</a></dd>
             <dd><a href="../prepare_PR_2/toolbar.html">prepare_PR_2</a></dd>
             <dd><a href="../update_docs/toolbar.html">update_docs</a></dd>

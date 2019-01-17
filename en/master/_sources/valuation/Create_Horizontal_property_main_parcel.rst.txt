@@ -13,7 +13,7 @@ Create Horizontal property main parcel
   or basic unit of the land, which serves as a matrix to a horizontal property element.
 
 
-  .. image:: ../static/Ficha_predial.gif
+  .. image:: ../static/V_Predio_Matriz_PH.gif
      :height: 500
      :width: 800
      :alt: Create Horizontal property main parcel

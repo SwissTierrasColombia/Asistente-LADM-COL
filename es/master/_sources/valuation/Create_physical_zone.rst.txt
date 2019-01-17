@@ -12,7 +12,7 @@ Create Physical Zone
   **Physical Zone** allows you to manage the physically homogeneous zones defined
   for the valuation and which delimit the zones that have similar physical characteristics.
 
-  .. image:: ../static/Ficha_predial.gif
+  .. image:: ../static/V_ZHF.gif
      :height: 500
      :width: 800
      :alt: Create Physical Zone

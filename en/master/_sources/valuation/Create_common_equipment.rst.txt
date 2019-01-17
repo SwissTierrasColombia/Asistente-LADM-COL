@@ -12,7 +12,7 @@ Create Common Equipment
   **Common equipment** Class to record the information relative to the common
   equipment property matrix of the horizontal property
 
-  .. image:: ../static/Ficha_predial.gif
+  .. image:: ../static/V_Equipamento_Comunal.gif
      :height: 500
      :width: 800
      :alt: Create Common Equipment

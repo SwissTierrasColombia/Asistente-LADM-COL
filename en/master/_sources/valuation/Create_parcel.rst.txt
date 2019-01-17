@@ -13,7 +13,7 @@ Create Parcel
   for the valuation of it.
 
 
-  .. image:: ../static/Ficha_predial.gif
+  .. image:: ../static/V_Predio.gif
      :height: 500
      :width: 800
      :alt: Create Parcel

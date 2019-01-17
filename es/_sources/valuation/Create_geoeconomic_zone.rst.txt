@@ -12,7 +12,7 @@ Create Geoeconomic Zone
   **Geoeconomic Zone** this class allows you to manage areas with similar economic
   characteristics and geographical location, defined to characterize the valuation.
 
-  .. image:: ../static/Ficha_predial.gif
+  .. image:: ../static/V_ZHG.gif
      :height: 500
      :width: 800
      :alt: Create Geoeconomic Zone

@@ -93,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#explode-and-merge">Explode and Merge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fill-points-bfs">Fill Points BFS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fill-more-bfs-and-less">Fill More BFS and Less</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fill-right-of-way-relations">Fill Right Of Way relations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#generate-annex-17">Generate Annex 17</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#import-from-intermediate-structure">Import from intermediate structure</a></li>
 </ul>
@@ -171,12 +172,12 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../1.0.0/toolbar.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 1.0.0.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../1.1.0/toolbar.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 1.1.0.</a></p>
 <div class="section" id="toolbar-ladm-col">
 <h1>Toolbar LADM_COL<a class="headerlink" href="#toolbar-ladm-col" title="Permalink to this headline">¶</a></h1>
 <p>This is how toolbar looks like:</p>
 <a class=""
-               data-lightbox="group-ed9f980e-8aa7-4ab4-b3dd-721a5ba86a1a"
+               data-lightbox="group-5b4eca21-2650-4ab7-bb68-b0ce69cfeab9"
                href="_images/ladm_col_toolbar.png"
                title=""
                data-title=""
@@ -189,7 +190,7 @@
 the next interaction: right click on the gray region in QGIS and clicking in
 “LADM-COL Toolbar” or like in the following gif:</p>
 <a class=""
-               data-lightbox="group-abec1b5e-90cb-436c-b48c-c0183b8a38db"
+               data-lightbox="group-d5280ca5-98ca-41eb-8825-aa19d7546c5b"
                href="_images/show_ladm_col_toolbar.gif"
                title=""
                data-title=""
@@ -203,7 +204,7 @@ the next interaction: right click on the gray region in QGIS and clicking in
 <p>If you need to merge or explodes boundaries you can use the <em>merge</em> and <em>explode</em>
 buttons on Toolbar LADM_COL.</p>
 <a class=""
-               data-lightbox="group-e514659d-ccfd-43a7-ac8f-7573e1b37a25"
+               data-lightbox="group-93b5f29d-6485-4801-8758-fb0c266b3015"
                href="_images/_UNIR_PARTIR_LINDERO2.gif"
                title=""
                data-title=""
@@ -222,7 +223,7 @@ Toolbar LADM_COL which makes automatic and faster this job.</p>
 <li>puntosccl –&gt; puntolindero and lindero</li>
 </ul>
 <a class=""
-               data-lightbox="group-1085b7e5-4b57-45fb-b90e-7753de735d99"
+               data-lightbox="group-5cb4d4d6-060f-4c58-bb3f-c0b2c1cc0e5c"
                href="_images/_LLENAR_TOPOLOGIAS_PUNTO_LINDERO.gif"
                title=""
                data-title=""
@@ -242,7 +243,7 @@ and Less</em> on Toolbar LADM_COL which makes automatic and faster this job.</p>
 <li>menos –&gt; terreno and lindero (holes or intern rings)</li>
 </ul>
 <a class=""
-               data-lightbox="group-c391b992-37c1-43b8-9f8f-cdaf284e8070"
+               data-lightbox="group-8b534cf2-a2c6-4239-b4c4-58544f97239c"
                href="_images/_TOPOLOGIAS_TERRENO.gif"
                title=""
                data-title=""
@@ -251,6 +252,24 @@ and Less</em> on Toolbar LADM_COL which makes automatic and faster this job.</p>
                      width="800"
                      height="500"
                      alt="basic settings"/>
+                </a></div>
+<div class="section" id="fill-right-of-way-relations">
+<h2>Fill Right Of Way relations<a class="headerlink" href="#fill-right-of-way-relations" title="Permalink to this headline">¶</a></h2>
+<p>You have to select one <strong>Right of Way</strong>, one or more <strong>Plot(s)</strong> which will be benefited
+with the Right of Way, and one or more <strong>Administrative Source(s)</strong> which support
+this Right of Way. The plugin automatically creates the relations between benefited
+parcels and the restrictions. Is important to know that you should have relations
+between parcels and plots to avoid any issue with this function</p>
+<a class=""
+               data-lightbox="group-36a0bf5e-b7d1-426b-bd6b-92acf625324a"
+               href="_images/fill_relations_right_of_way.gif"
+               title=""
+               data-title=""
+               ><img src="_images/fill_relations_right_of_way.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="Fill right of way relations"/>
                 </a></div>
 <div class="section" id="generate-annex-17">
 <h2>Generate Annex 17<a class="headerlink" href="#generate-annex-17" title="Permalink to this headline">¶</a></h2>
@@ -267,7 +286,7 @@ the properties surrounding it.</p>
 </ol>
 <p>Download dependencies. This step is done only once.</p>
 <a class=""
-               data-lightbox="group-05ae975a-1ea7-4493-b72f-165983ebebea"
+               data-lightbox="group-c7ad1fca-d53d-4c39-bb38-f8e2101d81ff"
                href="_images/annex_17_1.gif"
                title=""
                data-title=""
@@ -283,7 +302,7 @@ the properties surrounding it.</p>
 <li>Go to the directory that you selected in step 3 to verify the result, which should look like this in the following image:</li>
 </ol>
 <a class=""
-               data-lightbox="group-822679a9-cf31-4c56-a0db-5d83c10832df"
+               data-lightbox="group-c65ff5be-c8cb-48d9-a154-6a89163aebd7"
                href="_images/annex_17_2.gif"
                title=""
                data-title=""
@@ -304,7 +323,7 @@ the properties surrounding it.</p>
 <li>Structure of Grouping:</li>
 </ul>
 <a class=""
-               data-lightbox="group-acd12616-012d-413a-9fa0-ee5629acc3f7"
+               data-lightbox="group-d304505d-c369-4bcc-a124-796338430f3b"
                href="_images/agrupacion.png"
                title=""
                data-title=""
@@ -317,7 +336,7 @@ the properties surrounding it.</p>
 <li>Structure of Law:</li>
 </ul>
 <a class=""
-               data-lightbox="group-1287d048-4cf1-4771-91b2-d8f2bcd4d781"
+               data-lightbox="group-eb943657-b628-4859-ac05-e33dfa974026"
                href="_images/derecho.PNG"
                title=""
                data-title=""
@@ -330,7 +349,7 @@ the properties surrounding it.</p>
 <li>Structure of Party:</li>
 </ul>
 <a class=""
-               data-lightbox="group-51fca051-4536-41b4-b6a5-7994ded5dae4"
+               data-lightbox="group-dd741447-5263-4b46-b2fa-1b1a3a9527cc"
                href="_images/interesado.PNG"
                title=""
                data-title=""
@@ -343,7 +362,7 @@ the properties surrounding it.</p>
 <li>Structure of Plot:</li>
 </ul>
 <a class=""
-               data-lightbox="group-65c98d92-6fa0-4996-8d8e-783c3ae9e5e9"
+               data-lightbox="group-32239743-d13a-4d9f-a932-d4cae4f36268"
                href="_images/predio.PNG"
                title=""
                data-title=""
@@ -364,7 +383,7 @@ the properties surrounding it.</p>
 <p>The execution of the model with the sample data should generate the following result:</p>
 <p>Intermediate tables:</p>
 <a class=""
-               data-lightbox="group-f67de0ab-6596-48e7-9eee-7fb9732504a7"
+               data-lightbox="group-20d26572-c97a-4f23-8f51-a1491e9ace34"
                href="_images/tablas_intermed.PNG"
                title=""
                data-title=""
@@ -375,7 +394,7 @@ the properties surrounding it.</p>
                      alt="basic settings"/>
                 </a><p>Model tables involved:</p>
 <a class=""
-               data-lightbox="group-adc2b4ce-67dc-425b-a1f6-c78c5b044354"
+               data-lightbox="group-7dd55536-5be4-4714-8faf-1d5c54c61cc9"
                href="_images/tabla_implicadas.PNG"
                title=""
                data-title=""
@@ -386,7 +405,7 @@ the properties surrounding it.</p>
                      alt="basic settings"/>
                 </a><p>An example of the procedure making use of the example data:</p>
 <a class=""
-               data-lightbox="group-494880a4-0be3-44f4-8aed-ea0ecad6bd7b"
+               data-lightbox="group-db082e80-a61f-4d2b-a8e8-a4494db03608"
                href="_images/import_intermediate_structure.gif"
                title=""
                data-title=""
@@ -462,11 +481,13 @@ the properties surrounding it.</p>
             <dd><a href="../0.8.0/toolbar.html">0.8.0</a></dd>
             <dd><a href="../0.9.0/toolbar.html">0.9.0</a></dd>
             <dd><a href="../1.0.0/toolbar.html">1.0.0</a></dd>
+            <dd><a href="../1.1.0/toolbar.html">1.1.0</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
             <dd><a href="../Documentation_for_annex_17/toolbar.html">Documentation_for_annex_17</a></dd>
             <dd><a href="../Documentation_valuation_asistente_ladm_col/toolbar.html">Documentation_valuation_asistente_ladm_col</a></dd>
+            <dd><a href="../images_of_valuation/toolbar.html">images_of_valuation</a></dd>
             <dd><a href="toolbar.html">master</a></dd>
             <dd><a href="../prepare_PR_2/toolbar.html">prepare_PR_2</a></dd>
             <dd><a href="../update_docs/toolbar.html">update_docs</a></dd>

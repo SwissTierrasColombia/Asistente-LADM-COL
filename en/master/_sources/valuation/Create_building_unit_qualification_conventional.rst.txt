@@ -11,7 +11,7 @@ Create Building Unit Qualification conventional
 
   **Building Unit Qualification conventional** is data for the valuation of the construction unit.
 
-  .. image:: ../static/Ficha_predial.gif
+  .. image:: ../static/V_Calificacion_convencional_UC.gif
      :height: 500
      :width: 800
      :alt: Create Building Unit Qualification conventional

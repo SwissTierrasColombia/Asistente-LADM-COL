@@ -59,6 +59,21 @@ This are the tables that relate with this function:
    :width: 800
    :alt: basic settings
 
+Fill Right Of Way relations
+===========================
+
+You have to select one **Right of Way**, one or more **Plot(s)** which will be benefited
+with the Right of Way, and one or more **Administrative Source(s)** which support
+this Right of Way. The plugin automatically creates the relations between benefited
+parcels and the restrictions. Is important to know that you should have relations
+between parcels and plots to avoid any issue with this function
+
+.. image:: static/fill_relations_right_of_way.gif
+   :height: 500
+   :width: 800
+   :alt: Fill right of way relations
+
+
 Generate Annex 17
 =================
 

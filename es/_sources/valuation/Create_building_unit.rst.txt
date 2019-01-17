@@ -11,7 +11,7 @@ Create Building Unit
 
   **Building Unit** it is a grouping of specific attributes for the valuation of it.
 
-  .. image:: ../static/Ficha_predial.gif
+  .. image:: ../static/V_Unidad_Construccion.gif
      :height: 500
      :width: 800
      :alt: Create Building Unit
