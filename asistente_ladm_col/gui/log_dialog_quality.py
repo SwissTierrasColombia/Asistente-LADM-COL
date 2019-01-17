@@ -23,16 +23,19 @@ from ..utils import get_ui_class
 LOG_DIALOG_UI = get_ui_class('log_dlg_quality.ui')
 
 class LogDialogQuality(QDialog, LOG_DIALOG_UI):
-    def __init__(self, qgis_utils, iface, parent=None):
+    def __init__(self, qgis_utils, quality, iface, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.qgis_utils = qgis_utils
-        self.iface = iface
+        self.quality = quality
+        self.iface = iface        
 
         # Set connections
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.rejected.connect(self.rejected)
         self.buttonBox.helpRequested.connect(self.show_help)
+        msg = self.quality.send_log_dialog_quality_text()
+        self.txt_log_quality.append(msg)
 
     def accepted(self):
         print ("Aceptar")
@@ -40,3 +43,6 @@ class LogDialogQuality(QDialog, LOG_DIALOG_UI):
         print ("Aceptar")
     def show_help(self):
         print ("Aceptar")
+
+    def add_text_to_dialog(self, msg):
+        self.txt_log_quality.append(msg)

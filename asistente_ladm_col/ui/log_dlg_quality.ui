@@ -20,6 +20,9 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QTextEdit" name="txt_log_quality">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="documentTitle">
        <string/>
       </property>

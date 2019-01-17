@@ -22,8 +22,7 @@ from qgis.core import Qgis
 
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
-                              QSettings,
-                              pyqtSlot)
+                              QSettings)
 
 from qgis.PyQt.QtGui import (QBrush,
                              QFont,
@@ -53,11 +52,10 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
 from ..utils import get_ui_class
 from ..resources_rc import *
 
-from .log_dialog_quality import LogDialogQuality
-
 DIALOG_UI = get_ui_class('dlg_quality.ui')
 
 class DialogQuality(QDialog, DIALOG_UI):
+
     def __init__(self, db, qgis_utils, quality, iface, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
@@ -234,7 +232,7 @@ class DialogQuality(QDialog, DIALOG_UI):
 
             iterator_topology += 1
 
-        self.quality.log_message(count_topology)
+        self.quality.count_topology_rules(count_topology)
 
         iterator = QTreeWidgetItemIterator(self.trw_quality_rules, QTreeWidgetItemIterator.Selectable)
 
@@ -309,7 +307,7 @@ class DialogQuality(QDialog, DIALOG_UI):
 
             iterator += 1
 
-        self.quality.log_button()
+        self.quality.generate_log_button()
 
         if self.qgis_utils.error_group_exists():
             self.qgis_utils.set_error_group_visibility(True)

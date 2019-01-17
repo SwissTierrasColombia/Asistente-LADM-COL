@@ -21,7 +21,8 @@ from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               QCoreApplication,
                               QVariant,
-                              QSettings)
+                              QSettings,
+                              pyqtSignal)
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsField,
@@ -37,9 +38,6 @@ from qgis.core import (Qgis,
                        NULL,
                        QgsRectangle)
 
-from qgis.PyQt.QtWidgets import (QProgressBar,
-                                 QPushButton)
-
 import processing
 from .logic_checks import LogicChecks
 from .project_generator_utils import ProjectGeneratorUtils
@@ -47,6 +45,7 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
                                      DEFAULT_USE_ROADS_VALUE,
                                      translated_strings)
+
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
                                            BUILDING_TABLE,
@@ -73,48 +72,34 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE,
                                            ZONE_FIELD)
 
-from asistente_ladm_col.gui.log_dialog_quality import LogDialogQuality
-
 class QualityUtils(QObject):
+    log_quality_message_emitted = pyqtSignal(str, int)
+    log_quality_button_emitted = pyqtSignal()
+    log_quality_message_ini_emitted = pyqtSignal(str)
+    log_quality_message_finish_emitted = pyqtSignal(str)
 
-    def __init__(self, qgis_utils, iface):
+    def __init__(self, qgis_utils):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
         self.logic = LogicChecks()
         self.project_generator_utils = ProjectGeneratorUtils()
         self.log = QgsApplication.messageLog()
-        self.iface = iface
+        self.log_dialog_quality_text = ""
 
-    def log_message(self, count_topology):
-        self.progressMessageBar = self.iface.messageBar().createMessage("Asistente LADM_COL", "")
-        self.progress = QProgressBar()
-        self.progress.setFixedWidth(80)
-        self.count_topology = count_topology
-        self.progress.setMaximum(self.count_topology*10)
-        self.progress.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
-        self.progressMessageBar.layout().addWidget(self.progress)
-        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Info)
-        self.progress_count = 0
-        self.rules_count = 0
-        self.message_topology_rules = "Updating progress bar"
+    def count_topology_rules(self, count):
+        self.log_quality_message_emitted.emit(QCoreApplication.translate("QualityUtils",""), count)
+        QCoreApplication.processEvents()
 
-    def log_button(self):
-        self.button = QPushButton(self.progressMessageBar)
-        self.button.pressed.connect(self.show_log_dlg_quality)
-        self.button.setText(QCoreApplication.translate("LogDialogQuality",
-            "log Quality Rules"))
-        self.progressMessageBar.layout().addWidget(self.button)
+    def generate_log_button(self):
+        self.log_quality_button_emitted.emit()
+        QCoreApplication.processEvents()
 
-    def show_log_dlg_quality(self):
-        print ("Jhon Alexander Galindo Ambuila")
-        dlg = LogDialogQuality(self.qgis_utils, self.iface)
-        dlg.exec_()
+    def send_log_dialog_quality_text(self):
+        return self.log_dialog_quality_text
 
     def check_boundary_points_covered_by_boundary_nodes(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Boundary Points should be covered by Boundary nodes'".format(self.message_topology_rules, self.rules_count+1, self.count_topology))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Boundary Points should be covered by Boundary nodes'"))
 
         res_layers = self.qgis_utils.get_layers(db, {
             BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
@@ -170,9 +155,8 @@ class QualityUtils(QObject):
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "All boundary points are covered by boundary nodes!"), Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Boundary Points should be covered by Boundary nodes'"))
 
     def get_boundary_points_features_not_covered_by_boundary_nodes(self, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field=ID_FIELD):
         tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
@@ -279,10 +263,8 @@ class QualityUtils(QObject):
         return features
 
     def check_boundary_nodes_covered_by_boundary_points(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Boundary nodes should be covered by Boundary Points'".format(self.message_topology_rules, self.rules_count, self.count_topology))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Boundary nodes should be covered by Boundary Points'"))
 
         res_layers = self.qgis_utils.get_layers(db, {
         BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None},
@@ -310,7 +292,6 @@ class QualityUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "There are no boundaries to check 'missing boundary points in boundaries'."),
                 Qgis.Info)
-            return
 
         elif point_bfs is None:
             self.qgis_utils.message_emitted.emit(
@@ -342,10 +323,8 @@ class QualityUtils(QObject):
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate("QGISUtils", "There are no missing boundary points in boundaries."), Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
-        self.progressMessageBar.setText("{} ({}/{}) running 'Boundary nodes should be covered by Boundary Points'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+            "{} ({}/{}) running 'Boundary nodes should be covered by Boundary Points'"))
 
     def get_boundary_nodes_features_not_covered_by_boundary_points(self, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field=ID_FIELD):
 
@@ -462,10 +441,8 @@ class QualityUtils(QObject):
         return features
 
     def check_plot_nodes_covered_by_boundary_points(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Plot nodes should be covered by boundary points'".format(self.message_topology_rules, self.rules_count, self.count_topology))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+            "{} ({}/{}) running 'Plot nodes should be covered by boundary points'"))
 
         res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
@@ -511,16 +488,12 @@ class QualityUtils(QObject):
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate("QGISUtils", "All plot nodes are covered by boundary points!"), Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
-        self.progressMessageBar.setText("{} ({}/{}) running 'Plot nodes should be covered by boundary points'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+            "{} ({}/{}) running 'Plot nodes should be covered by boundary points'"))
 
     def check_boundary_points_covered_by_plot_nodes(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Boundary Points should be covered by plot nodes'".format(self.message_topology_rules, self.rules_count + 1, self.count_topology))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Boundary Points should be covered by plot nodes'"))
 
         res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
@@ -532,45 +505,42 @@ class QualityUtils(QObject):
         if boundary_point_layer is None:
             self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils", "Layer {} not found in DB! {}")
                                                  .format(BOUNDARY_POINT_TABLE, db.get_description()), Qgis.Warning)
-            return
 
-        if plot_layer is None:
+        elif plot_layer is None:
             self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils","Layer {} not found in DB! {}")
                                                  .format(PLOT_TABLE, db.get_description()), Qgis.Warning)
-            return
 
-        if boundary_point_layer.featureCount() == 0:
+        elif boundary_point_layer.featureCount() == 0:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "There are no boundary points to check 'boundary points should be covered by Plot nodes'."),
                 Qgis.Info)
-            return
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
-                                     "memory")
-
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int)])
-        error_layer.updateFields()
-
-        topology_rule = 'boundary_points_covered_by_plot_nodes'
-        features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule)
-        error_layer.dataProvider().addFeatures(features)
-
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-
-            """self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate(
-                    "QGISUtils", "A memory layer with {} boundary points not covered by plot nodes has been added to the map!")
-                    .format(added_layer.featureCount()), Qgis.Info)"""
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "All boundary points are covered by plot nodes!"), Qgis.Info)
+            error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                         translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
+                                         "memory")
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int)])
+            error_layer.updateFields()
+
+            topology_rule = 'boundary_points_covered_by_plot_nodes'
+            features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule)
+            error_layer.dataProvider().addFeatures(features)
+
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
+
+                """self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate(
+                        "QGISUtils", "A memory layer with {} boundary points not covered by plot nodes has been added to the map!")
+                        .format(added_layer.featureCount()), Qgis.Info)"""
+            else:
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils", "All boundary points are covered by plot nodes!"), Qgis.Info)
+
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Boundary Points should be covered by plot nodes'"))
 
     @staticmethod
     def get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule, id_field=ID_FIELD):
@@ -627,13 +597,17 @@ class QualityUtils(QObject):
 
     def check_overlapping_points(self, db, point_layer_name):
         if point_layer_name == BOUNDARY_POINT_TABLE:
-            self.progressMessageBar.setText("{} ({}/{}) running 'Boundary Points should not overlap'".format(self.message_topology_rules, self.rules_count+1, self.count_topology))
+            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                    "{} ({}/{}) running 'Boundary Points should not overlap'"))
+            self.log_dialog_quality_text += 'titulo1'
         elif point_layer_name == CONTROL_POINT_TABLE:
-            self.progressMessageBar.setText("{} ({}/{}) running 'Control Points should not overlap'".format(self.message_topology_rules, self.rules_count+1, self.count_topology))
+            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                    "{} ({}/{}) running 'Control Points should not overlap'"))
+            self.log_dialog_quality_text += 'titulo2'
 
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_dialog_quality_text += 'Verde'
+        self.log_dialog_quality_text += 'Rojo'
+
         """
         Shows which points are overlapping
         :param db: db connection instance
@@ -648,64 +622,64 @@ class QualityUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "Table {} not found in DB! {}").format(point_layer_name, db.get_description()),
                 Qgis.Warning)
-            return
 
-        if point_layer.featureCount() == 0:
+        elif point_layer.featureCount() == 0:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                    "There are no points in layer '{}' to check for overlaps!").format(point_layer_name), Qgis.Info)
-            return
 
-        error_layer_name = ''
-        if point_layer_name == BOUNDARY_POINT_TABLE:
-            error_layer_name = translated_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS
-        elif point_layer_name == CONTROL_POINT_TABLE:
-            error_layer_name = translated_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS
-
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     error_layer_name, "memory")
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField("point_count", QVariant.Int), QgsField("intersecting_ids", QVariant.String) ])
-        error_layer.updateFields()
-
-        overlapping = self.qgis_utils.geometry.get_overlapping_points(point_layer)
-        flat_overlapping = [id for items in overlapping for id in items]  # Build a flat list of ids
-
-        t_ids = {f.id(): f[ID_FIELD] for f in point_layer.getFeatures(flat_overlapping)}
-
-        for items in overlapping:
-            # We need a feature geometry, pick the first id to get it
-            feature = point_layer.getFeature(items[0])
-            point = feature.geometry()
-            new_feature = QgsVectorLayerUtils().createFeature(
-                error_layer,
-                point,
-                {0: len(items), 1: ", ".join([str(t_ids[i]) for i in items])})
-            features.append(new_feature)
-
-        error_layer.dataProvider().addFeatures(features)
-
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-
-            """self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} overlapping points in '{}' has been added to the map!").format(
-                    added_layer.featureCount(), point_layer_name), Qgis.Info)"""
         else:
-            print ("Prueba")
-            """self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no overlapping points in layer '{}'!").format(point_layer_name), Qgis.Info)"""
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
+            error_layer_name = ''
+            if point_layer_name == BOUNDARY_POINT_TABLE:
+                error_layer_name = translated_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS
+            elif point_layer_name == CONTROL_POINT_TABLE:
+                error_layer_name = translated_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS
+
+            error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                         error_layer_name, "memory")
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField("point_count", QVariant.Int), QgsField("intersecting_ids", QVariant.String) ])
+            error_layer.updateFields()
+
+            overlapping = self.qgis_utils.geometry.get_overlapping_points(point_layer)
+            flat_overlapping = [id for items in overlapping for id in items]  # Build a flat list of ids
+
+            t_ids = {f.id(): f[ID_FIELD] for f in point_layer.getFeatures(flat_overlapping)}
+
+            for items in overlapping:
+                # We need a feature geometry, pick the first id to get it
+                feature = point_layer.getFeature(items[0])
+                point = feature.geometry()
+                new_feature = QgsVectorLayerUtils().createFeature(
+                    error_layer,
+                    point,
+                    {0: len(items), 1: ", ".join([str(t_ids[i]) for i in items])})
+                features.append(new_feature)
+
+            error_layer.dataProvider().addFeatures(features)
+
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
+
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                                               "A memory layer with {} overlapping points in '{}' has been added to the map!").format(
+                        added_layer.featureCount(), point_layer_name), Qgis.Info)
+            else:
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                                               "There are no overlapping points in layer '{}'!").format(point_layer_name), Qgis.Info)
+
+        if point_layer_name == BOUNDARY_POINT_TABLE:
+            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                    "{} ({}/{}) running 'Boundary Points should not overlap'"))
+        elif point_layer_name == CONTROL_POINT_TABLE:
+            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                    "{} ({}/{}) running 'Control Points should not overlap'"))
 
     def check_plots_covered_by_boundaries(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Plots should be covered by Boundaries'".format(self.message_topology_rules, self.rules_count, self.count_topology))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Plots should be covered by Boundaries'"))
 
         # read data
         res_layers = self.qgis_utils.get_layers(db, {
@@ -775,10 +749,8 @@ class QualityUtils(QObject):
                     QCoreApplication.translate("QGISUtils",
                                                "All plots are covered by boundaries!"), Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
-        self.progressMessageBar.setText("{} ({}/{}) running 'Plots should be covered by Boundaries'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Plots should be covered by Boundaries'"))
 
     def get_plot_features_not_covered_by_boundaries(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
         """
@@ -1031,10 +1003,8 @@ class QualityUtils(QObject):
         return features
 
     def check_boundaries_covered_by_plots(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Boundaries should be covered by Plots'".format(self.message_topology_rules, self.rules_count, self.count_topology))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Boundaries should be covered by Plots'"))
 
         # read data
         res_layers = self.qgis_utils.get_layers(db, {
@@ -1105,10 +1075,8 @@ class QualityUtils(QObject):
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate("QGISUtils", "All boundaries are covered by plots!"), Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
-        self.progressMessageBar.setText("{} ({}/{}) running 'Boundaries should be covered by Plots'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Boundaries should be covered by Plots'"))
 
     def get_boundary_features_not_covered_by_plots(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
         """
@@ -1366,15 +1334,14 @@ class QualityUtils(QObject):
 
     def check_overlapping_polygons(self, db, polygon_layer_name):
         if polygon_layer_name == PLOT_TABLE:
-            self.progressMessageBar.setText("{} ({}/{}) running 'Plots should not overlap'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Plots should not overlap'"))
         elif polygon_layer_name == BUILDING_TABLE:
-            self.progressMessageBar.setText("{} ({}/{}) running 'Buildings should not overlap'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Buildings should not overlap'"))
         elif polygon_layer_name == RIGHT_OF_WAY_TABLE:
-            self.progressMessageBar.setText("{} ({}/{}) running 'Rights of Way should not overlap'".format(self.message_topology_rules, self.rules_count, self.count_topology))
-
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Rights of Way should not overlap'"))
 
         polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, QgsWkbTypes.PolygonGeometry, load=True)
 
@@ -1446,21 +1413,19 @@ class QualityUtils(QObject):
                         "There are no overlapping polygons in layer '{}'!").format(
                         polygon_layer_name), Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
         if polygon_layer_name == PLOT_TABLE:
-            self.progressMessageBar.setText("{} ({}/{}) running 'Plots should not overlap'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Plots should not overlap'"))
         elif polygon_layer_name == BUILDING_TABLE:
-            self.progressMessageBar.setText("{} ({}/{}) running 'Buildings should not overlap'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Buildings should not overlap'"))
         elif polygon_layer_name == RIGHT_OF_WAY_TABLE:
-            self.progressMessageBar.setText("{} ({}/{}) running 'Rights of Way should not overlap'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Rights of Way should not overlap'"))
 
     def check_overlaps_in_boundaries(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Boundaries should not overlap'".format(self.message_topology_rules, self.rules_count, self.count_topology))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Boundaries should not overlap'"))
 
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
 
@@ -1469,65 +1434,60 @@ class QualityUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                     "Table {} not found in DB! {}").format(
                         BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
-            return
-
-        overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_layer)
-        if overlapping is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                   "There are no boundaries to check for overlaps!"), Qgis.Info)
-            return
-
-        error_point_layer = overlapping['native:saveselectedfeatures_3:Intersected_Points']
-        error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
-        if type(error_point_layer) is QgsVectorLayer:
-            error_point_layer.setName("{} (point intersections)".format(
-                translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES
-            ))
-        if type(error_line_layer) is QgsVectorLayer:
-            error_line_layer.setName("{} (line intersections)".format(
-                translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES
-            ))
-
-        if (type(error_point_layer) is not QgsVectorLayer and \
-           type(error_line_layer) is not QgsVectorLayer) or \
-           (error_point_layer.featureCount() == 0 and \
-           error_line_layer.featureCount() == 0):
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no overlapping boundaries."), Qgis.Info)
         else:
-            msg = ''
+            overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_layer)
+            if overlapping is None:
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                       "There are no boundaries to check for overlaps!"), Qgis.Info)
+            else:
+                error_point_layer = overlapping['native:saveselectedfeatures_3:Intersected_Points']
+                error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
+                if type(error_point_layer) is QgsVectorLayer:
+                    error_point_layer.setName("{} (point intersections)".format(
+                        translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES
+                    ))
+                if type(error_line_layer) is QgsVectorLayer:
+                    error_line_layer.setName("{} (line intersections)".format(
+                        translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES
+                    ))
 
-            if type(error_point_layer) is QgsVectorLayer and error_point_layer.featureCount() > 0:
-                added_point_layer = self.add_error_layer(error_point_layer)
-                msg = QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} overlapping boundaries (point intersections) has been added to the map.").format(added_point_layer.featureCount())
+                if (type(error_point_layer) is not QgsVectorLayer and \
+                   type(error_line_layer) is not QgsVectorLayer) or \
+                   (error_point_layer.featureCount() == 0 and \
+                   error_line_layer.featureCount() == 0):
 
-            if type(error_line_layer) is QgsVectorLayer and error_line_layer.featureCount() > 0:
-                added_line_layer = self.add_error_layer(error_line_layer)
-                msg = QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} overlapping boundaries (line intersections) has been added to the map.").format(added_line_layer.featureCount())
+                    self.qgis_utils.message_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                                   "There are no overlapping boundaries."), Qgis.Info)
+                else:
+                    msg = ''
 
-            if type(error_point_layer) is QgsVectorLayer and \
-               type(error_line_layer) is QgsVectorLayer and \
-               error_point_layer.featureCount() > 0 and \
-               error_line_layer.featureCount() > 0:
-                msg = QCoreApplication.translate("QGISUtils",
-                    "Two memory layers with overlapping boundaries ({} point intersections and {} line intersections) have been added to the map.").format(added_point_layer.featureCount(), added_line_layer.featureCount())
+                    if type(error_point_layer) is QgsVectorLayer and error_point_layer.featureCount() > 0:
+                        added_point_layer = self.add_error_layer(error_point_layer)
+                        msg = QCoreApplication.translate("QGISUtils",
+                            "A memory layer with {} overlapping boundaries (point intersections) has been added to the map.").format(added_point_layer.featureCount())
 
-            self.qgis_utils.message_emitted.emit(msg, Qgis.Info)
+                    if type(error_line_layer) is QgsVectorLayer and error_line_layer.featureCount() > 0:
+                        added_line_layer = self.add_error_layer(error_line_layer)
+                        msg = QCoreApplication.translate("QGISUtils",
+                            "A memory layer with {} overlapping boundaries (line intersections) has been added to the map.").format(added_line_layer.featureCount())
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
+                    if type(error_point_layer) is QgsVectorLayer and \
+                       type(error_line_layer) is QgsVectorLayer and \
+                       error_point_layer.featureCount() > 0 and \
+                       error_line_layer.featureCount() > 0:
+                        msg = QCoreApplication.translate("QGISUtils",
+                            "Two memory layers with overlapping boundaries ({} point intersections and {} line intersections) have been added to the map.").format(added_point_layer.featureCount(), added_line_layer.featureCount())
+
+                    self.qgis_utils.message_emitted.emit(msg, Qgis.Info)
+
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Boundaries should not overlap'"))
 
     def check_boundaries_are_not_split(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Boundaries should not be split'".format(self.message_topology_rules, self.rules_count, self.count_topology))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Boundaries should not be split'"))
 
         """
         An split boundary is an incomplete boundary because it is connected to
@@ -1542,58 +1502,54 @@ class QualityUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                     "Layer {} not found in DB! {}").format(
                         BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
-            return
 
-        if boundary_layer.featureCount() == 0:
+        elif boundary_layer.featureCount() == 0:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                    "There are no boundaries to check 'boundaries should not be split'!"), Qgis.Info)
-            return
 
-        wrong_boundaries = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(boundary_layer)
-
-        if wrong_boundaries is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no wrong boundaries!"), Qgis.Info)
-            return
-
-        error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                        translated_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT,
-                        "memory")
-        pr = error_layer.dataProvider()
-        pr.addAttributes([QgsField("boundary_id", QVariant.Int)])
-        error_layer.updateFields()
-
-        for feature in wrong_boundaries:
-            new_feature = QgsVectorLayerUtils().createFeature(error_layer, feature.geometry(),
-                                                              {0: feature[ID_FIELD]})
-            features.append(new_feature)
-
-        error_layer.dataProvider().addFeatures(features)
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} wrong boundaries has been added to the map!").format(added_layer.featureCount()),
-                Qgis.Info)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no wrong boundaries."),
-                Qgis.Info)
+            wrong_boundaries = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(boundary_layer)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
+            if wrong_boundaries is None:
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate("QGISUtils",
+                                               "There are no wrong boundaries!"), Qgis.Info)
+
+            else:
+                error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                translated_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT,
+                                "memory")
+                pr = error_layer.dataProvider()
+                pr.addAttributes([QgsField("boundary_id", QVariant.Int)])
+                error_layer.updateFields()
+
+                for feature in wrong_boundaries:
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, feature.geometry(),
+                                                                      {0: feature[ID_FIELD]})
+                    features.append(new_feature)
+
+                error_layer.dataProvider().addFeatures(features)
+                if error_layer.featureCount() > 0:
+                    added_layer = self.add_error_layer(error_layer)
+                    self.qgis_utils.message_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                                   "A memory layer with {} wrong boundaries has been added to the map!").format(added_layer.featureCount()),
+                        Qgis.Info)
+                else:
+                    self.qgis_utils.message_emitted.emit(
+                        QCoreApplication.translate("QGISUtils",
+                                                   "There are no wrong boundaries."),
+                        Qgis.Info)
+
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Boundaries should not be split'"))
 
     def check_too_long_segments(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Boundary segments should not be longer than {}m.''".format(self.message_topology_rules, self.rules_count, self.count_topology, QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
-
         tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Boundary segments should not be longer than {meters}m.'".format("{}", "{}", "{}", meters=tolerance)))
+
         features = []
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
 
@@ -1645,10 +1601,8 @@ class QualityUtils(QObject):
                                                "All boundary segments are within the length tolerance for segments ({}m.)!").format(tolerance),
                     Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
-        self.progressMessageBar.setText("{} ({}/{}) running 'Boundary segments should not be longer than {}m.''".format(self.message_topology_rules, self.rules_count, self.count_topology, QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)))
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Boundary segments should not be longer than {meters}m.''".format("{}", "{}", "{}", meters=tolerance)))
 
     def check_missing_boundary_points_in_boundaries(self, db):
         res_layers = self.qgis_utils.get_layers(db, {
@@ -1814,10 +1768,8 @@ class QualityUtils(QObject):
                                            "There are no missing survey points in buildings."), Qgis.Info)
 
     def check_dangles_in_boundaries(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Boundaries should not have dangles'".format(self.message_topology_rules, self.rules_count, self.count_topology))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Boundaries should not have dangles'"))
 
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
 
@@ -1863,10 +1815,8 @@ class QualityUtils(QObject):
                                                "Boundaries have no dangles!"),
                     Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
-        self.progressMessageBar.setText("{} ({}/{}) running 'Boundaries should not have dangles'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Boundaries should not have dangles'"))
 
     def get_missing_boundary_points_in_boundaries(self, boundary_point_layer, boundary_layer):
         res = dict()
@@ -1925,10 +1875,8 @@ class QualityUtils(QObject):
         return res
 
     def check_right_of_way_overlaps_buildings(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Right of Way should not overlap Buildings'".format(self.message_topology_rules, self.rules_count, self.count_topology))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Right of Way should not overlap Buildings'"))
 
         res_layers = self.qgis_utils.get_layers(db, {
             RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
@@ -1994,16 +1942,12 @@ class QualityUtils(QObject):
                     QCoreApplication.translate("QGISUtils",
                                                "There are no Right of Way-Building overlaps."), Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
-        self.progressMessageBar.setText("{} ({}/{}) running 'Right of Way should not overlap Buildings'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Right of Way should not overlap Buildings'"))
 
     def check_gaps_in_plots(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Plots should not have gaps'".format(self.message_topology_rules, self.rules_count, self.count_topology))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Plots should not have gaps'"))
 
         use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, True)
@@ -2051,16 +1995,12 @@ class QualityUtils(QObject):
                     QCoreApplication.translate("QGISUtils",
                                                "There are no gaps in layer Plot."), Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
-        self.progressMessageBar.setText("{} ({}/{}) running 'Plots should not have gaps'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Plots should not have gaps'"))
 
     def check_multiparts_in_right_of_way(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Right of Way should not have multipart geometries'".format(self.message_topology_rules, self.rules_count, self.count_topology))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Right of Way should not have multipart geometries'"))
 
         right_of_way_layer = self.qgis_utils.get_layer(db, RIGHT_OF_WAY_TABLE, QgsWkbTypes.PolygonGeometry, True)
 
@@ -2107,16 +2047,12 @@ class QualityUtils(QObject):
                     QCoreApplication.translate("QGISUtils",
                                                "There are no multipart geometries in layer Right Of Way."), Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
-        self.progressMessageBar.setText("{} ({}/{}) running 'Right of Way should not have multipart geometries'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Right of Way should not have multipart geometries'"))
 
     def check_parcel_right_relationship(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Parcel should have one and only one Right'".format(self.message_topology_rules, self.rules_count, self.count_topology))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Parcel should have one and only one Right'"))
 
         table_name = QCoreApplication.translate("LogicChecksConfigStrings","Logic Consistency Errors in table '{}'").format(PARCEL_TABLE)
         error_layer = None
@@ -2151,15 +2087,12 @@ class QualityUtils(QObject):
                                            "Parcel-Right relationships are correct!"),
                 Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Parcel should have one and only one Right'"))
 
     def check_fraction_sum_for_party_groups(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Group Party Fractions should sum 1'".format(self.message_topology_rules, self.rules_count, self.count_topology))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Group Party Fractions should sum 1'"))
 
         error_layer = None
         error_layer = self.logic.get_fractions_which_sum_is_not_one(db, error_layer)
@@ -2178,9 +2111,8 @@ class QualityUtils(QObject):
                                            "Group Party Fractions are correct!"),
                 Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Group Party Fractions should sum 1'"))
 
     def get_dangle_ids(self, boundary_layer):
         # 1. Run extract specific vertices
@@ -2221,10 +2153,8 @@ class QualityUtils(QObject):
         return added_layer
 
     def find_duplicate_records_in_a_table(self, db):
-        self.progressMessageBar.setText("{} ({}/{}) running 'Table records should not be repeated'".format(self.message_topology_rules, self.rules_count, self.count_topology))
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Table records should not be repeated'"))
 
         for table in LOGIC_CONSISTENCY_TABLES:
             fields = LOGIC_CONSISTENCY_TABLES[table]
@@ -2245,25 +2175,25 @@ class QualityUtils(QObject):
                                                "There are no repeated records in {table}!".format(table=table)),
                     Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
+        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Table records should not be repeated'"))
 
     def basic_logic_validations(self, db, rule):
         if rule == 'DEPARTMENT_CODE_VALIDATION':
-            self.progressMessageBar.setText("{} ({}/{}) running 'Check that the {department} field of the {parcel} table has two numerical characters'".format(self.message_topology_rules, self.rules_count, self.count_topology, department=DEPARTMENT_FIELD, parcel=PARCEL_TABLE))
+            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                    "{} ({}/{}) running 'Check that the {department} field of the {parcel} table has two numerical characters'".format("{}", "{}", "{}", department=DEPARTMENT_FIELD, parcel=PARCEL_TABLE)))
         elif rule == 'MUNICIPALITY_CODE_VALIDATION':
-            self.progressMessageBar.setText("{} ({}/{}) running 'Check that the {municipality} field of the {parcel} table has three numerical characters'".format(self.message_topology_rules, self.rules_count, self.count_topology, municipality=MUNICIPALITY_FIELD, parcel=PARCEL_TABLE))
+            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                    "{} ({}/{}) running 'Check that the {municipality} field of the {parcel} table has three numerical characters'".format("{}", "{}", "{}", municipality=MUNICIPALITY_FIELD, parcel=PARCEL_TABLE)))
         elif rule == 'ZONE_CODE_VALIDATION':
-        	self.progressMessageBar.setText("{} ({}/{}) running 'Check that the {zone} field of the {parcel} table has two numerical characters'".format(self.message_topology_rules, self.rules_count, self.count_topology, zone=ZONE_FIELD, parcel=PARCEL_TABLE))
+            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                    "{} ({}/{}) running 'Check that the {zone} field of the {parcel} table has two numerical characters'".format("{}", "{}", "{}", zone=ZONE_FIELD, parcel=PARCEL_TABLE)))
         elif rule == 'PARCEL_NUMBER_VALIDATION':
-        	self.progressMessageBar.setText("{} ({}/{}) running 'Check that the {parcel_number} has 30 numerical characters'".format(self.message_topology_rules, self.rules_count, self.count_topology, parcel_number=PARCEL_NUMBER_FIELD))
+        	self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                    "{} ({}/{}) running 'Check that the {parcel_number} has 30 numerical characters'".format("{}", "{}", "{}", parcel_number=PARCEL_NUMBER_FIELD)))
         elif rule == 'PARCEL_NUMBER_BEFORE_VALIDATION':
-        	self.progressMessageBar.setText("{} ({}/{}) running 'Check that the {parcel_number_before} has 20 numerical characters'".format(self.message_topology_rules, self.rules_count, self.count_topology, parcel_number_before=PARCEL_NUMBER_BEFORE_FIELD))
-
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+        	self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                    "{} ({}/{}) running 'Check that the {parcel_number_before} has 20 numerical characters'".format("{}", "{}", "{}", parcel_number_before=PARCEL_NUMBER_BEFORE_FIELD)))
 
         query = db.logic_validation_queries[rule]['query']
         table_name = db.logic_validation_queries[rule]['table_name']
@@ -2316,34 +2246,35 @@ class QualityUtils(QObject):
                                            "There are no repeated records in {table}!".format(table=table)),
                 Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
-
         if rule == 'DEPARTMENT_CODE_VALIDATION':
-            self.progressMessageBar.setText("{} ({}/{}) running 'Check that the {department} field of the {parcel} table has two numerical characters'".format(self.message_topology_rules, self.rules_count, self.count_topology, department=DEPARTMENT_FIELD, parcel=PARCEL_TABLE))
+            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                    "{} ({}/{}) running 'Check that the {department} field of the {parcel} table has two numerical characters'".format("{}", "{}", "{}", department=DEPARTMENT_FIELD, parcel=PARCEL_TABLE)))
         elif rule == 'MUNICIPALITY_CODE_VALIDATION':
-            self.progressMessageBar.setText("{} ({}/{}) running 'Check that the {municipality} field of the {parcel} table has three numerical characters'".format(self.message_topology_rules, self.rules_count, self.count_topology, municipality=MUNICIPALITY_FIELD, parcel=PARCEL_TABLE))
+            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                    "{} ({}/{}) running 'Check that the {municipality} field of the {parcel} table has three numerical characters'".format("{}", "{}", "{}", municipality=MUNICIPALITY_FIELD, parcel=PARCEL_TABLE)))
         elif rule == 'ZONE_CODE_VALIDATION':
-        	self.progressMessageBar.setText("{} ({}/{}) running 'Check that the {zone} field of the {parcel} table has two numerical characters'".format(self.message_topology_rules, self.rules_count, self.count_topology, zone=ZONE_FIELD, parcel=PARCEL_TABLE))
+            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                    "{} ({}/{}) running 'Check that the {zone} field of the {parcel} table has two numerical characters'".format("{}", "{}", "{}", zone=ZONE_FIELD, parcel=PARCEL_TABLE)))
         elif rule == 'PARCEL_NUMBER_VALIDATION':
-        	self.progressMessageBar.setText("{} ({}/{}) running 'Check that the {parcel_number} has 30 numerical characters'".format(self.message_topology_rules, self.rules_count, self.count_topology, parcel_number=PARCEL_NUMBER_FIELD))
+        	self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                    "{} ({}/{}) running 'Check that the {parcel_number} has 30 numerical characters'".format("{}", "{}", "{}", parcel_number=PARCEL_NUMBER_FIELD)))
         elif rule == 'PARCEL_NUMBER_BEFORE_VALIDATION':
-        	self.progressMessageBar.setText("{} ({}/{}) running 'Check that the {parcel_number_before} has 20 numerical characters'".format(self.message_topology_rules, self.rules_count, self.count_topology, parcel_number_before=PARCEL_NUMBER_BEFORE_FIELD))
+        	self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                    "{} ({}/{}) running 'Check that the {parcel_number_before} has 20 numerical characters'".format("{}", "{}", "{}", parcel_number_before=PARCEL_NUMBER_BEFORE_FIELD)))
 
     def advance_logic_validations(self, db, rule):
         if rule == 'COL_PARTY_TYPE_NATURAL_VALIDATION':
-            self.progressMessageBar.setText("{} ({}/{}) running 'Check that attributes are appropriate for parties of type natural'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Check that attributes are appropriate for parties of type natural'"))
         elif rule == 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION':
-            self.progressMessageBar.setText("{} ({}/{}) running 'Check that attributes are appropriate for parties of type legal'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Check that attributes are appropriate for parties of type legal'"))
         elif rule == 'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION':
-            self.progressMessageBar.setText("{} ({}/{}) running 'Check that the type of parcel corresponds to position 22 of the {parcel_number}'".format(self.message_topology_rules, self.rules_count, self.count_topology, parcel_number=PARCEL_NUMBER_FIELD))
+            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Check that the type of parcel corresponds to position 22 of the {parcel_number}'".format("{}", "{}", "{}", parcel_number=PARCEL_NUMBER_FIELD)))
         elif rule == 'UEBAUNIT_PARCEL_VALIDATION':
-            self.progressMessageBar.setText("{} ({}/{}) running 'Check that Spatial Units associated with Parcels correspond to the parcel type'".format(self.message_topology_rules, self.rules_count, self.count_topology))
-
-        QCoreApplication.processEvents()
-        self.progress_count += 2
-        self.progress.setValue(self.progress_count)
+            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Check that Spatial Units associated with Parcels correspond to the parcel type'"))
 
         table_name = db.logic_validation_queries[rule]['table_name']
         table = db.logic_validation_queries[rule]['table']
@@ -2387,15 +2318,15 @@ class QualityUtils(QObject):
                                            "There are no repeated records in {table}!".format(table=table)),
                 Qgis.Info)
 
-        self.progress_count += 8
-        self.progress.setValue(self.progress_count)
-        self.rules_count += 1
-
         if rule == 'COL_PARTY_TYPE_NATURAL_VALIDATION':
-            self.progressMessageBar.setText("{} ({}/{}) running 'Check that attributes are appropriate for parties of type natural'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Check that attributes are appropriate for parties of type natural'"))
         elif rule == 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION':
-            self.progressMessageBar.setText("{} ({}/{}) running 'Check that attributes are appropriate for parties of type legal'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Check that attributes are appropriate for parties of type legal'"))
         elif rule == 'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION':
-            self.progressMessageBar.setText("{} ({}/{}) running 'Check that the type of parcel corresponds to position 22 of the {parcel_number}'".format(self.message_topology_rules, self.rules_count, self.count_topology, parcel_number=PARCEL_NUMBER_FIELD))
+            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Check that the type of parcel corresponds to position 22 of the {parcel_number}'".format("{}", "{}", "{}", parcel_number=PARCEL_NUMBER_FIELD)))
         elif rule == 'UEBAUNIT_PARCEL_VALIDATION':
-            self.progressMessageBar.setText("{} ({}/{}) running 'Check that Spatial Units associated with Parcels correspond to the parcel type'".format(self.message_topology_rules, self.rules_count, self.count_topology))
+            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
+                "{} ({}/{}) running 'Check that Spatial Units associated with Parcels correspond to the parcel type'"))

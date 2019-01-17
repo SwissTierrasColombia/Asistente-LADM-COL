@@ -24,17 +24,22 @@ from functools import (partial,
 
 import qgis.utils
 from processing.modeler.ModelerUtils import ModelerUtils
-from qgis.PyQt.QtCore import (QObject,
+from qgis.PyQt.QtCore import (Qt,
+                              QObject,
                               QCoreApplication)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QAction,
                                  QMenu,
+                                 QPushButton,
+                                 QProgressBar,
                                  QPushButton)
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsExpression,
                        QgsExpressionContext,
                        QgsProcessingModelAlgorithm)
+
+
 
 from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     LADM_COL_MENU_OBJECTNAME,
@@ -80,6 +85,7 @@ from .gui.create_physical_zone_valuation_wizard import CreatePhysicalZoneValuati
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
 from .gui.dialog_import_from_excel import DialogImportFromExcel
+from .gui.log_dialog_quality import LogDialogQuality
 from .gui.reports import ReportGenerator
 from .gui.toolbar import ToolBar
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
@@ -87,7 +93,6 @@ from .utils.model_parser import ModelParser
 from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
-
 
 class AsistenteLADMCOLPlugin(QObject):
     def __init__(self, iface):
@@ -110,7 +115,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.iface.mainWindow().menuBar().addMenu(self._menu)
 
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
-        self.quality = QualityUtils(self.qgis_utils, self.iface)
+        self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
         self.report_generator = ReportGenerator(self.qgis_utils)
 
@@ -153,6 +158,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
         self.qgis_utils.set_node_visibility_requested.connect(self.set_node_visibility)
+
+        self.quality.log_quality_message_emitted.connect(self.show_log_quality_message)
+        self.quality.log_quality_button_emitted.connect(self.show_log_quality_button)
+        self.quality.log_quality_message_ini_emitted.connect(self.show_log_quality_message_ini)
+        self.quality.log_quality_message_finish_emitted.connect(self.show_log_quality_message_finish)
 
         self.iface.initializationCompleted.connect(self.qgis_initialized)
 
@@ -598,6 +608,43 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def load_layers(self, layers):
         self.qgis_utils.get_layers(self.get_db_connection(), layers, True)
+
+    def show_log_quality_message(self, msg, count):
+        self.progressMessageBar = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        self.progress = QProgressBar()
+        self.progress.setFixedWidth(80)
+        self.count_topology = count
+        self.progress.setMaximum(self.count_topology*10)
+        self.progress.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+        self.progressMessageBar.layout().addWidget(self.progress)
+        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Info)
+        self.progress_count = 0
+        self.rules_count = 0
+        self.message_topology_rules = "Updating progress bar"
+
+    def show_log_quality_button(self):
+        self.button = QPushButton(self.progressMessageBar)
+        self.button.pressed.connect(self.show_log_dlg_quality)
+        self.button.setText(QCoreApplication.translate("LogDialogQuality",
+            "log Quality Rules"))
+        self.progressMessageBar.layout().addWidget(self.button)
+
+    def show_log_quality_message_ini(self, msg):
+        self.progress_count += 2
+        self.progress.setValue(self.progress_count)
+        self.progressMessageBar.setText(msg.format(self.message_topology_rules, self.rules_count+1, self.count_topology))
+        QCoreApplication.processEvents()
+
+    def show_log_quality_message_finish(self, msg):
+        self.progress_count += 8
+        self.progress.setValue(self.progress_count)
+        self.rules_count += 1
+        self.progressMessageBar.setText(msg.format(self.message_topology_rules, self.rules_count, self.count_topology))
+        QCoreApplication.processEvents()
+
+    def show_log_dlg_quality(self):
+        dlg = LogDialogQuality(self.qgis_utils, self.quality, self.iface)
+        dlg.exec_()
 
     def _db_connection_required(func_to_decorate):
         @wraps(func_to_decorate)
