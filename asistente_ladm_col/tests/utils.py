@@ -139,8 +139,8 @@ def import_qgismodelbaker():
     global iface
     plugin_found = "QgisModelBaker" in qgis.utils.plugins
     if not plugin_found:
-        import qgismodelbaker
-        pg = qgismodelbaker.classFactory(iface)
+        import QgisModelBaker
+        pg = QgisModelBaker.classFactory(iface)
         qgis.utils.plugins["QgisModelBaker"] = pg
 
 def unload_qgismodelbaker():
