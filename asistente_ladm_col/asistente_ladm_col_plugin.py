@@ -51,6 +51,7 @@ from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                           COL_PARTY_TABLE)
 from .gui.about_dialog import AboutDialog
 from .gui.model_baker.dlg_import_schema import DialogImportSchema
+from .gui.model_baker.dlg_import_data import DialogImportData
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
@@ -132,6 +133,7 @@ class AsistenteLADMCOLPlugin(QObject):
         # Connections
 
         self._import_schema_action.triggered.connect(self.show_dlg_import_schema)
+        self._import_data_action.triggered.connect(self.show_dlg_import_data)
         self._controlled_measurement_action.triggered.connect(self.show_dlg_controlled_measurement)
         self._load_layers_action.triggered.connect(self.load_layers_from_qgis_model_baker)
         self._settings_action.triggered.connect(self.show_settings)
@@ -758,6 +760,11 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     def show_dlg_import_schema(self):
         dlg = DialogImportSchema(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg.exec_()
+
+    @_qgis_model_baker_required
+    def show_dlg_import_data(self):
+        dlg = DialogImportData(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
     def show_dlg_controlled_measurement(self):

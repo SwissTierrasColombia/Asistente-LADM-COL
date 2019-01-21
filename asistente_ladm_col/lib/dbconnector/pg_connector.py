@@ -768,3 +768,12 @@ class PGConnector(DBConnector):
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(query)
         return cur.fetchall()
+
+    def _schema_names_list(self):
+        query = """
+                    SELECT n.nspname as "schema_name"
+                    FROM pg_catalog.pg_namespace n
+                    WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema'
+                    ORDER BY 1"""
+
+        return self.execute_sql_query(query)
