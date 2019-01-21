@@ -270,7 +270,7 @@ class DialogQuality(QDialog, DIALOG_UI):
                 elif id == 'check_col_party_legal_type':
                     self.quality.advance_logic_validations(self._db, 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION')
                 elif id == 'check_parcel_type_and_22_position_of_parcel_number':
-                    self.quality.advance_logic_validations(self._db, 'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION')
+                    self.quality.advance_logic_validations(self._db, 'PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER_VALIDATION')
                 elif id == 'check_uebaunit_parcel':
                     self.quality.advance_logic_validations(self._db, 'UEBAUNIT_PARCEL_VALIDATION')
 

@@ -68,7 +68,7 @@ class PGConnector(DBConnector):
         self.logic_validation_queries = {
             'DEPARTMENT_CODE_VALIDATION': {
                 'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=2 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=DEPARTMENT_FIELD),
-                'desc_error': 'Deparment code must have two numerical characters.',
+                'desc_error': 'Department code must have two numerical characters.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
                 'table': PARCEL_TABLE},
             'MUNICIPALITY_CODE_VALIDATION': {
@@ -163,7 +163,7 @@ class PGConnector(DBConnector):
                 'desc_error': 'Parcel must have one or more spatial units associated with it.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Errors in relationships between Spatial Units and Parcels"),
                 'table': PARCEL_TABLE},
-            'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION': {
+            'PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER_VALIDATION': {
                 'query': """
                         SELECT p.{id}, p.{parcel_type} FROM {schema}.{table} p
                         WHERE (p.{parcel_number} IS NOT NULL AND 

@@ -234,19 +234,19 @@ class TesQualityValidations(unittest.TestCase):
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
         uri.setDataSource(SCHEMA_NAME, 'puntolindero', "localizacion_original", "", "gid")
         boundary_point_layer = QgsVectorLayer(uri.uri(), 'puntolindero', "postgres")
-        self.assertEqual(boundary_point_layer.featureCount(), 92)
+        self.assertEqual(boundary_point_layer.featureCount(), 109)
 
         uri = QgsDataSourceUri()
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
         uri.setDataSource(SCHEMA_NAME, 'lindero', "geometria", "", "gid")
         boundary_layer = QgsVectorLayer(uri.uri(), 'lindero', "postgres")
-        self.assertEqual(boundary_layer.featureCount(), 19)
+        self.assertEqual(boundary_layer.featureCount(), 22)
 
         uri = QgsDataSourceUri()
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
         uri.setDataSource(SCHEMA_NAME, 'puntoccl', None, "", None)
         point_bfs_layer = QgsVectorLayer(uri.uri(), 'puntoccl', "postgres")
-        self.assertEqual(point_bfs_layer.featureCount(), 60)
+        self.assertEqual(point_bfs_layer.featureCount(), 81)
 
         error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
 
@@ -335,19 +335,19 @@ class TesQualityValidations(unittest.TestCase):
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
         uri.setDataSource(SCHEMA_NAME, 'puntolindero', "localizacion_original", "", "gid")
         boundary_point_layer = QgsVectorLayer(uri.uri(), 'puntolindero', "postgres")
-        self.assertEqual(boundary_point_layer.featureCount(), 92)
+        self.assertEqual(boundary_point_layer.featureCount(), 109)
 
         uri = QgsDataSourceUri()
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
         uri.setDataSource(SCHEMA_NAME, 'lindero', "geometria", "", "gid")
         boundary_layer = QgsVectorLayer(uri.uri(), 'lindero', "postgres")
-        self.assertEqual(boundary_layer.featureCount(), 19)
+        self.assertEqual(boundary_layer.featureCount(), 22)
 
         uri = QgsDataSourceUri()
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
         uri.setDataSource(SCHEMA_NAME, 'puntoccl', None, "", None)
         point_bfs_layer = QgsVectorLayer(uri.uri(), 'puntoccl', "postgres")
-        self.assertEqual(point_bfs_layer.featureCount(), 60)
+        self.assertEqual(point_bfs_layer.featureCount(), 81)
 
         error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
 
@@ -458,19 +458,19 @@ class TesQualityValidations(unittest.TestCase):
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
         uri.setDataSource(SCHEMA_NAME, 'lindero', "geometria", "", "gid")
         boundary_layer = QgsVectorLayer(uri.uri(), 'lindero', "postgres")
-        self.assertEqual(boundary_layer.featureCount(), 19)
+        self.assertEqual(boundary_layer.featureCount(), 22)
 
         uri = QgsDataSourceUri()
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
         uri.setDataSource(SCHEMA_NAME, 'terreno', "poligono_creado", "", "gid")
         plot_layer = QgsVectorLayer(uri.uri(), 'terreno', "postgres")
-        self.assertEqual(plot_layer.featureCount(), 15)
+        self.assertEqual(plot_layer.featureCount(), 17)
 
         uri = QgsDataSourceUri()
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
         uri.setDataSource(SCHEMA_NAME, 'masccl', None, "", None)
         more_bfs_layer = QgsVectorLayer(uri.uri(), 'masccl', "postgres")
-        self.assertEqual(more_bfs_layer.featureCount(), 15)
+        self.assertEqual(more_bfs_layer.featureCount(), 18)
 
         uri = QgsDataSourceUri()
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
@@ -489,14 +489,14 @@ class TesQualityValidations(unittest.TestCase):
         features = self.quality.get_plot_features_not_covered_by_boundaries(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
 
         # the algorithm was successfully executed
-        self.assertEqual(len(features), 15)
+        self.assertEqual(len(features), 16)
 
         error_layer.dataProvider().addFeatures(features)
 
         # English language is set as default for validations
         exp = "\"error_type\" = 'Plot is not covered by boundary'"
         error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 11)
+        self.assertEqual(error_layer.selectedFeatureCount(), 12)
 
         result = [{'id': f['plot_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
 
@@ -510,8 +510,8 @@ class TesQualityValidations(unittest.TestCase):
                        {'id': 12, 'geom': 'MultiLineString ((894847.40195368567947298 1544448.57311991089954972, 894852.59466425550635904 1544369.26626757089979947),(894914.05367824051063508 1544372.94515221077017486, 894911.74524271208792925 1544391.85083696991205215),(894904.21943272789940238 1544453.48590945219621062, 894847.40195368567947298 1544448.57311991089954972))'},
                        {'id': 13, 'geom': 'MultiLineString ((894904.21943272789940238 1544453.48590945219621062, 894972.97113655728753656 1544459.43060564785264432, 894986.66100987792015076 1544377.2913657242897898),(894914.05367824051063508 1544372.94515221077017486, 894911.74524271208792925 1544391.85083696991205215))'},
                        {'id': 19, 'geom': 'MultiLineString ((894863.92421458975877613 1544306.00961153814569116, 894862.50802079797722399 1544287.59909224486909807, 894910.65860971866641194 1544288.07115684216842055, 894905.93796374613884836 1544314.50677428883500397, 894863.92421458975877613 1544306.00961153814569116))'},
-                       {'id': 22, 'geom': 'MultiLineString ((895053.22211809176951647 1544435.35531118814833462, 895076.2805417146300897 1544438.87918988126330078),(895126.55513874720782042 1544446.56235088966786861, 895150.11316665716003627 1544450.16258106869645417))'}]
-
+                       {'id': 22, 'geom': 'MultiLineString ((895053.22211809176951647 1544435.35531118814833462, 895076.2805417146300897 1544438.87918988126330078),(895126.55513874720782042 1544446.56235088966786861, 895150.11316665716003627 1544450.16258106869645417))'},
+                       {'id': 50, 'geom': 'MultiLineString ((871581.97680000029504299 1554559.16310000047087669, 871583.06890000030398369 1554559.11189999990165234, 871586.15149999968707561 1554558.96719999983906746))'}]
 
         for item in test_result:
             self.assertIn(item, result, 'geometrical error in the polygon with id {}'.format(item['id']))
@@ -559,19 +559,19 @@ class TesQualityValidations(unittest.TestCase):
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
         uri.setDataSource(SCHEMA_NAME, 'lindero', "geometria", "", "gid")
         boundary_layer = QgsVectorLayer(uri.uri(), 'lindero', "postgres")
-        self.assertEqual(boundary_layer.featureCount(), 19)
+        self.assertEqual(boundary_layer.featureCount(), 22)
 
         uri = QgsDataSourceUri()
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
         uri.setDataSource(SCHEMA_NAME, 'terreno', "poligono_creado", "", "gid")
         plot_layer = QgsVectorLayer(uri.uri(), 'terreno', "postgres")
-        self.assertEqual(plot_layer.featureCount(), 15)
+        self.assertEqual(plot_layer.featureCount(), 17)
 
         uri = QgsDataSourceUri()
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
         uri.setDataSource(SCHEMA_NAME, 'masccl', None, "", None)
         more_bfs_layer = QgsVectorLayer(uri.uri(), 'masccl', "postgres")
-        self.assertEqual(more_bfs_layer.featureCount(), 15)
+        self.assertEqual(more_bfs_layer.featureCount(), 18)
 
         uri = QgsDataSourceUri()
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
@@ -590,19 +590,20 @@ class TesQualityValidations(unittest.TestCase):
         features = self.quality.get_boundary_features_not_covered_by_plots(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
 
         # the algorithm was successfully executed
-        self.assertEqual(len(features), 10)
+        self.assertEqual(len(features), 11)
 
         error_layer.dataProvider().addFeatures(features)
 
         # English language is set as default for validations
         exp = "\"error_type\" = 'Boundary is not covered by plot'"
         error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 2)
+        self.assertEqual(error_layer.selectedFeatureCount(), 3)
 
-        result = [{'id': f['boundary_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
+        result = [{'id': f['boundary_id'], 'id_plot': f['plot_id'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
 
-        test_result = [{'id': 23, 'geom': 'MultiLineString ((895053.22211809176951647 1544435.35531118814833462, 895065.96786221780348569 1544460.84679944021627307, 895076.2805417146300897 1544438.87918988126330078),(895126.55513874720782042 1544446.56235088966786861, 895138.19374559889547527 1544479.25731873349286616, 895150.11316665716003627 1544450.16258106869645417))'},
-                       {'id': 46, 'geom': 'MultiLineString ((895120.17207429651170969 1544364.95636973413638771, 895070.07765273051336408 1544331.15500104054808617, 895121.96658773790113628 1544243.82460397086106241, 895178.79977707355283201 1544283.71215808903798461, 895120.17207429651170969 1544364.95636973413638771))'}]
+        test_result = [{'id': 23, 'id_plot': None, 'geom': 'MultiLineString ((895053.22211809176951647 1544435.35531118814833462, 895065.96786221780348569 1544460.84679944021627307, 895076.2805417146300897 1544438.87918988126330078),(895126.55513874720782042 1544446.56235088966786861, 895138.19374559889547527 1544479.25731873349286616, 895150.11316665716003627 1544450.16258106869645417))'},
+                       {'id': 46, 'id_plot': None, 'geom': 'MultiLineString ((895120.17207429651170969 1544364.95636973413638771, 895070.07765273051336408 1544331.15500104054808617, 895121.96658773790113628 1544243.82460397086106241, 895178.79977707355283201 1544283.71215808903798461, 895120.17207429651170969 1544364.95636973413638771))'},
+                       {'id': 53, 'id_plot': 50, 'geom': 'LineString (871560.66490000020712614 1554564.43640000000596046, 871564.08800000045448542 1554562.86659999936819077, 871564.11380000039935112 1554562.17349999956786633, 871581.97680000029504299 1554559.16310000047087669, 871586.15149999968707561 1554558.96719999983906746)'}]
 
         for item in test_result:
             self.assertIn(item, result, 'Error: Boundary is not covered by the plot.  boundary_id = {}'.format(item['id']))
@@ -855,12 +856,13 @@ class TesQualityValidations(unittest.TestCase):
 
         gpkg_path = get_test_copy_path('geopackage/topology_cases.gpkg')
 
-        diff_geom = ['MultiLineString ((780300.30731518880929798 1225605.22174088703468442, 780297.95234157983213663 1225599.8581298291683197, 780292.44514157995581627 1225602.31722982972860336, 780294.34505024075042456 1225606.57437412883155048))',
-                     'MultiLineString ((780300.30731518880929798 1225605.22174088703468442, 780297.95234157983213663 1225599.8581298291683197, 780292.44514157995581627 1225602.31722982972860336, 780294.34505024075042456 1225606.57437412883155048))',
-                     'MultiLineString ((780309.73902403307147324 1225602.49830744392238557, 780308.30989155941642821 1225603.05408118362538517, 780307.64825615496374667 1225603.95390533376485109),(780310.01870060083456337 1225599.16431454825215042, 780310.03014361101668328 1225598.66082209814339876, 780311.16639214521273971 1225598.61655267467722297))',
-                     'MultiLineString ((780307.7805832359008491 1225598.39616793626919389, 780307.60049424471799284 1225599.58559290133416653),(780308.69099051796365529 1225598.27522822353057563, 780307.7805832359008491 1225598.39616793626919389),(780315.57867445563897491 1225608.45340170268900692, 780315.45555392769165337 1225607.63259818265214562, 780314.78905752801802009 1225607.92419035756029189),(780317.62428020488005131 1225603.16991792898625135, 780318.36674970726016909 1225602.84235785435885191, 780318.29131162946578115 1225603.45340628433041275))',
-                     'MultiLineString ((780306.77080396702513099 1225605.06540775927715003, 780306.64257034030742943 1225605.91234613093547523, 780307.906158416881226 1225605.63026071945205331),(780314.52926436136476696 1225599.74590416136197746, 780312.94133939070161432 1225600.03702373942360282, 780312.34155925654340535 1225600.40004855743609369),(780312.43979134678374976 1225599.65884278574958444, 780314.52926436136476696 1225599.74590416136197746),(780318.10209554550237954 1225604.98605656484141946, 780317.2287368115503341 1225605.14484906173311174, 780316.19658558059018105 1225606.12406946043483913))',
-                     '']
+        diff_geom = [['MultiLineString ((780300.30731518880929798 1225605.22174088703468442, 780297.95234157983213663 1225599.8581298291683197, 780292.44514157995581627 1225602.31722982972860336, 780294.34505024075042456 1225606.57437412883155048))'],
+                     ['MultiLineString ((780300.30731518880929798 1225605.22174088703468442, 780297.95234157983213663 1225599.8581298291683197, 780292.44514157995581627 1225602.31722982972860336, 780294.34505024075042456 1225606.57437412883155048))'],
+                     ['MultiLineString ((780309.73902403307147324 1225602.49830744392238557, 780308.30989155941642821 1225603.05408118362538517, 780307.64825615496374667 1225603.95390533376485109),(780310.01870060083456337 1225599.16431454825215042, 780310.03014361101668328 1225598.66082209814339876, 780311.16639214521273971 1225598.61655267467722297))'],
+                     ['MultiLineString ((780307.7805832359008491 1225598.39616793626919389, 780307.60049424471799284 1225599.58559290133416653),(780308.69099051796365529 1225598.27522822353057563, 780307.7805832359008491 1225598.39616793626919389),(780315.57867445563897491 1225608.45340170268900692, 780315.45555392769165337 1225607.63259818265214562, 780314.78905752801802009 1225607.92419035756029189),(780317.62428020488005131 1225603.16991792898625135, 780318.36674970726016909 1225602.84235785435885191, 780318.29131162946578115 1225603.45340628433041275))'],
+                     ['MultiLineString ((780306.77080396702513099 1225605.06540775927715003, 780306.64257034030742943 1225605.91234613093547523, 780307.906158416881226 1225605.63026071945205331),(780314.52926436136476696 1225599.74590416136197746, 780312.94133939070161432 1225600.03702373942360282, 780312.34155925654340535 1225600.40004855743609369),(780312.43979134678374976 1225599.65884278574958444, 780314.52926436136476696 1225599.74590416136197746),(780318.10209554550237954 1225604.98605656484141946, 780317.2287368115503341 1225605.14484906173311174, 780316.19658558059018105 1225606.12406946043483913))'],
+                     '',
+                     ['MultiLineString ((871560.66490000020712614 1554564.43640000000596046, 871561.29310000035911798 1554568.61969999969005585, 871565.18800000008195639 1554569.14470000006258488, 871582.36809999961405993 1554569.08310000039637089, 871586.65579999983310699 1554568.74300000071525574, 871586.17630000039935112 1554559.7443000003695488, 871586.15149999968707561 1554558.96719999983906746))',  'MultiLineString ((871581.97680000029504299 1554559.16310000047087669, 871583.06890000030398369 1554559.11189999990165234, 871586.15149999968707561 1554558.96719999983906746),(871586.15149999968707561 1554558.96719999983906746, 871585.68250000011175871 1554551.27449999935925007, 871585.4917000001296401 1554549.15570000000298023, 871584.2698999997228384 1554549.2476000003516674, 871576.33000000007450581 1554549.84439999982714653, 871561.16789999976754189 1554551.16310000047087669, 871545.42370000015944242 1554551.99960000067949295, 871546.30889999959617853 1554566.21570000052452087, 871560.66490000020712614 1554564.43640000000596046))']]
 
         for i in range(len(diff_geom)):
             uri_polygon = gpkg_path + '|layername={layername}_case{case}'.format(
@@ -875,8 +877,9 @@ class TesQualityValidations(unittest.TestCase):
 
             if diff_plot_boundary is not None:
                 if len(diff_plot_boundary) > 0:
-                    self.assertEqual(diff_plot_boundary[0]['geometry'].asWkt(), diff_geom[i], 'case_{}'.format(i + 1))
-                else:
+                    for element in range(len(diff_plot_boundary)):
+                        self.assertIn(diff_plot_boundary[element]['geometry'].asWkt(), diff_geom[i], 'case_{}, element_{}'.format(i + 1, element))
+                else: # Case 6
                     self.assertEqual('', diff_geom[i], 'case_{}'.format(i + 1))
 
     def test_lines_must_be_covered_by_polygons(self):
@@ -889,7 +892,8 @@ class TesQualityValidations(unittest.TestCase):
                      'MultiLineString ((780309.73902403307147324 1225602.49830744392238557, 780307.83351406815927476 1225602.05170354596339166, 780307.64825615496374667 1225603.95390533376485109))',
                      '',
                      'MultiLineString ((780318.10209554550237954 1225604.98605656484141946, 780317.50662368256598711 1225605.92888701660558581, 780316.19658558059018105 1225606.12406946043483913))',
-                     'MultiLineString ((780314.52926436136476696 1225599.74590416136197746, 780312.94133939070161432 1225600.03702373942360282, 780310.92996776115614921 1225601.25443288357928395, 780310.00367819482926279 1225599.82530040992423892, 780310.03014361101668328 1225598.66082209814339876, 780312.06798065674956888 1225598.5814258495811373, 780311.35341442003846169 1225599.61357708042487502, 780314.52926436136476696 1225599.74590416136197746))']
+                     'MultiLineString ((780314.52926436136476696 1225599.74590416136197746, 780312.94133939070161432 1225600.03702373942360282, 780310.92996776115614921 1225601.25443288357928395, 780310.00367819482926279 1225599.82530040992423892, 780310.03014361101668328 1225598.66082209814339876, 780312.06798065674956888 1225598.5814258495811373, 780311.35341442003846169 1225599.61357708042487502, 780314.52926436136476696 1225599.74590416136197746))',
+                     '']
 
         for i in range(len(diff_geom)):
             uri_polygon = gpkg_path + '|layername={layername}_case{case}'.format(layername='polygon', case=i+1)
