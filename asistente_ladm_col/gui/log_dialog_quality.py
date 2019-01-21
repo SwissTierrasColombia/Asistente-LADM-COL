@@ -28,21 +28,17 @@ class LogDialogQuality(QDialog, LOG_DIALOG_UI):
         self.setupUi(self)
         self.qgis_utils = qgis_utils
         self.quality = quality
-        self.iface = iface        
+        self.iface = iface
 
         # Set connections
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.rejected.connect(self.rejected)
         self.buttonBox.helpRequested.connect(self.show_help)
-        msg = self.quality.send_log_dialog_quality_text()
-        self.txt_log_quality.append(msg)
+        self.txt_log_quality.setHtml(self.quality.send_log_dialog_quality_text())
 
     def accepted(self):
-        print ("Aceptar")
+        self.quality.clean_log_dialog_quality_text()
     def rejected(self):
-        print ("Aceptar")
+        self.quality.clean_log_dialog_quality_text()
     def show_help(self):
         print ("Aceptar")
-
-    def add_text_to_dialog(self, msg):
-        self.txt_log_quality.append(msg)
