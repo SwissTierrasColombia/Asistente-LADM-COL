@@ -27,16 +27,18 @@ from qgis.PyQt.QtWidgets import QAction, QWizard
 
 import processing
 from ..utils import get_ui_class
-from ..config.table_mapping_config import EXTADDRESS_TABLE
-from ..config.general_config import (
-    DEFAULT_EPSG,
-    PLUGIN_NAME,
-    TranslatableConfigStrings
-)
+from ..utils.custom_selection import CustomSelection
+from ..config.table_mapping_config import (EXTADDRESS_TABLE,
+                                           BUILDING_TABLE,
+                                           BUILDING_UNIT_TABLE,
+                                           PLOT_TABLE)
+from ..config.general_config import (DEFAULT_EPSG,
+                                     PLUGIN_NAME,
+                                     TranslatableConfigStrings)
 from ..config.help_strings import HelpStrings
 from .right_of_way import RightOfWay
 
-WIZARD_UI = get_ui_class('wiz_associate_ext_address_cadastre.ui')
+WIZARD_UI = get_ui_class('wiz_associate_extaddress_cadastre.ui')
 
 class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
@@ -47,6 +49,9 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self.log = QgsApplication.messageLog()
         self._db = db
         self.qgis_utils = qgis_utils
+        canvas = self.iface.mapCanvas()
+        self.maptool = self.iface.mapCanvas().mapTool()
+        self.custom_selection = CustomSelection(canvas)
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
 
@@ -56,6 +61,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self.rad_to_building.toggled.connect(self.adjust_page_1_controls)
         self.rad_to_building_unit.toggled.connect(self.adjust_page_1_controls)
         self.adjust_page_1_controls()
+        self.button(QWizard.NextButton).clicked.connect(self.prepare_selection)
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
 
@@ -73,13 +79,17 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.cbo_mapping.setEnabled(True)
             finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(EXTADDRESS_TABLE, True))
+            self.wizardPage1.setFinalPage(True)
+            self.wizardPage1.setButtonText(QWizard.FinishButton,
+                                           QCoreApplication.translate("AssociateExtAddressWizard",
+                                           finish_button_text))
 
         elif self.rad_to_plot.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
-            finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Select Plot")
+            #finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Associate Plot ExtAddress")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_POINTS)
 
         elif self.rad_to_building.isChecked():
@@ -87,7 +97,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.mMapLayerComboBox.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
-            finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Select Building")
+            #finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Associate Building ExtAddress")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION2_POINTS)
 
         elif self.rad_to_building_unit.isChecked():
@@ -95,12 +105,26 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.mMapLayerComboBox.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
-            finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Select Building Unit")
+            #finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Associate Building Unit ExtAddress")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION3_POINTS)
 
-        self.wizardPage1.setButtonText(QWizard.FinishButton,
-                                       QCoreApplication.translate('AssociateExtAddressWizard',
-                                       finish_button_text))
+        # self.wizardPage1.setButtonText(QWizard.FinishButton,
+        #                                QCoreApplication.translate('AssociateExtAddressWizard',
+        #                                finish_button_text))
+
+    def prepare_selection(self):
+        if self.rad_to_plot.isChecked():
+            self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
+                                    "Select Plot"))
+            self.btn_select.clicked.connect(self.select_plot)
+        elif self.rad_to_building.isChecked():
+            self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
+                                    "Select Building"))
+            self.btn_select.clicked.connect(self.select_building)
+        elif self.rad_to_building_unit.isChecked():
+            self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
+                                    "Select Building Unit"))
+            self.btn_select.clicked.connect(self.select_building_unit)
 
     def finished_dialog(self):
         self.save_settings()
@@ -126,11 +150,66 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                     Qgis.Warning)
 
         elif self.rad_to_plot.isChecked():
-            pass
+            self.prepare_extdirection_plot_creation()
+
         elif self.rad_to_building.isChecked():
-            pass
+            self.prepare_extdirection_building_creation()
+
         elif self.rad_to_building_unit.isChecked():
-            pass
+            self.prepare_extdirection_building_unit_creation()
+
+
+    def select_plot(self):
+
+        self.setVisible(False)
+        # Load layers
+        res_layers = self.qgis_utils.get_layers(self._db, {
+            EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
+            }, load=True)
+
+        self._ext_address_layer = res_layers[EXTADDRESS_TABLE]
+        self._plot_layer = res_layers[PLOT_TABLE]
+        tool = self.custom_selection
+        tool.after_click.connect(self.activate_wizard)
+        self.iface.mapCanvas().setMapTool(tool)
+
+    def select_building(self):
+        print("Aun no estoy listo para asociar construcciones")
+        pass
+
+    def select_building_unit(self):
+        print("Aun no estoy listo para asociar unidades de construccion")
+        pass
+
+    def activate_wizard(self):
+        self.setVisible(True)
+        self.iface.mapCanvas().setMapTool(self.maptool)
+
+    def prepare_extdirection_plot_creation(self):
+        # Load layers
+        res_layers = self.qgis_utils.get_layers(self._db, {
+            EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
+            }, load=True)
+
+        self._ext_address_layer = res_layers[EXTADDRESS_TABLE]
+        self._plot_layer = res_layers[PLOT_TABLE]
+
+
+    def prepare_extdirection_building_creation(self):
+        # Load layers
+        res_layers = self.qgis_utils.get_layers(self._db, {
+            EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
+            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
+            }, load=True)
+
+    def prepare_extdirection_building_unit_creation(self):
+        # Load layers
+        res_layers = self.qgis_utils.get_layers(self._db, {
+            EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
+            BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
+            }, load=True)
 
     def save_settings(self):
         settings = QSettings()

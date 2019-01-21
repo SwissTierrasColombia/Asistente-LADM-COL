@@ -99,6 +99,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.log = QgsApplication.messageLog()
         self._about_dialog = None
         self.toolbar = None
+        self.wiz_address = None
 
     def initGui(self):
         # Set Menus
@@ -814,8 +815,8 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def show_wiz_extaddress_cad(self):
-        wiz = AssociateExtAddressWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self.wiz_address = AssociateExtAddressWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz_address.exec_()
 
     @_project_generator_required
     @_db_connection_required
