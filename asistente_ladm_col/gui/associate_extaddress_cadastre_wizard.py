@@ -21,8 +21,10 @@ from qgis.core import (QgsProject, QgsVectorLayer, QgsEditFormConfig,
                        QgsMapLayerProxyModel, QgsWkbTypes, QgsApplication,
                        QgsProcessingException, QgsProcessingFeedback,
                        QgsVectorLayerUtils)
+from qgis.gui import QgsMapToolIdentifyFeature
 
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
+from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtWidgets import QAction, QWizard
 
 import processing
@@ -49,9 +51,10 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self.log = QgsApplication.messageLog()
         self._db = db
         self.qgis_utils = qgis_utils
-        canvas = self.iface.mapCanvas()
+        self.canvas = self.iface.mapCanvas()
         self.maptool = self.iface.mapCanvas().mapTool()
-        self.custom_selection = CustomSelection(canvas)
+        self.maptool_id = None
+        self.custom_selection = CustomSelection(self.canvas)
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
 
@@ -170,9 +173,28 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
         self._ext_address_layer = res_layers[EXTADDRESS_TABLE]
         self._plot_layer = res_layers[PLOT_TABLE]
-        tool = self.custom_selection
-        tool.after_click.connect(self.activate_wizard)
-        self.iface.mapCanvas().setMapTool(tool)
+
+
+        #tool = self.custom_selection
+        self.maptool_id = QgsMapToolIdentifyFeature(self.canvas)
+        self.maptool_id.setLayer(self._plot_layer)
+        cursor = QCursor()
+        cursor.setShape(Qt.WhatsThisCursor)
+        self.maptool_id.setCursor(cursor)
+        #tool.after_click.connect(self.activate_wizard)
+        self.iface.mapCanvas().setMapTool(self.maptool_id)
+        self.maptool_id.featureIdentified.connect(self.get_feature_id)
+
+
+    def get_feature_id(self, feature):
+        print("El id del terreno es " + str(feature.id()))
+        self.setVisible(True)
+        if feature:
+            self.lbl_selected.setText(QCoreApplication.translate("AssociateExtAddressWizard",
+                                    "1 Plot Selected"))
+            #self._plot_layer.selectByIds(feature.id())
+
+        self.iface.mapCanvas().setMapTool(self.maptool)
 
     def select_building(self):
         print("Aun no estoy listo para asociar construcciones")
