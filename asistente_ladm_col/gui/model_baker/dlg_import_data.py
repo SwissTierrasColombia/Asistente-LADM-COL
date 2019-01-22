@@ -16,6 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 """
+from qgis.PyQt.QtWidgets import QMessageBox
+from xml.dom import minidom
+from xml.parsers.expat import ExpatError
 from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
@@ -45,6 +48,7 @@ from ...utils.qt_utils import (Validators,
 
 from ...config.general_config import (DEFAULT_EPSG,
                                       DEFAULT_INHERITANCE,
+                                      DEFAULT_HIDDEN_MODELS,
                                       DEFAULT_MODEL_NAMES_CHECKED)
 from ...utils import get_ui_class
 from ...resources_rc import *
@@ -78,17 +82,10 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.xtf_file_line_edit.setPlaceholderText(QCoreApplication.translate('DialogImportData', "[Name of the XTF to be created]"))
         fileValidator = FileValidator(pattern=['*.xtf', '*.itf', '*.xml'])
         self.xtf_file_line_edit.setValidator(fileValidator)
-        self.xtf_file_line_edit.textChanged.connect(self.validators.validate_line_edits)
+        #self.xtf_file_line_edit.textChanged.connect(self.validators.validate_line_edits)
+        #self.xtf_file_line_edit.textChanged.emit(self.xtf_file_line_edit.text())
+        self.xtf_file_line_edit.textChanged.connect(self.update_import_models)
         self.xtf_file_line_edit.textChanged.emit(self.xtf_file_line_edit.text())
-
-        self.qmodels_ilimodels = QStandardItemModel()
-        for modelname in DEFAULT_MODEL_NAMES_CHECKED:
-            item = QStandardItem(modelname)
-            item.setCheckable(True)
-            item.setEditable(False)
-            item.setCheckState(DEFAULT_MODEL_NAMES_CHECKED[modelname])
-            self.qmodels_ilimodels.appendRow(item)
-        self.import_models_list_view.setModel(self.qmodels_ilimodels)
 
         # PG
         self.db_connect_label.setToolTip(self.db.get_uri_without_password())
@@ -128,6 +125,79 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
 
+    def update_import_models(self):
+
+        message_error = None
+
+        if not self.xtf_file_line_edit.text().strip():
+            color = '#ffd356'  # Light orange
+            self.import_models_qmodel = QStandardItemModel()
+            self.import_models_list_view.setModel(self.import_models_qmodel)
+        else:
+
+            try:
+                mydoc = minidom.parse(self.xtf_file_line_edit.text().strip())
+                upper_models = mydoc.getElementsByTagName('MODEL')
+                lower_models = mydoc.getElementsByTagName('model')
+
+                models = list()
+                models.extend([model for model in upper_models])
+                models.extend([model for model in lower_models])
+
+                is_valid_xtf = True if len(models) > 0 else False
+
+            except ExpatError:
+                is_valid_xtf = False
+
+            if is_valid_xtf:
+                color = '#fff'  # White
+                self.import_models_qmodel = QStandardItemModel()
+                for model in models:
+                    try:
+                        u_model_name = model.attributes['NAME'].value
+                    except KeyError:
+                        # attribute not available
+                        u_model_name = None
+                        pass
+
+                    try:
+                        l_model_name = model.attributes['name'].value
+                    except KeyError:
+                        # attribute not available
+                        l_model_name = None
+                        pass
+
+                    if u_model_name or l_model_name:
+                        model_name = u_model_name if u_model_name and len(u_model_name) > 0 else l_model_name
+
+                        if not model_name in DEFAULT_HIDDEN_MODELS:
+                            item = QStandardItem(model_name)
+                            item.setCheckable(False)
+                            item.setEditable(False)
+                            #item.setCheckState(Qt.Checked)
+                            self.import_models_qmodel.appendRow(item)
+
+                if self.import_models_qmodel.rowCount() > 0:
+                    self.import_models_list_view.setModel(self.import_models_qmodel)
+                else:
+                    message_error = QCoreApplication.translate('DialogImportData', 'The XTF file does not register ili models, please verify')
+                    color = '#f6989d'  # Red
+                    self.import_models_qmodel = QStandardItemModel()
+                    self.import_models_list_view.setModel(self.import_models_qmodel)
+
+            else:
+                message_error = QCoreApplication.translate('DialogImportData', 'Please set a valid XTF file')
+                color = '#f6989d'  # Red
+                self.import_models_qmodel = QStandardItemModel()
+                self.import_models_list_view.setModel(self.import_models_qmodel)
+
+        self.xtf_file_line_edit.setStyleSheet('QLineEdit {{ background-color: {} }}'.format(color))
+
+        if message_error:
+            self.txtStdout.setText(message_error)
+            self.show_message(message_error, Qgis.Critical)
+            self.import_models_list_view.setFocus()
+            return
 
     def update_schema_names_model(self):
         res, msg = self.db.test_connection()
@@ -164,13 +234,12 @@ class DialogImportData(QDialog, DIALOG_UI):
                 break
         return checked_schema
 
-    def get_checked_models(self):
-        checked_models = list()
-        for index in range(self.qmodels_ilimodels.rowCount()):
-            item = self.qmodels_ilimodels.item(index)
-            if item.checkState() == Qt.Checked:
-                checked_models.append(item.text())
-        return checked_models
+    def get_ili_models(self):
+        ili_models = list()
+        for index in range(self.import_models_qmodel.rowCount()):
+            item = self.import_models_qmodel.item(index)
+            ili_models.append(item.text())
+        return ili_models
 
     def show_settings(self):
         self.qgis_utils.get_settings_dialog().exec_()
@@ -190,7 +259,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.xtf_file_line_edit.setFocus()
             return
 
-        if not self.get_checked_models():
+        if not self.get_ili_models():
             message_error = QCoreApplication.translate('DialogImportData','Please set a valid INTERLIS model(s) before creating the project.')
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Critical)
@@ -288,8 +357,8 @@ class DialogImportData(QDialog, DIALOG_UI):
         configuration.stroke_arcs = True
 
         configuration.base_configuration = self.base_configuration
-        if self.get_checked_models():
-            configuration.ilimodels = ';'.join(self.get_checked_models())
+        if self.get_ili_models():
+            configuration.ilimodels = ';'.join(self.get_ili_models())
 
         return configuration
 

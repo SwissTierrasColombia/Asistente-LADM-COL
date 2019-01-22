@@ -166,15 +166,15 @@
           <string>GeoPackage</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_6">
+          <item row="0" column="2">
+           <widget class="QLineEdit" name="gpkg_file_line_edit"/>
+          </item>
           <item row="0" column="1">
            <widget class="QLabel" name="label_9">
             <property name="text">
              <string>Database File</string>
             </property>
            </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QLineEdit" name="gpkg_file_line_edit"/>
           </item>
           <item row="0" column="3">
            <widget class="QToolButton" name="gpkg_file_browse_button">
@@ -195,13 +195,6 @@
           <string>Interlis</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>Models</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
@@ -222,13 +215,23 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1" colspan="2">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Models</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="2">
            <widget class="QListView" name="import_models_list_view">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::NoSelection</enum>
             </property>
            </widget>
           </item>
@@ -333,7 +336,7 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>417</x>
+     <x>405</x>
      <y>575</y>
     </hint>
     <hint type="destinationlabel">

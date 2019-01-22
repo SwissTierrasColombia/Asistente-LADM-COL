@@ -120,6 +120,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.add_cadastre_menu()
 
         self._menu.addSeparator()
+        self.add_data_management_menu()
         self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"), self.iface.mainWindow())
         self._menu.addAction(self._load_layers_action)
         self._menu.addSeparator()
@@ -195,15 +196,19 @@ class AsistenteLADMCOLPlugin(QObject):
     def qgis_initialized(self):
         self.refresh_menus(self.get_db_connection())
 
-    def add_cadastre_menu(self):
-        self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
-        self._cadastre_menu.setObjectName(CADASTRE_MENU_OBJECTNAME)
-
-        self._data_management_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data Management"), self._cadastre_menu)
+    def add_data_management_menu(self):
+        self._data_management_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data Management"), self._menu)
         self._import_schema_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import schema"), self._data_management_menu)
         self._import_data_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import data"), self._data_management_menu)
         self._export_data_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"), self._data_management_menu)
         self._data_management_menu.addActions([self._import_schema_action, self._import_data_action, self._export_data_action])
+
+        self._menu.addMenu(self._data_management_menu)
+
+
+    def add_cadastre_menu(self):
+        self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
+        self._cadastre_menu.setObjectName(CADASTRE_MENU_OBJECTNAME)
 
         self._preprocessing_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Preprocessing"), self._cadastre_menu)
         self._controlled_measurement_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Controlled Measurement"), self._preprocessing_menu)
@@ -297,7 +302,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._quality_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check Quality Rules"), self._cadastre_menu)
 
-        self._cadastre_menu.addMenu(self._data_management_menu)
         self._cadastre_menu.addMenu(self._preprocessing_menu)
         self._cadastre_menu.addSeparator()
         self._cadastre_menu.addMenu(self._surveying_and_representation_cadastre_menu)

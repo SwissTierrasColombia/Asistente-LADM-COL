@@ -33,6 +33,8 @@ DEFAULT_MODEL_NAMES_CHECKED = {'Avaluos_V2_2_1': Qt.Unchecked,
                      'Diagnostico_Juridico_V2_2_1': Qt.Unchecked,
                      'Ficha_Predial_V2_2_1':Qt.Unchecked}
 
+DEFAULT_HIDDEN_MODELS = ['LADM_COL_V1_1', 'ISO19107_V1_MAGNABOG']
+
 DEFAULT_INHERITANCE ='smart2'
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
