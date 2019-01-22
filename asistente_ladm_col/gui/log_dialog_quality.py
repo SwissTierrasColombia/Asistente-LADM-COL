@@ -53,7 +53,7 @@ class LogDialogQuality(QDialog, LOG_DIALOG_UI):
 
         new_filename, filter = QFileDialog.getSaveFileName(self,
                                            QCoreApplication.translate('LogDialogQuality', 'Save File'),
-                                           os.path.expanduser("~"))
+                                           os.path.expanduser("~"), filter = "PDF(*.pdf)")
 
         titulo = QCoreApplication.translate('LogDialogQuality', "Result topological validations - logical consistency {}_database: {}, schema: {}").format(
                 time.strftime("%H:%M:%S_%d/%m/%y"), settings.value('Asistente-LADM_COL/pg/database'), 
@@ -65,7 +65,5 @@ class LogDialogQuality(QDialog, LOG_DIALOG_UI):
             printer = QPrinter()
             printer.setPageSize(QPrinter.A4)
             printer.setOutputFormat(QPrinter.PdfFormat)
-            printer.setOutputFileName(new_filename)
-            self.txt_log_quality.print(printer)
-
-        
+            printer.setOutputFileName("{}{}".format(new_filename, ".pdf"))
+            self.txt_log_quality.print(printer)        
