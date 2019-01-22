@@ -1061,7 +1061,7 @@ class QualityUtils(QObject):
     def get_boundary_features_not_covered_by_plots(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
         """
         Return all boundary features that have errors when checking if they are covered by plots.
-        That is both geometric and alphanumeric (topology table) errors.
+        This takes into account both geometric and alphanumeric (topology table) errors.
         """
         type_tplg_error = {0: translated_strings.ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT,
                            1: translated_strings.ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE,
@@ -1213,7 +1213,21 @@ class QualityUtils(QObject):
             if count_more_bfs > 1:
                 errors_duplicate_in_more_bfs.append((item_sj_bp['plot_id'], item_sj_bp['boundary_id']))
             elif count_more_bfs == 0:
-                errors_not_in_more_bfs.append((item_sj_bp['plot_id'], item_sj_bp['boundary_id']))
+                # Check for the special case of two contiguous plots, one of them covers the common boundary, but the
+                # other one does not! This should be still a geometry error but is not captured by the code above. Only
+                # in this point of the whole checks we can validate between the individual boundary and the individual
+                # plot.
+                boundary_geom = dict_boundary[item_sj_bp['boundary_id']].geometry()
+                plot_geom = dict_plot_as_lines[item_sj_bp['plot_id']].geometry()
+                intersection = boundary_geom.intersection(plot_geom)
+
+                if intersection.isGeosEqual(boundary_geom):
+                    errors_not_in_more_bfs.append((item_sj_bp['plot_id'], item_sj_bp['boundary_id']))
+                else:
+                    errors_boundary_plot_diffs.append({
+                        'id': item_sj_bp['boundary_id'],
+                        'id_plot': item_sj_bp['plot_id'],
+                        'geometry': boundary_geom})
 
         # finalize validation in more_bfs table
 
@@ -1260,12 +1274,13 @@ class QualityUtils(QObject):
 
         features = list()
 
-        # plot not covered by boundary
+        # boundary not covered by plot
         for boundary_plot_diff in errors_boundary_plot_diffs:
             boundary_id = boundary_plot_diff['id']
             boundary_geom = boundary_plot_diff['geometry']
+            plot_id = boundary_plot_diff['id_plot'] if 'id_plot' in boundary_plot_diff else None
             new_feature = QgsVectorLayerUtils().createFeature(error_layer, boundary_geom,
-                                                              {0: None, 1: boundary_id, 2: type_tplg_error[0]})
+                                                              {0: plot_id, 1: boundary_id, 2: type_tplg_error[0]})
             features.append(new_feature)
 
         # No registered more bfs
@@ -1273,8 +1288,8 @@ class QualityUtils(QObject):
             for error_more_bfs in set(errors_not_in_more_bfs):
                 plot_id = error_more_bfs[0]  # plot_id
                 boundary_id = error_more_bfs[1]  # boundary_id
-                geom_plot = dict_plot_as_lines[plot_id].geometry()
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_plot,
+                geom_boundary = dict_boundary[boundary_id].geometry()
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_boundary,
                                                                   {0: plot_id, 1: boundary_id, 2: type_tplg_error[1]})
                 features.append(new_feature)
 
@@ -1283,8 +1298,8 @@ class QualityUtils(QObject):
             for error_more_bfs in set(errors_duplicate_in_more_bfs):
                 plot_id = error_more_bfs[0]  # plot_id
                 boundary_id = error_more_bfs[1]  # boundary_id
-                geom_plot = dict_plot_as_lines[plot_id].geometry()
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_plot,
+                geom_boundary = dict_boundary[boundary_id].geometry()
+                new_feature = QgsVectorLayerUtils().createFeature(error_layer, geom_boundary,
                                                                   {0: plot_id, 1: boundary_id, 2: type_tplg_error[2]})
                 features.append(new_feature)
 
@@ -2118,7 +2133,6 @@ class QualityUtils(QObject):
     def find_duplicate_records_in_a_table(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.FIND_DUPLICATE_RECORDS_IN_A_TABLE))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.FIND_DUPLICATE_RECORDS_IN_A_TABLE)
-
         self.log_dialog_quality_text += "<ul>"
 
         for table in LOGIC_CONSISTENCY_TABLES:
@@ -2207,7 +2221,7 @@ class QualityUtils(QObject):
 
         else:
             self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
-                                           "There are no repeated records in {table}!".format(table=table)))
+                                           "No errors found when checking '{rule}' for '{table}'!".format(rule=db.logic_validation_queries[rule]['desc_error'], table=table)))
 
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
@@ -2260,7 +2274,7 @@ class QualityUtils(QObject):
             errors_count, error_layer = self.logic.col_party_type_natural_validation(db, rule, error_layer)
         elif rule == 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION':
             errors_count, error_layer = self.logic.col_party_type_no_natural_validation(db, rule, error_layer)
-        elif rule == 'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION':
+        elif rule == 'PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER_VALIDATION':
             errors_count, error_layer = self.logic.parcel_type_and_22_position_of_parcel_number_validation(db, rule, error_layer)
         elif rule == 'UEBAUNIT_PARCEL_VALIDATION':
             errors_count, error_layer = self.logic.uebaunit_parcel_validation(db, rule, error_layer)
@@ -2275,7 +2289,7 @@ class QualityUtils(QObject):
                     error_count=errors_count, table=table))
         else:
             self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
-                                           "There are no repeated records in {table}!".format(table=table)))
+                                           "No errors found when checking '{rule}' for '{table}'!".format(rule=db.logic_validation_queries[rule]['desc_error'], table=table)))
 
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
@@ -2288,3 +2302,4 @@ class QualityUtils(QObject):
             self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER))
         elif rule == 'UEBAUNIT_PARCEL_VALIDATION':
             self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_UEBAUNIT_PARCEL))
+
