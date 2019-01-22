@@ -18,11 +18,8 @@
 """
 import collections
 
-from qgis.core import Qgis
-
 from qgis.PyQt.QtCore import (Qt,
-                              QCoreApplication,
-                              QSettings)
+                              QCoreApplication)
 
 from qgis.PyQt.QtGui import (QBrush,
                              QFont,
@@ -31,24 +28,16 @@ from qgis.PyQt.QtGui import (QBrush,
 
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QTreeWidgetItem,
-                                 QTreeWidgetItemIterator,
-                                 QProgressBar,
-                                 QPushButton)
+                                 QTreeWidgetItemIterator)
 
-from ..config.general_config import (translated_strings,
-                                    DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)
+from ..config.general_config import translated_strings
 
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            CONTROL_POINT_TABLE,
                                            PLOT_TABLE,
                                            BUILDING_TABLE,
-                                           RIGHT_OF_WAY_TABLE,
-                                           PARCEL_TABLE,
-                                           DEPARTMENT_FIELD,
-                                           MUNICIPALITY_FIELD,
-                                           ZONE_FIELD,
-                                           PARCEL_NUMBER_FIELD,
-                                           PARCEL_NUMBER_BEFORE_FIELD)
+                                           RIGHT_OF_WAY_TABLE)
+
 from ..utils import get_ui_class
 from ..resources_rc import *
 
@@ -56,13 +45,12 @@ DIALOG_UI = get_ui_class('dlg_quality.ui')
 
 class DialogQuality(QDialog, DIALOG_UI):
 
-    def __init__(self, db, qgis_utils, quality, iface, parent=None):
+    def __init__(self, db, qgis_utils, quality, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self._db = db
         self.qgis_utils = qgis_utils
         self.quality = quality
-        self.iface = iface
 
         self.trw_quality_rules.setItemsExpandable(False)
 
@@ -220,6 +208,7 @@ class DialogQuality(QDialog, DIALOG_UI):
 
     def accepted(self):
         #self.qgis_utils.remove_error_group_requested.emit()
+        self.quality.clean_log_dialog_quality_text()
 
         iterator_topology = QTreeWidgetItemIterator(self.trw_quality_rules, QTreeWidgetItemIterator.Selectable)
         count_topology = 0

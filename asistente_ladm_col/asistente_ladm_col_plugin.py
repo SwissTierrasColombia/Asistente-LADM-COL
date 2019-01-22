@@ -31,15 +31,13 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QAction,
                                  QMenu,
                                  QPushButton,
-                                 QProgressBar,
-                                 QPushButton)
+                                 QProgressBar)
+
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsExpression,
                        QgsExpressionContext,
                        QgsProcessingModelAlgorithm)
-
-
 
 from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     LADM_COL_MENU_OBJECTNAME,
@@ -615,12 +613,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.progress.setFixedWidth(80)
         self.count_topology = count
         self.progress.setMaximum(self.count_topology*10)
-        self.progress.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
         self.progressMessageBar.layout().addWidget(self.progress)
         self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Info)
         self.progress_count = 0
         self.rules_count = 0
-        self.message_topology_rules = "Updating progress bar"
+        self.message_topology_rules = QCoreApplication.translate("LogDialogQuality", "Updating progress bar")
 
     def show_log_quality_button(self):
         self.button = QPushButton(self.progressMessageBar)
@@ -630,16 +627,19 @@ class AsistenteLADMCOLPlugin(QObject):
         self.progressMessageBar.layout().addWidget(self.button)
 
     def show_log_quality_message_ini(self, msg):
+        msg = "{} {}".format("{} ({}/{}) running", msg)
         self.progress_count += 2
         self.progress.setValue(self.progress_count)
-        self.progressMessageBar.setText(msg.format(self.message_topology_rules, self.rules_count+1, self.count_topology))
+        self.progressMessageBar.setText(msg.format(self.message_topology_rules,
+            self.rules_count+1, self.count_topology))
         QCoreApplication.processEvents()
 
     def show_log_quality_message_finish(self, msg):
         self.progress_count += 8
         self.progress.setValue(self.progress_count)
         self.rules_count += 1
-        self.progressMessageBar.setText(msg.format(self.message_topology_rules, self.rules_count, self.count_topology))
+        self.progressMessageBar.setText(msg.format(self.message_topology_rules,
+            self.rules_count, self.count_topology))
         QCoreApplication.processEvents()
 
     def show_log_dlg_quality(self):
@@ -921,7 +921,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def show_dlg_quality(self):
-        dlg = DialogQuality(self.get_db_connection(), self.qgis_utils, self.quality, self.iface)
+        dlg = DialogQuality(self.get_db_connection(), self.qgis_utils, self.quality)
         dlg.exec_()
 
     @_project_generator_required

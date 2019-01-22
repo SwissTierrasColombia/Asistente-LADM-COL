@@ -16,7 +16,14 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os
+import time
+
 from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtPrintSupport import QPrinter
+from qgis.PyQt.QtWidgets import QFileDialog
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QSettings)
 
 from ..utils import get_ui_class
 
@@ -31,14 +38,34 @@ class LogDialogQuality(QDialog, LOG_DIALOG_UI):
         self.iface = iface
 
         # Set connections
-        self.buttonBox.accepted.connect(self.accepted)
-        self.buttonBox.rejected.connect(self.rejected)
+        self.buttonBox.accepted.connect(self.saved)
         self.buttonBox.helpRequested.connect(self.show_help)
         self.txt_log_quality.setHtml(self.quality.send_log_dialog_quality_text())
 
-    def accepted(self):
-        self.quality.clean_log_dialog_quality_text()
-    def rejected(self):
-        self.quality.clean_log_dialog_quality_text()
+    def saved(self):
+        self.print_pdf(self.quality.send_log_dialog_quality_text())
     def show_help(self):
-        print ("Aceptar")
+        self.qgis_utils.show_help("quality_rules")
+
+    def print_pdf(self, text):
+
+        settings = QSettings()
+
+        new_filename, filter = QFileDialog.getSaveFileName(self,
+                                           QCoreApplication.translate('LogDialogQuality', 'Save File'),
+                                           os.path.expanduser("~"))
+
+        titulo = QCoreApplication.translate('LogDialogQuality', "Result topological validations - logical consistency {}_database: {}, schema: {}").format(
+                time.strftime("%H:%M:%S_%d/%m/%y"), settings.value('Asistente-LADM_COL/pg/database'), 
+                settings.value('Asistente-LADM_COL/pg/schema'))
+
+        self.txt_log_quality.setHtml("<h2 align='center'>{}</h2> \n {}".format(titulo, self.quality.send_log_dialog_quality_text()))
+
+        if new_filename:
+            printer = QPrinter()
+            printer.setPageSize(QPrinter.A4)
+            printer.setOutputFormat(QPrinter.PdfFormat)
+            printer.setOutputFileName(new_filename)
+            self.txt_log_quality.print(printer)
+
+        

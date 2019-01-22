@@ -101,8 +101,7 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text = ""
 
     def check_boundary_points_covered_by_boundary_nodes(self, db):
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Boundary Points should be covered by Boundary nodes'"))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES)
 
         self.log_dialog_quality_text += "<ul>"
@@ -159,8 +158,7 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Boundary Points should be covered by Boundary nodes'"))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES))
 
     def get_boundary_points_features_not_covered_by_boundary_nodes(self, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field=ID_FIELD):
         tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
@@ -267,16 +265,15 @@ class QualityUtils(QObject):
         return features
 
     def check_boundary_nodes_covered_by_boundary_points(self, db):
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Boundary nodes should be covered by Boundary Points'"))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)
 
         self.log_dialog_quality_text += "<ul>"
 
         res_layers = self.qgis_utils.get_layers(db, {
-        BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None},
-        POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None},
-        BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}}, load=True)
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None},
+            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None},
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}}, load=True)
 
         boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
         boundary_layer = res_layers[BOUNDARY_TABLE]
@@ -325,8 +322,7 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-            "{} ({}/{}) running 'Boundary nodes should be covered by Boundary Points'"))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS))
 
     def get_boundary_nodes_features_not_covered_by_boundary_points(self, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field=ID_FIELD):
 
@@ -443,8 +439,7 @@ class QualityUtils(QObject):
         return features
 
     def check_plot_nodes_covered_by_boundary_points(self, db):
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-            "{} ({}/{}) running 'Plot nodes should be covered by boundary points'"))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)
 
         self.log_dialog_quality_text += "<ul>"
@@ -494,12 +489,10 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-            "{} ({}/{}) running 'Plot nodes should be covered by boundary points'"))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS))
 
     def check_boundary_points_covered_by_plot_nodes(self, db):
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Boundary Points should be covered by plot nodes'"))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES)
 
         self.log_dialog_quality_text += "<ul>"
@@ -549,8 +542,7 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Boundary Points should be covered by plot nodes'"))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES))
 
     @staticmethod
     def get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule, id_field=ID_FIELD):
@@ -607,12 +599,10 @@ class QualityUtils(QObject):
 
     def check_overlapping_points(self, db, point_layer_name):
         if point_layer_name == BOUNDARY_POINT_TABLE:
-            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                    "{} ({}/{}) running 'Boundary Points should not overlap'"))
+            self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS))
             self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS)
         elif point_layer_name == CONTROL_POINT_TABLE:
-            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                    "{} ({}/{}) running 'Control Points should not overlap'"))
+            self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS))
             self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS)
 
         self.log_dialog_quality_text += "<ul>"
@@ -677,15 +667,12 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "<HR>"
 
         if point_layer_name == BOUNDARY_POINT_TABLE:
-            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                    "{} ({}/{}) running 'Boundary Points should not overlap'"))
+            self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS))
         elif point_layer_name == CONTROL_POINT_TABLE:
-            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                    "{} ({}/{}) running 'Control Points should not overlap'"))
+            self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS))
 
     def check_plots_covered_by_boundaries(self, db):
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Plots should be covered by Boundaries'"))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES)
 
         self.log_dialog_quality_text += "<ul>"
@@ -750,8 +737,7 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Plots should be covered by Boundaries'"))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES))
 
     def get_plot_features_not_covered_by_boundaries(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
         """
@@ -1004,8 +990,7 @@ class QualityUtils(QObject):
         return features
 
     def check_boundaries_covered_by_plots(self, db):
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Boundaries should be covered by Plots'"))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS)
 
         self.log_dialog_quality_text += "<ul>"
@@ -1071,8 +1056,7 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Boundaries should be covered by Plots'"))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS))
 
     def get_boundary_features_not_covered_by_plots(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
         """
@@ -1330,16 +1314,13 @@ class QualityUtils(QObject):
 
     def check_overlapping_polygons(self, db, polygon_layer_name):
         if polygon_layer_name == PLOT_TABLE:
-            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Plots should not overlap'"))
+            self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_PLOTS))
             self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_OVERLAPS_IN_PLOTS)
         elif polygon_layer_name == BUILDING_TABLE:
-            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Buildings should not overlap'"))
+            self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_BUILDINGS))
             self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_OVERLAPS_IN_BUILDINGS)
         elif polygon_layer_name == RIGHT_OF_WAY_TABLE:
-            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Rights of Way should not overlap'"))
+            self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY))
             self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY)
 
         self.log_dialog_quality_text += "<ul>"
@@ -1414,18 +1395,14 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "<HR>"
 
         if polygon_layer_name == PLOT_TABLE:
-            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Plots should not overlap'"))
+            self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_PLOTS))
         elif polygon_layer_name == BUILDING_TABLE:
-            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Buildings should not overlap'"))
+            self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_BUILDINGS))
         elif polygon_layer_name == RIGHT_OF_WAY_TABLE:
-            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Rights of Way should not overlap'"))
+            self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY))
 
     def check_overlaps_in_boundaries(self, db):
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Boundaries should not overlap'"))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES)
 
         self.log_dialog_quality_text += "<ul>"
@@ -1487,12 +1464,10 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Boundaries should not overlap'"))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES))
 
     def check_boundaries_are_not_split(self, db):
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Boundaries should not be split'"))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT)
 
         self.log_dialog_quality_text += "<ul>"
@@ -1544,13 +1519,11 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Boundaries should not be split'"))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT))
 
     def check_too_long_segments(self, db):
         tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Boundary segments should not be longer than {meters}m.'".format("{}", "{}", "{}", meters=tolerance)))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_TOO_LONG_BOUNDARY_SEGMENTS))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_TOO_LONG_BOUNDARY_SEGMENTS)
 
         self.log_dialog_quality_text += "<ul>"
@@ -1604,8 +1577,7 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Boundary segments should not be longer than {meters}m.''".format("{}", "{}", "{}", meters=tolerance)))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_TOO_LONG_BOUNDARY_SEGMENTS))
 
     def check_missing_boundary_points_in_boundaries(self, db):
         res_layers = self.qgis_utils.get_layers(db, {
@@ -1771,8 +1743,7 @@ class QualityUtils(QObject):
                                            "There are no missing survey points in buildings."), Qgis.Info)
 
     def check_dangles_in_boundaries(self, db):
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Boundaries should not have dangles'"))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_DANGLES_IN_BOUNDARIES))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_DANGLES_IN_BOUNDARIES)
 
         self.log_dialog_quality_text += "<ul>"
@@ -1817,8 +1788,7 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Boundaries should not have dangles'"))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_DANGLES_IN_BOUNDARIES))
 
     def get_missing_boundary_points_in_boundaries(self, boundary_point_layer, boundary_layer):
         res = dict()
@@ -1877,8 +1847,7 @@ class QualityUtils(QObject):
         return res
 
     def check_right_of_way_overlaps_buildings(self, db):
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Right of Way should not overlap Buildings'"))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS)
 
         self.log_dialog_quality_text += "<ul>"
@@ -1938,12 +1907,10 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Right of Way should not overlap Buildings'"))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS))
 
     def check_gaps_in_plots(self, db):
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Plots should not have gaps'"))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_GAPS_IN_PLOTS))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_GAPS_IN_PLOTS)
 
         self.log_dialog_quality_text += "<ul>"
@@ -1991,12 +1958,10 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Plots should not have gaps'"))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_GAPS_IN_PLOTS))
 
     def check_multiparts_in_right_of_way(self, db):
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Right of Way should not have multipart geometries'"))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY)
 
         self.log_dialog_quality_text += "<ul>"
@@ -2044,12 +2009,10 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Right of Way should not have multipart geometries'"))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY))
 
     def check_parcel_right_relationship(self, db):
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Parcel should have one and only one Right'"))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_PARCEL_RIGHT_RELATIONSHIP))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_PARCEL_RIGHT_RELATIONSHIP)
 
         self.log_dialog_quality_text += "<ul>"
@@ -2087,12 +2050,10 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Parcel should have one and only one Right'"))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_PARCEL_RIGHT_RELATIONSHIP))
 
     def check_fraction_sum_for_party_groups(self, db):
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Group Party Fractions should sum 1'"))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_FRACTION_SUM_FOR_PARTY_GROUPS))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_FRACTION_SUM_FOR_PARTY_GROUPS)
 
         self.log_dialog_quality_text += "<ul>"
@@ -2114,8 +2075,7 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Group Party Fractions should sum 1'"))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_FRACTION_SUM_FOR_PARTY_GROUPS))
 
     def get_dangle_ids(self, boundary_layer):
         # 1. Run extract specific vertices
@@ -2156,8 +2116,7 @@ class QualityUtils(QObject):
         return added_layer
 
     def find_duplicate_records_in_a_table(self, db):
-        self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Table records should not be repeated'"))
+        self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.FIND_DUPLICATE_RECORDS_IN_A_TABLE))
         self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.FIND_DUPLICATE_RECORDS_IN_A_TABLE)
 
         self.log_dialog_quality_text += "<ul>"
@@ -2181,29 +2140,23 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "</ul>"
         self.log_dialog_quality_text += "<HR>"
 
-        self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Table records should not be repeated'"))
+        self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.FIND_DUPLICATE_RECORDS_IN_A_TABLE))
 
     def basic_logic_validations(self, db, rule):
         if rule == 'DEPARTMENT_CODE_VALIDATION':
-            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                    "{} ({}/{}) running 'Check that the {department} field of the {parcel} table has two numerical characters'".format("{}", "{}", "{}", department=DEPARTMENT_FIELD, parcel=PARCEL_TABLE)))
+            self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS))
             self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS)
         elif rule == 'MUNICIPALITY_CODE_VALIDATION':
-            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                    "{} ({}/{}) running 'Check that the {municipality} field of the {parcel} table has three numerical characters'".format("{}", "{}", "{}", municipality=MUNICIPALITY_FIELD, parcel=PARCEL_TABLE)))
+            self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS))
             self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS)
         elif rule == 'ZONE_CODE_VALIDATION':
-            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                    "{} ({}/{}) running 'Check that the {zone} field of the {parcel} table has two numerical characters'".format("{}", "{}", "{}", zone=ZONE_FIELD, parcel=PARCEL_TABLE)))
+            self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_ZONE_CODE_HAS_TWO_NUMERICAL_CHARACTERS))
             self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_ZONE_CODE_HAS_TWO_NUMERICAL_CHARACTERS)
-        elif rule == 'PARCEL_NUMBER_VALIDATION':            
-            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                      "{} ({}/{}) running 'Check that the {parcel_number} has 30 numerical characters'".format("{}", "{}", "{}", parcel_number=PARCEL_NUMBER_FIELD)))
+        elif rule == 'PARCEL_NUMBER_VALIDATION':
+            self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS))
             self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS)
         elif rule == 'PARCEL_NUMBER_BEFORE_VALIDATION':
-            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                      "{} ({}/{}) running 'Check that the {parcel_number_before} has 20 numerical characters'".format("{}", "{}", "{}", parcel_number_before=PARCEL_NUMBER_BEFORE_FIELD)))
+            self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS))
             self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS)
 
         self.log_dialog_quality_text += "<ul>"
@@ -2260,37 +2213,28 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "<HR>"
 
         if rule == 'DEPARTMENT_CODE_VALIDATION':
-            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                    "{} ({}/{}) running 'Check that the {department} field of the {parcel} table has two numerical characters'".format("{}", "{}", "{}", department=DEPARTMENT_FIELD, parcel=PARCEL_TABLE)))
+            self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS))
         elif rule == 'MUNICIPALITY_CODE_VALIDATION':
-            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                    "{} ({}/{}) running 'Check that the {municipality} field of the {parcel} table has three numerical characters'".format("{}", "{}", "{}", municipality=MUNICIPALITY_FIELD, parcel=PARCEL_TABLE)))
+            self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS))
         elif rule == 'ZONE_CODE_VALIDATION':
-            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                    "{} ({}/{}) running 'Check that the {zone} field of the {parcel} table has two numerical characters'".format("{}", "{}", "{}", zone=ZONE_FIELD, parcel=PARCEL_TABLE)))
+            self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_ZONE_CODE_HAS_TWO_NUMERICAL_CHARACTERS))
         elif rule == 'PARCEL_NUMBER_VALIDATION':
-        	self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                    "{} ({}/{}) running 'Check that the {parcel_number} has 30 numerical characters'".format("{}", "{}", "{}", parcel_number=PARCEL_NUMBER_FIELD)))
+            self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS))
         elif rule == 'PARCEL_NUMBER_BEFORE_VALIDATION':
-        	self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                    "{} ({}/{}) running 'Check that the {parcel_number_before} has 20 numerical characters'".format("{}", "{}", "{}", parcel_number_before=PARCEL_NUMBER_BEFORE_FIELD)))
+            self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS))
 
     def advance_logic_validations(self, db, rule):
         if rule == 'COL_PARTY_TYPE_NATURAL_VALIDATION':
-            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Check that attributes are appropriate for parties of type natural'"))
+            self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_COL_PARTY_NATURAL_TYPE))
             self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_COL_PARTY_NATURAL_TYPE)
         elif rule == 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION':
-            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Check that attributes are appropriate for parties of type legal'"))
+            self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_COL_PARTY_LEGAL_TYPE))
             self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_COL_PARTY_LEGAL_TYPE)
         elif rule == 'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION':
-            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Check that the type of parcel corresponds to position 22 of the {parcel_number}'".format("{}", "{}", "{}", parcel_number=PARCEL_NUMBER_FIELD)))
+            self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER))
             self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER)
         elif rule == 'UEBAUNIT_PARCEL_VALIDATION':
-            self.log_quality_message_ini_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Check that Spatial Units associated with Parcels correspond to the parcel type'"))
+            self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_UEBAUNIT_PARCEL))
             self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_UEBAUNIT_PARCEL)
 
         self.log_dialog_quality_text += "<ul>"
@@ -2337,14 +2281,10 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text += "<HR>"
 
         if rule == 'COL_PARTY_TYPE_NATURAL_VALIDATION':
-            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Check that attributes are appropriate for parties of type natural'"))
+            self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_COL_PARTY_NATURAL_TYPE))
         elif rule == 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION':
-            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Check that attributes are appropriate for parties of type legal'"))
+            self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_COL_PARTY_LEGAL_TYPE))
         elif rule == 'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION':
-            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "Check that the type of parcel corresponds to position 22 of the {parcel_number}".format("{}", "{}", "{}", parcel_number=PARCEL_NUMBER_FIELD)))
+            self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER))
         elif rule == 'UEBAUNIT_PARCEL_VALIDATION':
-            self.log_quality_message_finish_emitted.emit(QCoreApplication.translate("QualityUtils",
-                "{} ({}/{}) running 'Check that Spatial Units associated with Parcels correspond to the parcel type'"))
+            self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_UEBAUNIT_PARCEL))
