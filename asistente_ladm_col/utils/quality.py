@@ -37,15 +37,23 @@ from qgis.core import (Qgis,
                        QgsFeatureRequest,
                        NULL,
                        QgsRectangle)
-
 import processing
+import time
 from .logic_checks import LogicChecks
 from .project_generator_utils import ProjectGeneratorUtils
 from ..config.general_config import (DEFAULT_EPSG,
                                      DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
                                      DEFAULT_USE_ROADS_VALUE,
+                                     PREFIX_TITLE_TOPOLOGICAL_RULE,
+                                     SUFFIX_TITLE_TOPOLOGICAL_RULE,
+                                     LIST_VINEYARDS_OPEN,
+                                     LIST_VINEYARDS_CLOSE,
+                                     CONTENT_SEPARATOR,
+                                     NEW_VINEYARDS_LIST_ERROR,
+                                     NEW_VINEYARDS_LIST_CORRECT,
+                                     TIME_EJECUTION_SECONDS,
+                                     NEW_VINEYARDS_TIME_EJECUTION_SECONDS,
                                      translated_strings)
-
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
                                            BUILDING_TABLE,
@@ -102,9 +110,12 @@ class QualityUtils(QObject):
 
     def check_boundary_points_covered_by_boundary_nodes(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES)
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         res_layers = self.qgis_utils.get_layers(db, {
             BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
@@ -116,19 +127,19 @@ class QualityUtils(QObject):
         point_bfs_layer = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
 
         if boundary_point_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
             "Layer {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()))
 
         elif boundary_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
             "Layer {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
         elif point_bfs_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
             "Table {} not found in DB! {}").format(POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()))
 
         elif boundary_point_layer.featureCount() == 0:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
             "There are no boundary points to check 'boundary points should be covered by boundary nodes'."))
         else:
             error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
@@ -147,16 +158,19 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate(
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate(
                     "QGISUtils", "A memory layer with {} boundary points not covered by boundary nodes has been added to the map!")
                     .format(added_layer.featureCount()))
 
             else:
-                self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                 "All boundary points are covered by boundary nodes!"))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES))
 
@@ -266,9 +280,12 @@ class QualityUtils(QObject):
 
     def check_boundary_nodes_covered_by_boundary_points(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         res_layers = self.qgis_utils.get_layers(db, {
             BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None},
@@ -280,19 +297,19 @@ class QualityUtils(QObject):
         point_bfs = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
 
         if boundary_point_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "Table {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()))
 
         elif boundary_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "Table {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
         elif boundary_layer.featureCount() == 0:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "There are no boundaries to check 'missing boundary points in boundaries'."))
 
         elif point_bfs is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "Table {} not found in DB! {}").format(POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()))
 
         else:
@@ -312,15 +329,18 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                     "A memory layer with {} boundary vertices with no associated boundary points or with boundary points wrongly registered in the PointBFS table been added to the map!").format(added_layer.featureCount()))
 
             else:
-                self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils"
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils"
                     , "There are no missing boundary points in boundaries."))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS))
 
@@ -440,9 +460,12 @@ class QualityUtils(QObject):
 
     def check_plot_nodes_covered_by_boundary_points(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
@@ -452,15 +475,15 @@ class QualityUtils(QObject):
         boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
 
         if boundary_point_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
             "Layer {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()))
 
         elif plot_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
             "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
 
         elif plot_layer.featureCount() == 0:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
             "There are no plots to check 'Plots should be covered by boundary points'."))
 
         else:
@@ -478,24 +501,30 @@ class QualityUtils(QObject):
 
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
-                self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate(
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate(
                     "QGISUtils", "A memory layer with {} plot nodes not covered by boundary points has been added to the map!")
                     .format(added_layer.featureCount()))
 
             else:
-                self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                 "All plot nodes are covered by boundary points!"))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS))
 
     def check_boundary_points_covered_by_plot_nodes(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES)
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
@@ -505,15 +534,15 @@ class QualityUtils(QObject):
         boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
 
         if boundary_point_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
             "Layer {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()))
 
         elif plot_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
             "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
 
         elif boundary_point_layer.featureCount() == 0:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
             "There are no boundary points to check 'boundary points should be covered by Plot nodes'."))
 
         else:
@@ -532,15 +561,18 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                 "A memory layer with {} boundary points not covered by plot nodes has been added to the map!").format(added_layer.featureCount()))
 
             else:
-                self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                  "All boundary points are covered by plot nodes!"))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES))
 
@@ -600,12 +632,16 @@ class QualityUtils(QObject):
     def check_overlapping_points(self, db, point_layer_name):
         if point_layer_name == BOUNDARY_POINT_TABLE:
             self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS))
-            self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS)
+            self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                translated_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
         elif point_layer_name == CONTROL_POINT_TABLE:
             self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS))
-            self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS)
+            self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                translated_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         """
         Shows which points are overlapping
@@ -617,11 +653,11 @@ class QualityUtils(QObject):
         point_layer = self.qgis_utils.get_layer(db, point_layer_name, load=True)
 
         if point_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                            "Table {} not found in DB! {}").format(point_layer_name, db.get_description()))
 
         elif point_layer.featureCount() == 0:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                     "There are no points in layer '{}' to check for overlaps!").format(point_layer_name))
 
         else:
@@ -656,15 +692,18 @@ class QualityUtils(QObject):
 
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
-                self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                            "A memory layer with {} overlapping points in '{}' has been added to the map!").format(
                     added_layer.featureCount(), point_layer_name))
             else:
-                self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                                            "There are no overlapping points in layer '{}'!").format(point_layer_name))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         if point_layer_name == BOUNDARY_POINT_TABLE:
             self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS))
@@ -673,9 +712,12 @@ class QualityUtils(QObject):
 
     def check_plots_covered_by_boundaries(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES)
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         # read data
         res_layers = self.qgis_utils.get_layers(db, {
@@ -691,23 +733,23 @@ class QualityUtils(QObject):
         less_layer = res_layers[LESS_TABLE]
 
         if plot_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
 
         elif boundary_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "Layer {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
         elif plot_layer.featureCount() == 0:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "There are no plots to check 'plots should be covered by boundaries'."))
 
         elif more_bfs_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(
                 MORE_BOUNDARY_FACE_STRING_TABLE, db.get_description()))
 
         elif less_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
              "Table {} not found in the DB! {}").format(LESS_TABLE, db.get_description()))
 
         else:
@@ -727,15 +769,18 @@ class QualityUtils(QObject):
                 error_layer.dataProvider().addFeatures(features)
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                            "A memory layer with {} plots not covered by boundaries has been added to the map!").format(added_layer.featureCount()))
 
             else:
-                self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                                            "All plots are covered by boundaries!"))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES))
 
@@ -991,9 +1036,12 @@ class QualityUtils(QObject):
 
     def check_boundaries_covered_by_plots(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS)
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         # read data
         res_layers = self.qgis_utils.get_layers(db, {
@@ -1010,23 +1058,23 @@ class QualityUtils(QObject):
 
         # validate data
         if plot_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
 
         elif boundary_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "Layer {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
         elif boundary_layer.featureCount() == 0:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "There are no boundaries to check 'boundaries should be covered by plots'."))
 
         elif more_bfs_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
             "Table {} not found in the DB! {}").format(MORE_BOUNDARY_FACE_STRING_TABLE, db.get_description()))
 
         elif less_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "Table {} not found in the DB! {}").format(LESS_TABLE, db.get_description()))
 
         else:
@@ -1046,15 +1094,18 @@ class QualityUtils(QObject):
                 error_layer.dataProvider().addFeatures(features)
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                       "A memory layer with {} boundaries not covered by plots has been added to the map!").format(added_layer.featureCount()))
 
             else:
-                self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                 "All boundaries are covered by plots!"))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS))
 
@@ -1330,20 +1381,25 @@ class QualityUtils(QObject):
     def check_overlapping_polygons(self, db, polygon_layer_name):
         if polygon_layer_name == PLOT_TABLE:
             self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_PLOTS))
-            self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_OVERLAPS_IN_PLOTS)
+            self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                translated_strings.CHECK_OVERLAPS_IN_PLOTS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
         elif polygon_layer_name == BUILDING_TABLE:
             self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_BUILDINGS))
-            self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_OVERLAPS_IN_BUILDINGS)
+            self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                translated_strings.CHECK_OVERLAPS_IN_BUILDINGS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
         elif polygon_layer_name == RIGHT_OF_WAY_TABLE:
             self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY))
-            self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY)
+            self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                translated_strings.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, QgsWkbTypes.PolygonGeometry, load=True)
 
         if polygon_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "Table {} not found in DB! {}").format(polygon_layer_name, db.get_description()))
 
         else:
@@ -1398,16 +1454,19 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                     "A memory layer with {} overlapping polygons in layer '{}' has been added to the map!").format(
                     added_layer.featureCount(), polygon_layer_name))
 
             else:
-                self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                     "There are no overlapping polygons in layer '{}'!").format(polygon_layer_name))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         if polygon_layer_name == PLOT_TABLE:
             self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_PLOTS))
@@ -1418,20 +1477,23 @@ class QualityUtils(QObject):
 
     def check_overlaps_in_boundaries(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES)
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
 
         if boundary_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                 "Table {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
         else:
             overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_layer)
             if overlapping is None:
-                self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                    "There are no boundaries to check for overlaps!"))
 
             else:
@@ -1451,7 +1513,7 @@ class QualityUtils(QObject):
                    (error_point_layer.featureCount() == 0 and \
                    error_line_layer.featureCount() == 0):
 
-                    self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                    self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                                                "There are no overlapping boundaries."))
 
                 else:
@@ -1474,18 +1536,24 @@ class QualityUtils(QObject):
                         msg = QCoreApplication.translate("QGISUtils",
                             "Two memory layers with overlapping boundaries ({} point intersections and {} line intersections) have been added to the map.").format(added_point_layer.featureCount(), added_line_layer.featureCount())
 
-                    self.log_dialog_quality_text += "<li style='color:red;'>{}".format(msg)
+                    self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, msg)
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES))
 
     def check_boundaries_are_not_split(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT)
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         """
         An split boundary is an incomplete boundary because it is connected to
@@ -1496,18 +1564,18 @@ class QualityUtils(QObject):
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
 
         if boundary_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                 "Layer {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
         elif boundary_layer.featureCount() == 0:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                "There are no boundaries to check 'boundaries should not be split'!"))
 
         else:
             wrong_boundaries = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(boundary_layer)
 
             if wrong_boundaries is None:
-                self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                                            "There are no wrong boundaries!"))
             else:
                 error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG),
@@ -1525,33 +1593,39 @@ class QualityUtils(QObject):
                 error_layer.dataProvider().addFeatures(features)
                 if error_layer.featureCount() > 0:
                     added_layer = self.add_error_layer(error_layer)
-                    self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+                    self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                            "A memory layer with {} wrong boundaries has been added to the map!").format(added_layer.featureCount()))
                 else:
-                    self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                    self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                                                "There are no wrong boundaries."))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT))
 
     def check_too_long_segments(self, db):
         tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_TOO_LONG_BOUNDARY_SEGMENTS))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_TOO_LONG_BOUNDARY_SEGMENTS)
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.CHECK_TOO_LONG_BOUNDARY_SEGMENTS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         features = []
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
 
         if boundary_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                    "Table {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
         elif boundary_layer.featureCount() == 0:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                "There are no boundaries to check for too long segments!"))
 
         else:
@@ -1582,15 +1656,18 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                    "A memory layer with {} boundary segments longer than {}m. has been added to the map!").format(added_layer.featureCount(), tolerance))
 
             else:
-                self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                    "All boundary segments are within the length tolerance for segments ({}m.)!").format(tolerance))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_TOO_LONG_BOUNDARY_SEGMENTS))
 
@@ -1759,18 +1836,21 @@ class QualityUtils(QObject):
 
     def check_dangles_in_boundaries(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_DANGLES_IN_BOUNDARIES))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_DANGLES_IN_BOUNDARIES)
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.CHECK_DANGLES_IN_BOUNDARIES, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
 
         if boundary_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "Table {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
         elif boundary_layer.featureCount() == 0:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "There are no boundaries to check for dangles."))
 
         else:
@@ -1793,15 +1873,18 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                            "A memory layer with {} boundary dangles has been added to the map!").format(added_layer.featureCount()))
 
             else:
-                self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                                            "Boundaries have no dangles!"))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_DANGLES_IN_BOUNDARIES))
 
@@ -1863,9 +1946,12 @@ class QualityUtils(QObject):
 
     def check_right_of_way_overlaps_buildings(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS)
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         res_layers = self.qgis_utils.get_layers(db, {
             RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
@@ -1875,19 +1961,19 @@ class QualityUtils(QObject):
         building_layer = res_layers[BUILDING_TABLE]
 
         if right_of_way_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                 "Table {} not found in DB! {}").format(RIGHT_OF_WAY_TABLE, db.get_description()))
 
         elif building_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                 "Table {} not found in DB! {}").format(BUILDING_TABLE, db.get_description()))
 
         elif right_of_way_layer.featureCount() == 0:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                "There are no Right of Way features to check 'Right of Way should not overlap buildings'."))
 
         elif building_layer.featureCount() == 0:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                "There are no buildings to check 'Right of Way should not overlap buildings'."))
 
         else:
@@ -1912,33 +1998,39 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                        "A memory layer with {} Right of Way-Building overlaps has been added to the map!").format(
                     added_layer.featureCount()))
             else:
-                self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                                            "There are no Right of Way-Building overlaps."))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS))
 
     def check_gaps_in_plots(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_GAPS_IN_PLOTS))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_GAPS_IN_PLOTS)
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.CHECK_GAPS_IN_PLOTS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, True)
 
         if plot_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
 
         elif plot_layer.featureCount() == 0:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "There are no Plot features to check 'Plot should not have gaps'."))
 
         else:
@@ -1962,33 +2054,38 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                    "A memory layer with {} gaps in layer Plots has been added to the map!").format(added_layer.featureCount()))
 
             else:
-                self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                                            "There are no gaps in layer Plot."))
 
+        endTime = time.time()
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_GAPS_IN_PLOTS))
 
     def check_multiparts_in_right_of_way(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY)
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         right_of_way_layer = self.qgis_utils.get_layer(db, RIGHT_OF_WAY_TABLE, QgsWkbTypes.PolygonGeometry, True)
 
         if right_of_way_layer is None:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "Layer {} not found in DB! {}").format(RIGHT_OF_WAY_TABLE, db.get_description()))
 
         elif right_of_way_layer.featureCount() == 0:
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                        "There are no Right Of Way features to check 'Right Of Way should not have Multipart geometries'."))
 
 
@@ -2013,24 +2110,30 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                    "A memory layer with {} multipart geometries in layer Right Of Way has been added to the map!").format(
                     added_layer.featureCount()))
 
             else:
-                self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                                            "There are no multipart geometries in layer Right Of Way."))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY))
 
     def check_parcel_right_relationship(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_PARCEL_RIGHT_RELATIONSHIP))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_PARCEL_RIGHT_RELATIONSHIP)
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.CHECK_PARCEL_RIGHT_RELATIONSHIP, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         table_name = QCoreApplication.translate("LogicChecksConfigStrings","Logic Consistency Errors in table '{}'").format(PARCEL_TABLE)
         error_layer = None
@@ -2055,23 +2158,29 @@ class QualityUtils(QObject):
             else:
                 added_layer = error_layer
 
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                        "A memory layer with {} parcel errors has been added to the map!").format(added_layer.featureCount()))
 
         else:
-            self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                                        "Parcel-Right relationships are correct!"))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_PARCEL_RIGHT_RELATIONSHIP))
 
     def check_fraction_sum_for_party_groups(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_FRACTION_SUM_FOR_PARTY_GROUPS))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_FRACTION_SUM_FOR_PARTY_GROUPS)
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.CHECK_FRACTION_SUM_FOR_PARTY_GROUPS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         error_layer = None
         error_layer = self.logic.get_fractions_which_sum_is_not_one(db, error_layer)
@@ -2079,16 +2188,19 @@ class QualityUtils(QObject):
         if error_layer.featureCount() > 0:
             added_layer = self.add_error_layer(error_layer)
 
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                 "A memory layer with {} fractions which do not sum 1 has been added to the map!").format(
                     added_layer.featureCount()))
 
         else:
-            self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                                        "Group Party Fractions are correct!"))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_FRACTION_SUM_FOR_PARTY_GROUPS))
 
@@ -2132,8 +2244,12 @@ class QualityUtils(QObject):
 
     def find_duplicate_records_in_a_table(self, db):
         self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.FIND_DUPLICATE_RECORDS_IN_A_TABLE))
-        self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.FIND_DUPLICATE_RECORDS_IN_A_TABLE)
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+            translated_strings.FIND_DUPLICATE_RECORDS_IN_A_TABLE, SUFFIX_TITLE_TOPOLOGICAL_RULE)
+
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         for table in LOGIC_CONSISTENCY_TABLES:
             fields = LOGIC_CONSISTENCY_TABLES[table]
@@ -2144,36 +2260,46 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                            "A memory layer with {error_count} duplicate records from {table} has been added to the map!").format(error_count=added_layer.featureCount(), table=table))
 
             else:
-                self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+                self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                                            "There are no repeated records in {table}!".format(table=table)))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.FIND_DUPLICATE_RECORDS_IN_A_TABLE))
 
     def basic_logic_validations(self, db, rule):
         if rule == 'DEPARTMENT_CODE_VALIDATION':
             self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS))
-            self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS)
+            self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                translated_strings.CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
         elif rule == 'MUNICIPALITY_CODE_VALIDATION':
             self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS))
-            self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS)
+            self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                translated_strings.CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
         elif rule == 'ZONE_CODE_VALIDATION':
             self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_ZONE_CODE_HAS_TWO_NUMERICAL_CHARACTERS))
-            self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_ZONE_CODE_HAS_TWO_NUMERICAL_CHARACTERS)
+            self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                translated_strings.CHECK_ZONE_CODE_HAS_TWO_NUMERICAL_CHARACTERS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
         elif rule == 'PARCEL_NUMBER_VALIDATION':
             self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS))
-            self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS)
+            self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                translated_strings.CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
         elif rule == 'PARCEL_NUMBER_BEFORE_VALIDATION':
             self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS))
-            self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS)
+            self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                translated_strings.CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         query = db.logic_validation_queries[rule]['query']
         table_name = db.logic_validation_queries[rule]['table_name']
@@ -2216,15 +2342,18 @@ class QualityUtils(QObject):
             else:
                 added_layer = error_layer
 
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
                                "A memory layer with {error_count} error record(s) from {table} has been added to the map!").format(error_count=len(new_features), table=table))
 
         else:
-            self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                                            "No errors found when checking '{rule}' for '{table}'!".format(rule=db.logic_validation_queries[rule]['desc_error'], table=table)))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         if rule == 'DEPARTMENT_CODE_VALIDATION':
             self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS))
@@ -2240,18 +2369,24 @@ class QualityUtils(QObject):
     def advance_logic_validations(self, db, rule):
         if rule == 'COL_PARTY_TYPE_NATURAL_VALIDATION':
             self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_COL_PARTY_NATURAL_TYPE))
-            self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_COL_PARTY_NATURAL_TYPE)
+            self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                translated_strings.CHECK_COL_PARTY_NATURAL_TYPE, SUFFIX_TITLE_TOPOLOGICAL_RULE)
         elif rule == 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION':
             self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_COL_PARTY_LEGAL_TYPE))
-            self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_COL_PARTY_LEGAL_TYPE)
-        elif rule == 'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION':
+            self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                translated_strings.CHECK_COL_PARTY_LEGAL_TYPE, SUFFIX_TITLE_TOPOLOGICAL_RULE)
+        elif rule == 'PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER_VALIDATION':
             self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER))
-            self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER)
+            self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                translated_strings.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER, SUFFIX_TITLE_TOPOLOGICAL_RULE)
         elif rule == 'UEBAUNIT_PARCEL_VALIDATION':
             self.log_quality_message_ini_emitted.emit("'{}'".format(translated_strings.CHECK_UEBAUNIT_PARCEL))
-            self.log_dialog_quality_text += "<h4>{}</h4>".format(translated_strings.CHECK_UEBAUNIT_PARCEL)
+            self.log_dialog_quality_text += "{}{}{}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                translated_strings.CHECK_UEBAUNIT_PARCEL, SUFFIX_TITLE_TOPOLOGICAL_RULE)
 
-        self.log_dialog_quality_text += "<ul>"
+        self.log_dialog_quality_text += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
 
         table_name = db.logic_validation_queries[rule]['table_name']
         table = db.logic_validation_queries[rule]['table']
@@ -2285,21 +2420,23 @@ class QualityUtils(QObject):
             else:
                 added_layer = error_layer
 
-            self.log_dialog_quality_text += "<li style='color:red;'>{}".format(QCoreApplication.translate("QGISUtils", "A memory layer with {error_count} error record(s) from {table} has been added to the map!").format(
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils", "A memory layer with {error_count} error record(s) from {table} has been added to the map!").format(
                     error_count=errors_count, table=table))
         else:
-            self.log_dialog_quality_text += "<li style='color:green;'>{}".format(QCoreApplication.translate("QGISUtils",
+            self.log_dialog_quality_text += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils",
                                            "No errors found when checking '{rule}' for '{table}'!".format(rule=db.logic_validation_queries[rule]['desc_error'], table=table)))
 
-        self.log_dialog_quality_text += "</ul>"
-        self.log_dialog_quality_text += "<HR>"
+        endTime = time.time()
+
+        self.log_dialog_quality_text += "{}{}: {}".format(NEW_VINEYARDS_TIME_EJECUTION_SECONDS, TIME_EJECUTION_SECONDS, endTime - startTime)
+        self.log_dialog_quality_text += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text += CONTENT_SEPARATOR
 
         if rule == 'COL_PARTY_TYPE_NATURAL_VALIDATION':
             self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_COL_PARTY_NATURAL_TYPE))
         elif rule == 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION':
             self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_COL_PARTY_LEGAL_TYPE))
-        elif rule == 'PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER_VALIDATION':
+        elif rule == 'PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER_VALIDATION':
             self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER))
         elif rule == 'UEBAUNIT_PARCEL_VALIDATION':
             self.log_quality_message_finish_emitted.emit("'{}'".format(translated_strings.CHECK_UEBAUNIT_PARCEL))
-

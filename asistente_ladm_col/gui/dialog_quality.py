@@ -17,27 +17,21 @@
  ***************************************************************************/
 """
 import collections
-
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication)
-
 from qgis.PyQt.QtGui import (QBrush,
                              QFont,
                              QIcon,
                              QColor)
-
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QTreeWidgetItem,
                                  QTreeWidgetItemIterator)
-
 from ..config.general_config import translated_strings
-
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            CONTROL_POINT_TABLE,
                                            PLOT_TABLE,
                                            BUILDING_TABLE,
                                            RIGHT_OF_WAY_TABLE)
-
 from ..utils import get_ui_class
 from ..resources_rc import *
 
@@ -210,18 +204,7 @@ class DialogQuality(QDialog, DIALOG_UI):
         #self.qgis_utils.remove_error_group_requested.emit()
         self.quality.clean_log_dialog_quality_text()
 
-        iterator_topology = QTreeWidgetItemIterator(self.trw_quality_rules, QTreeWidgetItemIterator.Selectable)
-        count_topology = 0
-
-        while iterator_topology.value():
-            item_topology = iterator_topology.value()
-
-            if item_topology.isSelected():
-                count_topology = count_topology + 1
-
-            iterator_topology += 1
-
-        self.quality.count_topology_rules(count_topology)
+        self.quality.count_topology_rules(len(self.trw_quality_rules.selectedItems()))
 
         iterator = QTreeWidgetItemIterator(self.trw_quality_rules, QTreeWidgetItemIterator.Selectable)
 

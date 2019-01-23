@@ -192,3 +192,14 @@ class TranslatableConfigStrings(QObject):
 
 
 translated_strings = TranslatableConfigStrings()
+
+# Log topology rules
+PREFIX_TITLE_TOPOLOGICAL_RULE = "<h4>"
+SUFFIX_TITLE_TOPOLOGICAL_RULE = "</h4>"
+LIST_VINEYARDS_OPEN = "<ul>"
+LIST_VINEYARDS_CLOSE = "</ul>"
+CONTENT_SEPARATOR = "<HR>"
+NEW_VINEYARDS_LIST_ERROR = "<li style='color:red;'>"
+NEW_VINEYARDS_LIST_CORRECT = "<li style='color:green;'>"
+NEW_VINEYARDS_TIME_EJECUTION_SECONDS = "<li style='color:blue;'>"
+TIME_EJECUTION_SECONDS = "Execution time (sec)"
