@@ -939,10 +939,12 @@ class GeometryUtils(QObject):
             'PREFIX':'',
             'OUTPUT':'memory:'})['OUTPUT']
 
+        # Get buildings that are not cointained in a single plot
+        # This give us buildings that intersect with 0 OR more than one plots
         building_within_plots.selectByExpression('"{}_2" IS NOT NULL'.format(id_field))
         building_within_plots.dataProvider().deleteFeatures(building_within_plots.selectedFeatureIds())
-        print(building_within_plots.isValid(), building_within_plots.featureCount())
 
+        # Now we run an intersection to classify the subset of buildings in two groups
         building_plots_with_errors = processing.run("qgis:joinattributesbylocation", {
             'INPUT': building_within_plots,
             'JOIN': plot_layer,
@@ -954,12 +956,11 @@ class GeometryUtils(QObject):
             'OUTPUT':'memory:'})['OUTPUT']
 
         buildings_with_no_plot = list()
-        buildings_not_within_plot = list()
+        buildings_not_within_a_single_plot = list()
         for feature in building_plots_with_errors.getFeatures():
             if feature['{}_3'.format(id_field)]:
-                buildings_not_within_plot.append(feature)
+                buildings_not_within_a_single_plot.append(feature)
             else:
                 buildings_with_no_plot.append(feature)
 
-        print(len(buildings_with_no_plot), len(buildings_not_within_plot))
-        return buildings_with_no_plot, buildings_not_within_plot
+        return buildings_with_no_plot, buildings_not_within_a_single_plot
