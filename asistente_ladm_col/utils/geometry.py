@@ -672,7 +672,7 @@ class GeometryUtils(QObject):
                     geom = QgsPolygon()
                     geom.fromWkt(polygon_geom.asWkt())
                     single_polygon = geom
-                    
+
                 if single_polygon.numInteriorRings() > 0:
                     has_inner_rings = True
 
@@ -927,3 +927,40 @@ class GeometryUtils(QObject):
         boundaries_to_del = [f.id() for f in layer.getFeatures()]
 
         return merge_geometries, boundaries_to_del
+
+    def get_buildings_out_of_plots(self, building_layer, plot_layer, id_field=ID_FIELD):
+        building_within_plots = processing.run("qgis:joinattributesbylocation", {
+            'INPUT': building_layer,
+            'JOIN': plot_layer,
+            'PREDICATE':[5], # within
+            'JOIN_FIELDS':[id_field],
+            'METHOD':0, # 1:m
+            'DISCARD_NONMATCHING':False,
+            'PREFIX':'',
+            'OUTPUT':'memory:'})['OUTPUT']
+
+        # Get buildings that are not cointained in a single plot
+        # This give us buildings that intersect with 0 OR more than one plots
+        building_within_plots.selectByExpression('"{}_2" IS NOT NULL'.format(id_field))
+        building_within_plots.dataProvider().deleteFeatures(building_within_plots.selectedFeatureIds())
+
+        # Now we run an intersection to classify the subset of buildings in two groups
+        building_plots_with_errors = processing.run("qgis:joinattributesbylocation", {
+            'INPUT': building_within_plots,
+            'JOIN': plot_layer,
+            'PREDICATE':[0], # intersects
+            'JOIN_FIELDS':[id_field],
+            'METHOD':1, # 1:1 We just want to know whether building intersects plots or not
+            'DISCARD_NONMATCHING':False,
+            'PREFIX':'',
+            'OUTPUT':'memory:'})['OUTPUT']
+
+        buildings_with_no_plot = list()
+        buildings_not_within_a_single_plot = list()
+        for feature in building_plots_with_errors.getFeatures():
+            if feature['{}_3'.format(id_field)]:
+                buildings_not_within_a_single_plot.append(feature)
+            else:
+                buildings_with_no_plot.append(feature)
+
+        return buildings_with_no_plot, buildings_not_within_a_single_plot

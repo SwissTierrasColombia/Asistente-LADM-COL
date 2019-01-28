@@ -124,6 +124,12 @@ class DialogQuality(QDialog, DIALOG_UI):
                 }, {
                     'id': 'check_plot_nodes_covered_by_boundary_points',
                     'text': translated_strings.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS
+                },{
+                    'id': 'check_buildings_should_be_within_plots',
+                    'text': translated_strings.CHECK_BUILDING_WITHIN_PLOTS
+                },{
+                    'id': 'check_building_units_should_be_within_plots',
+                    'text': translated_strings.CHECK_BUILDING_UNIT_WITHIN_PLOTS
                 }]
             }
 
@@ -249,6 +255,10 @@ class DialogQuality(QDialog, DIALOG_UI):
                     self.quality.check_multiparts_in_right_of_way(self._db)
                 elif id == 'check_plot_nodes_covered_by_boundary_points':
                     self.quality.check_plot_nodes_covered_by_boundary_points(self._db)
+                elif id == 'check_buildings_should_be_within_plots':
+                    self.quality.check_building_within_plots(self._db)
+                elif id == 'check_building_units_should_be_within_plots':
+                    self.quality.check_building_unit_within_plots(self._db)
                 elif id == 'check_parcel_right_relationship':
                     self.quality.check_parcel_right_relationship(self._db)
                 elif id == 'find_duplicate_records_in_a_table':
