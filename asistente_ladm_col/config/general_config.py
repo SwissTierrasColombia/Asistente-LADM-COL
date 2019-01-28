@@ -157,6 +157,8 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not overlap Buildings")
         self.CHECK_GAPS_IN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Plots should not have gaps")
         self.CHECK_MULTIPART_IN_RIGHT_OF_WAY = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not have multipart geometries")
+        self.CHECK_BUILDING_WITHIN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Buildings should be within Plots")
+        self.CHECK_BUILDING_UNIT_WITHIN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Building Units should be within Plots")
 
         # Logic consistency checks
         self.CHECK_PARCEL_RIGHT_RELATIONSHIP = QCoreApplication.translate("TranslatableConfigStrings", "Parcel should have one and only one Right")
@@ -189,6 +191,10 @@ class TranslatableConfigStrings(QObject):
         self.ERROR_DUPLICATE_POINT_BFS = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary point and boundary is duplicated in the {} table").format(POINT_BOUNDARY_FACE_STRING_TABLE)
         self.ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE = QCoreApplication.translate("TranslatableConfigStrings", "Boundary point is not covered by boundary node")
         self.ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT = QCoreApplication.translate("TranslatableConfigStrings", "Boundary node is not covered by boundary point")
+        self.ERROR_BUILDING_IS_NOT_OVER_A_PLOT = QCoreApplication.translate("TranslatableConfigStrings", "Building is not over a plot")
+        self.ERROR_BUILDING_CROSSES_A_PLOT_LIMIT = QCoreApplication.translate("TranslatableConfigStrings", "Building crosses a plot's limit")
+        self.ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT = QCoreApplication.translate("TranslatableConfigStrings", "Building Unit is not over a plot")
+        self.ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT = QCoreApplication.translate("TranslatableConfigStrings", "Building Unit crosses a plot's limit")
 
 
 translated_strings = TranslatableConfigStrings()

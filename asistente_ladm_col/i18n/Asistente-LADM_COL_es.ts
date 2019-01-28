@@ -2096,7 +2096,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation>Las Fracciones no suman 1</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1956"/>
+        <location filename="../utils/quality.py" line="1957"/>
         <source>Logic Consistency Errors in table &apos;{}&apos;</source>
         <translation>Errores de Consistencia Lógica en la tabla &apos;{}&apos;</translation>
     </message>
@@ -2279,12 +2279,12 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <location filename="../utils/qgis_utils.py" line="958"/>
         <location filename="../utils/qgis_utils.py" line="1002"/>
         <location filename="../utils/qgis_utils.py" line="1009"/>
-        <location filename="../utils/quality.py" line="659"/>
-        <location filename="../utils/quality.py" line="666"/>
-        <location filename="../utils/quality.py" line="983"/>
-        <location filename="../utils/quality.py" line="989"/>
-        <location filename="../utils/quality.py" line="1479"/>
-        <location filename="../utils/quality.py" line="1694"/>
+        <location filename="../utils/quality.py" line="660"/>
+        <location filename="../utils/quality.py" line="667"/>
+        <location filename="../utils/quality.py" line="984"/>
+        <location filename="../utils/quality.py" line="990"/>
+        <location filename="../utils/quality.py" line="1480"/>
+        <location filename="../utils/quality.py" line="1695"/>
         <source>Table {} not found in the DB! {}</source>
         <translation>¡No se encontró la tabla {} en la base de datos! {}</translation>
     </message>
@@ -2405,25 +2405,29 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">No se puede abrir la ayuda del plugin. Revisa si hay conexión a Internet.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="97"/>
-        <location filename="../utils/quality.py" line="248"/>
-        <location filename="../utils/quality.py" line="255"/>
-        <location filename="../utils/quality.py" line="269"/>
-        <location filename="../utils/quality.py" line="570"/>
-        <location filename="../utils/quality.py" line="1293"/>
-        <location filename="../utils/quality.py" line="1364"/>
-        <location filename="../utils/quality.py" line="1538"/>
-        <location filename="../utils/quality.py" line="1545"/>
-        <location filename="../utils/quality.py" line="1559"/>
-        <location filename="../utils/quality.py" line="1642"/>
-        <location filename="../utils/quality.py" line="1649"/>
-        <location filename="../utils/quality.py" line="1801"/>
-        <location filename="../utils/quality.py" line="1809"/>
+        <location filename="../utils/quality.py" line="98"/>
+        <location filename="../utils/quality.py" line="249"/>
+        <location filename="../utils/quality.py" line="256"/>
+        <location filename="../utils/quality.py" line="270"/>
+        <location filename="../utils/quality.py" line="571"/>
+        <location filename="../utils/quality.py" line="1294"/>
+        <location filename="../utils/quality.py" line="1365"/>
+        <location filename="../utils/quality.py" line="1539"/>
+        <location filename="../utils/quality.py" line="1546"/>
+        <location filename="../utils/quality.py" line="1560"/>
+        <location filename="../utils/quality.py" line="1643"/>
+        <location filename="../utils/quality.py" line="1650"/>
+        <location filename="../utils/quality.py" line="1802"/>
+        <location filename="../utils/quality.py" line="1810"/>
+        <location filename="../utils/quality.py" line="2172"/>
+        <location filename="../utils/quality.py" line="2179"/>
+        <location filename="../utils/quality.py" line="2241"/>
+        <location filename="../utils/quality.py" line="2248"/>
         <source>Table {} not found in DB! {}</source>
         <translation>¡No se encontró la tabla {} en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="577"/>
+        <location filename="../utils/quality.py" line="578"/>
         <source>There are no points in layer &apos;{}&apos; to check for overlaps!</source>
         <translation>¡No hay puntos en la capa {} para revisar superposiciones!</translation>
     </message>
@@ -2432,35 +2436,35 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Puntos superpuestos en {}</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="614"/>
+        <location filename="../utils/quality.py" line="615"/>
         <source>A memory layer with {} overlapping points in &apos;{}&apos; has been added to the map!</source>
         <translation>¡Una capa temporal con {} puntos superpuestos en la capa &apos;{}&apos; ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="619"/>
+        <location filename="../utils/quality.py" line="620"/>
         <source>There are no overlapping points in layer &apos;{}&apos;!</source>
         <translation>¡No hay puntos superpuestos en la capa &apos;{}&apos;!</translation>
     </message>
     <message>
         <location filename="../utils/qgis_utils.py" line="1105"/>
-        <location filename="../utils/quality.py" line="87"/>
-        <location filename="../utils/quality.py" line="92"/>
-        <location filename="../utils/quality.py" line="420"/>
-        <location filename="../utils/quality.py" line="425"/>
-        <location filename="../utils/quality.py" line="467"/>
-        <location filename="../utils/quality.py" line="472"/>
-        <location filename="../utils/quality.py" line="638"/>
-        <location filename="../utils/quality.py" line="645"/>
-        <location filename="../utils/quality.py" line="962"/>
-        <location filename="../utils/quality.py" line="969"/>
-        <location filename="../utils/quality.py" line="1428"/>
-        <location filename="../utils/quality.py" line="1865"/>
-        <location filename="../utils/quality.py" line="1912"/>
+        <location filename="../utils/quality.py" line="88"/>
+        <location filename="../utils/quality.py" line="93"/>
+        <location filename="../utils/quality.py" line="421"/>
+        <location filename="../utils/quality.py" line="426"/>
+        <location filename="../utils/quality.py" line="468"/>
+        <location filename="../utils/quality.py" line="473"/>
+        <location filename="../utils/quality.py" line="639"/>
+        <location filename="../utils/quality.py" line="646"/>
+        <location filename="../utils/quality.py" line="963"/>
+        <location filename="../utils/quality.py" line="970"/>
+        <location filename="../utils/quality.py" line="1429"/>
+        <location filename="../utils/quality.py" line="1866"/>
+        <location filename="../utils/quality.py" line="1913"/>
         <source>Layer {} not found in DB! {}</source>
         <translation>¡No se encontró la capa {} en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="652"/>
+        <location filename="../utils/quality.py" line="653"/>
         <source>There are no plots to check &apos;plots should be covered by boundaries&apos;.</source>
         <translation>No hay terrenos para revisar &apos;los límites de Terrenos deben estar cubiertos por Linderos&apos;.</translation>
     </message>
@@ -2477,7 +2481,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡Todos los límites de Terrenos están cubiertos por Linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="103"/>
+        <location filename="../utils/quality.py" line="104"/>
         <source>There are no boundary points to check &apos;boundary points should be covered by boundary nodes&apos;.</source>
         <translation>No hay puntos de lindero para revisar &apos;los Puntos de Lindero deben estar cubiertos por nodos de Linderos&apos;.</translation>
     </message>
@@ -2486,17 +2490,17 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Los Puntos de Lindero deben estar cubiertos por nodos de Linderos</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="124"/>
+        <location filename="../utils/quality.py" line="125"/>
         <source>A memory layer with {} boundary points not covered by boundary nodes has been added to the map!</source>
         <translation>¡Una capa temporal con {} puntos de lindero no cubiertos por nodos de lindero ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="129"/>
+        <location filename="../utils/quality.py" line="130"/>
         <source>All boundary points are covered by boundary nodes!</source>
         <translation>¡Todos los Puntos de Lindero están cubiertos por nodos de Linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="976"/>
+        <location filename="../utils/quality.py" line="977"/>
         <source>There are no boundaries to check &apos;boundaries should be covered by plots&apos;.</source>
         <translation>No hay Linderos para revisar &apos;los Linderos deben estar cubiertos por límites de Terrenos&apos;.</translation>
     </message>
@@ -2521,117 +2525,143 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡Todos los límites de Terrenos están cubiertos por Linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="688"/>
+        <location filename="../utils/quality.py" line="689"/>
         <source>A memory layer with {} plots not covered by boundaries has been added to the map!</source>
         <translation>¡Una capa temporal con {} límites de terreno no cubiertos por linderos ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="692"/>
+        <location filename="../utils/quality.py" line="693"/>
         <source>All plots are covered by boundaries!</source>
         <translation>¡Todos los terrenos están cubiertos por linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1011"/>
+        <location filename="../utils/quality.py" line="1012"/>
         <source>A memory layer with {} boundaries not covered by plots has been added to the map!</source>
         <translation>¡Una capa temporal con {} linderos no cubiertos por límites de terreno ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1017"/>
+        <location filename="../utils/quality.py" line="1018"/>
         <source>All boundaries are covered by plots!</source>
         <translation>¡Todos los linderos están cubiertos por terrenos!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1350"/>
+        <location filename="../utils/quality.py" line="1351"/>
         <source>A memory layer with {} overlapping polygons in layer &apos;{}&apos; has been added to the map!</source>
         <translation>¡Una capa temporal con {} polígonos superpuestos en la capa &apos;{}&apos; ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1355"/>
+        <location filename="../utils/quality.py" line="1356"/>
         <source>There are no overlapping polygons in layer &apos;{}&apos;!</source>
         <translation>¡No hay polígonos superpuestos en la capa &apos;{}&apos;!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1372"/>
+        <location filename="../utils/quality.py" line="1373"/>
         <source>There are no boundaries to check for overlaps!</source>
         <translation>¡No hay linderos para revisar superposiciones!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1393"/>
+        <location filename="../utils/quality.py" line="1394"/>
         <source>There are no overlapping boundaries.</source>
         <translation>No hay linderos superpuestos.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1400"/>
+        <location filename="../utils/quality.py" line="1401"/>
         <source>A memory layer with {} overlapping boundaries (point intersections) has been added to the map.</source>
         <translation>Una capa temporal con {} linderos superpuestos (intersecciones tipo punto) ha sido agregada al mapa.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1405"/>
+        <location filename="../utils/quality.py" line="1406"/>
         <source>A memory layer with {} overlapping boundaries (line intersections) has been added to the map.</source>
         <translation>Una capa temporal con {} linderos superpuestos (intersecciones tipo línea) ha sido agregada al mapa.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1412"/>
+        <location filename="../utils/quality.py" line="1413"/>
         <source>Two memory layers with overlapping boundaries ({} point intersections and {} line intersections) have been added to the map.</source>
         <translation>Dos capas temporales con superposiciones de linderos ({} puntos superpuestos y {} líneas superpuestas) han sido agregadas al mapa.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1435"/>
+        <location filename="../utils/quality.py" line="1436"/>
         <source>There are no boundaries to check &apos;boundaries should not be split&apos;!</source>
         <translation>¡No hay linderos para revisar &apos;los Linderos deben terminar en cambio de colindancia&apos;!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1443"/>
+        <location filename="../utils/quality.py" line="1444"/>
         <source>There are no wrong boundaries!</source>
         <translation>¡No hay linderos mal definidos!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1980"/>
+        <location filename="../utils/quality.py" line="1981"/>
         <source>A memory layer with {} parcel errors has been added to the map!</source>
         <translation>¡Una capa temporal con {} errores en Predios ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1985"/>
+        <location filename="../utils/quality.py" line="1986"/>
         <source>Parcel-Right relationships are correct!</source>
         <translation>¡Las relaciones Predio-Derecho son correctas!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1998"/>
+        <location filename="../utils/quality.py" line="1999"/>
         <source>A memory layer with {} fractions which do not sum 1 has been added to the map!</source>
         <translation>¡Una capa temporal con {} fracciones que no suman 1 ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="2004"/>
+        <location filename="../utils/quality.py" line="2005"/>
         <source>Group Party Fractions are correct!</source>
         <translation>¡Las fracciones en las agrupaciones de interesados son correctas!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="2057"/>
+        <location filename="../utils/quality.py" line="2058"/>
         <source>A memory layer with {error_count} duplicate records from {table} has been added to the map!</source>
         <translation>¡Una capa temporal con {error_count} registros duplicados ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="2109"/>
-        <location filename="../utils/quality.py" line="2152"/>
+        <location filename="../utils/quality.py" line="2110"/>
+        <location filename="../utils/quality.py" line="2153"/>
         <source>A memory layer with {error_count} error record(s) from {table} has been added to the map!</source>
         <translation>¡Una capa temporal con {error_count} registros con errores de la tabla {table} ha sido agregada al mapa!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="2186"/>
+        <location filename="../utils/quality.py" line="2255"/>
+        <source>There are no buildings to check &apos;Building should be within Plots&apos;.</source>
+        <translation>No hay construcciones para revisar &apos;las construcciones deben estar dentro de un terreno&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="2225"/>
+        <source>A memory layer with {} buildings not within a plot has been added to the map!</source>
+        <translation>¡Una capa temporal con {} construcciones que no están dentro de su terreno correspondiente ha sido agregada al mapa!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="2229"/>
+        <source>All buildings are within a plot.</source>
+        <translation>Todas las construcciones están dentro de su terreno correspondiente.</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="2294"/>
+        <source>A memory layer with {} building units not within a plot has been added to the map!</source>
+        <translation>¡Una capa temporal con {} unidades de construcción que no están dentro de su terreno correspondiente ha sido agregada al mapa!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="2298"/>
+        <source>All building units are within a plot.</source>
+        <translation>Todas las unidades de construcción están dentro de su terreno correspondiente.</translation>
     </message>
     <message>
         <source>Wrong boundaries.</source>
         <translation type="vanished">Linderos mal definidos.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1463"/>
+        <location filename="../utils/quality.py" line="1464"/>
         <source>A memory layer with {} wrong boundaries has been added to the map!</source>
         <translation>¡Una capa temporal con {} linderos mal definidos ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1468"/>
+        <location filename="../utils/quality.py" line="1469"/>
         <source>There are no wrong boundaries.</source>
         <translation>No hay linderos mal definidos.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1486"/>
+        <location filename="../utils/quality.py" line="1487"/>
         <source>There are no boundaries to check for too long segments!</source>
         <translation>¡No hay linderos para revisar linderos con segmentos muy largos!</translation>
     </message>
@@ -2640,18 +2670,18 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Segmentos de lindero más largos que {}m.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1517"/>
+        <location filename="../utils/quality.py" line="1518"/>
         <source>A memory layer with {} boundary segments longer than {}m. has been added to the map!</source>
         <translation>¡Una capa temporal con {} segmentos de lindero más largos que {}m. ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1522"/>
+        <location filename="../utils/quality.py" line="1523"/>
         <source>All boundary segments are within the length tolerance for segments ({}m.)!</source>
         <translation>¡Todos los segmentos de lindero están dentro de la tolerancia de longitud para segmentos ({}m.)!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="262"/>
-        <location filename="../utils/quality.py" line="1552"/>
+        <location filename="../utils/quality.py" line="263"/>
+        <location filename="../utils/quality.py" line="1553"/>
         <source>There are no boundaries to check &apos;missing boundary points in boundaries&apos;.</source>
         <translation>No hay linderos para revisar &apos;nodos de linderos deben estar cubiertos por puntos de lindero&apos;.</translation>
     </message>
@@ -2660,23 +2690,23 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Nodos de Lindero sin Punto Lindero asociado</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1586"/>
+        <location filename="../utils/quality.py" line="1587"/>
         <source>Missing boundary point in boundary</source>
         <translation>Nodos de Lindero sin Punto Lindero asociado</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1610"/>
+        <location filename="../utils/quality.py" line="1611"/>
         <source>Relation found more than once in the PointBFS table</source>
         <translation>La relación entre Lindero y Punto de Lindero se encontró más de una vez en la tabla PuntoCCL</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1615"/>
+        <location filename="../utils/quality.py" line="1616"/>
         <source>Relation not found in the PointBFS table</source>
         <translation>La relación entre Lindero y Punto de Lindero no se encontró en la tabla PuntoCCL</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="291"/>
-        <location filename="../utils/quality.py" line="1622"/>
+        <location filename="../utils/quality.py" line="292"/>
+        <location filename="../utils/quality.py" line="1623"/>
         <source>A memory layer with {} boundary vertices with no associated boundary points or with boundary points wrongly registered in the PointBFS table been added to the map!</source>
         <translation>¡Una capa temporal con {} nodos de lindero sin punto de lindero asociado o con puntos de lindero registrados incorrectamente en la tabla PuntoCCL ha sido agregada al mapa!</translation>
     </message>
@@ -2685,63 +2715,63 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡Una capa temporal con {} nodos de lindero sin punto de lindero asociado ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="295"/>
-        <location filename="../utils/quality.py" line="1626"/>
+        <location filename="../utils/quality.py" line="296"/>
+        <location filename="../utils/quality.py" line="1627"/>
         <source>There are no missing boundary points in boundaries.</source>
         <translation>No hay nodos de linderos sin puntos de lindero asociados.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="431"/>
+        <location filename="../utils/quality.py" line="432"/>
         <source>There are no plots to check &apos;Plots should be covered by boundary points&apos;.</source>
         <translation>No hay terrenos para revisar &apos;los nodos de Terreno deben estar cubiertos por Puntos de Lindero&apos;.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="451"/>
+        <location filename="../utils/quality.py" line="452"/>
         <source>A memory layer with {} plot nodes not covered by boundary points has been added to the map!</source>
         <translation>¡Una capa temporal con {} nodos de terreno no cubiertos por puntos de lindero ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="456"/>
+        <location filename="../utils/quality.py" line="457"/>
         <source>All plot nodes are covered by boundary points!</source>
         <translation>¡Todos los nodos de Terreno están cubiertos por Puntos de Lindero!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="478"/>
+        <location filename="../utils/quality.py" line="479"/>
         <source>There are no boundary points to check &apos;boundary points should be covered by Plot nodes&apos;.</source>
         <translation>No hay puntos de lindero para revisar &apos;los Puntos de Lindero deben estar cubiertos por nodos de Terrenos&apos;.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="498"/>
+        <location filename="../utils/quality.py" line="499"/>
         <source>A memory layer with {} boundary points not covered by plot nodes has been added to the map!</source>
         <translation>¡Una capa temporal con {} puntos de lindero no cubiertos por nodos de terreno ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="503"/>
+        <location filename="../utils/quality.py" line="504"/>
         <source>All boundary points are covered by plot nodes!</source>
         <translation>¡Todos los Puntos de Lindero están cubiertos por nodos de Terrenos!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1656"/>
+        <location filename="../utils/quality.py" line="1657"/>
         <source>There are no buildings to check &apos;missing survey points in buildings&apos;.</source>
         <translation>No hay construcciones para revisar &apos;nodos de construcciones deben estar cubiertos por puntos de levantamiento&apos;.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1662"/>
+        <location filename="../utils/quality.py" line="1663"/>
         <source>Missing survey points in buildings</source>
         <translation>Nodos de Construcción sin Punto de Levantamiento asociado</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1682"/>
+        <location filename="../utils/quality.py" line="1683"/>
         <source>A memory layer with {} building vertices with no associated survey points has been added to the map!</source>
         <translation>¡Una capa temporal con {} nodos de construcciones sin punto de levantamiento asociado ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1686"/>
+        <location filename="../utils/quality.py" line="1687"/>
         <source>There are no missing survey points in buildings.</source>
         <translation>No hay puntos de levantamiento faltantes en las construcciones.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1701"/>
+        <location filename="../utils/quality.py" line="1702"/>
         <source>There are no boundaries to check for dangles.</source>
         <translation>No hay linderos para revisar nodos sin conectar.</translation>
     </message>
@@ -2750,22 +2780,22 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Nodos sin conectar en linderos</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1726"/>
+        <location filename="../utils/quality.py" line="1727"/>
         <source>A memory layer with {} boundary dangles has been added to the map!</source>
         <translation>¡Una capa temporal con {} nodos sin conectar en linderos ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1731"/>
+        <location filename="../utils/quality.py" line="1732"/>
         <source>Boundaries have no dangles!</source>
         <translation>¡Los linderos no tienen nodos sin conectar!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1817"/>
+        <location filename="../utils/quality.py" line="1818"/>
         <source>There are no Right of Way features to check &apos;Right of Way should not overlap buildings&apos;.</source>
         <translation>No hay servidumbres para revisar &apos;las Servidumbres no se deben superponer con Construcciones&apos;.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1824"/>
+        <location filename="../utils/quality.py" line="1825"/>
         <source>There are no buildings to check &apos;Right of Way should not overlap buildings&apos;.</source>
         <translation>No hay construcciones para revisar &apos;las Servidumbres no se deben superponer con Construcciones&apos;.</translation>
     </message>
@@ -2774,17 +2804,17 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Superposiciones entre Servidumbre y Construcción</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1851"/>
+        <location filename="../utils/quality.py" line="1852"/>
         <source>A memory layer with {} Right of Way-Building overlaps has been added to the map!</source>
         <translation>¡Una capa temporal con {} superposiciones tipo polígono entre Servidumbre y Construcción ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1856"/>
+        <location filename="../utils/quality.py" line="1857"/>
         <source>There are no Right of Way-Building overlaps.</source>
         <translation>No hay superposiciones entre Servidumbres y Construcciones.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1873"/>
+        <location filename="../utils/quality.py" line="1874"/>
         <source>There are no Plot features to check &apos;Plot should not have gaps&apos;.</source>
         <translation>No hay terrenos para revisar &apos;no deben haber huecos entre Terrenos&apos;.</translation>
     </message>
@@ -2793,17 +2823,17 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Huecos entre terrenos</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1899"/>
+        <location filename="../utils/quality.py" line="1900"/>
         <source>A memory layer with {} gaps in layer Plots has been added to the map!</source>
         <translation>¡Una capa temporal con {} huecos entre terrenos ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1904"/>
+        <location filename="../utils/quality.py" line="1905"/>
         <source>There are no gaps in layer Plot.</source>
         <translation>No hay huecos entre Terrenos.</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1920"/>
+        <location filename="../utils/quality.py" line="1921"/>
         <source>There are no Right Of Way features to check &apos;Right Of Way should not have Multipart geometries&apos;.</source>
         <translation>No hay servidumbres de paso para revisar &apos;las Servidumbres de paso no deben tener geometrías multiparte&apos;.</translation>
     </message>
@@ -2812,12 +2842,12 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Geometrías multiparte en servidumbres de paso</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1946"/>
+        <location filename="../utils/quality.py" line="1947"/>
         <source>A memory layer with {} multipart geometries in layer Right Of Way has been added to the map!</source>
         <translation>¡Una capa temporal con {} geometrías multiparte en la capa Servidumbres de paso ha sido agregada al mapa!</translation>
     </message>
     <message>
-        <location filename="../utils/quality.py" line="1951"/>
+        <location filename="../utils/quality.py" line="1952"/>
         <source>There are no multipart geometries in layer Right Of Way.</source>
         <translation>No hay geometrías multiparte en la capa servidumbres de paso.</translation>
     </message>
@@ -3232,115 +3262,145 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>Las Servidumbres de Paso no deben tener geometrías multiparte</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="162"/>
+        <location filename="../config/general_config.py" line="160"/>
+        <source>Buildings should be within Plots</source>
+        <translation>Las Construcciones deben estar dentro de su Terreno correspondiente</translation>
+    </message>
+    <message>
+        <location filename="../config/general_config.py" line="161"/>
+        <source>Building Units should be within Plots</source>
+        <translation>Las Unidades de Construcción deben estar dentro de su Terreno correspondiente</translation>
+    </message>
+    <message>
+        <location filename="../config/general_config.py" line="164"/>
         <source>Parcel should have one and only one Right</source>
         <translation>Los predios deben tener derecho asociado y pueden tener máximo un derecho de tipo Dominio asociado</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="163"/>
+        <location filename="../config/general_config.py" line="165"/>
         <source>Group Party Fractions should sum 1</source>
         <translation>Las fracciones de las agrupaciones de interesados deben sumar uno (1)</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="164"/>
+        <location filename="../config/general_config.py" line="166"/>
         <source>Table records should not be repeated</source>
         <translation>No deben haber registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="166"/>
+        <location filename="../config/general_config.py" line="168"/>
         <source>Check that the {department} field of the {parcel} table has two numerical characters</source>
         <translation>Revisar que el campo {department} de la tabla {parcel} tiene dos caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="167"/>
+        <location filename="../config/general_config.py" line="169"/>
         <source>Check that the {municipality} field of the {parcel} table has three numerical characters</source>
         <translation>Revisar que el campo {municipality} de la tabla {parcel} tiene tres caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="168"/>
+        <location filename="../config/general_config.py" line="170"/>
         <source>Check that the {zone} field of the {parcel} table has two numerical characters</source>
         <translation>Revisar que el campo {zone} de la tabla {parcel} tiene dos caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="169"/>
+        <location filename="../config/general_config.py" line="171"/>
         <source>Check that the {parcel_number} has 30 numerical characters</source>
         <translation>Revisar que el {parcel_number} tiene 30 caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="170"/>
+        <location filename="../config/general_config.py" line="172"/>
         <source>Check that the {parcel_number_before} has 20 numerical characters</source>
         <translation>Revisar que el {parcel_number_before} tiene 20 caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="171"/>
+        <location filename="../config/general_config.py" line="173"/>
         <source>Check that attributes are appropriate for parties of type natural</source>
         <translation>Revisar que los atributos son apropiados para interesados naturales</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="172"/>
+        <location filename="../config/general_config.py" line="174"/>
         <source>Check that attributes are appropriate for parties of type legal</source>
         <translation>Revisar que los atributos son apropiados para interesados jurídicos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="173"/>
+        <location filename="../config/general_config.py" line="175"/>
         <source>Check that the type of parcel corresponds to position 22 of the {parcel_number}</source>
         <translation>Revisar que el tipo de Predio corresponde a la posición 22 del {parcel_number}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="174"/>
+        <location filename="../config/general_config.py" line="176"/>
         <source>Check that Spatial Units associated with Parcels correspond to the parcel type</source>
         <translation>Revisar que las Unidades Espaciales asociadas a Predios correspondan al tipo de predio</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="177"/>
+        <location filename="../config/general_config.py" line="179"/>
         <source>Parcel does not have any Right associated</source>
         <translation>El Predio no tiene Derecho asociado</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="178"/>
+        <location filename="../config/general_config.py" line="180"/>
         <source>Parcel has more than one domain right associated</source>
         <translation>El Predio tiene más de un Derecho de dominio asociado</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="181"/>
+        <location filename="../config/general_config.py" line="183"/>
         <source>Plot nodes should be covered by boundary points</source>
         <translation>Los nodos de Terrenos deben estar cubiertos por Puntos de Lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="182"/>
+        <location filename="../config/general_config.py" line="184"/>
         <source>Plot is not covered by boundary</source>
         <translation>El terreno no está cubierto por linderos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="183"/>
+        <location filename="../config/general_config.py" line="185"/>
         <source>Boundary is not covered by plot</source>
         <translation>El lindero no está cubierto por terreno</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="184"/>
         <location filename="../config/general_config.py" line="186"/>
+        <location filename="../config/general_config.py" line="188"/>
         <source>Topological relationship between boundary and plot is not recorded in the {} table</source>
         <translation>La relación topológica entre lindero y terreno no está registrada en la tabla {}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="188"/>
+        <location filename="../config/general_config.py" line="190"/>
         <source>Topological relationship between boundary point and boundary is not recorded in the {} table</source>
         <translation>La relación topológica entre el punto lindero y el lindero no está registrada en la tabla {}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="189"/>
+        <location filename="../config/general_config.py" line="191"/>
         <source>Topological relationship between boundary point and boundary is duplicated in the {} table</source>
         <translation>La relación topológica entre el punto lindero y el lindero está duplicada en la tabla de {}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="190"/>
+        <location filename="../config/general_config.py" line="192"/>
         <source>Boundary point is not covered by boundary node</source>
         <translation>Punto lindero no está cubierto por un nodo de un lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="191"/>
+        <location filename="../config/general_config.py" line="193"/>
         <source>Boundary node is not covered by boundary point</source>
         <translation>Nodo lindero no está cubierto por un punto lindero</translation>
+    </message>
+    <message>
+        <location filename="../config/general_config.py" line="194"/>
+        <source>Building is not over a plot</source>
+        <translation>La Construcción no está dentro de ningún Terreno</translation>
+    </message>
+    <message>
+        <location filename="../config/general_config.py" line="195"/>
+        <source>Building crosses a plot&apos;s limit</source>
+        <translation>La Construcción cruza los límites de su Terreno</translation>
+    </message>
+    <message>
+        <location filename="../config/general_config.py" line="196"/>
+        <source>Building Unit is not over a plot</source>
+        <translation>La Unidad de Construcción no está dentro de ningún Terreno</translation>
+    </message>
+    <message>
+        <location filename="../config/general_config.py" line="197"/>
+        <source>Building Unit crosses a plot&apos;s limit</source>
+        <translation>La Unidad de Construcción cruza los límites de su Terreno</translation>
     </message>
     <message>
         <source>Plot is not covered by the boundary</source>
@@ -3355,8 +3415,8 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">La relación topológica entre el lindero y el terreno no esta registrada en la tabla {}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="185"/>
         <location filename="../config/general_config.py" line="187"/>
+        <location filename="../config/general_config.py" line="189"/>
         <source>Topological relationship between boundary and plot is duplicated in the {} table</source>
         <translation>La relación topológica entre lindero y terreno está duplicada en la tabla {}</translation>
     </message>

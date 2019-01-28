@@ -57,7 +57,6 @@ class TesQualityValidations(unittest.TestCase):
             restore_schema(test_connection_db)
 
     def test_find_duplicate_records(self):
-
         schema_name = 'test_ladm_col_logic_checks'
         self.db_connection = get_dbconn(schema_name)
         db = self.db_connection
@@ -82,7 +81,6 @@ class TesQualityValidations(unittest.TestCase):
                 self.assertIn(item, result, 'the record {error_item} is not duplicated in the table {table}'.format(error_item=item,table=table))
 
     def test_split_by_selected_boundary(self):
-
         print('\nINFO: Validation of the definition of selected boundary ...')
 
         gpkg_path = get_test_copy_path('geopackage/adjust_boundaries_cases.gpkg')
@@ -110,7 +108,6 @@ class TesQualityValidations(unittest.TestCase):
                                  'The geometries are invalid: case {case}'.format(case=i + 1))
 
     def test_split_by_boundary(self):
-
         print('\nINFO: Validation of the definition of boundaries...')
 
         gpkg_path = get_test_copy_path('geopackage/adjust_boundaries_cases.gpkg')
@@ -1309,6 +1306,38 @@ class TesQualityValidations(unittest.TestCase):
 
         for expected in expected_list:
             self.assertIn(expected, geometries)
+
+    def test_check_buildings_within_plots(self):
+        print('\nINFO: Validating buldings are within plots...')
+
+        gpkg_path = get_test_copy_path('geopackage/buildings_plots.gpkg')
+        uri = gpkg_path + '|layername={layername}'.format(layername='buildings')
+        building_layer = QgsVectorLayer(uri, 'buildings', 'ogr')
+        self.assertEqual(building_layer.featureCount(), 6)
+
+        uri = gpkg_path + '|layername={layername}'.format(layername='plots')
+        plot_layer = QgsVectorLayer(uri, 'plots', 'ogr')
+        self.assertEqual(plot_layer.featureCount(), 5)
+
+        buildings_with_no_plot, buildings_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(
+                    building_layer,
+                    plot_layer,
+                    "id")
+
+        self.assertEqual(len(buildings_with_no_plot), 1)
+        self.assertEqual(len(buildings_not_within_plot), 2)
+
+        self.assertEqual(buildings_with_no_plot[0]["id"], 5)
+        self.assertEqual(buildings_not_within_plot[0]["id"], 2)
+        self.assertEqual(buildings_not_within_plot[1]["id"], 6)
+
+        expected_geometry_no_plot = 'MultiPolygon (((-75.14985606919390193 9.50028842268738671, -75.14985606919390193 9.5006630929751168, -75.14922300560428425 9.50057265531945738, -75.14921008593918828 9.5001979850317273, -75.14985606919390193 9.50028842268738671)))'
+        expected_geometries_not_within_plot = [
+            'MultiPolygon (((-75.14258229774588926 9.49984915407418384, -75.14198799315154531 9.49982331474399544, -75.14192339482607963 9.49898353651287586, -75.14259521741097103 9.49881558086665123, -75.14258229774588926 9.49984915407418384)))',
+            'MultiPolygon (((-75.1430372948142633 9.49682077975437977, -75.14242022761496287 9.4980865586247436, -75.14136013781103429 9.49713722447197028, -75.14083800402700319 9.49791251403006953, -75.1406639594323309 9.49691571316965621, -75.1430372948142633 9.49682077975437977)))']
+        self.assertEqual(buildings_with_no_plot[0].geometry().asWkt(), expected_geometry_no_plot)
+        self.assertEqual(buildings_not_within_plot[0].geometry().asWkt(), expected_geometries_not_within_plot[0])
+        self.assertEqual(buildings_not_within_plot[1].geometry().asWkt(), expected_geometries_not_within_plot[1])
 
     def tearDownClass():
         print('tearDown test_boundaries_digitizing')
