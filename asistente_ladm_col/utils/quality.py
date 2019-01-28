@@ -2300,7 +2300,6 @@ class QualityUtils(QObject):
                                            "No errors found when checking '{rule}' for '{table}'!".format(rule=db.logic_validation_queries[rule]['desc_error'], table=table)))
 
         endTime = time.time()
-
         
         self.log_dialog_quality_text_content += LIST_VINEYARDS_CLOSE
         self.log_dialog_quality_text_content += CONTENT_SEPARATOR
@@ -2366,6 +2365,11 @@ class QualityUtils(QObject):
         self.log_quality_message_finish_emitted.emit("'{}'".format(title))
 
     def check_building_within_plots(self, db, title):
+        self.log_quality_message_ini_emitted.emit("'{}'".format(title))
+        self.log_dialog_quality_text_content += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
+
         res_layers = self.qgis_utils.get_layers(db, {
             BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}}, load=True)
@@ -2374,67 +2378,75 @@ class QualityUtils(QObject):
         plot_layer = res_layers[PLOT_TABLE]
 
         if building_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(BUILDING_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+            self.log_dialog_quality_text_content += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(BUILDING_TABLE, db.get_description()))
+          
+        elif plot_layer is None:
+            self.log_dialog_quality_text_content += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
+          
+        elif building_layer.featureCount() == 0:
+            self.log_dialog_quality_text_content += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
+                                           "There are no buildings to check 'Building should be within Plots'."))
 
-        if plot_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(PLOT_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+        else:  
+            error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                        translated_strings.CHECK_BUILDING_WITHIN_PLOTS,
+                                        "memory")
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField('building_id', QVariant.Int),
+                                        QgsField('error_type', QVariant.String)])
 
-        if building_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no buildings to check 'Building should be within Plots'."),
-                Qgis.Info)
-            return
+            error_layer.updateFields()
 
-        error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_BUILDING_WITHIN_PLOTS,
-                                     "memory")
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('building_id', QVariant.Int),
-                                     QgsField('error_type', QVariant.String)])
+            buildings_with_no_plot, buildings_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(building_layer, plot_layer)
 
-        error_layer.updateFields()
+            new_features = list()
+            for building_with_no_plot in buildings_with_no_plot:
+                new_feature = QgsVectorLayerUtils().createFeature(
+                                error_layer,
+                                building_with_no_plot.geometry(),
+                                {0: building_with_no_plot[ID_FIELD],
+                                1: translated_strings.ERROR_BUILDING_IS_NOT_OVER_A_PLOT})
+                new_features.append(new_feature)
 
-        buildings_with_no_plot, buildings_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(building_layer, plot_layer)
+            for building_not_within_plot in buildings_not_within_plot:
+                new_feature = QgsVectorLayerUtils().createFeature(
+                                error_layer,
+                                building_not_within_plot.geometry(),
+                                {0: building_not_within_plot[ID_FIELD],
+                                1: translated_strings.ERROR_BUILDING_CROSSES_A_PLOT_LIMIT})
+                new_features.append(new_feature)
 
-        new_features = list()
-        for building_with_no_plot in buildings_with_no_plot:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                            error_layer,
-                            building_with_no_plot.geometry(),
-                            {0: building_with_no_plot[ID_FIELD],
-                             1: translated_strings.ERROR_BUILDING_IS_NOT_OVER_A_PLOT})
-            new_features.append(new_feature)
+            data_provider.addFeatures(new_features)
 
-        for building_not_within_plot in buildings_not_within_plot:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                            error_layer,
-                            building_not_within_plot.geometry(),
-                            {0: building_not_within_plot[ID_FIELD],
-                             1: translated_strings.ERROR_BUILDING_CROSSES_A_PLOT_LIMIT})
-            new_features.append(new_feature)
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
 
-        data_provider.addFeatures(new_features)
+                self.log_dialog_quality_text_content += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
+                        "A memory layer with {} buildings not within a plot has been added to the map!").format(added_layer.featureCount()))
 
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
+            else:
+                self.log_dialog_quality_text_content += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils", 
+                        "All buildings are within a plot."))
 
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} buildings not within a plot has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
-        else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "All buildings are within a plot."), Qgis.Info)
+        endTime = time.time()
+
+        self.log_dialog_quality_text_content += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text_content += CONTENT_SEPARATOR
+        self.log_dialog_quality_text += "{}{} ({}) {}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                title, set_time_format(endTime - startTime), SUFFIX_TITLE_TOPOLOGICAL_RULE)
+        self.log_dialog_quality_text += self.log_dialog_quality_text_content
+        self.log_dialog_quality_text_content = ""
+
+        self.log_quality_message_finish_emitted.emit("'{}'".format(title))
 
     def check_building_unit_within_plots(self, db, title):
+        self.log_quality_message_ini_emitted.emit("'{}'".format(title))
+        self.log_dialog_quality_text_content += LIST_VINEYARDS_OPEN
+
+        startTime = time.time()
+        
         res_layers = self.qgis_utils.get_layers(db, {
             BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}}, load=True)
@@ -2443,62 +2455,64 @@ class QualityUtils(QObject):
         plot_layer = res_layers[PLOT_TABLE]
 
         if building_unit_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(BUILDING_UNIT_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+            self.log_dialog_quality_text_content += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(BUILDING_UNIT_TABLE, db.get_description()))
 
-        if plot_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(PLOT_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+        elif plot_layer is None:
+            self.log_dialog_quality_text_content += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
+                                           "Table {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
+          
+        elif building_unit_layer.featureCount() == 0:
+            self.log_dialog_quality_text_content += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
+                                           "There are no buildings to check 'Building should be within Plots'."))
 
-        if building_unit_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no buildings to check 'Building should be within Plots'."),
-                Qgis.Info)
-            return
+        else:  
+            error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                        translated_strings.CHECK_BUILDING_UNIT_WITHIN_PLOTS,
+                                        "memory")
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField('building_unit_id', QVariant.Int),
+                                        QgsField('error_type', QVariant.String)])
 
-        error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_BUILDING_UNIT_WITHIN_PLOTS,
-                                     "memory")
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('building_unit_id', QVariant.Int),
-                                     QgsField('error_type', QVariant.String)])
+            error_layer.updateFields()
 
-        error_layer.updateFields()
+            building_units_with_no_plot, building_units_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(building_unit_layer, plot_layer)
 
-        building_units_with_no_plot, building_units_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(building_unit_layer, plot_layer)
+            new_features = list()
+            for building_unit_with_no_plot in building_units_with_no_plot:
+                new_feature = QgsVectorLayerUtils().createFeature(
+                                error_layer,
+                                building_unit_with_no_plot.geometry(),
+                                {0: building_unit_with_no_plot[ID_FIELD],
+                                1: translated_strings.ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT})
+                new_features.append(new_feature)
 
-        new_features = list()
-        for building_unit_with_no_plot in building_units_with_no_plot:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                            error_layer,
-                            building_unit_with_no_plot.geometry(),
-                            {0: building_unit_with_no_plot[ID_FIELD],
-                             1: translated_strings.ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT})
-            new_features.append(new_feature)
+            for building_unit_not_within_plot in building_units_not_within_plot:
+                new_feature = QgsVectorLayerUtils().createFeature(
+                                error_layer,
+                                building_unit_not_within_plot.geometry(),
+                                {0: building_unit_not_within_plot[ID_FIELD],
+                                1: translated_strings.ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT})
+                new_features.append(new_feature)
 
-        for building_unit_not_within_plot in building_units_not_within_plot:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                            error_layer,
-                            building_unit_not_within_plot.geometry(),
-                            {0: building_unit_not_within_plot[ID_FIELD],
-                             1: translated_strings.ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT})
-            new_features.append(new_feature)
+            data_provider.addFeatures(new_features)
 
-        data_provider.addFeatures(new_features)
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
 
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
+                self.log_dialog_quality_text_content += "{}{}".format(NEW_VINEYARDS_LIST_ERROR, QCoreApplication.translate("QGISUtils",
+                        "A memory layer with {} building units not within a plot has been added to the map!").format(added_layer.featureCount()))
+            else:
+                self.log_dialog_quality_text_content += "{}{}".format(NEW_VINEYARDS_LIST_CORRECT, QCoreApplication.translate("QGISUtils", 
+                        "All building units are within a plot."))
+        
+        endTime = time.time()
+        
+        self.log_dialog_quality_text_content += LIST_VINEYARDS_CLOSE
+        self.log_dialog_quality_text_content += CONTENT_SEPARATOR
+        self.log_dialog_quality_text += "{}{} ({}) {}".format(PREFIX_TITLE_TOPOLOGICAL_RULE, 
+                title, set_time_format(endTime - startTime), SUFFIX_TITLE_TOPOLOGICAL_RULE)
+        self.log_dialog_quality_text += self.log_dialog_quality_text_content
+        self.log_dialog_quality_text_content = ""
 
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} building units not within a plot has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
-        else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "All building units are within a plot."), Qgis.Info)
+        self.log_quality_message_finish_emitted.emit("'{}'".format(title))
