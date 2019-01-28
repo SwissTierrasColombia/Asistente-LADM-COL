@@ -59,6 +59,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self.translatable_config_strings = TranslatableConfigStrings()
         self._ext_address_layer = None
         self._plot_layer = None
+        self._custom_layer = None
 
         self.restore_settings()
 
@@ -115,7 +116,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Associate Building ExtAddress")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION2_POINTS)
 
-        elif self.rad_to_building_unit.isChecked():
+        else: #self.rad_to_building_unit.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
@@ -139,6 +140,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
             self._ext_address_layer = res_layers[EXTADDRESS_TABLE]
             self._plot_layer = res_layers[PLOT_TABLE]
+            self.iface.setActiveLayer(self._plot_layer)
 
             self.check_selected_features(self._plot_layer)
             self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
@@ -148,7 +150,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                     "Select Building"))
             self.btn_select.clicked.connect(self.select_building)
-        elif self.rad_to_building_unit.isChecked():
+        else: #self.rad_to_building_unit.isChecked():
             self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                     "Select Building Unit"))
             self.btn_select.clicked.connect(self.select_building_unit)
@@ -157,7 +159,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
         if layer.selectedFeatureCount() == 1:
             self.lbl_selected.setText(QCoreApplication.translate("AssociateExtAddressWizard",
-                                          str(layer.selectedFeatureCount()) + " Feature(s) Selected"))
+                                          "1 Feature Selected"))
             self.button(self.FinishButton).setDisabled(False)
         elif layer.selectedFeatureCount() > 1:
             self.show_message(QCoreApplication.translate("AssociateExtAddressWizard",
@@ -168,6 +170,47 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         else:
             self.button(self.FinishButton).setDisabled(True)
 
+
+    def select_plot(self):
+        #Make wizard disappear
+        self.setVisible(False)
+        #Create maptool
+        self.maptool_id = QgsMapToolIdentifyFeature(self.canvas)
+        self._custom_layer = self._plot_layer
+        self.maptool_id.setLayer(self._custom_layer)
+        cursor = QCursor()
+        cursor.setShape(Qt.CrossCursor)
+        self.maptool_id.setCursor(cursor)
+        self.iface.mapCanvas().setMapTool(self.maptool_id)
+        self.maptool_id.featureIdentified.connect(self.get_feature_id)
+
+    def select_building(self):
+        print("Aun no estoy listo para asociar construcciones")
+        self.maptool_id.featureIdentified.disconnect(self.get_feature_id)
+        self.log.logMessage("Parcel's featureIdentified SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+        pass
+
+    def select_building_unit(self):
+        print("Aun no estoy listo para asociar unidades de construccion")
+        self.maptool_id.featureIdentified.disconnect(self.get_feature_id)
+        self.log.logMessage("Parcel's featureIdentified SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+        pass
+
+    def get_feature_id(self, feature):
+        #Make wizard appear
+        print("El id del terreno es " + str(feature.id()))
+        self.setVisible(True)
+        if feature:
+            self.lbl_selected.setText(QCoreApplication.translate("AssociateExtAddressWizard",
+                                    "1 Feature Selected"))
+            self._custom_layer.selectByIds([feature.id()])
+
+        self.iface.mapCanvas().setMapTool(self.maptool)
+
+        self.check_selected_features(self._custom_layer)
+
+        self.maptool_id.featureIdentified.disconnect(self.get_feature_id)
+        self.log.logMessage("Parcel's featureIdentified SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
 
     def finished_dialog(self):
         self.save_settings()
@@ -198,52 +241,8 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         elif self.rad_to_building.isChecked():
             self.prepare_extdirection_building_creation()
 
-        elif self.rad_to_building_unit.isChecked():
+        else: #self.rad_to_building_unit.isChecked():
             self.prepare_extdirection_building_unit_creation()
-
-
-    def select_plot(self):
-
-        self.setVisible(False)
-        self.maptool_id = QgsMapToolIdentifyFeature(self.canvas)
-        self.maptool_id.setLayer(self._plot_layer)
-        cursor = QCursor()
-        cursor.setShape(Qt.CrossCursor)
-        self.maptool_id.setCursor(cursor)
-        self.iface.mapCanvas().setMapTool(self.maptool_id)
-        self.maptool_id.featureIdentified.connect(self.get_feature_id)
-
-
-    def get_feature_id(self, feature):
-        print("El id del terreno es " + str(feature.id()))
-        self.setVisible(True)
-        if feature:
-            self.lbl_selected.setText(QCoreApplication.translate("AssociateExtAddressWizard",
-                                    "1 Plot Selected"))
-            self._plot_layer.selectByIds([feature.id()])
-
-        self.iface.mapCanvas().setMapTool(self.maptool)
-
-        self.check_selected_features(self._plot_layer)
-
-        self.maptool_id.featureIdentified.disconnect(self.get_feature_id)
-        self.log.logMessage("Parcel's featureIdentified SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
-
-    def select_building(self):
-        print("Aun no estoy listo para asociar construcciones")
-        self.maptool_id.featureIdentified.disconnect(self.get_feature_id)
-        self.log.logMessage("Parcel's featureIdentified SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
-        pass
-
-    def select_building_unit(self):
-        print("Aun no estoy listo para asociar unidades de construccion")
-        self.maptool_id.featureIdentified.disconnect(self.get_feature_id)
-        self.log.logMessage("Parcel's featureIdentified SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
-        pass
-
-    def activate_wizard(self):
-        self.setVisible(True)
-        self.iface.mapCanvas().setMapTool(self.maptool)
 
     def prepare_extdirection_plot_creation(self):
         # Load layers
