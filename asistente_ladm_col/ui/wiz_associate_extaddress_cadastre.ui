@@ -241,7 +241,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWizardPage" name="wizardPage">
+  <widget class="QWizardPage" name="wizardPage2">
    <widget class="QSplitter" name="splitter_2">
     <property name="geometry">
      <rect>
