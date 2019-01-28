@@ -29,7 +29,6 @@ from qgis.PyQt.QtWidgets import QAction, QWizard
 
 import processing
 from ..utils import get_ui_class
-from ..utils.custom_selection import CustomSelection
 from ..config.table_mapping_config import (EXTADDRESS_TABLE,
                                            BUILDING_TABLE,
                                            BUILDING_UNIT_TABLE,
@@ -54,7 +53,6 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self.canvas = self.iface.mapCanvas()
         self.maptool = self.iface.mapCanvas().mapTool()
         self.maptool_id = None
-        self.custom_selection = CustomSelection(self.canvas)
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
 
@@ -179,7 +177,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self.maptool_id = QgsMapToolIdentifyFeature(self.canvas)
         self.maptool_id.setLayer(self._plot_layer)
         cursor = QCursor()
-        cursor.setShape(Qt.WhatsThisCursor)
+        cursor.setShape(Qt.CrossCursor)
         self.maptool_id.setCursor(cursor)
         #tool.after_click.connect(self.activate_wizard)
         self.iface.mapCanvas().setMapTool(self.maptool_id)
@@ -192,16 +190,23 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         if feature:
             self.lbl_selected.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                     "1 Plot Selected"))
-            #self._plot_layer.selectByIds(feature.id())
+            self._plot_layer.selectByIds([feature.id()])
 
         self.iface.mapCanvas().setMapTool(self.maptool)
 
+        self.maptool_id.featureIdentified.disconnect(self.get_feature_id)
+        self.log.logMessage("Parcel's featureIdentified SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+
     def select_building(self):
         print("Aun no estoy listo para asociar construcciones")
+        self.maptool_id.featureIdentified.disconnect(self.get_feature_id)
+        self.log.logMessage("Parcel's featureIdentified SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         pass
 
     def select_building_unit(self):
         print("Aun no estoy listo para asociar unidades de construccion")
+        self.maptool_id.featureIdentified.disconnect(self.get_feature_id)
+        self.log.logMessage("Parcel's featureIdentified SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         pass
 
     def activate_wizard(self):
