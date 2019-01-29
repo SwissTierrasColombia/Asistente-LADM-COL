@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>InterlisImportSchema</class>
- <widget class="QDialog" name="InterlisImportSchema">
+ <class>InterlisExportData</class>
+ <widget class="QDialog" name="InterlisExportData">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>443</width>
-    <height>519</height>
+    <width>431</width>
+    <height>493</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,9 +17,9 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Create LADM-COL structure</string>
+   <string>Export Data</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_5">
+  <layout class="QGridLayout" name="gridLayout_4">
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -70,7 +70,77 @@
      </property>
      <widget class="QWidget" name="page">
       <layout class="QGridLayout" name="gridLayout_7">
-       <item row="1" column="0">
+       <item row="4" column="0">
+        <widget class="QGroupBox" name="ili_config">
+         <property name="title">
+          <string>Interlis</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>XTF File</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="xtf_file_line_edit"/>
+          </item>
+          <item row="0" column="2">
+           <widget class="QToolButton" name="xtf_file_browse_button">
+            <property name="toolTip">
+             <string>Browse XTF files</string>
+            </property>
+            <property name="text">
+             <string>…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Models</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <widget class="QListView" name="export_models_list_view">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::NoSelection</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_1">
+         <item>
+          <widget class="QProgressBar" name="progress_bar">
+           <property name="value">
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDialogButtonBox" name="buttonBox">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="standardButtons">
+            <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0">
         <widget class="QGroupBox" name="gpkg_config">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
@@ -82,15 +152,15 @@
           <string>GeoPackage</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_6">
+          <item row="0" column="2">
+           <widget class="QLineEdit" name="gpkg_file_line_edit"/>
+          </item>
           <item row="0" column="1">
            <widget class="QLabel" name="label_9">
             <property name="text">
              <string>Database File</string>
             </property>
            </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QLineEdit" name="gpkg_file_line_edit"/>
           </item>
           <item row="0" column="3">
            <widget class="QToolButton" name="gpkg_file_browse_button">
@@ -105,33 +175,7 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QGroupBox" name="ili_config">
-         <property name="title">
-          <string>Interlis</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>Models</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QListWidget" name="import_models_list_widget">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="3" column="0">
+       <item row="5" column="0">
         <widget class="QgsCollapsibleGroupBox" name="log_config">
          <property name="maximumSize">
           <size>
@@ -193,16 +237,19 @@
          </property>
          <layout class="QGridLayout" name="gridLayout">
           <item row="1" column="1">
-           <widget class="QLineEdit" name="schema_name_line_edit">
-            <property name="placeholderText">
-             <string/>
+           <widget class="QListWidget" name="schema_names_list_widget">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Schema Name</string>
+             <string>Schema Names</string>
             </property>
            </widget>
           </item>
@@ -240,27 +287,6 @@
          </layout>
         </widget>
        </item>
-       <item row="4" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_1">
-         <item>
-          <widget class="QProgressBar" name="progress_bar">
-           <property name="value">
-            <number>0</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDialogButtonBox" name="buttonBox">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="standardButtons">
-            <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="page_2"/>
@@ -287,12 +313,12 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>InterlisImportSchema</receiver>
+   <receiver>InterlisExportData</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>405</x>
+     <y>575</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -303,12 +329,12 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>InterlisImportSchema</receiver>
+   <receiver>InterlisExportData</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>405</x>
+     <y>575</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

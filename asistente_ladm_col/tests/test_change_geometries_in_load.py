@@ -7,7 +7,7 @@ from qgis.testing import (unittest,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import (import_qgismodelbaker,
+from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             get_dbconn,
                                             restore_schema,
                                             run_etl_model,
@@ -16,7 +16,7 @@ from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.tests.utils import get_test_copy_path
 from asistente_ladm_col.config.table_mapping_config import BOUNDARY_POINT_TABLE
 
-import_qgismodelbaker()
+import_qgis_model_baker()
 
 
 class TestGeomsLoad(unittest.TestCase):

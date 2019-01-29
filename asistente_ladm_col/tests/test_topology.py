@@ -6,11 +6,11 @@ from qgis.testing import (unittest,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import (import_qgismodelbaker,
+from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             get_test_copy_path)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
-import_qgismodelbaker()
+import_qgis_model_baker()
 
 class TestTopology(unittest.TestCase):
 

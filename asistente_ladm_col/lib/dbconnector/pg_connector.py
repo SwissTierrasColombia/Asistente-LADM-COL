@@ -18,6 +18,7 @@
 """
 import psycopg2
 import psycopg2.extras
+from psycopg2 import ProgrammingError
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsWkbTypes,
                        Qgis,
@@ -752,8 +753,12 @@ class PGConnector(DBConnector):
             if not res:
                 return (res, msg)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur.execute(query)
-        return cur.fetchall()
+
+        try:
+            cur.execute(query)
+            return cur.fetchall()
+        except ProgrammingError:
+            return None
 
     def execute_sql_query_dict_cursor(self, query):
         """
@@ -773,7 +778,13 @@ class PGConnector(DBConnector):
         query = """
                     SELECT n.nspname as "schema_name"
                     FROM pg_catalog.pg_namespace n
-                    WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema'
+                    WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema' AND nspname <> 'public'
                     ORDER BY 1"""
 
-        return self.execute_sql_query(query)
+        result = self.execute_sql_query(query)
+        return result if not isinstance(result, tuple) else None
+
+    def _get_models(self, dbschema):
+        query = "SELECT modelname FROM {schema}.t_ili2db_model".format(schema=dbschema)
+        result = self.execute_sql_query(query)
+        return result if not isinstance(result, tuple) else None

@@ -16,45 +16,42 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.core import Qgis
-from qgis.gui import QgsMessageBar
-
-from qgis.PyQt.QtCore import (Qt,
-                              QCoreApplication,
-                              QSettings)
-from qgis.PyQt.QtWidgets import (QDialog,
-                                 QSizePolicy,
-                                 QDialogButtonBox)
-from qgis.PyQt.QtGui import (QColor,
-                             QValidator,
-                             QStandardItemModel,
-                             QStandardItem)
-
 from QgisModelBaker.libili2db import iliimporter
 from QgisModelBaker.libili2db.ili2dbconfig import (SchemaImportConfiguration,
                                                    BaseConfiguration)
 from QgisModelBaker.libili2db.ili2dbutils import color_log_text
-from QgisModelBaker.libili2db.iliimporter import JavaNotFoundError
 from QgisModelBaker.libili2db.ilicache import IliCache
-
-from ...utils.qt_utils import (Validators,
-                               NonEmptyStringValidator,
-                               FileValidator,
-                               make_file_selector,
-                               make_save_file_selector,
-                               OverrideCursor)
+from QgisModelBaker.libili2db.iliimporter import JavaNotFoundError
+from qgis.PyQt.QtCore import (Qt,
+                              QCoreApplication,
+                              QRegExp,
+                              QSettings)
+from qgis.PyQt.QtGui import (QColor,
+                             QValidator,
+                             QRegExpValidator)
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QListWidgetItem,
+                                 QSizePolicy,
+                                 QDialogButtonBox)
+from qgis.core import Qgis
+from qgis.gui import QgsMessageBar
 
 from ...config.general_config import (DEFAULT_EPSG,
                                       DEFAULT_INHERITANCE,
                                       DEFAULT_MODEL_NAMES_CHECKED)
-
 from ...lib.dbconnector.pg_connector import PGConnector
 from ...utils import get_ui_class
+from ...utils.qt_utils import (Validators,
+                               FileValidator,
+                               make_file_selector,
+                               make_save_file_selector,
+                               OverrideCursor)
 from ...resources_rc import *
 
 DIALOG_UI = get_ui_class('model_baker/dlg_import_schema.ui')
 
 class DialogImportSchema(QDialog, DIALOG_UI):
+
     def __init__(self, iface, db, qgis_utils):
         QDialog.__init__(self)
         self.iface = iface
@@ -66,27 +63,24 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.setupUi(self)
 
         self.type_combo_box.clear()
-        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportSchema','Interlis (use PostGIS)'), 'ili2pg')
-        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportSchema','Interlis (use GeoPackage)'), 'ili2gpkg')
+        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportSchema','Use PostgreSQL/PostGIS'), 'ili2pg')
+        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportSchema','Use GeoPackage'), 'ili2gpkg')
         self.type_combo_box.currentIndexChanged.connect(self.type_changed)
         self.type_changed()
 
         self.schema_name_line_edit.setPlaceholderText(QCoreApplication.translate('DialogImportSchema', "[Name of the schema to be created]"))
         self.validators = Validators()
-        nonEmptyValidator = NonEmptyStringValidator()
-        self.schema_name_line_edit.setValidator(nonEmptyValidator)
-        self.schema_name_line_edit.textChanged.connect(self.validators.validate_line_edits)
+
+        # schema name mustn't have special characters
+        regex = QRegExp("[a-zA-Z0-9_]+")
+        validator = QRegExpValidator(regex)
+        self.schema_name_line_edit.setValidator(validator)
+        self.schema_name_line_edit.setMaxLength(63)
+        self.schema_name_line_edit.textChanged.connect(self.validators.validate_line_edits_lower_case)
         self.schema_name_line_edit.textChanged.emit(self.schema_name_line_edit.text())
 
-        self.qmodels_ilimodels = QStandardItemModel()
-        for modelname in DEFAULT_MODEL_NAMES_CHECKED:
-            item = QStandardItem(modelname)
-            item.setCheckable(True)
-            item.setEditable(False)
-            item.setCheckState(DEFAULT_MODEL_NAMES_CHECKED[modelname])
-            self.qmodels_ilimodels.appendRow(item)
-        self.import_models_list_view.setModel(self.qmodels_ilimodels)
-
+        self.update_import_models()
+        self.previous_item = QListWidgetItem()
 
         # PG
         self.db_connect_label.setToolTip(self.db.get_uri_without_password())
@@ -107,6 +101,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.gpkgSaveFileValidator = FileValidator(pattern='*.gpkg', allow_non_existing=True)
         self.gpkgOpenFileValidator = FileValidator(pattern='*.gpkg')
         self.gpkg_file_line_edit.textChanged.connect(self.validators.validate_line_edits)
+        self.restore_configuration()
 
         # LOG
         self.log_config.setTitle(QCoreApplication.translate('DialogImportSchema', 'Show log'))
@@ -119,20 +114,47 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.clear()
         self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self.buttonBox.addButton(QCoreApplication.translate('DialogImportSchema', 'Import schema'), QDialogButtonBox.AcceptRole)
+        self.buttonBox.addButton(QCoreApplication.translate('DialogImportSchema', 'Create LADM-COL structure'), QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
 
+    def update_import_models(self):
+        for modelname in DEFAULT_MODEL_NAMES_CHECKED:
+            item = QListWidgetItem(modelname)
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+            item.setCheckState(DEFAULT_MODEL_NAMES_CHECKED[modelname])
+            self.import_models_list_widget.addItem(item)
+        self.import_models_list_widget.itemClicked.connect(self.on_item_clicked_import_model)
+        self.import_models_list_widget.itemChanged.connect(self.on_itemchanged_import_model)
+
+    def on_item_clicked_import_model(self, item):
+        # disconnect signal to do changes in the items
+        self.import_models_list_widget.itemChanged.disconnect(self.on_itemchanged_import_model)
+        if self.previous_item.text() != item.text():
+            if item.checkState() == Qt.Checked:
+                item.setCheckState(Qt.Unchecked)
+            else:
+                item.setCheckState(Qt.Checked)
+        # connect signal to check when the items change
+        self.import_models_list_widget.itemChanged.connect(self.on_itemchanged_import_model)
+        self.previous_item = item
+
+    def on_itemchanged_import_model(self, item):
+        if self.previous_item.text() != item.text():
+            item.setSelected(True)
+        self.previous_item = item
+
     def get_checked_models(self):
         checked_models = list()
-        for index in range(self.qmodels_ilimodels.rowCount()):
-            item = self.qmodels_ilimodels.item(index)
+        for index in range(self.import_models_list_widget.count()):
+            item = self.import_models_list_widget.item(index)
             if item.checkState() == Qt.Checked:
                 checked_models.append(item.text())
         return checked_models
 
     def show_settings(self):
         self.qgis_utils.get_settings_dialog().exec_()
+        QCoreApplication.processEvents()
         self.db = self.qgis_utils.get_db_connection()
         self.db_connect_label.setToolTip(self.db.get_uri_without_password())
         self.db_connect_label.setText(self.db.dbname)
@@ -141,24 +163,24 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         configuration = self.updated_configuration()
 
         if not self.get_checked_models():
-            message_error = QCoreApplication.translate('DialogImportSchema','Please set a valid INTERLIS model(s) before creating the project.')
+            message_error = QCoreApplication.translate('DialogImportSchema','Please set a valid model(s) before creating the LADM-COL structure.')
             self.txtStdout.setText(message_error)
-            self.show_message(message_error, Qgis.Critical)
-            self.import_models_list_view.setFocus()
+            self.show_message(message_error, Qgis.Warning)
+            self.import_models_list_widget.setFocus()
             return
 
         if self.type_combo_box.currentData() == 'ili2pg':
             if not self.schema_name_line_edit.text().strip():
-                message_error = QCoreApplication.translate('DialogImportSchema','Please set a valid schema name before creating the project.')
+                message_error = QCoreApplication.translate('DialogImportSchema','Please set a valid schema name before creating the LADM-COL structure.')
                 self.txtStdout.setText(message_error)
-                self.show_message(message_error, Qgis.Critical)
+                self.show_message(message_error, Qgis.Warning)
                 self.schema_name_line_edit.setFocus()
                 return
         elif self.type_combo_box.currentData() == 'ili2gpkg':
             if not configuration.dbfile or self.gpkg_file_line_edit.validator().validate(configuration.dbfile, 0)[0] != QValidator.Acceptable:
-                message_error = QCoreApplication.translate("DialogImportSchema", 'Please set a valid database file before creating the project.')
+                message_error = QCoreApplication.translate("DialogImportSchema", 'Please set a valid database file before creating the LADM-COL structure.')
                 self.txtStdout.setText(message_error)
-                self.show_message(message_error, Qgis.Critical)
+                self.show_message(message_error, Qgis.Warning)
                 self.gpkg_file_line_edit.setFocus()
                 return
 
@@ -170,8 +192,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             res, msg = _db_connector.test_connection()
             if res:
                 if _db_connector._schema_exists():
-                    message_error = QCoreApplication.translate("DialogImportSchema", 'Schema {} exist, please set a valid schema name before creating the project.'.format(configuration.dbschema))
-                    self.show_message(message_error, Qgis.Critical)
+                    message_error = QCoreApplication.translate("DialogImportSchema", 'Schema {} exist, please set a valid schema name before creating the LADM-COL structure.'.format(configuration.dbschema))
+                    self.show_message(message_error, Qgis.Warning)
                     self.print_new_info(message_error)
                     return
 
@@ -197,6 +219,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                 if importer.run() != iliimporter.Importer.SUCCESS:
                     self.enable()
                     self.progress_bar.hide()
+                    self.show_message(QCoreApplication.translate('DialogImportSchema', 'An error occurred when creating the LADM-COL structure'), Qgis.Warning)
                     return
             except JavaNotFoundError:
                 self.txtStdout.setTextColor(QColor('#000000'))
@@ -212,6 +235,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
             self.print_info(QCoreApplication.translate('DialogImportSchema', '\nDone!'), '#004905')
+            self.show_message(QCoreApplication.translate('DialogImportSchema', 'Creation of the LADM-COL structure was successfully completed'), Qgis.Success)
 
     def save_configuration(self, configuration):
         settings = QSettings()
@@ -275,7 +299,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def on_process_finished(self, exit_code, result):
         if exit_code == 0:
             color = '#004905'
-            message = QCoreApplication.translate('DialogImportSchema', 'Interlis model(s) successfully imported into the database!')
+            message = QCoreApplication.translate('DialogImportSchema', 'Model(s) successfully imported into the database!')
         else:
             color = '#aa2222'
             message = QCoreApplication.translate('DialogImportSchema','Finished with errors!')
@@ -304,10 +328,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.buttonBox.setEnabled(True)
 
     def show_message(self, message, level):
-        if level == Qgis.Warning:
-            self.bar.pushMessage(message, Qgis.Info, 10)
-        elif level == Qgis.Critical:
-            self.bar.pushMessage(message, Qgis.Warning, 10)
+        self.bar.pushMessage("Asistente LADM_COL", message, level, duration = 0)
 
     def type_changed(self):
         self.progress_bar.hide()

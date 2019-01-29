@@ -135,7 +135,7 @@ def get_test_copy_path(path):
     copyfile(src_path, dst_path)
     return dst_path
 
-def import_qgismodelbaker():
+def import_qgis_model_baker():
     global iface
     plugin_found = "QgisModelBaker" in qgis.utils.plugins
     if not plugin_found:
@@ -143,7 +143,7 @@ def import_qgismodelbaker():
         pg = QgisModelBaker.classFactory(iface)
         qgis.utils.plugins["QgisModelBaker"] = pg
 
-def unload_qgismodelbaker():
+def unload_qgis_model_baker():
     global iface
     plugin_found = "QgisModelBaker" in qgis.utils.plugins
     if plugin_found:

@@ -65,8 +65,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.connection_is_dirty = False
 
         self.cbo_db_source.clear()
-        self.cbo_db_source.addItem(self.tr('PostgreSQL / PostGIS'), 'pg')
-        self.cbo_db_source.addItem(self.tr('GeoPackage'), 'gpkg')
+        self.cbo_db_source.addItem(QCoreApplication.translate("SettingsDialog", 'PostgreSQL / PostGIS'), 'pg')
+        self.cbo_db_source.addItem(QCoreApplication.translate("SettingsDialog", 'GeoPackage'), 'gpkg')
         self.cbo_db_source.currentIndexChanged.connect(self.db_source_changed)
 
         # Set connections

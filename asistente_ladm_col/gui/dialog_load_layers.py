@@ -64,7 +64,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
         self.cbo_select_predefined_tables.addItem("", []) # By default
 
         for name, layer_list in LAYER_SETS.items():
-            self.cbo_select_predefined_tables.addItem(self.tr(name), layer_list)
+            self.cbo_select_predefined_tables.addItem(name, layer_list)
 
         self.cbo_select_predefined_tables.currentIndexChanged.connect(self.select_predefined_changed)
 

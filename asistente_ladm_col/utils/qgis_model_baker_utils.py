@@ -46,8 +46,8 @@ class QgisModelBakerUtils(QObject):
 
     def get_generator(self, db):
         if 'QgisModelBaker' in qgis.utils.plugins:
-            qgismodelbaker = qgis.utils.plugins["QgisModelBaker"]
-            generator = qgismodelbaker.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
+            QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
+            generator = QgisModelBaker.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
                 db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             return generator
         else:
@@ -72,17 +72,18 @@ class QgisModelBakerUtils(QObject):
         between layers being loaded, but not when a layer already
         loaded has a relation or is part of a bag of enum. For
         that case, we use a cached set of relations and bags of
+        that case, we use a cached set of relations and bags of
         enums that we get only once per session and configure in
         the Asistente LADM_COL.
         """
         if 'QgisModelBaker' in qgis.utils.plugins:
-            qgismodelbaker = qgis.utils.plugins["QgisModelBaker"]
-            generator = qgismodelbaker.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
+            QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
+            generator = QgisModelBaker.get_generator()("ili2pg" if db.mode=="pg" else "ili2gpkg",
                 db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             layers = generator.layers(layer_list)
             relations, bags_of_enum = generator.relations(layers, layer_list)
             legend = generator.legend(layers, ignore_node_names=[translated_strings.ERROR_LAYER_GROUP])
-            qgismodelbaker.create_project(layers, relations, bags_of_enum, legend, auto_transaction=False)
+            QgisModelBaker.create_project(layers, relations, bags_of_enum, legend, auto_transaction=False)
         else:
             self.log.logMessage(
                 "El plugin QGIS Model Baker es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",
@@ -147,12 +148,12 @@ class QgisModelBakerUtils(QObject):
 
     def get_first_index_for_layer_type(self, layer_type, group=QgsProject.instance().layerTreeRoot()):
         if 'QgisModelBaker' in qgis.utils.plugins:
-            import qgismodelbaker
-            return qgismodelbaker.utils.qgis_utils.get_first_index_for_layer_type(layer_type, group)
+            import QgisModelBaker
+            return QgisModelBaker.utils.qgis_utils.get_first_index_for_layer_type(layer_type, group)
         return None
 
     def get_suggested_index_for_layer(self, layer, group):
         if 'QgisModelBaker' in qgis.utils.plugins:
-            import qgismodelbaker
-            return qgismodelbaker.utils.qgis_utils.get_suggested_index_for_layer(layer, group)
+            import QgisModelBaker
+            return QgisModelBaker.utils.qgis_utils.get_suggested_index_for_layer(layer, group)
         return None

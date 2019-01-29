@@ -47,16 +47,26 @@ def make_file_selector(widget, title=QCoreApplication.translate('Asistente-LADM_
                        file_filter=QCoreApplication.translate('Asistente-LADM_COL', 'Any file(*)'), parent=None):
     return partial(selectFileName, line_edit_widget=widget, title=title, file_filter=file_filter, parent=parent)
 
-
-def selectFileNameToSave(line_edit_widget, title, file_filter, parent, extension):
+def selectFileNameToSave(line_edit_widget, title, file_filter, parent, extension, extensions):
     filename, matched_filter = QFileDialog.getSaveFileName(parent, title, line_edit_widget.text(), file_filter)
-    line_edit_widget.setText(filename if filename.endswith(extension) else (filename + extension if filename else ''))
+    extension_valid = False
 
+    if not extensions:
+        extensions = [extension]
 
-def make_save_file_selector(widget, title=QCoreApplication.translate('Asistente-LADM_COL', 'Open File'),
-                            file_filter=QCoreApplication.translate('Asistente-LADM_COL', 'Any file(*)'), parent=None, extension=''):
-    return partial(selectFileNameToSave, line_edit_widget=widget, title=title, file_filter=file_filter, parent=parent, extension=extension)
+    if extensions:
+        extension_valid = any(filename.endswith(ext) for ext in extensions)
 
+    if not extension_valid and filename:
+        filename = filename + extension
+
+    line_edit_widget.setText(filename)
+
+def make_save_file_selector(widget, title=QCoreApplication.translate('QgisModelBaker', 'Open File'),
+                            file_filter=QCoreApplication.translate('QgisModelBaker', 'Any file(*)'), parent=None,
+                            extension='', extensions=None):
+    return partial(selectFileNameToSave, line_edit_widget=widget, title=title, file_filter=file_filter, parent=parent,
+                   extension=extension, extensions=extensions)
 
 def selectFolder(line_edit_widget, title, parent):
     foldername = QFileDialog.getExistingDirectory(parent, title, line_edit_widget.text())
@@ -183,6 +193,25 @@ class Validators(QObject):
             else:
                 color = '#f6989d'  # Red
         senderObj.setStyleSheet('QLineEdit {{ background-color: {} }}'.format(color))
+
+    def validate_line_edits_lower_case(self, *args, **kwargs):
+        """
+        Validate line edits and set their color to indicate validation state.
+        """
+        senderObj = self.sender()
+        validator = senderObj.validator()
+        if validator is None:
+            color = '#fff'  # White
+        else:
+            state = validator.validate(senderObj.text().strip(), 0)[0]
+            if state == QValidator.Acceptable:
+                color = '#fff'  # White
+            elif state == QValidator.Intermediate:
+                color = '#ffd356'  # Light orange
+            else:
+                color = '#f6989d'  # Red
+        senderObj.setStyleSheet('QLineEdit {{ background-color: {} }}'.format(color))
+        senderObj.setText(senderObj.text().strip().lower())
 
 
 class FileValidator(QValidator):

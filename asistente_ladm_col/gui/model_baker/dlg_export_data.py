@@ -16,11 +16,11 @@
  *                                                                         *
  ***************************************************************************/
 """
-from xml.dom import minidom
-from xml.parsers.expat import ExpatError
+import os
+import re
 
-from QgisModelBaker.libili2db import iliimporter
-from QgisModelBaker.libili2db.ili2dbconfig import (ImportDataConfiguration,
+from QgisModelBaker.libili2db import iliexporter
+from QgisModelBaker.libili2db.ili2dbconfig import (ExportConfiguration,
                                                    BaseConfiguration)
 from QgisModelBaker.libili2db.ili2dbutils import color_log_text
 from QgisModelBaker.libili2db.ilicache import IliCache
@@ -35,25 +35,28 @@ from qgis.PyQt.QtGui import (QColor,
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
                                  QListWidgetItem,
+                                 QMessageBox,
                                  QDialogButtonBox)
 from qgis.core import Qgis
 from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
-from ...config.general_config import (DEFAULT_EPSG,
-                                      DEFAULT_INHERITANCE,
-                                      DEFAULT_HIDDEN_MODELS)
+from ...config.general_config import DEFAULT_HIDDEN_MODELS
+from ...lib.dbconnector.pg_connector import PGConnector
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
                                FileValidator,
-                               make_file_selector,
                                make_save_file_selector,
+                               make_file_selector,
                                OverrideCursor)
 from ...resources_rc import *
 
-DIALOG_UI = get_ui_class('model_baker/dlg_import_data.ui')
+DIALOG_UI = get_ui_class('model_baker/dlg_export_data.ui')
 
-class DialogImportData(QDialog, DIALOG_UI):
+class DialogExportData(QDialog, DIALOG_UI):
+    ValidExtensions = ['xtf', 'itf', 'gml', 'xml']
+    current_row_schema = 0
+    
     def __init__(self, iface, db, qgis_utils):
         QDialog.__init__(self)
         self.setupUi(self)
@@ -66,20 +69,23 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.ilicache.refresh()
 
         self.type_combo_box.clear()
-        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportData','Use PostgreSQL/PostGIS'), 'ili2pg')
-        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportData','Use GeoPackage)'), 'ili2gpkg')
+        self.type_combo_box.addItem(QCoreApplication.translate('DialogExportData','Use PostgreSQL/PostGIS'), 'ili2pg')
+        self.type_combo_box.addItem(QCoreApplication.translate('DialogExportData','Use GeoPackage'), 'ili2gpkg')
         self.type_combo_box.currentIndexChanged.connect(self.type_changed)
         self.type_changed()
 
         self.xtf_file_browse_button.clicked.connect(
-            make_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate('DialogImportData','Open Transfer or Catalog File'),
-                               file_filter=QCoreApplication.translate('DialogImportData','Transfer File (*.xtf *.itf);;Catalogue File (*.xml *.xls *.xlsx)')))
-
+            make_save_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate('DialogExportData','Save in XTF Transfer File'),
+                                    file_filter=QCoreApplication.translate('DialogExportData','XTF Transfer File (*.xtf);;Interlis 1 Transfer File (*.itf);;XML (*.xml);;GML (*.gml)'), extension='.xtf', extensions=['.' + ext for ext in self.ValidExtensions]))
+        self.xtf_file_browse_button.clicked.connect(self.xtf_browser_opened_to_true)
+        self.xtf_browser_was_opened = False
+        
         self.validators = Validators()
-        self.xtf_file_line_edit.setPlaceholderText(QCoreApplication.translate('DialogImportData', "[Name of the XTF to be created]"))
-        fileValidator = FileValidator(pattern=['*.xtf', '*.itf', '*.xml'])
+        fileValidator = FileValidator(pattern=['*.' + ext for ext in self.ValidExtensions], allow_non_existing=True)
+        self.xtf_file_line_edit.setPlaceholderText(QCoreApplication.translate('DialogExportData', "[Name of the XTF to be created]"))
         self.xtf_file_line_edit.setValidator(fileValidator)
-        self.xtf_file_line_edit.textChanged.connect(self.update_import_models)
+        self.xtf_file_line_edit.textChanged.connect(self.validators.validate_line_edits)
+        self.xtf_file_line_edit.textChanged.connect(self.xtf_browser_opened_to_false)
         self.xtf_file_line_edit.textChanged.emit(self.xtf_file_line_edit.text())
 
         # PG
@@ -87,26 +93,20 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.db_connect_label.setText(self.db.dbname)
         self.connection_setting_button.clicked.connect(self.show_settings)
 
-        self.connection_setting_button.setText(QCoreApplication.translate('DialogImportData', 'Connection Settings'))
+        self.connection_setting_button.setText(QCoreApplication.translate('DialogExportData', 'Connection Settings'))
 
         # GPKG
-        self.gpkg_file_line_edit.setPlaceholderText(QCoreApplication.translate('DialogImportData', "[Name of the Geopackage to be created]"))
-
-        self.gpkg_file_browse_button.clicked.connect(
-            make_save_file_selector(self.gpkg_file_line_edit, title=QCoreApplication.translate('DialogImportData','Save in GeoPackage database file'),
-                                    file_filter=QCoreApplication.translate('DialogImportData','GeoPackage Database (*.gpkg)'), extension='.gpkg'))
-
-        gpkgFileValidator = FileValidator(pattern='*.gpkg', allow_non_existing=True)
+        self.gpkg_file_line_edit.setPlaceholderText(QCoreApplication.translate('DialogExportData', "[Name of the Geopackage to be created]"))
+        self.gpkg_file_browse_button.clicked.connect(make_file_selector(self.gpkg_file_line_edit, title=QCoreApplication.translate('DialogExportData','Open GeoPackage database file'),file_filter=QCoreApplication.translate('DialogExportData','GeoPackage Database (*.gpkg)')))
+        gpkgFileValidator = FileValidator(pattern='*.gpkg')
         self.gpkg_file_line_edit.setValidator(gpkgFileValidator)
-
-        self.gpkgSaveFileValidator = FileValidator(pattern='*.gpkg', allow_non_existing=True)
-        self.gpkgOpenFileValidator = FileValidator(pattern='*.gpkg')
         self.gpkg_file_line_edit.textChanged.connect(self.validators.validate_line_edits)
         self.gpkg_file_line_edit.textChanged.emit(self.gpkg_file_line_edit.text())
         self.restore_configuration()
 
         # LOG
-        self.log_config.setTitle(QCoreApplication.translate('DialogImportData', 'Show log'))
+        self.log_config.setTitle(QCoreApplication.translate('DialogExportData', 'Show log'))
+        self.log_config.setFlat(True)
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
@@ -116,90 +116,18 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.clear()
         self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self.buttonBox.addButton(QCoreApplication.translate('DialogImportData', 'Import data'), QDialogButtonBox.AcceptRole)
+        self.buttonBox.addButton(QCoreApplication.translate('DialogExportData', 'Export data'), QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
 
     def showEvent(self, event):
+        # update after create dialog
         self.update_schema_names_model()
-
-    def update_import_models(self):
-
-        message_error = None
-
-        if not self.xtf_file_line_edit.text().strip():
-            color = '#ffd356'  # Light orange
-            self.import_models_qmodel = QStandardItemModel()
-            self.import_models_list_view.setModel(self.import_models_qmodel)
-        else:
-
-            try:
-                mydoc = minidom.parse(self.xtf_file_line_edit.text().strip())
-                upper_models = mydoc.getElementsByTagName('MODEL')
-                lower_models = mydoc.getElementsByTagName('model')
-
-                models = list()
-                models.extend([model for model in upper_models])
-                models.extend([model for model in lower_models])
-
-                is_valid_xtf = True if len(models) > 0 else False
-
-            except ExpatError:
-                is_valid_xtf = False
-
-            if is_valid_xtf:
-                color = '#fff'  # White
-                self.import_models_qmodel = QStandardItemModel()
-                for model in models:
-                    try:
-                        u_model_name = model.attributes['NAME'].value
-                    except KeyError:
-                        # attribute not available
-                        u_model_name = None
-                        pass
-
-                    try:
-                        l_model_name = model.attributes['name'].value
-                    except KeyError:
-                        # attribute not available
-                        l_model_name = None
-                        pass
-
-                    if u_model_name or l_model_name:
-                        model_name = u_model_name if u_model_name and len(u_model_name) > 0 else l_model_name
-
-                        if not model_name in DEFAULT_HIDDEN_MODELS:
-                            item = QStandardItem(model_name)
-                            item.setCheckable(False)
-                            item.setEditable(False)
-                            self.import_models_qmodel.appendRow(item)
-
-                if self.import_models_qmodel.rowCount() > 0:
-                    self.import_models_list_view.setModel(self.import_models_qmodel)
-                else:
-                    message_error = QCoreApplication.translate('DialogImportData', 'The XTF file does not register ili models, please verify')
-                    color = '#f6989d'  # Red
-                    self.import_models_qmodel = QStandardItemModel()
-                    self.import_models_list_view.setModel(self.import_models_qmodel)
-
-            else:
-                message_error = QCoreApplication.translate('DialogImportData', 'Please set a valid XTF file')
-                color = '#f6989d'  # Red
-                self.import_models_qmodel = QStandardItemModel()
-                self.import_models_list_view.setModel(self.import_models_qmodel)
-
-        self.xtf_file_line_edit.setStyleSheet('QLineEdit {{ background-color: {} }}'.format(color))
-
-        if message_error:
-            self.txtStdout.setText(message_error)
-            self.show_message(message_error, Qgis.Warning)
-            self.import_models_list_view.setFocus()
-            return
+        self.update_models_names(self.get_checked_schema())
 
     def update_schema_names_model(self):
         res, msg = self.db.test_connection()
         schema_names = self.db._schema_names_list()
-        self.schema_names_list_widget.clear()
 
         if schema_names:
             for schema_name in schema_names:
@@ -211,18 +139,17 @@ class DialogImportData(QDialog, DIALOG_UI):
             default_item = self.schema_names_list_widget.item(0)
             default_item.setCheckState(Qt.Checked)
         else:
-            message_error = 'There are no schemes to import into the database. Please select another database.'
-            self.txtStdout.setText(QCoreApplication.translate('DialogImportData', message_error))
+            self.schema_names_list_widget.clear()
+            self.export_models_list_view.setModel(QStandardItemModel())
+            message_error = 'There are no schemes to export into the database. Please select another database.'
+            self.txtStdout.setText(QCoreApplication.translate('DialogExportData', message_error))
             self.show_message(message_error, Qgis.Warning)
-            # try:
-            #     self.show_message(message_error, Qgis.Warning)
-            # except AttributeError:
-            #     pass
 
         self.schema_names_list_widget.currentRowChanged.connect(self.on_current_row_changed_schema_names)
         self.schema_names_list_widget.itemChanged.connect(self.on_itemchanged_schema_name)
 
     def on_itemchanged_schema_name(self, selected_item):
+
         # disconnect signal to do changes in the items
         self.schema_names_list_widget.itemChanged.disconnect(self.on_itemchanged_schema_name)
 
@@ -237,18 +164,46 @@ class DialogImportData(QDialog, DIALOG_UI):
         item.setCheckState(Qt.Checked)
         item.setSelected(True)
 
+        # Update list view with models name info
+        schema_name = item.text()
+        self.update_models_names(schema_name)
+
         # connect signal to check when the items change
         self.schema_names_list_widget.itemChanged.connect(self.on_itemchanged_schema_name)
 
 
     def on_current_row_changed_schema_names(self, current_row):
+
         for index in range(self.schema_names_list_widget.count()):
             item = self.schema_names_list_widget.item(index)
             item.setCheckState(Qt.Unchecked)
 
         item = self.schema_names_list_widget.item(current_row)
+
         if item:
             item.setCheckState(Qt.Checked)
+            # Update list view with models name info
+            schema_name = item.text()
+            self.update_models_names(schema_name)
+
+    def update_models_names(self, dbschema):
+        _db_connector = PGConnector(self.db.get_uri_without_schema(), dbschema)
+        res, msg = _db_connector.test_connection()
+        self.export_models_qmodel = QStandardItemModel()
+        if res:
+            db_models = _db_connector._get_models(dbschema)
+            if db_models:
+                for db_model in db_models:
+                    regex = re.compile(r'(?:\{[^\}]*\}|\s)')
+                    for modelname in regex.split(db_model['modelname']):
+                        if modelname and modelname not in DEFAULT_HIDDEN_MODELS:
+                            item = QStandardItem(modelname.strip())
+                            item.setCheckable(False)
+                            item.setEditable(False)
+                            self.export_models_qmodel.appendRow(item)
+
+        self.export_models_list_view.setModel(self.export_models_qmodel)
+
 
     def get_checked_schema(self):
         checked_schema = None
@@ -261,8 +216,8 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def get_ili_models(self):
         ili_models = list()
-        for index in range(self.import_models_qmodel.rowCount()):
-            item = self.import_models_qmodel.item(index)
+        for index in range(self.export_models_qmodel.rowCount()):
+            item = self.export_models_qmodel.item(index)
             ili_models.append(item.text())
         return ili_models
 
@@ -278,25 +233,44 @@ class DialogImportData(QDialog, DIALOG_UI):
         configuration = self.updated_configuration()
 
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
-            message_error = 'Please set a valid model before importing data.'
-            self.txtStdout.setText(QCoreApplication.translate('DialogImportData',message_error))
+            message_error = 'Please set a valid XTF file before exporting data.'
+            self.txtStdout.setText(QCoreApplication.translate('DialogExportData',message_error))
             self.show_message(message_error, Qgis.Warning)
             self.xtf_file_line_edit.setFocus()
             return
 
         if not self.get_ili_models():
-            message_error = QCoreApplication.translate('DialogImportData','Please set a valid model(s) before creating the project.')
+            message_error = QCoreApplication.translate('DialogExportData','Please set a valid Schema to export. This schema no have information to export')
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
-            self.import_models_list_view.setFocus()
+            self.export_models_list_view.setFocus()
+            return
+        
+        if not configuration.iliexportmodels:
+            message_error = QCoreApplication.translate('DialogExportData','Please set a model before exporting data.')
+            self.txtStdout.setText(message_error)
+            self.show_message(message_error, Qgis.Warning)
+            self.export_models_list_view.setFocus()
             return
 
         if self.type_combo_box.currentData() == 'ili2gpkg':
             if not configuration.dbfile or self.gpkg_file_line_edit.validator().validate(configuration.dbfile, 0)[0] != QValidator.Acceptable:
-                message_error = QCoreApplication.translate("DialogImportData", 'Please set a valid database file before creating the project.')
+                message_error = QCoreApplication.translate('DialogExportData', 'Please set an existing database file before creating the project.')
                 self.txtStdout.setText(message_error)
                 self.show_message(message_error, Qgis.Warning)
                 self.gpkg_file_line_edit.setFocus()
+                return
+
+        # If xtf browser was opened and the file exists, the user already chose
+        # to overwrite the file
+        if os.path.isfile(self.xtf_file_line_edit.text().strip()) and not self.xtf_browser_was_opened:
+            self.msg = QMessageBox()
+            self.msg.setIcon(QMessageBox.Warning)
+            self.msg.setText(QCoreApplication.translate('DialogExportData',"{filename} already exists.\nDo you want to replace it?").format(filename=os.path.basename(self.xtf_file_line_edit.text().strip())))
+            self.msg.setWindowTitle(QCoreApplication.translate('DialogExportData',"Save in XTF Transfer File"))
+            self.msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            msg_box = self.msg.exec_()
+            if msg_box == QMessageBox.No:
                 return
             
         with OverrideCursor(Qt.WaitCursor):
@@ -307,30 +281,30 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.txtStdout.setTextColor(QColor('#000000'))
             self.txtStdout.clear()
 
-            dataImporter = iliimporter.Importer(dataImport=True)
+            exporter = iliexporter.Exporter()
 
-            dataImporter.tool_name = self.type_combo_box.currentData()
-            dataImporter.configuration = configuration
+            exporter.tool_name = self.type_combo_box.currentData()
+            exporter.configuration = configuration
 
             self.save_configuration(configuration)
 
-            dataImporter.stdout.connect(self.print_info)
-            dataImporter.stderr.connect(self.on_stderr)
-            dataImporter.process_started.connect(self.on_process_started)
-            dataImporter.process_finished.connect(self.on_process_finished)
+            exporter.stdout.connect(self.print_info)
+            exporter.stderr.connect(self.on_stderr)
+            exporter.process_started.connect(self.on_process_started)
+            exporter.process_finished.connect(self.on_process_finished)
 
             self.progress_bar.setValue(25)
 
             try:
-                if dataImporter.run() != iliimporter.Importer.SUCCESS:
+                if exporter.run() != iliexporter.Exporter.SUCCESS:
                     self.enable()
                     self.progress_bar.hide()
-                    self.show_message(QCoreApplication.translate('DialogImportData', 'An error occurred when importing the data'), Qgis.Warning)
+                    self.show_message(QCoreApplication.translate('DialogExportData', 'An error occurred when exporting the data'), Qgis.Warning)
                     return
             except JavaNotFoundError:
                 self.txtStdout.setTextColor(QColor('#000000'))
                 self.txtStdout.clear()
-                self.txtStdout.setText(QCoreApplication.translate('DialogImportData','Java could not be found. Please <a href="https://java.com/en/download/">install Java</a> and or <a href="#configure">configure a custom java path</a>. We also support the JAVA_HOME environment variable in case you prefer this.'))
+                self.txtStdout.setText(QCoreApplication.translate('DialogExportData','Java could not be found. Please <a href="https://java.com/en/download/">install Java</a> and or <a href="#configure">configure a custom java path</a>. We also support the JAVA_HOME environment variable in case you prefer this.'))
                 self.enable()
                 self.progress_bar.hide()
                 return
@@ -339,11 +313,11 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.buttonBox.setEnabled(True)
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
-            self.show_message(QCoreApplication.translate('DialogImportData', 'Import of the data was successfully completed'), Qgis.Success)
+            self.show_message(QCoreApplication.translate('DialogExportData', 'Export of the data was successfully completed.') , Qgis.Success)
 
     def save_configuration(self, configuration):
         settings = QSettings()
-        settings.setValue('QgisModelBaker/ili2pg/xtffile_import', configuration.xtffile)
+        settings.setValue('QgisModelBaker/ili2pg/xtffile_export', configuration.xtffile)
         settings.setValue('QgisModelBaker/importtype', self.type_combo_box.currentData())
 
         if self.type_combo_box.currentData() == 'ili2gpkg':
@@ -351,7 +325,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def restore_configuration(self):
         settings = QSettings()
-        self.xtf_file_line_edit.setText(settings.value('QgisModelBaker/ili2pg/xtffile_import'))
+        self.xtf_file_line_edit.setText(settings.value('QgisModelBaker/ili2pg/xtffile_export'))
         self.type_combo_box.setCurrentIndex(self.type_combo_box.findData(settings.value('QgisModelBaker/importtype', 'ili2pg')))
         self.type_changed()
 
@@ -360,7 +334,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         Get the configuration that is updated with the user configuration changes on the dialog.
         :return: Configuration
         """
-        configuration = ImportDataConfiguration()
+        configuration = ExportConfiguration()
 
         if self.type_combo_box.currentData() == 'ili2pg':
             # PostgreSQL specific options
@@ -374,16 +348,9 @@ class DialogImportData(QDialog, DIALOG_UI):
             configuration.dbfile = self.gpkg_file_line_edit.text().strip()
 
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
-        configuration.delete_data = False
-
-        configuration.epsg = DEFAULT_EPSG
-        configuration.inheritance = DEFAULT_INHERITANCE
-        configuration.create_basket_col = False
-        configuration.create_import_tid = False
-        configuration.stroke_arcs = True
-
         configuration.base_configuration = self.base_configuration
         if self.get_ili_models():
+            configuration.iliexportmodels = ';'.join(self.get_ili_models())
             configuration.ilimodels = ';'.join(self.get_ili_models())
 
         return configuration
@@ -413,13 +380,12 @@ class DialogImportData(QDialog, DIALOG_UI):
     def on_process_finished(self, exit_code, result):
         color = '#004905' if exit_code == 0 else '#aa2222'
         self.txtStdout.setTextColor(QColor(color))
-        self.txtStdout.append('Finished ({})'.format(exit_code))
-        if result == iliimporter.Importer.SUCCESS:
+        self.txtStdout.append(QCoreApplication.translate('DialogExportData','Finished ({})'.format(exit_code)))
+        if result == iliexporter.Exporter.SUCCESS:
             self.buttonBox.clear()
             self.buttonBox.setEnabled(True)
             self.buttonBox.addButton(QDialogButtonBox.Close)
         else:
-            self.show_message(QCoreApplication.translate('DialogImportData', 'Error when importing data'), Qgis.Warning)
             self.enable()
 
     def advance_progress_bar_by_text(self, text):
@@ -431,7 +397,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             QCoreApplication.processEvents()
 
     def show_help(self):
-        self.qgis_utils.show_help("import_data")
+        self.qgis_utils.show_help("export_data")
 
     def disable(self):
         self.pg_config.setEnabled(False)
@@ -454,3 +420,15 @@ class DialogImportData(QDialog, DIALOG_UI):
         elif self.type_combo_box.currentData() == 'ili2gpkg':
             self.pg_config.hide()
             self.gpkg_config.show()
+
+    def xtf_browser_opened_to_true(self):
+        """
+        Slot. Sets a flag to true to eventually avoid asking a user whether to overwrite a file.
+        """
+        self.xtf_browser_was_opened = True
+
+    def xtf_browser_opened_to_false(self):
+        """
+        Slot. Sets a flag to false to eventually ask a user whether to overwrite a file.
+        """
+        self.xtf_browser_was_opened = False

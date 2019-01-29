@@ -52,6 +52,7 @@ from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
 from .gui.about_dialog import AboutDialog
 from .gui.model_baker.dlg_import_schema import DialogImportSchema
 from .gui.model_baker.dlg_import_data import DialogImportData
+from .gui.model_baker.dlg_export_data import DialogExportData
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
@@ -135,6 +136,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._import_schema_action.triggered.connect(self.show_dlg_import_schema)
         self._import_data_action.triggered.connect(self.show_dlg_import_data)
+        self._export_data_action.triggered.connect(self.show_dlg_export_data)
         self._controlled_measurement_action.triggered.connect(self.show_dlg_controlled_measurement)
         self._load_layers_action.triggered.connect(self.load_layers_from_qgis_model_baker)
         self._settings_action.triggered.connect(self.show_settings)
@@ -198,7 +200,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def add_data_management_menu(self):
         self._data_management_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data Management"), self._menu)
-        self._import_schema_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import schema"), self._data_management_menu)
+        self._import_schema_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create LADM-COL structure"), self._data_management_menu)
         self._import_data_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import data"), self._data_management_menu)
         self._export_data_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"), self._data_management_menu)
         self._data_management_menu.addActions([self._import_schema_action, self._import_data_action, self._export_data_action])
@@ -769,6 +771,11 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     def show_dlg_import_data(self):
         dlg = DialogImportData(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg.exec_()
+
+    @_qgis_model_baker_required
+    def show_dlg_export_data(self):
+        dlg = DialogExportData(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
     def show_dlg_controlled_measurement(self):

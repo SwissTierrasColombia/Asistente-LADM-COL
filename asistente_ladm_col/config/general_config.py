@@ -14,10 +14,7 @@ from .table_mapping_config import (MORE_BOUNDARY_FACE_STRING_TABLE,
                                    MUNICIPALITY_FIELD,
                                    ZONE_FIELD,
                                    PARCEL_NUMBER_FIELD,
-                                   PARCEL_NUMBER_BEFORE_FIELD,
-                                   COL_PARTY_TABLE,
-                                   COL_PARTY_TYPE_FIELD,
-                                   PARCEL_TYPE_FIELD)
+                                   PARCEL_NUMBER_BEFORE_FIELD)
 from ..utils.qt_utils import get_plugin_metadata
 
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
@@ -84,7 +81,10 @@ MODULE_HELP_MAPPING = {
     'create_building_unit_qualification_valuation_conventional': 'valuation/Create_building_unit_qualification_conventional.html',
     'create_geoeconomic_zone_valuation': 'valuation/Create_geoeconomic_zone.html',
     'create_physical_zone_valuation': 'valuation/Create_physical_zone.html',
-    'import_from_excel': 'toolbar.html#import-from-intermediate-structure'
+    'import_from_excel': 'toolbar.html#import-from-intermediate-structure',
+    'import_schema' : 'index.html',
+    'import_data' : 'index.html',
+    'export_data' : 'index.html'
 }
 # Configure QGIS Model Baker Dependency
 QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.0.0"
@@ -96,7 +96,7 @@ QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = False
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = '' #'https://github.com/AgenciaImplementacion/qgismodelbaker/releases/download/3.3.2.1/qgismodelbaker.zip'
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = '' #'https://github.com/AgenciaImplementacion/qgis_model_baker/releases/download/3.3.2.1/qgis_model_baker.zip'
 
 # QGIS Model Baker definitions
 SCHEMA_NAME = 'schemaname'
