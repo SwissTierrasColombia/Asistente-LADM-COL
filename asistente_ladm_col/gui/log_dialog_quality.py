@@ -18,14 +18,13 @@
 """
 import os
 import time
-
 from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtWidgets import QFileDialog
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
-
 from ..utils import get_ui_class
+from asistente_ladm_col.utils.utils import set_time_format
 
 LOG_DIALOG_UI = get_ui_class('log_dlg_quality.ui')
 
@@ -40,26 +39,29 @@ class LogDialogQuality(QDialog, LOG_DIALOG_UI):
         # Set connections
         self.buttonBox.accepted.connect(self.saved)
         self.buttonBox.helpRequested.connect(self.show_help)
-        self.txt_log_quality.setHtml(self.quality.send_log_dialog_quality_text())
+        text, total_time = self.quality.send_log_dialog_quality_text()
+        self.txt_log_quality.setHtml(text)
 
     def saved(self):
-        self.print_pdf(self.quality.send_log_dialog_quality_text())
+        text, total_time = self.quality.send_log_dialog_quality_text()
+        self.print_pdf(text, total_time)
+
     def show_help(self):
         self.qgis_utils.show_help("quality_rules")
 
-    def print_pdf(self, text):
-
+    def print_pdf(self, text, total_time):
         settings = QSettings()
 
         new_filename, filter = QFileDialog.getSaveFileName(self,
                                            QCoreApplication.translate('LogDialogQuality', 'Save File'),
                                            os.path.expanduser("~"), filter = "PDF(*.pdf)")
 
-        titulo = QCoreApplication.translate('LogDialogQuality', "Result topological validations - logical consistency {}_database: {}, schema: {}").format(
+        titulo = QCoreApplication.translate(
+            'LogDialogQuality', "Result topological validations - logical consistency {}_database: {}, schema: {} - total time: {}").format(
                 time.strftime("%H:%M:%S_%d/%m/%y"), settings.value('Asistente-LADM_COL/pg/database'), 
-                settings.value('Asistente-LADM_COL/pg/schema'))
+                settings.value('Asistente-LADM_COL/pg/schema'), set_time_format(total_time))
 
-        self.txt_log_quality.setHtml("<h2 align='center'>{}</h2> \n {}".format(titulo, self.quality.send_log_dialog_quality_text()))
+        self.txt_log_quality.setHtml("<h2 align='center'>{}</h2> \n {}".format(titulo, text))
 
         if new_filename:
             printer = QPrinter()

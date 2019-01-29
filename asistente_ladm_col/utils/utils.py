@@ -20,11 +20,29 @@ def get_number_of_rows_in_excel_file(excel_file_route, sheet, header_rows=1):
 
 def set_time_format(time):
     time_format = '.2f'
-    if time < 60:
-        return "{}{}".format(format(time, time_format), "seg")
+    unit_millisecond = "ms"
+    unit_second = "seg"
+    unit_minutes = "min"
+    unit_hours = "h"
+    unit_days = "D"
+    
+    if time < 1:
+        return "{}{}".format(format(time*1000, time_format), unit_millisecond)
+    elif time < 60:
+        seg = time
+        return "{}{}".format(format(seg, time_format), unit_second)
     elif time >= 60 and time < 3600:
-        return "{}{}".format(format(time/float(60), time_format), "min")
+        minu = int(time/float(60))
+        seg = 60*(time/float(60) - minu)
+        return "{}{} {}{}".format(minu, unit_minutes, format(seg, time_format), unit_second)
     elif time >= 3600 and time < 86400:
-        return "{}{}".format(format(time/float(3600), time_format), "h")
+        h = int(time/float(3600))
+        minu = int(60*(time/float(3600) - h))
+        seg = 60*((60*(time/float(3600) - h)) - minu)
+        return "{}{} {}{} {}{}".format(h, unit_hours, minu, unit_minutes, format(seg, time_format), unit_second)
     elif time >= 86400:
-        return "{}{}".format(format(time/float(86400), time_format), "D")
+        D = int(time/float(86400))
+        h = int(24*(time/float(86400) - D))
+        minu = int(60*((24*(time/float(86400) - D) - h)))
+        seg = 60*((60*((24*(time/float(86400) - D) - h))) - minu)
+        return "{}{} {}{} {}{} {}{}".format(D, unit_days, h, unit_hours, minu, unit_minutes, format(seg, time_format), unit_second)

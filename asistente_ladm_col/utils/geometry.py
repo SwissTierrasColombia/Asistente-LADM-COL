@@ -182,6 +182,9 @@ class GeometryUtils(QObject):
         index = QgsSpatialIndex(boundary_point_layer)
         candidate_features = None
 
+        print (id_field_idx)
+        print (lines)
+
         for line in lines:
             bbox = line.geometry().boundingBox()
             bbox.scale(1.001)

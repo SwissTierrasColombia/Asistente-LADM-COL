@@ -202,8 +202,8 @@ translated_strings = TranslatableConfigStrings()
 # Log topology rules
 PREFIX_TITLE_TOPOLOGICAL_RULE = "<h4>"
 SUFFIX_TITLE_TOPOLOGICAL_RULE = "</h4>"
-LIST_VINEYARDS_OPEN = "<ul>"
-LIST_VINEYARDS_CLOSE = "</ul>"
+LIST_CONTAINER_OPEN = "<ul>"
+LIST_CONTAINER_CLOSE = "</ul>"
 CONTENT_SEPARATOR = "<HR>"
-NEW_VINEYARDS_LIST_ERROR = "<li style='color:red;'>"
-NEW_VINEYARDS_LIST_CORRECT = "<li style='color:green;'>"
+NEW_LIST_ITEM_LIST_ERROR = "<li style='color:red;'>"
+NEW_LIST_ITEM_LIST_CORRECT = "<li style='color:green;'>"

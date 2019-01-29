@@ -216,76 +216,77 @@ class DialogQuality(QDialog, DIALOG_UI):
 
         while iterator.value():
             item = iterator.value()
+            title = item.text(0)
 
             if item.isSelected():
                 id = item.data(0, Qt.UserRole)
 
                 if id == 'check_overlaps_in_boundary_points':
-                    self.quality.check_overlapping_points(self._db, BOUNDARY_POINT_TABLE, item.text(0))
+                    self.quality.check_overlapping_points(self._db, title, BOUNDARY_POINT_TABLE)
                 elif id == 'check_overlaps_in_control_points':
-                    self.quality.check_overlapping_points(self._db, CONTROL_POINT_TABLE, item.text(0))
+                    self.quality.check_overlapping_points(self._db, title, CONTROL_POINT_TABLE)
                 elif id == 'check_boundary_points_covered_by_boundary_nodes':
-                    self.quality.check_boundary_points_covered_by_boundary_nodes(self._db, item.text(0))
+                    self.quality.check_boundary_points_covered_by_boundary_nodes(self._db, title, None)
                 elif id == 'check_boundary_points_covered_by_plot_nodes':
-                    self.quality.check_boundary_points_covered_by_plot_nodes(self._db, item.text(0))
+                    self.quality.check_boundary_points_covered_by_plot_nodes(self._db, title, None)
                 elif id == 'check_too_long_boundary_segments':
-                    self.quality.check_too_long_segments(self._db, item.text(0))
+                    self.quality.check_too_long_segments(self._db, title, None)
                 elif id == 'check_overlaps_in_boundaries':
-                    self.quality.check_overlaps_in_boundaries(self._db, item.text(0))
+                    self.quality.check_overlaps_in_boundaries(self._db, title, None)
                 elif id == 'check_boundaries_are_not_split':
-                    self.quality.check_boundaries_are_not_split(self._db, item.text(0))
+                    self.quality.check_boundaries_are_not_split(self._db, title, None)
                 elif id == 'check_boundaries_covered_by_plots':
-                    self.quality.check_boundaries_covered_by_plots(self._db, item.text(0))
+                    self.quality.check_boundaries_covered_by_plots(self._db, title, None)
                 elif id == 'check_boundary_nodes_covered_by_boundary_points':
-                    self.quality.check_boundary_nodes_covered_by_boundary_points(self._db, item.text(0))
+                    self.quality.check_boundary_nodes_covered_by_boundary_points(self._db, title, None)
                 elif id == 'check_dangles_in_boundaries':
-                    self.quality.check_dangles_in_boundaries(self._db, item.text(0))
+                    self.quality.check_dangles_in_boundaries(self._db, title, None)
                 elif id == 'check_overlaps_in_plots':
-                    self.quality.check_overlapping_polygons(self._db, PLOT_TABLE, item.text(0))
+                    self.quality.check_overlapping_polygons(self._db, title, PLOT_TABLE)
                 elif id == 'check_overlaps_in_buildings':
-                    self.quality.check_overlapping_polygons(self._db, BUILDING_TABLE, item.text(0))
+                    self.quality.check_overlapping_polygons(self._db, title, BUILDING_TABLE)
                 elif id == 'check_overlaps_in_rights_of_way':
-                    self.quality.check_overlapping_polygons(self._db, RIGHT_OF_WAY_TABLE, item.text(0))
+                    self.quality.check_overlapping_polygons(self._db, title, RIGHT_OF_WAY_TABLE)
                 elif id == 'check_plots_covered_by_boundaries':
-                    self.quality.check_plots_covered_by_boundaries(self._db, item.text(0))
+                    self.quality.check_plots_covered_by_boundaries(self._db, title, None)
                 #elif id == 'check_missing_survey_points_in_buildings':
                 #    self.quality.check_missing_survey_points_in_buildings(self._db)
                 elif id == 'check_right_of_way_overlaps_buildings':
-                    self.quality.check_right_of_way_overlaps_buildings(self._db, item.text(0))
+                    self.quality.check_right_of_way_overlaps_buildings(self._db, title, None)
                 elif id == 'check_gaps_in_plots':
-                    self.quality.check_gaps_in_plots(self._db, item.text(0))
+                    self.quality.check_gaps_in_plots(self._db, title, None)
                 elif id == 'check_multipart_in_right_of_way':
-                    self.quality.check_multiparts_in_right_of_way(self._db, item.text(0))
+                    self.quality.check_multiparts_in_right_of_way(self._db, title, None)
                 elif id == 'check_plot_nodes_covered_by_boundary_points':
-                    self.quality.check_plot_nodes_covered_by_boundary_points(self._db, item.text(0))
+                    self.quality.check_plot_nodes_covered_by_boundary_points(self._db, title, None)
                 elif id == 'check_buildings_should_be_within_plots':
-                    self.quality.check_building_within_plots(self._db, item.text(0))
+                    self.quality.check_building_within_plots(self._db, title, None)
                 elif id == 'check_building_units_should_be_within_plots':
-                    self.quality.check_building_unit_within_plots(self._db, item.text(0))
+                    self.quality.check_building_unit_within_plots(self._db, title, None)
                 elif id == 'check_parcel_right_relationship':
-                    self.quality.check_parcel_right_relationship(self._db, item.text(0))
+                    self.quality.check_parcel_right_relationship(self._db, title, None)
                 elif id == 'find_duplicate_records_in_a_table':
-                    self.quality.find_duplicate_records_in_a_table(self._db, item.text(0))
+                    self.quality.find_duplicate_records_in_a_table(self._db, title, None)
                 elif id == 'check_fraction_sum_for_party_groups':
-                    self.quality.check_fraction_sum_for_party_groups(self._db, item.text(0))
+                    self.quality.check_fraction_sum_for_party_groups(self._db, title, None)
                 elif id == 'check_department_code_has_two_numerical_characters':
-                    self.quality.basic_logic_validations(self._db, 'DEPARTMENT_CODE_VALIDATION', item.text(0))
+                    self.quality.basic_logic_validations(self._db, title, 'DEPARTMENT_CODE_VALIDATION')
                 elif id == 'check_municipality_code_has_three_numerical_characters':
-                    self.quality.basic_logic_validations(self._db, 'MUNICIPALITY_CODE_VALIDATION', item.text(0))
+                    self.quality.basic_logic_validations(self._db, title, 'MUNICIPALITY_CODE_VALIDATION')
                 elif id == 'check_zone_code_has_two_numerical_characters':
-                    self.quality.basic_logic_validations(self._db, 'ZONE_CODE_VALIDATION', item.text(0))
+                    self.quality.basic_logic_validations(self._db, title, 'ZONE_CODE_VALIDATION')
                 elif id == 'check_parcel_number_has_30_numerical_characters':
-                    self.quality.basic_logic_validations(self._db, 'PARCEL_NUMBER_VALIDATION', item.text(0))
+                    self.quality.basic_logic_validations(self._db, title, 'PARCEL_NUMBER_VALIDATION')
                 elif id == 'check_parcel_number_before_has_20_numerical_characters':
-                    self.quality.basic_logic_validations(self._db, 'PARCEL_NUMBER_BEFORE_VALIDATION', item.text(0))
+                    self.quality.basic_logic_validations(self._db, title, 'PARCEL_NUMBER_BEFORE_VALIDATION')
                 elif id == 'check_col_party_natural_type':
-                    self.quality.advance_logic_validations(self._db, 'COL_PARTY_TYPE_NATURAL_VALIDATION', item.text(0))
+                    self.quality.advance_logic_validations(self._db, title, 'COL_PARTY_TYPE_NATURAL_VALIDATION')
                 elif id == 'check_col_party_legal_type':
-                    self.quality.advance_logic_validations(self._db, 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION', item.text(0))
+                    self.quality.advance_logic_validations(self._db, title, 'COL_PARTY_TYPE_NO_NATURAL_VALIDATION')
                 elif id == 'check_parcel_type_and_22_position_of_parcel_number':
-                    self.quality.advance_logic_validations(self._db, 'PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER_VALIDATION', item.text(0))
+                    self.quality.advance_logic_validations(self._db, title, 'PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER_VALIDATION')
                 elif id == 'check_uebaunit_parcel':
-                    self.quality.advance_logic_validations(self._db, 'UEBAUNIT_PARCEL_VALIDATION', item.text(0))
+                    self.quality.advance_logic_validations(self._db, title, 'UEBAUNIT_PARCEL_VALIDATION')
 
             iterator += 1
 
