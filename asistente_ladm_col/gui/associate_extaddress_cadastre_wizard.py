@@ -21,7 +21,9 @@ from qgis.core import (QgsProject, QgsVectorLayer, QgsEditFormConfig,
                        QgsMapLayerProxyModel, QgsWkbTypes, QgsApplication,
                        QgsProcessingException, QgsProcessingFeedback,
                        QgsVectorLayerUtils)
-from qgis.gui import QgsMapToolIdentifyFeature, QgsMessageBar
+from qgis.gui import (QgsMapToolIdentifyFeature, 
+                      QgsMessageBar, 
+                      QgsExpressionSelectionDialog)
 
 from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
 from qgis.PyQt.QtGui import QCursor
@@ -163,10 +165,9 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self._current_layer = self._plot_layer
             self.iface.setActiveLayer(self._plot_layer)
 
-            self.check_selected_features(self._plot_layer)
+            self.check_selected_features()
             self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                     "Select Plot"))
-            self.btn_select.clicked.connect(self.select_feature)
         elif self.rad_to_building.isChecked():
             # Load layers
             res_layers = self.qgis_utils.get_layers(self._db, {
@@ -179,11 +180,10 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self._current_layer = self._building_layer
             self.iface.setActiveLayer(self._current_layer)
 
-            self.check_selected_features(self._current_layer)
+            self.check_selected_features()
 
             self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                     "Select Building"))
-            self.btn_select.clicked.connect(self.select_feature)
         elif self.rad_to_building_unit.isChecked():
             # Load layers
             res_layers = self.qgis_utils.get_layers(self._db, {
@@ -196,11 +196,10 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self._current_layer = self._building_unit_layer
             self.iface.setActiveLayer(self._current_layer)
 
-            self.check_selected_features(self._current_layer)
+            self.check_selected_features()
 
             self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                     "Select Building Unit"))
-            self.btn_select.clicked.connect(self.select_feature)
         else: #self.rad_to_right_of_way.isChecked():
             # Load layers
             res_layers = self.qgis_utils.get_layers(self._db, {
@@ -213,29 +212,35 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self._current_layer = self._right_of_way_layer
             self.iface.setActiveLayer(self._current_layer)
 
-            self.check_selected_features(self._current_layer)
+            self.check_selected_features()
 
             self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                     "Select Right of Way"))
-            self.btn_select.clicked.connect(self.select_feature)
 
-    def check_selected_features(self, layer):
+        self.btn_select.clicked.connect(self.select_feature)
+        self.btn_select_by_expression.clicked.connect(self.select_feature_by_expression)
 
-        if layer.selectedFeatureCount() == 1:
+    def check_selected_features(self):
+
+        if self._current_layer.selectedFeatureCount() == 1:
             self.lbl_selected.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                           "1 Feature Selected"))
             self.button(self.FinishButton).setDisabled(False)
-            self._feature_tid = layer.selectedFeatures()[0].attribute(ID_FIELD)
+            self._feature_tid = self._current_layer.selectedFeatures()[0].attribute(ID_FIELD)
             print("El Tid es " + str(self._feature_tid))
-        elif layer.selectedFeatureCount() > 1:
+        elif self._current_layer.selectedFeatureCount() > 1:
             self.show_message(QCoreApplication.translate("AssociateExtAddressWizard",
                                           "Please select just one feature"), Qgis.Warning)
             self.lbl_selected.setText(QCoreApplication.translate("AssociateExtAddressWizard",
-                                          str(layer.selectedFeatureCount()) + " Feature(s) Selected"))
+                                          str(self._current_layer.selectedFeatureCount()) + " Feature(s) Selected"))
             self.button(self.FinishButton).setDisabled(True)
         else:
             self.button(self.FinishButton).setDisabled(True)
 
+    def select_feature_by_expression(self):
+        Dlg_expression_selection = QgsExpressionSelectionDialog(self._current_layer)
+        Dlg_expression_selection.finished.connect(self.check_selected_features)
+        Dlg_expression_selection.exec()
 
     def select_feature(self):
         #Make wizard disappear
@@ -260,7 +265,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
         self.iface.mapCanvas().setMapTool(self.maptool)
 
-        self.check_selected_features(self._current_layer)
+        self.check_selected_features()
 
         self.maptool_identify.featureIdentified.disconnect(self.get_feature_id)
         self.log.logMessage("Parcel's featureIdentified SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
