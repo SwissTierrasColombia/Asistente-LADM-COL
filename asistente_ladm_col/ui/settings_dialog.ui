@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>513</width>
+    <width>545</width>
     <height>476</height>
    </rect>
   </property>
@@ -180,13 +180,6 @@
             </size>
            </property>
           </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btn_get_from_qgis_model_baker">
-           <property name="text">
-            <string>Get from QGIS Model Baker</string>
-           </property>
-          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btn_test_connection">
@@ -672,8 +665,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>257</x>
+     <y>466</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -688,8 +681,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>325</x>
+     <y>466</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
