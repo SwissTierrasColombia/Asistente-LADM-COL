@@ -6,3 +6,6 @@ hidden="True"
 
 ["LADM_COL_V1_1.LADM_Nucleo.LA_UnidadEspacial.Punto_Referencia"]
 hidden="True"
+
+["LADM_COL_V1_1.LADM_Nucleo.LA_UnidadEspacial.Ext_Direccion_ID"]
+hidden="True"
