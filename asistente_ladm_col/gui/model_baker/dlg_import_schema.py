@@ -48,6 +48,7 @@ from ...utils.qt_utils import (Validators,
                                make_save_file_selector,
                                OverrideCursor)
 from ...resources_rc import *
+from qgis.PyQt.QtWidgets import QMessageBox
 
 DIALOG_UI = get_ui_class('model_baker/dlg_import_schema.ui')
 
@@ -220,7 +221,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                 if importer.run() != iliimporter.Importer.SUCCESS:
                     self.enable()
                     self.progress_bar.hide()
-                    self.show_message(QCoreApplication.translate('DialogImportSchema', 'An error occurred when creating the LADM-COL structure'), Qgis.Warning)
+                    self.show_message(QCoreApplication.translate('DialogImportSchema', 'An error occurred when creating the LADM-COL structure. For more information see the log...'), Qgis.Warning)
                     return
             except JavaNotFoundError:
                 self.txtStdout.setTextColor(QColor('#000000'))
@@ -240,6 +241,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def save_configuration(self, configuration):
         settings = QSettings()
+        settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', 1 if self.log_config.isCollapsed() else 0)
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/importtype', self.type_combo_box.currentData())
         if self.type_combo_box.currentData() == 'ili2gpkg':
             settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2gpkg/dbfile', configuration.dbfile)
@@ -248,6 +250,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         settings = QSettings()
         self.type_combo_box.setCurrentIndex(self.type_combo_box.findData(settings.value('Asistente-LADM_COL/QgisModelBaker/importtype', 'ili2pg')))
         self.type_changed()
+
+        # Show log
+        value_show_log = settings.value('Asistente-LADM_COL/QgisModelBaker/show_log') if settings.value('Asistente-LADM_COL/QgisModelBaker/show_log') else 0
+        self.log_config.setCollapsed(bool(int(value_show_log)))
 
         # set model repository
         # if there is no option  by default use online model repository

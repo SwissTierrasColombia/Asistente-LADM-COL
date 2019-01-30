@@ -299,7 +299,7 @@ class DialogExportData(QDialog, DIALOG_UI):
                 if exporter.run() != iliexporter.Exporter.SUCCESS:
                     self.enable()
                     self.progress_bar.hide()
-                    self.show_message(QCoreApplication.translate('DialogExportData', 'An error occurred when exporting the data'), Qgis.Warning)
+                    self.show_message(QCoreApplication.translate('DialogExportData', 'An error occurred when exporting the data. For more information see the log...'), Qgis.Warning)
                     return
             except JavaNotFoundError:
                 self.txtStdout.setTextColor(QColor('#000000'))
@@ -319,6 +319,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         settings = QSettings()
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_export', configuration.xtffile)
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/importtype', self.type_combo_box.currentData())
+        settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', 1 if self.log_config.isCollapsed() else 0)
 
         if self.type_combo_box.currentData() == 'ili2gpkg':
             settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2gpkg/dbfile', configuration.dbfile)
@@ -328,6 +329,10 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.xtf_file_line_edit.setText(settings.value('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_export'))
         self.type_combo_box.setCurrentIndex(self.type_combo_box.findData(settings.value('Asistente-LADM_COL/QgisModelBaker/importtype', 'ili2pg')))
         self.type_changed()
+
+        # Show log
+        value_show_log = settings.value('Asistente-LADM_COL/QgisModelBaker/show_log') if settings.value('Asistente-LADM_COL/QgisModelBaker/show_log') else 0
+        self.log_config.setCollapsed(bool(int(value_show_log)))
 
         # set model repository
         # if there is no option by default use online model repository
