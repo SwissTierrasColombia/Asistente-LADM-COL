@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os
 from QgisModelBaker.libili2db import iliimporter
 from QgisModelBaker.libili2db.ili2dbconfig import (SchemaImportConfiguration,
                                                    BaseConfiguration)
@@ -239,14 +240,21 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def save_configuration(self, configuration):
         settings = QSettings()
-        settings.setValue('QgisModelBaker/importtype', self.type_combo_box.currentData())
+        settings.setValue('Asistente-LADM_COL/QgisModelBaker/importtype', self.type_combo_box.currentData())
         if self.type_combo_box.currentData() == 'ili2gpkg':
-            settings.setValue('QgisModelBaker/ili2gpkg/dbfile', configuration.dbfile)
+            settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2gpkg/dbfile', configuration.dbfile)
 
     def restore_configuration(self):
         settings = QSettings()
-        self.type_combo_box.setCurrentIndex(self.type_combo_box.findData(settings.value('QgisModelBaker/importtype', 'ili2pg')))
+        self.type_combo_box.setCurrentIndex(self.type_combo_box.findData(settings.value('Asistente-LADM_COL/QgisModelBaker/importtype', 'ili2pg')))
         self.type_changed()
+
+        # set model repository
+        # if there is no option  by default use online model repository
+        custom_model_is_checked =  settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked') if settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked') else 0
+        self.use_local_models = bool(int(custom_model_is_checked))
+        if self.use_local_models:
+            self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models') if settings.value('Asistente-LADM_COL/models/custom_models') else None
 
     def updated_configuration(self):
         configuration = SchemaImportConfiguration()
@@ -264,11 +272,21 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             configuration.tool_name = 'ili2gpkg'
             configuration.dbfile = self.gpkg_file_line_edit.text().strip()
 
+        # set custom toml file
+        configuration.tomlfile = self.get_toml_path()
         configuration.epsg = DEFAULT_EPSG
         configuration.inheritance = DEFAULT_INHERITANCE
         configuration.create_basket_col = False
         configuration.create_import_tid = False
         configuration.stroke_arcs = True
+
+        # Check custom model directories
+        if self.use_local_models:
+            if self.custom_model_directories is None:
+                self.base_configuration.custom_model_directories_enabled = False
+            else:
+                self.base_configuration.custom_model_directories = self.custom_model_directories
+                self.base_configuration.custom_model_directories_enabled = True
 
         configuration.base_configuration = self.base_configuration
         if self.get_checked_models():
@@ -316,6 +334,12 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def show_help(self):
         self.qgis_utils.show_help("import_schema")
+
+    def get_toml_path(self):
+        base_path = os.path.dirname(os.path.abspath(__file__)).split('asistente_ladm_col')[0]
+        toml_dir_path = os.path.join(base_path, 'asistente_ladm_col', 'resources', 'toml')
+        toml_file_path = os.path.join(toml_dir_path, 'hide_fields_LADM.toml')
+        return toml_file_path
 
     def disable(self):
         self.pg_config.setEnabled(False)

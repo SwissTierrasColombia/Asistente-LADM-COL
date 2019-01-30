@@ -41,6 +41,7 @@ from ..config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANC
                                      TEST_SERVER,
                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                      SOURCE_SERVICE_EXPECTED_ID)
+from ..gui.custom_model_dir import CustomModelDirDialog
 from ..lib.dbconnector.db_connector import DBConnector
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
@@ -70,6 +71,13 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.cbo_db_source.addItem(QCoreApplication.translate("SettingsDialog", 'GeoPackage'), 'gpkg')
         self.cbo_db_source.currentIndexChanged.connect(self.db_source_changed)
 
+        self.online_models_radio_button.setChecked(True)
+        self.online_models_radio_button.toggled.connect(self.model_provider_toggle)
+        self.custom_model_directories_line_edit.setText("")
+        self.custom_models_dir_button.clicked.connect(self.show_custom_model_dir)
+        self.custom_model_directories_line_edit.setVisible(False)
+        self.custom_models_dir_button.setVisible(False)
+
         # Set connections
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.helpRequested.connect(self.show_help)
@@ -93,6 +101,15 @@ class SettingsDialog(QDialog, DIALOG_UI):
         #self.tabWidget.currentWidget().layout().setContentsMargins(0, 0, 0, 0)
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
+    def model_provider_toggle(self):
+        if self.offline_models_radio_button.isChecked():
+            self.custom_model_directories_line_edit.setVisible(True)
+            self.custom_models_dir_button.setVisible(True)
+        else:
+            self.custom_model_directories_line_edit.setVisible(False)
+            self.custom_models_dir_button.setVisible(False)
+            self.custom_model_directories_line_edit.setText("")
+
     def get_db_connection(self, update_connection=True):
         if self._db is not None:
             self.log.logMessage("Returning existing db connection...", PLUGIN_NAME, Qgis.Info)
@@ -110,6 +127,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 self._db = db
 
             return db
+
+    def show_custom_model_dir(self):
+        dlg = CustomModelDirDialog(self.custom_model_directories_line_edit.text(), self)
+        dlg.exec_()
 
     def accepted(self):
         if self._db is not None:
@@ -178,6 +199,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/pg/password', dict_conn['password'])
         settings.setValue('Asistente-LADM_COL/gpkg/dbfile', dict_conn['dbfile'])
 
+        settings.setValue('Asistente-LADM_COL/models/custom_model_directories_is_checked', 1 if self.offline_models_radio_button.isChecked() else 0)
+        if self.offline_models_radio_button.isChecked():
+            settings.setValue('Asistente-LADM_COL/models/custom_models', self.custom_model_directories_line_edit.text())
+
         settings.setValue('Asistente-LADM_COL/quality/too_long_tolerance', int(self.txt_too_long_tolerance.text()) or DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)
         settings.setValue('Asistente-LADM_COL/quality/use_roads', self.chk_use_roads.isChecked())
 
@@ -216,6 +241,17 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_pg_user.setText(settings.value('Asistente-LADM_COL/pg/user'))
         self.txt_pg_password.setText(settings.value('Asistente-LADM_COL/pg/password'))
         self.txt_gpkg_file.setText(settings.value('Asistente-LADM_COL/gpkg/dbfile'))
+
+        if bool(int(settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked'))):
+            self.offline_models_radio_button.setChecked(True)
+            self.custom_model_directories_line_edit.setText(settings.value('Asistente-LADM_COL/models/custom_models'))
+            self.custom_model_directories_line_edit.setVisible(True)
+            self.custom_models_dir_button.setVisible(True)
+        else:
+            self.online_models_radio_button.setChecked(True)
+            self.custom_model_directories_line_edit.setText("")
+            self.custom_model_directories_line_edit.setVisible(False)
+            self.custom_models_dir_button.setVisible(False)
 
         self.txt_too_long_tolerance.setText(str(settings.value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)))
         use_roads = settings.value('Asistente-LADM_COL/quality/use_roads', True, bool)

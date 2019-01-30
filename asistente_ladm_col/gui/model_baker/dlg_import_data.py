@@ -343,17 +343,24 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def save_configuration(self, configuration):
         settings = QSettings()
-        settings.setValue('QgisModelBaker/ili2pg/xtffile_import', configuration.xtffile)
-        settings.setValue('QgisModelBaker/importtype', self.type_combo_box.currentData())
+        settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_import', configuration.xtffile)
+        settings.setValue('Asistente-LADM_COL/QgisModelBaker/importtype', self.type_combo_box.currentData())
 
         if self.type_combo_box.currentData() == 'ili2gpkg':
-            settings.setValue('QgisModelBaker/ili2gpkg/dbfile', configuration.dbfile)
+            settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2gpkg/dbfile', configuration.dbfile)
 
     def restore_configuration(self):
         settings = QSettings()
-        self.xtf_file_line_edit.setText(settings.value('QgisModelBaker/ili2pg/xtffile_import'))
-        self.type_combo_box.setCurrentIndex(self.type_combo_box.findData(settings.value('QgisModelBaker/importtype', 'ili2pg')))
+        self.xtf_file_line_edit.setText(settings.value('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_import'))
+        self.type_combo_box.setCurrentIndex(self.type_combo_box.findData(settings.value('Asistente-LADM_COL/QgisModelBaker/importtype', 'ili2pg')))
         self.type_changed()
+
+        # set model repository
+        # if there is no option  by default use online model repository
+        custom_model_is_checked =  settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked') if settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked') else 0
+        self.use_local_models = bool(int(custom_model_is_checked))
+        if self.use_local_models:
+            self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models') if settings.value('Asistente-LADM_COL/models/custom_models') else None
 
     def updated_configuration(self):
         """
@@ -381,6 +388,14 @@ class DialogImportData(QDialog, DIALOG_UI):
         configuration.create_basket_col = False
         configuration.create_import_tid = False
         configuration.stroke_arcs = True
+
+        # Check custom model directories
+        if self.use_local_models:
+            if self.custom_model_directories is None:
+                self.base_configuration.custom_model_directories_enabled = False
+            else:
+                self.base_configuration.custom_model_directories = self.custom_model_directories
+                self.base_configuration.custom_model_directories_enabled = True
 
         configuration.base_configuration = self.base_configuration
         if self.get_ili_models():
