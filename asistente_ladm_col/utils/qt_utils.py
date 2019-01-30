@@ -191,7 +191,7 @@ class Validators(QObject):
             elif state == QValidator.Intermediate:
                 color = '#ffd356'  # Light orange
             else:
-                color = '#f6989d'  # Red
+                color = '#ffd356'  # Light orange
         senderObj.setStyleSheet('QLineEdit {{ background-color: {} }}'.format(color))
 
     def validate_line_edits_lower_case(self, *args, **kwargs):
@@ -209,7 +209,7 @@ class Validators(QObject):
             elif state == QValidator.Intermediate:
                 color = '#ffd356'  # Light orange
             else:
-                color = '#f6989d'  # Red
+                color = '#ffd356'  # Light orange
         senderObj.setStyleSheet('QLineEdit {{ background-color: {} }}'.format(color))
         senderObj.setText(senderObj.text().strip().lower())
 

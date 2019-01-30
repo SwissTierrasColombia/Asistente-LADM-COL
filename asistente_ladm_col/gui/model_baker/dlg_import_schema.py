@@ -103,7 +103,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.gpkgSaveFileValidator = FileValidator(pattern='*.gpkg', allow_non_existing=True)
         self.gpkgOpenFileValidator = FileValidator(pattern='*.gpkg')
         self.gpkg_file_line_edit.textChanged.connect(self.validators.validate_line_edits)
-        self.restore_configuration()
 
         # LOG
         self.log_config.setTitle(QCoreApplication.translate('DialogImportSchema', 'Show log'))
@@ -119,6 +118,9 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.buttonBox.addButton(QCoreApplication.translate('DialogImportSchema', 'Create LADM-COL structure'), QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
+
+    def showEvent(self, event):
+        self.restore_configuration()
 
     def update_import_models(self):
         for modelname in DEFAULT_MODEL_NAMES_CHECKED:

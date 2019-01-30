@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os
 from xml.dom import minidom
 from xml.parsers.expat import ExpatError
 
@@ -103,7 +104,6 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.gpkgOpenFileValidator = FileValidator(pattern='*.gpkg')
         self.gpkg_file_line_edit.textChanged.connect(self.validators.validate_line_edits)
         self.gpkg_file_line_edit.textChanged.emit(self.gpkg_file_line_edit.text())
-        self.restore_configuration()
 
         # LOG
         self.log_config.setTitle(QCoreApplication.translate('DialogImportData', 'Show log'))
@@ -122,6 +122,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def showEvent(self, event):
         self.update_schema_names_model()
+        self.restore_configuration()
 
     def update_import_models(self):
 
@@ -134,15 +135,19 @@ class DialogImportData(QDialog, DIALOG_UI):
         else:
 
             try:
-                mydoc = minidom.parse(self.xtf_file_line_edit.text().strip())
-                upper_models = mydoc.getElementsByTagName('MODEL')
-                lower_models = mydoc.getElementsByTagName('model')
 
-                models = list()
-                models.extend([model for model in upper_models])
-                models.extend([model for model in lower_models])
+                if os.path.isfile(self.xtf_file_line_edit.text().strip()):
+                    mydoc = minidom.parse(self.xtf_file_line_edit.text().strip())
+                    upper_models = mydoc.getElementsByTagName('MODEL')
+                    lower_models = mydoc.getElementsByTagName('model')
 
-                is_valid_xtf = True if len(models) > 0 else False
+                    models = list()
+                    models.extend([model for model in upper_models])
+                    models.extend([model for model in lower_models])
+
+                    is_valid_xtf = True if len(models) > 0 else False
+                else:
+                    is_valid_xtf = False
 
             except ExpatError:
                 is_valid_xtf = False
@@ -178,13 +183,13 @@ class DialogImportData(QDialog, DIALOG_UI):
                     self.import_models_list_view.setModel(self.import_models_qmodel)
                 else:
                     message_error = QCoreApplication.translate('DialogImportData', 'The XTF file does not register ili models, please verify')
-                    color = '#f6989d'  # Red
+                    color = '#ffd356'  # Light orange
                     self.import_models_qmodel = QStandardItemModel()
                     self.import_models_list_view.setModel(self.import_models_qmodel)
 
             else:
                 message_error = QCoreApplication.translate('DialogImportData', 'Please set a valid XTF file')
-                color = '#f6989d'  # Red
+                color = '#ffd356'  # Light orange
                 self.import_models_qmodel = QStandardItemModel()
                 self.import_models_list_view.setModel(self.import_models_qmodel)
 
@@ -277,15 +282,23 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         configuration = self.updated_configuration()
 
+        if not os.path.isfile(self.xtf_file_line_edit.text().strip()):
+            message_error = 'Please set a valid XTF file before importing data. XTF file does not exist'
+            self.txtStdout.setText(QCoreApplication.translate('DialogImportData', message_error))
+            self.show_message(message_error, Qgis.Warning)
+            self.xtf_file_line_edit.setFocus()
+            return
+
+
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
-            message_error = 'Please set a valid model before importing data.'
+            message_error = 'Please set a valid XTF before importing data.'
             self.txtStdout.setText(QCoreApplication.translate('DialogImportData',message_error))
             self.show_message(message_error, Qgis.Warning)
             self.xtf_file_line_edit.setFocus()
             return
 
         if not self.get_ili_models():
-            message_error = QCoreApplication.translate('DialogImportData','Please set a valid model(s) before creating the project.')
+            message_error = QCoreApplication.translate('DialogImportData','The selected XTF file does not have information according to the LADM-COL model to import.')
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
             self.import_models_list_view.setFocus()

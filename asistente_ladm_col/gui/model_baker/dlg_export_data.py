@@ -102,7 +102,6 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.gpkg_file_line_edit.setValidator(gpkgFileValidator)
         self.gpkg_file_line_edit.textChanged.connect(self.validators.validate_line_edits)
         self.gpkg_file_line_edit.textChanged.emit(self.gpkg_file_line_edit.text())
-        self.restore_configuration()
 
         # LOG
         self.log_config.setTitle(QCoreApplication.translate('DialogExportData', 'Show log'))
@@ -124,6 +123,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         # update after create dialog
         self.update_schema_names_model()
         self.update_models_names(self.get_checked_schema())
+        self.restore_configuration()
 
     def update_schema_names_model(self):
         res, msg = self.db.test_connection()
