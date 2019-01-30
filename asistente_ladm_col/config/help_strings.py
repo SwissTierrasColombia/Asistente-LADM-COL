@@ -137,12 +137,6 @@ Choose this option if you want to associate an <b>ExtAddress</b> to an existing 
 Add more text...\
 ")
 
-        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION4_POINTS = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to associate an <b>ExtAddress</b> to an existing <i>Right of way</i>.\
-<br><br>\
-Add more text...\
-")
-
 # Clase de tipo LA_RRR que registra las responsabilidades que las instancias de los interesados tienen sobre los predios.
         self.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you have selected at least one <i>Administrative Source</i> and want to link such selected sources to a new <b>Responsibility</b> that you will create using a form.\
