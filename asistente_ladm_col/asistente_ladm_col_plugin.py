@@ -25,7 +25,7 @@ from functools import (partial,
 import qgis.utils
 from processing.modeler.ModelerUtils import ModelerUtils
 from qgis.PyQt.QtCore import (QObject,
-                              QCoreApplication)
+                              QCoreApplication, Qt)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QAction,
                                  QMenu,
@@ -81,6 +81,7 @@ from .gui.create_physical_zone_valuation_wizard import CreatePhysicalZoneValuati
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
 from .gui.dialog_import_from_excel import DialogImportFromExcel
+from .gui.dockwidget_queries import DockWidgetQueries
 from .gui.right_of_way import RightOfWay
 from .gui.reports import ReportGenerator
 from .gui.toolbar import ToolBar
@@ -97,6 +98,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface = iface
         self.log = QgsApplication.messageLog()
         self._about_dialog = None
+        self._dock_widget_queries = None
         self.toolbar = None
 
     def initGui(self):
@@ -122,7 +124,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._menu.addSeparator()
         self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"), self.iface.mainWindow())
-        self._menu.addAction(self._load_layers_action)
+        self._queries_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Make Queries"), self.iface.mainWindow())
+        self._menu.addActions([self._load_layers_action,
+                              self._queries_action])
         self._menu.addSeparator()
         self._settings_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
         self._help_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"), self.iface.mainWindow())
@@ -134,6 +138,7 @@ class AsistenteLADMCOLPlugin(QObject):
         # Connections
         self._controlled_measurement_action.triggered.connect(self.show_dlg_controlled_measurement)
         self._load_layers_action.triggered.connect(self.load_layers_from_project_generator)
+        self._queries_action.triggered.connect(self.show_queries)
         self._settings_action.triggered.connect(self.show_settings)
         self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
@@ -746,6 +751,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.deleteLater()
         self.iface.mainWindow().removeToolBar(self._ladm_col_toolbar)
         del self._ladm_col_toolbar
+        del self._dock_widget_queries
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
 
     def show_settings(self):
@@ -759,6 +765,14 @@ class AsistenteLADMCOLPlugin(QObject):
     def load_layers_from_project_generator(self):
         dlg = DialogLoadLayers(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
+
+    @_db_connection_required
+    def show_queries(self):
+        if self._dock_widget_queries is None:
+            self._dock_widget_queries = DockWidgetQueries(self.iface, self.get_db_connection(), self.qgis_utils)
+            self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_queries)
+        else:
+            self._dock_widget_queries.toggleUserVisible()
 
     def get_db_connection(self):
         return self.qgis_utils.get_db_connection()

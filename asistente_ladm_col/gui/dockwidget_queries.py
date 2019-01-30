@@ -18,10 +18,10 @@
 """
 from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtGui import QColor, QIcon, QCursor
+from qgis.core import QgsWkbTypes, Qgis, QgsMessageLog
+from qgis.gui import QgsDockWidget, QgsMapToolIdentifyFeature
 
 from ..config.table_mapping_config import PLOT_TABLE, UEBAUNIT_TABLE, PARCEL_TABLE
-from qgis._core import QgsWkbTypes, Qgis, QgsMessageLog
-from qgis.gui import QgsDockWidget, QgsMapToolIdentifyFeature
 
 from ..utils import get_ui_class
 
@@ -44,9 +44,19 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self._identify_tool = None
         self._identify_neighbours_tool = None
 
-        self.add_options()
+        self.add_layers()
 
-        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/surveying.png"))sudo ln -s /docs/dev/qgis/build_07/output/python/plugins/processing/algs/gdal/gdalcalc.py /usr/bin/gdal_calc.py
+        self.cbo_plot_fields.clear()
+
+        for field in self._plot_layer.fields():
+            alias = field.alias()
+            if alias is '':
+                name = field.name()
+                self.cbo_plot_fields.addItem(name, name)
+            else:
+                self.cbo_plot_fields.addItem(alias, name)
+
+        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/surveying.png"))
 
         self.btn_identify_plot_neighbours.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/party.png"))
 
@@ -66,25 +76,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         if self._plot_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("DockerWidgetQueries",
+                                                QCoreApplication.translate("DockWidgetQueries",
                                                                            "Plot layer couldn't be found... {}").format(
                                                     self._db.get_description()),
                                                 Qgis.Warning)
-            return
-
-    def add_options(self):
-        if self._plot_layer == None:
-            self.add_layers()
-
-        self.cbo_plot_fields.clear()
-
-        for field in self._plot_layer.fields():
-            alias = field.alias()
-            if alias is '':
-                name = field.name()
-                self.cbo_plot_fields.addItem(name, name)
-            else:
-                self.cbo_plot_fields.addItem(alias, name)
 
     def query_plot(self):
         option = self.cbo_plot_fields.currentData()
@@ -99,7 +94,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 self.treeView.expandAll()
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                    QCoreApplication.translate("DockerWidgetQueries","t_id must be an integer"))
+                    QCoreApplication.translate("DockWidgetQueries","t_id must be an integer"))
 
 
     def clear_plot(self):
@@ -107,8 +102,8 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
 
     def identify_plot(self):
-        # enable needed layers
-        self.add_layers()
+        if self._plot_layer is None:
+            self.add_layers()
 
         # recover old state of mapCanvas
         self.mapCanvas = self.iface.mapCanvas()
@@ -141,8 +136,8 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.treeView.expandAll()
 
     def identify_plot_neighbours(self):
-        # enable needed layers
-        self.add_layers()
+        if self._plot_layer is None:
+            self.add_layers()
 
         # recover old state of mapCanvas
         self.mapCanvas = self.iface.mapCanvas()

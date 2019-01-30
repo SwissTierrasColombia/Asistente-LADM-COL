@@ -379,6 +379,71 @@ class PGConnector(DBConnector):
                     """.format(self.schema))
         return (True, cur)
 
+
+    def retrieve_sql_data(self, sql_query):
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(sql_query)
+        results = cur.fetchall()
+        colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
+        return colnames, results
+
+    def get_parcels_and_parties_by_plot(self, plot__t_id):
+        sql_query = """
+             SELECT     predio.fmi            AS "Folio" ,
+                       predio.nupre          AS "NUPRE" ,
+                       predio.numero_predial AS "Número_Predial" ,
+                       predio.nombre         AS "Nombre_del_Predio" ,
+                       Json_agg(derecho)     AS derecho ,
+                       CASE
+                                  WHEN Json_agg(servidumbre)::text <> '[null]' THEN Json_agg(servidumbre)
+                                  ELSE NULL
+                       END AS servidumbre
+            FROM       {db_schema}.terreno
+            LEFT JOIN  {db_schema}.uebaunit
+            ON         terreno.t_id = uebaunit.ue_terreno
+            LEFT JOIN  {db_schema}.predio
+            ON         predio.t_id = uebaunit.baunit_predio
+            INNER JOIN
+                       (
+                                 SELECT    col_derecho.unidad_predio ,
+                                           col_derecho.tipo "Tipo_Derecho" ,
+                                           col_derecho.codigo_registral_derecho "Código_Registral" ,
+                                           col_derecho.descripcion "Descripción" ,
+                                           col_interesado.documento_identidad "Documento_Identidad" ,
+                                           col_interesado.tipo_documento "Tipo_Documento" ,
+                                           col_interesado.primer_apellido "Primer_Apellido" ,
+                                           col_interesado.primer_nombre "Primer_Nombre" ,
+                                           col_interesado.segundo_apellido "Segundo_Apellido" ,
+                                           col_interesado.segundo_nombre "Segundo_Nombre" ,
+                                           col_interesado.genero "Género"
+                                 FROM      {db_schema}.col_derecho
+                                 LEFT JOIN {db_schema}.col_interesado
+                                 ON        col_derecho.interesado_col_interesado = col_interesado.t_id ) derecho
+            ON         derecho.unidad_predio = predio.t_id
+            LEFT JOIN
+                       (
+                              SELECT servidumbrepaso.identificador,
+                                     uebaunit.baunit_predio,
+                                     uebaunit.ue_servidumbrepaso,
+                                     servidumbrepaso.etiqueta
+                              FROM   {db_schema}.uebaunit
+                              JOIN   {db_schema}.servidumbrepaso
+                              ON     uebaunit.ue_servidumbrepaso = servidumbrepaso.t_id ) servidumbre
+            ON         servidumbre.baunit_predio = predio.t_id
+            WHERE      terreno.t_id = '{plot_t_id}' --'12160'
+            GROUP BY   predio.fmi ,
+                       predio.nupre ,
+                       predio.numero_predial ,
+                       predio.nombre;
+            """.format(db_schema=self.schema, plot_t_id=plot__t_id)
+
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
+        cur.execute(sql_query)
+        records = cur.fetchall()
+        res = [record._asdict() for record in records]
+
+        return res
+
     def get_annex17_plot_data(self, plot_id, mode='only_id'):
         if self.conn is None:
             res, msg = self.test_connection()

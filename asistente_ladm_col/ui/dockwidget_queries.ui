@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>dockWidget</class>
- <widget class="QDockWidget" name="dockWidget">
+ <class>dock_widget_queries</class>
+ <widget class="QDockWidget" name="dock_widget_queries">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,8 +16,14 @@
     <height>562</height>
    </size>
   </property>
+  <property name="floating">
+   <bool>false</bool>
+  </property>
+  <property name="features">
+   <set>QDockWidget::AllDockWidgetFeatures</set>
+  </property>
   <property name="windowTitle">
-   <string>LADM_COL</string>
+   <string/>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout_3">
@@ -43,13 +49,13 @@
         <number>0</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>6</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>6</number>
        </property>
        <property name="bottomMargin">
-        <number>0</number>
+        <number>6</number>
        </property>
        <item row="0" column="0">
         <widget class="QTabWidget" name="tabWidget">
@@ -67,7 +73,7 @@
               <enum>QTabWidget::South</enum>
              </property>
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="tab_plot_coordinates">
               <attribute name="title">
@@ -217,13 +223,13 @@
         <number>0</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>6</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>6</number>
        </property>
        <property name="bottomMargin">
-        <number>0</number>
+        <number>6</number>
        </property>
        <item row="0" column="0">
         <widget class="QTreeView" name="treeView"/>
