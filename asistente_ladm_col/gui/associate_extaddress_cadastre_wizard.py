@@ -140,6 +140,8 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
     def prepare_selection(self):
         if self.rad_to_plot.isChecked():
+            self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
+                                    "Select Plot"))
             # Load layers
             res_layers = self.qgis_utils.get_layers(self._db, {
             EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
@@ -152,9 +154,11 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.iface.setActiveLayer(self._plot_layer)
 
             self.check_selected_features()
-            self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
-                                    "Select Plot"))
+
         elif self.rad_to_building.isChecked():
+            self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
+                                    "Select Building"))
+
             # Load layers
             res_layers = self.qgis_utils.get_layers(self._db, {
             EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
@@ -168,9 +172,10 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
             self.check_selected_features()
 
-            self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
-                                    "Select Building"))
         else: #self.rad_to_building_unit.isChecked():
+            self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
+                                    "Select Building Unit"))
+
             # Load layers
             res_layers = self.qgis_utils.get_layers(self._db, {
             EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
@@ -184,19 +189,17 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
             self.check_selected_features()
 
-            self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
-                                    "Select Building Unit"))
-
         self.btn_select.clicked.connect(self.select_feature)
         self.btn_select_by_expression.clicked.connect(self.select_feature_by_expression)
 
     def check_selected_features(self):
-
+        self.bar.clearWidgets()
         if self._current_layer.selectedFeatureCount() == 1:
             self.lbl_selected.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                           "1 Feature Selected"))
             self.button(self.FinishButton).setDisabled(False)
             self._feature_tid = self._current_layer.selectedFeatures()[0].attribute(ID_FIELD)
+            self.canvas.zoomToSelected(self._current_layer)
         elif self._current_layer.selectedFeatureCount() > 1:
             self.show_message(QCoreApplication.translate("AssociateExtAddressWizard",
                                           "Please select just one feature"), Qgis.Warning)
@@ -204,12 +207,15 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                                           str(self._current_layer.selectedFeatureCount()) + " Feature(s) Selected"))
             self.button(self.FinishButton).setDisabled(True)
         else:
+            self.lbl_selected.setText(QCoreApplication.translate("AssociateExtAddressWizard",
+                                          "0 Selected"))
             self.button(self.FinishButton).setDisabled(True)
 
     def select_feature_by_expression(self):
         Dlg_expression_selection = QgsExpressionSelectionDialog(self._current_layer)
-        Dlg_expression_selection.finished.connect(self.check_selected_features)
+        self._current_layer.selectionChanged.connect(self.check_selected_features)
         Dlg_expression_selection.exec()
+        self._current_layer.selectionChanged.disconnect(self.check_selected_features)
 
     def select_feature(self):
         #Make wizard disappear
@@ -309,7 +315,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self._current_layer.removeSelection()
 
     def show_message(self, message, level):
-        self.bar.pushMessage(message, level, 3)
+        self.bar.pushMessage(message, level, 0)
 
     def save_settings(self):
         settings = QSettings()
