@@ -17,6 +17,7 @@
  ***************************************************************************/
 """
 import os
+
 from QgisModelBaker.libili2db import iliimporter
 from QgisModelBaker.libili2db.ili2dbconfig import (SchemaImportConfiguration,
                                                    BaseConfiguration)
@@ -48,7 +49,6 @@ from ...utils.qt_utils import (Validators,
                                make_save_file_selector,
                                OverrideCursor)
 from ...resources_rc import *
-from qgis.PyQt.QtWidgets import QMessageBox
 
 DIALOG_UI = get_ui_class('model_baker/dlg_import_schema.ui')
 

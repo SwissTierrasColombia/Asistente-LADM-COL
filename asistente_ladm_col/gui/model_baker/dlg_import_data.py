@@ -18,8 +18,6 @@
 """
 import os
 import re
-from xml.dom import minidom
-from xml.parsers.expat import ExpatError
 
 from QgisModelBaker.libili2db import iliimporter
 from QgisModelBaker.libili2db.ili2dbconfig import (ImportDataConfiguration,
