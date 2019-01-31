@@ -21,7 +21,8 @@
 import gc
 
 from qgis.PyQt.QtCore import (QObject,
-                              QVariant)
+                              QVariant,
+                              pyqtSignal)
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsField,
@@ -46,10 +47,18 @@ from ..config.table_mapping_config import ID_FIELD
 
 
 class GeometryUtils(QObject):
+    log_geometry_message_emitted = pyqtSignal(str, int)
+    update_log_geometry_progress_emitted = pyqtSignal(int)
 
     def __init__(self):
         QObject.__init__(self)
         self.log = QgsApplication.messageLog()
+
+    def emit_log_geometry_message(self, msg, count):
+        self.log_geometry_message_emitted.emit(msg, count)
+
+    def emit_update_log_geometry_progress(self, count):
+        self.update_log_geometry_progress_emitted.emit(count)
 
     def get_pair_boundary_plot(self, boundary_layer, plot_layer, id_field=ID_FIELD, use_selection=True):
         id_field_idx = plot_layer.fields().indexFromName(id_field)
@@ -170,19 +179,34 @@ class GeometryUtils(QObject):
     def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer, id_field=ID_FIELD, use_selection=True):
         id_field_idx = boundary_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
-        lines = boundary_layer.getSelectedFeatures(request) if use_selection else boundary_layer.getFeatures(request)
+        if use_selection:
+            lines = boundary_layer.getSelectedFeatures(request)  
+            number_of_lines = boundary_layer.selectedFeatureCount()  
+        else:
+            lines = boundary_layer.getFeatures(request)
+            number_of_lines = boundary_layer.featureCount()
+        
         intersect_pairs = list()
 
         if boundary_point_layer.featureCount() == 0:
             return intersect_pairs
 
+        self.emit_log_geometry_message("filling point BFS ...", number_of_lines)
         id_field_idx = boundary_point_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_features = {feature.id(): feature for feature in boundary_point_layer.getFeatures(request)}
         index = QgsSpatialIndex(boundary_point_layer)
         candidate_features = None
 
+        line_counter = 0
+        minimum_unit = int(number_of_lines/20)
+        percents_validator = int(number_of_lines/20)
+
         for line in lines:
+            line_counter += 1
+            if line_counter == percents_validator or line_counter == number_of_lines:
+                self.emit_update_log_geometry_progress(line_counter)
+                percents_validator = percents_validator + minimum_unit
             bbox = line.geometry().boundingBox()
             bbox.scale(1.001)
             candidates_ids = index.intersects(bbox)

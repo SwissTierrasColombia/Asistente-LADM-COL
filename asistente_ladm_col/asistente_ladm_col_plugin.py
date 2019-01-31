@@ -29,7 +29,8 @@ from qgis.PyQt.QtCore import (QObject,
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QAction,
                                  QMenu,
-                                 QPushButton)
+                                 QPushButton,
+                                 QProgressBar)
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsExpression,
@@ -89,7 +90,6 @@ from .utils.model_parser import ModelParser
 from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
-
 
 class AsistenteLADMCOLPlugin(QObject):
     def __init__(self, iface):
@@ -156,6 +156,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
         self.qgis_utils.set_node_visibility_requested.connect(self.set_node_visibility)
+        self.qgis_utils.geometry.log_geometry_message_emitted.connect(self.show_log_geometry_message)
+        self.qgis_utils.geometry.update_log_geometry_progress_emitted.connect(self.update_log_geometry_progress)
 
         self.iface.initializationCompleted.connect(self.qgis_initialized)
 
@@ -704,6 +706,18 @@ class AsistenteLADMCOLPlugin(QObject):
                     return True
 
         return True
+
+    def show_log_geometry_message(self, msg, count):
+        self.progressMessageBar = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        self.progress = QProgressBar()
+        self.progress.setFixedWidth(80)
+        self.progress.setMaximum(count)
+        self.progressMessageBar.layout().addWidget(self.progress)
+        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Info)
+
+    def update_log_geometry_progress(self, count):
+        self.progress.setValue(count)
+        QCoreApplication.processEvents()
 
     @_project_generator_required
     @_db_connection_required
