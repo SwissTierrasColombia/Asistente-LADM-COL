@@ -63,18 +63,29 @@ class GeometryUtils(QObject):
     def get_pair_boundary_plot(self, boundary_layer, plot_layer, id_field=ID_FIELD, use_selection=True):
         id_field_idx = plot_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
-        polygons = plot_layer.getSelectedFeatures(request) if use_selection else plot_layer.getFeatures(request)
+        if use_selection:
+            polygons = plot_layer.getSelectedFeatures(request)  
+            number_of_polygons = plot_layer.selectedFeatureCount()  
+        else:
+            polygons = plot_layer.getFeatures(request)
+            number_of_polygons = plot_layer.featureCount()
+
         intersect_more_pairs = list()
         intersect_less_pairs = list()
 
         if boundary_layer.featureCount() == 0:
             return (intersect_more_pairs, intersect_less_pairs)
 
+        self.emit_log_geometry_message("filling more BFS and less...", number_of_polygons)
         id_field_idx = boundary_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_features = {feature.id(): feature for feature in boundary_layer.getFeatures(request)}
         index = QgsSpatialIndex(boundary_layer)
         candidate_features = None
+
+        poligon_counter = 0
+        minimum_unit = int(number_of_polygons/20)
+        percents_validator = int(number_of_polygons/20)
 
         for polygon in polygons:
             bbox = polygon.geometry().boundingBox()
@@ -96,6 +107,12 @@ class GeometryUtils(QObject):
 
                     if is_multipart:
                         multi_polygon = polygon_geom.get()
+                        # TODO: remove when the error is resolved
+                        if type(multi_polygon) != type(QgsMultiPolygon()):
+                            geom = QgsMultiPolygon()
+                            geom.fromWkt(polygon_geom.asWkt())
+                            multi_polygon = geom
+                        
                         for part in range(multi_polygon.numGeometries()):
                             if multi_polygon.ringCount(part) > 1:
                                 has_inner_rings = True
@@ -170,6 +187,11 @@ class GeometryUtils(QObject):
                                 PLUGIN_NAME,
                                 Qgis.Warning
                             )
+
+            poligon_counter += 1
+            if poligon_counter == percents_validator or poligon_counter == number_of_polygons:
+                self.emit_update_log_geometry_progress(poligon_counter)
+                percents_validator = percents_validator + minimum_unit
         # free up memory
         del candidate_features
         del dict_features
@@ -203,10 +225,6 @@ class GeometryUtils(QObject):
         percents_validator = int(number_of_lines/20)
 
         for line in lines:
-            line_counter += 1
-            if line_counter == percents_validator or line_counter == number_of_lines:
-                self.emit_update_log_geometry_progress(line_counter)
-                percents_validator = percents_validator + minimum_unit
             bbox = line.geometry().boundingBox()
             bbox.scale(1.001)
             candidates_ids = index.intersects(bbox)
@@ -220,6 +238,11 @@ class GeometryUtils(QObject):
                         pair = (line[id_field], candidate_feature[id_field])
                         if pair not in intersect_pairs:
                             intersect_pairs.append(pair)
+
+            line_counter += 1
+            if line_counter == percents_validator or line_counter == number_of_lines:
+                self.emit_update_log_geometry_progress(line_counter)
+                percents_validator = percents_validator + minimum_unit
         # free up memory
         del candidate_features
         del dict_features
