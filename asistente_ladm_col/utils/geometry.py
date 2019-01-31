@@ -182,9 +182,6 @@ class GeometryUtils(QObject):
         index = QgsSpatialIndex(boundary_point_layer)
         candidate_features = None
 
-        print (id_field_idx)
-        print (lines)
-
         for line in lines:
             bbox = line.geometry().boundingBox()
             bbox.scale(1.001)
@@ -684,6 +681,13 @@ class GeometryUtils(QObject):
                 if is_multipart and multi_polygon:
                     for i in range(multi_polygon.numGeometries()):
                         temp_polygon = multi_polygon.geometryN(i)
+
+                        # TODO: remove when the error is resolved
+                        if type(temp_polygon) != type(QgsPolygon()):
+                            geom = QgsPolygon()
+                            geom.fromWkt(temp_polygon.asWkt())
+                            temp_polygon = geom
+
                         for j in range(temp_polygon.numInteriorRings()):
                             new_feature = QgsVectorLayerUtils().createFeature(layer, QgsGeometry(
                                 temp_polygon.interiorRing(j).clone()), {0: polygon[id_field]})
