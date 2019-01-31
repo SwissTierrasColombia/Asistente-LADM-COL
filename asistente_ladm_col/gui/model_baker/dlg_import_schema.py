@@ -65,8 +65,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.setupUi(self)
 
         self.type_combo_box.clear()
-        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportSchema','Use PostgreSQL/PostGIS'), 'ili2pg')
-        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportSchema','Use GeoPackage'), 'ili2gpkg')
+        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportSchema','PostgreSQL/PostGIS'), 'ili2pg')
+        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportSchema','GeoPackage'), 'ili2gpkg')
         self.type_combo_box.currentIndexChanged.connect(self.type_changed)
         self.type_changed()
 
@@ -350,11 +350,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         return toml_file_path
 
     def disable(self):
+        self.type_combo_box.setEnabled(False)
         self.pg_config.setEnabled(False)
         self.ili_config.setEnabled(False)
         self.buttonBox.setEnabled(False)
 
     def enable(self):
+        self.type_combo_box.setEnabled(True)
         self.pg_config.setEnabled(True)
         self.ili_config.setEnabled(True)
         self.buttonBox.setEnabled(True)

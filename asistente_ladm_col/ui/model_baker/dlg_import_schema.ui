@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>InterlisImportSchema</class>
  <widget class="QDialog" name="InterlisImportSchema">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -37,7 +40,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Source</string>
+        <string>Type</string>
        </property>
       </widget>
      </item>
@@ -45,7 +48,7 @@
       <widget class="QComboBox" name="type_combo_box">
        <item>
         <property name="text">
-         <string>PostGIS</string>
+         <string>PostgreSQL/PostGIS</string>
         </property>
        </item>
        <item>
@@ -108,13 +111,13 @@
        <item row="2" column="0">
         <widget class="QGroupBox" name="ili_config">
          <property name="title">
-          <string>Interlis</string>
+          <string>Models</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
           <item row="0" column="0">
            <widget class="QLabel" name="label_8">
             <property name="text">
-             <string>Models</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;LADM-COL&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;models&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>

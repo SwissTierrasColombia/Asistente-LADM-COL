@@ -69,8 +69,8 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.ilicache.refresh()
 
         self.type_combo_box.clear()
-        self.type_combo_box.addItem(QCoreApplication.translate('DialogExportData','Use PostgreSQL/PostGIS'), 'ili2pg')
-        self.type_combo_box.addItem(QCoreApplication.translate('DialogExportData','Use GeoPackage'), 'ili2gpkg')
+        self.type_combo_box.addItem(QCoreApplication.translate('DialogExportData','PostgreSQL/PostGIS'), 'ili2pg')
+        self.type_combo_box.addItem(QCoreApplication.translate('DialogExportData','GeoPackage'), 'ili2gpkg')
         self.type_combo_box.currentIndexChanged.connect(self.type_changed)
         self.type_changed()
 
@@ -421,11 +421,13 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.qgis_utils.show_help("export_data")
 
     def disable(self):
+        self.type_combo_box.setEnabled(False)
         self.pg_config.setEnabled(False)
         self.ili_config.setEnabled(False)
         self.buttonBox.setEnabled(False)
 
     def enable(self):
+        self.type_combo_box.setEnabled(True)
         self.pg_config.setEnabled(True)
         self.ili_config.setEnabled(True)
         self.buttonBox.setEnabled(True)

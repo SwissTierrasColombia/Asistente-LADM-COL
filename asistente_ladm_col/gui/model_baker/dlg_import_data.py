@@ -17,6 +17,7 @@
  ***************************************************************************/
 """
 import os
+import re
 from xml.dom import minidom
 from xml.parsers.expat import ExpatError
 
@@ -67,8 +68,8 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.ilicache.refresh()
 
         self.type_combo_box.clear()
-        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportData','Use PostgreSQL/PostGIS'), 'ili2pg')
-        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportData','Use GeoPackage)'), 'ili2gpkg')
+        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportData','PostgreSQL/PostGIS'), 'ili2pg')
+        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportData','GeoPackage)'), 'ili2gpkg')
         self.type_combo_box.currentIndexChanged.connect(self.type_changed)
         self.type_changed()
 
@@ -134,65 +135,32 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.import_models_list_view.setModel(self.import_models_qmodel)
         else:
 
-            try:
-
-                if os.path.isfile(self.xtf_file_line_edit.text().strip()):
-                    mydoc = minidom.parse(self.xtf_file_line_edit.text().strip())
-                    upper_models = mydoc.getElementsByTagName('MODEL')
-                    lower_models = mydoc.getElementsByTagName('model')
-
-                    models = list()
-                    models.extend([model for model in upper_models])
-                    models.extend([model for model in lower_models])
-
-                    is_valid_xtf = True if len(models) > 0 else False
-                else:
-                    is_valid_xtf = False
-
-            except ExpatError:
-                is_valid_xtf = False
-
-            if is_valid_xtf:
+            if os.path.isfile(self.xtf_file_line_edit.text().strip()):
                 color = '#fff'  # White
+
                 self.import_models_qmodel = QStandardItemModel()
-                for model in models:
-                    try:
-                        u_model_name = model.attributes['NAME'].value
-                    except KeyError:
-                        # attribute not available
-                        u_model_name = None
-                        pass
+                models_name = self.find_models_xtf(self.xtf_file_line_edit.text().strip())
 
-                    try:
-                        l_model_name = model.attributes['name'].value
-                    except KeyError:
-                        # attribute not available
-                        l_model_name = None
-                        pass
-
-                    if u_model_name or l_model_name:
-                        model_name = u_model_name if u_model_name and len(u_model_name) > 0 else l_model_name
-
-                        if not model_name in DEFAULT_HIDDEN_MODELS:
-                            item = QStandardItem(model_name)
-                            item.setCheckable(False)
-                            item.setEditable(False)
-                            self.import_models_qmodel.appendRow(item)
+                for model_name in models_name:
+                    if not model_name in DEFAULT_HIDDEN_MODELS:
+                        item = QStandardItem(model_name)
+                        item.setCheckable(False)
+                        item.setEditable(False)
+                        self.import_models_qmodel.appendRow(item)
 
                 if self.import_models_qmodel.rowCount() > 0:
                     self.import_models_list_view.setModel(self.import_models_qmodel)
                 else:
-                    message_error = QCoreApplication.translate('DialogImportData', 'The XTF file does not register ili models, please verify')
+                    message_error = QCoreApplication.translate('DialogImportData',
+                                                               'The XTF file does not register models, please verify')
                     color = '#ffd356'  # Light orange
                     self.import_models_qmodel = QStandardItemModel()
                     self.import_models_list_view.setModel(self.import_models_qmodel)
-
             else:
                 message_error = QCoreApplication.translate('DialogImportData', 'Please set a valid XTF file')
                 color = '#ffd356'  # Light orange
                 self.import_models_qmodel = QStandardItemModel()
                 self.import_models_list_view.setModel(self.import_models_qmodel)
-
         self.xtf_file_line_edit.setStyleSheet('QLineEdit {{ background-color: {} }}'.format(color))
 
         if message_error:
@@ -200,6 +168,17 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.show_message(message_error, Qgis.Warning)
             self.import_models_list_view.setFocus()
             return
+
+    def find_models_xtf(self, xtf_path):
+        models_name = list()
+        pattern = re.compile(r'<MODEL[^>]*>(?P<text>[^<]*)</MODEL>')
+        with open(xtf_path, 'r') as f:
+            for txt in pattern.finditer(f.read()):
+                model_tag = str(txt.group(0))
+                name = re.findall( 'NAME="(.*?)"', model_tag, re.IGNORECASE)
+                models_name.extend(name)
+        return models_name
+
 
     def update_schema_names_model(self):
         res, msg = self.db.test_connection()
@@ -467,11 +446,13 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.qgis_utils.show_help("import_data")
 
     def disable(self):
+        self.type_combo_box.setEnabled(False)
         self.pg_config.setEnabled(False)
         self.ili_config.setEnabled(False)
         self.buttonBox.setEnabled(False)
 
     def enable(self):
+        self.type_combo_box.setEnabled(True)
         self.pg_config.setEnabled(True)
         self.ili_config.setEnabled(True)
         self.buttonBox.setEnabled(True)
