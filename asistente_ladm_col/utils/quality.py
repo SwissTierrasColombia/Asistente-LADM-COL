@@ -16,6 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 """
+import time
+from functools import wraps
 
 from qgis.PyQt.QtCore import (Qt,
                               QObject,
@@ -38,9 +40,7 @@ from qgis.core import (Qgis,
                        NULL,
                        QgsRectangle)
 import processing
-import time
-from functools import wraps
-from asistente_ladm_col.utils.utils import set_time_format
+
 from .logic_checks import LogicChecks
 from .project_generator_utils import ProjectGeneratorUtils
 from ..config.general_config import (DEFAULT_EPSG,
@@ -53,8 +53,10 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      LOG_QUALITY_CONTENT_SEPARATOR,
                                      LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
                                      LOG_QUALITY_LIST_ITEM_CORRECT_OPEN,
-                                     translated_strings, LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
-                                     LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE, LOG_QUALITY_LIST_ITEM_OPEN,
+                                     translated_strings,
+                                     LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
+                                     LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE,
+                                     LOG_QUALITY_LIST_ITEM_OPEN,
                                      LOG_QUALITY_LIST_ITEM_CLOSE)
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
@@ -83,7 +85,7 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE,
                                            ZONE_FIELD)
 from .qt_utils import OverrideCursor
-
+from .utils import set_time_format
 
 class QualityUtils(QObject):
     log_quality_show_message_emitted = pyqtSignal(str, int)
@@ -1481,7 +1483,6 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_too_long_segments(self, db, rule_name):
         tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
-
         features = []
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
 
