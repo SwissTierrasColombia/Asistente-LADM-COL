@@ -133,6 +133,19 @@ VALUATION_MENU_OBJECTNAME = "ladm_col_valuation"
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
 
+# Log topology rules
+LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE = "<h4>"
+LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE = "</h4>"
+LOG_QUALITY_LIST_CONTAINER_OPEN = "<ul>"
+LOG_QUALITY_LIST_CONTAINER_CLOSE = "</ul>"
+LOG_QUALITY_CONTENT_SEPARATOR = "<HR>"
+LOG_QUALITY_LIST_ITEM_ERROR_OPEN = "<li style='color:red;'>"
+LOG_QUALITY_LIST_ITEM_ERROR_CLOSE = "</li>"
+LOG_QUALITY_LIST_ITEM_CORRECT_OPEN = "<li style='color:green;'>"
+LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE = "</li>"
+LOG_QUALITY_LIST_ITEM_OPEN = "<li style='color:#ffd356;'>"
+LOG_QUALITY_LIST_ITEM_CLOSE = "</li>"
+
 
 class TranslatableConfigStrings(QObject):
     def __init__(self):

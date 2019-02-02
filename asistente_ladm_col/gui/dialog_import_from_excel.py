@@ -31,7 +31,6 @@ import processing
 
 from asistente_ladm_col import PLUGIN_NAME
 from asistente_ladm_col.utils.qt_utils import make_file_selector, normalize_local_url
-from asistente_ladm_col.utils.utils import get_number_of_rows_in_excel_file
 from ..config.help_strings import HelpStrings
 from qgis.PyQt.QtGui import (QBrush,
                              QFont,
