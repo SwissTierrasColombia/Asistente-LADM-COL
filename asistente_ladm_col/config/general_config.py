@@ -59,6 +59,7 @@ MODULE_HELP_MAPPING = {
     'create_plot': 'cadastre/Spatial_Unit.html#create-plot',
     'create_building': 'cadastre/Spatial_Unit.html#create-building',
     'create_building_unit': 'cadastre/Spatial_Unit.html#create-building-unit',
+    'create_right_of_way':'cadastre/Spatial_Unit.html#create-right-of-way',
     'create_right': 'cadastre/RRR.html#right',
     'create_responsibility': 'cadastre/RRR.html#responsibility',
     'create_restriction': 'cadastre/RRR.html#restriction',
@@ -142,6 +143,19 @@ VALUATION_MENU_OBJECTNAME = "ladm_col_valuation"
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
 
+# Log topology rules
+LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE = "<h4>"
+LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE = "</h4>"
+LOG_QUALITY_LIST_CONTAINER_OPEN = "<ul>"
+LOG_QUALITY_LIST_CONTAINER_CLOSE = "</ul>"
+LOG_QUALITY_CONTENT_SEPARATOR = "<HR>"
+LOG_QUALITY_LIST_ITEM_ERROR_OPEN = "<li style='color:red;'>"
+LOG_QUALITY_LIST_ITEM_ERROR_CLOSE = "</li>"
+LOG_QUALITY_LIST_ITEM_CORRECT_OPEN = "<li style='color:green;'>"
+LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE = "</li>"
+LOG_QUALITY_LIST_ITEM_OPEN = "<li style='color:#ffd356;'>"
+LOG_QUALITY_LIST_ITEM_CLOSE = "</li>"
+
 
 class TranslatableConfigStrings(QObject):
     def __init__(self):
@@ -149,6 +163,7 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_OVERLAPS_IN_BOUNDARY_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should not overlap")
         self.CHECK_OVERLAPS_IN_CONTROL_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Control Points should not overlap")
         self.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by Boundary nodes")
+        self.RIGHT_OF_WAY_LINE_LAYER = QCoreApplication.translate("TranslatableConfigStrings", "Right of way line")
         self.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by plot nodes")
 
         too_long_tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
@@ -165,6 +180,8 @@ class TranslatableConfigStrings(QObject):
         self.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not overlap Buildings")
         self.CHECK_GAPS_IN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Plots should not have gaps")
         self.CHECK_MULTIPART_IN_RIGHT_OF_WAY = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not have multipart geometries")
+        self.CHECK_BUILDING_WITHIN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Buildings should be within Plots")
+        self.CHECK_BUILDING_UNIT_WITHIN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Building Units should be within Plots")
 
         # Logic consistency checks
         self.CHECK_PARCEL_RIGHT_RELATIONSHIP = QCoreApplication.translate("TranslatableConfigStrings", "Parcel should have one and only one Right")
@@ -197,6 +214,10 @@ class TranslatableConfigStrings(QObject):
         self.ERROR_DUPLICATE_POINT_BFS = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary point and boundary is duplicated in the {} table").format(POINT_BOUNDARY_FACE_STRING_TABLE)
         self.ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE = QCoreApplication.translate("TranslatableConfigStrings", "Boundary point is not covered by boundary node")
         self.ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT = QCoreApplication.translate("TranslatableConfigStrings", "Boundary node is not covered by boundary point")
+        self.ERROR_BUILDING_IS_NOT_OVER_A_PLOT = QCoreApplication.translate("TranslatableConfigStrings", "Building is not over a plot")
+        self.ERROR_BUILDING_CROSSES_A_PLOT_LIMIT = QCoreApplication.translate("TranslatableConfigStrings", "Building crosses a plot's limit")
+        self.ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT = QCoreApplication.translate("TranslatableConfigStrings", "Building Unit is not over a plot")
+        self.ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT = QCoreApplication.translate("TranslatableConfigStrings", "Building Unit crosses a plot's limit")
 
 
 translated_strings = TranslatableConfigStrings()

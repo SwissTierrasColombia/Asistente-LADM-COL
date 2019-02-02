@@ -31,7 +31,7 @@ LAYER_QML_STYLE = {
     },
     BUILDING_TABLE: {
         QgsWkbTypes.PointGeometry: 'style_building_point',
-        QgsWkbTypes.PolygonGeometry: 'style_building_25'
+        QgsWkbTypes.PolygonGeometry: 'style_building'
     },
     BUILDING_UNIT_TABLE: {
         QgsWkbTypes.PointGeometry: 'style_building_unit_point',

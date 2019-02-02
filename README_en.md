@@ -17,7 +17,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([1.0.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.0.0)) of the LADM_COL Assistant depends on [Project Generator v3.3.7](https://github.com/opengisch/projectgenerator/releases/download/v3.3.7/projectgenerator.v3.3.7.zip) and allows users to:
+The current version ([1.2.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.2.0)) of the LADM_COL Assistant depends on [Project Generator v3.3.7](https://github.com/opengisch/projectgenerator/releases/download/v3.3.7/projectgenerator.v3.3.7.zip) and allows users to:
 
  - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
  - Capture data for the `FICHA_PREDIAL v2.2.1` model.
@@ -42,6 +42,12 @@ The current version ([1.0.0](https://github.com/AgenciaImplementacion/Asistente-
    - `BFS Points` (relates `Boundary Points` to `Boundary`)
    - `More BFS` (relates `Boundaries` to `Plot`)
    - `Less` (relates `Plots` to their inner rings)
+ - Create `Right of Way`:
+   - By digitizing on the map the polygon or a centerline with width.
+     - Aids for digitization:
+       - Automatic snapping configuration and default field values.
+   - From another layer with any structure, setting a field mapping.
+   - Create relations of benefited and restricted `Parcels`.
  - Create `Parcels`:
    - Using preconfigured forms.
      - And associating the new `Parcel` to selected `Plots` and/or `Buildings`.
@@ -89,6 +95,8 @@ The current version ([1.0.0](https://github.com/AgenciaImplementacion/Asistente-
    - Check that `Plot` boundaries are covered by `Boundaries` and their relations are correctly recorded in topology tables (`MoreBFS` and `Less`).
    - Check that `Boundaries` are covered by `Plot` boundaries and their relations are correctly recorded in topology tables (`MoreBFS` and `Less`).
    - Check that `Right of Way` has no multi-part geometries.
+   - Check that `Buildings` are within their corresponding `Plots`.
+   - Check that `Building Units` are within their corresponding `Plots`.
  - Check quality rules (consistency):
    - Parcel should hace one and only one Right
    - Table records should not be repeated
@@ -116,8 +124,8 @@ Unit tests are automatically executed after every commit made to the repository.
 - Windows: http://portal.proadmintierra.info:18000/
 
 To run the tests locally you need to have *docker* and *docker-compose* installed. We suggest to:
-- Download *docker* from the [official site](https://www.docker.com/community-edition#/download). For instance, for Ubuntu / Linux_Mint follow the steps in [Install using the convenience script](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
-- Install *docker-compose* using the [binaries](https://github.com/docker/compose/releases/tag/1.18.0).
+- Download *docker* from the [official site](https://hub.docker.com/search/?type=edition&offering=community). For instance, for Ubuntu / Linux_Mint follow the steps in [Install using the convenience script](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-convenience-script).
+- Install *docker-compose* using the [binaries](https://github.com/docker/compose/releases).
 
 The command to execute unit tests is (execute from the repository's root folder):
 ```sh

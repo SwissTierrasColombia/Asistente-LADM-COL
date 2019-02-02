@@ -250,8 +250,26 @@ class ReportGenerator():
             QCoreApplication.translate("ReportGenerator", "Generating {} report{}...").format(total, '' if total == 1 else 's'),
             progress)
 
+        polygons_with_holes = []
+        multi_polygons = []
+
         for selected_plot in selected_plots:
             plot_id = selected_plot[ID_FIELD]
+
+            geometry = selected_plot.geometry()
+            abstract_geometry = geometry.get()
+            if abstract_geometry.ringCount() > 1:
+                polygons_with_holes.append(str(plot_id))
+                self.log.logMessage(QCoreApplication.translate("ReportGenerator",
+                    "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(ID_FIELD, plot_id),
+                    PLUGIN_NAME, Qgis.Warning)
+                continue
+            if abstract_geometry.numGeometries() > 1:
+                multi_polygons.append(str(plot_id))
+                self.log.logMessage(QCoreApplication.translate("ReportGenerator",
+                    "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(ID_FIELD, plot_id),
+                    PLUGIN_NAME, Qgis.Warning)
+                continue
 
             # Generate data file
             json_file = self.update_json_data(db, json_spec_file, plot_id, tmp_dir)
@@ -299,13 +317,23 @@ class ReportGenerator():
 
             self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Success, 0)
         else:
+            details_msg = ''
+            if polygons_with_holes:
+                details_msg += QCoreApplication.translate("ReportGenerator",
+                                                          " The following polygons were skipped because they have holes and are not supported: {}.").format(
+                    ", ".join(polygons_with_holes))
+            if multi_polygons:
+                details_msg += QCoreApplication.translate("ReportGenerator",
+                                                          " The following polygons were skipped because they are multi-polygons and are not supported: {}.").format(
+                    ", ".join(multi_polygons))
+
             if total == 1:
-                msg = QCoreApplication.translate("ReportGenerator", "The report for plot {} couldn't be generated! See QGIS log (tab 'Anexo_17') for details.").format(plot_id)
+                msg = QCoreApplication.translate("ReportGenerator", "The report for plot {} couldn't be generated!{} See QGIS log (tab 'Anexo_17') for details.").format(plot_id, details_msg)
             else:
                 if count == 0:
-                    msg = QCoreApplication.translate("ReportGenerator", "No report could be generated! See QGIS log (tab 'Anexo_17') for details.")
+                    msg = QCoreApplication.translate("ReportGenerator", "No report could be generated!{} See QGIS log (tab 'Anexo_17') for details.").format(details_msg)
                 else:
-                    msg = QCoreApplication.translate("ReportGenerator", "At least one report couldn't be generated! See QGIS log (tab 'Anexo_17') for details. Go to <a href='file:///{path}'>{path}</a> to see the reports that were generated.").format(path=normalize_local_url(save_into_folder))
+                    msg = QCoreApplication.translate("ReportGenerator", "At least one report couldn't be generated!{details_msg} See QGIS log (tab 'Anexo_17') for details. Go to <a href='file:///{path}'>{path}</a> to see the reports that were generated.").format(details_msg=details_msg, path=normalize_local_url(save_into_folder))
 
             self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Warning, 0)
 

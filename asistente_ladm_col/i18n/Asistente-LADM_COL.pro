@@ -11,6 +11,7 @@ FORMS = ../ui/dlg_load_layers.ui \
         ../ui/wiz_create_boundaries_cadastre.ui \
         ../ui/wiz_create_parcel_cadastre.ui \
         ../ui/wiz_create_building_cadastre.ui \
+        ../ui/wiz_create_right_of_way_cadastre.ui \
         ../ui/wiz_create_party_cadastre.ui \
         ../ui/wiz_create_col_party_cadastre.ui \
         ../ui/wiz_create_party_cadastre.ui \
@@ -43,6 +44,7 @@ SOURCES = ../__init__.py \
           ../gui/create_parcel_cadastre_wizard.py \
           ../gui/create_building_cadastre_wizard.py \
           ../gui/create_building_unit_cadastre_wizard.py \
+          ../gui/create_right_of_way_cadastre_wizard.py \
           ../gui/create_legal_party_prc.py \
           ../gui/create_market_research_prc.py \
           ../gui/create_natural_party_prc.py \
@@ -52,9 +54,11 @@ SOURCES = ../__init__.py \
           ../gui/settings_dialog.py \
           ../gui/dialog_quality.py \
           ../gui/toolbar.py \
+          ../gui/right_of_way.py \
           ../gui/reports.py \
           ../gui/controlled_measurement_dialog.py \
           ../gui/upload_progress_dialog.py \
+          ../gui/log_quality_dialog.py \
           ../lib/dbconnector/gpkg_connector.py \
           ../lib/dbconnector/pg_connector.py \
           ../lib/source_handler.py \

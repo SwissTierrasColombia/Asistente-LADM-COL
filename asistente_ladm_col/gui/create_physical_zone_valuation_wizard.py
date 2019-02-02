@@ -27,7 +27,6 @@ from qgis.core import (QgsProject,
                        QgsMapLayerProxyModel,
                        QgsWkbTypes)
 
-from ..config.general_config import FIELD_MAPPING_PATH
 from ..config.help_strings import HelpStrings
 from ..config.table_mapping_config import VALUATION_PHYSICAL_ZONE_TABLE
 from ..utils import get_ui_class
