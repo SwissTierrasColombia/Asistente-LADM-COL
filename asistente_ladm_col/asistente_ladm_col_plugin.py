@@ -798,7 +798,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def call_fill_right_of_way_relations(self):
         self.right_of_way.fill_right_of_way_relations(self.get_db_connection())
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def call_report_generation(self):
         self.report_generator.generate_report(self.get_db_connection(), self._report_action)
@@ -886,7 +886,7 @@ class AsistenteLADMCOLPlugin(QObject):
         wiz = CreateRightOfWayCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_parcel_cad(self):
         wiz = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
