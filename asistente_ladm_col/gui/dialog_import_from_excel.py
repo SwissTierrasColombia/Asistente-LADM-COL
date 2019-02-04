@@ -134,10 +134,13 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         self.txt_log.setText(QCoreApplication.translate("DialogImportFromExcel", "Loading tables from the Excel file..."))
 
         # Now that we have the Excel file, build vrts to load its sheets appropriately
-        layer_group_party = self.get_layer_from_excel_sheet(excel_path, 'agrupacion')
-        layer_party = self.get_layer_from_excel_sheet(excel_path, 'interesado')
-        layer_parcel = self.get_layer_from_excel_sheet(excel_path, 'predio')
-        layer_right = self.get_layer_from_excel_sheet(excel_path, 'derecho')
+        layer_parcel = self.check_layer_from_excel_sheet(excel_path, 'predio')
+        layer_party = self.check_layer_from_excel_sheet(excel_path, 'interesado')
+        layer_group_party = self.check_layer_from_excel_sheet(excel_path, 'agrupacion')
+        layer_right = self.check_layer_from_excel_sheet(excel_path, 'derecho')
+
+        if layer_parcel is None or layer_party is None or layer_group_party is None or layer_right is None:
+            return
 
         if not layer_group_party.isValid() or not layer_party.isValid() or not layer_parcel.isValid() or not layer_right.isValid():
             self.show_message(
@@ -148,7 +151,6 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
             return
 
         QgsProject.instance().addMapLayers([layer_group_party, layer_party, layer_parcel, layer_right])
-
 
         self.txt_log.setText(QCoreApplication.translate("DialogImportFromExcel", "Loading LADM_COL tables..."))
         step += 1
@@ -610,12 +612,38 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
             Qgis.Success,
             0)
 
+    def check_layer_from_excel_sheet(self, excel_path, sheetname):
+        layer = self.get_layer_from_excel_sheet(excel_path, sheetname)
+
+        if sheetname == 'predio':
+            if len(list(layer.getFeatures('"numero predial nuevo" is Null'))) > 0:
+                self.show_message(
+                QCoreApplication.translate("DialogImportFromExcel", "The column numero predial nuevo has empty values."),
+                Qgis.Warning)    
+                return None
+            else:
+                return layer
+
+        if layer is None:
+            self.show_message(
+                QCoreApplication.translate("DialogImportFromExcel", "The {} sheet has no information or has another name.".format(sheetname)),
+                Qgis.Warning)
+            self.progress.setVisible(False)
+            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+            return None
+        else:
+            return layer
+
     def get_layer_from_excel_sheet(self, excel_path, sheetname):
         basename = os.path.basename(excel_path)
         filename = os.path.splitext(basename)[0]
         dirname = os.path.dirname(excel_path)
 
         header_in_first_row, count = self.get_excel_info(excel_path, sheetname)
+
+        if header_in_first_row is None and count is None:
+            return None     
+
         layer_definition = "<SrcLayer>{sheetname}</SrcLayer>".format(sheetname=sheetname)
         if header_in_first_row:
             layer_definition = """<SrcSql dialect="sqlite">SELECT * FROM '{sheetname}' LIMIT {count} OFFSET 1</SrcSql>""".format(sheetname=sheetname, count=count)
@@ -647,7 +675,6 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         layer.setProviderEncoding('UTF-8')
         return layer
 
-
     def get_excel_info(self, path, sheetname):
         data_source = ogr.Open(path, 0)
         layer = data_source.GetLayer(sheetname)
@@ -661,7 +688,6 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         # If ogr recognizes the header, the first row will contain data, otherwise it'll contain field names
         header_in_first_row = True
         for field in self.fields[sheetname]:
-            print(field, feature.GetField(self.fields[sheetname].index(field)) == field)
             if feature.GetField(self.fields[sheetname].index(field)) != field:
                 header_in_first_row = False
 
