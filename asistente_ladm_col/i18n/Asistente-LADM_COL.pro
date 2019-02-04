@@ -58,6 +58,7 @@ SOURCES = ../__init__.py \
           ../gui/reports.py \
           ../gui/controlled_measurement_dialog.py \
           ../gui/upload_progress_dialog.py \
+          ../gui/log_quality_dialog.py \
           ../lib/dbconnector/gpkg_connector.py \
           ../lib/dbconnector/pg_connector.py \
           ../lib/source_handler.py \

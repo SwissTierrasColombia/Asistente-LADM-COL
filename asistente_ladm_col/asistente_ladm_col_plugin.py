@@ -24,12 +24,15 @@ from functools import (partial,
 
 import qgis.utils
 from processing.modeler.ModelerUtils import ModelerUtils
-from qgis.PyQt.QtCore import (QObject,
+from qgis.PyQt.QtCore import (Qt,
+                              QObject,
                               QCoreApplication)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QAction,
                                  QMenu,
-                                 QPushButton)
+                                 QPushButton,
+                                 QProgressBar)
+
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsExpression,
@@ -82,6 +85,7 @@ from .gui.create_physical_zone_valuation_wizard import CreatePhysicalZoneValuati
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
 from .gui.dialog_import_from_excel import DialogImportFromExcel
+from .gui.log_quality_dialog import LogQualityDialog
 from .gui.right_of_way import RightOfWay
 from .gui.reports import ReportGenerator
 from .gui.toolbar import ToolBar
@@ -90,7 +94,6 @@ from .utils.model_parser import ModelParser
 from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
-
 
 class AsistenteLADMCOLPlugin(QObject):
     def __init__(self, iface):
@@ -158,6 +161,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
         self.qgis_utils.set_node_visibility_requested.connect(self.set_node_visibility)
+
+        self.quality.log_quality_show_message_emitted.connect(self.show_log_quality_message)
+        self.quality.log_quality_show_button_emitted.connect(self.show_log_quality_button)
+        self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
+        self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
 
         self.iface.initializationCompleted.connect(self.qgis_initialized)
 
@@ -620,6 +628,48 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def load_layers(self, layers):
         self.qgis_utils.get_layers(self.get_db_connection(), layers, True)
+
+    def show_log_quality_message(self, msg, count):
+        self.progressMessageBar = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        self.progress = QProgressBar()
+        self.progress.setFixedWidth(80)
+        self.log_quality_total_rule_count = count
+        self.progress.setMaximum(self.log_quality_total_rule_count * 10)
+        self.progressMessageBar.layout().addWidget(self.progress)
+        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Info)
+        self.progress_count = 0
+        self.log_quality_current_rule_count = 0
+
+    def show_log_quality_button(self):
+        self.button = QPushButton(self.progressMessageBar)
+        self.button.pressed.connect(self.show_log_quality_dialog)
+        self.button.setText(QCoreApplication.translate("LogQualityDialog", "Show Results"))
+        self.progressMessageBar.layout().addWidget(self.button)
+        QCoreApplication.processEvents()
+
+    def set_log_quality_initial_progress(self, msg):
+        self.progress_count += 2 # 20% of the current rule
+        self.progress.setValue(self.progress_count)
+        self.progressMessageBar.setText("Checking {} out of {}: '{}'".format(
+            self.log_quality_current_rule_count + 1,
+            self.log_quality_total_rule_count,
+            msg))
+        QCoreApplication.processEvents()
+
+    def set_log_quality_final_progress(self, msg):
+        self.progress_count += 8 # 80% of the current rule
+        self.progress.setValue(self.progress_count)
+        self.log_quality_current_rule_count += 1
+        if self.log_quality_current_rule_count ==  self.log_quality_total_rule_count:
+            self.progressMessageBar.setText(QCoreApplication.translate("LogQualityDialog",
+                "All the {} quality rules were checked! Click the button at the right-hand side to see a report.").format(self.log_quality_total_rule_count))
+        else:
+            self.progressMessageBar.setText(msg)
+        QCoreApplication.processEvents()
+
+    def show_log_quality_dialog(self):
+        dlg = LogQualityDialog(self.qgis_utils, self.quality, self.iface)
+        dlg.exec_()
 
     def _db_connection_required(func_to_decorate):
         @wraps(func_to_decorate)
