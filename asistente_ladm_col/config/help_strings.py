@@ -119,22 +119,61 @@ Choose this option if you want to create a <b>Right of Way</b> digitizing center
 <b>Right of Way</b> is a type of spatial unit of the LADM model which allows the representation of a Right of Way associated to a LA_BAUnit.\
 ")
 
-        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_POINTS = QCoreApplication.translate("HelpStrings", "\
+        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_1 = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to associate an <b>ExtAddress</b> to an existing <i>Plot</i>.\
 <br><br>\
-Add more text...\
+<b>ExtAddress</b> is a class for manage the <i>Spatial Units</i> addresses from <i>LADM-COL model</i>.\
 ")
 
-        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION2_POINTS = QCoreApplication.translate("HelpStrings", "\
+        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_2 = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to associate an <b>ExtAddress</b> to an existing <i>Building</i>.\
 <br><br>\
-Add more text...\
+<b>ExtAddress</b> is a class for manage the <i>Spatial Units</i> addresses from <i>LADM-COL model</i>.\
 ")
 
-        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION3_POINTS = QCoreApplication.translate("HelpStrings", "\
+        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_3 = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to associate an <b>ExtAddress</b> to an existing <i>Building Unit</i>.\
 <br><br>\
-Add more text...\
+<b>ExtAddress</b> is a class for manage the <i>Spatial Units</i> addresses from <i>LADM-COL model</i>.\
+")
+
+        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_1 = QCoreApplication.translate("HelpStrings", "\
+To associate the <b>ExtAddress</b> to an existing <i>Plot</i>, first you have to select one of this.\
+<br><br>\
+There are two ways to associate:\
+<br><br>\
+1. <b>Selecting Plot on the map</b>: here you select one <i>Plot</i> and immediately it will come back to wizard, \
+this enables the button for create the association.\
+<br><br>\
+2. <b>Selecting by expression</b>:  here you select one <i>Plot</i> using an expression, this has to be valid and \
+the selection should take just one feature. If the expression gets two or more features, the button for create \
+the association will not be activated.\
+")
+
+        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_2 = QCoreApplication.translate("HelpStrings", "\
+To associate the <b>ExtAddress</b> to an existing <i>Building</i>, first you have to select one of this.\
+<br><br>\
+There are two ways to associate:\
+<br><br>\
+1. <b>Selecting Building on the map</b>: here you select one <i>Building</i> and immediately it will come back to wizard, \
+this enables the button for create the association.\
+<br><br>\
+2. <b>Selecting by expression</b>:  here you select one <i>Building</i> using an expression, this has to be valid and \
+the selection should take just one feature. If the expression gets two or more features, the button for create \
+the association will not be activated.\
+")
+
+        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_3 = QCoreApplication.translate("HelpStrings", "\
+To associate the <b>ExtAddress</b> to an existing <i>Building Unit</i>, first you have to select one of this.\
+<br><br>\
+There are two ways to associate:\
+<br><br>\
+1. <b>Selecting Building Unit on the map</b>: here you select one <i>Building Unit</i> and immediately it will come back to wizard, \
+this enables the button for create the association.\
+<br><br>\
+2. <b>Selecting by expression</b>:  here you select one <i>Building Unit</i> using an expression, this has to be valid and \
+the selection should take just one feature. If the expression gets two or more features, the button for create \
+the association will not be activated.\
 ")
 
 # Clase de tipo LA_RRR que registra las responsabilidades que las instancias de los interesados tienen sobre los predios.

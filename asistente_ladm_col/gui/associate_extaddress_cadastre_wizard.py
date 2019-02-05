@@ -112,7 +112,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.wizardPage1.setFinalPage(False)
             enable_next_wizard(self)
             finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Associate Plot ExtAddress")
-            self.txt_help_page_1.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_POINTS)
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_1)
 
         elif self.rad_to_building.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -122,7 +122,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.wizardPage1.setFinalPage(False)
             enable_next_wizard(self)
             finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Associate Building ExtAddress")
-            self.txt_help_page_1.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION2_POINTS)
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_2)
 
         else: #self.rad_to_building_unit.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -132,13 +132,14 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.wizardPage1.setFinalPage(False)
             enable_next_wizard(self)
             finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Associate Building Unit ExtAddress")
-            self.txt_help_page_1.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION3_POINTS)
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_3)
 
         self.wizardPage2.setButtonText(QWizard.FinishButton,
                                        QCoreApplication.translate('AssociateExtAddressWizard',
                                        finish_button_text))
 
     def prepare_selection(self):
+        self.button(self.FinishButton).setDisabled(True)
         if self.rad_to_plot.isChecked():
             self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                     "Select Plot"))
@@ -151,7 +152,8 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self._extaddress_layer = res_layers[EXTADDRESS_TABLE]
             self._plot_layer = res_layers[PLOT_TABLE]
             self._current_layer = self._plot_layer
-            self.iface.setActiveLayer(self._plot_layer)
+            self.iface.setActiveLayer(self._current_layer)
+            self.txt_help_page_2.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_1)
 
             self.check_selected_features()
 
@@ -169,6 +171,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self._building_layer = res_layers[BUILDING_TABLE]
             self._current_layer = self._building_layer
             self.iface.setActiveLayer(self._current_layer)
+            self.txt_help_page_2.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_2)
 
             self.check_selected_features()
 
@@ -186,6 +189,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self._building_unit_layer = res_layers[BUILDING_UNIT_TABLE]
             self._current_layer = self._building_unit_layer
             self.iface.setActiveLayer(self._current_layer)
+            self.txt_help_page_2.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_3)
 
             self.check_selected_features()
 
