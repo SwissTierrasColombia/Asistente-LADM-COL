@@ -50,7 +50,7 @@ from ...utils.qt_utils import (Validators,
                                OverrideCursor)
 from ...resources_rc import *
 
-DIALOG_UI = get_ui_class('model_baker/dlg_import_schema.ui')
+DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_schema.ui')
 
 class DialogImportSchema(QDialog, DIALOG_UI):
 
@@ -198,7 +198,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                 if _db_connector._schema_exists():
                     message_error = QCoreApplication.translate("DialogImportSchema", 'Schema {} exist, please set a valid schema name before creating the LADM-COL structure.'.format(configuration.dbschema))
                     self.show_message(message_error, Qgis.Warning)
-                    self.print_new_info(message_error)
+                    self.print_info(message_error, True) # Clear and print
                     return
 
         with OverrideCursor(Qt.WaitCursor):
@@ -302,15 +302,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         return configuration
 
-    def print_info(self, text, text_color='#000000'):
+    def print_info(self, text, text_color='#000000', clear=False):
         self.txtStdout.setTextColor(QColor(text_color))
         self.txtStdout.append(text)
         QCoreApplication.processEvents()
-
-    def print_new_info(self, message_error):
-        self.txtStdout.setTextColor(QColor('#000000'))
-        self.txtStdout.clear()
-        self.txtStdout.setText(message_error)
 
     def on_stderr(self, text):
         color_log_text(text, self.txtStdout)

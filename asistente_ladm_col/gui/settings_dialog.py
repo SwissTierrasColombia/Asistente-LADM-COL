@@ -199,7 +199,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/pg/password', dict_conn['password'])
         settings.setValue('Asistente-LADM_COL/gpkg/dbfile', dict_conn['dbfile'])
 
-        settings.setValue('Asistente-LADM_COL/models/custom_model_directories_is_checked', 1 if self.offline_models_radio_button.isChecked() else 0)
+        settings.setValue('Asistente-LADM_COL/models/custom_model_directories_is_checked', self.offline_models_radio_button.isChecked())
         if self.offline_models_radio_button.isChecked():
             settings.setValue('Asistente-LADM_COL/models/custom_models', self.custom_model_directories_line_edit.text())
 
@@ -243,7 +243,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_pg_password.setText(settings.value('Asistente-LADM_COL/pg/password'))
         self.txt_gpkg_file.setText(settings.value('Asistente-LADM_COL/gpkg/dbfile'))
 
-        custom_model_directories_is_checked = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked')  if settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked') else 0
+        custom_model_directories_is_checked = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
         if bool(int(custom_model_directories_is_checked)):
             self.offline_models_radio_button.setChecked(True)
             self.custom_model_directories_line_edit.setText(settings.value('Asistente-LADM_COL/models/custom_models'))

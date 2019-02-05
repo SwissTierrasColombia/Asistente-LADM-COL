@@ -54,3 +54,9 @@ class GPKGConnector(DBConnector):
                 uri=self.uri,
                 table=layer_name.lower()
             ))
+
+    def _get_models(self):
+        cursor = self.conn.cursor()
+        cursor.execute("""SELECT modelname, content
+                          FROM t_ili2db_model """)
+        return cursor

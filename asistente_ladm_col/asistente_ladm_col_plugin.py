@@ -53,9 +53,9 @@ from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                           ID_FIELD,
                                           COL_PARTY_TABLE)
 from .gui.about_dialog import AboutDialog
-from .gui.model_baker.dlg_import_schema import DialogImportSchema
-from .gui.model_baker.dlg_import_data import DialogImportData
-from .gui.model_baker.dlg_export_data import DialogExportData
+from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
+from .gui.qgis_model_baker.dlg_import_data import DialogImportData
+from .gui.qgis_model_baker.dlg_export_data import DialogExportData
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard

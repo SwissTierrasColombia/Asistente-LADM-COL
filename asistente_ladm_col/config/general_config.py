@@ -28,7 +28,7 @@ DEFAULT_MODEL_NAMES_CHECKED = {'Avaluos_V2_2_1': Qt.Unchecked,
                      'Cartografia_Referencia_V2_2_1': Qt.Unchecked,
                      'Catastro_Registro_Nucleo_V2_2_1': Qt.Checked,
                      'Diagnostico_Juridico_V2_2_1': Qt.Unchecked,
-                     'Ficha_Predial_V2_2_1':Qt.Unchecked}
+                     'Ficha_Predial_V2_2_1': Qt.Unchecked}
 
 DEFAULT_HIDDEN_MODELS = ['LADM_COL_V1_1', 'ISO19107_V1_MAGNABOG']
 
@@ -43,6 +43,11 @@ PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
 HELP_DIR_NAME = 'help'
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'styles')
+
+
+# SETTINGS DIALOG TAB INDEXES
+SETTINGS_CONNECTION_TAB_INDEX = 0
+
 
 # Version to be installed when creating reports (annex 17)
 # (Other versions, if found, will be dropped in favor of this one)
@@ -83,9 +88,9 @@ MODULE_HELP_MAPPING = {
     'create_geoeconomic_zone_valuation': 'valuation/Create_geoeconomic_zone.html',
     'create_physical_zone_valuation': 'valuation/Create_physical_zone.html',
     'import_from_excel': 'toolbar.html#import-from-intermediate-structure',
-    'import_schema' : 'index.html',
-    'import_data' : 'index.html',
-    'export_data' : 'index.html'
+    'import_schema' : 'data_management.html#create-ladm-col-structure',
+    'import_data' : 'data_management.html#import-data',
+    'export_data' : 'data_management.html#export-data'
 }
 # Configure QGIS Model Baker Dependency
 QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.0.0"
