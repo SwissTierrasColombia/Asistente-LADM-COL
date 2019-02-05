@@ -22,7 +22,9 @@ import stat
 from osgeo import ogr
 from qgis.core import (Qgis,
                        QgsVectorLayer,
-                       QgsProject, QgsApplication)
+                       QgsProject,
+                       QgsFeatureRequest, 
+                       QgsApplication)
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               QCoreApplication, QFile)
@@ -62,6 +64,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         self.qgis_utils = qgis_utils
         self.log = QgsApplication.messageLog()
         self.help_strings = HelpStrings()
+        self.log_dialog_excel_text_content = ""
 
         self.fields = {'interesado': ['nombre1', 'nombre2', 'apellido1', 'apellido2', 'razon social', 'sexo persona',
                                  'tipo documento', 'numero de documento', 'tipo persona', 'organo emisor del documento',
@@ -615,24 +618,61 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
     def check_layer_from_excel_sheet(self, excel_path, sheetname):
         layer = self.get_layer_from_excel_sheet(excel_path, sheetname)
 
+        if layer is None:
+            self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The {} sheet has not information or has another name.".format(sheetname))
         if sheetname == 'predio':
             if len(list(layer.getFeatures('"numero predial nuevo" is Null'))) > 0:
-                self.show_message(
-                QCoreApplication.translate("DialogImportFromExcel", "The column numero predial nuevo has empty values."),
-                Qgis.Warning)    
-                return None
-            else:
-                return layer
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column numero predial nuevo has empty values.")    
+            if self.check_field_numeric_layer(layer, 'departamento') == 'No numeric':
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column deparmento has non-numeric values.")
+            if self.check_field_numeric_layer(layer, 'municipio') == 'No numeric':
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column municipio has non-numeric values.")
+            if self.check_field_numeric_layer(layer, 'numero predial nuevo') == 'No numeric':
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column numero predial nuevo has non-numeric values.")   
+        if sheetname == 'interesado':
+            if len(list(layer.getFeatures('"tipo documento" is Null'))) > 0:
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column tipo documento has empty values.")
+            if len(list(layer.getFeatures('"numero de documento" is Null'))) > 0:
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column numero de documento has empty values.")
+            if self.check_field_numeric_layer(layer, 'numero de documento') == 'No numeric':
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column numero de documento has non-numeric values.")
+        if sheetname == 'agrupacion':
+            if len(list(layer.getFeatures('"numero predial nuevo" is Null'))) > 0:
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column numero predial nuevo has empty values.")
+            if len(list(layer.getFeatures('"tipo documento" is Null'))) > 0:
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column tipo documento has empty values.")
+            if len(list(layer.getFeatures('"numero de documento" is Null'))) > 0:
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column numero de documento has empty values.")
+            if len(list(layer.getFeatures('"id agrupación" is Null'))) > 0:
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column id agrupación has empty values.")
+            if self.check_field_numeric_layer(layer, 'numero de documento') == 'No numeric':
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column numero de documento has non-numeric values.")
+        if sheetname == 'derecho':
+            if len(list(layer.getFeatures('"tipo" is Null'))) > 0:
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column tipo has empty values.")
+            if len(list(layer.getFeatures('"tipo de fuente" is Null'))) > 0:
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column tipo de fuente has empty values.")
+            if len(list(layer.getFeatures('"estado_disponibilidad de la fuente" is Null'))) > 0:
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column estado_disponibilidad de la fuente has empty values.")
+            if len(list(layer.getFeatures('"Ruta de Almacenamiento de la fuente" is Null'))) > 0:
+                self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "The column Ruta de Almacenamiento de la fuente has empty values.")
+            if len(list(layer.getFeatures('"tipo" is Null'))) + len(list(layer.getFeatures('"tipo" is Null'))) != len(list(layer.getFeatures())):
+                 self.log_dialog_excel_text_content += QCoreApplication.translate("DialogImportFromExcel", "the number of fields in the agrupacion and numero de documento columns is not logical.")    
+        return layer
 
-        if layer is None:
-            self.show_message(
-                QCoreApplication.translate("DialogImportFromExcel", "The {} sheet has no information or has another name.".format(sheetname)),
-                Qgis.Warning)
-            self.progress.setVisible(False)
-            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
-            return None
-        else:
-            return layer
+    def check_field_numeric_layer(self, layer, name):
+        id_field_idx = layer.fields().indexFromName(name)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        fields = layer.getFeatures(request)
+        result = "numeric"
+
+        for field in fields:
+            try:
+                int(field[name]) 
+            except:
+                result = "No numeric"
+                break
+        return result
 
     def get_layer_from_excel_sheet(self, excel_path, sheetname):
         basename = os.path.basename(excel_path)
