@@ -5,6 +5,7 @@ FORMS = ../ui/dlg_load_layers.ui \
         ../ui/controlled_measurement_dialog.ui \
         ../ui/upload_progress_dialog.ui \
         ../ui/dlg_group_party.ui \
+        ../ui/wiz_associate_extaddress_cadastre.ui \
         ../ui/wiz_create_points_cadastre.ui \
         ../ui/wiz_create_administrative_source_cadastre.ui \
         ../ui/wiz_create_plot_cadastre.ui \
@@ -30,6 +31,7 @@ SOURCES = ../__init__.py \
           ../utils/qgis_utils.py \
           ../utils/quality.py \
           ../utils/model_parser.py \
+          ../gui/associate_extaddress_cadastre_wizard.py \
           ../gui/create_administrative_source_cadastre_wizard.py \
           ../gui/create_col_party_cadastre_wizard.py \
           ../gui/create_group_party_cadastre.py \
