@@ -18,7 +18,7 @@
 """
 import json
 
-from qgis.PyQt.Qt import (QNetworkRequest,
+from qgis.PyQt.QtNetwork import (QNetworkRequest,
                           QNetworkAccessManager)
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,

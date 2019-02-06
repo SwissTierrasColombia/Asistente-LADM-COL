@@ -19,7 +19,7 @@
 import json
 import os.path
 
-from qgis.PyQt.Qt import QNetworkRequest
+from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtCore import (QEventLoop,
                               QUrl,
                               pyqtSignal,
