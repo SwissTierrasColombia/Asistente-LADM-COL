@@ -143,6 +143,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         if self.rad_to_plot.isChecked():
             self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                     "Select Plot"))
+            self.txt_help_page_2.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_1)
             # Load layers
             res_layers = self.qgis_utils.get_layers(self._db, {
             EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
@@ -153,13 +154,13 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self._plot_layer = res_layers[PLOT_TABLE]
             self._current_layer = self._plot_layer
             self.iface.setActiveLayer(self._current_layer)
-            self.txt_help_page_2.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_1)
 
             self.check_selected_features()
 
         elif self.rad_to_building.isChecked():
             self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                     "Select Building"))
+            self.txt_help_page_2.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_2)
 
             # Load layers
             res_layers = self.qgis_utils.get_layers(self._db, {
@@ -171,13 +172,13 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self._building_layer = res_layers[BUILDING_TABLE]
             self._current_layer = self._building_layer
             self.iface.setActiveLayer(self._current_layer)
-            self.txt_help_page_2.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_2)
 
             self.check_selected_features()
 
         else: #self.rad_to_building_unit.isChecked():
             self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                     "Select Building Unit"))
+            self.txt_help_page_2.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_3)
 
             # Load layers
             res_layers = self.qgis_utils.get_layers(self._db, {
@@ -189,7 +190,6 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self._building_unit_layer = res_layers[BUILDING_UNIT_TABLE]
             self._current_layer = self._building_unit_layer
             self.iface.setActiveLayer(self._current_layer)
-            self.txt_help_page_2.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_3)
 
             self.check_selected_features()
 
