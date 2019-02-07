@@ -59,6 +59,7 @@ MODULE_HELP_MAPPING = {
     'create_spatial_source': 'cadastre/Source.html#spatial-source',
     'load_layers': 'load_layers.html#load-layers',
     'col_party': 'cadastre/Party.html#col-party',
+    'group_party': 'cadastre/Party.html#group-party',
     'quality_rules': 'index.html', # TODO: Add this to help sections
     'settings': 'help.html#settings',
     'create_property_record_card': 'property_record_card/Property_record_card.html',
