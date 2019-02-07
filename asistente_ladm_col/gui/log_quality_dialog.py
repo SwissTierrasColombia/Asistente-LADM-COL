@@ -26,7 +26,6 @@ from qgis.PyQt.QtWidgets import (QFileDialog,
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 from ..utils import get_ui_class
-from asistente_ladm_col.utils.utils import set_time_format
 from ..utils.qt_utils import normalize_local_url
 
 LOG_DIALOG_UI = get_ui_class('dlg_log_quality.ui')
@@ -38,7 +37,6 @@ class LogQualityDialog(QDialog, LOG_DIALOG_UI):
         self.qgis_utils = qgis_utils
         self.quality = quality
         self.iface = iface
-
         # Set connections
         self.buttonBox.accepted.connect(self.save)
 
@@ -64,7 +62,7 @@ class LogQualityDialog(QDialog, LOG_DIALOG_UI):
                 'LogQualityDialog',
                 "<h2 align='center'>Quality Check Results</h2><div style='text-align:center;'>{}<br>Database: {}, Schema: {}<br>Total execution time: {}</div>").format(
                 time.strftime("%d/%m/%y %H:%M:%S"), settings.value('Asistente-LADM_COL/pg/database'),
-                settings.value('Asistente-LADM_COL/pg/schema'), set_time_format(total_time))
+                settings.value('Asistente-LADM_COL/pg/schema'), self.quality.utils.set_time_format(total_time))
 
             self.txt_log_quality.setHtml("{}<br>{}".format(title, text))
 

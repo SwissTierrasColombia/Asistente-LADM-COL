@@ -88,11 +88,13 @@ from .gui.log_quality_dialog import LogQualityDialog
 from .gui.right_of_way import RightOfWay
 from .gui.reports import ReportGenerator
 from .gui.toolbar import ToolBar
+from .gui.log_excel_dialog import LogExcelDialog
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.model_parser import ModelParser
 from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
+from .utils.utils import Utils
 
 class AsistenteLADMCOLPlugin(QObject):
     def __init__(self, iface):
@@ -119,6 +121,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
         self.report_generator = ReportGenerator(self.qgis_utils)
+        self.excel = Utils()
 
         # Menus
         self.add_cadastre_menu()
@@ -159,11 +162,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
         self.qgis_utils.set_node_visibility_requested.connect(self.set_node_visibility)
-
         self.quality.log_quality_show_message_emitted.connect(self.show_log_quality_message)
         self.quality.log_quality_show_button_emitted.connect(self.show_log_quality_button)
         self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
         self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
+        self.quality.utils.log_excel_show_message_emitted.connect(self.show_log_excel_button)
 
         self.iface.initializationCompleted.connect(self.qgis_initialized)
 
@@ -662,6 +665,20 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = LogQualityDialog(self.qgis_utils, self.quality, self.iface)
         dlg.exec_()
 
+    def show_log_excel_button(self, msg, text):
+        self.progressMessageBar = self.iface.messageBar().createMessage("DialogImportFromExcel", "Errors were found in the Excel file")
+        self.button = QPushButton(self.progressMessageBar)
+        self.button.pressed.connect(self.show_log_excel_dialog)
+        self.button.setText(QCoreApplication.translate("DialogImportFromExcel", "Show Results"))
+        self.progressMessageBar.layout().addWidget(self.button)
+        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Info)
+        self.text = text
+        QCoreApplication.processEvents()
+
+    def show_log_excel_dialog(self):
+        dlg = LogExcelDialog(self.iface, self.get_db_connection(), self.qgis_utils, self.quality.utils, self.text)
+        dlg.exec_()
+
     def _db_connection_required(func_to_decorate):
         @wraps(func_to_decorate)
         def decorated_function(inst, *args, **kwargs):
@@ -788,7 +805,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_project_generator_required
     @_db_connection_required
     def call_import_from_intermediate_structure(self):
-        dlg = DialogImportFromExcel(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg = DialogImportFromExcel(self.iface, self.get_db_connection(), self.qgis_utils, self.quality.utils)
         dlg.exec_()
 
     def unload(self):
