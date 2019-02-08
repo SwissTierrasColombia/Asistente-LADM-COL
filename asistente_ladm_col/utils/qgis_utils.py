@@ -202,16 +202,16 @@ class QGISUtils(QObject):
         for relation in self._relations:
             for layer_name in layer_names:
                 if relation[REFERENCING_LAYER] == layer_name:
-                    if relation[REFERENCED_LAYER] not in already_loaded:
+                    if relation[REFERENCED_LAYER] not in already_loaded and relation[REFERENCED_LAYER] not in layer_names:
                         related_layers.append(relation[REFERENCED_LAYER])
 
         related_layers_bags_of_enum = list()
         for layer_name in layer_names:
             if layer_name in self._bags_of_enum:
                 for k,v in self._bags_of_enum[layer_name].items():
-                    if v[2] not in already_loaded:
+                    if v[2] not in already_loaded and v[2] not in layer_names:
                         related_layers_bags_of_enum.append(v[2]) # domain
-                    if v[3] not in already_loaded:
+                    if v[3] not in already_loaded and v[3] not in layer_names:
                         related_layers_bags_of_enum.append(v[3]) # structure
 
         related_layers.extend(self.get_related_domains(related_layers, already_loaded))
