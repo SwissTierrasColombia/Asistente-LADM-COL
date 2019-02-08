@@ -94,7 +94,6 @@ from .utils.model_parser import ModelParser
 from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
-from .utils.utils import Utils
 
 class AsistenteLADMCOLPlugin(QObject):
     def __init__(self, iface):
@@ -121,7 +120,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
         self.report_generator = ReportGenerator(self.qgis_utils)
-        self.excel = Utils()
 
         # Menus
         self.add_cadastre_menu()

@@ -25,8 +25,7 @@ from qgis.core import (Qgis,
                        QgsProject,
                        QgsFeatureRequest, 
                        QgsApplication)
-from qgis.PyQt.QtCore import (pyqtSignal,
-                              Qt,
+from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               QCoreApplication, 
                               QFile)
@@ -42,7 +41,6 @@ from qgis.PyQt.QtGui import (QBrush,
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QTreeWidgetItem,
                                  QLineEdit,
-                                 QPushButton,
                                  QTreeWidgetItemIterator,
                                  QComboBox, QSizePolicy, QGridLayout, QDialogButtonBox, QFileDialog)
 from ..config.table_mapping_config import (COL_PARTY_TABLE,
@@ -108,22 +106,22 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         self.log_dialog_excel_text_content = ""
         self.existence_grouping = None
 
-        self.fields = {'interesado': [EXCEL_SHEET_TITLE_FIRST_NAME, EXCEL_SHEET_TITLE_MIDDLE, EXCEL_SHEET_TITLE_FIRST_SURNAME,
-                                      EXCEL_SHEET_TITLE_SECOND_SURNAME, EXCEL_SHEET_TITLE_BUSINESS_NAME, EXCEL_SHEET_TITLE_SEX,
-                                      EXCEL_SHEET_TITLE_DOCUMENT_TYPE, EXCEL_SHEET_TITLE_DOCUMENT_NUMBER, EXCEL_SHEET_TITLE_KIND_PERSON,
-                                      EXCEL_SHEET_TITLE_ISSUING_ENTITY,EXCEL_SHEET_TITLE_DATE_ISSUE
-                                     ],
-                  'predio': [EXCEL_SHEET_TITLE_DEPARTMENT, EXCEL_SHEET_TITLE_MUNICIPALITY, EXCEL_SHEET_TITLE_ZONE, 
-                             EXCEL_SHEET_TITLE_REGISTRATION_PLOT, EXCEL_SHEET_TITLE_NPN, EXCEL_SHEET_TITLE_NPV,
-                             EXCEL_SHEET_TITLE_PLOT_NAME, EXCEL_SHEET_TITLE_VALUATION, EXCEL_SHEET_TITLE_PLOT_TYPE
-                             ],
-                  'agrupacion': [EXCEL_SHEET_TITLE_NPN, EXCEL_SHEET_TITLE_DOCUMENT_TYPE, EXCEL_SHEET_TITLE_DOCUMENT_NUMBER,
-                                 EXCEL_SHEET_TITLE_ID_GROUP
-                                 ],
-                  'derecho': [EXCEL_SHEET_TITLE_TYPE, EXCEL_SHEET_TITLE_PARTY_DOCUMENT_NUMBER, EXCEL_SHEET_TITLE_GROUP, EXCEL_SHEET_TITLE_NPN,
-                              EXCEL_SHEET_TITLE_SOURCE_TYPE, EXCEL_SHEET_TITLE_DESCRIPTION_SOURCE, EXCEL_SHEET_TITLE_STATE_SOURCE,
-                              EXCEL_SHEET_TITLE_OFFICIALITY_SOURCE, EXCEL_SHEET_TITLE_STORAGE_PATH
-                              ]}
+        self.fields = {EXCEL_SHEET_NAME_PLOT: [EXCEL_SHEET_TITLE_DEPARTMENT, EXCEL_SHEET_TITLE_MUNICIPALITY, EXCEL_SHEET_TITLE_ZONE, 
+                            EXCEL_SHEET_TITLE_REGISTRATION_PLOT, EXCEL_SHEET_TITLE_NPN, EXCEL_SHEET_TITLE_NPV,
+                            EXCEL_SHEET_TITLE_PLOT_NAME, EXCEL_SHEET_TITLE_VALUATION, EXCEL_SHEET_TITLE_PLOT_TYPE
+                            ],
+                        EXCEL_SHEET_NAME_PARTY: [EXCEL_SHEET_TITLE_FIRST_NAME, EXCEL_SHEET_TITLE_MIDDLE, EXCEL_SHEET_TITLE_FIRST_SURNAME,
+                            EXCEL_SHEET_TITLE_SECOND_SURNAME, EXCEL_SHEET_TITLE_BUSINESS_NAME, EXCEL_SHEET_TITLE_SEX,
+                            EXCEL_SHEET_TITLE_DOCUMENT_TYPE, EXCEL_SHEET_TITLE_DOCUMENT_NUMBER, EXCEL_SHEET_TITLE_KIND_PERSON,
+                            EXCEL_SHEET_TITLE_ISSUING_ENTITY,EXCEL_SHEET_TITLE_DATE_ISSUE
+                            ],
+                        EXCEL_SHEET_NAME_GROUP: [EXCEL_SHEET_TITLE_NPN, EXCEL_SHEET_TITLE_DOCUMENT_TYPE, EXCEL_SHEET_TITLE_DOCUMENT_NUMBER,
+                            EXCEL_SHEET_TITLE_ID_GROUP
+                            ],
+                        EXCEL_SHEET_NAME_RIGHT: [EXCEL_SHEET_TITLE_TYPE, EXCEL_SHEET_TITLE_PARTY_DOCUMENT_NUMBER, EXCEL_SHEET_TITLE_GROUP, EXCEL_SHEET_TITLE_NPN,
+                            EXCEL_SHEET_TITLE_SOURCE_TYPE, EXCEL_SHEET_TITLE_DESCRIPTION_SOURCE, EXCEL_SHEET_TITLE_STATE_SOURCE,
+                            EXCEL_SHEET_TITLE_OFFICIALITY_SOURCE, EXCEL_SHEET_TITLE_STORAGE_PATH
+                            ]}
 
         self.txt_help_page.setHtml(self.help_strings.DLG_IMPORT_FROM_EXCEL)
         self.txt_help_page.anchorClicked.connect(self.save_template)
@@ -805,7 +803,6 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         dirname = os.path.dirname(excel_path)
 
         header_in_first_row, count = self.get_excel_info(excel_path, sheetname)
-
         if header_in_first_row is None and count is None:
             return None     
 
