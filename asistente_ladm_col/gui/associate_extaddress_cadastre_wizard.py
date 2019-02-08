@@ -57,7 +57,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.canvas = self.iface.mapCanvas()
-        self.maptool = self.iface.mapCanvas().mapTool()
+        self.maptool = self.canvas.mapTool()
         self.maptool_identify = None
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
@@ -97,12 +97,12 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
             disable_next_wizard(self)
-            finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Import")
+            FinishButton_text = QCoreApplication.translate("AssociateExtAddressWizard", "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(EXTADDRESS_TABLE, True))
             self.wizardPage1.setFinalPage(True)
             self.wizardPage1.setButtonText(QWizard.FinishButton,
                                            QCoreApplication.translate("AssociateExtAddressWizard",
-                                           finish_button_text))
+                                           FinishButton_text))
 
         elif self.rad_to_plot.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -111,7 +111,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.cbo_mapping.setEnabled(False)
             self.wizardPage1.setFinalPage(False)
             enable_next_wizard(self)
-            finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Associate Plot ExtAddress")
+            FinishButton_text = QCoreApplication.translate("AssociateExtAddressWizard", "Associate Plot ExtAddress")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_1)
 
         elif self.rad_to_building.isChecked():
@@ -121,7 +121,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.cbo_mapping.setEnabled(False)
             self.wizardPage1.setFinalPage(False)
             enable_next_wizard(self)
-            finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Associate Building ExtAddress")
+            FinishButton_text = QCoreApplication.translate("AssociateExtAddressWizard", "Associate Building ExtAddress")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_2)
 
         else: #self.rad_to_building_unit.isChecked():
@@ -131,12 +131,12 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.cbo_mapping.setEnabled(False)
             self.wizardPage1.setFinalPage(False)
             enable_next_wizard(self)
-            finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Associate Building Unit ExtAddress")
+            FinishButton_text = QCoreApplication.translate("AssociateExtAddressWizard", "Associate Building Unit ExtAddress")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_3)
 
         self.wizardPage2.setButtonText(QWizard.FinishButton,
                                        QCoreApplication.translate('AssociateExtAddressWizard',
-                                       finish_button_text))
+                                       FinishButton_text))
 
     def prepare_selection(self):
         self.button(self.FinishButton).setDisabled(True)
@@ -146,16 +146,13 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.txt_help_page_2.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_1)
             # Load layers
             res_layers = self.qgis_utils.get_layers(self._db, {
-            EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
-            }, load=True)
+                    EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
+                    PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
+                }, load=True)
 
             self._extaddress_layer = res_layers[EXTADDRESS_TABLE]
             self._plot_layer = res_layers[PLOT_TABLE]
             self._current_layer = self._plot_layer
-            self.iface.setActiveLayer(self._current_layer)
-
-            self.check_selected_features()
 
         elif self.rad_to_building.isChecked():
             self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
@@ -164,16 +161,13 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
             # Load layers
             res_layers = self.qgis_utils.get_layers(self._db, {
-            EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
-            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
-            }, load=True)
+                    EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
+                    BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
+                }, load=True)
 
             self._extaddress_layer = res_layers[EXTADDRESS_TABLE]
             self._building_layer = res_layers[BUILDING_TABLE]
             self._current_layer = self._building_layer
-            self.iface.setActiveLayer(self._current_layer)
-
-            self.check_selected_features()
 
         else: #self.rad_to_building_unit.isChecked():
             self.btn_select.setText(QCoreApplication.translate("AssociateExtAddressWizard",
@@ -182,37 +176,37 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
             # Load layers
             res_layers = self.qgis_utils.get_layers(self._db, {
-            EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
-            BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
-            }, load=True)
+                    EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
+                    BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
+                }, load=True)
 
             self._extaddress_layer = res_layers[EXTADDRESS_TABLE]
             self._building_unit_layer = res_layers[BUILDING_UNIT_TABLE]
             self._current_layer = self._building_unit_layer
-            self.iface.setActiveLayer(self._current_layer)
 
-            self.check_selected_features()
-
+        self.iface.setActiveLayer(self._current_layer)
+        self.check_selected_features()
         self.btn_select.clicked.connect(self.select_feature)
         self.btn_select_by_expression.clicked.connect(self.select_feature_by_expression)
 
     def check_selected_features(self):
         self.bar.clearWidgets()
+
         if self._current_layer.selectedFeatureCount() == 1:
             self.lbl_selected.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                           "1 Feature Selected"))
             self.button(self.FinishButton).setDisabled(False)
-            self._feature_tid = self._current_layer.selectedFeatures()[0].attribute(ID_FIELD)
+            self._feature_tid = self._current_layer.selectedFeatures()[0][ID_FIELD]
             self.canvas.zoomToSelected(self._current_layer)
         elif self._current_layer.selectedFeatureCount() > 1:
             self.show_message(QCoreApplication.translate("AssociateExtAddressWizard",
                                           "Please select just one feature"), Qgis.Warning)
             self.lbl_selected.setText(QCoreApplication.translate("AssociateExtAddressWizard",
-                                          str(self._current_layer.selectedFeatureCount()) + " Feature(s) Selected"))
+                                          "{} Feature(s) Selected".format(self._current_layer.selectedFeatureCount())))
             self.button(self.FinishButton).setDisabled(True)
         else:
             self.lbl_selected.setText(QCoreApplication.translate("AssociateExtAddressWizard",
-                                          "0 Selected"))
+                                          "0 Features Selected"))
             self.button(self.FinishButton).setDisabled(True)
 
     def select_feature_by_expression(self):
@@ -222,31 +216,31 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self._current_layer.selectionChanged.disconnect(self.check_selected_features)
 
     def select_feature(self):
-        #Make wizard disappear
-        self.setVisible(False)
-        #Create maptool
+        self.setVisible(False) # Make wizard disappear
+
+        # Create maptool
         self.maptool_identify = QgsMapToolIdentifyFeature(self.canvas)
         self.maptool_identify.setLayer(self._current_layer)
         cursor = QCursor()
         cursor.setShape(Qt.CrossCursor)
         self.maptool_identify.setCursor(cursor)
-        self.iface.mapCanvas().setMapTool(self.maptool_identify)
+        self.canvas.setMapTool(self.maptool_identify)
         self.maptool_identify.featureIdentified.connect(self.get_feature_id)
 
+        # TODO: Take into account that a user can select another tool
+
     def get_feature_id(self, feature):
-        #Make wizard appear
-        self.setVisible(True)
+        self.setVisible(True) # Make wizard appear
         if feature:
             self.lbl_selected.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                     "1 Feature Selected"))
-            self._current_layer.selectByIds([feature.id()])
+            self._current_layer.select(feature.id())
 
-        self.iface.mapCanvas().setMapTool(self.maptool)
-
+        self.canvas.setMapTool(self.maptool)
         self.check_selected_features()
 
         self.maptool_identify.featureIdentified.disconnect(self.get_feature_id)
-        self.log.logMessage("Parcel's featureIdentified SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+        self.log.logMessage("Spatial Unit's featureIdentified SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
 
     def finished_dialog(self):
         self.save_settings()
@@ -272,10 +266,9 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                     Qgis.Warning)
 
         else:
-            self.prepare_extdirection_creation()
+            self.prepare_extaddress_creation()
 
-    def prepare_extdirection_creation(self):
-
+    def prepare_extaddress_creation(self):
         # Don't suppress (i.e., show) feature form
         form_config = self._extaddress_layer.editFormConfig()
         form_config.setSuppress(QgsEditFormConfig.SuppressOff)
@@ -292,7 +285,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
             # Create connections to react when a feature is added to buffer and
             # when it gets stored into the DB
-            self._extaddress_layer.featureAdded.connect(self.call_right_commit)
+            self._extaddress_layer.featureAdded.connect(self.call_extaddress_commit)
 
         else:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
@@ -300,8 +293,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                                            "Please select a feature"),
                 Qgis.Warning)
 
-    def call_right_commit(self, fid):
-
+    def call_extaddress_commit(self, fid):
         plot_field_idx = self._extaddress_layer.getFeature(fid).fieldNameIndex(EXTADDRESS_PLOT_FIELD)
         building_field_idx = self._extaddress_layer.getFeature(fid).fieldNameIndex(EXTADDRESS_BUILDING_FIELD)
         building_unit_field_idx = self._extaddress_layer.getFeature(fid).fieldNameIndex(EXTADDRESS_BUILDING_UNIT_FIELD)
@@ -313,7 +305,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         else: #self._current_layer.name() == BUILDING_UNIT_TABLE:
             self._extaddress_layer.changeAttributeValue(fid, building_unit_field_idx, self._feature_tid)
 
-        self._extaddress_layer.featureAdded.disconnect(self.call_right_commit)
+        self._extaddress_layer.featureAdded.disconnect(self.call_extaddress_commit)
         self.log.logMessage("Extaddres's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         res = self._extaddress_layer.commitChanges()
         self._current_layer.removeSelection()
@@ -337,7 +329,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
     def restore_settings(self):
         settings = QSettings()
 
-        load_data_type = settings.value('Asistente-LADM_COL/wizards/ext_address_load_data_type') or 'to_plot'
+        load_data_type = settings.value('Asistente-LADM_COL/wizards/ext_address_load_data_type', 'to_plot')
         if load_data_type == 'refactor':
             self.rad_refactor.setChecked(True)
         elif load_data_type == 'to_plot':

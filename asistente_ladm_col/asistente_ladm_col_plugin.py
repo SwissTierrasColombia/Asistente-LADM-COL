@@ -905,7 +905,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.wiz_address = AssociateExtAddressWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.wiz_address.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_parcel_cad(self):
         wiz = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
