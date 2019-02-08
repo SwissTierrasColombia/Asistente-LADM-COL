@@ -6,7 +6,9 @@
         begin                : 2018-06-11
         git sha              : :%H$
         copyright            : (C) 2018 by Germán Carrillo (BSF Swissphoto)
+                               (C) 2019 by Leonardo Cardona (BSF Swissphoto)
         email                : gcarrillo@linuxmail.org
+                               leocardonapiedrahita@gmail.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -89,8 +91,8 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.xtf_file_line_edit.textChanged.emit(self.xtf_file_line_edit.text())
 
         # PG
-        self.db_connect_label.setToolTip(self.db.get_uri_without_password())
-        self.db_connect_label.setText(self.db.dbname)
+        self.db_connect_label.setToolTip(self.db.get_display_conn_string())
+        self.db_connect_label.setText(self.db.dict_conn_params["database"])
         self.connection_setting_button.clicked.connect(self.show_settings)
 
         self.connection_setting_button.setText(QCoreApplication.translate('DialogExportData', 'Connection Settings'))
@@ -172,7 +174,6 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.schema_names_list_widget.itemChanged.connect(self.on_itemchanged_schema_name)
 
     def on_current_row_changed_schema_names(self, current_row):
-
         for index in range(self.schema_names_list_widget.count()):
             item = self.schema_names_list_widget.item(index)
             item.setCheckState(Qt.Unchecked)
@@ -187,7 +188,13 @@ class DialogExportData(QDialog, DIALOG_UI):
 
     def update_model_names(self, dbschema):
         self.export_models_qmodel = QStandardItemModel()
-        db_models = self.db._get_models(dbschema) if dbschema else None
+
+        db_models = None
+        if self.type_combo_box.currentData() == 'ili2gpkg':
+            db_models = self.db.get_models()
+        elif self.type_combo_box.currentData() == 'ili2pg':
+            db_models = self.db.get_models(dbschema) if dbschema else None
+
         if db_models:
             for db_model in db_models:
                 regex = re.compile(r'(?:\{[^\}]*\}|\s)')
@@ -203,7 +210,7 @@ class DialogExportData(QDialog, DIALOG_UI):
     def get_checked_schema(self):
         selected = self.schema_names_list_widget.selectedItems()
         if selected:
-            return selected[0]
+            return selected[0].text()
 
         return ''
 
@@ -216,11 +223,11 @@ class DialogExportData(QDialog, DIALOG_UI):
 
     def show_settings(self):
         dlg = self.qgis_utils.get_settings_dialog()
-        dlg.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
+        dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
         if dlg.exec_():
             self.db = self.qgis_utils.get_db_connection()
-            self.db_connect_label.setToolTip(self.db.get_uri_without_password())
-            self.db_connect_label.setText(self.db.dbname)
+            self.db_connect_label.setToolTip(self.db.get_display_conn_string())
+            self.db_connect_label.setText(self.db.dict_conn_params['database'])
             self.update_schema_names_model()
 
     def accepted(self):
@@ -320,7 +327,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         settings = QSettings()
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_export', configuration.xtffile)
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/importtype', self.type_combo_box.currentData())
-        settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', self.log_config.isCollapsed())
+        settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
 
         if self.type_combo_box.currentData() == 'ili2gpkg':
             settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2gpkg/dbfile', configuration.dbfile)
@@ -332,8 +339,8 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.type_changed()
 
         # Show log
-        value_show_log = settings.value('Asistente-LADM_COL/QgisModelBaker/show_log', type=bool)
-        self.log_config.setCollapsed(value_show_log)
+        value_show_log = settings.value('Asistente-LADM_COL/QgisModelBaker/show_log', False, type=bool)
+        self.log_config.setCollapsed(not value_show_log)
 
         # set model repository
         # if there is no option by default use online model repository
@@ -350,14 +357,14 @@ class DialogExportData(QDialog, DIALOG_UI):
 
         if self.type_combo_box.currentData() == 'ili2pg':
             # PostgreSQL specific options
-            configuration.dbhost = self.db.host
-            configuration.dbport = self.db.port
-            configuration.dbusr = self.db.user
-            configuration.database = self.db.dbname
+            configuration.dbhost = self.db.dict_conn_params["host"]
+            configuration.dbport = self.db.dict_conn_params["port"]
+            configuration.dbusr = self.db.dict_conn_params["username"]
+            configuration.database = self.db.dict_conn_params["database"]
             configuration.dbschema = self.get_checked_schema()
-            configuration.dbpwd = self.db.password
+            configuration.dbpwd = self.db.dict_conn_params["password"]
         elif self.type_combo_box.currentData() == 'ili2gpkg':
-            configuration.dbfile = self.gpkg_file_line_edit.text().strip()
+            configuration.dbfile = self.db.dict_conn_params["dbfile"]
 
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
 

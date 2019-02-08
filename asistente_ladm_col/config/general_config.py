@@ -41,8 +41,15 @@ FIELD_MAPPING_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL',
 MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE = 10
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
+# PLUGIN_DIR (set in translator.py)
 HELP_DIR_NAME = 'help'
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'styles')
+TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.toml')
+
+# Settings for create schema acording with LADM-COL
+CREATE_BASKET_COL = False
+CREATE_IMPORT_TID = False
+STROKE_ARCS = True
 
 
 # SETTINGS DIALOG TAB INDEXES

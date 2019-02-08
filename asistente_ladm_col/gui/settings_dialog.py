@@ -244,7 +244,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_gpkg_file.setText(settings.value('Asistente-LADM_COL/gpkg/dbfile'))
 
         custom_model_directories_is_checked = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
-        if bool(int(custom_model_directories_is_checked)):
+        if custom_model_directories_is_checked:
             self.offline_models_radio_button.setChecked(True)
             self.custom_model_directories_line_edit.setText(settings.value('Asistente-LADM_COL/models/custom_models'))
             self.custom_model_directories_line_edit.setVisible(True)

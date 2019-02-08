@@ -6,7 +6,9 @@
         begin                : 2018-06-11
         git sha              : :%H$
         copyright            : (C) 2018 by Germán Carrillo (BSF Swissphoto)
+                               (C) 2019 by Leonardo Cardona (BSF Swissphoto)
         email                : gcarrillo@linuxmail.org
+                               leocardonapiedrahita@gmail.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -40,8 +42,12 @@ from qgis.gui import QgsMessageBar
 
 from ...config.general_config import (DEFAULT_EPSG,
                                       DEFAULT_INHERITANCE,
-                                      DEFAULT_MODEL_NAMES_CHECKED)
-from ...lib.dbconnector.pg_connector import PGConnector
+                                      DEFAULT_MODEL_NAMES_CHECKED,
+                                      SETTINGS_CONNECTION_TAB_INDEX,
+                                      TOML_FILE_DIR,
+                                      CREATE_BASKET_COL,
+                                      CREATE_IMPORT_TID,
+                                      STROKE_ARCS)
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
                                FileValidator,
@@ -85,8 +91,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.previous_item = QListWidgetItem()
 
         # PG
-        self.db_connect_label.setToolTip(self.db.get_uri_without_password())
-        self.db_connect_label.setText(self.db.dbname)
+        self.db_connect_label.setToolTip(self.db.get_display_conn_string())
+        self.db_connect_label.setText(self.db.dict_conn_params['database'])
         self.connection_setting_button.clicked.connect(self.show_settings)
 
         self.connection_setting_button.setText(QCoreApplication.translate('DialogImportSchema', 'Connection Settings'))
@@ -149,19 +155,16 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.previous_item = item
 
     def get_checked_models(self):
-        checked_models = list()
-        for index in range(self.import_models_list_widget.count()):
-            item = self.import_models_list_widget.item(index)
-            if item.checkState() == Qt.Checked:
-                checked_models.append(item.text())
-        return checked_models
+        selected_items = self.import_models_list_widget.selectedItems()
+        return [item.text() for item in selected_items]
 
     def show_settings(self):
-        self.qgis_utils.get_settings_dialog().exec_()
-        QCoreApplication.processEvents()
-        self.db = self.qgis_utils.get_db_connection()
-        self.db_connect_label.setToolTip(self.db.get_uri_without_password())
-        self.db_connect_label.setText(self.db.dbname)
+        dlg = self.qgis_utils.get_settings_dialog()
+        dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
+        if dlg.exec_():
+            self.db = self.qgis_utils.get_db_connection()
+            self.db_connect_label.setToolTip(self.db.get_display_conn_string())
+            self.db_connect_label.setText(self.db.dict_conn_params['database'])
 
     def accepted(self):
         configuration = self.updated_configuration()
@@ -192,14 +195,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.save_configuration(configuration)
 
         if self.type_combo_box.currentData() == 'ili2pg':
-            _db_connector = PGConnector(self.db.get_uri_without_schema(), configuration.dbschema)
-            res, msg = _db_connector.test_connection()
-            if res:
-                if _db_connector._schema_exists():
-                    message_error = QCoreApplication.translate("DialogImportSchema", 'Schema {} exist, please set a valid schema name before creating the LADM-COL structure.'.format(configuration.dbschema))
-                    self.show_message(message_error, Qgis.Warning)
-                    self.print_info(message_error, True) # Clear and print
-                    return
+            if self.db._schema_exists(configuration.dbschema):
+                message_error = QCoreApplication.translate("DialogImportSchema",
+                                                           "Schema '{}' already exists, please set a valid schema before creating the LADM-COL structure.".format(
+                                                               configuration.dbschema))
+                self.show_message(message_error, Qgis.Warning)
+                self.print_info(message_error, True)  # Clear and print
+                return
 
         with OverrideCursor(Qt.WaitCursor):
             self.progress_bar.show()
@@ -219,7 +221,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             importer.process_finished.connect(self.on_process_finished)
 
             try:
-                self.progress_bar.setValue(50)
                 if importer.run() != iliimporter.Importer.SUCCESS:
                     self.enable()
                     self.progress_bar.hide()
@@ -243,7 +244,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def save_configuration(self, configuration):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', 1 if self.log_config.isCollapsed() else 0)
+        settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/importtype', self.type_combo_box.currentData())
         if self.type_combo_box.currentData() == 'ili2gpkg':
             settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2gpkg/dbfile', configuration.dbfile)
@@ -254,13 +255,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.type_changed()
 
         # Show log
-        value_show_log = settings.value('Asistente-LADM_COL/QgisModelBaker/show_log') if settings.value('Asistente-LADM_COL/QgisModelBaker/show_log') else 0
-        self.log_config.setCollapsed(bool(int(value_show_log)))
+        value_show_log = settings.value('Asistente-LADM_COL/QgisModelBaker/show_log', False, type=bool)
+        self.log_config.setCollapsed(not value_show_log)
 
         # set model repository
         # if there is no option  by default use online model repository
-        custom_model_is_checked =  settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked') if settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked') else 0
-        self.use_local_models = bool(int(custom_model_is_checked))
+        custom_model_is_checked =  settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
+        self.use_local_models = custom_model_is_checked
         if self.use_local_models:
             self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models') if settings.value('Asistente-LADM_COL/models/custom_models') else None
 
@@ -270,23 +271,23 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         if self.type_combo_box.currentData() == 'ili2pg':
             # PostgreSQL specific options
             configuration.tool_name = 'ili2pg'
-            configuration.dbhost = self.db.host
-            configuration.dbport = self.db.port
-            configuration.dbusr = self.db.user
-            configuration.database = self.db.dbname
-            configuration.dbschema = self.schema_name_line_edit.text().strip().lower()
-            configuration.dbpwd = self.db.password
+            configuration.dbhost = self.db.dict_conn_params['host']
+            configuration.dbport = self.db.dict_conn_params['port']
+            configuration.dbusr = self.db.dict_conn_params['username']
+            configuration.database = self.db.dict_conn_params['database']
+            configuration.dbschema = self.db.dict_conn_params['schema']
+            configuration.dbpwd = self.db.dict_conn_params['password']
         elif self.type_combo_box.currentData() == 'ili2gpkg':
             configuration.tool_name = 'ili2gpkg'
-            configuration.dbfile = self.gpkg_file_line_edit.text().strip()
+            configuration.dbfile = self.db.dict_conn_params['dbfile']
 
         # set custom toml file
-        configuration.tomlfile = self.get_toml_path()
+        configuration.tomlfile = TOML_FILE_DIR
         configuration.epsg = DEFAULT_EPSG
         configuration.inheritance = DEFAULT_INHERITANCE
-        configuration.create_basket_col = False
-        configuration.create_import_tid = False
-        configuration.stroke_arcs = True
+        configuration.create_basket_col = CREATE_BASKET_COL
+        configuration.create_import_tid = CREATE_IMPORT_TID
+        configuration.stroke_arcs = STROKE_ARCS
 
         # Check custom model directories
         if self.use_local_models:
@@ -314,7 +315,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def on_process_started(self, command):
         self.txtStdout.setText(command)
-        self.progress_bar.setValue(30)
         QCoreApplication.processEvents()
 
     def on_process_finished(self, exit_code, result):
@@ -327,22 +327,15 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         self.txtStdout.setTextColor(QColor(color))
         self.txtStdout.append(message)
-        self.progress_bar.setValue(50)
 
     def advance_progress_bar_by_text(self, text):
         if text.strip() == 'Info: compile models…':
             self.progress_bar.setValue(20)
         elif text.strip() == 'Info: create table structure…':
-            self.progress_bar.setValue(30)
+            self.progress_bar.setValue(70)
 
     def show_help(self):
         self.qgis_utils.show_help("import_schema")
-
-    def get_toml_path(self):
-        base_path = os.path.dirname(os.path.abspath(__file__)).split('asistente_ladm_col')[0]
-        toml_dir_path = os.path.join(base_path, 'asistente_ladm_col', 'resources', 'toml')
-        toml_file_path = os.path.join(toml_dir_path, 'hide_fields_LADM.toml')
-        return toml_file_path
 
     def disable(self):
         self.type_combo_box.setEnabled(False)
