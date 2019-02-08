@@ -71,14 +71,14 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.ilicache.refresh()
 
         self.type_combo_box.clear()
-        self.type_combo_box.addItem(QCoreApplication.translate("DialogExportData","PostgreSQL/PostGIS"), 'ili2pg')
-        self.type_combo_box.addItem(QCoreApplication.translate("DialogExportData","GeoPackage"), 'ili2gpkg')
+        self.type_combo_box.addItem(QCoreApplication.translate("DialogExportData", "PostgreSQL/PostGIS"), 'ili2pg')
+        self.type_combo_box.addItem(QCoreApplication.translate("DialogExportData", "GeoPackage"), 'ili2gpkg')
         self.type_combo_box.currentIndexChanged.connect(self.type_changed)
         self.type_changed()
 
         self.xtf_file_browse_button.clicked.connect(
-            make_save_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogExportData","Save in XTF Transfer File"),
-                                    file_filter=QCoreApplication.translate("DialogExportData","XTF Transfer File (*.xtf);;Interlis 1 Transfer File (*.itf);;XML (*.xml);;GML (*.gml)"), extension='.xtf', extensions=['.' + ext for ext in self.ValidExtensions]))
+            make_save_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogExportData", "Save in XTF Transfer File"),
+                                    file_filter=QCoreApplication.translate("DialogExportData", "XTF Transfer File (*.xtf);;Interlis 1 Transfer File (*.itf);;XML (*.xml);;GML (*.gml)"), extension='.xtf', extensions=['.' + ext for ext in self.ValidExtensions]))
         self.xtf_file_browse_button.clicked.connect(self.xtf_browser_opened_to_true)
         self.xtf_browser_was_opened = False
         
@@ -99,7 +99,7 @@ class DialogExportData(QDialog, DIALOG_UI):
 
         # GPKG
         self.gpkg_file_line_edit.setPlaceholderText(QCoreApplication.translate("DialogExportData", "[Name of the Geopackage to be created]"))
-        self.gpkg_file_browse_button.clicked.connect(make_file_selector(self.gpkg_file_line_edit, title=QCoreApplication.translate("DialogExportData","Open GeoPackage database file"),file_filter=QCoreApplication.translate("DialogExportData","GeoPackage Database (*.gpkg)")))
+        self.gpkg_file_browse_button.clicked.connect(make_file_selector(self.gpkg_file_line_edit, title=QCoreApplication.translate("DialogExportData", "Open GeoPackage database file"), file_filter=QCoreApplication.translate("DialogExportData", "GeoPackage Database (*.gpkg)")))
         gpkgFileValidator = FileValidator(pattern='*.gpkg')
         self.gpkg_file_line_edit.setValidator(gpkgFileValidator)
         self.gpkg_file_line_edit.textChanged.connect(self.validators.validate_line_edits)
@@ -248,14 +248,14 @@ class DialogExportData(QDialog, DIALOG_UI):
             return
 
         if not self.get_ili_models():
-            message_error = QCoreApplication.translate("DialogExportData","Please set a valid schema to export. This schema does not have information to export.")
+            message_error = QCoreApplication.translate("DialogExportData", "Please set a valid schema to export. This schema does not have information to export.")
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
             self.export_models_list_view.setFocus()
             return
         
         if not configuration.iliexportmodels:
-            message_error = QCoreApplication.translate("DialogExportData","Please set a model before exporting data.")
+            message_error = QCoreApplication.translate("DialogExportData", "Please set a model before exporting data.")
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
             self.export_models_list_view.setFocus()
@@ -274,8 +274,8 @@ class DialogExportData(QDialog, DIALOG_UI):
         if os.path.isfile(self.xtf_file_line_edit.text().strip()) and not self.xtf_browser_was_opened:
             self.msg = QMessageBox()
             self.msg.setIcon(QMessageBox.Warning)
-            self.msg.setText(QCoreApplication.translate("DialogExportData","{filename} already exists.\nDo you want to replace it?").format(filename=os.path.basename(self.xtf_file_line_edit.text().strip())))
-            self.msg.setWindowTitle(QCoreApplication.translate("DialogExportData","Save in XTF Transfer File"))
+            self.msg.setText(QCoreApplication.translate("DialogExportData", "{filename} already exists.\nDo you want to replace it?").format(filename=os.path.basename(self.xtf_file_line_edit.text().strip())))
+            self.msg.setWindowTitle(QCoreApplication.translate("DialogExportData", "Save in XTF Transfer File"))
             self.msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
             msg_box = self.msg.exec_()
             if msg_box == QMessageBox.No:
@@ -312,7 +312,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             except JavaNotFoundError:
                 self.txtStdout.setTextColor(QColor('#000000'))
                 self.txtStdout.clear()
-                self.txtStdout.setText(QCoreApplication.translate("DialogExportData","""Java could not be found. Please <a href="https://java.com/en/download/">install Java</a> and or <a href="#configure">configure a custom java path</a>. We also support the JAVA_HOME environment variable in case you prefer this."""))
+                self.txtStdout.setText(QCoreApplication.translate("DialogExportData", """Java could not be found. Please <a href="https://java.com/en/download/">install Java</a> and or <a href="#configure">configure a custom java path</a>. We also support the JAVA_HOME environment variable in case you prefer this."""))
                 self.enable()
                 self.progress_bar.hide()
                 return
@@ -403,7 +403,7 @@ class DialogExportData(QDialog, DIALOG_UI):
     def on_process_finished(self, exit_code, result):
         color = '#004905' if exit_code == 0 else '#aa2222'
         self.txtStdout.setTextColor(QColor(color))
-        self.txtStdout.append(QCoreApplication.translate("DialogExportData","Finished ({})").format(exit_code))
+        self.txtStdout.append(QCoreApplication.translate("DialogExportData", "Finished ({})").format(exit_code))
         if result == iliexporter.Exporter.SUCCESS:
             self.buttonBox.clear()
             self.buttonBox.setEnabled(True)

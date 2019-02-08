@@ -1929,7 +1929,7 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def check_parcel_right_relationship(self, db, rule_name):
-        table_name = QCoreApplication.translate("LogicChecksConfigStrings","Logic Consistency Errors in table '{}'").format(PARCEL_TABLE)
+        table_name = QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{}'").format(PARCEL_TABLE)
         error_layer = None
         error_layer_exist = False
 
