@@ -14,6 +14,7 @@ MAINTAINER Agencia Implementacion <agenciadeimplementacion@incige.com>
 #  future \
 #  transifex-client
 
+ENV PYTHONPATH="/usr/share/qgis/python"
 
 # SO deps
 RUN apt-get update && \
@@ -35,13 +36,13 @@ RUN pip3 install --upgrade pip==9.0.3 && \
     pip3 install --upgrade psycopg2
 
 # When our PRs get merged in time!
-RUN wget https://github.com/opengisch/projectgenerator/releases/download/v3.3.7/projectgenerator.v3.3.7.zip -O /tmp/projectgenerator.zip
+RUN wget https://github.com/opengisch/QgisModelBaker/releases/download/v4.0.0/QgisModelBaker.v4.0.0.zip -O /tmp/QgisModelBaker.zip
 
 # When we need a custom release
-#RUN wget https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip -O /tmp/projectgenerator.zip
+#RUN wget https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.0.0/QgisModelBaker.v4.0.0.zip -O /tmp/QgisModelBaker.zip
 
-RUN unzip /tmp/projectgenerator.zip -d /usr/share/qgis/python/plugins
-RUN rm -rf /tmp/projectgenerator.zip
+RUN unzip /tmp/QgisModelBaker.zip -d /usr/share/qgis/python/plugins
+RUN rm -rf /tmp/QgisModelBaker.zip
 
 ENV LANG=C.UTF-8
 

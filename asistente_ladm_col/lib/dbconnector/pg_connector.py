@@ -18,9 +18,11 @@
 """
 import psycopg2
 import psycopg2.extras
+from psycopg2 import ProgrammingError
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsWkbTypes,
                        Qgis,
+                       QgsDataSourceUri,
                        QgsApplication)
 
 from .db_connector import DBConnector
@@ -63,6 +65,16 @@ class PGConnector(DBConnector):
         self.provider = 'postgres'
         self._tables_info = None
         self.model_parser = None
+
+        data_source_uri = QgsDataSourceUri(self.uri)
+        self.dict_conn_params = {
+            'host': data_source_uri.host(),
+            'port': data_source_uri.port(),
+            'username': data_source_uri.username(),
+            'password': data_source_uri.password(),
+            'database': data_source_uri.database(),
+            'schema': self.schema
+        }
 
         # Logical validations queries
         self.logic_validation_queries = {
@@ -246,12 +258,13 @@ class PGConnector(DBConnector):
 
         return bool(cur.fetchone()[0])
 
-    def _schema_exists(self):
-        if self.schema:
+    def _schema_exists(self, schema=None):
+        schema = schema if schema is not None else self.schema
+        if schema:
             cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
             cur.execute("""
                         SELECT EXISTS(SELECT 1 FROM pg_namespace WHERE nspname = '{}');
-            """.format(self.schema))
+            """.format(schema))
 
             return bool(cur.fetchone()[0])
 
@@ -752,8 +765,12 @@ class PGConnector(DBConnector):
             if not res:
                 return (res, msg)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur.execute(query)
-        return cur.fetchall()
+
+        try:
+            cur.execute(query)
+            return cur.fetchall()
+        except ProgrammingError:
+            return None
 
     def execute_sql_query_dict_cursor(self, query):
         """
@@ -768,3 +785,18 @@ class PGConnector(DBConnector):
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(query)
         return cur.fetchall()
+
+    def _schema_names_list(self):
+        query = """
+                    SELECT n.nspname as "schema_name"
+                    FROM pg_catalog.pg_namespace n
+                    WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema' AND nspname <> 'public'
+                    ORDER BY 1"""
+
+        result = self.execute_sql_query(query)
+        return result if not isinstance(result, tuple) else None
+
+    def get_models(self, schema=None):
+        query = "SELECT modelname FROM {schema}.t_ili2db_model".format(schema=schema if schema else self.schema)
+        result = self.execute_sql_query(query)
+        return result if not isinstance(result, tuple) else None

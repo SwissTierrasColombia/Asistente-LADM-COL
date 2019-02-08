@@ -136,8 +136,8 @@ class ReportGenerator():
     def get_tmp_filename(self, basename, extension='gpkg'):
         return "{}_{}.{}".format(basename, str(time.time()).replace(".",""), extension)
 
-    def get_java_path_from_project_generator(self):
-        path = QSettings().value('QgsProjectGenerator/ili2db/JavaPath')
+    def get_java_path_from_qgis_model_baker(self):
+        path = QSettings().value('QgisModelBaker/ili2db/JavaPath')
         java_path = os.path.dirname(os.path.dirname(path or ''))
         return java_path
 
@@ -170,19 +170,19 @@ class ReportGenerator():
                     "The dependency library to generate reports was found, but does not match with the version required. Click the button to remove the installed version and try again."))
             return
 
-        # Check if JAVA_HOME path is set, otherwise use path from project Generator
+        # Check if JAVA_HOME path is set, otherwise use path from QGIS Model Baker
         if os.name == 'nt':
             if 'JAVA_HOME' not in os.environ:
-                java_path = self.get_java_path_from_project_generator()
+                java_path = self.get_java_path_from_qgis_model_baker()
                 if not java_path:
                     self.qgis_utils.message_emitted.emit(
                         QCoreApplication.translate("ReportGenerator",
-                                                   "Please set JAVA_HOME path in Project Generator Settings or in Environmental Variables for your OS"),
+                                                   "Please set JAVA_HOME path in QGIS Model Baker Settings or in Environmental Variables for your OS"),
                         Qgis.Warning)
                     return
                 else:
                     os.environ["JAVA_HOME"] = java_path
-                    self.log.logMessage("The JAVA_HOME path has been set using Project Generator Settings for reports.", PLUGIN_NAME, Qgis.Info)
+                    self.log.logMessage("The JAVA_HOME path has been set using QGIS Model Baker Settings for reports.", PLUGIN_NAME, Qgis.Info)
 
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
         if plot_layer is None:

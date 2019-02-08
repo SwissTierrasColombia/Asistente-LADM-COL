@@ -18,11 +18,14 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([1.2.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.2.0)) del Asistente LADM_COL depende del plugin [Project Generator v3.3.7](https://github.com/opengisch/projectgenerator/releases/download/v3.3.7/projectgenerator.v3.3.7.zip) y permite:
+La versión actual ([1.2.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.2.0)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v4.4.0](https://github.com/opengisch/QgisModelBaker/releases/download/v4.0.0/QgisModelBaker.v4.0.0.zip) y permite:
 
  - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
  - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
  - Capturar datos para el modelo `AVALÚOS v2.2.1`.
+ - Crear estructura de base de datos conforme con los modelos mencionados.
+ - Importar datos desde archivo de transferencia (.XTF).
+ - Exportar datos a archivo de transferencia (.XTF).
  - Preprocesar puntos: Medición controlada.
    - Agrupamiento de puntos por cercanía.
    - Cálculo de posición promediada para puntos del mismo grupo.
@@ -78,7 +81,7 @@ La versión actual ([1.2.0](https://github.com/AgenciaImplementacion/Asistente-L
    - Usando formularios preconfigurados.
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
  - Seleccionar en un diálogo las capas a cargar de cualquier modelo de la base de datos o esquema:
-   - Usar el plugin 'Project Generator' para cargar capas con formularios, relaciones y dominios configurados.
+   - Usar el plugin 'QGIS Model Baker' para cargar capas con formularios, relaciones y dominios configurados.
    - Cargar conjuntos de capas preconfigurados.
  - Realizar revisiones de calidad (topología):
    - Revisar segmentos de linderos muy largos (que superen una tolerancia dada).
