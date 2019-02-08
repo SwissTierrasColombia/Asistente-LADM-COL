@@ -1450,7 +1450,7 @@ class QualityUtils(QObject):
 
         elif boundary_layer.featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
-                             "There are no boundaries to check 'boundaries should not be split'!"))
+                             "There are no boundaries to check 'boundaries should not be split'!"), Qgis.Info)
 
         else:
             wrong_boundaries = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(boundary_layer)
