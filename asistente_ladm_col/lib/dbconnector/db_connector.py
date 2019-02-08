@@ -27,7 +27,7 @@ class DBConnector(QObject):
         self.uri = uri
         self.schema = schema
         self.conn = None
-        self.dict_connection_params = dict()
+        self.dict_conn_params = dict()
 
     def test_connection(self):
         pass
@@ -52,7 +52,10 @@ class DBConnector(QObject):
 
     def get_display_conn_string(self):
         # Do not use to connect to a DB, only for display purposes
-        tmp_dict_conn_params = self.dict_connection_params
+        tmp_dict_conn_params = self.dict_conn_params.copy()
         if 'password' in tmp_dict_conn_params:
             del tmp_dict_conn_params['password']
+        if 'schema' in tmp_dict_conn_params:
+            del tmp_dict_conn_params['schema']
+
         return ' '.join(["{}={}".format(k, v) for k, v in tmp_dict_conn_params.items()])
