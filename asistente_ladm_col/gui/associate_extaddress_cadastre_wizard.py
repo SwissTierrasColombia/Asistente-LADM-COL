@@ -234,7 +234,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         if feature:
             self.lbl_selected.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                     "1 Feature Selected"))
-            self._current_layer.select(feature.id())
+            self._current_layer.selectByIds([feature.id()])
 
         self.canvas.setMapTool(self.maptool)
         self.check_selected_features()
