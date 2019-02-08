@@ -155,8 +155,12 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.previous_item = item
 
     def get_checked_models(self):
-        selected_items = self.import_models_list_widget.selectedItems()
-        return [item.text() for item in selected_items]
+        checked_models = list()
+        for index in range(self.import_models_list_widget.count()):
+            item = self.import_models_list_widget.item(index)
+            if item.checkState() == Qt.Checked:
+                checked_models.append(item.text())
+        return checked_models
 
     def show_settings(self):
         dlg = self.qgis_utils.get_settings_dialog()
@@ -167,7 +171,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.db_connect_label.setText(self.db.dict_conn_params['database'])
 
     def accepted(self):
-        configuration = self.updated_configuration()
+        configuration = self.update_configuration()
 
         if not self.get_checked_models():
             message_error = QCoreApplication.translate('DialogImportSchema','Please set a valid model(s) before creating the LADM-COL structure.')
@@ -195,6 +199,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.save_configuration(configuration)
 
         if self.type_combo_box.currentData() == 'ili2pg':
+            self.db.test_connection() #TODO: remove test_connection.  Open connection if this is closed
             if self.db._schema_exists(configuration.dbschema):
                 message_error = QCoreApplication.translate("DialogImportSchema",
                                                            "Schema '{}' already exists, please set a valid schema before creating the LADM-COL structure.".format(
@@ -265,7 +270,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         if self.use_local_models:
             self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models') if settings.value('Asistente-LADM_COL/models/custom_models') else None
 
-    def updated_configuration(self):
+    def update_configuration(self):
         configuration = SchemaImportConfiguration()
 
         if self.type_combo_box.currentData() == 'ili2pg':
@@ -275,7 +280,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             configuration.dbport = self.db.dict_conn_params['port']
             configuration.dbusr = self.db.dict_conn_params['username']
             configuration.database = self.db.dict_conn_params['database']
-            configuration.dbschema = self.db.dict_conn_params['schema']
+            configuration.dbschema = self.schema_name_line_edit.text().strip().lower()
             configuration.dbpwd = self.db.dict_conn_params['password']
         elif self.type_combo_box.currentData() == 'ili2gpkg':
             configuration.tool_name = 'ili2gpkg'

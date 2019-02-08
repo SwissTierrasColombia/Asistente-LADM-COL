@@ -68,8 +68,8 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.ilicache.refresh()
 
         self.type_combo_box.clear()
-        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportData",'PostgreSQL/PostGIS'), 'ili2pg')
-        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportData",'GeoPackage)'), 'ili2gpkg')
+        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportData", 'PostgreSQL/PostGIS'), 'ili2pg')
+        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportData", 'GeoPackage'), 'ili2gpkg')
         self.type_combo_box.currentIndexChanged.connect(self.type_changed)
         self.type_changed()
 
@@ -231,11 +231,13 @@ class DialogImportData(QDialog, DIALOG_UI):
             item.setCheckState(Qt.Checked)
 
     def get_checked_schema(self):
-        selected = self.schema_names_list_widget.selectedItems()
-        if selected:
-            return selected[0].text()
-
-        return ''
+        checked_schema = None
+        for index in range(self.schema_names_list_widget.count()):
+            item = self.schema_names_list_widget.item(index)
+            if item.checkState() == Qt.Checked:
+                checked_schema = item.text()
+                break
+        return checked_schema
 
     def get_ili_models(self):
         ili_models = list()
