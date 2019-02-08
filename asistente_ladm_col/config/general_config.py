@@ -101,7 +101,7 @@ MODULE_HELP_MAPPING = {
     'export_data' : 'data_management.html#export-data'
 }
 # Configure QGIS Model Baker Dependency
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.0.0"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.1.0"
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
