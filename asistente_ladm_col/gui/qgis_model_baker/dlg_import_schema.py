@@ -198,16 +198,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         configuration.dbschema = self.schema_name_line_edit.text().strip().lower()
         self.save_configuration(configuration)
 
-        if self.type_combo_box.currentData() == 'ili2pg':
-            self.db.test_connection() #TODO: remove test_connection.  Open connection if this is closed
-            if self.db._schema_exists(configuration.dbschema):
-                message_error = QCoreApplication.translate("DialogImportSchema",
-                                                           "Schema '{}' already exists, please set a valid schema before creating the LADM-COL structure.").format(
-                                                               configuration.dbschema)
-                self.show_message(message_error, Qgis.Warning)
-                self.print_info(message_error, True)  # Clear and print
-                return
-
         with OverrideCursor(Qt.WaitCursor):
             self.progress_bar.show()
             self.progress_bar.setValue(0)

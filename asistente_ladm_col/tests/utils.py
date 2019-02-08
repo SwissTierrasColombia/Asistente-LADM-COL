@@ -60,7 +60,7 @@ def get_dbconn(schema):
     dict_conn['port'] = DB_PORT
     dict_conn['database'] = DB_NAME
     dict_conn['schema'] = schema
-    dict_conn['user'] = DB_USER
+    dict_conn['username'] = DB_USER
     dict_conn['password'] = DB_PASSWORD
     asistente_ladm_col_plugin.qgis_utils.set_db_connection('pg', dict_conn)
 

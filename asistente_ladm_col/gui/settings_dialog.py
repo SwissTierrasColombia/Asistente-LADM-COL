@@ -27,8 +27,8 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QTextStream,
                               QIODevice,
-                              QEventLoop
-                              )
+                              QEventLoop,
+                              QTimer)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
                                  QGridLayout)
@@ -42,6 +42,7 @@ from ..config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANC
                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                      SOURCE_SERVICE_EXPECTED_ID)
 from ..gui.custom_model_dir import CustomModelDirDialog
+from ..gui.dlg_capture_parameter import DialogCaptureParameter
 from ..lib.dbconnector.db_connector import DBConnector
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
@@ -82,11 +83,24 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.helpRequested.connect(self.show_help)
         self.btn_test_connection.clicked.connect(self.test_connection)
+
+        self.txt_pg_host.setPlaceholderText(QCoreApplication.translate("SettingsDialog", "[Leave empty to use standard host: localhost]"))
         self.txt_pg_host.textEdited.connect(self.set_connection_dirty)
+
+        self.txt_pg_port.setPlaceholderText(QCoreApplication.translate("SettingsDialog", "[Leave empty to use standard port: 5432]"))
         self.txt_pg_port.textEdited.connect(self.set_connection_dirty)
-        self.txt_pg_database.textEdited.connect(self.set_connection_dirty)
-        self.txt_pg_schema.textEdited.connect(self.set_connection_dirty)
+
+        self.create_db_button.setToolTip(QCoreApplication.translate("SettingsDialog", "Create database"))
+        self.create_db_button.clicked.connect(self.show_modal_create_db)
+        self.selected_db_combobox.currentIndexChanged.connect(self.selected_database_change)
+
+        self.create_schema_button.setToolTip(QCoreApplication.translate("SettingsDialog", "Create schema"))
+        self.create_schema_button.clicked.connect(self.show_modal_create_schema)
+
+        self.txt_pg_user.setPlaceholderText(QCoreApplication.translate("SettingsDialog", "Database Username"))
         self.txt_pg_user.textEdited.connect(self.set_connection_dirty)
+
+        self.txt_pg_password.setPlaceholderText(QCoreApplication.translate("SettingsDialog", "[Leave empty to use system password]"))
         self.txt_pg_password.textEdited.connect(self.set_connection_dirty)
         self.txt_gpkg_file.textEdited.connect(self.set_connection_dirty)
         self.btn_test_service.clicked.connect(self.test_service)
@@ -95,11 +109,74 @@ class SettingsDialog(QDialog, DIALOG_UI):
         # Trigger some default behaviours
         self.restore_settings()
 
+        # refresh the connection on changing values but avoid massive db connects by timer
+        self.refreshTimer = QTimer()
+        self.refreshTimer.setSingleShot(True)
+        self.refreshTimer.timeout.connect(self.refresh_connection)
+        self.txt_pg_host.textChanged.connect(self.request_for_refresh_connection)
+        self.txt_pg_port.textChanged.connect(self.request_for_refresh_connection)
+        self.txt_pg_user.textChanged.connect(self.request_for_refresh_connection)
+        self.txt_pg_password.textChanged.connect(self.request_for_refresh_connection)
+
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.setLayout(QGridLayout())
         #self.tabWidget.currentWidget().layout().setContentsMargins(0, 0, 0, 0)
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
+
+    def showEvent(self, event):
+        self.update_dbnames()
+        # it is necessary to reload the variables
+        # to load the database and schema name
+        self.restore_settings()
+
+    def request_for_refresh_connection(self, text):
+        # hold refresh back
+        self.refreshTimer.start(500)
+
+    def refresh_connection(self):
+        if not self.txt_pg_user.text().strip() \
+                or not self.txt_pg_password.text().strip():
+            self.selected_db_combobox.clear()
+            self.selected_schema_combobox.clear()
+        else:
+            # Update database names list
+            self.update_dbnames()
+
+    def selected_database_change(self, index):
+        self.update_db_schemas()
+
+    def update_dbnames(self):
+        if self.cbo_db_source.currentData() == 'pg':
+            dict_conn = self.read_connection_parameters()
+            uri = self.get_connection_uri(dict_conn)
+            tmp_db_conn = PGConnector('')
+
+            dbmames = tmp_db_conn.get_dbnames_list(uri)
+            self.selected_db_combobox.clear()
+
+            if dbmames[0]:
+                self.selected_db_combobox.addItems(dbmames[1])
+            else:
+                # TODO: Resolve whether to display the message
+                #self.show_message(dbmames[1] , Qgis.Warning)
+                pass
+
+    def update_db_schemas(self):
+        if self.cbo_db_source.currentData() == 'pg':
+            dict_conn = self.read_connection_parameters()
+            uri = self.get_connection_uri(dict_conn)
+            tmp_db_conn = PGConnector('')
+
+            schemas_db = tmp_db_conn.get_dbname_schema_list(uri)
+            self.selected_schema_combobox.clear()
+
+            if schemas_db[0]:
+                self.selected_schema_combobox.addItems(schemas_db[1])
+            else:
+                # TODO: Resolve whether to display the message
+                #self.show_message(schemas_db[1], Qgis.Warning)
+                pass
 
     def model_provider_toggle(self):
         if self.offline_models_radio_button.isChecked():
@@ -162,9 +239,24 @@ class SettingsDialog(QDialog, DIALOG_UI):
         if self.cbo_db_source.currentData() == 'pg':
             self.txt_pg_host.setText(dict_conn['host'])
             self.txt_pg_port.setText(dict_conn['port'])
-            self.txt_pg_database.setText(dict_conn['database'])
-            self.txt_pg_schema.setText(dict_conn['schema'])
-            self.txt_pg_user.setText(dict_conn['user'])
+
+            dbname_setting = dict_conn['database']
+            index = self.selected_db_combobox.findText(dbname_setting, Qt.MatchFixedString)
+            if index >= 0:
+                self.selected_db_combobox.setCurrentIndex(index)
+            else:
+                # this is necessary to be able to run the unit tests, when the database is empty
+                self.selected_db_combobox.addItem(dbname_setting)
+
+            schema_setting = dict_conn['schema']
+            index = self.selected_schema_combobox.findText(schema_setting, Qt.MatchFixedString)
+            if index >= 0:
+                self.selected_schema_combobox.setCurrentIndex(index)
+            else:
+                # this is necessary to be able to run the unit tests, when the database is empty
+                self.selected_schema_combobox.addItem(schema_setting)
+
+            self.txt_pg_user.setText(dict_conn['username'])
             self.txt_pg_password.setText(dict_conn['password'])
         else:
             self.txt_gpkg_file.setText(dict_conn['dbfile'])
@@ -179,9 +271,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
         dict_conn = dict()
         dict_conn['host'] = self.txt_pg_host.text().strip() or 'localhost'
         dict_conn['port'] = self.txt_pg_port.text().strip() or '5432'
-        dict_conn['database'] = "'{}'".format(self.txt_pg_database.text().strip())
-        dict_conn['schema'] = self.txt_pg_schema.text().strip() or 'public'
-        dict_conn['user'] = self.txt_pg_user.text().strip()
+        dict_conn['database'] = "'{}'".format(self.selected_db_combobox.currentText().strip())
+        dict_conn['schema'] = self.selected_schema_combobox.currentText().strip() or 'public'
+        dict_conn['username'] = self.txt_pg_user.text().strip()
         dict_conn['password'] = self.txt_pg_password.text().strip()
         dict_conn['dbfile'] = self.txt_gpkg_file.text().strip()
         return dict_conn
@@ -195,7 +287,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/pg/port', dict_conn['port'])
         settings.setValue('Asistente-LADM_COL/pg/database', dict_conn['database'].strip("'"))
         settings.setValue('Asistente-LADM_COL/pg/schema', dict_conn['schema'])
-        settings.setValue('Asistente-LADM_COL/pg/user', dict_conn['user'])
+        settings.setValue('Asistente-LADM_COL/pg/username', dict_conn['username'])
         settings.setValue('Asistente-LADM_COL/pg/password', dict_conn['password'])
         settings.setValue('Asistente-LADM_COL/gpkg/dbfile', dict_conn['dbfile'])
 
@@ -207,7 +299,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/quality/use_roads', self.chk_use_roads.isChecked())
 
         settings.setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
-        settings.setValue('Asistente-LADM_COL/sources/document_repository', self.connexion_box.isChecked())
+        settings.setValue('Asistente-LADM_COL/sources/document_repository', self.connection_box.isChecked())
 
         endpoint = self.txt_service_endpoint.text().strip()
         settings.setValue('Asistente-LADM_COL/source/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
@@ -237,9 +329,18 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.db_source_changed()
         self.txt_pg_host.setText(settings.value('Asistente-LADM_COL/pg/host'))
         self.txt_pg_port.setText(settings.value('Asistente-LADM_COL/pg/port'))
-        self.txt_pg_database.setText(settings.value('Asistente-LADM_COL/pg/database'))
-        self.txt_pg_schema.setText(settings.value('Asistente-LADM_COL/pg/schema'))
-        self.txt_pg_user.setText(settings.value('Asistente-LADM_COL/pg/user'))
+
+        dbname_setting = settings.value('Asistente-LADM_COL/pg/database')
+        index = self.selected_db_combobox.findText(dbname_setting, Qt.MatchFixedString)
+        if index >= 0:
+            self.selected_db_combobox.setCurrentIndex(index)
+
+        schema_setting = settings.value('Asistente-LADM_COL/pg/schema')
+        index = self.selected_schema_combobox.findText(schema_setting, Qt.MatchFixedString)
+        if index >= 0:
+            self.selected_schema_combobox.setCurrentIndex(index)
+
+        self.txt_pg_user.setText(settings.value('Asistente-LADM_COL/pg/username'))
         self.txt_pg_password.setText(settings.value('Asistente-LADM_COL/pg/password'))
         self.txt_gpkg_file.setText(settings.value('Asistente-LADM_COL/gpkg/dbfile'))
 
@@ -261,7 +362,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.update_images_state(use_roads)
 
         self.chk_automatic_values_in_batch_mode.setChecked(settings.value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool))
-        self.connexion_box.setChecked(settings.value('Asistente-LADM_COL/sources/document_repository', True, bool))
+        self.connection_box.setChecked(settings.value('Asistente-LADM_COL/sources/document_repository', True, bool))
         self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool))
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
@@ -357,15 +458,15 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def show_message(self, message, level):
         self.bar.pushMessage(message, level, 10)
 
-    def get_connection_uri(self, dict_conn):
+    def get_connection_uri(self, dict_conn, level=1):
         uri = []
         if self.cbo_db_source.currentData() == 'pg':
             uri += ['host={}'.format(dict_conn['host'])]
             uri += ['port={}'.format(dict_conn['port'])]
-            if dict_conn['database']:
+            if dict_conn['database'] and level == 1:
                 uri += ['dbname={}'.format(dict_conn['database'])]
-            if dict_conn['user']:
-                uri += ['user={}'.format(dict_conn['user'])]
+            if dict_conn['username']:
+                uri += ['user={}'.format(dict_conn['username'])]
             if dict_conn['password']:
                 uri += ['password={}'.format(dict_conn['password'])]
         elif self.cbo_db_source.currentData() == 'gpkg':
@@ -387,3 +488,48 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def show_help(self):
         self.qgis_utils.show_help("settings")
+
+    def database_created(self, db_name):
+        self.update_dbnames()
+
+        # select the database created by the user
+        index = self.selected_db_combobox.findText(db_name, Qt.MatchFixedString)
+        if index >= 0:
+            self.selected_db_combobox.setCurrentIndex(index)
+
+    def schema_created(self, schema_name):
+        self.update_db_schemas()
+
+        # select the database created by the user
+        index = self.selected_schema_combobox.findText(schema_name, Qt.MatchFixedString)
+        if index >= 0:
+            self.selected_schema_combobox.setCurrentIndex(index)
+
+    def show_modal_create_db(self):
+        if self.cbo_db_source.currentData() == 'pg':
+            tmp_db_conn = PGConnector('')
+            dict_conn = self.read_connection_parameters()
+            uri = self.get_connection_uri(dict_conn, level=0)
+            test_conn = tmp_db_conn.test_connection(uri=uri, level=0)
+            if test_conn[0]:
+                create_db_dlg = DialogCaptureParameter(dict_conn, 'database', parent=self)
+                create_db_dlg.completed_creation.connect(self.database_created)
+                create_db_dlg.setModal(True)
+                create_db_dlg.exec_()
+            else:
+                self.show_message(QCoreApplication.translate("SettingsDialog", "Establish the connection to the database before attempting to create a database."), Qgis.Warning)
+
+    def show_modal_create_schema(self):
+        if self.cbo_db_source.currentData() == 'pg':
+            tmp_db_conn = PGConnector('')
+            dict_conn = self.read_connection_parameters()
+            uri = self.get_connection_uri(dict_conn, level=0)
+            test_conn = tmp_db_conn.test_connection(uri=uri, level=0)
+
+            if test_conn[0]:
+                create_db_dlg = DialogCaptureParameter(self.read_connection_parameters(), 'schema', parent=self)
+                create_db_dlg.completed_creation.connect(self.schema_created)
+                create_db_dlg.setModal(True)
+                create_db_dlg.exec_()
+            else:
+                self.show_message(QCoreApplication.translate("SettingsDialog", "Establish the connection to the database before attempting to create a schema."), Qgis.Warning)
