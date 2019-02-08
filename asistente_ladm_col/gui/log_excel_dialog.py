@@ -41,13 +41,5 @@ class LogExcelDialog(QDialog, LOG_DIALOG_EXCEL_UI):
         self.qgis_utils = qgis_utils
         self.utils = Utils
         self.dialog_excel = DialogImportFromExcel(self.iface, self._db, self.qgis_utils, self.utils)
- 
-        # Set connections
-        self.buttonBox.accepted.connect(self.save)
-
-        self.buttonBox.button(QDialogButtonBox.Save).setText(QCoreApplication.translate("LogQualityDialog", "Export to PDF"))
         self.txt_log_excel.setHtml(text)
-        
-    def save(self):
-        print (self.txt_log_excel)
 

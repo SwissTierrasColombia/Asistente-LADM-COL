@@ -146,6 +146,41 @@ LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE = "</li>"
 LOG_QUALITY_LIST_ITEM_OPEN = "<li style='color:#ffd356;'>"
 LOG_QUALITY_LIST_ITEM_CLOSE = "</li>"
 
+# Excel titles 
+EXCEL_SHEET_NAME_PLOT = 'predio'
+EXCEL_SHEET_NAME_PARTY = 'interesado'
+EXCEL_SHEET_NAME_GROUP = 'agrupacion'
+EXCEL_SHEET_NAME_RIGHT = 'derecho'
+
+EXCEL_SHEET_TITLE_DEPARTMENT = 'departamento'
+EXCEL_SHEET_TITLE_MUNICIPALITY = 'municipio'
+EXCEL_SHEET_TITLE_ZONE = 'zona'
+EXCEL_SHEET_TITLE_REGISTRATION_PLOT = 'matricula predio'
+EXCEL_SHEET_TITLE_NPN = 'numero predial nuevo'
+EXCEL_SHEET_TITLE_NPV = 'numero predial viejo'
+EXCEL_SHEET_TITLE_PLOT_NAME = 'nombre predio'
+EXCEL_SHEET_TITLE_VALUATION = 'avaluo'
+EXCEL_SHEET_TITLE_PLOT_TYPE = 'tipo predio'
+EXCEL_SHEET_TITLE_FIRST_NAME = 'nombre1'
+EXCEL_SHEET_TITLE_MIDDLE = 'nombre2' 
+EXCEL_SHEET_TITLE_FIRST_SURNAME = 'apellido1' 
+EXCEL_SHEET_TITLE_SECOND_SURNAME = 'apellido2'
+EXCEL_SHEET_TITLE_BUSINESS_NAME = 'razon social'
+EXCEL_SHEET_TITLE_SEX = 'sexo persona'
+EXCEL_SHEET_TITLE_DOCUMENT_TYPE = 'tipo documento'
+EXCEL_SHEET_TITLE_DOCUMENT_NUMBER = 'numero de documento'
+EXCEL_SHEET_TITLE_KIND_PERSON = 'tipo persona'
+EXCEL_SHEET_TITLE_ISSUING_ENTITY = 'organo emisor del documento'
+EXCEL_SHEET_TITLE_DATE_ISSUE = 'fecha emision del documento'
+EXCEL_SHEET_TITLE_ID_GROUP = 'id agrupación'
+EXCEL_SHEET_TITLE_TYPE = 'tipo'
+EXCEL_SHEET_TITLE_PARTY_DOCUMENT_NUMBER = 'número documento Interesado'
+EXCEL_SHEET_TITLE_GROUP = 'agrupación'
+EXCEL_SHEET_TITLE_SOURCE_TYPE = 'tipo de fuente'
+EXCEL_SHEET_TITLE_DESCRIPTION_SOURCE = 'Descripción de la fuente'
+EXCEL_SHEET_TITLE_STATE_SOURCE = 'estado_disponibilidad de la fuente'
+EXCEL_SHEET_TITLE_OFFICIALITY_SOURCE = 'Es oficial la fuente'
+EXCEL_SHEET_TITLE_STORAGE_PATH = 'Ruta de Almacenamiento de la fuente'
 
 class TranslatableConfigStrings(QObject):
     def __init__(self):
@@ -208,6 +243,5 @@ class TranslatableConfigStrings(QObject):
         self.ERROR_BUILDING_CROSSES_A_PLOT_LIMIT = QCoreApplication.translate("TranslatableConfigStrings", "Building crosses a plot's limit")
         self.ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT = QCoreApplication.translate("TranslatableConfigStrings", "Building Unit is not over a plot")
         self.ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT = QCoreApplication.translate("TranslatableConfigStrings", "Building Unit crosses a plot's limit")
-
 
 translated_strings = TranslatableConfigStrings()
