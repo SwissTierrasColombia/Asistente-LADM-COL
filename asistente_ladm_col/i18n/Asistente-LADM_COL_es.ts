@@ -396,23 +396,23 @@
         <translation>No se pudo ejecutar una funcionalidad, la conexión a la base de datos no fue válida.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="714"/>
-        <source>The plugin &apos;Project Generator&apos; version {} is required, but couldn&apos;t be found. Download it &lt;a href=&quot;{}&quot;&gt;from this link&lt;/a&gt; and use &apos;Install from ZIP&apos;.</source>
-        <translation>Se requiere el plugin &apos;Project Generator&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar desde ZIP&quot;.</translation>
+        <location filename="../asistente_ladm_col_plugin.py" line="642"/>
+        <source>The plugin &apos;QGIS Model Baker&apos; version {} is required, but couldn&apos;t be found. Download it &lt;a href=&quot;{}&quot;&gt;from this link&lt;/a&gt; and use &apos;Install from ZIP&apos;.</source>
+        <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar desde ZIP&quot;.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="717"/>
-        <source>The plugin &apos;Project Generator&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
-        <translation>Se requiere el plugin &apos;Project Generator&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Plugins.</translation>
+        <location filename="../asistente_ladm_col_plugin.py" line="645"/>
+        <source>The plugin &apos;QGIS Model Baker&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
+        <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Plugins.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="727"/>
-        <source>A dialog/tool couldn&apos;t be opened/executed, Project Generator not found.</source>
-        <translation>No se pudo ejecutar una funcionalidad, no se encontró Project Generator.</translation>
+        <location filename="../asistente_ladm_col_plugin.py" line="655"/>
+        <source>A dialog/tool couldn&apos;t be opened/executed, QGIS Model Baker not found.</source>
+        <translation>No se pudo ejecutar una funcionalidad, no se encontró QGIS Model Baker.</translation>
     </message>
     <message>
-        <source>The plugin &apos;Project Generator&apos; version {} (or higher) is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
-        <translation type="vanished">Se requiere el plugin &apos;Project Generator&apos; versión {} (o superior), pero no está instalado. Click en el botón para mostrar el Administrador de Plugins.</translation>
+        <source>The plugin &apos;QGIS Model Baker&apos; version {} (or higher) is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
+        <translation type="vanished">Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} (o superior), pero no está instalado. Click en el botón para mostrar el Administrador de Plugins.</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="721"/>
@@ -420,8 +420,8 @@
         <translation>Administrador de Plugins</translation>
     </message>
     <message>
-        <source>A dialog couldn&apos;t be open, Project Generator not found.</source>
-        <translation type="vanished">No se pudo ejecutar una funcionalidad, no se encontró Project Generator.</translation>
+        <source>A dialog couldn&apos;t be open, QGIS Model Baker not found.</source>
+        <translation type="vanished">No se pudo ejecutar una funcionalidad, no se encontró QGIS Model Baker.</translation>
     </message>
     <message>
         <source>You need to set a valid connection to your DB first. Click the button to go to Settings.</source>
@@ -1435,8 +1435,8 @@
     </message>
     <message>
         <location filename="../ui/settings_dialog.ui" line="187"/>
-        <source>Get from Project Generator</source>
-        <translation>Obtener desde Project Generator</translation>
+        <source>Get from QGIS Model Baker</source>
+        <translation>Obtener desde QGIS Model Baker</translation>
     </message>
     <message>
         <location filename="../ui/settings_dialog.ui" line="200"/>
@@ -2998,8 +2998,8 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     </message>
     <message>
         <location filename="../gui/reports.py" line="179"/>
-        <source>Please set JAVA_HOME path in Project Generator Settings or in Environmental Variables for your OS</source>
-        <translation>Debes definir la variable de entorno JAVA_HOME en la configuración de Project Generator o en tu sistema operativo</translation>
+        <source>Please set JAVA_HOME path in QGIS Model Baker Settings or in Environmental Variables for your OS</source>
+        <translation>Debes definir la variable de entorno JAVA_HOME en la configuración de QGIS Model Baker o en tu sistema operativo</translation>
     </message>
     <message>
         <location filename="../gui/reports.py" line="190"/>
@@ -3193,10 +3193,10 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>SettingsDialog</name>
     <message>
-        <location filename="../gui/settings_dialog.py" line="271"/>
-        <location filename="../gui/settings_dialog.py" line="291"/>
-        <source>Connection parameters couldn&apos;t be imported from Project Generator. Are you sure there are connection parameters to import?</source>
-        <translation>No se pudieron obtener los parámetros de conexión desde Project Generator. Verifica que allí existan parámetros de conexión.</translation>
+        <location filename="../gui/settings_dialog.py" line="269"/>
+        <location filename="../gui/settings_dialog.py" line="289"/>
+        <source>Connection parameters couldn&apos;t be imported from QGIS Model Baker. Are you sure there are connection parameters to import?</source>
+        <translation>No se pudieron obtener los parámetros de conexión desde QGIS Model Baker. Verifica que allí existan parámetros de conexión.</translation>
     </message>
     <message>
         <location filename="../gui/settings_dialog.py" line="332"/>

@@ -6,8 +6,8 @@ from qgis.testing import (start_app,
 start_app()
 
 from asistente_ladm_col.tests.utils import (get_iface,
-                                            import_projectgenerator,
-                                            unload_projectgenerator)
+                                            import_qgis_model_baker,
+                                            unload_qgis_model_baker)
 
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 asistente_ladm_col = AsistenteLADMCOLPlugin(get_iface())
@@ -18,11 +18,11 @@ class TestPlugin(unittest.TestCase):
     def test_01_dependencies(self):
         global asistente_ladm_col
 
-        unload_projectgenerator()
+        unload_qgis_model_baker()
         valid = asistente_ladm_col.is_plugin_version_valid()
         self.assertFalse(valid)
 
-        import_projectgenerator()
+        import_qgis_model_baker()
         valid = asistente_ladm_col.is_plugin_version_valid()
         self.assertTrue(valid)
 

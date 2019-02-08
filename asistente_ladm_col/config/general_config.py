@@ -2,6 +2,7 @@ import os.path
 
 from qgis.PyQt.QtCore import (QSettings,
                               QObject,
+                              Qt,
                               QCoreApplication)
 
 from .translator import PLUGIN_DIR
@@ -13,10 +14,7 @@ from .table_mapping_config import (MORE_BOUNDARY_FACE_STRING_TABLE,
                                    MUNICIPALITY_FIELD,
                                    ZONE_FIELD,
                                    PARCEL_NUMBER_FIELD,
-                                   PARCEL_NUMBER_BEFORE_FIELD,
-                                   COL_PARTY_TABLE,
-                                   COL_PARTY_TYPE_FIELD,
-                                   PARCEL_TYPE_FIELD)
+                                   PARCEL_NUMBER_BEFORE_FIELD)
 from ..utils.qt_utils import get_plugin_metadata
 
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
@@ -26,6 +24,15 @@ VALUATION_MODEL_PREFIX = "Avaluos_"
 # From this version on the plugin will work, a message will block prior versions
 LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION = "17.07.2018"
 
+DEFAULT_MODEL_NAMES_CHECKED = {'Avaluos_V2_2_1': Qt.Unchecked,
+                     'Cartografia_Referencia_V2_2_1': Qt.Unchecked,
+                     'Catastro_Registro_Nucleo_V2_2_1': Qt.Checked,
+                     'Diagnostico_Juridico_V2_2_1': Qt.Unchecked,
+                     'Ficha_Predial_V2_2_1': Qt.Unchecked}
+
+DEFAULT_HIDDEN_MODELS = ['LADM_COL_V1_1', 'ISO19107_V1_MAGNABOG']
+
+DEFAULT_INHERITANCE ='smart2'
 DEFAULT_EPSG =  "3116"
 DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE = 200 # meters
 DEFAULT_USE_ROADS_VALUE = False
@@ -34,8 +41,20 @@ FIELD_MAPPING_PATH = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL',
 MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE = 10
 PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
+# PLUGIN_DIR (set in translator.py)
 HELP_DIR_NAME = 'help'
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'styles')
+TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.toml')
+
+# Settings for create schema acording with LADM-COL
+CREATE_BASKET_COL = False
+CREATE_IMPORT_TID = False
+STROKE_ARCS = True
+
+
+# SETTINGS DIALOG TAB INDEXES
+SETTINGS_CONNECTION_TAB_INDEX = 0
+
 
 # Version to be installed when creating reports (annex 17)
 # (Other versions, if found, will be dropped in favor of this one)
@@ -60,6 +79,7 @@ MODULE_HELP_MAPPING = {
     'create_spatial_source': 'cadastre/Source.html#spatial-source',
     'load_layers': 'load_layers.html#load-layers',
     'col_party': 'cadastre/Party.html#col-party',
+    'group_party': 'cadastre/Party.html#group-party',
     'quality_rules': 'index.html', # TODO: Add this to help sections
     'settings': 'help.html#settings',
     'create_property_record_card': 'property_record_card/Property_record_card.html',
@@ -76,21 +96,24 @@ MODULE_HELP_MAPPING = {
     'create_building_unit_qualification_valuation_conventional': 'valuation/Create_building_unit_qualification_conventional.html',
     'create_geoeconomic_zone_valuation': 'valuation/Create_geoeconomic_zone.html',
     'create_physical_zone_valuation': 'valuation/Create_physical_zone.html',
-    'import_from_excel': 'toolbar.html#import-from-intermediate-structure'
+    'import_from_excel': 'toolbar.html#import-from-intermediate-structure',
+    'import_schema' : 'data_management.html#create-ladm-col-structure',
+    'import_data' : 'data_management.html#import-data',
+    'export_data' : 'data_management.html#export-data'
 }
-# Configure Project Generator Dependency
-PROJECT_GENERATOR_MIN_REQUIRED_VERSION = "3.3.7"
+# Configure QGIS Model Baker Dependency
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.1.0"
 
-# If Asistente LADM_COL depends on a specific version of Project Generator
+# If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
-PROJECT_GENERATOR_EXACT_REQUIRED_VERSION = False
+QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = False
 
-# If Asistente LADM_COL depends on a specific version of Project Generator
+# If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-PROJECT_GENERATOR_REQUIRED_VERSION_URL = '' #'https://github.com/AgenciaImplementacion/projectgenerator/releases/download/3.3.2.1/projectgenerator.zip'
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = '' #'https://github.com/AgenciaImplementacion/qgis_model_baker/releases/download/3.3.2.1/qgis_model_baker.zip'
 
-# Project Generator definitions
+# QGIS Model Baker definitions
 SCHEMA_NAME = 'schemaname'
 TABLE_NAME = 'tablename'
 PRIMARY_KEY = 'primary_key'

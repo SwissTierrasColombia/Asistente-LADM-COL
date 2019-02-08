@@ -17,11 +17,14 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([1.2.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.2.0)) of the LADM_COL Assistant depends on [Project Generator v3.3.7](https://github.com/opengisch/projectgenerator/releases/download/v3.3.7/projectgenerator.v3.3.7.zip) and allows users to:
+The current version ([1.2.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.2.0)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.4.0](https://github.com/opengisch/QgisModelBaker/releases/download/v4.0.0/QgisModelBaker.v4.0.0.zip) and allows users to:
 
  - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
  - Capture data for the `FICHA_PREDIAL v2.2.1` model.
  - Capture data for the `AVALÚOS v2.2.1` model.
+ - Create database structures for the aforementioned models.
+ - Import data from transfer files (.XTF).
+ - Export data to transfer files (.XTF).
  - Preprocess points: Controlled Measurement.
    - Group points by nearness.
    - Average point position from points of the same group.
@@ -76,7 +79,7 @@ The current version ([1.2.0](https://github.com/AgenciaImplementacion/Asistente-
    - Using preconfigured forms.
    - From another table with any structure, setting a field mapping.
  - Select in a dialog layers to load from any model in the database or schema:
-   - Use the 'Project Generator' plugin (a prerequisite) to load layers with configured forms, relations and domains.
+   - Use the 'QGIS Model Baker' plugin (a prerequisite) to load layers with configured forms, relations and domains.
    - Load preconfigured layer sets.
  - Check quality rules (topology):
    - Check too long `Boundary` segments (exceeding a given tolerance).
