@@ -503,6 +503,21 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
             {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
         ]
+    elif layer_name == EXTADDRESS_TABLE:
+        mapping = [
+            {'expression': '"nombre_area_direccion"', 'length': 255, 'name': 'nombre_area_direccion', 'precision': -1, 'type': 10},
+            {'expression': '"nombre_edificio"', 'length': 255, 'name': 'nombre_edificio', 'precision': -1, 'type': 10},
+            {'expression': '"numero_edificio"', 'length': 255, 'name': 'numero_edificio', 'precision': -1, 'type': 10},
+            {'expression': '"ciudad"', 'length': 255, 'name': 'ciudad', 'precision': -1, 'type': 10},
+            {'expression': '"pais"', 'length': 255, 'name': 'pais', 'precision': -1, 'type': 10},
+            {'expression': '"codigo_postal"', 'length': 255, 'name': 'codigo_postal', 'precision': -1, 'type': 10},
+            {'expression': '"apartado_correo"', 'length': 255, 'name': 'apartado_correo', 'precision': -1, 'type': 10},
+            {'expression': '"departamento"', 'length': 255, 'name': 'departamento', 'precision': -1, 'type': 10},
+            {'expression': '"nombre_calle"', 'length': 255, 'name': 'nombre_calle', 'precision': -1, 'type': 10},
+            {'expression': '"construccion_ext_direccion_id"', 'length': -1, 'name': 'construccion_ext_direccion_id', 'precision': 0, 'type': 4},
+            {'expression': '"terreno_ext_direccion_id"', 'length': -1, 'name': 'terreno_ext_direccion_id', 'precision': 0, 'type': 4},
+            {'expression': '"unidadconstruccion_ext_direccion_id"', 'length': -1, 'name': 'unidadconstruccion_ext_direccion_id', 'precision': 0, 'type': 4}
+        ]
 
     # If the user wants to enable automatic fields...
     if QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):

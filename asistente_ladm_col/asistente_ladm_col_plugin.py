@@ -66,6 +66,7 @@ from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizar
 from .gui.create_building_cadastre_wizard import CreateBuildingCadastreWizard
 from .gui.create_building_unit_cadastre_wizard import CreateBuildingUnitCadastreWizard
 from .gui.create_right_of_way_cadastre_wizard import CreateRightOfWayCadastreWizard
+from .gui.associate_extaddress_cadastre_wizard import AssociateExtAddressWizard
 from .gui.create_col_party_cadastre_wizard import CreateColPartyCadastreWizard
 from .gui.create_group_party_cadastre import CreateGroupPartyCadastre
 from .gui.create_legal_party_prc import CreateLegalPartyPRCWizard
@@ -108,6 +109,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.log = QgsApplication.messageLog()
         self._about_dialog = None
         self.toolbar = None
+        self.wiz_address = None
 
     def initGui(self):
         # Set Menus
@@ -265,11 +267,17 @@ class AsistenteLADMCOLPlugin(QObject):
                 QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Right of Way"),
                 self._spatial_unit_cadastre_menu)
+        self._extaddress_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Associate Address")
+                )
 
         self._spatial_unit_cadastre_menu.addActions([self._plot_spatial_unit_cadastre_action,
                                                      self._building_spatial_unit_cadastre_action,
                                                      self._building_unit_spatial_unit_cadastre_action,
                                                      self._right_of_way_cadastre_action])
+        self._spatial_unit_cadastre_menu.addSeparator()
+        self._spatial_unit_cadastre_menu.addAction(self._extaddress_cadastre_action)
 
         self._baunit_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "BA Unit"), self._cadastre_menu)
         self._baunit_cadastre_menu.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/ba_unit.png"))
@@ -349,6 +357,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._building_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_building_cad)
         self._building_unit_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_building_unit_cad)
         self._right_of_way_cadastre_action.triggered.connect(self.show_wiz_right_of_way_cad)
+        self._extaddress_cadastre_action.triggered.connect(self.show_wiz_extaddress_cad)
         self._col_party_cadastre_action.triggered.connect(self.show_wiz_col_party_cad)
         self._group_party_cadastre_action.triggered.connect(self.show_dlg_group_party)
         self._right_rrr_cadastre_action.triggered.connect(self.show_wiz_right_rrr_cad)
@@ -889,6 +898,12 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_wiz_right_of_way_cad(self):
         wiz = CreateRightOfWayCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
+
+    @_qgis_model_baker_required
+    @_db_connection_required
+    def show_wiz_extaddress_cad(self):
+        self.wiz_address = AssociateExtAddressWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz_address.exec_()
 
     @_qgis_model_baker_required
     @_db_connection_required
