@@ -71,20 +71,20 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.ilicache.refresh()
 
         self.type_combo_box.clear()
-        self.type_combo_box.addItem(QCoreApplication.translate('DialogExportData','PostgreSQL/PostGIS'), 'ili2pg')
-        self.type_combo_box.addItem(QCoreApplication.translate('DialogExportData','GeoPackage'), 'ili2gpkg')
+        self.type_combo_box.addItem(QCoreApplication.translate("DialogExportData","PostgreSQL/PostGIS"), 'ili2pg')
+        self.type_combo_box.addItem(QCoreApplication.translate("DialogExportData","GeoPackage"), 'ili2gpkg')
         self.type_combo_box.currentIndexChanged.connect(self.type_changed)
         self.type_changed()
 
         self.xtf_file_browse_button.clicked.connect(
-            make_save_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate('DialogExportData','Save in XTF Transfer File'),
-                                    file_filter=QCoreApplication.translate('DialogExportData','XTF Transfer File (*.xtf);;Interlis 1 Transfer File (*.itf);;XML (*.xml);;GML (*.gml)'), extension='.xtf', extensions=['.' + ext for ext in self.ValidExtensions]))
+            make_save_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogExportData","Save in XTF Transfer File"),
+                                    file_filter=QCoreApplication.translate("DialogExportData","XTF Transfer File (*.xtf);;Interlis 1 Transfer File (*.itf);;XML (*.xml);;GML (*.gml)"), extension='.xtf', extensions=['.' + ext for ext in self.ValidExtensions]))
         self.xtf_file_browse_button.clicked.connect(self.xtf_browser_opened_to_true)
         self.xtf_browser_was_opened = False
         
         self.validators = Validators()
         fileValidator = FileValidator(pattern=['*.' + ext for ext in self.ValidExtensions], allow_non_existing=True)
-        self.xtf_file_line_edit.setPlaceholderText(QCoreApplication.translate('DialogExportData', "[Name of the XTF to be created]"))
+        self.xtf_file_line_edit.setPlaceholderText(QCoreApplication.translate("DialogExportData", "[Name of the XTF to be created]"))
         self.xtf_file_line_edit.setValidator(fileValidator)
         self.xtf_file_line_edit.textChanged.connect(self.validators.validate_line_edits)
         self.xtf_file_line_edit.textChanged.connect(self.xtf_browser_opened_to_false)
@@ -95,18 +95,18 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.db_connect_label.setText(self.db.dict_conn_params["database"])
         self.connection_setting_button.clicked.connect(self.show_settings)
 
-        self.connection_setting_button.setText(QCoreApplication.translate('DialogExportData', 'Connection Settings'))
+        self.connection_setting_button.setText(QCoreApplication.translate("DialogExportData", "Connection Settings"))
 
         # GPKG
-        self.gpkg_file_line_edit.setPlaceholderText(QCoreApplication.translate('DialogExportData', "[Name of the Geopackage to be created]"))
-        self.gpkg_file_browse_button.clicked.connect(make_file_selector(self.gpkg_file_line_edit, title=QCoreApplication.translate('DialogExportData','Open GeoPackage database file'),file_filter=QCoreApplication.translate('DialogExportData','GeoPackage Database (*.gpkg)')))
+        self.gpkg_file_line_edit.setPlaceholderText(QCoreApplication.translate("DialogExportData", "[Name of the Geopackage to be created]"))
+        self.gpkg_file_browse_button.clicked.connect(make_file_selector(self.gpkg_file_line_edit, title=QCoreApplication.translate("DialogExportData","Open GeoPackage database file"),file_filter=QCoreApplication.translate("DialogExportData","GeoPackage Database (*.gpkg)")))
         gpkgFileValidator = FileValidator(pattern='*.gpkg')
         self.gpkg_file_line_edit.setValidator(gpkgFileValidator)
         self.gpkg_file_line_edit.textChanged.connect(self.validators.validate_line_edits)
         self.gpkg_file_line_edit.textChanged.emit(self.gpkg_file_line_edit.text())
 
         # LOG
-        self.log_config.setTitle(QCoreApplication.translate('DialogExportData', 'Show log'))
+        self.log_config.setTitle(QCoreApplication.translate("DialogExportData", "Show log"))
         self.log_config.setFlat(True)
 
         self.bar = QgsMessageBar()
@@ -117,7 +117,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.clear()
         self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self.buttonBox.addButton(QCoreApplication.translate('DialogExportData', 'Export data'), QDialogButtonBox.AcceptRole)
+        self.buttonBox.addButton(QCoreApplication.translate("DialogExportData", "Export data"), QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
 
@@ -144,7 +144,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.schema_names_list_widget.clear()
             self.export_models_list_view.setModel(QStandardItemModel())
             message_error = 'There are no schemes to export into the database. Please select another database.'
-            self.txtStdout.setText(QCoreApplication.translate('DialogExportData', message_error))
+            self.txtStdout.setText(QCoreApplication.translate("DialogExportData", message_error))
             self.show_message(message_error, Qgis.Warning)
 
         self.schema_names_list_widget.currentRowChanged.connect(self.on_current_row_changed_schema_names)
@@ -234,28 +234,28 @@ class DialogExportData(QDialog, DIALOG_UI):
         configuration = self.update_configuration()
 
         if not self.get_checked_schema():
-            message_error = QCoreApplication.translate('DialogExportData', 'You need to select a valid schema where to get the data from.')
+            message_error = QCoreApplication.translate("DialogExportData", "You need to select a valid schema where to get the data from.")
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
             self.connection_setting_button.setFocus()
             return
 
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
-            message_error = QCoreApplication.translate('DialogExportData', 'Please set a valid XTF file before exporting data.')
+            message_error = QCoreApplication.translate("DialogExportData", "Please set a valid XTF file before exporting data.")
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
             self.xtf_file_line_edit.setFocus()
             return
 
         if not self.get_ili_models():
-            message_error = QCoreApplication.translate('DialogExportData','Please set a valid schema to export. This schema does not have information to export.')
+            message_error = QCoreApplication.translate("DialogExportData","Please set a valid schema to export. This schema does not have information to export.")
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
             self.export_models_list_view.setFocus()
             return
         
         if not configuration.iliexportmodels:
-            message_error = QCoreApplication.translate('DialogExportData','Please set a model before exporting data.')
+            message_error = QCoreApplication.translate("DialogExportData","Please set a model before exporting data.")
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
             self.export_models_list_view.setFocus()
@@ -263,7 +263,7 @@ class DialogExportData(QDialog, DIALOG_UI):
 
         if self.type_combo_box.currentData() == 'ili2gpkg':
             if not configuration.dbfile or self.gpkg_file_line_edit.validator().validate(configuration.dbfile, 0)[0] != QValidator.Acceptable:
-                message_error = QCoreApplication.translate('DialogExportData', 'Please set an existing database file before creating the project.')
+                message_error = QCoreApplication.translate("DialogExportData", "Please set an existing database file before creating the project.")
                 self.txtStdout.setText(message_error)
                 self.show_message(message_error, Qgis.Warning)
                 self.gpkg_file_line_edit.setFocus()
@@ -274,8 +274,8 @@ class DialogExportData(QDialog, DIALOG_UI):
         if os.path.isfile(self.xtf_file_line_edit.text().strip()) and not self.xtf_browser_was_opened:
             self.msg = QMessageBox()
             self.msg.setIcon(QMessageBox.Warning)
-            self.msg.setText(QCoreApplication.translate('DialogExportData',"{filename} already exists.\nDo you want to replace it?").format(filename=os.path.basename(self.xtf_file_line_edit.text().strip())))
-            self.msg.setWindowTitle(QCoreApplication.translate('DialogExportData',"Save in XTF Transfer File"))
+            self.msg.setText(QCoreApplication.translate("DialogExportData","{filename} already exists.\nDo you want to replace it?").format(filename=os.path.basename(self.xtf_file_line_edit.text().strip())))
+            self.msg.setWindowTitle(QCoreApplication.translate("DialogExportData","Save in XTF Transfer File"))
             self.msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
             msg_box = self.msg.exec_()
             if msg_box == QMessageBox.No:
@@ -307,12 +307,12 @@ class DialogExportData(QDialog, DIALOG_UI):
                 if exporter.run() != iliexporter.Exporter.SUCCESS:
                     self.enable()
                     self.progress_bar.hide()
-                    self.show_message(QCoreApplication.translate('DialogExportData', 'An error occurred when exporting the data. For more information see the log...'), Qgis.Warning)
+                    self.show_message(QCoreApplication.translate("DialogExportData", "An error occurred when exporting the data. For more information see the log..."), Qgis.Warning)
                     return
             except JavaNotFoundError:
                 self.txtStdout.setTextColor(QColor('#000000'))
                 self.txtStdout.clear()
-                self.txtStdout.setText(QCoreApplication.translate('DialogExportData','Java could not be found. Please <a href="https://java.com/en/download/">install Java</a> and or <a href="#configure">configure a custom java path</a>. We also support the JAVA_HOME environment variable in case you prefer this.'))
+                self.txtStdout.setText(QCoreApplication.translate("DialogExportData","""Java could not be found. Please <a href="https://java.com/en/download/">install Java</a> and or <a href="#configure">configure a custom java path</a>. We also support the JAVA_HOME environment variable in case you prefer this."""))
                 self.enable()
                 self.progress_bar.hide()
                 return
@@ -321,7 +321,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.buttonBox.setEnabled(True)
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
-            self.show_message(QCoreApplication.translate('DialogExportData', 'Export of the data was successfully completed.') , Qgis.Success)
+            self.show_message(QCoreApplication.translate("DialogExportData", "Export of the data was successfully completed.") , Qgis.Success)
 
     def save_configuration(self, configuration):
         settings = QSettings()
@@ -403,7 +403,7 @@ class DialogExportData(QDialog, DIALOG_UI):
     def on_process_finished(self, exit_code, result):
         color = '#004905' if exit_code == 0 else '#aa2222'
         self.txtStdout.setTextColor(QColor(color))
-        self.txtStdout.append(QCoreApplication.translate('DialogExportData','Finished ({})'.format(exit_code)))
+        self.txtStdout.append(QCoreApplication.translate("DialogExportData","Finished ({})").format(exit_code))
         if result == iliexporter.Exporter.SUCCESS:
             self.buttonBox.clear()
             self.buttonBox.setEnabled(True)

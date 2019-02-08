@@ -688,11 +688,11 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         settings = QSettings()
 
         new_filename, filter = QFileDialog.getSaveFileName(self,
-                                   QCoreApplication.translate('DialogImportFromExcel',
-                                                              'Save File'),
+                                   QCoreApplication.translate("DialogImportFromExcel",
+                                                              "Save File"),
                                    os.path.join(settings.value('Asistente-LADM_COL/import_from_excel_dialog/template_save_path', '.'), filename),
-                                   QCoreApplication.translate('DialogImportFromExcel',
-                                                              'Excel File (*.xlsx *.xls)'))
+                                   QCoreApplication.translate("DialogImportFromExcel",
+                                                              "Excel File (*.xlsx *.xls)"))
 
         if new_filename:
             settings.setValue('Asistente-LADM_COL/import_from_excel_dialog/template_save_path', os.path.dirname(new_filename))
@@ -700,7 +700,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
             if not template_file.exists():
                 self.log.logMessage("Excel doesn't exist! Probably due to a missing 'make' execution to generate resources...", PLUGIN_NAME, Qgis.Critical)
-                msg = QCoreApplication.translate('DialogImportFromExcel', 'Excel file not found. Update your plugin. For details see log.')
+                msg = QCoreApplication.translate("DialogImportFromExcel", "Excel file not found. Update your plugin. For details see log.")
                 self.show_message(msg, Qgis.Warning)
                 return
 
@@ -711,11 +711,11 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
             if template_file.copy(new_filename):
                 os.chmod(new_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
-                msg = QCoreApplication.translate('DialogImportFromExcel', 'The file <a href="file:///{}">{}</a> was successfully saved!').format(normalize_local_url(new_filename), os.path.basename(new_filename))
+                msg = QCoreApplication.translate("DialogImportFromExcel", """The file <a href="file:///{}">{}</a> was successfully saved!""").format(normalize_local_url(new_filename), os.path.basename(new_filename))
                 self.show_message(msg, Qgis.Info)
             else:
                 self.log.logMessage('There was an error copying the CSV file {}!'.format(new_filename), PLUGIN_NAME, Qgis.Info)
-                msg = QCoreApplication.translate('DialogImportFromExcel', 'The file couldn\'t be saved.')
+                msg = QCoreApplication.translate("DialogImportFromExcel", "The file couldn\'t be saved.")
                 self.show_message(msg, Qgis.Warning)
 
 

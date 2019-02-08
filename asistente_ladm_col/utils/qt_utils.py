@@ -43,8 +43,8 @@ def selectFileName(line_edit_widget, title, file_filter, parent):
     line_edit_widget.setText(filename)
 
 
-def make_file_selector(widget, title=QCoreApplication.translate('Asistente-LADM_COL', 'Open File'),
-                       file_filter=QCoreApplication.translate('Asistente-LADM_COL', 'Any file(*)'), parent=None):
+def make_file_selector(widget, title=QCoreApplication.translate("Asistente-LADM_COL", "Open File"),
+                       file_filter=QCoreApplication.translate("Asistente-LADM_COL", "Any file(*)"), parent=None):
     return partial(selectFileName, line_edit_widget=widget, title=title, file_filter=file_filter, parent=parent)
 
 def selectFileNameToSave(line_edit_widget, title, file_filter, parent, extension, extensions):
@@ -62,8 +62,8 @@ def selectFileNameToSave(line_edit_widget, title, file_filter, parent, extension
 
     line_edit_widget.setText(filename)
 
-def make_save_file_selector(widget, title=QCoreApplication.translate('QgisModelBaker', 'Open File'),
-                            file_filter=QCoreApplication.translate('QgisModelBaker', 'Any file(*)'), parent=None,
+def make_save_file_selector(widget, title=QCoreApplication.translate("QgisModelBaker", "Open File"),
+                            file_filter=QCoreApplication.translate("QgisModelBaker", "Any file(*)"), parent=None,
                             extension='', extensions=None):
     return partial(selectFileNameToSave, line_edit_widget=widget, title=title, file_filter=file_filter, parent=parent,
                    extension=extension, extensions=extensions)
@@ -73,7 +73,7 @@ def selectFolder(line_edit_widget, title, parent):
     line_edit_widget.setText(foldername)
 
 
-def make_folder_selector(widget, title=QCoreApplication.translate('Asistente-LADM_COL', 'Open Folder'), parent=None):
+def make_folder_selector(widget, title=QCoreApplication.translate("Asistente-LADM_COL", "Open Folder"), parent=None):
     return partial(selectFolder, line_edit_widget=widget, title=title, parent=parent)
 
 
