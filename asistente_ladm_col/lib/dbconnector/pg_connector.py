@@ -101,7 +101,7 @@ class PGConnector(DBConnector):
             'PARCEL_NUMBER_BEFORE_VALIDATION': {
                 'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=20 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=PARCEL_NUMBER_BEFORE_FIELD),
                 'desc_error': 'Parcel number before must have 20 numerical characters.',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings","Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
                 'table': PARCEL_TABLE},
             'COL_PARTY_TYPE_NATURAL_VALIDATION': {
                 'query': """
@@ -243,7 +243,7 @@ class PGConnector(DBConnector):
                     ) as conteo
                     WHERE p.t_id = conteo.unidad_predio and conteo.dominios > 1""".format(schema=self.schema),
                 'desc_error': 'Get parcels with duplicate rights',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", 'Parcels with repeated domain right'),
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Parcels with repeated domain right"),
                 'table': PARCEL_TABLE}
         }
 

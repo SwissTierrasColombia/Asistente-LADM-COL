@@ -428,11 +428,11 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         settings.setValue('Asistente-LADM_COL/wizards/points_csv_file_delimiter', self.txt_delimiter.text().strip())
 
         new_filename, filter = QFileDialog.getSaveFileName(self,
-                                   QCoreApplication.translate('CreatePointsCadastreWizard',
-                                                              'Save File'),
+                                   QCoreApplication.translate("CreatePointsCadastreWizard",
+                                                              "Save File"),
                                    os.path.join(settings.value('Asistente-LADM_COL/wizards/points_download_csv_path', '.'), filename),
-                                   QCoreApplication.translate('CreatePointsCadastreWizard',
-                                                              'CSV File (*.csv *.txt)'))
+                                   QCoreApplication.translate("CreatePointsCadastreWizard",
+                                                              "CSV File (*.csv *.txt)"))
 
         if new_filename:
             settings.setValue('Asistente-LADM_COL/wizards/points_download_csv_path', os.path.dirname(new_filename))
@@ -440,7 +440,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
             if not template_file.exists():
                 self.log.logMessage("CSV doesn't exist! Probably due to a missing 'make' execution to generate resources...", PLUGIN_NAME, Qgis.Critical)
-                msg = QCoreApplication.translate('CreatePointsCadastreWizard', 'CSV file not found. Update your plugin. For details see log.')
+                msg = QCoreApplication.translate("CreatePointsCadastreWizard", "CSV file not found. Update your plugin. For details see log.")
                 self.show_message(msg, Qgis.Warning)
                 return
 
@@ -451,11 +451,11 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
             if template_file.copy(new_filename):
                 os.chmod(new_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
-                msg = QCoreApplication.translate('CreatePointsCadastreWizard', 'The file <a href="file:///{}">{}</a> was successfully saved!').format(normalize_local_url(new_filename), os.path.basename(new_filename))
+                msg = QCoreApplication.translate("CreatePointsCadastreWizard", """The file <a href="file:///{}">{}</a> was successfully saved!""").format(normalize_local_url(new_filename), os.path.basename(new_filename))
                 self.show_message(msg, Qgis.Info)
             else:
                 self.log.logMessage('There was an error copying the CSV file {}!'.format(new_filename), PLUGIN_NAME, Qgis.Info)
-                msg = QCoreApplication.translate('CreatePointsCadastreWizard', 'The file couldn\'t be saved.')
+                msg = QCoreApplication.translate("CreatePointsCadastreWizard", "The file couldn\'t be saved.")
                 self.show_message(msg, Qgis.Warning)
 
     def show_message(self, message, level):

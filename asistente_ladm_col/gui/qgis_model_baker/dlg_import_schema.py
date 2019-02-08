@@ -71,12 +71,12 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.setupUi(self)
 
         self.type_combo_box.clear()
-        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportSchema','PostgreSQL/PostGIS'), 'ili2pg')
-        self.type_combo_box.addItem(QCoreApplication.translate('DialogImportSchema','GeoPackage'), 'ili2gpkg')
+        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportSchema", "PostgreSQL/PostGIS"), 'ili2pg')
+        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportSchema", "GeoPackage"), 'ili2gpkg')
         self.type_combo_box.currentIndexChanged.connect(self.type_changed)
         self.type_changed()
 
-        self.schema_name_line_edit.setPlaceholderText(QCoreApplication.translate('DialogImportSchema', "[Name of the schema to be created]"))
+        self.schema_name_line_edit.setPlaceholderText(QCoreApplication.translate("DialogImportSchema", "[Name of the schema to be created]"))
         self.validators = Validators()
 
         # schema name mustn't have special characters
@@ -95,13 +95,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.db_connect_label.setText(self.db.dict_conn_params['database'])
         self.connection_setting_button.clicked.connect(self.show_settings)
 
-        self.connection_setting_button.setText(QCoreApplication.translate('DialogImportSchema', 'Connection Settings'))
+        self.connection_setting_button.setText(QCoreApplication.translate("DialogImportSchema", "Connection Settings"))
 
         # GPKG
-        self.gpkg_file_line_edit.setPlaceholderText(QCoreApplication.translate('DialogImportSchema', "[Name of the Geopackage to be created]"))
+        self.gpkg_file_line_edit.setPlaceholderText(QCoreApplication.translate("DialogImportSchema", "[Name of the Geopackage to be created]"))
         self.gpkg_file_browse_button.clicked.connect(make_file_selector(self.gpkg_file_line_edit,
-                                                                        title=QCoreApplication.translate('DialogImportSchema', 'Open GeoPackage database file'),
-                                                                        file_filter=QCoreApplication.translate('DialogImportSchema','GeoPackage Database (*.gpkg)')))
+                                                                        title=QCoreApplication.translate("DialogImportSchema", "Open GeoPackage database file"),
+                                                                        file_filter=QCoreApplication.translate("DialogImportSchema", "GeoPackage Database (*.gpkg)")))
 
         gpkgFileValidator = FileValidator(pattern='*.gpkg')
         self.gpkg_file_line_edit.setValidator(gpkgFileValidator)
@@ -111,7 +111,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.gpkg_file_line_edit.textChanged.connect(self.validators.validate_line_edits)
 
         # LOG
-        self.log_config.setTitle(QCoreApplication.translate('DialogImportSchema', 'Show log'))
+        self.log_config.setTitle(QCoreApplication.translate("DialogImportSchema", "Show log"))
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
@@ -121,7 +121,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.clear()
         self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self.buttonBox.addButton(QCoreApplication.translate('DialogImportSchema', 'Create LADM-COL structure'), QDialogButtonBox.AcceptRole)
+        self.buttonBox.addButton(QCoreApplication.translate("DialogImportSchema", "Create LADM-COL structure"), QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
 
@@ -174,7 +174,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         configuration = self.update_configuration()
 
         if not self.get_checked_models():
-            message_error = QCoreApplication.translate('DialogImportSchema','Please set a valid model(s) before creating the LADM-COL structure.')
+            message_error = QCoreApplication.translate("DialogImportSchema", "Please set a valid model(s) before creating the LADM-COL structure.")
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
             self.import_models_list_widget.setFocus()
@@ -182,7 +182,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         if self.type_combo_box.currentData() == 'ili2pg':
             if not self.schema_name_line_edit.text().strip():
-                message_error = QCoreApplication.translate('DialogImportSchema','Please set a valid schema name before creating the LADM-COL structure.')
+                message_error = QCoreApplication.translate("DialogImportSchema", "Please set a valid schema name before creating the LADM-COL structure.")
                 self.txtStdout.setText(message_error)
                 self.show_message(message_error, Qgis.Warning)
                 self.schema_name_line_edit.setFocus()
@@ -202,8 +202,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.db.test_connection() #TODO: remove test_connection.  Open connection if this is closed
             if self.db._schema_exists(configuration.dbschema):
                 message_error = QCoreApplication.translate("DialogImportSchema",
-                                                           "Schema '{}' already exists, please set a valid schema before creating the LADM-COL structure.".format(
-                                                               configuration.dbschema))
+                                                           "Schema '{}' already exists, please set a valid schema before creating the LADM-COL structure.").format(
+                                                               configuration.dbschema)
                 self.show_message(message_error, Qgis.Warning)
                 self.print_info(message_error, True)  # Clear and print
                 return
@@ -229,13 +229,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                 if importer.run() != iliimporter.Importer.SUCCESS:
                     self.enable()
                     self.progress_bar.hide()
-                    self.show_message(QCoreApplication.translate('DialogImportSchema', 'An error occurred when creating the LADM-COL structure. For more information see the log...'), Qgis.Warning)
+                    self.show_message(QCoreApplication.translate("DialogImportSchema", "An error occurred when creating the LADM-COL structure. For more information see the log..."), Qgis.Warning)
                     return
             except JavaNotFoundError:
                 self.txtStdout.setTextColor(QColor('#000000'))
                 self.txtStdout.clear()
-                self.txtStdout.setText(QCoreApplication.translate('DialogImportSchema',
-                    'Java could not be found. Please <a href="https://java.com/en/download/">install Java</a> and or <a href="#configure">configure a custom java path</a>. We also support the JAVA_HOME environment variable in case you prefer this.'))
+                self.txtStdout.setText(QCoreApplication.translate("DialogImportSchema",
+                    """Java could not be found. Please <a href="https://java.com/en/download/">install Java</a> and or <a href="#configure">configure a custom java path</a>. We also support the JAVA_HOME environment variable in case you prefer this."""))
                 self.enable()
                 self.progress_bar.hide()
                 return
@@ -244,8 +244,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.buttonBox.setEnabled(True)
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
-            self.print_info(QCoreApplication.translate('DialogImportSchema', '\nDone!'), '#004905')
-            self.show_message(QCoreApplication.translate('DialogImportSchema', 'Creation of the LADM-COL structure was successfully completed'), Qgis.Success)
+            self.print_info(QCoreApplication.translate("DialogImportSchema", "\nDone!"), '#004905')
+            self.show_message(QCoreApplication.translate("DialogImportSchema", "Creation of the LADM-COL structure was successfully completed"), Qgis.Success)
 
     def save_configuration(self, configuration):
         settings = QSettings()
@@ -325,10 +325,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def on_process_finished(self, exit_code, result):
         if exit_code == 0:
             color = '#004905'
-            message = QCoreApplication.translate('DialogImportSchema', 'Model(s) successfully imported into the database!')
+            message = QCoreApplication.translate("DialogImportSchema", "Model(s) successfully imported into the database!")
         else:
             color = '#aa2222'
-            message = QCoreApplication.translate('DialogImportSchema','Finished with errors!')
+            message = QCoreApplication.translate("DialogImportSchema", "Finished with errors!")
 
         self.txtStdout.setTextColor(QColor(color))
         self.txtStdout.append(message)
@@ -374,6 +374,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.gpkg_file_browse_button.clicked.connect(
                 make_save_file_selector(
                     self.gpkg_file_line_edit,
-                    title=QCoreApplication.translate('DialogImportSchema', 'Open GeoPackage database file'),
-                    file_filter=QCoreApplication.translate('DialogImportSchema','GeoPackage Database (*.gpkg)'),
+                    title=QCoreApplication.translate("DialogImportSchema", "Open GeoPackage database file"),
+                    file_filter=QCoreApplication.translate("DialogImportSchema", "GeoPackage Database (*.gpkg)"),
                     extension='.gpkg'))

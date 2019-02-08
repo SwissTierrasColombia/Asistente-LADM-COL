@@ -50,8 +50,8 @@ class LogQualityDialog(QDialog, LOG_DIALOG_UI):
         text, total_time = self.quality.get_log_dialog_quality_text()
         settings = QSettings()
         new_filename, filter = QFileDialog.getSaveFileName(self,
-                                                           QCoreApplication.translate('LogQualityDialog',
-                                                                                      'Export to PDF'),
+                                                           QCoreApplication.translate("LogQualityDialog",
+                                                                                      "Export to PDF"),
                                                            settings.value(
                                                                'Asistente-LADM_COL/log_quality_dialog/save_path', '.'),
                                                            filter="PDF (*.pdf)")               

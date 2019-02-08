@@ -73,11 +73,11 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
             self.mMapLayerComboBox.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
-            finish_button_text = QCoreApplication.translate('CreateBuildingCadastreWizard', 'Start')
+            finish_button_text = QCoreApplication.translate("CreateBuildingCadastreWizard", "Start")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_BUILDING_CADASTRE_PAGE_1_OPTION_POINTS)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
-                                       QCoreApplication.translate('CreateBuildingCadastreWizard',
+                                       QCoreApplication.translate("CreateBuildingCadastreWizard",
                                        finish_button_text))
 
     def finished_dialog(self):
@@ -99,7 +99,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
                     self.qgis_utils.save_field_mapping(BUILDING_TABLE)
             else:
                 self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                    QCoreApplication.translate('CreateBuildingCadastreWizard',
+                    QCoreApplication.translate("CreateBuildingCadastreWizard",
                                                "Select a source layer to set the field mapping to '{}'.").format(BUILDING_TABLE),
                     Qgis.Warning)
 
@@ -118,14 +118,14 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
 
         if self._building_layer is None:
             self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                QCoreApplication.translate('CreateBuildingCadastreWizard',
+                QCoreApplication.translate("CreateBuildingCadastreWizard",
                                            "Building layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
 
         if self._survey_point_layer is None:
             self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                QCoreApplication.translate('CreateBuildingCadastreWizard',
+                QCoreApplication.translate("CreateBuildingCadastreWizard",
                                            "Survey Point layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
