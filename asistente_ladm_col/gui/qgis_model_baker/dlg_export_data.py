@@ -208,11 +208,13 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.export_models_list_view.setModel(self.export_models_qmodel)
 
     def get_checked_schema(self):
-        selected = self.schema_names_list_widget.selectedItems()
-        if selected:
-            return selected[0].text()
-
-        return ''
+        checked_schema = None
+        for index in range(self.schema_names_list_widget.count()):
+            item = self.schema_names_list_widget.item(index)
+            if item.checkState() == Qt.Checked:
+                checked_schema = item.text()
+                break
+        return checked_schema
 
     def get_ili_models(self):
         ili_models = list()

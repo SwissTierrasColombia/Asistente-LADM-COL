@@ -32,7 +32,7 @@ class GPKGConnector(DBConnector):
         self.mode = 'gpkg'
         self.provider = 'ogr'
 
-        self.dict_connection_params = {'dbfile': self.uri}
+        self.dict_conn_params = {'dbfile': self.uri}
 
     def test_connection(self):
         try:
