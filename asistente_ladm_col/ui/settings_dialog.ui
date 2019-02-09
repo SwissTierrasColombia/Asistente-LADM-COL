@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>551</width>
+    <width>469</width>
     <height>486</height>
    </rect>
   </property>
@@ -63,48 +63,38 @@
           <string/>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="5" column="0">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Host</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
            <widget class="QLabel" name="label_8">
             <property name="text">
              <string>Port</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="2">
+          <item row="9" column="2">
            <widget class="QComboBox" name="selected_db_combobox"/>
           </item>
-          <item row="0" column="2">
-           <widget class="QLineEdit" name="txt_pg_user">
-            <property name="placeholderText">
-             <string>Database Username</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="2">
+          <item row="6" column="2">
            <widget class="QLineEdit" name="txt_pg_port">
             <property name="placeholderText">
              <string>[Leave empty to use standard port 5432]</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="2">
-           <widget class="QLineEdit" name="txt_pg_host">
-            <property name="text">
-             <string>localhost</string>
-            </property>
-            <property name="placeholderText">
-             <string>Database Hostname</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0">
+          <item row="10" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
              <string>Schema</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="3">
+          <item row="9" column="3">
            <widget class="QPushButton" name="create_db_button">
             <property name="text">
              <string/>
@@ -115,28 +105,28 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Password</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>User</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
+          <item row="9" column="0">
            <widget class="QLabel" name="label_6">
             <property name="text">
              <string>Database</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
+          <item row="10" column="3">
+           <widget class="QPushButton" name="create_schema_button">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/Asistente-LADM_COL/resources/images/schema.png</normaloff>:/Asistente-LADM_COL/resources/images/schema.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="2">
+           <widget class="QComboBox" name="selected_schema_combobox"/>
+          </item>
+          <item row="8" column="2">
            <widget class="QLineEdit" name="txt_pg_password">
             <property name="echoMode">
              <enum>QLineEdit::Password</enum>
@@ -146,24 +136,34 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_9">
+          <item row="8" column="0">
+           <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>Host</string>
+             <string>Password</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLineEdit" name="txt_pg_host">
+            <property name="text">
+             <string>localhost</string>
+            </property>
+            <property name="placeholderText">
+             <string>Database Hostname</string>
             </property>
            </widget>
           </item>
           <item row="7" column="2">
-           <widget class="QComboBox" name="selected_schema_combobox"/>
-          </item>
-          <item row="7" column="3">
-           <widget class="QPushButton" name="create_schema_button">
-            <property name="text">
-             <string/>
+           <widget class="QLineEdit" name="txt_pg_user">
+            <property name="placeholderText">
+             <string>Database Username</string>
             </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/Asistente-LADM_COL/resources/images/schema.png</normaloff>:/Asistente-LADM_COL/resources/images/schema.png</iconset>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>User</string>
             </property>
            </widget>
           </item>
@@ -243,7 +243,7 @@
        <item row="1" column="0" colspan="2">
         <widget class="QRadioButton" name="offline_models_radio_button">
          <property name="text">
-          <string>Use local repository models</string>
+          <string>Use models from local folders</string>
          </property>
         </widget>
        </item>
@@ -263,7 +263,7 @@
        <item row="0" column="0" colspan="2">
         <widget class="QRadioButton" name="online_models_radio_button">
          <property name="text">
-          <string>Use cloud repository models</string>
+          <string>Use models from Internet repository </string>
          </property>
          <property name="checked">
           <bool>true</bool>
@@ -717,12 +717,31 @@
  </customwidgets>
  <tabstops>
   <tabstop>cbo_db_source</tabstop>
-  <tabstop>txt_pg_host</tabstop>
-  <tabstop>txt_pg_port</tabstop>
   <tabstop>txt_gpkg_file</tabstop>
   <tabstop>btn_gpkg_file_browse</tabstop>
+  <tabstop>txt_pg_host</tabstop>
+  <tabstop>txt_pg_port</tabstop>
+  <tabstop>txt_pg_user</tabstop>
+  <tabstop>txt_pg_password</tabstop>
+  <tabstop>selected_db_combobox</tabstop>
+  <tabstop>create_db_button</tabstop>
+  <tabstop>selected_schema_combobox</tabstop>
+  <tabstop>create_schema_button</tabstop>
   <tabstop>btn_test_connection</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>online_models_radio_button</tabstop>
+  <tabstop>offline_models_radio_button</tabstop>
+  <tabstop>custom_model_directories_line_edit</tabstop>
+  <tabstop>custom_models_dir_button</tabstop>
+  <tabstop>txt_too_long_tolerance</tabstop>
+  <tabstop>chk_use_roads</tabstop>
+  <tabstop>chk_automatic_values_in_batch_mode</tabstop>
+  <tabstop>namespace_collapsible_group_box</tabstop>
+  <tabstop>txt_namespace</tabstop>
+  <tabstop>chk_local_id</tabstop>
+  <tabstop>connection_box</tabstop>
+  <tabstop>txt_service_endpoint</tabstop>
+  <tabstop>btn_test_service</tabstop>
  </tabstops>
  <connections>
   <connection>

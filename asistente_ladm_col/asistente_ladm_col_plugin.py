@@ -131,10 +131,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.add_cadastre_menu()
 
         self._menu.addSeparator()
-        self.add_data_management_menu()
         self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"), self.iface.mainWindow())
         self._menu.addAction(self._load_layers_action)
         self._menu.addSeparator()
+        self.add_data_management_menu()
         self._settings_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
         self._help_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"), self.iface.mainWindow())
         self._about_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"), self.iface.mainWindow())
