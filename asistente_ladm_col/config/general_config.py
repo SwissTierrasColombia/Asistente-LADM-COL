@@ -102,16 +102,16 @@ MODULE_HELP_MAPPING = {
     'export_data' : 'data_management.html#export-data'
 }
 # Configure QGIS Model Baker Dependency
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.1.0"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.1.0.1"
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
-QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = False
+QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = True
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = '' #'https://github.com/AgenciaImplementacion/qgis_model_baker/releases/download/3.3.2.1/qgis_model_baker.zip'
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip' # ''
 
 # QGIS Model Baker definitions
 SCHEMA_NAME = 'schemaname'
