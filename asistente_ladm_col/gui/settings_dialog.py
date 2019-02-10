@@ -42,7 +42,7 @@ from ..config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANC
                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                      SOURCE_SERVICE_EXPECTED_ID)
 from ..gui.custom_model_dir import CustomModelDirDialog
-from ..gui.dlg_capture_parameter import DialogCaptureParameter
+from ..gui.dlg_get_db_or_schema_name import DialogGetDBOrSchemaName
 from ..lib.dbconnector.db_connector import DBConnector
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
 from ..lib.dbconnector.pg_connector import PGConnector
@@ -92,12 +92,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self.create_db_button.setToolTip(QCoreApplication.translate("SettingsDialog", "Create database"))
         self.create_db_button.clicked.connect(self.show_modal_create_db)
-        self.selected_db_combobox.currentIndexChanged.connect(self.selected_database_change)
+        self.selected_db_combobox.currentIndexChanged.connect(self.selected_database_changed)
 
         self.create_schema_button.setToolTip(QCoreApplication.translate("SettingsDialog", "Create schema"))
         self.create_schema_button.clicked.connect(self.show_modal_create_schema)
 
-        self.txt_pg_user.setPlaceholderText(QCoreApplication.translate("SettingsDialog", "Database Username"))
+        self.txt_pg_user.setPlaceholderText(QCoreApplication.translate("SettingsDialog", "Database username"))
         self.txt_pg_user.textEdited.connect(self.set_connection_dirty)
 
         self.txt_pg_password.setPlaceholderText(QCoreApplication.translate("SettingsDialog", "[Leave empty to use system password]"))
@@ -109,7 +109,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         # Trigger some default behaviours
         self.restore_settings()
 
-        # refresh the connection on changing values but avoid massive db connects by timer
+        # Set a timer to avoid creating too many db connections while editing connection parameters
         self.refreshTimer = QTimer()
         self.refreshTimer.setSingleShot(True)
         self.refreshTimer.timeout.connect(self.refresh_connection)
@@ -121,17 +121,16 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.setLayout(QGridLayout())
-        #self.tabWidget.currentWidget().layout().setContentsMargins(0, 0, 0, 0)
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
     def showEvent(self, event):
-        self.update_dbnames()
-        # it is necessary to reload the variables
+        self.update_db_names()
+        # It is necessary to reload the variables
         # to load the database and schema name
         self.restore_settings()
 
     def request_for_refresh_connection(self, text):
-        # hold refresh back
+        # Wait half a second before refreshing connection
         self.refreshTimer.start(500)
 
     def refresh_connection(self):
@@ -140,26 +139,25 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.selected_db_combobox.clear()
             self.selected_schema_combobox.clear()
         else:
-            # Update database names list
-            self.update_dbnames()
+            # Update database name list
+            self.update_db_names()
 
-    def selected_database_change(self, index):
+    def selected_database_changed(self, index):
         self.update_db_schemas()
 
-    def update_dbnames(self):
+    def update_db_names(self):
         if self.cbo_db_source.currentData() == 'pg':
             dict_conn = self.read_connection_parameters()
             uri = self.get_connection_uri(dict_conn)
             tmp_db_conn = PGConnector('')
 
-            dbmames = tmp_db_conn.get_dbnames_list(uri)
+            dbnames = tmp_db_conn.get_dbnames_list(uri)
             self.selected_db_combobox.clear()
 
-            if dbmames[0]:
-                self.selected_db_combobox.addItems(dbmames[1])
+            if dbnames[0]:
+                self.selected_db_combobox.addItems(dbnames[1])
             else:
-                # TODO: Resolve whether to display the message
-                #self.show_message(dbmames[1] , Qgis.Warning)
+                # We won't show a message here to avoid bothering the user with potentially too much messages
                 pass
 
     def update_db_schemas(self):
@@ -174,8 +172,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             if schemas_db[0]:
                 self.selected_schema_combobox.addItems(schemas_db[1])
             else:
-                # TODO: Resolve whether to display the message
-                #self.show_message(schemas_db[1], Qgis.Warning)
+                # We won't show a message here to avoid bothering the user with potentially too much messages
                 pass
 
     def model_provider_toggle(self):
@@ -490,7 +487,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.qgis_utils.show_help("settings")
 
     def database_created(self, db_name):
-        self.update_dbnames()
+        self.update_db_names()
 
         # select the database created by the user
         index = self.selected_db_combobox.findText(db_name, Qt.MatchFixedString)
@@ -512,12 +509,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
             uri = self.get_connection_uri(dict_conn, level=0)
             test_conn = tmp_db_conn.test_connection(uri=uri, level=0)
             if test_conn[0]:
-                create_db_dlg = DialogCaptureParameter(dict_conn, 'database', parent=self)
-                create_db_dlg.completed_creation.connect(self.database_created)
+                create_db_dlg = DialogGetDBOrSchemaName(dict_conn, 'database', parent=self)
+                create_db_dlg.db_or_schema_created.connect(self.database_created)
                 create_db_dlg.setModal(True)
                 create_db_dlg.exec_()
             else:
-                self.show_message(QCoreApplication.translate("SettingsDialog", "Establish the connection to the database before attempting to create a database."), Qgis.Warning)
+                self.show_message(QCoreApplication.translate("SettingsDialog", "First set the connection to the database before attempting to create a database."), Qgis.Warning)
 
     def show_modal_create_schema(self):
         if self.cbo_db_source.currentData() == 'pg':
@@ -527,9 +524,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
             test_conn = tmp_db_conn.test_connection(uri=uri, level=0)
 
             if test_conn[0]:
-                create_db_dlg = DialogCaptureParameter(self.read_connection_parameters(), 'schema', parent=self)
-                create_db_dlg.completed_creation.connect(self.schema_created)
+                create_db_dlg = DialogGetDBOrSchemaName(self.read_connection_parameters(), 'schema', parent=self)
+                create_db_dlg.db_or_schema_created.connect(self.schema_created)
                 create_db_dlg.setModal(True)
                 create_db_dlg.exec_()
             else:
-                self.show_message(QCoreApplication.translate("SettingsDialog", "Establish the connection to the database before attempting to create a schema."), Qgis.Warning)
+                self.show_message(QCoreApplication.translate("SettingsDialog", "First set the connection to the database before attempting to create a schema."), Qgis.Warning)

@@ -300,7 +300,7 @@ class PGConnector(DBConnector):
         if not self._schema_exists() and level == 1:
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' does not exist in the database!").format(self.schema))
-        if not self._metadata_exists()and level == 1:
+        if not self._metadata_exists() and level == 1:
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
 
@@ -822,10 +822,10 @@ class PGConnector(DBConnector):
                 cur = conn.cursor()
                 cur.execute(sql)
             except psycopg2.ProgrammingError:
-                return (False, QCoreApplication.translate("PGConnector", 'Database "{}" already exists'.format(db_name)))
+                return (False, QCoreApplication.translate("PGConnector", 'Database "{}" already exists.'.format(db_name)))
         cur.close()
         conn.close()
-        return (True, QCoreApplication.translate("PGConnector", '"{}" database was successfully created'.format(db_name)))
+        return (True, QCoreApplication.translate("PGConnector", 'Database "{}" was successfully created!'.format(db_name)))
 
     def create_schema(self, uri, schema_name):
         """
@@ -845,10 +845,10 @@ class PGConnector(DBConnector):
                 cur = conn.cursor()
                 cur.execute(sql)
             except psycopg2.ProgrammingError:
-                return (False, QCoreApplication.translate("PGConnector", 'Schema "{}" already exists'.format(schema_name)))
+                return (False, QCoreApplication.translate("PGConnector", 'Schema "{}" already exists.'.format(schema_name)))
         cur.close()
         conn.close()
-        return (True, QCoreApplication.translate("PGConnector", '"{}" schema was successfully created'.format(schema_name)))
+        return (True, QCoreApplication.translate("PGConnector", 'Schema "{}" was successfully created!'.format(schema_name)))
 
     def get_dbnames_list(self, uri):
         dbnames_list = list()
