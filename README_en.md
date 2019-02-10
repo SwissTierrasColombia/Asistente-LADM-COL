@@ -17,7 +17,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([1.2.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.2.0)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.4.0](https://github.com/opengisch/QgisModelBaker/releases/download/v4.0.0/QgisModelBaker.v4.0.0.zip) and allows users to:
+The current version ([1.3.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.3.0)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.1.0.1](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip) and allows users to:
 
  - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
  - Capture data for the `FICHA_PREDIAL v2.2.1` model.
@@ -51,6 +51,7 @@ The current version ([1.2.0](https://github.com/AgenciaImplementacion/Asistente-
        - Automatic snapping configuration and default field values.
    - From another layer with any structure, setting a field mapping.
    - Create relations of benefited and restricted `Parcels`.
+ - Associate addresses to `Plots`, `Buildings` and `Unit Buildings`.
  - Create `Parcels`:
    - Using preconfigured forms.
      - And associating the new `Parcel` to selected `Plots` and/or `Buildings`.
@@ -113,6 +114,7 @@ The current version ([1.2.0](https://github.com/AgenciaImplementacion/Asistente-
    - Check that attributes are appropriate for parties of type legal
    - Check that the type of parcel corresponds to position 22 of the numero_predial
    - Check that Spatial Units associated with Parcels correspond to the parcel type
+ - Generate report of the quality checks.
  - Generate reports based on selected `Plots` (Annex 17).
  - Import data from [intermediate structure in Excel](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
  - Configure automatic values for `namespace` and `local_id` attributes.
