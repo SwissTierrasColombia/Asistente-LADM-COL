@@ -122,29 +122,29 @@ Previous requirements:
 + Structure of Grouping:
 
 .. image:: static/agrupacion.png
-   :height: 500
-   :width: 800
+   :height: 60
+   :width: 380
    :alt: basic settings
 
 + Structure of Law:
 
 .. image:: static/derecho.PNG
-   :height: 500
-   :width: 800
+   :height: 120
+   :width: 900
    :alt: basic settings
 
 + Structure of Party:
 
 .. image:: static/interesado.PNG
-   :height: 500
-   :width: 800
+   :height: 60
+   :width: 500
    :alt: basic settings
 
 + Structure of Plot:
 
 .. image:: static/predio.PNG
-   :height: 500
-   :width: 800
+   :height: 60
+   :width: 500
    :alt: basic settings
 
 `Blank template of intermediate structure. <static/data_templates/estructura_vacia.xlsx>`_
@@ -164,15 +164,15 @@ The execution of the model with the sample data should generate the following re
 Intermediate tables:
 
 .. image:: static/tablas_intermed.PNG
-   :height: 250
-   :width: 400
+   :height: 55
+   :width: 150
    :alt: basic settings
 
 Model tables involved:
 
 .. image:: static/tabla_implicadas.PNG
-   :height: 250
-   :width: 400
+   :height: 85
+   :width: 180
    :alt: basic settings
 
 An example of the procedure making use of the example data:

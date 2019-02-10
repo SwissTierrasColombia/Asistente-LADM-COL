@@ -118,3 +118,52 @@ Create Right of Way
 4. Fill Right of way relations
 
   To know how to use this function go to this `LINK <../toolbar.html#fill-right-of-way-relations>`_.
+
+
+Associate Extaddress
+--------------------
+
+To associate extaddress there are two groups of options:
+
+Creating manually using Spatial Units
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. To Plot
+
+2. To Building
+
+3. To Building Unit
+
+   To associate the **ExtAddress** to an existing *Spatial Unit*, first you have to select one of this.
+
+   There are two ways to associate
+
+  a. **Selecting on the map**: here you select one *Spatial Unit* and immediately it will come back to wizard,
+     this enables the button for create the association
+
+    .. image:: ../static/associate_extaddress_select_by_map.gif
+       :height: 500
+       :width: 800
+       :alt: Extaddress Selecting on the map
+
+  b. **Selecting by expression**:  here you select one *Spatial Unit* using an expression, this has to be valid and
+     the selection should take just one feature. If the expression gets two or more features, the button for create
+     the association will not be activated.
+
+    .. image:: ../static/associate_extaddress_select_by_expression.gif
+       :height: 500
+       :width: 800
+       :alt: Extaddress Selecting by expression
+
+Using refactor from an existing layer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+4. From another QGIS Layer/table (setting a field mapping)
+
+  Choose this option to open a window that allows you to import data from a source
+  layer into the *LADM_COL* **extdireccion** layer.
+
+  If the field structure of input and target layers differs, you can set a field
+  mapping to define field transformations and correspondence.
+
+  For use this function check this `LINK <../mapping_fields.html>`_.

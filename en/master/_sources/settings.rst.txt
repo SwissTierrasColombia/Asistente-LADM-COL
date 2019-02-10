@@ -21,6 +21,10 @@ These parameters are: \
 
 *Only PostgreSQL/PostGIS parameters*
 
+**User**: User name that has permission on the database
+
+**Password**: user password
+
 **Host**: address where the database is hosted *localhost* is equivalent to
 *127.0.0.1*
 
@@ -32,9 +36,12 @@ model of LADM_COL
 **Schema**: Name of the schema that stores the objects of the physical model of
 LADM_COL
 
-**User**: User name that has permission on the database
+.. image:: static/db_connection_settings.gif
+   :height: 500
+   :width: 800
+   :alt: set database connection settings
 
-**Password**: user password
+**Note**: You can create your database and schema. But names should not contain special characters.
 
 *Only GeoPackage parameters*
 
@@ -43,6 +50,15 @@ database.
 
 The *Test Connection* button is used to know if the entered parameters are
 correct and allow connection to the database
+
+Models
+-------------
+In this tab, you can select whether you want to use the repository of local or remote models.
+
+.. image:: static/set_custom_models_directories.gif
+   :height: 500
+   :width: 800
+   :alt: set custom models directories
 
 Quality
 -------------

@@ -41,7 +41,11 @@ Group Party
   This **Group Party** has rights or is subject to restrictions or
   responsibilities related to one or more *Parcels*.
 
-  .. image:: ../static/crear_interesado_juridico.gif
+  You can insert fractions to have the percent correspondence in the **Group Party**,
+  the sum of numerators divided by the sum of denominators must be 1, otherwise the 
+  creation of the grouping will not be allowed.
+  
+  .. image:: ../static/group_party.gif
      :height: 500
      :width: 800
      :alt: Create Group Party

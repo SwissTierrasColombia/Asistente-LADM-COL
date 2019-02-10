@@ -86,10 +86,12 @@
 <li class="toctree-l1"><a class="reference internal" href="cadastre.html">Cadastre</a></li>
 <li class="toctree-l1"><a class="reference internal" href="property_record_card.html">Property record card</a></li>
 <li class="toctree-l1"><a class="reference internal" href="valuation.html">Valuation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_management.html">Data management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="load_layers.html">Load Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mapping_fields.html">Using Mapping Fields</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Settings</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#database-connection">Database Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#models">Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#quality">Quality</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#automatic-values">Automatic Values</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sources">Sources</a></li>
@@ -170,11 +172,11 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="1.2.0/settings.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 1.2.0.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="1.3.0/settings.html"><b>Warning:</b> This document is for the development version of LADM_COL Assistant. The latest version is 1.3.0.</a></p>
 <div class="section" id="settings">
 <h1>Settings<a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h1>
 <a class=""
-               data-lightbox="group-52a5d445-9eda-4575-b321-71c2cf5c339e"
+               data-lightbox="group-b4db0ad3-4959-40dd-aa90-94c7aafade68"
                href="_images/03_CONFIGURACION.gif"
                title=""
                data-title=""
@@ -192,6 +194,8 @@ physical model of LADM_COL is stored.</p>
 <p><strong>Source</strong>: define the origin of the data, it can be a spatial database
 <em>PostgreSQL/PostGIS</em> or <em>GeoPackage</em>.</p>
 <p><em>Only PostgreSQL/PostGIS parameters</em></p>
+<p><strong>User</strong>: User name that has permission on the database</p>
+<p><strong>Password</strong>: user password</p>
 <p><strong>Host</strong>: address where the database is hosted <em>localhost</em> is equivalent to
 <em>127.0.0.1</em></p>
 <p><strong>Port</strong>: listening port number for the database</p>
@@ -199,14 +203,37 @@ physical model of LADM_COL is stored.</p>
 model of LADM_COL</p>
 <p><strong>Schema</strong>: Name of the schema that stores the objects of the physical model of
 LADM_COL</p>
-<p><strong>User</strong>: User name that has permission on the database</p>
-<p><strong>Password</strong>: user password</p>
+<a class=""
+               data-lightbox="group-5ee2a7bc-31e2-4d4e-832b-03eb45a0a5c4"
+               href="_images/db_connection_settings.gif"
+               title=""
+               data-title=""
+               ><img src="_images/db_connection_settings.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="set database connection settings"/>
+                </a><p><strong>Note</strong>: You can create your database and schema. But names should not contain special characters.</p>
 <p><em>Only GeoPackage parameters</em></p>
 <p><strong>Database File</strong>: Disk location of the GeoPakage file that contains the
 database.</p>
 <p>The <em>Test Connection</em> button is used to know if the entered parameters are
 correct and allow connection to the database</p>
 </div>
+<div class="section" id="models">
+<h2>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h2>
+<p>In this tab, you can select whether you want to use the repository of local or remote models.</p>
+<a class=""
+               data-lightbox="group-659577d2-b981-482d-b392-9e2a8ec925fb"
+               href="_images/set_custom_models_directories.gif"
+               title=""
+               data-title=""
+               ><img src="_images/set_custom_models_directories.gif"
+                     class=""
+                     width="800"
+                     height="500"
+                     alt="set custom models directories"/>
+                </a></div>
 <div class="section" id="quality">
 <h2>Quality<a class="headerlink" href="#quality" title="Permalink to this headline">¶</a></h2>
 <p>For data quality issues in this tab, the tolerance limit allowed for
@@ -226,7 +253,7 @@ database.</p>
 <p>If you want to fill those values by youtself, uncheck the check boxes in this
 form.</p>
 <a class=""
-               data-lightbox="group-fa49bc30-a531-465c-a516-87b0293b52a2"
+               data-lightbox="group-1f316763-29a8-45ba-8b1b-d0110abb4b0c"
                href="_images/settings.gif"
                title=""
                data-title=""
@@ -242,7 +269,7 @@ form.</p>
 administrative sources and spatial sources associated with the information
 collected in LADM-COL.</p>
 <a class=""
-               data-lightbox="group-effb6c05-89d1-4b6e-a607-9c11a0026355"
+               data-lightbox="group-78aceab6-3d98-4300-8beb-cd53e77d878c"
                href="_images/Configurar_fuentes.gif"
                title=""
                data-title=""
@@ -320,11 +347,13 @@ collected in LADM-COL.</p>
             <dd><a href="1.0.0/settings.html">1.0.0</a></dd>
             <dd><a href="1.1.0/settings.html">1.1.0</a></dd>
             <dd><a href="1.2.0/settings.html">1.2.0</a></dd>
+            <dd><a href="1.3.0/settings.html">1.3.0</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
             <dd><a href="Documentation_for_annex_17/settings.html">Documentation_for_annex_17</a></dd>
             <dd><a href="Documentation_valuation_asistente_ladm_col/settings.html">Documentation_valuation_asistente_ladm_col</a></dd>
+            <dd><a href="Subscribe_releases_asistente/settings.html">Subscribe_releases_asistente</a></dd>
             <dd><a href="images_of_valuation/settings.html">images_of_valuation</a></dd>
             <dd><a href="master/settings.html">master</a></dd>
             <dd><a href="prepare_PR_2/settings.html">prepare_PR_2</a></dd>
