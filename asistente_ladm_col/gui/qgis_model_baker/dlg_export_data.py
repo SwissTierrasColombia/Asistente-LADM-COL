@@ -393,7 +393,6 @@ class DialogExportData(QDialog, DIALOG_UI):
     def on_stderr(self, text):
         color_log_text(text, self.txtStdout)
         self.advance_progress_bar_by_text(text)
-        QCoreApplication.processEvents()
 
     def on_process_started(self, command):
         self.disable()
@@ -417,8 +416,14 @@ class DialogExportData(QDialog, DIALOG_UI):
         if text.strip() == 'Info: compile models...':
             self.progress_bar.setValue(50)
             QCoreApplication.processEvents()
-        elif text.strip() == 'Info: create table structure...':
-            self.progress_bar.setValue(75)
+        elif text.strip() == 'Info: process data...':
+            self.progress_bar.setValue(55)
+            QCoreApplication.processEvents()
+        elif text.strip() == 'Info: first validation pass...':
+            self.progress_bar.setValue(70)
+            QCoreApplication.processEvents()
+        elif text.strip() == 'Info: second validation pass...':
+            self.progress_bar.setValue(85)
             QCoreApplication.processEvents()
 
     def show_help(self):

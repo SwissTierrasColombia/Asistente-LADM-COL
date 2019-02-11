@@ -306,7 +306,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def on_stderr(self, text):
         color_log_text(text, self.txtStdout)
         self.advance_progress_bar_by_text(text)
-        QCoreApplication.processEvents()
 
     def on_process_started(self, command):
         self.txtStdout.setText(command)
@@ -326,8 +325,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def advance_progress_bar_by_text(self, text):
         if text.strip() == 'Info: compile models…':
             self.progress_bar.setValue(20)
+            QCoreApplication.processEvents()
         elif text.strip() == 'Info: create table structure…':
             self.progress_bar.setValue(70)
+            QCoreApplication.processEvents()
 
     def show_help(self):
         self.qgis_utils.show_help("import_schema")

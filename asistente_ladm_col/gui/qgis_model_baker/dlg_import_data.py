@@ -404,7 +404,6 @@ class DialogImportData(QDialog, DIALOG_UI):
     def on_stderr(self, text):
         color_log_text(text, self.txtStdout)
         self.advance_progress_bar_by_text(text)
-        QCoreApplication.processEvents()
 
     def on_process_started(self, command):
         self.disable()
@@ -430,8 +429,15 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.progress_bar.setValue(50)
             QCoreApplication.processEvents()
         elif text.strip() == 'Info: create table structure...':
-            self.progress_bar.setValue(75)
+            self.progress_bar.setValue(55)
             QCoreApplication.processEvents()
+        elif text.strip() == 'Info: first validation pass...':
+            self.progress_bar.setValue(60)
+            QCoreApplication.processEvents()
+        elif text.strip() == 'Info: second validation pass...':
+            self.progress_bar.setValue(80)
+            QCoreApplication.processEvents()
+
 
     def show_help(self):
         self.qgis_utils.show_help("import_data")
