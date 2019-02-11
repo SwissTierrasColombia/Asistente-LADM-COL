@@ -253,7 +253,7 @@
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="140"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="712"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="714"/>
         <source>Settings</source>
         <translation>Configuración</translation>
     </message>
@@ -406,27 +406,27 @@
         <translation>Borrar dependencias</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="709"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="711"/>
         <source>Check your database connection, since there was a problem accessing a valid Cadastre-Registry model in the database. Click the button to go to Settings.</source>
         <translation>Revisa tu conexión a la base de datos. Hubo un problema accediendo a un modelo válido de Catastro-Registro en la base de datos. Click en el botón para ir a Configuración.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="717"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="719"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, connection to DB was not valid.</source>
         <translation>No se pudo ejecutar una funcionalidad, la conexión a la base de datos no fue válida.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="736"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="738"/>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} is required, but couldn&apos;t be found. Download it &lt;a href=&quot;{}&quot;&gt;from this link&lt;/a&gt; and use &apos;Install from ZIP&apos;.</source>
         <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar desde ZIP&quot;.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="739"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="741"/>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
         <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Plugins.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="749"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="751"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, QGIS Model Baker not found.</source>
         <translation>No se pudo ejecutar una funcionalidad, no se encontró QGIS Model Baker.</translation>
     </message>
@@ -435,7 +435,7 @@
         <translation type="vanished">Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} (o superior), pero no está instalado. Click en el botón para mostrar el Administrador de Plugins.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="743"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="745"/>
         <source>Plugin Manager</source>
         <translation>Administrador de Plugins</translation>
     </message>
@@ -734,7 +734,7 @@
         <translation>No se pudo encontrar la tabla Agrupación de Interesados... {}</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="937"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="939"/>
         <location filename="../gui/create_group_party_cadastre.py" line="126"/>
         <location filename="../gui/create_group_party_cadastre.py" line="135"/>
         <location filename="../gui/create_group_party_cadastre.py" line="144"/>
@@ -1252,12 +1252,12 @@
         <translation>¡El nuevo derecho (t_id={}) se creó exitosamente y fue asociado con su fuente administrativa correspondiente (t_id={})!</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="957"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="959"/>
         <source>Administrative Source table couldn&apos;t be found... {}</source>
         <translation>No se pudo encontrar la capa Fuente Administrativa... {}</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="963"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="965"/>
         <source>Close the edit session in table {} before creating rights.</source>
         <translation>Cierra la sesión de edición en la tabla {} antes de continuar creando derechos.</translation>
     </message>
@@ -1830,7 +1830,7 @@ Do you want to replace it?</source>
         <translation>Se exportaron los datos exitósamente.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="408"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="407"/>
         <source>Finished ({})</source>
         <translation>Terminado ({})</translation>
     </message>
@@ -1893,7 +1893,7 @@ Do you want to replace it?</source>
         <translation>Se importaron los datos exitósamente</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="425"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="424"/>
         <source>Error when importing data</source>
         <translation>Error al importar datos</translation>
     </message>
@@ -1927,13 +1927,13 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="103"/>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="367"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="368"/>
         <source>Open GeoPackage database file</source>
         <translation>Abrir archivo de base de datos GeoPackage</translation>
     </message>
     <message>
         <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="104"/>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="368"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="369"/>
         <source>GeoPackage Database (*.gpkg)</source>
         <translation>Base de datos GeoPackage (*.gpkg)</translation>
     </message>
@@ -1975,12 +1975,12 @@ Done!</source>
         <translation>La estructura LADM-COL se creó exitósamente</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="318"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="317"/>
         <source>Model(s) successfully imported into the database!</source>
         <translation>¡Se importaron exitósamente los modelos a la base de datos!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="321"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="320"/>
         <source>Finished with errors!</source>
         <translation>¡Terminado con errores!</translation>
     </message>
@@ -2806,7 +2806,12 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation>Mostrar Resultados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="686"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="676"/>
+        <source>Checking {} out of {}: &apos;{}&apos;</source>
+        <translation>Revisando {} de {}: &apos;{}&apos;</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="688"/>
         <source>All the {} quality rules were checked! Click the button at the right-hand side to see a report.</source>
         <translation>¡Se terminaron de revisar las {} reglas de calidad! Haz clic en el botón de la derecha para ver un reporte.</translation>
     </message>
@@ -3378,13 +3383,24 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     <message>
         <location filename="../utils/quality.py" line="2026"/>
         <source>A memory layer with {error_count} duplicate records from {table} has been added to the map!</source>
-        <translation>¡Una capa temporal con {error_count} registros duplicados ha sido agregada al mapa!</translation>
+        <translation>¡Una capa temporal con {error_count} registros duplicados de la tabla {table} ha sido agregada al mapa!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="2030"/>
+        <source>There are no repeated records in {table}!</source>
+        <translation>¡No hay registros duplicados en {table}!</translation>
     </message>
     <message>
         <location filename="../utils/quality.py" line="2076"/>
         <location filename="../utils/quality.py" line="2117"/>
         <source>A memory layer with {error_count} error record(s) from {table} has been added to the map!</source>
         <translation>¡Una capa temporal con {error_count} registros con errores de la tabla {table} ha sido agregada al mapa!</translation>
+    </message>
+    <message>
+        <location filename="../utils/quality.py" line="2080"/>
+        <location filename="../utils/quality.py" line="2120"/>
+        <source>No errors found when checking &apos;{rule}&apos; for &apos;{table}&apos;!</source>
+        <translation>¡No se encontraron errores al revisar &apos;{rule}&apos; para &apos;{table}&apos;!</translation>
     </message>
     <message>
         <location filename="../utils/quality.py" line="2142"/>

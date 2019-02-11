@@ -672,10 +672,12 @@ class AsistenteLADMCOLPlugin(QObject):
     def set_log_quality_initial_progress(self, msg):
         self.progress_count += 2 # 20% of the current rule
         self.progress.setValue(self.progress_count)
-        self.progressMessageBar.setText("Checking {} out of {}: '{}'".format(
-            self.log_quality_current_rule_count + 1,
-            self.log_quality_total_rule_count,
-            msg))
+        self.progressMessageBar.setText(
+            QCoreApplication.translate("LogQualityDialog",
+                                       "Checking {} out of {}: '{}'").format(
+                                        self.log_quality_current_rule_count + 1,
+                                        self.log_quality_total_rule_count,
+                                        msg))
         QCoreApplication.processEvents()
 
     def set_log_quality_final_progress(self, msg):

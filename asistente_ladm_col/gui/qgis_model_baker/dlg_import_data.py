@@ -438,7 +438,6 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.progress_bar.setValue(80)
             QCoreApplication.processEvents()
 
-
     def show_help(self):
         self.qgis_utils.show_help("import_data")
 

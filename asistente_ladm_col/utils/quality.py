@@ -2028,7 +2028,7 @@ class QualityUtils(QObject):
 
             else:
                 self.log_message(QCoreApplication.translate("QGISUtils",
-                                 "There are no repeated records in {table}!".format(table=table)), Qgis.Success)
+                                 "There are no repeated records in {table}!").format(table=table), Qgis.Success)
 
     @_log_quality_checks
     def basic_logic_validations(self, db, rule, rule_name):
@@ -2078,7 +2078,7 @@ class QualityUtils(QObject):
 
         else:
             self.log_message(QCoreApplication.translate("QGISUtils",
-                             "No errors found when checking '{rule}' for '{table}'!".format(rule=db.logic_validation_queries[rule]['desc_error'], table=table)), Qgis.Success)
+                             "No errors found when checking '{rule}' for '{table}'!").format(rule=db.logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
 
     @_log_quality_checks
     def advanced_logic_validations(self, db, rule, rule_name):
@@ -2118,7 +2118,7 @@ class QualityUtils(QObject):
                     error_count=errors_count, table=table))
         else:
             self.log_message(QCoreApplication.translate("QGISUtils",
-                             "No errors found when checking '{rule}' for '{table}'!".format(rule=db.logic_validation_queries[rule]['desc_error'], table=table)), Qgis.Success)
+                             "No errors found when checking '{rule}' for '{table}'!").format(rule=db.logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
 
     @_log_quality_checks
     def check_building_within_plots(self, db, rule_name):
