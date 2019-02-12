@@ -56,13 +56,13 @@ from ...utils.model_parser import ModelParser
 
 
 class PGConnector(DBConnector):
-    def __init__(self, uri, schema="public"):
+    def __init__(self, uri, schema="public", conn_dict={}):
         DBConnector.__init__(self, uri, schema)
-        self.uri = uri
+        self.mode = 'pg'
+        self.uri = uri if uri is not None else self.get_connection_uri(conn_dict, self.mode, level=1)
         self.conn = None
         self.schema = schema
         self.log = QgsApplication.messageLog()
-        self.mode = 'pg'
         self.provider = 'postgres'
         self._tables_info = None
         self.model_parser = None
@@ -286,6 +286,11 @@ class PGConnector(DBConnector):
         return False
 
     def test_connection(self, uri=None, level=1):
+        """
+        :param level: (int) level of connection with postgres
+                    0 = Server
+                    1 = Database
+        """
         uri = self.uri if uri is None else uri
         try:
             self.conn = psycopg2.connect(uri)
@@ -303,6 +308,8 @@ class PGConnector(DBConnector):
         if not self._metadata_exists() and level == 1:
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
+
+        # TODO: Test schema permissions
 
         if level == 1:
             if self.model_parser is None:

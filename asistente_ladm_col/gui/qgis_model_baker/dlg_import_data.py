@@ -68,8 +68,8 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.ilicache.refresh()
 
         self.type_combo_box.clear()
-        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportData", 'PostgreSQL/PostGIS'), 'ili2pg')
-        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportData", 'GeoPackage'), 'ili2gpkg')
+        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportData", 'PostgreSQL/PostGIS'), 'pg')
+        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportData", 'GeoPackage'), 'gpkg')
         self.type_combo_box.currentIndexChanged.connect(self.type_changed)
         self.type_changed()
 
@@ -280,7 +280,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.import_models_list_view.setFocus()
             return
 
-        if self.type_combo_box.currentData() == 'ili2gpkg':
+        if self.type_combo_box.currentData() == 'gpkg':
             if not configuration.dbfile or self.gpkg_file_line_edit.validator().validate(configuration.dbfile, 0)[0] != QValidator.Acceptable:
                 message_error = QCoreApplication.translate("DialogImportData", "Please set a valid database file before creating the project.")
                 self.txtStdout.setText(message_error)
@@ -333,16 +333,17 @@ class DialogImportData(QDialog, DIALOG_UI):
     def save_configuration(self, configuration):
         settings = QSettings()
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_import', configuration.xtffile)
-        settings.setValue('Asistente-LADM_COL/QgisModelBaker/importtype', self.type_combo_box.currentData())
+        settings.setValue('Asistente-LADM_COL/db_connection_source', self.type_combo_box.currentData())
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
 
-        if self.type_combo_box.currentData() == 'ili2gpkg':
+        if self.type_combo_box.currentData() == 'gpkg':
             settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2gpkg/dbfile', configuration.dbfile)
 
     def restore_configuration(self):
         settings = QSettings()
         self.xtf_file_line_edit.setText(settings.value('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_import'))
-        self.type_combo_box.setCurrentIndex(self.type_combo_box.findData(settings.value('Asistente-LADM_COL/QgisModelBaker/importtype', 'ili2pg')))
+        self.type_combo_box.setCurrentIndex(
+            self.type_combo_box.findData(settings.value('Asistente-LADM_COL/db_connection_source', 'pg')))
         self.type_changed()
 
         # Show log
@@ -362,7 +363,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         """
         configuration = ImportDataConfiguration()
 
-        if self.type_combo_box.currentData() == 'ili2pg':
+        if self.type_combo_box.currentData() == 'pg':
             # PostgreSQL specific options
             configuration.dbhost = self.db.dict_conn_params['host']
             configuration.dbport = self.db.dict_conn_params['port']
@@ -370,7 +371,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             configuration.database = self.db.dict_conn_params['database']
             configuration.dbschema = self.get_checked_schema()
             configuration.dbpwd = self.db.dict_conn_params['password']
-        elif self.type_combo_box.currentData() == 'ili2gpkg':
+        elif self.type_combo_box.currentData() == 'gpkg':
             configuration.dbfile = self.db.dict_conn_params['dbfile']
 
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
@@ -458,9 +459,9 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def type_changed(self):
         self.progress_bar.hide()
-        if self.type_combo_box.currentData() == 'ili2pg':
+        if self.type_combo_box.currentData() == 'pg':
             self.pg_config.show()
             self.gpkg_config.hide()
-        elif self.type_combo_box.currentData() == 'ili2gpkg':
+        elif self.type_combo_box.currentData() == 'gpkg':
             self.pg_config.hide()
             self.gpkg_config.show()

@@ -20,7 +20,7 @@ from qgis.PyQt.QtCore import QObject
 
 class DBConnector(QObject):
     '''SuperClass for all DB connectors.'''
-    def __init__(self, uri, schema=None):
+    def __init__(self, uri, schema=None, conn_dict={}):
         QObject.__init__(self)
         self.mode = ''
         self.provider = '' # QGIS provider name. e.g., postgres
@@ -59,3 +59,30 @@ class DBConnector(QObject):
             del tmp_dict_conn_params['schema']
 
         return ' '.join(["{}={}".format(k, v) for k, v in tmp_dict_conn_params.items()])
+
+    def get_connection_uri(self, dict_conn, mode='pg', level=1):
+        """
+        :param dict_conn: (dict) dictionary with the parameters to establish a connection
+        :param level: (str) Connection mode:
+            'pg': PostgreQSL/PostGIS
+            'gpkg': GeoPackage
+        :param level: (int) At what level the connection will be established
+            0: server level
+            1: database level
+        :return: (str) string uri to establish a connection
+        """
+        uri = []
+        if mode == 'pg':
+            uri += ['host={}'.format(dict_conn['host'])]
+            uri += ['port={}'.format(dict_conn['port'])]
+            if dict_conn['username']:
+                uri += ['user={}'.format(dict_conn['username'])]
+            if dict_conn['password']:
+                uri += ['password={}'.format(dict_conn['password'])]
+            if dict_conn['database'] and level == 1:
+                uri += ['dbname={}'.format(dict_conn['database'])]
+        elif mode == 'gpkg':
+            uri = [dict_conn['dbfile']]
+
+        return ' '.join(uri)
+

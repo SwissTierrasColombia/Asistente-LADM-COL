@@ -148,8 +148,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def update_db_names(self):
         if self.cbo_db_source.currentData() == 'pg':
             dict_conn = self.read_connection_parameters()
-            uri = self.get_connection_uri(dict_conn)
             tmp_db_conn = PGConnector('')
+            uri = tmp_db_conn.get_connection_uri(dict_conn, 'pg', level=0)
 
             dbnames = tmp_db_conn.get_dbnames_list(uri)
             self.selected_db_combobox.clear()
@@ -163,8 +163,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def update_db_schemas(self):
         if self.cbo_db_source.currentData() == 'pg':
             dict_conn = self.read_connection_parameters()
-            uri = self.get_connection_uri(dict_conn)
             tmp_db_conn = PGConnector('')
+            uri = tmp_db_conn.get_connection_uri(dict_conn, 'pg')
 
             schemas_db = tmp_db_conn.get_dbname_schema_list(uri)
             self.selected_schema_combobox.clear()
@@ -191,11 +191,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         else:
             self.log.logMessage("Getting new db connection...", PLUGIN_NAME, Qgis.Info)
             dict_conn = self.read_connection_parameters()
-            uri = self.get_connection_uri(dict_conn)
             if self.cbo_db_source.currentData() == 'pg':
-                db = PGConnector(uri, dict_conn['schema'])
+                db = PGConnector(None, dict_conn['schema'], dict_conn)
             else:
-                db = GPKGConnector(uri)
+                db = GPKGConnector(None, conn_dict=dict_conn)
 
             if update_connection:
                 self._db = db
@@ -228,7 +227,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def set_db_connection(self, mode, dict_conn):
         """
-        To be used by external scripts
+        To be used by external scripts and unit tests
         """
         self.cbo_db_source.setCurrentIndex(self.cbo_db_source.findData(mode))
         self.db_source_changed()
@@ -237,21 +236,13 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.txt_pg_host.setText(dict_conn['host'])
             self.txt_pg_port.setText(dict_conn['port'])
 
+            self.selected_db_combobox.clear()
             dbname_setting = dict_conn['database']
-            index = self.selected_db_combobox.findText(dbname_setting, Qt.MatchFixedString)
-            if index >= 0:
-                self.selected_db_combobox.setCurrentIndex(index)
-            else:
-                # this is necessary to be able to run the unit tests, when the database is empty
-                self.selected_db_combobox.addItem(dbname_setting)
+            self.selected_db_combobox.addItem(dbname_setting)
 
+            self.selected_schema_combobox.clear()
             schema_setting = dict_conn['schema']
-            index = self.selected_schema_combobox.findText(schema_setting, Qt.MatchFixedString)
-            if index >= 0:
-                self.selected_schema_combobox.setCurrentIndex(index)
-            else:
-                # this is necessary to be able to run the unit tests, when the database is empty
-                self.selected_schema_combobox.addItem(schema_setting)
+            self.selected_schema_combobox.addItem(schema_setting)
 
             self.txt_pg_user.setText(dict_conn['username'])
             self.txt_pg_password.setText(dict_conn['password'])
@@ -328,14 +319,20 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_pg_port.setText(settings.value('Asistente-LADM_COL/pg/port'))
 
         dbname_setting = settings.value('Asistente-LADM_COL/pg/database')
-        index = self.selected_db_combobox.findText(dbname_setting, Qt.MatchFixedString)
-        if index >= 0:
-            self.selected_db_combobox.setCurrentIndex(index)
+        if self.selected_db_combobox.count():
+            index = self.selected_db_combobox.findText(dbname_setting, Qt.MatchFixedString)
+            if index >= 0:
+                self.selected_db_combobox.setCurrentIndex(index)
+        else:
+            self.selected_db_combobox.addItem(dbname_setting)
 
         schema_setting = settings.value('Asistente-LADM_COL/pg/schema')
-        index = self.selected_schema_combobox.findText(schema_setting, Qt.MatchFixedString)
-        if index >= 0:
-            self.selected_schema_combobox.setCurrentIndex(index)
+        if self.selected_schema_combobox.count():
+            index = self.selected_schema_combobox.findText(schema_setting, Qt.MatchFixedString)
+            if index >= 0:
+                self.selected_schema_combobox.setCurrentIndex(index)
+        else:
+            self.selected_schema_combobox.addItem(schema_setting)
 
         self.txt_pg_user.setText(settings.value('Asistente-LADM_COL/pg/username'))
         self.txt_pg_password.setText(settings.value('Asistente-LADM_COL/pg/password'))
@@ -455,21 +452,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def show_message(self, message, level):
         self.bar.pushMessage(message, level, 10)
 
-    def get_connection_uri(self, dict_conn, level=1):
-        uri = []
-        if self.cbo_db_source.currentData() == 'pg':
-            uri += ['host={}'.format(dict_conn['host'])]
-            uri += ['port={}'.format(dict_conn['port'])]
-            if dict_conn['database'] and level == 1:
-                uri += ['dbname={}'.format(dict_conn['database'])]
-            if dict_conn['username']:
-                uri += ['user={}'.format(dict_conn['username'])]
-            if dict_conn['password']:
-                uri += ['password={}'.format(dict_conn['password'])]
-        elif self.cbo_db_source.currentData() == 'gpkg':
-            uri = [dict_conn['dbfile']]
-        return ' '.join(uri)
-
     def set_connection_dirty(self, text):
         if not self.connection_is_dirty:
             self.connection_is_dirty = True
@@ -506,7 +488,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         if self.cbo_db_source.currentData() == 'pg':
             tmp_db_conn = PGConnector('')
             dict_conn = self.read_connection_parameters()
-            uri = self.get_connection_uri(dict_conn, level=0)
+            uri = tmp_db_conn.get_connection_uri(dict_conn, 'pg', level=0)
             test_conn = tmp_db_conn.test_connection(uri=uri, level=0)
             if test_conn[0]:
                 create_db_dlg = DialogGetDBOrSchemaName(dict_conn, 'database', parent=self)
@@ -520,7 +502,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         if self.cbo_db_source.currentData() == 'pg':
             tmp_db_conn = PGConnector('')
             dict_conn = self.read_connection_parameters()
-            uri = self.get_connection_uri(dict_conn, level=0)
+            uri = tmp_db_conn.get_connection_uri(dict_conn, 'pg', level=0)
             test_conn = tmp_db_conn.test_connection(uri=uri, level=0)
 
             if test_conn[0]:

@@ -87,13 +87,13 @@ class DialogGetDBOrSchemaName(QDialog, DIALOG_UI):
         if self.type == 'database':
             db_name = parameter_value
             # Connection with postgres server
-            uri = self.get_connection_uri(self.dict_conn)
+            uri = tmp_db_conn.get_connection_uri(self.dict_conn, 'pg')
             result = tmp_db_conn.create_database(uri, db_name)
         elif self.type == 'schema':
             db_name = self.parent.selected_db_combobox.currentText().strip()
             schema_name = parameter_value
             # Connection with postgres database
-            uri = self.get_connection_uri(self.dict_conn, 1) # 1: Connection at Database level
+            uri = tmp_db_conn.get_connection_uri(self.dict_conn, 'pg', level=1) # 1: Connection at Database level
             result = tmp_db_conn.create_schema(uri, schema_name)
 
         if result[0]:
@@ -111,23 +111,3 @@ class DialogGetDBOrSchemaName(QDialog, DIALOG_UI):
 
     def show_message(self, message, level):
         self.bar.pushMessage("Asistente LADM_COL", message, level, duration=0)
-
-    def get_connection_uri(self, dict_conn, level=0):
-        """
-        Get connection URI wit postgres DB
-        :param dict_conn: dictionary with connection database parameters
-        :param level: (int) level of connection with postgres
-                    0 = Server
-                    1 = Database
-        :return: (str) URI connection to DB
-        """
-        uri = []
-        uri += ['host={}'.format(dict_conn['host'])]
-        uri += ['port={}'.format(dict_conn['port'])]
-        uri += ['user={}'.format(dict_conn['username'])]
-        uri += ['password={}'.format(dict_conn['password'])]
-
-        if dict_conn['database'] and level == 1:
-            uri += ['dbname={}'.format(dict_conn['database'])]
-
-        return ' '.join(uri)

@@ -71,8 +71,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.setupUi(self)
 
         self.type_combo_box.clear()
-        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportSchema", "PostgreSQL/PostGIS"), 'ili2pg')
-        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportSchema", "GeoPackage"), 'ili2gpkg')
+        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportSchema", "PostgreSQL/PostGIS"), 'pg')
+        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportSchema", "GeoPackage"), 'gpkg')
+        self.type_combo_box.setCurrentIndex(
+            self.type_combo_box.findData(QSettings().value('Asistente-LADM_COL/db_connection_source', 'pg')))
         self.type_combo_box.currentIndexChanged.connect(self.type_changed)
         self.type_changed()
 
@@ -92,10 +94,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         # PG
         self.db_connect_label.setToolTip(self.db.get_display_conn_string())
-        self.db_connect_label.setText(self.db.dict_conn_params['database'])
         self.connection_setting_button.clicked.connect(self.show_settings)
-
         self.connection_setting_button.setText(QCoreApplication.translate("DialogImportSchema", "Connection Settings"))
+        if self.type_combo_box.currentData() == 'pg':
+            self.db_connect_label.setText(self.db.dict_conn_params['database'])
 
         # GPKG
         self.gpkg_file_line_edit.setPlaceholderText(QCoreApplication.translate("DialogImportSchema", "[Name of the Geopackage to be created]"))
@@ -180,14 +182,14 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.import_models_list_widget.setFocus()
             return
 
-        if self.type_combo_box.currentData() == 'ili2pg':
+        if self.type_combo_box.currentData() == 'pg':
             if not self.schema_name_line_edit.text().strip():
                 message_error = QCoreApplication.translate("DialogImportSchema", "Please set a valid schema name before creating the LADM-COL structure.")
                 self.txtStdout.setText(message_error)
                 self.show_message(message_error, Qgis.Warning)
                 self.schema_name_line_edit.setFocus()
                 return
-        elif self.type_combo_box.currentData() == 'ili2gpkg':
+        elif self.type_combo_box.currentData() == 'gpkg':
             if not configuration.dbfile or self.gpkg_file_line_edit.validator().validate(configuration.dbfile, 0)[0] != QValidator.Acceptable:
                 message_error = QCoreApplication.translate("DialogImportSchema", 'Please set a valid database file before creating the LADM-COL structure.')
                 self.txtStdout.setText(message_error)
@@ -208,7 +210,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
             importer = iliimporter.Importer()
 
-            importer.tool_name = self.type_combo_box.currentData()
+            importer.tool_name = 'ili2pg' if self.type_combo_box.currentData() == 'pg' else 'ili2gpkg'
             importer.configuration = configuration
             importer.stdout.connect(self.print_info)
             importer.stderr.connect(self.on_stderr)
@@ -240,13 +242,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def save_configuration(self, configuration):
         settings = QSettings()
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
-        settings.setValue('Asistente-LADM_COL/QgisModelBaker/importtype', self.type_combo_box.currentData())
-        if self.type_combo_box.currentData() == 'ili2gpkg':
-            settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2gpkg/dbfile', configuration.dbfile)
+        settings.setValue('Asistente-LADM_COL/db_connection_source', self.type_combo_box.currentData())
+        if self.type_combo_box.currentData() == 'gpkg':
+            settings.setValue('Asistente-LADM_COL/QgisModelBaker/gpkg/dbfile', configuration.dbfile)
 
     def restore_configuration(self):
         settings = QSettings()
-        self.type_combo_box.setCurrentIndex(self.type_combo_box.findData(settings.value('Asistente-LADM_COL/QgisModelBaker/importtype', 'ili2pg')))
+        self.type_combo_box.setCurrentIndex(self.type_combo_box.findData(settings.value('Asistente-LADM_COL/db_connection_source', 'pg')))
         self.type_changed()
 
         # Show log
@@ -263,17 +265,17 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def update_configuration(self):
         configuration = SchemaImportConfiguration()
 
-        if self.type_combo_box.currentData() == 'ili2pg':
+        if self.type_combo_box.currentData() == 'pg':
             # PostgreSQL specific options
-            configuration.tool_name = 'ili2pg'
+            configuration.tool_name = 'pg'
             configuration.dbhost = self.db.dict_conn_params['host']
             configuration.dbport = self.db.dict_conn_params['port']
             configuration.dbusr = self.db.dict_conn_params['username']
             configuration.database = self.db.dict_conn_params['database']
             configuration.dbschema = self.schema_name_line_edit.text().strip().lower()
             configuration.dbpwd = self.db.dict_conn_params['password']
-        elif self.type_combo_box.currentData() == 'ili2gpkg':
-            configuration.tool_name = 'ili2gpkg'
+        elif self.type_combo_box.currentData() == 'gpkg':
+            configuration.tool_name = 'gpkg'
             configuration.dbfile = self.db.dict_conn_params['dbfile']
 
         # set custom toml file
@@ -350,10 +352,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     def type_changed(self):
         self.progress_bar.hide()
-        if self.type_combo_box.currentData() == 'ili2pg':
+        if self.type_combo_box.currentData() == 'pg':
             self.pg_config.show()
             self.gpkg_config.hide()
-        elif self.type_combo_box.currentData() == 'ili2gpkg':
+        elif self.type_combo_box.currentData() == 'gpkg':
             self.pg_config.hide()
             self.gpkg_config.show()
             self.gpkg_file_line_edit.setValidator(self.gpkgSaveFileValidator)

@@ -25,11 +25,11 @@ from .db_connector import DBConnector
 
 
 class GPKGConnector(DBConnector):
-    def __init__(self, uri, schema=None):
+    def __init__(self, uri, schema=None, conn_dict={}):
         DBConnector.__init__(self, uri, schema)
-        self.uri = uri
-        self.conn = None
         self.mode = 'gpkg'
+        self.uri = uri if uri is not None else self.get_connection_uri(conn_dict, self.mode)
+        self.conn = None
         self.provider = 'ogr'
 
         self.dict_conn_params = {'dbfile': self.uri}
