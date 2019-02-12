@@ -259,7 +259,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         dict_conn = dict()
         dict_conn['host'] = self.txt_pg_host.text().strip() or 'localhost'
         dict_conn['port'] = self.txt_pg_port.text().strip() or '5432'
-        dict_conn['database'] = "'{}'".format(self.selected_db_combobox.currentText().strip())
+        dict_conn['database'] = self.selected_db_combobox.currentText().strip()
         dict_conn['schema'] = self.selected_schema_combobox.currentText().strip() or 'public'
         dict_conn['username'] = self.txt_pg_user.text().strip()
         dict_conn['password'] = self.txt_pg_password.text().strip()
