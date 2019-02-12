@@ -18,8 +18,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
-
 from QgisModelBaker.libili2db import iliimporter
 from QgisModelBaker.libili2db.ili2dbconfig import (SchemaImportConfiguration,
                                                    BaseConfiguration)
@@ -48,6 +46,8 @@ from ...config.general_config import (DEFAULT_EPSG,
                                       CREATE_BASKET_COL,
                                       CREATE_IMPORT_TID,
                                       STROKE_ARCS)
+from ...gui.dlg_get_java_path import DialogGetJavaPath
+from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
                                FileValidator,
@@ -222,10 +222,16 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                     self.show_message(QCoreApplication.translate("DialogImportSchema", "An error occurred when creating the LADM-COL structure. For more information see the log..."), Qgis.Warning)
                     return
             except JavaNotFoundError:
-                self.txtStdout.setTextColor(QColor('#000000'))
-                self.txtStdout.clear()
-                self.txtStdout.setText(QCoreApplication.translate("DialogImportSchema",
-                    """Java could not be found. Please <a href="https://java.com/en/download/">install Java</a> and or <a href="#configure">configure a custom java path</a>. We also support the JAVA_HOME environment variable in case you prefer this."""))
+                # Set JAVA PATH
+                get_java_path_dlg = DialogGetJavaPath()
+                get_java_path_dlg.setModal(True)
+                if get_java_path_dlg.exec_():
+                    configuration = self.update_configuration()
+                if not get_java_path_from_qgis_model_baker():
+                    self.txtStdout.setTextColor(QColor('#000000'))
+                    self.txtStdout.clear()
+                    self.txtStdout.setText(QCoreApplication.translate("DialogImportSchema",
+                                                                      """Java could not be found. Please <a href="https://java.com/en/download/">install Java</a> and or <a href="#configure">configure a custom java path</a>. We also support the JAVA_HOME environment variable in case you prefer this."""))
                 self.enable()
                 self.progress_bar.hide()
                 return
@@ -283,6 +289,12 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         configuration.create_basket_col = CREATE_BASKET_COL
         configuration.create_import_tid = CREATE_IMPORT_TID
         configuration.stroke_arcs = STROKE_ARCS
+
+        # Set java path
+        settings = QSettings()
+        java_path = settings.value('QgisModelBaker/ili2db/JavaPath', '', str)
+        if java_path:
+            self.base_configuration.java_path = java_path
 
         # Check custom model directories
         if self.use_local_models:

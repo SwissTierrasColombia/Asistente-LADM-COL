@@ -45,6 +45,8 @@ from qgis.gui import QgsMessageBar
 
 from ...config.general_config import (DEFAULT_HIDDEN_MODELS,
                                       SETTINGS_CONNECTION_TAB_INDEX)
+from ...gui.dlg_get_java_path import DialogGetJavaPath
+from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
                                FileValidator,
@@ -312,9 +314,17 @@ class DialogExportData(QDialog, DIALOG_UI):
                     self.show_message(QCoreApplication.translate("DialogExportData", "An error occurred when exporting the data. For more information see the log..."), Qgis.Warning)
                     return
             except JavaNotFoundError:
-                self.txtStdout.setTextColor(QColor('#000000'))
-                self.txtStdout.clear()
-                self.txtStdout.setText(QCoreApplication.translate("DialogExportData", """Java could not be found. Please <a href="https://java.com/en/download/">install Java</a> and or <a href="#configure">configure a custom java path</a>. We also support the JAVA_HOME environment variable in case you prefer this."""))
+                # Set JAVA PATH
+                get_java_path_dlg = DialogGetJavaPath()
+                get_java_path_dlg.setModal(True)
+                if get_java_path_dlg.exec_():
+                    configuration = self.update_configuration()
+
+                if not get_java_path_from_qgis_model_baker():
+                    self.txtStdout.setTextColor(QColor('#000000'))
+                    self.txtStdout.clear()
+                    self.txtStdout.setText(QCoreApplication.translate("DialogExportData",
+                                                                      """Java could not be found. Please <a href="https://java.com/en/download/">install Java</a> and or <a href="#configure">configure a custom java path</a>. We also support the JAVA_HOME environment variable in case you prefer this."""))
                 self.enable()
                 self.progress_bar.hide()
                 return
@@ -369,6 +379,12 @@ class DialogExportData(QDialog, DIALOG_UI):
             configuration.dbfile = self.db.dict_conn_params["dbfile"]
 
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
+
+        # Set java path
+        settings = QSettings()
+        java_path = settings.value('QgisModelBaker/ili2db/JavaPath', '', str)
+        if java_path:
+            self.base_configuration.java_path = java_path
 
         # Check custom model directories
         if QSettings().value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool):
