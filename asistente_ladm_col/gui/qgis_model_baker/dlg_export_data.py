@@ -293,7 +293,7 @@ class DialogExportData(QDialog, DIALOG_UI):
 
             exporter = iliexporter.Exporter()
 
-            exporter.tool_name = self.type_combo_box.currentData()
+            exporter.tool_name = 'ili2pg' if self.type_combo_box.currentData() == 'pg' else 'ili2gpkg'
             exporter.configuration = configuration
 
             self.save_configuration(configuration)

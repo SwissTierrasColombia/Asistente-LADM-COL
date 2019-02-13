@@ -298,7 +298,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
             dataImporter = iliimporter.Importer(dataImport=True)
 
-            dataImporter.tool_name = self.type_combo_box.currentData()
+            dataImporter.tool_name = 'ili2pg' if self.type_combo_box.currentData() == 'pg' else 'ili2gpkg'
             dataImporter.configuration = configuration
 
             self.save_configuration(configuration)
