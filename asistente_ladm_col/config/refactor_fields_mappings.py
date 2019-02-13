@@ -92,23 +92,23 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == COL_PARTY_TABLE:
         mapping = [
-            {'name': 'documento_identidad', 'type': 10, 'length': 10, 'precision': -1, 'expression': '"documento_identidad"'},
-            {'name': 'tipo_documento', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo_documento"'},
-            {'name': 'organo_emisor', 'type': 10, 'length': 20, 'precision': -1, 'expression': '"organo_emisor"'},
-            {'name': 'fecha_emision', 'type': 14, 'length': -1, 'precision': -1, 'expression': '"fecha_emision"'},
-            {'name': 'primer_apellido', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"primer_apellido"'},
-            {'name': 'primer_nombre', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"primer_nombre"'},
-            {'name': 'segundo_apellido', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"segundo_apellido"'},
-            {'name': 'segundo_nombre', 'type': 10, 'length': 50, 'precision': -1, 'expression': '"segundo_nombre"'},
-            {'name': 'genero', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"genero"'},
-            {'name': 'nombre', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"nombre"'},
-            {'name': 'tipo', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"tipo"'},
-            {'name': 'razon_social', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"razon_social"'},
-            {'name': 'p_espacio_de_nombres', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"p_espacio_de_nombres"'},
-            {'name': 'p_local_id', 'type': 10, 'length': 255, 'precision': -1, 'expression': '"p_local_id"'},
-            {'name': 'agrupacion', 'type': 4, 'length': -1, 'precision': 0, 'expression': '"agrupacion"'},
-            {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
-            {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
+            {'expression': '"documento_identidad"', 'length': 12, 'name': 'documento_identidad', 'precision': -1, 'type': 10},
+            {'expression': '"tipo_documento"', 'length': 255, 'name': 'tipo_documento', 'precision': -1, 'type': 10},
+            {'expression': '"organo_emisor"', 'length': 20, 'name': 'organo_emisor', 'precision': -1, 'type': 10},
+            {'expression': '"fecha_emision"', 'length': -1, 'name': 'fecha_emision', 'precision': -1, 'type': 14},
+            {'expression': '"primer_apellido"', 'length': 100, 'name': 'primer_apellido', 'precision': -1, 'type': 10},
+            {'expression': '"primer_nombre"', 'length': 100, 'name': 'primer_nombre', 'precision': -1, 'type': 10},
+            {'expression': '"segundo_apellido"', 'length': 100, 'name': 'segundo_apellido', 'precision': -1, 'type': 10},
+            {'expression': '"segundo_nombre"', 'length': 100, 'name': 'segundo_nombre', 'precision': -1, 'type': 10},
+            {'expression': '"razon_social"', 'length': 250, 'name': 'razon_social', 'precision': -1, 'type': 10},
+            {'expression': '"genero"', 'length': 255, 'name': 'genero', 'precision': -1, 'type': 10},
+            {'expression': '"tipo_interesado_juridico"', 'length': 255, 'name': 'tipo_interesado_juridico', 'precision': -1, 'type': 10},
+            {'expression': '"nombre"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10},
+            {'expression': '"tipo"', 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10},
+            {'expression': '"p_espacio_de_nombres"', 'length': 255, 'name': 'p_espacio_de_nombres', 'precision': -1, 'type': 10},
+            {'expression': '"p_local_id"', 'length': 255, 'name': 'p_local_id', 'precision': -1, 'type': 10},
+            {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
+            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
         ]
     elif layer_name == ADMINISTRATIVE_SOURCE_TABLE:
         mapping = [
