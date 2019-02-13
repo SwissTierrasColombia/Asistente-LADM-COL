@@ -104,7 +104,7 @@ def java_path_is_valid(java_path):
                 java_version = re.search(pattern, procs_message).groups()[0]
 
                 if java_version:
-                    if float(java_version) >= JAVA_REQUIRED_VERSION:
+                    if float(java_version) == JAVA_REQUIRED_VERSION:
                         return (True, QCoreApplication.translate("DialogGetJavaPath", "Java path has been configured correctly."))
                     else:
                         return (False, QCoreApplication.translate("DialogGetJavaPath", "Java version is not valid. Current version is {} and must be greater than {}.").format(java_version, JAVA_REQUIRED_VERSION))

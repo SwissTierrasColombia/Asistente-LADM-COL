@@ -321,10 +321,11 @@ class DialogExportData(QDialog, DIALOG_UI):
                     configuration = self.update_configuration()
 
                 if not get_java_path_from_qgis_model_baker():
+                    message_error_java = QCoreApplication.translate("DialogExportData", """Java could not be found. Please <a href="https://java.com/en/download/">install Java</a> and or <a href="#configure">configure a custom java path</a>. We also support the JAVA_HOME environment variable in case you prefer this.""")
                     self.txtStdout.setTextColor(QColor('#000000'))
                     self.txtStdout.clear()
-                    self.txtStdout.setText(QCoreApplication.translate("DialogExportData",
-                                                                      """Java could not be found. Please <a href="https://java.com/en/download/">install Java</a> and or <a href="#configure">configure a custom java path</a>. We also support the JAVA_HOME environment variable in case you prefer this."""))
+                    self.txtStdout.setText(message_error_java)
+                    self.show_message(message_error_java, Qgis.Warning)
                 self.enable()
                 self.progress_bar.hide()
                 return
@@ -379,10 +380,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             configuration.dbfile = self.db.dict_conn_params["dbfile"]
 
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
-
-        # Set java path
-        settings = QSettings()
-        java_path = settings.value('QgisModelBaker/ili2db/JavaPath', '', str)
+        java_path = get_java_path_from_qgis_model_baker()
         if java_path:
             self.base_configuration.java_path = java_path
 
