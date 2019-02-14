@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os
 import re
 import subprocess
 from qgis.PyQt.QtCore import (Qt,
@@ -95,6 +96,9 @@ def java_path_is_valid(java_path):
     :return: (bool, str)  True if java Path is valid, False in another case
     """
     try:
+        if os.name == 'nt':
+            java_path = validate_java_path(java_path)
+
         procs_message = subprocess.check_output([java_path, '-version'], stderr=subprocess.STDOUT).decode('utf8').lower()
         types_java = ['jre', 'java', 'jdk']
 
@@ -116,3 +120,9 @@ def java_path_is_valid(java_path):
             return (False, QCoreApplication.translate("DialogGetJavaPath", "Java path is not valid, please select a valid path..."))
     except Exception as e:
         return (False, QCoreApplication.translate("DialogGetJavaPath", "Java path is not valid, please select a valid path..."))
+
+def validate_java_path(java_path):
+    escape_characters = [('\a', '\\a'), ('\b', '\\b'), ('\f', '\\f'), ('\n', '\\n'), ('\r', '\\r'), ('\t', '\\t'), ('\v', '\\v')]
+    for escape_character in escape_characters:
+        java_path = java_path.replace(escape_character[0], escape_character[1])
+    return java_path
