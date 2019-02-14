@@ -214,10 +214,13 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         if self.connection_is_dirty:
             self.connection_is_dirty = False
-            if self._db.test_connection()[0]:
+            res, msg = self._db.test_connection()
+            if res:
                 self.cache_layers_and_relations_requested.emit(self._db)
                 self.refresh_menus_requested.emit(self._db)
-
+            else:
+                self.show_message(msg, Qgis.Warning)
+                return
         self.save_settings()
 
     def reject(self):

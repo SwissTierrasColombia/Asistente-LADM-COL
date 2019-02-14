@@ -309,14 +309,22 @@ class PGConnector(DBConnector):
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
 
-        # TODO: Test schema permissions
-
-        if level == 1:
-            if self.model_parser is None:
-                self.model_parser = ModelParser(self)
-            if not self.model_parser.validate_cadastre_model_version()[0]:
-                return (False, QCoreApplication.translate("PGConnector",
-                        "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
+        res, msg = self.get_schema_privileges(uri, self.schema)
+        if res:
+            if msg['create']  and msg['create']:
+                if level == 1:
+                    try:
+                        if self.model_parser is None:
+                            self.model_parser = ModelParser(self)
+                        if not self.model_parser.validate_cadastre_model_version()[0]:
+                            return (False, QCoreApplication.translate("PGConnector", "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
+                    except psycopg2.ProgrammingError as e:
+                        # if it is not possible to consult the scheme for lack of privileges
+                        return (False, QCoreApplication.translate("PGConnector", "The schema '{}' the scheme does not have permissions to be consulted: {}").format(self.schema, e))
+            else:
+                return (False, QCoreApplication.translate("PGConnector", "The schema '{}' the scheme does not have permissions to be consulted").format(self.schema))
+        else:
+            return (False, msg)
 
         return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS successful!"))
 
@@ -828,8 +836,8 @@ class PGConnector(DBConnector):
                 conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
                 cur = conn.cursor()
                 cur.execute(sql)
-            except psycopg2.ProgrammingError:
-                return (False, QCoreApplication.translate("PGConnector", 'Database "{}" already exists.'.format(db_name)))
+            except psycopg2.ProgrammingError as e:
+                return (False, QCoreApplication.translate("PGConnector",'An error occurred while trying to create the "{}" database: {}'.format(db_name, e)))
         cur.close()
         conn.close()
         return (True, QCoreApplication.translate("PGConnector", 'Database "{}" was successfully created!'.format(db_name)))
@@ -851,8 +859,8 @@ class PGConnector(DBConnector):
                 conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
                 cur = conn.cursor()
                 cur.execute(sql)
-            except psycopg2.ProgrammingError:
-                return (False, QCoreApplication.translate("PGConnector", 'Schema "{}" already exists.'.format(schema_name)))
+            except psycopg2.ProgrammingError as e:
+                return (False, QCoreApplication.translate("PGConnector", 'An error occurred while trying to create the "{}" schema: {}'.format(schema_name, e)))
         cur.close()
         conn.close()
         return (True, QCoreApplication.translate("PGConnector", 'Schema "{}" was successfully created!'.format(schema_name)))
@@ -893,3 +901,27 @@ class PGConnector(DBConnector):
             return (False, QCoreApplication.translate("PGConnector",
                                                "There was an error when obtaining the list of existing schemas: {}").format(e))
         return (True, schemas_list)
+
+    def get_schema_privileges(self, uri, schema):
+        try:
+            conn = psycopg2.connect(uri)
+            cur = conn.cursor()
+            query = """
+            SELECT
+                CASE WHEN pg_catalog.has_schema_privilege(current_user, '{schema}', 'CREATE') = True  THEN 1 ELSE 0 END AS "create",
+                CASE WHEN pg_catalog.has_schema_privilege(current_user, '{schema}', 'USAGE')  = True  THEN 1 ELSE 0 END AS "usage";
+            """.format(schema=schema)
+
+            cur.execute(query)
+            schema_privileges = cur.fetchone()
+            if schema_privileges:
+                privileges = {'create': bool(int(schema_privileges[0])),  # 'create'
+                              'usage': bool(int(schema_privileges[1]))}  # 'usage'
+            else:
+                return (False, QCoreApplication.translate("PGConnector", "No information for {} scheme ").format(self.schema))
+            cur.close()
+            conn.close()
+        except Exception as e:
+            return (False, QCoreApplication.translate("PGConnector",
+                                               "There was an error when obtaining privileges for {} schema: {}").format(schema, e))
+        return (True, privileges)
