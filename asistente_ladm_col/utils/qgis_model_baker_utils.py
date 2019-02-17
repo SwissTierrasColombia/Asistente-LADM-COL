@@ -16,8 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os
 import qgis
-from qgis.PyQt.QtCore import QObject
+from qgis.PyQt.QtCore import (QObject,
+                              QSettings)
 from qgis.core import (QgsProject,
                        Qgis,
                        QgsApplication)
@@ -157,3 +159,13 @@ class QgisModelBakerUtils(QObject):
             import QgisModelBaker
             return QgisModelBaker.utils.qgis_utils.get_suggested_index_for_layer(layer, group)
         return None
+
+def get_java_path_dir_from_qgis_model_baker():
+    java_path = QSettings().value('QgisModelBaker/ili2db/JavaPath')
+    java_path_dir = os.path.dirname(os.path.dirname(java_path or ''))
+    return java_path_dir
+
+def get_java_path_from_qgis_model_baker():
+    java_path = QSettings().value('QgisModelBaker/ili2db/JavaPath', '', str)
+    return java_path
+

@@ -44,7 +44,13 @@ from qgis.gui import QgsMessageBar
 
 from ...config.general_config import (DEFAULT_EPSG,
                                       DEFAULT_INHERITANCE,
-                                      DEFAULT_HIDDEN_MODELS, SETTINGS_CONNECTION_TAB_INDEX)
+                                      DEFAULT_HIDDEN_MODELS,
+                                      SETTINGS_CONNECTION_TAB_INDEX,
+                                      CREATE_BASKET_COL,
+                                      CREATE_IMPORT_TID,
+                                      STROKE_ARCS)
+from ...gui.dlg_get_java_path import DialogGetJavaPath
+from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
                                FileValidator,
@@ -64,6 +70,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.db = db
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
+
         self.ilicache = IliCache(self.base_configuration)
         self.ilicache.refresh()
 
@@ -256,7 +263,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.update_schema_names_model()
 
     def accepted(self):
-        configuration = self.updated_configuration()
+        configuration = self.update_configuration()
 
         if not os.path.isfile(self.xtf_file_line_edit.text().strip()):
             message_error = 'Please set a valid XTF file before importing data. XTF file does not exist'
@@ -317,9 +324,20 @@ class DialogImportData(QDialog, DIALOG_UI):
                     self.show_message(QCoreApplication.translate("DialogImportData", "An error occurred when importing the data. For more information see the log..."), Qgis.Warning)
                     return
             except JavaNotFoundError:
-                self.txtStdout.setTextColor(QColor('#000000'))
-                self.txtStdout.clear()
-                self.txtStdout.setText(QCoreApplication.translate("DialogImportData", "Java could not be found. Please <a href=\"https://java.com/en/download/\">install Java</a> and or <a href=\"#configure\">configure a custom java path</a>. We also support the JAVA_HOME environment variable in case you prefer this."))
+
+                # Set JAVA PATH
+                get_java_path_dlg = DialogGetJavaPath()
+                get_java_path_dlg.setModal(True)
+                if get_java_path_dlg.exec_():
+                    configuration = self.update_configuration()
+
+                if not get_java_path_from_qgis_model_baker():
+                    message_error_java = QCoreApplication.translate("DialogImportData",
+                                                                    """Java could not be found. You can configure the JAVA_HOME environment variable, restart QGIS and try again.""")
+                    self.txtStdout.setTextColor(QColor('#000000'))
+                    self.txtStdout.clear()
+                    self.txtStdout.setText(message_error_java)
+                    self.show_message(message_error_java, Qgis.Warning)
                 self.enable()
                 self.progress_bar.hide()
                 return
@@ -356,7 +374,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         if self.use_local_models:
             self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models') if settings.value('Asistente-LADM_COL/models/custom_models') else None
 
-    def updated_configuration(self):
+    def update_configuration(self):
         """
         Get the configuration that is updated with the user configuration changes on the dialog.
         :return: Configuration
@@ -379,9 +397,13 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         configuration.epsg = DEFAULT_EPSG
         configuration.inheritance = DEFAULT_INHERITANCE
-        configuration.create_basket_col = False
-        configuration.create_import_tid = False
-        configuration.stroke_arcs = True
+        configuration.create_basket_col = CREATE_BASKET_COL
+        configuration.create_import_tid = CREATE_IMPORT_TID
+        configuration.stroke_arcs = STROKE_ARCS
+
+        java_path = get_java_path_from_qgis_model_baker()
+        if java_path:
+            self.base_configuration.java_path = java_path
 
         # Check custom model directories
         if self.use_local_models:

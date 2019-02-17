@@ -41,6 +41,7 @@ from qgis.core import (QgsWkbTypes,
                        Qgis,
                        QgsNetworkContentFetcherTask,
                        QgsApplication)
+from ..utils.qgis_model_baker_utils import get_java_path_dir_from_qgis_model_baker
 
 from ..config.general_config import (TEST_SERVER,
                                      PLUGIN_NAME,
@@ -48,9 +49,9 @@ from ..config.general_config import (TEST_SERVER,
                                      URL_REPORTS_LIBRARIES)
 from ..config.table_mapping_config import (ID_FIELD,
                                            PLOT_TABLE)
-from ..utils.qt_utils import (OverrideCursor,
-                              remove_readonly,
+from ..utils.qt_utils import (remove_readonly,
                               normalize_local_url)
+from ..gui.dlg_get_java_path import DialogGetJavaPath
 
 class ReportGenerator():
     def __init__(self, qgis_utils):
@@ -136,11 +137,6 @@ class ReportGenerator():
     def get_tmp_filename(self, basename, extension='gpkg'):
         return "{}_{}.{}".format(basename, str(time.time()).replace(".",""), extension)
 
-    def get_java_path_from_qgis_model_baker(self):
-        path = QSettings().value('QgisModelBaker/ili2db/JavaPath')
-        java_path = os.path.dirname(os.path.dirname(path or ''))
-        return java_path
-
     def generate_report(self, db, button):
         # Check if mapfish and Jasper are installed, otherwise show where to
         # download them from and return
@@ -173,15 +169,20 @@ class ReportGenerator():
         # Check if JAVA_HOME path is set, otherwise use path from QGIS Model Baker
         if os.name == 'nt':
             if 'JAVA_HOME' not in os.environ:
-                java_path = self.get_java_path_from_qgis_model_baker()
-                if not java_path:
-                    self.qgis_utils.message_emitted.emit(
-                        QCoreApplication.translate("ReportGenerator",
-                                                   "Please set JAVA_HOME path in QGIS Model Baker Settings or in Environmental Variables for your OS"),
-                        Qgis.Warning)
-                    return
+                java_path_dir = get_java_path_dir_from_qgis_model_baker()
+                if not java_path_dir:
+                    # Set Java Home
+                    get_java_path_dlg = DialogGetJavaPath()
+                    get_java_path_dlg.setModal(True)
+                    get_java_path_dlg.exec_()
+
+                    java_path_dir = get_java_path_dir_from_qgis_model_baker()
+                    if not java_path_dir:
+                        self.qgis_utils.message_emitted.emit(
+                            QCoreApplication.translate("ReportGenerator", "Please set JAVA_HOME path in QGIS Model Baker Settings or in your OS environmental variables."), Qgis.Warning)
+                        return
                 else:
-                    os.environ["JAVA_HOME"] = java_path
+                    os.environ["JAVA_HOME"] = java_path_dir
                     self.log.logMessage("The JAVA_HOME path has been set using QGIS Model Baker Settings for reports.", PLUGIN_NAME, Qgis.Info)
 
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)

@@ -101,6 +101,9 @@ MODULE_HELP_MAPPING = {
     'import_data' : 'data_management.html#import-data',
     'export_data' : 'data_management.html#export-data'
 }
+
+JAVA_REQUIRED_VERSION = 1.8
+
 # Configure QGIS Model Baker Dependency
 QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.1.0.1"
 
