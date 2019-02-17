@@ -1732,105 +1732,110 @@
 <context>
     <name>DialogExportData</name>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="74"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="76"/>
         <source>PostgreSQL/PostGIS</source>
         <translation>PostgreSQL/PostGIS</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="75"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="77"/>
         <source>GeoPackage</source>
         <translation>GeoPackage</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="80"/>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="280"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="82"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="282"/>
         <source>Save in XTF Transfer File</source>
         <translation>Guardar en archivo de transferencia XTF</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="81"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="83"/>
         <source>XTF Transfer File (*.xtf);;Interlis 1 Transfer File (*.itf);;XML (*.xml);;GML (*.gml)</source>
         <translation>XTF Transfer File (*.xtf);;Interlis 1 Transfer File (*.itf);;XML (*.xml);;GML (*.gml)</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="87"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="89"/>
         <source>[Name of the XTF to be created]</source>
         <translation>[Nombre del XTF a ser creado]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="98"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="100"/>
         <source>Connection Settings</source>
         <translation>Configurar conexión</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="101"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="103"/>
         <source>[Name of the Geopackage to be created]</source>
         <translation>[Nombre de la base de datos GeoPackage que va a ser creada]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="102"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="104"/>
         <source>Open GeoPackage database file</source>
         <translation>Abrir archivo de base de datos GeoPackage</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="102"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="104"/>
         <source>GeoPackage Database (*.gpkg)</source>
         <translation>Base de datos GeoPackage (*.gpkg)</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="109"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="111"/>
         <source>Show log</source>
         <translation>Mostrar detalles</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="120"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="122"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="239"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="241"/>
         <source>You need to select a valid schema where to get the data from.</source>
         <translation>Debes seleccionar un esquema válido desde el cuál se obtendrán los datos.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="246"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="248"/>
         <source>Please set a valid XTF file before exporting data.</source>
         <translation>Por favor define un archivo XTF válido antes de exportar los datos.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="253"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="255"/>
         <source>Please set a valid schema to export. This schema does not have information to export.</source>
         <translation>Por favor define un esquema válido para exportar. Este esquema no tiene información para exportar.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="260"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="262"/>
         <source>Please set a model before exporting data.</source>
         <translation>Por favor define un modelo antes de exportar los datos.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="268"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="270"/>
         <source>Please set an existing database file before creating the project.</source>
         <translation>Por favor define una base de datos válida antes de crear el proyecto.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="279"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="281"/>
         <source>{filename} already exists.
 Do you want to replace it?</source>
         <translation>{filename} ya existe.
 ¿Quieres reemplazarlo?</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="312"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="314"/>
         <source>An error occurred when exporting the data. For more information see the log...</source>
         <translation>Ocurrió un error cuando se exportaban datos. Para más información revisa los detalles del log...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="326"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="324"/>
+        <source>Java could not be found. You can configure the JAVA_HOME environment variable, restart QGIS and try again.</source>
+        <translation>No se pudo encontrar Java. Puedes configurar la variable de entorno JAVA_HOME, reiniciar QGIS e intentarlo de nuevo.</translation>
+    </message>
+    <message>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="338"/>
         <source>Export of the data was successfully completed.</source>
         <translation>Se exportaron los datos exitósamente.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="407"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="423"/>
         <source>Finished ({})</source>
         <translation>Terminado ({})</translation>
     </message>
@@ -1838,62 +1843,66 @@ Do you want to replace it?</source>
 <context>
     <name>DialogImportData</name>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="81"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="88"/>
         <source>[Name of the XTF to be created]</source>
         <translation>[Nombre del XTF a ser creado]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="95"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="102"/>
         <source>[Name of the Geopackage to be created]</source>
         <translation>[Nombre de la base de datos GeoPackage que va a ser creada]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="110"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="117"/>
         <source>Show log</source>
         <translation>Mostrar detalles</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="120"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="127"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="154"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="161"/>
         <source>No models were found in the XTF. Is it a valid file?</source>
         <translation>No se encontraron modelos en el archivo XTF. ¿Es un archivo válido?</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="160"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="167"/>
         <source>Please set a valid XTF file</source>
         <translation>Por favor selecciona un archivo XTF válido</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="277"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="284"/>
         <source>The selected XTF file does not have information according to the LADM-COL model to import.</source>
         <translation>El archivo XTF seleccionado no tiene información correspondiente al modelo LADM-COL para importar.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="285"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="292"/>
         <source>Please set a valid database file before creating the project.</source>
         <translation>Por favor define una base de datos válida antes de crear el proyecto.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="317"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="324"/>
         <source>An error occurred when importing the data. For more information see the log...</source>
         <translation>Ocurrió un error cuando se importaban datos. Para más información revisa los detalles del log...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="322"/>
-        <source>Java could not be found. Please &lt;a href=&quot;https://java.com/en/download/&quot;&gt;install Java&lt;/a&gt; and or &lt;a href=&quot;#configure&quot;&gt;configure a custom java path&lt;/a&gt;. We also support the JAVA_HOME environment variable in case you prefer this.</source>
-        <translation>No se encontró JAVA. Por favor &lt;a href=&quot;https://java.com/en/download/&quot;&gt;instala Java&lt;/a&gt; o &lt;a href=&quot;#configure&quot;&gt;configura una ruta personalizada a Java&lt;/a&gt;. La variable de entorno JAVA_HOME también está soportada.</translation>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="335"/>
+        <source>Java could not be found. You can configure the JAVA_HOME environment variable, restart QGIS and try again.</source>
+        <translation>No se pudo encontrar Java. Puedes configurar la variable de entorno JAVA_HOME, reiniciar QGIS e intentarlo de nuevo.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="331"/>
+        <source>Java could not be found. Please &lt;a href=&quot;https://java.com/en/download/&quot;&gt;install Java&lt;/a&gt; and or &lt;a href=&quot;#configure&quot;&gt;configure a custom java path&lt;/a&gt;. We also support the JAVA_HOME environment variable in case you prefer this.</source>
+        <translation type="vanished">No se encontró JAVA. Por favor &lt;a href=&quot;https://java.com/en/download/&quot;&gt;instala Java&lt;/a&gt; o &lt;a href=&quot;#configure&quot;&gt;configura una ruta personalizada a Java&lt;/a&gt;. La variable de entorno JAVA_HOME también está soportada.</translation>
+    </message>
+    <message>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="349"/>
         <source>Import of the data was successfully completed</source>
         <translation>Se importaron los datos exitósamente</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="424"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="447"/>
         <source>Error when importing data</source>
         <translation>Error al importar datos</translation>
     </message>
@@ -1911,7 +1920,7 @@ Do you want to replace it?</source>
         <translation>GeoPackage</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="79"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="81"/>
         <source>[Name of the schema to be created]</source>
         <translation>[Nombre del esquema a ser creado]</translation>
     </message>
@@ -1921,66 +1930,71 @@ Do you want to replace it?</source>
         <translation>Configurar conexión</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="101"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="103"/>
         <source>[Name of the Geopackage to be created]</source>
         <translation>[Nombre de la base de datos GeoPackage que va a ser creada]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="103"/>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="368"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="105"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="382"/>
         <source>Open GeoPackage database file</source>
         <translation>Abrir archivo de base de datos GeoPackage</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="104"/>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="369"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="106"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="383"/>
         <source>GeoPackage Database (*.gpkg)</source>
         <translation>Base de datos GeoPackage (*.gpkg)</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="114"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="116"/>
         <source>Show log</source>
         <translation>Mostrar detalles</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="124"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="126"/>
         <source>Create LADM-COL structure</source>
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="177"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="179"/>
         <source>Please set a valid model(s) before creating the LADM-COL structure.</source>
         <translation>Por favor define un(os) modelo(s) válido(s) antes de crear la estructura LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="185"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="187"/>
         <source>Please set a valid schema name before creating the LADM-COL structure.</source>
         <translation>Por favor define un esquema válido antes de crear la estructura LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="222"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="224"/>
         <source>An error occurred when creating the LADM-COL structure. For more information see the log...</source>
         <translation>Ocurrió un error cuando se creaba la estructura LADM-COL. Para más información revisa los detalles del log...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="237"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="233"/>
+        <source>Java could not be found. You can configure the JAVA_HOME environment variable, restart QGIS and try again.</source>
+        <translation>No se pudo encontrar Java. Puedes configurar la variable de entorno JAVA_HOME, reiniciar QGIS e intentarlo de nuevo.</translation>
+    </message>
+    <message>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="247"/>
         <source>
 Done!</source>
         <translation>
 ¡Terminado exitósamente!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="238"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="248"/>
         <source>Creation of the LADM-COL structure was successfully completed</source>
         <translation>La estructura LADM-COL se creó exitósamente</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="317"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="331"/>
         <source>Model(s) successfully imported into the database!</source>
         <translation>¡Se importaron exitósamente los modelos a la base de datos!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="320"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="334"/>
         <source>Finished with errors!</source>
         <translation>¡Terminado con errores!</translation>
     </message>
@@ -2865,49 +2879,68 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>PGConnector</name>
     <message>
-        <location filename="../lib/dbconnector/pg_connector.py" line="294"/>
+        <location filename="../lib/dbconnector/pg_connector.py" line="299"/>
         <source>There was an error connecting to the database: {}</source>
         <translation>Hubo un error conectando a la base de datos: {}</translation>
     </message>
     <message>
-        <location filename="../lib/dbconnector/pg_connector.py" line="298"/>
         <source>The current database does not have PostGIS installed! Please install it before proceeding.</source>
-        <translation>¡La base de datos actual no tiene PostGIS instalado! Instálalo antes de continuar.</translation>
+        <translation type="vanished">¡La base de datos actual no tiene PostGIS instalado! Instálalo antes de continuar.</translation>
     </message>
     <message>
-        <location filename="../lib/dbconnector/pg_connector.py" line="301"/>
+        <location filename="../lib/dbconnector/pg_connector.py" line="308"/>
         <source>The schema &apos;{}&apos; does not exist in the database!</source>
         <translation>¡El esquema {} no existe en la base de datos!</translation>
     </message>
     <message>
-        <location filename="../lib/dbconnector/pg_connector.py" line="304"/>
+        <location filename="../lib/dbconnector/pg_connector.py" line="311"/>
         <source>The schema &apos;{}&apos; is not a valid INTERLIS schema. That is, the schema doesn&apos;t have some INTERLIS metadata tables.</source>
         <translation>El esquema {} no es un esquema válido de INTERLIS. Esto es, al esquema le hacen falta tablas de metadatos de INTERLIS.</translation>
     </message>
     <message>
-        <location filename="../lib/dbconnector/pg_connector.py" line="311"/>
+        <location filename="../lib/dbconnector/pg_connector.py" line="322"/>
         <source>The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to &lt;a href=&quot;{}&quot;&gt;the QGIS Plugins Repo&lt;/a&gt; to download another version of this plugin.</source>
         <translation>La verión del modelo Catastro-Registro en la base de datos es antigua y no está soportada en esta versión del plugin. Ve a &lt;a href=&quot;{}&quot;&gt;the QGIS Plugins Repo&lt;/a&gt; para descargar otra versión de este plugin.</translation>
     </message>
     <message>
-        <location filename="../lib/dbconnector/pg_connector.py" line="314"/>
+        <location filename="../lib/dbconnector/pg_connector.py" line="326"/>
+        <source>User &apos;{}&apos; has not enough permissions over the schema &apos;{}&apos;. Details: {}</source>
+        <translation>El usuario &apos;{}&apos; no tiene suficientes permisos sobre el esquema &apos;{}&apos;. Detalles: {}</translation>
+    </message>
+    <message>
+        <location filename="../lib/dbconnector/pg_connector.py" line="333"/>
+        <source>User &apos;{}&apos; has not enough permissions over the schema &apos;{}&apos;.</source>
+        <translation>El usuario &apos;{}&apos; no tiene suficientes permisos sobre el esquema &apos;{}&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../lib/dbconnector/pg_connector.py" line="340"/>
         <source>Connection to PostGIS successful!</source>
         <translation>¡Conexión exitosa a base de datos de PostGIS!</translation>
     </message>
     <message>
-        <location filename="../lib/dbconnector/pg_connector.py" line="369"/>
+        <location filename="../lib/dbconnector/pg_connector.py" line="395"/>
         <source>Layer &apos;{}&apos; was not found in the database (schema: {}).</source>
         <translation>No se encontró la capa &apos;{}&apos; en la base de datos (esquema: {}).</translation>
     </message>
     <message>
-        <location filename="../lib/dbconnector/pg_connector.py" line="866"/>
+        <location filename="../lib/dbconnector/pg_connector.py" line="892"/>
         <source>There was an error when obtaining the list of existing databases. : {}</source>
         <translation>Hubo un error obteniendo el listado de bases de datos existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/dbconnector/pg_connector.py" line="886"/>
+        <location filename="../lib/dbconnector/pg_connector.py" line="912"/>
         <source>There was an error when obtaining the list of existing schemas: {}</source>
         <translation>Hubo un error obteniendo el listado de esquemas existentes.: {}</translation>
+    </message>
+    <message>
+        <location filename="../lib/dbconnector/pg_connector.py" line="932"/>
+        <source>No information for schema &apos;{}&apos;.</source>
+        <translation>No hay información para el esquema &apos;{}&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../lib/dbconnector/pg_connector.py" line="936"/>
+        <source>There was an error when obtaining privileges for schema &apos;{}&apos;. Details: {}</source>
+        <translation>Hubo un error obteniendo los permisos para el esquema &apos;{}&apos;. Detalles: {}</translation>
     </message>
 </context>
 <context>
@@ -3647,87 +3680,91 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>ReportGenerator</name>
     <message>
-        <location filename="../gui/reports.py" line="151"/>
+        <location filename="../gui/reports.py" line="147"/>
         <source>The dependency library to generate reports is not installed. Click on the button to download and install it.</source>
         <translation>Las dependencias para generar reportes no están instaladas. Click en el botón para descargarlas e instalarlas.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="169"/>
+        <location filename="../gui/reports.py" line="165"/>
         <source>The dependency library to generate reports was found, but does not match with the version required. Click the button to remove the installed version and try again.</source>
         <translation>Se encontraron las dependencias para generar reportes, pero no en la versión requerida. Haz click en el botón de la derecha para borrar la versión instalada y prueba de nuevo.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="179"/>
         <source>Please set JAVA_HOME path in QGIS Model Baker Settings or in Environmental Variables for your OS</source>
-        <translation>Debes definir la variable de entorno JAVA_HOME en la configuración de QGIS Model Baker o en tu sistema operativo</translation>
+        <translation type="vanished">Debes definir la variable de entorno JAVA_HOME en la configuración de QGIS Model Baker o en tu sistema operativo</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="190"/>
+        <location filename="../gui/reports.py" line="182"/>
+        <source>Please set JAVA_HOME path in QGIS Model Baker Settings or in your OS environmental variables.</source>
+        <translation>Por favor define la ruta JAVA_HOME en la configuración de QGIS Model Baker o en las variables de entorno de tu sistema operativo.</translation>
+    </message>
+    <message>
+        <location filename="../gui/reports.py" line="191"/>
         <source>Layer &apos;Plot&apos; not found in DB! {}</source>
         <translation>¡No se encontró la capa &apos;Terreno&apos; en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="198"/>
+        <location filename="../gui/reports.py" line="199"/>
         <source>To generate reports, first select at least a plot!</source>
         <translation>¡Primero selecciona por lo menos un predio para generar reportes!</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="207"/>
+        <location filename="../gui/reports.py" line="208"/>
         <source>Select a folder to save the reports to be generated</source>
         <translation>Selecciona una carpeta para almacenar los reportes que serán generados</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="211"/>
+        <location filename="../gui/reports.py" line="212"/>
         <source>You need to select a folder where to save the reports before continuing.</source>
         <translation>Necesitas seleccionar una carpeta para almacenar los reportes antes de continuar.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="250"/>
+        <location filename="../gui/reports.py" line="251"/>
         <source>Generating {} report{}...</source>
         <translation>Generando {} reporte{}...</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="263"/>
+        <location filename="../gui/reports.py" line="264"/>
         <source>Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.</source>
         <translation>Omitiendo Anexo 17 para el terreno con {}={} porque tiene agujeros. El módulo de reportes no soporta dichos polígonos.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="269"/>
+        <location filename="../gui/reports.py" line="270"/>
         <source>Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.</source>
         <translation>Omitiendo Anexo 17 para el terreno con {}={} porque es un multipolígono. El módulo de reportes no soporta dichos polígonos.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="314"/>
+        <location filename="../gui/reports.py" line="315"/>
         <source>The report &lt;a href=&apos;file:///{}&apos;&gt;anexo_17_{}.pdf&lt;/a&gt; was successfully generated!</source>
         <translation>¡El reporte &lt;a href=&apos;file://{}&apos;&gt;anexo_17_{}.pdf&lt;/a&gt; fue generado exitosamente!</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="316"/>
+        <location filename="../gui/reports.py" line="317"/>
         <source>All reports were successfully generated in folder &lt;a href=&apos;file:///{path}&apos;&gt;{path}&lt;/a&gt;!</source>
         <translation>¡Todos los reportes fueron generados exitosamente en la carpeta &lt;a href=&apos;file:///{path}&apos;&gt;{path}&lt;/a&gt;!</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="322"/>
+        <location filename="../gui/reports.py" line="323"/>
         <source> The following polygons were skipped because they have holes and are not supported: {}.</source>
         <translation> Se omitieron los siguientes polígonos porque tienen agujeros, los cuales no están soportados: {}.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="326"/>
+        <location filename="../gui/reports.py" line="327"/>
         <source> The following polygons were skipped because they are multi-polygons and are not supported: {}.</source>
         <translation> Se omitieron los siguientes polígonos porque son multipolígonos, los cuales no están soportados: {}.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="331"/>
+        <location filename="../gui/reports.py" line="332"/>
         <source>The report for plot {} couldn&apos;t be generated!{} See QGIS log (tab &apos;Anexo_17&apos;) for details.</source>
         <translation>¡No se pudo generar el reporte para el terreno {}! Revisa el log de QGIS (pestaña &apos;Anexo_17&apos;) para más detalles.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="334"/>
+        <location filename="../gui/reports.py" line="335"/>
         <source>No report could be generated!{} See QGIS log (tab &apos;Anexo_17&apos;) for details.</source>
         <translation>¡No se pudo generar ningún reporte!{} Revisa el log de QGIS (pestaña &apos;Anexo_17&apos;) para más detalles.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="336"/>
+        <location filename="../gui/reports.py" line="337"/>
         <source>At least one report couldn&apos;t be generated!{details_msg} See QGIS log (tab &apos;Anexo_17&apos;) for details. Go to &lt;a href=&apos;file:///{path}&apos;&gt;{path}&lt;/a&gt; to see the reports that were generated.</source>
         <translation>¡Por lo menos un reporte no pudo ser generado!{details_msg} Revisa el log de QGIS (pestaña &apos;Anexo_17&apos;) para más detalles. Ve a &lt;a href=&apos;file:///{path}&apos;&gt;{path}&lt;/a&gt; para revisar los reportes generados.</translation>
     </message>
@@ -3736,12 +3773,12 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡Por lo menos un reporte no pudo ser generado! Revisa el log de QGIS (pestaña &apos;Anexo_17&apos;) para más detalles. Ve a &lt;a href=&apos;file:///{path}&apos;&gt;{path}&lt;/a&gt; para revisar los reportes generados.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="364"/>
+        <location filename="../gui/reports.py" line="365"/>
         <source>Dependencies to generate reports couldn&apos;t be installed. Check if it is possible to write into this folder: &lt;a href=&apos;file:///{path}&apos;&gt;{path}&lt;/a&gt;</source>
         <translation>No se pudieron instalar las dependencias para generar reportes. Revisa si es posible escribir en esta carpeta: &lt;a href=&apos;file:///{path}&apos;&gt;{path}&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="408"/>
+        <location filename="../gui/reports.py" line="409"/>
         <source>It wasn&apos;t possible to remove the dependency folder. You need to remove this folder yourself to generate reports: &lt;a href=&apos;file:///{path}&apos;&gt;{path}&lt;/a&gt;</source>
         <translation>No fue posible borrar la carpeta de dependencias. Debes borrar esta carpeta para generar reportes: &lt;a href=&apos;file:///{path}&apos;&gt;{path}&lt;/a&gt;</translation>
     </message>
@@ -3766,7 +3803,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡Por lo menos un reporte no pudo ser generado! Revisa el log de QGIS (pestaña &apos;Anexo_17&apos;) para más detalles. Ve a &lt;a href=&apos;file://{path}&apos;&gt;{path}&lt;/a&gt; para revisar los reportes generados.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="359"/>
+        <location filename="../gui/reports.py" line="360"/>
         <source>There was an error with the download. The downloaded file is invalid.</source>
         <translation>Hubo un error con la descarga. El archivo descargado no es válido.</translation>
     </message>
@@ -3775,12 +3812,12 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">No se pudieron instalar las dependencias para generar reportes. Revisa si es posible escribir en esta carpeta: &lt;a href=&apos;file://{path}&apos;&gt;{path}&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="369"/>
+        <location filename="../gui/reports.py" line="370"/>
         <source>The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports.</source>
         <translation>¡Las dependencias para generar reportes han sido instaladas! Selecciona terrenos y dale click al botón en la barra de herramientas para generar reportes.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="390"/>
+        <location filename="../gui/reports.py" line="391"/>
         <source>There was a problem connecting to Internet.</source>
         <translation>Hubo un problema con la conexión a Internet.</translation>
     </message>
@@ -3917,17 +3954,17 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>¡La URL del servicio no es válida!</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="479"/>
+        <location filename="../gui/settings_dialog.py" line="464"/>
         <source>Missing roads will be marked as errors.</source>
         <translation>Las vías faltantes serán marcadas como errores.</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="517"/>
+        <location filename="../gui/settings_dialog.py" line="502"/>
         <source>First set the connection to the database before attempting to create a database.</source>
         <translation>Primero establece la conexión a la base de datos antes de intentar crear una base de datos.</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="532"/>
+        <location filename="../gui/settings_dialog.py" line="517"/>
         <source>First set the connection to the database before attempting to create a schema.</source>
         <translation>Primero establece la conexión a la base de datos antes de intentar crear un esquema.</translation>
     </message>
@@ -3987,238 +4024,238 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>TranslatableConfigStrings</name>
     <message>
-        <location filename="../config/general_config.py" line="176"/>
+        <location filename="../config/general_config.py" line="179"/>
         <source>Validation errors</source>
         <translation>Errores de validación</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="177"/>
+        <location filename="../config/general_config.py" line="180"/>
         <source>Boundary Points should not overlap</source>
         <translation>Los Puntos de Lindero no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="178"/>
+        <location filename="../config/general_config.py" line="181"/>
         <source>Control Points should not overlap</source>
         <translation>Los Puntos de Control no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="179"/>
+        <location filename="../config/general_config.py" line="182"/>
         <source>Boundary Points should be covered by Boundary nodes</source>
         <translation>Los Puntos de Lindero deben estar cubiertos por nodos de Lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="180"/>
+        <location filename="../config/general_config.py" line="183"/>
         <source>Right of way line</source>
         <translation>Linea de Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="181"/>
+        <location filename="../config/general_config.py" line="184"/>
         <source>Boundary Points should be covered by plot nodes</source>
         <translation>Los Puntos de Lindero deben estar cubiertos por nodos de Terrenos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="184"/>
+        <location filename="../config/general_config.py" line="187"/>
         <source>Boundary segments should not be longer than {}m.</source>
         <translation>Los segmentos de Linderos no deben ser más largos que {}m.</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="185"/>
+        <location filename="../config/general_config.py" line="188"/>
         <source>Boundaries should not overlap</source>
         <translation>Los Linderos no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="186"/>
+        <location filename="../config/general_config.py" line="189"/>
         <source>Boundaries should not be split</source>
         <translation>Los Linderos deben terminar en cambio de colindancia</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="187"/>
+        <location filename="../config/general_config.py" line="190"/>
         <source>Boundaries should be covered by Plots</source>
         <translation>Los Linderos deben estar cubiertos por límites de Terrenos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="188"/>
+        <location filename="../config/general_config.py" line="191"/>
         <source>Boundary nodes should be covered by Boundary Points</source>
         <translation>Los nodos de Linderos deben estar cubiertos por Puntos de Lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="189"/>
+        <location filename="../config/general_config.py" line="192"/>
         <source>Boundaries should not have dangles</source>
         <translation>Los Linderos no deben tener nodos sin conectar</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="190"/>
+        <location filename="../config/general_config.py" line="193"/>
         <source>Plots should not overlap</source>
         <translation>Los Terrenos no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="191"/>
+        <location filename="../config/general_config.py" line="194"/>
         <source>Buildings should not overlap</source>
         <translation>Las Construcciones no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="192"/>
+        <location filename="../config/general_config.py" line="195"/>
         <source>Rights of Way should not overlap</source>
         <translation>Las Servidumbres de Paso no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="193"/>
+        <location filename="../config/general_config.py" line="196"/>
         <source>Plots should be covered by Boundaries</source>
         <translation>Los límites de Terreno deben estar cubiertos por Linderos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="194"/>
+        <location filename="../config/general_config.py" line="197"/>
         <source>Right of Way should not overlap Buildings</source>
         <translation>Las Servidumbres no se deben superponer con Construcciones</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="195"/>
+        <location filename="../config/general_config.py" line="198"/>
         <source>Plots should not have gaps</source>
         <translation>No deben haber huecos entre Terrenos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="196"/>
+        <location filename="../config/general_config.py" line="199"/>
         <source>Right of Way should not have multipart geometries</source>
         <translation>Las Servidumbres de Paso no deben tener geometrías multiparte</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="197"/>
+        <location filename="../config/general_config.py" line="200"/>
         <source>Buildings should be within Plots</source>
         <translation>Las Construcciones deben estar dentro de su Terreno correspondiente</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="198"/>
+        <location filename="../config/general_config.py" line="201"/>
         <source>Building Units should be within Plots</source>
         <translation>Las Unidades de Construcción deben estar dentro de su Terreno correspondiente</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="201"/>
+        <location filename="../config/general_config.py" line="204"/>
         <source>Parcel should have one and only one Right</source>
         <translation>Los predios deben tener derecho asociado y pueden tener máximo un derecho de tipo Dominio asociado</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="202"/>
+        <location filename="../config/general_config.py" line="205"/>
         <source>Group Party Fractions should sum 1</source>
         <translation>Las fracciones de las agrupaciones de interesados deben sumar uno (1)</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="203"/>
+        <location filename="../config/general_config.py" line="206"/>
         <source>Table records should not be repeated</source>
         <translation>No deben haber registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="205"/>
+        <location filename="../config/general_config.py" line="208"/>
         <source>Check that the {department} field of the {parcel} table has two numerical characters</source>
         <translation>Revisar que el campo {department} de la tabla {parcel} tiene dos caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="206"/>
+        <location filename="../config/general_config.py" line="209"/>
         <source>Check that the {municipality} field of the {parcel} table has three numerical characters</source>
         <translation>Revisar que el campo {municipality} de la tabla {parcel} tiene tres caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="207"/>
+        <location filename="../config/general_config.py" line="210"/>
         <source>Check that the {zone} field of the {parcel} table has two numerical characters</source>
         <translation>Revisar que el campo {zone} de la tabla {parcel} tiene dos caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="208"/>
+        <location filename="../config/general_config.py" line="211"/>
         <source>Check that the {parcel_number} has 30 numerical characters</source>
         <translation>Revisar que el {parcel_number} tiene 30 caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="209"/>
+        <location filename="../config/general_config.py" line="212"/>
         <source>Check that the {parcel_number_before} has 20 numerical characters</source>
         <translation>Revisar que el {parcel_number_before} tiene 20 caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="210"/>
+        <location filename="../config/general_config.py" line="213"/>
         <source>Check that attributes are appropriate for parties of type natural</source>
         <translation>Revisar que los atributos son apropiados para interesados naturales</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="211"/>
+        <location filename="../config/general_config.py" line="214"/>
         <source>Check that attributes are appropriate for parties of type legal</source>
         <translation>Revisar que los atributos son apropiados para interesados jurídicos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="212"/>
+        <location filename="../config/general_config.py" line="215"/>
         <source>Check that the type of parcel corresponds to position 22 of the {parcel_number}</source>
         <translation>Revisar que el tipo de Predio corresponde a la posición 22 del {parcel_number}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="213"/>
+        <location filename="../config/general_config.py" line="216"/>
         <source>Check that Spatial Units associated with Parcels correspond to the parcel type</source>
         <translation>Revisar que las Unidades Espaciales asociadas a Predios correspondan al tipo de predio</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="216"/>
+        <location filename="../config/general_config.py" line="219"/>
         <source>Parcel does not have any Right associated</source>
         <translation>El Predio no tiene Derecho asociado</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="217"/>
+        <location filename="../config/general_config.py" line="220"/>
         <source>Parcel has more than one domain right associated</source>
         <translation>El Predio tiene más de un Derecho de dominio asociado</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="220"/>
+        <location filename="../config/general_config.py" line="223"/>
         <source>Plot nodes should be covered by boundary points</source>
         <translation>Los nodos de Terrenos deben estar cubiertos por Puntos de Lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="221"/>
+        <location filename="../config/general_config.py" line="224"/>
         <source>Plot is not covered by boundary</source>
         <translation>El terreno no está cubierto por linderos</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="222"/>
+        <location filename="../config/general_config.py" line="225"/>
         <source>Boundary is not covered by plot</source>
         <translation>El lindero no está cubierto por terreno</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="223"/>
-        <location filename="../config/general_config.py" line="225"/>
+        <location filename="../config/general_config.py" line="226"/>
+        <location filename="../config/general_config.py" line="228"/>
         <source>Topological relationship between boundary and plot is not recorded in the {} table</source>
         <translation>La relación topológica entre lindero y terreno no está registrada en la tabla {}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="227"/>
+        <location filename="../config/general_config.py" line="230"/>
         <source>Topological relationship between boundary point and boundary is not recorded in the {} table</source>
         <translation>La relación topológica entre el punto lindero y el lindero no está registrada en la tabla {}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="228"/>
+        <location filename="../config/general_config.py" line="231"/>
         <source>Topological relationship between boundary point and boundary is duplicated in the {} table</source>
         <translation>La relación topológica entre el punto lindero y el lindero está duplicada en la tabla de {}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="229"/>
+        <location filename="../config/general_config.py" line="232"/>
         <source>Boundary point is not covered by boundary node</source>
         <translation>Punto lindero no está cubierto por un nodo de un lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="230"/>
+        <location filename="../config/general_config.py" line="233"/>
         <source>Boundary node is not covered by boundary point</source>
         <translation>Nodo lindero no está cubierto por un punto lindero</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="231"/>
+        <location filename="../config/general_config.py" line="234"/>
         <source>Building is not over a plot</source>
         <translation>La Construcción no está dentro de ningún Terreno</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="232"/>
+        <location filename="../config/general_config.py" line="235"/>
         <source>Building crosses a plot&apos;s limit</source>
         <translation>La Construcción cruza los límites de su Terreno</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="233"/>
+        <location filename="../config/general_config.py" line="236"/>
         <source>Building Unit is not over a plot</source>
         <translation>La Unidad de Construcción no está dentro de ningún Terreno</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="234"/>
+        <location filename="../config/general_config.py" line="237"/>
         <source>Building Unit crosses a plot&apos;s limit</source>
         <translation>La Unidad de Construcción cruza los límites de su Terreno</translation>
     </message>
@@ -4235,8 +4272,8 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">La relación topológica entre el lindero y el terreno no esta registrada en la tabla {}</translation>
     </message>
     <message>
-        <location filename="../config/general_config.py" line="224"/>
-        <location filename="../config/general_config.py" line="226"/>
+        <location filename="../config/general_config.py" line="227"/>
+        <location filename="../config/general_config.py" line="229"/>
         <source>Topological relationship between boundary and plot is duplicated in the {} table</source>
         <translation>La relación topológica entre lindero y terreno está duplicada en la tabla {}</translation>
     </message>
