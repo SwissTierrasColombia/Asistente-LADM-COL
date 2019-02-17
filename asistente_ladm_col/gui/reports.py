@@ -179,7 +179,7 @@ class ReportGenerator():
                     java_path_dir = get_java_path_dir_from_qgis_model_baker()
                     if not java_path_dir:
                         self.qgis_utils.message_emitted.emit(
-                            QCoreApplication.translate("ReportGenerator","Please set JAVA_HOME path in QGIS Model Baker Settings or in Environmental Variables for your OS"), Qgis.Warning)
+                            QCoreApplication.translate("ReportGenerator", "Please set JAVA_HOME path in QGIS Model Baker Settings or in your OS environmental variables."), Qgis.Warning)
                         return
                 else:
                     os.environ["JAVA_HOME"] = java_path_dir

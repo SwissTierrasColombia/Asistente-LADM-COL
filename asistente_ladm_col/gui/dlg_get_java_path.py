@@ -46,7 +46,7 @@ class DialogGetJavaPath(QDialog, DIALOG_UI):
         self.setWindowTitle(QCoreApplication.translate("DialogGetJavaPath", "Get Java Path"))
 
         self.java_path_line_edit.setPlaceholderText(
-            QCoreApplication.translate("DialogGetJavaPath", "[By default %PATH and %JAVA_HOME is searched]"))
+            QCoreApplication.translate("DialogGetJavaPath", "[By default both %PATH and %JAVA_HOME are searched]"))
 
         self.java_path_search_button.clicked.connect(
             make_file_selector(self.java_path_line_edit,
@@ -111,9 +111,9 @@ def java_path_is_valid(java_path):
                     if float(java_version) == JAVA_REQUIRED_VERSION:
                         return (True, QCoreApplication.translate("DialogGetJavaPath", "Java path has been configured correctly."))
                     else:
-                        return (False, QCoreApplication.translate("DialogGetJavaPath", "Java version is not valid. Current version is {} and must be greater than {}.").format(java_version, JAVA_REQUIRED_VERSION))
+                        return (False, QCoreApplication.translate("DialogGetJavaPath", "Java version is not valid. Current version is {}, but must be {}.").format(java_version, JAVA_REQUIRED_VERSION))
 
-                return (False, QCoreApplication.translate("DialogGetJavaPath", "Java exists but it is not possible to know its version"))
+                return (False, QCoreApplication.translate("DialogGetJavaPath", "Java exists but it is not possible to know and validate its version."))
             else:
                 return (False, QCoreApplication.translate("DialogGetJavaPath", "Java path is not valid, please select a valid path..."))
         else:
