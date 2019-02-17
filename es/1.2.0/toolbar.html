@@ -17,13 +17,33 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'',
+              LANGUAGE:'es',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+        <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/banner.css" type="text/css" />
@@ -33,21 +53,16 @@
     <link rel="search" title="Búsqueda" href="search.html" />
     <link rel="next" title="Guía de Instalación para el plugin" href="installation.html" />
     <link rel="prev" title="Configuración" href="settings.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -172,12 +187,12 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../1.3.0/toolbar.html"><b>Warning:</b> This document is for an old version of LADM_COL Assistant. The latest version is 1.3.0.</a></p>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../1.3.1/toolbar.html"><b>Warning:</b> This document is for an old version of LADM_COL Assistant. The latest version is 1.3.1.</a></p>
 <div class="section" id="toolbar-ladm-col">
 <h1>Barra de herramientas de LADM_COL<a class="headerlink" href="#toolbar-ladm-col" title="Enlazar permanentemente con este título">¶</a></h1>
 <p>Así es como se ve la barra de herramientas:</p>
 <a class=""
-               data-lightbox="group-63fc08f6-360f-4191-8cda-60b3ae331769"
+               data-lightbox="group-fe455462-a86f-4696-9e63-8ae1cd4c9d1d"
                href="_images/ladm_col_toolbar.png"
                title=""
                data-title=""
@@ -188,7 +203,7 @@
                      alt="LADM-COL toolbar"/>
                 </a><p>Si la barra de herramientas no aparece en la interfaz de QGIS, puedes hacer que se vea con la siguiente interacción: click derecho en la región gris en QGIS y clickeando en «Herramientas LADM-COL» o como en el siguiente gif:</p>
 <a class=""
-               data-lightbox="group-36901753-e64e-4a63-a6c8-b9f326aa481b"
+               data-lightbox="group-7b1487f4-ab64-40df-a1ca-de028290bf4e"
                href="_images/show_ladm_col_toolbar.gif"
                title=""
                data-title=""
@@ -201,7 +216,7 @@
 <h2>Partir por segmento y Unir<a class="headerlink" href="#explode-and-merge" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Si necesitas unir o explotar por segmentos los linderos puedes utilizar los botones <em>Unir</em> y <em>Partir por segmento</em> en la barra de herramientas de LADM_COL.</p>
 <a class=""
-               data-lightbox="group-e885431e-6752-46b2-9d6a-9052217d6fa5"
+               data-lightbox="group-c0e6eadc-f2f9-44c3-b38c-f71bcb512dff"
                href="_images/_UNIR_PARTIR_LINDERO2.gif"
                title=""
                data-title=""
@@ -219,7 +234,7 @@
 <li>puntosccl –&gt; puntolindero y lindero</li>
 </ul>
 <a class=""
-               data-lightbox="group-2fa56434-ab26-4ff5-9536-95bdfabaa0cd"
+               data-lightbox="group-0996d5b7-770b-43a4-ac01-726e6baf5820"
                href="_images/_LLENAR_TOPOLOGIAS_PUNTO_LINDERO.gif"
                title=""
                data-title=""
@@ -238,7 +253,7 @@
 <li>menos –&gt; terreno y lindero (agujeros o anillos internos)</li>
 </ul>
 <a class=""
-               data-lightbox="group-8addb536-bc23-44c5-b26a-4a5c685b619d"
+               data-lightbox="group-734b00c4-745e-49ca-9ccf-b92b77fc5a10"
                href="_images/_TOPOLOGIAS_TERRENO.gif"
                title=""
                data-title=""
@@ -252,7 +267,7 @@
 <h2>Llenar relaciones de Servidumbre de paso<a class="headerlink" href="#fill-right-of-way-relations" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Debes seleccionar una <strong>Servidumbre de Paso</strong>, uno o más <strong>Terreno(s)</strong> que serán beneficiados con la servidumbre de paso, y una o más <strong>Fuentes Administrativa(s)</strong> que soporte(n) la servidumbre de paso. El plugin automáticamente crea la relación entre los predios beneficados y las relaciones. Es importante saber que debes tener las relaciones entre los predios y los terrenos para evitar inconvenientes con esta función</p>
 <a class=""
-               data-lightbox="group-b6951bbc-ee71-45b0-804b-0c1561a3cc8f"
+               data-lightbox="group-6e5803bd-44f9-4ebd-8f88-df1ff3e8ff72"
                href="_images/fill_relations_right_of_way.gif"
                title=""
                data-title=""
@@ -273,7 +288,7 @@
 </ol>
 <p>Descargar dependencias. Este paso se realiza una sola vez.</p>
 <a class=""
-               data-lightbox="group-416d1d52-adef-4621-b773-04d8a2145f5e"
+               data-lightbox="group-0e5e8129-b2eb-4d7b-9d8b-d815763fbe29"
                href="_images/annex_17_1.gif"
                title=""
                data-title=""
@@ -289,7 +304,7 @@
 <li>Vaya al directorio que seleccionó en el paso 3 para verificar el resultado, que debería verse así en la siguiente imagen:</li>
 </ol>
 <a class=""
-               data-lightbox="group-019529d1-2dd3-450a-a35d-449deff1839c"
+               data-lightbox="group-2395e44b-baf6-4756-b65e-5a7941b7d2f9"
                href="_images/annex_17_2.gif"
                title=""
                data-title=""
@@ -310,7 +325,7 @@
 <li>Estructura de Agrupación:</li>
 </ul>
 <a class=""
-               data-lightbox="group-71da7946-997e-4443-bbcb-ceb7a81cc2dd"
+               data-lightbox="group-98bdf170-9711-4a73-ba38-753048a5e693"
                href="_images/agrupacion.png"
                title=""
                data-title=""
@@ -323,7 +338,7 @@
 <li>Estructura de Predio:</li>
 </ul>
 <a class=""
-               data-lightbox="group-3c20c01c-2e9a-453f-951e-9d27d7017b7e"
+               data-lightbox="group-fdb779ca-9fd9-4619-b9c9-dc93d419f4a8"
                href="_images/derecho.PNG"
                title=""
                data-title=""
@@ -336,7 +351,7 @@
 <li>Estructura de Predio:</li>
 </ul>
 <a class=""
-               data-lightbox="group-8050a24a-eb63-4ad5-beac-5e579eb9af38"
+               data-lightbox="group-b4f506ac-671e-47ee-834d-f8edcbf05ad0"
                href="_images/interesado.PNG"
                title=""
                data-title=""
@@ -349,7 +364,7 @@
 <li>Estructura de Predio:</li>
 </ul>
 <a class=""
-               data-lightbox="group-7d1edab8-74fb-4c03-8cfd-95d1fbab8b7e"
+               data-lightbox="group-b77ac8a2-2586-4761-b5ea-ae6dd58577aa"
                href="_images/predio.PNG"
                title=""
                data-title=""
@@ -370,7 +385,7 @@
 <p>La ejecución del modelo con los datos de ejemplo debe genberar el siguiente resultado:</p>
 <p>Tablas intermedias:</p>
 <a class=""
-               data-lightbox="group-6b728eaa-baba-4424-96d9-757aa6aab9b8"
+               data-lightbox="group-03a81371-98e7-411a-91e6-74dfe8c70010"
                href="_images/tablas_intermed.PNG"
                title=""
                data-title=""
@@ -381,7 +396,7 @@
                      alt="basic settings"/>
                 </a><p>Tablas del modelo implicadas:</p>
 <a class=""
-               data-lightbox="group-069593f4-7e65-4deb-a7d8-33eca5e15e9e"
+               data-lightbox="group-d0bd22a4-dd08-4951-a8c4-dc7e49d75918"
                href="_images/tabla_implicadas.PNG"
                title=""
                data-title=""
@@ -392,7 +407,7 @@
                      alt="basic settings"/>
                 </a><p>Un ejemplo del procedimiento haciendo uso de los datos de ejemplo:</p>
 <a class=""
-               data-lightbox="group-59cc51bb-e066-4425-9cd1-149f3bdbca1e"
+               data-lightbox="group-e3b6ce73-517f-4bcf-bda5-67156438bfe4"
                href="_images/import_intermediate_structure.gif"
                title=""
                data-title=""
@@ -415,7 +430,7 @@
         <a href="installation.html" class="btn btn-neutral float-right" title="Guía de Instalación para el plugin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="settings.html" class="btn btn-neutral" title="Configuración" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="settings.html" class="btn btn-neutral float-left" title="Configuración" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -471,6 +486,7 @@
             <dd><a href="../1.1.0/toolbar.html">1.1.0</a></dd>
             <dd><a href="toolbar.html">1.2.0</a></dd>
             <dd><a href="../1.3.0/toolbar.html">1.3.0</a></dd>
+            <dd><a href="../1.3.1/toolbar.html">1.3.1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
@@ -488,39 +504,16 @@
 </div>
 
 
-  
-
-    
-    
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'',
-              LANGUAGE:'es',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/translations.js"></script>
-        <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
-        <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
-        <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
