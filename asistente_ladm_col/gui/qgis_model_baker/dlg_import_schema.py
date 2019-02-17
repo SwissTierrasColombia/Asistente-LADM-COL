@@ -228,7 +228,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                 if get_java_path_dlg.exec_():
                     configuration = self.update_configuration()
                 if not get_java_path_from_qgis_model_baker():
-                    message_error_java = QCoreApplication.translate("DialogImportSchema", """Java could not be found. You can configure the JAVA_HOME environment variable, restart QGIS and try again.""")
+                    message_error_java = QCoreApplication.translate("DialogImportSchema",
+                                                                    """Java could not be found. You can configure the JAVA_HOME environment variable, restart QGIS and try again.""")
                     self.txtStdout.setTextColor(QColor('#000000'))
                     self.txtStdout.clear()
                     self.txtStdout.setText(message_error_java)
