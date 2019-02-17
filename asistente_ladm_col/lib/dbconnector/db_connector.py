@@ -81,6 +81,10 @@ class DBConnector(QObject):
                 uri += ['password={}'.format(dict_conn['password'])]
             if dict_conn['database'] and level == 1:
                 uri += ['dbname={}'.format(dict_conn['database'])]
+            else:
+                # It is necessary to define the database name for listing databases
+                # PostgreSQL uses the db 'postgres' by default and it cannot be deleted, so we use it as last resort
+                uri += ["dbname='postgres'"]
         elif mode == 'gpkg':
             uri = [dict_conn['dbfile']]
 
