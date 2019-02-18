@@ -140,9 +140,9 @@ class LogicChecks(QObject):
             if record[COL_PARTY_LEGAL_PARTY_FIELD] > 0:
                 errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{legal_party} must be NULL").format(legal_party=COL_PARTY_LEGAL_PARTY_FIELD))
             if record[COL_PARTY_SURNAME_FIELD] > 0:
-                errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{surname_party} must not be NULL and It must be filled in".format(surname_party=COL_PARTY_SURNAME_FIELD)))
+                errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{surname_party} must not be NULL and It must be filled in").format(surname_party=COL_PARTY_SURNAME_FIELD))
             if record[COL_PARTY_FIRST_NAME_FIELD] > 0:
-                errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{first_name_party} must not be NULL and It must be filled in".format(first_name_party=COL_PARTY_FIRST_NAME_FIELD)))
+                errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{first_name_party} must not be NULL and It must be filled in").format(first_name_party=COL_PARTY_FIRST_NAME_FIELD))
             if record[COL_PARTY_DOC_TYPE_FIELD] > 0:
                 errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{doc_type} must be different from NIT").format(doc_type=COL_PARTY_DOC_TYPE_FIELD))
 
@@ -177,9 +177,9 @@ class LogicChecks(QObject):
             if record[COL_PARTY_LEGAL_PARTY_FIELD] > 0:
                 errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{legal_party} must not be NULL and It must be filled in").format(legal_party=COL_PARTY_LEGAL_PARTY_FIELD))
             if record[COL_PARTY_SURNAME_FIELD] > 0:
-                errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{surname_party} must be NULL".format(surname_party=COL_PARTY_SURNAME_FIELD)))
+                errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{surname_party} must be NULL").format(surname_party=COL_PARTY_SURNAME_FIELD))
             if record[COL_PARTY_FIRST_NAME_FIELD] > 0:
-                errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{first_name_party} must be NULL".format(first_name_party=COL_PARTY_FIRST_NAME_FIELD)))
+                errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{first_name_party} must be NULL").format(first_name_party=COL_PARTY_FIRST_NAME_FIELD))
             if record[COL_PARTY_DOC_TYPE_FIELD] > 0:
                 errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{doc_type} must be equal to NIT or Secuencial_IGAC or Secuencial_SNR").format(doc_type=COL_PARTY_DOC_TYPE_FIELD))
 

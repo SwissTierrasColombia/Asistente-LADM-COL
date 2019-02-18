@@ -60,7 +60,7 @@ def get_dbconn(schema):
     dict_conn['port'] = DB_PORT
     dict_conn['database'] = DB_NAME
     dict_conn['schema'] = schema
-    dict_conn['user'] = DB_USER
+    dict_conn['username'] = DB_USER
     dict_conn['password'] = DB_PASSWORD
     asistente_ladm_col_plugin.qgis_utils.set_db_connection('pg', dict_conn)
 
@@ -135,19 +135,19 @@ def get_test_copy_path(path):
     copyfile(src_path, dst_path)
     return dst_path
 
-def import_projectgenerator():
+def import_qgis_model_baker():
     global iface
-    plugin_found = "projectgenerator" in qgis.utils.plugins
+    plugin_found = "QgisModelBaker" in qgis.utils.plugins
     if not plugin_found:
-        import projectgenerator
-        pg = projectgenerator.classFactory(iface)
-        qgis.utils.plugins["projectgenerator"] = pg
+        import QgisModelBaker
+        pg = QgisModelBaker.classFactory(iface)
+        qgis.utils.plugins["QgisModelBaker"] = pg
 
-def unload_projectgenerator():
+def unload_qgis_model_baker():
     global iface
-    plugin_found = "projectgenerator" in qgis.utils.plugins
+    plugin_found = "QgisModelBaker" in qgis.utils.plugins
     if plugin_found:
-        del(qgis.utils.plugins["projectgenerator"])
+        del(qgis.utils.plugins["QgisModelBaker"])
 
 def run_etl_model(input_layer, out_layer, ladm_col_layer_name=BOUNDARY_POINT_TABLE):
 

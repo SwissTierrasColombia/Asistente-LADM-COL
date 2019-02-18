@@ -72,11 +72,11 @@ class CreateGeoeconomicZoneValuationWizard(QWizard, WIZARD_UI):
             self.mMapLayerComboBox.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
-            finish_button_text = QCoreApplication.translate('CreateGeoeconomicZoneValuationWizard', 'Start')
+            finish_button_text = QCoreApplication.translate("CreateGeoeconomicZoneValuationWizard", "Start")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_GEOECONOMIC_ZONE_VALUATION_PAGE_1_OPTION_FORM)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
-                                       QCoreApplication.translate('CreateGeoeconomicZoneValuationWizard',
+                                       QCoreApplication.translate("CreateGeoeconomicZoneValuationWizard",
                                        finish_button_text))
 
     def finished_dialog(self):
@@ -98,7 +98,7 @@ class CreateGeoeconomicZoneValuationWizard(QWizard, WIZARD_UI):
                     self.qgis_utils.save_field_mapping(VALUATION_GEOECONOMIC_ZONE_TABLE)
             else:
                 self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                    QCoreApplication.translate('CreateGeoeconomicZoneValuationWizard',
+                    QCoreApplication.translate("CreateGeoeconomicZoneValuationWizard",
                                                "Select a source layer to set the field mapping to '{}'.").format(VALUATION_GEOECONOMIC_ZONE_TABLE),
                     Qgis.Warning)
 
@@ -115,7 +115,7 @@ class CreateGeoeconomicZoneValuationWizard(QWizard, WIZARD_UI):
 
         if self._geoeconomic_zone_valuation is None:
             self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                QCoreApplication.translate('CreateGeoeconomicZoneValuationWizard',
+                QCoreApplication.translate("CreateGeoeconomicZoneValuationWizard",
                                            "Geoeconomic zone valuation layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
@@ -143,8 +143,8 @@ class CreateGeoeconomicZoneValuationWizard(QWizard, WIZARD_UI):
         self.iface.actionAddFeature().trigger()
 
         self.iface.messageBar().pushMessage('Asistente LADM_COL',
-            QCoreApplication.translate('CreateGeoeconomicZoneValuationWizard',
-                                       'You can now start capturing geoeconomic zones digitizing on the map...'),
+            QCoreApplication.translate("CreateGeoeconomicZoneValuationWizard",
+                                       "You can now start capturing geoeconomic zones digitizing on the map..."),
             Qgis.Info)
 
     def save_settings(self):

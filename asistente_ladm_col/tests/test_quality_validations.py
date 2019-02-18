@@ -24,7 +24,7 @@ from asistente_ladm_col.config.table_mapping_config import (ID_FIELD,
                                                             BUILDING_UNIT_TABLE,
                                                             COL_PARTY_TABLE,
                                                             LOGIC_CONSISTENCY_TABLES)
-from asistente_ladm_col.tests.utils import (import_projectgenerator,
+from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             get_test_copy_path,
                                             get_dbconn,
                                             restore_schema)
@@ -32,7 +32,7 @@ from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.quality import QualityUtils
 from asistente_ladm_col.utils.logic_checks import LogicChecks
 
-import_projectgenerator()
+import_qgis_model_baker()
 
 class TesQualityValidations(unittest.TestCase):
 

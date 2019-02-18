@@ -38,6 +38,10 @@ DOMAIN_KEY_FIELD = {
     "pg": "ilicode",
     "gpkg": "iliCode"
 }
+EXTADDRESS_TABLE = "extdireccion"
+EXTADDRESS_PLOT_FIELD = "terreno_ext_direccion_id"
+EXTADDRESS_BUILDING_FIELD = "construccion_ext_direccion_id"
+EXTADDRESS_BUILDING_UNIT_FIELD = "unidadconstruccion_ext_direccion_id"
 EXTFILE_TABLE = "extarchivo"
 EXTFILE_DATA_FIELD = "datos"
 FIRST_NAME_FIELD = "primer_nombre"
@@ -264,7 +268,7 @@ LAYER_CONSTRAINTS = {
     PARCEL_TABLE: {
         PARCEL_TYPE_FIELD: {
             'expression': """
-                            CASE 
+                            CASE
                                 WHEN  "{parcel_type}" =  'NPH' THEN
                                     num_selected('{plot_layer}') = 1 AND num_selected('{building_unit_layer}') = 0
                                 WHEN  "{parcel_type}" IN  ('PropiedadHorizontal.Matriz', 'Condominio.Matriz', 'ParqueCementerio.Matriz', 'BienUsoPublico', 'Condominio.UnidadPredial') THEN
@@ -287,7 +291,7 @@ LAYER_CONSTRAINTS = {
                                         WHEN length("{parcel_number}") != 30 OR regexp_match(to_string("{parcel_number}"), '^[0-9]*$') = 0  THEN
                                             FALSE
                                         WHEN "{parcel_type}" = 'NPH' THEN
-                                            substr("{parcel_number}", 22,1) = 0 
+                                            substr("{parcel_number}", 22,1) = 0
                                         WHEN strpos( "{parcel_type}", 'PropiedadHorizontal.') != 0 THEN
                                             substr("{parcel_number}", 22,1) = 9
                                         WHEN strpos( "{parcel_type}", 'Condominio.') != 0 THEN
@@ -337,7 +341,7 @@ LAYER_CONSTRAINTS = {
                                 WHEN  "{col_party_type}" = 'Persona_Natural' THEN
                                      "{col_party_doc_type}" !=  'NIT'
                                 WHEN  "{col_party_type}" = 'Persona_No_Natural' THEN
-                                     "{col_party_doc_type}" = 'NIT' OR "{col_party_doc_type}" = 'Secuencial_IGAC' OR "{col_party_doc_type}" = 'Secuencial_SNR' 
+                                     "{col_party_doc_type}" = 'NIT' OR "{col_party_doc_type}" = 'Secuencial_IGAC' OR "{col_party_doc_type}" = 'Secuencial_SNR'
                                 ELSE
                                     TRUE
                             END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_doc_type=COL_PARTY_DOC_TYPE_FIELD),
@@ -382,7 +386,7 @@ LAYER_CONSTRAINTS = {
                                 WHEN  "{col_party_type}" =  'Persona_No_Natural' THEN
                                      "{col_party_legal_party}" IS NOT NULL
                                 WHEN  "{col_party_type}" =  'Persona_Natural' THEN
-                                     "{col_party_legal_party}" IS NULL                                     
+                                     "{col_party_legal_party}" IS NULL
                                 ELSE
                                     TRUE
                             END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_legal_party=COL_PARTY_LEGAL_PARTY_FIELD),

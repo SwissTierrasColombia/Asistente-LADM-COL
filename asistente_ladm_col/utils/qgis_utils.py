@@ -23,7 +23,6 @@ import os
 import socket
 import webbrowser
 
-import processing
 from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               pyqtSignal,
@@ -49,11 +48,11 @@ from qgis.core import (Qgis,
                        QgsRelation,
                        QgsVectorLayer,
                        QgsVectorLayerUtils,
-                       QgsWkbTypes,
-                       edit)
+                       QgsWkbTypes)
 
+import processing
 from .geometry import GeometryUtils
-from .project_generator_utils import ProjectGeneratorUtils
+from .qgis_model_baker_utils import QgisModelBakerUtils
 from .qt_utils import OverrideCursor
 from .symbology import SymbologyUtils
 from ..config.general_config import (DEFAULT_EPSG,
@@ -79,8 +78,6 @@ from ..config.table_mapping_config import (POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
                                            BUILDING_UNIT_TABLE,
-                                           COL_PARTY_NAME_FIELD,
-                                           COL_PARTY_TABLE,
                                            CUSTOM_WIDGET_CONFIGURATION,
                                            DICT_AUTOMATIC_VALUES,
                                            DICT_DISPLAY_EXPRESSIONS,
@@ -90,7 +87,6 @@ from ..config.table_mapping_config import (POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            ID_FIELD,
                                            LAYER_CONSTRAINTS,
                                            LAYER_VARIABLES,
-                                           LENGTH_FIELD_BOUNDARY_TABLE,
                                            LESS_TABLE,
                                            LESS_TABLE_BOUNDARY_FIELD,
                                            LESS_TABLE_PLOT_FIELD,
@@ -138,7 +134,7 @@ class QGISUtils(QObject):
 
     def __init__(self, layer_tree_view=None):
         QObject.__init__(self)
-        self.project_generator_utils = ProjectGeneratorUtils()
+        self.qgis_model_baker_utils = QgisModelBakerUtils()
         self.symbology = SymbologyUtils()
         self.geometry = GeometryUtils()
         self.layer_tree_view = layer_tree_view
@@ -182,7 +178,7 @@ class QGISUtils(QObject):
         QCoreApplication.processEvents()
 
         with OverrideCursor(Qt.WaitCursor):
-            self._layers, self._relations, self._bags_of_enum = self.project_generator_utils.get_layers_and_relations_info(db)
+            self._layers, self._relations, self._bags_of_enum = self.qgis_model_baker_utils.get_layers_and_relations_info(db)
 
         self.clear_status_bar_emitted.emit()
 
@@ -202,16 +198,16 @@ class QGISUtils(QObject):
         for relation in self._relations:
             for layer_name in layer_names:
                 if relation[REFERENCING_LAYER] == layer_name:
-                    if relation[REFERENCED_LAYER] not in already_loaded:
+                    if relation[REFERENCED_LAYER] not in already_loaded and relation[REFERENCED_LAYER] not in layer_names:
                         related_layers.append(relation[REFERENCED_LAYER])
 
         related_layers_bags_of_enum = list()
         for layer_name in layer_names:
             if layer_name in self._bags_of_enum:
                 for k,v in self._bags_of_enum[layer_name].items():
-                    if v[2] not in already_loaded:
+                    if v[2] not in already_loaded and v[2] not in layer_names:
                         related_layers_bags_of_enum.append(v[2]) # domain
-                    if v[3] not in already_loaded:
+                    if v[3] not in already_loaded and v[3] not in layer_names:
                         related_layers_bags_of_enum.append(v[3]) # structure
 
         related_layers.extend(self.get_related_domains(related_layers, already_loaded))
@@ -271,7 +267,7 @@ class QGISUtils(QObject):
 
                 if layers_to_load:
                     # Get related layers from cached relations and add them to
-                    # list of layers to load, Project Generator will set relations
+                    # list of layers to load, QGIS Model Baker will set relations
                     already_loaded = [ladm_layer.dataProvider().uri().table() for ladm_layer in ladm_layers]
                     profiler.start("related_layers")
                     additional_layers_to_load = self.get_related_layers(layers_to_load, already_loaded)
@@ -284,7 +280,7 @@ class QGISUtils(QObject):
                         "Loading LADM_COL layers to QGIS and configuring their relations and forms..."), 0)
                     QCoreApplication.processEvents()
                     profiler.start("load_layers")
-                    self.project_generator_utils.load_layers(all_layers_to_load, db)
+                    self.qgis_model_baker_utils.load_layers(all_layers_to_load, db)
                     profiler.end()
                     print("Load layers", profiler.totalTime())
                     profiler.clear()
@@ -436,7 +432,7 @@ class QGISUtils(QObject):
     def configure_missing_relations(self, layer):
         """
         Relations between newly loaded layers and already loaded layer cannot
-        be handled by project generator (which only sets relations between
+        be handled by qgis model baker (which only sets relations between
         loaded layers), so we do it in the Asistente LADM_COL.
         """
         layer_name = layer.dataProvider().uri().table()
@@ -494,7 +490,7 @@ class QGISUtils(QObject):
     def configure_missing_bags_of_enum(self, layer):
         """
         Bags of enums between newly loaded layers and already loaded layers
-        cannot be handled by project generator (which only sets relations
+        cannot be handled by qgis model baker (which only sets relations
         between loaded layers), so we do it in the Asistente LADM_COL.
         """
         layer_name = layer.dataProvider().uri().table()

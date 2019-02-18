@@ -24,12 +24,15 @@ from functools import (partial,
 
 import qgis.utils
 from processing.modeler.ModelerUtils import ModelerUtils
-from qgis.PyQt.QtCore import (QObject,
-                              QCoreApplication, Qt)
+from qgis.PyQt.QtCore import (Qt,
+                              QObject,
+                              QCoreApplication)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QAction,
                                  QMenu,
-                                 QPushButton)
+                                 QPushButton,
+                                 QProgressBar)
+
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsExpression,
@@ -38,9 +41,9 @@ from qgis.core import (Qgis,
 
 from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     LADM_COL_MENU_OBJECTNAME,
-                                    PROJECT_GENERATOR_MIN_REQUIRED_VERSION,
-                                    PROJECT_GENERATOR_EXACT_REQUIRED_VERSION,
-                                    PROJECT_GENERATOR_REQUIRED_VERSION_URL,
+                                    QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
+                                    QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
+                                    QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
                                     PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
                                     PLUGIN_NAME,
                                     PLUGIN_VERSION,
@@ -50,12 +53,20 @@ from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                           ID_FIELD,
                                           COL_PARTY_TABLE)
 from .gui.about_dialog import AboutDialog
+try:
+    from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
+    from .gui.qgis_model_baker.dlg_import_data import DialogImportData
+    from .gui.qgis_model_baker.dlg_export_data import DialogExportData
+except ModuleNotFoundError as e:
+    pass # The plugin will take care of validating the presence/absence of QGIS Model Baker
+
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
 from .gui.create_building_cadastre_wizard import CreateBuildingCadastreWizard
 from .gui.create_building_unit_cadastre_wizard import CreateBuildingUnitCadastreWizard
 from .gui.create_right_of_way_cadastre_wizard import CreateRightOfWayCadastreWizard
+from .gui.associate_extaddress_cadastre_wizard import AssociateExtAddressWizard
 from .gui.create_col_party_cadastre_wizard import CreateColPartyCadastreWizard
 from .gui.create_group_party_cadastre import CreateGroupPartyCadastre
 from .gui.create_legal_party_prc import CreateLegalPartyPRCWizard
@@ -82,6 +93,7 @@ from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
 from .gui.dialog_import_from_excel import DialogImportFromExcel
 from .gui.dockwidget_queries import DockWidgetQueries
+from .gui.log_quality_dialog import LogQualityDialog
 from .gui.right_of_way import RightOfWay
 from .gui.reports import ReportGenerator
 from .gui.toolbar import ToolBar
@@ -91,7 +103,6 @@ from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
 
-
 class AsistenteLADMCOLPlugin(QObject):
     def __init__(self, iface):
         QObject.__init__(self)
@@ -100,6 +111,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._about_dialog = None
         self._dock_widget_queries = None
         self.toolbar = None
+        self.wiz_address = None
 
     def initGui(self):
         # Set Menus
@@ -128,6 +140,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.addActions([self._load_layers_action,
                               self._queries_action])
         self._menu.addSeparator()
+        self.add_data_management_menu()
         self._settings_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
         self._help_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"), self.iface.mainWindow())
         self._about_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"), self.iface.mainWindow())
@@ -136,9 +149,13 @@ class AsistenteLADMCOLPlugin(QObject):
                                self._about_action])
 
         # Connections
+
+        self._import_schema_action.triggered.connect(self.show_dlg_import_schema)
+        self._import_data_action.triggered.connect(self.show_dlg_import_data)
+        self._export_data_action.triggered.connect(self.show_dlg_export_data)
         self._controlled_measurement_action.triggered.connect(self.show_dlg_controlled_measurement)
-        self._load_layers_action.triggered.connect(self.load_layers_from_project_generator)
         self._queries_action.triggered.connect(self.show_queries)
+        self._load_layers_action.triggered.connect(self.load_layers_from_qgis_model_baker)
         self._settings_action.triggered.connect(self.show_settings)
         self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
@@ -161,6 +178,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
         self.qgis_utils.set_node_visibility_requested.connect(self.set_node_visibility)
+
+        self.quality.log_quality_show_message_emitted.connect(self.show_log_quality_message)
+        self.quality.log_quality_show_button_emitted.connect(self.show_log_quality_button)
+        self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
+        self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
 
         self.iface.initializationCompleted.connect(self.qgis_initialized)
 
@@ -201,6 +223,16 @@ class AsistenteLADMCOLPlugin(QObject):
     def qgis_initialized(self):
         self.refresh_menus(self.get_db_connection())
 
+    def add_data_management_menu(self):
+        self._data_management_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data Management"), self._menu)
+        self._import_schema_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create LADM-COL structure"), self._data_management_menu)
+        self._import_data_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import data"), self._data_management_menu)
+        self._export_data_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"), self._data_management_menu)
+        self._data_management_menu.addActions([self._import_schema_action, self._import_data_action, self._export_data_action])
+
+        self._menu.addMenu(self._data_management_menu)
+
+
     def add_cadastre_menu(self):
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
         self._cadastre_menu.setObjectName(CADASTRE_MENU_OBJECTNAME)
@@ -240,11 +272,17 @@ class AsistenteLADMCOLPlugin(QObject):
                 QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Right of Way"),
                 self._spatial_unit_cadastre_menu)
+        self._extaddress_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Associate Address")
+                )
 
         self._spatial_unit_cadastre_menu.addActions([self._plot_spatial_unit_cadastre_action,
                                                      self._building_spatial_unit_cadastre_action,
                                                      self._building_unit_spatial_unit_cadastre_action,
                                                      self._right_of_way_cadastre_action])
+        self._spatial_unit_cadastre_menu.addSeparator()
+        self._spatial_unit_cadastre_menu.addAction(self._extaddress_cadastre_action)
 
         self._baunit_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "BA Unit"), self._cadastre_menu)
         self._baunit_cadastre_menu.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/ba_unit.png"))
@@ -324,6 +362,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._building_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_building_cad)
         self._building_unit_spatial_unit_cadastre_action.triggered.connect(self.show_wiz_building_unit_cad)
         self._right_of_way_cadastre_action.triggered.connect(self.show_wiz_right_of_way_cad)
+        self._extaddress_cadastre_action.triggered.connect(self.show_wiz_extaddress_cad)
         self._col_party_cadastre_action.triggered.connect(self.show_wiz_col_party_cad)
         self._group_party_cadastre_action.triggered.connect(self.show_dlg_group_party)
         self._right_rrr_cadastre_action.triggered.connect(self.show_wiz_right_rrr_cad)
@@ -617,6 +656,50 @@ class AsistenteLADMCOLPlugin(QObject):
     def load_layers(self, layers):
         self.qgis_utils.get_layers(self.get_db_connection(), layers, True)
 
+    def show_log_quality_message(self, msg, count):
+        self.progressMessageBar = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        self.progress = QProgressBar()
+        self.progress.setFixedWidth(80)
+        self.log_quality_total_rule_count = count
+        self.progress.setMaximum(self.log_quality_total_rule_count * 10)
+        self.progressMessageBar.layout().addWidget(self.progress)
+        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Info)
+        self.progress_count = 0
+        self.log_quality_current_rule_count = 0
+
+    def show_log_quality_button(self):
+        self.button = QPushButton(self.progressMessageBar)
+        self.button.pressed.connect(self.show_log_quality_dialog)
+        self.button.setText(QCoreApplication.translate("LogQualityDialog", "Show Results"))
+        self.progressMessageBar.layout().addWidget(self.button)
+        QCoreApplication.processEvents()
+
+    def set_log_quality_initial_progress(self, msg):
+        self.progress_count += 2 # 20% of the current rule
+        self.progress.setValue(self.progress_count)
+        self.progressMessageBar.setText(
+            QCoreApplication.translate("LogQualityDialog",
+                                       "Checking {} out of {}: '{}'").format(
+                                        self.log_quality_current_rule_count + 1,
+                                        self.log_quality_total_rule_count,
+                                        msg))
+        QCoreApplication.processEvents()
+
+    def set_log_quality_final_progress(self, msg):
+        self.progress_count += 8 # 80% of the current rule
+        self.progress.setValue(self.progress_count)
+        self.log_quality_current_rule_count += 1
+        if self.log_quality_current_rule_count ==  self.log_quality_total_rule_count:
+            self.progressMessageBar.setText(QCoreApplication.translate("LogQualityDialog",
+                "All the {} quality rules were checked! Click the button at the right-hand side to see a report.").format(self.log_quality_total_rule_count))
+        else:
+            self.progressMessageBar.setText(msg)
+        QCoreApplication.processEvents()
+
+    def show_log_quality_dialog(self):
+        dlg = LogQualityDialog(self.qgis_utils, self.quality, self.iface)
+        dlg.exec_()
+
     def _db_connection_required(func_to_decorate):
         @wraps(func_to_decorate)
         def decorated_function(inst, *args, **kwargs):
@@ -645,22 +728,22 @@ class AsistenteLADMCOLPlugin(QObject):
 
         return decorated_function
 
-    def _project_generator_required(func_to_decorate):
+    def _qgis_model_baker_required(func_to_decorate):
         @wraps(func_to_decorate)
         def decorated_function(inst, *args, **kwargs):
-            # Check if Project Generator is installed and active, disable access if not
+            # Check if QGIS Model Baker is installed and active, disable access if not
             plugin_version_right = inst.is_plugin_version_valid()
 
             if plugin_version_right:
                 func_to_decorate(inst)
             else:
-                if PROJECT_GENERATOR_REQUIRED_VERSION_URL:
-                    # If we depend on a specific version of Project Generator (only on that one)
+                if QGIS_MODEL_BAKER_REQUIRED_VERSION_URL:
+                    # If we depend on a specific version of QGIS Model Baker (only on that one)
                     # and it is not the latest version, show a download link
-                    msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'Project Generator' version {} is required, but couldn't be found. Download it <a href=\"{}\">from this link</a> and use 'Install from ZIP'.").format(PROJECT_GENERATOR_MIN_REQUIRED_VERSION, PROJECT_GENERATOR_REQUIRED_VERSION_URL)
+                    msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'QGIS Model Baker' version {} is required, but couldn't be found. Download it <a href=\"{}\">from this link</a> and use 'Install from ZIP'.").format(QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION, QGIS_MODEL_BAKER_REQUIRED_VERSION_URL)
                     inst.iface.messageBar().pushMessage("Asistente LADM_COL", msg, Qgis.Warning, 15)
                 else:
-                    msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'Project Generator' version {} {}is required, but couldn't be found. Click the button to show the Plugin Manager.").format(PROJECT_GENERATOR_MIN_REQUIRED_VERSION, '' if PROJECT_GENERATOR_EXACT_REQUIRED_VERSION else '(or higher) ')
+                    msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'QGIS Model Baker' version {} {}is required, but couldn't be found. Click the button to show the Plugin Manager.").format(QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION, '' if QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION else '(or higher) ')
 
                     widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", msg)
                     button = QPushButton(widget)
@@ -670,7 +753,7 @@ class AsistenteLADMCOLPlugin(QObject):
                     inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
 
                 inst.log.logMessage(
-                    QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, Project Generator not found."),
+                    QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, QGIS Model Baker not found."),
                     PLUGIN_NAME,
                     Qgis.Warning
                 )
@@ -678,16 +761,16 @@ class AsistenteLADMCOLPlugin(QObject):
         return decorated_function
 
     def is_plugin_version_valid(self):
-        plugin_found = 'projectgenerator' in qgis.utils.plugins
+        plugin_found = 'QgisModelBaker' in qgis.utils.plugins
         if not plugin_found:
             return False
-        current_version = get_plugin_metadata('projectgenerator', 'version')
-        min_required_version = PROJECT_GENERATOR_MIN_REQUIRED_VERSION
+        current_version = get_plugin_metadata('QgisModelBaker', 'version')
+        min_required_version = QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION
         if current_version is None:
             return False
 
         current_version_splitted = current_version.split(".")
-        if len(current_version_splitted) < 4: # We could need 4 places for custom Project Generator versions
+        if len(current_version_splitted) < 4: # We could need 4 places for custom QGIS Model Baker versions
             current_version_splitted = current_version_splitted + ['0','0','0','0']
             current_version_splitted = current_version_splitted[:4]
 
@@ -696,9 +779,9 @@ class AsistenteLADMCOLPlugin(QObject):
             min_required_version_splitted = min_required_version_splitted + ['0','0','0','0']
             min_required_version_splitted = min_required_version_splitted[:4]
 
-        self.log.logMessage("[Project Generator] Min required version: {}, current_version: {}".format(min_required_version_splitted, current_version_splitted), PLUGIN_NAME, Qgis.Info)
+        self.log.logMessage("[QGIS Model Baker] Min required version: {}, current_version: {}".format(min_required_version_splitted, current_version_splitted), PLUGIN_NAME, Qgis.Info)
 
-        if PROJECT_GENERATOR_EXACT_REQUIRED_VERSION:
+        if QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION:
             return min_required_version_splitted == current_version_splitted
 
         else: # Min version and subsequent versions should work
@@ -710,37 +793,37 @@ class AsistenteLADMCOLPlugin(QObject):
 
         return True
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def call_explode_boundaries(self):
         self.qgis_utils.build_boundary(self.get_db_connection())
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def call_topological_editing(self):
         self.toolbar.enable_topological_editing(self.get_db_connection())
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def call_fill_topology_table_pointbfs(self):
         self.qgis_utils.fill_topology_table_pointbfs(self.get_db_connection())
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def call_fill_topology_tables_morebfs_less(self):
         self.qgis_utils.fill_topology_tables_morebfs_less(self.get_db_connection())
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def call_fill_right_of_way_relations(self):
         self.right_of_way.fill_right_of_way_relations(self.get_db_connection())
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def call_report_generation(self):
         self.report_generator.generate_report(self.get_db_connection(), self._report_action)
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def call_import_from_intermediate_structure(self):
         dlg = DialogImportFromExcel(self.iface, self.get_db_connection(), self.qgis_utils)
@@ -760,9 +843,9 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_plugin_manager(self):
         self.iface.actionManagePlugins().trigger()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
-    def load_layers_from_project_generator(self):
+    def load_layers_from_qgis_model_baker(self):
         dlg = DialogLoadLayers(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
@@ -777,59 +860,80 @@ class AsistenteLADMCOLPlugin(QObject):
     def get_db_connection(self):
         return self.qgis_utils.get_db_connection()
 
+    @_qgis_model_baker_required
+    def show_dlg_import_schema(self):
+        dlg = DialogImportSchema(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg.exec_()
+
+    @_qgis_model_baker_required
+    def show_dlg_import_data(self):
+        dlg = DialogImportData(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg.exec_()
+
+    @_qgis_model_baker_required
+    def show_dlg_export_data(self):
+        dlg = DialogExportData(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg.exec_()
+
     def show_dlg_controlled_measurement(self):
         dlg = ControlledMeasurementDialog(self.qgis_utils)
         dlg.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_point_cad(self):
         wiz = CreatePointsCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_boundaries_cad(self):
         wiz = CreateBoundariesCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_plot_cad(self):
         wiz = CreatePlotCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_cad(self):
         wiz = CreateBuildingCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_unit_cad(self):
         wiz = CreateBuildingUnitCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_right_of_way_cad(self):
         wiz = CreateRightOfWayCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
+    @_db_connection_required
+    def show_wiz_extaddress_cad(self):
+        self.wiz_address = AssociateExtAddressWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz_address.exec_()
+
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_parcel_cad(self):
         wiz = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_col_party_cad(self):
         wiz = CreateColPartyCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_dlg_group_party(self):
         dlg = CreateGroupPartyCadastre(self.iface, self.get_db_connection(), self.qgis_utils)
@@ -861,7 +965,7 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.set_parties_data(data)
         dlg.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_right_rrr_cad(self):
         layer = self.qgis_utils.get_layer(self.get_db_connection(), ADMINISTRATIVE_SOURCE_TABLE, load=True)
@@ -880,114 +984,114 @@ class AsistenteLADMCOLPlugin(QObject):
         wiz = CreateRightCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_responsibility_rrr_cad(self):
         wiz = CreateResponsibilityCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_restriction_rrr_cad(self):
         wiz = CreateRestrictionCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_administrative_source_cad(self):
         wiz = CreateAdministrativeSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_spatial_source_cad(self):
         wiz = CreateSpatialSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def upload_source_files(self):
         self.qgis_utils.upload_source_files(self.get_db_connection())
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_dlg_quality(self):
         dlg = DialogQuality(self.get_db_connection(), self.qgis_utils, self.quality)
         dlg.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_property_record_card(self):
         wiz = CreatePropertyRecordCardPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_market_research_prc(self):
         wiz = CreateMarketResearchPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_nuclear_family_prc(self):
         wiz = CreateNuclearFamilyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_natural_party_prc(self):
         wiz = CreateNaturalPartyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_legal_party_prc(self):
         wiz = CreateLegalPartyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_parcel_valuation(self):
         wiz = CreateParcelValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_horizontal_property_main_parcel_valuation(self):
         wiz = CreateHorizontalPropertyValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_common_equipment_valuation(self):
         wiz = CreateCommonEquipmentValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_valuation(self):
         wiz = CreateBuildingValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_unit_valuation(self):
         wiz = CreateBuildingUnitValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_unit_qualification_valuation(self):
         wiz = CreateBuildingUnitQualificationValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_geoeconomic_zone_valuation(self):
         wiz = CreateGeoeconomicZoneValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
 
-    @_project_generator_required
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_physical_zone_valuation_action(self):
         wiz = CreatePhysicalZoneValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)

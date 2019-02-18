@@ -17,10 +17,13 @@
  ***************************************************************************/
 """
 import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import psycopg2.extras
+from psycopg2 import ProgrammingError
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsWkbTypes,
                        Qgis,
+                       QgsDataSourceUri,
                        QgsApplication)
 
 from .db_connector import DBConnector
@@ -53,16 +56,26 @@ from ...utils.model_parser import ModelParser
 
 
 class PGConnector(DBConnector):
-    def __init__(self, uri, schema="public"):
+    def __init__(self, uri, schema="public", conn_dict={}):
         DBConnector.__init__(self, uri, schema)
-        self.uri = uri
+        self.mode = 'pg'
+        self.uri = uri if uri is not None else self.get_connection_uri(conn_dict, self.mode, level=1)
         self.conn = None
         self.schema = schema
         self.log = QgsApplication.messageLog()
-        self.mode = 'pg'
         self.provider = 'postgres'
         self._tables_info = None
         self.model_parser = None
+
+        data_source_uri = QgsDataSourceUri(self.uri)
+        self.dict_conn_params = {
+            'host': data_source_uri.host(),
+            'port': data_source_uri.port(),
+            'username': data_source_uri.username(),
+            'password': data_source_uri.password(),
+            'database': data_source_uri.database(),
+            'schema': self.schema
+        }
 
         # Logical validations queries
         self.logic_validation_queries = {
@@ -89,7 +102,7 @@ class PGConnector(DBConnector):
             'PARCEL_NUMBER_BEFORE_VALIDATION': {
                 'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=20 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=PARCEL_NUMBER_BEFORE_FIELD),
                 'desc_error': 'Parcel number before must have 20 numerical characters.',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings","Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
                 'table': PARCEL_TABLE},
             'COL_PARTY_TYPE_NATURAL_VALIDATION': {
                 'query': """
@@ -231,7 +244,7 @@ class PGConnector(DBConnector):
                     ) as conteo
                     WHERE p.t_id = conteo.unidad_predio and conteo.dominios > 1""".format(schema=self.schema),
                 'desc_error': 'Get parcels with duplicate rights',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", 'Parcels with repeated domain right'),
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Parcels with repeated domain right"),
                 'table': PARCEL_TABLE}
         }
 
@@ -246,12 +259,13 @@ class PGConnector(DBConnector):
 
         return bool(cur.fetchone()[0])
 
-    def _schema_exists(self):
-        if self.schema:
+    def _schema_exists(self, schema=None):
+        schema = schema if schema is not None else self.schema
+        if schema:
             cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
             cur.execute("""
                         SELECT EXISTS(SELECT 1 FROM pg_namespace WHERE nspname = '{}');
-            """.format(self.schema))
+            """.format(schema))
 
             return bool(cur.fetchone()[0])
 
@@ -271,29 +285,57 @@ class PGConnector(DBConnector):
 
         return False
 
-    def test_connection(self):
+    def test_connection(self, uri=None, level=1):
+        """
+        :param level: (int) level of connection with postgres
+                    0 = Server
+                    1 = Database
+        """
+        uri = self.uri if uri is None else uri
         try:
-            self.conn = psycopg2.connect(self.uri)
+            self.conn = psycopg2.connect(uri)
             self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
         except Exception as e:
             return (False, QCoreApplication.translate("PGConnector",
                     "There was an error connecting to the database: {}").format(e))
 
-        if not self._postgis_exists():
-            return (False, QCoreApplication.translate("PGConnector",
-                    "The current database does not have PostGIS installed! Please install it before proceeding."))
-        if not self._schema_exists():
+        # No longer needed, we can connect to empty DBs, so we want to avoid showing this particular message
+        # if not self._postgis_exists() and level == 1:
+        #     return (False, QCoreApplication.translate("PGConnector",
+        #             "The current database does not have PostGIS installed! Please install it before proceeding."))
+
+        if not self._schema_exists() and level == 1:
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' does not exist in the database!").format(self.schema))
-        if not self._metadata_exists():
+        if not self._metadata_exists() and level == 1:
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
 
-        if self.model_parser is None:
-            self.model_parser = ModelParser(self)
-        if not self.model_parser.validate_cadastre_model_version()[0]:
-            return (False, QCoreApplication.translate("PGConnector",
-                    "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
+        res, msg = self.get_schema_privileges(uri, self.schema)
+        if res:
+            if msg['create'] and msg['usage']:
+                if level == 1:
+                    try:
+                        if self.model_parser is None:
+                            self.model_parser = ModelParser(self)
+                        if not self.model_parser.validate_cadastre_model_version()[0]:
+                            return (False, QCoreApplication.translate("PGConnector", "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
+                    except psycopg2.ProgrammingError as e:
+                        # if it is not possible to access the schema due to lack of privileges
+                        return (False,
+                                QCoreApplication.translate("PGConnector",
+                                                           "User '{}' has not enough permissions over the schema '{}'. Details: {}").format(
+                                                                self.dict_conn_params['username'],
+                                                                self.schema,
+                                                                e))
+            else:
+                return (False,
+                        QCoreApplication.translate("PGConnector",
+                                                   "User '{}' has not enough permissions over the schema '{}'.").format(
+                            self.dict_conn_params['username'],
+                            self.schema))
+        else:
+            return (False, msg)
 
         return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS successful!"))
 
@@ -817,8 +859,12 @@ class PGConnector(DBConnector):
             if not res:
                 return (res, msg)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur.execute(query)
-        return cur.fetchall()
+
+        try:
+            cur.execute(query)
+            return cur.fetchall()
+        except ProgrammingError:
+            return None
 
     def execute_sql_query_dict_cursor(self, query):
         """
@@ -833,3 +879,125 @@ class PGConnector(DBConnector):
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(query)
         return cur.fetchall()
+
+    def _schema_names_list(self):
+        query = """
+                    SELECT n.nspname as "schema_name"
+                    FROM pg_catalog.pg_namespace n
+                    WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema' AND nspname <> 'public'
+                    ORDER BY 1"""
+
+        result = self.execute_sql_query(query)
+        return result if not isinstance(result, tuple) else None
+
+    def get_models(self, schema=None):
+        query = "SELECT modelname FROM {schema}.t_ili2db_model".format(schema=schema if schema else self.schema)
+        result = self.execute_sql_query(query)
+        return result if not isinstance(result, tuple) else None
+
+    def create_database(self, uri, db_name):
+        """
+        Create a database
+        :param uri: (str) Connection uri only: (host, port, user, pass)
+        :param db_name: (str) Database name to be created
+        :return: tuple(bool, str)
+            bool: True if everything was executed successfully and False if not
+            str: Message to the user indicating the type of error or if everything was executed correctly
+        """
+        sql = """CREATE DATABASE "{}" WITH ENCODING = 'UTF8' CONNECTION LIMIT = -1""".format(db_name)
+        conn = psycopg2.connect(uri)
+
+        if conn:
+            try:
+                conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+                cur = conn.cursor()
+                cur.execute(sql)
+            except psycopg2.ProgrammingError as e:
+                return (False, QCoreApplication.translate("PGConnector", "An error occurred while trying to create the '{}' database: {}".format(db_name, e)))
+        cur.close()
+        conn.close()
+        return (True, QCoreApplication.translate("PGConnector", "Database '{}' was successfully created!".format(db_name)))
+
+    def create_schema(self, uri, schema_name):
+        """
+        Create a schema
+        :param uri:  (str) connection uri only: (host, port, user, pass, db)
+        :param schema_name: (str) schema name to be created
+        :return: tuple(bool, str)
+            bool: True if everything was executed successfully and False if not
+            str: Message to the user indicating the type of error or if everything was executed correctly
+        """
+        sql = 'CREATE SCHEMA "{}"'.format(schema_name)
+        conn = psycopg2.connect(uri)
+
+        if conn:
+            try:
+                conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+                cur = conn.cursor()
+                cur.execute(sql)
+            except psycopg2.ProgrammingError as e:
+                return (False, QCoreApplication.translate("PGConnector", "An error occurred while trying to create the '{}' schema: {}".format(schema_name, e)))
+        cur.close()
+        conn.close()
+        return (True, QCoreApplication.translate("PGConnector", "Schema '{}' was successfully created!".format(schema_name)))
+
+    def get_dbnames_list(self, uri):
+        dbnames_list = list()
+        try:
+            conn = psycopg2.connect(uri)
+            cur = conn.cursor()
+            query = """SELECT datname FROM pg_database WHERE datistemplate = false AND datname <> 'postgres' ORDER BY datname"""
+            cur.execute(query)
+            dbnames = cur.fetchall()
+            for dbname in dbnames:
+                dbnames_list.append(dbname[0])
+            cur.close()
+            conn.close()
+        except Exception as e:
+            return (False, QCoreApplication.translate("PGConnector",
+                                               "There was an error when obtaining the list of existing databases. : {}").format(e))
+        return (True, dbnames_list)
+
+    def get_dbname_schema_list(self, uri):
+        schemas_list = list()
+        try:
+            conn = psycopg2.connect(uri)
+            cur = conn.cursor()
+            query = """
+            SELECT n.nspname as "schema_name" FROM pg_catalog.pg_namespace n 
+            WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema' AND nspname <> 'public' ORDER BY "schema_name"
+            """
+            cur.execute(query)
+            schemas = cur.fetchall()
+            for schema in schemas:
+                schemas_list.append(schema[0])
+            cur.close()
+            conn.close()
+        except Exception as e:
+            return (False, QCoreApplication.translate("PGConnector",
+                                               "There was an error when obtaining the list of existing schemas: {}").format(e))
+        return (True, schemas_list)
+
+    def get_schema_privileges(self, uri, schema):
+        try:
+            conn = psycopg2.connect(uri)
+            cur = conn.cursor()
+            query = """
+                        SELECT
+                            CASE WHEN pg_catalog.has_schema_privilege(current_user, '{schema}', 'CREATE') = True  THEN 1 ELSE 0 END AS "create",
+                            CASE WHEN pg_catalog.has_schema_privilege(current_user, '{schema}', 'USAGE')  = True  THEN 1 ELSE 0 END AS "usage";
+                    """.format(schema=schema)
+
+            cur.execute(query)
+            schema_privileges = cur.fetchone()
+            if schema_privileges:
+                privileges = {'create': bool(int(schema_privileges[0])),  # 'create'
+                              'usage': bool(int(schema_privileges[1]))}  # 'usage'
+            else:
+                return (False, QCoreApplication.translate("PGConnector", "No information for schema '{}'.").format(self.schema))
+            cur.close()
+            conn.close()
+        except Exception as e:
+            return (False, QCoreApplication.translate("PGConnector",
+                                               "There was an error when obtaining privileges for schema '{}'. Details: {}").format(schema, e))
+        return (True, privileges)

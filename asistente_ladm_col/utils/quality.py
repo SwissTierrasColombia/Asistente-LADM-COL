@@ -16,11 +16,15 @@
  *                                                                         *
  ***************************************************************************/
 """
+import time
+from functools import wraps
 
-from qgis.PyQt.QtCore import (QObject,
+from qgis.PyQt.QtCore import (Qt,
+                              QObject,
                               QCoreApplication,
                               QVariant,
-                              QSettings)
+                              QSettings,
+                              pyqtSignal)
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsField,
@@ -35,21 +39,35 @@ from qgis.core import (Qgis,
                        QgsFeatureRequest,
                        NULL,
                        QgsRectangle)
-
 import processing
+
 from .logic_checks import LogicChecks
-from .project_generator_utils import ProjectGeneratorUtils
+from .qgis_model_baker_utils import QgisModelBakerUtils
 from ..config.general_config import (DEFAULT_EPSG,
                                      DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
                                      DEFAULT_USE_ROADS_VALUE,
-                                     translated_strings)
+                                     LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
+                                     LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE,
+                                     LOG_QUALITY_LIST_CONTAINER_OPEN,
+                                     LOG_QUALITY_LIST_CONTAINER_CLOSE,
+                                     LOG_QUALITY_CONTENT_SEPARATOR,
+                                     LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
+                                     LOG_QUALITY_LIST_ITEM_CORRECT_OPEN,
+                                     translated_strings,
+                                     LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
+                                     LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE,
+                                     LOG_QUALITY_LIST_ITEM_OPEN,
+                                     LOG_QUALITY_LIST_ITEM_CLOSE)
 from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            BOUNDARY_TABLE,
                                            BUILDING_TABLE,
                                            BUILDING_UNIT_TABLE,
                                            CONTROL_POINT_TABLE,
+                                           DEPARTMENT_FIELD,
                                            ID_FIELD,
                                            LOGIC_CONSISTENCY_TABLES,
+                                           PARCEL_NUMBER_FIELD,
+                                           PARCEL_NUMBER_BEFORE_FIELD,
                                            PARCEL_TABLE,
                                            POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            MOREBFS_TABLE_PLOT_FIELD,
@@ -60,21 +78,83 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            MOREBFS_TABLE_BOUNDARY_FIELD,
                                            MORE_BOUNDARY_FACE_STRING_TABLE,
+                                           MUNICIPALITY_FIELD,
                                            LESS_TABLE,
                                            PLOT_TABLE,
                                            RIGHT_OF_WAY_TABLE,
-                                           SURVEY_POINT_TABLE)
+                                           SURVEY_POINT_TABLE,
+                                           ZONE_FIELD)
+from .qt_utils import OverrideCursor
+from .utils import set_time_format
 
 class QualityUtils(QObject):
+    log_quality_show_message_emitted = pyqtSignal(str, int)
+    log_quality_show_button_emitted = pyqtSignal()
+    log_quality_set_initial_progress_emitted = pyqtSignal(str)
+    log_quality_set_final_progress_emitted = pyqtSignal(str)
 
     def __init__(self, qgis_utils):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
         self.logic = LogicChecks()
-        self.project_generator_utils = ProjectGeneratorUtils()
+        self.qgis_model_baker_utils = QgisModelBakerUtils()
         self.log = QgsApplication.messageLog()
+        self.log_dialog_quality_text_content = ""
+        self.total_time = 0
 
-    def check_boundary_points_covered_by_boundary_nodes(self, db):
+    def set_count_topology_rules(self, count):
+        self.log_quality_show_message_emitted.emit(QCoreApplication.translate("QualityUtils", ""), count)
+
+    def generate_log_button(self):
+        self.log_quality_show_button_emitted.emit()
+
+    def get_log_dialog_quality_text(self):
+        return self.log_dialog_quality_text, self.total_time
+
+    def clean_log_dialog_quality_text(self):
+        self.log_dialog_quality_text = ""
+
+    def _log_quality_checks(func_to_decorate):
+        @wraps(func_to_decorate)
+        def add_format_to_text(self, db, **args):
+            rule_name = args['rule_name']
+            self.log_quality_set_initial_progress_emitted.emit(rule_name)
+            self.log_dialog_quality_text_content += LOG_QUALITY_LIST_CONTAINER_OPEN
+
+            start_time = time.time()
+            with OverrideCursor(Qt.WaitCursor):
+                func_to_decorate(self, db, **args)
+            end_time = time.time()
+
+            self.total_time = self.total_time + (end_time - start_time)
+
+            self.log_dialog_quality_text_content += LOG_QUALITY_LIST_CONTAINER_CLOSE
+            self.log_dialog_quality_text_content += LOG_QUALITY_CONTENT_SEPARATOR
+
+            self.log_dialog_quality_text += "{}{} [{}]{}".format(LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
+                                                                  rule_name, set_time_format(end_time - start_time), LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE)
+            self.log_dialog_quality_text += self.log_dialog_quality_text_content
+            self.log_dialog_quality_text_content = ""
+
+            self.log_quality_set_final_progress_emitted.emit(rule_name)
+
+        return add_format_to_text
+
+    def log_message(self, msg, type=Qgis.Critical):
+        if type == Qgis.Critical:
+            prefix = LOG_QUALITY_LIST_ITEM_ERROR_OPEN
+            suffix = LOG_QUALITY_LIST_ITEM_ERROR_CLOSE
+        elif type == Qgis.Success:
+            prefix = LOG_QUALITY_LIST_ITEM_CORRECT_OPEN
+            suffix = LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE
+        else: # Qgis.Info
+            prefix = LOG_QUALITY_LIST_ITEM_OPEN
+            suffix = LOG_QUALITY_LIST_ITEM_CLOSE
+
+        self.log_dialog_quality_text_content += "{}{}{}".format(prefix, msg, suffix)
+
+    @_log_quality_checks
+    def check_boundary_points_covered_by_boundary_nodes(self, db, rule_name):
         res_layers = self.qgis_utils.get_layers(db, {
             BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
             POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None},
@@ -85,52 +165,46 @@ class QualityUtils(QObject):
         point_bfs_layer = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
 
         if boundary_point_layer is None:
-            self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils", "Layer {} not found in DB! {}")
-                                                 .format(BOUNDARY_POINT_TABLE, db.get_description()), Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Layer {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()))
 
-        if boundary_layer is None:
-            self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils","Layer {} not found in DB! {}")
-                                                 .format(BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
-            return
+        elif boundary_layer is None:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Layer {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
-        if point_bfs_layer is None:
-            self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils","Table {} not found in DB! {}")
-                                                 .format(POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()), Qgis.Warning)
-            return
+        elif point_bfs_layer is None:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in DB! {}").format(POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()))
 
-        if boundary_point_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "There are no boundary points to check 'boundary points should be covered by boundary nodes'."),
-                Qgis.Info)
-            return
-
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
-                                     "memory")
-
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
-                                     QgsField('boundary_id', QVariant.Int),
-                                     QgsField('error_type', QVariant.String)])
-        error_layer.updateFields()
-
-        features = self.get_boundary_points_features_not_covered_by_boundary_nodes(boundary_point_layer, boundary_layer, point_bfs_layer, error_layer)
-        error_layer.dataProvider().addFeatures(features)
-
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate(
-                    "QGISUtils", "A memory layer with {} boundary points not covered by boundary nodes has been added to the map!")
-                    .format(added_layer.featureCount()), Qgis.Info)
+        elif boundary_point_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no boundary points to check 'boundary points should be covered by boundary nodes'."), Qgis.Info)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "All boundary points are covered by boundary nodes!"), Qgis.Info)
+            error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                         translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
+                                         "memory")
+
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
+                                         QgsField('boundary_id', QVariant.Int),
+                                         QgsField('error_type', QVariant.String)])
+            error_layer.updateFields()
+
+            features = self.get_boundary_points_features_not_covered_by_boundary_nodes(boundary_point_layer, boundary_layer, point_bfs_layer, error_layer)
+            error_layer.dataProvider().addFeatures(features)
+
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
+
+                self.log_message(QCoreApplication.translate(
+                                 "QGISUtils", "A memory layer with {} boundary points not covered by boundary nodes has been added to the map!")
+                                 .format(added_layer.featureCount()))
+
+            else:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "All boundary points are covered by boundary nodes!"), Qgis.Success)
 
     def get_boundary_points_features_not_covered_by_boundary_nodes(self, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field=ID_FIELD):
-
         tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # layer is created with unique vertices
@@ -234,7 +308,8 @@ class QualityUtils(QObject):
 
         return features
 
-    def check_boundary_nodes_covered_by_boundary_points(self, db):
+    @_log_quality_checks
+    def check_boundary_nodes_covered_by_boundary_points(self, db, rule_name):
         res_layers = self.qgis_utils.get_layers(db, {
             BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None},
             POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None},
@@ -245,58 +320,46 @@ class QualityUtils(QObject):
         point_bfs = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
 
         if boundary_point_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()))
 
-        if boundary_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+        elif boundary_layer is None:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
-        if boundary_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no boundaries to check 'missing boundary points in boundaries'."),
-                Qgis.Info)
-            return
+        elif boundary_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no boundaries to check 'missing boundary points in boundaries'."), Qgis.Info)
 
-        if point_bfs is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(
-                    POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()), Qgis.Warning)
-            return
+        elif point_bfs is None:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in DB! {}").format(POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()))
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
-                                     "memory")
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
-                                     QgsField('boundary_id', QVariant.Int),
-                                     QgsField('error_type', QVariant.String)])
-
-        error_layer.updateFields()
-
-        features = self.get_boundary_nodes_features_not_covered_by_boundary_points(boundary_point_layer, boundary_layer, point_bfs, error_layer)
-        data_provider.addFeatures(features)
-
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} boundary vertices with no associated boundary points or with boundary points wrongly registered in the PointBFS table been added to the map!").format(added_layer.featureCount()), Qgis.Info)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "There are no missing boundary points in boundaries."), Qgis.Info)
+            error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                         translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
+                                         "memory")
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
+                                         QgsField('boundary_id', QVariant.Int),
+                                         QgsField('error_type', QVariant.String)])
+
+            error_layer.updateFields()
+
+            features = self.get_boundary_nodes_features_not_covered_by_boundary_points(boundary_point_layer, boundary_layer, point_bfs, error_layer)
+            data_provider.addFeatures(features)
+
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
+
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                    "A memory layer with {} boundary vertices with no associated boundary points or with boundary points wrongly registered in the PointBFS table been added to the map!").format(added_layer.featureCount()))
+
+            else:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "There are no missing boundary points in boundaries."), Qgis.Success)
 
     def get_boundary_nodes_features_not_covered_by_boundary_points(self, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field=ID_FIELD):
-
         tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # layer is created with unique vertices, it is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as we need them
@@ -409,7 +472,8 @@ class QualityUtils(QObject):
 
         return features
 
-    def check_plot_nodes_covered_by_boundary_points(self, db):
+    @_log_quality_checks
+    def check_plot_nodes_covered_by_boundary_points(self, db, rule_name):
         res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None}}, load=True)
@@ -418,45 +482,43 @@ class QualityUtils(QObject):
         boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
 
         if boundary_point_layer is None:
-            self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils", "Layer {} not found in DB! {}")
-                                                 .format(BOUNDARY_POINT_TABLE, db.get_description()), Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Layer {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()))
 
-        if plot_layer is None:
-            self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils","Layer {} not found in DB! {}")
-                                                 .format(PLOT_TABLE, db.get_description()), Qgis.Warning)
-            return
+        elif plot_layer is None:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
 
-        if plot_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "There are no plots to check 'Plots should be covered by boundary points'."),
-                Qgis.Info)
-            return
+        elif plot_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no plots to check 'Plots should be covered by boundary points'."), Qgis.Info)
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS,
-                                     "memory")
-
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('plot_id', QVariant.Int)])
-        error_layer.updateFields()
-
-        topology_rule = 'plot_nodes_covered_by_boundary_points'
-        features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule)
-        error_layer.dataProvider().addFeatures(features)
-
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate(
-                    "QGISUtils", "A memory layer with {} plot nodes not covered by boundary points has been added to the map!")
-                    .format(added_layer.featureCount()), Qgis.Info)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "All plot nodes are covered by boundary points!"), Qgis.Info)
+            error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                         translated_strings.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS,
+                                         "memory")
 
-    def check_boundary_points_covered_by_plot_nodes(self, db):
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField('plot_id', QVariant.Int)])
+            error_layer.updateFields()
+
+            topology_rule = 'plot_nodes_covered_by_boundary_points'
+            features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule)
+            error_layer.dataProvider().addFeatures(features)
+
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
+                self.log_message(QCoreApplication.translate(
+                                 "QGISUtils",
+                                 "A memory layer with {} plot nodes not covered by boundary points has been added to the map!")
+                                 .format(added_layer.featureCount()))
+
+            else:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "All plot nodes are covered by boundary points!"), Qgis.Success)
+
+    @_log_quality_checks
+    def check_boundary_points_covered_by_plot_nodes(self, db, rule_name):
         res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None}}, load=True)
@@ -465,43 +527,39 @@ class QualityUtils(QObject):
         boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
 
         if boundary_point_layer is None:
-            self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils", "Layer {} not found in DB! {}")
-                                                 .format(BOUNDARY_POINT_TABLE, db.get_description()), Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Layer {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()))
 
-        if plot_layer is None:
-            self.qgis_utils.message_emitted.emit(QCoreApplication.translate("QGISUtils","Layer {} not found in DB! {}")
-                                                 .format(PLOT_TABLE, db.get_description()), Qgis.Warning)
-            return
+        elif plot_layer is None:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
 
-        if boundary_point_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "There are no boundary points to check 'boundary points should be covered by Plot nodes'."),
-                Qgis.Info)
-            return
+        elif boundary_point_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no boundary points to check 'boundary points should be covered by Plot nodes'."), Qgis.Info)
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
-                                     "memory")
-
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int)])
-        error_layer.updateFields()
-
-        topology_rule = 'boundary_points_covered_by_plot_nodes'
-        features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule)
-        error_layer.dataProvider().addFeatures(features)
-
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate(
-                    "QGISUtils", "A memory layer with {} boundary points not covered by plot nodes has been added to the map!")
-                    .format(added_layer.featureCount()), Qgis.Info)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "All boundary points are covered by plot nodes!"), Qgis.Info)
+            error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                         translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
+                                         "memory")
+
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int)])
+            error_layer.updateFields()
+
+            topology_rule = 'boundary_points_covered_by_plot_nodes'
+            features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule)
+            error_layer.dataProvider().addFeatures(features)
+
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
+
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                    "A memory layer with {} boundary points not covered by plot nodes has been added to the map!").format(added_layer.featureCount()))
+
+            else:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "All boundary points are covered by plot nodes!"), Qgis.Success)
 
     @staticmethod
     def get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule, id_field=ID_FIELD):
@@ -556,7 +614,8 @@ class QualityUtils(QObject):
 
         return features
 
-    def check_overlapping_points(self, db, point_layer_name):
+    @_log_quality_checks
+    def check_overlapping_points(self, db, point_layer_name, rule_name):
         """
         Shows which points are overlapping
         :param db: db connection instance
@@ -567,60 +626,54 @@ class QualityUtils(QObject):
         point_layer = self.qgis_utils.get_layer(db, point_layer_name, load=True)
 
         if point_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(point_layer_name, db.get_description()),
-                Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in DB! {}").format(point_layer_name, db.get_description()))
 
-        if point_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                   "There are no points in layer '{}' to check for overlaps!").format(point_layer_name), Qgis.Info)
-            return
+        elif point_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no points in layer '{}' to check for overlaps!").format(point_layer_name), Qgis.Info)
 
-        error_layer_name = ''
-        if point_layer_name == BOUNDARY_POINT_TABLE:
-            error_layer_name = translated_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS
-        elif point_layer_name == CONTROL_POINT_TABLE:
-            error_layer_name = translated_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS
-
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     error_layer_name, "memory")
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField("point_count", QVariant.Int), QgsField("intersecting_ids", QVariant.String) ])
-        error_layer.updateFields()
-
-        overlapping = self.qgis_utils.geometry.get_overlapping_points(point_layer)
-        flat_overlapping = [id for items in overlapping for id in items]  # Build a flat list of ids
-
-        t_ids = {f.id(): f[ID_FIELD] for f in point_layer.getFeatures(flat_overlapping)}
-
-        for items in overlapping:
-            # We need a feature geometry, pick the first id to get it
-            feature = point_layer.getFeature(items[0])
-            point = feature.geometry()
-            new_feature = QgsVectorLayerUtils().createFeature(
-                error_layer,
-                point,
-                {0: len(items), 1: ", ".join([str(t_ids[i]) for i in items])})
-            features.append(new_feature)
-
-        error_layer.dataProvider().addFeatures(features)
-
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} overlapping points in '{}' has been added to the map!").format(
-                    added_layer.featureCount(), point_layer_name), Qgis.Info)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no overlapping points in layer '{}'!").format(point_layer_name), Qgis.Info)
+            error_layer_name = ''
+            if point_layer_name == BOUNDARY_POINT_TABLE:
+                error_layer_name = translated_strings.CHECK_OVERLAPS_IN_BOUNDARY_POINTS
+            elif point_layer_name == CONTROL_POINT_TABLE:
+                error_layer_name = translated_strings.CHECK_OVERLAPS_IN_CONTROL_POINTS
 
-    def check_plots_covered_by_boundaries(self, db):
+            error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                         error_layer_name, "memory")
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField("point_count", QVariant.Int), QgsField("intersecting_ids", QVariant.String) ])
+            error_layer.updateFields()
+
+            overlapping = self.qgis_utils.geometry.get_overlapping_points(point_layer)
+            flat_overlapping = [id for items in overlapping for id in items]  # Build a flat list of ids
+
+            t_ids = {f.id(): f[ID_FIELD] for f in point_layer.getFeatures(flat_overlapping)}
+
+            for items in overlapping:
+                # We need a feature geometry, pick the first id to get it
+                feature = point_layer.getFeature(items[0])
+                point = feature.geometry()
+                new_feature = QgsVectorLayerUtils().createFeature(
+                    error_layer,
+                    point,
+                    {0: len(items), 1: ", ".join([str(t_ids[i]) for i in items])})
+                features.append(new_feature)
+
+            error_layer.dataProvider().addFeatures(features)
+
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "A memory layer with {} overlapping points in '{}' has been added to the map!").format(
+                                 added_layer.featureCount(), point_layer_name))
+            else:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "There are no overlapping points in layer '{}'!").format(point_layer_name), Qgis.Success)
+
+    @_log_quality_checks
+    def check_plots_covered_by_boundaries(self, db, rule_name):
         # read data
         res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
@@ -635,63 +688,48 @@ class QualityUtils(QObject):
         less_layer = res_layers[LESS_TABLE]
 
         if plot_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Layer {} not found in DB! {}").format(
-                    PLOT_TABLE, db.get_description()), Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
 
-        if boundary_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Layer {} not found in DB! {}").format(
-                    BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
-            return
+        elif boundary_layer is None:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Layer {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
-        if plot_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no plots to check 'plots should be covered by boundaries'."),
-                Qgis.Info)
-            return
+        elif plot_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no plots to check 'plots should be covered by boundaries'."), Qgis.Info)
 
-        if more_bfs_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(
-                    MORE_BOUNDARY_FACE_STRING_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+        elif more_bfs_layer is None:
+            self.log_message(QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(
+                             MORE_BOUNDARY_FACE_STRING_TABLE, db.get_description()))
 
-        if less_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(LESS_TABLE,
-                                                                                                   db.get_description()),
-                Qgis.Warning)
-            return
+        elif less_layer is None:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in the DB! {}").format(LESS_TABLE, db.get_description()))
 
-        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES,
-                                     "memory")
-
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
-                                     QgsField('boundary_id', QVariant.Int),
-                                     QgsField('error_type', QVariant.String)])
-        error_layer.updateFields()
-
-        features = self.get_plot_features_not_covered_by_boundaries(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
-
-        if features:
-            error_layer.dataProvider().addFeatures(features)
-            added_layer = self.add_error_layer(error_layer)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} plots not covered by boundaries has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "All plots are covered by boundaries!"), Qgis.Info)
+            error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                         translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES,
+                                         "memory")
+
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
+                                         QgsField('boundary_id', QVariant.Int),
+                                         QgsField('error_type', QVariant.String)])
+            error_layer.updateFields()
+
+            features = self.get_plot_features_not_covered_by_boundaries(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
+
+            if features:
+                error_layer.dataProvider().addFeatures(features)
+                added_layer = self.add_error_layer(error_layer)
+
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "A memory layer with {} plots not covered by boundaries has been added to the map!").format(added_layer.featureCount()))
+
+            else:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "All plots are covered by boundaries!"), Qgis.Success)
 
     def get_plot_features_not_covered_by_boundaries(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
         """
@@ -943,7 +981,8 @@ class QualityUtils(QObject):
 
         return features
 
-    def check_boundaries_covered_by_plots(self, db):
+    @_log_quality_checks
+    def check_boundaries_covered_by_plots(self, db, rule_name):
         # read data
         res_layers = self.qgis_utils.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
@@ -959,63 +998,48 @@ class QualityUtils(QObject):
 
         # validate data
         if plot_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
 
-        if boundary_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Layer {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+        elif boundary_layer is None:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Layer {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
-        if boundary_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no boundaries to check 'boundaries should be covered by plots'."),
-                Qgis.Info)
-            return
+        elif boundary_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no boundaries to check 'boundaries should be covered by plots'."), Qgis.Info)
 
-        if more_bfs_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(MORE_BOUNDARY_FACE_STRING_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+        elif more_bfs_layer is None:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in the DB! {}").format(MORE_BOUNDARY_FACE_STRING_TABLE, db.get_description()))
 
-        if less_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in the DB! {}").format(LESS_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+        elif less_layer is None:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in the DB! {}").format(LESS_TABLE, db.get_description()))
 
-        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS,
-                                     "memory")
-
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
-                                     QgsField('boundary_id', QVariant.Int),
-                                     QgsField('error_type', QVariant.String)])
-        error_layer.updateFields()
-
-        features = self.get_boundary_features_not_covered_by_plots(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
-
-        if features:
-            error_layer.dataProvider().addFeatures(features)
-            added_layer = self.add_error_layer(error_layer)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate(
-                    "QGISUtils",
-                    "A memory layer with {} boundaries not covered by plots has been added to the map!")
-                    .format(added_layer.featureCount()), Qgis.Info)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "All boundaries are covered by plots!"), Qgis.Info)
+            error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                         translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS,
+                                         "memory")
+
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
+                                         QgsField('boundary_id', QVariant.Int),
+                                         QgsField('error_type', QVariant.String)])
+            error_layer.updateFields()
+
+            features = self.get_boundary_features_not_covered_by_plots(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
+
+            if features:
+                error_layer.dataProvider().addFeatures(features)
+                added_layer = self.add_error_layer(error_layer)
+
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "A memory layer with {} boundaries not covered by plots has been added to the map!").format(added_layer.featureCount()))
+
+            else:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "All boundaries are covered by plots!"), Qgis.Success)
 
     def get_boundary_features_not_covered_by_plots(self, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, id_field=ID_FIELD):
         """
@@ -1286,136 +1310,132 @@ class QualityUtils(QObject):
 
         return features
 
-    def check_overlapping_polygons(self, db, polygon_layer_name):
+    @_log_quality_checks
+    def check_overlapping_polygons(self, db, polygon_layer_name, rule_name):
         polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, QgsWkbTypes.PolygonGeometry, load=True)
 
         if polygon_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(polygon_layer_name, db.get_description()),
-                Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in DB! {}").format(polygon_layer_name, db.get_description()))
 
-        error_layer_name = ''
-        if polygon_layer_name == PLOT_TABLE:
-            error_layer_name = translated_strings.CHECK_OVERLAPS_IN_PLOTS
-        elif polygon_layer_name == BUILDING_TABLE:
-            error_layer_name = translated_strings.CHECK_OVERLAPS_IN_BUILDINGS
-        elif polygon_layer_name == RIGHT_OF_WAY_TABLE:
-            error_layer_name = translated_strings.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY
-
-        error_layer = QgsVectorLayer("Polygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     error_layer_name, "memory")
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField("polygon_id", QVariant.Int),
-                                     QgsField("overlapping_ids", QVariant.String),
-                                     QgsField("count_parts", QVariant.Int)])
-        error_layer.updateFields()
-
-        if QgsWkbTypes.isMultiType(polygon_layer.wkbType()) and \
-            polygon_layer.geometryType() == QgsWkbTypes.PolygonGeometry:
-            polygon_layer = processing.run("native:multiparttosingleparts",
-                                           {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-
-        overlapping = self.qgis_utils.geometry.get_overlapping_polygons(polygon_layer)
-
-        flat_overlapping = [id for items in overlapping for id in items]  # Build a flat list of ids
-        flat_overlapping = list(set(flat_overlapping))  # unique values
-
-        if type(polygon_layer) == QgsVectorLayer: # A string might come from processing for empty layers
-            t_ids = {f.id(): f[ID_FIELD] for f in polygon_layer.getFeatures() if f.id() in flat_overlapping}
-
-        features = []
-
-        for overlapping_item in overlapping:
-            polygon_id_field = overlapping_item[0]
-            overlapping_id_field = overlapping_item[1]
-            polygon_intersection = self.qgis_utils.geometry.get_intersection_polygons(polygon_layer, polygon_id_field, overlapping_id_field)
-
-            if polygon_intersection is not None:
-                new_feature = QgsVectorLayerUtils().createFeature(
-                    error_layer,
-                    polygon_intersection,
-                    {0: t_ids[polygon_id_field],
-                     1: t_ids[overlapping_id_field],
-                     2: len(polygon_intersection.asMultiPolygon()) if polygon_intersection.isMultipart() else 1})
-
-                features.append(new_feature)
-
-        error_layer.dataProvider().addFeatures(features)
-
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} overlapping polygons in layer '{}' has been added to the map!").format(
-                    added_layer.featureCount(), polygon_layer_name), Qgis.Info)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "There are no overlapping polygons in layer '{}'!").format(
-                    polygon_layer_name), Qgis.Info)
+            error_layer_name = ''
+            if polygon_layer_name == PLOT_TABLE:
+                error_layer_name = translated_strings.CHECK_OVERLAPS_IN_PLOTS
+            elif polygon_layer_name == BUILDING_TABLE:
+                error_layer_name = translated_strings.CHECK_OVERLAPS_IN_BUILDINGS
+            elif polygon_layer_name == RIGHT_OF_WAY_TABLE:
+                error_layer_name = translated_strings.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY
 
-    def check_overlaps_in_boundaries(self, db):
+            error_layer = QgsVectorLayer("Polygon?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                         error_layer_name, "memory")
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField("polygon_id", QVariant.Int),
+                                         QgsField("overlapping_ids", QVariant.String),
+                                         QgsField("count_parts", QVariant.Int)])
+            error_layer.updateFields()
+
+            if QgsWkbTypes.isMultiType(polygon_layer.wkbType()) and \
+                polygon_layer.geometryType() == QgsWkbTypes.PolygonGeometry:
+                polygon_layer = processing.run("native:multiparttosingleparts",
+                                               {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+
+            overlapping = self.qgis_utils.geometry.get_overlapping_polygons(polygon_layer)
+
+            flat_overlapping = [id for items in overlapping for id in items]  # Build a flat list of ids
+            flat_overlapping = list(set(flat_overlapping))  # unique values
+
+            if type(polygon_layer) == QgsVectorLayer: # A string might come from processing for empty layers
+                t_ids = {f.id(): f[ID_FIELD] for f in polygon_layer.getFeatures() if f.id() in flat_overlapping}
+
+            features = []
+
+            for overlapping_item in overlapping:
+                polygon_id_field = overlapping_item[0]
+                overlapping_id_field = overlapping_item[1]
+                polygon_intersection = self.qgis_utils.geometry.get_intersection_polygons(polygon_layer, polygon_id_field, overlapping_id_field)
+
+                if polygon_intersection is not None:
+                    new_feature = QgsVectorLayerUtils().createFeature(
+                        error_layer,
+                        polygon_intersection,
+                        {0: t_ids[polygon_id_field],
+                         1: t_ids[overlapping_id_field],
+                         2: len(polygon_intersection.asMultiPolygon()) if polygon_intersection.isMultipart() else 1})
+
+                    features.append(new_feature)
+
+            error_layer.dataProvider().addFeatures(features)
+
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
+
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "A memory layer with {} overlapping polygons in layer '{}' has been added to the map!").format(
+                                 added_layer.featureCount(), polygon_layer_name))
+
+            else:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "There are no overlapping polygons in layer '{}'!").format(polygon_layer_name), Qgis.Success)
+
+    @_log_quality_checks
+    def check_overlaps_in_boundaries(self, db, rule_name):
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
 
         if boundary_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "Table {} not found in DB! {}").format(
-                        BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
-        overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_layer)
-        if overlapping is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                   "There are no boundaries to check for overlaps!"), Qgis.Info)
-            return
-
-        error_point_layer = overlapping['native:saveselectedfeatures_3:Intersected_Points']
-        error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
-        if type(error_point_layer) is QgsVectorLayer:
-            error_point_layer.setName("{} (point intersections)".format(
-                translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES
-            ))
-        if type(error_line_layer) is QgsVectorLayer:
-            error_line_layer.setName("{} (line intersections)".format(
-                translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES
-            ))
-
-        if (type(error_point_layer) is not QgsVectorLayer and \
-           type(error_line_layer) is not QgsVectorLayer) or \
-           (error_point_layer.featureCount() == 0 and \
-           error_line_layer.featureCount() == 0):
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no overlapping boundaries."), Qgis.Info)
         else:
-            msg = ''
+            overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_layer)
+            if overlapping is None:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "There are no boundaries to check for overlaps!"), Qgis.Info)
 
-            if type(error_point_layer) is QgsVectorLayer and error_point_layer.featureCount() > 0:
-                added_point_layer = self.add_error_layer(error_point_layer)
-                msg = QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} overlapping boundaries (point intersections) has been added to the map.").format(added_point_layer.featureCount())
+            else:
+                error_point_layer = overlapping['native:saveselectedfeatures_3:Intersected_Points']
+                error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
+                if type(error_point_layer) is QgsVectorLayer:
+                    error_point_layer.setName("{} (point intersections)".format(
+                        translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES
+                    ))
+                if type(error_line_layer) is QgsVectorLayer:
+                    error_line_layer.setName("{} (line intersections)".format(
+                        translated_strings.CHECK_OVERLAPS_IN_BOUNDARIES
+                    ))
 
-            if type(error_line_layer) is QgsVectorLayer and error_line_layer.featureCount() > 0:
-                added_line_layer = self.add_error_layer(error_line_layer)
-                msg = QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} overlapping boundaries (line intersections) has been added to the map.").format(added_line_layer.featureCount())
+                if (type(error_point_layer) is not QgsVectorLayer and \
+                   type(error_line_layer) is not QgsVectorLayer) or \
+                   (error_point_layer.featureCount() == 0 and \
+                   error_line_layer.featureCount() == 0):
 
-            if type(error_point_layer) is QgsVectorLayer and \
-               type(error_line_layer) is QgsVectorLayer and \
-               error_point_layer.featureCount() > 0 and \
-               error_line_layer.featureCount() > 0:
-                msg = QCoreApplication.translate("QGISUtils",
-                    "Two memory layers with overlapping boundaries ({} point intersections and {} line intersections) have been added to the map.").format(added_point_layer.featureCount(), added_line_layer.featureCount())
+                    self.log_message(QCoreApplication.translate("QGISUtils",
+                                     "There are no overlapping boundaries."), Qgis.Success)
 
-            self.qgis_utils.message_emitted.emit(msg, Qgis.Info)
+                else:
+                    msg = ''
 
-    def check_boundaries_are_not_split(self, db):
+                    if type(error_point_layer) is QgsVectorLayer and error_point_layer.featureCount() > 0:
+                        added_point_layer = self.add_error_layer(error_point_layer)
+                        msg = QCoreApplication.translate("QGISUtils",
+                            "A memory layer with {} overlapping boundaries (point intersections) has been added to the map.").format(added_point_layer.featureCount())
+
+                    if type(error_line_layer) is QgsVectorLayer and error_line_layer.featureCount() > 0:
+                        added_line_layer = self.add_error_layer(error_line_layer)
+                        msg = QCoreApplication.translate("QGISUtils",
+                            "A memory layer with {} overlapping boundaries (line intersections) has been added to the map.").format(added_line_layer.featureCount())
+
+                    if type(error_point_layer) is QgsVectorLayer and \
+                       type(error_line_layer) is QgsVectorLayer and \
+                       error_point_layer.featureCount() > 0 and \
+                       error_line_layer.featureCount() > 0:
+                        msg = QCoreApplication.translate("QGISUtils",
+                            "Two memory layers with overlapping boundaries ({} point intersections and {} line intersections) have been added to the map.").format(added_point_layer.featureCount(), added_line_layer.featureCount())
+
+                    self.log_message(msg)
+
+    @_log_quality_checks
+    def check_boundaries_are_not_split(self, db, rule_name):
         """
         An split boundary is an incomplete boundary because it is connected to
         a single boundary and therefore, they don't represent a change in
@@ -1425,106 +1445,95 @@ class QualityUtils(QObject):
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
 
         if boundary_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "Layer {} not found in DB! {}").format(
-                        BOUNDARY_TABLE, db.get_description()), Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Layer {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
-        if boundary_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                   "There are no boundaries to check 'boundaries should not be split'!"), Qgis.Info)
-            return
+        elif boundary_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no boundaries to check 'boundaries should not be split'!"), Qgis.Info)
 
-        wrong_boundaries = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(boundary_layer)
-
-        if wrong_boundaries is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no wrong boundaries!"), Qgis.Info)
-            return
-
-        error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                        translated_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT,
-                        "memory")
-        pr = error_layer.dataProvider()
-        pr.addAttributes([QgsField("boundary_id", QVariant.Int)])
-        error_layer.updateFields()
-
-        for feature in wrong_boundaries:
-            new_feature = QgsVectorLayerUtils().createFeature(error_layer, feature.geometry(),
-                                                              {0: feature[ID_FIELD]})
-            features.append(new_feature)
-
-        error_layer.dataProvider().addFeatures(features)
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} wrong boundaries has been added to the map!").format(added_layer.featureCount()),
-                Qgis.Info)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no wrong boundaries."),
-                Qgis.Info)
+            wrong_boundaries = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(boundary_layer)
 
-    def check_too_long_segments(self, db):
+            if wrong_boundaries is None:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "There are no wrong boundaries!"), Qgis.Success)
+            else:
+                error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                translated_strings.CHECK_BOUNDARIES_ARE_NOT_SPLIT,
+                                "memory")
+                pr = error_layer.dataProvider()
+                pr.addAttributes([QgsField("boundary_id", QVariant.Int)])
+                error_layer.updateFields()
+
+                for feature in wrong_boundaries:
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, feature.geometry(),
+                                                                      {0: feature[ID_FIELD]})
+                    features.append(new_feature)
+
+                error_layer.dataProvider().addFeatures(features)
+                if error_layer.featureCount() > 0:
+                    added_layer = self.add_error_layer(error_layer)
+                    self.log_message(QCoreApplication.translate("QGISUtils",
+                                     "A memory layer with {} wrong boundaries has been added to the map!").format(added_layer.featureCount()))
+                else:
+                    self.log_message(QCoreApplication.translate("QGISUtils",
+                                     "There are no wrong boundaries."), Qgis.Success)
+
+    @_log_quality_checks
+    def check_too_long_segments(self, db, rule_name):
         tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
         features = []
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
 
         if boundary_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
-        if boundary_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                   "There are no boundaries to check for too long segments!"), Qgis.Info)
-            return
+        elif boundary_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no boundaries to check for too long segments!"), Qgis.Info)
 
-        error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG),
-                        translated_strings.CHECK_TOO_LONG_BOUNDARY_SEGMENTS,
-                        "memory")
-        pr = error_layer.dataProvider()
-        pr.addAttributes([QgsField("boundary_id", QVariant.Int),
-                          QgsField("distance", QVariant.Double)])
-        error_layer.updateFields()
+        else:
+            error_layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG),
+                            translated_strings.CHECK_TOO_LONG_BOUNDARY_SEGMENTS,
+                            "memory")
+            pr = error_layer.dataProvider()
+            pr.addAttributes([QgsField("boundary_id", QVariant.Int),
+                              QgsField("distance", QVariant.Double)])
+            error_layer.updateFields()
 
-        for feature in boundary_layer.getFeatures():
-            lines = feature.geometry()
-            if lines.isMultipart():
-                for part in range(lines.constGet().numGeometries()):
-                    line = lines.constGet().geometryN(part)
-                    segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
+            for feature in boundary_layer.getFeatures():
+                lines = feature.geometry()
+                if lines.isMultipart():
+                    for part in range(lines.constGet().numGeometries()):
+                        line = lines.constGet().geometryN(part)
+                        segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(line, tolerance)
+                        for segment_info in segments_info:
+                            new_feature = QgsVectorLayerUtils().createFeature(error_layer, segment_info[0], {0:feature.id(), 1:segment_info[1]})
+                            features.append(new_feature)
+                else:
+                    segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(lines.constGet(), tolerance)
                     for segment_info in segments_info:
                         new_feature = QgsVectorLayerUtils().createFeature(error_layer, segment_info[0], {0:feature.id(), 1:segment_info[1]})
                         features.append(new_feature)
+
+            error_layer.dataProvider().addFeatures(features)
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
+
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "A memory layer with {} boundary segments longer than {}m. has been added to the map!").format(added_layer.featureCount(), tolerance))
+
             else:
-                segments_info = self.qgis_utils.geometry.get_too_long_segments_from_simple_line(lines.constGet(), tolerance)
-                for segment_info in segments_info:
-                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, segment_info[0], {0:feature.id(), 1:segment_info[1]})
-                    features.append(new_feature)
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "All boundary segments are within the length tolerance for segments ({}m.)!").format(tolerance), Qgis.Success)
 
-        error_layer.dataProvider().addFeatures(features)
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} boundary segments longer than {}m. has been added to the map!").format(added_layer.featureCount(), tolerance),
-                Qgis.Info)
-        else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "All boundary segments are within the length tolerance for segments ({}m.)!").format(tolerance),
-                Qgis.Info)
-
+    @_log_quality_checks
     def check_missing_boundary_points_in_boundaries(self, db):
+        """
+        Not used anymore but kept for reference
+        """
         res_layers = self.qgis_utils.get_layers(db, {
             BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None},
             POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None},
@@ -1687,51 +1696,44 @@ class QualityUtils(QObject):
                 QCoreApplication.translate("QGISUtils",
                                            "There are no missing survey points in buildings."), Qgis.Info)
 
-    def check_dangles_in_boundaries(self, db):
+    @_log_quality_checks
+    def check_dangles_in_boundaries(self, db, rule_name):
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
 
         if boundary_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                                       "Table {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()))
 
-        if boundary_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no boundaries to check for dangles."),
-                Qgis.Info)
-            return
+        elif boundary_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no boundaries to check for dangles."), Qgis.Info)
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
-                            translated_strings.CHECK_DANGLES_IN_BOUNDARIES,
-                            "memory")
-        pr = error_layer.dataProvider()
-        pr.addAttributes([QgsField("boundary_id", QVariant.Int)])
-        error_layer.updateFields()
-
-        end_points, dangle_ids = self.get_dangle_ids(boundary_layer)
-
-        new_features = []
-        for dangle in end_points.getFeatures(dangle_ids):
-            new_feature = QgsVectorLayerUtils().createFeature(end_points, dangle.geometry(), {0: dangle[ID_FIELD]})
-            new_features.append(new_feature)
-
-        error_layer.dataProvider().addFeatures(new_features)
-
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} boundary dangles has been added to the map!").format(added_layer.featureCount()),
-                Qgis.Info)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Boundaries have no dangles!"),
-                Qgis.Info)
+            error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                translated_strings.CHECK_DANGLES_IN_BOUNDARIES,
+                                "memory")
+            pr = error_layer.dataProvider()
+            pr.addAttributes([QgsField("boundary_id", QVariant.Int)])
+            error_layer.updateFields()
+
+            end_points, dangle_ids = self.get_dangle_ids(boundary_layer)
+
+            new_features = []
+            for dangle in end_points.getFeatures(dangle_ids):
+                new_feature = QgsVectorLayerUtils().createFeature(end_points, dangle.geometry(), {0: dangle[ID_FIELD]})
+                new_features.append(new_feature)
+
+            error_layer.dataProvider().addFeatures(new_features)
+
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
+
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "A memory layer with {} boundary dangles has been added to the map!").format(added_layer.featureCount()))
+
+            else:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "Boundaries have no dangles!"), Qgis.Success)
 
     def get_missing_boundary_points_in_boundaries(self, boundary_point_layer, boundary_layer):
         res = dict()
@@ -1789,7 +1791,8 @@ class QualityUtils(QObject):
                         res[feature[ID_FIELD]] = [diff_geom]
         return res
 
-    def check_right_of_way_overlaps_buildings(self, db):
+    @_log_quality_checks
+    def check_right_of_way_overlaps_buildings(self, db, rule_name):
         res_layers = self.qgis_utils.get_layers(db, {
             RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}}, load=True)
@@ -1798,163 +1801,135 @@ class QualityUtils(QObject):
         building_layer = res_layers[BUILDING_TABLE]
 
         if right_of_way_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "Table {} not found in DB! {}").format(RIGHT_OF_WAY_TABLE,
-                    db.get_description()),
-                Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in DB! {}").format(RIGHT_OF_WAY_TABLE, db.get_description()))
 
-        if building_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "Table {} not found in DB! {}").format(BUILDING_TABLE,
-                    db.get_description()),
-                Qgis.Warning)
-            return
+        elif building_layer is None:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in DB! {}").format(BUILDING_TABLE, db.get_description()))
 
-        if right_of_way_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                   "There are no Right of Way features to check 'Right of Way should not overlap buildings'."),
-                Qgis.Info)
-            return
+        elif right_of_way_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no Right of Way features to check 'Right of Way should not overlap buildings'."), Qgis.Info)
 
-        if building_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                   "There are no buildings to check 'Right of Way should not overlap buildings'."),
-                Qgis.Info)
-            return
+        elif building_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no buildings to check 'Right of Way should not overlap buildings'."), Qgis.Info)
 
-        error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS,
-                                     "memory")
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField("right_of_way_id", QVariant.Int)])
-        data_provider.addAttributes([QgsField("building_id", QVariant.Int)])
-        error_layer.updateFields()
-
-        ids, overlapping_polygons = self.qgis_utils.geometry.get_inner_intersections_between_polygons(right_of_way_layer, building_layer)
-
-        if overlapping_polygons is not None:
-            new_features = list()
-            for key, polygon in zip(ids, overlapping_polygons.asGeometryCollection()):
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer, polygon, {0: key[0], 1: key[1]}) # right_of_way_id, building_id
-                new_features.append(new_feature)
-
-            data_provider.addFeatures(new_features)
-
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} Right of Way-Building overlaps has been added to the map!").format(
-                    added_layer.featureCount()), Qgis.Info)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no Right of Way-Building overlaps."), Qgis.Info)
+            error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                         translated_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS,
+                                         "memory")
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField("right_of_way_id", QVariant.Int)])
+            data_provider.addAttributes([QgsField("building_id", QVariant.Int)])
+            error_layer.updateFields()
 
-    def check_gaps_in_plots(self, db):
+            ids, overlapping_polygons = self.qgis_utils.geometry.get_inner_intersections_between_polygons(right_of_way_layer, building_layer)
+
+            if overlapping_polygons is not None:
+                new_features = list()
+                for key, polygon in zip(ids, overlapping_polygons.asGeometryCollection()):
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, polygon, {0: key[0], 1: key[1]}) # right_of_way_id, building_id
+                    new_features.append(new_feature)
+
+                data_provider.addFeatures(new_features)
+
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
+
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "A memory layer with {} Right of Way-Building overlaps has been added to the map!").format(
+                                 added_layer.featureCount()))
+            else:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "There are no Right of Way-Building overlaps."), Qgis.Success)
+
+    @_log_quality_checks
+    def check_gaps_in_plots(self, db, rule_name):
         use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, True)
 
         if plot_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Layer {} not found in DB! {}").format(PLOT_TABLE,
-                                                                                  db.get_description()),
-                Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
 
-        if plot_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no Plot features to check 'Plot should not have gaps'."),
-                Qgis.Info)
-            return
+        elif plot_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no Plot features to check 'Plot should not have gaps'."), Qgis.Info)
 
-        error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_GAPS_IN_PLOTS,
-                                     "memory")
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField("id", QVariant.Int)])
-        error_layer.updateFields()
-
-        gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(plot_layer, use_roads)
-
-        if gaps is not None:
-            new_features = list()
-            for geom, id in zip(gaps, range(0, len(gaps))):
-                feature = QgsVectorLayerUtils().createFeature(error_layer, geom, {0: id})
-                new_features.append(feature)
-
-            data_provider.addFeatures(new_features)
-
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} gaps in layer Plots has been added to the map!").format(
-                    added_layer.featureCount()), Qgis.Info)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no gaps in layer Plot."), Qgis.Info)
+            error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                         translated_strings.CHECK_GAPS_IN_PLOTS,
+                                         "memory")
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField("id", QVariant.Int)])
+            error_layer.updateFields()
 
-    def check_multiparts_in_right_of_way(self, db):
+            gaps = self.qgis_utils.geometry.get_gaps_in_polygon_layer(plot_layer, use_roads)
+
+            if gaps is not None:
+                new_features = list()
+                for geom, id in zip(gaps, range(0, len(gaps))):
+                    feature = QgsVectorLayerUtils().createFeature(error_layer, geom, {0: id})
+                    new_features.append(feature)
+
+                data_provider.addFeatures(new_features)
+
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
+
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "A memory layer with {} gaps in layer Plots has been added to the map!").format(added_layer.featureCount()))
+
+            else:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "There are no gaps in layer Plot."), Qgis.Success)
+
+    @_log_quality_checks
+    def check_multiparts_in_right_of_way(self, db, rule_name):
         right_of_way_layer = self.qgis_utils.get_layer(db, RIGHT_OF_WAY_TABLE, QgsWkbTypes.PolygonGeometry, True)
 
         if right_of_way_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Layer {} not found in DB! {}").format(RIGHT_OF_WAY_TABLE,
-                                                                                  db.get_description()),
-                Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Layer {} not found in DB! {}").format(RIGHT_OF_WAY_TABLE, db.get_description()))
 
-        if right_of_way_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no Right Of Way features to check 'Right Of Way should not have Multipart geometries'."),
-                Qgis.Info)
-            return
+        elif right_of_way_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no Right Of Way features to check 'Right Of Way should not have Multipart geometries'."), Qgis.Info)
 
-        error_layer = QgsVectorLayer("Polygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY,
-                                     "memory")
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField("original_id", QVariant.Int)])
-        error_layer.updateFields()
-
-        multi_parts, ids = self.qgis_utils.geometry.get_multipart_geoms(right_of_way_layer)
-
-        if multi_parts is not None:
-            new_features = list()
-            for geom, id in zip(multi_parts, ids):
-                feature = QgsVectorLayerUtils().createFeature(error_layer, geom, {0: id})
-                new_features.append(feature)
-
-            data_provider.addFeatures(new_features)
-
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} multipart geometries in layer Right Of Way has been added to the map!").format(
-                    added_layer.featureCount()), Qgis.Info)
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no multipart geometries in layer Right Of Way."), Qgis.Info)
+            error_layer = QgsVectorLayer("Polygon?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                         translated_strings.CHECK_MULTIPART_IN_RIGHT_OF_WAY,
+                                         "memory")
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField("original_id", QVariant.Int)])
+            error_layer.updateFields()
 
-    def check_parcel_right_relationship(self, db):
+            multi_parts, ids = self.qgis_utils.geometry.get_multipart_geoms(right_of_way_layer)
 
-        table_name = QCoreApplication.translate("LogicChecksConfigStrings","Logic Consistency Errors in table '{}'").format(PARCEL_TABLE)
+            if multi_parts is not None:
+                new_features = list()
+                for geom, id in zip(multi_parts, ids):
+                    feature = QgsVectorLayerUtils().createFeature(error_layer, geom, {0: id})
+                    new_features.append(feature)
+
+                data_provider.addFeatures(new_features)
+
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
+
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "A memory layer with {} multipart geometries in layer Right Of Way has been added to the map!").format(
+                                 added_layer.featureCount()))
+
+            else:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "There are no multipart geometries in layer Right Of Way."), Qgis.Success)
+
+    @_log_quality_checks
+    def check_parcel_right_relationship(self, db, rule_name):
+        table_name = QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{}'").format(PARCEL_TABLE)
         error_layer = None
         error_layer_exist = False
 
@@ -1977,34 +1952,27 @@ class QualityUtils(QObject):
             else:
                 added_layer = error_layer
 
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {} parcel errors has been added to the map!").format(added_layer.featureCount()),
-                Qgis.Info)
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "A memory layer with {} parcel errors has been added to the map!").format(added_layer.featureCount()))
+
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Parcel-Right relationships are correct!"),
-                Qgis.Info)
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Parcel-Right relationships are correct!"), Qgis.Success)
 
-    def check_fraction_sum_for_party_groups(self, db):
-
+    @_log_quality_checks
+    def check_fraction_sum_for_party_groups(self, db, rule_name):
         error_layer = None
         error_layer = self.logic.get_fractions_which_sum_is_not_one(db, error_layer)
 
         if error_layer.featureCount() > 0:
             added_layer = self.add_error_layer(error_layer)
 
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} fractions which do not sum 1 has been added to the map!").format(
-                        added_layer.featureCount()),
-                Qgis.Info)
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "A memory layer with {} fractions which do not sum 1 has been added to the map!").format(
+                             added_layer.featureCount()))
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Group Party Fractions are correct!"),
-                Qgis.Info)
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Group Party Fractions are correct!"), Qgis.Success)
 
     def get_dangle_ids(self, boundary_layer):
         # 1. Run extract specific vertices
@@ -2038,13 +2006,14 @@ class QualityUtils(QObject):
                 break
 
         added_layer = QgsProject.instance().addMapLayer(error_layer, False)
-        index = self.project_generator_utils.get_suggested_index_for_layer(added_layer, group)
+        index = self.qgis_model_baker_utils.get_suggested_index_for_layer(added_layer, group)
         added_layer = group.insertLayer(index, added_layer).layer()
         if added_layer.isSpatial():
             self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
         return added_layer
 
-    def find_duplicate_records_in_a_table(self, db):
+    @_log_quality_checks
+    def find_duplicate_records_in_a_table(self, db, rule_name):
         for table in LOGIC_CONSISTENCY_TABLES:
             fields = LOGIC_CONSISTENCY_TABLES[table]
 
@@ -2054,17 +2023,15 @@ class QualityUtils(QObject):
             if error_layer.featureCount() > 0:
                 added_layer = self.add_error_layer(error_layer)
 
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate("QGISUtils",
-                                               "A memory layer with {error_count} duplicate records from {table} has been added to the map!").format(error_count=added_layer.featureCount(), table=table),
-                    Qgis.Info)
-            else:
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate("QGISUtils",
-                                               "There are no repeated records in {table}!".format(table=table)),
-                    Qgis.Info)
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "A memory layer with {error_count} duplicate records from {table} has been added to the map!").format(error_count=added_layer.featureCount(), table=table))
 
-    def basic_logic_validations(self, db, rule):
+            else:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "There are no repeated records in {table}!").format(table=table), Qgis.Success)
+
+    @_log_quality_checks
+    def basic_logic_validations(self, db, rule, rule_name):
         query = db.logic_validation_queries[rule]['query']
         table_name = db.logic_validation_queries[rule]['table_name']
         table = db.logic_validation_queries[rule]['table']
@@ -2106,17 +2073,15 @@ class QualityUtils(QObject):
             else:
                 added_layer = error_layer
 
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "A memory layer with {error_count} error record(s) from {table} has been added to the map!").format(error_count=len(new_features), table=table),
-                Qgis.Info)
-        else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "No errors found when checking '{rule}' for '{table}'!".format(rule=db.logic_validation_queries[rule]['desc_error'], table=table)),
-                Qgis.Info)
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "A memory layer with {error_count} error record(s) from {table} has been added to the map!").format(error_count=len(new_features), table=table))
 
-    def advance_logic_validations(self, db, rule):
+        else:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "No errors found when checking '{rule}' for '{table}'!").format(rule=db.logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
+
+    @_log_quality_checks
+    def advanced_logic_validations(self, db, rule, rule_name):
         table_name = db.logic_validation_queries[rule]['table_name']
         table = db.logic_validation_queries[rule]['table']
 
@@ -2149,17 +2114,15 @@ class QualityUtils(QObject):
             else:
                 added_layer = error_layer
 
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "A memory layer with {error_count} error record(s) from {table} has been added to the map!").format(
-                    error_count=errors_count, table=table),
-                Qgis.Info)
+            self.log_message(QCoreApplication.translate("QGISUtils", "A memory layer with {error_count} error record(s) from {table} has been added to the map!").format(
+                    error_count=errors_count, table=table))
         else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "No errors found when checking '{rule}' for '{table}'!".format(rule=db.logic_validation_queries[rule]['desc_error'], table=table)),
-                Qgis.Info)
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "No errors found when checking '{rule}' for '{table}'!").format(rule=db.logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
 
-    def check_building_within_plots(self, db):
+    @_log_quality_checks
+    def check_building_within_plots(self, db, rule_name):
+
         res_layers = self.qgis_utils.get_layers(db, {
             BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}}, load=True)
@@ -2168,67 +2131,60 @@ class QualityUtils(QObject):
         plot_layer = res_layers[PLOT_TABLE]
 
         if building_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(BUILDING_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in DB! {}").format(BUILDING_TABLE, db.get_description()))
+          
+        elif plot_layer is None:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
+          
+        elif building_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no buildings to check 'Building should be within Plots'."), Qgis.Info)
 
-        if plot_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(PLOT_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+        else:  
+            error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                        translated_strings.CHECK_BUILDING_WITHIN_PLOTS,
+                                        "memory")
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField('building_id', QVariant.Int),
+                                        QgsField('error_type', QVariant.String)])
 
-        if building_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no buildings to check 'Building should be within Plots'."),
-                Qgis.Info)
-            return
+            error_layer.updateFields()
 
-        error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_BUILDING_WITHIN_PLOTS,
-                                     "memory")
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('building_id', QVariant.Int),
-                                     QgsField('error_type', QVariant.String)])
+            buildings_with_no_plot, buildings_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(building_layer, plot_layer)
 
-        error_layer.updateFields()
+            new_features = list()
+            for building_with_no_plot in buildings_with_no_plot:
+                new_feature = QgsVectorLayerUtils().createFeature(
+                                error_layer,
+                                building_with_no_plot.geometry(),
+                                {0: building_with_no_plot[ID_FIELD],
+                                1: translated_strings.ERROR_BUILDING_IS_NOT_OVER_A_PLOT})
+                new_features.append(new_feature)
 
-        buildings_with_no_plot, buildings_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(building_layer, plot_layer)
+            for building_not_within_plot in buildings_not_within_plot:
+                new_feature = QgsVectorLayerUtils().createFeature(
+                                error_layer,
+                                building_not_within_plot.geometry(),
+                                {0: building_not_within_plot[ID_FIELD],
+                                1: translated_strings.ERROR_BUILDING_CROSSES_A_PLOT_LIMIT})
+                new_features.append(new_feature)
 
-        new_features = list()
-        for building_with_no_plot in buildings_with_no_plot:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                            error_layer,
-                            building_with_no_plot.geometry(),
-                            {0: building_with_no_plot[ID_FIELD],
-                             1: translated_strings.ERROR_BUILDING_IS_NOT_OVER_A_PLOT})
-            new_features.append(new_feature)
+            data_provider.addFeatures(new_features)
 
-        for building_not_within_plot in buildings_not_within_plot:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                            error_layer,
-                            building_not_within_plot.geometry(),
-                            {0: building_not_within_plot[ID_FIELD],
-                             1: translated_strings.ERROR_BUILDING_CROSSES_A_PLOT_LIMIT})
-            new_features.append(new_feature)
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
 
-        data_provider.addFeatures(new_features)
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "A memory layer with {} buildings not within a plot has been added to the map!").format(added_layer.featureCount()))
 
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
+            else:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "All buildings are within a plot."), Qgis.Success)
 
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} buildings not within a plot has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
-        else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "All buildings are within a plot."), Qgis.Info)
-
-    def check_building_unit_within_plots(self, db):
+    @_log_quality_checks
+    def check_building_unit_within_plots(self, db, rule_name):
         res_layers = self.qgis_utils.get_layers(db, {
             BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}}, load=True)
@@ -2237,62 +2193,53 @@ class QualityUtils(QObject):
         plot_layer = res_layers[PLOT_TABLE]
 
         if building_unit_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(BUILDING_UNIT_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in DB! {}").format(BUILDING_UNIT_TABLE, db.get_description()))
 
-        if plot_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(PLOT_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
+        elif plot_layer is None:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "Table {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
+          
+        elif building_unit_layer.featureCount() == 0:
+            self.log_message(QCoreApplication.translate("QGISUtils",
+                             "There are no buildings to check 'Building should be within Plots'."), Qgis.Info)
 
-        if building_unit_layer.featureCount() == 0:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "There are no buildings to check 'Building should be within Plots'."),
-                Qgis.Info)
-            return
+        else:  
+            error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
+                                        translated_strings.CHECK_BUILDING_UNIT_WITHIN_PLOTS,
+                                        "memory")
+            data_provider = error_layer.dataProvider()
+            data_provider.addAttributes([QgsField('building_unit_id', QVariant.Int),
+                                        QgsField('error_type', QVariant.String)])
 
-        error_layer = QgsVectorLayer("MultiPolygon?crs=EPSG:{}".format(DEFAULT_EPSG),
-                                     translated_strings.CHECK_BUILDING_UNIT_WITHIN_PLOTS,
-                                     "memory")
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes([QgsField('building_unit_id', QVariant.Int),
-                                     QgsField('error_type', QVariant.String)])
+            error_layer.updateFields()
 
-        error_layer.updateFields()
+            building_units_with_no_plot, building_units_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(building_unit_layer, plot_layer)
 
-        building_units_with_no_plot, building_units_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(building_unit_layer, plot_layer)
+            new_features = list()
+            for building_unit_with_no_plot in building_units_with_no_plot:
+                new_feature = QgsVectorLayerUtils().createFeature(
+                                error_layer,
+                                building_unit_with_no_plot.geometry(),
+                                {0: building_unit_with_no_plot[ID_FIELD],
+                                1: translated_strings.ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT})
+                new_features.append(new_feature)
 
-        new_features = list()
-        for building_unit_with_no_plot in building_units_with_no_plot:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                            error_layer,
-                            building_unit_with_no_plot.geometry(),
-                            {0: building_unit_with_no_plot[ID_FIELD],
-                             1: translated_strings.ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT})
-            new_features.append(new_feature)
+            for building_unit_not_within_plot in building_units_not_within_plot:
+                new_feature = QgsVectorLayerUtils().createFeature(
+                                error_layer,
+                                building_unit_not_within_plot.geometry(),
+                                {0: building_unit_not_within_plot[ID_FIELD],
+                                1: translated_strings.ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT})
+                new_features.append(new_feature)
 
-        for building_unit_not_within_plot in building_units_not_within_plot:
-            new_feature = QgsVectorLayerUtils().createFeature(
-                            error_layer,
-                            building_unit_not_within_plot.geometry(),
-                            {0: building_unit_not_within_plot[ID_FIELD],
-                             1: translated_strings.ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT})
-            new_features.append(new_feature)
+            data_provider.addFeatures(new_features)
 
-        data_provider.addFeatures(new_features)
+            if error_layer.featureCount() > 0:
+                added_layer = self.add_error_layer(error_layer)
 
-        if error_layer.featureCount() > 0:
-            added_layer = self.add_error_layer(error_layer)
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                    "A memory layer with {} building units not within a plot has been added to the map!").format(added_layer.featureCount()), Qgis.Info)
-        else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "All building units are within a plot."), Qgis.Info)
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "A memory layer with {} building units not within a plot has been added to the map!").format(added_layer.featureCount()))
+            else:
+                self.log_message(QCoreApplication.translate("QGISUtils",
+                                 "All building units are within a plot."), Qgis.Success)
