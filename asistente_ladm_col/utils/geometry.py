@@ -655,7 +655,7 @@ class GeometryUtils(QObject):
                 multi_polygon = polygon_geom.constGet()
 
                 # TODO: remove when the error is resolved
-                if type(multi_polygon) != type(QgsMultiPolygon()):
+                if type(multi_polygon) != QgsMultiPolygon:
                     geom = QgsMultiPolygon()
                     geom.fromWkt(polygon_geom.asWkt())
                     multi_polygon = geom
@@ -668,7 +668,7 @@ class GeometryUtils(QObject):
                 single_polygon = polygon_geom.constGet()
 
                 # TODO: remove when the error is resolved
-                if type(single_polygon) != type(QgsPolygon()):
+                if type(single_polygon) != QgsPolygon:
                     geom = QgsPolygon()
                     geom.fromWkt(polygon_geom.asWkt())
                     single_polygon = geom
@@ -683,7 +683,7 @@ class GeometryUtils(QObject):
                         temp_polygon = multi_polygon.geometryN(i)
 
                         # TODO: remove when the error is resolved
-                        if type(temp_polygon) != type(QgsPolygon()):
+                        if type(temp_polygon) != QgsPolygon:
                             geom = QgsPolygon()
                             geom.fromWkt(temp_polygon.asWkt())
                             temp_polygon = geom
