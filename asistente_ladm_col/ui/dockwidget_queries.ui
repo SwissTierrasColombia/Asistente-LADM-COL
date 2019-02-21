@@ -27,6 +27,9 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout_3">
+    <property name="topMargin">
+     <number>0</number>
+    </property>
     <item row="0" column="0">
      <widget class="QGroupBox" name="groupBox">
       <property name="sizePolicy">
@@ -64,7 +67,7 @@
          </property>
          <widget class="QWidget" name="tab_plot">
           <attribute name="title">
-           <string>Plot</string>
+           <string>By component</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout_4">
            <item row="0" column="0">
@@ -77,7 +80,7 @@
              </property>
              <widget class="QWidget" name="tab_plot_coordinates">
               <attribute name="title">
-               <string>Coordinate</string>
+               <string>Spatial query</string>
               </attribute>
               <layout class="QGridLayout" name="gridLayout_5">
                <item row="0" column="0">
@@ -97,33 +100,8 @@
                    <property name="text">
                     <string>Identify</string>
                    </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="tab_plot_neighbours">
-              <attribute name="title">
-               <string>Neighbours</string>
-              </attribute>
-              <layout class="QGridLayout" name="gridLayout_6">
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_4">
-                 <property name="text">
-                  <string>Select a Plot feature to identify neigbours information:</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <layout class="QGridLayout" name="gridLayout_9">
-                 <item row="0" column="0" alignment="Qt::AlignHCenter">
-                  <widget class="QPushButton" name="btn_identify_plot_neighbours">
-                   <property name="text">
-                    <string>Identify</string>
+                   <property name="checkable">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
@@ -133,7 +111,7 @@
              </widget>
              <widget class="QWidget" name="tab_plot_survey">
               <attribute name="title">
-               <string>Survey</string>
+               <string>Alphanumeric query</string>
               </attribute>
               <layout class="QGridLayout" name="gridLayout_7">
                <item row="2" column="0">
@@ -190,17 +168,6 @@
             </widget>
            </item>
           </layout>
-         </widget>
-         <widget class="QWidget" name="tab_parcel">
-          <attribute name="title">
-           <string>Parcel</string>
-          </attribute>
-          <layout class="QGridLayout" name="gridLayout_8"/>
-         </widget>
-         <widget class="QWidget" name="tab_party">
-          <attribute name="title">
-           <string>Party</string>
-          </attribute>
          </widget>
         </widget>
        </item>

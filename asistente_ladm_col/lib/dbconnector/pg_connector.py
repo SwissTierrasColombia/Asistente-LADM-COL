@@ -429,7 +429,13 @@ class PGConnector(DBConnector):
         colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
         return colnames, results
 
-    def get_parcels_and_parties_by_plot(self, plot__t_id):
+    def get_igac_basic_info(self, plot__t_id):
+        # if self.conn is None:
+        #     res, msg = self.test_connection()
+        #     if not res:
+        #         print(msg)
+        #         return (res, msg)
+
         sql_query = """
              SELECT     predio.fmi            AS "Folio" ,
                        predio.nupre          AS "NUPRE" ,
