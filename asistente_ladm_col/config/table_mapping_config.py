@@ -216,9 +216,9 @@ DICT_DISPLAY_EXPRESSIONS = {
         FIRST_NAME_FIELD,
         SECOND_NAME_FIELD,
         BUSINESS_NAME_FIELD),
-    PARCEL_TABLE: "concat({}, ' ', {}, ' ', {})".format(NUPRE_FIELD, FMI_FIELD, PARCEL_NAME_FIELD),
+    PARCEL_TABLE: "concat({}, ' - ', {}, ' - ', {})".format(ID_FIELD, PARCEL_NUMBER_FIELD, FMI_FIELD),
     LA_BAUNIT_TABLE: "{} || ' ' || {} || ' ' || {}".format(ID_FIELD, LA_BAUNIT_NAME_FIELD, TYPE_FIELD),
-    LA_GROUP_PARTY_TABLE: "concat({}, ' ', {})".format(ID_FIELD, LA_GROUP_PARTY_NAME_FIELD),
+    LA_GROUP_PARTY_TABLE: "concat({}, ' - ', {})".format(ID_FIELD, LA_GROUP_PARTY_NAME_FIELD),
     BUILDING_TABLE: '"{}{}"  || \' \' ||  "{}"'.format(NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
                                                                     NAMESPACE_FIELD,
                                                                     ID_FIELD)
