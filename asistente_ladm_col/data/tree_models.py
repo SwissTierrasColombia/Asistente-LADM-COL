@@ -130,7 +130,7 @@ class TreeModel(QAbstractItemModel):
     def __init__(self, headers=None, data=None, parent=None):
         super(TreeModel, self).__init__(parent)
 
-        rootData = ("Title",) #[header for header in headers]
+        rootData = ("",) # [header for header in headers]
         self.rootItem = TreeItem(rootData)
         self.setupModelData(data, self.rootItem)
 
@@ -256,30 +256,65 @@ class TreeModel(QAbstractItemModel):
         if data is None:
             return
 
+        t_id = data["t_id"]
+        records = data["records"]
+
         if parent is None:
             parent = self.rootItem
 
         parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
         new_parent = parent.child(parent.childCount() -1)
-        new_parent.setData(0, "Terreno x")
+        new_parent.setData(0, "Terreno: {}".format(t_id))
 
-        for record in data:
-            for key, value in record.items():
-                row_data = "{}: {}".format(key, value)
+        if records is None:
+            return
 
-                if type(value) is list:
-                    sub_parent = new_parent.child(new_parent.childCount() -1)
-                    sub_parent.setData(0, key)
-                    for row in value:
-                        if type(row) is dict:
-                            for sub_k, sub_v in row.items():
-                                sub_parent.insertChildren(sub_parent.childCount(), 1, self.rootItem.columnCount())
-                                sub_parent.child(sub_parent.childCount() -1).setData(0, "{}: {}".format(sub_k, sub_v))
+        for record in records:
+            self.fill_model(record, new_parent)
 
-                    continue
+    def fill_model(self, record, parent):
+        for key, values in record.items():  # either tuple or dict
+            if type(values) is list:
+                for value in values:
+                    if type(value) is dict:
+                        if len(value) == 2 and 'id' in value and 'records' in value:
+                            # We have a list of LADM_COL model objects, we deal differently with them...
+                            self.fill_collection(key, values, parent)
+                            break
+            elif type(values) is dict:
+                self.fill_model(values, parent)
+            else:
+                # Simple key-value pair
+                parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
+                parent.child(parent.childCount() - 1).setData(0, "{}: {}".format(key, values))
 
-                new_parent.insertChildren(new_parent.childCount(), 1, self.rootItem.columnCount())
-                new_parent.child(new_parent.childCount() -1).setData(0, row_data)
+    def fill_collection(self, key, collection, parent):
+        """
+        Fill a collection of LADM_COL objects
+        """
+        parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
+        collection_parent = parent.child(parent.childCount() - 1)
+        collection_parent.setData(0, "{} ({})".format(key, len(collection)))
+        for object in collection:
+            # Fill LADM_COL object
+            collection_parent.insertChildren(collection_parent.childCount(), 1, self.rootItem.columnCount())
+            object_parent = collection_parent.child(collection_parent.childCount() - 1)
+            object_parent.setData(0, "{}".format(object['id']))
+            self.fill_model(object['records'], object_parent)
+
+
+    #def fill_model(self, record, parent):
+        #for key, value in record.items(): # either tuple or dict
+            #print(record, key, value)
+            # if type(value) is list and len(record) == 2 and 'id' in record: # We have a listo of LADM_COL model objects
+            #     collection_parent = parent.child(parent.childCount() - 1)
+            #     collection_parent.setData(0, "{} ({})".format(key, len(value)))
+            #     for row in value:
+            #         if type(row) is dict:
+            #             self.fill_model(row, collection_parent)
+            # else:
+            #     parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
+            #     parent.child(parent.childCount() - 1).setData(0, "{}: {}".format(key, value))
 
     def updateActions(self):
         # TODO If a PLOT is selected, we could show it on the QGIS map

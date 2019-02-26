@@ -52,7 +52,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.add_layers()
         self.fill_combos()
 
-        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/surveying.png"))
+        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/spatial_unit.png"))
 
         # Set connections
         self.btn_query_plot.clicked.connect(self.query_plot)
@@ -167,7 +167,8 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             self._plot_layer.selectByIds([plot_feature.id()])
             records = self._db.get_igac_basic_info(plot_t_id)
             print(records)
-            self.treeModel = TreeModel(data=records)
+            data = {"t_id": plot_t_id, "records": records}
+            self.treeModel = TreeModel(data=data)
             self.treeView.setModel(self.treeModel)
             self.treeView.expandAll()
 
@@ -180,8 +181,9 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         if option == ID_FIELD:
             if query != '' and query.isdigit():
                 records = self._db.get_igac_basic_info(query)
+                data = {"t_id": query, "records": records}
                 #print(records)
-                self.treeModel = TreeModel(data=records)
+                self.treeModel = TreeModel(data=data)
                 self.treeView.setModel(self.treeModel)
                 self.treeView.expandAll()
             else:
