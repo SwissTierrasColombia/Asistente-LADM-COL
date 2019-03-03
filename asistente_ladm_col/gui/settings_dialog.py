@@ -54,8 +54,7 @@ DIALOG_UI = get_ui_class('settings_dialog.ui')
 
 class SettingsDialog(QDialog, DIALOG_UI):
 
-    cache_layers_and_relations_requested = pyqtSignal(DBConnector)
-    refresh_menus_requested = pyqtSignal(DBConnector)
+    db_connection_changed = pyqtSignal(DBConnector)
     fetcher_task = None
 
     def __init__(self, iface=None, parent=None, qgis_utils=None):
@@ -216,8 +215,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.connection_is_dirty = False
             res, msg = self._db.test_connection()
             if res:
-                self.cache_layers_and_relations_requested.emit(self._db)
-                self.refresh_menus_requested.emit(self._db)
+                self.db_connection_changed.emit(self._db)
             else:
                 self.show_message(msg, Qgis.Warning)
                 return

@@ -16,8 +16,11 @@
  *                                                                         *
  ***************************************************************************/
 """
+from functools import partial
+
 from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtGui import QColor, QIcon, QCursor
+from PyQt5.QtWidgets import QMenu, QAction, QApplication
 from qgis.core import QgsWkbTypes, Qgis, QgsMessageLog
 from qgis.gui import QgsDockWidget, QgsMapToolIdentifyFeature
 
@@ -42,10 +45,11 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.selection_color = None
         self.active_map_tool_before_custom = None
 
-        # self.treeView.selectionModel().selectionChanged.connect(self.treeModel.updateActions)
+        self.clipboard = QApplication.clipboard()
 
         # Required layers
         self._plot_layer = None
+        self._parcel_layer = None
 
         self._identify_tool = None
 
@@ -55,9 +59,13 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/spatial_unit.png"))
 
         # Set connections
-        self.btn_query_plot.clicked.connect(self.query_plot)
-        self.btn_clear_plot.clicked.connect(self.clear_plot)
+        self.btn_alphanumeric_query.clicked.connect(self.alphanumeric_query)
+        self.btn_clear_alphanumeric_query.clicked.connect(self.clear_alphanumeric_query)
         self.btn_identify_plot.clicked.connect(self.btn_plot_toggled)
+
+        # Context menu
+        self.treeView.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.treeView.customContextMenuRequested.connect(self.show_context_menu)
 
         # Create maptool
         self.maptool_identify = QgsMapToolIdentifyFeature(self.canvas)
@@ -69,7 +77,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}, load=True)
 
         self._plot_layer = res_layers[PLOT_TABLE]
-
         if self._plot_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                                                 QCoreApplication.translate("DockWidgetQueries",
@@ -84,25 +91,46 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 pass
             self._plot_layer.willBeDeleted.connect(self.layer_removed)
 
-    def layer_removed(self):
-        # The required layer was removed, deactivate custom tool
+        self._parcel_layer = res_layers[PARCEL_TABLE]
+        if self._parcel_layer is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                                                QCoreApplication.translate("DockWidgetQueries",
+                                                                           "Parcel layer couldn't be found... {}").format(
+                                                    self._db.get_description()),
+                                                Qgis.Warning)
+        else:
+            # Layer was found, listen to its removal so that we can update the variable properly
+            try:
+                self._parcel_layer.willBeDeleted.disconnect(self.parcel_layer_removed)
+            except TypeError as e:
+                pass
+            self._parcel_layer.willBeDeleted.connect(self.parcel_layer_removed)
+
+    def initialize_tool(self):
         self._plot_layer = None
         self.initialize_tools(new_tool=None, old_tool=self.maptool_identify)
         self.btn_plot_toggled()
 
+    def update_db_connection(self, db):
+        self._db = db
+        self.initialize_tool()
 
+    def layer_removed(self):
+        # The required layer was removed, deactivate custom tool
+        self.initialize_tool()
+
+    def parcel_layer_removed(self):
+        self._parcel_layer = None
 
     def fill_combos(self):
-        self.cbo_plot_fields.clear()
+        self.cbo_parcel_fields.clear()
 
-        if self._plot_layer is not None:
-            for field in self._plot_layer.fields():
-                alias = field.alias()
-                if alias is '':
-                    name = field.name()
-                    self.cbo_plot_fields.addItem(name, name)
-                else:
-                    self.cbo_plot_fields.addItem(alias, name)
+        if self._parcel_layer is not None:
+            self.cbo_parcel_fields.addItem('Número Predial', 'numero_predial')
+            self.cbo_parcel_fields.addItem('Número Predial Anterior', 'numero_predial_anterior')
+            self.cbo_parcel_fields.addItem('Folio de Matrícula Inmobiliaria', 'fmi')
+        else:
+            self.add_layers()
 
     def initialize_tools(self, new_tool, old_tool):
         if self.maptool_identify == old_tool:
@@ -167,28 +195,49 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             self._plot_layer.selectByIds([plot_feature.id()])
             records = self._db.get_igac_basic_info(plot_t_id)
             print(records)
-            data = {"t_id": plot_t_id, "records": records}
-            self.treeModel = TreeModel(data=data)
+            #data = {"t_id": plot_t_id, "records": records}
+            self.treeModel = TreeModel(data=records)
             self.treeView.setModel(self.treeModel)
             self.treeView.expandAll()
 
-    def query_plot(self):
+    def alphanumeric_query(self):
         """
         Alphanumeric query
         """
-        option = self.cbo_plot_fields.currentData()
-        query = self.txt_plot_query.text()
-        if option == ID_FIELD:
-            if query != '' and query.isdigit():
-                records = self._db.get_igac_basic_info(query)
-                data = {"t_id": query, "records": records}
-                #print(records)
-                self.treeModel = TreeModel(data=data)
-                self.treeView.setModel(self.treeModel)
-                self.treeView.expandAll()
-            else:
-                self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                    QCoreApplication.translate("DockWidgetQueries","t_id must be an integer"))
+        option = self.cbo_parcel_fields.currentData()
+        query = self.txt_alphanumeric_query.text().strip()
+        if query:
+            if option == 'fmi':
+                records = self._db.get_igac_basic_info(parcel_fmi=query)
+            elif option == 'numero_predial':
+                records = self._db.get_igac_basic_info(parcel_number=query)
+            else: # previous_parcel_number
+                records = self._db.get_igac_basic_info(previous_parcel_number=query)
+            #data = {"t_id": query, "records": records}
+            #print(records)
+            self.treeModel = TreeModel(data=records)
+            self.treeView.setModel(self.treeModel)
+            self.treeView.expandAll()
+        else:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                QCoreApplication.translate("DockWidgetQueries", "First enter a query"))
 
-    def clear_plot(self):
-        self.txt_plot_query.setText('')
+    def clear_alphanumeric_query(self):
+        self.txt_alphanumeric_query.setText('')
+
+    def show_context_menu(self, point):
+        index = self.treeView.indexAt(point)
+
+        context_menu = QMenu("Context menu")
+
+        index_data = index.data(Qt.UserRole)
+        if "value" in index_data:
+            action_copy = QAction("Copy value")
+            action_copy.triggered.connect(partial(self.copy_value, index_data["value"]))
+            context_menu.addAction(action_copy)
+
+        context_menu.exec_(self.treeView.mapToGlobal(point))
+
+    def copy_value(self, value):
+        print("{} copied!".format(value))
+        self.clipboard.setText(str(value))

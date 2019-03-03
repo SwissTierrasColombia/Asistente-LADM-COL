@@ -167,7 +167,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.create_progress_message_bar_emitted.connect(self.create_progress_message_bar)
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
-        self.qgis_utils.refresh_menus_requested.connect(self.refresh_menus)
+        self.qgis_utils.db_connection_changed.connect(self.refresh_menus)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
@@ -527,12 +527,13 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def refresh_menus(self, db):
         """
-        Depending on the models avilable in the DB, some menus should appear or
+        Depending on the models available in the DB, some menus should appear or
         disappear from the GUI.
         """
         res, msg = db.test_connection() # The parser is specific for each new connection
         if res:
             model_parser = ModelParser(db)
+            self.property_record_card_model_exists = model_parser.property_record_card_model_exists
             if model_parser.property_record_card_model_exists():
                 self.add_property_record_card_menu()
             else:
@@ -542,6 +543,12 @@ class AsistenteLADMCOLPlugin(QObject):
                 self.add_valuation_menu()
             else:
                 self.remove_valuation_menu()
+
+            self.log.logMessage("Menus refreshed! Valuation: {}; Property Record Card: {}".format(
+                    model_parser.valuation_model_exists(),
+                    model_parser.property_record_card_model_exists()),
+                PLUGIN_NAME,
+                Qgis.Info)
 
     def add_processing_models(self, provider_id):
         if not (provider_id == 'model' or provider_id is None):
@@ -853,6 +860,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_queries(self):
         if self._dock_widget_queries is None:
             self._dock_widget_queries = DockWidgetQueries(self.iface, self.get_db_connection(), self.qgis_utils)
+            self.qgis_utils.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_queries)
         else:
             self._dock_widget_queries.toggleUserVisible()

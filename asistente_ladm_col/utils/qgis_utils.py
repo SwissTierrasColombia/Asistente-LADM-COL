@@ -118,7 +118,7 @@ class QGISUtils(QObject):
     create_progress_message_bar_emitted = pyqtSignal(str, QProgressBar)
     remove_error_group_requested = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
-    refresh_menus_requested = pyqtSignal(DBConnector)
+    db_connection_changed = pyqtSignal(DBConnector)
     message_emitted = pyqtSignal(str, int) # Message, level
     message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
@@ -158,8 +158,8 @@ class QGISUtils(QObject):
     def get_settings_dialog(self):
         if self.__settings_dialog is None:
             self.__settings_dialog = SettingsDialog(qgis_utils=self)
-            self.__settings_dialog.cache_layers_and_relations_requested.connect(self.cache_layers_and_relations)
-            self.__settings_dialog.refresh_menus_requested.connect(self.refresh_menus)
+            self.__settings_dialog.db_connection_changed.connect(self.cache_layers_and_relations)
+            self.__settings_dialog.db_connection_changed.connect(self.db_connection_changed)
 
         return self.__settings_dialog
 
@@ -181,12 +181,6 @@ class QGISUtils(QObject):
             self._layers, self._relations, self._bags_of_enum = self.qgis_model_baker_utils.get_layers_and_relations_info(db)
 
         self.clear_status_bar_emitted.emit()
-
-    def refresh_menus(self, db):
-        """
-        Chain the SIGNAL request to other modules.
-        """
-        self.refresh_menus_requested.emit(db)
 
     def get_related_layers(self, layer_names, already_loaded):
         """

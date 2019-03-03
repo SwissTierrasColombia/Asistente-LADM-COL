@@ -429,106 +429,130 @@ class PGConnector(DBConnector):
         return colnames, results
 
     def get_igac_basic_info(self, plot_t_id='NULL', parcel_fmi='NULL', parcel_number='NULL',  previous_parcel_number='NULL'):
-        property_card_model = False
-        valuation_model = False
+        property_card_model = True
+        valuation_model = True
 
         query = """
-        WITH 
-            predios_seleccionados AS (
-        		SELECT uebaunit.baunit_predio FROM {schema}.uebaunit WHERE uebaunit.ue_terreno = {id_terreno}
-        			UNION
-        		SELECT t_id FROM {schema}.predio WHERE predio.fmi = '{fmi_predio}'
-        			UNION
-        		SELECT t_id FROM {schema}.predio WHERE predio.numero_predial = '{numero_predial}'
-        			UNION 
-        		SELECT t_id FROM {schema}.predio WHERE predio.numero_predial_anterior = '{numero_predial_anterior}'
-        	),
-        	info_direccion_terreno AS (SELECT pais, departamento, ciudad, codigo_postal, apartado_correo, nombre_calle FROM {schema}.extdireccion WHERE terreno_ext_direccion_id IN (SELECT * FROM predios_seleccionados)),
-        	uebaunit_seleccionados AS (SELECT baunit_predio, ue_terreno, ue_construccion FROM {schema}.uebaunit WHERE uebaunit.baunit_predio IN (SELECT * FROM predios_seleccionados)),
-        	info_construcciones AS (
-        		SELECT construccion.area_construccion AS área_construcción,
-        			json_build_object(
-        				'id', construccion.t_id,
-        				'records', json_build_object('área_construcción', construccion.area_construccion,
-        											 'total_unidades_de_construcción', count(*),
-        											 'unidadconstruccion', json_agg(json_build_object('id', unidadconstruccion.t_id,
-        																							  'records', json_build_object('número_de_pisos', unidadconstruccion.numero_pisos,
+        SELECT
+        json_agg(json_build_object(
+        		'id', componente_informacion_basica.t_id,
+        		'attributes', json_build_object('Departamento', componente_informacion_basica.departamento,
+        									 'Municipio', componente_informacion_basica.municipio,
+        									 'Zona', componente_informacion_basica.zona,
+        									 'NUPRE', componente_informacion_basica.nupre,
+        									 'FMI', componente_informacion_basica.fmi,
+        									 'Número predial', componente_informacion_basica.numero_predial,
+        									 'Número_predial_anterior', componente_informacion_basica.numero_predial_anterior,
+        									 'Tipo', componente_informacion_basica.tipo,
+        									 'Destinación_económica', componente_informacion_basica.destinacion_economica,
+        									 'Área_terreno', componente_informacion_basica.area_calculada,
+        									 'extdireccion', componente_informacion_basica.direccion,
+        									 'construccion', componente_informacion_basica.construcciones,
+        									 'Área_total_construcciones', componente_informacion_basica.area_construcciones))) as predio
+        FROM (
+        	WITH 
+        		predios_seleccionados AS (
+        			SELECT uebaunit.baunit_predio FROM {schema}.uebaunit WHERE uebaunit.ue_terreno = {plot_t_id}
+        				UNION
+        			SELECT t_id FROM {schema}.predio WHERE predio.fmi = '{parcel_fmi}'
+        				UNION
+        			SELECT t_id FROM {schema}.predio WHERE predio.numero_predial = '{parcel_number}'
+        				UNION 
+        			SELECT t_id FROM {schema}.predio WHERE predio.numero_predial_anterior = '{previous_parcel_number}'
+        		),
+        		info_direccion_terreno AS (SELECT pais, departamento, ciudad, codigo_postal, apartado_correo, nombre_calle FROM {schema}.extdireccion WHERE terreno_ext_direccion_id IN (SELECT * FROM predios_seleccionados)),
+        		uebaunit_seleccionados AS (SELECT baunit_predio, ue_terreno, ue_construccion FROM {schema}.uebaunit WHERE uebaunit.baunit_predio IN (SELECT * FROM predios_seleccionados)),
+        		info_construcciones AS (
+        			SELECT construccion.area_construccion AS área_construcción,
+        				json_build_object(
+        					'id', construccion.t_id,
+        					'attributes', json_build_object('Área_construcción', construccion.area_construccion,
+        												 'Total_unidades_de_construcción', count(*),
+        												 'unidadconstruccion', json_agg(json_build_object('id', unidadconstruccion.t_id,
+        																								  'attributes', json_build_object('Número_de_pisos', unidadconstruccion.numero_pisos,
         """
 
         if valuation_model:
             query += """
-        																														   'Número_de_Habitaciones', unidad_construccion.num_habitaciones,
-        																														   'número_de_baños', unidad_construccion.num_banios,
-        																														   'número_de_locales', unidad_construccion.num_locales,
-        																														   'uso', unidad_construccion.uso,
-        																														   'puntuación', unidad_construccion.puntuacion,
+        																															   'Número_de_habitaciones', unidad_construccion.num_habitaciones,
+        																															   'Número_de_baños', unidad_construccion.num_banios,
+        																															   'Número_de_locales', unidad_construccion.num_locales,
+        																															   'Uso', unidad_construccion.uso,
+        																															   'Puntuación', unidad_construccion.puntuacion,
         		    """
         else:
             query += """
-            																														   'Número_de_Habitaciones', NULL,
-            																														   'número_de_baños', NULL,
-            																														   'número_de_locales', NULL,
-            																														   'uso', NULL,
-            																														   'puntuación', NULL,
+        																															   'Número_de_habitaciones', NULL,
+        																															   'Número_de_baños', NULL,
+        																															   'Número_de_locales', NULL,
+        																															   'Uso', NULL,
+        																															   'Puntuación', NULL,
             	    """
 
         query += """
-        																														   'área_construida', unidadconstruccion.area_construida))))) AS construccion
-        			FROM {schema}.construccion LEFT JOIN {schema}.unidadconstruccion  ON construccion.t_id = unidadconstruccion.construccion
+        																															   'Área_construida', unidadconstruccion.area_construida))))) AS construccion
+        				FROM {schema}.construccion LEFT JOIN {schema}.unidadconstruccion  ON construccion.t_id = unidadconstruccion.construccion
                 """
 
         if valuation_model:
             query += """
-        			LEFT JOIN {schema}.avaluounidadconstruccion ON unidadconstruccion.t_id = avaluounidadconstruccion.ucons
-        			LEFT JOIN {schema}.unidad_construccion ON avaluounidadconstruccion.aucons = unidad_construccion.t_id
+        				LEFT JOIN {schema}.avaluounidadconstruccion ON unidadconstruccion.t_id = avaluounidadconstruccion.ucons
+        				LEFT JOIN {schema}.unidad_construccion ON avaluounidadconstruccion.aucons = unidad_construccion.t_id
                     """
 
         query += """
-        			WHERE construccion.t_id in (SELECT DISTINCT(uebaunit_seleccionados.ue_construccion) FROM uebaunit_seleccionados WHERE uebaunit_seleccionados.ue_construccion IS NOT NULL)
-        			GROUP BY construccion.t_id),
-        	info_predio AS (
-        		SELECT DISTINCT
-        			predio.t_id AS id,
-        			predio.departamento AS departamento,
-        			predio.municipio AS municipio,
-        			predio.zona AS zona,
-        			predio.nupre AS "NUPRE",
-        			predio.fmi AS "FMI",
-        			predio.numero_predial AS número_predial,
-        			predio.numero_predial_anterior AS número_predial_anterior,
-        			predio.tipo AS tipo,
+        				WHERE construccion.t_id in (SELECT DISTINCT(uebaunit_seleccionados.ue_construccion) FROM uebaunit_seleccionados WHERE uebaunit_seleccionados.ue_construccion IS NOT NULL)
+        				GROUP BY construccion.t_id),
+        		info_predio AS (
+        			SELECT DISTINCT
+        				terreno.t_id as leo,
+        				predio.t_id,
+        				predio.departamento,
+        				predio.municipio,
+        				predio.zona,
+        				predio.nupre,
+        				predio.fmi,
+        				predio.numero_predial,
+        				predio.numero_predial_anterior,
+        				predio.tipo,
         """
 
         if property_card_model:
             query += """
-        			predio_ficha.destinacion_economica AS destinación_económica,    
+        				predio_ficha.destinacion_economica,
             """
         else:
             query += """
-            			NULL AS destinación_económica,    
+            			NULL AS destinacion_economica,
                 """
 
         query += """
-        			terreno.area_calculada AS área_terreno
-        		FROM (SELECT DISTINCT(ue_terreno) FROM uebaunit_seleccionados) AS uebaunit_seleccionados_f LEFT JOIN  {schema}.terreno ON terreno.t_id IN (SELECT DISTINCT(uebaunit_seleccionados.ue_terreno) FROM uebaunit_seleccionados WHERE uebaunit_seleccionados.ue_terreno IS NOT NULL) 
-        		LEFT JOIN  {schema}.predio ON predio.t_id IN (SELECT DISTINCT(uebaunit_seleccionados.baunit_predio) FROM uebaunit_seleccionados WHERE uebaunit_seleccionados.baunit_predio IS NOT NULL)
-        """
+        				terreno.area_calculada
+        			FROM (SELECT DISTINCT(ue_terreno) FROM uebaunit_seleccionados) AS uebaunit_seleccionados_f LEFT JOIN  {schema}.terreno ON terreno.t_id IN (SELECT DISTINCT(uebaunit_seleccionados.ue_terreno) FROM uebaunit_seleccionados WHERE uebaunit_seleccionados.ue_terreno IS NOT NULL) 
+        			LEFT JOIN  {schema}.predio ON predio.t_id IN (SELECT DISTINCT(uebaunit_seleccionados.baunit_predio) FROM uebaunit_seleccionados WHERE uebaunit_seleccionados.baunit_predio IS NOT NULL)
+            """
 
         if property_card_model:
             query += """
-        		LEFT JOIN {schema}.predio_ficha ON predio_ficha.crpredio = predio.t_id    
+        			LEFT JOIN {schema}.predio_ficha ON predio_ficha.crpredio = predio.t_id
             """
 
         query += """
-        	)
-        SELECT * FROM info_predio,
-        (SELECT array_to_json(ARRAY_AGG(info_direccion_terreno)) AS dirección FROM info_direccion_terreno) AS json_direcciones,
-        (SELECT json_agg(construccion) as construcciones FROM info_construcciones) AS json_construcciones,
-        (SELECT count(*) AS total_construcciones, SUM(info_construcciones.área_construcción) AS área_total_construcciones FROM info_construcciones) AS info_construcciones_totales
+                	, {schema}.uebaunit
+			        WHERE terreno.t_id = uebaunit.ue_terreno AND predio.t_id = uebaunit.baunit_predio
+            """
+            
+        query += """
+        		)
+        	SELECT * FROM info_predio,
+        	(SELECT array_to_json(ARRAY_AGG(info_direccion_terreno)) AS direccion FROM info_direccion_terreno) AS json_direcciones,
+        	(SELECT json_agg(construccion) as construcciones FROM info_construcciones) AS json_construcciones,
+        	(SELECT SUM(info_construcciones.área_construcción) AS area_construcciones FROM info_construcciones) AS info_construcciones_totales
+        ) AS componente_informacion_basica
         """
 
-        query = query.format(schema=self.schema, id_terreno=plot_t_id, fmi_predio=parcel_fmi, numero_predial=parcel_number,
-                             numero_predial_anterior=previous_parcel_number)
+        query = query.format(schema=self.schema, plot_t_id=plot_t_id, parcel_fmi=parcel_fmi, parcel_number=parcel_number,
+                             previous_parcel_number=previous_parcel_number)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute(query)

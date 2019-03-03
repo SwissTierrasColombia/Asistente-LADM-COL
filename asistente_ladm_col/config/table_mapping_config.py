@@ -174,6 +174,43 @@ VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE = "calificacion_convenc
 VALUATION_GEOECONOMIC_ZONE_TABLE = "zona_homogenea_geoeconomica"
 VALUATION_PHYSICAL_ZONE_TABLE = "zona_homogenea_fisica"
 
+
+"""
+LADM PACKAGES
+"""
+SURVEYING_AND_REPRESENTATION_PACKAGE = "Topografía y Representación"
+SPATIAL_UNIT_PACKAGE = "Unidad Espacial"
+BA_UNIT_PACKAGE = "Unidad Administrativa"
+RRR_PACKAGE = "Derechos, Restricciones y Responsabilidades"
+PARTY_PACKAGE = "Interesados"
+SOURCE_PACKAGE = "Fuentes"
+
+"""
+LADM PACKAGE ICONS
+"""
+DICT_PACKAGE_ICON = { # Resources don't seem to be initialized at this point, so return path and build icon when needed
+    SURVEYING_AND_REPRESENTATION_PACKAGE: ":/Asistente-LADM_COL/resources/images/surveying.png",
+    SPATIAL_UNIT_PACKAGE: ":/Asistente-LADM_COL/resources/images/spatial_unit.png",
+    BA_UNIT_PACKAGE: ":/Asistente-LADM_COL/resources/images/ba_unit.png",
+    RRR_PACKAGE: ":/Asistente-LADM_COL/resources/images/rrr.png",
+    PARTY_PACKAGE: ":/Asistente-LADM_COL/resources/images/party.png",
+    SOURCE_PACKAGE: ":/Asistente-LADM_COL/resources/images/source.png"
+}
+
+DICT_TABLE_PACKAGE = {
+    PARCEL_TABLE: BA_UNIT_PACKAGE,
+    PLOT_TABLE: SPATIAL_UNIT_PACKAGE,
+    BUILDING_TABLE: SPATIAL_UNIT_PACKAGE,
+    BUILDING_UNIT_TABLE: SPATIAL_UNIT_PACKAGE,
+    RIGHT_OF_WAY_TABLE: SPATIAL_UNIT_PACKAGE,
+    COL_PARTY_TABLE: PARTY_PACKAGE,
+    LA_GROUP_PARTY_TABLE: PARTY_PACKAGE,
+    RIGHT_TABLE: RRR_PACKAGE,
+    ADMINISTRATIVE_SOURCE_TABLE: SOURCE_PACKAGE,
+    SPATIAL_SOURCE_TABLE: SOURCE_PACKAGE
+}
+
+
 NAMESPACE_PREFIX = {
     ADMINISTRATIVE_SOURCE_TABLE: 's',
     BOUNDARY_POINT_TABLE: 'p',

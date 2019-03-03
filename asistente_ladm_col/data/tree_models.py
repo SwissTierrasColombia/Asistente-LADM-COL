@@ -38,19 +38,28 @@
 ## $QT_END_LICENSE$
 ##
 #############################################################################
-
 from qgis.PyQt.QtCore import (
     QAbstractItemModel,
-    QFile,
-    QIODevice,
-    QItemSelectionModel,
     QModelIndex,
-    Qt)
+    Qt,
+    QVariant)
+from qgis.PyQt.QtGui import QColor, QIcon
+
+from ..config.table_mapping_config import DICT_PACKAGE_ICON, DICT_TABLE_PACKAGE
+
+ALT_COLOR_EVEN = QColor(255,165,79)
+ALT_COLOR_ODD = QColor(135,206,255)
+
 
 class TreeItem(object):
     def __init__(self, data, parent=None):
+        """
+        :param data: list of dicts. Each element in the list represents the data of a column. Such data should have
+                     at least a Qt.DisplayRole.
+        :param parent:
+        """
         self.parentItem = parent
-        self.itemData = data
+        self.itemData = [{Qt.DisplayRole: ""}]
         self.childItems = []
 
     def child(self, row):
@@ -67,15 +76,18 @@ class TreeItem(object):
     def columnCount(self):
         return len(self.itemData)
 
-    def data(self, column):
-        return self.itemData[column]
+    def data(self, column, role=Qt.DisplayRole):
+        if role not in self.itemData[column]:
+            return None
+
+        return self.itemData[column][role]
 
     def insertChildren(self, position, count, columns):
         if position < 0 or position > len(self.childItems):
             return False
 
         for row in range(count):
-            data = [None for v in range(columns)]
+            data = [{Qt.DisplayRole: None} for v in range(columns)]
             item = TreeItem(data, self)
             self.childItems.insert(position, item)
 
@@ -86,7 +98,7 @@ class TreeItem(object):
             return False
 
         for column in range(columns):
-            self.itemData.insert(position, None)
+            self.itemData.insert(position, {Qt.DisplayRole: None})
 
         for child in self.childItems:
             child.insertColumns(position, columns)
@@ -117,11 +129,11 @@ class TreeItem(object):
 
         return True
 
-    def setData(self, column, value):
+    def setData(self, column, value, role=Qt.DisplayRole):
         if column < 0 or column >= len(self.itemData):
             return False
 
-        self.itemData[column] = value
+        self.itemData[column][role] = value
 
         return True
 
@@ -141,11 +153,17 @@ class TreeModel(QAbstractItemModel):
         if not index.isValid():
             return None
 
-        if role != Qt.DisplayRole:
-            return None
+        if role in (Qt.DisplayRole, Qt.UserRole, Qt.ToolTipRole, Qt.DecorationRole):
+            return self.getItem(index).data(index.column(), role)
+        elif role == Qt.BackgroundRole:
+            item_data = self.getItem(index).data(index.column(), Qt.UserRole)
+            if item_data == 'collection':
+                return QVariant(ALT_COLOR_EVEN) # Orange
+            elif item_data == 'object':
+                return QVariant(ALT_COLOR_ODD) # Blue
+        else:
+            return QVariant()
 
-        item = self.getItem(index)
-        return item.data(index.column())
 
     def flags(self, index):
         if not index.isValid():
@@ -231,11 +249,11 @@ class TreeModel(QAbstractItemModel):
         return parentItem.childCount()
 
     def setData(self, index, value, role=Qt.DisplayRole):
-        if role != Qt.DisplayRole:
+        if role not in (Qt.DisplayRole, Qt.UserRole, Qt.ToolTipRole, Qt.DecorationRole):
             return False
 
         item = self.getItem(index)
-        result = item.setData(index.column(), value)
+        result = item.setData(index.column(), value, role)
 
         if result:
             self.dataChanged.emit(index, index)
@@ -256,37 +274,37 @@ class TreeModel(QAbstractItemModel):
         if data is None:
             return
 
-        t_id = data["t_id"]
-        records = data["records"]
-
         if parent is None:
             parent = self.rootItem
 
-        parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
-        new_parent = parent.child(parent.childCount() -1)
-        new_parent.setData(0, "Terreno: {}".format(t_id))
-
-        if records is None:
+        if data is None:
             return
 
-        for record in records:
-            self.fill_model(record, new_parent)
+        self.fill_model(data[0], parent)
 
     def fill_model(self, record, parent):
+        """
+        Fill data in the treeview depending on the structure. It expects JSON data. The JSON data may contain LADM_COL
+        object collections in the form:
+            "ladm_col_table_name" : [{"id": 5, "records":{k,v pairs}}, {"id": 5, "records":{k,v pairs}}, ...]
+        """
         for key, values in record.items():  # either tuple or dict
             if type(values) is list:
                 for value in values:
                     if type(value) is dict:
-                        if len(value) == 2 and 'id' in value and 'records' in value:
+                        if len(value) == 2 and 'id' in value and 'attributes' in value:
                             # We have a list of LADM_COL model objects, we deal differently with them...
                             self.fill_collection(key, values, parent)
                             break
             elif type(values) is dict:
+                # Dict of key-value pairs, reuse the function
                 self.fill_model(values, parent)
             else:
                 # Simple key-value pair
                 parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
-                parent.child(parent.childCount() - 1).setData(0, "{}: {}".format(key, values))
+                kv_item = parent.child(parent.childCount() - 1)
+                kv_item.setData(0, "{}: {}".format(key, values))
+                res = kv_item.setData(0, {"value": values}, Qt.UserRole)
 
     def fill_collection(self, key, collection, parent):
         """
@@ -295,27 +313,14 @@ class TreeModel(QAbstractItemModel):
         parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
         collection_parent = parent.child(parent.childCount() - 1)
         collection_parent.setData(0, "{} ({})".format(key, len(collection)))
+        collection_parent.setData(0, {"type": key}, Qt.UserRole)
+        res = collection_parent.setData(0, QIcon(DICT_PACKAGE_ICON[DICT_TABLE_PACKAGE[key]]) if key in DICT_TABLE_PACKAGE else None, Qt.DecorationRole)
+
         for object in collection:
             # Fill LADM_COL object
             collection_parent.insertChildren(collection_parent.childCount(), 1, self.rootItem.columnCount())
             object_parent = collection_parent.child(collection_parent.childCount() - 1)
-            object_parent.setData(0, "{}".format(object['id']))
-            self.fill_model(object['records'], object_parent)
-
-
-    #def fill_model(self, record, parent):
-        #for key, value in record.items(): # either tuple or dict
-            #print(record, key, value)
-            # if type(value) is list and len(record) == 2 and 'id' in record: # We have a listo of LADM_COL model objects
-            #     collection_parent = parent.child(parent.childCount() - 1)
-            #     collection_parent.setData(0, "{} ({})".format(key, len(value)))
-            #     for row in value:
-            #         if type(row) is dict:
-            #             self.fill_model(row, collection_parent)
-            # else:
-            #     parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
-            #     parent.child(parent.childCount() - 1).setData(0, "{}: {}".format(key, value))
-
-    def updateActions(self):
-        # TODO If a PLOT is selected, we could show it on the QGIS map
-        pass
+            object_parent.setData(0, "t_id: {}".format(object['id']))
+            object_parent.setData(0, {"type": key, "id": object['id'], "value": object['id']}, Qt.UserRole)
+            object_parent.setData(0, key, Qt.ToolTipRole)
+            self.fill_model(object['attributes'], object_parent)

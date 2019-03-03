@@ -86,7 +86,7 @@
                <item row="0" column="0">
                 <widget class="QLabel" name="label_2">
                  <property name="text">
-                  <string>Select a Plot feature to identify releated information:</string>
+                  <string>Select a Plot feature to identify related information:</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -117,14 +117,14 @@
                <item row="2" column="0">
                 <layout class="QHBoxLayout" name="horizontalLayout_2">
                  <item>
-                  <widget class="QPushButton" name="btn_clear_plot">
+                  <widget class="QPushButton" name="btn_clear_alphanumeric_query">
                    <property name="text">
                     <string>Clear</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="btn_query_plot">
+                  <widget class="QPushButton" name="btn_alphanumeric_query">
                    <property name="text">
                     <string>Query</string>
                    </property>
@@ -142,7 +142,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="cbo_plot_fields">
+                  <widget class="QComboBox" name="cbo_parcel_fields">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -154,12 +154,12 @@
                 </layout>
                </item>
                <item row="0" column="0">
-                <widget class="QLineEdit" name="txt_plot_query">
+                <widget class="QLineEdit" name="txt_alphanumeric_query">
                  <property name="text">
                   <string/>
                  </property>
                  <property name="placeholderText">
-                  <string>Search for</string>
+                  <string>Search for...</string>
                  </property>
                 </widget>
                </item>
