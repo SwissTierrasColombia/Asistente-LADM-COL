@@ -136,7 +136,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._menu.addSeparator()
         self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"), self.iface.mainWindow())
-        self._queries_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Make Queries"), self.iface.mainWindow())
+        self._queries_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Queries"), self.iface.mainWindow())
         self._menu.addActions([self._load_layers_action,
                               self._queries_action])
         self._menu.addSeparator()
@@ -532,21 +532,19 @@ class AsistenteLADMCOLPlugin(QObject):
         """
         res, msg = db.test_connection() # The parser is specific for each new connection
         if res:
-            model_parser = ModelParser(db)
-            self.property_record_card_model_exists = model_parser.property_record_card_model_exists
-            if model_parser.property_record_card_model_exists():
+            if db.property_record_card_model_exists():
                 self.add_property_record_card_menu()
             else:
                 self.remove_property_record_card_menu()
 
-            if model_parser.valuation_model_exists():
+            if db.valuation_model_exists():
                 self.add_valuation_menu()
             else:
                 self.remove_valuation_menu()
 
             self.log.logMessage("Menus refreshed! Valuation: {}; Property Record Card: {}".format(
-                    model_parser.valuation_model_exists(),
-                    model_parser.property_record_card_model_exists()),
+                    db.valuation_model_exists(),
+                    db.property_record_card_model_exists()),
                 PLUGIN_NAME,
                 Qgis.Info)
 

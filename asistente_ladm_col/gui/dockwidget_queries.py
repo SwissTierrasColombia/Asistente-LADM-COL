@@ -21,11 +21,12 @@ from functools import partial
 from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtGui import QColor, QIcon, QCursor
 from PyQt5.QtWidgets import QMenu, QAction, QApplication
-from qgis.core import QgsWkbTypes, Qgis, QgsMessageLog
+from qgis.core import QgsWkbTypes, Qgis, QgsMessageLog, QgsFeature, QgsFeatureRequest, QgsExpression
 from qgis.gui import QgsDockWidget, QgsMapToolIdentifyFeature
 
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
-from ..config.table_mapping_config import PLOT_TABLE, UEBAUNIT_TABLE, PARCEL_TABLE, ID_FIELD
+from ..config.table_mapping_config import PLOT_TABLE, UEBAUNIT_TABLE, PARCEL_TABLE, ID_FIELD, DICT_TABLE_PACKAGE, \
+    SPATIAL_UNIT_PACKAGE, UEBAUNIT_TABLE_PARCEL_FIELD, UEBAUNIT_TABLE_PLOT_FIELD
 
 from ..utils import get_ui_class
 
@@ -50,6 +51,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         # Required layers
         self._plot_layer = None
         self._parcel_layer = None
+        self._uebaunit_table = None
 
         self._identify_tool = None
 
@@ -106,6 +108,21 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 pass
             self._parcel_layer.willBeDeleted.connect(self.parcel_layer_removed)
 
+        self._uebaunit_table = res_layers[UEBAUNIT_TABLE]
+        if self._uebaunit_table is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                                                QCoreApplication.translate("DockWidgetQueries",
+                                                                           "UEBAUnit table couldn't be found... {}").format(
+                                                    self._db.get_description()),
+                                                Qgis.Warning)
+        else:
+            # Layer was found, listen to its removal so that we can update the variable properly
+            try:
+                self._uebaunit_table.willBeDeleted.disconnect(self.uebaunit_table_removed)
+            except TypeError as e:
+                pass
+            self._uebaunit_table.willBeDeleted.connect(self.uebaunit_table_removed)
+
     def initialize_tool(self):
         self._plot_layer = None
         self.initialize_tools(new_tool=None, old_tool=self.maptool_identify)
@@ -121,6 +138,9 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
     def parcel_layer_removed(self):
         self._parcel_layer = None
+
+    def uebaunit_table_removed(self):
+        self._uebaunit_table = None
 
     def fill_combos(self):
         self.cbo_parcel_fields.clear()
@@ -172,7 +192,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         self.maptool_identify.setLayer(self._plot_layer)
         cursor = QCursor()
-        cursor.setShape(Qt.CrossCursor)
+        cursor.setShape(Qt.PointingHandCursor)
         self.maptool_identify.setCursor(cursor)
         self.canvas.setMapTool(self.maptool_identify)
 
@@ -196,6 +216,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             records = self._db.get_igac_basic_info(plot_t_id)
             print(records)
             #data = {"t_id": plot_t_id, "records": records}
+
+            if not self.isVisible():
+                self.show()
+
             self.treeModel = TreeModel(data=records)
             self.treeView.setModel(self.treeModel)
             self.treeView.expandAll()
@@ -214,7 +238,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             else: # previous_parcel_number
                 records = self._db.get_igac_basic_info(previous_parcel_number=query)
             #data = {"t_id": query, "records": records}
-            #print(records)
+
             self.treeModel = TreeModel(data=records)
             self.treeView.setModel(self.treeModel)
             self.treeView.expandAll()
@@ -236,8 +260,110 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             action_copy.triggered.connect(partial(self.copy_value, index_data["value"]))
             context_menu.addAction(action_copy)
 
+        context_menu.addSeparator()
+
+        # Configure actions for tables/layers
+        if "type" in index_data and "id" in index_data:
+            table_name = index_data["type"]
+            t_id = index_data["id"]
+            geometry_type = None
+            if table_name in DICT_TABLE_PACKAGE and DICT_TABLE_PACKAGE[table_name] == SPATIAL_UNIT_PACKAGE:
+                # Layers in Spatial Unit package have double geometry, we need the polygon one
+                geometry_type=QgsWkbTypes.PolygonGeometry
+
+            if table_name == PARCEL_TABLE:
+                if self._parcel_layer is None or self._plot_layer is None or self._uebaunit_table is None:
+                    self.add_layers()
+                layer = self._parcel_layer
+            else:
+                layer = self.qgis_utils.get_layer(self._db, table_name, geometry_type, True)
+
+            if layer is not None:
+                if layer.isSpatial():
+                    action_zoom_to_feature = QAction("Zoom to {} with {}={}".format(table_name, ID_FIELD, t_id))
+                    action_zoom_to_feature.triggered.connect(partial(self.zoom_to_feature, layer, t_id))
+                    context_menu.addAction(action_zoom_to_feature)
+
+                if table_name == PARCEL_TABLE:
+                    # We show a handy option to zoom to related plots
+                    plot_ids = self.get_plots_related_to_parcel(t_id)
+                    if plot_ids:
+                        action_zoom_to_plots = QAction("Zoom to related plot(s)")
+                        action_zoom_to_plots.triggered.connect(partial(self.zoom_to_plots, plot_ids))
+                        context_menu.addAction(action_zoom_to_plots)
+
+                action_open_feature_form = QAction("Open form for {} with {}={}".format(table_name, ID_FIELD, t_id))
+                action_open_feature_form.triggered.connect(partial(self.open_feature_form, layer, t_id))
+                context_menu.addAction(action_open_feature_form)
+
         context_menu.exec_(self.treeView.mapToGlobal(point))
 
     def copy_value(self, value):
         print("{} copied!".format(value))
         self.clipboard.setText(str(value))
+
+    def zoom_to_feature(self, layer, t_id):
+        feature = self.get_feature_from_t_id(layer, t_id)
+        self.iface.mapCanvas().zoomToFeatureIds(layer, [feature.id()])
+        self.canvas.flashFeatureIds(layer,
+                                    [feature.id()],
+                                    QColor(255, 0, 0, 255),
+                                    QColor(255, 0, 0, 0),
+                                    flashes=1,
+                                    duration=500)
+
+    def open_feature_form(self, layer, t_id):
+        feature = self.get_feature_from_t_id(layer, t_id)
+        self.iface.openFeatureForm(layer, feature)
+
+    def get_feature_from_t_id(self, layer, t_id):
+        field_idx = layer.fields().indexFromName(ID_FIELD)
+        request = QgsFeatureRequest(QgsExpression("{}={}".format(ID_FIELD, t_id))).setSubsetOfAttributes([field_idx])
+        request.setFlags(QgsFeatureRequest.NoGeometry)
+
+        iterator = layer.getFeatures(request)
+        feature = QgsFeature()
+        res = iterator.nextFeature(feature)
+        if res:
+            print(feature.attributes())
+            return feature
+
+        return None
+
+    def zoom_to_plots(self, plot_ids):
+        print("zoom to plot ids: {}".format(plot_ids))
+        self.iface.mapCanvas().zoomToFeatureIds(self._plot_layer, plot_ids)
+        self.canvas.flashFeatureIds(self._plot_layer,
+                                    plot_ids,
+                                    QColor(255, 0, 0, 255),
+                                    QColor(255, 0, 0, 0),
+                                    flashes=1,
+                                    duration=500)
+
+    def get_plots_related_to_parcel(self, t_id):
+        """
+        TODO: This function should be in a ladm lib
+        :param t_id: parcel t_id
+        :return: list of plot t_ids related to the parcel
+        """
+        plots = list()
+        features = self._uebaunit_table.getFeatures("{}={} AND {} IS NOT NULL".format(
+                                                    UEBAUNIT_TABLE_PARCEL_FIELD,
+                                                    t_id,
+                                                    UEBAUNIT_TABLE_PLOT_FIELD))
+
+        plot_t_ids = list()
+        for feature in features:
+            plot_t_ids.append(feature[UEBAUNIT_TABLE_PLOT_FIELD])
+
+        if plot_t_ids:
+            request = QgsFeatureRequest(
+                        QgsExpression("{} IN ({})".format(ID_FIELD,
+                                                          ",".join([str(id) for id in plot_t_ids])))).setNoAttributes()
+            request.setFlags(QgsFeatureRequest.NoGeometry)
+            features = self._plot_layer.getFeatures(request)
+
+            for feature in features:
+                plots.append(feature.id())
+
+        return plots

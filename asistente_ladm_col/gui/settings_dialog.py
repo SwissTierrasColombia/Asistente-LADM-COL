@@ -128,6 +128,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
         # to load the database and schema name
         self.restore_settings()
 
+        self.selected_schema_combobox.currentIndexChanged.connect(self.selected_schema_changed)
+        print("Conectado...")
+
     def request_for_refresh_connection(self, text):
         # Wait half a second before refreshing connection
         self.refreshTimer.start(500)
@@ -143,6 +146,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def selected_database_changed(self, index):
         self.update_db_schemas()
+
+    def selected_schema_changed(self, index):
+        if not self.connection_is_dirty:
+            self.connection_is_dirty = True
 
     def update_db_names(self):
         if self.cbo_db_source.currentData() == 'pg':
@@ -211,19 +218,34 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None # Reset db connection
         self._db = self.get_db_connection()
 
+        # Schema combobox changes frequently, so control whether we listen to its changes to make the db conn dirty
+        try:
+            self.selected_schema_combobox.currentIndexChanged.disconnect(self.selected_schema_changed)
+        except TypeError as e:
+            pass
+
         if self.connection_is_dirty:
             self.connection_is_dirty = False
+
             res, msg = self._db.test_connection()
             if res:
                 self.db_connection_changed.emit(self._db)
             else:
                 self.show_message(msg, Qgis.Warning)
                 return
+
         self.save_settings()
 
     def reject(self):
         self.restore_settings()
         self.connection_is_dirty = False
+
+        # Schema combobox changes frequently, so control whether we listen to its changes to make the db conn dirty
+        try:
+            self.selected_schema_combobox.currentIndexChanged.disconnect(self.selected_schema_changed)
+        except TypeError as e:
+            pass
+
         self.done(0)
 
     def set_db_connection(self, mode, dict_conn):

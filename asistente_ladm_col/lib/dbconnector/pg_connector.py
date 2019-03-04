@@ -65,7 +65,6 @@ class PGConnector(DBConnector):
         self.log = QgsApplication.messageLog()
         self.provider = 'postgres'
         self._tables_info = None
-        self.model_parser = None
 
         data_source_uri = QgsDataSourceUri(self.uri)
         self.dict_conn_params = {
@@ -429,8 +428,14 @@ class PGConnector(DBConnector):
         return colnames, results
 
     def get_igac_basic_info(self, plot_t_id='NULL', parcel_fmi='NULL', parcel_number='NULL',  previous_parcel_number='NULL'):
-        property_card_model = True
-        valuation_model = True
+        """
+        Query by component: Basic info
+        :param plot_t_id:
+        :param parcel_fmi:
+        :param parcel_number:
+        :param previous_parcel_number:
+        :return:
+        """
 
         query = """
         SELECT
@@ -472,7 +477,7 @@ class PGConnector(DBConnector):
         																								  'attributes', json_build_object('Número_de_pisos', unidadconstruccion.numero_pisos,
         """
 
-        if valuation_model:
+        if self.valuation_model_exists():
             query += """
         																															   'Número_de_habitaciones', unidad_construccion.num_habitaciones,
         																															   'Número_de_baños', unidad_construccion.num_banios,
@@ -494,7 +499,7 @@ class PGConnector(DBConnector):
         				FROM {schema}.construccion LEFT JOIN {schema}.unidadconstruccion  ON construccion.t_id = unidadconstruccion.construccion
                 """
 
-        if valuation_model:
+        if self.valuation_model_exists():
             query += """
         				LEFT JOIN {schema}.avaluounidadconstruccion ON unidadconstruccion.t_id = avaluounidadconstruccion.ucons
         				LEFT JOIN {schema}.unidad_construccion ON avaluounidadconstruccion.aucons = unidad_construccion.t_id
@@ -517,7 +522,7 @@ class PGConnector(DBConnector):
         				predio.tipo,
         """
 
-        if property_card_model:
+        if self.property_record_card_model_exists():
             query += """
         				predio_ficha.destinacion_economica,
             """
@@ -532,7 +537,7 @@ class PGConnector(DBConnector):
         			LEFT JOIN  {schema}.predio ON predio.t_id IN (SELECT DISTINCT(uebaunit_seleccionados.baunit_predio) FROM uebaunit_seleccionados WHERE uebaunit_seleccionados.baunit_predio IS NOT NULL)
             """
 
-        if property_card_model:
+        if self.property_record_card_model_exists():
             query += """
         			LEFT JOIN {schema}.predio_ficha ON predio_ficha.crpredio = predio.t_id
             """

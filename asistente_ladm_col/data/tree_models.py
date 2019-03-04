@@ -45,7 +45,7 @@ from qgis.PyQt.QtCore import (
     QVariant)
 from qgis.PyQt.QtGui import QColor, QIcon
 
-from ..config.table_mapping_config import DICT_PACKAGE_ICON, DICT_TABLE_PACKAGE
+from ..config.table_mapping_config import DICT_PACKAGE_ICON, DICT_TABLE_PACKAGE, DICT_PLURAL
 
 ALT_COLOR_EVEN = QColor(255,165,79)
 ALT_COLOR_ODD = QColor(135,206,255)
@@ -312,7 +312,7 @@ class TreeModel(QAbstractItemModel):
         """
         parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
         collection_parent = parent.child(parent.childCount() - 1)
-        collection_parent.setData(0, "{} ({})".format(key, len(collection)))
+        collection_parent.setData(0, "{} ({})".format(DICT_PLURAL[key] if key in DICT_PLURAL else key, len(collection)))
         collection_parent.setData(0, {"type": key}, Qt.UserRole)
         res = collection_parent.setData(0, QIcon(DICT_PACKAGE_ICON[DICT_TABLE_PACKAGE[key]]) if key in DICT_TABLE_PACKAGE else None, Qt.DecorationRole)
 

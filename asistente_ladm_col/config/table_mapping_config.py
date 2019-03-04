@@ -174,6 +174,15 @@ VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE = "calificacion_convenc
 VALUATION_GEOECONOMIC_ZONE_TABLE = "zona_homogenea_geoeconomica"
 VALUATION_PHYSICAL_ZONE_TABLE = "zona_homogenea_fisica"
 
+"""
+PLURAL WORDS, FOR DISPLAY PURPOSES
+"""
+DICT_PLURAL = {
+    PARCEL_TABLE: "Predios",
+    BUILDING_TABLE: "Construcciones",
+    BUILDING_UNIT_TABLE: "Unidades de Construcción"
+}
+
 
 """
 LADM PACKAGES
