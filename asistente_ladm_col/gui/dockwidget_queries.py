@@ -160,7 +160,8 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             except TypeError as e:
                 pass
 
-            self.canvas.setSelectionColor(self.selection_color) # Original selection color set in QGIS
+            if self.selection_color is not None:
+                self.canvas.setSelectionColor(self.selection_color) # Original selection color set in QGIS
 
             self.btn_identify_plot.setChecked(False)
         else:
