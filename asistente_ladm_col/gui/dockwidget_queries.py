@@ -146,16 +146,15 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.cbo_parcel_fields.clear()
 
         if self._parcel_layer is not None:
-            self.cbo_parcel_fields.addItem('Número Predial', 'numero_predial')
-            self.cbo_parcel_fields.addItem('Número Predial Anterior', 'numero_predial_anterior')
-            self.cbo_parcel_fields.addItem('Folio de Matrícula Inmobiliaria', 'fmi')
+            self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Parcel Number"), 'parcel_number')
+            self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Previous Parcel Number"), 'previous_parcel_number')
+            self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Folio de Matrícula Inmobiliaria"), 'fmi')
         else:
             self.add_layers()
 
     def initialize_tools(self, new_tool, old_tool):
         if self.maptool_identify == old_tool:
             # custom identify was deactivated
-            print("Before: custom tool...")
             try:
                 self.canvas.mapToolSet.disconnect(self.initialize_tools)
             except TypeError as e:
@@ -166,7 +165,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             self.btn_identify_plot.setChecked(False)
         else:
             # custom identify was activated
-            print("Before: A QGIS tool...")
+            pass
 
     def btn_plot_toggled(self):
         if self.btn_identify_plot.isChecked():
@@ -214,8 +213,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         with OverrideCursor(Qt.WaitCursor):
             self._plot_layer.selectByIds([plot_feature.id()])
             records = self._db.get_igac_basic_info(plot_t_id)
-            print(records)
-            #data = {"t_id": plot_t_id, "records": records}
+            #print(records)
 
             if not self.isVisible():
                 self.show()
@@ -233,11 +231,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         if query:
             if option == 'fmi':
                 records = self._db.get_igac_basic_info(parcel_fmi=query)
-            elif option == 'numero_predial':
+            elif option == 'parcel_number':
                 records = self._db.get_igac_basic_info(parcel_number=query)
             else: # previous_parcel_number
                 records = self._db.get_igac_basic_info(previous_parcel_number=query)
-            #data = {"t_id": query, "records": records}
 
             self.treeModel = TreeModel(data=records)
             self.treeView.setModel(self.treeModel)
@@ -256,7 +253,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         index_data = index.data(Qt.UserRole)
         if "value" in index_data:
-            action_copy = QAction("Copy value")
+            action_copy = QAction(QCoreApplication.translate("DockWidgetQueries", "Copy value"))
             action_copy.triggered.connect(partial(self.copy_value, index_data["value"]))
             context_menu.addAction(action_copy)
 
@@ -280,7 +277,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
             if layer is not None:
                 if layer.isSpatial():
-                    action_zoom_to_feature = QAction("Zoom to {} with {}={}".format(table_name, ID_FIELD, t_id))
+                    action_zoom_to_feature = QAction(QCoreApplication.translate("DockWidgetQueries", "Zoom to {} with {}={}").format(table_name, ID_FIELD, t_id))
                     action_zoom_to_feature.triggered.connect(partial(self.zoom_to_feature, layer, t_id))
                     context_menu.addAction(action_zoom_to_feature)
 
@@ -288,18 +285,17 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                     # We show a handy option to zoom to related plots
                     plot_ids = self.get_plots_related_to_parcel(t_id)
                     if plot_ids:
-                        action_zoom_to_plots = QAction("Zoom to related plot(s)")
+                        action_zoom_to_plots = QAction(QCoreApplication.translate("DockWidgetQueries", "Zoom to related plot(s)"))
                         action_zoom_to_plots.triggered.connect(partial(self.zoom_to_plots, plot_ids))
                         context_menu.addAction(action_zoom_to_plots)
 
-                action_open_feature_form = QAction("Open form for {} with {}={}".format(table_name, ID_FIELD, t_id))
+                action_open_feature_form = QAction(QCoreApplication.translate("DockWidgetQueries", "Open form for {} with {}={}").format(table_name, ID_FIELD, t_id))
                 action_open_feature_form.triggered.connect(partial(self.open_feature_form, layer, t_id))
                 context_menu.addAction(action_open_feature_form)
 
         context_menu.exec_(self.treeView.mapToGlobal(point))
 
     def copy_value(self, value):
-        print("{} copied!".format(value))
         self.clipboard.setText(str(value))
 
     def zoom_to_feature(self, layer, t_id):
@@ -331,7 +327,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         return None
 
     def zoom_to_plots(self, plot_ids):
-        print("zoom to plot ids: {}".format(plot_ids))
         self.iface.mapCanvas().zoomToFeatureIds(self._plot_layer, plot_ids)
         self.canvas.flashFeatureIds(self._plot_layer,
                                     plot_ids,
