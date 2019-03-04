@@ -18,7 +18,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([1.3.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.3.1)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v4.1.0.1](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip) y permite:
+La versión actual ([1.4.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.4.0)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v4.1.0.1](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip) y permite:
 
  - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
  - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
@@ -26,6 +26,8 @@ La versión actual ([1.3.1](https://github.com/AgenciaImplementacion/Asistente-L
  - Crear estructura de base de datos conforme con los modelos mencionados.
  - Importar datos desde archivo de transferencia (.XTF).
  - Exportar datos a archivo de transferencia (.XTF).
+ - Consultar datos LADM_COL por componentes:
+   - Información Básica.
  - Preprocesar puntos: Medición controlada.
    - Agrupamiento de puntos por cercanía.
    - Cálculo de posición promediada para puntos del mismo grupo.
