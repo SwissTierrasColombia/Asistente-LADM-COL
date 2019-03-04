@@ -92,6 +92,7 @@ from .gui.create_physical_zone_valuation_wizard import CreatePhysicalZoneValuati
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
 from .gui.dialog_import_from_excel import DialogImportFromExcel
+from .gui.dockwidget_queries import DockWidgetQueries
 from .gui.log_quality_dialog import LogQualityDialog
 from .gui.right_of_way import RightOfWay
 from .gui.reports import ReportGenerator
@@ -108,6 +109,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface = iface
         self.log = QgsApplication.messageLog()
         self._about_dialog = None
+        self._dock_widget_queries = None
         self.toolbar = None
         self.wiz_address = None
 
@@ -134,7 +136,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._menu.addSeparator()
         self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"), self.iface.mainWindow())
-        self._menu.addAction(self._load_layers_action)
+        self._queries_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Queries"), self.iface.mainWindow())
+        self._menu.addActions([self._load_layers_action,
+                              self._queries_action])
         self._menu.addSeparator()
         self.add_data_management_menu()
         self._settings_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
@@ -150,6 +154,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._import_data_action.triggered.connect(self.show_dlg_import_data)
         self._export_data_action.triggered.connect(self.show_dlg_export_data)
         self._controlled_measurement_action.triggered.connect(self.show_dlg_controlled_measurement)
+        self._queries_action.triggered.connect(self.show_queries)
         self._load_layers_action.triggered.connect(self.load_layers_from_qgis_model_baker)
         self._settings_action.triggered.connect(self.show_settings)
         self._help_action.triggered.connect(self.show_help)
@@ -162,7 +167,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.create_progress_message_bar_emitted.connect(self.create_progress_message_bar)
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
-        self.qgis_utils.refresh_menus_requested.connect(self.refresh_menus)
+        self.qgis_utils.db_connection_changed.connect(self.refresh_menus)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
@@ -522,21 +527,26 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def refresh_menus(self, db):
         """
-        Depending on the models avilable in the DB, some menus should appear or
+        Depending on the models available in the DB, some menus should appear or
         disappear from the GUI.
         """
         res, msg = db.test_connection() # The parser is specific for each new connection
         if res:
-            model_parser = ModelParser(db)
-            if model_parser.property_record_card_model_exists():
+            if db.property_record_card_model_exists():
                 self.add_property_record_card_menu()
             else:
                 self.remove_property_record_card_menu()
 
-            if model_parser.valuation_model_exists():
+            if db.valuation_model_exists():
                 self.add_valuation_menu()
             else:
                 self.remove_valuation_menu()
+
+            self.log.logMessage("Menus refreshed! Valuation: {}; Property Record Card: {}".format(
+                    db.valuation_model_exists(),
+                    db.property_record_card_model_exists()),
+                PLUGIN_NAME,
+                Qgis.Info)
 
     def add_processing_models(self, provider_id):
         if not (provider_id == 'model' or provider_id is None):
@@ -829,6 +839,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.deleteLater()
         self.iface.mainWindow().removeToolBar(self._ladm_col_toolbar)
         del self._ladm_col_toolbar
+        del self._dock_widget_queries
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
 
     def show_settings(self):
@@ -842,6 +853,15 @@ class AsistenteLADMCOLPlugin(QObject):
     def load_layers_from_qgis_model_baker(self):
         dlg = DialogLoadLayers(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
+
+    @_db_connection_required
+    def show_queries(self):
+        if self._dock_widget_queries is None:
+            self._dock_widget_queries = DockWidgetQueries(self.iface, self.get_db_connection(), self.qgis_utils)
+            self.qgis_utils.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
+            self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_queries)
+        else:
+            self._dock_widget_queries.toggleUserVisible()
 
     def get_db_connection(self):
         return self.qgis_utils.get_db_connection()
