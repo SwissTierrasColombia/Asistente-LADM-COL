@@ -29,6 +29,7 @@ from ..utils import get_ui_class
 from asistente_ladm_col.utils.utils import Utils
 from ..utils.qt_utils import normalize_local_url
 from .dialog_import_from_excel import DialogImportFromExcel
+from ..utils.qt_utils import save_pdf_format
 
 LOG_DIALOG_EXCEL_UI = get_ui_class('dlg_log_excel.ui')
 
@@ -41,5 +42,12 @@ class LogExcelDialog(QDialog, LOG_DIALOG_EXCEL_UI):
         self.qgis_utils = qgis_utils
         self.utils = Utils
         self.dialog_excel = DialogImportFromExcel(self.iface, self._db, self.qgis_utils, self.utils)
+        self.buttonBox.accepted.connect(self.save)
+        self.buttonBox.button(QDialogButtonBox.Save).setText(QCoreApplication.translate("LogExcelDialog", "Export to PDF"))
         self.txt_log_excel.setHtml(text)
+        self.export_text = text
 
+    def save(self):
+        title = QCoreApplication.translate(
+                'LogExcelDialog',"<h2 align='center'>Excel Check Results</h2>")
+        save_pdf_format(self, 'Asistente-LADM_COL/log_excel_dialog/save_path', title, self.export_text ) 

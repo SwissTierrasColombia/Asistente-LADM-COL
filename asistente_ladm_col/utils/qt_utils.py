@@ -23,18 +23,22 @@ import stat
 import sys
 from functools import partial
 
+from qgis.core import Qgis
 import qgis.utils
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                               QFile,
                               QIODevice,
                               QEventLoop,
-                              QUrl)
+                              QUrl,
+                              QSettings)
+from qgis.PyQt.QtPrintSupport import QPrinter                              
 from qgis.PyQt.QtGui import QValidator
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QApplication,
-                                 QWizard)
+                                 QWizard,
+                                 QTextEdit)
 from qgis.core import QgsNetworkAccessManager
 
 
@@ -114,56 +118,31 @@ class NetworkError(RuntimeError):
         self.msg = msg
         self.error_code = error_code
 
+def save_pdf_format(self, settings_path, title, text):
+    settings = QSettings()
+    new_filename, filter = QFileDialog.getSaveFileName(self,
+                                                        QCoreApplication.translate('Asistente-LADM_COL',
+                                                                                    'Export to PDF'),
+                                                        settings.value(
+                                                            settings_path, '.'),
+                                                        filter="PDF (*.pdf)")               
 
-def download_file(url, filename, on_progress=None, on_finished=None, on_error=None, on_success=None):
-    """
-    Will download the file from url to a local filename.
-    The method will only return once it's finished.
+    if new_filename:
+        settings.setValue(settings_path, os.path.dirname(new_filename))
+        new_filename = new_filename if new_filename.lower().endswith(".pdf") else "{}.pdf".format(new_filename)
 
-    While downloading it will repeatedly report progress by calling on_progress
-    with two parameters bytes_received and bytes_total.
+        txt_log = QTextEdit()
+        txt_log.setHtml("{}<br>{}".format(title, text))
 
-    If an error occurs, it raises a NetworkError exception.
+        printer = QPrinter()
+        printer.setPageSize(QPrinter.Letter)
+        printer.setOutputFormat(QPrinter.PdfFormat)
+        printer.setOutputFileName(new_filename)
+        txt_log.print(printer)
 
-    It will return the filename if everything was ok.
-    """
-    network_access_manager = QgsNetworkAccessManager.instance()
-
-    req = QNetworkRequest(QUrl(url))
-    reply = network_access_manager.get(req)
-
-    def on_download_progress(bytes_received, bytes_total):
-        on_progress(bytes_received, bytes_total)
-
-    def finished():
-        file = QFile(filename)
-        file.open(QIODevice.WriteOnly)
-        file.write(reply.readAll())
-        file.close()
-        if reply.error() and on_error:
-            on_error(reply.error(), reply.errorString())
-        elif not reply.error() and on_success:
-            on_success()
-
-        if on_finished:
-            on_finished()
-        reply.deleteLater()
-
-    if on_progress:
-        reply.downloadProgress.connect(on_download_progress)
-
-    reply.finished.connect(finished)
-
-    if not on_finished and not on_success:
-        loop = QEventLoop()
-        reply.finished.connect(loop.quit)
-        loop.exec_()
-
-        if reply.error():
-            raise NetworkError(reply.error(), reply.errorString())
-        else:
-            return filename
-
+        msg = QCoreApplication.translate("Asistente-LADM_COL", 
+            "All Excel Check report successfully generated in folder <a href='file:///{path}'>{path}</a>!").format(path=normalize_local_url(new_filename))
+        self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Success, 0)
 
 class Validators(QObject):
     def validate_line_edits(self, *args, **kwargs):
