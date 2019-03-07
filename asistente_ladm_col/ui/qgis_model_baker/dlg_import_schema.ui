@@ -2,9 +2,6 @@
 <ui version="4.0">
  <class>InterlisImportSchema</class>
  <widget class="QDialog" name="InterlisImportSchema">
-  <property name="windowModality">
-   <enum>Qt::WindowModal</enum>
-  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -27,43 +24,6 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_5">
    <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="label_10">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>88</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Type</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="type_combo_box">
-       <item>
-        <property name="text">
-         <string>PostgreSQL/PostGIS</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>GeoPackage</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -76,68 +36,46 @@
      </property>
      <widget class="QWidget" name="page">
       <layout class="QGridLayout" name="gridLayout_7">
-       <item row="1" column="0">
-        <widget class="QGroupBox" name="gpkg_config">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="title">
-          <string>GeoPackage</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_6">
-          <item row="0" column="1">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Database File</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QLineEdit" name="gpkg_file_line_edit"/>
-          </item>
-          <item row="0" column="3">
-           <widget class="QToolButton" name="gpkg_file_browse_button">
-            <property name="toolTip">
-             <string>Browse GeoPackage files</string>
-            </property>
-            <property name="text">
-             <string>…</string>
-            </property>
-           </widget>
-          </item>
+       <item row="3" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_1">
+         <item>
+          <widget class="QProgressBar" name="progress_bar">
+           <property name="value">
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDialogButtonBox" name="buttonBox">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="standardButtons">
+            <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="1">
+        <widget class="QWidget" name="widget" native="true">
+         <layout class="QGridLayout" name="gridLayout_2">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
          </layout>
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="QGroupBox" name="ili_config">
-         <property name="title">
-          <string>Models</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;LADM-COL&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;models&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QListWidget" name="import_models_list_widget">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="3" column="0">
         <widget class="QgsCollapsibleGroupBox" name="log_config">
          <property name="maximumSize">
           <size>
@@ -168,26 +106,34 @@
          </layout>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QWidget" name="widget" native="true">
-         <layout class="QGridLayout" name="gridLayout_2">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
+       <item row="1" column="0">
+        <widget class="QGroupBox" name="ili_config">
+         <property name="title">
+          <string>Models</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;LADM-COL&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;models&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QListWidget" name="import_models_list_widget">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
        <item row="0" column="0">
-        <widget class="QGroupBox" name="pg_config">
+        <widget class="QGroupBox" name="db_config">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -198,27 +144,6 @@
           <string>PostgreSQL</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="schema_name_line_edit">
-            <property name="placeholderText">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Schema Name</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Database:</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
@@ -243,29 +168,15 @@
             </item>
            </layout>
           </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Database:</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
-       </item>
-       <item row="4" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_1">
-         <item>
-          <widget class="QProgressBar" name="progress_bar">
-           <property name="value">
-            <number>0</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDialogButtonBox" name="buttonBox">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="standardButtons">
-            <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-           </property>
-          </widget>
-         </item>
-        </layout>
        </item>
       </layout>
      </widget>
@@ -283,9 +194,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>type_combo_box</tabstop>
-  <tabstop>gpkg_file_line_edit</tabstop>
-  <tabstop>gpkg_file_browse_button</tabstop>
   <tabstop>txtStdout</tabstop>
  </tabstops>
  <resources/>

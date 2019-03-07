@@ -2,9 +2,6 @@
 <ui version="4.0">
  <class>InterlisImportData</class>
  <widget class="QDialog" name="InterlisImportData">
-  <property name="windowModality">
-   <enum>Qt::WindowModal</enum>
-  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -26,43 +23,6 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="label_10">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>88</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Type</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="type_combo_box">
-       <item>
-        <property name="text">
-         <string>PostgreSQL/PostGIS</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>GeoPackage</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item row="1" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="sizePolicy">
@@ -147,15 +107,12 @@
         </widget>
        </item>
        <item row="0" column="0">
-        <widget class="QGroupBox" name="pg_config">
+        <widget class="QGroupBox" name="db_config">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
-         </property>
-         <property name="title">
-          <string>PostgreSQL</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
           <item row="0" column="0">
@@ -191,13 +148,20 @@
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label">
+            <property name="visible">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Schema Names</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QListWidget" name="schema_names_list_widget"/>
+           <widget class="QListWidget" name="schema_names_list_widget">
+            <property name="visible">
+             <bool>false</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -251,41 +215,6 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QGroupBox" name="gpkg_config">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="title">
-          <string>GeoPackage</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_6">
-          <item row="0" column="2">
-           <widget class="QLineEdit" name="gpkg_file_line_edit"/>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Database File</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="QToolButton" name="gpkg_file_browse_button">
-            <property name="toolTip">
-             <string>Browse GeoPackage files</string>
-            </property>
-            <property name="text">
-             <string>…</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="page_2"/>
@@ -302,9 +231,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>type_combo_box</tabstop>
-  <tabstop>gpkg_file_line_edit</tabstop>
-  <tabstop>gpkg_file_browse_button</tabstop>
   <tabstop>txtStdout</tabstop>
  </tabstops>
  <resources/>

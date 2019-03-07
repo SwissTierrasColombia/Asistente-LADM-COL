@@ -55,7 +55,8 @@ from ...utils.qt_utils import (Validators,
                                make_save_file_selector,
                                OverrideCursor)
 from ...resources_rc import *
-
+from ...config.config_db_supported import ConfigDbSupported
+from ...db_support.enum_action_type import EnumActionType
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_schema.ui')
 
 class DialogImportSchema(QDialog, DIALOG_UI):
@@ -67,50 +68,21 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
+        self._conf_db = ConfigDbSupported()
+        self._params = None
+        self._current_db = None
 
         self.setupUi(self)
-
-        self.type_combo_box.clear()
-        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportSchema", "PostgreSQL/PostGIS"), 'pg')
-        self.type_combo_box.addItem(QCoreApplication.translate("DialogImportSchema", "GeoPackage"), 'gpkg')
-        self.type_combo_box.setCurrentIndex(
-            self.type_combo_box.findData(QSettings().value('Asistente-LADM_COL/db_connection_source', 'pg')))
-        self.type_combo_box.currentIndexChanged.connect(self.type_changed)
-        self.type_changed()
-
-        self.schema_name_line_edit.setPlaceholderText(QCoreApplication.translate("DialogImportSchema", "[Name of the schema to be created]"))
         self.validators = Validators()
-
-        # schema name mustn't have special characters
-        regex = QRegExp("[a-zA-Z0-9_]+")
-        validator = QRegExpValidator(regex)
-        self.schema_name_line_edit.setValidator(validator)
-        self.schema_name_line_edit.setMaxLength(63)
-        self.schema_name_line_edit.textChanged.connect(self.validators.validate_line_edits_lower_case)
-        self.schema_name_line_edit.textChanged.emit(self.schema_name_line_edit.text())
 
         self.update_import_models()
         self.previous_item = QListWidgetItem()
 
-        # PG
+        #
         self.db_connect_label.setToolTip(self.db.get_display_conn_string())
+        self.db_connect_label.setText(self.db.get_display_conn_string())
         self.connection_setting_button.clicked.connect(self.show_settings)
         self.connection_setting_button.setText(QCoreApplication.translate("DialogImportSchema", "Connection Settings"))
-        if self.type_combo_box.currentData() == 'pg':
-            self.db_connect_label.setText(self.db.dict_conn_params['database'])
-
-        # GPKG
-        self.gpkg_file_line_edit.setPlaceholderText(QCoreApplication.translate("DialogImportSchema", "[Name of the Geopackage to be created]"))
-        self.gpkg_file_browse_button.clicked.connect(make_file_selector(self.gpkg_file_line_edit,
-                                                                        title=QCoreApplication.translate("DialogImportSchema", "Open GeoPackage database file"),
-                                                                        file_filter=QCoreApplication.translate("DialogImportSchema", "GeoPackage Database (*.gpkg)")))
-
-        gpkgFileValidator = FileValidator(pattern='*.gpkg')
-        self.gpkg_file_line_edit.setValidator(gpkgFileValidator)
-
-        self.gpkgSaveFileValidator = FileValidator(pattern='*.gpkg', allow_non_existing=True)
-        self.gpkgOpenFileValidator = FileValidator(pattern='*.gpkg')
-        self.gpkg_file_line_edit.textChanged.connect(self.validators.validate_line_edits)
 
         # LOG
         self.log_config.setTitle(QCoreApplication.translate("DialogImportSchema", "Show log"))
@@ -167,10 +139,14 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def show_settings(self):
         dlg = self.qgis_utils.get_settings_dialog()
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
+        dlg.set_action_type(EnumActionType.SCHEMA_IMPORT)
         if dlg.exec_():
-            self.db = self.qgis_utils.get_db_connection()
+            self.db = dlg.get_db_connection()
+            self._params = dlg.get_params()
+            self._current_db = dlg.get_current_db()
+
             self.db_connect_label.setToolTip(self.db.get_display_conn_string())
-            self.db_connect_label.setText(self.db.dict_conn_params['database'])
+            self.db_connect_label.setText(self.db.get_display_conn_string())
 
     def accepted(self):
         configuration = self.update_configuration()
@@ -182,22 +158,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.import_models_list_widget.setFocus()
             return
 
-        if self.type_combo_box.currentData() == 'pg':
-            if not self.schema_name_line_edit.text().strip():
-                message_error = QCoreApplication.translate("DialogImportSchema", "Please set a valid schema name before creating the LADM-COL structure.")
-                self.txtStdout.setText(message_error)
-                self.show_message(message_error, Qgis.Warning)
-                self.schema_name_line_edit.setFocus()
-                return
-        elif self.type_combo_box.currentData() == 'gpkg':
-            if not configuration.dbfile or self.gpkg_file_line_edit.validator().validate(configuration.dbfile, 0)[0] != QValidator.Acceptable:
-                message_error = QCoreApplication.translate("DialogImportSchema", 'Please set a valid database file before creating the LADM-COL structure.')
-                self.txtStdout.setText(message_error)
-                self.show_message(message_error, Qgis.Warning)
-                self.gpkg_file_line_edit.setFocus()
-                return
-
-        configuration.dbschema = self.schema_name_line_edit.text().strip().lower()
         self.save_configuration(configuration)
 
         with OverrideCursor(Qt.WaitCursor):
@@ -210,7 +170,9 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
             importer = iliimporter.Importer()
 
-            importer.tool_name = 'ili2pg' if self.type_combo_box.currentData() == 'pg' else 'ili2gpkg'
+            item_db = self._conf_db.get_db_items()[self.db.mode]
+
+            importer.tool_name = item_db.get_model_baker_tool_name()
             importer.configuration = configuration
             importer.stdout.connect(self.print_info)
             importer.stderr.connect(self.on_stderr)
@@ -250,14 +212,9 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def save_configuration(self, configuration):
         settings = QSettings()
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
-        settings.setValue('Asistente-LADM_COL/db_connection_source', self.type_combo_box.currentData())
-        if self.type_combo_box.currentData() == 'gpkg':
-            settings.setValue('Asistente-LADM_COL/QgisModelBaker/gpkg/dbfile', configuration.dbfile)
 
     def restore_configuration(self):
         settings = QSettings()
-        self.type_combo_box.setCurrentIndex(self.type_combo_box.findData(settings.value('Asistente-LADM_COL/db_connection_source', 'pg')))
-        self.type_changed()
 
         # Show log
         value_show_log = settings.value('Asistente-LADM_COL/QgisModelBaker/show_log', False, type=bool)
@@ -271,20 +228,9 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models') if settings.value('Asistente-LADM_COL/models/custom_models') else None
 
     def update_configuration(self):
-        configuration = SchemaImportConfiguration()
+        item_db = self._conf_db.get_db_items()[self.db.mode]
 
-        if self.type_combo_box.currentData() == 'pg':
-            # PostgreSQL specific options
-            configuration.tool_name = 'pg'
-            configuration.dbhost = self.db.dict_conn_params['host']
-            configuration.dbport = self.db.dict_conn_params['port']
-            configuration.dbusr = self.db.dict_conn_params['username']
-            configuration.database = self.db.dict_conn_params['database']
-            configuration.dbschema = self.schema_name_line_edit.text().strip().lower()
-            configuration.dbpwd = self.db.dict_conn_params['password']
-        elif self.type_combo_box.currentData() == 'gpkg':
-            configuration.tool_name = 'gpkg'
-            configuration.dbfile = self.db.dict_conn_params['dbfile']
+        configuration = item_db.get_schema_import_configuration(self.db.dict_conn_params)
 
         # set custom toml file
         configuration.tomlfile = TOML_FILE_DIR
@@ -348,37 +294,16 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.qgis_utils.show_help("import_schema")
 
     def disable(self):
-        self.type_combo_box.setEnabled(False)
-        self.pg_config.setEnabled(False)
+        self.db_config.setEnabled(False)
         self.ili_config.setEnabled(False)
         self.buttonBox.setEnabled(False)
 
     def enable(self):
-        self.type_combo_box.setEnabled(True)
-        self.pg_config.setEnabled(True)
+        self.db_config.setEnabled(True)
         self.ili_config.setEnabled(True)
         self.buttonBox.setEnabled(True)
 
     def show_message(self, message, level):
         self.bar.pushMessage("Asistente LADM_COL", message, level, duration = 0)
 
-    def type_changed(self):
-        self.progress_bar.hide()
-        if self.type_combo_box.currentData() == 'pg':
-            self.pg_config.show()
-            self.gpkg_config.hide()
-        elif self.type_combo_box.currentData() == 'gpkg':
-            self.pg_config.hide()
-            self.gpkg_config.show()
-            self.gpkg_file_line_edit.setValidator(self.gpkgSaveFileValidator)
-            self.gpkg_file_line_edit.textChanged.emit(self.gpkg_file_line_edit.text())
-            try:
-                self.gpkg_file_browse_button.clicked.disconnect()
-            except:
-                pass
-            self.gpkg_file_browse_button.clicked.connect(
-                make_save_file_selector(
-                    self.gpkg_file_line_edit,
-                    title=QCoreApplication.translate("DialogImportSchema", "Open GeoPackage database file"),
-                    file_filter=QCoreApplication.translate("DialogImportSchema", "GeoPackage Database (*.gpkg)"),
-                    extension='.gpkg'))
+
