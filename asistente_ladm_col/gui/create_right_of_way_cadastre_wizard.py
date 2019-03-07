@@ -101,7 +101,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_RIGHT_OF_WAY_CADASTRE_PAGE_1_OPTION2_POINTS)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
-                                       QCoreApplication.translate('CreateRightOfWayCadastreWizard',
+                                       QCoreApplication.translate("CreateRightOfWayCadastreWizard",
                                        finish_button_text))
 
     def finished_dialog(self):

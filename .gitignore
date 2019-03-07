@@ -114,3 +114,6 @@ resources_rc.py
 
 # pycharm
 .idea
+
+# vscode
+.vscode

@@ -166,7 +166,7 @@ class DomainRelationGenerator:
             iliattr_dbattr_mapping[record['iliname']] = record['sqlname']
 
         # Get structures_ili_pg
-        # This line differs from project generator, for us it's a parameter
+        # This line differs from qgis model baker, for us it's a parameter
         if self.debug:
             print("Structures:", structures)
 

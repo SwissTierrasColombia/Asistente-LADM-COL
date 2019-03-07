@@ -24,7 +24,7 @@ from ..config.general_config import (CADASTRE_MODEL_PREFIX,
                                      CADASTRE_MODEL_PREFIX_LEGACY,
                                      LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION,
                                      PROPERTY_RECORD_CARD_MODEL_PREFIX, VALUATION_MODEL_PREFIX)
-from ..utils.project_generator_utils import ProjectGeneratorUtils
+from ..utils.qgis_model_baker_utils import QgisModelBakerUtils
 
 
 class ModelParser:
@@ -36,8 +36,8 @@ class ModelParser:
         self.valuation_model = None
 
         self._db_connector = db_connector
-        project_generator_utils = ProjectGeneratorUtils()
-        self._pro_gen_db_connector = project_generator_utils.get_db_connection(self._db_connector)
+        qgis_model_baker_utils = QgisModelBakerUtils()
+        self._pro_gen_db_connector = qgis_model_baker_utils.get_db_connection(self._db_connector)
 
         if self._pro_gen_db_connector:
             model_records = self._get_models()

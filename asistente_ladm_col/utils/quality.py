@@ -42,7 +42,7 @@ from qgis.core import (Qgis,
 import processing
 
 from .logic_checks import LogicChecks
-from .project_generator_utils import ProjectGeneratorUtils
+from .qgis_model_baker_utils import QgisModelBakerUtils
 from ..config.general_config import (DEFAULT_EPSG,
                                      DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
                                      DEFAULT_USE_ROADS_VALUE,
@@ -98,7 +98,7 @@ class QualityUtils(QObject):
         self.qgis_utils = qgis_utils
         self.logic = LogicChecks()
         self.utils = Utils()
-        self.project_generator_utils = ProjectGeneratorUtils()
+        self.qgis_model_baker_utils = QgisModelBakerUtils()
         self.log = QgsApplication.messageLog()
         self.log_dialog_quality_text_content = ""
         self.total_time = 0
@@ -1451,7 +1451,7 @@ class QualityUtils(QObject):
 
         elif boundary_layer.featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
-                             "There are no boundaries to check 'boundaries should not be split'!"))
+                             "There are no boundaries to check 'boundaries should not be split'!"), Qgis.Info)
 
         else:
             wrong_boundaries = self.qgis_utils.geometry.get_boundaries_connected_to_single_boundary(boundary_layer)
@@ -1930,7 +1930,7 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def check_parcel_right_relationship(self, db, rule_name):
-        table_name = QCoreApplication.translate("LogicChecksConfigStrings","Logic Consistency Errors in table '{}'").format(PARCEL_TABLE)
+        table_name = QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{}'").format(PARCEL_TABLE)
         error_layer = None
         error_layer_exist = False
 
@@ -2007,7 +2007,7 @@ class QualityUtils(QObject):
                 break
 
         added_layer = QgsProject.instance().addMapLayer(error_layer, False)
-        index = self.project_generator_utils.get_suggested_index_for_layer(added_layer, group)
+        index = self.qgis_model_baker_utils.get_suggested_index_for_layer(added_layer, group)
         added_layer = group.insertLayer(index, added_layer).layer()
         if added_layer.isSpatial():
             self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
@@ -2029,7 +2029,7 @@ class QualityUtils(QObject):
 
             else:
                 self.log_message(QCoreApplication.translate("QGISUtils",
-                                 "There are no repeated records in {table}!".format(table=table)), Qgis.Success)
+                                 "There are no repeated records in {table}!").format(table=table), Qgis.Success)
 
     @_log_quality_checks
     def basic_logic_validations(self, db, rule, rule_name):
@@ -2079,7 +2079,7 @@ class QualityUtils(QObject):
 
         else:
             self.log_message(QCoreApplication.translate("QGISUtils",
-                             "No errors found when checking '{rule}' for '{table}'!".format(rule=db.logic_validation_queries[rule]['desc_error'], table=table)), Qgis.Success)
+                             "No errors found when checking '{rule}' for '{table}'!").format(rule=db.logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
 
     @_log_quality_checks
     def advanced_logic_validations(self, db, rule, rule_name):
@@ -2119,7 +2119,7 @@ class QualityUtils(QObject):
                     error_count=errors_count, table=table))
         else:
             self.log_message(QCoreApplication.translate("QGISUtils",
-                             "No errors found when checking '{rule}' for '{table}'!".format(rule=db.logic_validation_queries[rule]['desc_error'], table=table)), Qgis.Success)
+                             "No errors found when checking '{rule}' for '{table}'!").format(rule=db.logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
 
     @_log_quality_checks
     def check_building_within_plots(self, db, rule_name):

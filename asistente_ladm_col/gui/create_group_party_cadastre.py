@@ -103,6 +103,7 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         self.btn_deselect_all.clicked.connect(self.deselect_all)
         self.btn_select.clicked.connect(self.select)
         self.btn_deselect.clicked.connect(self.deselect)
+        self.buttonBox.helpRequested.connect(self.show_help)
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)

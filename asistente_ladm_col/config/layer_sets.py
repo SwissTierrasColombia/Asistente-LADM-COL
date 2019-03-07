@@ -10,6 +10,14 @@ LAYER_SETS = {
         PARTY_DOCUMENT_TYPE_TABLE,
         PARTY_TYPE_TABLE
     ],
+    'Derechos': [
+        COL_PARTY_TABLE,
+        PARCEL_TABLE,
+        ADMINISTRATIVE_SOURCE_TABLE,
+        EXTFILE_TABLE,
+        LA_GROUP_PARTY_TABLE,
+        RIGHT_TABLE
+    ],
     'Punto Lindero, Lindero y Terreno': [
         BOUNDARY_POINT_TABLE,
         BOUNDARY_TABLE,

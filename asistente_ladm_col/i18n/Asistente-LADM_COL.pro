@@ -5,6 +5,11 @@ FORMS = ../ui/dlg_load_layers.ui \
         ../ui/controlled_measurement_dialog.ui \
         ../ui/upload_progress_dialog.ui \
         ../ui/dlg_group_party.ui \
+        ../ui/qgis_model_baker/dlg_import_schema.ui \
+        ../ui/qgis_model_baker/dlg_import_data.ui \
+        ../ui/qgis_model_baker/dlg_export_data.ui \
+        ../ui/dockwidget_queries.ui \
+        ../ui/wiz_associate_extaddress_cadastre.ui \
         ../ui/wiz_create_points_cadastre.ui \
         ../ui/wiz_create_administrative_source_cadastre.ui \
         ../ui/wiz_create_plot_cadastre.ui \
@@ -30,6 +35,7 @@ SOURCES = ../__init__.py \
           ../utils/qgis_utils.py \
           ../utils/quality.py \
           ../utils/model_parser.py \
+          ../gui/associate_extaddress_cadastre_wizard.py \
           ../gui/create_administrative_source_cadastre_wizard.py \
           ../gui/create_col_party_cadastre_wizard.py \
           ../gui/create_group_party_cadastre.py \
@@ -50,6 +56,7 @@ SOURCES = ../__init__.py \
           ../gui/create_natural_party_prc.py \
           ../gui/create_nuclear_family_prc.py \
           ../gui/create_property_record_card_prc.py \
+          ../gui/dockwidget_queries.py \
           ../gui/about_dialog.py \
           ../gui/settings_dialog.py \
           ../gui/dialog_quality.py \
@@ -59,6 +66,9 @@ SOURCES = ../__init__.py \
           ../gui/controlled_measurement_dialog.py \
           ../gui/upload_progress_dialog.py \
           ../gui/log_quality_dialog.py \
+          ../gui/qgis_model_baker/dlg_import_schema.py \
+          ../gui/qgis_model_baker/dlg_import_data.py \
+          ../gui/qgis_model_baker/dlg_export_data.py \
           ../lib/dbconnector/gpkg_connector.py \
           ../lib/dbconnector/pg_connector.py \
           ../lib/source_handler.py \

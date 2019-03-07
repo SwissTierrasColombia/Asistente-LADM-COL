@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="/Asistente-LADM_COL">
+    <file>resources/images/schema.png</file>
+    <file>resources/images/create_db.png</file>
     <file>resources/images/source.png</file>
     <file>resources/images/ba_unit.png</file>
     <file>resources/images/rrr.png</file>

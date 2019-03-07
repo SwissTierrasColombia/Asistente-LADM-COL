@@ -47,27 +47,37 @@ def selectFileName(line_edit_widget, title, file_filter, parent):
     line_edit_widget.setText(filename)
 
 
-def make_file_selector(widget, title=QCoreApplication.translate('Asistente-LADM_COL', 'Open File'),
-                       file_filter=QCoreApplication.translate('Asistente-LADM_COL', 'Any file(*)'), parent=None):
+def make_file_selector(widget, title=QCoreApplication.translate("Asistente-LADM_COL", "Open File"),
+                       file_filter=QCoreApplication.translate("Asistente-LADM_COL", "Any file(*)"), parent=None):
     return partial(selectFileName, line_edit_widget=widget, title=title, file_filter=file_filter, parent=parent)
 
-
-def selectFileNameToSave(line_edit_widget, title, file_filter, parent, extension):
+def selectFileNameToSave(line_edit_widget, title, file_filter, parent, extension, extensions):
     filename, matched_filter = QFileDialog.getSaveFileName(parent, title, line_edit_widget.text(), file_filter)
-    line_edit_widget.setText(filename if filename.endswith(extension) else (filename + extension if filename else ''))
+    extension_valid = False
 
+    if not extensions:
+        extensions = [extension]
 
-def make_save_file_selector(widget, title=QCoreApplication.translate('Asistente-LADM_COL', 'Open File'),
-                            file_filter=QCoreApplication.translate('Asistente-LADM_COL', 'Any file(*)'), parent=None, extension=''):
-    return partial(selectFileNameToSave, line_edit_widget=widget, title=title, file_filter=file_filter, parent=parent, extension=extension)
+    if extensions:
+        extension_valid = any(filename.endswith(ext) for ext in extensions)
 
+    if not extension_valid and filename:
+        filename = filename + extension
+
+    line_edit_widget.setText(filename)
+
+def make_save_file_selector(widget, title=QCoreApplication.translate("QgisModelBaker", "Open File"),
+                            file_filter=QCoreApplication.translate("QgisModelBaker", "Any file(*)"), parent=None,
+                            extension='', extensions=None):
+    return partial(selectFileNameToSave, line_edit_widget=widget, title=title, file_filter=file_filter, parent=parent,
+                   extension=extension, extensions=extensions)
 
 def selectFolder(line_edit_widget, title, parent):
     foldername = QFileDialog.getExistingDirectory(parent, title, line_edit_widget.text())
     line_edit_widget.setText(foldername)
 
 
-def make_folder_selector(widget, title=QCoreApplication.translate('Asistente-LADM_COL', 'Open Folder'), parent=None):
+def make_folder_selector(widget, title=QCoreApplication.translate("Asistente-LADM_COL", "Open Folder"), parent=None):
     return partial(selectFolder, line_edit_widget=widget, title=title, parent=parent)
 
 
@@ -160,8 +170,27 @@ class Validators(QObject):
             elif state == QValidator.Intermediate:
                 color = '#ffd356'  # Light orange
             else:
-                color = '#f6989d'  # Red
+                color = '#ffd356'  # Light orange
         senderObj.setStyleSheet('QLineEdit {{ background-color: {} }}'.format(color))
+
+    def validate_line_edits_lower_case(self, *args, **kwargs):
+        """
+        Validate line edits and set their color to indicate validation state.
+        """
+        senderObj = self.sender()
+        validator = senderObj.validator()
+        if validator is None:
+            color = '#fff'  # White
+        else:
+            state = validator.validate(senderObj.text().strip(), 0)[0]
+            if state == QValidator.Acceptable:
+                color = '#fff'  # White
+            elif state == QValidator.Intermediate:
+                color = '#ffd356'  # Light orange
+            else:
+                color = '#ffd356'  # Light orange
+        senderObj.setStyleSheet('QLineEdit {{ background-color: {} }}'.format(color))
+        senderObj.setText(senderObj.text().strip().lower())
 
 
 class FileValidator(QValidator):
@@ -180,9 +209,17 @@ class FileValidator(QValidator):
         if self.allow_empty and not text.strip():
             return QValidator.Acceptable, text, pos
 
+        pattern_matches = False
+        if type(self.pattern) is str:
+            pattern_matches = fnmatch.fnmatch(text, self.pattern)
+        elif type(self.pattern) is list:
+            pattern_matches = True in (fnmatch.fnmatch(text, pattern) for pattern in self.pattern)
+        else:
+            raise TypeError('pattern must be str or list, not {}'.format(type(self.pattern)))
+
         if not text \
                 or (not self.allow_non_existing and not os.path.isfile(text)) \
-                or not fnmatch.fnmatch(text, self.pattern) \
+                or not pattern_matches \
                 or (self.is_executable and not os.access(text, os.X_OK)):
             return QValidator.Intermediate, text, pos
         else:
