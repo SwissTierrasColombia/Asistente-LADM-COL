@@ -38,6 +38,10 @@ DOMAIN_KEY_FIELD = {
     "pg": "ilicode",
     "gpkg": "iliCode"
 }
+EXTADDRESS_TABLE = "extdireccion"
+EXTADDRESS_PLOT_FIELD = "terreno_ext_direccion_id"
+EXTADDRESS_BUILDING_FIELD = "construccion_ext_direccion_id"
+EXTADDRESS_BUILDING_UNIT_FIELD = "unidadconstruccion_ext_direccion_id"
 EXTFILE_TABLE = "extarchivo"
 EXTFILE_DATA_FIELD = "datos"
 FIRST_NAME_FIELD = "primer_nombre"
@@ -170,6 +174,52 @@ VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE = "calificacion_convenc
 VALUATION_GEOECONOMIC_ZONE_TABLE = "zona_homogenea_geoeconomica"
 VALUATION_PHYSICAL_ZONE_TABLE = "zona_homogenea_fisica"
 
+"""
+PLURAL WORDS, FOR DISPLAY PURPOSES
+"""
+DICT_PLURAL = {
+    PARCEL_TABLE: "Predios",
+    BUILDING_TABLE: "Construcciones",
+    BUILDING_UNIT_TABLE: "Unidades de Construcción"
+}
+
+
+"""
+LADM PACKAGES
+"""
+SURVEYING_AND_REPRESENTATION_PACKAGE = "Topografía y Representación"
+SPATIAL_UNIT_PACKAGE = "Unidad Espacial"
+BA_UNIT_PACKAGE = "Unidad Administrativa"
+RRR_PACKAGE = "Derechos, Restricciones y Responsabilidades"
+PARTY_PACKAGE = "Interesados"
+SOURCE_PACKAGE = "Fuentes"
+
+"""
+LADM PACKAGE ICONS
+"""
+DICT_PACKAGE_ICON = { # Resources don't seem to be initialized at this point, so return path and build icon when needed
+    SURVEYING_AND_REPRESENTATION_PACKAGE: ":/Asistente-LADM_COL/resources/images/surveying.png",
+    SPATIAL_UNIT_PACKAGE: ":/Asistente-LADM_COL/resources/images/spatial_unit.png",
+    BA_UNIT_PACKAGE: ":/Asistente-LADM_COL/resources/images/ba_unit.png",
+    RRR_PACKAGE: ":/Asistente-LADM_COL/resources/images/rrr.png",
+    PARTY_PACKAGE: ":/Asistente-LADM_COL/resources/images/party.png",
+    SOURCE_PACKAGE: ":/Asistente-LADM_COL/resources/images/source.png"
+}
+
+DICT_TABLE_PACKAGE = {
+    PARCEL_TABLE: BA_UNIT_PACKAGE,
+    PLOT_TABLE: SPATIAL_UNIT_PACKAGE,
+    BUILDING_TABLE: SPATIAL_UNIT_PACKAGE,
+    BUILDING_UNIT_TABLE: SPATIAL_UNIT_PACKAGE,
+    RIGHT_OF_WAY_TABLE: SPATIAL_UNIT_PACKAGE,
+    COL_PARTY_TABLE: PARTY_PACKAGE,
+    LA_GROUP_PARTY_TABLE: PARTY_PACKAGE,
+    RIGHT_TABLE: RRR_PACKAGE,
+    ADMINISTRATIVE_SOURCE_TABLE: SOURCE_PACKAGE,
+    SPATIAL_SOURCE_TABLE: SOURCE_PACKAGE
+}
+
+
 NAMESPACE_PREFIX = {
     ADMINISTRATIVE_SOURCE_TABLE: 's',
     BOUNDARY_POINT_TABLE: 'p',
@@ -212,9 +262,9 @@ DICT_DISPLAY_EXPRESSIONS = {
         FIRST_NAME_FIELD,
         SECOND_NAME_FIELD,
         BUSINESS_NAME_FIELD),
-    PARCEL_TABLE: "concat({}, ' ', {}, ' ', {})".format(NUPRE_FIELD, FMI_FIELD, PARCEL_NAME_FIELD),
+    PARCEL_TABLE: "concat({}, ' - ', {}, ' - ', {})".format(ID_FIELD, PARCEL_NUMBER_FIELD, FMI_FIELD),
     LA_BAUNIT_TABLE: "{} || ' ' || {} || ' ' || {}".format(ID_FIELD, LA_BAUNIT_NAME_FIELD, TYPE_FIELD),
-    LA_GROUP_PARTY_TABLE: "concat({}, ' ', {})".format(ID_FIELD, LA_GROUP_PARTY_NAME_FIELD),
+    LA_GROUP_PARTY_TABLE: "concat({}, ' - ', {})".format(ID_FIELD, LA_GROUP_PARTY_NAME_FIELD),
     BUILDING_TABLE: '"{}{}"  || \' \' ||  "{}"'.format(NAMESPACE_PREFIX[BUILDING_UNIT_TABLE],
                                                                     NAMESPACE_FIELD,
                                                                     ID_FIELD)
@@ -264,7 +314,7 @@ LAYER_CONSTRAINTS = {
     PARCEL_TABLE: {
         PARCEL_TYPE_FIELD: {
             'expression': """
-                            CASE 
+                            CASE
                                 WHEN  "{parcel_type}" =  'NPH' THEN
                                     num_selected('{plot_layer}') = 1 AND num_selected('{building_unit_layer}') = 0
                                 WHEN  "{parcel_type}" IN  ('PropiedadHorizontal.Matriz', 'Condominio.Matriz', 'ParqueCementerio.Matriz', 'BienUsoPublico', 'Condominio.UnidadPredial') THEN
@@ -287,7 +337,7 @@ LAYER_CONSTRAINTS = {
                                         WHEN length("{parcel_number}") != 30 OR regexp_match(to_string("{parcel_number}"), '^[0-9]*$') = 0  THEN
                                             FALSE
                                         WHEN "{parcel_type}" = 'NPH' THEN
-                                            substr("{parcel_number}", 22,1) = 0 
+                                            substr("{parcel_number}", 22,1) = 0
                                         WHEN strpos( "{parcel_type}", 'PropiedadHorizontal.') != 0 THEN
                                             substr("{parcel_number}", 22,1) = 9
                                         WHEN strpos( "{parcel_type}", 'Condominio.') != 0 THEN
@@ -337,7 +387,7 @@ LAYER_CONSTRAINTS = {
                                 WHEN  "{col_party_type}" = 'Persona_Natural' THEN
                                      "{col_party_doc_type}" !=  'NIT'
                                 WHEN  "{col_party_type}" = 'Persona_No_Natural' THEN
-                                     "{col_party_doc_type}" = 'NIT' OR "{col_party_doc_type}" = 'Secuencial_IGAC' OR "{col_party_doc_type}" = 'Secuencial_SNR' 
+                                     "{col_party_doc_type}" = 'NIT' OR "{col_party_doc_type}" = 'Secuencial_IGAC' OR "{col_party_doc_type}" = 'Secuencial_SNR'
                                 ELSE
                                     TRUE
                             END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_doc_type=COL_PARTY_DOC_TYPE_FIELD),
@@ -382,7 +432,7 @@ LAYER_CONSTRAINTS = {
                                 WHEN  "{col_party_type}" =  'Persona_No_Natural' THEN
                                      "{col_party_legal_party}" IS NOT NULL
                                 WHEN  "{col_party_type}" =  'Persona_Natural' THEN
-                                     "{col_party_legal_party}" IS NULL                                     
+                                     "{col_party_legal_party}" IS NULL
                                 ELSE
                                     TRUE
                             END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_legal_party=COL_PARTY_LEGAL_PARTY_FIELD),

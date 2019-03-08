@@ -25,12 +25,14 @@ from .db_connector import DBConnector
 
 
 class GPKGConnector(DBConnector):
-    def __init__(self, uri, schema=None):
+    def __init__(self, uri, schema=None, conn_dict={}):
         DBConnector.__init__(self, uri, schema)
-        self.uri = uri
-        self.conn = None
         self.mode = 'gpkg'
+        self.uri = uri if uri is not None else self.get_connection_uri(conn_dict, self.mode)
+        self.conn = None
         self.provider = 'ogr'
+
+        self.dict_conn_params = {'dbfile': self.uri}
 
     def test_connection(self):
         try:
@@ -54,3 +56,9 @@ class GPKGConnector(DBConnector):
                 uri=self.uri,
                 table=layer_name.lower()
             ))
+
+    def get_models(self):
+        cursor = self.conn.cursor()
+        cursor.execute("""SELECT modelname, content
+                          FROM t_ili2db_model""")
+        return cursor

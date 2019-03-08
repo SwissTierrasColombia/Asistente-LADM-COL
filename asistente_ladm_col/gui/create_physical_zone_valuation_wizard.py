@@ -71,11 +71,11 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
             self.mMapLayerComboBox.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
-            finish_button_text = QCoreApplication.translate('CreatePhysicalZoneValuationWizard', 'Start')
+            finish_button_text = QCoreApplication.translate("CreatePhysicalZoneValuationWizard", "Start")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_PHYSICAL_ZONE_VALUATION_PAGE_1_OPTION_FORM)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
-                                       QCoreApplication.translate('CreatePhysicalZoneValuationWizard',
+                                       QCoreApplication.translate("CreatePhysicalZoneValuationWizard",
                                        finish_button_text))
 
     def finished_dialog(self):
@@ -97,7 +97,7 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
                     self.qgis_utils.save_field_mapping(VALUATION_PHYSICAL_ZONE_TABLE)
             else:
                 self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                    QCoreApplication.translate('CreatePhysicalZoneValuationWizard',
+                    QCoreApplication.translate("CreatePhysicalZoneValuationWizard",
                                                "Select a source layer to set the field mapping to '{}'.").format(VALUATION_PHYSICAL_ZONE_TABLE),
                     Qgis.Warning)
 
@@ -114,7 +114,7 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
 
         if self._physical_zone_valuation is None:
             self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                QCoreApplication.translate('CreatePhysicalZoneValuationWizard',
+                QCoreApplication.translate("CreatePhysicalZoneValuationWizard",
                                            "Physical zone valuation layer couldn't be found... {}").format(self._db.get_description()),
                 Qgis.Warning)
             return
@@ -142,8 +142,8 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
         self.iface.actionAddFeature().trigger()
 
         self.iface.messageBar().pushMessage('Asistente LADM_COL',
-            QCoreApplication.translate('CreatePhysicalZoneValuationWizard',
-                                       'You can now start capturing physical zones digitizing on the map...'),
+            QCoreApplication.translate("CreatePhysicalZoneValuationWizard",
+                                       "You can now start capturing physical zones digitizing on the map..."),
             Qgis.Info)
 
     def save_settings(self):

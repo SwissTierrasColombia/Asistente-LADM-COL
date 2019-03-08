@@ -17,11 +17,16 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([1.2.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.2.0)) of the LADM_COL Assistant depends on [Project Generator v3.3.7](https://github.com/opengisch/projectgenerator/releases/download/v3.3.7/projectgenerator.v3.3.7.zip) and allows users to:
+The current version ([1.4.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.4.0)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.1.0.1](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip) and allows users to:
 
  - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
  - Capture data for the `FICHA_PREDIAL v2.2.1` model.
  - Capture data for the `AVALÚOS v2.2.1` model.
+ - Create database structures for the aforementioned models.
+ - Import data from transfer files (.XTF).
+ - Export data to transfer files (.XTF).
+ - Search for LADM_COL data by component:
+   - Basic information.
  - Preprocess points: Controlled Measurement.
    - Group points by nearness.
    - Average point position from points of the same group.
@@ -48,6 +53,7 @@ The current version ([1.2.0](https://github.com/AgenciaImplementacion/Asistente-
        - Automatic snapping configuration and default field values.
    - From another layer with any structure, setting a field mapping.
    - Create relations of benefited and restricted `Parcels`.
+ - Associate addresses to `Plots`, `Buildings` and `Unit Buildings`.
  - Create `Parcels`:
    - Using preconfigured forms.
      - And associating the new `Parcel` to selected `Plots` and/or `Buildings`.
@@ -76,7 +82,7 @@ The current version ([1.2.0](https://github.com/AgenciaImplementacion/Asistente-
    - Using preconfigured forms.
    - From another table with any structure, setting a field mapping.
  - Select in a dialog layers to load from any model in the database or schema:
-   - Use the 'Project Generator' plugin (a prerequisite) to load layers with configured forms, relations and domains.
+   - Use the 'QGIS Model Baker' plugin (a prerequisite) to load layers with configured forms, relations and domains.
    - Load preconfigured layer sets.
  - Check quality rules (topology):
    - Check too long `Boundary` segments (exceeding a given tolerance).
@@ -110,6 +116,7 @@ The current version ([1.2.0](https://github.com/AgenciaImplementacion/Asistente-
    - Check that attributes are appropriate for parties of type legal
    - Check that the type of parcel corresponds to position 22 of the numero_predial
    - Check that Spatial Units associated with Parcels correspond to the parcel type
+ - Generate report of the quality checks.
  - Generate reports based on selected `Plots` (Annex 17).
  - Import data from [intermediate structure in Excel](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
  - Configure automatic values for `namespace` and `local_id` attributes.

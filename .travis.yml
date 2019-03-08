@@ -27,7 +27,6 @@ before_deploy:
   - ./scripts/release-docs.sh
   - zip -r asistente_ladm_col.zip asistente_ladm_col
     -x asistente_ladm_col/tests/\*
-    asistente_ladm_col/resources/\*
     \*.pyc \*/__pycache__/\*
 deploy:
   skip_cleanup: true

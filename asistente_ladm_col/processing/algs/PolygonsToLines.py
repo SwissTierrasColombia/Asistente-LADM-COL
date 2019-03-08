@@ -30,6 +30,7 @@
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsGeometry,
+                       QgsLineString,
                        QgsPoint,
                        QgsPolygon,
                        QgsMultiPolygon,
@@ -116,7 +117,7 @@ class PolygonsToLines(QgisFeatureBasedAlgorithm):
         # TODO: remove when the error is resolved
         # Error: The expected object type is a QgsCurvePolygon but it receives a QgsPoint, however the WKT of the
         #        QgsPoint corresponds to either a QgsPolygon or QgsMultiPolygon (yeap, it must be a bug in QGIS)
-        if type(geometry) == type(QgsPoint()):
+        if type(geometry) == QgsPoint or type(geometry) == QgsLineString:
             geom = QgsGeometry().fromWkt(geometry.asWkt())
             curve = None
             if geom.isMultipart():
