@@ -190,6 +190,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
             self.existence_grouping = None
             self.utils.send_signal_log_excel(QCoreApplication.translate("DialogImportFromExcel", "Check errors in excel file"), self.log_dialog_excel_text_content)
+            self.done(0)
             return
 
         if not layer_group_party.isValid() or not layer_party.isValid() or not layer_parcel.isValid() or not layer_right.isValid():
@@ -706,9 +707,13 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
                         "The column numero de documento has empty values in the sheet {}.".format(sheetname)))
                 error_counter += 1
-            if self.check_field_numeric_layer(layer, 'numero de documento') == 'No numeric':
+            if self.check_len_layer(layer, 'numero de documento', 12) == 'exceed':
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column numero de documento has non-numeric values in the sheet {}.".format(sheetname)))
+                        "The column numero de documento has more characters of the permitted in the sheet {}.".format(sheetname)))
+                error_counter += 1
+            if len(list(layer.getFeatures('"tipo persona" is Null'))) > 0:
+                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                        "The column tipo persona has empty values in the sheet {}.".format(sheetname)))
                 error_counter += 1
         if sheetname == EXCEL_SHEET_NAME_GROUP and layer is not None:
             if not title_validator:
@@ -732,9 +737,9 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
                         "The column id agrupación has empty values in the sheet {}.".format(sheetname)))
                 error_counter += 1
-            if self.check_field_numeric_layer(layer, 'numero de documento') == 'No numeric':
+            if self.check_len_layer(layer, 'numero de documento', 12) == 'exceed':
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column numero de documento has non-numeric values in the sheet {}.".format(sheetname)))
+                        "The column numero de documento has more characters of the permitted in the sheet {}.".format(sheetname)))
                 error_counter += 1
         if sheetname == EXCEL_SHEET_NAME_RIGHT and layer is not None:
             if not title_validator:
@@ -790,6 +795,26 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                 result = "No numeric"
                 break
         return result
+
+    def check_len_layer (self, layer, name, size):
+        id_field_idx = layer.fields().indexFromName(name)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+        fields = layer.getFeatures(request)
+
+        result = ""
+
+        for field in fields:
+            if len(str(field[name])) > size:
+                print (str(len(field[name])))
+                print (str(field[name]))
+                result = "exceed"
+                break
+            else:
+                result = "No exceed"
+        print (result)
+        return result
+
+
 
     def generate_message_excel_error(self, msg):
         self.log_dialog_excel_text_content += LOG_QUALITY_LIST_CONTAINER_OPEN
