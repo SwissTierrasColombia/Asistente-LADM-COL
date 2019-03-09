@@ -26,7 +26,8 @@ import qgis.utils
 from processing.modeler.ModelerUtils import ModelerUtils
 from qgis.PyQt.QtCore import (Qt,
                               QObject,
-                              QCoreApplication)
+                              QCoreApplication,
+                              QSettings)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QAction,
                                  QMenu,
@@ -652,6 +653,14 @@ class AsistenteLADMCOLPlugin(QObject):
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
 
+    def show_message_with_settings_button(self, msg, button_text, level):
+        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        button = QPushButton(widget)
+        button.setText(button_text)
+        button.pressed.connect(self.show_settings)
+        widget.layout().addWidget(button)
+        self.iface.messageBar().pushWidget(widget, level, 25)
+
     def show_status_bar_message(self, msg, duration):
         self.iface.statusBarIface().showMessage(msg, duration)
 
@@ -942,6 +951,16 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_dlg_group_party(self):
+        namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
+        local_id_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
+
+        if not namespace_enabled or not local_id_enabled:
+            self.show_message_with_settings_button(QCoreApplication.translate("CreateGroupPartyCadastre",
+                                                       "First enable automatic values for both namespace and local_id fields before creating group parties. Click the button to open the settings dialog."),
+                                                   QCoreApplication.translate("CreateGroupPartyCadastre", "Open Settings"),
+                                                   Qgis.Info)
+            return
+
         dlg = CreateGroupPartyCadastre(self.iface, self.get_db_connection(), self.qgis_utils)
 
         res, msg = dlg.validate_target_layers()
