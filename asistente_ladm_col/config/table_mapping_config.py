@@ -178,9 +178,13 @@ VALUATION_PHYSICAL_ZONE_TABLE = "zona_homogenea_fisica"
 PLURAL WORDS, FOR DISPLAY PURPOSES
 """
 DICT_PLURAL = {
+    PLOT_TABLE: "Terrenos",
     PARCEL_TABLE: "Predios",
     BUILDING_TABLE: "Construcciones",
-    BUILDING_UNIT_TABLE: "Unidades de Construcción"
+    BUILDING_UNIT_TABLE: "Unidades de Construcción",
+    EXTADDRESS_TABLE: "Direcciones",
+    COL_PARTY_TABLE: "Interesados",
+    LA_GROUP_PARTY_TABLE: "Agrupación de interesados"
 }
 
 

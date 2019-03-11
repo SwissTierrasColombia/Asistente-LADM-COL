@@ -280,7 +280,9 @@ class TreeModel(QAbstractItemModel):
         if data is None:
             return
 
-        self.fill_model(data[0], parent)
+        print(data)
+        for record in data:
+            self.fill_model(record, parent)
 
     def fill_model(self, record, parent):
         """
@@ -290,6 +292,12 @@ class TreeModel(QAbstractItemModel):
         """
         for key, values in record.items():  # either tuple or dict
             if type(values) is list:
+                if not len(values):
+                    parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
+                    kv_item = parent.child(parent.childCount() - 1)
+                    kv_item.setData(0, "{} (0)".format(DICT_PLURAL[key] if key in DICT_PLURAL else key))
+                    continue
+
                 for value in values:
                     if type(value) is dict:
                         if len(value) == 2 and 'id' in value and 'attributes' in value:
