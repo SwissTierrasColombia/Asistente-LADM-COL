@@ -43,12 +43,9 @@ from qgis.PyQt.QtCore import (
     QModelIndex,
     Qt,
     QVariant)
-from qgis.PyQt.QtGui import QColor, QIcon
+from qgis.PyQt.QtGui import QColor, QIcon, QBrush
 
 from ..config.table_mapping_config import DICT_PACKAGE_ICON, DICT_TABLE_PACKAGE, DICT_PLURAL
-
-ALT_COLOR_EVEN = QColor(255,165,79)
-ALT_COLOR_ODD = QColor(135,206,255)
 
 
 class TreeItem(object):
@@ -153,14 +150,8 @@ class TreeModel(QAbstractItemModel):
         if not index.isValid():
             return None
 
-        if role in (Qt.DisplayRole, Qt.UserRole, Qt.ToolTipRole, Qt.DecorationRole):
+        if role in (Qt.DisplayRole, Qt.UserRole, Qt.ToolTipRole, Qt.DecorationRole, Qt.ForegroundRole):
             return self.getItem(index).data(index.column(), role)
-        elif role == Qt.BackgroundRole:
-            item_data = self.getItem(index).data(index.column(), Qt.UserRole)
-            if item_data == 'collection':
-                return QVariant(ALT_COLOR_EVEN) # Orange
-            elif item_data == 'object':
-                return QVariant(ALT_COLOR_ODD) # Blue
         else:
             return QVariant()
 
@@ -249,7 +240,7 @@ class TreeModel(QAbstractItemModel):
         return parentItem.childCount()
 
     def setData(self, index, value, role=Qt.DisplayRole):
-        if role not in (Qt.DisplayRole, Qt.UserRole, Qt.ToolTipRole, Qt.DecorationRole):
+        if role not in (Qt.DisplayRole, Qt.UserRole, Qt.ToolTipRole, Qt.DecorationRole, Qt.ForegroundRole):
             return False
 
         item = self.getItem(index)
@@ -296,6 +287,10 @@ class TreeModel(QAbstractItemModel):
                     parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
                     kv_item = parent.child(parent.childCount() - 1)
                     kv_item.setData(0, "{} (0)".format(DICT_PLURAL[key] if key in DICT_PLURAL else key))
+                    kv_item.setData(0, {"type": key}, Qt.UserRole)
+                    kv_item.setData(0, QIcon(
+                        DICT_PACKAGE_ICON[DICT_TABLE_PACKAGE[key]]) if key in DICT_TABLE_PACKAGE else None,
+                                                    Qt.DecorationRole)
                     continue
 
                 for value in values:
@@ -312,7 +307,9 @@ class TreeModel(QAbstractItemModel):
                 parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
                 kv_item = parent.child(parent.childCount() - 1)
                 kv_item.setData(0, "{}: {}".format(key, values))
-                res = kv_item.setData(0, {"value": values}, Qt.UserRole)
+                kv_item.setData(0, {"value": values}, Qt.UserRole)
+                if values is None:
+                    kv_item.setData(0, QBrush(Qt.lightGray), Qt.ForegroundRole)
 
     def fill_collection(self, key, collection, parent):
         """
@@ -322,7 +319,8 @@ class TreeModel(QAbstractItemModel):
         collection_parent = parent.child(parent.childCount() - 1)
         collection_parent.setData(0, "{} ({})".format(DICT_PLURAL[key] if key in DICT_PLURAL else key, len(collection)))
         collection_parent.setData(0, {"type": key}, Qt.UserRole)
-        res = collection_parent.setData(0, QIcon(DICT_PACKAGE_ICON[DICT_TABLE_PACKAGE[key]]) if key in DICT_TABLE_PACKAGE else None, Qt.DecorationRole)
+        res = collection_parent.setData(0, QIcon(
+            DICT_PACKAGE_ICON[DICT_TABLE_PACKAGE[key]]) if key in DICT_TABLE_PACKAGE else None, Qt.DecorationRole)
 
         for object in collection:
             # Fill LADM_COL object

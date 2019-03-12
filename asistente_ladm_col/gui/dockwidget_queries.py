@@ -66,11 +66,23 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.btn_identify_plot.clicked.connect(self.btn_plot_toggled)
 
         # Context menu
-        self.treeView.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.treeView.customContextMenuRequested.connect(self.show_context_menu)
+        self._set_context_menus()
+
+        self.tab_results.setTabEnabled(3, False)
+        self.tab_results.setTabEnabled(4, False)
 
         # Create maptool
         self.maptool_identify = QgsMapToolIdentifyFeature(self.canvas)
+
+    def _set_context_menus(self):
+        self.tree_view_basic.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tree_view_basic.customContextMenuRequested.connect(self.show_context_menu)
+
+        self.tree_view_legal.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tree_view_legal.customContextMenuRequested.connect(self.show_context_menu)
+
+        self.tree_view_property_record_card.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tree_view_property_record_card.customContextMenuRequested.connect(self.show_context_menu)
 
     def add_layers(self):
         res_layers = self.qgis_utils.get_layers(self._db, {
@@ -200,9 +212,9 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             self.maptool_identify.featureIdentified.disconnect()
         except TypeError as e:
             pass
-        self.maptool_identify.featureIdentified.connect(self.get_basic_info_by_plot)
+        self.maptool_identify.featureIdentified.connect(self.get_info_by_plot)
 
-    def get_basic_info_by_plot(self, plot_feature):
+    def get_info_by_plot(self, plot_feature):
         plot_t_id = plot_feature[ID_FIELD]
         self.canvas.flashFeatureIds(self._plot_layer,
                                     [plot_feature.id()],
@@ -213,15 +225,23 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         with OverrideCursor(Qt.WaitCursor):
             self._plot_layer.selectByIds([plot_feature.id()])
-            records = self._db.get_igac_basic_info(plot_t_id)
-            #print(records)
-
             if not self.isVisible():
                 self.show()
 
-            self.treeModel = TreeModel(data=records)
-            self.treeView.setModel(self.treeModel)
-            self.treeView.expandAll()
+            self.search_data_by_component(**{'plot_t_id': plot_t_id})
+
+    def search_data_by_component(self, **kwargs):
+        records = self._db.get_igac_basic_info(**kwargs)
+        self.tree_view_basic.setModel(TreeModel(data=records))
+        self.tree_view_basic.expandAll()
+
+        records = self._db.get_igac_legal_info(**kwargs)
+        self.tree_view_legal.setModel(TreeModel(data=records))
+        self.tree_view_legal.expandAll()
+
+        records = self._db.get_igac_property_record_card_info(**kwargs)
+        self.tree_view_property_record_card.setModel(TreeModel(data=records))
+        self.tree_view_property_record_card.expandAll()
 
     def alphanumeric_query(self):
         """
@@ -230,16 +250,15 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         option = self.cbo_parcel_fields.currentData()
         query = self.txt_alphanumeric_query.text().strip()
         if query:
+            params = dict()
             if option == 'fmi':
-                records = self._db.get_igac_basic_info(parcel_fmi=query)
+                params = {'parcel_fmi': query}
             elif option == 'parcel_number':
-                records = self._db.get_igac_basic_info(parcel_number=query)
+                params = {'parcel_number': query}
             else: # previous_parcel_number
-                records = self._db.get_igac_basic_info(previous_parcel_number=query)
+                params = {'previous_parcel_number': query}
 
-            self.treeModel = TreeModel(data=records)
-            self.treeView.setModel(self.treeModel)
-            self.treeView.expandAll()
+            self.search_data_by_component(**params)
         else:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("DockWidgetQueries", "First enter a query"))
@@ -248,11 +267,16 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.txt_alphanumeric_query.setText('')
 
     def show_context_menu(self, point):
-        index = self.treeView.indexAt(point)
+        tree_view = self.sender()
+        index = tree_view.indexAt(point)
 
         context_menu = QMenu("Context menu")
 
         index_data = index.data(Qt.UserRole)
+
+        if index_data is None:
+            return
+
         if "value" in index_data:
             action_copy = QAction(QCoreApplication.translate("DockWidgetQueries", "Copy value"))
             action_copy.triggered.connect(partial(self.copy_value, index_data["value"]))
@@ -294,7 +318,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 action_open_feature_form.triggered.connect(partial(self.open_feature_form, layer, t_id))
                 context_menu.addAction(action_open_feature_form)
 
-        context_menu.exec_(self.treeView.mapToGlobal(point))
+        context_menu.exec_(tree_view.mapToGlobal(point))
 
     def copy_value(self, value):
         self.clipboard.setText(str(value))

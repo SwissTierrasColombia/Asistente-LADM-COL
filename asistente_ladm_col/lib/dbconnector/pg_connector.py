@@ -427,15 +427,20 @@ class PGConnector(DBConnector):
         colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
         return colnames, results
 
-    def get_igac_basic_info(self, plot_t_id='NULL', parcel_fmi='NULL', parcel_number='NULL',  previous_parcel_number='NULL'):
+    def get_igac_basic_info(self, **kwargs):
         """
         Query by component: Basic info
-        :param plot_t_id:
-        :param parcel_fmi:
-        :param parcel_number:
-        :param previous_parcel_number:
+        :param kwargs: dict with one of the following key-value param
+               plot_t_id
+               parcel_fmi
+               parcel_number
+               previous_parcel_number
         :return:
         """
+        plot_t_id = kwargs['plot_t_id'] if 'plot_t_id' in kwargs else 'NULL'
+        parcel_fmi = kwargs['parcel_fmi'] if 'parcel_fmi' in kwargs else 'NULL'
+        parcel_number = kwargs['parcel_number'] if 'parcel_number' in kwargs else 'NULL'
+        previous_parcel_number = kwargs['previous_parcel_number'] if 'previous_parcel_number' in kwargs else 'NULL'
 
         query = """
         WITH
@@ -563,13 +568,14 @@ class PGConnector(DBConnector):
             """
         else:
             query += """
-            															  'Destinación económica', NULL,
+            														  'Destinación económica', NULL,
                 """
 
         query += """
         															  'construccion', COALESCE(info_construccion.construccion, '[]')
         															 ))) FILTER(WHERE predio.t_id IS NOT NULL) as predio
-        	 FROM {schema}.predio LEFT JOIN info_construccion ON predio.t_id = info_construccion.baunit_predio
+        	 FROM {schema}.predio LEFT JOIN {schema}.uebaunit ON uebaunit.baunit_predio = predio.t_id
+        	 LEFT JOIN info_construccion ON predio.t_id = info_construccion.baunit_predio
         """
 
         if self.property_record_card_model_exists():
@@ -578,8 +584,7 @@ class PGConnector(DBConnector):
             """
 
         query += """
-             LEFT JOIN {schema}.uebaunit ON uebaunit.baunit_predio = info_construccion.baunit_predio
-        	 WHERE predio.t_id = info_construccion.baunit_predio and uebaunit.ue_terreno IS NOT NULL
+        	 WHERE predio.t_id IN (SELECT * FROM predios_seleccionados) AND uebaunit.ue_terreno IS NOT NULL
              GROUP BY uebaunit.ue_terreno
          ),
          t_extdireccion AS (
@@ -618,7 +623,813 @@ class PGConnector(DBConnector):
         records = cur.fetchall()
         res = [record._asdict() for record in records]
 
-        print("QUERY:", query)
+        print("BASIC QUERY:", query)
+
+        return res
+
+    def get_igac_legal_info(self, **kwargs):
+        """
+        Query by component: Legal info
+        :param kwargs: dict with one of the following key-value param
+               plot_t_id
+               parcel_fmi
+               parcel_number
+               previous_parcel_number
+        :return:
+        """
+        plot_t_id = kwargs['plot_t_id'] if 'plot_t_id' in kwargs else 'NULL'
+        parcel_fmi = kwargs['parcel_fmi'] if 'parcel_fmi' in kwargs else 'NULL'
+        parcel_number = kwargs['parcel_number'] if 'parcel_number' in kwargs else 'NULL'
+        previous_parcel_number = kwargs['previous_parcel_number'] if 'previous_parcel_number' in kwargs else 'NULL'
+
+        query = """
+        WITH
+         terrenos_seleccionados AS (
+        	SELECT {plot_t_id} AS ue_terreno WHERE '{plot_t_id}' <> 'NULL'
+        		UNION
+        	SELECT uebaunit.ue_terreno FROM {schema}.predio LEFT JOIN {schema}.uebaunit ON predio.t_id = uebaunit.baunit_predio  WHERE uebaunit.ue_terreno IS NOT NULL AND CASE WHEN '{parcel_fmi}' = 'NULL' THEN  1 = 2 ELSE predio.fmi = '{parcel_fmi}' END
+        		UNION
+        	SELECT uebaunit.ue_terreno FROM {schema}.predio LEFT JOIN {schema}.uebaunit ON predio.t_id = uebaunit.baunit_predio  WHERE uebaunit.ue_terreno IS NOT NULL AND CASE WHEN '{parcel_number}' = 'NULL' THEN  1 = 2 ELSE predio.numero_predial = '{parcel_number}' END
+        		UNION
+        	SELECT uebaunit.ue_terreno FROM {schema}.predio LEFT JOIN {schema}.uebaunit ON predio.t_id = uebaunit.baunit_predio  WHERE uebaunit.ue_terreno IS NOT NULL AND CASE WHEN '{previous_parcel_number}' = 'NULL' THEN  1 = 2 ELSE predio.numero_predial_anterior = '{previous_parcel_number}' END
+         ),
+         predios_seleccionados AS (
+        	SELECT uebaunit.baunit_predio as t_id FROM {schema}.uebaunit WHERE uebaunit.ue_terreno = {plot_t_id} AND '{plot_t_id}' <> 'NULL'
+        		UNION
+        	SELECT t_id FROM {schema}.predio WHERE CASE WHEN '{parcel_fmi}' = 'NULL' THEN  1 = 2 ELSE predio.fmi = '{parcel_fmi}' END
+        		UNION
+        	SELECT t_id FROM {schema}.predio WHERE CASE WHEN '{parcel_number}' = 'NULL' THEN  1 = 2 ELSE predio.numero_predial = '{parcel_number}' END
+        		UNION
+        	SELECT t_id FROM {schema}.predio WHERE CASE WHEN '{previous_parcel_number}' = 'NULL' THEN  1 = 2 ELSE predio.numero_predial_anterior = '{previous_parcel_number}' END
+         ),
+         derechos_seleccionados AS (
+        	 SELECT col_derecho.t_id FROM {schema}.col_derecho WHERE col_derecho.unidad_predio IN (SELECT * FROM predios_seleccionados)
+         ),
+         derecho_interesados AS (
+        	 SELECT col_derecho.interesado_col_interesado, col_derecho.t_id FROM {schema}.col_derecho WHERE col_derecho.t_id IN (SELECT * FROM derechos_seleccionados) AND col_derecho.interesado_col_interesado IS NOT NULL
+         ),
+         derecho_agrupacion_interesados AS (
+        	 SELECT col_derecho.interesado_la_agrupacion_interesados, miembros.interesados_col_interesado
+        	 FROM {schema}.col_derecho LEFT JOIN {schema}.miembros ON col_derecho.interesado_la_agrupacion_interesados = miembros.agrupacion
+        	 WHERE col_derecho.t_id IN (SELECT * FROM derechos_seleccionados) AND col_derecho.interesado_la_agrupacion_interesados IS NOT NULL
+         ),
+          restricciones_seleccionadas AS (
+        	 SELECT col_restriccion.t_id FROM {schema}.col_restriccion WHERE col_restriccion.unidad_predio IN (SELECT * FROM predios_seleccionados)
+         ),
+         restriccion_interesados AS (
+        	 SELECT col_restriccion.interesado_col_interesado, col_restriccion.t_id FROM {schema}.col_restriccion WHERE col_restriccion.t_id IN (SELECT * FROM restricciones_seleccionadas) AND col_restriccion.interesado_col_interesado IS NOT NULL
+         ),
+         restriccion_agrupacion_interesados AS (
+        	 SELECT col_restriccion.interesado_la_agrupacion_interesados, miembros.interesados_col_interesado
+        	 FROM {schema}.col_restriccion LEFT JOIN {schema}.miembros ON col_restriccion.interesado_la_agrupacion_interesados = miembros.agrupacion
+        	 WHERE col_restriccion.t_id IN (SELECT * FROM restricciones_seleccionadas) AND col_restriccion.interesado_la_agrupacion_interesados IS NOT NULL
+         ),
+         responsabilidades_seleccionadas AS (
+        	 SELECT col_responsabilidad.t_id FROM {schema}.col_responsabilidad WHERE col_responsabilidad.unidad_predio IN (SELECT * FROM predios_seleccionados)
+         ),
+         responsabilidades_interesados AS (
+        	 SELECT col_responsabilidad.interesado_col_interesado, col_responsabilidad.t_id FROM {schema}.col_responsabilidad WHERE col_responsabilidad.t_id IN (SELECT * FROM responsabilidades_seleccionadas) AND col_responsabilidad.interesado_col_interesado IS NOT NULL
+         ),
+         responsabilidades_agrupacion_interesados AS (
+        	 SELECT col_responsabilidad.interesado_la_agrupacion_interesados, miembros.interesados_col_interesado
+        	 FROM {schema}.col_responsabilidad LEFT JOIN {schema}.miembros ON col_responsabilidad.interesado_la_agrupacion_interesados = miembros.agrupacion
+        	 WHERE col_responsabilidad.t_id IN (SELECT * FROM responsabilidades_seleccionadas) AND col_responsabilidad.interesado_la_agrupacion_interesados IS NOT NULL
+         ),
+         hipotecas_seleccionadas AS (
+        	 SELECT col_hipoteca.t_id FROM {schema}.col_hipoteca WHERE col_hipoteca.unidad_predio IN (SELECT * FROM predios_seleccionados)
+         ),
+         hipotecas_interesados AS (
+        	 SELECT col_hipoteca.interesado_col_interesado, col_hipoteca.t_id FROM {schema}.col_hipoteca WHERE col_hipoteca.t_id IN (SELECT * FROM hipotecas_seleccionadas) AND col_hipoteca.interesado_col_interesado IS NOT NULL
+         ),
+         hipotecas_agrupacion_interesados AS (
+        	 SELECT col_hipoteca.interesado_la_agrupacion_interesados, miembros.interesados_col_interesado
+        	 FROM {schema}.col_hipoteca LEFT JOIN {schema}.miembros ON col_hipoteca.interesado_la_agrupacion_interesados = miembros.agrupacion
+        	 WHERE col_hipoteca.t_id IN (SELECT * FROM hipotecas_seleccionadas) AND col_hipoteca.interesado_la_agrupacion_interesados IS NOT NULL
+         ),
+        ------------------------------------------------------------------------------------------
+        -- INFO DERECHOS
+        ------------------------------------------------------------------------------------------
+         info_contacto_interesados_derecho AS (
+        		SELECT interesado_contacto.interesado,
+        		  json_agg(
+        				json_build_object('id', interesado_contacto.t_id,
+        									   'attributes', json_build_object('Teléfono 1', interesado_contacto.telefono1,
+        																	   'Teléfono 2', interesado_contacto.telefono2,
+        																	   'Domicilio notificación', interesado_contacto.domicilio_notificacion,
+        																	   'Correo_Electrónico', interesado_contacto.correo_electronico,
+        																	   'Origen_de_datos', interesado_contacto.origen_datos)))
+        		FILTER(WHERE interesado_contacto.t_id IS NOT NULL) AS interesado_contacto
+        		FROM {schema}.interesado_contacto LEFT JOIN derecho_interesados ON derecho_interesados.interesado_col_interesado = interesado_contacto.interesado
+        		WHERE interesado_contacto.interesado IN (SELECT derecho_interesados.interesado_col_interesado FROM derecho_interesados)
+        		GROUP BY interesado_contacto.interesado
+         ),
+         info_interesados_derecho AS (
+        	 SELECT derecho_interesados.t_id,
+        	  json_agg(
+        		json_build_object('id', col_interesado.t_id,
+        						  'attributes', json_build_object('Tipo', col_interesado.tipo,
+        						                                  'Tipo interesado jurídico', col_interesado.tipo_interesado_juridico,
+        														  'Documento de identidad', col_interesado.documento_identidad,
+        														  'Tipo de documento', col_interesado.tipo_documento,
+        														  'Primer apellido', col_interesado.primer_apellido,
+        														  'Primer nombre', col_interesado.primer_nombre,
+        														  'Segundo apellido', col_interesado.segundo_apellido,
+        														  'Segundo nombre', col_interesado.segundo_nombre,
+        														  'Género', col_interesado.genero,
+        														  'Razón social',col_interesado.razon_social,
+        														  'Nombre', col_interesado.nombre,
+        														  'interesado_contacto', COALESCE(info_contacto_interesados_derecho.interesado_contacto, '[]')))
+        	 ) FILTER (WHERE col_interesado.t_id IS NOT NULL) AS col_interesado
+        	 FROM derecho_interesados LEFT JOIN {schema}.col_interesado ON col_interesado.t_id = derecho_interesados.interesado_col_interesado
+        	 LEFT JOIN info_contacto_interesados_derecho ON info_contacto_interesados_derecho.interesado = col_interesado.t_id
+        	 GROUP BY derecho_interesados.t_id
+         ),
+         info_contacto_interesado_agrupacion_interesados_derecho AS (
+        		SELECT interesado_contacto.interesado,
+        		  json_agg(
+        				json_build_object('id', interesado_contacto.t_id,
+        									   'attributes', json_build_object('Teléfono 1', interesado_contacto.telefono1,
+        																	   'Teléfono 2', interesado_contacto.telefono2,
+        																	   'Domicilio notificación', interesado_contacto.domicilio_notificacion,
+        																	   'Correo_Electrónico', interesado_contacto.correo_electronico,
+        																	   'Origen_de_datos', interesado_contacto.origen_datos)))
+        		FILTER(WHERE interesado_contacto.t_id IS NOT NULL) AS interesado_contacto
+        		FROM {schema}.interesado_contacto LEFT JOIN derecho_interesados ON derecho_interesados.interesado_col_interesado = interesado_contacto.interesado
+        		WHERE interesado_contacto.interesado IN (SELECT DISTINCT derecho_agrupacion_interesados.interesados_col_interesado FROM derecho_agrupacion_interesados)
+        		GROUP BY interesado_contacto.interesado
+         ),
+         info_interesados_agrupacion_interesados_derecho AS (
+        	 SELECT derecho_agrupacion_interesados.interesado_la_agrupacion_interesados,
+        	  json_agg(
+        		json_build_object('id', col_interesado.t_id,
+        						  'attributes', json_build_object('Tipo', col_interesado.tipo,
+        														  'Tipo interesado jurídico', col_interesado.tipo_interesado_juridico,
+        														  'Documento de identidad', col_interesado.documento_identidad,
+        														  'Tipo de documento', col_interesado.tipo_documento,
+        														  'Primer apellido', col_interesado.primer_apellido,
+        														  'Primer nombre', col_interesado.primer_nombre,
+        														  'Segundo apellido', col_interesado.segundo_apellido,
+        														  'Segundo nombre', col_interesado.segundo_nombre,
+        														  'Género', col_interesado.genero,
+        														  'Razón social',col_interesado.razon_social,
+        														  'Nombre', col_interesado.nombre,
+        														  'interesado_contacto', COALESCE(info_contacto_interesado_agrupacion_interesados_derecho.interesado_contacto, '[]'),
+        														  'fraccion', ROUND((fraccion.numerador::numeric/fraccion.denominador::numeric)*100,2) ))
+        	 ) FILTER (WHERE col_interesado.t_id IS NOT NULL) AS col_interesado
+        	 FROM derecho_agrupacion_interesados LEFT JOIN {schema}.col_interesado ON col_interesado.t_id = derecho_agrupacion_interesados.interesados_col_interesado
+        	 LEFT JOIN info_contacto_interesado_agrupacion_interesados_derecho ON info_contacto_interesado_agrupacion_interesados_derecho.interesado = col_interesado.t_id
+        	 LEFT JOIN {schema}.miembros ON (miembros.agrupacion::text || miembros.interesados_col_interesado::text) = (derecho_agrupacion_interesados.interesado_la_agrupacion_interesados::text|| col_interesado.t_id::text)
+        	 LEFT JOIN {schema}.fraccion ON miembros.t_id = fraccion.miembros_participacion
+        	 GROUP BY derecho_agrupacion_interesados.interesado_la_agrupacion_interesados
+         ),
+         info_agrupacion_interesados AS (
+        	 SELECT col_derecho.t_id,
+        	 json_agg(
+        		json_build_object('id', la_agrupacion_interesados.t_id,
+        						  'attributes', json_build_object('Tipo de agrupación de interesados', la_agrupacion_interesados.ai_tipo,
+        														  'Nombre', la_agrupacion_interesados.nombre,
+        														  'Tipo', la_agrupacion_interesados.tipo,
+        														  'col_interesado', COALESCE(info_interesados_agrupacion_interesados_derecho.col_interesado, '[]')))
+        	 ) FILTER (WHERE la_agrupacion_interesados.t_id IS NOT NULL) AS la_agrupacion_interesados
+        	 FROM {schema}.la_agrupacion_interesados LEFT JOIN {schema}.col_derecho ON la_agrupacion_interesados.t_id = col_derecho.interesado_la_agrupacion_interesados
+        	 LEFT JOIN info_interesados_agrupacion_interesados_derecho ON info_interesados_agrupacion_interesados_derecho.interesado_la_agrupacion_interesados = la_agrupacion_interesados.t_id
+        	 WHERE la_agrupacion_interesados.t_id IN (SELECT DISTINCT derecho_agrupacion_interesados.interesado_la_agrupacion_interesados FROM derecho_agrupacion_interesados)
+        	 AND col_derecho.t_id IN (SELECT derechos_seleccionados.t_id FROM derechos_seleccionados)
+        	 GROUP BY col_derecho.t_id
+         ),
+         info_fuentes_administrativas_derecho AS (
+        	SELECT col_derecho.t_id,
+        	 json_agg(
+        		json_build_object('id', col_fuenteadministrativa.t_id,
+        						  'attributes', json_build_object('Tipo de fuente administrativa', col_fuenteadministrativa.tipo,
+        														  'Estado disponibilidad', col_fuenteadministrativa.estado_disponibilidad,
+        														  'Oficialidad fuente administrativa', col_fuenteadministrativa.oficialidad,
+        														  'Enlace Soporte Fuente', extarchivo.datos))
+        	 ) FILTER (WHERE col_fuenteadministrativa.t_id IS NOT NULL) AS col_fuenteadministrativa
+        	FROM {schema}.col_derecho
+        	LEFT JOIN {schema}.rrrfuente ON col_derecho.t_id = rrrfuente.rrr_col_derecho
+        	LEFT JOIN {schema}.col_fuenteadministrativa ON rrrfuente.rfuente = col_fuenteadministrativa.t_id
+        	LEFT JOIN {schema}.extarchivo ON extarchivo.col_fuenteadminstrtiva_ext_archivo_id = col_fuenteadministrativa.t_id
+        	WHERE col_derecho.t_id IN (SELECT derechos_seleccionados.t_id FROM derechos_seleccionados)
+            GROUP BY col_derecho.t_id
+         ),
+        info_derecho AS (
+          SELECT col_derecho.unidad_predio,
+        	json_agg(
+        		json_build_object('id', col_derecho.t_id,
+        						  'attributes', json_build_object('Tipo de derecho', col_derecho.tipo,
+        														  'Código registral', col_derecho.codigo_registral_derecho,
+        														  'Descripción', col_derecho.descripcion,
+        														  'col_fuenteadministrativa', COALESCE(info_fuentes_administrativas_derecho.col_fuenteadministrativa, '[]'),
+        														  'col_interesado', COALESCE(info_interesados_derecho.col_interesado, '[]'),
+        														  'la_agrupacion_interesados', COALESCE(info_agrupacion_interesados.la_agrupacion_interesados, '[]')))
+        	 ) FILTER (WHERE col_derecho.t_id IS NOT NULL) AS col_derecho
+          FROM {schema}.col_derecho LEFT JOIN info_fuentes_administrativas_derecho ON col_derecho.t_id = info_fuentes_administrativas_derecho.t_id
+          LEFT JOIN info_interesados_derecho ON col_derecho.t_id = info_interesados_derecho.t_id
+          LEFT JOIN info_agrupacion_interesados ON col_derecho.t_id = info_agrupacion_interesados.t_id
+          WHERE col_derecho.t_id IN (SELECT * FROM derechos_seleccionados)
+          GROUP BY col_derecho.unidad_predio
+        ),
+        ------------------------------------------------------------------------------------------
+        -- INFO RESTRICCIONES
+        ------------------------------------------------------------------------------------------
+         info_contacto_interesados_restriccion AS (
+        		SELECT interesado_contacto.interesado,
+        		  json_agg(
+        				json_build_object('id', interesado_contacto.t_id,
+        									   'attributes', json_build_object('Teléfono 1', interesado_contacto.telefono1,
+        																	   'Teléfono 2', interesado_contacto.telefono2,
+        																	   'Domicilio notificación', interesado_contacto.domicilio_notificacion,
+        																	   'Correo_Electrónico', interesado_contacto.correo_electronico,
+        																	   'Origen_de_datos', interesado_contacto.origen_datos)))
+        		FILTER(WHERE interesado_contacto.t_id IS NOT NULL) AS interesado_contacto
+        		FROM {schema}.interesado_contacto LEFT JOIN restriccion_interesados ON restriccion_interesados.interesado_col_interesado = interesado_contacto.interesado
+        		WHERE interesado_contacto.interesado IN (SELECT restriccion_interesados.interesado_col_interesado FROM restriccion_interesados)
+        		GROUP BY interesado_contacto.interesado
+         ),
+         info_interesados_restriccion AS (
+        	 SELECT restriccion_interesados.t_id,
+        	  json_agg(
+        		json_build_object('id', col_interesado.t_id,
+        						  'attributes', json_build_object('Tipo', col_interesado.tipo,
+        														  'Tipo interesado jurídico', col_interesado.tipo_interesado_juridico,
+        														  'Documento de identidad', col_interesado.documento_identidad,
+        														  'Tipo de documento', col_interesado.tipo_documento,
+        														  'Primer apellido', col_interesado.primer_apellido,
+        														  'Primer nombre', col_interesado.primer_nombre,
+        														  'Segundo apellido', col_interesado.segundo_apellido,
+        														  'Segundo nombre', col_interesado.segundo_nombre,
+        														  'Género', col_interesado.genero,
+        														  'Razón social',col_interesado.razon_social,
+        														  'Nombre', col_interesado.nombre,
+        														  'interesado_contacto', COALESCE(info_contacto_interesados_restriccion.interesado_contacto, '[]')))
+        	 ) FILTER (WHERE col_interesado.t_id IS NOT NULL) AS col_interesado
+        	 FROM restriccion_interesados LEFT JOIN {schema}.col_interesado ON col_interesado.t_id = restriccion_interesados.interesado_col_interesado
+        	 LEFT JOIN info_contacto_interesados_restriccion ON info_contacto_interesados_restriccion.interesado = col_interesado.t_id
+        	 GROUP BY restriccion_interesados.t_id
+         ),
+         info_contacto_interesado_agrupacion_interesados_restriccion AS (
+        		SELECT interesado_contacto.interesado,
+        		  json_agg(
+        				json_build_object('id', interesado_contacto.t_id,
+        									   'attributes', json_build_object('Teléfono 1', interesado_contacto.telefono1,
+        																	   'Teléfono 2', interesado_contacto.telefono2,
+        																	   'Domicilio notificación', interesado_contacto.domicilio_notificacion,
+        																	   'Correo_Electrónico', interesado_contacto.correo_electronico,
+        																	   'Origen_de_datos', interesado_contacto.origen_datos)))
+        		FILTER(WHERE interesado_contacto.t_id IS NOT NULL) AS interesado_contacto
+        		FROM {schema}.interesado_contacto LEFT JOIN restriccion_interesados ON restriccion_interesados.interesado_col_interesado = interesado_contacto.interesado
+        		WHERE interesado_contacto.interesado IN (SELECT DISTINCT restriccion_agrupacion_interesados.interesados_col_interesado FROM restriccion_agrupacion_interesados)
+        		GROUP BY interesado_contacto.interesado
+         ),
+         info_interesados_agrupacion_interesados_restriccion AS (
+        	 SELECT restriccion_agrupacion_interesados.interesado_la_agrupacion_interesados,
+        	  json_agg(
+        		json_build_object('id', col_interesado.t_id,
+        						  'attributes', json_build_object('Tipo', col_interesado.tipo,
+        														  'Tipo interesado jurídico', col_interesado.tipo_interesado_juridico,
+        														  'Documento de identidad', col_interesado.documento_identidad,
+        														  'Tipo de documento', col_interesado.tipo_documento,
+        														  'Primer apellido', col_interesado.primer_apellido,
+        														  'Primer nombre', col_interesado.primer_nombre,
+        														  'Segundo apellido', col_interesado.segundo_apellido,
+        														  'Segundo nombre', col_interesado.segundo_nombre,
+        														  'Género', col_interesado.genero,
+        														  'Razón social',col_interesado.razon_social,
+        														  'Nombre', col_interesado.nombre,
+        														  'interesado_contacto', COALESCE(info_contacto_interesado_agrupacion_interesados_restriccion.interesado_contacto, '[]'),
+        														  'fraccion', ROUND((fraccion.numerador::numeric/fraccion.denominador::numeric)*100,2) ))
+        	 ) FILTER (WHERE col_interesado.t_id IS NOT NULL) AS col_interesado
+        	 FROM restriccion_agrupacion_interesados LEFT JOIN {schema}.col_interesado ON col_interesado.t_id = restriccion_agrupacion_interesados.interesados_col_interesado
+        	 LEFT JOIN info_contacto_interesado_agrupacion_interesados_restriccion ON info_contacto_interesado_agrupacion_interesados_restriccion.interesado = col_interesado.t_id
+        	 LEFT JOIN {schema}.miembros ON (miembros.agrupacion::text || miembros.interesados_col_interesado::text) = (restriccion_agrupacion_interesados.interesado_la_agrupacion_interesados::text|| col_interesado.t_id::text)
+        	 LEFT JOIN {schema}.fraccion ON miembros.t_id = fraccion.miembros_participacion
+        	 GROUP BY restriccion_agrupacion_interesados.interesado_la_agrupacion_interesados
+         ),
+         info_agrupacion_interesados_restriccion AS (
+        	 SELECT col_restriccion.t_id,
+        	 json_agg(
+        		json_build_object('id', la_agrupacion_interesados.t_id,
+        						  'attributes', json_build_object('Tipo de agrupación de interesados', la_agrupacion_interesados.ai_tipo,
+        														  'Nombre', la_agrupacion_interesados.nombre,
+        														  'Tipo', la_agrupacion_interesados.tipo,
+        														  'col_interesado', COALESCE(info_interesados_agrupacion_interesados_restriccion.col_interesado, '[]')))
+        	 ) FILTER (WHERE la_agrupacion_interesados.t_id IS NOT NULL) AS la_agrupacion_interesados
+        	 FROM {schema}.la_agrupacion_interesados LEFT JOIN {schema}.col_restriccion ON la_agrupacion_interesados.t_id = col_restriccion.interesado_la_agrupacion_interesados
+        	 LEFT JOIN info_interesados_agrupacion_interesados_restriccion ON info_interesados_agrupacion_interesados_restriccion.interesado_la_agrupacion_interesados = la_agrupacion_interesados.t_id
+        	 WHERE la_agrupacion_interesados.t_id IN (SELECT DISTINCT restriccion_agrupacion_interesados.interesado_la_agrupacion_interesados FROM restriccion_agrupacion_interesados)
+        	 AND col_restriccion.t_id IN (SELECT restricciones_seleccionadas.t_id FROM restricciones_seleccionadas)
+        	 GROUP BY col_restriccion.t_id
+         ),
+         info_fuentes_administrativas_restriccion AS (
+        	SELECT col_restriccion.t_id,
+        	 json_agg(
+        		json_build_object('id', col_fuenteadministrativa.t_id,
+        						  'attributes', json_build_object('Tipo de fuente administrativa', col_fuenteadministrativa.tipo,
+        														  'Estado disponibilidad', col_fuenteadministrativa.estado_disponibilidad,
+        														  'Oficialidad fuente administrativa', col_fuenteadministrativa.oficialidad,
+        														  'Enlace Soporte Fuente', extarchivo.datos))
+        	 ) FILTER (WHERE col_fuenteadministrativa.t_id IS NOT NULL) AS col_fuenteadministrativa
+        	FROM {schema}.col_restriccion
+        	LEFT JOIN {schema}.rrrfuente ON col_restriccion.t_id = rrrfuente.rrr_col_restriccion
+        	LEFT JOIN {schema}.col_fuenteadministrativa ON rrrfuente.rfuente = col_fuenteadministrativa.t_id
+        	LEFT JOIN {schema}.extarchivo ON extarchivo.col_fuenteadminstrtiva_ext_archivo_id = col_fuenteadministrativa.t_id
+        	WHERE col_restriccion.t_id IN (SELECT restricciones_seleccionadas.t_id FROM restricciones_seleccionadas)
+            GROUP BY col_restriccion.t_id
+         ),
+        info_restriccion AS (
+          SELECT col_restriccion.unidad_predio,
+        	json_agg(
+        		json_build_object('id', col_restriccion.t_id,
+        						  'attributes', json_build_object('Tipo de derecho', col_restriccion.tipo,
+        														  'Código registral', col_restriccion.codigo_registral_restriccion,
+        														  'Descripción', col_restriccion.descripcion,
+        														  'col_fuenteadministrativa', COALESCE(info_fuentes_administrativas_restriccion.col_fuenteadministrativa, '[]'),
+        														  'col_interesado', COALESCE(info_interesados_restriccion.col_interesado, '[]'),
+        														  'la_agrupacion_interesados', COALESCE(info_agrupacion_interesados_restriccion.la_agrupacion_interesados, '[]')))
+        	 ) FILTER (WHERE col_restriccion.t_id IS NOT NULL) AS col_restriccion
+          FROM {schema}.col_restriccion LEFT JOIN info_fuentes_administrativas_restriccion ON col_restriccion.t_id = info_fuentes_administrativas_restriccion.t_id
+          LEFT JOIN info_interesados_restriccion ON col_restriccion.t_id = info_interesados_restriccion.t_id
+          LEFT JOIN info_agrupacion_interesados_restriccion ON col_restriccion.t_id = info_agrupacion_interesados_restriccion.t_id
+          WHERE col_restriccion.t_id IN (SELECT * FROM restricciones_seleccionadas)
+          GROUP BY col_restriccion.unidad_predio
+        ),
+        ------------------------------------------------------------------------------------------
+        -- INFO RESTRICCIONES
+        ------------------------------------------------------------------------------------------
+         info_contacto_interesados_responsabilidad AS (
+        		SELECT interesado_contacto.interesado,
+        		  json_agg(
+        				json_build_object('id', interesado_contacto.t_id,
+        									   'attributes', json_build_object('Teléfono 1', interesado_contacto.telefono1,
+        																	   'Teléfono 2', interesado_contacto.telefono2,
+        																	   'Domicilio notificación', interesado_contacto.domicilio_notificacion,
+        																	   'Correo_Electrónico', interesado_contacto.correo_electronico,
+        																	   'Origen_de_datos', interesado_contacto.origen_datos)))
+        		FILTER(WHERE interesado_contacto.t_id IS NOT NULL) AS interesado_contacto
+        		FROM {schema}.interesado_contacto LEFT JOIN responsabilidades_interesados ON responsabilidades_interesados.interesado_col_interesado = interesado_contacto.interesado
+        		WHERE interesado_contacto.interesado IN (SELECT responsabilidades_interesados.interesado_col_interesado FROM responsabilidades_interesados)
+        		GROUP BY interesado_contacto.interesado
+         ),
+         info_interesados_responsabilidad AS (
+        	 SELECT responsabilidades_interesados.t_id,
+        	  json_agg(
+        		json_build_object('id', col_interesado.t_id,
+        						  'attributes', json_build_object('Tipo', col_interesado.tipo,
+        														  'Tipo interesado jurídico', col_interesado.tipo_interesado_juridico,
+        														  'Documento de identidad', col_interesado.documento_identidad,
+        														  'Tipo de documento', col_interesado.tipo_documento,
+        														  'Primer apellido', col_interesado.primer_apellido,
+        														  'Primer nombre', col_interesado.primer_nombre,
+        														  'Segundo apellido', col_interesado.segundo_apellido,
+        														  'Segundo nombre', col_interesado.segundo_nombre,
+        														  'Género', col_interesado.genero,
+        														  'Razón social',col_interesado.razon_social,
+        														  'Nombre', col_interesado.nombre,
+        														  'interesado_contacto', COALESCE(info_contacto_interesados_responsabilidad.interesado_contacto, '[]')))
+        	 ) FILTER (WHERE col_interesado.t_id IS NOT NULL) AS col_interesado
+        	 FROM responsabilidades_interesados LEFT JOIN {schema}.col_interesado ON col_interesado.t_id = responsabilidades_interesados.interesado_col_interesado
+        	 LEFT JOIN info_contacto_interesados_responsabilidad ON info_contacto_interesados_responsabilidad.interesado = col_interesado.t_id
+        	 GROUP BY responsabilidades_interesados.t_id
+         ),
+         info_contacto_interesado_agrupacion_interesados_responsabilidad AS (
+        		SELECT interesado_contacto.interesado,
+        		  json_agg(
+        				json_build_object('id', interesado_contacto.t_id,
+        									   'attributes', json_build_object('Teléfono 1', interesado_contacto.telefono1,
+        																	   'Teléfono 2', interesado_contacto.telefono2,
+        																	   'Domicilio notificación', interesado_contacto.domicilio_notificacion,
+        																	   'Correo_Electrónico', interesado_contacto.correo_electronico,
+        																	   'Origen_de_datos', interesado_contacto.origen_datos)))
+        		FILTER(WHERE interesado_contacto.t_id IS NOT NULL) AS interesado_contacto
+        		FROM {schema}.interesado_contacto LEFT JOIN responsabilidades_interesados ON responsabilidades_interesados.interesado_col_interesado = interesado_contacto.interesado
+        		WHERE interesado_contacto.interesado IN (SELECT DISTINCT responsabilidades_agrupacion_interesados.interesados_col_interesado FROM responsabilidades_agrupacion_interesados)
+        		GROUP BY interesado_contacto.interesado
+         ),
+         info_interesados_agrupacion_interesados_responsabilidad AS (
+        	 SELECT responsabilidades_agrupacion_interesados.interesado_la_agrupacion_interesados,
+        	  json_agg(
+        		json_build_object('id', col_interesado.t_id,
+        						  'attributes', json_build_object('Tipo', col_interesado.tipo,
+        														  'Tipo interesado jurídico', col_interesado.tipo_interesado_juridico,
+        														  'Documento de identidad', col_interesado.documento_identidad,
+        														  'Tipo de documento', col_interesado.tipo_documento,
+        														  'Primer apellido', col_interesado.primer_apellido,
+        														  'Primer nombre', col_interesado.primer_nombre,
+        														  'Segundo apellido', col_interesado.segundo_apellido,
+        														  'Segundo nombre', col_interesado.segundo_nombre,
+        														  'Género', col_interesado.genero,
+        														  'Razón social',col_interesado.razon_social,
+        														  'Nombre', col_interesado.nombre,
+        														  'interesado_contacto', COALESCE(info_contacto_interesado_agrupacion_interesados_responsabilidad.interesado_contacto, '[]'),
+        														  'fraccion', ROUND((fraccion.numerador::numeric/fraccion.denominador::numeric)*100,2) ))
+        	 ) FILTER (WHERE col_interesado.t_id IS NOT NULL) AS col_interesado
+        	 FROM responsabilidades_agrupacion_interesados LEFT JOIN {schema}.col_interesado ON col_interesado.t_id = responsabilidades_agrupacion_interesados.interesados_col_interesado
+        	 LEFT JOIN info_contacto_interesado_agrupacion_interesados_responsabilidad ON info_contacto_interesado_agrupacion_interesados_responsabilidad.interesado = col_interesado.t_id
+        	 LEFT JOIN {schema}.miembros ON (miembros.agrupacion::text || miembros.interesados_col_interesado::text) = (responsabilidades_agrupacion_interesados.interesado_la_agrupacion_interesados::text|| col_interesado.t_id::text)
+        	 LEFT JOIN {schema}.fraccion ON miembros.t_id = fraccion.miembros_participacion
+        	 GROUP BY responsabilidades_agrupacion_interesados.interesado_la_agrupacion_interesados
+         ),
+         info_agrupacion_interesados_responsabilidad AS (
+        	 SELECT col_responsabilidad.t_id,
+        	 json_agg(
+        		json_build_object('id', la_agrupacion_interesados.t_id,
+        						  'attributes', json_build_object('Tipo de agrupación de interesados', la_agrupacion_interesados.ai_tipo,
+        														  'Nombre', la_agrupacion_interesados.nombre,
+        														  'Tipo', la_agrupacion_interesados.tipo,
+        														  'col_interesado', COALESCE(info_interesados_agrupacion_interesados_responsabilidad.col_interesado, '[]')))
+        	 ) FILTER (WHERE la_agrupacion_interesados.t_id IS NOT NULL) AS la_agrupacion_interesados
+        	 FROM {schema}.la_agrupacion_interesados LEFT JOIN {schema}.col_responsabilidad ON la_agrupacion_interesados.t_id = col_responsabilidad.interesado_la_agrupacion_interesados
+        	 LEFT JOIN info_interesados_agrupacion_interesados_responsabilidad ON info_interesados_agrupacion_interesados_responsabilidad.interesado_la_agrupacion_interesados = la_agrupacion_interesados.t_id
+        	 WHERE la_agrupacion_interesados.t_id IN (SELECT DISTINCT responsabilidades_agrupacion_interesados.interesado_la_agrupacion_interesados FROM responsabilidades_agrupacion_interesados)
+        	 AND col_responsabilidad.t_id IN (SELECT responsabilidades_seleccionadas.t_id FROM responsabilidades_seleccionadas)
+        	 GROUP BY col_responsabilidad.t_id
+         ),
+         info_fuentes_administrativas_responsabilidad AS (
+        	SELECT col_responsabilidad.t_id,
+        	 json_agg(
+        		json_build_object('id', col_fuenteadministrativa.t_id,
+        						  'attributes', json_build_object('Tipo de fuente administrativa', col_fuenteadministrativa.tipo,
+        														  'Estado disponibilidad', col_fuenteadministrativa.estado_disponibilidad,
+        														  'Oficialidad fuente administrativa', col_fuenteadministrativa.oficialidad,
+        														  'Enlace Soporte Fuente', extarchivo.datos))
+        	 ) FILTER (WHERE col_fuenteadministrativa.t_id IS NOT NULL) AS col_fuenteadministrativa
+        	FROM {schema}.col_responsabilidad
+        	LEFT JOIN {schema}.rrrfuente ON col_responsabilidad.t_id = rrrfuente.rrr_col_responsabilidad
+        	LEFT JOIN {schema}.col_fuenteadministrativa ON rrrfuente.rfuente = col_fuenteadministrativa.t_id
+        	LEFT JOIN {schema}.extarchivo ON extarchivo.col_fuenteadminstrtiva_ext_archivo_id = col_fuenteadministrativa.t_id
+        	WHERE col_responsabilidad.t_id IN (SELECT responsabilidades_seleccionadas.t_id FROM responsabilidades_seleccionadas)
+            GROUP BY col_responsabilidad.t_id
+         ),
+        info_responsabilidad AS (
+          SELECT col_responsabilidad.unidad_predio,
+        	json_agg(
+        		json_build_object('id', col_responsabilidad.t_id,
+        						  'attributes', json_build_object('Tipo de derecho', col_responsabilidad.tipo,
+        														  'Código registral', col_responsabilidad.codigo_registral_responsabilidad,
+        														  'Descripción', col_responsabilidad.descripcion,
+        														  'col_fuenteadministrativa', COALESCE(info_fuentes_administrativas_responsabilidad.col_fuenteadministrativa, '[]'),
+        														  'col_interesado', COALESCE(info_interesados_responsabilidad.col_interesado, '[]'),
+        														  'la_agrupacion_interesados', COALESCE(info_agrupacion_interesados_responsabilidad.la_agrupacion_interesados, '[]')))
+        	 ) FILTER (WHERE col_responsabilidad.t_id IS NOT NULL) AS col_responsabilidad
+          FROM {schema}.col_responsabilidad LEFT JOIN info_fuentes_administrativas_responsabilidad ON col_responsabilidad.t_id = info_fuentes_administrativas_responsabilidad.t_id
+          LEFT JOIN info_interesados_responsabilidad ON col_responsabilidad.t_id = info_interesados_responsabilidad.t_id
+          LEFT JOIN info_agrupacion_interesados_responsabilidad ON col_responsabilidad.t_id = info_agrupacion_interesados_responsabilidad.t_id
+          WHERE col_responsabilidad.t_id IN (SELECT * FROM responsabilidades_seleccionadas)
+          GROUP BY col_responsabilidad.unidad_predio
+        ),
+        ------------------------------------------------------------------------------------------
+        -- INFO HIPOTECA
+        ------------------------------------------------------------------------------------------
+         info_contacto_interesados_hipoteca AS (
+        		SELECT interesado_contacto.interesado,
+        		  json_agg(
+        				json_build_object('id', interesado_contacto.t_id,
+        									   'attributes', json_build_object('Teléfono 1', interesado_contacto.telefono1,
+        																	   'Teléfono 2', interesado_contacto.telefono2,
+        																	   'Domicilio notificación', interesado_contacto.domicilio_notificacion,
+        																	   'Correo_Electrónico', interesado_contacto.correo_electronico,
+        																	   'Origen_de_datos', interesado_contacto.origen_datos)))
+        		FILTER(WHERE interesado_contacto.t_id IS NOT NULL) AS interesado_contacto
+        		FROM {schema}.interesado_contacto LEFT JOIN hipotecas_interesados ON hipotecas_interesados.interesado_col_interesado = interesado_contacto.interesado
+        		WHERE interesado_contacto.interesado IN (SELECT hipotecas_interesados.interesado_col_interesado FROM hipotecas_interesados)
+        		GROUP BY interesado_contacto.interesado
+         ),
+         info_interesados_hipoteca AS (
+        	 SELECT hipotecas_interesados.t_id,
+        	  json_agg(
+        		json_build_object('id', col_interesado.t_id,
+        						  'attributes', json_build_object('Tipo', col_interesado.tipo,
+        														  'Tipo interesado jurídico', col_interesado.tipo_interesado_juridico,
+        														  'Documento de identidad', col_interesado.documento_identidad,
+        														  'Tipo de documento', col_interesado.tipo_documento,
+        														  'Primer apellido', col_interesado.primer_apellido,
+        														  'Primer nombre', col_interesado.primer_nombre,
+        														  'Segundo apellido', col_interesado.segundo_apellido,
+        														  'Segundo nombre', col_interesado.segundo_nombre,
+        														  'Género', col_interesado.genero,
+        														  'Razón social',col_interesado.razon_social,
+        														  'Nombre', col_interesado.nombre,
+        														  'interesado_contacto', COALESCE(info_contacto_interesados_hipoteca.interesado_contacto, '[]')))
+        	 ) FILTER (WHERE col_interesado.t_id IS NOT NULL) AS col_interesado
+        	 FROM hipotecas_interesados LEFT JOIN {schema}.col_interesado ON col_interesado.t_id = hipotecas_interesados.interesado_col_interesado
+        	 LEFT JOIN info_contacto_interesados_hipoteca ON info_contacto_interesados_hipoteca.interesado = col_interesado.t_id
+        	 GROUP BY hipotecas_interesados.t_id
+         ),
+         info_contacto_interesado_agrupacion_interesados_hipoteca AS (
+        		SELECT interesado_contacto.interesado,
+        		  json_agg(
+        				json_build_object('id', interesado_contacto.t_id,
+        									   'attributes', json_build_object('Teléfono 1', interesado_contacto.telefono1,
+        																	   'Teléfono 2', interesado_contacto.telefono2,
+        																	   'Domicilio notificación', interesado_contacto.domicilio_notificacion,
+        																	   'Correo_Electrónico', interesado_contacto.correo_electronico,
+        																	   'Origen_de_datos', interesado_contacto.origen_datos)))
+        		FILTER(WHERE interesado_contacto.t_id IS NOT NULL) AS interesado_contacto
+        		FROM {schema}.interesado_contacto LEFT JOIN hipotecas_interesados ON hipotecas_interesados.interesado_col_interesado = interesado_contacto.interesado
+        		WHERE interesado_contacto.interesado IN (SELECT DISTINCT hipotecas_agrupacion_interesados.interesados_col_interesado FROM hipotecas_agrupacion_interesados)
+        		GROUP BY interesado_contacto.interesado
+         ),
+         info_interesados_agrupacion_interesados_hipoteca AS (
+        	 SELECT hipotecas_agrupacion_interesados.interesado_la_agrupacion_interesados,
+        	  json_agg(
+        		json_build_object('id', col_interesado.t_id,
+        						  'attributes', json_build_object('Tipo', col_interesado.tipo,
+        														  'Tipo interesado jurídico', col_interesado.tipo_interesado_juridico,
+        														  'Documento de identidad', col_interesado.documento_identidad,
+        														  'Tipo de documento', col_interesado.tipo_documento,
+        														  'Primer apellido', col_interesado.primer_apellido,
+        														  'Primer nombre', col_interesado.primer_nombre,
+        														  'Segundo apellido', col_interesado.segundo_apellido,
+        														  'Segundo nombre', col_interesado.segundo_nombre,
+        														  'Género', col_interesado.genero,
+        														  'Razón social',col_interesado.razon_social,
+        														  'Nombre', col_interesado.nombre,
+        														  'interesado_contacto', COALESCE(info_contacto_interesado_agrupacion_interesados_hipoteca.interesado_contacto, '[]'),
+        														  'fraccion', ROUND((fraccion.numerador::numeric/fraccion.denominador::numeric)*100,2) ))
+        	 ) FILTER (WHERE col_interesado.t_id IS NOT NULL) AS col_interesado
+        	 FROM hipotecas_agrupacion_interesados LEFT JOIN {schema}.col_interesado ON col_interesado.t_id = hipotecas_agrupacion_interesados.interesados_col_interesado
+        	 LEFT JOIN info_contacto_interesado_agrupacion_interesados_hipoteca ON info_contacto_interesado_agrupacion_interesados_hipoteca.interesado = col_interesado.t_id
+        	 LEFT JOIN {schema}.miembros ON (miembros.agrupacion::text || miembros.interesados_col_interesado::text) = (hipotecas_agrupacion_interesados.interesado_la_agrupacion_interesados::text|| col_interesado.t_id::text)
+        	 LEFT JOIN {schema}.fraccion ON miembros.t_id = fraccion.miembros_participacion
+        	 GROUP BY hipotecas_agrupacion_interesados.interesado_la_agrupacion_interesados
+         ),
+         info_agrupacion_interesados_hipoteca AS (
+        	 SELECT col_hipoteca.t_id,
+        	 json_agg(
+        		json_build_object('id', la_agrupacion_interesados.t_id,
+        						  'attributes', json_build_object('Tipo de agrupación de interesados', la_agrupacion_interesados.ai_tipo,
+        														  'Nombre', la_agrupacion_interesados.nombre,
+        														  'Tipo', la_agrupacion_interesados.tipo,
+        														  'col_interesado', COALESCE(info_interesados_agrupacion_interesados_hipoteca.col_interesado, '[]')))
+        	 ) FILTER (WHERE la_agrupacion_interesados.t_id IS NOT NULL) AS la_agrupacion_interesados
+        	 FROM {schema}.la_agrupacion_interesados LEFT JOIN {schema}.col_hipoteca ON la_agrupacion_interesados.t_id = col_hipoteca.interesado_la_agrupacion_interesados
+        	 LEFT JOIN info_interesados_agrupacion_interesados_hipoteca ON info_interesados_agrupacion_interesados_hipoteca.interesado_la_agrupacion_interesados = la_agrupacion_interesados.t_id
+        	 WHERE la_agrupacion_interesados.t_id IN (SELECT DISTINCT hipotecas_agrupacion_interesados.interesado_la_agrupacion_interesados FROM hipotecas_agrupacion_interesados)
+        	 AND col_hipoteca.t_id IN (SELECT hipotecas_seleccionadas.t_id FROM hipotecas_seleccionadas)
+        	 GROUP BY col_hipoteca.t_id
+         ),
+         info_fuentes_administrativas_hipoteca AS (
+        	SELECT col_hipoteca.t_id,
+        	 json_agg(
+        		json_build_object('id', col_fuenteadministrativa.t_id,
+        						  'attributes', json_build_object('Tipo de fuente administrativa', col_fuenteadministrativa.tipo,
+        														  'Estado disponibilidad', col_fuenteadministrativa.estado_disponibilidad,
+        														  'Oficialidad fuente administrativa', col_fuenteadministrativa.oficialidad,
+        														  'Enlace Soporte Fuente', extarchivo.datos))
+        	 ) FILTER (WHERE col_fuenteadministrativa.t_id IS NOT NULL) AS col_fuenteadministrativa
+        	FROM {schema}.col_hipoteca
+        	LEFT JOIN {schema}.rrrfuente ON col_hipoteca.t_id = rrrfuente.rrr_col_hipoteca
+        	LEFT JOIN {schema}.col_fuenteadministrativa ON rrrfuente.rfuente = col_fuenteadministrativa.t_id
+        	LEFT JOIN {schema}.extarchivo ON extarchivo.col_fuenteadminstrtiva_ext_archivo_id = col_fuenteadministrativa.t_id
+        	WHERE col_hipoteca.t_id IN (SELECT hipotecas_seleccionadas.t_id FROM hipotecas_seleccionadas)
+            GROUP BY col_hipoteca.t_id
+         ),
+        info_hipoteca AS (
+          SELECT col_hipoteca.unidad_predio,
+        	json_agg(
+        		json_build_object('id', col_hipoteca.t_id,
+        						  'attributes', json_build_object('Tipo de derecho', col_hipoteca.tipo,
+        														  'Código registral', col_hipoteca.codigo_registral_hipoteca,
+        														  'Descripción', col_hipoteca.descripcion,
+        														  'col_fuenteadministrativa', COALESCE(info_fuentes_administrativas_hipoteca.col_fuenteadministrativa, '[]'),
+        														  'col_interesado', COALESCE(info_interesados_hipoteca.col_interesado, '[]'),
+        														  'la_agrupacion_interesados', COALESCE(info_agrupacion_interesados_hipoteca.la_agrupacion_interesados, '[]')))
+        	 ) FILTER (WHERE col_hipoteca.t_id IS NOT NULL) AS col_hipoteca
+          FROM {schema}.col_hipoteca LEFT JOIN info_fuentes_administrativas_hipoteca ON col_hipoteca.t_id = info_fuentes_administrativas_hipoteca.t_id
+          LEFT JOIN info_interesados_hipoteca ON col_hipoteca.t_id = info_interesados_hipoteca.t_id
+          LEFT JOIN info_agrupacion_interesados_hipoteca ON col_hipoteca.t_id = info_agrupacion_interesados_hipoteca.t_id
+          WHERE col_hipoteca.t_id IN (SELECT * FROM hipotecas_seleccionadas)
+          GROUP BY col_hipoteca.unidad_predio
+        ),
+         info_predio AS (
+        	 SELECT uebaunit.ue_terreno,
+        			json_agg(json_build_object('id', predio.t_id,
+        							  'attributes', json_build_object('NUPRE', predio.nupre,
+        															  'FMI', predio.fmi,
+        															  'Número predial', predio.numero_predial,
+        															  'Número predial anterior', predio.numero_predial_anterior,
+        															  'col_derecho', COALESCE(info_derecho.col_derecho, '[]'),
+        															  'col_restriccion', COALESCE(info_restriccion.col_restriccion, '[]'),
+        															  'col_responsabilidad', COALESCE(info_responsabilidad.col_responsabilidad, '[]'),
+        															  'col_hipoteca', COALESCE(info_hipoteca.col_hipoteca, '[]')
+        															 ))) FILTER(WHERE predio.t_id IS NOT NULL) as predio
+        	 FROM {schema}.predio LEFT JOIN {schema}.uebaunit ON uebaunit.baunit_predio = predio.t_id
+             LEFT JOIN info_derecho ON info_derecho.unidad_predio = predio.t_id
+        	 LEFT JOIN info_restriccion ON info_restriccion.unidad_predio = predio.t_id
+             LEFT JOIN info_responsabilidad ON info_responsabilidad.unidad_predio = predio.t_id
+             LEFT JOIN info_hipoteca ON info_hipoteca.unidad_predio = predio.t_id
+        	 WHERE predio.t_id IN (SELECT * FROM predios_seleccionados)
+        		AND uebaunit.ue_terreno IS NOT NULL
+        		AND uebaunit.ue_construccion IS NULL
+        		AND uebaunit.ue_unidadconstruccion IS NULL
+             GROUP BY uebaunit.ue_terreno
+         ),
+         info_terreno AS (
+        	 SELECT terreno.t_id,
+        	 json_build_object('id', terreno.t_id,
+        						'attributes', json_build_object('Área de terreno', terreno.area_calculada,
+        														'predio', COALESCE(info_predio.predio, '[]')
+        													   )) as terreno 
+        	 FROM {schema}.terreno LEFT JOIN info_predio ON terreno.t_id = info_predio.ue_terreno
+        	 WHERE terreno.t_id IN (SELECT * FROM terrenos_seleccionados)
+         )
+        SELECT json_agg(info_terreno.terreno) AS terreno FROM info_terreno
+        """
+
+        query = query.format(schema=self.schema, plot_t_id=plot_t_id, parcel_fmi=parcel_fmi, parcel_number=parcel_number,
+                             previous_parcel_number=previous_parcel_number)
+
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
+        cur.execute(query)
+        records = cur.fetchall()
+        res = [record._asdict() for record in records]
+
+        print("LEGAL QUERY:", query)
+
+        return res
+
+    def get_igac_property_record_card_info(self, **kwargs):
+        """
+        Query by component: Legal info
+        :param kwargs: dict with one of the following key-value param
+               plot_t_id
+               parcel_fmi
+               parcel_number
+               previous_parcel_number
+        :return:
+        """
+        plot_t_id = kwargs['plot_t_id'] if 'plot_t_id' in kwargs else 'NULL'
+        parcel_fmi = kwargs['parcel_fmi'] if 'parcel_fmi' in kwargs else 'NULL'
+        parcel_number = kwargs['parcel_number'] if 'parcel_number' in kwargs else 'NULL'
+        previous_parcel_number = kwargs['previous_parcel_number'] if 'previous_parcel_number' in kwargs else 'NULL'
+
+        query = """
+        WITH
+         terrenos_seleccionados AS (
+        	SELECT {plot_t_id} AS ue_terreno WHERE '{plot_t_id}' <> 'NULL'
+        		UNION
+        	SELECT uebaunit.ue_terreno FROM {schema}.predio LEFT JOIN {schema}.uebaunit ON predio.t_id = uebaunit.baunit_predio  WHERE uebaunit.ue_terreno IS NOT NULL AND CASE WHEN '{parcel_fmi}' = 'NULL' THEN  1 = 2 ELSE predio.fmi = '{parcel_fmi}' END
+        		UNION
+        	SELECT uebaunit.ue_terreno FROM {schema}.predio LEFT JOIN {schema}.uebaunit ON predio.t_id = uebaunit.baunit_predio  WHERE uebaunit.ue_terreno IS NOT NULL AND CASE WHEN '{parcel_number}' = 'NULL' THEN  1 = 2 ELSE predio.numero_predial = '{parcel_number}' END
+        		UNION
+        	SELECT uebaunit.ue_terreno FROM {schema}.predio LEFT JOIN {schema}.uebaunit ON predio.t_id = uebaunit.baunit_predio  WHERE uebaunit.ue_terreno IS NOT NULL AND CASE WHEN '{previous_parcel_number}' = 'NULL' THEN  1 = 2 ELSE predio.numero_predial_anterior = '{previous_parcel_number}' END
+         ),
+         predios_seleccionados AS (
+        	SELECT uebaunit.baunit_predio as t_id FROM {schema}.uebaunit WHERE uebaunit.ue_terreno = {plot_t_id} AND '{plot_t_id}' <> 'NULL'
+        		UNION
+        	SELECT t_id FROM {schema}.predio WHERE CASE WHEN '{parcel_fmi}' = 'NULL' THEN  1 = 2 ELSE predio.fmi = '{parcel_fmi}' END
+        		UNION
+        	SELECT t_id FROM {schema}.predio WHERE CASE WHEN '{parcel_number}' = 'NULL' THEN  1 = 2 ELSE predio.numero_predial = '{parcel_number}' END
+        		UNION
+        	SELECT t_id FROM {schema}.predio WHERE CASE WHEN '{previous_parcel_number}' = 'NULL' THEN  1 = 2 ELSE predio.numero_predial_anterior = '{previous_parcel_number}' END
+         ),
+        """
+
+        if self.property_record_card_model_exists():
+            query += """
+         predio_ficha_seleccionados AS (
+        	 SELECT predio_ficha.t_id FROM {schema}.predio_ficha WHERE predio_ficha.crpredio IN (SELECT * FROM predios_seleccionados)
+         ),
+         fpredio_investigacion_mercado AS (
+        	SELECT investigacionmercado.fichapredio,
+        		json_agg(
+        				json_build_object('id', investigacionmercado.t_id,
+        									   'attributes', json_build_object('Disponible en el mercado', investigacionmercado.disponible_mercado,
+        																	   'Tipo de oferta', investigacionmercado.tipo_oferta,
+        																	   'Valor', investigacionmercado.valor,
+        																	   'Nombre oferente', investigacionmercado.nombre_oferente,
+        																	   'Teléfono contacto oferente', investigacionmercado.telefono_contacto_oferente,
+        																	   'Observaciones', investigacionmercado.observaciones))
+        		) FILTER(WHERE investigacionmercado.t_id IS NOT NULL) AS investigacionmercado
+        	FROM {schema}.investigacionmercado WHERE investigacionmercado.fichapredio IN (SELECT * FROM predio_ficha_seleccionados)
+        	GROUP BY investigacionmercado.fichapredio
+         ),
+         fpredio_nucleo_familiar AS (
+        	SELECT nucleofamiliar.fichapredio,
+        		json_agg(
+        				json_build_object('id', nucleofamiliar.t_id,
+        									   'attributes', json_build_object('Documento de identidad', nucleofamiliar.documento_identidad,
+        																	   'Tipo de documento', nucleofamiliar.tipo_documento,
+        																	   'Organo emisor', nucleofamiliar.organo_emisor,
+        																	   'Fecha de emisión', nucleofamiliar.fecha_emision,
+        																	   'Primer nombre', nucleofamiliar.primer_nombre,
+        																	   'Segundo nombre', nucleofamiliar.segundo_nombre,
+        																	   'Primer apellido', nucleofamiliar.primer_apellido,
+        																	   'Segundo apellido', nucleofamiliar.segundo_apellido,
+        																	   'Fecha de nacimiento', nucleofamiliar.fecha_nacimiento,
+        																	   'Lugar de nacimiento', nucleofamiliar.lugar_nacimiento,
+        																	   'Nacionalidad', nucleofamiliar.nacionalidad,
+        																	   'Discapacidad', nucleofamiliar.discapacidad,
+        																	   'Género', nucleofamiliar.genero,
+        																	   'Habita predio', nucleofamiliar.habita_predio,
+        																	   'Parentesco', nucleofamiliar.parentesco,
+        																	   'Etnia', nucleofamiliar.etnia,
+        																	   'Dirección', nucleofamiliar.direccion,
+        																	   'Celular', nucleofamiliar.celular))
+        		) FILTER(WHERE nucleofamiliar.t_id IS NOT NULL) AS nucleofamiliar
+        	FROM {schema}.nucleofamiliar WHERE nucleofamiliar.fichapredio IN (SELECT * FROM predio_ficha_seleccionados)
+        	GROUP BY nucleofamiliar.fichapredio
+         ),
+            """
+
+        query += """
+         info_predio AS (
+        	 SELECT uebaunit.ue_terreno,
+        			json_agg(json_build_object('id', predio.t_id,
+        							  'attributes', json_build_object('Departamento', predio.departamento,
+        															  'Municipio', predio.municipio,
+        															  'Zona', predio.zona,
+        															  'NUPRE', predio.nupre,
+        															  'FMI', predio.fmi,
+        															  'Número predial', predio.numero_predial,
+        															  'Número predial anterior', predio.numero_predial_anterior,
+        """
+
+        if self.property_record_card_model_exists():
+            query += """
+        															  'Sector', predio_ficha.sector,
+        															  'Localidad/Comuna', predio_ficha.localidad_comuna,
+        															  'Barrio', predio_ficha.barrio,
+        															  'Manzana/Vereda', predio_ficha.manzana_vereda,
+        															  'Terreno', predio_ficha.terreno,
+        															  'Condición propiedad', predio_ficha.condicion_propiedad,
+        															  'Edificio', predio_ficha.edificio,
+        															  'Piso', predio_ficha.piso,
+        															  'Unidad', predio_ficha.unidad,
+        															  'Estado NUPRE', predio_ficha.estado_nupre,
+        															  'Destinación económica', predio_ficha.destinacion_economica,
+        															  'Tipo de predio', predio_ficha.predio_tipo,
+        															  'Tipo predio público', predio_ficha.tipo_predio_publico,
+        															  'Formalidad', predio_ficha.formalidad,
+        															  'Estrato', predio_ficha.estrato,
+        															  'Clase suelo POT', predio_ficha.clase_suelo_pot,
+        															  'Categoría suelo POT', predio_ficha.categoria_suelo_pot,
+        															  'Derecho FMI', predio_ficha.derecho_fmi,
+        															  'Inscrito RUPTA', predio_ficha.inscrito_rupta,
+        															  'Fecha medida RUPTA', predio_ficha.fecha_medida_rupta,
+        															  'Anotación FMI RUPTA', predio_ficha.anotacion_fmi_rupta,
+        															  'Inscrito protección colectiva', predio_ficha.inscrito_proteccion_colectiva,
+        															  'Fecha protección colectiva', predio_ficha.fecha_proteccion_colectiva,
+        															  'Anotación FMI protección colectiva', predio_ficha.anotacion_fmi_proteccion_colectiva,
+        															  'Inscrito proteccion Ley 1448', predio_ficha.inscrito_proteccion_ley1448,
+        															  'Fecha protección ley 1448', predio_ficha.fecha_proteccion_ley1448,
+        															  'Anotación FDM Ley 1448', predio_ficha.anotacion_fmi_ley1448,
+        															  'Inscripción URT', predio_ficha.inscripcion_urt,
+        															  'Fecha de inscripción URT', predio_ficha.fecha_inscripcion_urt,
+        															  'Anotación FMI URT', predio_ficha.anotacion_fmi_urt,
+        															  'Vigencia fiscal', predio_ficha.vigencia_fiscal,
+        															  'Observaciones', predio_ficha.observaciones,
+        															  'Fecha visita predial', predio_ficha.fecha_visita_predial,
+        															  'Nombre quien atendio', predio_ficha.nombre_quien_atendio,
+        															  'Número de documento de quien atendio', predio_ficha.numero_documento_quien_atendio,
+        															  'Categoría quien atendio', predio_ficha.categoria_quien_atendio,
+        															  'Tipo de documento de quien atendio', predio_ficha.tipo_documento_quien_atendio,
+        															  'Nombre encuestador', predio_ficha.nombre_encuestador,
+        															  'Número de documento encuestador', predio_ficha.numero_documento_encuestador,
+        															  'Tipo de documento encuestador', predio_ficha.tipo_documento_encuestador,
+        															  'nucleofamiliar', COALESCE(fpredio_nucleo_familiar.nucleofamiliar, '[]'),
+        															  'investigacionmercado', COALESCE(fpredio_investigacion_mercado.investigacionmercado, '[]'),
+            """
+
+        query += """
+        															  'Tipo', predio.tipo
+        															 ))) FILTER(WHERE predio.t_id IS NOT NULL) as predio
+        	 FROM {schema}.predio LEFT JOIN {schema}.uebaunit ON uebaunit.baunit_predio = predio.t_id
+        """
+
+        if self.property_record_card_model_exists():
+            query += """
+        	 LEFT JOIN {schema}.predio_ficha ON predio_ficha.crpredio = predio.t_id
+        	 LEFT JOIN fpredio_nucleo_familiar ON fpredio_nucleo_familiar.fichapredio = predio_ficha.t_id
+        	 LEFT JOIN fpredio_investigacion_mercado ON fpredio_investigacion_mercado.fichapredio = predio_ficha.t_id
+            """
+
+        query += """
+        	 WHERE predio.t_id IN (SELECT * FROM predios_seleccionados) AND uebaunit.ue_terreno IS NOT NULL
+             GROUP BY uebaunit.ue_terreno
+         ),
+         info_terreno AS (
+        	SELECT terreno.t_id,
+              json_build_object('id', terreno.t_id,
+        						'attributes', json_build_object('Área de terreno', terreno.area_calculada,
+        														'predio', COALESCE(info_predio.predio, '[]')
+        													   )) as terreno
+            FROM {schema}.terreno LEFT JOIN info_predio ON info_predio.ue_terreno = terreno.t_id
+        	WHERE terreno.t_id IN (SELECT * FROM terrenos_seleccionados)
+         )
+        SELECT json_agg(info_terreno.terreno) AS terreno FROM info_terreno
+        """
+
+        query = query.format(schema=self.schema, plot_t_id=plot_t_id, parcel_fmi=parcel_fmi, parcel_number=parcel_number,
+                             previous_parcel_number=previous_parcel_number)
+
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
+        cur.execute(query)
+        records = cur.fetchall()
+        res = [record._asdict() for record in records]
+
+        print("PROPERTY RECORD CARD QUERY:", query)
 
         return res
 
