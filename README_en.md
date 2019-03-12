@@ -123,6 +123,23 @@ The current version ([1.4.0](https://github.com/AgenciaImplementacion/Asistente-
  - Load styles for newly added layers from preconfigured QML files.
  - View illustrative GIFs in the plugin's online help or download them for offline work.
 
+
+## Minimum requirements
+
+To use the LADM_COL Assistant you need:
+
+ - Operting System:
+   - Windows 8 or Windows 10
+   - GNU/Linux
+ - Base software:
+   - QGIS v3.4.x
+   - Java v1.8
+   - PostgreSQL 9.5 or higher (PostgreSQL 10 and PostgreSQL 11 works as well).
+   - PostGIS 2.4 or higher.
+ - QGIS plugins:
+   - LADM_COL Assistant
+   - QGIS Model Baker v4.1.0.1
+
 ## Testing
 
 Unit tests are automatically executed after every commit made to the repository. Results are available for:
