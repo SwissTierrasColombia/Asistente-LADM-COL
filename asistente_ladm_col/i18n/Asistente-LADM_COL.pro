@@ -8,6 +8,7 @@ FORMS = ../ui/dlg_load_layers.ui \
         ../ui/qgis_model_baker/dlg_import_schema.ui \
         ../ui/qgis_model_baker/dlg_import_data.ui \
         ../ui/qgis_model_baker/dlg_export_data.ui \
+        ../ui/dockwidget_queries.ui \
         ../ui/wiz_associate_extaddress_cadastre.ui \
         ../ui/wiz_create_points_cadastre.ui \
         ../ui/wiz_create_administrative_source_cadastre.ui \
@@ -55,6 +56,7 @@ SOURCES = ../__init__.py \
           ../gui/create_natural_party_prc.py \
           ../gui/create_nuclear_family_prc.py \
           ../gui/create_property_record_card_prc.py \
+          ../gui/dockwidget_queries.py \
           ../gui/about_dialog.py \
           ../gui/settings_dialog.py \
           ../gui/dialog_quality.py \

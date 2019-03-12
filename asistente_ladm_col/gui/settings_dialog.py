@@ -53,8 +53,7 @@ DIALOG_UI = get_ui_class('settings_dialog.ui')
 
 class SettingsDialog(QDialog, DIALOG_UI):
 
-    cache_layers_and_relations_requested = pyqtSignal(DBConnector)
-    refresh_menus_requested = pyqtSignal(DBConnector)
+    db_connection_changed = pyqtSignal(DBConnector)
     fetcher_task = None
 
     def __init__(self, iface=None, parent=None, qgis_utils=None):
@@ -152,8 +151,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self._lst_panel[self._current_db].params_changed = False
             res, msg = self._db.test_connection()
             if res:
-                self.cache_layers_and_relations_requested.emit(self._db)
-                self.refresh_menus_requested.emit(self._db)
+                self.db_connection_changed.emit(self._db)
             else:
                 self.show_message(msg, Qgis.Warning)
                 return
@@ -177,19 +175,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._lst_panel[current_db].write_connection_parameters(dict_conn)
 
         self.accepted() # Create/update the db object
-
-    def db_source_changed(self):
-        if self._db is not None:
-            self._db.close_connection()
-
-        self._db = None # Reset db connection
-
-        for key, value in self._lst_panel.items():
-            value.setVisible(False)
-
-        current_db = self.cbo_db_source.currentData()
-
-        self._lst_panel[current_db].setVisible(True)
 
     def save_settings(self):
         settings = QSettings()
@@ -276,6 +261,19 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
 
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/source/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
+
+    def db_source_changed(self):
+        if self._db is not None:
+            self._db.close_connection()
+
+        self._db = None # Reset db connection
+
+        for key, value in self._lst_panel.items():
+            value.setVisible(False)
+
+        current_db = self.cbo_db_source.currentData()
+
+        self._lst_panel[current_db].setVisible(True)
 
     def test_connection(self):
         if self._db is not None:
@@ -375,4 +373,5 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def get_params(self):
         return self._params
+
 

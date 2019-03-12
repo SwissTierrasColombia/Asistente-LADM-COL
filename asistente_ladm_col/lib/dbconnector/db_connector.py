@@ -16,7 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 """
+import psycopg2
+
 from qgis.PyQt.QtCore import QObject
+
+from asistente_ladm_col.utils.model_parser import ModelParser
+
 
 class DBConnector(QObject):
     '''SuperClass for all DB connectors.'''
@@ -28,6 +33,8 @@ class DBConnector(QObject):
         self.schema = schema
         self.conn = None
         self.dict_conn_params = dict()
+
+        self.model_parser = None
 
     def test_connection(self):
         pass
@@ -90,3 +97,27 @@ class DBConnector(QObject):
 
         return ' '.join(uri)
 
+    def valuation_model_exists(self):
+        if self.model_parser is None:
+            res = self._parse_model()
+            if not res:
+                return False
+
+        return self.model_parser.valuation_model_exists()
+
+    def property_record_card_model_exists(self):
+        if self.model_parser is None:
+            res = self._parse_model()
+            if not res:
+                return False
+
+        return self.model_parser.property_record_card_model_exists()
+
+    def _parse_models(self):
+        try:
+            if self.model_parser is None:
+                self.model_parser = ModelParser(self)
+                return True
+        except psycopg2.ProgrammingError as e:
+            # if it is not possible to access the schema due to lack of privileges
+            return False
