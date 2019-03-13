@@ -65,12 +65,12 @@
 <context>
     <name>AsistenteLADMCOLPlugin</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="237"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="238"/>
         <source>Cadastre</source>
         <translation>Catastro</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="257"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="258"/>
         <source>Spatial Unit</source>
         <translation>Unidad Espacial</translation>
     </message>
@@ -83,135 +83,135 @@
         <translation type="vanished">Definir Linderos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="287"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="288"/>
         <source>BA Unit</source>
         <translation>Unidad Administrativa Básica</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="295"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="296"/>
         <source>Party</source>
         <translation>Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="299"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="300"/>
         <source>Create Party</source>
         <translation>Crear Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="303"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="304"/>
         <source>Create Group Party</source>
         <translation>Crear Agrupación de Interesados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="324"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="325"/>
         <source>RRR</source>
         <translation>RRR</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="308"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="309"/>
         <source>Source</source>
         <translation>Fuente</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="261"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="262"/>
         <source>Create Plot</source>
         <translation>Crear Terreno</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="240"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="241"/>
         <source>Preprocessing</source>
         <translation>Pre-procesamiento</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="139"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="140"/>
         <source>Queries</source>
         <translation>Consultar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="190"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="191"/>
         <source>Build boundaries...</source>
         <translation>Construir linderos...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="241"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="242"/>
         <source>Controlled Measurement</source>
         <translation>Medición Controlada</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="244"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="245"/>
         <source>Surveying and Representation</source>
         <translation>Topografía y Representación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="248"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="249"/>
         <source>Create Point</source>
         <translation>Crear Punto</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="252"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="253"/>
         <source>Create Boundary</source>
         <translation>Crear Lindero</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="265"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="462"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="266"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="463"/>
         <source>Create Building</source>
         <translation>Crear Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="269"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="466"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="270"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="467"/>
         <source>Create Building Unit</source>
         <translation>Crear Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="291"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="450"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="292"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="451"/>
         <source>Create Parcel</source>
         <translation>Crear Predio</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="399"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="400"/>
         <source>Create Natural Party</source>
         <translation>Crear Interesado Natural</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="403"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="404"/>
         <source>Create Legal Party</source>
         <translation>Crear Interesado Jurídico</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="318"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="319"/>
         <source>Upload Pending Source Files</source>
         <translation>Subir Archivos Fuente Pendientes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="328"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="329"/>
         <source>Create Right</source>
         <translation>Crear Derecho</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="332"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="333"/>
         <source>Create Restriction</source>
         <translation>Crear Restricción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="336"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="337"/>
         <source>Create Responsibility</source>
         <translation>Crear Responsabilidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="342"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="343"/>
         <source>Check Quality Rules</source>
         <translation>Revisar Reglas de Calidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="312"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="313"/>
         <source>Create Administrative Source</source>
         <translation>Crear Fuente Administrativa</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="316"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="317"/>
         <source>Create Spatial Source</source>
         <translation>Crear Fuente Espacial</translation>
     </message>
@@ -252,23 +252,23 @@
         <translation type="vanished">Revisar todo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="138"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="139"/>
         <source>Load layers</source>
         <translation>Cargar capas</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="144"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="724"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="145"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="733"/>
         <source>Settings</source>
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="145"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="146"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="146"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="147"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
@@ -281,157 +281,157 @@
         <translation type="vanished">Unir...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="192"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="193"/>
         <source>Move nodes...</source>
         <translation>Mover nodos...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="194"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="195"/>
         <source>Fill Point BFS</source>
         <translation>Llenar PuntosCCL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="196"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="197"/>
         <source>Fill More BFS and Less</source>
         <translation>Llenar más CCL y menos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="198"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="199"/>
         <source>Fill Right of Way Relations</source>
         <translation>Llenar relaciones de Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="200"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="201"/>
         <source>Generate Annex 17</source>
         <translation>Generar Anexo 17</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="202"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="203"/>
         <source>Import from intermediate structure</source>
         <translation>Importar desde estructura intermedia</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="205"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="206"/>
         <source>LADM-COL tools</source>
         <translation>Herramientas LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="227"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="228"/>
         <source>Data Management</source>
         <translation>Administración de datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="228"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="229"/>
         <source>Create LADM-COL structure</source>
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="229"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="230"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="230"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="231"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="273"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="274"/>
         <source>Create Right of Way</source>
         <translation>Crear Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="277"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="278"/>
         <source>Associate Address</source>
         <translation>Relacionar Dirección</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="382"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="383"/>
         <source>Property record card</source>
         <translation>Ficha predial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="387"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="388"/>
         <source>Create Property Record Card</source>
         <translation>Crear Ficha Predial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="391"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="392"/>
         <source>Create Market Research</source>
         <translation>Crear Investigación de Mercado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="395"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="396"/>
         <source>Create Nuclear Family</source>
         <translation>Crear Núcleo Familiar</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="445"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="446"/>
         <source>Valuation</source>
         <translation>Avalúos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="454"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="455"/>
         <source>Create Horizontal Property main Parcel</source>
         <translation>Crear Predio Matriz PH</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="458"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="459"/>
         <source>Create Common Equipment</source>
         <translation>Crear Equipamiento Comunal</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="470"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="471"/>
         <source>Create Building Unit Qualification</source>
         <translation>Crear Calificación de Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="474"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="475"/>
         <source>Create Geoeconomic Zone</source>
         <translation>Crear Zona Homogénea Geoeconómica</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="478"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="479"/>
         <source>Create Physical Zone</source>
         <translation>Crear Zona Homogénea Física</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="631"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="632"/>
         <source>Open About Dialog</source>
         <translation>Abrir diálogo Acerca de</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="640"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="641"/>
         <source>Download and install dependency</source>
         <translation>Descargar e instalar dependencias</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="649"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="650"/>
         <source>Remove dependency</source>
         <translation>Borrar dependencias</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="721"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="730"/>
         <source>Check your database connection, since there was a problem accessing a valid Cadastre-Registry model in the database. Click the button to go to Settings.</source>
         <translation>Revisa tu conexión a la base de datos. Hubo un problema accediendo a un modelo válido de Catastro-Registro en la base de datos. Click en el botón para ir a Configuración.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="729"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="738"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, connection to DB was not valid.</source>
         <translation>No se pudo ejecutar una funcionalidad, la conexión a la base de datos no fue válida.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="748"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="757"/>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} is required, but couldn&apos;t be found. Download it &lt;a href=&quot;{}&quot;&gt;from this link&lt;/a&gt; and use &apos;Install from ZIP&apos;.</source>
         <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar desde ZIP&quot;.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="751"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="760"/>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
         <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Plugins.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="761"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="770"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, QGIS Model Baker not found.</source>
         <translation>No se pudo ejecutar una funcionalidad, no se encontró QGIS Model Baker.</translation>
     </message>
@@ -440,7 +440,7 @@
         <translation type="vanished">Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} (o superior), pero no está instalado. Click en el botón para mostrar el Administrador de Plugins.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="755"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="764"/>
         <source>Plugin Manager</source>
         <translation>Administrador de Plugins</translation>
     </message>
@@ -739,7 +739,17 @@
         <translation>No se pudo encontrar la tabla Agrupación de Interesados... {}</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="959"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="958"/>
+        <source>First enable automatic values for both namespace and local_id fields before creating group parties. Click the button to open the settings dialog.</source>
+        <translation>Primero habilita los valores automáticos para los campos &apos;espacio de nombres&apos; y &apos;local_id&apos; antes de crear agrupaciones de interesados. Haz clic en el botón para abrir el diálogo de configuración.</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="960"/>
+        <source>Open Settings</source>
+        <translation>Abrir Configuración</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="978"/>
         <location filename="../gui/create_group_party_cadastre.py" line="126"/>
         <location filename="../gui/create_group_party_cadastre.py" line="135"/>
         <location filename="../gui/create_group_party_cadastre.py" line="144"/>
@@ -1257,12 +1267,12 @@
         <translation>¡El nuevo derecho (t_id={}) se creó exitosamente y fue asociado con su fuente administrativa correspondiente (t_id={})!</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="979"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="998"/>
         <source>Administrative Source table couldn&apos;t be found... {}</source>
         <translation>No se pudo encontrar la capa Fuente Administrativa... {}</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="985"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1004"/>
         <source>Close the edit session in table {} before creating rights.</source>
         <translation>Cierra la sesión de edición en la tabla {} antes de continuar creando derechos.</translation>
     </message>
@@ -2146,52 +2156,57 @@ Done!</source>
 <context>
     <name>DockWidgetQueries</name>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="84"/>
+        <location filename="../gui/dockwidget_queries.py" line="96"/>
         <source>Plot layer couldn&apos;t be found... {}</source>
         <translation>No se encontró la capa Terreno... {}</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="99"/>
+        <location filename="../gui/dockwidget_queries.py" line="111"/>
         <source>Parcel layer couldn&apos;t be found... {}</source>
         <translation>No se encontró la capa Predio... {}</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="114"/>
+        <location filename="../gui/dockwidget_queries.py" line="126"/>
         <source>UEBAUnit table couldn&apos;t be found... {}</source>
         <translation>No se encontró la tabla UEBAUNIT... {}</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="149"/>
+        <location filename="../gui/dockwidget_queries.py" line="161"/>
         <source>Parcel Number</source>
         <translation>Número Predial</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="150"/>
+        <location filename="../gui/dockwidget_queries.py" line="162"/>
         <source>Previous Parcel Number</source>
         <translation>Número Predial Anterior</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="244"/>
+        <location filename="../gui/dockwidget_queries.py" line="163"/>
+        <source>Folio de Matrícula Inmobiliaria</source>
+        <translation>Folio de Matrícula Inmobiliaria</translation>
+    </message>
+    <message>
+        <location filename="../gui/dockwidget_queries.py" line="264"/>
         <source>First enter a query</source>
         <translation>Primero ingresa una consulta</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="256"/>
+        <location filename="../gui/dockwidget_queries.py" line="281"/>
         <source>Copy value</source>
         <translation>Copiar valor</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="280"/>
+        <location filename="../gui/dockwidget_queries.py" line="305"/>
         <source>Zoom to {} with {}={}</source>
         <translation>Zoom a {} con {}={}</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="288"/>
+        <location filename="../gui/dockwidget_queries.py" line="313"/>
         <source>Zoom to related plot(s)</source>
         <translation>Zoom a terreno asociado</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="292"/>
+        <location filename="../gui/dockwidget_queries.py" line="317"/>
         <source>Open form for {} with {}={}</source>
         <translation>Abrir formulario para {} con {}={}</translation>
     </message>
@@ -2873,17 +2888,17 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>LogQualityDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="678"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="687"/>
         <source>Show Results</source>
         <translation>Mostrar Resultados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="686"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="695"/>
         <source>Checking {} out of {}: &apos;{}&apos;</source>
         <translation>Revisando {} de {}: &apos;{}&apos;</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="698"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="707"/>
         <source>All the {} quality rules were checked! Click the button at the right-hand side to see a report.</source>
         <translation>¡Se terminaron de revisar las {} reglas de calidad! Haz clic en el botón de la derecha para ver un reporte.</translation>
     </message>
@@ -2981,22 +2996,22 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation>No se encontró la capa &apos;{}&apos; en la base de datos (esquema: {}).</translation>
     </message>
     <message>
-        <location filename="../lib/dbconnector/pg_connector.py" line="1039"/>
+        <location filename="../lib/dbconnector/pg_connector.py" line="1922"/>
         <source>There was an error when obtaining the list of existing databases. : {}</source>
         <translation>Hubo un error obteniendo el listado de bases de datos existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/dbconnector/pg_connector.py" line="1059"/>
+        <location filename="../lib/dbconnector/pg_connector.py" line="1942"/>
         <source>There was an error when obtaining the list of existing schemas: {}</source>
         <translation>Hubo un error obteniendo el listado de esquemas existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/dbconnector/pg_connector.py" line="1079"/>
+        <location filename="../lib/dbconnector/pg_connector.py" line="1962"/>
         <source>No information for schema &apos;{}&apos;.</source>
         <translation>No hay información para el esquema &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../lib/dbconnector/pg_connector.py" line="1083"/>
+        <location filename="../lib/dbconnector/pg_connector.py" line="1966"/>
         <source>There was an error when obtaining privileges for schema &apos;{}&apos;. Details: {}</source>
         <translation>Hubo un error obteniendo los permisos para el esquema &apos;{}&apos;. Detalles: {}</translation>
     </message>
@@ -4441,6 +4456,31 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <location filename="../ui/dockwidget_queries.ui" line="186"/>
         <source>Results</source>
         <translation>Resultados</translation>
+    </message>
+    <message>
+        <location filename="../ui/dockwidget_queries.ui" line="211"/>
+        <source>Basic info</source>
+        <translation>Básica</translation>
+    </message>
+    <message>
+        <location filename="../ui/dockwidget_queries.ui" line="225"/>
+        <source>Legal info</source>
+        <translation>Jurídica</translation>
+    </message>
+    <message>
+        <location filename="../ui/dockwidget_queries.ui" line="239"/>
+        <source>Property record card</source>
+        <translation>Ficha predial</translation>
+    </message>
+    <message>
+        <location filename="../ui/dockwidget_queries.ui" line="253"/>
+        <source>Physical info</source>
+        <translation>Física</translation>
+    </message>
+    <message>
+        <location filename="../ui/dockwidget_queries.ui" line="270"/>
+        <source>Economic info</source>
+        <translation>Económica</translation>
     </message>
 </context>
 <context>

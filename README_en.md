@@ -17,7 +17,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([1.4.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.4.0)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.1.0.1](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip) and allows users to:
+The current version ([1.5.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.5.0)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.1.0.1](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip) and allows users to:
 
  - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
  - Capture data for the `FICHA_PREDIAL v2.2.1` model.
@@ -27,6 +27,8 @@ The current version ([1.4.0](https://github.com/AgenciaImplementacion/Asistente-
  - Export data to transfer files (.XTF).
  - Search for LADM_COL data by component:
    - Basic information.
+   - Legal information.
+   - Property record card information.
  - Preprocess points: Controlled Measurement.
    - Group points by nearness.
    - Average point position from points of the same group.
@@ -122,6 +124,23 @@ The current version ([1.4.0](https://github.com/AgenciaImplementacion/Asistente-
  - Configure automatic values for `namespace` and `local_id` attributes.
  - Load styles for newly added layers from preconfigured QML files.
  - View illustrative GIFs in the plugin's online help or download them for offline work.
+
+
+## Minimum requirements
+
+To use the LADM_COL Assistant you need:
+
+ - Operting System:
+   - Windows 8 or Windows 10
+   - GNU/Linux
+ - Base software:
+   - QGIS v3.4.x
+   - Java v1.8
+   - PostgreSQL 9.5 or higher (PostgreSQL 10 and PostgreSQL 11 works as well).
+   - PostGIS 2.4 or higher.
+ - QGIS plugins:
+   - LADM_COL Assistant
+   - QGIS Model Baker v4.1.0.1
 
 ## Testing
 

@@ -61,7 +61,7 @@
         <number>6</number>
        </property>
        <item row="0" column="0">
-        <widget class="QTabWidget" name="tabWidget">
+        <widget class="QTabWidget" name="tab_queries">
          <property name="currentIndex">
           <number>0</number>
          </property>
@@ -199,7 +199,87 @@
         <number>6</number>
        </property>
        <item row="0" column="0">
-        <widget class="QTreeView" name="treeView"/>
+        <widget class="QTabWidget" name="tab_results">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="tab_results_basic_info">
+          <attribute name="title">
+           <string>Basic info</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_6">
+           <item row="0" column="0">
+            <widget class="QTreeView" name="tree_view_basic">
+             <property name="headerHidden">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_results_legal">
+          <attribute name="title">
+           <string>Legal info</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_8">
+           <item row="0" column="0">
+            <widget class="QTreeView" name="tree_view_legal">
+             <property name="headerHidden">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_results_property_record_card">
+          <attribute name="title">
+           <string>Property record card</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_10">
+           <item row="0" column="0">
+            <widget class="QTreeView" name="tree_view_property_record_card">
+             <property name="headerHidden">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_results_physical">
+          <attribute name="title">
+           <string>Physical info</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_9">
+           <item row="0" column="0">
+            <widget class="QTreeView" name="tree_view_physical">
+             <property name="headerHidden">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_results_economic">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <attribute name="title">
+           <string>Economic info</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_11">
+           <item row="0" column="0">
+            <widget class="QTreeView" name="tree_view_economic">
+             <property name="headerHidden">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
        </item>
       </layout>
      </widget>

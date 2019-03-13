@@ -80,6 +80,7 @@ MEMBERS_TABLE = "miembros"
 MORE_BOUNDARY_FACE_STRING_TABLE = "masccl"
 MOREBFS_TABLE_BOUNDARY_FIELD = "cclp_lindero"
 MOREBFS_TABLE_PLOT_FIELD = "uep_terreno"
+MORTGAGE_TABLE = "col_hipoteca"
 MUNICIPALITY_FIELD = "municipio"
 NAMESPACE_FIELD = "_espacio_de_nombres"
 NIT_NUMBER_FIELD = "numero_nit"
@@ -184,7 +185,16 @@ DICT_PLURAL = {
     BUILDING_UNIT_TABLE: "Unidades de Construcción",
     EXTADDRESS_TABLE: "Direcciones",
     COL_PARTY_TABLE: "Interesados",
-    LA_GROUP_PARTY_TABLE: "Agrupación de interesados"
+    LA_GROUP_PARTY_TABLE: "Agrupación de interesados",
+    RIGHT_TABLE: "Derechos",
+    RESTRICTION_TABLE: "Restricciones",
+    RESPONSIBILITY_TABLE: "Responsabilidades",
+    MORTGAGE_TABLE: "Hipotecas",
+    ADMINISTRATIVE_SOURCE_TABLE: "Fuentes Administrativas",
+    SPATIAL_SOURCE_TABLE: "Fuentes Espaciales",
+    NUCLEAR_FAMILY_TABLE: "Núcleo Familiar",
+    MARKET_RESEARCH_TABLE: "Investigaciones de Mercado",
+    PROPERTY_RECORD_CARD_TABLE: "Ficha Predial"
 }
 
 
@@ -219,6 +229,9 @@ DICT_TABLE_PACKAGE = {
     COL_PARTY_TABLE: PARTY_PACKAGE,
     LA_GROUP_PARTY_TABLE: PARTY_PACKAGE,
     RIGHT_TABLE: RRR_PACKAGE,
+    RESTRICTION_TABLE: RRR_PACKAGE,
+    RESPONSIBILITY_TABLE: RRR_PACKAGE,
+    MORTGAGE_TABLE: RRR_PACKAGE,
     ADMINISTRATIVE_SOURCE_TABLE: SOURCE_PACKAGE,
     SPATIAL_SOURCE_TABLE: SOURCE_PACKAGE
 }
