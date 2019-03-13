@@ -271,7 +271,7 @@ class TreeModel(QAbstractItemModel):
         if data is None:
             return
 
-        print(data)
+        #print(data)
         for record in data:
             self.fill_model(record, parent)
 

@@ -281,8 +281,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             action_copy = QAction(QCoreApplication.translate("DockWidgetQueries", "Copy value"))
             action_copy.triggered.connect(partial(self.copy_value, index_data["value"]))
             context_menu.addAction(action_copy)
-
-        context_menu.addSeparator()
+            context_menu.addSeparator()
 
         # Configure actions for tables/layers
         if "type" in index_data and "id" in index_data:
@@ -318,7 +317,8 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 action_open_feature_form.triggered.connect(partial(self.open_feature_form, layer, t_id))
                 context_menu.addAction(action_open_feature_form)
 
-        context_menu.exec_(tree_view.mapToGlobal(point))
+        if context_menu.actions():
+            context_menu.exec_(tree_view.mapToGlobal(point))
 
     def copy_value(self, value):
         self.clipboard.setText(str(value))
@@ -346,7 +346,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         feature = QgsFeature()
         res = iterator.nextFeature(feature)
         if res:
-            print(feature.attributes())
             return feature
 
         return None
