@@ -222,8 +222,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings = QSettings()
         default_db = self.conf_db.id_default_db
 
-        self.cbo_db_source.setCurrentIndex(
-            self.cbo_db_source.findData(settings.value('Asistente-LADM_COL/db_connection_source', default_db)))
+        index_db = self.cbo_db_source.findData(settings.value('Asistente-LADM_COL/db_connection_source', default_db))
+
+        if index_db == -1:
+            index_db = self.cbo_db_source.findData(default_db)
+
+        self.cbo_db_source.setCurrentIndex(index_db)
         self.db_source_changed()
 
         current_db = self.cbo_db_source.currentData()
