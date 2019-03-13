@@ -34,7 +34,6 @@ class DbSchemaDbPanel(DbConfigPanel):
         self.db_connector = db_connector
         self.selected_db_combobox = QComboBox()
         self.selected_schema_combobox = QComboBox()
-        self.selected_db_combobox.currentIndexChanged.connect(self.selected_database_changed)
 
         self.create_db_button = QPushButton()
         self.create_db_button.clicked.connect(self.show_modal_create_db)
@@ -46,6 +45,24 @@ class DbSchemaDbPanel(DbConfigPanel):
         self.refreshTimer = QTimer()
         self.refreshTimer.setSingleShot(True)
         self.refreshTimer.timeout.connect(self.refresh_connection)
+
+    def _connect_change_signals(self):
+        self.selected_db_combobox.currentIndexChanged.connect(self.selected_database_changed)
+        self.selected_schema_combobox.currentIndexChanged.connect(self.selected_schema_changed)
+
+    def _disconnect_change_signals(self):
+        try:
+            self.selected_db_combobox.currentIndexChanged.disconnect(self.selected_database_changed)
+        except TypeError:
+            pass
+
+        try:
+            self.selected_schema_combobox.currentIndexChanged.disconnect(self.selected_schema_changed)
+        except TypeError:
+            pass
+
+    def selected_schema_changed(self, index):
+        self._set_params_changed()
 
     def refresh_connection(self):
         if not self.check_for_refresh():
