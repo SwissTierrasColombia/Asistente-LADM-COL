@@ -191,7 +191,10 @@ DICT_PLURAL = {
     RESPONSIBILITY_TABLE: "Responsabilidades",
     MORTGAGE_TABLE: "Hipotecas",
     ADMINISTRATIVE_SOURCE_TABLE: "Fuentes Administrativas",
-    SPATIAL_SOURCE_TABLE: "Fuentes Espaciales"
+    SPATIAL_SOURCE_TABLE: "Fuentes Espaciales",
+    NUCLEAR_FAMILY_TABLE: "Núcleo Familiar",
+    MARKET_RESEARCH_TABLE: "Investigaciones de Mercado",
+    PROPERTY_RECORD_CARD_TABLE: "Ficha Predial"
 }
 
 

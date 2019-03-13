@@ -437,10 +437,13 @@ class PGConnector(DBConnector):
                previous_parcel_number
         :return:
         """
-        plot_t_id = kwargs['plot_t_id'] if 'plot_t_id' in kwargs else 'NULL'
-        parcel_fmi = kwargs['parcel_fmi'] if 'parcel_fmi' in kwargs else 'NULL'
-        parcel_number = kwargs['parcel_number'] if 'parcel_number' in kwargs else 'NULL'
-        previous_parcel_number = kwargs['previous_parcel_number'] if 'previous_parcel_number' in kwargs else 'NULL'
+        params = {
+            'plot_t_id': 'NULL',
+            'parcel_fmi': 'NULL',
+            'parcel_number': 'NULL',
+            'previous_parcel_number': 'NULL'
+        }
+        params.update(kwargs)
 
         query = """
         WITH
@@ -615,8 +618,11 @@ class PGConnector(DBConnector):
         SELECT json_agg(info_terreno.terreno) AS terreno FROM info_terreno
         """
 
-        query = query.format(schema=self.schema, plot_t_id=plot_t_id, parcel_fmi=parcel_fmi, parcel_number=parcel_number,
-                             previous_parcel_number=previous_parcel_number)
+        query = query.format(schema=self.schema,
+                             plot_t_id=params['plot_t_id'],
+                             parcel_fmi=params['parcel_fmi'],
+                             parcel_number=params['parcel_number'],
+                             previous_parcel_number=params['previous_parcel_number'])
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute(query)
@@ -637,10 +643,13 @@ class PGConnector(DBConnector):
                previous_parcel_number
         :return:
         """
-        plot_t_id = kwargs['plot_t_id'] if 'plot_t_id' in kwargs else 'NULL'
-        parcel_fmi = kwargs['parcel_fmi'] if 'parcel_fmi' in kwargs else 'NULL'
-        parcel_number = kwargs['parcel_number'] if 'parcel_number' in kwargs else 'NULL'
-        previous_parcel_number = kwargs['previous_parcel_number'] if 'previous_parcel_number' in kwargs else 'NULL'
+        params = {
+            'plot_t_id': 'NULL',
+            'parcel_fmi': 'NULL',
+            'parcel_number': 'NULL',
+            'previous_parcel_number': 'NULL'
+        }
+        params.update(kwargs)
 
         query = """
         WITH
@@ -1237,8 +1246,11 @@ class PGConnector(DBConnector):
         SELECT json_agg(info_terreno.terreno) AS terreno FROM info_terreno
         """
 
-        query = query.format(schema=self.schema, plot_t_id=plot_t_id, parcel_fmi=parcel_fmi, parcel_number=parcel_number,
-                             previous_parcel_number=previous_parcel_number)
+        query = query.format(schema=self.schema,
+                             plot_t_id=params['plot_t_id'],
+                             parcel_fmi=params['parcel_fmi'],
+                             parcel_number=params['parcel_number'],
+                             previous_parcel_number=params['previous_parcel_number'])
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute(query)
@@ -1259,10 +1271,13 @@ class PGConnector(DBConnector):
                previous_parcel_number
         :return:
         """
-        plot_t_id = kwargs['plot_t_id'] if 'plot_t_id' in kwargs else 'NULL'
-        parcel_fmi = kwargs['parcel_fmi'] if 'parcel_fmi' in kwargs else 'NULL'
-        parcel_number = kwargs['parcel_number'] if 'parcel_number' in kwargs else 'NULL'
-        previous_parcel_number = kwargs['previous_parcel_number'] if 'previous_parcel_number' in kwargs else 'NULL'
+        params = {
+            'plot_t_id': 'NULL',
+            'parcel_fmi': 'NULL',
+            'parcel_number': 'NULL',
+            'previous_parcel_number': 'NULL'
+        }
+        params.update(kwargs)
 
         query = """
         WITH
@@ -1421,8 +1436,11 @@ class PGConnector(DBConnector):
         SELECT json_agg(info_terreno.terreno) AS terreno FROM info_terreno
         """
 
-        query = query.format(schema=self.schema, plot_t_id=plot_t_id, parcel_fmi=parcel_fmi, parcel_number=parcel_number,
-                             previous_parcel_number=previous_parcel_number)
+        query = query.format(schema=self.schema,
+                             plot_t_id=params['plot_t_id'],
+                             parcel_fmi=params['parcel_fmi'],
+                             parcel_number=params['parcel_number'],
+                             previous_parcel_number=params['previous_parcel_number'])
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute(query)
