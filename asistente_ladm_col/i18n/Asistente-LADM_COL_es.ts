@@ -4295,12 +4295,12 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     <message>
         <location filename="../config/general_config.py" line="230"/>
         <source>Topological relationship between boundary point and boundary is not recorded in the {} table</source>
-        <translation>La relación topológica entre el punto lindero y el lindero no está registrada en la tabla {}</translation>
+        <translation>La relación topológica entre el punto lindero y el nodo de un lindero no está registra en la tabla de {}</translation>
     </message>
     <message>
         <location filename="../config/general_config.py" line="231"/>
         <source>Topological relationship between boundary point and boundary is duplicated in the {} table</source>
-        <translation>La relación topológica entre el punto lindero y el lindero está duplicada en la tabla de {}</translation>
+        <translation>La relación topológica entre el punto lindero y el nodo de un lindero está duplicada en la tabla de {}</translation>
     </message>
     <message>
         <location filename="../config/general_config.py" line="232"/>
