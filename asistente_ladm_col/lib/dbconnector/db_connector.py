@@ -79,6 +79,8 @@ class DBConnector(QObject):
         :return: (str) string uri to establish a connection
         """
         uri = []
+        separator = ' '
+
         if mode == 'pg':
             uri += ['host={}'.format(dict_conn['host'])]
             uri += ['port={}'.format(dict_conn['port'])]
@@ -94,8 +96,22 @@ class DBConnector(QObject):
                 uri += ["dbname='postgres'"]
         elif mode == 'gpkg':
             uri = [dict_conn['dbfile']]
+        elif mode == 'mssql':
+            uri += ['DRIVER={SQL Server}']
+            host = dict_conn['host'] or 'localhost'
+            if dict_conn['port']:
+                host += ',' + dict_conn['port']
+            if dict_conn['instance']:
+                host += '\\' + dict_conn['instance']
 
-        return ' '.join(uri)
+            uri += ['SERVER={}'.format(host)]
+            if dict_conn['database'] and level == 1:
+                uri += ['DATABASE={}'.format(dict_conn['database'])]
+            uri += ['UID={}'.format(dict_conn['username'])]
+            uri += ['PWD={}'.format(dict_conn['password'])]
+            separator = ';'
+
+        return separator.join(uri)
 
     def valuation_model_exists(self):
         if self.model_parser is None:
