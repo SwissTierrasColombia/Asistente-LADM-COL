@@ -20,6 +20,7 @@ from qgis.PyQt.QtCore import QObject
 
 from ..db_support.pg_admin import PgAdmin
 from ..db_support.gpkg_admin import GpkgAdmin
+from ..db_support.mssql_admin import MssqlAdmin
 
 
 class ConfigDbSupported(QObject):
@@ -35,6 +36,9 @@ class ConfigDbSupported(QObject):
         self.id_default_db = db_item.get_id()
 
         db_item = GpkgAdmin()
+        self._db_items[db_item.get_id()] = db_item
+
+        db_item = MssqlAdmin()
         self._db_items[db_item.get_id()] = db_item
 
     def get_db_items(self):
