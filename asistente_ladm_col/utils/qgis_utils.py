@@ -38,6 +38,7 @@ from qgis.core import (Qgis,
                        QgsEditorWidgetSetup,
                        QgsExpression,
                        QgsExpressionContextUtils,
+                       QgsFieldConstraints,
                        QgsGeometry,
                        QgsLayerTreeGroup,
                        QgsLayerTreeNode,
@@ -553,10 +554,22 @@ class QGISUtils(QObject):
     def set_layer_constraints(self, layer):
         if layer.name() in LAYER_CONSTRAINTS:
             for field_name, value in LAYER_CONSTRAINTS[layer.name()].items():
+                idx = layer.fields().indexOf(field_name)
                 layer.setConstraintExpression(
-                    layer.fields().indexOf(field_name),
+                    idx,
                     value['expression'],
                     value['description'])
+
+                layer.setFieldConstraint(
+                    idx,
+                    QgsFieldConstraints.ConstraintExpression,
+                    QgsFieldConstraints.ConstraintStrengthSoft)
+
+                # We shouldn't make DB constraints flexible, but in case you from the future need it, uncomment
+                # layer.setFieldConstraint(
+                #     idx,
+                #     QgsFieldConstraints.ConstraintUnique,
+                #     QgsFieldConstraints.ConstraintStrengthSoft)
 
     def set_form_groups(self, layer):
         if layer.name() in FORM_GROUPS:
