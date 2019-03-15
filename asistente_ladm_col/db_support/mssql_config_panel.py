@@ -98,12 +98,10 @@ class MssqlConfigPanel(QWidget, DbSchemaDbPanel):
         self.txt_host.textChanged.connect(self.request_for_refresh_connection)
         self.txt_port.textChanged.connect(self.request_for_refresh_connection)
         self.txt_user.textChanged.connect(self.request_for_refresh_connection)
+        self.txt_instance.textChanged.connect(self.request_for_refresh_connection)
         self.txt_password.textChanged.connect(self.request_for_refresh_connection)
 
-        self.txt_host.textEdited.connect(self._set_params_changed)
-        self.txt_port.textEdited.connect(self._set_params_changed)
-        self.txt_user.textEdited.connect(self._set_params_changed)
-        self.txt_password.textEdited.connect(self._set_params_changed)
+        self._connect_change_signals()
 
     def read_connection_parameters(self):
         """
@@ -123,10 +121,50 @@ class MssqlConfigPanel(QWidget, DbSchemaDbPanel):
 
         return dict_conn
 
+    def _connect_change_signals(self):
+        DbSchemaDbPanel._connect_change_signals(self)
+        self.txt_host.textEdited.connect(self._text_changed)
+        self.txt_port.textEdited.connect(self._text_changed)
+        self.txt_user.textEdited.connect(self._text_changed)
+        self.txt_password.textEdited.connect(self._text_changed)
+        self.txt_instance.textEdited.connect(self._text_changed)
+
+    def _text_changed(self, text):
+        self._set_params_changed()
+
+    def _disconnect_change_signals(self):
+        DbSchemaDbPanel._disconnect_change_signals(self)
+        try:
+            self.txt_host.textEdited.disconnect(self._text_changed)
+        except TypeError:
+            pass
+
+        try:
+            self.txt_port.textEdited.disconnect(self._text_changed)
+        except TypeError:
+            pass
+
+        try:
+            self.txt_user.textEdited.disconnect(self._text_changed)
+        except TypeError:
+            pass
+
+        try:
+            self.txt_password.textEdited.disconnect(self._text_changed)
+        except TypeError:
+            pass
+
+        try:
+            self.txt_instance.textEdited.disconnect(self._text_changed)
+        except TypeError:
+            pass
+
     def get_keys_connection_parameters(self):
         return list(self.read_connection_parameters().keys())
 
     def write_connection_parameters(self, dict_conn):
+        self._disconnect_change_signals()
+
         self.txt_host.setText(dict_conn['host'])
         self.txt_port.setText(dict_conn['port'])
         self.txt_instance.setText(dict_conn['instance'])
@@ -134,6 +172,7 @@ class MssqlConfigPanel(QWidget, DbSchemaDbPanel):
         self.txt_password.setText(dict_conn['password'])
 
         if not dict_conn['database']:
+            self._connect_change_signals()
             return
         db_name_setting = dict_conn['database'].strip("'")
         self.update_db_names()
@@ -149,6 +188,8 @@ class MssqlConfigPanel(QWidget, DbSchemaDbPanel):
 
                     if index >= 0:
                         self.selected_schema_combobox.setCurrentIndex(index)
+
+        self._connect_change_signals()
 
     def check_for_refresh(self):
         return self.txt_user.text().strip() and self.txt_password.text().strip()
