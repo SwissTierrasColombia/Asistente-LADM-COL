@@ -108,6 +108,7 @@ from ..config.translator import (
 from ..gui.settings_dialog import SettingsDialog
 from ..lib.dbconnector.db_connector import DBConnector
 from ..lib.source_handler import SourceHandler
+from ..config.config_db_supported import ConfigDbSupported
 
 
 class QGISUtils(QObject):
@@ -380,25 +381,13 @@ class QGISUtils(QObject):
     def get_ladm_layers_from_layer_tree(self, db):
         ladm_layers = list()
 
+        conf_db = ConfigDbSupported()
+
+        tester_ladm_layer = conf_db.get_db_admin(db.mode).get_ladm_layer_tester()
+
         for k,layer in QgsProject.instance().mapLayers().items():
-            if db.mode == 'pg':
-                if layer.dataProvider().name() == 'postgres':
-
-                    layer_uri = layer.dataProvider().uri()
-                    db_uri = QgsDataSourceUri(db.uri)
-
-                    if layer_uri.schema() == db.schema and \
-                       layer_uri.database() == db_uri.database() and \
-                       layer_uri.host() == db_uri.host() and \
-                       layer_uri.port() == db_uri.port() and \
-                       layer_uri.username() == db_uri.username() and \
-                       layer_uri.password() == db_uri.password():
-
-                        ladm_layers.append(layer)
-
-            elif db.mode == 'gpkg':
-                # To be implemented for GeoPackage layers
-                pass
+            if tester_ladm_layer.is_ladm_layer(layer, db):
+                ladm_layers.append(layer)
 
         return ladm_layers
 

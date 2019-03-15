@@ -3,7 +3,7 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2019-02-21
+        begin                : 2019-03-15
         git sha              : :%H$
         copyright            : (C) 2019 by Yesid Polanía (BSF Swissphoto)
         email                : yesidpol.3@gmail.com
@@ -16,38 +16,27 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QObject
-from .enum_action_type import EnumActionType
+from .db_ladm_layer_tester import DbLadmLayerTester
+from qgis.core import (QgsDataSourceUri)
 
 
-class DbAdmin(QObject):
+class PgLadmLayerTester(DbLadmLayerTester):
+    _PROVIDER_NAME = 'postgres'
 
     def __init__(self):
-        self._mode = None
+        pass
 
-    def get_id(self):
-        raise Exception('unimplemented method')
+    def is_ladm_layer(self, layer, db):
+        result = False
+        if layer.dataProvider().name() == PgLadmLayerTester._PROVIDER_NAME:
+            layer_uri = layer.dataProvider().uri()
+            db_uri = QgsDataSourceUri(db.uri)
 
-    def get_name(self):
-        raise Exception('unimplemented method')
+            result = (layer_uri.schema() == db.schema and \
+                    layer_uri.database() == db_uri.database() and \
+                    layer_uri.host() == db_uri.host() and \
+                    layer_uri.port() == db_uri.port() and \
+                    layer_uri.username() == db_uri.username() and \
+                    layer_uri.password() == db_uri.password())
 
-    def get_config_panel(self):
-        raise Exception('unimplemented method')
-
-    def get_model_baker_tool_name(self):
-        raise Exception('unimplemented method')
-
-    def get_db_connector(self, parameters):
-        raise Exception('unimplemented method')
-
-    def get_schema_import_configuration(self, params):
-        raise Exception('unimplemented method')
-
-    def get_import_configuration(self, params):
-        raise Exception('unimplemented method')
-
-    def get_export_configuration(self, params):
-        raise Exception('unimplemented method')
-
-    def get_ladm_layer_tester(self):
-        raise NotImplementedError
+        return result
