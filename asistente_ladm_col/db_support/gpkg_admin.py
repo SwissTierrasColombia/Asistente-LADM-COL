@@ -19,7 +19,7 @@
 from .db_admin import DbAdmin
 from .gpkg_config_panel import GpkgConfigPanel
 from ..lib.dbconnector.gpkg_connector import GPKGConnector
-from .enum_action_type import EnumActionType
+from .none_ladm_layer_tester import NoneLadmLayerTester
 from QgisModelBaker.libili2db.ili2dbconfig import (SchemaImportConfiguration,
                                                    ImportDataConfiguration,
                                                    ExportConfiguration,
@@ -61,3 +61,6 @@ class GpkgAdmin(DbAdmin):
         configuration = ExportConfiguration()
         configuration.dbfile = params['dbfile']
         return configuration
+
+    def get_ladm_layer_tester(self):
+        return NoneLadmLayerTester()
