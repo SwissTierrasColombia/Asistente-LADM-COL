@@ -126,8 +126,6 @@ class MssqlConnector(DBConnector):
         """
         uri = self.uri if uri is None else uri
 
-        print('show uri (delete me)')
-        print(uri)
         try:
             self.conn = conn = pyodbc.connect(uri)
             self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
@@ -168,7 +166,6 @@ class MssqlConnector(DBConnector):
             cur.close()
             conn.close()
         except Exception as e:
-            # FIXME mensajes no deberían ir acá
             return (False, QCoreApplication.translate("MSSQLConnector",
                                                "There was an error when obtaining the list of existing databases. : {}").format(e))
 
@@ -261,6 +258,16 @@ class MssqlConnector(DBConnector):
 
         try:
             cur.execute(query)
-            return cur.fetchall()
+            return self._get_dict_result(cur)
         except pyodbc.ProgrammingError:
             return None
+
+    def _get_dict_result(self, cur):
+        columns = [column[0] for column in cur.description]
+
+        res = []
+        for row in cur.fetchall():
+            my_rec = dict(zip(columns, row))
+            res.append(my_rec)
+
+        return res
