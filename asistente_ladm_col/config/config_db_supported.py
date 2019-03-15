@@ -39,3 +39,11 @@ class ConfigDbSupported(QObject):
 
     def get_db_items(self):
         return self._db_items
+
+    def get_db_admin(self, db_type):
+        result = None
+
+        if db_type in self._db_items:
+            result = self._db_items[db_type]
+
+        return result
