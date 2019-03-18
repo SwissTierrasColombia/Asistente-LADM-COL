@@ -99,10 +99,10 @@ class DBConnector(QObject):
         elif mode == 'mssql':
             uri += ['DRIVER={SQL Server}']
             host = dict_conn['host'] or 'localhost'
-            if dict_conn['port']:
-                host += ',' + dict_conn['port']
             if dict_conn['instance']:
                 host += '\\' + dict_conn['instance']
+            if dict_conn['port']:
+                host += ',' + dict_conn['port']
 
             uri += ['SERVER={}'.format(host)]
             if dict_conn['database'] and level == 1:
