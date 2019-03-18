@@ -287,6 +287,7 @@ class TreeModel(QAbstractItemModel):
                     parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
                     kv_item = parent.child(parent.childCount() - 1)
                     kv_item.setData(0, "{} (0)".format(DICT_PLURAL[key] if key in DICT_PLURAL else key))
+                    kv_item.setData(0, QBrush(Qt.lightGray), Qt.ForegroundRole)
                     kv_item.setData(0, {"type": key}, Qt.UserRole)
                     kv_item.setData(0, QIcon(
                         DICT_PACKAGE_ICON[DICT_TABLE_PACKAGE[key]]) if key in DICT_TABLE_PACKAGE else None,
