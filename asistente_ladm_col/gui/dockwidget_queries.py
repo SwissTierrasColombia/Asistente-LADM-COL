@@ -68,7 +68,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         # Context menu
         self._set_context_menus()
 
-        self.tab_results.setTabEnabled(3, False)
         self.tab_results.setTabEnabled(4, False)
 
         # Create maptool
@@ -83,6 +82,9 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         self.tree_view_property_record_card.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree_view_property_record_card.customContextMenuRequested.connect(self.show_context_menu)
+
+        self.tree_view_physical.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tree_view_physical.customContextMenuRequested.connect(self.show_context_menu)
 
     def add_layers(self):
         res_layers = self.qgis_utils.get_layers(self._db, {
@@ -242,6 +244,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         records = self._db.get_igac_property_record_card_info(**kwargs)
         self.tree_view_property_record_card.setModel(TreeModel(data=records))
         self.tree_view_property_record_card.expandAll()
+
+        records = self._db.get_igac_physical_info(**kwargs)
+        self.tree_view_physical.setModel(TreeModel(data=records))
+        self.tree_view_physical.expandAll()
 
     def alphanumeric_query(self):
         """
