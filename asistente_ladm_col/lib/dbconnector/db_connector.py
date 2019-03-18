@@ -121,3 +121,6 @@ class DBConnector(QObject):
         except psycopg2.ProgrammingError as e:
             # if it is not possible to access the schema due to lack of privileges
             return False
+
+    def is_ladm_layer(self, layer):
+        raise NotImplementedError
