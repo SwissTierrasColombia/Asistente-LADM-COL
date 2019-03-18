@@ -48,6 +48,3 @@ class DbAdmin(QObject):
 
     def get_export_configuration(self, params):
         raise Exception('unimplemented method')
-
-    def get_ladm_layer_tester(self):
-        raise NotImplementedError

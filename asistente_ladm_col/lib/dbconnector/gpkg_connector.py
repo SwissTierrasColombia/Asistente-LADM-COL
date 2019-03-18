@@ -62,3 +62,6 @@ class GPKGConnector(DBConnector):
         cursor.execute("""SELECT modelname, content
                           FROM t_ili2db_model""")
         return cursor
+
+    def is_ladm_layer(self, layer):
+        return False

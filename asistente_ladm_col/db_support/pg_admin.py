@@ -20,7 +20,6 @@ from .db_admin import DbAdmin
 
 from .pg_config_panel import PgConfigPanel
 from ..lib.dbconnector.pg_connector import PGConnector
-from .pg_ladm_layer_tester import PgLadmLayerTester
 from QgisModelBaker.libili2db.ili2dbconfig import (SchemaImportConfiguration,
                                                    ImportDataConfiguration,
                                                    ExportConfiguration,
@@ -83,6 +82,3 @@ class PgAdmin(DbAdmin):
         configuration.dbpwd = params['password']
 
         return configuration
-
-    def get_ladm_layer_tester(self):
-        return PgLadmLayerTester()

@@ -56,6 +56,9 @@ from ...utils.model_parser import ModelParser
 
 
 class PGConnector(DBConnector):
+
+    _PROVIDER_NAME = 'postgres'
+
     def __init__(self, uri, schema="public", conn_dict={}):
         DBConnector.__init__(self, uri, schema)
         self.mode = 'pg'
@@ -1966,3 +1969,18 @@ class PGConnector(DBConnector):
             return (False, QCoreApplication.translate("PGConnector",
                                                "There was an error when obtaining privileges for schema '{}'. Details: {}").format(schema, e))
         return (True, privileges)
+
+    def is_ladm_layer(self, layer):
+        result = False
+        if layer.dataProvider().name() == PGConnector._PROVIDER_NAME:
+            layer_uri = layer.dataProvider().uri()
+            db_uri = QgsDataSourceUri(self.uri)
+
+            result = (layer_uri.schema() == self.schema and \
+                      layer_uri.database() == db_uri.database() and \
+                      layer_uri.host() == db_uri.host() and \
+                      layer_uri.port() == db_uri.port() and \
+                      layer_uri.username() == db_uri.username() and \
+                      layer_uri.password() == db_uri.password())
+
+        return result

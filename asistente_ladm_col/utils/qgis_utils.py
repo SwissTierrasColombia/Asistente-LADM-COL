@@ -381,12 +381,8 @@ class QGISUtils(QObject):
     def get_ladm_layers_from_layer_tree(self, db):
         ladm_layers = list()
 
-        conf_db = ConfigDbSupported()
-
-        tester_ladm_layer = conf_db.get_db_admin(db.mode).get_ladm_layer_tester()
-
         for k,layer in QgsProject.instance().mapLayers().items():
-            if tester_ladm_layer.is_ladm_layer(layer, db):
+            if db.is_ladm_layer(layer):
                 ladm_layers.append(layer)
 
         return ladm_layers
