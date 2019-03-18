@@ -20,7 +20,6 @@ from .db_admin import DbAdmin
 
 from .mssql_config_panel import MssqlConfigPanel
 from ..lib.dbconnector.mssql_connector import MssqlConnector
-from .mssql_ladm_layer_tester import MssqlLadmLayerTester
 
 from QgisModelBaker.libili2db.ili2dbconfig import (SchemaImportConfiguration,
                                                    ImportDataConfiguration,
@@ -88,6 +87,3 @@ class MssqlAdmin(DbAdmin):
         configuration.dbpwd = params['password']
 
         return configuration
-
-    def get_ladm_layer_tester(self):
-        return MssqlLadmLayerTester()

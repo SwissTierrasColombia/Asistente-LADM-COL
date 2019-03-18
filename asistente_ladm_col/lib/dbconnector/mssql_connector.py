@@ -20,15 +20,15 @@ from .db_connector import DBConnector
 
 import pyodbc
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsDataSourceUri)
-# FIXME No deberia ir aca
 from ...config.general_config import (PLUGIN_NAME, INTERLIS_TEST_METADATA_TABLE_PG, PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO)
-# FIXME No deberia ir aca
 from qgis.core import (Qgis, QgsApplication)
 from ...utils.model_parser import ModelParser
 
 
 class MssqlConnector(DBConnector):
+
+    _PROVIDER_NAME = 'mssql'
+
     def __init__(self, uri, schema=None, conn_dict={}):
         DBConnector.__init__(self, uri, schema)
         self.mode = 'mssql'
@@ -37,7 +37,6 @@ class MssqlConnector(DBConnector):
         self.uri = uri if uri is not None else self.get_connection_uri(conn_dict, self.mode, level=1)
         self.conn = None
         self.schema = schema
-        # FIXME No debería ir acá
         self.log = QgsApplication.messageLog()
         self.provider = 'mssql'
         self._tables_info = None
@@ -271,3 +270,18 @@ class MssqlConnector(DBConnector):
             res.append(my_rec)
 
         return res
+
+    def is_ladm_layer(self, layer):
+        result = False
+        if layer.dataProvider().name() == MssqlConnector._PROVIDER_NAME:
+            layer_uri = layer.dataProvider().uri()
+            db_uri = self.dict_conn_params
+
+            result = (layer_uri.schema() == self.schema and \
+                layer_uri.database() == db_uri['database'] and \
+                layer_uri.host() == db_uri['host'] + '\\' + db_uri['instance'] and \
+                layer_uri.port() == db_uri['port'] and \
+                layer_uri.username() == db_uri['username'] and \
+                layer_uri.password() == db_uri['password'])
+
+        return result
