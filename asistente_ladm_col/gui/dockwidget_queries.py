@@ -68,8 +68,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         # Context menu
         self._set_context_menus()
 
-        self.tab_results.setTabEnabled(4, False)
-
         # Create maptool
         self.maptool_identify = QgsMapToolIdentifyFeature(self.canvas)
 
@@ -85,6 +83,9 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         self.tree_view_physical.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree_view_physical.customContextMenuRequested.connect(self.show_context_menu)
+
+        self.tree_view_economic.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tree_view_economic.customContextMenuRequested.connect(self.show_context_menu)
 
     def add_layers(self):
         res_layers = self.qgis_utils.get_layers(self._db, {
@@ -230,7 +231,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             if not self.isVisible():
                 self.show()
 
-            self.search_data_by_component(**{'plot_t_id': plot_t_id})
+            self.search_data_by_component(plot_t_id=plot_t_id)
 
     def search_data_by_component(self, **kwargs):
         records = self._db.get_igac_basic_info(**kwargs)
@@ -249,6 +250,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.tree_view_physical.setModel(TreeModel(data=records))
         self.tree_view_physical.expandAll()
 
+        records = self._db.get_igac_economic_info(**kwargs)
+        self.tree_view_economic.setModel(TreeModel(data=records))
+        self.tree_view_economic.expandAll()
+
     def alphanumeric_query(self):
         """
         Alphanumeric query
@@ -256,15 +261,13 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         option = self.cbo_parcel_fields.currentData()
         query = self.txt_alphanumeric_query.text().strip()
         if query:
-            params = dict()
             if option == 'fmi':
-                params = {'parcel_fmi': query}
+                self.search_data_by_component(parcel_fmi=query)
             elif option == 'parcel_number':
-                params = {'parcel_number': query}
+                self.search_data_by_component(parcel_number=query)
             else: # previous_parcel_number
-                params = {'previous_parcel_number': query}
+                self.search_data_by_component(previous_parcel_number=query)
 
-            self.search_data_by_component(**params)
         else:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("DockWidgetQueries", "First enter a query"))
