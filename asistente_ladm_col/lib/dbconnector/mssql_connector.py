@@ -277,10 +277,13 @@ class MssqlConnector(DBConnector):
             layer_uri = layer.dataProvider().uri()
             db_uri = self.dict_conn_params
 
+            host_test = db_uri['host']
+            host_test += "\\" + db_uri['instance'] if db_uri['instance'] else ""
+            host_test += "," + db_uri['port'] if db_uri['port'] else ""
+
             result = (layer_uri.schema() == self.schema and \
                 layer_uri.database() == db_uri['database'] and \
-                layer_uri.host() == db_uri['host'] + '\\' + db_uri['instance'] and \
-                layer_uri.port() == db_uri['port'] and \
+                layer_uri.host() == host_test and \
                 layer_uri.username() == db_uri['username'] and \
                 layer_uri.password() == db_uri['password'])
 
