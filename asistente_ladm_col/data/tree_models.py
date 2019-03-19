@@ -43,7 +43,7 @@ from qgis.PyQt.QtCore import (
     QModelIndex,
     Qt,
     QVariant)
-from qgis.PyQt.QtGui import QColor, QIcon, QBrush
+from qgis.PyQt.QtGui import QColor, QIcon, QBrush, QFont
 
 from ..config.table_mapping_config import DICT_PACKAGE_ICON, DICT_TABLE_PACKAGE, DICT_PLURAL
 
@@ -150,7 +150,7 @@ class TreeModel(QAbstractItemModel):
         if not index.isValid():
             return None
 
-        if role in (Qt.DisplayRole, Qt.UserRole, Qt.ToolTipRole, Qt.DecorationRole, Qt.ForegroundRole):
+        if role in (Qt.DisplayRole, Qt.UserRole, Qt.ToolTipRole, Qt.DecorationRole, Qt.ForegroundRole, Qt.FontRole):
             return self.getItem(index).data(index.column(), role)
         else:
             return QVariant()
@@ -240,7 +240,7 @@ class TreeModel(QAbstractItemModel):
         return parentItem.childCount()
 
     def setData(self, index, value, role=Qt.DisplayRole):
-        if role not in (Qt.DisplayRole, Qt.UserRole, Qt.ToolTipRole, Qt.DecorationRole, Qt.ForegroundRole):
+        if role not in (Qt.DisplayRole, Qt.UserRole, Qt.ToolTipRole, Qt.DecorationRole, Qt.ForegroundRole, Qt.FontRole):
             return False
 
         item = self.getItem(index)
@@ -330,4 +330,7 @@ class TreeModel(QAbstractItemModel):
             object_parent.setData(0, "t_id: {}".format(object['id']))
             object_parent.setData(0, {"type": key, "id": object['id'], "value": object['id']}, Qt.UserRole)
             object_parent.setData(0, key, Qt.ToolTipRole)
+            font = QFont()
+            font.setBold(True)
+            object_parent.setData(0, font, Qt.FontRole)
             self.fill_model(object['attributes'], object_parent)
