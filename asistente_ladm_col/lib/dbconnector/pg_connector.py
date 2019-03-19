@@ -624,6 +624,11 @@ class PGConnector(DBConnector):
                              parcel_number=params['parcel_number'],
                              previous_parcel_number=params['previous_parcel_number'])
 
+
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute(query)
         records = cur.fetchall()
@@ -1252,6 +1257,10 @@ class PGConnector(DBConnector):
                              parcel_number=params['parcel_number'],
                              previous_parcel_number=params['previous_parcel_number'])
 
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute(query)
         records = cur.fetchall()
@@ -1442,6 +1451,10 @@ class PGConnector(DBConnector):
                              parcel_number=params['parcel_number'],
                              previous_parcel_number=params['previous_parcel_number'])
 
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute(query)
         records = cur.fetchall()
@@ -1813,6 +1826,10 @@ class PGConnector(DBConnector):
                              parcel_number=params['parcel_number'],
                              previous_parcel_number=params['previous_parcel_number'])
 
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute(query)
         records = cur.fetchall()
@@ -2104,6 +2121,10 @@ class PGConnector(DBConnector):
                              parcel_number=params['parcel_number'],
                              previous_parcel_number=params['previous_parcel_number'])
 
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute(query)
         records = cur.fetchall()
