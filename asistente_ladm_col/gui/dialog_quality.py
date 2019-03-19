@@ -207,7 +207,7 @@ class DialogQuality(QDialog, DIALOG_UI):
 
     def accepted(self):
         #self.qgis_utils.remove_error_group_requested.emit()
-        self.quality.clean_log_dialog_quality_text()
+        self.quality.initialize_log_dialog_quality()
         self.quality.set_count_topology_rules(len(self.trw_quality_rules.selectedItems()))
 
         iterator = QTreeWidgetItemIterator(self.trw_quality_rules, QTreeWidgetItemIterator.Selectable)
