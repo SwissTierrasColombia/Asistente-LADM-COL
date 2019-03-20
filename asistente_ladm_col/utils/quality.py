@@ -111,8 +111,9 @@ class QualityUtils(QObject):
     def get_log_dialog_quality_text(self):
         return self.log_dialog_quality_text, self.total_time
 
-    def clean_log_dialog_quality_text(self):
+    def initialize_log_dialog_quality(self):
         self.log_dialog_quality_text = ""
+        self.total_time = 0
 
     def _log_quality_checks(func_to_decorate):
         @wraps(func_to_decorate)

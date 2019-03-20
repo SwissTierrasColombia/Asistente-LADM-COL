@@ -43,11 +43,10 @@ class LogQualityDialog(QDialog, LOG_DIALOG_UI):
         self.buttonBox.accepted.connect(self.save)
 
         self.buttonBox.button(QDialogButtonBox.Save).setText(QCoreApplication.translate("LogQualityDialog", "Export to PDF"))
-        text, total_time = self.quality.get_log_dialog_quality_text()
-        self.txt_log_quality.setHtml(text)
+        self.text, self.total_time = self.quality.get_log_dialog_quality_text()
+        self.txt_log_quality.setHtml(self.text)
 
     def save(self):
-        text, total_time = self.quality.get_log_dialog_quality_text()
         settings = QSettings()
         new_filename, filter = QFileDialog.getSaveFileName(self,
                                                            QCoreApplication.translate("LogQualityDialog",
@@ -64,9 +63,9 @@ class LogQualityDialog(QDialog, LOG_DIALOG_UI):
                 'LogQualityDialog',
                 "<h2 align='center'>Quality Check Results</h2><div style='text-align:center;'>{}<br>Database: {}, Schema: {}<br>Total execution time: {}</div>").format(
                 time.strftime("%d/%m/%y %H:%M:%S"), settings.value('Asistente-LADM_COL/pg/database'),
-                settings.value('Asistente-LADM_COL/pg/schema'), set_time_format(total_time))
+                settings.value('Asistente-LADM_COL/pg/schema'), set_time_format(self.total_time))
 
-            self.txt_log_quality.setHtml("{}<br>{}".format(title, text))
+            self.txt_log_quality.setHtml("{}<br>{}".format(title, self.text))
 
             printer = QPrinter()
             printer.setPageSize(QPrinter.Letter)
@@ -76,5 +75,5 @@ class LogQualityDialog(QDialog, LOG_DIALOG_UI):
 
             msg = QCoreApplication.translate("LogQualityDialog", 
                 "All Quality Check report successfully generated in folder <a href='file:///{path}'>{path}</a>!").format(path=normalize_local_url(new_filename))
-            self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Success, 0) 
+            self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Success, 0)
 
