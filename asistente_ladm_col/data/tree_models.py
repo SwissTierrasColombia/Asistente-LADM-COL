@@ -301,8 +301,15 @@ class TreeModel(QAbstractItemModel):
                             self.fill_collection(key, values, parent)
                             break
             elif type(values) is dict:
-                # Dict of key-value pairs, reuse the function
-                self.fill_model(values, parent)
+                if key == 'attributes':
+                    # Dict of key-value pairs, reuse the function
+                    self.fill_model(values, parent)
+                else:
+                    # Non-LADM object (e.g., external boundaries)
+                    parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
+                    kv_item = parent.child(parent.childCount() - 1)
+                    kv_item.setData(0, "{}:".format(key))
+                    self.fill_model(values, kv_item)
             else:
                 # Simple key-value pair
                 parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
