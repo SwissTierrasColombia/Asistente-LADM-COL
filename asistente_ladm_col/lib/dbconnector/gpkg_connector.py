@@ -65,3 +65,6 @@ class GPKGConnector(DBConnector):
 
     def is_ladm_layer(self, layer):
         return False
+
+    def get_description_conn_string(self):
+        return os.path.basename(self.dict_conn_params['dbfile'])

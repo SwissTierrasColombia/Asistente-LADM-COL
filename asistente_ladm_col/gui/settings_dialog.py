@@ -217,6 +217,17 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
             self.qgis_utils.automatic_namespace_local_id_configuration_changed(self._db)
 
+    def _restore_settings_db(self):
+        settings = QSettings()
+        # reload all panels
+        for index_db, item_db in self._lst_panel.items():
+            dict_conn = dict()
+            keys = item_db.get_keys_connection_parameters()
+            for key in keys:
+                dict_conn[key] = settings.value('Asistente-LADM_COL/' + index_db + '/' + key)
+
+            item_db.write_connection_parameters(dict_conn)
+
     def restore_settings(self):
         # Restore QSettings
         settings = QSettings()
@@ -230,16 +241,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.cbo_db_source.setCurrentIndex(index_db)
         self.db_source_changed()
 
-        current_db = self.cbo_db_source.currentData()
-
-        dict_conn = dict()
-
-        keys = self._lst_panel[current_db].get_keys_connection_parameters()
-
-        for key in keys:
-            dict_conn[key] = settings.value('Asistente-LADM_COL/' + current_db + '/' + key)
-
-        self._lst_panel[current_db].write_connection_parameters(dict_conn)
+        self._restore_settings_db()
 
         custom_model_directories_is_checked = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
         if custom_model_directories_is_checked:

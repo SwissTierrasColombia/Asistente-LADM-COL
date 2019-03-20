@@ -67,6 +67,9 @@ class DBConnector(QObject):
 
         return ' '.join(["{}={}".format(k, v) for k, v in tmp_dict_conn_params.items()])
 
+    def get_description_conn_string(self):
+        raise NotImplementedError
+
     def get_connection_uri(self, dict_conn, mode='pg', level=1):
         """
         :param dict_conn: (dict) dictionary with the parameters to establish a connection

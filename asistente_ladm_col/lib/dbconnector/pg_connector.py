@@ -250,6 +250,9 @@ class PGConnector(DBConnector):
                 'table': PARCEL_TABLE}
         }
 
+    def get_description_conn_string(self):
+        return self.dict_conn_params['database'] + '.' + self.dict_conn_params['schema']
+
     def _postgis_exists(self):
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute("""

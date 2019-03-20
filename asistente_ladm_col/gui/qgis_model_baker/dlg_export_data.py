@@ -92,7 +92,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.xtf_file_line_edit.textChanged.connect(self.xtf_browser_opened_to_false)
         self.xtf_file_line_edit.textChanged.emit(self.xtf_file_line_edit.text())
 
-        self.db_connect_label.setText(self.db.get_display_conn_string())
+        self.db_connect_label.setText(self.db.get_description_conn_string())
         self.db_connect_label.setToolTip(self.db.get_display_conn_string())
         self.connection_setting_button.clicked.connect(self.show_settings)
 
@@ -156,7 +156,7 @@ class DialogExportData(QDialog, DIALOG_UI):
             self._current_db = dlg.get_current_db()
             
             self.db_connect_label.setToolTip(self.db.get_display_conn_string())
-            self.db_connect_label.setText(self.db.get_display_conn_string())
+            self.db_connect_label.setText(self.db.get_description_conn_string())
             self.update_model_names()
 
     def accepted(self):
