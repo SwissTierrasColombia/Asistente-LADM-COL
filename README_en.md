@@ -17,7 +17,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([1.5.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.5.0)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.1.0.1](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip) and allows users to:
+The current version ([1.6.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.6.0)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.1.0.1](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip) and allows users to:
 
  - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
  - Capture data for the `FICHA_PREDIAL v2.2.1` model.
@@ -29,6 +29,8 @@ The current version ([1.5.0](https://github.com/AgenciaImplementacion/Asistente-
    - Basic information.
    - Legal information.
    - Property record card information.
+   - Physical information.
+   - Economic information.
  - Preprocess points: Controlled Measurement.
    - Group points by nearness.
    - Average point position from points of the same group.
