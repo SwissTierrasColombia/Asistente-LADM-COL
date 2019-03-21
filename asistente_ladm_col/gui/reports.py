@@ -158,7 +158,7 @@ class ReportGenerator():
             version_found = ''
             with open(version_path) as f:
                 version_found = f.read()
-            if version_found != REPORTS_REQUIRED_VERSION:
+            if version_found.strip() != REPORTS_REQUIRED_VERSION:
                 required_version_found = False
 
         if not required_version_found:
