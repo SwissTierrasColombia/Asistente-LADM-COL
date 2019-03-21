@@ -5067,7 +5067,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../ui/wiz_create_building_unit_qualification_valuation.ui" line="123"/>
         <source>Unconventional</source>
-        <translation>Unconventional</translation>
+        <translation type="unfinished">No convencional</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_building_unit_qualification_valuation.ui" line="180"/>
