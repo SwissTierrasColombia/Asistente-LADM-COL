@@ -12,9 +12,17 @@ FORMS = ../ui/dlg_load_layers.ui \
         ../ui/wiz_associate_extaddress_cadastre.ui \
         ../ui/wiz_create_points_cadastre.ui \
         ../ui/wiz_create_administrative_source_cadastre.ui \
+        ../ui/wiz_create_building_valuation.ui \
+        ../ui/wiz_create_building_unit_qualification_valuation.ui \
+        ../ui/wiz_create_building_unit_valuation.ui \
+        ../ui/wiz_create_common_equipment_valuation.ui \
+        ../ui/wiz_create_geoeconomic_zone_valuation.ui \
+        ../ui/wiz_create_horizontal_property_valuation.ui \
         ../ui/wiz_create_plot_cadastre.ui \
         ../ui/wiz_create_boundaries_cadastre.ui \
         ../ui/wiz_create_parcel_cadastre.ui \
+        ../ui/wiz_create_parcel_valuation.ui \
+        ../ui/wiz_create_physical_zone_valuation.ui \
         ../ui/wiz_create_building_cadastre.ui \
         ../ui/wiz_create_right_of_way_cadastre.ui \
         ../ui/wiz_create_party_cadastre.ui \

@@ -5048,6 +5048,122 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>wiz_create_building_unit_qualification_valuation</name>
+    <message>
+        <location filename="../ui/wiz_create_building_unit_qualification_valuation.ui" line="17"/>
+        <source>Create building unit qualification (Valuation)</source>
+        <translation>Crear Calificación de Unidad de Construcción (Avalúos)</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_unit_qualification_valuation.ui" line="55"/>
+        <source>Building unit qualification type</source>
+        <translation>Tipo de calificación de unidad de construcción</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_unit_qualification_valuation.ui" line="100"/>
+        <source>Conventional</source>
+        <translation>Conventional</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_unit_qualification_valuation.ui" line="123"/>
+        <source>Unconventional</source>
+        <translation>Unconventional</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_unit_qualification_valuation.ui" line="180"/>
+        <source>Load data</source>
+        <translation>Cargar datos</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_unit_qualification_valuation.ui" line="199"/>
+        <source>Entering data manually using a form</source>
+        <translation>Ingresando datos manualmente en un formulario</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_unit_qualification_valuation.ui" line="225"/>
+        <source>From another QGIS layer/table (setting a field mapping)</source>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_unit_qualification_valuation.ui" line="259"/>
+        <source>Source:</source>
+        <translation>Fuente:</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_unit_qualification_valuation.ui" line="288"/>
+        <source>Recent mappings:</source>
+        <translation>Mapeos recientes:</translation>
+    </message>
+</context>
+<context>
+    <name>wiz_create_building_unit_valuation</name>
+    <message>
+        <location filename="../ui/wiz_create_building_unit_valuation.ui" line="14"/>
+        <source>Create building unit (Valuation)</source>
+        <translation>Crear unidad de construcción (Avalúos)</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_unit_valuation.ui" line="49"/>
+        <source>How would you like to create buildings units?</source>
+        <translation>¿Cómo te gustaría crear unidades de construcción (Avalúos)?</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_unit_valuation.ui" line="68"/>
+        <source>Entering data manually using a form
+(you need to select one building unit before)</source>
+        <translation>Ingresando datos manualmente en un formulario
+(necesitas haber seleccionado una unidad de construcción)</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_unit_valuation.ui" line="95"/>
+        <source>From another QGIS layer/table (setting a field mapping)</source>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_unit_valuation.ui" line="126"/>
+        <source>Source:</source>
+        <translation>Fuente:</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_unit_valuation.ui" line="155"/>
+        <source>Recent mappings:</source>
+        <translation>Mapeos recientes:</translation>
+    </message>
+</context>
+<context>
+    <name>wiz_create_building_valuation</name>
+    <message>
+        <location filename="../ui/wiz_create_building_valuation.ui" line="14"/>
+        <source>Create building (Valuation)</source>
+        <translation>Crear construcción (Avalúos)</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_valuation.ui" line="49"/>
+        <source>How would you like to buildings?</source>
+        <translation>¿Cómo te gustaría crear construcciones?</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_valuation.ui" line="68"/>
+        <source>Entering data manually using a form</source>
+        <translation>Ingresando datos manualmente en un formulario</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_valuation.ui" line="94"/>
+        <source>From another QGIS layer/table (setting a field mapping)</source>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_valuation.ui" line="125"/>
+        <source>Source:</source>
+        <translation>Fuente:</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_building_valuation.ui" line="154"/>
+        <source>Recent mappings:</source>
+        <translation>Mapeos recientes:</translation>
+    </message>
+</context>
+<context>
     <name>wiz_create_col_party_cadastre</name>
     <message>
         <source>Create Natural Party</source>
@@ -5080,6 +5196,105 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../ui/wiz_create_col_party_cadastre.ui" line="154"/>
+        <source>Recent mappings:</source>
+        <translation>Mapeos recientes:</translation>
+    </message>
+</context>
+<context>
+    <name>wiz_create_common_equipment_valuation</name>
+    <message>
+        <location filename="../ui/wiz_create_common_equipment_valuation.ui" line="14"/>
+        <source>Create common equipment (Valuation)</source>
+        <translation>Crear equipamiento comunal (Avalúos)</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_common_equipment_valuation.ui" line="49"/>
+        <source>How would you like to create common equipments?</source>
+        <translation>¿Cómo te gustaría crear equipamientos comunales?</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_common_equipment_valuation.ui" line="68"/>
+        <source>Entering data manually using a form</source>
+        <translation>Ingresando datos manualmente en un formulario</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_common_equipment_valuation.ui" line="94"/>
+        <source>From another QGIS layer/table (setting a field mapping)</source>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_common_equipment_valuation.ui" line="125"/>
+        <source>Source:</source>
+        <translation>Fuente:</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_common_equipment_valuation.ui" line="154"/>
+        <source>Recent mappings:</source>
+        <translation>Mapeos recientes:</translation>
+    </message>
+</context>
+<context>
+    <name>wiz_create_geoeconomic_zone_valuation</name>
+    <message>
+        <location filename="../ui/wiz_create_geoeconomic_zone_valuation.ui" line="17"/>
+        <source>Create geoeconomic zone (Valuation)</source>
+        <translation>Crear zona homogénea geoeconómica</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_geoeconomic_zone_valuation.ui" line="58"/>
+        <source>How would you like to create geoeconomic zones?</source>
+        <translation>¿Cómo te gustaría crear zonas homogéneas geoeconómicas?</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_geoeconomic_zone_valuation.ui" line="72"/>
+        <source>Source:</source>
+        <translation>Fuente:</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_geoeconomic_zone_valuation.ui" line="101"/>
+        <source>Recent mappings:</source>
+        <translation>Mapeos recientes:</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_geoeconomic_zone_valuation.ui" line="116"/>
+        <source>From another QGIS layer/table (setting a field mapping)</source>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_geoeconomic_zone_valuation.ui" line="152"/>
+        <source>Digitizing</source>
+        <translation>Digitalizando</translation>
+    </message>
+</context>
+<context>
+    <name>wiz_create_horizontal_property_valuation</name>
+    <message>
+        <location filename="../ui/wiz_create_horizontal_property_valuation.ui" line="14"/>
+        <source>Create horizontal property (Valuation)</source>
+        <translation>Crear Predio Matriz PH</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_horizontal_property_valuation.ui" line="49"/>
+        <source>How would you like to create horizontal properties?</source>
+        <translation>¿Cómo te gustaría crear Predios Matriz PH?</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_horizontal_property_valuation.ui" line="68"/>
+        <source>Entering data manually using a form</source>
+        <translation>Ingresando datos manualmente en un formulario</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_horizontal_property_valuation.ui" line="94"/>
+        <source>From another QGIS layer/table (setting a field mapping)</source>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_horizontal_property_valuation.ui" line="123"/>
+        <source>Source:</source>
+        <translation>Fuente:</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_horizontal_property_valuation.ui" line="152"/>
         <source>Recent mappings:</source>
         <translation>Mapeos recientes:</translation>
     </message>
@@ -5307,6 +5522,72 @@ Unidades de Construcción)</translation>
         <location filename="../ui/wiz_create_parcel_cadastre.ui" line="127"/>
         <source>Source:</source>
         <translation>Fuente:</translation>
+    </message>
+</context>
+<context>
+    <name>wiz_create_parcel_valuation</name>
+    <message>
+        <location filename="../ui/wiz_create_parcel_valuation.ui" line="14"/>
+        <source>Create parcel (Valuation)</source>
+        <translation>Crear predio (Avalúos)</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_parcel_valuation.ui" line="49"/>
+        <source>How would you like to create parcels valuation?</source>
+        <translation>¿Cómo te gustaría crear predios (Avalúos)?</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_parcel_valuation.ui" line="68"/>
+        <source>Entering data manually using a form</source>
+        <translation>Ingresando datos manualmente en un formulario</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_parcel_valuation.ui" line="94"/>
+        <source>From another QGIS layer/table (setting a field mapping)</source>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_parcel_valuation.ui" line="125"/>
+        <source>Source:</source>
+        <translation>Fuente:</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_parcel_valuation.ui" line="154"/>
+        <source>Recent mappings:</source>
+        <translation>Mapeos recientes:</translation>
+    </message>
+</context>
+<context>
+    <name>wiz_create_physical_zone_valuation</name>
+    <message>
+        <location filename="../ui/wiz_create_physical_zone_valuation.ui" line="17"/>
+        <source>Create physical zone (Valuation)</source>
+        <translation>Crear zona homogénea física</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_physical_zone_valuation.ui" line="58"/>
+        <source>How would you like to create physical zones?</source>
+        <translation>¿Cómo te gustaría crear zonas homogéneas físicas?</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_physical_zone_valuation.ui" line="72"/>
+        <source>Source:</source>
+        <translation>Fuente:</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_physical_zone_valuation.ui" line="101"/>
+        <source>Recent mappings:</source>
+        <translation>Mapeos recientes:</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_physical_zone_valuation.ui" line="116"/>
+        <source>From another QGIS layer/table (setting a field mapping)</source>
+        <translation>Desde otra capa de QGIS (definiendo un mapeo de campos)</translation>
+    </message>
+    <message>
+        <location filename="../ui/wiz_create_physical_zone_valuation.ui" line="152"/>
+        <source>Digitizing</source>
+        <translation>Digitalizando</translation>
     </message>
 </context>
 <context>
