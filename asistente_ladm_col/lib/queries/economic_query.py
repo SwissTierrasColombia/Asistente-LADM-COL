@@ -5,6 +5,9 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
      unidad_avaluo_predio AS (
          SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename LIKE 'predio' AND columnname LIKE 'avaluo_predio' LIMIT 1
      ),
+     unidad_avaluo_terreno AS (
+         SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = 'terreno' AND columnname = 'avaluo_terreno' LIMIT 1
+     ),
      unidad_area_calculada_terreno AS (
          SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = 'terreno' AND columnname = 'area_calculada' LIMIT 1
      ),
@@ -167,7 +170,7 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
                                                                   'unidadconstruccion', COALESCE(info_uc.unidadconstruccion, '[]')
                                                                  ))) FILTER(WHERE construccion.t_id IS NOT NULL) as construccion
          FROM {schema}.construccion LEFT JOIN info_uc ON construccion.t_id = info_uc.construccion
-         LEFT JOIN {schema}.uebaunit ON uebaunit.ue_construccion = info_uc.construccion
+         LEFT JOIN {schema}.uebaunit ON uebaunit.ue_construccion = construccion.t_id
          WHERE construccion.t_id IN (SELECT * FROM construcciones_seleccionadas)
          GROUP BY uebaunit.baunit_predio
      ),
@@ -204,8 +207,11 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
         """
 
     query += """
-         WHERE predio.t_id IN (SELECT * FROM predios_seleccionados) AND uebaunit.ue_terreno IS NOT NULL
-         GROUP BY uebaunit.ue_terreno
+         WHERE predio.t_id IN (SELECT * FROM predios_seleccionados) 
+         AND uebaunit.ue_terreno IS NOT NULL
+		 AND uebaunit.ue_construccion IS NULL
+		 AND uebaunit.ue_unidadconstruccion IS NULL
+		 GROUP BY uebaunit.ue_terreno
      ),
     """
 
@@ -245,6 +251,7 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
         SELECT terreno.t_id,
           json_build_object('id', terreno.t_id,
                             'attributes', json_build_object(CONCAT('Área de terreno' , (SELECT * FROM unidad_area_calculada_terreno)), terreno.area_calculada
+                                                            , CONCAT('Avalúo terreno', (SELECT * FROM unidad_avaluo_terreno)), terreno.Avaluo_Terreno
     """
 
     if valuation_model:

@@ -146,8 +146,11 @@ def get_igac_property_record_card_query(schema, plot_t_id, parcel_fmi, parcel_nu
         """
 
     query += """
-         WHERE predio.t_id IN (SELECT * FROM predios_seleccionados) AND uebaunit.ue_terreno IS NOT NULL
-         GROUP BY uebaunit.ue_terreno
+         WHERE predio.t_id IN (SELECT * FROM predios_seleccionados)
+         AND uebaunit.ue_terreno IS NOT NULL
+		 AND uebaunit.ue_construccion IS NULL
+		 AND uebaunit.ue_unidadconstruccion IS NULL
+		 GROUP BY uebaunit.ue_terreno
      ),
      info_terreno AS (
         SELECT terreno.t_id,
