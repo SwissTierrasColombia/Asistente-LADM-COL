@@ -98,6 +98,7 @@ from .gui.log_quality_dialog import LogQualityDialog
 from .gui.right_of_way import RightOfWay
 from .gui.reports import ReportGenerator
 from .gui.toolbar import ToolBar
+from .data.ladm_data import LADM_DATA
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.model_parser import ModelParser
 from .utils.qgis_utils import QGISUtils
@@ -130,7 +131,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.right_of_way = RightOfWay(self.iface, self.qgis_utils)
         self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
-        self.report_generator = ReportGenerator(self.qgis_utils)
+        self.ladm_data = LADM_DATA(self.qgis_utils)
+        self.report_generator = ReportGenerator(self.qgis_utils, self.ladm_data)
 
         # Menus
         self.add_cadastre_menu()
@@ -866,7 +868,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_queries(self):
         if self._dock_widget_queries is None:
-            self._dock_widget_queries = DockWidgetQueries(self.iface, self.get_db_connection(), self.qgis_utils)
+            self._dock_widget_queries = DockWidgetQueries(self.iface, self.get_db_connection(), self.qgis_utils, self.ladm_data)
             self.qgis_utils.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_queries)
         else:

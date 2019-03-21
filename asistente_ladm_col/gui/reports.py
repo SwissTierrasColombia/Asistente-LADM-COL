@@ -48,14 +48,15 @@ from ..config.general_config import (TEST_SERVER,
                                      REPORTS_REQUIRED_VERSION,
                                      URL_REPORTS_LIBRARIES)
 from ..config.table_mapping_config import (ID_FIELD,
-                                           PLOT_TABLE)
+                                           PLOT_TABLE, PARCEL_NUMBER_FIELD)
 from ..utils.qt_utils import (remove_readonly,
                               normalize_local_url)
 from ..gui.dlg_get_java_path import DialogGetJavaPath
 
 class ReportGenerator():
-    def __init__(self, qgis_utils):
+    def __init__(self, qgis_utils, ladm_data):
         self.qgis_utils = qgis_utils
+        self.ladm_data = ladm_data
         self.encoding = locale.getlocale()[1]
         # This might be unset
         if not self.encoding:
@@ -283,7 +284,10 @@ class ReportGenerator():
             proc.readyReadStandardOutput.connect(
                 functools.partial(self.stdout_ready, proc=proc))
 
-            current_report_path = os.path.join(save_into_folder, 'anexo_17_{}.pdf'.format(plot_id))
+
+            parcel_number = self.ladm_data.get_parcels_related_to_plot(db, plot_id, PARCEL_NUMBER_FIELD) or ['']
+            file_name = 'anexo_17_{}_{}.pdf'.format(plot_id, parcel_number[0])
+            current_report_path = os.path.join(save_into_folder, file_name)
             proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', current_report_path])
 
             if not proc.waitForStarted():
@@ -312,7 +316,7 @@ class ReportGenerator():
 
         if total == count:
             if total == 1:
-                msg = QCoreApplication.translate("ReportGenerator", "The report <a href='file:///{}'>anexo_17_{}.pdf</a> was successfully generated!").format(normalize_local_url(save_into_folder), plot_id)
+                msg = QCoreApplication.translate("ReportGenerator", "The report <a href='file:///{}'>{}</a> was successfully generated!").format(normalize_local_url(save_into_folder), file_name)
             else:
                 msg = QCoreApplication.translate("ReportGenerator", "All reports were successfully generated in folder <a href='file:///{path}'>{path}</a>!").format(path=normalize_local_url(save_into_folder))
 

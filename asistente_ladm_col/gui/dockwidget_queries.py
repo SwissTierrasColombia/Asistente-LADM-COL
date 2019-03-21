@@ -35,7 +35,7 @@ from ..data.tree_models import TreeModel
 DOCKWIDGET_UI = get_ui_class('dockwidget_queries.ui')
 
 class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
-    def __init__(self, iface, db, qgis_utils, parent=None):
+    def __init__(self, iface, db, qgis_utils, ladm_data, parent=None):
         super(DockWidgetQueries, self).__init__(None)
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
@@ -43,6 +43,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.canvas = iface.mapCanvas()
         self._db = db
         self.qgis_utils = qgis_utils
+        self.ladm_data = ladm_data
         self.selection_color = None
         self.active_map_tool_before_custom = None
 
@@ -316,7 +317,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
                 if table_name == PARCEL_TABLE:
                     # We show a handy option to zoom to related plots
-                    plot_ids = self.get_plots_related_to_parcel(t_id)
+                    plot_ids = self.ladm_data.get_plots_related_to_parcel(self._db, t_id, None, self._plot_layer, self._uebaunit_table)
                     if plot_ids:
                         action_zoom_to_plots = QAction(QCoreApplication.translate("DockWidgetQueries", "Zoom to related plot(s)"))
                         action_zoom_to_plots.triggered.connect(partial(self.zoom_to_plots, plot_ids))
@@ -367,31 +368,3 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                                     QColor(255, 0, 0, 0),
                                     flashes=1,
                                     duration=500)
-
-    def get_plots_related_to_parcel(self, t_id):
-        """
-        TODO: This function should be in a ladm lib
-        :param t_id: parcel t_id
-        :return: list of plot t_ids related to the parcel
-        """
-        plots = list()
-        features = self._uebaunit_table.getFeatures("{}={} AND {} IS NOT NULL".format(
-                                                    UEBAUNIT_TABLE_PARCEL_FIELD,
-                                                    t_id,
-                                                    UEBAUNIT_TABLE_PLOT_FIELD))
-
-        plot_t_ids = list()
-        for feature in features:
-            plot_t_ids.append(feature[UEBAUNIT_TABLE_PLOT_FIELD])
-
-        if plot_t_ids:
-            request = QgsFeatureRequest(
-                        QgsExpression("{} IN ({})".format(ID_FIELD,
-                                                          ",".join([str(id) for id in plot_t_ids])))).setNoAttributes()
-            request.setFlags(QgsFeatureRequest.NoGeometry)
-            features = self._plot_layer.getFeatures(request)
-
-            for feature in features:
-                plots.append(feature.id())
-
-        return plots
