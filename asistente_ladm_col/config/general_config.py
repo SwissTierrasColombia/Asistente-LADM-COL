@@ -58,7 +58,7 @@ SETTINGS_CONNECTION_TAB_INDEX = 0
 
 # Version to be installed when creating reports (annex 17)
 # (Other versions, if found, will be dropped in favor of this one)
-REPORTS_REQUIRED_VERSION = '0.1'
+REPORTS_REQUIRED_VERSION = '0.2'
 URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/annex_17/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
 
 MODULE_HELP_MAPPING = {
