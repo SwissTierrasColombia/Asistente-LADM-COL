@@ -37,8 +37,14 @@ SOURCES = ../__init__.py \
           ../utils/model_parser.py \
           ../gui/associate_extaddress_cadastre_wizard.py \
           ../gui/create_administrative_source_cadastre_wizard.py \
+          ../gui/create_building_unit_qualification_valuation_wizard.py \
+          ../gui/create_building_unit_valuation_wizard.py \
+          ../gui/create_building_valuation_wizard.py \
           ../gui/create_col_party_cadastre_wizard.py \
+          ../gui/create_common_equipment_valuation_wizard.py \
+          ../gui/create_geoeconomic_zone_valuation_wizard.py \
           ../gui/create_group_party_cadastre.py \
+          ../gui/create_horizontal_property_valuation_wizard.py \
           ../gui/create_responsibility_cadastre_wizard.py \
           ../gui/create_restriction_cadastre_wizard.py \
           ../gui/create_right_cadastre_wizard.py \
@@ -55,6 +61,8 @@ SOURCES = ../__init__.py \
           ../gui/create_market_research_prc.py \
           ../gui/create_natural_party_prc.py \
           ../gui/create_nuclear_family_prc.py \
+          ../gui/create_parcel_valuation_wizard.py \
+          ../gui/create_physical_zone_valuation_wizard.py \
           ../gui/create_property_record_card_prc.py \
           ../gui/dockwidget_queries.py \
           ../gui/about_dialog.py \
@@ -73,6 +81,7 @@ SOURCES = ../__init__.py \
           ../lib/dbconnector/pg_connector.py \
           ../lib/source_handler.py \
           ../config/general_config.py \
-          ../config/help_strings.py
+          ../config/help_strings.py \
+          ../data/ladm_data.py
 
 TRANSLATIONS = Asistente-LADM_COL_es.ts
