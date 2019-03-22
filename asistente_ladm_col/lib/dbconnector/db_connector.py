@@ -83,8 +83,8 @@ class DBConnector(QObject):
         """
         uri = []
         if mode == 'pg':
-            uri += ['host={}'.format(dict_conn['host'])]
-            uri += ['port={}'.format(dict_conn['port'])]
+            uri += ['host={}'.format(dict_conn['host'] or 'localhost')]
+            uri += ['port={}'.format(dict_conn['port'] or '5432')]
             if dict_conn['username']:
                 uri += ['user={}'.format(dict_conn['username'])]
             if dict_conn['password']:

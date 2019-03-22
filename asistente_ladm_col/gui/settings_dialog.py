@@ -147,8 +147,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._current_db = self.cbo_db_source.currentData()
         self._params = self._lst_panel[self._current_db].read_connection_parameters()
 
-        if self._lst_panel[self._current_db].params_changed:
-            self._lst_panel[self._current_db].params_changed = False
+        if self._lst_panel[self._current_db].state_changed():
             res, msg = self._db.test_connection()
             if res:
                 self.db_connection_changed.emit(self._db)
@@ -158,7 +157,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.save_settings()
 
     def reject(self):
-        self.restore_settings()
         self._current_db = self.cbo_db_source.currentData()
         self._lst_panel[self._current_db].params_changed = False
         self.done(0)
@@ -227,6 +225,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 dict_conn[key] = settings.value('Asistente-LADM_COL/' + index_db + '/' + key)
 
             item_db.write_connection_parameters(dict_conn)
+            item_db.save_state()
 
     def restore_settings(self):
         # Restore QSettings

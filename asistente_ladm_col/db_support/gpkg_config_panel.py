@@ -55,8 +55,6 @@ class GpkgConfigPanel(QWidget, DbConfigPanel):
         layout.addWidget(self.txt_file, 0, 1)
         layout.addWidget(self.btn_file_browse, 0, 2)
 
-        self.txt_file.textEdited.connect(self._set_params_changed)
-
     def read_connection_parameters(self):
         dict_conn = dict()
         dict_conn['dbfile'] = self.txt_file.text().strip()
@@ -93,3 +91,11 @@ class GpkgConfigPanel(QWidget, DbConfigPanel):
                 file_filter=QCoreApplication.translate("DialogExportData","GeoPackage Database (*.gpkg)"))
 
         self.btn_file_browse.clicked.connect(file_selector)
+
+    def state_changed(self):
+        result = True
+
+        if self.state:
+            result = (self.state['dbfile'] != self.txt_file.text().strip())
+
+        return result

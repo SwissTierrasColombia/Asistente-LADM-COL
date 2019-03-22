@@ -41,14 +41,45 @@ class DbSchemaDbPanel(DbConfigPanel):
         self.create_schema_button = QPushButton()
         self.create_schema_button.clicked.connect(self.show_modal_create_schema)
 
-        # Set a timer to avoid creating too many db connections while editing connection parameters
-        self.refreshTimer = QTimer()
-        self.refreshTimer.setSingleShot(True)
-        self.refreshTimer.timeout.connect(self.refresh_connection)
+        self.refresh_db_button = QPushButton()
+        self.refresh_db_button.setText('Refresh databases and schemas')
+        self.refresh_db_button.clicked.connect(self._refresh_db_button_clicked)
+
+        self._set_controls_enabled(False)
 
     def _connect_change_signals(self):
         self.selected_db_combobox.currentIndexChanged.connect(self.selected_database_changed)
-        self.selected_schema_combobox.currentIndexChanged.connect(self.selected_schema_changed)
+
+    def _set_controls_enabled(self, value):
+        self.selected_db_combobox.setEnabled(value)
+        self.selected_schema_combobox.setEnabled(value)
+        self.create_db_button.setEnabled(value)
+        self.create_schema_button.setEnabled(value)
+
+    def _refresh_db_button_clicked(self):
+        self._disconnect_change_signals()
+
+        old_db_selected = self.selected_db_combobox.currentText().strip()
+        old_schema_selected = self.selected_schema_combobox.currentText().strip()
+
+        if self.update_db_names():
+            old_db_index = self.selected_db_combobox.findText(old_db_selected, Qt.MatchFixedString)
+            if old_db_index >= 0:
+                self.selected_db_combobox.setCurrentIndex(old_db_index)
+
+            self.update_db_schemas()
+
+            old_schema_index = self.selected_schema_combobox.findText(old_schema_selected, Qt.MatchFixedString)
+
+            if old_schema_index >= 0:
+                self.selected_schema_combobox.setCurrentIndex(old_schema_index)
+
+            self._set_controls_enabled(True)
+        else:
+            self.selected_schema_combobox.clear()
+            self._set_controls_enabled(False)
+
+        self._connect_change_signals()
 
     def _disconnect_change_signals(self):
         try:
@@ -56,30 +87,12 @@ class DbSchemaDbPanel(DbConfigPanel):
         except TypeError:
             pass
 
-        try:
-            self.selected_schema_combobox.currentIndexChanged.disconnect(self.selected_schema_changed)
-        except TypeError:
-            pass
-
-    def selected_schema_changed(self, index):
-        self._set_params_changed()
-
-    def refresh_connection(self):
-        if not self.check_for_refresh():
-            self.selected_db_combobox.clear()
-            self.selected_schema_combobox.clear()
-        else:
-            # Update database name list
-            self.update_db_names()
-
     def check_for_refresh(self):
-        raise Exception('unimplemented method')
-
-    def request_for_refresh_connection(self, text):
-        # Wait half a second before refreshing connection
-        self.refreshTimer.start(500)
+        raise NotImplementedError
 
     def update_db_names(self):
+        result = False
+
         dict_conn = self.read_connection_parameters()
 
         tmp_db_conn = self.db_connector
@@ -91,9 +104,12 @@ class DbSchemaDbPanel(DbConfigPanel):
 
         if db_names[0]:
             self.selected_db_combobox.addItems(db_names[1])
+
+            result = True
         else:
-            # We won't show a message here to avoid bothering the user with potentially too much messages
-            pass
+            self.notify_message_requested.emit(QCoreApplication.translate("SettingsDialog", db_names[1]), Qgis.Warning)
+
+        return result
 
     def selected_database_changed(self, index):
         self.update_db_schemas()
