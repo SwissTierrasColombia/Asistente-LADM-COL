@@ -9,8 +9,7 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             get_dbconn,
-                                            restore_schema,
-                                            )
+                                            restore_schema)
 
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.config.table_mapping_config import BOUNDARY_POINT_TABLE, PLOT_TABLE
