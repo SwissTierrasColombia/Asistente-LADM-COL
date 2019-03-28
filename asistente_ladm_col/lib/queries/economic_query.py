@@ -92,6 +92,7 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
             AS calificacion_convencional
         FROM {schema}.calificacion_convencional LEFT JOIN {schema}.avaluounidadconstruccion ON calificacion_convencional.unidadconstruccion = avaluounidadconstruccion.aucons
         WHERE avaluounidadconstruccion.ucons IN (SELECT * FROM unidadesconstruccion_seleccionadas)
+        ORDER BY avaluounidadconstruccion.aucons
      ),
      info_calificacion_no_convencional AS (
         SELECT avaluounidadconstruccion.aucons,
@@ -102,6 +103,7 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
             AS calificacion_no_convencional
         FROM {schema}.calificacion_no_convencional LEFT JOIN {schema}.avaluounidadconstruccion ON calificacion_no_convencional.unidadconstruccion = avaluounidadconstruccion.aucons
         WHERE avaluounidadconstruccion.ucons IN (SELECT * FROM unidadesconstruccion_seleccionadas)
+        ORDER BY avaluounidadconstruccion.aucons
      ),
         """
 
@@ -147,7 +149,7 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
         """
 
     query += """
-                                                                 ))) FILTER(WHERE unidadconstruccion.t_id IS NOT NULL)  as unidadconstruccion
+                                                                 )) ORDER BY unidadconstruccion.t_id) FILTER(WHERE unidadconstruccion.t_id IS NOT NULL)  as unidadconstruccion
          FROM {schema}.unidadconstruccion
     """
 
@@ -168,7 +170,7 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
                 json_agg(json_build_object('id', construccion.t_id,
                                   'attributes', json_build_object('Área construcción', construccion.area_construccion,
                                                                   'unidadconstruccion', COALESCE(info_uc.unidadconstruccion, '[]')
-                                                                 ))) FILTER(WHERE construccion.t_id IS NOT NULL) as construccion
+                                                                 )) ORDER BY construccion.t_id) FILTER(WHERE construccion.t_id IS NOT NULL) as construccion
          FROM {schema}.construccion LEFT JOIN info_uc ON construccion.t_id = info_uc.construccion
          LEFT JOIN {schema}.uebaunit ON uebaunit.ue_construccion = construccion.t_id
          WHERE construccion.t_id IN (SELECT * FROM construcciones_seleccionadas)
@@ -196,7 +198,7 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
 
     query += """
                                                                   'construccion', COALESCE(info_construccion.construccion, '[]')
-                                                                 ))) FILTER(WHERE predio.t_id IS NOT NULL) as predio
+                                                                 )) ORDER BY predio.t_id) FILTER(WHERE predio.t_id IS NOT NULL) as predio
          FROM {schema}.predio LEFT JOIN {schema}.uebaunit ON uebaunit.baunit_predio = predio.t_id
          LEFT JOIN info_construccion ON predio.t_id = info_construccion.baunit_predio
     """
@@ -224,7 +226,7 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
                                            'attributes', json_build_object('Porcentaje', ROUND((st_area(st_intersection(terreno.poligono_creado, zona_homogenea_geoeconomica.geometria))/ st_area(terreno.poligono_creado))::numeric * 100,2),
                                                                            'Valor', zona_homogenea_geoeconomica.valor,
                                                                            'Identificador', zona_homogenea_geoeconomica.identificador))
-            ) FILTER(WHERE zona_homogenea_geoeconomica.t_id IS NOT NULL) AS zona_homogenea_geoeconomica
+            ORDER BY zona_homogenea_geoeconomica.t_id) FILTER(WHERE zona_homogenea_geoeconomica.t_id IS NOT NULL) AS zona_homogenea_geoeconomica
         FROM {schema}.terreno, {schema}.zona_homogenea_geoeconomica
         WHERE terreno.t_id IN (SELECT * FROM terrenos_seleccionados) AND
               st_intersects(terreno.poligono_creado, zona_homogenea_geoeconomica.geometria) = True AND
@@ -237,7 +239,7 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
                     json_build_object('id', zona_homogenea_fisica.t_id,
                                            'attributes', json_build_object('Porcentaje', ROUND((st_area(st_intersection(terreno.poligono_creado, zona_homogenea_fisica.geometria))/ st_area(terreno.poligono_creado))::numeric * 100, 2),
                                                                            'Identificador', zona_homogenea_fisica.identificador))
-            ) FILTER(WHERE zona_homogenea_fisica.t_id IS NOT NULL) AS zona_homogenea_fisica
+            ORDER BY zona_homogenea_fisica.t_id) FILTER(WHERE zona_homogenea_fisica.t_id IS NOT NULL) AS zona_homogenea_fisica
         FROM {schema}.terreno, {schema}.zona_homogenea_fisica
         WHERE terreno.t_id IN (SELECT * FROM terrenos_seleccionados) AND
               st_intersects(terreno.poligono_creado, zona_homogenea_fisica.geometria) = True AND
@@ -274,6 +276,7 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
 
     query += """
         WHERE terreno.t_id IN (SELECT * FROM terrenos_seleccionados)
+        ORDER BY terreno.t_id
      )
     SELECT json_agg(info_terreno.terreno) AS terreno FROM info_terreno
     """
