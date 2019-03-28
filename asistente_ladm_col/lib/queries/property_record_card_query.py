@@ -40,7 +40,7 @@ def get_igac_property_record_card_query(schema, plot_t_id, parcel_fmi, parcel_nu
                                                                            'Nombre oferente', investigacionmercado.nombre_oferente,
                                                                            'Teléfono contacto oferente', investigacionmercado.telefono_contacto_oferente,
                                                                            'Observaciones', investigacionmercado.observaciones))
-            ) FILTER(WHERE investigacionmercado.t_id IS NOT NULL) AS investigacionmercado
+            ORDER BY investigacionmercado.t_id) FILTER(WHERE investigacionmercado.t_id IS NOT NULL) AS investigacionmercado
         FROM {schema}.investigacionmercado WHERE investigacionmercado.fichapredio IN (SELECT * FROM predio_ficha_seleccionados)
         GROUP BY investigacionmercado.fichapredio
      ),
@@ -66,7 +66,7 @@ def get_igac_property_record_card_query(schema, plot_t_id, parcel_fmi, parcel_nu
                                                                            'Etnia', nucleofamiliar.etnia,
                                                                            'Dirección', nucleofamiliar.direccion,
                                                                            'Celular', nucleofamiliar.celular))
-            ) FILTER(WHERE nucleofamiliar.t_id IS NOT NULL) AS nucleofamiliar
+            ORDER BY nucleofamiliar.t_id) FILTER(WHERE nucleofamiliar.t_id IS NOT NULL) AS nucleofamiliar
         FROM {schema}.nucleofamiliar WHERE nucleofamiliar.fichapredio IN (SELECT * FROM predio_ficha_seleccionados)
         GROUP BY nucleofamiliar.fichapredio
      ),
@@ -134,7 +134,7 @@ def get_igac_property_record_card_query(schema, plot_t_id, parcel_fmi, parcel_nu
         """
 
     query += """
-                                                                 ))) FILTER(WHERE predio.t_id IS NOT NULL) as predio
+                                                                 )) ORDER BY predio.t_id) FILTER(WHERE predio.t_id IS NOT NULL) as predio
          FROM {schema}.predio LEFT JOIN {schema}.uebaunit ON uebaunit.baunit_predio = predio.t_id
     """
 
@@ -160,6 +160,7 @@ def get_igac_property_record_card_query(schema, plot_t_id, parcel_fmi, parcel_nu
                                                            )) as terreno
         FROM {schema}.terreno LEFT JOIN info_predio ON info_predio.ue_terreno = terreno.t_id
         WHERE terreno.t_id IN (SELECT * FROM terrenos_seleccionados)
+        ORDER BY terreno.t_id
      )
     SELECT json_agg(info_terreno.terreno) AS terreno FROM info_terreno
     """
