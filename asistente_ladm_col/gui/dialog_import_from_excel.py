@@ -275,7 +275,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                 'type': 10},
                                {'expression': '"nombre2"', 'length': 100, 'name': 'segundo_nombre', 'precision': -1,
                                 'type': 10},
-                               {'expression': '"razon_social"', 'length': 250, 'name': 'razon_social', 'precision': -1,
+                               {'expression': '"razon social"', 'length': 250, 'name': 'razon_social', 'precision': -1,
                                 'type': 10},
                                {'expression': '"sexo persona"', 'length': 255, 'name': 'genero', 'precision': -1,
                                 'type': 10},
@@ -423,7 +423,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                        {
                            'INPUT': concat_right_source_layer,
                            'mapping': [
-                               {'expression': '"descripcion de la fuente"', 'length': 255, 'name': 'texto', 'precision': -1, 'type': 10},
+                               {'expression': '"Descripción de la fuente"', 'length': 255, 'name': 'texto', 'precision': -1, 'type': 10},
                                {'expression': '"tipo de fuente"', 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10},
                                {'expression': '"codigo_registral_transaccion"', 'length': 5, 'name': 'codigo_registral_transaccion', 'precision': -1, 'type': 10},
                                {'expression': '"nombre"', 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10},

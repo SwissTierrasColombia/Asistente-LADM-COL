@@ -306,6 +306,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 if self._parcel_layer is None or self._plot_layer is None or self._uebaunit_table is None:
                     self.add_layers()
                 layer = self._parcel_layer
+                self.iface.layerTreeView().setCurrentLayer(layer)
             else:
                 layer = self.qgis_utils.get_layer(self._db, table_name, geometry_type, True)
 
