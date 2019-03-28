@@ -1325,7 +1325,9 @@ class QGISUtils(QObject):
             features = [f for f in extfile_layer.getFeatures()]
 
         self._source_handler = self.get_source_handler()
-        new_values = self._source_handler.upload_files(extfile_layer, field_index, features)
+        with OverrideCursor(Qt.WaitCursor):
+            new_values = self._source_handler.upload_files(extfile_layer, field_index, features)
+
         if new_values:
             extfile_layer.dataProvider().changeAttributeValues(new_values)
 
