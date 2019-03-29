@@ -24,7 +24,6 @@ from qgis.PyQt.QtWidgets import (QWidget,
                                  QComboBox,
                                  QPushButton
                                  )
-from .enum_action_type import EnumActionType
 from .db_schema_db_panel import DbSchemaDbPanel
 from ..lib.dbconnector.pg_connector import PGConnector
 from qgis.core import (Qgis)
@@ -64,8 +63,6 @@ class PgConfigPanel(QWidget, DbSchemaDbPanel):
             QCoreApplication.translate("SettingsDialog", "[Leave empty to use system password]"))
 
         self.create_db_button.setToolTip(QCoreApplication.translate("SettingsDialog", "Create database"))
-
-        # self.create_db_button.setIcon(icon)
 
         self.create_schema_button.setToolTip(QCoreApplication.translate("SettingsDialog", "Create schema"))
 

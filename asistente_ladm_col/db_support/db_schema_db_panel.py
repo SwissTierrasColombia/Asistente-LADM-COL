@@ -22,6 +22,7 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
                               QCoreApplication,
                               QTimer)
+from qgis.PyQt.QtGui import QIcon
 
 from .db_config_panel import DbConfigPanel
 from ..gui.dlg_get_db_or_schema_name import DialogGetDBOrSchemaName
@@ -37,9 +38,13 @@ class DbSchemaDbPanel(DbConfigPanel):
 
         self.create_db_button = QPushButton()
         self.create_db_button.clicked.connect(self.show_modal_create_db)
+        icon_create_db_button = QIcon(":/Asistente-LADM_COL/resources/images/create_db.png")
+        self.create_db_button.setIcon(icon_create_db_button)
 
         self.create_schema_button = QPushButton()
         self.create_schema_button.clicked.connect(self.show_modal_create_schema)
+        icon_create_schema_button = QIcon(":/Asistente-LADM_COL/resources/images/schema.png")
+        self.create_schema_button.setIcon(icon_create_schema_button)
 
         self.refresh_db_button = QPushButton()
         self.refresh_db_button.setText('Refresh databases and schemas')
