@@ -170,9 +170,9 @@ class ReportGenerator():
         if os.name == 'nt':
             if 'JAVA_HOME' not in os.environ:
                 self.msg = QMessageBox()
-                self.msg.setIcon(QMessageBox.Critical)
-                self.msg.setText(QCoreApplication.translate("ReportGenerator", "Error: JAVA_HOME was not found"))
-                self.msg.setWindowTitle(QCoreApplication.translate("ReportGenerator", "JAVA_HOME environment variable is not defined, please define your environment variable and restart QGIS"))
+                self.msg.setIcon(QMessageBox.Information)
+                self.msg.setText(QCoreApplication.translate("ReportGenerator", "JAVA_HOME environment variable is not defined, please define and restart QGIS before generating annex 17."))
+                self.msg.setWindowTitle(QCoreApplication.translate("ReportGenerator", "JAVA_HOME environment variable is not defined"))
                 self.msg.setStandardButtons(QMessageBox.Close)
                 self.msg.exec_()
                 return
