@@ -206,7 +206,8 @@ class DialogQuality(QDialog, DIALOG_UI):
         self.trw_quality_rules.setUpdatesEnabled(True) # Now render!
 
     def accepted(self):
-        #self.qgis_utils.remove_error_group_requested.emit()
+        # we erase the group error layer every time it runs because we assume that data set changes.
+        self.qgis_utils.remove_error_group_requested.emit()
         self.quality.initialize_log_dialog_quality()
         self.quality.set_count_topology_rules(len(self.trw_quality_rules.selectedItems()))
 
@@ -290,7 +291,12 @@ class DialogQuality(QDialog, DIALOG_UI):
         self.quality.generate_log_button()
 
         if self.qgis_utils.error_group_exists():
-            self.qgis_utils.set_error_group_visibility(True)
+            group = self.qgis_utils.get_error_layers_group()
+            # # Check if group layer is empty
+            if group.findLayers():
+                self.qgis_utils.set_error_group_visibility(True)
+            else:
+                self.qgis_utils.remove_error_group_requested.emit()
 
     def rejected(self):
         pass

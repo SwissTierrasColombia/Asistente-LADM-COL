@@ -25,9 +25,7 @@ FORMS = ../ui/dlg_load_layers.ui \
         ../ui/wiz_create_physical_zone_valuation.ui \
         ../ui/wiz_create_building_cadastre.ui \
         ../ui/wiz_create_right_of_way_cadastre.ui \
-        ../ui/wiz_create_party_cadastre.ui \
         ../ui/wiz_create_col_party_cadastre.ui \
-        ../ui/wiz_create_party_cadastre.ui \
         ../ui/wiz_create_responsibility_cadastre.ui \
         ../ui/wiz_create_restriction_cadastre.ui \
         ../ui/wiz_create_right_cadastre.ui \
@@ -41,8 +39,14 @@ FORMS = ../ui/dlg_load_layers.ui \
 SOURCES = ../__init__.py \
           ../asistente_ladm_col_plugin.py \
           ../utils/qgis_utils.py \
+          ../utils/logic_checks.py \
+          ../utils/qt_utils.py \
           ../utils/quality.py \
           ../utils/model_parser.py \
+          ../gui/custom_model_dir.py \
+          ../gui/dialog_import_from_excel.py \
+          ../gui/dlg_get_db_or_schema_name.py \
+          ../gui/dlg_get_java_path.py \
           ../gui/associate_extaddress_cadastre_wizard.py \
           ../gui/create_administrative_source_cadastre_wizard.py \
           ../gui/create_building_unit_qualification_valuation_wizard.py \

@@ -63,6 +63,24 @@
     </message>
 </context>
 <context>
+    <name>Asistente-LADM_COL</name>
+    <message>
+        <location filename="../utils/qt_utils.py" line="46"/>
+        <source>Open File</source>
+        <translation>Abrir archivo</translation>
+    </message>
+    <message>
+        <location filename="../utils/qt_utils.py" line="47"/>
+        <source>Any file(*)</source>
+        <translation>Cualquier archivo (*)</translation>
+    </message>
+    <message>
+        <location filename="../utils/qt_utils.py" line="76"/>
+        <source>Open Folder</source>
+        <translation>Abrir carpeta</translation>
+    </message>
+</context>
+<context>
     <name>AsistenteLADMCOLPlugin</name>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="240"/>
@@ -2051,6 +2069,80 @@ Do you want to replace it?</source>
     </message>
 </context>
 <context>
+    <name>DialogGetDBOrSchemaName</name>
+    <message>
+        <location filename="../gui/dlg_get_db_or_schema_name.py" line="53"/>
+        <source>Enter the name of the {type}:</source>
+        <translation>Ingrese el nombre del {type}:</translation>
+    </message>
+    <message>
+        <location filename="../gui/dlg_get_db_or_schema_name.py" line="54"/>
+        <location filename="../gui/dlg_get_db_or_schema_name.py" line="75"/>
+        <source>Create {type}</source>
+        <translation>Crear {type}</translation>
+    </message>
+    <message>
+        <location filename="../gui/dlg_get_db_or_schema_name.py" line="56"/>
+        <source>[Name of the {type} to be created]</source>
+        <translation>[Nombre del {type} a crear]</translation>
+    </message>
+    <message>
+        <location filename="../gui/dlg_get_db_or_schema_name.py" line="80"/>
+        <source>The name of the {type} cannot be empty.</source>
+        <translation>El nombre del {type} no puede estar vacío.</translation>
+    </message>
+</context>
+<context>
+    <name>DialogGetJavaPath</name>
+    <message>
+        <location filename="../gui/dlg_get_java_path.py" line="46"/>
+        <source>Get Java Path</source>
+        <translation>Obtener la ruta de instalación de java</translation>
+    </message>
+    <message>
+        <location filename="../gui/dlg_get_java_path.py" line="49"/>
+        <source>[By default both %PATH and %JAVA_HOME are searched]</source>
+        <translation>[De forma predeterminada, se busca en %PATH y %JAVA_HOME]</translation>
+    </message>
+    <message>
+        <location filename="../gui/dlg_get_java_path.py" line="53"/>
+        <source>Select Java application</source>
+        <translation>Seleccione la aplicación java</translation>
+    </message>
+    <message>
+        <location filename="../gui/dlg_get_java_path.py" line="54"/>
+        <source>java (*)</source>
+        <translation>java (*)</translation>
+    </message>
+    <message>
+        <location filename="../gui/dlg_get_java_path.py" line="68"/>
+        <source>Set JAVA Path</source>
+        <translation>Establecer ruta de java</translation>
+    </message>
+    <message>
+        <location filename="../gui/dlg_get_java_path.py" line="112"/>
+        <source>Java path has been configured correctly.</source>
+        <translation>La ruta de java se ha configurado correctamente.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dlg_get_java_path.py" line="114"/>
+        <source>Java version is not valid. Current version is {}, but must be {}.</source>
+        <translation>La versión de Java no es válida. La versión actual es {}, pero debe ser {}.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dlg_get_java_path.py" line="116"/>
+        <source>Java exists but it is not possible to know and validate its version.</source>
+        <translation>java existe pero no es posible conocer y validar su versión.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dlg_get_java_path.py" line="118"/>
+        <location filename="../gui/dlg_get_java_path.py" line="120"/>
+        <location filename="../gui/dlg_get_java_path.py" line="122"/>
+        <source>Java path is not valid, please select a valid path...</source>
+        <translation>La ruta de Java no es válida, seleccione una ruta válida ...</translation>
+    </message>
+</context>
+<context>
     <name>DialogImportData</name>
     <message>
         <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="88"/>
@@ -2115,6 +2207,159 @@ Do you want to replace it?</source>
         <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="447"/>
         <source>Error when importing data</source>
         <translation>Error al importar datos</translation>
+    </message>
+</context>
+<context>
+    <name>DialogImportFromExcel</name>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="89"/>
+        <source>Select the Excel file with data in the intermediate structure</source>
+        <translation>Seleccione el archivo de Excel con datos en la estructura intermedia</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="93"/>
+        <source>Import</source>
+        <translation>Importar</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="119"/>
+        <source>You need to select an Excel file before continuing with the import.</source>
+        <translation>Debe seleccionar un archivo de Excel antes de continuar con la importación.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="127"/>
+        <source>The specified Excel file does not exist!</source>
+        <translation>El archivo de Excel especificado no existe!</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="134"/>
+        <source>Loading tables from the Excel file...</source>
+        <translation>Cargando tablas desde el archivo de Excel ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="144"/>
+        <source>One of the sheets of the Excel file couldn&apos;t be loaded! Check the format again.</source>
+        <translation>¡Una de las hojas del archivo de Excel no se pudo cargar! Compruebe el formato de nuevo.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="153"/>
+        <source>Loading LADM_COL tables...</source>
+        <translation>Cargando tablas LADM_COL ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="254"/>
+        <source>ETL (step 1): Load col_interesado data...</source>
+        <translation>ETL (paso 1): Cargar datos col_interesado ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="299"/>
+        <source>ETL (step 2): Define group parties...</source>
+        <translation>ETL (paso 2): Definir agrupación de interesados ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="311"/>
+        <source>ETL (step 3): Load group parties...</source>
+        <translation>ETL (paso 3): Cargar agrupación de interesados ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="331"/>
+        <source>ETL (step 4): Join group parties t_id...</source>
+        <translation>ETL (paso 4): Asociar el t_id de la agrupación de interesados ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="347"/>
+        <source>ETL (step 5): Join group parties with parties...</source>
+        <translation>ETL (paso 5): Asociar la agrupación de interesados con los interesados ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="363"/>
+        <source>ETL (step 6): Load group party members...</source>
+        <translation>ETL (paso 6): Cargar los miembros de las agrupación de interesados ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="377"/>
+        <source>ETL (step 7): Load parcels...</source>
+        <translation>ETL (paso 7): Cargar los predios ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="403"/>
+        <source>ETL (step 8): Concatenate Rights and Sources fields...</source>
+        <translation>ETL (paso 8): concatenar campos de derechos y fuentes ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="418"/>
+        <source>ETL (step 9): Load Administrative Sources...</source>
+        <translation>ETL (paso 9): Cargar las fuentes administrativas ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="444"/>
+        <source>ETL (step 10): Join concatenate source to administrative source t_id...</source>
+        <translation>ETL (paso 10): Asociar el soporte con el t_id de la fuente administrativa ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="461"/>
+        <source>ETL (step 11): Load extarchivo...</source>
+        <translation>ETL (paso 11): Cargar extarchivo ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="483"/>
+        <source>ETL (step 12): Join source and party t_id...</source>
+        <translation>ETL (paso 12): Asociar la fuente y el t_id del interesado ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="500"/>
+        <source>ETL (step 13): Join source, party, group party t_id...</source>
+        <translation>ETL (paso 13): Asociar la fuente, interesado y el t_id de la agrupación de interesados ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="517"/>
+        <source>ETL (step 14): Join source, party, group party, parcel t_id...</source>
+        <translation>ETL (paso 14): Asociar fuente, interesado, agrupación de interesados y el t_id del predio ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="534"/>
+        <source>ETL (step 15): Load Rights...</source>
+        <translation>ETL (paso 15): Cargar derechos ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="560"/>
+        <source>ETL (step 16): Join source, party, group party, parcel, right t_id...</source>
+        <translation>ETL (paso 16): Asociar fuente, interesado, agrupación de interesados, predio, t_id del derecho ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="577"/>
+        <source>ETL (step 17): Load rrrfuente...</source>
+        <translation>ETL (paso 17): Cargar rrrfuente ...</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="596"/>
+        <source>Import done!!!&lt;br/&gt;</source>
+        <translation>Importación realizada !!! &lt;br/&gt;</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="598"/>
+        <source>&lt;br/&gt;&lt;b&gt;{count}&lt;/b&gt; records loaded into table &lt;b&gt;{table}&lt;/b&gt;</source>
+        <translation>&lt;br/&gt; &lt;b&gt;{count}&lt;/b&gt; registros cargados en la tabla &lt;b&gt; {table} &lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="691"/>
+        <source>Save File</source>
+        <translation>Guardar archivo</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="694"/>
+        <source>Excel File (*.xlsx *.xls)</source>
+        <translation>Archivo de Excel (* .xlsx * .xls)</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="703"/>
+        <source>Excel file not found. Update your plugin. For details see log.</source>
+        <translation>Archivo de Excel no encontrado. Actualiza tu plugin. Para más detalles ver log.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="718"/>
+        <source>The file couldn&apos;t be saved.</source>
+        <translation>No se pudo guardar el archivo.</translation>
     </message>
 </context>
 <context>
@@ -2391,17 +2636,17 @@ Done!</source>
         <translation>Copiar valor</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="314"/>
+        <location filename="../gui/dockwidget_queries.py" line="315"/>
         <source>Zoom to {} with {}={}</source>
         <translation>Zoom a {} con {}={}</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="322"/>
+        <location filename="../gui/dockwidget_queries.py" line="323"/>
         <source>Zoom to related plot(s)</source>
         <translation>Zoom a terreno asociado</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="326"/>
+        <location filename="../gui/dockwidget_queries.py" line="327"/>
         <source>Open form for {} with {}={}</source>
         <translation>Abrir formulario para {} con {}={}</translation>
     </message>
@@ -3162,6 +3407,146 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <source>Logic Consistency Errors in table &apos;{}&apos;</source>
         <translation>Errores de Consistencia Lógica en la tabla &apos;{}&apos;</translation>
     </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="69"/>
+        <source>Duplicate records in &apos;{table}&apos;</source>
+        <translation>Registros duplicados en {table}</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="139"/>
+        <source>{business_name} must be NULL</source>
+        <translation>{business_name} debe ser NULL</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="141"/>
+        <source>{legal_party} must be NULL</source>
+        <translation>{legal_party} debe ser NULL</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="143"/>
+        <source>{surname_party} must not be NULL and It must be filled in</source>
+        <translation>{surname_party} no debe ser NULL y se debe diligenciar</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="145"/>
+        <source>{first_name_party} must not be NULL and It must be filled in</source>
+        <translation>{first_name_party} no debe ser NULL y se debe diligenciar</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="147"/>
+        <source>{doc_type} must be different from NIT</source>
+        <translation>{doc_type} debe ser diferente de NIT</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="176"/>
+        <source>{business_name} must not be NULL and It must be filled in</source>
+        <translation>{business_name} no debe ser NULL y se debe diligenciar</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="178"/>
+        <source>{legal_party} must not be NULL and It must be filled in</source>
+        <translation>{legal_party} no debe ser NULL y se debe diligenciar</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="180"/>
+        <source>{surname_party} must be NULL</source>
+        <translation>{surname_party} debe ser NULL</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="182"/>
+        <source>{first_name_party} must be NULL</source>
+        <translation>{first_name_party} debe ser NULL</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="184"/>
+        <source>{doc_type} must be equal to NIT or Secuencial_IGAC or Secuencial_SNR</source>
+        <translation>{doc_type} debe ser igual a NIT o Secuencial_IGAC o Secuencial_SNR</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="213"/>
+        <source>When the {parcel_type} of {table} is NPH the 22nd position of the property code must be 0</source>
+        <translation>Cuando el {parcel_type} de {table} es NPH, la 22ª posición del código de propiedad debe ser 0</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="215"/>
+        <source>When the {parcel_type} of {table} is {value} the 22nd position of the property code must be 9</source>
+        <translation>Cuando el {parcel_type} de {table} es {value}, la 22ª posición del código de propiedad debe ser 9</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="217"/>
+        <source>When the {parcel_type} of {table} is {value} the 22nd position of the property code must be 8</source>
+        <translation>Cuando el {parcel_type} de {table} es {value}, la 22ª posición del código de propiedad debe ser 8</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="219"/>
+        <source>When the {parcel_type} of {table} is {value} the 22nd position of the property code must be 7</source>
+        <translation>Cuando el {parcel_type} de {table} es {value}, la 22ª posición del código de propiedad debe ser 7</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="221"/>
+        <source>When the {parcel_type} of {table} is Mejora the 22nd position of the property code must be 5</source>
+        <translation>Cuando el {parcel_type} de {table} es Mejora, la 22ª posición del código de propiedad debe ser 5</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="223"/>
+        <source>When the {parcel_type} of {table} is Via the 22nd position of the property code must be 4</source>
+        <translation>Cuando el {parcel_type} de {table} es Via, la 22ª posición del código de propiedad debe ser 4</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="225"/>
+        <source>When the {parcel_type} of {table} is BienUsoPublico the 22nd position of the property code must be 3</source>
+        <translation>Cuando el {parcel_type} de {table} es BienUsoPublico, la 22ª posición del código de propiedad debe ser 3</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="260"/>
+        <source>When the {parcel_type} of {table} is &apos;NPH&apos; you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)</source>
+        <translation>Cuando el {parcel_type} de {table} es &apos;NPH&apos;, debe tener 1 terreno y 0 unidades de construcción, pero tiene {plot_count} terreno(s) y {building_unit_count} unidad(es) de construcción</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="262"/>
+        <source>When the {parcel_type} of {table} is &apos;PropiedadHorizontal.Matriz&apos; you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)</source>
+        <translation>Cuando el {parcel_type} de {table} es &apos;PropiedadHorizontal.Matriz&apos; debería tener 1 terreno y 0 unidades de construcción, pero tiene {plot_count} terreno(s) y {building_unit_count} unidad(es) de construcción</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="264"/>
+        <source>When the {parcel_type} of {table} is &apos;Condominio.Matriz&apos; you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)</source>
+        <translation>Cuando el {parcel_type} de {table} es &apos;Condominio.Matriz&apos; debería tener 1 terreno y 0 unidades de construcción, pero tiene {plot_count} terreno(s) y {building_unit_count} unidad(es) de construcción</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="266"/>
+        <source>When the {parcel_type} of {table} is &apos;ParqueCementerio.Matriz&apos; you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)</source>
+        <translation>Cuando el {parcel_type} de {table} es &apos;ParqueCementerio.Matriz&apos; debería tener 1 terreno y 0 unidades de construcción, pero tiene {plot_count} terreno(s) y {building_unit_count} unidad(es) de construcción</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="268"/>
+        <source>When the {parcel_type} of {table} is &apos;BienUsoPublico&apos; you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)</source>
+        <translation>Cuando el {parcel_type} de {table} es &apos;BienUsoPublico&apos; debería tener 1 terreno y 0 unidades de construcción, pero tiene {plot_count} terreno(s) y {building_unit_count} unidad(es) de construcción</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="270"/>
+        <source>When the {parcel_type} of {table} is &apos;Condominio.UnidadPredial&apos; you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)</source>
+        <translation>Cuando el {parcel_type} de {table} es &apos;Condominio.UnidadPredial&apos; debería tener 1 terreno y 0 unidades de construcción, pero tiene {plot_count} terreno(s) y {building_unit_count} unidad(es) de construcción</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="272"/>
+        <source>When the {parcel_type} of {table} is &apos;Via&apos; you should have 1 plot and 0 building and 0 building unit but you have {plot_count} plot(s) and {building_count} building(s) and {building_unit_count} building unit(s)</source>
+        <translation>Cuando el {parcel_type} de {table} es &apos;Via&apos; debería tener 1 terreno y 0 construcciones y 0 unidades de construcción, pero tiene {plot_count} terreno(s) y {building_count} construccion(es) y {building_unit_count} unidad(es) de construcción</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="274"/>
+        <source>When the {parcel_type} of {table} is &apos;ParqueCementerio.UnidadPrivada&apos; you should have 1 plot and 0 building and 0 building unit but you have {plot_count} plot(s) and {building_count} building(s) and {building_unit_count} building unit(s)</source>
+        <translation>Cuando el {parcel_type} de {table} es&apos;ParqueCementerio.UnidadPrivada&apos; debería tener 1 terreno y 0 construcciones y 0 unidades de construcción, pero tiene {plot_count} terreno(s) y {building_count} construccion(es) y {building_unit_count}  unidad(es) de construcción</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="276"/>
+        <source>When the {parcel_type} of {table} is &apos;PropiedadHorizontal.UnidadPredial&apos; you should have 0 plot and 0 building but you have {plot_count} plot(s) and {building_count} building(s)</source>
+        <translation>Cuando el {parcel_type} de {table} es &apos;PropiedadHorizontal.UnidadPredial&apos; debería tener 0 terrenos y 0 construcciones, pero tiene {plot_count} terreno(s) y {building_count} construccion(es)</translation>
+    </message>
+    <message>
+        <location filename="../utils/logic_checks.py" line="278"/>
+        <source>When the {parcel_type} of {table} is &apos;Mejora&apos; you should have 0 plot and 1 building and 0 building unit but you have {plot_count} plot(s) and {building_count} building(s) and {building_unit_count} building unit(s)</source>
+        <translation>Cuando el {parcel_type} de {table} es &apos;Mejora&apos; debería tener 0 terrenos y 1 una construcción y 0 unidades de construcción, pero  tiene {plot_count} terreno(s) y {building_count} construcion(es) y {building_unit_count} unidad(es) de construcción</translation>
+    </message>
 </context>
 <context>
     <name>PGConnector</name>
@@ -3478,12 +3863,12 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>No se pudieron crear terrenos. ¡Asegúrate que los linderos seleccionados formen polígonos cerrados!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1363"/>
+        <location filename="../utils/qgis_utils.py" line="1365"/>
         <source>The local help could not be found in &apos;{}&apos; and cannot be open.</source>
         <translation>No se encontró la ayuda local en &apos;{}&apos; y por lo tanto no se pudo abrir.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1369"/>
+        <location filename="../utils/qgis_utils.py" line="1371"/>
         <source>Is your computer connected to Internet? If so, go to &lt;a href=&quot;{}&quot;&gt;online help&lt;/a&gt;.</source>
         <translation>¿Está tu computador conectado a Internet? Si es así, ve a la&lt;a href=&quot;{}&quot;&gt;ayuda en línea&lt;/a&gt;.</translation>
     </message>
@@ -3963,6 +4348,64 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <source>You can start moving nodes in layers {} and {}, simultaneously!</source>
         <translation>¡Puedes empezar a mover nodos simultáneamente en las capas {} y {}!</translation>
     </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="171"/>
+        <source>Col_Party table couldn&apos;t be found... {}</source>
+        <translation>No se encontró la tabla Col_Party... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="180"/>
+        <source>Parcel table couldn&apos;t be found... {}</source>
+        <translation>No se encontró la tabla Predio... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="189"/>
+        <source>Right table couldn&apos;t be found... {}</source>
+        <translation>No se encontró la tabla Derecho ... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="198"/>
+        <source>EXT_FILE table couldn&apos;t be found... {}</source>
+        <translation>No se encontró la tabla extarchivo ... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="207"/>
+        <source>RRR-SOURCE table couldn&apos;t be found... {}</source>
+        <translation>No se encontró la tabla rrrfuente ... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="216"/>
+        <source>Group party table couldn&apos;t be found... {}</source>
+        <translation>No se pudo encontrar la tabla Agrupación de Interesados... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="225"/>
+        <source>Members table couldn&apos;t be found... {}</source>
+        <translation>No se encontró la tabla Miembros... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="234"/>
+        <source>Administrative Source table couldn&apos;t be found... {}</source>
+        <translation>No se pudo encontrar la capa Fuente Administrativa... {}</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialog_import_from_excel.py" line="607"/>
+        <source>Data successfully imported to LADM_COL from intermediate structure (Excel file: &apos;{}&apos;)!!!</source>
+        <translation>Datos importados exitosamente a LADM_COL desde la estructura intermedia (archivo de Excel: &apos;{}&apos;) !!!</translation>
+    </message>
+</context>
+<context>
+    <name>QgisModelBaker</name>
+    <message>
+        <location filename="../utils/qt_utils.py" line="65"/>
+        <source>Open File</source>
+        <translation>Abrir archivo</translation>
+    </message>
+    <message>
+        <location filename="../utils/qt_utils.py" line="66"/>
+        <source>Any file(*)</source>
+        <translation>Cualquier archivo (*)</translation>
+    </message>
 </context>
 <context>
     <name>ReportGenerator</name>
@@ -4247,53 +4690,73 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>SourceHandler</name>
     <message>
-        <location filename="../lib/source_handler.py" line="69"/>
         <source>Source files were not uploaded to the document repository because you have that option unchecked. You can still upload the source files later using the &apos;Upload Pending Source Files&apos; menu.</source>
-        <translation>No se subieron archivos fuente al repositorio documental porque tienes esa opción desactivada. Puedes subir los archivos fuente luego, usando el menú &apos;Subir Archivos Fuente Pendientes&apos;.</translation>
+        <translation type="vanished">No se subieron archivos fuente al repositorio documental porque tienes esa opción desactivada. Puedes subir los archivos fuente luego, usando el menú &apos;Subir Archivos Fuente Pendientes&apos;.</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="79"/>
         <source>No file could be uploaded to the server. You can do it later from the &apos;Upload Pending Source Files&apos; menu. Reason: {}</source>
-        <translation>No se pudieron subir los archivos fuente al servidor remoto. Puedes hacerlo después desde el menú &apos;Subir Archivos Fuente Pendientes&apos;. Detalles: {}</translation>
+        <translation type="vanished">No se pudieron subir los archivos fuente al servidor remoto. Puedes hacerlo después desde el menú &apos;Subir Archivos Fuente Pendientes&apos;. Detalles: {}</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="172"/>
         <source>{} out of {} records {} ignored because {} file path couldn&apos;t be found in the local disk!</source>
-        <translation>¡{} de {} registros {} ignorado(s) porque {} ruta(s) no se encontró(encontraron) en el disco local!</translation>
+        <translation type="vanished">¡{} de {} registros {} ignorado(s) porque {} ruta(s) no se encontró(encontraron) en el disco local!</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="176"/>
-        <location filename="../lib/source_handler.py" line="187"/>
+        <location filename="../lib/source_handler.py" line="71"/>
+        <source>The source files were not uploaded to the document repository because you have that option unchecked. You can still upload the source files later using the &apos;Upload Pending Source Files&apos; menu.</source>
+        <translation>Los archivos fuente no se cargaron en el repositorio de documentos porque tiene esa opción desactivada. Aún puede cargar los archivos fuente más tarde usando el menú &apos;Subir Archivos Fuente Pendientes&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../lib/source_handler.py" line="81"/>
+        <source>No file could be uploaded to the document repository. You can do it later from the &apos;Upload Pending Source Files&apos; menu. Reason: {}</source>
+        <translation>No se pudo cargar ningún archivo al repositorio de documentos. Puede hacerlo más tarde desde el menú &apos;Subir Archivos Fuente Pendientes&apos;. Razón: {}</translation>
+    </message>
+    <message>
+        <location filename="../lib/source_handler.py" line="174"/>
+        <source>{} out of {} records {} not uploaded to the document repository because {} file path is NULL or it couldn&apos;t be found in the local disk!</source>
+        <translation>{} de {} registros {} no se ha cargado en el repositorio de documentos porque la ruta del archivo {} es NULL o no se pudo encontrar en el disco local!</translation>
+    </message>
+    <message>
+        <location filename="../lib/source_handler.py" line="178"/>
+        <location filename="../lib/source_handler.py" line="189"/>
         <source>was</source>
         <translation>fue</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="176"/>
-        <location filename="../lib/source_handler.py" line="187"/>
+        <location filename="../lib/source_handler.py" line="178"/>
+        <location filename="../lib/source_handler.py" line="189"/>
         <source>were</source>
         <translation>fueron</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="177"/>
-        <location filename="../lib/source_handler.py" line="188"/>
+        <location filename="../lib/source_handler.py" line="179"/>
+        <location filename="../lib/source_handler.py" line="190"/>
         <source>its</source>
         <translation>su</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="177"/>
-        <location filename="../lib/source_handler.py" line="188"/>
+        <location filename="../lib/source_handler.py" line="179"/>
+        <location filename="../lib/source_handler.py" line="190"/>
         <source>their</source>
         <translation>sus</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="183"/>
-        <source>{} out of {} files {} uploaded to the server and {} remote location stored in the database!</source>
-        <translation>¡{} de {} archivos {} subido(s) al servidor y {} ubicación(ubicaciones) remota(s) almacenada(s) en la base de datos!</translation>
+        <location filename="../lib/source_handler.py" line="185"/>
+        <source>{} out of {} files {} uploaded to the document repository and {} remote location stored in the database!</source>
+        <translation>¡{} de {} archivos {} subidos al repositorio de documentos y {} ubicación remota almacenada en la base de datos!</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="194"/>
+        <location filename="../lib/source_handler.py" line="196"/>
+        <source>{} out of {} files could not be uploaded to the document repository because of upload errors! See log for details.</source>
+        <translation>¡{} de {} archivos no se pudieron cargar en el repositorio de documentos debido a errores de carga! Vea el registro para más detalles.</translation>
+    </message>
+    <message>
+        <source>{} out of {} files {} uploaded to the server and {} remote location stored in the database!</source>
+        <translation type="vanished">¡{} de {} archivos {} subido(s) al servidor y {} ubicación(ubicaciones) remota(s) almacenada(s) en la base de datos!</translation>
+    </message>
+    <message>
         <source>{} out of {} files could not be uploaded to the server because of upload errors! See log for details.</source>
-        <translation>¡No se pudieron subir {} de {} archivos al servidor debido a errores! Revisa el log para más detalles.</translation>
+        <translation type="vanished">¡No se pudieron subir {} de {} archivos al servidor debido a errores! Revisa el log para más detalles.</translation>
     </message>
 </context>
 <context>
@@ -5067,7 +5530,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../ui/wiz_create_building_unit_qualification_valuation.ui" line="123"/>
         <source>Unconventional</source>
-        <translation type="unfinished">No convencional</translation>
+        <translation>No convencional</translation>
     </message>
     <message>
         <location filename="../ui/wiz_create_building_unit_qualification_valuation.ui" line="180"/>
