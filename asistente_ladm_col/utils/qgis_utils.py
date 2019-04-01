@@ -1338,6 +1338,9 @@ class QGISUtils(QObject):
             return True
         except:
             pass
+        finally:
+            s.close()
+
         return False
 
     def show_help(self, module='', offline=False):
