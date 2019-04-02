@@ -21,7 +21,7 @@ import os
 import qgis.utils
 from qgis.PyQt.QtCore import QCoreApplication
 
-from .db_connector import DBConnector
+from .db_connector import (DBConnector, EnumTestLevel)
 
 
 class GPKGConnector(DBConnector):
@@ -34,11 +34,19 @@ class GPKGConnector(DBConnector):
 
         self.dict_conn_params = {'dbfile': self.uri}
 
-    def test_connection(self):
+    def test_connection(self, test_level=EnumTestLevel.LADM):
         try:
-            if not os.path.exists(self.uri):
+
+            # file no exist, but directory must exist
+            if bool(test_level & EnumTestLevel.CREATE_SCHEMA):
+                directory = os.path.dirname(self.uri)
+
+                if not os.path.exists(directory):
+                    raise Exception("GeoPackage directory file not found.")
+            elif not os.path.exists(self.uri):
                 raise Exception("GeoPackage file not found.")
             self.conn = qgis.utils.spatialite_connect(self.uri)
+            # TODO verify EnumTestLevel.LADM
         except Exception as e:
             return (False, QCoreApplication.translate("GPKGConnector",
                     "There was an error connecting to the database: {}").format(e))

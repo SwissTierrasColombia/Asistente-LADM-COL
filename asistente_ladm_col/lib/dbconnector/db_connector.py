@@ -19,8 +19,21 @@
 import psycopg2
 
 from qgis.PyQt.QtCore import QObject
-
 from asistente_ladm_col.utils.model_parser import ModelParser
+from enum import IntFlag
+
+
+class EnumTestLevel(IntFlag):
+    SERVER = 1
+    DB = 2
+    DB_SCHEMA = 6
+    DB_FILE = 6
+    LADM = 14
+    CREATE_SCHEMA = 128
+
+    _CHECK_DB = 2
+    _CHECK_SCHEMA = 4
+    _CHECK_LADM = 8
 
 
 class DBConnector(QObject):
@@ -36,7 +49,7 @@ class DBConnector(QObject):
 
         self.model_parser = None
 
-    def test_connection(self):
+    def test_connection(self, test_level=EnumTestLevel.LADM):
         pass
 
     def validate_db(self):

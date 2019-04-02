@@ -26,6 +26,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from .db_config_panel import DbConfigPanel
 from ..gui.dlg_get_db_or_schema_name import DialogGetDBOrSchemaName
+from ..lib.dbconnector.db_connector import (EnumTestLevel)
 
 
 class DbSchemaDbPanel(DbConfigPanel):
@@ -157,7 +158,7 @@ class DbSchemaDbPanel(DbConfigPanel):
         dict_conn = self.read_connection_parameters()
         uri = tmp_db_conn.get_connection_uri(dict_conn, self.mode, level=0)
 
-        test_conn = tmp_db_conn.test_connection(uri=uri, level=0)
+        test_conn = tmp_db_conn.test_connection(uri=uri, test_level=EnumTestLevel.SERVER)
 
         if test_conn[0]:
             create_db_dlg = DialogGetDBOrSchemaName(tmp_db_conn, uri, 'database', parent=self)
@@ -173,7 +174,7 @@ class DbSchemaDbPanel(DbConfigPanel):
         tmp_db_conn = self.db_connector
         dict_conn = self.read_connection_parameters()
         uri = tmp_db_conn.get_connection_uri(dict_conn, self.mode, level=1)
-        test_conn = tmp_db_conn.test_connection(uri=uri, level=0)
+        test_conn = tmp_db_conn.test_connection(uri=uri, test_level=EnumTestLevel.DB)
 
         if test_conn[0]:
             create_db_dlg = DialogGetDBOrSchemaName(tmp_db_conn, uri, 'schema', parent=self)

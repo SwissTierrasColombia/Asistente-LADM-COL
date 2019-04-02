@@ -27,7 +27,6 @@ class DbConfigPanel(QObject):
     def __init__(self):
         super(DbConfigPanel, self).__init__()
         self._mode = None
-        self.params_changed = False
         self.state = None
 
     def read_connection_parameters(self):

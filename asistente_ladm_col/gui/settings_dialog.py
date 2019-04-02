@@ -42,11 +42,12 @@ from ..config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANC
                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                      SOURCE_SERVICE_EXPECTED_ID)
 from ..gui.custom_model_dir import CustomModelDirDialog
-from ..lib.dbconnector.db_connector import DBConnector
+from ..lib.dbconnector.db_connector import (DBConnector, EnumTestLevel)
 from ..utils import get_ui_class
 from ..utils.qt_utils import OverrideCursor
 from ..resources_rc import *
 from ..config.config_db_supported import ConfigDbSupported
+from ..db_support.enum_action_type import EnumActionType
 
 DIALOG_UI = get_ui_class('settings_dialog.ui')
 
@@ -67,6 +68,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._current_db = None
         self._params = None
 
+        self._action_type = None
+
+        self._emmit_db_connection_changed = None
+
         self.conf_db = ConfigDbSupported()
 
         self.online_models_radio_button.setChecked(True)
@@ -80,6 +85,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.helpRequested.connect(self.show_help)
         self.btn_test_connection.clicked.connect(self.test_connection)
+        self.btn_test_ladm_col_structure.clicked.connect(self.test_ladm_col_structure)
 
         self.btn_test_service.clicked.connect(self.test_service)
         self.chk_use_roads.toggled.connect(self.update_images_state)
@@ -108,6 +114,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         # to load the database and schema name
         self.restore_settings()
 
+        self.btn_test_ladm_col_structure.setVisible(self._action_type != EnumActionType.SCHEMA_IMPORT)
+
     def model_provider_toggle(self):
         if self.offline_models_radio_button.isChecked():
             self.custom_model_directories_line_edit.setVisible(True)
@@ -117,17 +125,22 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.custom_models_dir_button.setVisible(False)
             self.custom_model_directories_line_edit.setText("")
 
+    def _get_db_connector_from_gui(self):
+        current_db = self.cbo_db_source.currentData()
+        params = self._lst_panel[current_db].read_connection_parameters()
+        db = self._lst_db[current_db].get_db_connector(params)
+
+        return db
+
     def get_db_connection(self, update_connection=True):
         if self._db is not None:
             self.log.logMessage("Returning existing db connection...", PLUGIN_NAME, Qgis.Info)
             return self._db
         else:
             self.log.logMessage("Getting new db connection...", PLUGIN_NAME, Qgis.Info)
+            db = self._get_db_connector_from_gui()
 
-            current_db = self.cbo_db_source.currentData()
-            params = self._lst_panel[current_db].read_connection_parameters()
-            db = self._lst_db[current_db].get_db_connector(params)
-
+            # FIXME update within get method???
             if update_connection:
                 self._db = db
 
@@ -137,28 +150,50 @@ class SettingsDialog(QDialog, DIALOG_UI):
         dlg = CustomModelDirDialog(self.custom_model_directories_line_edit.text(), self)
         dlg.exec_()
 
+    def accept(self):
+        call_accepted = True
+        self._emmit_db_connection_changed = False
+
+        current_db = self.cbo_db_source.currentData()
+
+        if self._lst_panel[current_db].state_changed():
+            db = self._get_db_connector_from_gui()
+
+            test_level = EnumTestLevel.DB_SCHEMA
+
+            if self._action_type == EnumActionType.SCHEMA_IMPORT:
+                test_level |= EnumTestLevel.CREATE_SCHEMA
+
+            res, msg = db.test_connection(test_level=test_level)
+
+            if res:
+                self._emmit_db_connection_changed = True
+            else:
+                self.show_message(msg, Qgis.Warning)
+                call_accepted = False
+
+        if call_accepted:
+            QDialog.accept(self)
+
     def accepted(self):
         if self._db is not None:
             self._db.close_connection()
 
-        self._db = None # Reset db connection
+        # FIXME is it overwriting itself?
+        self._db = None
         self._db = self.get_db_connection()
 
+        # FIXME _current_db and _params are probably not used
         self._current_db = self.cbo_db_source.currentData()
         self._params = self._lst_panel[self._current_db].read_connection_parameters()
 
-        if self._lst_panel[self._current_db].state_changed():
-            res, msg = self._db.test_connection()
-            if res:
-                self.db_connection_changed.emit(self._db)
-            else:
-                self.show_message(msg, Qgis.Warning)
-                return
+        if self._emmit_db_connection_changed:
+            self.db_connection_changed.emit(self._db)
+
         self.save_settings()
 
     def reject(self):
         self._current_db = self.cbo_db_source.currentData()
-        self._lst_panel[self._current_db].params_changed = False
         self.done(0)
 
     def set_db_connection(self, mode, dict_conn):
@@ -281,12 +316,26 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._lst_panel[current_db].setVisible(True)
 
     def test_connection(self):
-        if self._db is not None:
-            self._db.close_connection()
+        db = self._get_db_connector_from_gui()
 
-        self._db = None # Reset db connection
-        db = self.get_db_connection(False)
-        res, msg = db.test_connection()
+        test_level = EnumTestLevel.DB_SCHEMA
+
+        if self._action_type == EnumActionType.SCHEMA_IMPORT:
+            test_level |= EnumTestLevel.CREATE_SCHEMA
+
+        res, msg = db.test_connection(test_level=test_level)
+
+        if db is not None:
+            db.close_connection()
+
+        self.show_message(msg, Qgis.Info if res else Qgis.Warning)
+        self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
+
+    def test_ladm_col_structure(self):
+        db = self._get_db_connector_from_gui()
+        test_level = EnumTestLevel.LADM
+
+        res, msg = db.test_connection(test_level=test_level)
 
         if db is not None:
             db.close_connection()
@@ -370,6 +419,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.qgis_utils.show_help("settings")
 
     def set_action_type(self, action_type):
+        self._action_type = action_type
+
         for key, value in self._lst_panel.items():
             value.set_action(action_type)
 

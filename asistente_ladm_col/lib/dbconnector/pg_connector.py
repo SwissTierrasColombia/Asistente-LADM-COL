@@ -26,7 +26,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsDataSourceUri,
                        QgsApplication)
 
-from .db_connector import DBConnector
+from .db_connector import (DBConnector, EnumTestLevel)
 from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
                                       PLUGIN_NAME,
                                       PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO)
@@ -290,11 +290,9 @@ class PGConnector(DBConnector):
 
         return False
 
-    def test_connection(self, uri=None, level=1):
+    def test_connection(self, uri=None,  test_level=EnumTestLevel.LADM):
         """
-        :param level: (int) level of connection with postgres
-                    0 = Server
-                    1 = Database
+        :param test_level: (EnumTestLevel) level of connection with postgres
         """
         uri = self.uri if uri is None else uri
         try:
@@ -309,17 +307,17 @@ class PGConnector(DBConnector):
         #     return (False, QCoreApplication.translate("PGConnector",
         #             "The current database does not have PostGIS installed! Please install it before proceeding."))
 
-        if not self._schema_exists() and level == 1:
+        if bool(test_level & EnumTestLevel._CHECK_SCHEMA) and not self._schema_exists():
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' does not exist in the database!").format(self.schema))
-        if not self._metadata_exists() and level == 1:
+        if bool(test_level & EnumTestLevel._CHECK_LADM) and not self._metadata_exists():
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
 
         res, msg = self.get_schema_privileges(uri, self.schema)
         if res:
             if msg['create'] and msg['usage']:
-                if level == 1:
+                if bool(test_level & EnumTestLevel._CHECK_LADM):
                     try:
                         if self.model_parser is None:
                             self.model_parser = ModelParser(self)
