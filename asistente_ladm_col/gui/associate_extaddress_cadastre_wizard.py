@@ -39,6 +39,8 @@ from ..config.table_mapping_config import (EXTADDRESS_TABLE,
                                            BUILDING_TABLE,
                                            BUILDING_UNIT_TABLE,
                                            ID_FIELD,
+                                           OID_EXTADDRESS_ID_FIELD,
+                                           OID_TABLE,
                                            PLOT_TABLE)
 from ..config.general_config import (DEFAULT_EPSG,
                                      PLUGIN_NAME,
@@ -68,6 +70,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self._current_layer = None
 
         self._feature_tid = None
+        self._extaddress_tid = None
 
         self.restore_settings()
 
@@ -147,10 +150,12 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             # Load layers
             res_layers = self.qgis_utils.get_layers(self._db, {
                     EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
+                    OID_TABLE: {'name': OID_TABLE, 'geometry': None},
                     PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
                 }, load=True)
 
             self._extaddress_layer = res_layers[EXTADDRESS_TABLE]
+            self._oid_layer = res_layers[OID_TABLE]
             self._plot_layer = res_layers[PLOT_TABLE]
             self._current_layer = self._plot_layer
 
@@ -162,11 +167,13 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             # Load layers
             res_layers = self.qgis_utils.get_layers(self._db, {
                     EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
+                    OID_TABLE: {'name': OID_TABLE, 'geometry': None},
                     BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
                 }, load=True)
 
             self._extaddress_layer = res_layers[EXTADDRESS_TABLE]
             self._building_layer = res_layers[BUILDING_TABLE]
+            self._oid_layer = res_layers[OID_TABLE]
             self._current_layer = self._building_layer
 
         else: #self.rad_to_building_unit.isChecked():
@@ -177,11 +184,13 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             # Load layers
             res_layers = self.qgis_utils.get_layers(self._db, {
                     EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry},
+                    OID_TABLE: {'name': OID_TABLE, 'geometry': None},
                     BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
                 }, load=True)
 
             self._extaddress_layer = res_layers[EXTADDRESS_TABLE]
             self._building_unit_layer = res_layers[BUILDING_UNIT_TABLE]
+            self._oid_layer = res_layers[OID_TABLE]
             self._current_layer = self._building_unit_layer
 
         self.iface.setActiveLayer(self._current_layer)
@@ -274,6 +283,11 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         form_config.setSuppress(QgsEditFormConfig.SuppressOff)
         self._extaddress_layer.setEditFormConfig(form_config)
 
+        # Suppress (i.e., hide) feature form
+        form_config = self._oid_layer.editFormConfig()
+        form_config.setSuppress(QgsEditFormConfig.SuppressOn)
+        self._oid_layer.setEditFormConfig(form_config)
+
         self.edit_extaddress()
 
     def edit_extaddress(self):
@@ -297,6 +311,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         plot_field_idx = self._extaddress_layer.getFeature(fid).fieldNameIndex(EXTADDRESS_PLOT_FIELD)
         building_field_idx = self._extaddress_layer.getFeature(fid).fieldNameIndex(EXTADDRESS_BUILDING_FIELD)
         building_unit_field_idx = self._extaddress_layer.getFeature(fid).fieldNameIndex(EXTADDRESS_BUILDING_UNIT_FIELD)
+        self._extaddress_tid = self._extaddress_layer.getFeature(fid)[ID_FIELD]
 
         if self._current_layer.name() == PLOT_TABLE:
             self._extaddress_layer.changeAttributeValue(fid, plot_field_idx, self._feature_tid)
@@ -306,9 +321,18 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self._extaddress_layer.changeAttributeValue(fid, building_unit_field_idx, self._feature_tid)
 
         self._extaddress_layer.featureAdded.disconnect(self.call_extaddress_commit)
-        self.log.logMessage("Extaddres's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+        self.log.logMessage("Extaddress's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         res = self._extaddress_layer.commitChanges()
         self._current_layer.removeSelection()
+        self.add_oid_feature()
+
+    def add_oid_feature(self):
+        # Add OID record
+        self._oid_layer.startEditing()
+        feature = QgsVectorLayerUtils().createFeature(self._oid_layer)
+        feature.setAttribute(OID_EXTADDRESS_ID_FIELD, self._extaddress_tid)
+        self._oid_layer.addFeature(feature)
+        self._oid_layer.commitChanges()
 
     def show_message(self, message, level):
         self.bar.pushMessage(message, level, 0)

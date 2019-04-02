@@ -86,6 +86,8 @@ NAMESPACE_FIELD = "_espacio_de_nombres"
 NIT_NUMBER_FIELD = "numero_nit"
 NUMBER_OF_FLOORS = "numero_pisos"
 NUPRE_FIELD = "nupre"
+OID_EXTADDRESS_ID_FIELD = "extdireccion_direccion_id"
+OID_TABLE = "oid"
 PARCEL_NAME_FIELD = "nombre"
 PARCEL_NUMBER_FIELD = "numero_predial"
 PARCEL_NUMBER_BEFORE_FIELD = "numero_predial_anterior"
@@ -274,7 +276,9 @@ DICT_AUTOMATIC_VALUES = {
         BUSINESS_NAME_FIELD)}],
     PARCEL_TABLE: [{DEPARTMENT_FIELD: 'substr("numero_predial", 0, 2)'},
                    {MUNICIPALITY_FIELD: 'substr("numero_predial", 3, 3)'},
-                   {ZONE_FIELD: 'substr("numero_predial", 6, 2)'}]
+                   {ZONE_FIELD: 'substr("numero_predial", 6, 2)'}],
+    OID_TABLE: [{"localid": "$id"},
+                {"espaciodenombres": "\'OID\'"}]
 }
 
 DICT_DISPLAY_EXPRESSIONS = {
