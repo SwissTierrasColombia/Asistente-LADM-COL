@@ -283,7 +283,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         form_config.setSuppress(QgsEditFormConfig.SuppressOff)
         self._extaddress_layer.setEditFormConfig(form_config)
 
-        # Suppress (i.e., show) feature form
+        # Suppress (i.e., hide) feature form
         form_config = self._oid_layer.editFormConfig()
         form_config.setSuppress(QgsEditFormConfig.SuppressOn)
         self._oid_layer.setEditFormConfig(form_config)
