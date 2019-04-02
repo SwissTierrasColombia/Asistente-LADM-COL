@@ -30,15 +30,17 @@ from qgis.PyQt.QtCore import (QEventLoop,
                               QFile,
                               QVariant,
                               QByteArray,
-                              QSettings)
+                              QSettings, Qt)
 from qgis.PyQt.QtNetwork import (QNetworkAccessManager,
                                  QHttpMultiPart,
                                  QHttpPart)
 from qgis.core import (QgsProject,
                        QgsDataSourceUri,
                        Qgis,
-                       QgsApplication)
+                       QgsApplication,
+                       NULL)
 
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
 from ..config.general_config import (DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                      PLUGIN_NAME,
                                      SOURCE_SERVICE_UPLOAD_SUFFIX)
@@ -65,23 +67,23 @@ class SourceHandler(QObject):
         formatted as changeAttributeValues expects to update 'datos' attribute
         to a remote location.
         """
-        if not QSettings().value('Asistente-LADM_COL/sources/document_repository'):
+        if not QSettings().value('Asistente-LADM_COL/sources/document_repository', False, bool):
             self.message_with_duration_emitted.emit(QCoreApplication.translate("SourceHandler",
-                   "Source files were not uploaded to the document repository because you have that option unchecked. You can still upload the source files later using the 'Upload Pending Source Files' menu."),
+                   "The source files were not uploaded to the document repository because you have that option unchecked. You can still upload the source files later using the 'Upload Pending Source Files' menu."),
                 Qgis.Info, 10)
             return dict()
 
-        # Test if we have Internet connection and a valid service}
+        # Test if we have Internet connection and a valid service
         dlg = self.qgis_utils.get_settings_dialog()
         res, msg = dlg.is_source_service_valid()
 
         if not res:
             msg['text'] = QCoreApplication.translate("SourceHandler",
-                "No file could be uploaded to the server. You can do it later from the 'Upload Pending Source Files' menu. Reason: {}").format(msg['text'])
-            self.message_with_duration_emitted.emit(msg['text'], msg['level'], 20)
+                "No file could be uploaded to the document repository. You can do it later from the 'Upload Pending Source Files' menu. Reason: {}").format(msg['text'])
+            self.message_with_duration_emitted.emit(msg['text'], Qgis.Info, 20) # The data is still saved, so always show Info msg
             return dict()
 
-        file_features = [feature for feature in features if os.path.isfile(feature[field_index])]
+        file_features = [feature for feature in features if not feature[field_index] == NULL and os.path.isfile(feature[field_index])]
         total = len(features)
         not_found = total - len(file_features)
 
@@ -115,7 +117,7 @@ class SourceHandler(QObject):
             multiPart.append(textPart)
 
             service_url = '/'.join([
-                QSettings().value('Asistente-LADM_COL/source/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE),
+                QSettings().value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE),
                 SOURCE_SERVICE_UPLOAD_SUFFIX])
             request = QNetworkRequest(QUrl(service_url))
             reply = nam.post(request, multiPart)
@@ -170,18 +172,18 @@ class SourceHandler(QObject):
         if not_found > 0:
             self.message_with_duration_emitted.emit(
                 QCoreApplication.translate("SourceHandler",
-                    "{} out of {} records {} ignored because {} file path couldn't be found in the local disk!").format(
+                    "{} out of {} records {} not uploaded to the document repository because {} file path is NULL or it couldn't be found in the local disk!").format(
                         not_found,
                         total,
                         QCoreApplication.translate("SourceHandler", "was") if not_found == 1 else QCoreApplication.translate("SourceHandler", "were"),
                         QCoreApplication.translate("SourceHandler", "its") if not_found == 1 else QCoreApplication.translate("SourceHandler", "their")
                     ),
-                Qgis.Warning,
+                Qgis.Info,
                 0)
         if len(new_values):
             self.message_with_duration_emitted.emit(
                 QCoreApplication.translate("SourceHandler",
-                    "{} out of {} files {} uploaded to the server and {} remote location stored in the database!").format(
+                    "{} out of {} files {} uploaded to the document repository and {} remote location stored in the database!").format(
                         len(new_values),
                         total,
                         QCoreApplication.translate("SourceHandler", "was") if len(new_values) == 1 else QCoreApplication.translate("SourceHandler", "were"),
@@ -192,11 +194,11 @@ class SourceHandler(QObject):
         if upload_errors:
             self.message_with_duration_emitted.emit(
                 QCoreApplication.translate("SourceHandler",
-                    "{} out of {} files could not be uploaded to the server because of upload errors! See log for details.").format(
+                    "{} out of {} files could not be uploaded to the document repository because of upload errors! See log for details.").format(
                         upload_errors,
                         total
                     ),
-                Qgis.Warning,
+                Qgis.Info,
                 0)
 
         return new_values
@@ -212,12 +214,14 @@ class SourceHandler(QObject):
             if modified_layer is None or QgsDataSourceUri(modified_layer.source()).table().lower() != layer.name().lower():
                 return
 
-            new_values = self.upload_files(modified_layer, field_index, features)
+            with OverrideCursor(Qt.WaitCursor):
+                new_values = self.upload_files(modified_layer, field_index, features)
+
             if new_values:
                 modified_layer.dataProvider().changeAttributeValues(new_values)
 
         layer.committedFeaturesAdded.connect(features_added)
 
     def get_file_url(self, part):
-        endpoint = QSettings().value('Asistente-LADM_COL/source/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE)
+        endpoint = QSettings().value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE)
         return '/'.join([endpoint, part[1:] if part.startswith('/') else part])

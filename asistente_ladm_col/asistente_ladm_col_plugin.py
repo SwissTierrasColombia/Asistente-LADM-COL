@@ -26,7 +26,8 @@ import qgis.utils
 from processing.modeler.ModelerUtils import ModelerUtils
 from qgis.PyQt.QtCore import (Qt,
                               QObject,
-                              QCoreApplication)
+                              QCoreApplication,
+                              QSettings)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QAction,
                                  QMenu,
@@ -98,6 +99,7 @@ from .gui.right_of_way import RightOfWay
 from .gui.reports import ReportGenerator
 from .gui.toolbar import ToolBar
 from .gui.log_excel_dialog import LogExcelDialog
+from .data.ladm_data import LADM_DATA
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.model_parser import ModelParser
 from .utils.qgis_utils import QGISUtils
@@ -130,7 +132,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.right_of_way = RightOfWay(self.iface, self.qgis_utils)
         self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
-        self.report_generator = ReportGenerator(self.qgis_utils)
+        self.ladm_data = LADM_DATA(self.qgis_utils)
+        self.report_generator = ReportGenerator(self.qgis_utils, self.ladm_data)
 
         # Menus
         self.add_cadastre_menu()
@@ -653,6 +656,14 @@ class AsistenteLADMCOLPlugin(QObject):
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
 
+    def show_message_with_settings_button(self, msg, button_text, level):
+        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        button = QPushButton(widget)
+        button.setText(button_text)
+        button.pressed.connect(self.show_settings)
+        widget.layout().addWidget(button)
+        self.iface.messageBar().pushWidget(widget, level, 25)
+
     def show_status_bar_message(self, msg, duration):
         self.iface.statusBarIface().showMessage(msg, duration)
 
@@ -872,7 +883,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_queries(self):
         if self._dock_widget_queries is None:
-            self._dock_widget_queries = DockWidgetQueries(self.iface, self.get_db_connection(), self.qgis_utils)
+            self._dock_widget_queries = DockWidgetQueries(self.iface, self.get_db_connection(), self.qgis_utils, self.ladm_data)
             self.qgis_utils.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_queries)
         else:
@@ -957,6 +968,16 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_dlg_group_party(self):
+        namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
+        local_id_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
+
+        if not namespace_enabled or not local_id_enabled:
+            self.show_message_with_settings_button(QCoreApplication.translate("CreateGroupPartyCadastre",
+                                                       "First enable automatic values for both namespace and local_id fields before creating group parties. Click the button to open the settings dialog."),
+                                                   QCoreApplication.translate("CreateGroupPartyCadastre", "Open Settings"),
+                                                   Qgis.Info)
+            return
+
         dlg = CreateGroupPartyCadastre(self.iface, self.get_db_connection(), self.qgis_utils)
 
         res, msg = dlg.validate_target_layers()

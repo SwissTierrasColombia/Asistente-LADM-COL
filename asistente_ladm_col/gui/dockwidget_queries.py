@@ -35,7 +35,7 @@ from ..data.tree_models import TreeModel
 DOCKWIDGET_UI = get_ui_class('dockwidget_queries.ui')
 
 class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
-    def __init__(self, iface, db, qgis_utils, parent=None):
+    def __init__(self, iface, db, qgis_utils, ladm_data, parent=None):
         super(DockWidgetQueries, self).__init__(None)
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
@@ -43,6 +43,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.canvas = iface.mapCanvas()
         self._db = db
         self.qgis_utils = qgis_utils
+        self.ladm_data = ladm_data
         self.selection_color = None
         self.active_map_tool_before_custom = None
 
@@ -66,11 +67,26 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.btn_identify_plot.clicked.connect(self.btn_plot_toggled)
 
         # Context menu
-        self.treeView.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.treeView.customContextMenuRequested.connect(self.show_context_menu)
+        self._set_context_menus()
 
         # Create maptool
         self.maptool_identify = QgsMapToolIdentifyFeature(self.canvas)
+
+    def _set_context_menus(self):
+        self.tree_view_basic.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tree_view_basic.customContextMenuRequested.connect(self.show_context_menu)
+
+        self.tree_view_legal.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tree_view_legal.customContextMenuRequested.connect(self.show_context_menu)
+
+        self.tree_view_property_record_card.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tree_view_property_record_card.customContextMenuRequested.connect(self.show_context_menu)
+
+        self.tree_view_physical.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tree_view_physical.customContextMenuRequested.connect(self.show_context_menu)
+
+        self.tree_view_economic.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tree_view_economic.customContextMenuRequested.connect(self.show_context_menu)
 
     def add_layers(self):
         res_layers = self.qgis_utils.get_layers(self._db, {
@@ -200,9 +216,9 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             self.maptool_identify.featureIdentified.disconnect()
         except TypeError as e:
             pass
-        self.maptool_identify.featureIdentified.connect(self.get_basic_info_by_plot)
+        self.maptool_identify.featureIdentified.connect(self.get_info_by_plot)
 
-    def get_basic_info_by_plot(self, plot_feature):
+    def get_info_by_plot(self, plot_feature):
         plot_t_id = plot_feature[ID_FIELD]
         self.canvas.flashFeatureIds(self._plot_layer,
                                     [plot_feature.id()],
@@ -213,15 +229,31 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         with OverrideCursor(Qt.WaitCursor):
             self._plot_layer.selectByIds([plot_feature.id()])
-            records = self._db.get_igac_basic_info(plot_t_id)
-            #print(records)
-
             if not self.isVisible():
                 self.show()
 
-            self.treeModel = TreeModel(data=records)
-            self.treeView.setModel(self.treeModel)
-            self.treeView.expandAll()
+            self.search_data_by_component(plot_t_id=plot_t_id)
+
+    def search_data_by_component(self, **kwargs):
+        records = self._db.get_igac_basic_info(**kwargs)
+        self.tree_view_basic.setModel(TreeModel(data=records))
+        self.tree_view_basic.expandAll()
+
+        records = self._db.get_igac_legal_info(**kwargs)
+        self.tree_view_legal.setModel(TreeModel(data=records))
+        self.tree_view_legal.expandAll()
+
+        records = self._db.get_igac_property_record_card_info(**kwargs)
+        self.tree_view_property_record_card.setModel(TreeModel(data=records))
+        self.tree_view_property_record_card.expandAll()
+
+        records = self._db.get_igac_physical_info(**kwargs)
+        self.tree_view_physical.setModel(TreeModel(data=records))
+        self.tree_view_physical.expandAll()
+
+        records = self._db.get_igac_economic_info(**kwargs)
+        self.tree_view_economic.setModel(TreeModel(data=records))
+        self.tree_view_economic.expandAll()
 
     def alphanumeric_query(self):
         """
@@ -231,15 +263,12 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         query = self.txt_alphanumeric_query.text().strip()
         if query:
             if option == 'fmi':
-                records = self._db.get_igac_basic_info(parcel_fmi=query)
+                self.search_data_by_component(parcel_fmi=query)
             elif option == 'parcel_number':
-                records = self._db.get_igac_basic_info(parcel_number=query)
+                self.search_data_by_component(parcel_number=query)
             else: # previous_parcel_number
-                records = self._db.get_igac_basic_info(previous_parcel_number=query)
+                self.search_data_by_component(previous_parcel_number=query)
 
-            self.treeModel = TreeModel(data=records)
-            self.treeView.setModel(self.treeModel)
-            self.treeView.expandAll()
         else:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("DockWidgetQueries", "First enter a query"))
@@ -248,17 +277,21 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.txt_alphanumeric_query.setText('')
 
     def show_context_menu(self, point):
-        index = self.treeView.indexAt(point)
+        tree_view = self.sender()
+        index = tree_view.indexAt(point)
 
         context_menu = QMenu("Context menu")
 
         index_data = index.data(Qt.UserRole)
+
+        if index_data is None:
+            return
+
         if "value" in index_data:
             action_copy = QAction(QCoreApplication.translate("DockWidgetQueries", "Copy value"))
             action_copy.triggered.connect(partial(self.copy_value, index_data["value"]))
             context_menu.addAction(action_copy)
-
-        context_menu.addSeparator()
+            context_menu.addSeparator()
 
         # Configure actions for tables/layers
         if "type" in index_data and "id" in index_data:
@@ -273,6 +306,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 if self._parcel_layer is None or self._plot_layer is None or self._uebaunit_table is None:
                     self.add_layers()
                 layer = self._parcel_layer
+                self.iface.layerTreeView().setCurrentLayer(layer)
             else:
                 layer = self.qgis_utils.get_layer(self._db, table_name, geometry_type, True)
 
@@ -284,7 +318,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
                 if table_name == PARCEL_TABLE:
                     # We show a handy option to zoom to related plots
-                    plot_ids = self.get_plots_related_to_parcel(t_id)
+                    plot_ids = self.ladm_data.get_plots_related_to_parcel(self._db, t_id, None, self._plot_layer, self._uebaunit_table)
                     if plot_ids:
                         action_zoom_to_plots = QAction(QCoreApplication.translate("DockWidgetQueries", "Zoom to related plot(s)"))
                         action_zoom_to_plots.triggered.connect(partial(self.zoom_to_plots, plot_ids))
@@ -294,7 +328,8 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 action_open_feature_form.triggered.connect(partial(self.open_feature_form, layer, t_id))
                 context_menu.addAction(action_open_feature_form)
 
-        context_menu.exec_(self.treeView.mapToGlobal(point))
+        if context_menu.actions():
+            context_menu.exec_(tree_view.mapToGlobal(point))
 
     def copy_value(self, value):
         self.clipboard.setText(str(value))
@@ -322,7 +357,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         feature = QgsFeature()
         res = iterator.nextFeature(feature)
         if res:
-            print(feature.attributes())
             return feature
 
         return None
@@ -335,31 +369,3 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                                     QColor(255, 0, 0, 0),
                                     flashes=1,
                                     duration=500)
-
-    def get_plots_related_to_parcel(self, t_id):
-        """
-        TODO: This function should be in a ladm lib
-        :param t_id: parcel t_id
-        :return: list of plot t_ids related to the parcel
-        """
-        plots = list()
-        features = self._uebaunit_table.getFeatures("{}={} AND {} IS NOT NULL".format(
-                                                    UEBAUNIT_TABLE_PARCEL_FIELD,
-                                                    t_id,
-                                                    UEBAUNIT_TABLE_PLOT_FIELD))
-
-        plot_t_ids = list()
-        for feature in features:
-            plot_t_ids.append(feature[UEBAUNIT_TABLE_PLOT_FIELD])
-
-        if plot_t_ids:
-            request = QgsFeatureRequest(
-                        QgsExpression("{} IN ({})".format(ID_FIELD,
-                                                          ",".join([str(id) for id in plot_t_ids])))).setNoAttributes()
-            request.setFlags(QgsFeatureRequest.NoGeometry)
-            features = self._plot_layer.getFeatures(request)
-
-            for feature in features:
-                plots.append(feature.id())
-
-        return plots

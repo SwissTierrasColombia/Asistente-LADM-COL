@@ -3,8 +3,8 @@
   <renderer-v2 symbollevels="0" attr="error_type" enableorderby="0" type="categorizedSymbol" forceraster="0">
     <categories>
       <category symbol="0" value="Punto lindero no está cubierto por un nodo de un lindero" label="Punto lindero no está cubierto por un nodo de un lindero" render="true"/>
-      <category symbol="1" value="La relación topológica entre el punto lindero y el lindero está duplicada en la tabla de puntoccl" label="La relación topológica entre el punto lindero y el nodo de un lindero está duplicada en la tabla de puntoccl" render="true"/>
-      <category symbol="2" value="La relación topológica entre el punto lindero y el lindero no está registra en la tabla de puntoccl" label="La relación topológica entre el punto lindero y el nodo de un lindero no está registra en la tabla de puntoccl" render="true"/>
+      <category symbol="1" value="La relación topológica entre el punto lindero y el nodo de un lindero está duplicada en la tabla de puntoccl" label="La relación topológica entre el punto lindero y el nodo de un lindero está duplicada en la tabla de puntoccl" render="true"/>
+      <category symbol="2" value="La relación topológica entre el punto lindero y el nodo de un lindero no está registra en la tabla de puntoccl" label="La relación topológica entre el punto lindero y el nodo de un lindero no está registra en la tabla de puntoccl" render="true"/>
     </categories>
     <symbols>
       <symbol alpha="1" clip_to_extent="1" name="0" type="marker">

@@ -27,6 +27,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsApplication)
 
 from .db_connector import DBConnector
+from ..queries import basic_query, legal_query, property_record_card_query, physical_query, economic_query
 from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
                                       PLUGIN_NAME,
                                       PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO)
@@ -427,146 +428,197 @@ class PGConnector(DBConnector):
         colnames = {desc[0]: cur.description.index(desc) for desc in cur.description}
         return colnames, results
 
-    def get_igac_basic_info(self, plot_t_id='NULL', parcel_fmi='NULL', parcel_number='NULL',  previous_parcel_number='NULL'):
+    def get_igac_basic_info(self, **kwargs):
         """
         Query by component: Basic info
-        :param plot_t_id:
-        :param parcel_fmi:
-        :param parcel_number:
-        :param previous_parcel_number:
+        :param kwargs: dict with one of the following key-value param
+               plot_t_id
+               parcel_fmi
+               parcel_number
+               previous_parcel_number
         :return:
         """
+        params = {
+            'plot_t_id': 'NULL',
+            'parcel_fmi': 'NULL',
+            'parcel_number': 'NULL',
+            'previous_parcel_number': 'NULL'
+        }
+        params.update(kwargs)
 
-        query = """
-        SELECT
-        json_agg(json_build_object(
-        		'id', componente_informacion_basica.t_id,
-        		'attributes', json_build_object('Departamento', componente_informacion_basica.departamento,
-        									 'Municipio', componente_informacion_basica.municipio,
-        									 'Zona', componente_informacion_basica.zona,
-        									 'NUPRE', componente_informacion_basica.nupre,
-        									 'FMI', componente_informacion_basica.fmi,
-        									 'Número predial', componente_informacion_basica.numero_predial,
-        									 'Número_predial_anterior', componente_informacion_basica.numero_predial_anterior,
-        									 'Tipo', componente_informacion_basica.tipo,
-        									 'Destinación_económica', componente_informacion_basica.destinacion_economica,
-        									 'Área_terreno', componente_informacion_basica.area_calculada,
-        									 'extdireccion', componente_informacion_basica.direccion,
-        									 'construccion', componente_informacion_basica.construcciones,
-        									 'Área_total_construcciones', componente_informacion_basica.area_construcciones))) as predio
-        FROM (
-        	WITH 
-        		predios_seleccionados AS (
-        			SELECT uebaunit.baunit_predio FROM {schema}.uebaunit WHERE uebaunit.ue_terreno = {plot_t_id}
-        				UNION
-        			SELECT t_id FROM {schema}.predio WHERE predio.fmi = '{parcel_fmi}'
-        				UNION
-        			SELECT t_id FROM {schema}.predio WHERE predio.numero_predial = '{parcel_number}'
-        				UNION 
-        			SELECT t_id FROM {schema}.predio WHERE predio.numero_predial_anterior = '{previous_parcel_number}'
-        		),
-        		info_direccion_terreno AS (SELECT pais, departamento, ciudad, codigo_postal, apartado_correo, nombre_calle FROM {schema}.extdireccion WHERE terreno_ext_direccion_id IN (SELECT * FROM predios_seleccionados)),
-        		uebaunit_seleccionados AS (SELECT baunit_predio, ue_terreno, ue_construccion FROM {schema}.uebaunit WHERE uebaunit.baunit_predio IN (SELECT * FROM predios_seleccionados)),
-        		info_construcciones AS (
-        			SELECT construccion.area_construccion AS área_construcción,
-        				json_build_object(
-        					'id', construccion.t_id,
-        					'attributes', json_build_object('Área_construcción', construccion.area_construccion,
-        												 'Total_unidades_de_construcción', count(*),
-        												 'unidadconstruccion', json_agg(json_build_object('id', unidadconstruccion.t_id,
-        																								  'attributes', json_build_object('Número_de_pisos', unidadconstruccion.numero_pisos,
-        """
+        query = basic_query.get_igac_basic_query(schema=self.schema,
+                             plot_t_id=params['plot_t_id'],
+                             parcel_fmi=params['parcel_fmi'],
+                             parcel_number=params['parcel_number'],
+                             previous_parcel_number=params['previous_parcel_number'],
+                             valuation_model=self.valuation_model_exists(),
+                             property_record_card_model=self.property_record_card_model_exists())
 
-        if self.valuation_model_exists():
-            query += """
-        																															   'Número_de_habitaciones', unidad_construccion.num_habitaciones,
-        																															   'Número_de_baños', unidad_construccion.num_banios,
-        																															   'Número_de_locales', unidad_construccion.num_locales,
-        																															   'Uso', unidad_construccion.uso,
-        																															   'Puntuación', unidad_construccion.puntuacion,
-        		    """
-        else:
-            query += """
-        																															   'Número_de_habitaciones', NULL,
-        																															   'Número_de_baños', NULL,
-        																															   'Número_de_locales', NULL,
-        																															   'Uso', NULL,
-        																															   'Puntuación', NULL,
-            	    """
-
-        query += """
-        																															   'Área_construida', unidadconstruccion.area_construida))))) AS construccion
-        				FROM {schema}.construccion LEFT JOIN {schema}.unidadconstruccion  ON construccion.t_id = unidadconstruccion.construccion
-                """
-
-        if self.valuation_model_exists():
-            query += """
-        				LEFT JOIN {schema}.avaluounidadconstruccion ON unidadconstruccion.t_id = avaluounidadconstruccion.ucons
-        				LEFT JOIN {schema}.unidad_construccion ON avaluounidadconstruccion.aucons = unidad_construccion.t_id
-                    """
-
-        query += """
-        				WHERE construccion.t_id in (SELECT DISTINCT(uebaunit_seleccionados.ue_construccion) FROM uebaunit_seleccionados WHERE uebaunit_seleccionados.ue_construccion IS NOT NULL)
-        				GROUP BY construccion.t_id),
-        		info_predio AS (
-        			SELECT DISTINCT
-        				terreno.t_id as leo,
-        				predio.t_id,
-        				predio.departamento,
-        				predio.municipio,
-        				predio.zona,
-        				predio.nupre,
-        				predio.fmi,
-        				predio.numero_predial,
-        				predio.numero_predial_anterior,
-        				predio.tipo,
-        """
-
-        if self.property_record_card_model_exists():
-            query += """
-        				predio_ficha.destinacion_economica,
-            """
-        else:
-            query += """
-            			NULL AS destinacion_economica,
-                """
-
-        query += """
-        				terreno.area_calculada
-        			FROM (SELECT DISTINCT(ue_terreno) FROM uebaunit_seleccionados) AS uebaunit_seleccionados_f LEFT JOIN  {schema}.terreno ON terreno.t_id IN (SELECT DISTINCT(uebaunit_seleccionados.ue_terreno) FROM uebaunit_seleccionados WHERE uebaunit_seleccionados.ue_terreno IS NOT NULL) 
-        			LEFT JOIN  {schema}.predio ON predio.t_id IN (SELECT DISTINCT(uebaunit_seleccionados.baunit_predio) FROM uebaunit_seleccionados WHERE uebaunit_seleccionados.baunit_predio IS NOT NULL)
-            """
-
-        if self.property_record_card_model_exists():
-            query += """
-        			LEFT JOIN {schema}.predio_ficha ON predio_ficha.crpredio = predio.t_id
-            """
-
-        query += """
-                	, {schema}.uebaunit
-			        WHERE terreno.t_id = uebaunit.ue_terreno AND predio.t_id = uebaunit.baunit_predio
-            """
-            
-        query += """
-        		)
-        	SELECT * FROM info_predio,
-        	(SELECT array_to_json(ARRAY_AGG(info_direccion_terreno)) AS direccion FROM info_direccion_terreno) AS json_direcciones,
-        	(SELECT json_agg(construccion) as construcciones FROM info_construcciones) AS json_construcciones,
-        	(SELECT SUM(info_construcciones.área_construcción) AS area_construcciones FROM info_construcciones) AS info_construcciones_totales
-        ) AS componente_informacion_basica
-        """
-
-        query = query.format(schema=self.schema, plot_t_id=plot_t_id, parcel_fmi=parcel_fmi, parcel_number=parcel_number,
-                             previous_parcel_number=previous_parcel_number)
-
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
         cur.execute(query)
         records = cur.fetchall()
         res = [record._asdict() for record in records]
 
-        print("QUERY:", query)
+        #print("BASIC QUERY:", query)
 
         return res
+
+    def get_igac_legal_info(self, **kwargs):
+        """
+        Query by component: Legal info
+        :param kwargs: dict with one of the following key-value param
+               plot_t_id
+               parcel_fmi
+               parcel_number
+               previous_parcel_number
+        :return:
+        """
+        params = {
+            'plot_t_id': 'NULL',
+            'parcel_fmi': 'NULL',
+            'parcel_number': 'NULL',
+            'previous_parcel_number': 'NULL'
+        }
+        params.update(kwargs)
+
+        query = legal_query.get_igac_legal_query(schema=self.schema,
+                             plot_t_id=params['plot_t_id'],
+                             parcel_fmi=params['parcel_fmi'],
+                             parcel_number=params['parcel_number'],
+                             previous_parcel_number=params['previous_parcel_number'])
+
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
+        cur.execute(query)
+        records = cur.fetchall()
+        res = [record._asdict() for record in records]
+
+        #print("LEGAL QUERY:", query)
+
+        return res
+
+    def get_igac_property_record_card_info(self, **kwargs):
+        """
+        Query by component: Legal info
+        :param kwargs: dict with one of the following key-value param
+               plot_t_id
+               parcel_fmi
+               parcel_number
+               previous_parcel_number
+        :return:
+        """
+        params = {
+            'plot_t_id': 'NULL',
+            'parcel_fmi': 'NULL',
+            'parcel_number': 'NULL',
+            'previous_parcel_number': 'NULL'
+        }
+        params.update(kwargs)
+
+        query = property_record_card_query.get_igac_property_record_card_query(schema=self.schema,
+                                                 plot_t_id=params['plot_t_id'],
+                                                 parcel_fmi=params['parcel_fmi'],
+                                                 parcel_number=params['parcel_number'],
+                                                 previous_parcel_number=params['previous_parcel_number'],
+                                                 property_record_card_model=self.property_record_card_model_exists())
+
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
+        cur.execute(query)
+        records = cur.fetchall()
+        res = [record._asdict() for record in records]
+
+        #print("PROPERTY RECORD CARD QUERY:", query)
+
+        return res
+
+    def get_igac_physical_info(self, **kwargs):
+        """
+        Query by component: Physical info
+        :param kwargs: dict with one of the following key-value param
+               plot_t_id
+               parcel_fmi
+               parcel_number
+               previous_parcel_number
+        :return:
+        """
+        params = {
+            'plot_t_id': 'NULL',
+            'parcel_fmi': 'NULL',
+            'parcel_number': 'NULL',
+            'previous_parcel_number': 'NULL'
+        }
+        params.update(kwargs)
+
+        query = physical_query.get_igac_physical_query(schema=self.schema,
+                                                       plot_t_id=params['plot_t_id'],
+                                                       parcel_fmi=params['parcel_fmi'],
+                                                       parcel_number=params['parcel_number'],
+                                                       previous_parcel_number=params['previous_parcel_number'],
+                                                       valuation_model=self.valuation_model_exists())
+
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
+        cur.execute(query)
+        records = cur.fetchall()
+        res = [record._asdict() for record in records]
+
+        #print("PHYSICAL QUERY:", query)
+
+        return res
+
+    def get_igac_economic_info(self, **kwargs):
+        """
+        Query by component: Economic info
+        :param kwargs: dict with one of the following key-value param
+               plot_t_id
+               parcel_fmi
+               parcel_number
+               previous_parcel_number
+        :return:
+        """
+        params = {
+            'plot_t_id': 'NULL',
+            'parcel_fmi': 'NULL',
+            'parcel_number': 'NULL',
+            'previous_parcel_number': 'NULL'
+        }
+        params.update(kwargs)
+
+        query = economic_query.get_igac_economic_query(schema=self.schema,
+                                                       plot_t_id=params['plot_t_id'],
+                                                       parcel_fmi=params['parcel_fmi'],
+                                                       parcel_number=params['parcel_number'],
+                                                       previous_parcel_number=params['previous_parcel_number'],
+                                                       valuation_model=self.valuation_model_exists(),
+                                                       property_record_card_model=self.property_record_card_model_exists())
+
+        if self.conn is None:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
+        cur.execute(query)
+        records = cur.fetchall()
+        res = [record._asdict() for record in records]
+
+        #print("ECONOMIC QUERY:", query)
+
+        return res
+
 
     def get_annex17_plot_data(self, plot_id, mode='only_id'):
         if self.conn is None:

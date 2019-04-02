@@ -42,8 +42,8 @@ class LogQualityDialog(QDialog, LOG_DIALOG_UI):
         self.buttonBox.accepted.connect(self.save)
 
         self.buttonBox.button(QDialogButtonBox.Save).setText(QCoreApplication.translate("LogQualityDialog", "Export to PDF"))
-        text, total_time = self.quality.get_log_dialog_quality_text()
-        self.txt_log_quality.setHtml(text)
+        self.text, self.total_time = self.quality.get_log_dialog_quality_text()
+        self.txt_log_quality.setHtml(self.text)
 
     def save(self):
         settings = QSettings()
