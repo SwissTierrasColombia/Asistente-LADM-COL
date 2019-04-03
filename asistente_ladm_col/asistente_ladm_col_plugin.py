@@ -186,7 +186,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality.log_quality_show_button_emitted.connect(self.show_log_quality_button)
         self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
         self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
-        self.quality.utils.log_excel_show_message_emitted.connect(self.show_log_excel_button)
 
         self.iface.initializationCompleted.connect(self.qgis_initialized)
 
@@ -717,8 +716,8 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = LogQualityDialog(self.qgis_utils, self.quality)
         dlg.exec_()
 
-    def show_log_excel_button(self, msg, text):
-        self.progressMessageBar = self.iface.messageBar().createMessage("DialogImportFromExcel",
+    def show_log_excel_button(self, text):
+        self.progressMessageBar = self.iface.messageBar().createMessage("Import from Excel",
             QCoreApplication.translate("DialogImportFromExcel",
                                        "Some errors were found while importing from the intermediate Excel file into LADM-COL!"))
         self.button = QPushButton(self.progressMessageBar)
@@ -727,7 +726,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.progressMessageBar.layout().addWidget(self.button)
         self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Info)
         self.text = text
-        QCoreApplication.processEvents()
 
     def show_log_excel_dialog(self):
         dlg = LogExcelDialog(self.qgis_utils, self.text)
@@ -859,8 +857,9 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def call_import_from_intermediate_structure(self):
-        dlg = DialogImportFromExcel(self.iface, self.get_db_connection(), self.qgis_utils, self.quality.utils)
-        dlg.exec_()
+        self._dlg = DialogImportFromExcel(self.iface, self.get_db_connection(), self.qgis_utils)
+        self._dlg.log_excel_show_message_emitted.connect(self.show_log_excel_button)
+        self._dlg.exec_()
 
     def unload(self):
         # remove the plugin menu item and icon

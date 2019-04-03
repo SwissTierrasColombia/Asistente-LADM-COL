@@ -28,7 +28,8 @@ from qgis.core import (Qgis,
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               QCoreApplication, 
-                              QFile)
+                              QFile,
+                              pyqtSignal)
 from qgis.gui import QgsMessageBar
 import processing
 
@@ -91,13 +92,14 @@ from ..utils import get_ui_class
 DIALOG_UI = get_ui_class('dlg_import_from_excel.ui')
 
 class DialogImportFromExcel(QDialog, DIALOG_UI):
-    def __init__(self, iface, db, qgis_utils, Utils, parent=None):
+    log_excel_show_message_emitted = pyqtSignal(str)
+
+    def __init__(self, iface, db, qgis_utils, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
         self._db = db
         self.qgis_utils = qgis_utils
-        self.utils = Utils
         self.log = QgsApplication.messageLog()
         self.help_strings = HelpStrings()
         self.log_dialog_excel_text_content = ""
@@ -185,10 +187,8 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         if layer_parcel is None or layer_party is None or layer_group_party is None or layer_right is None:
             # A layer is None if at least an error was found
-            self.progress.setVisible(False)
-            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
             self.group_parties_exists = False
-            self.utils.send_signal_log_excel(QCoreApplication.translate("DialogImportFromExcel", "Check errors in excel file"), self.log_dialog_excel_text_content)
+            self.log_excel_show_message_emitted.emit(self.log_dialog_excel_text_content)
             self.done(0)
             return
 

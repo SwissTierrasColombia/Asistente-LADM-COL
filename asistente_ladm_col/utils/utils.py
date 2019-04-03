@@ -16,13 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import (QObject,
-                              pyqtSignal,
-                              QCoreApplication)
+from qgis.PyQt.QtCore import QObject
 
 class Utils(QObject):
-    log_excel_show_message_emitted = pyqtSignal(str, str)
-
     def __init__(self):
         QObject.__init__(self)
  
@@ -53,6 +49,3 @@ class Utils(QObject):
             minu = int(60*((24*(time/float(86400) - D) - h)))
             seg = 60*((60*((24*(time/float(86400) - D) - h))) - minu)
             return "{}{} {}{} {}{} {}{}".format(D, unit_days, h, unit_hours, minu, unit_minutes, format(seg, time_format), unit_second)
-
-    def send_signal_log_excel(self, msg, text):
-        self.log_excel_show_message_emitted.emit(msg, text) # TODO Can this be emitted from its own dialog?
