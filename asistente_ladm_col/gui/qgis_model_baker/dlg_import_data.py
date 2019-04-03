@@ -36,6 +36,7 @@ from qgis.PyQt.QtGui import (QColor,
                              QStandardItem)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
+                                 QLayout,
                                  QListWidgetItem,
                                  QDialogButtonBox)
 from qgis.core import Qgis
@@ -67,6 +68,8 @@ class DialogImportData(QDialog, DIALOG_UI):
     def __init__(self, iface, db, qgis_utils):
         QDialog.__init__(self)
         self.setupUi(self)
+        self.layout().setSizeConstraint(QLayout.SetFixedSize)
+
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
         self.db = db
@@ -352,6 +355,10 @@ class DialogImportData(QDialog, DIALOG_UI):
         else:
             self.show_message(QCoreApplication.translate("DialogImportData", "Error when importing data"), Qgis.Warning)
             self.enable()
+
+            # Open log
+            if self.log_config.isCollapsed():
+                self.log_config.setCollapsed(False)
 
     def advance_progress_bar_by_text(self, text):
         if text.strip() == 'Info: compile models...':

@@ -36,6 +36,7 @@ from qgis.PyQt.QtGui import (QColor,
                              QStandardItem)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
+                                 QLayout,
                                  QListWidgetItem,
                                  QMessageBox,
                                  QDialogButtonBox)
@@ -66,6 +67,8 @@ class DialogExportData(QDialog, DIALOG_UI):
     def __init__(self, iface, db, qgis_utils):
         QDialog.__init__(self)
         self.setupUi(self)
+        self.layout().setSizeConstraint(QLayout.SetFixedSize)
+
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
         self.db = db
@@ -324,6 +327,10 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
         else:
             self.enable()
+            
+            # Open log
+            if self.log_config.isCollapsed():
+                self.log_config.setCollapsed(False)
 
     def advance_progress_bar_by_text(self, text):
         if text.strip() == 'Info: compile models...':

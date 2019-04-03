@@ -32,6 +32,7 @@ from qgis.PyQt.QtGui import (QColor,
                              QValidator,
                              QRegExpValidator)
 from qgis.PyQt.QtWidgets import (QDialog,
+                                 QLayout,
                                  QListWidgetItem,
                                  QSizePolicy,
                                  QDialogButtonBox)
@@ -73,6 +74,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self._current_db = None
 
         self.setupUi(self)
+        self.layout().setSizeConstraint(QLayout.SetFixedSize)
+
         self.validators = Validators()
 
         self.update_import_models()
@@ -278,6 +281,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         else:
             color = '#aa2222'
             message = QCoreApplication.translate("DialogImportSchema", "Finished with errors!")
+
+            # Open log
+            if self.log_config.isCollapsed():
+                self.log_config.setCollapsed(False)
 
         self.txtStdout.setTextColor(QColor(color))
         self.txtStdout.append(message)
