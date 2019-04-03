@@ -714,21 +714,23 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
 
     def show_log_quality_dialog(self):
-        dlg = LogQualityDialog(self.qgis_utils, self.quality, self.iface)
+        dlg = LogQualityDialog(self.qgis_utils, self.quality)
         dlg.exec_()
 
     def show_log_excel_button(self, msg, text):
-        self.progressMessageBar = self.iface.messageBar().createMessage("DialogImportFromExcel", "Errors were found in the Excel file")
+        self.progressMessageBar = self.iface.messageBar().createMessage("DialogImportFromExcel",
+            QCoreApplication.translate("DialogImportFromExcel",
+                                       "Some errors were found while importing from the intermediate Excel file into LADM-COL!"))
         self.button = QPushButton(self.progressMessageBar)
         self.button.pressed.connect(self.show_log_excel_dialog)
-        self.button.setText(QCoreApplication.translate("DialogImportFromExcel", "Show Results"))
+        self.button.setText(QCoreApplication.translate("DialogImportFromExcel", "Show errors found"))
         self.progressMessageBar.layout().addWidget(self.button)
         self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Info)
         self.text = text
         QCoreApplication.processEvents()
 
     def show_log_excel_dialog(self):
-        dlg = LogExcelDialog(self.iface, self.get_db_connection(), self.qgis_utils, self.quality.utils, self.text)
+        dlg = LogExcelDialog(self.qgis_utils, self.text)
         dlg.exec_()
 
     def _db_connection_required(func_to_decorate):

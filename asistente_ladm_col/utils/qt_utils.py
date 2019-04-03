@@ -128,14 +128,12 @@ class NetworkError(RuntimeError):
         self.msg = msg
         self.error_code = error_code
 
-def save_pdf_format(self, settings_path, title, text):
+def save_pdf_format(qgis_utils, settings_path, title, text):
     settings = QSettings()
-    new_filename, filter = QFileDialog.getSaveFileName(self,
-                                                        QCoreApplication.translate('Asistente-LADM_COL',
-                                                                                    'Export to PDF'),
-                                                        settings.value(
-                                                            settings_path, '.'),
-                                                        filter="PDF (*.pdf)")               
+    new_filename, filter = QFileDialog.getSaveFileName(None,
+                                                       QCoreApplication.translate('Asistente-LADM_COL', 'Export to PDF'),
+                                                       settings.value(settings_path, '.'),
+                                                       filter="PDF (*.pdf)")
 
     if new_filename:
         settings.setValue(settings_path, os.path.dirname(new_filename))
@@ -151,8 +149,10 @@ def save_pdf_format(self, settings_path, title, text):
         txt_log.print(printer)
 
         msg = QCoreApplication.translate("Asistente-LADM_COL", 
-            "All Excel Check report successfully generated in folder <a href='file:///{path}'>{path}</a>!").format(path=normalize_local_url(new_filename))
-        self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Success, 0)
+            "Report successfully generated in folder <a href='file:///{normalized_path}'>{path}</a>!").format(
+            normalized_path=normalize_local_url(new_filename),
+            path=new_filename)
+        qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Success, 0)
 
 class Validators(QObject):
     def validate_line_edits(self, *args, **kwargs):

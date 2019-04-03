@@ -16,38 +16,24 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
-import time
-from qgis.core import Qgis
 from qgis.PyQt.QtWidgets import QDialog
-from qgis.PyQt.QtPrintSupport import QPrinter
-from qgis.PyQt.QtWidgets import (QFileDialog,
-                                 QDialogButtonBox)
-from qgis.PyQt.QtCore import (QCoreApplication,
-                              QSettings)
+from qgis.PyQt.QtWidgets import QDialogButtonBox
+from qgis.PyQt.QtCore import QCoreApplication
 from ..utils import get_ui_class
-from asistente_ladm_col.utils.utils import Utils
-from ..utils.qt_utils import normalize_local_url
-from .dialog_import_from_excel import DialogImportFromExcel
 from ..utils.qt_utils import save_pdf_format
 
 LOG_DIALOG_EXCEL_UI = get_ui_class('dlg_log_excel.ui')
 
 class LogExcelDialog(QDialog, LOG_DIALOG_EXCEL_UI):
-    def __init__(self, iface, db, qgis_utils, Utils, text, parent=None):
+    def __init__(self, qgis_utils, text, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.iface = iface
-        self._db = db
         self.qgis_utils = qgis_utils
-        self.utils = Utils
-        self.dialog_excel = DialogImportFromExcel(self.iface, self._db, self.qgis_utils, self.utils)
         self.buttonBox.accepted.connect(self.save)
         self.buttonBox.button(QDialogButtonBox.Save).setText(QCoreApplication.translate("LogExcelDialog", "Export to PDF"))
         self.txt_log_excel.setHtml(text)
         self.export_text = text
 
     def save(self):
-        title = QCoreApplication.translate(
-                'LogExcelDialog',"<h2 align='center'>Excel Check Results</h2>")
-        save_pdf_format(self, 'Asistente-LADM_COL/log_excel_dialog/save_path', title, self.export_text ) 
+        title = QCoreApplication.translate('LogExcelDialog',"<h2 align='center'>Errors importing from Excel into LADM-COL</h2>")
+        save_pdf_format(self.qgis_utils, 'Asistente-LADM_COL/log_excel_dialog/save_path', title, self.export_text )

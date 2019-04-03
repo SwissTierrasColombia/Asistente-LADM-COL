@@ -55,4 +55,4 @@ class Utils(QObject):
             return "{}{} {}{} {}{} {}{}".format(D, unit_days, h, unit_hours, minu, unit_minutes, format(seg, time_format), unit_second)
 
     def send_signal_log_excel(self, msg, text):
-        self.log_excel_show_message_emitted.emit(msg, text)
+        self.log_excel_show_message_emitted.emit(msg, text) # TODO Can this be emitted from its own dialog?

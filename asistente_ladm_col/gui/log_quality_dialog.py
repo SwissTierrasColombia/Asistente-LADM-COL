@@ -16,28 +16,23 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
 import time
-from qgis.core import Qgis
 from qgis.PyQt.QtWidgets import QDialog
-from qgis.PyQt.QtPrintSupport import QPrinter
-from qgis.PyQt.QtWidgets import (QFileDialog,
-                                 QDialogButtonBox)
+from qgis.PyQt.QtWidgets import QDialogButtonBox
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 from ..utils import get_ui_class
-from ..utils.qt_utils import normalize_local_url
 from ..utils.qt_utils import save_pdf_format
 
 LOG_DIALOG_UI = get_ui_class('dlg_log_quality.ui')
 
 class LogQualityDialog(QDialog, LOG_DIALOG_UI):
-    def __init__(self, qgis_utils, quality, iface, parent=None):
+    def __init__(self, qgis_utils, quality, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.qgis_utils = qgis_utils
         self.quality = quality
-        self.iface = iface
+
         # Set connections
         self.buttonBox.accepted.connect(self.save)
 
@@ -54,5 +49,5 @@ class LogQualityDialog(QDialog, LOG_DIALOG_UI):
                 time.strftime("%d/%m/%y %H:%M:%S"), settings.value('Asistente-LADM_COL/pg/database'),
                 settings.value('Asistente-LADM_COL/pg/schema'), self.quality.utils.set_time_format(total_time))
 
-        save_pdf_format(self, 'Asistente-LADM_COL/log_quality_dialog/save_path', title, text )
+        save_pdf_format(self.qgis_utils, 'Asistente-LADM_COL/log_quality_dialog/save_path', title, text )
 

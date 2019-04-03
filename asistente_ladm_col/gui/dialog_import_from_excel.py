@@ -35,14 +35,11 @@ import processing
 from asistente_ladm_col import PLUGIN_NAME
 from asistente_ladm_col.utils.qt_utils import make_file_selector, normalize_local_url
 from ..config.help_strings import HelpStrings
-from qgis.PyQt.QtGui import (QBrush,
-                             QFont,
-                             QIcon)
 from qgis.PyQt.QtWidgets import (QDialog,
-                                 QTreeWidgetItem,
-                                 QLineEdit,
-                                 QTreeWidgetItemIterator,
-                                 QComboBox, QSizePolicy, QGridLayout, QDialogButtonBox, QFileDialog)
+                                 QSizePolicy,
+                                 QGridLayout,
+                                 QDialogButtonBox,
+                                 QFileDialog)
 from ..config.table_mapping_config import (COL_PARTY_TABLE,
                                            PARCEL_TABLE,
                                            RIGHT_TABLE,
@@ -104,7 +101,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         self.log = QgsApplication.messageLog()
         self.help_strings = HelpStrings()
         self.log_dialog_excel_text_content = ""
-        self.existence_grouping = None
+        self.group_parties_exists = False
 
         self.fields = {EXCEL_SHEET_NAME_PLOT: [EXCEL_SHEET_TITLE_DEPARTMENT, EXCEL_SHEET_TITLE_MUNICIPALITY, EXCEL_SHEET_TITLE_ZONE, 
                             EXCEL_SHEET_TITLE_REGISTRATION_PLOT, EXCEL_SHEET_TITLE_NPN, EXCEL_SHEET_TITLE_NPV,
@@ -180,15 +177,17 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         self.txt_log.setText(QCoreApplication.translate("DialogImportFromExcel", "Loading tables from the Excel file..."))
 
         # Now that we have the Excel file, build vrts to load its sheets appropriately
+        # Also validate each layer against a number of rules
         layer_parcel = self.check_layer_from_excel_sheet(excel_path, EXCEL_SHEET_NAME_PLOT)
         layer_party = self.check_layer_from_excel_sheet(excel_path, EXCEL_SHEET_NAME_PARTY)
         layer_group_party = self.check_layer_from_excel_sheet(excel_path, EXCEL_SHEET_NAME_GROUP)
         layer_right = self.check_layer_from_excel_sheet(excel_path, EXCEL_SHEET_NAME_RIGHT)
 
         if layer_parcel is None or layer_party is None or layer_group_party is None or layer_right is None:
+            # A layer is None if at least an error was found
             self.progress.setVisible(False)
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
-            self.existence_grouping = None
+            self.group_parties_exists = False
             self.utils.send_signal_log_excel(QCoreApplication.translate("DialogImportFromExcel", "Check errors in excel file"), self.log_dialog_excel_text_content)
             self.done(0)
             return
@@ -667,160 +666,156 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         layer = self.get_layer_from_excel_sheet(excel_path, sheetname)
         error_counter = 0
 
-        if layer is None and sheetname != 'agrupacion':
+        if layer is None and sheetname != EXCEL_SHEET_NAME_GROUP: # optional sheet
             self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
                     "The {} sheet has not information or has another name.".format(sheetname)))
             error_counter += 1
         else:
             title_validator = layer.fields().toList()
+
         if sheetname == EXCEL_SHEET_NAME_PLOT and layer is not None:
             if not title_validator:
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
                         "The title does not match the format in the sheet {}.".format(sheetname)))
                 error_counter += 1
-            if len(list(layer.getFeatures('"numero predial nuevo" is Null'))) > 0:
+            if list(layer.getFeatures('"numero predial nuevo" is Null')):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column numero predial nuevo has empty values in the sheet {}.".format(sheetname)))
+                        "The column numero predial nuevo has empty values in sheet {}.".format(sheetname)))
                 error_counter += 1    
-            if self.check_field_numeric_layer(layer, 'departamento') == 'No numeric':
+            if not self.check_field_numeric_layer(layer, 'departamento'):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column deparmento has non-numeric valuesin the sheet {}.".format(sheetname)))
+                        "The column departamento has non-numeric values in sheet {}.".format(sheetname)))
                 error_counter += 1
-            if self.check_field_numeric_layer(layer, 'municipio') == 'No numeric':
+            if not self.check_field_numeric_layer(layer, 'municipio'):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column municipio has non-numeric values in the sheet {}.".format(sheetname)))
+                        "The column municipio has non-numeric values in sheet {}.".format(sheetname)))
                 error_counter += 1
-            if self.check_field_numeric_layer(layer, 'numero predial nuevo') == 'No numeric':
+            if not self.check_field_numeric_layer(layer, 'numero predial nuevo'):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column numero predial nuevo has non-numeric values in the sheet {}.".format(sheetname)))   
+                        "The column numero predial nuevo has non-numeric values in sheet {}.".format(sheetname)))
                 error_counter += 1
+
         if sheetname == EXCEL_SHEET_NAME_PARTY and layer is not None:
             if not title_validator:
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The title does not match the format in the sheet {}.".format(sheetname)))
+                        "The title does not match the format in sheet {}.".format(sheetname)))
                 error_counter += 1
-            if len(list(layer.getFeatures('"tipo documento" is Null'))) > 0:
+            if list(layer.getFeatures('"tipo documento" is Null')):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column tipo documento has empty values in the sheet {}.".format(sheetname)))
+                        "The column tipo documento has empty values in sheet {}.".format(sheetname)))
                 error_counter += 1
-            if len(list(layer.getFeatures('"numero de documento" is Null'))) > 0:
+            if list(layer.getFeatures('"numero de documento" is Null')):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column numero de documento has empty values in the sheet {}.".format(sheetname)))
+                        "The column numero de documento has empty values in sheet {}.".format(sheetname)))
                 error_counter += 1
-            if self.check_len_layer(layer, 'numero de documento', 12) == 'exceed':
+            if not self.check_length_attribute_value(layer, 'numero de documento', 12):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column numero de documento has more characters of the permitted in the sheet {}.".format(sheetname)))
+                        "The column numero de documento has more characters than expected in sheet {}.".format(sheetname)))
                 error_counter += 1
-            if len(list(layer.getFeatures('"tipo persona" is Null'))) > 0:
+            if list(layer.getFeatures('"tipo persona" is Null')):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column tipo persona has empty values in the sheet {}.".format(sheetname)))
+                        "The column tipo persona has empty values in sheet {}.".format(sheetname)))
                 error_counter += 1
+
         if sheetname == EXCEL_SHEET_NAME_GROUP and layer is not None:
             if not title_validator:
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
                         "The title does not match the format in the sheet {}.".format(sheetname)))
                 error_counter += 1
-            self.existence_grouping = 'agrupacion'
-            if len(list(layer.getFeatures('"numero predial nuevo" is Null'))) > 0:
+            self.group_parties_exists = True
+            if list(layer.getFeatures('"numero predial nuevo" is Null')):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column numero predial nuevo has empty values in the sheet {}.".format(sheetname)))
+                        "The column numero predial nuevo has empty values in sheet {}.".format(sheetname)))
                 error_counter += 1
-            if len(list(layer.getFeatures('"tipo documento" is Null'))) > 0:
+            if list(layer.getFeatures('"tipo documento" is Null')):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column tipo documento has empty values in the sheet {}.".format(sheetname)))
+                        "The column tipo documento has empty values in sheet {}.".format(sheetname)))
                 error_counter += 1
-            if len(list(layer.getFeatures('"numero de documento" is Null'))) > 0:
+            if list(layer.getFeatures('"numero de documento" is Null')):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column numero de documento has empty values in the sheet {}.".format(sheetname)))
+                        "The column numero de documento has empty values in sheet {}.".format(sheetname)))
                 error_counter += 1
-            if len(list(layer.getFeatures('"id agrupación" is Null'))) > 0:
+            if list(layer.getFeatures('"id agrupación" is Null')):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column id agrupación has empty values in the sheet {}.".format(sheetname)))
+                        "The column id agrupación has empty values in sheet {}.".format(sheetname)))
                 error_counter += 1
-            if self.check_len_layer(layer, 'numero de documento', 12) == 'exceed':
+            if not self.check_length_attribute_value(layer, 'numero de documento', 12):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column numero de documento has more characters of the permitted in the sheet {}.".format(sheetname)))
+                        "The column numero de documento has more characters of the permitted in sheet {}.".format(sheetname)))
                 error_counter += 1
+
         if sheetname == EXCEL_SHEET_NAME_RIGHT and layer is not None:
             if not title_validator:
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The title does not match the format in the sheet {}.".format(sheetname)))
+                        "The title does not match the format in sheet {}.".format(sheetname)))
                 error_counter += 1
-            if len(list(layer.getFeatures('"tipo" is Null'))) > 0:
+            if list(layer.getFeatures('"tipo" is Null')):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column tipo has empty values in the sheet {}.".format(sheetname)))
+                        "The column tipo has empty values in sheet {}.".format(sheetname)))
                 error_counter += 1
-            if len(list(layer.getFeatures('"tipo de fuente" is Null'))) > 0:
+            if list(layer.getFeatures('"tipo de fuente" is Null')):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column tipo de fuente has empty values in the sheet {}.".format(sheetname)))
+                        "The column tipo de fuente has empty values in sheet {}.".format(sheetname)))
                 error_counter += 1
-            if len(list(layer.getFeatures('"estado_disponibilidad de la fuente" is Null'))) > 0:
+            if list(layer.getFeatures('"estado_disponibilidad de la fuente" is Null')):
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column estado_disponibilidad de la fuente has empty values in the sheet {}.".format(sheetname)))
+                        "The column estado_disponibilidad de la fuente has empty values in sheet {}.".format(sheetname)))
                 error_counter += 1
-            if len(list(layer.getFeatures('"Ruta de Almacenamiento de la fuente" is Null'))) > 0:
+            #if list(layer.getFeatures('"Ruta de Almacenamiento de la fuente" is Null')):
+            #    self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel",
+            #            "The column Ruta de Almacenamiento de la fuente has empty values in sheet {}.".format(sheetname)))
+            #    error_counter += 1
+            if len(list(layer.getFeatures('"número documento Interesado" is Null'))) + len(list(layer.getFeatures('"agrupación" is Null'))) != layer.featureCount():
                 self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "The column Ruta de Almacenamiento de la fuente has empty values in the sheet {}.".format(sheetname)))
+                        "Number of non-null parties plus number of non-null group parties is not equal to number of records in sheet {}. There might be rights without party or group party associated.".format(sheetname)))
                 error_counter += 1
-            if len(list(layer.getFeatures('"número documento Interesado" is Null'))) + len(list(layer.getFeatures('"agrupación" is Null'))) != len(list(layer.getFeatures())):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                        "the number of fields in the agrupacion and numero de documento columns is not logical in the sheet {}.".format(sheetname)))    
-                error_counter += 1
-            if self.existence_grouping is None:
-                if len(list(layer.getFeatures('"número documento Interesado" is Null'))) > 0:
+            if not self.group_parties_exists:
+                if list(layer.getFeatures('"número documento Interesado" is Null')):
                     self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                            "The column número documento Interesado has empty values in the sheet {}.".format(sheetname)))
+                            "The column número documento Interesado has empty values in sheet {}.".format(sheetname)))
                     error_counter += 1
-                if len(list(layer.getFeatures('"agrupacion" is Null'))) != len(list(layer.getFeatures())):
+                if len(list(layer.getFeatures('"agrupacion" is Null'))) != layer.featureCount():
                     self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
-                    "The column agrupacion has data but the sheet does not exist in the sheet {}.".format(sheetname)))
+                        "The column agrupacion has data but the sheet does not exist in sheet {}.".format(sheetname)))
                     error_counter += 1
-        
-        if error_counter == 0:
-            return layer
-        else:
-            self.log_dialog_excel_text = self.log_dialog_excel_text_content
-            return None
+
+        return layer if error_counter == 0 else None
 
     def check_field_numeric_layer(self, layer, name):
         id_field_idx = layer.fields().indexFromName(name)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
-        fields = layer.getFeatures(request)
-        result = "numeric"
+        features = layer.getFeatures(request)
+        is_numeric = True
 
-        for field in fields:
+        for feature in features:
             try:
-                int(field[name]) 
+                int(feature[name])
             except:
-                result = "No numeric"
+                is_numeric = False
                 break
-        return result
 
-    def check_len_layer (self, layer, name, size):
+        return is_numeric
+
+    def check_length_attribute_value(self, layer, name, size):
         id_field_idx = layer.fields().indexFromName(name)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
-        fields = layer.getFeatures(request)
+        features = layer.getFeatures(request)
+        right_length = True
 
-        result = ""
-
-        for field in fields:
-            if len(str(field[name])) > size:
-                print (str(len(field[name])))
-                print (str(field[name]))
-                result = "exceed"
+        for feature in features:
+            if len(str(feature[name])) > size:
+                right_length = False
                 break
-            else:
-                result = "No exceed"
-        print (result)
-        return result
 
-
+        return right_length
 
     def generate_message_excel_error(self, msg):
-        self.log_dialog_excel_text_content += LOG_QUALITY_LIST_CONTAINER_OPEN
-        self.log_dialog_excel_text_content += "{}{}{}".format(LOG_QUALITY_LIST_ITEM_ERROR_OPEN, msg, LOG_QUALITY_LIST_ITEM_ERROR_CLOSE)
-        self.log_dialog_excel_text_content += LOG_QUALITY_LIST_CONTAINER_CLOSE
-        self.log_dialog_excel_text_content += LOG_QUALITY_CONTENT_SEPARATOR
+        self.log_dialog_excel_text_content += "{}{}{}{}{}{}".format(LOG_QUALITY_LIST_CONTAINER_OPEN,
+                                                                    LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
+                                                                    msg,
+                                                                    LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
+                                                                    LOG_QUALITY_LIST_CONTAINER_CLOSE,
+                                                                    LOG_QUALITY_CONTENT_SEPARATOR)
 
     def get_layer_from_excel_sheet(self, excel_path, sheetname):
         basename = os.path.basename(excel_path)
