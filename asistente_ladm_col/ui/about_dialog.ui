@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>576</width>
-    <height>500</height>
+    <width>450</width>
+    <height>593</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,7 +20,16 @@
    <string>About</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>15</number>
+   </property>
+   <property name="topMargin">
+    <number>15</number>
+   </property>
+   <property name="rightMargin">
+    <number>15</number>
+   </property>
+   <property name="bottomMargin">
     <number>15</number>
    </property>
    <item row="7" column="0" alignment="Qt::AlignHCenter">
@@ -91,7 +100,7 @@
      </property>
     </spacer>
    </item>
-   <item row="9" column="0">
+   <item row="10" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -116,19 +125,6 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-   </item>
-   <item row="8" column="0">
-    <spacer name="verticalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item row="3" column="0">
     <spacer name="verticalSpacer_3">
@@ -162,6 +158,50 @@
      </property>
     </spacer>
    </item>
+   <item row="8" column="0">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="9" column="0">
+    <widget class="QgsCollapsibleGroupBox" name="change_log_group_box">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Changelog</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QTextBrowser" name="tb_changelog"/>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
@@ -175,10 +215,17 @@
    <layout class="QHBoxLayout" name="horizontalLayout"/>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgis.gui</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>buttonBox</tabstop>
  </tabstops>
- <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

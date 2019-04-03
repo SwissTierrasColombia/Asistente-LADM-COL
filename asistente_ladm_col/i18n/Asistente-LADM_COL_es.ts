@@ -13,8 +13,8 @@
         <translation type="vanished">Descargar ayuda para acceso sin Internet</translation>
     </message>
     <message>
-        <location filename="../ui/about_dialog.ui" line="29"/>
-        <location filename="../gui/about_dialog.py" line="75"/>
+        <location filename="../ui/about_dialog.ui" line="38"/>
+        <location filename="../gui/about_dialog.py" line="101"/>
         <source>Download help for offline access</source>
         <translation>Descargar ayuda para acceso offline</translation>
     </message>
@@ -23,41 +23,47 @@
         <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;v0.0.0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/about_dialog.ui" line="48"/>
+        <location filename="../ui/about_dialog.ui" line="57"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://abcde.co&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;v0.0.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://abcde.co&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;v0.0.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/about_dialog.ui" line="64"/>
+        <location filename="../ui/about_dialog.ui" line="73"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;LADM_COL Assistant&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Asistente LADM_COL&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/about_dialog.ui" line="71"/>
+        <location filename="../ui/about_dialog.ui" line="80"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://qgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS&lt;/span&gt;&lt;/a&gt; plugin to capture and maintain data according to &lt;a href=&quot;https://github.com/AgenciaImplementacion/LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;LADM_COL&lt;/span&gt;&lt;/a&gt; as well as to generate &lt;a href=&quot;https://www.interlis.ch/en&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INTERLIS&lt;/span&gt;&lt;/a&gt; transfer files (.XTF).&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Licence: &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License v3.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Source code repository at &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;A project by&lt;br/&gt;&lt;a href=&quot;https://www.proadmintierra.info/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Agencia de Implementación&lt;/span&gt;&lt;/a&gt; (&lt;a href=&quot;http://bsf-swissphoto.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;BSF-Swissphoto AG&lt;/span&gt;&lt;/a&gt; - &lt;a href=&quot;http://www.incige.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INCIGE S.A.S&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Plugin de &lt;a href=&quot;http://qgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS&lt;/span&gt;&lt;/a&gt; para capturar y mantener datos conformes con &lt;a href=&quot;https://github.com/AgenciaImplementacion/LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;LADM_COL&lt;/span&gt;&lt;/a&gt; y para generar archivos de intercambio de &lt;a href=&quot;https://www.interlis.ch/en&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INTERLIS&lt;/span&gt;&lt;/a&gt; (.XTF).&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Licencia: &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License v3.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Repositorio de código fuente en &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Un proyecto de&lt;br/&gt;&lt;a href=&quot;https://www.proadmintierra.info/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Agencia de Implementación&lt;/span&gt;&lt;/a&gt; (&lt;a href=&quot;http://bsf-swissphoto.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;BSF-Swissphoto AG&lt;/span&gt;&lt;/a&gt; - &lt;a href=&quot;http://www.incige.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INCIGE S.A.S&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../ui/about_dialog.ui" line="183"/>
+        <location filename="../gui/about_dialog.py" line="62"/>
+        <source>Changelog</source>
+        <translation>Registro de cambios</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://qgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS&lt;/span&gt;&lt;/a&gt; plugin to capture and maintain data according to &lt;a href=&quot;https://github.com/AgenciaImplementacion/LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;LADM_COL&lt;/span&gt;&lt;/a&gt; as well as to generate &lt;a href=&quot;http://www.interlis.ch/index_e.htm&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INTERLIS&lt;/span&gt;&lt;/a&gt; transfer files (.XTF).&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Licence: &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License v3.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Source code repository at &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;A project by&lt;br/&gt;&lt;a href=&quot;https://www.proadmintierra.info/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Agencia de Implementación&lt;/span&gt;&lt;/a&gt; (&lt;a href=&quot;http://bsf-swissphoto.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;BSF-Swissphoto AG&lt;/span&gt;&lt;/a&gt; - &lt;a href=&quot;http://www.incige.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INCIGE S.A.S&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Plugin de &lt;a href=&quot;http://qgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS&lt;/span&gt;&lt;/a&gt; para capturar y mantener datos conformes con &lt;a href=&quot;https://github.com/AgenciaImplementacion/LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;LADM_COL&lt;/span&gt;&lt;/a&gt; y para generar archivos de intercambio de &lt;a href=&quot;http://www.interlis.ch/index_e.htm&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INTERLIS&lt;/span&gt;&lt;/a&gt; (.XTF).&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Licencia: &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License v3.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Repositorio de código fuente en &lt;a href=&quot;https://github.com/AgenciaImplementacion/Asistente-LADM_COL&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GitHub&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Un proyecto de&lt;br/&gt;&lt;a href=&quot;https://www.proadmintierra.info/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Agencia de Implementación&lt;/span&gt;&lt;/a&gt; (&lt;a href=&quot;http://bsf-swissphoto.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;BSF-Swissphoto AG&lt;/span&gt;&lt;/a&gt; - &lt;a href=&quot;http://www.incige.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;INCIGE S.A.S&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/about_dialog.py" line="72"/>
+        <location filename="../gui/about_dialog.py" line="98"/>
         <source>Open help from local folder</source>
         <translation>Abrir ayuda desde carpeta local</translation>
     </message>
     <message>
-        <location filename="../gui/about_dialog.py" line="97"/>
+        <location filename="../gui/about_dialog.py" line="123"/>
         <source>There was an error with the download. The downloaded file is invalid.</source>
         <translation>Hubo un error con la descarga. El archivo descargado no es válido.</translation>
     </message>
     <message>
-        <location filename="../gui/about_dialog.py" line="101"/>
+        <location filename="../gui/about_dialog.py" line="127"/>
         <source>Help files were successfully downloaded and can be accessed offline from the About dialog!</source>
         <translation>¡Los archivos de ayuda fueron descargados exitosamente y pueden ser accedidos ofline desde el diálogo &quot;Acerca de&quot;!</translation>
     </message>
     <message>
-        <location filename="../gui/about_dialog.py" line="121"/>
+        <location filename="../gui/about_dialog.py" line="147"/>
         <source>There was a problem connecting to Internet.</source>
         <translation>Hubo un problema con la conexión a Internet.</translation>
     </message>
@@ -3863,12 +3869,12 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>No se pudieron crear terrenos. ¡Asegúrate que los linderos seleccionados formen polígonos cerrados!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1365"/>
+        <location filename="../utils/qgis_utils.py" line="1368"/>
         <source>The local help could not be found in &apos;{}&apos; and cannot be open.</source>
         <translation>No se encontró la ayuda local en &apos;{}&apos; y por lo tanto no se pudo abrir.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1371"/>
+        <location filename="../utils/qgis_utils.py" line="1374"/>
         <source>Is your computer connected to Internet? If so, go to &lt;a href=&quot;{}&quot;&gt;online help&lt;/a&gt;.</source>
         <translation>¿Está tu computador conectado a Internet? Si es así, ve a la&lt;a href=&quot;{}&quot;&gt;ayuda en línea&lt;/a&gt;.</translation>
     </message>
@@ -4410,12 +4416,12 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>ReportGenerator</name>
     <message>
-        <location filename="../gui/reports.py" line="148"/>
+        <location filename="../gui/reports.py" line="147"/>
         <source>The dependency library to generate reports is not installed. Click on the button to download and install it.</source>
         <translation>Las dependencias para generar reportes no están instaladas. Click en el botón para descargarlas e instalarlas.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="166"/>
+        <location filename="../gui/reports.py" line="165"/>
         <source>The dependency library to generate reports was found, but does not match with the version required. Click the button to remove the installed version and try again.</source>
         <translation>Se encontraron las dependencias para generar reportes, pero no en la versión requerida. Haz click en el botón de la derecha para borrar la versión instalada y prueba de nuevo.</translation>
     </message>
@@ -4424,42 +4430,51 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Debes definir la variable de entorno JAVA_HOME en la configuración de QGIS Model Baker o en tu sistema operativo</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="183"/>
         <source>Please set JAVA_HOME path in QGIS Model Baker Settings or in your OS environmental variables.</source>
-        <translation>Por favor define la ruta JAVA_HOME en la configuración de QGIS Model Baker o en las variables de entorno de tu sistema operativo.</translation>
+        <translation type="vanished">Por favor define la ruta JAVA_HOME en la configuración de QGIS Model Baker o en las variables de entorno de tu sistema operativo.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="192"/>
+        <location filename="../gui/reports.py" line="174"/>
+        <source>JAVA_HOME environment variable is not defined, please define it as an enviroment variable on Windows and restart QGIS before generating the annex 17.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/reports.py" line="175"/>
+        <source>JAVA_HOME not defined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/reports.py" line="183"/>
         <source>Layer &apos;Plot&apos; not found in DB! {}</source>
         <translation>¡No se encontró la capa &apos;Terreno&apos; en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="200"/>
+        <location filename="../gui/reports.py" line="191"/>
         <source>To generate reports, first select at least a plot!</source>
         <translation>¡Primero selecciona por lo menos un predio para generar reportes!</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="209"/>
+        <location filename="../gui/reports.py" line="200"/>
         <source>Select a folder to save the reports to be generated</source>
         <translation>Selecciona una carpeta para almacenar los reportes que serán generados</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="213"/>
+        <location filename="../gui/reports.py" line="204"/>
         <source>You need to select a folder where to save the reports before continuing.</source>
         <translation>Necesitas seleccionar una carpeta para almacenar los reportes antes de continuar.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="252"/>
+        <location filename="../gui/reports.py" line="243"/>
         <source>Generating {} report{}...</source>
         <translation>Generando {} reporte{}...</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="265"/>
+        <location filename="../gui/reports.py" line="256"/>
         <source>Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.</source>
         <translation>Omitiendo Anexo 17 para el terreno con {}={} porque tiene agujeros. El módulo de reportes no soporta dichos polígonos.</translation>
     </message>
     <message>
-        <location filename="../gui/reports.py" line="271"/>
+        <location filename="../gui/reports.py" line="262"/>
         <source>Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.</source>
         <translation>Omitiendo Anexo 17 para el terreno con {}={} porque es un multipolígono. El módulo de reportes no soporta dichos polígonos.</translation>
     </message>
