@@ -17,8 +17,10 @@
  ***************************************************************************/
 """
 
-from PyQt5.QtGui import QColor, QCursor
-from qgis.PyQt.QtCore import Qt
+from PyQt5.QtGui import (QColor,
+                         QCursor)
+from qgis.PyQt.QtCore import (Qt,
+                              pyqtSignal)
 from qgis.gui import (QgsMapTool,
                       QgsMapToolEmitPoint,
                       QgsRubberBand)
@@ -28,6 +30,9 @@ from qgis.core import (QgsPointXY,
 
 
 class SelectMapTool(QgsMapToolEmitPoint):
+
+    features_selected_signal = pyqtSignal()
+
     def __init__(self, canvas, layer, multi=True):
         self.canvas = canvas
         QgsMapToolEmitPoint.__init__(self, self.canvas)
@@ -123,6 +128,11 @@ class SelectMapTool(QgsMapToolEmitPoint):
 
         # show features selected
         self._layer.selectByIds(features_selected)
+
+        # emit the signal when at least one element has been selected
+        if len(self._layer.selectedFeatures()):
+            self.features_selected_signal.emit()
+
         self.reset()
 
     def deactivate(self):
