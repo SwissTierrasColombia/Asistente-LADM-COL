@@ -105,16 +105,16 @@ MODULE_HELP_MAPPING = {
 JAVA_REQUIRED_VERSION = 1.8
 
 # Configure QGIS Model Baker Dependency
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.1.0.1"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.1.1"
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
-QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = True
+QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = False
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip' # ''
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = '' # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip'
 
 # QGIS Model Baker definitions
 SCHEMA_NAME = 'schemaname'
