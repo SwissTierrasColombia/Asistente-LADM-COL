@@ -5,6 +5,8 @@ FORMS = ../ui/dlg_load_layers.ui \
         ../ui/controlled_measurement_dialog.ui \
         ../ui/upload_progress_dialog.ui \
         ../ui/dlg_group_party.ui \
+        ../ui/dlg_log_excel.ui \
+        ../ui/dlg_log_quality.ui \
         ../ui/qgis_model_baker/dlg_import_schema.ui \
         ../ui/qgis_model_baker/dlg_import_data.ui \
         ../ui/qgis_model_baker/dlg_export_data.ui \
@@ -86,6 +88,7 @@ SOURCES = ../__init__.py \
           ../gui/controlled_measurement_dialog.py \
           ../gui/upload_progress_dialog.py \
           ../gui/log_quality_dialog.py \
+          ../gui/log_excel_dialog.py \
           ../gui/qgis_model_baker/dlg_import_schema.py \
           ../gui/qgis_model_baker/dlg_import_data.py \
           ../gui/qgis_model_baker/dlg_export_data.py \

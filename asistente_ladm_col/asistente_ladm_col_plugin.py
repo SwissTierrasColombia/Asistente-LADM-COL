@@ -724,7 +724,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.button.pressed.connect(self.show_log_excel_dialog)
         self.button.setText(QCoreApplication.translate("DialogImportFromExcel", "Show errors found"))
         self.progressMessageBar.layout().addWidget(self.button)
-        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Info)
+        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Warning)
         self.text = text
 
     def show_log_excel_dialog(self):
