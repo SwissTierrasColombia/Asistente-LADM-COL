@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-
 from PyQt5.QtGui import (QColor,
                          QCursor)
 from qgis.PyQt.QtCore import (Qt,
@@ -30,8 +29,8 @@ from qgis.core import (QgsPointXY,
 
 
 class SelectMapTool(QgsMapToolEmitPoint):
-
     features_selected_signal = pyqtSignal()
+    buffer_selected = list()
 
     def __init__(self, canvas, layer, multi=True):
         self.canvas = canvas
@@ -63,9 +62,36 @@ class SelectMapTool(QgsMapToolEmitPoint):
         self.isEmittingPoint = True
 
     def canvasReleaseEvent(self, e):
-        self.isEmittingPoint = False
-        self.show_rubber_band()
-        self.intersection()
+        if e.button() & Qt.LeftButton:
+
+            self.isEmittingPoint = False
+            self.show_rubber_band()
+
+            if self._multi and (e.modifiers() & Qt.ControlModifier or e.modifiers() & Qt.ShiftModifier):
+                if self.rubberBand.asGeometry().type() == QgsWkbTypes.PolygonGeometry:
+                    self.reset()
+                    return
+                else:
+                    id_features_intersect = self.ids_features_intersect()
+
+                # if Control or Shift are selected, keeps the previous selection
+                for id_feature_intersect in id_features_intersect:
+                    # toggle selected feature
+                    if id_feature_intersect not in self.buffer_selected:
+                        self.buffer_selected.append(id_feature_intersect)
+                    else:
+                        self.buffer_selected.remove(id_feature_intersect)
+            else:
+                id_features_intersect = self.ids_features_intersect()
+                # Clear selected features if Control or Shift are not selected
+                self.buffer_selected = id_features_intersect
+
+            self.select_features()
+        elif e.button() & Qt.RightButton:
+            # emit the signal when at least one element has been selected
+            if len(self._layer.selectedFeatures()):
+                self.features_selected_signal.emit()
+                self.reset()
 
     def canvasDoubleClickEvent(self, e):
         self.canvasPressEvent(e)
@@ -102,7 +128,12 @@ class SelectMapTool(QgsMapToolEmitPoint):
             self.rubberBand.addPoint(point3, False)
             self.rubberBand.addPoint(point4, True)  # true to update canvas
 
-    def intersection(self):
+            # Aproximate polygon to point when it's small relate with the scale
+            if (self.rubberBand.asGeometry().area() / self.canvas.extent().area()) * 1000000 < 50:
+                self.rubberBand.reset(QgsWkbTypes.PointGeometry)
+                self.rubberBand.addPoint(self.startPoint, True)  # true to update canvas
+
+    def ids_features_intersect(self):
         index = QgsSpatialIndex(self._layer)
         bbox = self.rubberBand.asGeometry().boundingBox()
 
@@ -126,13 +157,11 @@ class SelectMapTool(QgsMapToolEmitPoint):
                 # Get the key corresponding to the minimum value within a dictionary
                 features_selected = [min(distances_features_selected, key=distances_features_selected.get)]
 
+        return features_selected
+
+    def select_features(self):
         # show features selected
-        self._layer.selectByIds(features_selected)
-
-        # emit the signal when at least one element has been selected
-        if len(self._layer.selectedFeatures()):
-            self.features_selected_signal.emit()
-
+        self._layer.selectByIds(self.buffer_selected)
         self.reset()
 
     def deactivate(self):
