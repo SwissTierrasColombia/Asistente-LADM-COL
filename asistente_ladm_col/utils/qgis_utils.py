@@ -28,7 +28,8 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
                               QCoreApplication,
                               QSettings)
-from qgis.PyQt.QtWidgets import QProgressBar, QMessageBox
+from qgis.PyQt.QtWidgets import (QProgressBar, 
+                                 QMessageBox)
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsAttributeEditorContainer,

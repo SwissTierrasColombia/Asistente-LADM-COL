@@ -98,6 +98,7 @@ from .gui.log_quality_dialog import LogQualityDialog
 from .gui.right_of_way import RightOfWay
 from .gui.reports import ReportGenerator
 from .gui.toolbar import ToolBar
+from .gui.log_excel_dialog import LogExcelDialog
 from .data.ladm_data import LADM_DATA
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.model_parser import ModelParser
@@ -181,7 +182,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
         self.qgis_utils.set_node_visibility_requested.connect(self.set_node_visibility)
-
         self.quality.log_quality_show_message_emitted.connect(self.show_log_quality_message)
         self.quality.log_quality_show_button_emitted.connect(self.show_log_quality_button)
         self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
@@ -713,7 +713,22 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
 
     def show_log_quality_dialog(self):
-        dlg = LogQualityDialog(self.qgis_utils, self.quality, self.iface)
+        dlg = LogQualityDialog(self.qgis_utils, self.quality)
+        dlg.exec_()
+
+    def show_log_excel_button(self, text):
+        self.progressMessageBar = self.iface.messageBar().createMessage("Import from Excel",
+            QCoreApplication.translate("DialogImportFromExcel",
+                                       "Some errors were found while importing from the intermediate Excel file into LADM-COL!"))
+        self.button = QPushButton(self.progressMessageBar)
+        self.button.pressed.connect(self.show_log_excel_dialog)
+        self.button.setText(QCoreApplication.translate("DialogImportFromExcel", "Show errors found"))
+        self.progressMessageBar.layout().addWidget(self.button)
+        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Warning)
+        self.text = text
+
+    def show_log_excel_dialog(self):
+        dlg = LogExcelDialog(self.qgis_utils, self.text)
         dlg.exec_()
 
     def _db_connection_required(func_to_decorate):
@@ -842,8 +857,9 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def call_import_from_intermediate_structure(self):
-        dlg = DialogImportFromExcel(self.iface, self.get_db_connection(), self.qgis_utils)
-        dlg.exec_()
+        self._dlg = DialogImportFromExcel(self.iface, self.get_db_connection(), self.qgis_utils)
+        self._dlg.log_excel_show_message_emitted.connect(self.show_log_excel_button)
+        self._dlg.exec_()
 
     def unload(self):
         # remove the plugin menu item and icon

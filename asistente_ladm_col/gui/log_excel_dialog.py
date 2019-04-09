@@ -3,7 +3,7 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2019-01-15
+        begin                : 2019-02-06
         git sha              : :%H$
         copyright            : (C) 2019 by Jhon Galindo
         email                : jhonsigpjc@gmail.com
@@ -16,38 +16,24 @@
  *                                                                         *
  ***************************************************************************/
 """
-import time
 from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtWidgets import QDialogButtonBox
-from qgis.PyQt.QtCore import (QCoreApplication,
-                              QSettings)
+from qgis.PyQt.QtCore import QCoreApplication
 from ..utils import get_ui_class
 from ..utils.qt_utils import save_pdf_format
 
-LOG_DIALOG_UI = get_ui_class('dlg_log_quality.ui')
+LOG_DIALOG_EXCEL_UI = get_ui_class('dlg_log_excel.ui')
 
-class LogQualityDialog(QDialog, LOG_DIALOG_UI):
-    def __init__(self, qgis_utils, quality, parent=None):
+class LogExcelDialog(QDialog, LOG_DIALOG_EXCEL_UI):
+    def __init__(self, qgis_utils, text, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.qgis_utils = qgis_utils
-        self.quality = quality
-
-        # Set connections
         self.buttonBox.accepted.connect(self.save)
-
-        self.buttonBox.button(QDialogButtonBox.Save).setText(QCoreApplication.translate("LogQualityDialog", "Export to PDF"))
-        self.text, self.total_time = self.quality.get_log_dialog_quality_text()
-        self.txt_log_quality.setHtml(self.text)
+        self.buttonBox.button(QDialogButtonBox.Save).setText(QCoreApplication.translate("LogExcelDialog", "Export to PDF"))
+        self.txt_log_excel.setHtml(text)
+        self.export_text = text
 
     def save(self):
-        settings = QSettings()
-        text, total_time = self.quality.get_log_dialog_quality_text()
-        title = QCoreApplication.translate(
-                'LogQualityDialog',
-                "<h2 align='center'>Quality Check Results</h2><div style='text-align:center;'>{}<br>Database: {}, Schema: {}<br>Total execution time: {}</div>").format(
-                time.strftime("%d/%m/%y %H:%M:%S"), settings.value('Asistente-LADM_COL/pg/database'),
-                settings.value('Asistente-LADM_COL/pg/schema'), self.quality.utils.set_time_format(total_time))
-
-        save_pdf_format(self.qgis_utils, 'Asistente-LADM_COL/log_quality_dialog/save_path', title, text )
-
+        title = QCoreApplication.translate('LogExcelDialog',"<h2 align='center'>Errors importing from Excel into LADM-COL</h2>")
+        save_pdf_format(self.qgis_utils, 'Asistente-LADM_COL/log_excel_dialog/save_path', title, self.export_text )
