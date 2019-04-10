@@ -151,6 +151,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.addActions([self._settings_action,
                                self._help_action,
                                self._about_action])
+        self.refresh_menus(self.get_db_connection())
 
         # Connections
 
