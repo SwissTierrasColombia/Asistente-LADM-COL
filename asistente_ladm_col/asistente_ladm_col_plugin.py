@@ -957,8 +957,8 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_parcel_cad(self):
-        wiz = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self._wiz_create_parcel = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        self._wiz_create_parcel.exec_()
 
     @_qgis_model_baker_required
     @_db_connection_required
