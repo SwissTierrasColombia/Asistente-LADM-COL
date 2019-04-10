@@ -58,11 +58,13 @@ from ...utils.model_parser import ModelParser
 class PGConnector(DBConnector):
 
     _PROVIDER_NAME = 'postgres'
+    _DEFAULT_HOST = 'localhost'
+    _DEFAULT_PORT = '5432'
 
     def __init__(self, uri, schema="public", conn_dict={}):
         DBConnector.__init__(self, uri, schema)
         self.mode = 'pg'
-        self.uri = uri if uri is not None else self.get_connection_uri(conn_dict, self.mode, level=1)
+        self.uri = uri if uri is not None else self.get_connection_uri(conn_dict, level=1)
         self.conn = None
         self.schema = schema
         self.log = QgsApplication.messageLog()
@@ -1985,3 +1987,20 @@ class PGConnector(DBConnector):
                       layer_uri.password() == db_uri.password())
 
         return result
+
+    def get_connection_uri(self, dict_conn, level=1):
+        uri = []
+        uri += ['host={}'.format(dict_conn['host'] or self._DEFAULT_HOST)]
+        uri += ['port={}'.format(dict_conn['port'] or self._DEFAULT_PORT)]
+        if dict_conn['username']:
+            uri += ['user={}'.format(dict_conn['username'])]
+        if dict_conn['password']:
+            uri += ['password={}'.format(dict_conn['password'])]
+        if dict_conn['database'] and level == 1:
+            uri += ['dbname={}'.format(dict_conn['database'])]
+        else:
+            # It is necessary to define the database name for listing databases
+            # PostgreSQL uses the db 'postgres' by default and it cannot be deleted, so we use it as last resort
+            uri += ["dbname='{}'".format(self._PROVIDER_NAME)]
+
+        return ' '.join(uri)

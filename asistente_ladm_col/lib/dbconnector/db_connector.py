@@ -83,35 +83,15 @@ class DBConnector(QObject):
     def get_description_conn_string(self):
         raise NotImplementedError
 
-    def get_connection_uri(self, dict_conn, mode='pg', level=1):
+    def get_connection_uri(self, dict_conn, level=1):
         """
         :param dict_conn: (dict) dictionary with the parameters to establish a connection
-        :param level: (str) Connection mode:
-            'pg': PostgreQSL/PostGIS
-            'gpkg': GeoPackage
         :param level: (int) At what level the connection will be established
             0: server level
             1: database level
         :return: (str) string uri to establish a connection
         """
-        uri = []
-        if mode == 'pg':
-            uri += ['host={}'.format(dict_conn['host'] or 'localhost')]
-            uri += ['port={}'.format(dict_conn['port'] or '5432')]
-            if dict_conn['username']:
-                uri += ['user={}'.format(dict_conn['username'])]
-            if dict_conn['password']:
-                uri += ['password={}'.format(dict_conn['password'])]
-            if dict_conn['database'] and level == 1:
-                uri += ['dbname={}'.format(dict_conn['database'])]
-            else:
-                # It is necessary to define the database name for listing databases
-                # PostgreSQL uses the db 'postgres' by default and it cannot be deleted, so we use it as last resort
-                uri += ["dbname='postgres'"]
-        elif mode == 'gpkg':
-            uri = [dict_conn['dbfile']]
-
-        return ' '.join(uri)
+        raise NotImplemented
 
     def valuation_model_exists(self):
         if self.model_parser is None:

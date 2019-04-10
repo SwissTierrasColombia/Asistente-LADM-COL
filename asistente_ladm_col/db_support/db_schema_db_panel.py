@@ -103,7 +103,7 @@ class DbSchemaDbPanel(DbConfigPanel):
 
         tmp_db_conn = self.db_connector
 
-        uri = tmp_db_conn.get_connection_uri(dict_conn, self.mode, level=0)
+        uri = tmp_db_conn.get_connection_uri(dict_conn, level=0)
         db_names = tmp_db_conn.get_dbnames_list(uri)
 
         self.selected_db_combobox.clear()
@@ -125,7 +125,7 @@ class DbSchemaDbPanel(DbConfigPanel):
         tmp_db_conn = self.db_connector
 
         if tmp_db_conn:
-            uri = tmp_db_conn.get_connection_uri(dict_conn, self.mode)
+            uri = tmp_db_conn.get_connection_uri(dict_conn)
             schemas_db = tmp_db_conn.get_dbname_schema_list(uri)
 
             self.selected_schema_combobox.clear()
@@ -156,7 +156,7 @@ class DbSchemaDbPanel(DbConfigPanel):
 
         tmp_db_conn = self.db_connector
         dict_conn = self.read_connection_parameters()
-        uri = tmp_db_conn.get_connection_uri(dict_conn, self.mode, level=0)
+        uri = tmp_db_conn.get_connection_uri(dict_conn, level=0)
 
         test_conn = tmp_db_conn.test_connection(uri=uri, test_level=EnumTestLevel.SERVER)
 
@@ -173,7 +173,7 @@ class DbSchemaDbPanel(DbConfigPanel):
 
         tmp_db_conn = self.db_connector
         dict_conn = self.read_connection_parameters()
-        uri = tmp_db_conn.get_connection_uri(dict_conn, self.mode, level=1)
+        uri = tmp_db_conn.get_connection_uri(dict_conn, level=1)
         test_conn = tmp_db_conn.test_connection(uri=uri, test_level=EnumTestLevel.DB)
 
         if test_conn[0]:
