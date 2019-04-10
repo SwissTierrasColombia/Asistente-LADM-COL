@@ -32,7 +32,7 @@ class GPKGConnector(DBConnector):
         self.conn = None
         self.provider = 'ogr'
 
-        self.dict_conn_params = {'dbfile': self.uri}
+        self._dict_conn_params = {'dbfile': self.uri}
 
     def test_connection(self, test_level=EnumTestLevel.LADM):
         try:

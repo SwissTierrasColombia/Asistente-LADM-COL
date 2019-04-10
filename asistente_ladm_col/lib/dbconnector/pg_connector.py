@@ -72,7 +72,7 @@ class PGConnector(DBConnector):
         self._tables_info = None
 
         data_source_uri = QgsDataSourceUri(self.uri)
-        self.dict_conn_params = {
+        self._dict_conn_params = {
             'host': data_source_uri.host(),
             'port': data_source_uri.port(),
             'username': data_source_uri.username(),
@@ -253,7 +253,7 @@ class PGConnector(DBConnector):
         }
 
     def get_description_conn_string(self):
-        return self.dict_conn_params['database'] + '.' + self.dict_conn_params['schema']
+        return self._dict_conn_params['database'] + '.' + self._dict_conn_params['schema']
 
     def _postgis_exists(self):
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -292,12 +292,17 @@ class PGConnector(DBConnector):
 
         return False
 
-    def test_connection(self, uri=None,  test_level=EnumTestLevel.LADM):
+    def test_connection(self,  test_level=EnumTestLevel.LADM):
         """
         :param test_level: (EnumTestLevel) level of connection with postgres
         """
-        uri = self.uri if uri is None else uri
+        uri = self.uri
+
+        if bool(test_level & EnumTestLevel.SERVER):
+            uri = self.get_connection_uri(self._dict_conn_params, 0)
+
         try:
+            self.close_connection()
             self.conn = psycopg2.connect(uri)
             self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
         except Exception as e:
@@ -330,14 +335,14 @@ class PGConnector(DBConnector):
                         return (False,
                                 QCoreApplication.translate("PGConnector",
                                                            "User '{}' has not enough permissions over the schema '{}'. Details: {}").format(
-                                                                self.dict_conn_params['username'],
+                                                                self._dict_conn_params['username'],
                                                                 self.schema,
                                                                 e))
             else:
                 return (False,
                         QCoreApplication.translate("PGConnector",
                                                    "User '{}' has not enough permissions over the schema '{}'.").format(
-                            self.dict_conn_params['username'],
+                            self._dict_conn_params['username'],
                             self.schema))
         else:
             return (False, msg)
@@ -1996,7 +2001,7 @@ class PGConnector(DBConnector):
             uri += ['user={}'.format(dict_conn['username'])]
         if dict_conn['password']:
             uri += ['password={}'.format(dict_conn['password'])]
-        if dict_conn['database'] and level == 1:
+        if level == 1 and dict_conn['database']:
             uri += ['dbname={}'.format(dict_conn['database'])]
         else:
             # It is necessary to define the database name for listing databases

@@ -45,9 +45,18 @@ class DBConnector(QObject):
         self.uri = uri
         self.schema = schema
         self.conn = None
-        self.dict_conn_params = dict()
+        self._dict_conn_params = dict()
 
         self.model_parser = None
+
+    @property
+    def dict_conn_params(self):
+        return self._dict_conn_params.copy()
+
+    @dict_conn_params.setter
+    def dict_conn_params(self, value):
+        self._dict_conn_params = value
+        self.uri = self.get_connection_uri(value, level=1)
 
     def test_connection(self, test_level=EnumTestLevel.LADM):
         pass
@@ -72,7 +81,7 @@ class DBConnector(QObject):
 
     def get_display_conn_string(self):
         # Do not use to connect to a DB, only for display purposes
-        tmp_dict_conn_params = self.dict_conn_params.copy()
+        tmp_dict_conn_params = self._dict_conn_params.copy()
         if 'password' in tmp_dict_conn_params:
             del tmp_dict_conn_params['password']
         if 'schema' in tmp_dict_conn_params:

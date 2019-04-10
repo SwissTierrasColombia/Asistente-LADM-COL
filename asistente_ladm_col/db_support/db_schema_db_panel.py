@@ -156,12 +156,12 @@ class DbSchemaDbPanel(DbConfigPanel):
 
         tmp_db_conn = self.db_connector
         dict_conn = self.read_connection_parameters()
-        uri = tmp_db_conn.get_connection_uri(dict_conn, level=0)
+        tmp_db_conn.dict_conn_params = dict_conn
 
-        test_conn = tmp_db_conn.test_connection(uri=uri, test_level=EnumTestLevel.SERVER)
+        test_conn = tmp_db_conn.test_connection(test_level=EnumTestLevel.SERVER)
 
         if test_conn[0]:
-            create_db_dlg = DialogGetDBOrSchemaName(tmp_db_conn, uri, 'database', parent=self)
+            create_db_dlg = DialogGetDBOrSchemaName(tmp_db_conn, tmp_db_conn.uri, 'database', parent=self)
             create_db_dlg.db_or_schema_created.connect(self.database_created)
             create_db_dlg.setModal(True)
             create_db_dlg.exec_()
@@ -173,11 +173,11 @@ class DbSchemaDbPanel(DbConfigPanel):
 
         tmp_db_conn = self.db_connector
         dict_conn = self.read_connection_parameters()
-        uri = tmp_db_conn.get_connection_uri(dict_conn, level=1)
-        test_conn = tmp_db_conn.test_connection(uri=uri, test_level=EnumTestLevel.DB)
+        tmp_db_conn.dict_conn_params = dict_conn
+        test_conn = tmp_db_conn.test_connection(test_level=EnumTestLevel.DB)
 
         if test_conn[0]:
-            create_db_dlg = DialogGetDBOrSchemaName(tmp_db_conn, uri, 'schema', parent=self)
+            create_db_dlg = DialogGetDBOrSchemaName(tmp_db_conn, tmp_db_conn.uri, 'schema', parent=self)
             create_db_dlg.db_or_schema_created.connect(self.schema_created)
             create_db_dlg.setModal(True)
             create_db_dlg.exec_()
