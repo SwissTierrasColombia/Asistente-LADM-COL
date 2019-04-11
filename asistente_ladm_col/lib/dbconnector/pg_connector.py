@@ -299,7 +299,7 @@ class PGConnector(DBConnector):
         """
         uri = self.uri
 
-        if bool(test_level & EnumTestLevel.SERVER):
+        if test_level & EnumTestLevel.SERVER:
             uri = self.get_connection_uri(self._dict_conn_params, 0)
 
         try:

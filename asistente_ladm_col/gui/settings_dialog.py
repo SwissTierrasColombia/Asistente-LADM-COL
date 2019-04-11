@@ -107,6 +107,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.db_layout.addWidget(self._lst_panel[key])
 
         self.db_source_changed()
+
+        # Trigger some default behaviours
+        self.restore_settings()
+
         self.cbo_db_source.currentIndexChanged.connect(self.db_source_changed)
 
     def showEvent(self, event):
