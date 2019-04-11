@@ -28,7 +28,8 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
                               QCoreApplication,
                               QSettings)
-from qgis.PyQt.QtWidgets import QProgressBar, QMessageBox
+from qgis.PyQt.QtWidgets import (QProgressBar, 
+                                 QMessageBox)
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsAttributeEditorContainer,
@@ -38,6 +39,7 @@ from qgis.core import (Qgis,
                        QgsEditorWidgetSetup,
                        QgsExpression,
                        QgsExpressionContextUtils,
+                       QgsFieldConstraints,
                        QgsGeometry,
                        QgsLayerTreeGroup,
                        QgsLayerTreeNode,
@@ -538,10 +540,22 @@ class QGISUtils(QObject):
     def set_layer_constraints(self, layer):
         if layer.name() in LAYER_CONSTRAINTS:
             for field_name, value in LAYER_CONSTRAINTS[layer.name()].items():
+                idx = layer.fields().indexOf(field_name)
                 layer.setConstraintExpression(
-                    layer.fields().indexOf(field_name),
+                    idx,
                     value['expression'],
                     value['description'])
+
+                layer.setFieldConstraint(
+                    idx,
+                    QgsFieldConstraints.ConstraintExpression,
+                    QgsFieldConstraints.ConstraintStrengthSoft)
+
+                # We shouldn't make DB constraints flexible, but in case you from the future need it, uncomment
+                # layer.setFieldConstraint(
+                #     idx,
+                #     QgsFieldConstraints.ConstraintUnique,
+                #     QgsFieldConstraints.ConstraintStrengthSoft)
 
     def set_form_groups(self, layer):
         if layer.name() in FORM_GROUPS:
@@ -1297,7 +1311,9 @@ class QGISUtils(QObject):
             features = [f for f in extfile_layer.getFeatures()]
 
         self._source_handler = self.get_source_handler()
-        new_values = self._source_handler.upload_files(extfile_layer, field_index, features)
+        with OverrideCursor(Qt.WaitCursor):
+            new_values = self._source_handler.upload_files(extfile_layer, field_index, features)
+
         if new_values:
             extfile_layer.dataProvider().changeAttributeValues(new_values)
 
@@ -1308,6 +1324,9 @@ class QGISUtils(QObject):
             return True
         except:
             pass
+        finally:
+            s.close()
+
         return False
 
     def show_help(self, module='', offline=False):

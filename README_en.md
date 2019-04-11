@@ -4,7 +4,7 @@
 [![Build Status](http://portal.proadmintierra.info:18000/status.svg?branch=master)](http://portal.proadmintierra.info:18000)
 
 # LADM_COL Assistant
-[QGIS](http://qgis.org) plugin to capture and maintain data compliant with [LADM_COL](https://github.com/AgenciaImplementacion/LADM_COL) as well as generate [INTERLIS](http://www.interlis.ch/index_e.htm) interchange files (.XTF).
+[QGIS](http://qgis.org) plugin to capture and maintain data compliant with [LADM_COL](https://github.com/AgenciaImplementacion/LADM_COL) as well as to generate [INTERLIS](http://www.interlis.ch/index_e.htm) interchange files (.XTF).
 
 License: [GNU General Public License v3.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE)
 
@@ -17,7 +17,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([1.5.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.5.0)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.1.0.1](https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip) and allows users to:
+The current version ([1.6.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.6.1)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.1.1](https://github.com/opengisch/QgisModelBaker/releases/download/v4.1.1/QgisModelBaker.v4.1.1.zip) and allows users to:
 
  - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
  - Capture data for the `FICHA_PREDIAL v2.2.1` model.
@@ -29,6 +29,8 @@ The current version ([1.5.0](https://github.com/AgenciaImplementacion/Asistente-
    - Basic information.
    - Legal information.
    - Property record card information.
+   - Physical information.
+   - Economic information.
  - Preprocess points: Controlled Measurement.
    - Group points by nearness.
    - Average point position from points of the same group.
@@ -140,7 +142,7 @@ To use the LADM_COL Assistant you need:
    - PostGIS 2.4 or higher.
  - QGIS plugins:
    - LADM_COL Assistant
-   - QGIS Model Baker v4.1.0.1
+   - QGIS Model Baker v4.1.1
 
 ## Testing
 

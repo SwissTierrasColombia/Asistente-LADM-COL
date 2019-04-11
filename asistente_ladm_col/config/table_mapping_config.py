@@ -86,6 +86,8 @@ NAMESPACE_FIELD = "_espacio_de_nombres"
 NIT_NUMBER_FIELD = "numero_nit"
 NUMBER_OF_FLOORS = "numero_pisos"
 NUPRE_FIELD = "nupre"
+OID_EXTADDRESS_ID_FIELD = "extdireccion_direccion_id"
+OID_TABLE = "oid"
 PARCEL_NAME_FIELD = "nombre"
 PARCEL_NUMBER_FIELD = "numero_predial"
 PARCEL_NUMBER_BEFORE_FIELD = "numero_predial_anterior"
@@ -194,7 +196,10 @@ DICT_PLURAL = {
     SPATIAL_SOURCE_TABLE: "Fuentes Espaciales",
     NUCLEAR_FAMILY_TABLE: "Núcleo Familiar",
     MARKET_RESEARCH_TABLE: "Investigaciones de Mercado",
-    PROPERTY_RECORD_CARD_TABLE: "Ficha Predial"
+    PROPERTY_RECORD_CARD_TABLE: "Ficha Predial",
+    BOUNDARY_TABLE: "Linderos",
+    BOUNDARY_POINT_TABLE: "Puntos de Lindero",
+    SURVEY_POINT_TABLE: "Puntos de Levantamiento"
 }
 
 
@@ -233,7 +238,10 @@ DICT_TABLE_PACKAGE = {
     RESPONSIBILITY_TABLE: RRR_PACKAGE,
     MORTGAGE_TABLE: RRR_PACKAGE,
     ADMINISTRATIVE_SOURCE_TABLE: SOURCE_PACKAGE,
-    SPATIAL_SOURCE_TABLE: SOURCE_PACKAGE
+    SPATIAL_SOURCE_TABLE: SOURCE_PACKAGE,
+    BOUNDARY_POINT_TABLE: SURVEYING_AND_REPRESENTATION_PACKAGE,
+    SURVEY_POINT_TABLE: SURVEYING_AND_REPRESENTATION_PACKAGE,
+    BOUNDARY_TABLE: SURVEYING_AND_REPRESENTATION_PACKAGE
 }
 
 
@@ -268,7 +276,9 @@ DICT_AUTOMATIC_VALUES = {
         BUSINESS_NAME_FIELD)}],
     PARCEL_TABLE: [{DEPARTMENT_FIELD: 'substr("numero_predial", 0, 2)'},
                    {MUNICIPALITY_FIELD: 'substr("numero_predial", 3, 3)'},
-                   {ZONE_FIELD: 'substr("numero_predial", 6, 2)'}]
+                   {ZONE_FIELD: 'substr("numero_predial", 6, 2)'}],
+    OID_TABLE: [{"localid": "$id"},
+                {"espaciodenombres": "\'OID\'"}]
 }
 
 DICT_DISPLAY_EXPRESSIONS = {

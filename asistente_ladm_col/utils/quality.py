@@ -85,7 +85,7 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE,
                                            ZONE_FIELD)
 from .qt_utils import OverrideCursor
-from .utils import set_time_format
+from .utils import Utils
 
 class QualityUtils(QObject):
     log_quality_show_message_emitted = pyqtSignal(str, int)
@@ -97,6 +97,7 @@ class QualityUtils(QObject):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
         self.logic = LogicChecks()
+        self.utils = Utils()
         self.qgis_model_baker_utils = QgisModelBakerUtils()
         self.log = QgsApplication.messageLog()
         self.log_dialog_quality_text_content = ""
@@ -111,8 +112,9 @@ class QualityUtils(QObject):
     def get_log_dialog_quality_text(self):
         return self.log_dialog_quality_text, self.total_time
 
-    def clean_log_dialog_quality_text(self):
+    def initialize_log_dialog_quality(self):
         self.log_dialog_quality_text = ""
+        self.total_time = 0
 
     def _log_quality_checks(func_to_decorate):
         @wraps(func_to_decorate)
@@ -132,7 +134,7 @@ class QualityUtils(QObject):
             self.log_dialog_quality_text_content += LOG_QUALITY_CONTENT_SEPARATOR
 
             self.log_dialog_quality_text += "{}{} [{}]{}".format(LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
-                                                                  rule_name, set_time_format(end_time - start_time), LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE)
+                                                                  rule_name, self.utils.set_time_format(end_time - start_time), LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE)
             self.log_dialog_quality_text += self.log_dialog_quality_text_content
             self.log_dialog_quality_text_content = ""
 
