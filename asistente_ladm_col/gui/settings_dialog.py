@@ -162,12 +162,16 @@ class SettingsDialog(QDialog, DIALOG_UI):
             test_level = EnumTestLevel.DB_SCHEMA
 
             if self._action_type == EnumActionType.SCHEMA_IMPORT:
+                # Limit the validation (used in GeoPackage)
                 test_level |= EnumTestLevel.CREATE_SCHEMA
 
             res, msg = db.test_connection(test_level=test_level)
 
             if res:
-                self._emmit_db_connection_changed = True
+                if self._action_type != EnumActionType.SCHEMA_IMPORT:
+                    res, msg = db.test_connection(test_level=EnumTestLevel.LADM)
+                    if res:
+                        self._emmit_db_connection_changed = True
             else:
                 self.show_message(msg, Qgis.Warning)
                 call_accepted = False

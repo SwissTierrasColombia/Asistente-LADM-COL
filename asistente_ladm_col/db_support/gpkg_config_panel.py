@@ -47,7 +47,7 @@ class GpkgConfigPanel(QWidget, DbConfigPanel):
 
         self.action = None
 
-        self.set_action(EnumActionType.OTHER)
+        self.set_action(EnumActionType.CONFIG)
 
         layout = QGridLayout(self)
         layout.addWidget(lbl_file, 0, 0)

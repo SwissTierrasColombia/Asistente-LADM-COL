@@ -853,7 +853,7 @@ class AsistenteLADMCOLPlugin(QObject):
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
 
     def show_settings(self):
-        self.qgis_utils.get_settings_dialog().set_action_type(EnumActionType.OTHER)
+        self.qgis_utils.get_settings_dialog().set_action_type(EnumActionType.CONFIG)
         self.qgis_utils.get_settings_dialog().exec_()
 
     def show_plugin_manager(self):
