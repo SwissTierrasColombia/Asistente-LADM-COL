@@ -40,7 +40,8 @@ from qgis.core import (Qgis,
                        QgsExpressionContext,
                        QgsProcessingModelAlgorithm)
 
-from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
+from .config.general_config import (FIELD_DATA_CAPTURE_MENU_OBJECTNAME,
+                                    CADASTRE_MENU_OBJECTNAME,
                                     LADM_COL_MENU_OBJECTNAME,
                                     QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
                                     QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
@@ -62,6 +63,7 @@ except ModuleNotFoundError as e:
     pass # The plugin will take care of validating the presence/absence of QGIS Model Baker
 
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
+from .gui.create_input_load_field_data_capture_wizard import InputLoadFieldDataCaptureWizard
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
 from .gui.create_building_cadastre_wizard import CreateBuildingCadastreWizard
@@ -136,6 +138,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.report_generator = ReportGenerator(self.qgis_utils, self.ladm_data)
 
         # Menus
+        self.add_field_data_capture_menu()
         self.add_cadastre_menu()
 
         self._menu.addSeparator()
@@ -235,6 +238,33 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._menu.addMenu(self._data_management_menu)
 
+    def add_field_data_capture_menu(self):
+        self._field_data_capture_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Capture"), self._menu)
+        self._field_data_capture_menu.setObjectName(FIELD_DATA_CAPTURE_MENU_OBJECTNAME)
+
+        self._project_configuration_field_data_capture_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Project Configuration"), self._field_data_capture_menu)
+        self._input_load_field_data_capture_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Input Load"), self._field_data_capture_menu)
+        self._synchronization_operators_field_data_capture_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Synchronization Operators"), self._field_data_capture_menu)
+        self._synchronization_ladm_col_field_data_capture_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Synchronization LADM_COL"), self._field_data_capture_menu)
+
+        self._field_data_capture_menu.addActions([self._project_configuration_field_data_capture_action,
+                                                    self._input_load_field_data_capture_action,
+                                                    self._synchronization_operators_field_data_capture_action,
+                                                    self._synchronization_ladm_col_field_data_capture_action])
+
+        self._menu.addMenu(self._field_data_capture_menu)
+
+        #connections
+
+        self._input_load_field_data_capture_action.triggered.connect(self.show_wiz_input_load)
 
     def add_cadastre_menu(self):
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
@@ -911,6 +941,12 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_dlg_controlled_measurement(self):
         dlg = ControlledMeasurementDialog(self.qgis_utils)
         dlg.exec_()
+
+    @_qgis_model_baker_required
+    @_db_connection_required
+    def show_wiz_input_load(self):
+        wiz = InputLoadFieldDataCaptureWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        wiz.exec_()
 
     @_qgis_model_baker_required
     @_db_connection_required
