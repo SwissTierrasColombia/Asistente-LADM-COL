@@ -132,20 +132,8 @@ Choose this option if you want to create a <b>Right of Way</b> digitizing center
 <b>Right of Way</b> is a type of spatial unit of the LADM model which allows the representation of a Right of Way associated to a LA_BAUnit.\
 ")
 
-        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_1 = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to associate an <b>ExtAddress</b> to an existing <i>Plot</i>.\
-<br><br>\
-<b>ExtAddress</b> is a class for manage the <i>Spatial Units</i> addresses from <i>LADM-COL model</i>.\
-")
-
-        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_2 = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to associate an <b>ExtAddress</b> to an existing <i>Building</i>.\
-<br><br>\
-<b>ExtAddress</b> is a class for manage the <i>Spatial Units</i> addresses from <i>LADM-COL model</i>.\
-")
-
-        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1_OPTION_3 = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to associate an <b>ExtAddress</b> to an existing <i>Building Unit</i>.\
+        self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1 = QCoreApplication.translate("HelpStrings", "\
+Choose this option if you want to associate an <b>ExtAddress</b> to an existing <i>Spatial Unit</i>.\
 <br><br>\
 <b>ExtAddress</b> is a class for manage the <i>Spatial Units</i> addresses from <i>LADM-COL model</i>.\
 ")

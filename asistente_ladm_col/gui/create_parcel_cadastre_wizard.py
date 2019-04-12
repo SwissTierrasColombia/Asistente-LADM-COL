@@ -135,6 +135,11 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.button(self.FinishButton).setDisabled(True)
         self.txt_help_page_2.setHtml(self.help_strings.WIZ_CREATE_PARCEL_CADASTRE_PAGE_2)
 
+        # TODO:
+        #  It is necesary becasuse when I got to back signal map_tool_changed it is not disconnect
+        #  Remove when error are fixed
+        self.button(QWizard.BackButton).hide()
+
         # Load layers
         result = self.prepare_parcel_creation_layers()
 
