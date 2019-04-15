@@ -239,7 +239,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.addMenu(self._data_management_menu)
 
     def add_field_data_capture_menu(self):
-        self._field_data_capture_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Capture"), self._menu)
+        self._field_data_capture_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Field data capture"), self._menu)
         self._field_data_capture_menu.setObjectName(FIELD_DATA_CAPTURE_MENU_OBJECTNAME)
 
         self._project_configuration_field_data_capture_action = QAction(
