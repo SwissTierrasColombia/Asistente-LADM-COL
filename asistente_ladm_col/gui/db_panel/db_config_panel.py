@@ -16,11 +16,37 @@
  *                                                                         *
  ***************************************************************************/
 """
-from enum import Enum
+from qgis.PyQt.QtCore import (QObject, pyqtSignal)
+from qgis.core import Qgis
 
 
-class EnumActionType(Enum):
-    SCHEMA_IMPORT = 1
-    IMPORT = 2
-    EXPORT = 3
-    CONFIG = 100
+class DbConfigPanel(QObject):
+
+    notify_message_requested = pyqtSignal(str, Qgis.MessageLevel)
+
+    def __init__(self):
+        super(DbConfigPanel, self).__init__()
+        self._mode = None
+        self.state = None
+
+    def read_connection_parameters(self):
+        """
+        Convenient function to read connection parameters and apply default
+        values if needed.
+        """
+        raise NotImplementedError
+
+    def write_connection_parameters(self, dict_conn):
+        raise NotImplementedError
+
+    def get_keys_connection_parameters(self):
+        raise NotImplementedError
+
+    def set_action(self, action):
+        pass
+
+    def save_state(self):
+        self.state = self.read_connection_parameters()
+
+    def state_changed(self):
+        raise NotImplementedError

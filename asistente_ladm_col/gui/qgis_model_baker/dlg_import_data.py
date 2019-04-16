@@ -60,7 +60,7 @@ from ...utils.qt_utils import (Validators,
                                OverrideCursor)
 from ...resources_rc import *
 from ...config.config_db_supported import ConfigDbSupported
-from ...db_support.enum_action_type import EnumActionType
+from ...lib.db.enum_db_action_type import EnumDbActionType
 
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_data.ui')
 
@@ -182,7 +182,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def show_settings(self):
         dlg = self.qgis_utils.get_settings_dialog()
-        dlg.set_action_type(EnumActionType.IMPORT)
+        dlg.set_action_type(EnumDbActionType.IMPORT)
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
         if dlg.exec_():
             self.db = dlg.get_db_connection()

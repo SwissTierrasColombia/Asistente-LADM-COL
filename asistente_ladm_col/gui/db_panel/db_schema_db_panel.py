@@ -25,8 +25,8 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.PyQt.QtGui import QIcon
 
 from .db_config_panel import DbConfigPanel
-from ..gui.dlg_get_db_or_schema_name import DialogGetDBOrSchemaName
-from ..lib.dbconnector.db_connector import (EnumTestLevel)
+from ..dlg_get_db_or_schema_name import DialogGetDBOrSchemaName
+from ...lib.db.db_connector import EnumTestLevel
 
 
 class DbSchemaDbPanel(DbConfigPanel):

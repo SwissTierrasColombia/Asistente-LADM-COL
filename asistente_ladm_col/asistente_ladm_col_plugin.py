@@ -105,7 +105,7 @@ from .utils.model_parser import ModelParser
 from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
-from .db_support.enum_action_type import EnumActionType
+from .lib.db.enum_db_action_type import EnumDbActionType
 
 class AsistenteLADMCOLPlugin(QObject):
     def __init__(self, iface):
@@ -871,7 +871,7 @@ class AsistenteLADMCOLPlugin(QObject):
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
 
     def show_settings(self):
-        self.qgis_utils.get_settings_dialog().set_action_type(EnumActionType.CONFIG)
+        self.qgis_utils.get_settings_dialog().set_action_type(EnumDbActionType.CONFIG)
         self.qgis_utils.get_settings_dialog().exec_()
 
     def show_plugin_manager(self):

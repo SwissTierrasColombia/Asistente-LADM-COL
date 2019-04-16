@@ -57,7 +57,7 @@ from ...utils.qt_utils import (Validators,
 from ...resources_rc import *
 from ...config.config_db_supported import ConfigDbSupported
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_export_data.ui')
-from ...db_support.enum_action_type import EnumActionType
+from ...lib.db.enum_db_action_type import EnumDbActionType
 
 
 class DialogExportData(QDialog, DIALOG_UI):
@@ -150,7 +150,7 @@ class DialogExportData(QDialog, DIALOG_UI):
 
     def show_settings(self):
         dlg = self.qgis_utils.get_settings_dialog()
-        dlg.set_action_type(EnumActionType.EXPORT)
+        dlg.set_action_type(EnumDbActionType.EXPORT)
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
         if dlg.exec_():
             self.db = dlg.get_db_connection()

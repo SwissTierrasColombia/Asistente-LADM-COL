@@ -16,19 +16,20 @@
  *                                                                         *
  ***************************************************************************/
 """
-from .db_config_panel import DbConfigPanel
-from qgis.PyQt.QtCore import (Qt, QCoreApplication,pyqtSignal)
+
+from qgis.PyQt.QtCore import (Qt, QCoreApplication, pyqtSignal)
 from qgis.core import (Qgis)
 from qgis.PyQt.QtWidgets import (QWidget,
                                  QLabel,
                                  QGridLayout,
                                  QLineEdit,
                                  QToolButton)
-from .enum_action_type import EnumActionType
-from ..utils.qt_utils import ( make_save_file_selector,
+from ...lib.db.enum_db_action_type import EnumDbActionType
+from ...utils.qt_utils import (make_save_file_selector,
                                make_file_selector,
                                Validators,
                                FileValidator)
+from .db_config_panel import DbConfigPanel
 
 
 class GpkgConfigPanel(QWidget, DbConfigPanel):
@@ -46,7 +47,7 @@ class GpkgConfigPanel(QWidget, DbConfigPanel):
 
         self.action = None
 
-        self.set_action(EnumActionType.CONFIG)
+        self.set_action(EnumDbActionType.CONFIG)
 
         layout = QGridLayout(self)
         layout.addWidget(lbl_file, 0, 0)
@@ -73,7 +74,7 @@ class GpkgConfigPanel(QWidget, DbConfigPanel):
         except TypeError:
             pass
 
-        if action == EnumActionType.SCHEMA_IMPORT:
+        if action == EnumDbActionType.SCHEMA_IMPORT:
             # TODO DialogImportSchema?
             file_selector = make_save_file_selector(
                                 self.txt_file,

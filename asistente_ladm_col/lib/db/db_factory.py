@@ -17,10 +17,9 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import QObject
-from .enum_action_type import EnumActionType
 
 
-class DbAdmin(QObject):
+class DbFactory(QObject):
 
     def __init__(self):
         self._mode = None

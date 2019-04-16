@@ -24,9 +24,10 @@ from qgis.PyQt.QtWidgets import (QWidget,
                                  QComboBox,
                                  QPushButton
                                  )
+from qgis.core import Qgis
 from .db_schema_db_panel import DbSchemaDbPanel
-from ..lib.dbconnector.pg_connector import PGConnector
-from qgis.core import (Qgis)
+from ...lib.db.pg_connector import PGConnector
+
 
 
 class PgConfigPanel(QWidget, DbSchemaDbPanel):

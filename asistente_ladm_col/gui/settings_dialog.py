@@ -42,12 +42,12 @@ from ..config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANC
                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                      SOURCE_SERVICE_EXPECTED_ID)
 from ..gui.custom_model_dir import CustomModelDirDialog
-from ..lib.dbconnector.db_connector import (DBConnector, EnumTestLevel)
+from ..lib.db.db_connector import (DBConnector, EnumTestLevel)
 from ..utils import get_ui_class
 from ..utils.qt_utils import OverrideCursor
 from ..resources_rc import *
 from ..config.config_db_supported import ConfigDbSupported
-from ..db_support.enum_action_type import EnumActionType
+from ..lib.db.enum_db_action_type import EnumDbActionType
 
 DIALOG_UI = get_ui_class('settings_dialog.ui')
 
@@ -118,7 +118,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         # to load the database and schema name
         self.restore_settings()
 
-        self.btn_test_ladm_col_structure.setVisible(self._action_type != EnumActionType.SCHEMA_IMPORT)
+        self.btn_test_ladm_col_structure.setVisible(self._action_type != EnumDbActionType.SCHEMA_IMPORT)
 
     def model_provider_toggle(self):
         if self.offline_models_radio_button.isChecked():
@@ -160,14 +160,14 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
             test_level = EnumTestLevel.DB_SCHEMA
 
-            if self._action_type == EnumActionType.SCHEMA_IMPORT:
+            if self._action_type == EnumDbActionType.SCHEMA_IMPORT:
                 # Limit the validation (used in GeoPackage)
                 test_level |= EnumTestLevel.CREATE_SCHEMA
 
             res, msg = db.test_connection(test_level=test_level)
 
             if res:
-                if self._action_type != EnumActionType.SCHEMA_IMPORT:
+                if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
                     res, msg = db.test_connection(test_level=EnumTestLevel.LADM)
                     if res:
                         self._emmit_db_connection_changed = True
@@ -323,7 +323,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         test_level = EnumTestLevel.DB_SCHEMA
 
-        if self._action_type == EnumActionType.SCHEMA_IMPORT:
+        if self._action_type == EnumDbActionType.SCHEMA_IMPORT:
             test_level |= EnumTestLevel.CREATE_SCHEMA
 
         res, msg = db.test_connection(test_level=test_level)

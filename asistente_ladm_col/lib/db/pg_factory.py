@@ -16,19 +16,18 @@
  *                                                                         *
  ***************************************************************************/
 """
-from .db_admin import DbAdmin
+from .db_factory import DbFactory
 
-from .pg_config_panel import PgConfigPanel
-from ..lib.dbconnector.pg_connector import PGConnector
+from ...gui.db_panel.pg_config_panel import PgConfigPanel
+from ...lib.db.pg_connector import PGConnector
 from QgisModelBaker.libili2db.ili2dbconfig import (SchemaImportConfiguration,
                                                    ImportDataConfiguration,
-                                                   ExportConfiguration,
-                                                   BaseConfiguration)
+                                                   ExportConfiguration)
 
 
-class PgAdmin(DbAdmin):
+class PgFactory(DbFactory):
     def __init__(self):
-        DbAdmin.__init__(self)
+        DbFactory.__init__(self)
         self._mode = "pg"
 
     def get_name(self):

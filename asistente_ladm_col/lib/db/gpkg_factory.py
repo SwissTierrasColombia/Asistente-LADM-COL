@@ -16,15 +16,15 @@
  *                                                                         *
  ***************************************************************************/
 """
-from .db_admin import DbAdmin
-from .gpkg_config_panel import GpkgConfigPanel
-from ..lib.dbconnector.gpkg_connector import GPKGConnector
+from .db_factory import DbFactory
+from ...gui.db_panel.gpkg_config_panel import GpkgConfigPanel
+from ...lib.db.gpkg_connector import GPKGConnector
 from QgisModelBaker.libili2db.ili2dbconfig import (SchemaImportConfiguration,
                                                    ImportDataConfiguration,
-                                                   ExportConfiguration,
-                                                   BaseConfiguration)
+                                                   ExportConfiguration)
 
-class GpkgAdmin(DbAdmin):
+
+class GpkgFactory(DbFactory):
 
     def __init__(self):
         self._mode = "gpkg"

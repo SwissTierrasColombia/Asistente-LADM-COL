@@ -108,9 +108,8 @@ from ..config.translator import (
     PLUGIN_DIR
 )
 from ..gui.settings_dialog import SettingsDialog
-from ..lib.dbconnector.db_connector import DBConnector
+from ..lib.db.db_connector import DBConnector
 from ..lib.source_handler import SourceHandler
-from ..config.config_db_supported import ConfigDbSupported
 
 
 class QGISUtils(QObject):
