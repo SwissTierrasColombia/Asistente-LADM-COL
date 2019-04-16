@@ -30,7 +30,6 @@ from ..lib.dbconnector.db_connector import (EnumTestLevel)
 
 
 class DbSchemaDbPanel(DbConfigPanel):
-
     def __init__(self, db_connector):
         super(DbSchemaDbPanel, self).__init__()
         self.db_connector = db_connector
@@ -38,17 +37,17 @@ class DbSchemaDbPanel(DbConfigPanel):
         self.selected_schema_combobox = QComboBox()
 
         self.create_db_button = QPushButton()
-        self.create_db_button.clicked.connect(self.show_modal_create_db)
+        self.create_db_button.clicked.connect(self.show_create_db_dialog)
         icon_create_db_button = QIcon(":/Asistente-LADM_COL/resources/images/create_db.png")
         self.create_db_button.setIcon(icon_create_db_button)
 
         self.create_schema_button = QPushButton()
-        self.create_schema_button.clicked.connect(self.show_modal_create_schema)
+        self.create_schema_button.clicked.connect(self.show_create_schema_dialog)
         icon_create_schema_button = QIcon(":/Asistente-LADM_COL/resources/images/schema.png")
         self.create_schema_button.setIcon(icon_create_schema_button)
 
         self.refresh_db_button = QPushButton()
-        self.refresh_db_button.setText('Refresh databases and schemas')
+        self.refresh_db_button.setText(QCoreApplication.translate("SettingsDialog", "Refresh databases and schemas"))
         self.refresh_db_button.clicked.connect(self._refresh_db_button_clicked)
 
         self._set_controls_enabled(False)
@@ -93,9 +92,6 @@ class DbSchemaDbPanel(DbConfigPanel):
         except TypeError:
             pass
 
-    def check_for_refresh(self):
-        raise NotImplementedError
-
     def update_db_names(self):
         result = False
 
@@ -104,16 +100,16 @@ class DbSchemaDbPanel(DbConfigPanel):
         tmp_db_conn = self.db_connector
 
         uri = tmp_db_conn.get_connection_uri(dict_conn, level=0)
-        db_names = tmp_db_conn.get_dbnames_list(uri)
+        res, data = tmp_db_conn.get_dbnames_list(uri)
 
         self.selected_db_combobox.clear()
 
-        if db_names[0]:
-            self.selected_db_combobox.addItems(db_names[1])
+        if res:
+            self.selected_db_combobox.addItems(data)
 
             result = True
         else:
-            self.notify_message_requested.emit(QCoreApplication.translate("SettingsDialog", db_names[1]), Qgis.Warning)
+            self.notify_message_requested.emit(QCoreApplication.translate("SettingsDialog", data), Qgis.Warning)
 
         return result
 
@@ -126,12 +122,12 @@ class DbSchemaDbPanel(DbConfigPanel):
 
         if tmp_db_conn:
             uri = tmp_db_conn.get_connection_uri(dict_conn)
-            schemas_db = tmp_db_conn.get_dbname_schema_list(uri)
+            res, data = tmp_db_conn.get_dbname_schema_list(uri)
 
             self.selected_schema_combobox.clear()
 
-            if schemas_db[0]:
-                self.selected_schema_combobox.addItems(schemas_db[1])
+            if res:
+                self.selected_schema_combobox.addItems(data)
             else:
                 # We won't show a message here to avoid bothering the user with potentially too much messages
                 pass
@@ -147,40 +143,38 @@ class DbSchemaDbPanel(DbConfigPanel):
     def schema_created(self, schema_name):
         self.update_db_schemas()
 
-        # select the database created by the user
+        # select the schema created by the user
         index = self.selected_schema_combobox.findText(schema_name, Qt.MatchFixedString)
         if index >= 0:
             self.selected_schema_combobox.setCurrentIndex(index)
 
-    def show_modal_create_db(self):
-
+    def show_create_db_dialog(self):
         tmp_db_conn = self.db_connector
         dict_conn = self.read_connection_parameters()
         tmp_db_conn.dict_conn_params = dict_conn
 
-        test_conn = tmp_db_conn.test_connection(test_level=EnumTestLevel.SERVER)
+        res, msg = tmp_db_conn.test_connection(test_level=EnumTestLevel.SERVER)
 
-        if test_conn[0]:
+        if res:
             create_db_dlg = DialogGetDBOrSchemaName(tmp_db_conn, tmp_db_conn.uri, 'database', parent=self)
             create_db_dlg.db_or_schema_created.connect(self.database_created)
             create_db_dlg.setModal(True)
             create_db_dlg.exec_()
         else:
-            msg = "First set the connection to the database before attempting to create a database."
-            self.notify_message_requested.emit(QCoreApplication.translate("SettingsDialog", msg), Qgis.Warning)
+            msg = QCoreApplication.translate("SettingsDialog", "First set the connection to the database before attempting to create a database.")
+            self.notify_message_requested.emit(msg, Qgis.Warning)
 
-    def show_modal_create_schema(self):
-
+    def show_create_schema_dialog(self):
         tmp_db_conn = self.db_connector
         dict_conn = self.read_connection_parameters()
         tmp_db_conn.dict_conn_params = dict_conn
-        test_conn = tmp_db_conn.test_connection(test_level=EnumTestLevel.DB)
+        res, msg = tmp_db_conn.test_connection(test_level=EnumTestLevel.DB)
 
-        if test_conn[0]:
+        if res:
             create_db_dlg = DialogGetDBOrSchemaName(tmp_db_conn, tmp_db_conn.uri, 'schema', parent=self)
             create_db_dlg.db_or_schema_created.connect(self.schema_created)
             create_db_dlg.setModal(True)
             create_db_dlg.exec_()
         else:
-            msg = "First set the connection to the database before attempting to create a schema."
-            self.notify_message_requested.emit(QCoreApplication.translate("SettingsDialog", msg), Qgis.Warning)
+            msg = QCoreApplication.translate("SettingsDialog", "First set the connection to the database before attempting to create a schema.")
+            self.notify_message_requested.emit(msg, Qgis.Warning)

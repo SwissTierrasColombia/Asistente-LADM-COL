@@ -35,7 +35,6 @@ class GpkgConfigPanel(QWidget, DbConfigPanel):
     notify_message_requested = pyqtSignal(str, Qgis.MessageLevel)
 
     def __init__(self, parent=None):
-
         QWidget.__init__(self, parent)
         super(GpkgConfigPanel, self).__init__()
         lbl_file = QLabel(self.tr("Database File"))
@@ -76,19 +75,17 @@ class GpkgConfigPanel(QWidget, DbConfigPanel):
 
         if action == EnumActionType.SCHEMA_IMPORT:
             # TODO DialogImportSchema?
-            file_selector = \
-            make_save_file_selector(
-                self.txt_file,
-                title=QCoreApplication.translate("DialogImportSchema", "Create GeoPackage database file"),
-                file_filter=QCoreApplication.translate("DialogImportSchema", "GeoPackage Database (*.gpkg)"),
-                extension='.gpkg')
+            file_selector = make_save_file_selector(
+                                self.txt_file,
+                                title=QCoreApplication.translate("DialogImportSchema", "Create GeoPackage database file"),
+                                file_filter=QCoreApplication.translate("DialogImportSchema", "GeoPackage Database (*.gpkg)"),
+                                extension='.gpkg')
 
         else:
             # TODO DialogExportData?
-            file_selector = \
-                make_file_selector(self.txt_file,
-                title=QCoreApplication.translate("DialogExportData", "Open GeoPackage database file"),
-                file_filter=QCoreApplication.translate("DialogExportData","GeoPackage Database (*.gpkg)"))
+            file_selector = make_file_selector(self.txt_file,
+                                title=QCoreApplication.translate("DialogExportData", "Open GeoPackage database file"),
+                                file_filter=QCoreApplication.translate("DialogExportData","GeoPackage Database (*.gpkg)"))
 
         self.btn_file_browse.clicked.connect(file_selector)
 
@@ -96,6 +93,6 @@ class GpkgConfigPanel(QWidget, DbConfigPanel):
         result = True
 
         if self.state:
-            result = (self.state['dbfile'] != self.txt_file.text().strip())
+            result = self.state['dbfile'] != self.txt_file.text().strip()
 
         return result

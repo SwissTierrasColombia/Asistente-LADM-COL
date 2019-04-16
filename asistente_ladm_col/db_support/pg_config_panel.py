@@ -30,7 +30,6 @@ from qgis.core import (Qgis)
 
 
 class PgConfigPanel(QWidget, DbSchemaDbPanel):
-
     notify_message_requested = pyqtSignal(str, Qgis.MessageLevel)
 
     def __init__(self, parent=None):
@@ -100,7 +99,7 @@ class PgConfigPanel(QWidget, DbSchemaDbPanel):
         dict_conn['host'] = self.txt_host.text().strip()
         dict_conn['port'] = self.txt_port.text().strip()
         dict_conn['database'] = "'{}'".format(self.selected_db_combobox.currentText().strip())
-        dict_conn['schema'] = self.selected_schema_combobox.currentText().strip() or 'public'
+        dict_conn['schema'] = self.selected_schema_combobox.currentText().strip()
         dict_conn['username'] = self.txt_user.text().strip()
         dict_conn['password'] = self.txt_password.text().strip()
 
@@ -132,9 +131,6 @@ class PgConfigPanel(QWidget, DbSchemaDbPanel):
             self.selected_schema_combobox.addItem(dict_conn['schema'])
 
         self._connect_change_signals()
-
-    def check_for_refresh(self):
-        return self.txt_user.text().strip() and self.txt_password.text().strip()
 
     def state_changed(self):
         result = True

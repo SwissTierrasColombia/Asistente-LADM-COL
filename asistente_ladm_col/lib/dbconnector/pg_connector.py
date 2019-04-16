@@ -293,7 +293,7 @@ class PGConnector(DBConnector):
 
         return False
 
-    def test_connection(self,  test_level=EnumTestLevel.LADM):
+    def test_connection(self, test_level=EnumTestLevel.LADM):
         """
         :param test_level: (EnumTestLevel) level of connection with postgres
         """
@@ -315,17 +315,17 @@ class PGConnector(DBConnector):
         #     return (False, QCoreApplication.translate("PGConnector",
         #             "The current database does not have PostGIS installed! Please install it before proceeding."))
 
-        if bool(test_level & EnumTestLevel._CHECK_SCHEMA) and not self._schema_exists():
+        if test_level & EnumTestLevel._CHECK_SCHEMA and not self._schema_exists():
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' does not exist in the database!").format(self.schema))
-        if bool(test_level & EnumTestLevel._CHECK_LADM) and not self._metadata_exists():
+        if test_level & EnumTestLevel._CHECK_LADM and not self._metadata_exists():
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
 
         res, msg = self.get_schema_privileges(uri, self.schema)
         if res:
             if msg['create'] and msg['usage']:
-                if bool(test_level & EnumTestLevel._CHECK_LADM):
+                if test_level & EnumTestLevel._CHECK_LADM:
                     try:
                         if self.model_parser is None:
                             self.model_parser = ModelParser(self)

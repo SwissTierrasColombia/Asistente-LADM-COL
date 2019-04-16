@@ -136,19 +136,14 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         return db
 
-    def get_db_connection(self, update_connection=True):
+    def get_db_connection(self):
         if self._db is not None:
             self.log.logMessage("Returning existing db connection...", PLUGIN_NAME, Qgis.Info)
-            return self._db
         else:
             self.log.logMessage("Getting new db connection...", PLUGIN_NAME, Qgis.Info)
-            db = self._get_db_connector_from_gui()
+            self._db = self._get_db_connector_from_gui()
 
-            # FIXME update within get method???
-            if update_connection:
-                self._db = db
-
-            return db
+        return self._db
 
     def show_custom_model_dir(self):
         dlg = CustomModelDirDialog(self.custom_model_directories_line_edit.text(), self)
