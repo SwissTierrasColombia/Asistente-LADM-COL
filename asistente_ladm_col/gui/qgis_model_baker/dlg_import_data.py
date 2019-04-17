@@ -56,7 +56,6 @@ from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
                                FileValidator,
                                make_file_selector,
-                               make_save_file_selector,
                                OverrideCursor)
 from ...resources_rc import *
 from ...config.config_db_supported import ConfigDbSupported
@@ -307,7 +306,8 @@ class DialogImportData(QDialog, DIALOG_UI):
         """
         item_db = self._conf_db.get_db_items()[self.db.mode]
 
-        configuration = item_db.get_import_configuration(self.db.dict_conn_params)
+        configuration = ImportDataConfiguration()
+        item_db.set_db_configuration_params(self.db.dict_conn_params, configuration)
 
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
         configuration.delete_data = False

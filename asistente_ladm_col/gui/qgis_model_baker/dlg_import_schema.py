@@ -51,14 +51,12 @@ from ...gui.dlg_get_java_path import DialogGetJavaPath
 from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
-                               FileValidator,
-                               make_file_selector,
-                               make_save_file_selector,
                                OverrideCursor)
 from ...resources_rc import *
 from ...config.config_db_supported import ConfigDbSupported
 from ...lib.db.enum_db_action_type import EnumDbActionType
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_schema.ui')
+
 
 class DialogImportSchema(QDialog, DIALOG_UI):
 
@@ -240,7 +238,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def update_configuration(self):
         item_db = self._conf_db.get_db_items()[self.db.mode]
 
-        configuration = item_db.get_schema_import_configuration(self.db.dict_conn_params)
+        configuration = SchemaImportConfiguration()
+        item_db.set_db_configuration_params(self.db.dict_conn_params, configuration)
 
         # set custom toml file
         configuration.tomlfile = TOML_FILE_DIR

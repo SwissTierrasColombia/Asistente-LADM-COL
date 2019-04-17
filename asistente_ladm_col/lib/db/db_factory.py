@@ -39,11 +39,5 @@ class DbFactory(QObject):
     def get_db_connector(self, parameters):
         raise NotImplementedError
 
-    def get_schema_import_configuration(self, params):
-        raise NotImplementedError
-
-    def get_import_configuration(self, params):
-        raise NotImplementedError
-
-    def get_export_configuration(self, params):
+    def set_db_configuration_params(self, params, configuration):
         raise NotImplementedError
