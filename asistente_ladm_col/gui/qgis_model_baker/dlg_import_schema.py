@@ -81,9 +81,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.update_import_models()
         self.previous_item = QListWidgetItem()
 
-        #
-        self.db_connect_label.setToolTip(self.db.get_display_conn_string())
-        self.db_connect_label.setText(self.db.get_description_conn_string())
         self.connection_setting_button.clicked.connect(self.show_settings)
         self.connection_setting_button.setText(QCoreApplication.translate("DialogImportSchema", "Connection Settings"))
 
@@ -98,9 +95,22 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.clear()
         self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self.buttonBox.addButton(QCoreApplication.translate("DialogImportSchema", "Create LADM-COL structure"), QDialogButtonBox.AcceptRole)
+        self._accept_button = self.buttonBox.addButton(QCoreApplication.translate("DialogImportSchema", "Create LADM-COL structure"), QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
+
+        self.update_connection_info()
+
+    def update_connection_info(self):
+        db_description = self.db.get_description_conn_string()
+        if db_description:
+            self.db_connect_label.setText(db_description)
+            self.db_connect_label.setToolTip(self.db.get_display_conn_string())
+            self._accept_button.setEnabled(True)
+        else:
+            self.db_connect_label.setText(QCoreApplication.translate("DialogImportSchema", "The database is not defined!"))
+            self.db_connect_label.setToolTip('')
+            self._accept_button.setEnabled(False)
 
     def showEvent(self, event):
         self.restore_configuration()
@@ -143,13 +153,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         dlg = self.qgis_utils.get_settings_dialog()
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
         dlg.set_action_type(EnumDbActionType.SCHEMA_IMPORT)
-        if dlg.exec_():
-            self.db = dlg.get_db_connection()
-            self._params = dlg.get_params()
-            self._current_db = dlg.get_current_db()
+        dlg.exec_()
 
-            self.db_connect_label.setToolTip(self.db.get_display_conn_string())
-            self.db_connect_label.setText(self.db.get_description_conn_string())
+        self.db = dlg.get_db_connection()
+        self._params = dlg.get_params()
+        self._current_db = dlg.get_current_db()
+
+        self.update_connection_info()
 
     def accepted(self):
         configuration = self.update_configuration()

@@ -258,7 +258,10 @@ class PGConnector(DBConnector):
         self._uri = value
 
     def get_description_conn_string(self):
-        return self._dict_conn_params['database'] + '.' + self._dict_conn_params['schema']
+        if self._dict_conn_params['database'] and self._dict_conn_params['schema']:
+            return self._dict_conn_params['database'] + '.' + self._dict_conn_params['schema']
+
+        return None
 
     def _postgis_exists(self):
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
