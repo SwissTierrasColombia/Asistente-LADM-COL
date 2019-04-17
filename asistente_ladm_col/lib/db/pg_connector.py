@@ -306,6 +306,11 @@ class PGConnector(DBConnector):
         if test_level & EnumTestLevel.SERVER:
             uri = self.get_connection_uri(self._dict_conn_params, 0)
 
+        if test_level & EnumTestLevel.DB:
+            if not self._dict_conn_params['database'].strip("'") or self._dict_conn_params['database'] == 'postgres':
+                return (False, QCoreApplication.translate("PGConnector",
+                    "LADM_COL Assistant does not allow to manage LADM structures into default database 'postgres'"))
+
         try:
             self.close_connection()
             self.conn = psycopg2.connect(uri)
@@ -319,9 +324,14 @@ class PGConnector(DBConnector):
         #     return (False, QCoreApplication.translate("PGConnector",
         #             "The current database does not have PostGIS installed! Please install it before proceeding."))
 
-        if test_level & EnumTestLevel._CHECK_SCHEMA and not self._schema_exists():
-            return (False, QCoreApplication.translate("PGConnector",
+        if test_level & EnumTestLevel._CHECK_SCHEMA:
+            if not self._dict_conn_params['schema'] or self._dict_conn_params['schema'] == 'public':
+                return (False, QCoreApplication.translate("PGConnector",
+                    "LADM_COL Assistant does not allow to manage LADM structures into default schema 'public'"))
+            if not self._schema_exists():
+                return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' does not exist in the database!").format(self.schema))
+
         if test_level & EnumTestLevel._CHECK_LADM and not self._metadata_exists():
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
