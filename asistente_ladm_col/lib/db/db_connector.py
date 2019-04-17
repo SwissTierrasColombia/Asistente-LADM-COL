@@ -69,19 +69,19 @@ class DBConnector(QObject):
 
     @uri.setter
     def uri(self, value):
-        raise NotImplemented
+        raise NotImplementedError
 
     def test_connection(self, test_level=EnumTestLevel.LADM):
-        pass
+        raise NotImplementedError
 
     def validate_db(self):
-        pass
+        raise NotImplementedError
 
     def close_connection(self):
-        pass
+        raise NotImplementedError
 
     def get_uri_for_layer(self, layer_name, geometry_type=None):
-        pass
+        raise NotImplementedError
 
     def get_description(self):
         return "Current connection details: '{}' -> {} {}".format(
@@ -90,7 +90,7 @@ class DBConnector(QObject):
             'schema:{}'.format(self.schema) if self.schema else '')
 
     def get_models(self, schema=None):
-        pass
+        raise NotImplementedError
 
     def get_display_conn_string(self):
         # Do not use to connect to a DB, only for display purposes
@@ -113,7 +113,7 @@ class DBConnector(QObject):
             1: database level
         :return: (str) string uri to establish a connection
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def valuation_model_exists(self):
         if self.model_parser is None:
