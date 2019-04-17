@@ -153,13 +153,12 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         dlg = self.qgis_utils.get_settings_dialog()
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
         dlg.set_action_type(EnumDbActionType.SCHEMA_IMPORT)
-        dlg.exec_()
 
-        self.db = dlg.get_db_connection()
-        self._params = dlg.get_params()
-        self._current_db = dlg.get_current_db()
-
-        self.update_connection_info()
+        if dlg.exec_():
+            self.db = dlg.get_db_connection()
+            self._params = dlg.get_params()
+            self._current_db = dlg.get_current_db()
+            self.update_connection_info()
 
     def accepted(self):
         configuration = self.update_configuration()

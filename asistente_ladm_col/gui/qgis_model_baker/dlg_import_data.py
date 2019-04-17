@@ -95,8 +95,6 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.xtf_file_line_edit.textChanged.emit(self.xtf_file_line_edit.text())
 
         # db
-        self.db_connect_label.setToolTip(self.db.get_display_conn_string())
-        self.db_connect_label.setText(self.db.get_description_conn_string())
         self.connection_setting_button.clicked.connect(self.show_settings)
 
         self.connection_setting_button.setText(QCoreApplication.translate("DialogImportData", 'Connection Settings'))
@@ -112,9 +110,22 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.clear()
         self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self.buttonBox.addButton(QCoreApplication.translate("DialogImportData", "Import data"), QDialogButtonBox.AcceptRole)
+        self._accept_button = self.buttonBox.addButton(QCoreApplication.translate("DialogImportData", "Import data"), QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
+
+        self.update_connection_info()
+
+    def update_connection_info(self):
+        db_description = self.db.get_description_conn_string()
+        if db_description:
+            self.db_connect_label.setText(db_description)
+            self.db_connect_label.setToolTip(self.db.get_display_conn_string())
+            self._accept_button.setEnabled(True)
+        else:
+            self.db_connect_label.setText(QCoreApplication.translate("DialogImportData", "The database is not defined!"))
+            self.db_connect_label.setToolTip('')
+            self._accept_button.setEnabled(False)
 
     def showEvent(self, event):
         self.restore_configuration()
@@ -188,8 +199,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.db = dlg.get_db_connection()
             self._params = dlg.get_params()
             self._current_db = dlg.get_current_db()
-            self.db_connect_label.setToolTip(self.db.get_display_conn_string())
-            self.db_connect_label.setText(self.db.get_description_conn_string())
+            self.update_connection_info()
 
     def accepted(self):
         configuration = self.update_configuration()

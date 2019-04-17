@@ -77,8 +77,13 @@ class GPKGConnector(DBConnector):
         return False
 
     def get_description_conn_string(self):
-        return os.path.basename(self.dict_conn_params['dbfile'])
+        result = None
+        if self.dict_conn_params['dbfile']:
+            result = os.path.basename(self.dict_conn_params['dbfile'])
+        return result
 
     def get_connection_uri(self, dict_conn, level=1):
-        return [dict_conn['dbfile']]
+        return dict_conn['dbfile']
 
+    def close_connection(self):
+        pass  # this connection does not need to be closed
