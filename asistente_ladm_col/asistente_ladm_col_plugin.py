@@ -63,7 +63,8 @@ except ModuleNotFoundError as e:
     pass # The plugin will take care of validating the presence/absence of QGIS Model Baker
 
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
-from .gui.create_input_load_field_data_capture_wizard import InputLoadFieldDataCaptureWizard
+from .gui.create_input_load_field_data_capture_dialog import InputLoadFieldDataCaptureDialog
+from .gui.create_project_configuration_field_data_capture_dialog import ProjectConfigurationFieldDataCaptureDialog
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
 from .gui.create_building_cadastre_wizard import CreateBuildingCadastreWizard
@@ -263,8 +264,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.addMenu(self._field_data_capture_menu)
 
         #connections
-
-        self._input_load_field_data_capture_action.triggered.connect(self.show_wiz_input_load)
+        self._project_configuration_field_data_capture_action.triggered.connect(self.show_dialog_project_configuration)
+        self._input_load_field_data_capture_action.triggered.connect(self.show_dialog_input_load)
 
     def add_cadastre_menu(self):
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
@@ -944,9 +945,15 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_qgis_model_baker_required
     @_db_connection_required
-    def show_wiz_input_load(self):
-        wiz = InputLoadFieldDataCaptureWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+    def show_dialog_input_load(self):
+        dlg = InputLoadFieldDataCaptureDialog(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg.exec_()
+
+    @_qgis_model_baker_required
+    @_db_connection_required
+    def show_dialog_project_configuration(self):
+        dlg = ProjectConfigurationFieldDataCaptureDialog(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg.exec_()
 
     @_qgis_model_baker_required
     @_db_connection_required

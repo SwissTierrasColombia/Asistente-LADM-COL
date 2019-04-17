@@ -41,7 +41,7 @@ from ..utils import get_ui_class
 WIZARD_UI = get_ui_class('wiz_input_load_field_data_capture.ui')
 
 
-class InputLoadFieldDataCaptureWizard(QDialog, WIZARD_UI):
+class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
