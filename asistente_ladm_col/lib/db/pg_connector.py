@@ -63,24 +63,13 @@ class PGConnector(DBConnector):
     _DEFAULT_PORT = '5432'
 
     def __init__(self, uri, schema="public", conn_dict={}):
-        DBConnector.__init__(self, uri, schema)
+        DBConnector.__init__(self, uri, schema, conn_dict)
         self.mode = 'pg'
-        self.uri = uri if uri is not None else self.get_connection_uri(conn_dict, level=1)
         self.conn = None
         self.schema = schema
         self.log = QgsApplication.messageLog()
         self.provider = 'postgres'
         self._tables_info = None
-
-        data_source_uri = QgsDataSourceUri(self.uri)
-        self._dict_conn_params = {
-            'host': data_source_uri.host(),
-            'port': data_source_uri.port(),
-            'username': data_source_uri.username(),
-            'password': data_source_uri.password(),
-            'database': data_source_uri.database(),
-            'schema': self.schema
-        }
 
         # Logical validations queries
         self.logic_validation_queries = {
@@ -253,6 +242,21 @@ class PGConnector(DBConnector):
                 'table': PARCEL_TABLE}
         }
 
+    @DBConnector.uri.setter
+    def uri(self, value):
+        data_source_uri = QgsDataSourceUri(value)
+
+        self._dict_conn_params = {
+            'host': data_source_uri.host(),
+            'port': data_source_uri.port(),
+            'username': data_source_uri.username(),
+            'password': data_source_uri.password(),
+            'database': data_source_uri.database(),
+            'schema': self.schema
+        }
+
+        self._uri = value
+
     def get_description_conn_string(self):
         return self._dict_conn_params['database'] + '.' + self._dict_conn_params['schema']
 
@@ -297,7 +301,7 @@ class PGConnector(DBConnector):
         """
         :param test_level: (EnumTestLevel) level of connection with postgres
         """
-        uri = self.uri
+        uri = self._uri
 
         if test_level & EnumTestLevel.SERVER:
             uri = self.get_connection_uri(self._dict_conn_params, 0)
@@ -352,7 +356,7 @@ class PGConnector(DBConnector):
 
     def save_connection(self):
         if self.conn is None:
-            self.conn = psycopg2.connect(self.uri)
+            self.conn = psycopg2.connect(self._uri)
             self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
 
     def close_connection(self):
@@ -376,7 +380,7 @@ class PGConnector(DBConnector):
                     if geometry_type is not None:
                         if QgsWkbTypes.geometryType(QgsWkbTypes.parseType(record['type'])) == geometry_type:
                             data_source_uri = '{uri} key={primary_key} estimatedmetadata=true srid={srid} type={type} table="{schema}"."{table}" ({geometry_column})'.format(
-                                uri=self.uri,
+                                uri=self._uri,
                                 primary_key=record['primary_key'],
                                 srid=record['srid'],
                                 type=record['type'],
@@ -386,7 +390,7 @@ class PGConnector(DBConnector):
                             )
                     else:
                         data_source_uri = '{uri} key={primary_key} estimatedmetadata=true srid={srid} type={type} table="{schema}"."{table}" ({geometry_column})'.format(
-                            uri=self.uri,
+                            uri=self._uri,
                             primary_key=record['primary_key'],
                             srid=record['srid'],
                             type=record['type'],
@@ -396,7 +400,7 @@ class PGConnector(DBConnector):
                         )
                 else:
                     data_source_uri = '{uri} key={primary_key} table="{schema}"."{table}"'.format(
-                        uri=self.uri,
+                        uri=self._uri,
                         primary_key=record['primary_key'],
                         schema=record['schemaname'],
                         table=record['tablename']
@@ -1151,7 +1155,7 @@ class PGConnector(DBConnector):
         result = False
         if layer.dataProvider().name() == PGConnector._PROVIDER_NAME:
             layer_uri = layer.dataProvider().uri()
-            db_uri = QgsDataSourceUri(self.uri)
+            db_uri = QgsDataSourceUri(self._uri)
 
             result = (layer_uri.schema() == self.schema and \
                       layer_uri.database() == db_uri.database() and \

@@ -42,10 +42,15 @@ class DBConnector(QObject):
         QObject.__init__(self)
         self.mode = ''
         self.provider = '' # QGIS provider name. e.g., postgres
-        self.uri = uri
+        self._uri = None
         self.schema = schema
         self.conn = None
-        self._dict_conn_params = dict()
+        self._dict_conn_params = None
+        
+        if uri:
+            self.uri = uri
+        elif conn_dict:
+            self.dict_conn_params = conn_dict
 
         self.model_parser = None
 
@@ -56,7 +61,15 @@ class DBConnector(QObject):
     @dict_conn_params.setter
     def dict_conn_params(self, value):
         self._dict_conn_params = value
-        self.uri = self.get_connection_uri(value, level=1)
+        self._uri = self.get_connection_uri(value, level=1)
+
+    @property
+    def uri(self):
+        return self._uri
+
+    @uri.setter
+    def uri(self, value):
+        raise NotImplemented
 
     def test_connection(self, test_level=EnumTestLevel.LADM):
         pass
@@ -73,7 +86,7 @@ class DBConnector(QObject):
     def get_description(self):
         return "Current connection details: '{}' -> {} {}".format(
             self.mode,
-            self.uri,
+            self._uri,
             'schema:{}'.format(self.schema) if self.schema else '')
 
     def get_models(self, schema=None):

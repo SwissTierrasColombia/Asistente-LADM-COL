@@ -26,26 +26,28 @@ from .db_connector import (DBConnector, EnumTestLevel)
 
 class GPKGConnector(DBConnector):
     def __init__(self, uri, schema=None, conn_dict={}):
-        DBConnector.__init__(self, uri, schema)
+        DBConnector.__init__(self, uri, schema, conn_dict)
         self.mode = 'gpkg'
-        self.uri = uri if uri is not None else self.get_connection_uri(conn_dict)
         self.conn = None
         self.provider = 'ogr'
 
-        self._dict_conn_params = {'dbfile': self.uri}
+    @DBConnector.uri.setter
+    def uri(self, value):
+        self._dict_conn_params = {'dbfile': value}
+        self._uri = value
 
     def test_connection(self, test_level=EnumTestLevel.LADM):
         try:
 
             # file no exist, but directory must exist
             if test_level & EnumTestLevel.CREATE_SCHEMA:
-                directory = os.path.dirname(self.uri)
+                directory = os.path.dirname(self._uri)
 
                 if not os.path.exists(directory):
                     raise Exception("GeoPackage directory file not found.")
-            elif not os.path.exists(self.uri):
+            elif not os.path.exists(self._uri):
                 raise Exception("GeoPackage file not found.")
-            self.conn = qgis.utils.spatialite_connect(self.uri)
+            self.conn = qgis.utils.spatialite_connect(self._uri)
             # TODO verify EnumTestLevel.LADM
         except Exception as e:
             return (False, QCoreApplication.translate("GPKGConnector",
@@ -54,14 +56,14 @@ class GPKGConnector(DBConnector):
                 "Connection to GeoPackage successful!"))
 
     def save_connection(self):
-        self.conn = qgis.utils.spatialite_connect(self.uri)
+        self.conn = qgis.utils.spatialite_connect(self._uri)
 
     def validate_db(self):
         pass
 
     def get_uri_for_layer(self, layer_name, geometry_type=None):
         return (True, '{uri}|layername={table}'.format(
-                uri=self.uri,
+                uri=self._uri,
                 table=layer_name.lower()
             ))
 
