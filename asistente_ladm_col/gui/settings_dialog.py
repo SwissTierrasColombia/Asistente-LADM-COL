@@ -65,9 +65,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None
         self.qgis_utils = qgis_utils
 
-        self._current_db = None
-        self._params = None
-
         self._action_type = None
 
         self._emmit_db_connection_changed = None
@@ -186,17 +183,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None
         self._db = self.get_db_connection()
 
-        # FIXME _current_db and _params are probably not used
-        self._current_db = self.cbo_db_source.currentData()
-        self._params = self._lst_panel[self._current_db].read_connection_parameters()
-
         if self._emmit_db_connection_changed:
             self.db_connection_changed.emit(self._db)
 
         self.save_settings()
 
     def reject(self):
-        self._current_db = self.cbo_db_source.currentData()
         self.done(0)
 
     def set_db_connection(self, mode, dict_conn):
@@ -426,11 +418,3 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         for key, value in self._lst_panel.items():
             value.set_action(action_type)
-
-    def get_current_db(self):
-        return self._current_db
-
-    def get_params(self):
-        return self._params
-
-

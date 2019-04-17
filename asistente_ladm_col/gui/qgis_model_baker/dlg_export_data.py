@@ -165,9 +165,6 @@ class DialogExportData(QDialog, DIALOG_UI):
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
         if dlg.exec_():
             self.db = dlg.get_db_connection()
-            self._params = dlg.get_params()
-            self._current_db = dlg.get_current_db()
-            
             self.update_model_names()
             self.update_connection_info()
 
