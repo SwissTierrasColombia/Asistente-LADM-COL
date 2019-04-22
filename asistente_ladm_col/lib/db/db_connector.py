@@ -117,7 +117,7 @@ class DBConnector(QObject):
 
     def valuation_model_exists(self):
         if self.model_parser is None:
-            res = self._parse_model()
+            res = self._parse_models()
             if not res:
                 return False
 
@@ -125,7 +125,7 @@ class DBConnector(QObject):
 
     def property_record_card_model_exists(self):
         if self.model_parser is None:
-            res = self._parse_model()
+            res = self._parse_models()
             if not res:
                 return False
 

@@ -225,7 +225,10 @@ class AsistenteLADMCOLPlugin(QObject):
             QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_models)
 
     def qgis_initialized(self):
-        self.refresh_menus(self.get_db_connection())
+        # Refresh menus on QGIS start
+        db = self.get_db_connection()
+        res, msg = db.test_connection()
+        self.refresh_menus(db, res)
 
     def add_data_management_menu(self):
         self._data_management_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data Management"), self._menu)
@@ -529,13 +532,12 @@ class AsistenteLADMCOLPlugin(QObject):
 
         menu.deleteLater()
 
-    def refresh_menus(self, db):
+    def refresh_menus(self, db, ladm_col_db):
         """
         Depending on the models available in the DB, some menus should appear or
         disappear from the GUI.
         """
-        res, msg = db.test_connection() # The parser is specific for each new connection
-        if res:
+        if ladm_col_db:
             if db.property_record_card_model_exists():
                 self.add_property_record_card_menu()
             else:
@@ -740,7 +742,7 @@ class AsistenteLADMCOLPlugin(QObject):
             res, msg = db.test_connection()
             if res:
                 if not inst.qgis_utils._layers and not inst.qgis_utils._relations:
-                    inst.qgis_utils.cache_layers_and_relations(db)
+                    inst.qgis_utils.cache_layers_and_relations(db, ladm_col_db=True)
 
                 func_to_decorate(inst)
             else:

@@ -54,7 +54,7 @@ DIALOG_UI = get_ui_class('settings_dialog.ui')
 
 class SettingsDialog(QDialog, DIALOG_UI):
 
-    db_connection_changed = pyqtSignal(DBConnector)
+    db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
     fetcher_task = None
 
     def __init__(self, iface=None, parent=None, qgis_utils=None):
@@ -146,11 +146,11 @@ class SettingsDialog(QDialog, DIALOG_UI):
         dlg.exec_()
 
     def accepted(self):
-        valid_connection = True
-        emmit_db_connection_changed = False
         current_db = self.cbo_db_source.currentData()
-
         if self._lst_panel[current_db].state_changed():
+            valid_connection = True
+            ladm_col_schema = False
+
             db = self._get_db_connector_from_gui()
 
             test_level = EnumTestLevel.DB_SCHEMA
@@ -163,28 +163,29 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
             if res:
                 if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
-                    res, msg = db.test_connection(test_level=EnumTestLevel.LADM)
-                    if res:
-                        emmit_db_connection_changed = True
+                    # Don't check if it's a LADM schema, we expect it to be after the schema import
+                    ladm_col_schema, msg = db.test_connection(test_level=EnumTestLevel.LADM)
             else:
                 self.show_message(msg, Qgis.Warning)
                 valid_connection = False
 
-        if valid_connection:
-            if self._db is not None:
-                self._db.close_connection()
+            if valid_connection:
+                if self._db is not None:
+                    self._db.close_connection()
 
-            # FIXME is it overwriting itself?
-            self._db = None
-            self._db = self.get_db_connection()
+                # FIXME is it overwriting itself?
+                self._db = None
+                self._db = self.get_db_connection()
 
-            if emmit_db_connection_changed:
-                self.db_connection_changed.emit(self._db)
+                self.db_connection_changed.emit(self._db, ladm_col_schema)
 
-            self.save_settings()
-            QDialog.accept(self)
+                self.save_settings()
+                QDialog.accept(self)  # TODO remove?
+            else:
+                return  # Do not close the dialog
+
         else:
-            return
+            QDialog.accept(self)  # TODO remove?
 
     def reject(self):
         self.done(0)
