@@ -66,9 +66,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.qgis_utils = qgis_utils
 
         self._action_type = None
-
-        self._emmit_db_connection_changed = None
-
         self.conf_db = ConfigDbSupported()
 
         self.online_models_radio_button.setChecked(True)
@@ -79,6 +76,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.custom_models_dir_button.setVisible(False)
 
         # Set connections
+        self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.helpRequested.connect(self.show_help)
         self.btn_test_connection.clicked.connect(self.test_connection)
@@ -146,10 +144,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
         dlg = CustomModelDirDialog(self.custom_model_directories_line_edit.text(), self)
         dlg.exec_()
 
-    def accept(self):
-        call_accepted = True
-        self._emmit_db_connection_changed = False
-
+    def accepted(self):
+        valid_connection = True
+        emmit_db_connection_changed = False
         current_db = self.cbo_db_source.currentData()
 
         if self._lst_panel[current_db].state_changed():
@@ -167,26 +164,26 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
                     res, msg = db.test_connection(test_level=EnumTestLevel.LADM)
                     if res:
-                        self._emmit_db_connection_changed = True
+                        emmit_db_connection_changed = True
             else:
                 self.show_message(msg, Qgis.Warning)
-                call_accepted = False
+                valid_connection = False
 
-        if call_accepted:
+        if valid_connection:
+            if self._db is not None:
+                self._db.close_connection()
+
+            # FIXME is it overwriting itself?
+            self._db = None
+            self._db = self.get_db_connection()
+
+            if emmit_db_connection_changed:
+                self.db_connection_changed.emit(self._db)
+
+            self.save_settings()
             QDialog.accept(self)
-
-    def accepted(self):
-        if self._db is not None:
-            self._db.close_connection()
-
-        # FIXME is it overwriting itself?
-        self._db = None
-        self._db = self.get_db_connection()
-
-        if self._emmit_db_connection_changed:
-            self.db_connection_changed.emit(self._db)
-
-        self.save_settings()
+        else:
+            return
 
     def reject(self):
         self.done(0)
