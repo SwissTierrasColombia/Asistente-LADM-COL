@@ -313,7 +313,7 @@ class PGConnector(DBConnector):
         if test_level & EnumTestLevel.DB:
             if not self._dict_conn_params['database'].strip("'") or self._dict_conn_params['database'] == 'postgres':
                 return (False, QCoreApplication.translate("PGConnector",
-                    "LADM_COL Assistant does not allow to manage LADM structures into default database 'postgres'"))
+                    "First select a database to validate the LADM-COL structure."))
 
         try:
             self.close_connection()
@@ -331,7 +331,7 @@ class PGConnector(DBConnector):
         if test_level & EnumTestLevel._CHECK_SCHEMA:
             if not self._dict_conn_params['schema'] or self._dict_conn_params['schema'] == 'public':
                 return (False, QCoreApplication.translate("PGConnector",
-                    "LADM_COL Assistant does not allow to manage LADM structures into default schema 'public'"))
+                    "First select a schema to validate the LADM-COL structure."))
             if not self._schema_exists():
                 return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' does not exist in the database!").format(self.schema))
@@ -366,7 +366,10 @@ class PGConnector(DBConnector):
         else:
             return (False, msg)
 
-        return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS successful!"))
+        if test_level & EnumTestLevel._CHECK_LADM:
+            return (True, QCoreApplication.translate("PGConnector", "The schema '{}' has a valid LADM-COL structure!").format(self.schema))
+
+        return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS database successful!"))
 
     def save_connection(self):
         if self.conn is None:

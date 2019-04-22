@@ -48,7 +48,7 @@
          <item>
           <widget class="QPushButton" name="btn_test_ladm_col_structure">
            <property name="text">
-            <string>Test LADMcol structure</string>
+            <string>Test LADM-COL Structure</string>
            </property>
           </widget>
          </item>
