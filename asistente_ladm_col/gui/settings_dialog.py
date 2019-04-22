@@ -79,6 +79,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.helpRequested.connect(self.show_help)
+        self.finished.connect(self.finished_slot)
         self.btn_test_connection.clicked.connect(self.test_connection)
         self.btn_test_ladm_col_structure.clicked.connect(self.test_ladm_col_structure)
 
@@ -187,6 +188,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def reject(self):
         self.done(0)
+
+    def finished_slot(self, result):
+        self.bar.clearWidgets()
 
     def set_db_connection(self, mode, dict_conn):
         """
