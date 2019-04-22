@@ -98,6 +98,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.buttonBox.helpRequested.connect(self.show_help)
 
         self.update_connection_info()
+        self.restore_configuration()
 
     def update_connection_info(self):
         db_description = self.db.get_description_conn_string()
@@ -109,9 +110,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.db_connect_label.setText(QCoreApplication.translate("DialogImportSchema", "The database is not defined!"))
             self.db_connect_label.setToolTip('')
             self._accept_button.setEnabled(False)
-
-    def showEvent(self, event):
-        self.restore_configuration()
 
     def update_import_models(self):
         for modelname in DEFAULT_MODEL_NAMES_CHECKED:
@@ -230,8 +228,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         # set model repository
         # if there is no option  by default use online model repository
-        custom_model_is_checked =  settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
-        self.use_local_models = custom_model_is_checked
+        self.use_local_models = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
         if self.use_local_models:
             self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models') if settings.value('Asistente-LADM_COL/models/custom_models') else None
 

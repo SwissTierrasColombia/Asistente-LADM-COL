@@ -115,6 +115,8 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.buttonBox.helpRequested.connect(self.show_help)
 
         self.update_connection_info()
+        self.update_model_names()
+        self.restore_configuration()
 
     def update_connection_info(self):
         db_description = self.db.get_description_conn_string()
@@ -127,11 +129,6 @@ class DialogExportData(QDialog, DIALOG_UI):
                 QCoreApplication.translate("DialogExportData", "The database is not defined!"))
             self.db_connect_label.setToolTip('')
             self._accept_button.setEnabled(False)
-
-    def showEvent(self, event):
-        # update after create dialog
-        self.update_model_names()
-        self.restore_configuration()
 
     def update_model_names(self):
         self.export_models_qmodel = QStandardItemModel()
