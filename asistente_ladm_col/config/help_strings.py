@@ -81,7 +81,7 @@ It is formed by the terrain and may or may not have associated constructions.\
 ")
 
         self.WIZ_CREATE_PARCEL_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
-Before to creating a <b>Parcel</b>  you must associate with one or more existing <b>Spatial Units</b>, First you must select the Spatial Unit(s) of interest\
+Before creating a <b>Parcel</b>  you must associate with one or more existing <b>Spatial Units</b>, First you must select the Spatial Unit(s) of interest\
 <br><br>\
 There are two ways to associate:\
 <br><br>\
