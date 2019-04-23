@@ -88,9 +88,9 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
     def map_tool_changed(self, new_tool, old_tool):
         reply = QMessageBox.question(self,
-                                     QCoreApplication.translate("AssociateExtAddressWizard", "Continue?"),
+                                     QCoreApplication.translate("AssociateExtAddressWizard", "Stop address creation?"),
                                      QCoreApplication.translate("AssociateExtAddressWizard",
-                                                                "the mapTool is going to change, do you want to stop creating a ExtAddress?"),
+                                                                "The map tool is about to change. Do you want to stop creating addresses?"),
                                      QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.Yes:
             # Disconnect signal that check if map tool change
@@ -108,7 +108,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
     def adjust_page_1_controls(self):
         self.gbx_page1.setTitle(QCoreApplication.translate("AssociateExtAddressWizard",
-                                                           "How would you like to associate ext addresses?    "))
+                                                           "How would you like to create and associate addresses?"))
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
         self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(EXTADDRESS_TABLE))
@@ -133,18 +133,18 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             enable_next_wizard(self)
             self.wizardPage1.setFinalPage(False)
             finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard",
-                                                            "Associate ExtAddress with Spatial Unit")
+                                                            "Associate address with spatial unit")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1)
 
         self.wizardPage2.setButtonText(QWizard.FinishButton, finish_button_text)
 
     def adjust_page_2_controls(self):
         self.gbx_page2.setTitle(QCoreApplication.translate("AssociateExtAddressWizard",
-                                                           "Now you have to select the spatial unit to associate    "))
+                                                           "Associate the new address with these spatial unit(s):"))
         self.button(self.FinishButton).setDisabled(True)
 
         # TODO:
-        #  It is necesary becasuse when I got to back signal map_tool_changed it is not disconnect
+        #  It is necesary becasuse when I go back signal map_tool_changed is not disconnected
         #  Remove when error are fixed
         self.button(QWizard.BackButton).hide()
 

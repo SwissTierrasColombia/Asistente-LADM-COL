@@ -83,8 +83,8 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
 
     def map_tool_changed(self, new_tool, old_tool):
         reply = QMessageBox.question(self,
-                                     QCoreApplication.translate("CreateParcelCadastreWizard", "Continue?"),
-                                     QCoreApplication.translate("CreateParcelCadastreWizard","the mapTool is going to change, do you want to stop creating a Parcel?"),
+                                     QCoreApplication.translate("CreateParcelCadastreWizard", "Stop parcel creation?"),
+                                     QCoreApplication.translate("CreateParcelCadastreWizard","The map tool is about to change. Do you want to stop creating parcels?"),
                                      QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.Yes:
             # Disconnect signal that check if map tool change

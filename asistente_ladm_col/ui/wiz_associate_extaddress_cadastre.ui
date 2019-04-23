@@ -17,7 +17,7 @@
    <cursorShape>ArrowCursor</cursorShape>
   </property>
   <property name="windowTitle">
-   <string>Associate ExtAddress</string>
+   <string>Create and associate addresses</string>
   </property>
   <property name="options">
    <set>QWizard::HaveHelpButton</set>
@@ -67,7 +67,7 @@
         <item row="0" column="0">
          <widget class="QGroupBox" name="gbx_page1">
           <property name="title">
-           <string>How would you like to associate ext addresses?</string>
+           <string>How would you like to create and associate addresses?</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="3" column="0" colspan="2">
@@ -187,9 +187,7 @@
            <item row="1" column="0" colspan="2">
             <widget class="QRadioButton" name="rad_spatial_unit">
              <property name="text">
-              <string>Entering data manually using a form
-(you need to select one Plot and/or Buildings or 
-Building units before)</string>
+              <string>Entering data manually using a form</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -258,7 +256,7 @@ Building units before)</string>
            </sizepolicy>
           </property>
           <property name="title">
-           <string>Now you have to select the spatial unit to associate</string>
+           <string>Associate the new address with these spatial unit(s):</string>
           </property>
           <property name="flat">
            <bool>false</bool>
@@ -274,6 +272,9 @@ Building units before)</string>
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Select plot(s) on the map</string>
              </property>
              <property name="text">
               <string/>
@@ -298,6 +299,9 @@ Building units before)</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="toolTip">
+              <string>Select plot(s) based on an expression</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -314,6 +318,9 @@ Building units before)</string>
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Select building(s) on the map</string>
              </property>
              <property name="text">
               <string/>
@@ -332,6 +339,9 @@ Building units before)</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="toolTip">
+              <string>Select building(s) based on an expression</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -349,6 +359,9 @@ Building units before)</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="toolTip">
+              <string>Select building unit(s) on the map</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -365,6 +378,9 @@ Building units before)</string>
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Select building unit(s) based on an expression</string>
              </property>
              <property name="text">
               <string/>
