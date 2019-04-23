@@ -900,6 +900,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     def show_dlg_import_schema(self):
         dlg = DialogImportSchema(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg.models_have_changed.connect(self.refresh_menus)
         dlg.exec_()
 
     @_qgis_model_baker_required

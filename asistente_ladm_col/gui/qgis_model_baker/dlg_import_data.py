@@ -64,6 +64,9 @@ from ...lib.db.enum_db_action_type import EnumDbActionType
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_data.ui')
 
 class DialogImportData(QDialog, DIALOG_UI):
+
+
+
     def __init__(self, iface, db, qgis_utils):
         QDialog.__init__(self)
         self.setupUi(self)

@@ -313,7 +313,7 @@ class PGConnector(DBConnector):
         if test_level & EnumTestLevel.DB:
             if not self._dict_conn_params['database'].strip("'") or self._dict_conn_params['database'] == 'postgres':
                 return (False, QCoreApplication.translate("PGConnector",
-                    "First select a database to validate the LADM-COL structure."))
+                    "You should first select a database."))
 
         try:
             self.close_connection()
@@ -331,7 +331,7 @@ class PGConnector(DBConnector):
         if test_level & EnumTestLevel._CHECK_SCHEMA:
             if not self._dict_conn_params['schema'] or self._dict_conn_params['schema'] == 'public':
                 return (False, QCoreApplication.translate("PGConnector",
-                    "First select a schema to validate the LADM-COL structure."))
+                    "You should first select a schema."))
             if not self._schema_exists():
                 return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' does not exist in the database!").format(self.schema))

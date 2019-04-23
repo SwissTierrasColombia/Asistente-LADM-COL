@@ -27,7 +27,7 @@ from QgisModelBaker.libili2db.iliimporter import JavaNotFoundError
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QRegExp,
-                              QSettings)
+                              QSettings, pyqtSignal)
 from qgis.PyQt.QtGui import (QColor,
                              QValidator,
                              QRegExpValidator)
@@ -54,11 +54,14 @@ from ...utils.qt_utils import (Validators,
                                OverrideCursor)
 from ...resources_rc import *
 from ...config.config_db_supported import ConfigDbSupported
+from ...lib.db.db_connector import DBConnector
 from ...lib.db.enum_db_action_type import EnumDbActionType
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_schema.ui')
 
 
 class DialogImportSchema(QDialog, DIALOG_UI):
+
+    models_have_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
 
     def __init__(self, iface, db, qgis_utils):
         QDialog.__init__(self)
@@ -214,6 +217,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.progress_bar.setValue(100)
             self.print_info(QCoreApplication.translate("DialogImportSchema", "\nDone!"), '#004905')
             self.show_message(QCoreApplication.translate("DialogImportSchema", "Creation of the LADM-COL structure was successfully completed"), Qgis.Success)
+
+            self.models_have_changed.emit(self.db, True)
 
     def save_configuration(self, configuration):
         settings = QSettings()
