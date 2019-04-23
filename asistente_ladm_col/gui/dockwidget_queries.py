@@ -144,9 +144,12 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.initialize_tools(new_tool=None, old_tool=self.maptool_identify)
         self.btn_plot_toggled()
 
-    def update_db_connection(self, db):
+    def update_db_connection(self, db, ladm_col_db):
         self._db = db
         self.initialize_tool()
+
+        if not ladm_col_db:
+            self.setVisible(False)
 
     def layer_removed(self):
         # The required layer was removed, deactivate custom tool

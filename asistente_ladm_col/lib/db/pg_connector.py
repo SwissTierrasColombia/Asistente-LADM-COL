@@ -26,7 +26,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsDataSourceUri,
                        QgsApplication)
 
-from .db_connector import DBConnector
+from .db_connector import (DBConnector, EnumTestLevel)
 from ..queries import basic_query, legal_query, property_record_card_query, physical_query, economic_query
 from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
                                       PLUGIN_NAME,
@@ -57,25 +57,19 @@ from ...utils.model_parser import ModelParser
 
 
 class PGConnector(DBConnector):
+
+    _PROVIDER_NAME = 'postgres'
+    _DEFAULT_HOST = 'localhost'
+    _DEFAULT_PORT = '5432'
+
     def __init__(self, uri, schema="public", conn_dict={}):
-        DBConnector.__init__(self, uri, schema)
+        DBConnector.__init__(self, uri, schema, conn_dict)
         self.mode = 'pg'
-        self.uri = uri if uri is not None else self.get_connection_uri(conn_dict, self.mode, level=1)
         self.conn = None
         self.schema = schema
         self.log = QgsApplication.messageLog()
         self.provider = 'postgres'
         self._tables_info = None
-
-        data_source_uri = QgsDataSourceUri(self.uri)
-        self.dict_conn_params = {
-            'host': data_source_uri.host(),
-            'port': data_source_uri.port(),
-            'username': data_source_uri.username(),
-            'password': data_source_uri.password(),
-            'database': data_source_uri.database(),
-            'schema': self.schema
-        }
 
         # Logical validations queries
         self.logic_validation_queries = {
@@ -248,6 +242,28 @@ class PGConnector(DBConnector):
                 'table': PARCEL_TABLE}
         }
 
+    @DBConnector.uri.setter
+    def uri(self, value):
+        data_source_uri = QgsDataSourceUri(value)
+
+        self._dict_conn_params = {
+            'host': data_source_uri.host(),
+            'port': data_source_uri.port(),
+            'username': data_source_uri.username(),
+            'password': data_source_uri.password(),
+            'database': data_source_uri.database(),
+            'schema': self.schema
+        }
+
+        self._uri = value
+
+    def get_description_conn_string(self):
+        result = None
+        if self._dict_conn_params['database'] and self._dict_conn_params['database'].strip("'") and self._dict_conn_params['schema']:
+            result = self._dict_conn_params['database'] + '.' + self._dict_conn_params['schema']
+
+        return result
+
     def _postgis_exists(self):
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute("""
@@ -285,14 +301,22 @@ class PGConnector(DBConnector):
 
         return False
 
-    def test_connection(self, uri=None, level=1):
+    def test_connection(self, test_level=EnumTestLevel.LADM):
         """
-        :param level: (int) level of connection with postgres
-                    0 = Server
-                    1 = Database
+        :param test_level: (EnumTestLevel) level of connection with postgres
         """
-        uri = self.uri if uri is None else uri
+        uri = self._uri
+
+        if test_level & EnumTestLevel.SERVER:
+            uri = self.get_connection_uri(self._dict_conn_params, 0)
+
+        if test_level & EnumTestLevel.DB:
+            if not self._dict_conn_params['database'].strip("'") or self._dict_conn_params['database'] == 'postgres':
+                return (False, QCoreApplication.translate("PGConnector",
+                    "You should first select a database."))
+
         try:
+            self.close_connection()
             self.conn = psycopg2.connect(uri)
             self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
         except Exception as e:
@@ -304,17 +328,22 @@ class PGConnector(DBConnector):
         #     return (False, QCoreApplication.translate("PGConnector",
         #             "The current database does not have PostGIS installed! Please install it before proceeding."))
 
-        if not self._schema_exists() and level == 1:
-            return (False, QCoreApplication.translate("PGConnector",
+        if test_level & EnumTestLevel._CHECK_SCHEMA:
+            if not self._dict_conn_params['schema'] or self._dict_conn_params['schema'] == 'public':
+                return (False, QCoreApplication.translate("PGConnector",
+                    "You should first select a schema."))
+            if not self._schema_exists():
+                return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' does not exist in the database!").format(self.schema))
-        if not self._metadata_exists() and level == 1:
+
+        if test_level & EnumTestLevel._CHECK_LADM and not self._metadata_exists():
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
 
         res, msg = self.get_schema_privileges(uri, self.schema)
         if res:
             if msg['create'] and msg['usage']:
-                if level == 1:
+                if test_level & EnumTestLevel._CHECK_LADM:
                     try:
                         if self.model_parser is None:
                             self.model_parser = ModelParser(self)
@@ -325,23 +354,26 @@ class PGConnector(DBConnector):
                         return (False,
                                 QCoreApplication.translate("PGConnector",
                                                            "User '{}' has not enough permissions over the schema '{}'. Details: {}").format(
-                                                                self.dict_conn_params['username'],
+                                                                self._dict_conn_params['username'],
                                                                 self.schema,
                                                                 e))
             else:
                 return (False,
                         QCoreApplication.translate("PGConnector",
                                                    "User '{}' has not enough permissions over the schema '{}'.").format(
-                            self.dict_conn_params['username'],
+                            self._dict_conn_params['username'],
                             self.schema))
         else:
             return (False, msg)
 
-        return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS successful!"))
+        if test_level & EnumTestLevel._CHECK_LADM:
+            return (True, QCoreApplication.translate("PGConnector", "The schema '{}' has a valid LADM-COL structure!").format(self.schema))
+
+        return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS database successful!"))
 
     def save_connection(self):
         if self.conn is None:
-            self.conn = psycopg2.connect(self.uri)
+            self.conn = psycopg2.connect(self._uri)
             self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
 
     def close_connection(self):
@@ -365,7 +397,7 @@ class PGConnector(DBConnector):
                     if geometry_type is not None:
                         if QgsWkbTypes.geometryType(QgsWkbTypes.parseType(record['type'])) == geometry_type:
                             data_source_uri = '{uri} key={primary_key} estimatedmetadata=true srid={srid} type={type} table="{schema}"."{table}" ({geometry_column})'.format(
-                                uri=self.uri,
+                                uri=self._uri,
                                 primary_key=record['primary_key'],
                                 srid=record['srid'],
                                 type=record['type'],
@@ -375,7 +407,7 @@ class PGConnector(DBConnector):
                             )
                     else:
                         data_source_uri = '{uri} key={primary_key} estimatedmetadata=true srid={srid} type={type} table="{schema}"."{table}" ({geometry_column})'.format(
-                            uri=self.uri,
+                            uri=self._uri,
                             primary_key=record['primary_key'],
                             srid=record['srid'],
                             type=record['type'],
@@ -385,7 +417,7 @@ class PGConnector(DBConnector):
                         )
                 else:
                     data_source_uri = '{uri} key={primary_key} table="{schema}"."{table}"'.format(
-                        uri=self.uri,
+                        uri=self._uri,
                         primary_key=record['primary_key'],
                         schema=record['schemaname'],
                         table=record['tablename']
@@ -1135,3 +1167,35 @@ class PGConnector(DBConnector):
             return (False, QCoreApplication.translate("PGConnector",
                                                "There was an error when obtaining privileges for schema '{}'. Details: {}").format(schema, e))
         return (True, privileges)
+
+    def is_ladm_layer(self, layer):
+        result = False
+        if layer.dataProvider().name() == PGConnector._PROVIDER_NAME:
+            layer_uri = layer.dataProvider().uri()
+            db_uri = QgsDataSourceUri(self._uri)
+
+            result = (layer_uri.schema() == self.schema and \
+                      layer_uri.database() == db_uri.database() and \
+                      layer_uri.host() == db_uri.host() and \
+                      layer_uri.port() == db_uri.port() and \
+                      layer_uri.username() == db_uri.username() and \
+                      layer_uri.password() == db_uri.password())
+
+        return result
+
+    def get_connection_uri(self, dict_conn, level=1):
+        uri = []
+        uri += ['host={}'.format(dict_conn['host'] or self._DEFAULT_HOST)]
+        uri += ['port={}'.format(dict_conn['port'] or self._DEFAULT_PORT)]
+        if dict_conn['username']:
+            uri += ['user={}'.format(dict_conn['username'])]
+        if dict_conn['password']:
+            uri += ['password={}'.format(dict_conn['password'])]
+        if level == 1 and dict_conn['database']:
+            uri += ['dbname={}'.format(dict_conn['database'])]
+        else:
+            # It is necessary to define the database name for listing databases
+            # PostgreSQL uses the db 'postgres' by default and it cannot be deleted, so we use it as last resort
+            uri += ["dbname='{}'".format(self._PROVIDER_NAME)]
+
+        return ' '.join(uri)
