@@ -63,7 +63,6 @@ class SelectMapTool(QgsMapToolEmitPoint):
 
     def canvasReleaseEvent(self, e):
         if e.button() & Qt.LeftButton:
-
             self.isEmittingPoint = False
             self.show_rubber_band()
 
