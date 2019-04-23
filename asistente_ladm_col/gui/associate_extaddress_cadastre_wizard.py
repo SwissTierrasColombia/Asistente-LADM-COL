@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+
 from functools import partial
 
 import sip
@@ -23,6 +24,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 from qgis.PyQt.QtWidgets import (QWizard,
                                  QMessageBox)
+
 from qgis.core import (QgsEditFormConfig,
                        Qgis,
                        QgsMapLayerProxyModel,
@@ -53,7 +55,6 @@ WIZARD_UI = get_ui_class('wiz_associate_extaddress_cadastre.ui')
 
 
 class AssociateExtAddressWizard(QWizard, WIZARD_UI):
-
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
@@ -106,7 +107,6 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         sip.delete(self)
 
     def adjust_page_1_controls(self):
-
         self.gbx_page1.setTitle(QCoreApplication.translate("AssociateExtAddressWizard",
                                                            "How would you like to associate ext addresses?    "))
         self.cbo_mapping.clear()
@@ -399,9 +399,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         # Disconnect signal that check if map tool change
         # This is necessary before changing the tool to the user's previous selection
         self.canvas.mapToolSet.disconnect(self.map_tool_changed)
-
         self.canvas.setMapTool(self.maptool)
-
         self.log.logMessage("Select maptool SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.select_maptool.features_selected_signal.disconnect(self.features_selected)
 

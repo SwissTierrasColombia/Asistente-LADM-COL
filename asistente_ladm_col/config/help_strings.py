@@ -139,41 +139,41 @@ Choose this option if you want to associate an <b>ExtAddress</b> to an existing 
 ")
 
         self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_1 = QCoreApplication.translate("HelpStrings", "\
-To associate the <b>ExtAddress</b> to an existing <i>Plot</i>, first you have to select one of this.\
+To associate the <b>ExtAddress</b> to an existing <i>Plot</i>, first you have to select one.\
 <br><br>\
-There are two ways to associate:\
+There are two ways to select Plots:\
 <br><br>\
-1. <b>Selecting Plot on the map</b>: here you select one <i>Plot</i> and immediately it will come back to wizard, \
-this enables the button for create the association.\
+1. <b>Selecting Plot on the map</b>: select one <i>Plot</i> and right click on the map to go back to the wizard, \
+which enables the button for creating the association.\
 <br><br>\
-2. <b>Selecting by expression</b>:  here you select one <i>Plot</i> using an expression, this has to be valid and \
-the selection should take just one feature. If the expression gets two or more features, the button for create \
+2. <b>Selecting by expression</b>: select one <i>Plot</i> using an expression. The selection has to be valid and \
+should match only one feature. If the expression matches two or more features, the button for creating \
 the association will not be activated.\
 ")
 
         self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_2 = QCoreApplication.translate("HelpStrings", "\
-To associate the <b>ExtAddress</b> to an existing <i>Building</i>, first you have to select one of this.\
+To associate the <b>ExtAddress</b> to an existing <i>Building</i>, first you have to select one.\
 <br><br>\
-There are two ways to associate:\
+There are two ways to select Buildings:\
 <br><br>\
-1. <b>Selecting Building on the map</b>: here you select one <i>Building</i> and immediately it will come back to wizard, \
-this enables the button for create the association.\
+1. <b>Selecting Building on the map</b>: select one <i>Building</i> and right click on the map to go back to the wizard, \
+which enables the button for creating the association.\
 <br><br>\
-2. <b>Selecting by expression</b>:  here you select one <i>Building</i> using an expression, this has to be valid and \
-the selection should take just one feature. If the expression gets two or more features, the button for create \
+2. <b>Selecting by expression</b>:  select one <i>Building</i> using an expression. The selection has to be valid and \
+should match only one feature. If the expression matches two or more features, the button for creating \
 the association will not be activated.\
 ")
 
         self.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_3 = QCoreApplication.translate("HelpStrings", "\
-To associate the <b>ExtAddress</b> to an existing <i>Building Unit</i>, first you have to select one of this.\
+To associate the <b>ExtAddress</b> to an existing <i>Building Unit</i>, first you have to select one.\
 <br><br>\
-There are two ways to associate:\
+There are two ways to select Building Units:\
 <br><br>\
-1. <b>Selecting Building Unit on the map</b>: here you select one <i>Building Unit</i> and immediately it will come back to wizard, \
-this enables the button for create the association.\
+1. <b>Selecting Building Unit on the map</b>: select one <i>Building Unit</i> and right click on the map to go back to the wizard, \
+which enables the button for creating the association.\
 <br><br>\
-2. <b>Selecting by expression</b>:  here you select one <i>Building Unit</i> using an expression, this has to be valid and \
-the selection should take just one feature. If the expression gets two or more features, the button for create \
+2. <b>Selecting by expression</b>: select one <i>Building Unit</i> using an expression. The selection has to be valid and \
+should match only one feature. If the expression matches two or more features, the button for creating \
 the association will not be activated.\
 ")
 

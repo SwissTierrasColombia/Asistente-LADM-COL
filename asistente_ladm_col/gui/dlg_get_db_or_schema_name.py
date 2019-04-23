@@ -29,15 +29,15 @@ from qgis.gui import QgsMessageBar
 
 from ..utils import get_ui_class
 from ..utils.qt_utils import Validators
-from ..lib.dbconnector.pg_connector import PGConnector
 
 DIALOG_UI = get_ui_class('dlg_get_db_or_schema_name.ui')
+
 
 class DialogGetDBOrSchemaName(QDialog, DIALOG_UI):
 
     db_or_schema_created = pyqtSignal(str)
 
-    def __init__(self, dict_conn, type, parent=None):
+    def __init__(self, db_connector, uri, type, parent=None):
         """
         Constructor
         :param db: database connection instance
@@ -47,7 +47,8 @@ class DialogGetDBOrSchemaName(QDialog, DIALOG_UI):
         QDialog.__init__(self, parent)
 
         self.type = type
-        self.dict_conn = dict_conn
+        self.db_connector = db_connector
+        self.uri = uri
         self.parent = parent
         self.setupUi(self)
         self.message_label.setText(QCoreApplication.translate("DialogGetDBOrSchemaName", "Enter the name of the {type}:").format(type=self.type))
@@ -80,21 +81,16 @@ class DialogGetDBOrSchemaName(QDialog, DIALOG_UI):
             self.show_message(QCoreApplication.translate("DialogGetDBOrSchemaName", "The name of the {type} cannot be empty.").format(type=self.type), Qgis.Warning)
             return
 
-        tmp_db_conn = PGConnector('')
+        tmp_db_conn = self.db_connector
         self.buttonBox.setEnabled(False)
         self.parameter_line_edit.setEnabled(False)
 
         if self.type == 'database':
             db_name = parameter_value
-            # Connection with postgres server
-            uri = tmp_db_conn.get_connection_uri(self.dict_conn, 'pg')
-            result = tmp_db_conn.create_database(uri, db_name)
+            result = tmp_db_conn.create_database(self.uri, db_name)
         elif self.type == 'schema':
-            db_name = self.parent.selected_db_combobox.currentText().strip()
             schema_name = parameter_value
-            # Connection with postgres database
-            uri = tmp_db_conn.get_connection_uri(self.dict_conn, 'pg', level=1) # 1: Connection at Database level
-            result = tmp_db_conn.create_schema(uri, schema_name)
+            result = tmp_db_conn.create_schema(self.uri, schema_name)
 
         if result[0]:
             self.buttonBox.clear()

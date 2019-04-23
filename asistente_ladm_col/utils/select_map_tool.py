@@ -30,7 +30,7 @@ from qgis.core import (QgsPointXY,
 
 class SelectMapTool(QgsMapToolEmitPoint):
     features_selected_signal = pyqtSignal()
-    buffer_selected = list()
+    selected_feature_ids = list()
 
     def __init__(self, canvas, layer, multi=True):
         self.canvas = canvas
@@ -57,10 +57,9 @@ class SelectMapTool(QgsMapToolEmitPoint):
         self.rubberBand.reset(True)
 
     def canvasPressEvent(self, e):
-        if e.button() & Qt.LeftButton:
-            self.startPoint = self.toMapCoordinates(e.pos())
-            self.endPoint = self.startPoint
-            self.isEmittingPoint = True
+        self.startPoint = self.toMapCoordinates(e.pos())
+        self.endPoint = self.startPoint
+        self.isEmittingPoint = True
 
     def canvasReleaseEvent(self, e):
         if e.button() & Qt.LeftButton:
@@ -77,19 +76,21 @@ class SelectMapTool(QgsMapToolEmitPoint):
                 # if Control or Shift are selected, keeps the previous selection
                 for id_feature_intersect in id_features_intersect:
                     # toggle selected feature
-                    if id_feature_intersect not in self.buffer_selected:
-                        self.buffer_selected.append(id_feature_intersect)
+                    if id_feature_intersect not in self.selected_feature_ids:
+                        self.selected_feature_ids.append(id_feature_intersect)
                     else:
-                        self.buffer_selected.remove(id_feature_intersect)
+                        self.selected_feature_ids.remove(id_feature_intersect)
             else:
                 id_features_intersect = self.ids_features_intersect()
                 # Clear selected features if Control or Shift are not selected
-                self.buffer_selected = id_features_intersect
+                self.selected_feature_ids = id_features_intersect
 
             self.select_features()
         elif e.button() & Qt.RightButton:
-            self.features_selected_signal.emit()
-            self.reset()
+            # emit the signal when at least one element has been selected
+            if len(self._layer.selectedFeatures()):
+                self.features_selected_signal.emit()
+                self.reset()
 
     def canvasDoubleClickEvent(self, e):
         self.canvasPressEvent(e)
@@ -126,7 +127,7 @@ class SelectMapTool(QgsMapToolEmitPoint):
             self.rubberBand.addPoint(point3, False)
             self.rubberBand.addPoint(point4, True)  # true to update canvas
 
-            # Aproximate polygon to point when it's small relate with the scale
+            # Approximate polygon to point when it's too small related to the scale
             if (self.rubberBand.asGeometry().area() / self.canvas.extent().area()) * 1000000 < 50:
                 self.rubberBand.reset(QgsWkbTypes.PointGeometry)
                 self.rubberBand.addPoint(self.startPoint, True)  # true to update canvas
@@ -135,7 +136,7 @@ class SelectMapTool(QgsMapToolEmitPoint):
         index = QgsSpatialIndex(self._layer)
         bbox = self.rubberBand.asGeometry().boundingBox()
 
-        cadidate_features = self._layer.getFeatures(index.intersects(bbox))
+        candidate_features = self._layer.getFeatures(index.intersects(bbox))
         geom = self.rubberBand.asGeometry()
         centroid = geom
 
@@ -144,11 +145,11 @@ class SelectMapTool(QgsMapToolEmitPoint):
 
         features_selected = []
         distances_features_selected = dict()
-        for cadidate_feature in cadidate_features:
-            if cadidate_feature.geometry().intersects(geom):
-                features_selected.append(cadidate_feature.id())
+        for candidate_feature in candidate_features:
+            if candidate_feature.geometry().intersects(geom):
+                features_selected.append(candidate_feature.id())
                 # Calculate the distance to the centroid
-                distances_features_selected[cadidate_feature.id()] = cadidate_feature.geometry().distance(centroid)
+                distances_features_selected[candidate_feature.id()] = candidate_feature.geometry().distance(centroid)
 
         if not self._multi and geom.type() == QgsWkbTypes.PolygonGeometry:
             if features_selected:
@@ -159,7 +160,7 @@ class SelectMapTool(QgsMapToolEmitPoint):
 
     def select_features(self):
         # show features selected
-        self._layer.selectByIds(self.buffer_selected)
+        self._layer.selectByIds(self.selected_feature_ids)
         self.reset()
 
     def deactivate(self):
