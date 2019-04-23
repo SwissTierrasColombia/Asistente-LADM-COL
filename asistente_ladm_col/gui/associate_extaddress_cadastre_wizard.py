@@ -30,7 +30,10 @@ from qgis.core import (QgsEditFormConfig,
                        QgsMapLayerProxyModel,
                        QgsWkbTypes,
                        QgsApplication,
-                       QgsVectorLayerUtils)
+                       QgsVectorLayerUtils,
+                       QgsTolerance,
+                       QgsProject,
+                       QgsSnappingConfig)
 from qgis.gui import QgsExpressionSelectionDialog
 
 from ..config.general_config import (PLUGIN_NAME,
@@ -270,7 +273,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                 self._current_layer = self.iface.activeLayer()
             else:
                 # Select layer that have least one feature selected
-                # like current layer when current layer is not define
+                # as current layer when current layer is not defined
                 if self._plot_layer.selectedFeatureCount():
                     self._current_layer = self._plot_layer
                 elif self._building_layer.selectedFeatureCount():
@@ -281,11 +284,10 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                     # By default current_layer is plot layer
                     self._current_layer = self._plot_layer
 
-
         if self._current_layer.name() == PLOT_TABLE:
             self.rad_to_plot.setChecked(True)
 
-            # Remove selection in others layers
+            # Remove selection in others layers    # TODO: Why? There's is only one radio button active anyways...
             # ExtAddress can only be associated with one layer
             self._building_layer.removeSelection()
             self.rad_to_building.setStyleSheet('color:#000;')
@@ -356,7 +358,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                     count=self._building_unit_layer.selectedFeatureCount()))
                 self.rad_to_building_unit.setStyleSheet('color:#478046;')
             elif self._building_unit_layer.selectedFeatureCount() > 1:
-                # the color of the text is changed to highlight when there are more than one feature selected
+                # the color of the text is changed to highlight when there are more than one features selected
                 self.rad_to_building_unit.setText(QCoreApplication.translate("AssociateExtAddressWizard",
                                                                              "Building units: {count} Feature Selected").format(
                     count=self._building_unit_layer.selectedFeatureCount()))
@@ -370,7 +372,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         # Zoom to selected feature
         self.canvas.zoomToSelected(self._current_layer)
 
-        # Condition for enable the finish button
+        # Condition for enabling the finish button
         if self._plot_layer.selectedFeatureCount() + self._building_layer.selectedFeatureCount() + self._building_unit_layer.selectedFeatureCount() == 1:
             self.button(self.FinishButton).setDisabled(False)
         else:
@@ -389,7 +391,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         # This is necessary after select the maptool
         self.canvas.mapToolSet.connect(self.map_tool_changed)
 
-        # Connect signal that check a feature was selected
+        # Connect signal that checks a feature was selected
         self.select_maptool.features_selected_signal.connect(self.features_selected)
 
     def features_selected(self):
@@ -406,9 +408,9 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
     def select_feature_by_expression(self, layer):
         self._current_layer = layer
         self.iface.setActiveLayer(self._current_layer)
-        Dlg_expression_selection = QgsExpressionSelectionDialog(self._current_layer)
+        dlg_expression_selection = QgsExpressionSelectionDialog(self._current_layer)
         self._current_layer.selectionChanged.connect(self.check_selected_features)
-        Dlg_expression_selection.exec()
+        dlg_expression_selection.exec()
         self._current_layer.selectionChanged.disconnect(self.check_selected_features)
 
     def finished_dialog(self):
@@ -460,30 +462,42 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self._extaddress_layer.startEditing()
             self.iface.actionAddFeature().trigger()
 
+            # Configure Snapping
+            snapping = QgsProject.instance().snappingConfig()
+            snapping.setEnabled(True)
+            snapping.setMode(QgsSnappingConfig.AllLayers)
+            snapping.setType(QgsSnappingConfig.Vertex)
+            snapping.setUnits(QgsTolerance.Pixels)
+            snapping.setTolerance(12)
+            QgsProject.instance().setSnappingConfig(snapping)
+
             # Create connections to react when a feature is added to buffer and
             # when it gets stored into the DB
             self._extaddress_layer.featureAdded.connect(self.call_extaddress_commit)
 
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                                            QCoreApplication.translate("AssociateExtAddressWizard",
+                                                                       "Now you can click on the map to locate the new address..."),
+                                            Qgis.Info)
         else:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                                                 QCoreApplication.translate("AssociateExtAddressWizard",
-                                                                           "Please select a feature"),
+                                                                           "First select a {}.").format(self._current_layer.name()),
                                                 Qgis.Warning)
 
     def call_extaddress_commit(self, fid):
-        plot_field_idx = self._extaddress_layer.getFeature(fid).fieldNameIndex(EXTADDRESS_PLOT_FIELD)
-        building_field_idx = self._extaddress_layer.getFeature(fid).fieldNameIndex(EXTADDRESS_BUILDING_FIELD)
-        building_unit_field_idx = self._extaddress_layer.getFeature(fid).fieldNameIndex(EXTADDRESS_BUILDING_UNIT_FIELD)
-        self._extaddress_tid = self._extaddress_layer.getFeature(fid)[ID_FIELD]
-
-        # Get t_id of feature to associate
-        feature_id = self._current_layer.selectedFeatures()[0][ID_FIELD]
+        self._extaddress_tid = self._extaddress_layer.getFeature(fid)[ID_FIELD] # t_id of the new ext_address
+        feature_id = self._current_layer.selectedFeatures()[0][ID_FIELD] # Get t_id of feature to associate
 
         if self._current_layer.name() == PLOT_TABLE:
+            plot_field_idx = self._extaddress_layer.getFeature(fid).fieldNameIndex(EXTADDRESS_PLOT_FIELD)
             self._extaddress_layer.changeAttributeValue(fid, plot_field_idx, feature_id)
         elif self._current_layer.name() == BUILDING_TABLE:
+            building_field_idx = self._extaddress_layer.getFeature(fid).fieldNameIndex(EXTADDRESS_BUILDING_FIELD)
             self._extaddress_layer.changeAttributeValue(fid, building_field_idx, feature_id)
         elif self._current_layer.name() == BUILDING_UNIT_TABLE:
+            building_unit_field_idx = self._extaddress_layer.getFeature(fid).fieldNameIndex(
+                EXTADDRESS_BUILDING_UNIT_FIELD)
             self._extaddress_layer.changeAttributeValue(fid, building_unit_field_idx, feature_id)
 
         self._extaddress_layer.featureAdded.disconnect(self.call_extaddress_commit)
@@ -491,6 +505,12 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         res = self._extaddress_layer.commitChanges()
         self._current_layer.removeSelection()
         self.add_oid_feature()
+
+        self.iface.messageBar().pushMessage("Asistente LADM_COL",
+            QCoreApplication.translate("AssociateExtAddressWizard",
+                "The new address (t_id={}) was successfully created and associated with its corresponding '{}' (t_id={})!").format(
+                self._extaddress_tid, self._current_layer.name(), feature_id),
+            Qgis.Info)
 
     def add_oid_feature(self):
         # Add OID record
