@@ -16,19 +16,15 @@
  *                                                                         *
  ***************************************************************************/
 """
-from .db_admin import DbAdmin
+from .db_factory import DbFactory
 
-from .pg_config_panel import PgConfigPanel
-from ..lib.dbconnector.pg_connector import PGConnector
-from QgisModelBaker.libili2db.ili2dbconfig import (SchemaImportConfiguration,
-                                                   ImportDataConfiguration,
-                                                   ExportConfiguration,
-                                                   BaseConfiguration)
+from ...gui.db_panel.pg_config_panel import PgConfigPanel
+from ...lib.db.pg_connector import PGConnector
 
 
-class PgAdmin(DbAdmin):
+class PgFactory(DbFactory):
     def __init__(self):
-        DbAdmin.__init__(self)
+        DbFactory.__init__(self)
         self._mode = "pg"
 
     def get_name(self):
@@ -46,9 +42,7 @@ class PgAdmin(DbAdmin):
     def get_db_connector(self, parameters):
         return PGConnector(None, parameters['schema'], parameters)
 
-    def get_schema_import_configuration(self, params):
-        configuration = SchemaImportConfiguration()
-
+    def set_db_configuration_params(self, params, configuration):
         configuration.tool_name = 'pg'
         configuration.dbhost = params['host']
         configuration.dbport = params['port']
@@ -56,29 +50,3 @@ class PgAdmin(DbAdmin):
         configuration.database = params['database']
         configuration.dbschema = params['schema']
         configuration.dbpwd = params['password']
-
-        return configuration
-
-    def get_import_configuration(self, params):
-        configuration = ImportDataConfiguration()
-
-        configuration.dbhost = params['host']
-        configuration.dbport = params['port']
-        configuration.dbusr = params['username']
-        configuration.database = params['database']
-        configuration.dbschema = params['schema']
-        configuration.dbpwd = params['password']
-
-        return configuration
-
-    def get_export_configuration(self, params):
-        configuration = ExportConfiguration()
-
-        configuration.dbhost = params['host']
-        configuration.dbport = params['port']
-        configuration.dbusr = params['username']
-        configuration.database = params['database']
-        configuration.dbschema = params['schema']
-        configuration.dbpwd = params['password']
-
-        return configuration

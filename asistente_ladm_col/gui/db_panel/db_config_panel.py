@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import (QObject,pyqtSignal)
-from qgis.core import (Qgis)
+from qgis.PyQt.QtCore import (QObject, pyqtSignal)
+from qgis.core import Qgis
 
 
 class DbConfigPanel(QObject):
@@ -27,23 +27,26 @@ class DbConfigPanel(QObject):
     def __init__(self):
         super(DbConfigPanel, self).__init__()
         self._mode = None
-        self.params_changed = False
+        self.state = None
 
     def read_connection_parameters(self):
         """
         Convenient function to read connection parameters and apply default
         values if needed.
         """
-        raise Exception('unimplemented method')
+        raise NotImplementedError
 
     def write_connection_parameters(self, dict_conn):
-        raise Exception('unimplemented method')
+        raise NotImplementedError
 
     def get_keys_connection_parameters(self):
-        raise Exception('unimplemented method')
-
-    def _set_params_changed(self):
-        self.params_changed = True
+        raise NotImplementedError
 
     def set_action(self, action):
         pass
+
+    def save_state(self):
+        self.state = self.read_connection_parameters()
+
+    def state_changed(self):
+        raise NotImplementedError

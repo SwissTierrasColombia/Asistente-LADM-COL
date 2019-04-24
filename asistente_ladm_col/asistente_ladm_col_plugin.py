@@ -98,12 +98,14 @@ from .gui.log_quality_dialog import LogQualityDialog
 from .gui.right_of_way import RightOfWay
 from .gui.reports import ReportGenerator
 from .gui.toolbar import ToolBar
+from .gui.log_excel_dialog import LogExcelDialog
+from .data.ladm_data import LADM_DATA
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.model_parser import ModelParser
 from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
-from .db_support.enum_action_type import EnumActionType
+from .lib.db.enum_db_action_type import EnumDbActionType
 
 class AsistenteLADMCOLPlugin(QObject):
     def __init__(self, iface):
@@ -131,7 +133,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.right_of_way = RightOfWay(self.iface, self.qgis_utils)
         self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
-        self.report_generator = ReportGenerator(self.qgis_utils)
+        self.ladm_data = LADM_DATA(self.qgis_utils)
+        self.report_generator = ReportGenerator(self.qgis_utils, self.ladm_data)
 
         # Menus
         self.add_cadastre_menu()
@@ -180,7 +183,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
         self.qgis_utils.set_node_visibility_requested.connect(self.set_node_visibility)
-
         self.quality.log_quality_show_message_emitted.connect(self.show_log_quality_message)
         self.quality.log_quality_show_button_emitted.connect(self.show_log_quality_button)
         self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
@@ -223,7 +225,10 @@ class AsistenteLADMCOLPlugin(QObject):
             QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_models)
 
     def qgis_initialized(self):
-        self.refresh_menus(self.get_db_connection())
+        # Refresh menus on QGIS start
+        db = self.get_db_connection()
+        res, msg = db.test_connection()
+        self.refresh_menus(db, res)
 
     def add_data_management_menu(self):
         self._data_management_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data Management"), self._menu)
@@ -527,13 +532,12 @@ class AsistenteLADMCOLPlugin(QObject):
 
         menu.deleteLater()
 
-    def refresh_menus(self, db):
+    def refresh_menus(self, db, ladm_col_db):
         """
         Depending on the models available in the DB, some menus should appear or
         disappear from the GUI.
         """
-        res, msg = db.test_connection() # The parser is specific for each new connection
-        if res:
+        if ladm_col_db:
             if db.property_record_card_model_exists():
                 self.add_property_record_card_menu()
             else:
@@ -712,7 +716,22 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
 
     def show_log_quality_dialog(self):
-        dlg = LogQualityDialog(self.qgis_utils, self.quality, self.iface)
+        dlg = LogQualityDialog(self.qgis_utils, self.quality)
+        dlg.exec_()
+
+    def show_log_excel_button(self, text):
+        self.progressMessageBar = self.iface.messageBar().createMessage("Import from Excel",
+            QCoreApplication.translate("DialogImportFromExcel",
+                                       "Some errors were found while importing from the intermediate Excel file into LADM-COL!"))
+        self.button = QPushButton(self.progressMessageBar)
+        self.button.pressed.connect(self.show_log_excel_dialog)
+        self.button.setText(QCoreApplication.translate("DialogImportFromExcel", "Show errors found"))
+        self.progressMessageBar.layout().addWidget(self.button)
+        self.iface.messageBar().pushWidget(self.progressMessageBar, Qgis.Warning)
+        self.text = text
+
+    def show_log_excel_dialog(self):
+        dlg = LogExcelDialog(self.qgis_utils, self.text)
         dlg.exec_()
 
     def _db_connection_required(func_to_decorate):
@@ -723,7 +742,7 @@ class AsistenteLADMCOLPlugin(QObject):
             res, msg = db.test_connection()
             if res:
                 if not inst.qgis_utils._layers and not inst.qgis_utils._relations:
-                    inst.qgis_utils.cache_layers_and_relations(db)
+                    inst.qgis_utils.cache_layers_and_relations(db, ladm_col_db=True)
 
                 func_to_decorate(inst)
             else:
@@ -841,8 +860,9 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def call_import_from_intermediate_structure(self):
-        dlg = DialogImportFromExcel(self.iface, self.get_db_connection(), self.qgis_utils)
-        dlg.exec_()
+        self._dlg = DialogImportFromExcel(self.iface, self.get_db_connection(), self.qgis_utils)
+        self._dlg.log_excel_show_message_emitted.connect(self.show_log_excel_button)
+        self._dlg.exec_()
 
     def unload(self):
         # remove the plugin menu item and icon
@@ -853,7 +873,7 @@ class AsistenteLADMCOLPlugin(QObject):
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
 
     def show_settings(self):
-        self.qgis_utils.get_settings_dialog().set_action_type(EnumActionType.OTHER)
+        self.qgis_utils.get_settings_dialog().set_action_type(EnumDbActionType.CONFIG)
         self.qgis_utils.get_settings_dialog().exec_()
 
     def show_plugin_manager(self):
@@ -868,7 +888,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_queries(self):
         if self._dock_widget_queries is None:
-            self._dock_widget_queries = DockWidgetQueries(self.iface, self.get_db_connection(), self.qgis_utils)
+            self._dock_widget_queries = DockWidgetQueries(self.iface, self.get_db_connection(), self.qgis_utils, self.ladm_data)
             self.qgis_utils.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_queries)
         else:
@@ -880,6 +900,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     def show_dlg_import_schema(self):
         dlg = DialogImportSchema(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg.models_have_changed.connect(self.refresh_menus)
         dlg.exec_()
 
     @_qgis_model_baker_required
@@ -941,8 +962,8 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_parcel_cad(self):
-        wiz = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self._wiz_create_parcel = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        self._wiz_create_parcel.exec_()
 
     @_qgis_model_baker_required
     @_db_connection_required

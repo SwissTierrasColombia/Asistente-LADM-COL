@@ -28,7 +28,8 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
                               QCoreApplication,
                               QSettings)
-from qgis.PyQt.QtWidgets import QProgressBar, QMessageBox
+from qgis.PyQt.QtWidgets import (QProgressBar, 
+                                 QMessageBox)
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsAttributeEditorContainer,
@@ -38,6 +39,7 @@ from qgis.core import (Qgis,
                        QgsEditorWidgetSetup,
                        QgsExpression,
                        QgsExpressionContextUtils,
+                       QgsFieldConstraints,
                        QgsGeometry,
                        QgsLayerTreeGroup,
                        QgsLayerTreeNode,
@@ -106,9 +108,8 @@ from ..config.translator import (
     PLUGIN_DIR
 )
 from ..gui.settings_dialog import SettingsDialog
-from ..lib.dbconnector.db_connector import DBConnector
+from ..lib.db.db_connector import DBConnector
 from ..lib.source_handler import SourceHandler
-from ..config.config_db_supported import ConfigDbSupported
 
 
 class QGISUtils(QObject):
@@ -119,7 +120,7 @@ class QGISUtils(QObject):
     create_progress_message_bar_emitted = pyqtSignal(str, QProgressBar)
     remove_error_group_requested = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
-    db_connection_changed = pyqtSignal(DBConnector)
+    db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
     message_emitted = pyqtSignal(str, int) # Message, level
     message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
@@ -173,15 +174,23 @@ class QGISUtils(QObject):
             self._source_handler = SourceHandler(self)
         return self._source_handler
 
-    def cache_layers_and_relations(self, db):
-        self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
-            "Extracting relations and domains from the database... This is done only once per session!"), 0)
-        QCoreApplication.processEvents()
+    def cache_layers_and_relations(self, db, ladm_col_db):
+        if ladm_col_db:
+            self.status_bar_message_emitted.emit(QCoreApplication.translate("QGISUtils",
+                "Extracting relations and domains from the database... This is done only once per session!"), 0)
+            QCoreApplication.processEvents()
 
-        with OverrideCursor(Qt.WaitCursor):
-            self._layers, self._relations, self._bags_of_enum = self.qgis_model_baker_utils.get_layers_and_relations_info(db)
+            with OverrideCursor(Qt.WaitCursor):
+                self._layers, self._relations, self._bags_of_enum = self.qgis_model_baker_utils.get_layers_and_relations_info(db)
 
-        self.clear_status_bar_emitted.emit()
+            self.clear_status_bar_emitted.emit()
+        else:
+            self.clear_db_cache()
+
+    def clear_db_cache(self):
+        self._layers = list()
+        self._relations = list()
+        self._bags_of_enum = list()
 
     def get_related_layers(self, layer_names, already_loaded):
         """
@@ -538,10 +547,22 @@ class QGISUtils(QObject):
     def set_layer_constraints(self, layer):
         if layer.name() in LAYER_CONSTRAINTS:
             for field_name, value in LAYER_CONSTRAINTS[layer.name()].items():
+                idx = layer.fields().indexOf(field_name)
                 layer.setConstraintExpression(
-                    layer.fields().indexOf(field_name),
+                    idx,
                     value['expression'],
                     value['description'])
+
+                layer.setFieldConstraint(
+                    idx,
+                    QgsFieldConstraints.ConstraintExpression,
+                    QgsFieldConstraints.ConstraintStrengthSoft)
+
+                # We shouldn't make DB constraints flexible, but in case you from the future need it, uncomment
+                # layer.setFieldConstraint(
+                #     idx,
+                #     QgsFieldConstraints.ConstraintUnique,
+                #     QgsFieldConstraints.ConstraintStrengthSoft)
 
     def set_form_groups(self, layer):
         if layer.name() in FORM_GROUPS:
@@ -1297,7 +1318,9 @@ class QGISUtils(QObject):
             features = [f for f in extfile_layer.getFeatures()]
 
         self._source_handler = self.get_source_handler()
-        new_values = self._source_handler.upload_files(extfile_layer, field_index, features)
+        with OverrideCursor(Qt.WaitCursor):
+            new_values = self._source_handler.upload_files(extfile_layer, field_index, features)
+
         if new_values:
             extfile_layer.dataProvider().changeAttributeValues(new_values)
 
@@ -1308,6 +1331,9 @@ class QGISUtils(QObject):
             return True
         except:
             pass
+        finally:
+            s.close()
+
         return False
 
     def show_help(self, module='', offline=False):

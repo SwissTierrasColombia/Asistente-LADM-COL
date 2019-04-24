@@ -27,11 +27,12 @@ from QgisModelBaker.libili2db.iliimporter import JavaNotFoundError
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QRegExp,
-                              QSettings)
+                              QSettings, pyqtSignal)
 from qgis.PyQt.QtGui import (QColor,
                              QValidator,
                              QRegExpValidator)
 from qgis.PyQt.QtWidgets import (QDialog,
+                                 QLayout,
                                  QListWidgetItem,
                                  QSizePolicy,
                                  QDialogButtonBox)
@@ -50,16 +51,17 @@ from ...gui.dlg_get_java_path import DialogGetJavaPath
 from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
-                               FileValidator,
-                               make_file_selector,
-                               make_save_file_selector,
                                OverrideCursor)
 from ...resources_rc import *
 from ...config.config_db_supported import ConfigDbSupported
-from ...db_support.enum_action_type import EnumActionType
+from ...lib.db.db_connector import DBConnector
+from ...lib.db.enum_db_action_type import EnumDbActionType
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_schema.ui')
 
+
 class DialogImportSchema(QDialog, DIALOG_UI):
+
+    models_have_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
 
     def __init__(self, iface, db, qgis_utils):
         QDialog.__init__(self)
@@ -73,14 +75,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self._current_db = None
 
         self.setupUi(self)
+        self.layout().setSizeConstraint(QLayout.SetFixedSize)
+
         self.validators = Validators()
 
         self.update_import_models()
         self.previous_item = QListWidgetItem()
 
-        #
-        self.db_connect_label.setToolTip(self.db.get_display_conn_string())
-        self.db_connect_label.setText(self.db.get_display_conn_string())
         self.connection_setting_button.clicked.connect(self.show_settings)
         self.connection_setting_button.setText(QCoreApplication.translate("DialogImportSchema", "Connection Settings"))
 
@@ -95,12 +96,23 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.clear()
         self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self.buttonBox.addButton(QCoreApplication.translate("DialogImportSchema", "Create LADM-COL structure"), QDialogButtonBox.AcceptRole)
+        self._accept_button = self.buttonBox.addButton(QCoreApplication.translate("DialogImportSchema", "Create LADM-COL structure"), QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
 
-    def showEvent(self, event):
+        self.update_connection_info()
         self.restore_configuration()
+
+    def update_connection_info(self):
+        db_description = self.db.get_description_conn_string()
+        if db_description:
+            self.db_connect_label.setText(db_description)
+            self.db_connect_label.setToolTip(self.db.get_display_conn_string())
+            self._accept_button.setEnabled(True)
+        else:
+            self.db_connect_label.setText(QCoreApplication.translate("DialogImportSchema", "The database is not defined!"))
+            self.db_connect_label.setToolTip('')
+            self._accept_button.setEnabled(False)
 
     def update_import_models(self):
         for modelname in DEFAULT_MODEL_NAMES_CHECKED:
@@ -139,14 +151,11 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def show_settings(self):
         dlg = self.qgis_utils.get_settings_dialog()
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
-        dlg.set_action_type(EnumActionType.SCHEMA_IMPORT)
+        dlg.set_action_type(EnumDbActionType.SCHEMA_IMPORT)
+
         if dlg.exec_():
             self.db = dlg.get_db_connection()
-            self._params = dlg.get_params()
-            self._current_db = dlg.get_current_db()
-
-            self.db_connect_label.setToolTip(self.db.get_display_conn_string())
-            self.db_connect_label.setText(self.db.get_display_conn_string())
+            self.update_connection_info()
 
     def accepted(self):
         configuration = self.update_configuration()
@@ -209,6 +218,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.print_info(QCoreApplication.translate("DialogImportSchema", "\nDone!"), '#004905')
             self.show_message(QCoreApplication.translate("DialogImportSchema", "Creation of the LADM-COL structure was successfully completed"), Qgis.Success)
 
+            self.models_have_changed.emit(self.db, True)
+
     def save_configuration(self, configuration):
         settings = QSettings()
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
@@ -222,15 +233,15 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         # set model repository
         # if there is no option  by default use online model repository
-        custom_model_is_checked =  settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
-        self.use_local_models = custom_model_is_checked
+        self.use_local_models = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
         if self.use_local_models:
             self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models') if settings.value('Asistente-LADM_COL/models/custom_models') else None
 
     def update_configuration(self):
         item_db = self._conf_db.get_db_items()[self.db.mode]
 
-        configuration = item_db.get_schema_import_configuration(self.db.dict_conn_params)
+        configuration = SchemaImportConfiguration()
+        item_db.set_db_configuration_params(self.db.dict_conn_params, configuration)
 
         # set custom toml file
         configuration.tomlfile = TOML_FILE_DIR
@@ -278,6 +289,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         else:
             color = '#aa2222'
             message = QCoreApplication.translate("DialogImportSchema", "Finished with errors!")
+
+            # Open log
+            if self.log_config.isCollapsed():
+                self.log_config.setCollapsed(False)
 
         self.txtStdout.setTextColor(QColor(color))
         self.txtStdout.append(message)

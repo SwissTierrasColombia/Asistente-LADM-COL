@@ -36,6 +36,7 @@ from qgis.PyQt.QtGui import (QColor,
                              QStandardItem)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
+                                 QLayout,
                                  QListWidgetItem,
                                  QMessageBox,
                                  QDialogButtonBox)
@@ -51,12 +52,11 @@ from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
                                FileValidator,
                                make_save_file_selector,
-                               make_file_selector,
                                OverrideCursor)
 from ...resources_rc import *
 from ...config.config_db_supported import ConfigDbSupported
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_export_data.ui')
-from ...db_support.enum_action_type import EnumActionType
+from ...lib.db.enum_db_action_type import EnumDbActionType
 
 
 class DialogExportData(QDialog, DIALOG_UI):
@@ -66,6 +66,8 @@ class DialogExportData(QDialog, DIALOG_UI):
     def __init__(self, iface, db, qgis_utils):
         QDialog.__init__(self)
         self.setupUi(self)
+        self.layout().setSizeConstraint(QLayout.SetFixedSize)
+
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
         self.db = db
@@ -92,8 +94,6 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.xtf_file_line_edit.textChanged.connect(self.xtf_browser_opened_to_false)
         self.xtf_file_line_edit.textChanged.emit(self.xtf_file_line_edit.text())
 
-        self.db_connect_label.setText(self.db.get_display_conn_string())
-        self.db_connect_label.setToolTip(self.db.get_display_conn_string())
         self.connection_setting_button.clicked.connect(self.show_settings)
 
         self.connection_setting_button.setText(QCoreApplication.translate("DialogExportData", "Connection Settings"))
@@ -110,15 +110,25 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.clear()
         self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self.buttonBox.addButton(QCoreApplication.translate("DialogExportData", "Export data"), QDialogButtonBox.AcceptRole)
+        self._accept_button = self.buttonBox.addButton(QCoreApplication.translate("DialogExportData", "Export data"), QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
 
-    def showEvent(self, event):
-        # update after create dialog
+        self.update_connection_info()
         self.update_model_names()
         self.restore_configuration()
 
+    def update_connection_info(self):
+        db_description = self.db.get_description_conn_string()
+        if db_description:
+            self.db_connect_label.setText(db_description)
+            self.db_connect_label.setToolTip(self.db.get_display_conn_string())
+            self._accept_button.setEnabled(True)
+        else:
+            self.db_connect_label.setText(
+                QCoreApplication.translate("DialogExportData", "The database is not defined!"))
+            self.db_connect_label.setToolTip('')
+            self._accept_button.setEnabled(False)
 
     def update_model_names(self):
         self.export_models_qmodel = QStandardItemModel()
@@ -147,17 +157,12 @@ class DialogExportData(QDialog, DIALOG_UI):
 
     def show_settings(self):
         dlg = self.qgis_utils.get_settings_dialog()
-        dlg.set_action_type(EnumActionType.EXPORT)
+        dlg.set_action_type(EnumDbActionType.EXPORT)
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
         if dlg.exec_():
             self.db = dlg.get_db_connection()
-            
-            self._params = dlg.get_params()
-            self._current_db = dlg.get_current_db()
-            
-            self.db_connect_label.setToolTip(self.db.get_display_conn_string())
-            self.db_connect_label.setText(self.db.get_display_conn_string())
             self.update_model_names()
+            self.update_connection_info()
 
     def accepted(self):
         configuration = self.update_configuration()
@@ -276,7 +281,8 @@ class DialogExportData(QDialog, DIALOG_UI):
         """
         item_db = self._conf_db.get_db_items()[self.db.mode]
 
-        configuration = item_db.get_export_configuration(self.db.dict_conn_params)
+        configuration = ExportConfiguration()
+        item_db.set_db_configuration_params(self.db.dict_conn_params, configuration)
 
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
         java_path = get_java_path_from_qgis_model_baker()
@@ -324,6 +330,10 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
         else:
             self.enable()
+            
+            # Open log
+            if self.log_config.isCollapsed():
+                self.log_config.setCollapsed(False)
 
     def advance_progress_bar_by_text(self, text):
         if text.strip() == 'Info: compile models...':

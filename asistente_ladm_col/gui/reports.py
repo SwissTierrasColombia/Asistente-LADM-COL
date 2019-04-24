@@ -35,27 +35,27 @@ from qgis.PyQt.QtCore import (Qt,
                               QEventLoop,
                               QIODevice)
 from qgis.PyQt.QtWidgets import (QFileDialog,
+                                 QMessageBox,
                                  QProgressBar)
 from qgis.core import (QgsWkbTypes,
                        QgsDataSourceUri,
                        Qgis,
                        QgsNetworkContentFetcherTask,
                        QgsApplication)
-from ..utils.qgis_model_baker_utils import get_java_path_dir_from_qgis_model_baker
 
 from ..config.general_config import (TEST_SERVER,
                                      PLUGIN_NAME,
                                      REPORTS_REQUIRED_VERSION,
                                      URL_REPORTS_LIBRARIES)
 from ..config.table_mapping_config import (ID_FIELD,
-                                           PLOT_TABLE)
+                                           PLOT_TABLE, PARCEL_NUMBER_FIELD)
 from ..utils.qt_utils import (remove_readonly,
                               normalize_local_url)
-from ..gui.dlg_get_java_path import DialogGetJavaPath
 
 class ReportGenerator():
-    def __init__(self, qgis_utils):
+    def __init__(self, qgis_utils, ladm_data):
         self.qgis_utils = qgis_utils
+        self.ladm_data = ladm_data
         self.encoding = locale.getlocale()[1]
         # This might be unset
         if not self.encoding:
@@ -157,7 +157,7 @@ class ReportGenerator():
             version_found = ''
             with open(version_path) as f:
                 version_found = f.read()
-            if version_found != REPORTS_REQUIRED_VERSION:
+            if version_found.strip() != REPORTS_REQUIRED_VERSION:
                 required_version_found = False
 
         if not required_version_found:
@@ -169,21 +169,13 @@ class ReportGenerator():
         # Check if JAVA_HOME path is set, otherwise use path from QGIS Model Baker
         if os.name == 'nt':
             if 'JAVA_HOME' not in os.environ:
-                java_path_dir = get_java_path_dir_from_qgis_model_baker()
-                if not java_path_dir:
-                    # Set Java Home
-                    get_java_path_dlg = DialogGetJavaPath()
-                    get_java_path_dlg.setModal(True)
-                    get_java_path_dlg.exec_()
-
-                    java_path_dir = get_java_path_dir_from_qgis_model_baker()
-                    if not java_path_dir:
-                        self.qgis_utils.message_emitted.emit(
-                            QCoreApplication.translate("ReportGenerator", "Please set JAVA_HOME path in QGIS Model Baker Settings or in your OS environmental variables."), Qgis.Warning)
-                        return
-                else:
-                    os.environ["JAVA_HOME"] = java_path_dir
-                    self.log.logMessage("The JAVA_HOME path has been set using QGIS Model Baker Settings for reports.", PLUGIN_NAME, Qgis.Info)
+                self.msg = QMessageBox()
+                self.msg.setIcon(QMessageBox.Information)
+                self.msg.setText(QCoreApplication.translate("ReportGenerator", "JAVA_HOME environment variable is not defined, please define it as an enviroment variable on Windows and restart QGIS before generating the annex 17."))
+                self.msg.setWindowTitle(QCoreApplication.translate("ReportGenerator", "JAVA_HOME not defined"))
+                self.msg.setStandardButtons(QMessageBox.Close)
+                self.msg.exec_()
+                return
 
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
         if plot_layer is None:
@@ -283,7 +275,10 @@ class ReportGenerator():
             proc.readyReadStandardOutput.connect(
                 functools.partial(self.stdout_ready, proc=proc))
 
-            current_report_path = os.path.join(save_into_folder, 'anexo_17_{}.pdf'.format(plot_id))
+
+            parcel_number = self.ladm_data.get_parcels_related_to_plot(db, plot_id, PARCEL_NUMBER_FIELD) or ['']
+            file_name = 'anexo_17_{}_{}.pdf'.format(plot_id, parcel_number[0])
+            current_report_path = os.path.join(save_into_folder, file_name)
             proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', current_report_path])
 
             if not proc.waitForStarted():
@@ -312,7 +307,7 @@ class ReportGenerator():
 
         if total == count:
             if total == 1:
-                msg = QCoreApplication.translate("ReportGenerator", "The report <a href='file:///{}'>anexo_17_{}.pdf</a> was successfully generated!").format(normalize_local_url(save_into_folder), plot_id)
+                msg = QCoreApplication.translate("ReportGenerator", "The report <a href='file:///{}'>{}</a> was successfully generated!").format(normalize_local_url(save_into_folder), file_name)
             else:
                 msg = QCoreApplication.translate("ReportGenerator", "All reports were successfully generated in folder <a href='file:///{path}'>{path}</a>!").format(path=normalize_local_url(save_into_folder))
 

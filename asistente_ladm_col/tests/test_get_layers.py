@@ -9,8 +9,7 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             get_dbconn,
-                                            restore_schema,
-                                            )
+                                            restore_schema)
 
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.config.table_mapping_config import BOUNDARY_POINT_TABLE, PLOT_TABLE
@@ -42,7 +41,7 @@ class TestGetLayers(unittest.TestCase):
                                               "terreno"]
                                   }
 
-        self.qgis_utils.cache_layers_and_relations(self.db_connection) # Gather information from the database
+        self.qgis_utils.cache_layers_and_relations(self.db_connection, ladm_col_db=True) # Gather information from the database
         QgsProject.instance().clear()
 
         print("\nINFO: Validating get_layer() on empty project...")
