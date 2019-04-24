@@ -145,6 +145,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.addActions([self._load_layers_action,
                               self._queries_action])
         self._menu.addSeparator()
+        self.add_changes_menu()
+        self._menu.addSeparator()
         self.add_data_management_menu()
         self._settings_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
         self._help_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"), self.iface.mainWindow())
@@ -154,7 +156,6 @@ class AsistenteLADMCOLPlugin(QObject):
                                self._about_action])
 
         # Connections
-
         self._import_schema_action.triggered.connect(self.show_dlg_import_schema)
         self._import_data_action.triggered.connect(self.show_dlg_import_data)
         self._export_data_action.triggered.connect(self.show_dlg_export_data)
@@ -531,6 +532,25 @@ class AsistenteLADMCOLPlugin(QObject):
         self._physical_zone_valuation_action = None
 
         menu.deleteLater()
+
+    def add_changes_menu(self):
+        self._changes_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Changes"), self._menu)
+        self._query_by_parcel_changes_action = QAction(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query by parcel"), self._changes_menu)
+        self._batch_query_changes_action = QAction(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Batch query"), self._changes_menu)
+        self._settings_changes_action = QAction(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self._changes_menu)
+
+        self._changes_menu.addActions([self._query_by_parcel_changes_action, self._batch_query_changes_action,
+                                       self._changes_menu.addSeparator(), self._settings_changes_action])
+
+        self._menu.addMenu(self._changes_menu)
+
+        # Set connections
+        self._query_by_parcel_changes_action.triggered.connect(self.query_by_parcel_for_changes)
+        self._batch_query_changes_action.triggered.connect(self.batch_query_for_changes)
+        self._settings_changes_action.triggered.connect(self.show_settings_for_changes)
 
     def refresh_menus(self, db, ladm_col_db):
         """
@@ -1144,6 +1164,19 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_wiz_physical_zone_valuation_action(self):
         wiz = CreatePhysicalZoneValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
+
+    @_qgis_model_baker_required
+    @_db_connection_required
+    def query_by_parcel_for_changes(self):
+        pass
+
+    @_qgis_model_baker_required
+    @_db_connection_required
+    def batch_query_for_changes(self):
+        pass
+
+    def show_settings_for_changes(self):
+        pass
 
     def download_report_dependency(self):
         self.report_generator.download_report_dependency()
