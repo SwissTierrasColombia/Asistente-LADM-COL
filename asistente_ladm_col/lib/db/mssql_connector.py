@@ -23,31 +23,26 @@ from qgis.PyQt.QtCore import QCoreApplication
 from ...config.general_config import (PLUGIN_NAME, INTERLIS_TEST_METADATA_TABLE_PG, PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO)
 from qgis.core import (Qgis, QgsApplication)
 from ...utils.model_parser import ModelParser
+from .db_connector import (DBConnector, EnumTestLevel)
 
 
 class MssqlConnector(DBConnector):
 
     _PROVIDER_NAME = 'mssql'
+    _DEFAULT_HOST = 'localhost'
 
     def __init__(self, uri, schema=None, conn_dict={}):
-        DBConnector.__init__(self, uri, schema)
+        DBConnector.__init__(self, uri, schema, conn_dict)
         self.mode = 'mssql'
-
-        # TODO check get_connection_uri call
-        self.uri = uri if uri is not None else self.get_connection_uri(conn_dict, self.mode, level=1)
         self.conn = None
         self.schema = schema
         self.log = QgsApplication.messageLog()
         self.provider = 'mssql'
         self._tables_info = None
-        self.model_parser = None
 
-        self.dict_conn_params = self._get_dict_conn()
-
-    def _get_dict_conn(self, uri=None):
-        uri_to_dict = uri if uri is not None else self.uri
-
-        uri_parts = uri_to_dict.split(";")
+    @staticmethod
+    def _get_dict_conn(uri):
+        uri_parts = uri.split(";")
 
         lst_item_uri = dict()
 
@@ -84,7 +79,19 @@ class MssqlConnector(DBConnector):
         result['password'] = lst_item_uri['PWD'] if 'PWD' in lst_item_uri else ''
         result['database'] = lst_item_uri['DATABASE'] if 'DATABASE' in lst_item_uri else ''
 
-        result['schema'] = self.schema
+        return result
+
+    @DBConnector.uri.setter
+    def uri(self, value):
+        self._dict_conn_params = self._get_dict_conn(value)
+        self._dict_conn_params['schema'] = self.schema
+
+        self._uri = value
+
+    def get_description_conn_string(self):
+        result = None
+        if self._dict_conn_params['database'] and self._dict_conn_params['schema']:
+            result = self._dict_conn_params['database'] + '.' + self._dict_conn_params['schema']
 
         return result
 
@@ -117,39 +124,58 @@ class MssqlConnector(DBConnector):
 
         return False
 
-    def test_connection(self, uri=None, level=1):
+    def test_connection(self, test_level=EnumTestLevel.LADM):
         """
-        :param level: (int) level of connection with postgres
-                    0 = Server
-                    1 = Database
+        :param test_level: (EnumTestLevel) level of connection
         """
-        uri = self.uri if uri is None else uri
+        uri = self._uri
+
+        if test_level & EnumTestLevel.SERVER:
+            uri = self.get_connection_uri(self._dict_conn_params, 0)
+
+        if test_level & EnumTestLevel.DB:
+            if not self._dict_conn_params['database'] or self._dict_conn_params['database'] == 'master':
+                return (False, QCoreApplication.translate("MSSQLConnector",
+                    "You should first select a database."))
 
         try:
+            self.close_connection()
             self.conn = conn = pyodbc.connect(uri)
             self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
         except Exception as e:
             return (False, QCoreApplication.translate("MSSQLConnector",
                     "There was an error connecting to the database: {}").format(e))
 
-        if not self._schema_exists() and level == 1:
-            return (False, QCoreApplication.translate("MSSQLConnector",
+        if test_level & EnumTestLevel._CHECK_SCHEMA:
+            # TODO # is 'dbo' database valid?  self._dict_conn_params['schema'] == 'dbo':
+            if not self._dict_conn_params['schema']:
+                return (False, QCoreApplication.translate("MSSQLConnector",
+                    "You should first select a schema."))
+            if not self._schema_exists():
+                return (False, QCoreApplication.translate("MSSQLConnector",
                     "The schema '{}' does not exist in the database!").format(self.schema))
 
-        if not self._metadata_exists() and level == 1:
+        if test_level & EnumTestLevel._CHECK_LADM and not self._metadata_exists():
             return (False, QCoreApplication.translate("MSSQLConnector",
                     "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
 
         # TODO Test schema permissions (*)
-        if level == 1:
+        if test_level & EnumTestLevel._CHECK_LADM:
             if self.model_parser is None:
                 self.model_parser = ModelParser(self)
             if not self.model_parser.validate_cadastre_model_version()[0]:
-                return (False, QCoreApplication.translate("PGConnector",
-                                                          "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(
-                    PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
+                return (False, QCoreApplication.translate("MSSQLConnector", "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
+
+        if test_level & EnumTestLevel._CHECK_LADM:
+            return (True, QCoreApplication.translate("MSSQLConnector", "The schema '{}' has a valid LADM-COL structure!").format(self.schema))
 
         return (True, QCoreApplication.translate("MSSQLConnector", "Connection to Mssql successful!"))
+
+    def close_connection(self):
+        if self.conn:
+            self.conn.close()
+            self.conn = None
+            self.log.logMessage("Connection was closed!", PLUGIN_NAME, Qgis.Info)
 
     def get_dbnames_list(self, uri):
         dbnames_list = list()
@@ -205,7 +231,6 @@ class MssqlConnector(DBConnector):
 
         if conn:
             try:
-                # TODO Isolation level autocommit
                 cur = conn.cursor()
                 cur.execute(sql)
                 cur.commit()
@@ -288,3 +313,21 @@ class MssqlConnector(DBConnector):
                 layer_uri.password() == db_uri['password'])
 
         return result
+
+    def get_connection_uri(self, dict_conn, level=1):
+        uri = []
+
+        uri += ['DRIVER={SQL Server}']
+        host = dict_conn['host'] or self._DEFAULT_HOST
+        if dict_conn['instance']:
+            host += '\\' + dict_conn['instance']
+        if dict_conn['port']:
+            host += ',' + dict_conn['port']
+
+        uri += ['SERVER={}'.format(host)]
+        if dict_conn['database'] and level == 1:
+            uri += ['DATABASE={}'.format(dict_conn['database'])]
+        uri += ['UID={}'.format(dict_conn['username'])]
+        uri += ['PWD={}'.format(dict_conn['password'])]
+
+        return ';'.join(uri)

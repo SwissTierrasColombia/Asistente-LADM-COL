@@ -24,14 +24,12 @@ from qgis.PyQt.QtWidgets import (QWidget,
                                  QComboBox,
                                  QPushButton
                                  )
-
+from qgis.core import Qgis
 from .db_schema_db_panel import DbSchemaDbPanel
-from ..lib.dbconnector.mssql_connector import MssqlConnector
-from qgis.core import (Qgis)
+from ...lib.db.mssql_connector import MssqlConnector
 
 
 class MssqlConfigPanel(QWidget, DbSchemaDbPanel):
-
     notify_message_requested = pyqtSignal(str, Qgis.MessageLevel)
 
     def __init__(self, parent=None):
@@ -42,7 +40,6 @@ class MssqlConfigPanel(QWidget, DbSchemaDbPanel):
         # FIXME unused code (probably)
         self.mode = "mssql"
 
-        # TODO strings without traslation
         lbl_host = QLabel(self.tr("Host"))
         lbl_port = QLabel(self.tr("Port"))
         lbl_database = QLabel(self.tr("Database"))
@@ -80,8 +77,8 @@ class MssqlConfigPanel(QWidget, DbSchemaDbPanel):
         layout.addWidget(lbl_instance, 2, 0)
         layout.addWidget(lbl_user, 3, 0)
         layout.addWidget(lbl_password, 4, 0)
-        layout.addWidget(lbl_database, 5, 0)
-        layout.addWidget(lbl_schema, 6, 0)
+        layout.addWidget(lbl_database, 6, 0)
+        layout.addWidget(lbl_schema, 7, 0)
 
         layout.addWidget(self.txt_host, 0, 1)
         layout.addWidget(self.txt_port, 1, 1)
@@ -89,19 +86,16 @@ class MssqlConfigPanel(QWidget, DbSchemaDbPanel):
         layout.addWidget(self.txt_user, 3, 1)
         layout.addWidget(self.txt_password, 4, 1)
 
-        layout.addWidget(self.selected_db_combobox, 5, 1)
-        layout.addWidget(self.selected_schema_combobox, 6, 1)
+        layout.addWidget(self.refresh_db_button, 5, 0, 1, 2)
 
-        layout.addWidget(self.create_db_button, 5, 2)
-        layout.addWidget(self.create_schema_button, 6, 2)
+        layout.addWidget(self.selected_db_combobox, 6, 1)
+        layout.addWidget(self.selected_schema_combobox, 7, 1)
 
-        self.txt_host.textChanged.connect(self.request_for_refresh_connection)
-        self.txt_port.textChanged.connect(self.request_for_refresh_connection)
-        self.txt_user.textChanged.connect(self.request_for_refresh_connection)
-        self.txt_instance.textChanged.connect(self.request_for_refresh_connection)
-        self.txt_password.textChanged.connect(self.request_for_refresh_connection)
+        layout.addWidget(self.create_db_button, 6, 2)
+        layout.addWidget(self.create_schema_button, 7, 2)
 
-        self._connect_change_signals()
+    def showEvent(self, event):
+        self._set_controls_enabled(False)
 
     def read_connection_parameters(self):
         """
@@ -121,44 +115,6 @@ class MssqlConfigPanel(QWidget, DbSchemaDbPanel):
 
         return dict_conn
 
-    def _connect_change_signals(self):
-        DbSchemaDbPanel._connect_change_signals(self)
-        self.txt_host.textEdited.connect(self._text_changed)
-        self.txt_port.textEdited.connect(self._text_changed)
-        self.txt_user.textEdited.connect(self._text_changed)
-        self.txt_password.textEdited.connect(self._text_changed)
-        self.txt_instance.textEdited.connect(self._text_changed)
-
-    def _text_changed(self, text):
-        self._set_params_changed()
-
-    def _disconnect_change_signals(self):
-        DbSchemaDbPanel._disconnect_change_signals(self)
-        try:
-            self.txt_host.textEdited.disconnect(self._text_changed)
-        except TypeError:
-            pass
-
-        try:
-            self.txt_port.textEdited.disconnect(self._text_changed)
-        except TypeError:
-            pass
-
-        try:
-            self.txt_user.textEdited.disconnect(self._text_changed)
-        except TypeError:
-            pass
-
-        try:
-            self.txt_password.textEdited.disconnect(self._text_changed)
-        except TypeError:
-            pass
-
-        try:
-            self.txt_instance.textEdited.disconnect(self._text_changed)
-        except TypeError:
-            pass
-
     def get_keys_connection_parameters(self):
         return list(self.read_connection_parameters().keys())
 
@@ -175,21 +131,27 @@ class MssqlConfigPanel(QWidget, DbSchemaDbPanel):
             self._connect_change_signals()
             return
         db_name_setting = dict_conn['database'].strip("'")
-        self.update_db_names()
 
-        if self.selected_db_combobox.count():
-            index = self.selected_db_combobox.findText(db_name_setting, Qt.MatchFixedString)
-            if index >= 0:
-                self.selected_db_combobox.setCurrentIndex(index)
-                schema_setting = dict_conn['schema']
-                self.update_db_schemas()
-                if self.selected_schema_combobox.count():
-                    index = self.selected_schema_combobox.findText(schema_setting, Qt.MatchFixedString)
+        self.selected_db_combobox.clear()
+        self.selected_schema_combobox.clear()
 
-                    if index >= 0:
-                        self.selected_schema_combobox.setCurrentIndex(index)
+        if db_name_setting:
+            self.selected_db_combobox.addItem(db_name_setting)
+        if dict_conn['schema']:
+            self.selected_schema_combobox.addItem(dict_conn['schema'])
 
         self._connect_change_signals()
 
-    def check_for_refresh(self):
-        return self.txt_user.text().strip() and self.txt_password.text().strip()
+    def state_changed(self):
+        result = True
+
+        if self.state:
+            result = (self.state['host'] != self.txt_host.text().strip() or \
+                self.state['port'] != self.txt_port.text().strip() or \
+                self.state['database'] != self.selected_db_combobox.currentText().strip() or \
+                self.state['instance'] != self.txt_instance.text().strip() or \
+                self.state['schema'] != self.selected_schema_combobox.currentText().strip() or \
+                self.state['username'] != self.txt_user.text().strip() or \
+                self.state['password'] != self.txt_password.text().strip())
+
+        return result
