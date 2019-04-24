@@ -53,6 +53,7 @@ from qgis.core import (Qgis,
                        QgsWkbTypes)
 
 import processing
+
 from .geometry import GeometryUtils
 from .qgis_model_baker_utils import QgisModelBakerUtils
 from .qt_utils import OverrideCursor
@@ -107,6 +108,7 @@ from ..config.translator import (
     QGIS_LANG,
     PLUGIN_DIR
 )
+from ..gui.official_data_settings_dialog import OfficialDataSettingsDialog
 from ..gui.settings_dialog import SettingsDialog
 from ..lib.db.db_connector import DBConnector
 from ..lib.source_handler import SourceHandler
@@ -142,6 +144,7 @@ class QGISUtils(QObject):
         self.layer_tree_view = layer_tree_view
 
         self.__settings_dialog = None
+        self.__official_data_settings_dialog = None
         self._source_handler = None
         self._layers = list()
         self._relations = list()
@@ -168,6 +171,17 @@ class QGISUtils(QObject):
     def get_db_connection(self):
         self.__settings_dialog = self.get_settings_dialog()
         return self.__settings_dialog.get_db_connection()
+
+    def get_official_data_settings_dialog(self):
+        if self.__official_data_settings_dialog is None:
+            self.__official_data_settings_dialog = OfficialDataSettingsDialog(self, None)
+            #self.__official_data_settings_dialog.official_db_connection_changed.connect(self.official_db_connection_changed)
+
+        return self.__official_data_settings_dialog
+
+    def get_official_db_connection(self):
+        self.__official_data_settings_dialog = self.get_official_data_settings_dialog()
+        return self.__official_data_settings_dialog.get_db_connection()
 
     def get_source_handler(self):
         if self._source_handler is None:

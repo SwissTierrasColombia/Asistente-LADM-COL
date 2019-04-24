@@ -103,7 +103,6 @@ from .gui.toolbar import ToolBar
 from .gui.log_excel_dialog import LogExcelDialog
 from .data.ladm_data import LADM_DATA
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
-from .utils.model_parser import ModelParser
 from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
@@ -542,7 +541,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._batch_query_changes_action = QAction(
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Batch query"), self._changes_menu)
         self._settings_changes_action = QAction(
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self._changes_menu)
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Official data settings"), self._changes_menu)
 
         self._changes_menu.addActions([self._query_by_parcel_changes_action, self._batch_query_changes_action,
                                        self._changes_menu.addSeparator(), self._settings_changes_action])
@@ -552,7 +551,7 @@ class AsistenteLADMCOLPlugin(QObject):
         # Set connections
         self._query_by_parcel_changes_action.triggered.connect(self.query_by_parcel_for_changes)
         self._batch_query_changes_action.triggered.connect(self.batch_query_for_changes)
-        self._settings_changes_action.triggered.connect(self.show_settings_for_changes)
+        self._settings_changes_action.triggered.connect(self.show_official_data_settings)
 
     def refresh_menus(self, db, ladm_col_db):
         """
@@ -784,6 +783,31 @@ class AsistenteLADMCOLPlugin(QObject):
 
         return decorated_function
 
+    def _official_db_connection_required(func_to_decorate):
+        @wraps(func_to_decorate)
+        def decorated_function(inst, *args, **kwargs):
+            # Check if current connection is valid and disable access if not
+            db = inst.get_official_db_connection()
+            res, msg = db.test_connection()
+            if res:
+                func_to_decorate(inst)
+            else:
+                widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
+                             QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                             "Check your official database connection, since there was a problem accessing a valid Cadastre-Registry model in the database. Click the button to go to Settings."))
+                button = QPushButton(widget)
+                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", " Official Data Settings"))
+                button.pressed.connect(inst.show_official_data_settings)
+                widget.layout().addWidget(button)
+                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
+                inst.log.logMessage(
+                    QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, connection to official DB was not valid."),
+                    PLUGIN_NAME,
+                    Qgis.Warning
+                )
+
+        return decorated_function
+
     def _qgis_model_baker_required(func_to_decorate):
         @wraps(func_to_decorate)
         def decorated_function(inst, *args, **kwargs):
@@ -954,6 +978,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def get_db_connection(self):
         return self.qgis_utils.get_db_connection()
+
+    def get_official_db_connection(self):
+        return self.qgis_utils.get_official_db_connection()
 
     @_qgis_model_baker_required
     def show_dlg_import_schema(self):
@@ -1206,17 +1233,19 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_map_swipe_tool_required
     @_db_connection_required
+    @_official_db_connection_required
     def query_by_parcel_for_changes(self):
         pass
 
     @_qgis_model_baker_required
     @_map_swipe_tool_required
     @_db_connection_required
+    @_official_db_connection_required
     def batch_query_for_changes(self):
         pass
 
-    def show_settings_for_changes(self):
-        pass
+    def show_official_data_settings(self):
+        self.qgis_utils.get_official_data_settings_dialog().exec_()
 
     def download_report_dependency(self):
         self.report_generator.download_report_dependency()
