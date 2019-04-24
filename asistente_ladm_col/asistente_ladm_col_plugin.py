@@ -49,7 +49,9 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     PLUGIN_NAME,
                                     PLUGIN_VERSION,
                                     RELEASE_URL,
-                                    VALUATION_MENU_OBJECTNAME)
+                                    VALUATION_MENU_OBJECTNAME, QGIS_MODEL_BAKER_PLUGIN_NAME,
+                                    MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION, MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
+                                    MAP_SWIPE_TOOL_PLUGIN_NAME, MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
 from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                           ID_FIELD,
                                           COL_PARTY_TABLE)
@@ -786,7 +788,9 @@ class AsistenteLADMCOLPlugin(QObject):
         @wraps(func_to_decorate)
         def decorated_function(inst, *args, **kwargs):
             # Check if QGIS Model Baker is installed and active, disable access if not
-            plugin_version_right = inst.is_plugin_version_valid()
+            plugin_version_right = inst.is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
+                                                                QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
+                                                                QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
 
             if plugin_version_right:
                 func_to_decorate(inst)
@@ -814,17 +818,50 @@ class AsistenteLADMCOLPlugin(QObject):
 
         return decorated_function
 
-    def is_plugin_version_valid(self):
-        plugin_found = 'QgisModelBaker' in qgis.utils.plugins
+    def _map_swipe_tool_required(func_to_decorate):
+        @wraps(func_to_decorate)
+        def decorated_function(inst, *args, **kwargs):
+            # Check if Map Swipe Tool is installed and active, disable access if not
+            plugin_version_right = inst.is_plugin_version_valid(MAP_SWIPE_TOOL_PLUGIN_NAME,
+                                                                MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
+                                                                MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION)
+
+            if plugin_version_right:
+                func_to_decorate(inst)
+            else:
+                if MAP_SWIPE_TOOL_REQUIRED_VERSION_URL:
+                    # If we depend on a specific version of Map Swipe Tool (only on that one)
+                    # and it is not the latest version, show a download link
+                    msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'Map Swipe Tool' version {} is required, but couldn't be found. Download it <a href=\"{}\">from this link</a> and use 'Install from ZIP'.").format(MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION, MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
+                    inst.iface.messageBar().pushMessage("Asistente LADM_COL", msg, Qgis.Warning, 15)
+                else:
+                    msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'Map Swipe Tool' version {} {}is required, but couldn't be found. Click the button to show the Plugin Manager.").format(MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION, '' if MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION else '(or higher) ')
+
+                    widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+                    button = QPushButton(widget)
+                    button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
+                    button.pressed.connect(inst.show_plugin_manager)
+                    widget.layout().addWidget(button)
+                    inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
+
+                inst.log.logMessage(
+                    QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, Map Swipe Tool not found."),
+                    PLUGIN_NAME,
+                    Qgis.Warning
+                )
+
+        return decorated_function
+
+    def is_plugin_version_valid(self, plugin_name, min_required_version, exact_required_version):
+        plugin_found = plugin_name in qgis.utils.plugins
         if not plugin_found:
             return False
-        current_version = get_plugin_metadata('QgisModelBaker', 'version')
-        min_required_version = QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION
+        current_version = get_plugin_metadata(plugin_name, 'version')
         if current_version is None:
             return False
 
         current_version_splitted = current_version.split(".")
-        if len(current_version_splitted) < 4: # We could need 4 places for custom QGIS Model Baker versions
+        if len(current_version_splitted) < 4: # We could need 4 places for our custom plugin versions
             current_version_splitted = current_version_splitted + ['0','0','0','0']
             current_version_splitted = current_version_splitted[:4]
 
@@ -833,9 +870,10 @@ class AsistenteLADMCOLPlugin(QObject):
             min_required_version_splitted = min_required_version_splitted + ['0','0','0','0']
             min_required_version_splitted = min_required_version_splitted[:4]
 
-        self.log.logMessage("[QGIS Model Baker] Min required version: {}, current_version: {}".format(min_required_version_splitted, current_version_splitted), PLUGIN_NAME, Qgis.Info)
+        self.log.logMessage("[{}] Min required version: {}, current_version: {}".format(
+            plugin_name, min_required_version_splitted, current_version_splitted), PLUGIN_NAME, Qgis.Info)
 
-        if QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION:
+        if exact_required_version:
             return min_required_version_splitted == current_version_splitted
 
         else: # Min version and subsequent versions should work
@@ -1166,11 +1204,13 @@ class AsistenteLADMCOLPlugin(QObject):
         wiz.exec_()
 
     @_qgis_model_baker_required
+    @_map_swipe_tool_required
     @_db_connection_required
     def query_by_parcel_for_changes(self):
         pass
 
     @_qgis_model_baker_required
+    @_map_swipe_tool_required
     @_db_connection_required
     def batch_query_for_changes(self):
         pass
