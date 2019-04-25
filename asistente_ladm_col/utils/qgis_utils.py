@@ -242,23 +242,27 @@ class QGISUtils(QObject):
 
         return related_domains
 
-    def get_layer(self, db, layer_name, geometry_type=None, load=False):
+    def get_layer(self, db, layer_name, geometry_type=None, load=False, emit_map_freeze=True):
         # Handy function to avoid sending a whole dict when all we need is a single table/layer
-        res_layer = self.get_layers(db, {layer_name: {'name': layer_name, 'geometry': geometry_type}}, load)
+        res_layer = self.get_layers(db, {layer_name: {'name': layer_name, 'geometry': geometry_type}}, load, emit_map_freeze)
         return res_layer[layer_name]
 
-    def get_layers(self, db, layers, load=False):
+    def get_layers(self, db, layers, load=False, emit_map_freeze=True):
         # layers = {layer_id : {name: ABC, geometry: DEF}}
         # layer_id should match layer_name most of the times, but if the same
         # layer has multiple geometries, layer_id should contain the geometry
         # type to make the layer_id unique
+        #
+        # emit_map_freeze = False can be used for subsequent calls to get_layers (e.g., from differente dbs), where
+        #     one could be interested in handling the map_freeze from the outside
 
         # Response is a dict like this:
         # layers = {layer_id: layer_object} layer_object might be None
         response_layers = dict()
         additional_layers_to_load = list()
 
-        self.map_freeze_requested.emit(True)
+        if emit_map_freeze:
+            self.map_freeze_requested.emit(True)
 
         profiler = QgsApplication.profiler()
         with OverrideCursor(Qt.WaitCursor):
@@ -373,7 +377,9 @@ class QGISUtils(QObject):
                     profiler.clear()
                     self.clear_status_bar_emitted.emit()
 
-        self.map_freeze_requested.emit(False)
+        if emit_map_freeze:
+            self.map_freeze_requested.emit(False)
+
         self.map_refresh_requested.emit()
         self.activate_layer_requested.emit(list(response_layers.values())[0])
 

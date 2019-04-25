@@ -150,6 +150,10 @@ UESOURCE_TABLE_SOURCE_FIELD = "pfuente"
 VIDA_UTIL_FIELD = "comienzo_vida_util_version"
 ZONE_FIELD = "zona"
 
+# Official layer names:
+OFFICIAL_PLOT_TABLE = "terreno_oficial"
+OFFICIAL_PARCEL_TABLE = "predio_oficial"
+
 """
 PROPERTY RECORD CARD MAPPING
 """

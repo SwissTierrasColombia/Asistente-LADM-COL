@@ -40,6 +40,7 @@ from qgis.core import (Qgis,
                        QgsExpressionContext,
                        QgsProcessingModelAlgorithm)
 
+from asistente_ladm_col.gui.dockwidget_changes import DockWidgetChanges
 from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     LADM_COL_MENU_OBJECTNAME,
                                     QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
@@ -115,6 +116,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.log = QgsApplication.messageLog()
         self._about_dialog = None
         self._dock_widget_queries = None
+        self._dock_widget_changes = None
         self.toolbar = None
         self.wiz_address = None
 
@@ -1235,7 +1237,16 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_official_db_connection_required
     def query_by_parcel_for_changes(self):
-        pass
+        if self._dock_widget_changes is None:
+            self._dock_widget_changes = DockWidgetChanges(self.iface,
+                                                          self.get_db_connection(),
+                                                          self.get_official_db_connection(),
+                                                          self.qgis_utils,
+                                                          self.ladm_data)
+            self.qgis_utils.db_connection_changed.connect(self._dock_widget_changes.update_db_connection)
+            self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_changes)
+        else:
+            self._dock_widget_changes.toggleUserVisible()
 
     @_qgis_model_baker_required
     @_map_swipe_tool_required

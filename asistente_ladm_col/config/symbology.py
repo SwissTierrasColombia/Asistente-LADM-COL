@@ -6,6 +6,7 @@ from .table_mapping_config import (BOUNDARY_TABLE,
                                    CONTROL_POINT_TABLE,
                                    SURVEY_POINT_TABLE,
                                    PLOT_TABLE,
+                                   OFFICIAL_PLOT_TABLE,
                                    BUILDING_TABLE,
                                    BUILDING_UNIT_TABLE,
                                    RIGHT_OF_WAY_TABLE)
@@ -28,6 +29,9 @@ LAYER_QML_STYLE = {
     PLOT_TABLE: {
         QgsWkbTypes.PointGeometry: 'style_plot_point',
         QgsWkbTypes.PolygonGeometry: 'style_plot_polygon'
+    },
+    OFFICIAL_PLOT_TABLE: {
+        QgsWkbTypes.PolygonGeometry: 'style_official_plot_polygon'
     },
     BUILDING_TABLE: {
         QgsWkbTypes.PointGeometry: 'style_building_point',
