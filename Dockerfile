@@ -28,7 +28,8 @@ RUN apt-get update && \
 
 # Python deps
 RUN apt-get -y install \
-    python3-pip
+    python3-pip \
+    python3-pyodbc
 
 # Python pip installs
 # temporally pip==9.0.3 version
