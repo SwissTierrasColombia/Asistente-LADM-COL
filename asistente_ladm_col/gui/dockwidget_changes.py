@@ -18,12 +18,20 @@
 """
 from functools import partial
 
-from PyQt5.QtCore import QCoreApplication, Qt
-from PyQt5.QtGui import QColor, QIcon, QCursor
+import qgis
+from PyQt5.QtCore import QCoreApplication, Qt, QEvent, QPoint
+from PyQt5.QtGui import QColor, QIcon, QCursor, QMouseEvent
 from PyQt5.QtWidgets import QMenu, QAction, QApplication
-from qgis.core import QgsWkbTypes, Qgis, QgsMessageLog, QgsFeature, QgsFeatureRequest, QgsExpression
+from qgis.core import (QgsWkbTypes,
+                       Qgis,
+                       QgsMessageLog,
+                       QgsFeature,
+                       QgsFeatureRequest,
+                       QgsExpression,
+                       QgsRectangle)
 from qgis.gui import QgsDockWidget, QgsMapToolIdentifyFeature
 
+from asistente_ladm_col.config.general_config import MAP_SWIPE_TOOL_PLUGIN_NAME
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 from ..config.table_mapping_config import (PLOT_TABLE,
                                            UEBAUNIT_TABLE,
@@ -185,37 +193,66 @@ class DockWidgetChanges(QgsDockWidget, DOCKWIDGET_UI):
         res = official_parcels.nextFeature(official_parcel)
 
         if res:
-            plot_t_ids = self.ladm_data.get_plots_related_to_parcel(self._official_db,
+            official_plot_t_ids = self.ladm_data.get_plots_related_to_parcel(self._official_db,
                                                        official_parcel[ID_FIELD],
                                                        field_name = ID_FIELD,
                                                        plot_layer = self._official_plot_layer,
                                                        uebaunit_table = None)
+            if official_plot_t_ids:
+                self.qgis_utils.map_freeze_requested.emit(True)
 
-            self.qgis_utils.map_freeze_requested.emit(True)
+                self._official_plot_layer.setSubsetString(
+                    "\"{}\" IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in official_plot_t_ids])))
+                self.zoom_to_features(self._official_plot_layer, t_ids=official_plot_t_ids)
+                self.qgis_utils.symbology.set_layer_style_from_qml(self._official_plot_layer)
 
-            self._official_plot_layer.setSubsetString(
-                "\"{}\" IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids])))
-            self.zoom_to_features(self._official_plot_layer, t_ids=plot_t_ids)
-            self.qgis_utils.symbology.set_layer_style_from_qml(self._official_plot_layer)
+                # Get parcel's t_id and get related plot(s)
+                parcels = self._parcel_layer.getFeatures("{}='{}'".format(PARCEL_NUMBER_FIELD,
+                                                                        kwargs['parcel_number']))
+                parcel = QgsFeature()
+                res = parcels.nextFeature(parcel)
+                if res:
+                    plot_t_ids = self.ladm_data.get_plots_related_to_parcel(self._db,
+                                                                            parcel[ID_FIELD],
+                                                                            field_name=ID_FIELD,
+                                                                            plot_layer=self._plot_layer,
+                                                                            uebaunit_table=None)
+                    self._plot_layer.setSubsetString(
+                        "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids])))
 
-            # Get parcel's t_id and get related plot(s)
-            parcels = self._parcel_layer.getFeatures("{}='{}'".format(PARCEL_NUMBER_FIELD,
-                                                                    kwargs['parcel_number']))
-            parcel = QgsFeature()
-            res = parcels.nextFeature(parcel)
-            if res:
-                plot_t_ids = self.ladm_data.get_plots_related_to_parcel(self._db,
-                                                                        parcel[ID_FIELD],
-                                                                        field_name=ID_FIELD,
-                                                                        plot_layer=self._plot_layer,
-                                                                        uebaunit_table=None)
-                self._plot_layer.setSubsetString(
-                    "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids])))
+                self.qgis_utils.activate_layer_requested.emit(self._official_plot_layer)
+                self.qgis_utils.map_freeze_requested.emit(False)
 
-            self.qgis_utils.activate_layer_requested.emit(self._official_plot_layer)
-            self.qgis_utils.map_freeze_requested.emit(False)
+                # Activate Swipe Tool and send mouse event
+                map_swipe_tool =  qgis.utils.plugins[MAP_SWIPE_TOOL_PLUGIN_NAME]
+                map_swipe_tool.run(True)
+                self.iface.messageBar().clearWidgets()
 
-            # TODO: Activate swipe tool
+                if res: # plot_t_ids found
+                    plots = self.get_features_from_t_ids(self._plot_layer, plot_t_ids, True)
+                    plots_extent = QgsRectangle()
+                    for plot in plots:
+                        plots_extent.combineExtentWith(plot.geometry().boundingBox())
+
+                    print(plots_extent)
+                    coord_x = plots_extent.xMaximum() - (plots_extent.xMaximum() - plots_extent.xMinimum()) / 9
+                    coord_y = plots_extent.yMaximum() - (plots_extent.yMaximum() - plots_extent.yMinimum()) / 2
+
+                    coord_transform = self.iface.mapCanvas().getCoordinateTransform()
+                    map_point = coord_transform.transform(coord_x, coord_y)
+                    widget_point = map_point.toQPointF().toPoint()
+                    global_point = self.canvas.mapToGlobal(widget_point)
+
+                    print(coord_x, coord_y, global_point)
+                    #cursor = self.iface.mainWindow().cursor()
+                    #cursor.setPos(global_point.x(), global_point.y())
+
+                    self.canvas.mousePressEvent(QMouseEvent(QEvent.MouseButtonPress, global_point, Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
+                    # mc.mouseMoveEvent(QMouseEvent(QEvent.MouseMove, gp, Qt.NoButton, Qt.LeftButton, Qt.NoModifier))
+                    self.canvas.mouseMoveEvent(QMouseEvent(QEvent.MouseMove, widget_point + QPoint(1,0), Qt.NoButton, Qt.LeftButton, Qt.NoModifier))
+                    # QApplication.processEvents()
+                    self.canvas.mouseReleaseEvent(QMouseEvent(QEvent.MouseButtonRelease, widget_point + QPoint(1,0), Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
+                    # QApplication.processEvents()
 
     def alphanumeric_query(self):
         """
