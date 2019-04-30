@@ -58,6 +58,7 @@ class DockWidgetChanges(QgsDockWidget, DOCKWIDGET_UI):
         self._official_db = official_db
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
+        self.map_swipe_tool =  qgis.utils.plugins[MAP_SWIPE_TOOL_PLUGIN_NAME]
 
         # Required layers
         self._plot_layer = None
@@ -65,12 +66,16 @@ class DockWidgetChanges(QgsDockWidget, DOCKWIDGET_UI):
         self._official_plot_layer = None
         self._official_parcel_layer = None
 
+        self._current_official_substring = ""
+        self._current_substring = ""
+
         self.add_layers()
         self.fill_combos()
 
         # Set connections
         self.btn_alphanumeric_query.clicked.connect(self.alphanumeric_query)
         self.btn_clear_alphanumeric_query.clicked.connect(self.clear_alphanumeric_query)
+        self.chk_show_all_plots.toggled.connect(self.show_all_plots)
 
     def add_layers(self):
         self.qgis_utils.map_freeze_requested.emit(True)
@@ -128,6 +133,7 @@ class DockWidgetChanges(QgsDockWidget, DOCKWIDGET_UI):
             return
         else:
             self._official_plot_layer.setName(OFFICIAL_PLOT_TABLE)
+            self.qgis_utils.symbology.set_layer_style_from_qml(self._official_plot_layer)
 
             # Layer was found, listen to its removal so that we can deactivate the custom tool when that occurs
             try:
@@ -186,6 +192,9 @@ class DockWidgetChanges(QgsDockWidget, DOCKWIDGET_UI):
         # TODO: use also FMI and previous_parcel_number?
         # TODO: optimize QgsFeatureRequest
 
+        self.chk_show_all_plots.setEnabled(False)
+        self.chk_show_all_plots.setChecked(False)
+
         # Get official parcel's t_id and get related plot(s)
         official_parcels = self._official_parcel_layer.getFeatures("{}='{}'".format(PARCEL_NUMBER_FIELD,
                                                                                   kwargs['parcel_number']))
@@ -201,10 +210,9 @@ class DockWidgetChanges(QgsDockWidget, DOCKWIDGET_UI):
             if official_plot_t_ids:
                 self.qgis_utils.map_freeze_requested.emit(True)
 
-                self._official_plot_layer.setSubsetString(
-                    "\"{}\" IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in official_plot_t_ids])))
+                self._current_official_substring = "\"{}\" IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in official_plot_t_ids]))
+                self._official_plot_layer.setSubsetString(self._current_official_substring)
                 self.zoom_to_features(self._official_plot_layer, t_ids=official_plot_t_ids)
-                self.qgis_utils.symbology.set_layer_style_from_qml(self._official_plot_layer)
 
                 # Get parcel's t_id and get related plot(s)
                 parcels = self._parcel_layer.getFeatures("{}='{}'".format(PARCEL_NUMBER_FIELD,
@@ -217,16 +225,14 @@ class DockWidgetChanges(QgsDockWidget, DOCKWIDGET_UI):
                                                                             field_name=ID_FIELD,
                                                                             plot_layer=self._plot_layer,
                                                                             uebaunit_table=None)
-                    self._plot_layer.setSubsetString(
-                        "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids])))
+                    self._current_substring = "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids]))
+                    self._plot_layer.setSubsetString(self._current_substring)
 
                 self.qgis_utils.activate_layer_requested.emit(self._official_plot_layer)
                 self.qgis_utils.map_freeze_requested.emit(False)
 
                 # Activate Swipe Tool and send mouse event
-                map_swipe_tool =  qgis.utils.plugins[MAP_SWIPE_TOOL_PLUGIN_NAME]
-                map_swipe_tool.run(True)
-                self.iface.messageBar().clearWidgets()
+                self.activate_mapswipe_tool()
 
                 if res: # plot_t_ids found
                     plots = self.get_features_from_t_ids(self._plot_layer, plot_t_ids, True)
@@ -254,6 +260,9 @@ class DockWidgetChanges(QgsDockWidget, DOCKWIDGET_UI):
                     self.canvas.mouseReleaseEvent(QMouseEvent(QEvent.MouseButtonRelease, widget_point + QPoint(1,0), Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
                     # QApplication.processEvents()
 
+                    # Once the query is done, activate the checkbox to alternate all plots/only selected plot
+                    self.chk_show_all_plots.setEnabled(True)
+
     def alphanumeric_query(self):
         """
         Alphanumeric query
@@ -274,6 +283,18 @@ class DockWidgetChanges(QgsDockWidget, DOCKWIDGET_UI):
 
     def clear_alphanumeric_query(self):
         self.txt_alphanumeric_query.setText('')
+
+    def show_all_plots(self, state):
+        self._official_plot_layer.setSubsetString(self._current_official_substring if not state else "")
+        self._plot_layer.setSubsetString(self._current_substring if not state else "")
+
+    def activate_mapswipe_tool(self):
+        self.map_swipe_tool.run(True)
+        self.iface.messageBar().clearWidgets()
+
+    def deactivate_mapswipe_tool(self):
+        self.map_swipe_tool.run(False)
+        self.qgis_utils.set_layer_visibility(self._official_plot_layer, True)
 
     # def zoom_to_feature(self, layer, t_id):
     #     feature = self.get_feature_from_t_id(layer, t_id)
