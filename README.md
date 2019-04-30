@@ -37,7 +37,7 @@ La versión actual ([1.6.2](https://github.com/AgenciaImplementacion/Asistente-L
    - Cálculo de posición promediada para puntos del mismo grupo.
  - Agregar puntos a las capas `Punto Lindero`, `Punto Levantamiento` y `Punto Control`:
    - Desde archivo CSV con la estructura requerida.
-     - Validar para evitar insertar puntos superpuestos.
+   - Validar para evitar insertar puntos superpuestos.
    - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
  - Agregar `Linderos`:
    - Digitalizando sobre el mapa.
@@ -72,7 +72,7 @@ La versión actual ([1.6.2](https://github.com/AgenciaImplementacion/Asistente-L
    - Usando formularios preconfigurados.
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
  - Crear `Agrupaciones de Interesados`:
-   - Usando un formularios preconfigurado.
+   - Usando un formulario preconfigurado.
  - Crear `Fuente Espacial` y `Fuente Administrativa`:
    - Usando formularios preconfigurados.
      - Y relacionando la nueva `Fuente Espacial` a `Terrenos`, `Linderos` o `Puntos` previamente seleccionados.
@@ -181,7 +181,7 @@ NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
 
 ## ¿Cómo recibir notificaciones de nuevas versiones del Asistente LADM_COL?
 
- + Si tienes cuenta de GitHub o si puedes crear una, ve a https://github.com/AgenciaImplementacion/Asistente-LADM_COL/ y haz click en el botón `Watch` de la parte superior de la página web para seguir las novedades del repositorio.
+ + Si tienes cuenta de GitHub o si puedes crear una, ve a https://github.com/AgenciaImplementacion/Asistente-LADM_COL/ y haz clic en el botón `Watch` de la parte superior de la página web para seguir las novedades del repositorio.
 
  + Si no tienes cuenta de GitHub, tienes dos opciones:
 
@@ -190,7 +190,7 @@ NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
    b) Usa gitpunch!
 
       + Ve a la página https://gitpunch.com/
-      + Espera a que termine la animación o haz click en `Skip` (en la parte inferior de la página).
+      + Espera a que termine la animación o haz clic en `Skip` (en la parte inferior de la página).
       + Regístrate usando tu correo electrónico.
       + Busca por "Asistente LADM_COL" y elige el repositorio `AgenciaImplementacion/Asistente-LADM_COL`.
       + Eso es todo. Después de recibir un correo que te notifique una nueva versión del plugin, pasarán unas horas hasta que el mismo esté disponible en el repositorio oficial de plugins de QGIS.
