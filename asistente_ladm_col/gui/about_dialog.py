@@ -57,8 +57,6 @@ class AboutDialog(QDialog, DIALOG_UI):
         self.qgis_utils = qgis_utils
         self.check_local_help()
 
-        self.change_log_group_box.setTitle(QCoreApplication.translate("AboutDialog", "Changelog"))
-
         self.tb_changelog.setOpenExternalLinks(True)
 
         if QGIS_LANG == 'en':
