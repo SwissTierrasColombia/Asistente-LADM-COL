@@ -105,7 +105,7 @@ MODULE_HELP_MAPPING = {
 JAVA_REQUIRED_VERSION = 1.8
 
 # Configure QGIS Model Baker Dependency
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.1.1"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.2.2"
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True

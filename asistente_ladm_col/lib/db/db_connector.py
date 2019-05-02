@@ -19,8 +19,21 @@
 import psycopg2
 
 from qgis.PyQt.QtCore import QObject
-
 from asistente_ladm_col.utils.model_parser import ModelParser
+from enum import IntFlag
+
+
+class EnumTestLevel(IntFlag):
+    SERVER = 1
+    DB = 2
+    DB_SCHEMA = 6
+    DB_FILE = 6
+    LADM = 14
+    CREATE_SCHEMA = 128
+
+    _CHECK_DB = 2
+    _CHECK_SCHEMA = 4
+    _CHECK_LADM = 8
 
 
 class DBConnector(QObject):
@@ -29,37 +42,59 @@ class DBConnector(QObject):
         QObject.__init__(self)
         self.mode = ''
         self.provider = '' # QGIS provider name. e.g., postgres
-        self.uri = uri
+        self._uri = None
         self.schema = schema
         self.conn = None
-        self.dict_conn_params = dict()
+        self._dict_conn_params = None
+        
+        if uri:
+            self.uri = uri
+        elif conn_dict:
+            self.dict_conn_params = conn_dict
 
         self.model_parser = None
 
-    def test_connection(self):
-        pass
+    @property
+    def dict_conn_params(self):
+        return self._dict_conn_params.copy()
+
+    @dict_conn_params.setter
+    def dict_conn_params(self, value):
+        self._dict_conn_params = value
+        self._uri = self.get_connection_uri(value, level=1)
+
+    @property
+    def uri(self):
+        return self._uri
+
+    @uri.setter
+    def uri(self, value):
+        raise NotImplementedError
+
+    def test_connection(self, test_level=EnumTestLevel.LADM):
+        raise NotImplementedError
 
     def validate_db(self):
-        pass
+        raise NotImplementedError
 
     def close_connection(self):
-        pass
+        raise NotImplementedError
 
     def get_uri_for_layer(self, layer_name, geometry_type=None):
-        pass
+        raise NotImplementedError
 
     def get_description(self):
         return "Current connection details: '{}' -> {} {}".format(
             self.mode,
-            self.uri,
+            self._uri,
             'schema:{}'.format(self.schema) if self.schema else '')
 
     def get_models(self, schema=None):
-        pass
+        raise NotImplementedError
 
     def get_display_conn_string(self):
         # Do not use to connect to a DB, only for display purposes
-        tmp_dict_conn_params = self.dict_conn_params.copy()
+        tmp_dict_conn_params = self._dict_conn_params.copy()
         if 'password' in tmp_dict_conn_params:
             del tmp_dict_conn_params['password']
         if 'schema' in tmp_dict_conn_params:
@@ -67,39 +102,22 @@ class DBConnector(QObject):
 
         return ' '.join(["{}={}".format(k, v) for k, v in tmp_dict_conn_params.items()])
 
-    def get_connection_uri(self, dict_conn, mode='pg', level=1):
+    def get_description_conn_string(self):
+        raise NotImplementedError
+
+    def get_connection_uri(self, dict_conn, level=1):
         """
         :param dict_conn: (dict) dictionary with the parameters to establish a connection
-        :param level: (str) Connection mode:
-            'pg': PostgreQSL/PostGIS
-            'gpkg': GeoPackage
         :param level: (int) At what level the connection will be established
             0: server level
             1: database level
         :return: (str) string uri to establish a connection
         """
-        uri = []
-        if mode == 'pg':
-            uri += ['host={}'.format(dict_conn['host'])]
-            uri += ['port={}'.format(dict_conn['port'])]
-            if dict_conn['username']:
-                uri += ['user={}'.format(dict_conn['username'])]
-            if dict_conn['password']:
-                uri += ['password={}'.format(dict_conn['password'])]
-            if dict_conn['database'] and level == 1:
-                uri += ['dbname={}'.format(dict_conn['database'])]
-            else:
-                # It is necessary to define the database name for listing databases
-                # PostgreSQL uses the db 'postgres' by default and it cannot be deleted, so we use it as last resort
-                uri += ["dbname='postgres'"]
-        elif mode == 'gpkg':
-            uri = [dict_conn['dbfile']]
-
-        return ' '.join(uri)
+        raise NotImplementedError
 
     def valuation_model_exists(self):
         if self.model_parser is None:
-            res = self._parse_model()
+            res = self._parse_models()
             if not res:
                 return False
 
@@ -107,7 +125,7 @@ class DBConnector(QObject):
 
     def property_record_card_model_exists(self):
         if self.model_parser is None:
-            res = self._parse_model()
+            res = self._parse_models()
             if not res:
                 return False
 
@@ -121,3 +139,6 @@ class DBConnector(QObject):
         except psycopg2.ProgrammingError as e:
             # if it is not possible to access the schema due to lack of privileges
             return False
+
+    def is_ladm_layer(self, layer):
+        raise NotImplementedError

@@ -36,6 +36,7 @@ from qgis.PyQt.QtGui import (QColor,
                              QStandardItem)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
+                                 QLayout,
                                  QListWidgetItem,
                                  QMessageBox,
                                  QDialogButtonBox)
@@ -51,11 +52,12 @@ from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
                                FileValidator,
                                make_save_file_selector,
-                               make_file_selector,
                                OverrideCursor)
 from ...resources_rc import *
-
+from ...config.config_db_supported import ConfigDbSupported
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_export_data.ui')
+from ...lib.db.enum_db_action_type import EnumDbActionType
+
 
 class DialogExportData(QDialog, DIALOG_UI):
     ValidExtensions = ['xtf', 'itf', 'gml', 'xml']
@@ -64,6 +66,8 @@ class DialogExportData(QDialog, DIALOG_UI):
     def __init__(self, iface, db, qgis_utils):
         QDialog.__init__(self)
         self.setupUi(self)
+        self.layout().setSizeConstraint(QLayout.SetFixedSize)
+
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
         self.db = db
@@ -71,12 +75,10 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
         self.ilicache.refresh()
-
-        self.type_combo_box.clear()
-        self.type_combo_box.addItem(QCoreApplication.translate("DialogExportData", "PostgreSQL/PostGIS"), 'pg')
-        self.type_combo_box.addItem(QCoreApplication.translate("DialogExportData", "GeoPackage"), 'gpkg')
-        self.type_combo_box.currentIndexChanged.connect(self.type_changed)
-        self.type_changed()
+        
+        self._conf_db = ConfigDbSupported()
+        self._params = None
+        self._current_db = None
 
         self.xtf_file_browse_button.clicked.connect(
             make_save_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogExportData", "Save in XTF Transfer File"),
@@ -92,20 +94,9 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.xtf_file_line_edit.textChanged.connect(self.xtf_browser_opened_to_false)
         self.xtf_file_line_edit.textChanged.emit(self.xtf_file_line_edit.text())
 
-        # PG
-        self.db_connect_label.setToolTip(self.db.get_display_conn_string())
-        self.db_connect_label.setText(self.db.dict_conn_params["database"])
         self.connection_setting_button.clicked.connect(self.show_settings)
 
         self.connection_setting_button.setText(QCoreApplication.translate("DialogExportData", "Connection Settings"))
-
-        # GPKG
-        self.gpkg_file_line_edit.setPlaceholderText(QCoreApplication.translate("DialogExportData", "[Name of the Geopackage to be created]"))
-        self.gpkg_file_browse_button.clicked.connect(make_file_selector(self.gpkg_file_line_edit, title=QCoreApplication.translate("DialogExportData", "Open GeoPackage database file"), file_filter=QCoreApplication.translate("DialogExportData", "GeoPackage Database (*.gpkg)")))
-        gpkgFileValidator = FileValidator(pattern='*.gpkg')
-        self.gpkg_file_line_edit.setValidator(gpkgFileValidator)
-        self.gpkg_file_line_edit.textChanged.connect(self.validators.validate_line_edits)
-        self.gpkg_file_line_edit.textChanged.emit(self.gpkg_file_line_edit.text())
 
         # LOG
         self.log_config.setTitle(QCoreApplication.translate("DialogExportData", "Show log"))
@@ -119,83 +110,31 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.clear()
         self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self.buttonBox.addButton(QCoreApplication.translate("DialogExportData", "Export data"), QDialogButtonBox.AcceptRole)
+        self._accept_button = self.buttonBox.addButton(QCoreApplication.translate("DialogExportData", "Export data"), QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
 
-    def showEvent(self, event):
-        # update after create dialog
-        self.update_schema_names_model()
-        self.update_model_names(self.get_checked_schema())
+        self.update_connection_info()
+        self.update_model_names()
         self.restore_configuration()
 
-    def update_schema_names_model(self):
-        res, msg = self.db.test_connection()
-        schema_names = self.db._schema_names_list()
-
-        if schema_names:
-            for schema_name in schema_names:
-                item = QListWidgetItem(schema_name['schema_name'])
-                item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-                item.setCheckState(Qt.Unchecked)
-                self.schema_names_list_widget.addItem(item)
-
-            default_item = self.schema_names_list_widget.item(0)
-            default_item.setCheckState(Qt.Checked)
+    def update_connection_info(self):
+        db_description = self.db.get_description_conn_string()
+        if db_description:
+            self.db_connect_label.setText(db_description)
+            self.db_connect_label.setToolTip(self.db.get_display_conn_string())
+            self._accept_button.setEnabled(True)
         else:
-            self.schema_names_list_widget.clear()
-            self.export_models_list_view.setModel(QStandardItemModel())
-            message_error = 'There are no schemes to export into the database. Please select another database.'
-            self.txtStdout.setText(QCoreApplication.translate("DialogExportData", message_error))
-            self.show_message(message_error, Qgis.Warning)
+            self.db_connect_label.setText(
+                QCoreApplication.translate("DialogExportData", "The database is not defined!"))
+            self.db_connect_label.setToolTip('')
+            self._accept_button.setEnabled(False)
 
-        self.schema_names_list_widget.currentRowChanged.connect(self.on_current_row_changed_schema_names)
-        self.schema_names_list_widget.itemChanged.connect(self.on_itemchanged_schema_name)
-
-    def on_itemchanged_schema_name(self, selected_item):
-
-        # disconnect signal to do changes in the items
-        self.schema_names_list_widget.itemChanged.disconnect(self.on_itemchanged_schema_name)
-
-        for index in range(self.schema_names_list_widget.count()):
-            item = self.schema_names_list_widget.item(index)
-            item.setCheckState(Qt.Unchecked)
-            item.setSelected(False)
-            if item == selected_item:
-                select_index = index
-
-        item = self.schema_names_list_widget.item(select_index)
-        item.setCheckState(Qt.Checked)
-        item.setSelected(True)
-
-        # Update list view with models name info
-        schema_name = item.text()
-        self.update_model_names(schema_name)
-
-        # connect signal to check when the items change
-        self.schema_names_list_widget.itemChanged.connect(self.on_itemchanged_schema_name)
-
-    def on_current_row_changed_schema_names(self, current_row):
-        for index in range(self.schema_names_list_widget.count()):
-            item = self.schema_names_list_widget.item(index)
-            item.setCheckState(Qt.Unchecked)
-
-        item = self.schema_names_list_widget.item(current_row)
-
-        if item:
-            item.setCheckState(Qt.Checked)
-            # Update list view with models name info
-            schema_name = item.text()
-            self.update_model_names(schema_name)
-
-    def update_model_names(self, dbschema):
+    def update_model_names(self):
         self.export_models_qmodel = QStandardItemModel()
 
         db_models = None
-        if self.type_combo_box.currentData() == 'gpkg':
-            db_models = self.db.get_models()
-        elif self.type_combo_box.currentData() == 'pg':
-            db_models = self.db.get_models(dbschema) if dbschema else None
+        db_models = self.db.get_models()
 
         if db_models:
             for db_model in db_models:
@@ -209,15 +148,6 @@ class DialogExportData(QDialog, DIALOG_UI):
 
         self.export_models_list_view.setModel(self.export_models_qmodel)
 
-    def get_checked_schema(self):
-        checked_schema = None
-        for index in range(self.schema_names_list_widget.count()):
-            item = self.schema_names_list_widget.item(index)
-            if item.checkState() == Qt.Checked:
-                checked_schema = item.text()
-                break
-        return checked_schema
-
     def get_ili_models(self):
         ili_models = list()
         for index in range(self.export_models_qmodel.rowCount()):
@@ -227,22 +157,16 @@ class DialogExportData(QDialog, DIALOG_UI):
 
     def show_settings(self):
         dlg = self.qgis_utils.get_settings_dialog()
+        dlg.set_action_type(EnumDbActionType.EXPORT)
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
         if dlg.exec_():
-            self.db = self.qgis_utils.get_db_connection()
-            self.db_connect_label.setToolTip(self.db.get_display_conn_string())
-            self.db_connect_label.setText(self.db.dict_conn_params['database'])
-            self.update_schema_names_model()
+            self.db = dlg.get_db_connection()
+            self.update_model_names()
+            self.update_connection_info()
 
     def accepted(self):
         configuration = self.update_configuration()
 
-        if not self.get_checked_schema():
-            message_error = QCoreApplication.translate("DialogExportData", "You need to select a valid schema where to get the data from.")
-            self.txtStdout.setText(message_error)
-            self.show_message(message_error, Qgis.Warning)
-            self.connection_setting_button.setFocus()
-            return
 
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
             message_error = QCoreApplication.translate("DialogExportData", "Please set a valid XTF file before exporting data.")
@@ -264,14 +188,6 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.show_message(message_error, Qgis.Warning)
             self.export_models_list_view.setFocus()
             return
-
-        if self.type_combo_box.currentData() == 'gpkg':
-            if not configuration.dbfile or self.gpkg_file_line_edit.validator().validate(configuration.dbfile, 0)[0] != QValidator.Acceptable:
-                message_error = QCoreApplication.translate("DialogExportData", "Please set an existing database file before creating the project.")
-                self.txtStdout.setText(message_error)
-                self.show_message(message_error, Qgis.Warning)
-                self.gpkg_file_line_edit.setFocus()
-                return
 
         # If xtf browser was opened and the file exists, the user already chose
         # to overwrite the file
@@ -295,7 +211,9 @@ class DialogExportData(QDialog, DIALOG_UI):
 
             exporter = iliexporter.Exporter()
 
-            exporter.tool_name = 'ili2pg' if self.type_combo_box.currentData() == 'pg' else 'ili2gpkg'
+            item_db = self._conf_db.get_db_items()[self.db.mode]
+
+            exporter.tool_name = item_db.get_model_baker_tool_name()
             exporter.configuration = configuration
 
             self.save_configuration(configuration)
@@ -340,18 +258,11 @@ class DialogExportData(QDialog, DIALOG_UI):
     def save_configuration(self, configuration):
         settings = QSettings()
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_export', configuration.xtffile)
-        settings.setValue('Asistente-LADM_COL/db_connection_source', self.type_combo_box.currentData())
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
-
-        if self.type_combo_box.currentData() == 'gpkg':
-            settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2gpkg/dbfile', configuration.dbfile)
 
     def restore_configuration(self):
         settings = QSettings()
         self.xtf_file_line_edit.setText(settings.value('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_export'))
-        self.type_combo_box.setCurrentIndex(
-            self.type_combo_box.findData(settings.value('Asistente-LADM_COL/db_connection_source', 'pg')))
-        self.type_changed()
 
         # Show log
         value_show_log = settings.value('Asistente-LADM_COL/QgisModelBaker/show_log', False, type=bool)
@@ -368,18 +279,10 @@ class DialogExportData(QDialog, DIALOG_UI):
         Get the configuration that is updated with the user configuration changes on the dialog.
         :return: Configuration
         """
-        configuration = ExportConfiguration()
+        item_db = self._conf_db.get_db_items()[self.db.mode]
 
-        if self.type_combo_box.currentData() == 'pg':
-            # PostgreSQL specific options
-            configuration.dbhost = self.db.dict_conn_params["host"]
-            configuration.dbport = self.db.dict_conn_params["port"]
-            configuration.dbusr = self.db.dict_conn_params["username"]
-            configuration.database = self.db.dict_conn_params["database"]
-            configuration.dbschema = self.get_checked_schema()
-            configuration.dbpwd = self.db.dict_conn_params["password"]
-        elif self.type_combo_box.currentData() == 'gpkg':
-            configuration.dbfile = self.db.dict_conn_params["dbfile"]
+        configuration = ExportConfiguration()
+        item_db.set_db_configuration_params(self.db.dict_conn_params, configuration)
 
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
         java_path = get_java_path_from_qgis_model_baker()
@@ -427,6 +330,10 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
         else:
             self.enable()
+            
+            # Open log
+            if self.log_config.isCollapsed():
+                self.log_config.setCollapsed(False)
 
     def advance_progress_bar_by_text(self, text):
         if text.strip() == 'Info: compile models...':
@@ -446,28 +353,17 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.qgis_utils.show_help("export_data")
 
     def disable(self):
-        self.type_combo_box.setEnabled(False)
-        self.pg_config.setEnabled(False)
+        self.db_config.setEnabled(False)
         self.ili_config.setEnabled(False)
         self.buttonBox.setEnabled(False)
 
     def enable(self):
-        self.type_combo_box.setEnabled(True)
-        self.pg_config.setEnabled(True)
+        self.db_config.setEnabled(True)
         self.ili_config.setEnabled(True)
         self.buttonBox.setEnabled(True)
 
     def show_message(self, message, level):
         self.bar.pushMessage("Asistente LADM_COL", message, level, duration=0)
-
-    def type_changed(self):
-        self.progress_bar.hide()
-        if self.type_combo_box.currentData() == 'pg':
-            self.pg_config.show()
-            self.gpkg_config.hide()
-        elif self.type_combo_box.currentData() == 'gpkg':
-            self.pg_config.hide()
-            self.gpkg_config.show()
 
     def xtf_browser_opened_to_true(self):
         """
