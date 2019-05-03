@@ -32,6 +32,7 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal)
 from qgis.gui import QgsMessageBar
 import processing
+from ..utils.decorators_utils import _activate_processing_module
 
 from asistente_ladm_col import PLUGIN_NAME
 from asistente_ladm_col.utils.qt_utils import make_file_selector, normalize_local_url
@@ -94,6 +95,7 @@ DIALOG_UI = get_ui_class('dlg_import_from_excel.ui')
 class DialogImportFromExcel(QDialog, DIALOG_UI):
     log_excel_show_message_emitted = pyqtSignal(str)
 
+    @_activate_processing_module
     def __init__(self, iface, db, qgis_utils, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
