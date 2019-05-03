@@ -32,12 +32,15 @@ from qgis.core import (Qgis,
                        QgsMapLayerProxyModel)
 
 import processing
+from ..utils.decorators_utils import _activate_processing_module
 from ..utils import get_ui_class
 
 DIALOG_UI = get_ui_class('controlled_measurement_dialog.ui')
 GROUP_ID = 'AUTO' # If you change this, adjust the Group_Points as well
 
 class ControlledMeasurementDialog(QDialog, DIALOG_UI):
+
+    @_activate_processing_module
     def __init__(self, qgis_utils):
         QDialog.__init__(self)
         self.setupUi(self)
