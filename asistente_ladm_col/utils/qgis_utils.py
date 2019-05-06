@@ -53,7 +53,6 @@ from qgis.core import (Qgis,
                        QgsWkbTypes)
 
 import processing
-from ..utils.decorators_utils import _activate_processing_module
 from .geometry import GeometryUtils
 from .qgis_model_baker_utils import QgisModelBakerUtils
 from .qt_utils import OverrideCursor
@@ -135,7 +134,6 @@ class QGISUtils(QObject):
     zoom_full_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
 
-    @_activate_processing_module
     def __init__(self, layer_tree_view=None):
         QObject.__init__(self)
         self.qgis_model_baker_utils = QgisModelBakerUtils()

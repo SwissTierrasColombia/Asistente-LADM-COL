@@ -43,12 +43,10 @@ import processing
 from ..config.general_config import (DEFAULT_EPSG,
                                      PLUGIN_NAME)
 from ..config.table_mapping_config import ID_FIELD
-from ..utils.decorators_utils import _activate_processing_module
 
 
 class GeometryUtils(QObject):
 
-    @_activate_processing_module
     def __init__(self):
         QObject.__init__(self)
         self.log = QgsApplication.messageLog()
