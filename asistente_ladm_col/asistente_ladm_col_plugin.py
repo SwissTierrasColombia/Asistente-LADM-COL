@@ -54,12 +54,6 @@ from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                           ID_FIELD,
                                           COL_PARTY_TABLE)
 from .gui.about_dialog import AboutDialog
-try:
-    from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
-    from .gui.qgis_model_baker.dlg_import_data import DialogImportData
-    from .gui.qgis_model_baker.dlg_export_data import DialogExportData
-except ModuleNotFoundError as e:
-    pass # The plugin will take care of validating the presence/absence of QGIS Model Baker
 
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
@@ -188,8 +182,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
         self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
 
-        self.iface.initializationCompleted.connect(self.qgis_initialized)
-
         # Toolbar
         self._build_boundary_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Build boundaries..."), self.iface.mainWindow())
         self._build_boundary_action.triggered.connect(self.call_explode_boundaries)
@@ -216,6 +208,11 @@ class AsistenteLADMCOLPlugin(QObject):
                                            self._import_from_intermediate_structure_action,
                                            self._report_action])
 
+        if not qgis.utils.active_plugins:
+            self.iface.initializationCompleted.connect(self.call_refresh_menus)
+        else:
+            self.call_refresh_menus()
+
         # Add LADM_COL provider and models to QGIS
         self.ladm_col_provider = LADMCOLAlgorithmProvider()
         QgsApplication.processingRegistry().addProvider(self.ladm_col_provider)
@@ -224,7 +221,7 @@ class AsistenteLADMCOLPlugin(QObject):
         else: # We need to wait until processing is initialized
             QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_models)
 
-    def qgis_initialized(self):
+    def call_refresh_menus(self):
         # Refresh menus on QGIS start
         db = self.get_db_connection()
         res, msg = db.test_connection()
@@ -899,17 +896,20 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_qgis_model_baker_required
     def show_dlg_import_schema(self):
+        from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
         dlg = DialogImportSchema(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.models_have_changed.connect(self.refresh_menus)
         dlg.exec_()
 
     @_qgis_model_baker_required
     def show_dlg_import_data(self):
+        from .gui.qgis_model_baker.dlg_import_data import DialogImportData
         dlg = DialogImportData(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
     @_qgis_model_baker_required
     def show_dlg_export_data(self):
+        from .gui.qgis_model_baker.dlg_export_data import DialogExportData
         dlg = DialogExportData(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
