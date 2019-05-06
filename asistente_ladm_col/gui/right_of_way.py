@@ -38,7 +38,6 @@ from qgis.core import (Qgis,
                        QgsVectorLayerUtils)
 
 import processing
-from ..utils.decorators_utils import _activate_processing_module
 
 from ..config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                            COL_RESTRICTION_TYPE_RIGHT_OF_WAY_VALUE,
@@ -67,7 +66,6 @@ from ..config.general_config import (DEFAULT_EPSG,
 
 class RightOfWay(QObject):
 
-    @_activate_processing_module
     def __init__(self, iface, qgis_utils):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils

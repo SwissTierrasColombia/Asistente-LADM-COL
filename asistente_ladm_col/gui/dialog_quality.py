@@ -33,14 +33,12 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            BUILDING_TABLE,
                                            RIGHT_OF_WAY_TABLE)
 from ..utils import get_ui_class
-from ..utils.decorators_utils import _activate_processing_module
 from ..resources_rc import *
 
 DIALOG_UI = get_ui_class('dlg_quality.ui')
 
 class DialogQuality(QDialog, DIALOG_UI):
 
-    @_activate_processing_module
     def __init__(self, db, qgis_utils, quality, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)

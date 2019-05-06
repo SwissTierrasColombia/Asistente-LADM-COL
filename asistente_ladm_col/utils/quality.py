@@ -40,7 +40,6 @@ from qgis.core import (Qgis,
                        NULL,
                        QgsRectangle)
 import processing
-from ..utils.decorators_utils import _activate_processing_module
 
 from .logic_checks import LogicChecks
 from .qgis_model_baker_utils import QgisModelBakerUtils
@@ -94,7 +93,6 @@ class QualityUtils(QObject):
     log_quality_set_initial_progress_emitted = pyqtSignal(str)
     log_quality_set_final_progress_emitted = pyqtSignal(str)
 
-    @_activate_processing_module
     def __init__(self, qgis_utils):
         QObject.__init__(self)
         self.qgis_utils = qgis_utils
