@@ -204,6 +204,19 @@ Choose this option if you want to create a <b>Spatial Source</b> using a form. T
 <b>Spatial Source</b> is a specialization of the <i>COL_Fuente</i> class to store those sources corresponding to spatial data (geographic features, satellite imagery, photogrammetric flights, maps, coordinate listings, ancient or modern plans, location descriptions, and the like) that technically document the relationship between parties and parcels.\
 ")
 
+        self.WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
+Before creating a <b>Spatial Source</b>  you must associate with one or more existing <b>Spatial Features</b>, First you must select the Spatial feature(s) of interest\
+<br><br>\
+There are two ways to associate:\
+<br><br>\
+1. <b>Selecting Spatial Feature(s) on the map</b>: Here you can select on the map and immediately it will come back to wizard, \
+this enables the button for create the association.\
+<br><br>\
+2. <b>Selecting Spatial Unit(s) by expression</b>: Here you can select using an expression, this has to be valid and \
+the selection should take one feature. If the expression gets zero features or more than one, the button for create \
+the association will not be activated.\
+")
+
         self.WIZ_DEFINE_BOUNDARIES_CADASTRE_PAGE_1_OPTION_DIGITIZE = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create a <b>Boundary</b> using QGIS digitizing tools.\
 <br><br>\
