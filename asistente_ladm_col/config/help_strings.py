@@ -199,7 +199,7 @@ Choose this option if you have selected at least one <i>Administrative Source</i
 ")
 
         self.WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Spatial Source</b> using a form. Then select a layer to get all its selected features associated with the newly created <b>Spatial Source</b>.\
+Choose this option if you want to create a <b>Spatial Source</b> using a form. Then select the <b>Spatial Features</b> that you want to associate with the Spatial Source to create.\
 <br><br>\
 <b>Spatial Source</b> is a specialization of the <i>COL_Fuente</i> class to store those sources corresponding to spatial data (geographic features, satellite imagery, photogrammetric flights, maps, coordinate listings, ancient or modern plans, location descriptions, and the like) that technically document the relationship between parties and parcels.\
 ")

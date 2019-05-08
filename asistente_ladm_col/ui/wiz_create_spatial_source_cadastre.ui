@@ -256,7 +256,7 @@
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>Select building(s) on the map</string>
+                <string>Select boundary(ies) on the map</string>
                </property>
                <property name="text">
                 <string/>
@@ -276,7 +276,7 @@
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>Select building(s) based on an expression</string>
+                <string>Select boundary(ies) based on an expression</string>
                </property>
                <property name="text">
                 <string/>
@@ -414,7 +414,7 @@
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>Select building unit(s) on the map</string>
+                <string>Select point(s) on the map</string>
                </property>
                <property name="text">
                 <string/>
@@ -434,7 +434,7 @@
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>Select building unit(s) based on an expression</string>
+                <string>Select point(s) based on an expression</string>
                </property>
                <property name="text">
                 <string/>

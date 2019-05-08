@@ -126,7 +126,7 @@ class SelectMapTool(QgsMapToolEmitPoint):
             self.rubberBand.addPoint(point3, False)
             self.rubberBand.addPoint(point4, True)  # true to update canvas
 
-            # Aproximate polygon to point when it's small relate with the scale
+            # Approximate polygon to point when it's too small related to the scale
             if (self.rubberBand.asGeometry().area() / self.canvas.extent().area()) * 1000000 < 50:
                 self.rubberBand.reset(QgsWkbTypes.PointGeometry)
                 self.rubberBand.addPoint(self.startPoint, True)  # true to update canvas
@@ -135,7 +135,7 @@ class SelectMapTool(QgsMapToolEmitPoint):
         index = QgsSpatialIndex(self._layer)
         bbox = self.rubberBand.asGeometry().boundingBox()
 
-        cadidate_features = self._layer.getFeatures(index.intersects(bbox))
+        candidate_features = self._layer.getFeatures(index.intersects(bbox))
         geom = self.rubberBand.asGeometry()
         centroid = geom
 
@@ -144,11 +144,11 @@ class SelectMapTool(QgsMapToolEmitPoint):
 
         features_selected = []
         distances_features_selected = dict()
-        for cadidate_feature in cadidate_features:
-            if cadidate_feature.geometry().intersects(geom):
-                features_selected.append(cadidate_feature.id())
+        for candidate_feature in candidate_features:
+            if candidate_feature.geometry().intersects(geom):
+                features_selected.append(candidate_feature.id())
                 # Calculate the distance to the centroid
-                distances_features_selected[cadidate_feature.id()] = cadidate_feature.geometry().distance(centroid)
+                distances_features_selected[candidate_feature.id()] = candidate_feature.geometry().distance(centroid)
 
         if not self._multi and geom.type() == QgsWkbTypes.PolygonGeometry:
             if features_selected:
