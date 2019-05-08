@@ -57,9 +57,10 @@ class SelectMapTool(QgsMapToolEmitPoint):
         self.rubberBand.reset(True)
 
     def canvasPressEvent(self, e):
-        self.startPoint = self.toMapCoordinates(e.pos())
-        self.endPoint = self.startPoint
-        self.isEmittingPoint = True
+        if e.button() & Qt.LeftButton:
+            self.startPoint = self.toMapCoordinates(e.pos())
+            self.endPoint = self.startPoint
+            self.isEmittingPoint = True
 
     def canvasReleaseEvent(self, e):
         if e.button() & Qt.LeftButton:
@@ -87,10 +88,8 @@ class SelectMapTool(QgsMapToolEmitPoint):
 
             self.select_features()
         elif e.button() & Qt.RightButton:
-            # emit the signal when at least one element has been selected
-            if len(self._layer.selectedFeatures()):
-                self.features_selected_signal.emit()
-                self.reset()
+            self.features_selected_signal.emit()
+            self.reset()
 
     def canvasDoubleClickEvent(self, e):
         self.canvasPressEvent(e)
