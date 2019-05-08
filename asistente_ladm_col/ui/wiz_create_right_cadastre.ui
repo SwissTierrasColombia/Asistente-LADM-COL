@@ -254,7 +254,7 @@
               </sizepolicy>
              </property>
              <property name="toolTip">
-              <string>Select plot(s) based on an expression</string>
+              <string>Select Administrative Source(s) based on an expression</string>
              </property>
              <property name="text">
               <string/>

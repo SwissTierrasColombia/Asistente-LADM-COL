@@ -97,7 +97,7 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
     def adjust_page_2_controls(self):
 
         self.button(self.FinishButton).setDisabled(True)
-        self.txt_help_page_2.setHtml(self.help_strings.WIZ_CREATE_PARCEL_CADASTRE_PAGE_2) # TODO: Create message
+        self.txt_help_page_2.setHtml(self.help_strings.WIZ_CREATE_RIGHT_CADASTRE_PAGE_2)
 
         # Load layers
         result = self.prepare_right_creation_layers()
@@ -117,11 +117,11 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
 
     def check_selected_features(self):
 
-        # Check selected features in plot layer
+        # Check selected features in administrative source layer
         if self._administrative_source_layer.selectedFeatureCount():
-            self.lb_admin_source.setText(QCoreApplication.translate("CreateParcelCadastreWizard", "<b>Administrative Source(s)</b>: {count} Feature Selected").format(count=self._administrative_source_layer.selectedFeatureCount()))
+            self.lb_admin_source.setText(QCoreApplication.translate("CreateRightCadastreWizard", "<b>Administrative Source(s)</b>: {count} Feature Selected").format(count=self._administrative_source_layer.selectedFeatureCount()))
         else:
-            self.lb_admin_source.setText(QCoreApplication.translate("CreateParcelCadastreWizard", "<b>Administrative Source(s)</b>: 0 Features Selected"))
+            self.lb_admin_source.setText(QCoreApplication.translate("CreateRightCadastreWizard", "<b>Administrative Source(s)</b>: 0 Features Selected"))
 
         if self._administrative_source_layer.selectedFeatureCount() >= 1:
             self.button(self.FinishButton).setDisabled(False)
