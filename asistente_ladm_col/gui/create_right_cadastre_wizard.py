@@ -26,9 +26,9 @@ from qgis.core import (QgsEditFormConfig,
                        Qgis,
                        QgsMapLayerProxyModel,
                        QgsApplication)
+from qgis.gui import QgsExpressionSelectionDialog
 
-from ..config.general_config import (PLUGIN_NAME,
-                                     FIELD_MAPPING_PATH)
+from ..config.general_config import PLUGIN_NAME
 from ..config.help_strings import HelpStrings
 from ..config.table_mapping_config import (ID_FIELD,
                                            RIGHT_TABLE,
@@ -37,6 +37,8 @@ from ..config.table_mapping_config import (ID_FIELD,
                                            RRR_SOURCE_RIGHT_FIELD,
                                            RRR_SOURCE_SOURCE_FIELD)
 from ..utils import get_ui_class
+from ..utils.qt_utils import (enable_next_wizard,
+                              disable_next_wizard)
 
 WIZARD_UI = get_ui_class('wiz_create_right_cadastre.ui')
 
@@ -47,6 +49,7 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
+        self._current_layer = None
         self._right_layer = None
         self._administrative_source_layer = None
         self._rrr_source_relation_layer = None
@@ -58,6 +61,7 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
 
         self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
         self.adjust_page_1_controls()
+        self.button(QWizard.NextButton).clicked.connect(self.adjust_page_2_controls)
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
 
@@ -73,20 +77,56 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
             self.mMapLayerComboBox.setEnabled(True)
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
+            disable_next_wizard(self)
+            self.wizardPage1.setFinalPage(True)
             finish_button_text = QCoreApplication.translate("CreateRightCadastreWizard", "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(RIGHT_TABLE, False))
-
+            self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
+            enable_next_wizard(self)
+            self.wizardPage1.setFinalPage(False)
             finish_button_text = QCoreApplication.translate("CreateRightCadastreWizard", "Create")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_RIGHT_CADASTRE_PAGE_1_OPTION_FORM)
 
-        self.wizardPage1.setButtonText(QWizard.FinishButton,
-                                       QCoreApplication.translate("CreaterRightCadastreWizard",
-                                       finish_button_text))
+        self.wizardPage2.setButtonText(QWizard.FinishButton,finish_button_text)
+
+    def adjust_page_2_controls(self):
+
+        self.button(self.FinishButton).setDisabled(True)
+        self.txt_help_page_2.setHtml(self.help_strings.WIZ_CREATE_PARCEL_CADASTRE_PAGE_2) # TODO: Create message
+
+        # Load layers
+        result = self.prepare_right_creation_layers()
+
+        if result:
+            # Check if a previous features are selected
+            self.check_selected_features()
+            self.btn_admin_source_expression.clicked.connect(partial(self.select_features_by_expression, self._administrative_source_layer))
+
+    def select_features_by_expression(self, layer):
+        self._current_layer = layer
+        self.iface.setActiveLayer(self._current_layer)
+        Dlg_expression_selection = QgsExpressionSelectionDialog(self._current_layer)
+        self._current_layer.selectionChanged.connect(self.check_selected_features)
+        Dlg_expression_selection.exec()
+        self._current_layer.selectionChanged.disconnect(self.check_selected_features)
+
+    def check_selected_features(self):
+
+        # Check selected features in plot layer
+        if self._administrative_source_layer.selectedFeatureCount():
+            self.lb_admin_source.setText(QCoreApplication.translate("CreateParcelCadastreWizard", "<b>Administrative Source(s)</b>: {count} Feature Selected").format(count=self._administrative_source_layer.selectedFeatureCount()))
+        else:
+            self.lb_admin_source.setText(QCoreApplication.translate("CreateParcelCadastreWizard", "<b>Administrative Source(s)</b>: 0 Features Selected"))
+
+        if self._administrative_source_layer.selectedFeatureCount() >= 1:
+            self.button(self.FinishButton).setDisabled(False)
+        else:
+            self.button(self.FinishButton).setDisabled(True)
 
     def finished_dialog(self):
         self.save_settings()
@@ -114,8 +154,19 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
             self.prepare_right_creation()
 
     def prepare_right_creation(self):
+
+        result = self.prepare_right_creation_layers()
+
+        if result:
+            # Don't suppress (i.e., show) feature form
+            form_config = self._right_layer.editFormConfig()
+            form_config.setSuppress(QgsEditFormConfig.SuppressOff)
+            self._right_layer.setEditFormConfig(form_config)
+            self.edit_right()
+
+    def prepare_right_creation_layers(self):
         # Load layers
-        #self._right_layer = self.qgis_utils.get_layer(self._db, RIGHT_TABLE, None, load=True)
+        # self._right_layer = self.qgis_utils.get_layer(self._db, RIGHT_TABLE, None, load=True)
 
         res_layers = self.qgis_utils.get_layers(self._db, {
             RIGHT_TABLE: {'name': RIGHT_TABLE, 'geometry': None},
@@ -124,35 +175,31 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
 
         self._right_layer = res_layers[RIGHT_TABLE]
         self._administrative_source_layer = res_layers[ADMINISTRATIVE_SOURCE_TABLE]
-        self._rrr_source_relation_layer =  res_layers[RRR_SOURCE_RELATION_TABLE]
+        self._rrr_source_relation_layer = res_layers[RRR_SOURCE_RELATION_TABLE]
 
         if self._right_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateRightCadastreWizard",
-                                           "Right layer couldn't be found..."),
-                Qgis.Warning)
+                                                QCoreApplication.translate("CreateRightCadastreWizard",
+                                                                           "Right layer couldn't be found..."),
+                                                Qgis.Warning)
             return
 
         if self._administrative_source_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateRightCadastreWizard",
-                                           "Administrative source layer couldn't be found..."),
-                Qgis.Warning)
+                                                QCoreApplication.translate("CreateRightCadastreWizard",
+                                                                           "Administrative source layer couldn't be found..."),
+                                                Qgis.Warning)
             return
 
         if self._rrr_source_relation_layer is None:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateRightCadastreWizard",
-                                           "rrr source relation layer couldn't be found..."),
-                Qgis.Warning)
+                                                QCoreApplication.translate("CreateRightCadastreWizard",
+                                                                           "rrr source relation layer couldn't be found..."),
+                                                Qgis.Warning)
             return
 
-        # Don't suppress (i.e., show) feature form
-        form_config = self._right_layer.editFormConfig()
-        form_config.setSuppress(QgsEditFormConfig.SuppressOff)
-        self._right_layer.setEditFormConfig(form_config)
-
-        self.edit_right()
+        # All layers were successfully loaded
+        return True
 
     def edit_right(self):
         if self._administrative_source_layer.selectedFeatureCount() >= 1:
