@@ -229,7 +229,7 @@
            </sizepolicy>
           </property>
           <property name="title">
-           <string>What administrative source do you want to associate the right with?</string>
+           <string>What source do you want to associate the right with?</string>
           </property>
           <property name="flat">
            <bool>false</bool>
