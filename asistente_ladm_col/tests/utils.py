@@ -24,6 +24,7 @@ from sys import platform
 import psycopg2
 import qgis.utils
 from qgis.core import QgsApplication
+from qgis.analysis import QgsNativeAlgorithms
 
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 from ..config.table_mapping_config import BOUNDARY_POINT_TABLE
@@ -34,8 +35,6 @@ qgs = QgsApplication([], False)
 qgs.initQgis()
 
 import processing
-from processing.core.Processing import Processing
-Processing.initialize()
 
 # get from https://github.com/qgis/QGIS/blob/master/tests/src/python/test_qgssymbolexpressionvariables.py
 from qgis.testing.mocked import get_iface
@@ -68,13 +67,14 @@ def get_dbconn(schema):
     return db
 
 def restore_schema(schema):
+    print("\nRestoring schema {}...".format(schema))
     db_connection = get_dbconn(schema)
-    print("Testing Connection...\n", db_connection.test_connection())
+    print("Testing Connection...", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("""SELECT schema_name FROM information_schema.schemata WHERE schema_name = '{}';""".format(schema))
     result = cur.fetchone()
     if result is not None and len(result) > 0:
-        print("The schema test_ladm_col already exists")
+        print("The schema {} already exists".format(schema))
         return
 
     print("Restoring ladm_col database...")
@@ -94,25 +94,27 @@ def restore_schema(schema):
         print("Warning:", output)
 
 def drop_schema(schema):
+    print("\nDropping schema {}...".format(schema))
     db_connection = get_dbconn(schema)
-    print("Testing Connection...\n", db_connection.test_connection())
-    print("Clean ladm_col database...")
+    print("Testing Connection...", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     query = cur.execute("""DROP SCHEMA '{}' CASCADE;""".format(schema))
     db_connection.conn.commit()
     cur.close()
+    print("Schema {} removed...".format(schema))
     db_connection.conn.close()
     if query is not None:
         print("The drop schema is not working")
 
 def clean_table(schema, table):
+    print("\nCleaning table {}.{}...".format(schema, table))
     db_connection = get_dbconn(schema)
-    print("Testing Connection...\n", db_connection.test_connection())
-    print('Clean {}.{} table...'.format(schema, table))
+    print("Testing Connection...", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     query = cur.execute("""DELETE FROM {}.{} WHERE True;""".format(schema, table))
     db_connection.conn.commit()
     cur.close()
+    print('Table {}.{} cleaned...'.format(schema, table))
     if query is not None:
         print('The clean {}.{} is not working'.format(schema, table))
 
@@ -120,7 +122,7 @@ def get_iface():
     global iface
 
     def rewrite_method():
-        return "i'm rewrited"
+        return "I'm rewritten"
     iface.rewrite_method = rewrite_method
     return iface
 
@@ -142,6 +144,18 @@ def import_qgis_model_baker():
         import QgisModelBaker
         pg = QgisModelBaker.classFactory(iface)
         qgis.utils.plugins["QgisModelBaker"] = pg
+
+def import_processing():
+    global iface
+    plugin_found = "processing" in qgis.utils.plugins
+    if not plugin_found:
+        processing_plugin = processing.classFactory(iface)
+        qgis.utils.plugins["processing"] = processing_plugin
+        qgis.utils.active_plugins.append("processing")
+
+        from processing.core.Processing import Processing
+        Processing.initialize()
+        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
 
 def unload_qgis_model_baker():
     global iface
