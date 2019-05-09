@@ -23,6 +23,9 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetFixedSize</enum>
+   </property>
    <item row="0" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="sizePolicy">
@@ -81,11 +84,11 @@
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Schema Names</string>
-            </property>
             <property name="visible">
              <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Schema Names</string>
             </property>
            </widget>
           </item>

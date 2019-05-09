@@ -26,13 +26,10 @@ from QgisModelBaker.libili2db.ilicache import IliCache
 from QgisModelBaker.libili2db.iliimporter import JavaNotFoundError
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
-                              QRegExp,
-                              QSettings, pyqtSignal)
-from qgis.PyQt.QtGui import (QColor,
-                             QValidator,
-                             QRegExpValidator)
+                              QSettings,
+                              pyqtSignal)
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (QDialog,
-                                 QLayout,
                                  QListWidgetItem,
                                  QSizePolicy,
                                  QDialogButtonBox)
@@ -75,7 +72,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self._current_db = None
 
         self.setupUi(self)
-        self.layout().setSizeConstraint(QLayout.SetFixedSize)
 
         self.validators = Validators()
 
