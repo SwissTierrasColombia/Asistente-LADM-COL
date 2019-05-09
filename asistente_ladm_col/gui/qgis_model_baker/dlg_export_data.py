@@ -36,8 +36,6 @@ from qgis.PyQt.QtGui import (QColor,
                              QStandardItem)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
-                                 QLayout,
-                                 QListWidgetItem,
                                  QMessageBox,
                                  QDialogButtonBox)
 from qgis.core import Qgis
@@ -66,7 +64,6 @@ class DialogExportData(QDialog, DIALOG_UI):
     def __init__(self, iface, db, qgis_utils):
         QDialog.__init__(self)
         self.setupUi(self)
-        self.layout().setSizeConstraint(QLayout.SetFixedSize)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
