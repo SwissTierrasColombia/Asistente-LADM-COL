@@ -91,7 +91,7 @@ def _qgis_model_baker_required(func_to_decorate):
     return decorated_function
 
   
-def _activate_processing_module(func_to_decorate):
+def _activate_processing_plugin(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
 

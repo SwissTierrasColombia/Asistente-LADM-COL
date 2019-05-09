@@ -53,7 +53,7 @@ from qgis.core import (Qgis,
                        QgsWkbTypes)
 
 import processing
-from .decorators_utils import _activate_processing_module
+from .decorators import _activate_processing_plugin
 from .geometry import GeometryUtils
 from .qgis_model_baker_utils import QgisModelBakerUtils
 from .qt_utils import OverrideCursor
@@ -748,7 +748,7 @@ class QGISUtils(QObject):
     def set_node_visibility(self, node, visible):
         self.set_node_visibility_requested.emit(node, visible)
 
-    @_activate_processing_module
+    @_activate_processing_plugin
     def copy_csv_to_db(self, csv_path, delimiter, longitude, latitude, db, epsg, target_layer_name, elevation=None, decimal_point='.'):
         if not csv_path or not os.path.exists(csv_path):
             self.message_emitted.emit(
@@ -1096,7 +1096,7 @@ class QGISUtils(QObject):
     def turn_transaction_off(self):
         QgsProject.instance().setAutoTransaction(False)
 
-    @_activate_processing_module
+    @_activate_processing_plugin
     def show_etl_model(self, db, input_layer, ladm_col_layer_name, geometry_type=None, field_mapping=''):
         output = self.get_layer(db, ladm_col_layer_name, geometry_type, load=True)
         if output is None:
@@ -1163,7 +1163,7 @@ class QGISUtils(QObject):
 
         return mapping
 
-    @_activate_processing_module
+    @_activate_processing_plugin
     def save_field_mapping(self, ladm_col_layer_name):
         if not os.path.exists(FIELD_MAPPING_PATH):
             os.makedirs(FIELD_MAPPING_PATH)

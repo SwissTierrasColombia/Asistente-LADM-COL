@@ -51,8 +51,9 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
 from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                           ID_FIELD,
                                           COL_PARTY_TABLE)
-from .utils.decorators_utils import (_db_connection_required,
-                                     _qgis_model_baker_required)
+from .utils.decorators import (_db_connection_required,
+                               _qgis_model_baker_required,
+                               _activate_processing_plugin)
 
 from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
@@ -100,7 +101,6 @@ from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
 from .lib.db.enum_db_action_type import EnumDbActionType
-from .utils.decorators_utils import _activate_processing_module
 
 class AsistenteLADMCOLPlugin(QObject):
     def __init__(self, iface):
@@ -798,7 +798,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_qgis_model_baker_required
     @_db_connection_required
-    @_activate_processing_module
+    @_activate_processing_plugin
     def call_import_from_intermediate_structure(self):
         self._dlg = DialogImportFromExcel(self.iface, self.get_db_connection(), self.qgis_utils)
         self._dlg.log_excel_show_message_emitted.connect(self.show_log_excel_button)
@@ -856,7 +856,7 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = DialogExportData(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
-    @_activate_processing_module
+    @_activate_processing_plugin
     def show_dlg_controlled_measurement(self):
         dlg = ControlledMeasurementDialog(self.qgis_utils)
         dlg.exec_()
@@ -893,7 +893,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_qgis_model_baker_required
     @_db_connection_required
-    @_activate_processing_module
+    @_activate_processing_plugin
     def show_wiz_right_of_way_cad(self):
         wiz = CreateRightOfWayCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
@@ -1008,7 +1008,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_qgis_model_baker_required
     @_db_connection_required
-    @_activate_processing_module
+    @_activate_processing_plugin
     def show_dlg_quality(self):
         dlg = DialogQuality(self.get_db_connection(), self.qgis_utils, self.quality)
         dlg.exec_()
