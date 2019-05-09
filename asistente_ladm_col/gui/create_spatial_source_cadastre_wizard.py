@@ -87,15 +87,6 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
         self.help_strings = HelpStrings()
         self.restore_settings()
 
-        self.rad_boundary_point.setText(BOUNDARY_POINT_TABLE)
-        self.rad_survey_point.setText(SURVEY_POINT_TABLE)
-        self.rad_control_point.setText(CONTROL_POINT_TABLE)
-        self.rad_boundary_point.setChecked(True)
-
-        self.rad_boundary_point.toggled.connect(self.class_of_point_change)
-        self.rad_survey_point.toggled.connect(self.class_of_point_change)
-        self.rad_control_point.toggled.connect(self.class_of_point_change)
-
         self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
         self.adjust_page_1_controls()
 
@@ -174,24 +165,14 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
             self.btn_boundary_map.clicked.connect(partial(self.select_features_on_map, self._boundary_layer))
             self.btn_boundary_expression.clicked.connect(partial(self.select_features_by_expression, self._boundary_layer))
 
-            self.btn_point_map.clicked.connect(partial(self.select_features_on_map, self._boundary_point_layer))
-            self.btn_point_expression.clicked.connect(partial(self.select_features_by_expression, self._boundary_point_layer))
+            self.btn_boundary_point_map.clicked.connect(partial(self.select_features_on_map, self._boundary_point_layer))
+            self.btn_boundary_point_expression.clicked.connect(partial(self.select_features_by_expression, self._boundary_point_layer))
 
-    def class_of_point_change(self):
+            self.btn_survey_point_map.clicked.connect(partial(self.select_features_on_map, self._survey_point_layer))
+            self.btn_survey_point_expression.clicked.connect(partial(self.select_features_by_expression, self._survey_point_layer))
 
-        # Disconnect signals
-        self.btn_point_map.clicked.disconnect()
-        self.btn_point_expression.clicked.disconnect()
-
-        if self.rad_boundary_point.isChecked():
-            self.btn_point_map.clicked.connect(partial(self.select_features_on_map, self._boundary_point_layer))
-            self.btn_point_expression.clicked.connect(partial(self.select_features_by_expression, self._boundary_point_layer))
-        elif self.rad_survey_point.isChecked():
-            self.btn_point_map.clicked.connect(partial(self.select_features_on_map, self._survey_point_layer))
-            self.btn_point_expression.clicked.connect(partial(self.select_features_by_expression, self._survey_point_layer))
-        elif self.rad_control_point.isChecked():
-            self.btn_point_map.clicked.connect(partial(self.select_features_on_map, self._control_point_layer))
-            self.btn_point_expression.clicked.connect(partial(self.select_features_by_expression, self._control_point_layer))
+            self.btn_control_point_map.clicked.connect(partial(self.select_features_on_map, self._control_point_layer))
+            self.btn_control_point_expression.clicked.connect(partial(self.select_features_by_expression, self._control_point_layer))
 
     def select_features_on_map(self, layer):
         self._current_layer = layer
@@ -233,36 +214,36 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
 
         # Check selected features in plot layer
         if self._plot_layer.selectedFeatureCount():
-            self.lb_plot.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "Plots: {count} Feature Selected").format(count=self._plot_layer.selectedFeatureCount()))
+            self.lb_plot.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "<b>Plot(s)</b>: {count} Feature Selected").format(count=self._plot_layer.selectedFeatureCount()))
         else:
-            self.lb_plot.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "Plots: 0 Features Selected"))
+            self.lb_plot.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "<b>Plot(s)</b>: 0 Features Selected"))
 
         # Check selected features in boundary layer
         if self._boundary_layer.selectedFeatureCount():
-            self.lb_boundary.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "Boundary(ies): {count} Feature Selected").format(count=self._boundary_layer.selectedFeatureCount()))
+            self.lb_boundary.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "<b>Boundary(ies)</b>: {count} Feature Selected").format(count=self._boundary_layer.selectedFeatureCount()))
         else:
-            self.lb_boundary.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "Boundary(ies): 0 Features Selected"))
+            self.lb_boundary.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "<b>Boundary(ies)</b>: 0 Features Selected"))
 
         # Check selected features in boundary point layer
         if self._boundary_point_layer.selectedFeatureCount():
-            self.rad_boundary_point.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "{table}: {count} Features Selected").format(table=BOUNDARY_POINT_TABLE, count=self._boundary_point_layer.selectedFeatureCount()))
+            self.lb_boundary_point.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "<b>Boundary</b>: {count} Features Selected").format(count=self._boundary_point_layer.selectedFeatureCount()))
         else:
-            self.rad_boundary_point.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "{table}: 0 Features Selected".format(table=BOUNDARY_POINT_TABLE)))
+            self.lb_boundary_point.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "<b>Boundary</b>: 0 Features Selected"))
 
         # Check selected features in survey point layer
         if self._survey_point_layer.selectedFeatureCount():
-            self.rad_survey_point.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "{table}: {count} Features Selected").format(table=SURVEY_POINT_TABLE, count=self._survey_point_layer.selectedFeatureCount()))
+            self.lb_survey_point.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "<b>Survey</b>: {count} Features Selected").format(count=self._survey_point_layer.selectedFeatureCount()))
         else:
-            self.rad_survey_point.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "{table}: 0 Features Selected".format(table=SURVEY_POINT_TABLE)))
+            self.lb_survey_point.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "<b>Survey</b>: 0 Features Selected"))
 
         # Check selected features in control point layer
         if self._control_point_layer.selectedFeatureCount():
-            self.rad_control_point.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "{table}: {count} Features Selected").format(table=CONTROL_POINT_TABLE, count=self._control_point_layer.selectedFeatureCount()))
+            self.lb_control_point.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "<b>Control</b>: {count} Features Selected").format(count=self._control_point_layer.selectedFeatureCount()))
         else:
-            self.rad_control_point.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "{table}: 0 Features Selected".format(table=CONTROL_POINT_TABLE)))
+            self.lb_control_point.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "<b>Control</b>: 0 Features Selected"))
 
         # Verifies that an feature has been selected
-        if self._plot_layer.selectedFeatureCount() + self._boundary_layer.selectedFeatureCount() + self._boundary_point_layer.selectedFeatureCount() + self._survey_point_layer.selectedFeatureCount() + self._control_point_layer.selectedFeatureCount():
+        if self._plot_layer.selectedFeatureCount() + self._boundary_layer.selectedFeatureCount() + self._boundary_point_layer.selectedFeatureCount() + self._survey_point_layer.selectedFeatureCount() + self._control_point_layer.selectedFeatureCount() >= 1:
             self.button(self.FinishButton).setDisabled(False)
         else:
             self.button(self.FinishButton).setDisabled(True)
