@@ -1,7 +1,6 @@
 import nose2
 import itertools
 from qgis.core import QgsProject, QgsWkbTypes
-from processing.core.Processing import Processing
 from qgis.testing import (unittest,
                           start_app)
 
@@ -21,7 +20,6 @@ class TestGetLayers(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        Processing.initialize()
         self.qgis_utils = QGISUtils()
         self.db_connection = get_dbconn('test_ladm_col')
         result = self.db_connection.test_connection()

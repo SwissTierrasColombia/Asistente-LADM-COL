@@ -2,9 +2,12 @@ import time
 from functools import wraps
 
 from qgis.PyQt.QtCore import (Qt,
-                              QCoreApplication)
+                              QCoreApplication,
+                              QSettings)
 from qgis.PyQt.QtWidgets import QPushButton
-from qgis.core import Qgis
+from qgis.core import (Qgis,
+                       QgsApplication)
+from qgis.utils import (isPluginLoaded, loadPlugin, startPlugin)
 
 from ..config.general_config import (PLUGIN_NAME,
                                      QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
@@ -87,6 +90,24 @@ def _qgis_model_baker_required(func_to_decorate):
 
     return decorated_function
 
+  
+def _activate_processing_plugin(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+
+        if not isPluginLoaded("processing"):
+            loadPlugin('processing')
+            startPlugin('processing')
+            msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The processing plugin has been activated!")
+            QgsApplication.messageLog().logMessage(msg, PLUGIN_NAME, Qgis.Info)
+
+            # Check in the plugin manager that the processing plugin was activated
+            QSettings().setValue("PythonPlugins/processing", True)
+
+        func_to_decorate(*args, **kwargs)
+
+    return decorated_function
+  
 
 def _log_quality_checks(func_to_decorate):
     @wraps(func_to_decorate)

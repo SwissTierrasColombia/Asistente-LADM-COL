@@ -71,7 +71,7 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            RIGHT_OF_WAY_TABLE,
                                            SURVEY_POINT_TABLE)
 from .utils import Utils
-from .decorators_utils import _log_quality_checks
+from .decorators import _log_quality_checks
 
 class QualityUtils(QObject):
     log_quality_show_message_emitted = pyqtSignal(str, int)

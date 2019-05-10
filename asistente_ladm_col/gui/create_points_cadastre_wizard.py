@@ -42,7 +42,6 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE,
                                            CONTROL_POINT_TABLE)
 
-from ..processing.algs.InsertFeaturesToLayer import InsertFeaturesToLayer
 from ..utils import get_ui_class
 from ..utils.qt_utils import (make_file_selector,
                               enable_next_wizard,
@@ -61,7 +60,6 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
-        self.insert_features_to_layer = InsertFeaturesToLayer()
 
         self.target_layer = None
 
