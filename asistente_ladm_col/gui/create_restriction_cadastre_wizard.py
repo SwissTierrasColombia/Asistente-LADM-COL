@@ -98,6 +98,11 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
         self.button(self.FinishButton).setDisabled(True)
         self.txt_help_page_2.setHtml(self.help_strings.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_2)
 
+        try:
+            self.btn_admin_source_expression.clicked.disconnect()
+        except:
+            pass
+
         # Load layers
         result = self.prepare_restriction_creation_layers()
 
@@ -109,13 +114,12 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
     def select_features_by_expression(self, layer):
         self._current_layer = layer
         self.iface.setActiveLayer(self._current_layer)
-        Dlg_expression_selection = QgsExpressionSelectionDialog(self._current_layer)
+        dlg_expression_selection = QgsExpressionSelectionDialog(self._current_layer)
         self._current_layer.selectionChanged.connect(self.check_selected_features)
-        Dlg_expression_selection.exec()
+        dlg_expression_selection.exec()
         self._current_layer.selectionChanged.disconnect(self.check_selected_features)
 
     def check_selected_features(self):
-
         # Check selected features in administrative source layer
         if self._administrative_source_layer.selectedFeatureCount():
             self.lb_admin_source.setText(QCoreApplication.translate("CreateRestrictionCadastreWizard", "<b>Administrative Source(s)</b>: {count} Feature Selected").format(count=self._administrative_source_layer.selectedFeatureCount()))
@@ -153,7 +157,6 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
             self.prepare_restriction_creation()
 
     def prepare_restriction_creation(self):
-
         result = self.prepare_restriction_creation_layers()
 
         if result:

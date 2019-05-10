@@ -82,17 +82,16 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.NoGeometry)
 
     def map_tool_changed(self, new_tool, old_tool):
+        self.canvas.mapToolSet.disconnect(self.map_tool_changed)
         reply = QMessageBox.question(self,
                                      QCoreApplication.translate("CreateParcelCadastreWizard", "Stop parcel creation?"),
                                      QCoreApplication.translate("CreateParcelCadastreWizard","The map tool is about to change. Do you want to stop creating parcels?"),
                                      QMessageBox.Yes, QMessageBox.No)
+
         if reply == QMessageBox.Yes:
-            # Disconnect signal that check if map tool change
-            self.canvas.mapToolSet.disconnect(self.map_tool_changed)
             self.close()
         else:
             # Continue creating the Parcel
-            self.canvas.mapToolSet.disconnect(self.map_tool_changed)
             self.canvas.setMapTool(old_tool)
             self.canvas.mapToolSet.connect(self.map_tool_changed)
 
@@ -101,7 +100,6 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         sip.delete(self)
 
     def adjust_page_1_controls(self):
-
         self.gbx_page1.setTitle(QCoreApplication.translate("CreateParcelCadastreWizard", "How would you like to create parcels?    "))
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
@@ -130,15 +128,11 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.wizardPage2.setButtonText(QWizard.FinishButton,finish_button_text)
 
     def adjust_page_2_controls(self):
-
         self.gbx_page2.setTitle(QCoreApplication.translate("CreateParcelCadastreWizard", "What spatial unit do you want to associate the parcel with?    "))
         self.button(self.FinishButton).setDisabled(True)
         self.txt_help_page_2.setHtml(self.help_strings.WIZ_CREATE_PARCEL_CADASTRE_PAGE_2)
 
-        # TODO:
-        #  It is necesary becasuse when I got to back signal map_tool_changed it is not disconnect
-        #  Remove when error are fixed
-        self.button(QWizard.BackButton).hide()
+        self.disconnect_signals()
 
         # Load layers
         result = self.prepare_parcel_creation_layers()
@@ -154,6 +148,20 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._plot_layer))
             self.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._building_layer))
             self.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._building_unit_layer))
+
+    def disconnect_signals(self):
+        signals = [self.btn_plot_map.clicked,
+                   self.btn_building_map.clicked,
+                   self.btn_building_unit_map.clicked,
+                   self.btn_plot_expression.clicked,
+                   self.btn_building_expression.clicked,
+                   self.btn_building_unit_expression.clicked,
+                   self.canvas.mapToolSet]
+        for signal in signals:
+            try:
+                signal.disconnect()
+            except:
+                pass
 
     def select_features_on_map(self, layer):
         self._current_layer = layer
@@ -189,13 +197,12 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
     def select_features_by_expression(self, layer):
         self._current_layer = layer
         self.iface.setActiveLayer(self._current_layer)
-        Dlg_expression_selection = QgsExpressionSelectionDialog(self._current_layer)
+        dlg_expression_selection = QgsExpressionSelectionDialog(self._current_layer)
         self._current_layer.selectionChanged.connect(self.check_selected_features)
-        Dlg_expression_selection.exec()
+        dlg_expression_selection.exec()
         self._current_layer.selectionChanged.disconnect(self.check_selected_features)
 
     def check_selected_features(self):
-
         # Check selected features in plot layer
         if self._plot_layer.selectedFeatureCount():
             self.lb_plot.setText(QCoreApplication.translate("CreateParcelCadastreWizard", "<b>Plots</b>: {count} Feature Selected").format(count=self._plot_layer.selectedFeatureCount()))
