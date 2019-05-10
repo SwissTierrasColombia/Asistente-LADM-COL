@@ -788,6 +788,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_qgis_model_baker_required
     @_db_connection_required
+    @_activate_processing_plugin
     def call_fill_right_of_way_relations(self):
         self.right_of_way.fill_right_of_way_relations(self.get_db_connection())
 
