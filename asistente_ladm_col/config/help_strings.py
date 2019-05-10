@@ -179,23 +179,53 @@ the association will not be activated.\
 
 # Clase de tipo LA_RRR que registra las responsabilidades que las instancias de los interesados tienen sobre los predios.
         self.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you have selected at least one <i>Administrative Source</i> and want to link such selected sources to a new <b>Responsibility</b> that you will create using a form.\
+Choose this option if you want to create a <b>Responsibility</b> based on existing <b>Administrative Source(s)</b>.\
 <br><br>\
 <b>COL_Responsibility</b> is a class of type <i>LA_RRR</i> which stores responsibilities that parties have over parcels.\
 ")
 
+        self.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
+Before creating a <b>Responsibility</b> you must associate with one or more existing <b>Administrative Sources</b>, First you must select the Administrative Source(s) of interest\
+<br><br>\
+You can select an Administrative Source(s) by:\
+<br><br>\
+<b> * Expression</b>: Here you can select using an expression, this has to be valid and \
+the selection should take one feature. If the expression gets zero features or more than one, the button for create \
+the association will not be activated.\
+")
+
 # Restricciones a las que está sometido un predio y que inciden sobre los derechos que pueden ejercerse sobre él.
         self.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you have selected at least one <i>Administrative Source</i> and want to link such selected sources to a new <b>Restriction</b> that you will create using a form.\
+Choose this option if you want to create a <b>Restriction</b> based on existing <b>Administrative Source(s)</b>.\
 <br><br>\
 <b>COL_Restriction</b> are the restrictions on a parcel that affect rights that parties may have over it.\
 ")
 
+        self.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
+Before creating a <b>Restriction</b> you must associate with one or more existing <b>Administrative Sources</b>, First you must select the Administrative Source(s) of interest\
+<br><br>\
+You can select an Administrative Source(s) by:\
+<br><br>\
+<b> * Expression</b>: Here you can select using an expression, this has to be valid and \
+the selection should take one feature. If the expression gets zero features or more than one, the button for create \
+the association will not be activated.\
+")
+
 # <b>COL_Derecho</b> es una clase que registra las instancias de los derechos que un interesado ejerce sobre un predio. Es una especialización de la clase LA_RRR del propio modelo.
         self.WIZ_CREATE_RIGHT_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you have selected at least one <i>Administrative Source</i> and want to link such selected sources to a new <b>Right</b> that you will create using a form.\
+Choose this option if you want to create a <b>Right</b> based on existing <b>Administrative Source(s)</b>.\
 <br><br>\
 <b>COL_Right</b> is a class that stores right instances that a party has over a parcel. It is a specialization of the class LA_RRR.\
+")
+
+        self.WIZ_CREATE_RIGHT_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
+Before creating a <b>Right</b> you must associate with one or more existing <b>Administrative Sources</b>, First you must select the Administrative Source(s) of interest\
+<br><br>\
+You can select an Administrative Source(s) by:\
+<br><br>\
+<b> * Expression</b>: Here you can select using an expression, this has to be valid and \
+the selection should take one feature. If the expression gets zero features or more than one, the button for create \
+the association will not be activated.\
 ")
 
         self.WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
