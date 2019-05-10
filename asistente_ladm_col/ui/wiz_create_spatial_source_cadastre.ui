@@ -91,10 +91,10 @@
                  <height>16777215</height>
                 </size>
                </property>
-               <property name="allowEmptyLayer" stdset="0">
+               <property name="allowEmptyLayer">
                 <bool>true</bool>
                </property>
-               <property name="showCrs" stdset="0">
+               <property name="showCrs">
                 <bool>false</bool>
                </property>
               </widget>
@@ -229,7 +229,7 @@
            </sizepolicy>
           </property>
           <property name="title">
-           <string>What spatial features do you want to associate the space source with?</string>
+           <string>Which features do you want to associate the spatial source with?</string>
           </property>
           <property name="flat">
            <bool>false</bool>
@@ -562,7 +562,7 @@
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
