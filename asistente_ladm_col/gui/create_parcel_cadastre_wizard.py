@@ -189,9 +189,9 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
     def select_features_by_expression(self, layer):
         self._current_layer = layer
         self.iface.setActiveLayer(self._current_layer)
-        Dlg_expression_selection = QgsExpressionSelectionDialog(self._current_layer)
+        dlg_expression_selection = QgsExpressionSelectionDialog(self._current_layer)
         self._current_layer.selectionChanged.connect(self.check_selected_features)
-        Dlg_expression_selection.exec()
+        dlg_expression_selection.exec()
         self._current_layer.selectionChanged.disconnect(self.check_selected_features)
 
     def check_selected_features(self):

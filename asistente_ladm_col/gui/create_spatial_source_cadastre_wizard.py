@@ -148,9 +148,7 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
 
         self.txt_help_page_2.setHtml(self.help_strings.WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_2)
 
-        # TODO: It is necesary becasuse when I got to back signal map_tool_changed it is not disconnect
-        #       Remove when error are fixed
-        self.button(QWizard.BackButton).hide()
+        self.disconnect_signals()
 
         # Load layers
         result = self.prepare_spatial_source_creation_layers()
@@ -173,6 +171,24 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
 
             self.btn_control_point_map.clicked.connect(partial(self.select_features_on_map, self._control_point_layer))
             self.btn_control_point_expression.clicked.connect(partial(self.select_features_by_expression, self._control_point_layer))
+
+    def disconnect_signals(self):
+        signals = [self.btn_plot_map.clicked,
+                   self.btn_plot_expression.clicked,
+                   self.btn_boundary_map.clicked,
+                   self.btn_boundary_expression.clicked,
+                   self.btn_boundary_point_map.clicked,
+                   self.btn_boundary_point_expression.clicked,
+                   self.btn_survey_point_map.clicked,
+                   self.btn_survey_point_expression.clicked,
+                   self.btn_control_point_map.clicked,
+                   self.btn_control_point_expression.clicked,
+                   self.canvas.mapToolSet]
+        for signal in signals:
+            try:
+                signal.disconnect()
+            except:
+                pass
 
     def select_features_on_map(self, layer):
         self._current_layer = layer
@@ -205,13 +221,12 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
     def select_features_by_expression(self, layer):
         self._current_layer = layer
         self.iface.setActiveLayer(self._current_layer)
-        Dlg_expression_selection = QgsExpressionSelectionDialog(self._current_layer)
+        dlg_expression_selection = QgsExpressionSelectionDialog(self._current_layer)
         self._current_layer.selectionChanged.connect(self.check_selected_features)
-        Dlg_expression_selection.exec()
+        dlg_expression_selection.exec()
         self._current_layer.selectionChanged.disconnect(self.check_selected_features)
 
     def check_selected_features(self):
-
         # Check selected features in plot layer
         if self._plot_layer.selectedFeatureCount():
             self.lb_plot.setText(QCoreApplication.translate("CreateSpatialSourceCadastreWizard", "<b>Plot(s)</b>: {count} Feature Selected").format(count=self._plot_layer.selectedFeatureCount()))
@@ -274,7 +289,6 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
             self.prepare_spatial_source_creation()
 
     def prepare_spatial_source_creation(self):
-
         result = self.prepare_spatial_source_creation_layers()
 
         if result:
@@ -285,7 +299,6 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
             self.edit_spatial_source()
 
     def prepare_spatial_source_creation_layers(self):
-
         layers_to_load = {
             SPATIAL_SOURCE_TABLE: {'name': SPATIAL_SOURCE_TABLE, 'geometry': None},
             EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None},
