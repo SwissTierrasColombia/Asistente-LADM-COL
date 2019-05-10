@@ -1521,7 +1521,7 @@
     <message>
         <location filename="../gui/create_responsibility_cadastre_wizard.py" line="127"/>
         <source>&lt;b&gt;Administrative Source(s)&lt;/b&gt;: 0 Features Selected</source>
-        <translation>&lt;b&gt;Fuente(s) Administrativa(s)&lt;/b&gt;: {count} registros seleccionados</translation>
+        <translation>&lt;b&gt;Fuente(s) Administrativa(s)&lt;/b&gt;: 0 registros seleccionados</translation>
     </message>
     <message>
         <location filename="../gui/create_responsibility_cadastre_wizard.py" line="152"/>
@@ -1574,7 +1574,7 @@
     <message>
         <location filename="../gui/create_restriction_cadastre_wizard.py" line="127"/>
         <source>&lt;b&gt;Administrative Source(s)&lt;/b&gt;: 0 Features Selected</source>
-        <translation>&lt;b&gt;Fuente(s) Administrativa(s)&lt;/b&gt;: {count} registros seleccionados</translation>
+        <translation>&lt;b&gt;Fuente(s) Administrativa(s)&lt;/b&gt;: 0 registros seleccionados</translation>
     </message>
     <message>
         <location filename="../gui/create_restriction_cadastre_wizard.py" line="152"/>
@@ -1627,7 +1627,7 @@
     <message>
         <location filename="../gui/create_right_cadastre_wizard.py" line="127"/>
         <source>&lt;b&gt;Administrative Source(s)&lt;/b&gt;: 0 Features Selected</source>
-        <translation>&lt;b&gt;Fuente(s) Administrativa(s)&lt;/b&gt;: {count} registros seleccionados</translation>
+        <translation>&lt;b&gt;Fuente(s) Administrativa(s)&lt;/b&gt;: 0 registros seleccionados</translation>
     </message>
     <message>
         <location filename="../gui/create_right_cadastre_wizard.py" line="152"/>
