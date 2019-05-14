@@ -139,6 +139,11 @@ CLASS_CLASS_RELATION = 'class_class'
 
 TEST_SERVER = "www.google.com"
 
+# Colors for labels
+COLOR_ERROR_LABEL = "color:#FF0000"
+COLOR_OKAY_LABEL = "color:#478046"
+COLOR_INACTIVE_LABEL = "color:#646464"
+
 # DOWNLOAD PAGE URL IN QGIS PLUGIN REPO
 PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO = "https://plugins.qgis.org/plugins/asistente_ladm_col/"
 

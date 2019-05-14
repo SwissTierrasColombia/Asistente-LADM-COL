@@ -810,3 +810,65 @@ LOGIC_CONSISTENCY_TABLES = {
                                   'fecha_entrega',
                                   'oficialidad']
 }
+
+
+
+"""
+Constrains for wizard create parcel
+"""
+
+# Operations:
+# 1 = number of features must be selected
+# * = One or more features must be selected
+# None = There must be no features selected
+CONSTRAINT_TYPES_OF_PARCEL = {
+    "NPH": {
+        PLOT_TABLE: 1
+    },
+    "PropiedadHorizontal.Matriz": {
+        PLOT_TABLE: 1,
+        BUILDING_UNIT_TABLE: None
+    },
+    "PropiedadHorizontal.UnidadPredial": {
+        PLOT_TABLE: None,
+        BUILDING_TABLE: None,
+        BUILDING_UNIT_TABLE: '*'
+    },
+    "Condominio.Matriz": {
+        PLOT_TABLE: 1,
+        BUILDING_UNIT_TABLE: None
+    },
+    "Condominio.UnidadPredial": {
+        PLOT_TABLE: 1,
+        BUILDING_UNIT_TABLE: None
+    },
+    "Mejora": {
+        PLOT_TABLE: None,
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: '*'
+    },
+    "ParqueCementerio.Matriz": {
+        PLOT_TABLE: 1,
+        BUILDING_UNIT_TABLE: None
+    },
+    "ParqueCementerio.UnidadPrivada": {
+        PLOT_TABLE: 1,
+        BUILDING_TABLE: None,
+        BUILDING_UNIT_TABLE: None
+    },
+    "Vía": {
+        PLOT_TABLE: 1,
+        BUILDING_TABLE: None,
+        BUILDING_UNIT_TABLE: None
+    },
+    "BienUsoPublico": {
+        PLOT_TABLE: 1,
+        BUILDING_UNIT_TABLE: None
+    },
+    "Deposito": {
+    },
+    "Parqueadero": {
+    },
+    "Bodega": {
+    }
+}
