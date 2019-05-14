@@ -1,6 +1,23 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject)
 
+from .table_mapping_config import (PLOT_TABLE,
+                                   BUILDING_TABLE,
+                                   BUILDING_UNIT_TABLE,
+                                   PARCEL_TYPE_NO_PROPERTY_HORIZONTAL,
+                                   PARCEL_TYPE_PROPERTY_HORIZONTAL_MATRIX,
+                                   PARCEL_TYPE_PROPERTY_HORIZONTAL_UNIT_PREDIAL,
+                                   PARCEL_TYPE_CONDOMINIUM_MATRIX,
+                                   PARCEL_TYPE_CONDOMINIUM_UNIT_PREDIAL,
+                                   PARCEL_TYPE_MEJORA,
+                                   PARCEL_TYPE_CEMETERY_MATRIX,
+                                   PARCEL_TYPE_CEMETERY_PRIVATE_UNIT,
+                                   PARCEL_TYPE_ROAD,
+                                   PARCEL_TYPE_PUBLIC_USE,
+                                   PARCEL_TYPE_WAREHOUSE,
+                                   PARCEL_TYPE_PARKING,
+                                   PARCEL_TYPE_WINERY)
+
 # For this module use multiline "\" instead of triple double quotes
 
 class HelpStrings(QObject):
@@ -81,8 +98,10 @@ It is formed by the terrain and may or may not have associated constructions.\
 ")
 
         self.WIZ_CREATE_PARCEL_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
-Before creating a <b>Parcel</b>  you must associate with one or more existing <b>Spatial Units</b>, First you must select the Spatial Unit(s) of interest\
+Before creating a <b>Parcel</b>  you must associate with one or more existing <b>Spatial Units</b>.\
 <br><br>\
+{msg_parcel_type}\
+<br>\
 There are two ways to associate:\
 <br><br>\
 1. <b>Selecting Spatial Unit(s) on the map</b>: Here you can select on the map and immediately it will come back to wizard, \
@@ -340,6 +359,22 @@ Choose this option if you want to create a <b>Conventional Building Unit Qualifi
 
         self.WIZ_USING_FORM_BUILDING_UNIT_NO_QUALIFICATION_PAGE_2_OPTION = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create an <b>Unconventional Building Unit Qualification</b> using a form.")
+
+        self.MESSAGE_PARCEL_TYPES = {
+            PARCEL_TYPE_NO_PROPERTY_HORIZONTAL: QCoreApplication.translate("HelpStrings", "Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o mas '{building_table}es' y '{building_unit_table}'").format(parcel_type=PARCEL_TYPE_NO_PROPERTY_HORIZONTAL, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE, building_unit_table=BUILDING_UNIT_TABLE),
+            PARCEL_TYPE_PROPERTY_HORIZONTAL_MATRIX: QCoreApplication.translate("HelpStrings", "Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o más '{building_table}es'").format(parcel_type=PARCEL_TYPE_PROPERTY_HORIZONTAL_MATRIX, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE),
+            PARCEL_TYPE_PROPERTY_HORIZONTAL_UNIT_PREDIAL: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada deber una o más '{building_unit_table}'").format(parcel_type=PARCEL_TYPE_PROPERTY_HORIZONTAL_UNIT_PREDIAL, building_unit_table=BUILDING_UNIT_TABLE),
+            PARCEL_TYPE_CONDOMINIUM_MATRIX: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o más '{building_table}es'").format(parcel_type=PARCEL_TYPE_CONDOMINIUM_MATRIX, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE),
+            PARCEL_TYPE_CONDOMINIUM_UNIT_PREDIAL: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es  <b>'{parcel_type}'</b> la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o más '{building_table}es'").format(parcel_type=PARCEL_TYPE_CONDOMINIUM_UNIT_PREDIAL, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE),
+            PARCEL_TYPE_MEJORA: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada debe ser una '{building_table}' o '{building_unit_table}'").format(parcel_type=PARCEL_TYPE_MEJORA, building_table=BUILDING_TABLE, building_unit_table=BUILDING_UNIT_TABLE),
+            PARCEL_TYPE_CEMETERY_MATRIX: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o más '{building_table}es'").format(parcel_type=PARCEL_TYPE_CEMETERY_MATRIX, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE),
+            PARCEL_TYPE_CEMETERY_PRIVATE_UNIT: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada la unidad espacial asociada debe ser un '{plot_table}'").format(parcel_type=PARCEL_TYPE_CEMETERY_PRIVATE_UNIT, plot_table=PLOT_TABLE),
+            PARCEL_TYPE_ROAD: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada la unidad espacial asociada debe ser un '{plot_table}'").format(parcel_type=PARCEL_TYPE_ROAD, plot_table=PLOT_TABLE),
+            PARCEL_TYPE_PUBLIC_USE: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o más '{building_table}es'").format(parcel_type=PARCEL_TYPE_PUBLIC_USE, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE),
+            PARCEL_TYPE_WAREHOUSE: QCoreApplication.translate("HelpStrings",""),
+            PARCEL_TYPE_PARKING: QCoreApplication.translate("HelpStrings",""),
+            PARCEL_TYPE_WINERY: QCoreApplication.translate("HelpStrings","")
+        }
 
     def get_refactor_help_string(self, layer_name, layer_is_spatial):
         # Abre una ventana que te permite establecer una asignación entre la entrada (fuente) {type} y el tipo {type} <b>{name}</b> de LADM_COL.

@@ -817,58 +817,72 @@ LOGIC_CONSISTENCY_TABLES = {
 Constrains for wizard create parcel
 """
 
+# Types of parcels
+PARCEL_TYPE_NO_PROPERTY_HORIZONTAL = "NPH"
+PARCEL_TYPE_PROPERTY_HORIZONTAL_MATRIX = "PropiedadHorizontal.Matriz"
+PARCEL_TYPE_PROPERTY_HORIZONTAL_UNIT_PREDIAL = "PropiedadHorizontal.UnidadPredial"
+PARCEL_TYPE_CONDOMINIUM_MATRIX = "Condominio.Matriz"
+PARCEL_TYPE_CONDOMINIUM_UNIT_PREDIAL = "Condominio.UnidadPredial"
+PARCEL_TYPE_MEJORA = "Mejora"
+PARCEL_TYPE_CEMETERY_MATRIX = "ParqueCementerio.Matriz"
+PARCEL_TYPE_CEMETERY_PRIVATE_UNIT = "ParqueCementerio.UnidadPrivada"
+PARCEL_TYPE_ROAD = "Via"
+PARCEL_TYPE_PUBLIC_USE = "BienUsoPublico"
+PARCEL_TYPE_WAREHOUSE = "Deposito"
+PARCEL_TYPE_PARKING = "Parqueadero"
+PARCEL_TYPE_WINERY = "Bodega"
+
 # Operations:
 # 1 = number of features must be selected
 # * = One or more features must be selected
 # None = There must be no features selected
 CONSTRAINT_TYPES_OF_PARCEL = {
-    "NPH": {
+    PARCEL_TYPE_NO_PROPERTY_HORIZONTAL: {
         PLOT_TABLE: 1
     },
-    "PropiedadHorizontal.Matriz": {
+    PARCEL_TYPE_PROPERTY_HORIZONTAL_MATRIX: {
         PLOT_TABLE: 1,
         BUILDING_UNIT_TABLE: None
     },
-    "PropiedadHorizontal.UnidadPredial": {
+    PARCEL_TYPE_PROPERTY_HORIZONTAL_UNIT_PREDIAL: {
         PLOT_TABLE: None,
         BUILDING_TABLE: None,
         BUILDING_UNIT_TABLE: '*'
     },
-    "Condominio.Matriz": {
+    PARCEL_TYPE_CONDOMINIUM_MATRIX: {
         PLOT_TABLE: 1,
         BUILDING_UNIT_TABLE: None
     },
-    "Condominio.UnidadPredial": {
+    PARCEL_TYPE_CONDOMINIUM_UNIT_PREDIAL: {
         PLOT_TABLE: 1,
         BUILDING_UNIT_TABLE: None
     },
-    "Mejora": {
+    PARCEL_TYPE_MEJORA: {
         PLOT_TABLE: None,
-        BUILDING_TABLE: '*',
         BUILDING_UNIT_TABLE: '*'
     },
-    "ParqueCementerio.Matriz": {
+    PARCEL_TYPE_CEMETERY_MATRIX: {
         PLOT_TABLE: 1,
         BUILDING_UNIT_TABLE: None
     },
-    "ParqueCementerio.UnidadPrivada": {
-        PLOT_TABLE: 1,
-        BUILDING_TABLE: None,
-        BUILDING_UNIT_TABLE: None
-    },
-    "Vía": {
+    PARCEL_TYPE_CEMETERY_PRIVATE_UNIT: {
         PLOT_TABLE: 1,
         BUILDING_TABLE: None,
         BUILDING_UNIT_TABLE: None
     },
-    "BienUsoPublico": {
+    PARCEL_TYPE_ROAD: {
+        PLOT_TABLE: 1,
+        BUILDING_TABLE: None,
+        BUILDING_UNIT_TABLE: None
+    },
+    PARCEL_TYPE_PUBLIC_USE: {
         PLOT_TABLE: 1,
         BUILDING_UNIT_TABLE: None
     },
-    "Deposito": {
+    PARCEL_TYPE_WAREHOUSE: {
     },
-    "Parqueadero": {
+    PARCEL_TYPE_PARKING: {
     },
-    "Bodega": {
+    PARCEL_TYPE_WINERY: {
     }
 }

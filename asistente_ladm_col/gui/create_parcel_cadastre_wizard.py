@@ -40,6 +40,7 @@ from ..config.table_mapping_config import (BUILDING_TABLE,
                                            BUILDING_UNIT_TABLE,
                                            ID_FIELD,
                                            PARCEL_TABLE,
+                                           PARCEL_TYPE_FIELD,
                                            PLOT_TABLE,
                                            UEBAUNIT_TABLE,
                                            UEBAUNIT_TABLE_BUILDING_FIELD,
@@ -134,10 +135,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.wizardPage2.setButtonText(QWizard.FinishButton,finish_button_text)
 
     def adjust_page_2_controls(self):
-        self.gbx_page2.setTitle(QCoreApplication.translate("CreateParcelCadastreWizard", "What spatial unit do you want to associate the parcel with?    "))
         self.button(self.FinishButton).setDisabled(True)
-        self.txt_help_page_2.setHtml(self.help_strings.WIZ_CREATE_PARCEL_CADASTRE_PAGE_2)
-
         self.disconnect_signals()
 
         # Load layers
@@ -190,7 +188,13 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                     self.btn_building_unit_map.setEnabled(False)
                     self.btn_building_unit_expression.setEnabled(False)
 
+        self.update_help_message(parcel_type)
         self.check_selected_features()
+
+    def update_help_message(self, parcel_type):
+        msg_parcel_type = self.help_strings.MESSAGE_PARCEL_TYPES[parcel_type]
+        msg_help = self.help_strings.WIZ_CREATE_PARCEL_CADASTRE_PAGE_2.format(msg_parcel_type=msg_parcel_type)
+        self.txt_help_page_2.setHtml(msg_help)
 
     def constraint_is_okay(self, type):
         result = True
@@ -207,6 +211,11 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             # elif CONSTRAINT_TYPES_OF_PARCEL[type][spatial_unit] == None:
             #     if not _layer.selectedFeatureCount() == 0:
             #         result = False
+
+        # At least one feature must be selected
+        if self._plot_layer.selectedFeatureCount() == 0 and self._building_layer.selectedFeatureCount() == 0 and self._building_unit_layer.selectedFeatureCount() == 0:
+            result = False
+
         return result
 
     def disconnect_signals(self):
@@ -408,9 +417,23 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.iface.actionAddFeature().trigger()
 
         ## TODO: Show selection page when all three layers have selections
-        plot_ids = [f[ID_FIELD] for f in self._plot_layer.selectedFeatures()]
-        building_ids = [f[ID_FIELD] for f in self._building_layer.selectedFeatures()]
-        building_unit_ids = [f[ID_FIELD] for f in self._building_unit_layer.selectedFeatures()]
+
+        plot_ids = list()
+        building_ids = list()
+        building_unit_ids = list()
+
+        # Apply restriction to the selection
+        if PLOT_TABLE in CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()]:
+            if CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()][PLOT_TABLE] is not None:
+                plot_ids = [f[ID_FIELD] for f in self._plot_layer.selectedFeatures()]
+
+        if BUILDING_TABLE in CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()]:
+            if CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()][BUILDING_TABLE] is not None:
+                building_ids = [f[ID_FIELD] for f in self._building_layer.selectedFeatures()]
+
+        if BUILDING_UNIT_TABLE in CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()]:
+            if CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()][BUILDING_UNIT_TABLE] is not None:
+                building_unit_ids = [f[ID_FIELD] for f in self._building_unit_layer.selectedFeatures()]
 
         # Create connections to react when a feature is added to buffer and
         # when it gets stored into the DB
@@ -418,6 +441,10 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self._parcel_layer.committedFeaturesAdded.connect(partial(self.finish_parcel, plot_ids, building_ids, building_unit_ids))
 
     def call_parcel_commit(self, fid):
+        # assigns the type of parcel before to creating it
+        parcel_type_field_idx = self._parcel_layer.getFeature(fid).fieldNameIndex(PARCEL_TYPE_FIELD)
+        self._parcel_layer.changeAttributeValue(fid, parcel_type_field_idx, self.cb_parcel_type.currentText())
+
         self._parcel_layer.featureAdded.disconnect(self.call_parcel_commit)
         self.log.logMessage("Parcel's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         res = self._parcel_layer.commitChanges()
