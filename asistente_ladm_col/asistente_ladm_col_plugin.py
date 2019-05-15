@@ -19,8 +19,7 @@
 import glob
 import os.path
 import shutil
-from functools import (partial,
-                       wraps)
+from functools import partial
 
 import qgis.utils
 from processing.modeler.ModelerUtils import ModelerUtils
@@ -45,7 +44,6 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     LADM_COL_MENU_OBJECTNAME,
                                     QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
                                     QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
-                                    QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
                                     PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
                                     PLUGIN_NAME,
                                     PLUGIN_VERSION,
@@ -56,14 +54,11 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
 from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                           ID_FIELD,
                                           COL_PARTY_TABLE)
-from .gui.about_dialog import AboutDialog
-try:
-    from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
-    from .gui.qgis_model_baker.dlg_import_data import DialogImportData
-    from .gui.qgis_model_baker.dlg_export_data import DialogExportData
-except ModuleNotFoundError as e:
-    pass # The plugin will take care of validating the presence/absence of QGIS Model Baker
+from .utils.decorators import (_db_connection_required,
+                               _qgis_model_baker_required,
+                               _activate_processing_plugin)
 
+from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
@@ -192,8 +187,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
         self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
 
-        self.iface.initializationCompleted.connect(self.qgis_initialized)
-
         # Toolbar
         self._build_boundary_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Build boundaries..."), self.iface.mainWindow())
         self._build_boundary_action.triggered.connect(self.call_explode_boundaries)
@@ -220,6 +213,11 @@ class AsistenteLADMCOLPlugin(QObject):
                                            self._import_from_intermediate_structure_action,
                                            self._report_action])
 
+        if not qgis.utils.active_plugins:
+            self.iface.initializationCompleted.connect(self.call_refresh_menus)
+        else:
+            self.call_refresh_menus()
+
         # Add LADM_COL provider and models to QGIS
         self.ladm_col_provider = LADMCOLAlgorithmProvider()
         QgsApplication.processingRegistry().addProvider(self.ladm_col_provider)
@@ -228,7 +226,7 @@ class AsistenteLADMCOLPlugin(QObject):
         else: # We need to wait until processing is initialized
             QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_models)
 
-    def qgis_initialized(self):
+    def call_refresh_menus(self):
         # Refresh menus on QGIS start
         db = self.get_db_connection()
         res, msg = db.test_connection()
@@ -757,34 +755,6 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = LogExcelDialog(self.qgis_utils, self.text)
         dlg.exec_()
 
-    def _db_connection_required(func_to_decorate):
-        @wraps(func_to_decorate)
-        def decorated_function(inst, *args, **kwargs):
-            # Check if current connection is valid and disable access if not
-            db = inst.get_db_connection()
-            res, msg = db.test_connection()
-            if res:
-                if not inst.qgis_utils._layers and not inst.qgis_utils._relations:
-                    inst.qgis_utils.cache_layers_and_relations(db, ladm_col_db=True)
-
-                func_to_decorate(inst)
-            else:
-                widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
-                             QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                             "Check your database connection, since there was a problem accessing a valid Cadastre-Registry model in the database. Click the button to go to Settings."))
-                button = QPushButton(widget)
-                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
-                button.pressed.connect(inst.show_settings)
-                widget.layout().addWidget(button)
-                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
-                inst.log.logMessage(
-                    QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, connection to DB was not valid."),
-                    PLUGIN_NAME,
-                    Qgis.Warning
-                )
-
-        return decorated_function
-
     def _official_db_connection_required(func_to_decorate):
         @wraps(func_to_decorate)
         def decorated_function(inst, *args, **kwargs):
@@ -804,40 +774,6 @@ class AsistenteLADMCOLPlugin(QObject):
                 inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
                 inst.log.logMessage(
                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, connection to official DB was not valid."),
-                    PLUGIN_NAME,
-                    Qgis.Warning
-                )
-
-        return decorated_function
-
-    def _qgis_model_baker_required(func_to_decorate):
-        @wraps(func_to_decorate)
-        def decorated_function(inst, *args, **kwargs):
-            # Check if QGIS Model Baker is installed and active, disable access if not
-            plugin_version_right = inst.is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                                                QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                                                QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
-
-            if plugin_version_right:
-                func_to_decorate(inst)
-            else:
-                if QGIS_MODEL_BAKER_REQUIRED_VERSION_URL:
-                    # If we depend on a specific version of QGIS Model Baker (only on that one)
-                    # and it is not the latest version, show a download link
-                    msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'QGIS Model Baker' version {} is required, but couldn't be found. Download it <a href=\"{}\">from this link</a> and use 'Install from ZIP'.").format(QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION, QGIS_MODEL_BAKER_REQUIRED_VERSION_URL)
-                    inst.iface.messageBar().pushMessage("Asistente LADM_COL", msg, Qgis.Warning, 15)
-                else:
-                    msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'QGIS Model Baker' version {} {}is required, but couldn't be found. Click the button to show the Plugin Manager.").format(QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION, '' if QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION else '(or higher) ')
-
-                    widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", msg)
-                    button = QPushButton(widget)
-                    button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
-                    button.pressed.connect(inst.show_plugin_manager)
-                    widget.layout().addWidget(button)
-                    inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
-
-                inst.log.logMessage(
-                    QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, QGIS Model Baker not found."),
                     PLUGIN_NAME,
                     Qgis.Warning
                 )
@@ -933,6 +869,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_qgis_model_baker_required
     @_db_connection_required
+    @_activate_processing_plugin
     def call_fill_right_of_way_relations(self):
         self.right_of_way.fill_right_of_way_relations(self.get_db_connection())
 
@@ -943,6 +880,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_qgis_model_baker_required
     @_db_connection_required
+    @_activate_processing_plugin
     def call_import_from_intermediate_structure(self):
         self._dlg = DialogImportFromExcel(self.iface, self.get_db_connection(), self.qgis_utils)
         self._dlg.log_excel_show_message_emitted.connect(self.show_log_excel_button)
@@ -986,20 +924,24 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_qgis_model_baker_required
     def show_dlg_import_schema(self):
+        from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
         dlg = DialogImportSchema(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.models_have_changed.connect(self.refresh_menus)
         dlg.exec_()
 
     @_qgis_model_baker_required
     def show_dlg_import_data(self):
+        from .gui.qgis_model_baker.dlg_import_data import DialogImportData
         dlg = DialogImportData(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
     @_qgis_model_baker_required
     def show_dlg_export_data(self):
+        from .gui.qgis_model_baker.dlg_export_data import DialogExportData
         dlg = DialogExportData(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
+    @_activate_processing_plugin
     def show_dlg_controlled_measurement(self):
         dlg = ControlledMeasurementDialog(self.qgis_utils)
         dlg.exec_()
@@ -1036,6 +978,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_qgis_model_baker_required
     @_db_connection_required
+    @_activate_processing_plugin
     def show_wiz_right_of_way_cad(self):
         wiz = CreateRightOfWayCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
@@ -1150,6 +1093,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_qgis_model_baker_required
     @_db_connection_required
+    @_activate_processing_plugin
     def show_dlg_quality(self):
         dlg = DialogQuality(self.get_db_connection(), self.qgis_utils, self.quality)
         dlg.exec_()

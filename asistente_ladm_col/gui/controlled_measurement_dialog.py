@@ -38,6 +38,7 @@ DIALOG_UI = get_ui_class('controlled_measurement_dialog.ui')
 GROUP_ID = 'AUTO' # If you change this, adjust the Group_Points as well
 
 class ControlledMeasurementDialog(QDialog, DIALOG_UI):
+
     def __init__(self, qgis_utils):
         QDialog.__init__(self)
         self.setupUi(self)

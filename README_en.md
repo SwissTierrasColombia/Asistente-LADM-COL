@@ -17,7 +17,7 @@ A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([B
 
 ## Functionalities
 
-The current version ([1.6.2](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.6.2)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.2.2](https://github.com/opengisch/QgisModelBaker/releases/download/v4.2.2/QgisModelBaker.v4.2.2.zip) and allows users to:
+The current version ([1.6.3](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.6.3)) of the LADM_COL Assistant depends on [QGIS Model Baker v4.2.2](https://github.com/opengisch/QgisModelBaker/releases/download/v4.2.2/QgisModelBaker.v4.2.2.zip) and allows users to:
 
  - Capture data for the `CATASTRO_REGISTRO_NUCLEO v2.2.1` model.
  - Capture data for the `FICHA_PREDIAL v2.2.1` model.
@@ -136,7 +136,7 @@ To use the LADM_COL Assistant you need:
    - Windows 8 or Windows 10
    - GNU/Linux
  - Base software:
-   - QGIS v3.4.x
+   - QGIS v3.4.6-Madeira o superior
    - Java v1.8
    - PostgreSQL 9.5 or higher (PostgreSQL 10 and PostgreSQL 11 works as well).
    - PostGIS 2.4 or higher.

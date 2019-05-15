@@ -25,10 +25,12 @@ from functools import partial
 
 from qgis.PyQt.QtCore import (QUrl,
                               QFile,
+                              QTextStream,
+                              QTextCodec,
                               QIODevice,
                               QCoreApplication,
                               pyqtSignal)
-from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtWidgets import (QDialog, QLayout)
 from qgis.core import (QgsNetworkContentFetcherTask,
                        QgsApplication,
                        Qgis)
@@ -54,6 +56,21 @@ class AboutDialog(QDialog, DIALOG_UI):
         self.setupUi(self)
         self.qgis_utils = qgis_utils
         self.check_local_help()
+
+        self.tb_changelog.setOpenExternalLinks(True)
+
+        if QGIS_LANG == 'en':
+            file = QFile(":/Asistente-LADM_COL/resources/html/Changelog_en.html")
+        else:
+            file = QFile(":/Asistente-LADM_COL/resources/html/Changelog.html")
+
+        if not file.open(QIODevice.ReadOnly | QIODevice.Text):
+            raise Exception(file.errorString())
+
+        codec = QTextCodec.codecForLocale()
+        stream = QTextStream(file)
+        stream.setCodec(codec)
+        self.tb_changelog.setHtml(stream.readAll())
 
     def check_local_help(self):
         try:

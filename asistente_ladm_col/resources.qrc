@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="/Asistente-LADM_COL">
+    <file>resources/html/Changelog.html</file>
+    <file>resources/html/Changelog_en.html</file>
+    <file>resources/images/schema.png</file>
     <file>resources/images/mIconExpressionSelect.svg</file>
     <file>resources/images/mActionSelectRectangle.svg</file>
     <file>resources/images/schema.png</file>

@@ -38,6 +38,7 @@ from ..resources_rc import *
 DIALOG_UI = get_ui_class('dlg_quality.ui')
 
 class DialogQuality(QDialog, DIALOG_UI):
+
     def __init__(self, db, qgis_utils, quality, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)

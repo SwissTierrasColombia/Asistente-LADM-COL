@@ -1,4 +1,5 @@
 import nose2
+import qgis
 
 from qgis.core import (QgsVectorLayer,
                        QgsApplication,
@@ -9,9 +10,6 @@ from qgis.testing import (unittest,
                           start_app)
 
 from qgis.PyQt.QtCore import QVariant
-import processing
-from processing.core.Processing import Processing
-from qgis.analysis import QgsNativeAlgorithms
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
@@ -25,6 +23,7 @@ from asistente_ladm_col.config.table_mapping_config import (ID_FIELD,
                                                             COL_PARTY_TABLE,
                                                             LOGIC_CONSISTENCY_TABLES)
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
+                                            import_processing,
                                             get_test_copy_path,
                                             get_dbconn,
                                             restore_schema)
@@ -33,6 +32,8 @@ from asistente_ladm_col.utils.quality import QualityUtils
 from asistente_ladm_col.utils.logic_checks import LogicChecks
 
 import_qgis_model_baker()
+import_processing()
+import processing
 
 class TesQualityValidations(unittest.TestCase):
 
@@ -41,8 +42,6 @@ class TesQualityValidations(unittest.TestCase):
         self.qgis_utils = QGISUtils()
         self.quality = QualityUtils(self.qgis_utils)
         self.logic_checks = LogicChecks()
-        Processing.initialize()
-        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
 
         test_connection_dbs = ['test_ladm_col_validations_against_topology_tables', 'test_ladm_col_logic_checks']
 

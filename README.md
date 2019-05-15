@@ -18,7 +18,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([1.6.2](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.6.2)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v4.2.2](https://github.com/opengisch/QgisModelBaker/releases/download/v4.2.2/QgisModelBaker.v4.2.2.zip) y permite:
+La versión actual ([1.6.3](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.6.3)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v4.2.2](https://github.com/opengisch/QgisModelBaker/releases/download/v4.2.2/QgisModelBaker.v4.2.2.zip) y permite:
 
  - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
  - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
@@ -72,7 +72,7 @@ La versión actual ([1.6.2](https://github.com/AgenciaImplementacion/Asistente-L
    - Usando formularios preconfigurados.
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
  - Crear `Agrupaciones de Interesados`:
-   - Usando un formularios preconfigurado.
+   - Usando un formulario preconfigurado.
  - Crear `Fuente Espacial` y `Fuente Administrativa`:
    - Usando formularios preconfigurados.
      - Y relacionando la nueva `Fuente Espacial` a `Terrenos`, `Linderos` o `Puntos` previamente seleccionados.
@@ -137,7 +137,7 @@ Para usar el Asistente LADM_COL se requiere:
    - Windows 8 o Windows 10
    - GNU/Linux
  - Software base:
-   - QGIS v3.4.x
+   - QGIS v3.4.6-Madeira o superior
    - Java v1.8
    - PostgreSQL 9.5 o superior (funciona PostgreSQL 10 y PostgreSQL 11).
    - PostGIS 2.4 o superior.
@@ -181,7 +181,7 @@ NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
 
 ## ¿Cómo recibir notificaciones de nuevas versiones del Asistente LADM_COL?
 
- + Si tienes cuenta de GitHub o si puedes crear una, ve a https://github.com/AgenciaImplementacion/Asistente-LADM_COL/ y haz click en el botón `Watch` de la parte superior de la página web para seguir las novedades del repositorio.
+ + Si tienes cuenta de GitHub o si puedes crear una, ve a https://github.com/AgenciaImplementacion/Asistente-LADM_COL/ y haz clic en el botón `Watch` de la parte superior de la página web para seguir las novedades del repositorio.
 
  + Si no tienes cuenta de GitHub, tienes dos opciones:
 
@@ -190,7 +190,7 @@ NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
    b) Usa gitpunch!
 
       + Ve a la página https://gitpunch.com/
-      + Espera a que termine la animación o haz click en `Skip` (en la parte inferior de la página).
+      + Espera a que termine la animación o haz clic en `Skip` (en la parte inferior de la página).
       + Regístrate usando tu correo electrónico.
       + Busca por "Asistente LADM_COL" y elige el repositorio `AgenciaImplementacion/Asistente-LADM_COL`.
       + Eso es todo. Después de recibir un correo que te notifique una nueva versión del plugin, pasarán unas horas hasta que el mismo esté disponible en el repositorio oficial de plugins de QGIS.

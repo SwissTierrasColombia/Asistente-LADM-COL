@@ -185,6 +185,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 return  # Do not close the dialog
 
         else:
+            # Save settings from tabs other than database connection
+            self.save_settings()
             QDialog.accept(self)  # TODO remove?
 
     def reject(self):

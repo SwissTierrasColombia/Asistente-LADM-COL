@@ -102,6 +102,8 @@ MODULE_HELP_MAPPING = {
     'export_data' : 'data_management.html#export-data'
 }
 
+QGIS_REQUIRED_VERSION = '3.4.6-Madeira'
+QGIS_REQUIRED_VERSION_INT = 30406
 JAVA_REQUIRED_VERSION = 1.8
 
 # Configure QGIS Model Baker Dependency
