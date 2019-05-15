@@ -139,6 +139,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._queries_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Queries"), self.iface.mainWindow())
         self._menu.addActions([self._load_layers_action,
                               self._queries_action])
+        self.add_reports_menu()
         self._menu.addSeparator()
         self.add_data_management_menu()
         self._settings_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
@@ -237,6 +238,13 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._menu.addMenu(self._data_management_menu)
 
+    def add_reports_menu(self):
+        self._report_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Reports"), self._menu)
+        self._annex_17_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"), self._report_menu)
+        self._ant_map_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"), self._report_menu)
+        self._report_menu.addActions([self._annex_17_action, self._ant_map_action])
+
+        self._menu.addMenu(self._report_menu)
 
     def add_cadastre_menu(self):
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
