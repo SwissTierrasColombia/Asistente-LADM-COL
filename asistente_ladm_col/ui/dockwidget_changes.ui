@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>541</width>
-    <height>638</height>
+    <height>694</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -255,12 +255,12 @@
          </item>
          <item row="0" column="1">
           <property name="text">
-           <string>01239</string>
+           <string>134213</string>
           </property>
          </item>
          <item row="0" column="2">
           <property name="text">
-           <string>213</string>
+           <string>174732</string>
           </property>
          </item>
          <item row="0" column="3">
@@ -268,10 +268,10 @@
            <string/>
           </property>
           <property name="background">
-           <brush brushstyle="NoBrush">
+           <brush brushstyle="SolidPattern">
             <color alpha="255">
              <red>255</red>
-             <green>85</green>
+             <green>0</green>
              <blue>0</blue>
             </color>
            </brush>
@@ -293,12 +293,12 @@
          </item>
          <item row="1" column="1">
           <property name="text">
-           <string>2398</string>
+           <string>342-29972</string>
           </property>
          </item>
          <item row="1" column="2">
           <property name="text">
-           <string>2398</string>
+           <string>34229972</string>
           </property>
          </item>
          <item row="1" column="3">
@@ -306,10 +306,10 @@
            <string/>
           </property>
           <property name="background">
-           <brush brushstyle="NoBrush">
+           <brush brushstyle="SolidPattern">
             <color alpha="255">
-             <red>0</red>
-             <green>255</green>
+             <red>255</red>
+             <green>0</green>
              <blue>0</blue>
             </color>
            </brush>
@@ -319,6 +319,32 @@
             <color alpha="255">
              <red>0</red>
              <green>255</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </property>
+         </item>
+         <item row="2" column="0">
+          <property name="text">
+           <string>Nombre</string>
+          </property>
+         </item>
+         <item row="2" column="1">
+          <property name="text">
+           <string>Las Marías</string>
+          </property>
+         </item>
+         <item row="2" column="2">
+          <property name="text">
+           <string>Las Marías</string>
+          </property>
+         </item>
+         <item row="2" column="3">
+          <property name="background">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>85</red>
+             <green>170</green>
              <blue>0</blue>
             </color>
            </brush>

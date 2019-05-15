@@ -189,3 +189,64 @@ class LADM_DATA():
                         parcel_ids.append(feature[field_name])
 
         return parcel_ids
+
+    def get_parcel_data_to_compare_changes(self, db, search_criterion=None):
+        """
+        :param db: DB Connector object
+        :param search_criterion: FieldName-Value pair to search in parcel layer (None for getting all parcels)
+        :return: list of plot ids related to the parcel
+        """
+        required_layers = {
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}
+
+        res_layers = self.qgis_utils.get_layers(db, required_layers, load=True)
+
+        parcel_table = res_layers[PARCEL_TABLE]
+        if parcel_table is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("LADM_DATA", "Parcel table couldn't be found... {}").format(
+                    db.get_description()),
+                Qgis.Warning)
+            return
+
+        plot_layer = res_layers[PLOT_TABLE]
+        if plot_layer is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("LADM_DATA", "Plot layer couldn't be found... {}").format(
+                                                    db.get_description()),
+                                           Qgis.Warning)
+            return
+
+        uebaunit_table = res_layers[UEBAUNIT_TABLE]
+        if uebaunit_table is None:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate("LADM_DATA", "UEBAUnit table couldn't be found... {}").format(
+                    db.get_description()),
+                Qgis.Warning)
+            return
+
+        if search_criterion is not None:
+            field_name = search_criterion.keys()[0]
+            field_value = search_criterion.values()[0]
+            request = QgsFeatureRequest(QgsExpression("{}={}".format(field_name, field_value)))
+
+            parcel_features = parcel_table.getFeatures(request)
+        else:
+            parcel_features = parcel_table.getFeatures()
+
+        dict_features = dict()
+        for feature in parcel_features:
+            dict_attrs = dict()
+            for field in parcel_table.fields():
+                 dict_attrs[field.name()] = feature.attribute(field.name())
+
+            dict_features[feature.id()] = dict_attrs
+
+        # features = uebaunit_table.getFeatures("{} IN ({}) AND {} IS NOT NULL".format(
+        #                                             UEBAUNIT_TABLE_PARCEL_FIELD,
+        #                                             ",".join(feature_dict.keys()),
+        #                                             UEBAUNIT_TABLE_PLOT_FIELD))
+
+        return dict_features
