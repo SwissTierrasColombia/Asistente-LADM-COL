@@ -31,8 +31,15 @@ from qgis.core import (QgsWkbTypes,
 from qgis.gui import QgsPanelWidgetStack, QgsPanelWidget
 
 from asistente_ladm_col.config.general_config import MAP_SWIPE_TOOL_PLUGIN_NAME
-from asistente_ladm_col.config.table_mapping_config import PLOT_TABLE, PARCEL_TABLE, UEBAUNIT_TABLE, \
-    OFFICIAL_PLOT_TABLE, OFFICIAL_PARCEL_TABLE, PARCEL_NUMBER_FIELD, ID_FIELD
+from asistente_ladm_col.config.table_mapping_config import (PLOT_TABLE,
+                                                            PARCEL_TABLE,
+                                                            UEBAUNIT_TABLE,
+                                                            OFFICIAL_PLOT_TABLE,
+                                                            OFFICIAL_PARCEL_TABLE,
+                                                            PARCEL_NUMBER_FIELD,
+                                                            PARCEL_NUMBER_BEFORE_FIELD,
+                                                            FMI_FIELD,
+                                                            ID_FIELD)
 from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_per_parcel_panel_widget.ui')
@@ -66,8 +73,10 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         # Set connections
         self.btn_alphanumeric_query.clicked.connect(self.alphanumeric_query)
-        self.btn_clear_alphanumeric_query.clicked.connect(self.clear_alphanumeric_query)
         self.chk_show_all_plots.toggled.connect(self.show_all_plots)
+        self.cbo_parcel_fields.currentIndexChanged.connect(self.field_search_updated)
+
+        self.initialize_field_values_line_edit()
 
     def add_layers(self):
         self.qgis_utils.map_freeze_requested.emit(True)
@@ -153,6 +162,15 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.qgis_utils.map_freeze_requested.emit(False)
 
+    def field_search_updated(self, index=None):
+        self.initialize_field_values_line_edit()
+
+    def initialize_field_values_line_edit(self):
+        self.txt_alphanumeric_query.setLayer(self._official_parcel_layer)
+        idx = self._official_parcel_layer.fields().indexOf(self.cbo_parcel_fields.currentData())
+        self.txt_alphanumeric_query.setAttributeIndex(idx)
+        print("Set to field",idx)
+
     def initialize_layers(self):
         self._plot_layer = None
         self._parcel_layer = None
@@ -174,9 +192,9 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.cbo_parcel_fields.clear()
 
         if self._official_parcel_layer is not None:
-            self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Parcel Number"), 'parcel_number')
-            self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Previous Parcel Number"), 'previous_parcel_number')
-            self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Folio de Matrícula Inmobiliaria"), 'fmi')
+            self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Parcel Number"), PARCEL_NUMBER_FIELD)
+            self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Previous Parcel Number"), PARCEL_NUMBER_BEFORE_FIELD)
+            self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Folio de Matrícula Inmobiliaria"), FMI_FIELD)
         else:
             self.add_layers()
 
@@ -260,11 +278,11 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         Alphanumeric query
         """
         option = self.cbo_parcel_fields.currentData()
-        query = self.txt_alphanumeric_query.text().strip()
+        query = self.txt_alphanumeric_query.value()
         if query:
-            if option == 'fmi':
+            if option == FMI_FIELD:
                 self.search_data(parcel_fmi=query)
-            elif option == 'parcel_number':
+            elif option == PARCEL_NUMBER_FIELD:
                 self.search_data(parcel_number=query)
             else: # previous_parcel_number
                 self.search_data(previous_parcel_number=query)
@@ -272,9 +290,6 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         else:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("DockWidgetChanges", "First enter a query"))
-
-    def clear_alphanumeric_query(self):
-        self.txt_alphanumeric_query.setText('')
 
     def show_all_plots(self, state):
         self._official_plot_layer.setSubsetString(self._current_official_substring if not state else "")

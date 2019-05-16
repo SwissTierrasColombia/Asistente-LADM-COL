@@ -50,36 +50,48 @@
          <enum>QTabWidget::South</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_plot_coordinates">
          <attribute name="title">
           <string>Spatial query</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_5">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_2">
+          <item row="0" column="1">
+           <widget class="QPushButton" name="btn_identify_plot">
             <property name="text">
-             <string>Select a Plot feature to identify related information:</string>
+             <string>Select a plot in the map</string>
             </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QPushButton" name="btn_identify_plot">
-              <property name="text">
-               <string>Identify</string>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
+          <item row="0" column="0">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="2">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -87,26 +99,8 @@
          <attribute name="title">
           <string>Alphanumeric query</string>
          </attribute>
-         <layout class="QGridLayout" name="gridLayout_7">
-          <item row="3" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QPushButton" name="btn_clear_alphanumeric_query">
-              <property name="text">
-               <string>Clear</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btn_alphanumeric_query">
-              <property name="text">
-               <string>Query</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="2" column="0">
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QLabel" name="label">
@@ -127,28 +121,47 @@
             </item>
            </layout>
           </item>
-          <item row="0" column="0">
-           <widget class="QLineEdit" name="txt_alphanumeric_query">
-            <property name="text">
-             <string>705080002000000030134000000000</string>
-            </property>
-            <property name="placeholderText">
-             <string>Search for...</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
-           <widget class="QgsFilterLineEdit" name="mLineEdit">
-            <property name="showSearchIcon">
-             <bool>true</bool>
-            </property>
-            <property name="showSpinner">
-             <bool>false</bool>
-            </property>
-            <property name="qgisRelation" stdset="0">
-             <string notr="true"/>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Value:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsFieldValuesLineEdit" name="txt_alphanumeric_query">
+              <property name="qgisRelation" stdset="0">
+               <string notr="true"/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_alphanumeric_query">
+              <property name="text">
+               <string>Query</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -339,9 +352,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFilterLineEdit</class>
+   <class>QgsFieldValuesLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
+   <header>qgsfieldvalueslineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
