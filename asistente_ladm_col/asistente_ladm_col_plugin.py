@@ -39,7 +39,7 @@ from qgis.core import (Qgis,
                        QgsExpressionContext,
                        QgsProcessingModelAlgorithm)
 
-from asistente_ladm_col.gui.dockwidget_changes import DockWidgetChanges
+from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     LADM_COL_MENU_OBJECTNAME,
                                     PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
@@ -109,7 +109,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.log = QgsApplication.messageLog()
         self._about_dialog = None
         self._dock_widget_queries = None
-        self._dock_widget_changes = None
+        self._dock_widget_change_detection = None
         self.toolbar = None
         self.wiz_address = None
 
@@ -533,22 +533,22 @@ class AsistenteLADMCOLPlugin(QObject):
         menu.deleteLater()
 
     def add_changes_menu(self):
-        self._changes_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Changes"), self._menu)
-        self._query_by_parcel_changes_action = QAction(
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query by parcel"), self._changes_menu)
-        self._batch_query_changes_action = QAction(
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Batch query"), self._changes_menu)
+        self._change_detection_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change detection"), self._menu)
+        self._query_changes_per_parcel_action = QAction(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query per parcel"), self._change_detection_menu)
+        self._query_changes_all_parcels_action = QAction(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query all parcels"), self._change_detection_menu)
         self._settings_changes_action = QAction(
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Official data settings"), self._changes_menu)
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Official data settings"), self._change_detection_menu)
 
-        self._changes_menu.addActions([self._query_by_parcel_changes_action, self._batch_query_changes_action,
-                                       self._changes_menu.addSeparator(), self._settings_changes_action])
+        self._change_detection_menu.addActions([self._query_changes_per_parcel_action, self._query_changes_all_parcels_action,
+                                                self._change_detection_menu.addSeparator(), self._settings_changes_action])
 
-        self._menu.addMenu(self._changes_menu)
+        self._menu.addMenu(self._change_detection_menu)
 
         # Set connections
-        self._query_by_parcel_changes_action.triggered.connect(self.query_by_parcel_for_changes)
-        self._batch_query_changes_action.triggered.connect(self.batch_query_for_changes)
+        self._query_changes_per_parcel_action.triggered.connect(self.query_changes_per_parcel)
+        self._query_changes_all_parcels_action.triggered.connect(self.query_changes_all_parcels)
         self._settings_changes_action.triggered.connect(self.show_official_data_settings)
 
     def refresh_menus(self, db, ladm_col_db):
@@ -1119,24 +1119,29 @@ class AsistenteLADMCOLPlugin(QObject):
     @_map_swipe_tool_required
     @_db_connection_required
     @_official_db_connection_required
-    def query_by_parcel_for_changes(self):
-        if self._dock_widget_changes is None:
-            self._dock_widget_changes = DockWidgetChanges(self.iface,
-                                                          self.get_db_connection(),
-                                                          self.get_official_db_connection(),
-                                                          self.qgis_utils,
-                                                          self.ladm_data)
-            self.qgis_utils.db_connection_changed.connect(self._dock_widget_changes.update_db_connection)
-            self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_changes)
-        else:
-            self._dock_widget_changes.toggleUserVisible()
+    def query_changes_per_parcel(self):
+        self.show_change_detection_dockwidget()
+        self._dock_widget_change_detection.show_parcel_panel()
 
     @_qgis_model_baker_required
     @_map_swipe_tool_required
     @_db_connection_required
     @_official_db_connection_required
-    def batch_query_for_changes(self):
-        pass
+    def query_changes_all_parcels(self):
+        self.show_change_detection_dockwidget()
+
+    def show_change_detection_dockwidget(self):
+        if self._dock_widget_change_detection is None:
+            self._dock_widget_change_detection = DockWidgetChangeDetection(self.iface,
+                                                                           self.get_db_connection(),
+                                                                           self.get_official_db_connection(),
+                                                                           self.qgis_utils,
+                                                                           self.ladm_data)
+            self.qgis_utils.db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
+            self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
+
+        if not self._dock_widget_change_detection.isVisible():
+            self._dock_widget_change_detection.setVisible(True)
 
     def show_official_data_settings(self):
         self.qgis_utils.get_official_data_settings_dialog().exec_()

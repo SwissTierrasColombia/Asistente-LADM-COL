@@ -14,7 +14,7 @@ from ..config.general_config import (PLUGIN_NAME,
                                      QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
                                      QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION, MAP_SWIPE_TOOL_PLUGIN_NAME,
                                      MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION, MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
-                                     MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
+                                     MAP_SWIPE_TOOL_REQUIRED_VERSION_URL, QGIS_MODEL_BAKER_PLUGIN_NAME)
 
 from ..config.general_config import (LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
                                      LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE,
@@ -57,7 +57,9 @@ def _qgis_model_baker_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(inst, *args, **kwargs):
         # Check if QGIS Model Baker is installed and active, disable access if not
-        plugin_version_right = inst.is_plugin_version_valid()
+        plugin_version_right = inst.is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
+                                                            QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
+                                                            QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
 
         if plugin_version_right:
             func_to_decorate(inst)

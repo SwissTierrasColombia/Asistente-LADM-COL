@@ -3,9 +3,9 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2018-03-08
+        begin                : 2019-05-16
         git sha              : :%H$
-        copyright            : (C) 2018 by Germán Carrillo (BSF Swissphoto)
+        copyright            : (C) 2019 by Germán Carrillo (BSF Swissphoto)
         email                : gcarrillo@linuxmail.org
  ***************************************************************************/
 /***************************************************************************
@@ -16,12 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 """
-from functools import partial
-
 import qgis
-from PyQt5.QtCore import QCoreApplication, Qt, QEvent, QPoint
-from PyQt5.QtGui import QColor, QIcon, QCursor, QMouseEvent
-from PyQt5.QtWidgets import QMenu, QAction, QApplication
+
+from qgis.PyQt.QtGui import QColor, QMouseEvent
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QEvent, QPoint
 from qgis.core import (QgsWkbTypes,
                        Qgis,
                        QgsMessageLog,
@@ -29,36 +27,30 @@ from qgis.core import (QgsWkbTypes,
                        QgsFeatureRequest,
                        QgsExpression,
                        QgsRectangle)
-from qgis.gui import QgsDockWidget, QgsMapToolIdentifyFeature
+
+from qgis.gui import QgsPanelWidgetStack, QgsPanelWidget
 
 from asistente_ladm_col.config.general_config import MAP_SWIPE_TOOL_PLUGIN_NAME
-from asistente_ladm_col.utils.qt_utils import OverrideCursor
-from ..config.table_mapping_config import (PLOT_TABLE,
-                                           UEBAUNIT_TABLE,
-                                           PARCEL_TABLE,
-                                           ID_FIELD,
-                                           PARCEL_NUMBER_FIELD,
-                                           OFFICIAL_PLOT_TABLE,
-                                           OFFICIAL_PARCEL_TABLE)
+from asistente_ladm_col.config.table_mapping_config import PLOT_TABLE, PARCEL_TABLE, UEBAUNIT_TABLE, \
+    OFFICIAL_PLOT_TABLE, OFFICIAL_PARCEL_TABLE, PARCEL_NUMBER_FIELD, ID_FIELD
+from asistente_ladm_col.utils import get_ui_class
 
-from ..utils import get_ui_class
+WIDGET_UI = get_ui_class('change_detection/changes_per_parcel_panel_widget.ui')
 
-from ..data.tree_models import TreeModel
-
-DOCKWIDGET_UI = get_ui_class('dockwidget_changes.ui')
-
-class DockWidgetChanges(QgsDockWidget, DOCKWIDGET_UI):
+class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
     def __init__(self, iface, db, official_db, qgis_utils, ladm_data, parent=None):
-        super(DockWidgetChanges, self).__init__(None)
+        QgsPanelWidget.__init__(self, parent)
         self.setupUi(self)
-        self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.iface = iface
         self.canvas = iface.mapCanvas()
         self._db = db
         self._official_db = official_db
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
-        self.map_swipe_tool =  qgis.utils.plugins[MAP_SWIPE_TOOL_PLUGIN_NAME]
+
+        self.setDockMode(True)
+
+        self.map_swipe_tool = qgis.utils.plugins[MAP_SWIPE_TOOL_PLUGIN_NAME]
 
         # Required layers
         self._plot_layer = None
