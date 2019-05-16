@@ -49,6 +49,8 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     RELEASE_URL,
                                     VALUATION_MENU_OBJECTNAME)
 from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
+                                          ANNEX_17_REPORT,
+                                          ANT_MAP_REPORT,
                                           ID_FIELD,
                                           COL_PARTY_TABLE)
 from .utils.decorators import (_db_connection_required,
@@ -160,6 +162,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._settings_action.triggered.connect(self.show_settings)
         self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
+        self._annex_17_action.triggered.connect(self.call_annex_17_report_generation)
+        self._ant_map_action.triggered.connect(self.call_ant_map_report_generation)
 
         self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
         self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
@@ -195,8 +199,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
         self._fill_right_of_way_relations_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Right of Way Relations"), self.iface.mainWindow())
         self._fill_right_of_way_relations_action.triggered.connect(self.call_fill_right_of_way_relations)
-        self._report_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Generate Annex 17"), self.iface.mainWindow())
-        self._report_action.triggered.connect(self.call_report_generation)
         self._import_from_intermediate_structure_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import from intermediate structure"),
                                       self.iface.mainWindow())
         self._import_from_intermediate_structure_action.triggered.connect(self.call_import_from_intermediate_structure)
@@ -207,8 +209,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                            self._fill_point_BFS_action,
                                            self._fill_more_BFS_less_action,
                                            self._fill_right_of_way_relations_action,
-                                           self._import_from_intermediate_structure_action,
-                                           self._report_action])
+                                           self._import_from_intermediate_structure_action])
 
         if not qgis.utils.active_plugins:
             self.iface.initializationCompleted.connect(self.call_refresh_menus)
@@ -802,8 +803,13 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_qgis_model_baker_required
     @_db_connection_required
-    def call_report_generation(self):
-        self.report_generator.generate_report(self.get_db_connection(), self._report_action)
+    def call_ant_map_report_generation(self):
+        self.report_generator.generate_report(self.get_db_connection(), self._annex_17_action, ANT_MAP_REPORT)
+
+    @_qgis_model_baker_required
+    @_db_connection_required
+    def call_annex_17_report_generation(self):
+        self.report_generator.generate_report(self.get_db_connection(), self._annex_17_action, ANNEX_17_REPORT)
 
     @_qgis_model_baker_required
     @_db_connection_required

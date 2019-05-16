@@ -1099,7 +1099,7 @@ class PGConnector(DBConnector):
         else:
             return cur.fetchall()[0][0]
 
-    def get_ant_map_boundaries_data(self, plot_id, mode='only_id'):
+    def get_ant_map_neighbouring_change_data(self, plot_id, mode='only_id'):
         if self.conn is None:
             res, msg = self.test_connection()
             if not res:

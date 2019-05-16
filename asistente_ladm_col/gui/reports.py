@@ -47,8 +47,11 @@ from ..config.general_config import (TEST_SERVER,
                                      PLUGIN_NAME,
                                      REPORTS_REQUIRED_VERSION,
                                      URL_REPORTS_LIBRARIES)
-from ..config.table_mapping_config import (ID_FIELD,
-                                           PLOT_TABLE, PARCEL_NUMBER_FIELD)
+from ..config.table_mapping_config import (ANNEX_17_REPORT,
+                                           ANT_MAP_REPORT,
+                                           ID_FIELD,
+                                           PLOT_TABLE,
+                                           PARCEL_NUMBER_FIELD)
 from ..utils.qt_utils import (remove_readonly,
                               normalize_local_url)
 
@@ -62,7 +65,7 @@ class ReportGenerator():
             self.encoding = 'UTF8'
 
         self.log = QgsApplication.messageLog()
-        self.LOG_TAB = 'Reportes'
+        self.LOG_TAB = 'Reportes LADM-COL'
         self._downloading = False
 
     def stderr_ready(self, proc):
@@ -95,19 +98,33 @@ class ReportGenerator():
 
         return new_file_path
 
-    def get_layer_geojson(self, db, layer_name, plot_id):
-        if layer_name == 'terreno':
-            return db.get_annex17_plot_data(plot_id, 'only_id')
-        elif layer_name == 'terrenos':
-            return db.get_annex17_plot_data(plot_id, 'all_but_id')
-        elif layer_name == 'terrenos_all':
-            return db.get_annex17_plot_data(plot_id, 'all')
-        elif layer_name == 'construcciones':
-            return db.get_annex17_building_data()
-        else:
-            return db.get_annex17_point_data(plot_id)
+    def get_layer_geojson(self, db, layer_name, plot_id, report_type):
+        if report_type == ANNEX_17_REPORT:
+            if layer_name == 'terreno':
+                return db.get_annex17_plot_data(plot_id, 'only_id')
+            elif layer_name == 'terrenos':
+                return db.get_annex17_plot_data(plot_id, 'all_but_id')
+            elif layer_name == 'terrenos_all':
+                return db.get_annex17_plot_data(plot_id, 'all')
+            elif layer_name == 'construcciones':
+                return db.get_annex17_building_data()
+            else:
+                return db.get_annex17_point_data(plot_id)
+        else: #report_type == ANT_MAP_REPORT:
+            if layer_name == 'terreno':
+                return db.get_ant_map_plot_data(plot_id, 'only_id')
+            elif layer_name == 'terrenos':
+                return db.get_annex17_plot_data(plot_id, 'all_but_id')
+            elif layer_name == 'terrenos_all':
+                return db.get_annex17_plot_data(plot_id, 'all')
+            elif layer_name == 'construcciones':
+                return db.get_annex17_building_data()
+            elif layer_name == 'puntoLindero':
+                return db.get_annex17_point_data(plot_id)
+            else: #layer_name == 'cambio_colindancia':
+                return db.get_ant_map_neighbouring_change_data(plot_id)
 
-    def update_json_data(self, db, json_spec_file, plot_id, tmp_dir):
+    def update_json_data(self, db, json_spec_file, plot_id, tmp_dir, report_type):
         json_data = dict()
         with open(json_spec_file) as f:
             json_data = json.load(f)
@@ -116,11 +133,11 @@ class ReportGenerator():
         json_data['attributes']['datasetName'] = db.schema
         layers = json_data['attributes']['map']['layers']
         for layer in layers:
-            layer['geoJson'] = self.get_layer_geojson(db, layer['name'], plot_id)
+            layer['geoJson'] = self.get_layer_geojson(db, layer['name'], plot_id, report_type)
 
         overview_layers = json_data['attributes']['overviewMap']['layers']
         for layer in overview_layers:
-            layer['geoJson'] = self.get_layer_geojson(db, layer['name'], plot_id)
+            layer['geoJson'] = self.get_layer_geojson(db, layer['name'], plot_id, report_type)
 
         new_json_file_path = os.path.join(tmp_dir, self.get_tmp_filename('json_data_{}'.format(plot_id), 'json'))
         with open(new_json_file_path, 'w') as new_json:
@@ -137,7 +154,7 @@ class ReportGenerator():
     def get_tmp_filename(self, basename, extension='gpkg'):
         return "{}_{}.{}".format(basename, str(time.time()).replace(".",""), extension)
 
-    def generate_report(self, db, button):
+    def generate_report(self, db, button, report_type):
         # Check if mapfish and Jasper are installed, otherwise show where to
         # download them from and return
         base_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'impresion')
@@ -207,7 +224,11 @@ class ReportGenerator():
             return
         QSettings().setValue("Asistente-LADM_COL/reports/save_into_dir", save_into_folder)
 
-        config_path = os.path.join(base_path, 'Annex_17')
+        if report_type == ANNEX_17_REPORT:
+            config_path = os.path.join(base_path, ANNEX_17_REPORT)
+        else: #report_type == ANT_MAP_REPORT:
+            config_path = os.path.join(base_path, ANT_MAP_REPORT)
+
         json_spec_file = os.path.join(config_path, 'spec_json_file.json')
 
         script_name = ''
@@ -265,7 +286,7 @@ class ReportGenerator():
                 continue
 
             # Generate data file
-            json_file = self.update_json_data(db, json_spec_file, plot_id, tmp_dir)
+            json_file = self.update_json_data(db, json_spec_file, plot_id, tmp_dir, report_type)
             print("JSON FILE:", json_file)
 
             # Run sh/bat passing config and data files
@@ -277,7 +298,10 @@ class ReportGenerator():
 
 
             parcel_number = self.ladm_data.get_parcels_related_to_plot(db, plot_id, PARCEL_NUMBER_FIELD) or ['']
-            file_name = 'anexo_17_{}_{}.pdf'.format(plot_id, parcel_number[0])
+            if report_type == ANNEX_17_REPORT:
+                file_name = 'anexo_17_{}_{}.pdf'.format(plot_id, parcel_number[0])
+            else: #report_typre == ANT_MAP_REPORT:
+                file_name = 'plano_ant_{}_{}.pdf'.format(plot_id, parcel_number[0])
             current_report_path = os.path.join(save_into_folder, file_name)
             proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', current_report_path])
 
