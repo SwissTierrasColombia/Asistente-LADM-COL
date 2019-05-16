@@ -133,7 +133,7 @@ class DockWidgetChanges(QgsDockWidget, DOCKWIDGET_UI):
             return
         else:
             self._official_plot_layer.setName(OFFICIAL_PLOT_TABLE)
-            self.qgis_utils.symbology.set_layer_style_from_qml(self._official_plot_layer)
+            self.qgis_utils.symbology.set_layer_style_from_qml(self._official_plot_layer, db=self._official_db)
 
             # Layer was found, listen to its removal so that we can deactivate the custom tool when that occurs
             try:

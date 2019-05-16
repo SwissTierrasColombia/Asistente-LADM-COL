@@ -25,6 +25,9 @@ from .db_connector import (DBConnector, EnumTestLevel)
 
 
 class GPKGConnector(DBConnector):
+
+    _PROVIDER_NAME = 'ogr'
+
     def __init__(self, uri, schema=None, conn_dict={}):
         DBConnector.__init__(self, uri, schema, conn_dict)
         self.mode = 'gpkg'
@@ -74,7 +77,22 @@ class GPKGConnector(DBConnector):
         return cursor
 
     def is_ladm_layer(self, layer):
-        return False
+        result = False
+        if layer.dataProvider().name() == GPKGConnector._PROVIDER_NAME:
+            # Dbfile should be equal to _uri
+            dbfile = layer.source().split('|')[0]
+            result = (dbfile == self._uri)
+        return result
+
+    def get_provider_layer_name(self, layer):
+        name = layer.source().split('|layername=')[1]
+        return name
+
+    def get_ladm_provider_layer_name(self, layer):
+        name = None
+        if self.is_ladm_layer(layer):
+            name = self.get_provider_layer_name(layer)
+        return name
 
     def get_description_conn_string(self):
         result = None
