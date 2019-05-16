@@ -62,7 +62,7 @@ class ReportGenerator():
             self.encoding = 'UTF8'
 
         self.log = QgsApplication.messageLog()
-        self.LOG_TAB = 'Anexo_17'
+        self.LOG_TAB = 'Reportes'
         self._downloading = False
 
     def stderr_ready(self, proc):
@@ -207,7 +207,7 @@ class ReportGenerator():
             return
         QSettings().setValue("Asistente-LADM_COL/reports/save_into_dir", save_into_folder)
 
-        config_path = os.path.join(base_path, 'ANT')
+        config_path = os.path.join(base_path, 'Annex_17')
         json_spec_file = os.path.join(config_path, 'spec_json_file.json')
 
         script_name = ''

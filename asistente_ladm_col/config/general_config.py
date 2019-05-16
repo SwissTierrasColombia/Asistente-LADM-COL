@@ -56,10 +56,10 @@ STROKE_ARCS = True
 SETTINGS_CONNECTION_TAB_INDEX = 0
 
 
-# Version to be installed when creating reports (annex 17)
+# Version to be installed when creating reports (annex 17 - ANT Map)
 # (Other versions, if found, will be dropped in favor of this one)
-REPORTS_REQUIRED_VERSION = '0.2'
-URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/annex_17/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
+REPORTS_REQUIRED_VERSION = '0.3'
+URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/LADM_COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
