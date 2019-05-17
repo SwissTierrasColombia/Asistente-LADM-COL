@@ -19,6 +19,8 @@
 import os
 import stat
 
+from asistente_ladm_col.utils.qt_utils import make_file_selector
+
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               QCoreApplication,
@@ -50,6 +52,19 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
+
+
+        self.btn_browse_file_gdb.clicked.connect(
+            make_file_selector(self.gdb_path, QCoreApplication.translate("DialogImportFromExcel",
+                                  "Select the Excel file with data in the intermediate structure"),
+                                   QCoreApplication.translate("DialogImportFromExcel",
+                                                                      'Excel File (*.xlsx *.xls)')))
+
+        self.btn_browse_file_gdb.clicked.connect(
+            make_file_selector(self.gdb_path, QCoreApplication.translate("DialogImportFromExcel",
+                                  "Select the Excel file with data in the intermediate structure"),
+                                   QCoreApplication.translate("DialogImportFromExcel",
+                                                                      'Excel File (*.xlsx *.xls)')))
 
     def show_help(self):
         self.qgis_utils.show_help("create_points")

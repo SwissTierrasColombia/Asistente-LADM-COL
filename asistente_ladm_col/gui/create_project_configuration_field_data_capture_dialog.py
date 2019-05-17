@@ -17,7 +17,12 @@
  ***************************************************************************/
 """
 import os
-import stat
+
+from ..utils.qfield_utils import (import_capture_model,
+                                  organize_legend,
+                                  change_multimedia_suppord,
+                                  load_default_value,
+                                  load_simbology)
 
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
@@ -29,6 +34,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QGridLayout)
 from qgis.core import (Qgis,
                        QgsMapLayerProxyModel,
+                       QgsProject,
                        QgsApplication,
                        QgsCoordinateReferenceSystem,
                        QgsWkbTypes)
@@ -41,14 +47,22 @@ from ..utils import get_ui_class
 WIZARD_UI = get_ui_class('wiz_project_configuration_field_data_capture.ui')
 
 class ProjectConfigurationFieldDataCaptureDialog(QDialog, WIZARD_UI):
-    def __init__(self, iface, db, qgis_utils, parent=None):
+    def __init__(self, iface, db, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
         self._db = db
-        self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
+        self.buttonBox.accepted.connect(self.accepted)
 
     def show_help(self):
         self.qgis_utils.show_help("create_points")
+
+    def accepted(self):
+        import_capture_model('ili2gpkg', 'Captura_Geografica_V0_3', '/home/shade/Desktop/prueba10.gpkg')
+        organize_legend('Captura_Geografica_V0_3')
+        change_multimedia_suppord()
+        load_default_value()
+        load_simbology()
+

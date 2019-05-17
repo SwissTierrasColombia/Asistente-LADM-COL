@@ -1,0 +1,127 @@
+INTERLIS 2.3;
+
+MODEL Captura_Geografica_V0_3 (en)
+AT "mailto:PC4@localhost"
+VERSION "2019-03-18"  =
+  IMPORTS ISO19107_V1_MAGNABOG,LADM_COL_V1_1;
+
+  TOPIC Captura_Geografica =
+
+    DOMAIN
+
+      AcuerdoTipo = (
+        Acuerdo,
+        Desacuerdo
+      );
+
+      ConfiabilidadTipo = (
+        Confiable,
+        No_Confiable
+      );
+
+      DefPuntoTipo = (
+        Bien_Definido,
+        No_Bien_Definido
+      );
+
+      FuenteEspacialTipo = (
+        Croquis_Campo,
+        Protocolo_Posicionamiento,
+        Informe_Calculo,
+        Datos_Crudos,
+        Referencia_Espacial
+      );
+
+      LineaTipo = (
+        Servidumbre
+      );
+
+      MonumentacionTipo = (
+        Incrustacion,
+        Mojon,
+        No_Materializado,
+        Pilastra,
+        Otros
+      );
+
+      PoligonoTipo = (
+        Terreno,
+        Construccion,
+        Servidumbre
+      );
+
+      PuntoTipo = (
+        Punto_Lindero,
+        Punto_Levantamiento(
+          Construccion,
+          Servidumbre
+        ),
+        Punto_Control
+      );
+
+    CLASS Punto_Referencia_Predio =
+      /** Identificador del predio
+       */
+      Identificador_Predio : MANDATORY TEXT*1000;
+      Geometria : MANDATORY ISO19107_V1_MAGNABOG.GM_Point2D;
+    END Punto_Referencia_Predio;
+
+    CLASS Fuente_Espacial =
+      Nombre : TEXT*255;
+      Fecha : INTERLIS.XMLDate;
+      Tipo : MANDATORY FuenteEspacialTipo;
+      Soporte_Multimedia : URI;
+    END Fuente_Espacial;
+
+    CLASS Linea =
+      Geometria : MANDATORY ISO19107_V1_MAGNABOG.GM_Curve2D;
+      Tipo_Linea : LineaTipo;
+      Ancho : 0 .. 1000 [INTERLIS.M];
+    END Linea;
+
+    CLASS Poligono =
+      Tipo_Poligono : MANDATORY PoligonoTipo;
+      Geometria : MANDATORY ISO19107_V1_MAGNABOG.GM_Surface2D;
+      Area_Poligono : 0.0 .. 99999999999999.9;
+    END Poligono;
+
+    CLASS Punto =
+      Tipo_Punto : MANDATORY PuntoTipo;
+      Nombre_Punto : MANDATORY TEXT*255;
+      Descripcion_Punto : MTEXT*255;
+      Acuerdo : AcuerdoTipo;
+      Definicion_Punto : DefPuntoTipo;
+      /** Corresponde a la exactitud vertical del punto
+       */
+      Exactitud_Vertical : 0 .. 1000 [LADM_COL_V1_1.cm];
+      /** Corresponde a la exactitud horizontal del punto
+       */
+      Exactitud_Horizontal : MANDATORY 0 .. 1000 [LADM_COL_V1_1.cm];
+      Confiabilidad : ConfiabilidadTipo;
+      Monumentacion : MANDATORY MonumentacionTipo;
+      Geometria : MANDATORY ISO19107_V1_MAGNABOG.GM_Point2D;
+    END Punto;
+
+    ASSOCIATION linea_fuente =
+      linea -- {0..1} Linea;
+      fuente_espacial -- {0..*} Fuente_Espacial;
+    END linea_fuente;
+
+    ASSOCIATION poligono_fuente =
+      poligono -- {0..1} Poligono;
+      fuente_espacial -- {0..*} Fuente_Espacial;
+    END poligono_fuente;
+
+    ASSOCIATION punto_fuente =
+      punto -- {0..1} Punto;
+      fuente -- {0..*} Fuente_Espacial;
+    END punto_fuente;
+
+    ASSOCIATION Punto_referencia_Fuente =
+      Fuente_Espacial -- {0..*} Fuente_Espacial;
+      Punto_Referencia -- {0..1} Punto_Referencia_Predio;
+    END Punto_referencia_Fuente;
+
+  END Captura_Geografica;
+
+END Captura_Geografica_V0_3.

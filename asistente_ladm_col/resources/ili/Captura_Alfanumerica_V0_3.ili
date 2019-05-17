@@ -1,0 +1,448 @@
+INTERLIS 2.3;
+
+MODEL Captura_Alfanumerica_V0_3 (en)
+AT "mailto:PC4@localhost"
+VERSION "2019-03-18"  =
+  IMPORTS ISO19107_V1_MAGNABOG;
+
+  TOPIC Captura_Alfanumerica =
+
+    DOMAIN
+
+      ArmazonTipo = (
+        Madera,
+        Prefabricado,
+        !!@ ili2db.dispName = "Ladrillo bloque"
+        Ladrillo_Bloque,
+        !!@ ili2db.dispName = "Concreto cuatro o mas pisos"
+        Concreto_cuatro_o_mas_pisos,
+        !!@ ili2db.dispName = "Concreto hasta tres pisos"
+        Concreto_hasta_tres_pisos
+      );
+
+      CalidadDerechoTipo = (
+        /** Pleno dominio
+         */
+        !!@ ili2db.dispName = "Propiedad"
+        Propiedad,
+        /** Posesión, Ocupación o tenencia
+         */
+        !!@ ili2db.dispName = "Falsa tradición"
+        Falsa_Tradicion,
+        /** Propiedad colectiva
+         */
+        !!@ ili2db.dispName = "Propiedad colectiva"
+        Propiedad_Colectiva
+      );
+
+      CalificacionTipo = (
+        Residencial,
+        Comercial,
+        Industrial
+      );
+
+      CategoriaQuienAtendioTipo = (
+        !!@ ili2db.dispName = "Propietario"
+        Propietario,
+        !!@ ili2db.dispName = "Arrendatario"
+        Arrendatario,
+        !!@ ili2db.dispName = "Cuidandero"
+        Cuidandero,
+        !!@ ili2db.dispName = "Visitante"
+        Visitante,
+        !!@ ili2db.dispName = "Visitante ocasional"
+        Visitante_Ocasional,
+        !!@ ili2db.dispName = "Otro"
+        Otro
+      );
+
+      CerchasTipo = (
+        Madera,
+        !!@ ili2db.dispName = "Metalica liviana"
+        Metalica_liviana,
+        !!@ ili2db.dispName = "Metalica mediana"
+        Metalica_mediana,
+        !!@ ili2db.dispName = "Metalica pesada"
+        Metalica_Pesada,
+        Altura
+      );
+
+      ConservacionTipo = (
+        Malo,
+        Regular,
+        Bueno,
+        Excelente
+      );
+
+      CubiertaTipo = (
+        !!@ ili2db.dispName = "Materiales de desecho o Telas asfálticas"
+        Materiales_de_desecho_o_Telas_asfalticas,
+        !!@ ili2db.dispName = "Zinc, Teja de barro, Eternit rústico"
+        Zinc_Teja_de_barro_Eternit_rustico,
+        !!@ ili2db.dispName = "Entre piso o Cubierta provisional"
+        Entre_piso_o_Cubierta_provisional,
+        !!@ ili2db.dispName = "Eternit o Teja de barro (Cubierta sencilla)"
+        Eternit_o_Teja_de_barro,
+        !!@ ili2db.dispName = "Azotea, Aluminio, Placa sencilla con eternit o Teja de barro"
+        Azotea_Aluminio_placa_sencilla_con_eternit_o_teja_de_barro,
+        !!@ ili2db.dispName = "Placa impermeabilizada, Cubierta lujosa u Ornamental"
+        EnumElement110
+      );
+
+      CubrimientoMurosTipo = (
+        !!@ ili2db.dispName = "Sin cubrimiento"
+        Sin_cubrimiento,
+        !!@ ili2db.dispName = "Pañete, Papel común, Ladrillo prensado"
+        Panete_Papel_comun_Ladrillo_presado,
+        !!@ ili2db.dispName = "Estuco, Cerámica, Papel fino"
+        Estuco_Caramica_Papel_fino,
+        !!@ ili2db.dispName = "Madera, Piedra ornamental"
+        Madera_Piedra_Ornamental,
+        !!@ ili2db.dispName = "Marmol, lujosos, otros"
+        Marmol_lujosos_otros
+      );
+
+      DestinacionEconomicaTipo = (
+        !!@ ili2db.dispName = "Agrícola"
+        Agricola,
+        !!@ ili2db.dispName = "Agroindustrial"
+        Agroindustrial,
+        !!@ ili2db.dispName = "Agropecuario"
+        Agropecuario,
+        !!@ ili2db.dispName = "Comercial"
+        Comercial,
+        !!@ ili2db.dispName = "Cultural"
+        Cultural,
+        !!@ ili2db.dispName = "Educativo"
+        Educativo,
+        !!@ ili2db.dispName = "Forestal"
+        Forestal,
+        !!@ ili2db.dispName = "Habitacional"
+        Habitacional,
+        !!@ ili2db.dispName = "Industrial"
+        Industrial,
+        !!@ ili2db.dispName = "Institucional"
+        Institucional,
+        !!@ ili2db.dispName = "Minero"
+        Minero,
+        !!@ ili2db.dispName = "Pecuario"
+        Pecuario,
+        !!@ ili2db.dispName = "Recreacional"
+        Recreacional,
+        !!@ ili2db.dispName = "Religioso"
+        Religioso,
+        !!@ ili2db.dispName = "Salubridad"
+        Salubridad,
+        !!@ ili2db.dispName = "Servicios especiales"
+        Servicios_Especiales,
+        !!@ ili2db.dispName = "Uso público"
+        Uso_Publico,
+        !!@ ili2db.dispName = "Lote urbanizable no urbanizado"
+        Lote_Urbanizable_No_Urbanizado,
+        !!@ ili2db.dispName = "Lote urbanizable no construido"
+        Lote_Urbanizable_No_Construido,
+        !!@ ili2db.dispName = "Lote no urbanizable"
+        Lote_No_Urbanizable,
+        !!@ ili2db.dispName = "Tierras aparentemente inexplotadas"
+        Tierras_Aparentemente_Inexplotadas,
+        !!@ ili2db.dispName = "Acuicola"
+        Acuicola,
+        !!@ ili2db.dispName = "Infrestructura y transporte"
+        Infrestructura_Transporte,
+        !!@ ili2db.dispName = "Infrestructura hidraulica"
+        Infrestructura_Hidraulica,
+        !!@ ili2db.dispName = "Infraestructura de saneamiento"
+        Infraestructura_Saneamiento,
+        !!@ ili2db.dispName = "Infraestructura de seguridad"
+        Infraestructura_Seguridad,
+        !!@ ili2db.dispName = "Infraestructura asociada a explotación"
+        Infraestructura_Asociada_Explotacion
+      );
+
+      DocumentoSoporteTipo = (
+        !!@ ili2db.dispName = "Escritura pública"
+        Escritura_Publica,
+        !!@ ili2db.dispName = "Sentencia"
+        Sentencia,
+        !!@ ili2db.dispName = "Acto administrativo"
+        Acto_Administrativo,
+        !!@ ili2db.dispName = "Documento privado"
+        Documento_Privado
+      );
+
+      DocumentoTipo = (
+        !!@ ili2db.dispName = "Cédula de ciudadanía"
+        Cedula_Ciudadania,
+        !!@ ili2db.dispName = "Cédula de extranjería"
+        Cedula_Extranjeria,
+        !!@ ili2db.dispName = "NIT"
+        NIT,
+        !!@ ili2db.dispName = "Pasaporte"
+        Pasaporte,
+        !!@ ili2db.dispName = "Tarjeta de identidad"
+        Tarjeta_Identidad,
+        !!@ ili2db.dispName = "Libreta militar"
+        Libreta_Militar,
+        !!@ ili2db.dispName = "Registro civil"
+        Registro_Civil,
+        !!@ ili2db.dispName = "Cédula militar"
+        Cedula_Militar,
+        !!@ ili2db.dispName = "NUIP"
+        NUIP
+      );
+
+      EnchapesTipo = (
+        !!@ ili2db.dispName = "Sin cubrimiento"
+        Sin_cubrimiento,
+        !!@ ili2db.dispName = "Pañete, Baldosa comun, Cemento"
+        Panete_Baldosa_comun_Cemento,
+        !!@ ili2db.dispName = "Baldosin unicolor o Papel común"
+        Baldosin_unicolor_Papel_comun,
+        !!@ ili2db.dispName = "Baldosin decorado, papel fino"
+        Baldosin_decorado_Papel_fino,
+        !!@ ili2db.dispName = "Ceramica cristana, granito"
+        Ceramica_cristana_Granito,
+        !!@ ili2db.dispName = "Marmol, enchape lujoso"
+        EnumElement154
+      );
+
+      FachadaMobiliarioTipo = (
+        Pobre,
+        Sencilla,
+        Regular,
+        Buena,
+        Lujosa
+      );
+
+      FormalidadTipo = (
+        Formal,
+        Informal
+      );
+
+      FuenteTipo = (
+        Escritura,
+        Certificado,
+        Contrato,
+        !!@ ili2db.dispName = "Documento identidad"
+        Documento_Identidad,
+        Informe,
+        !!@ ili2db.dispName = "Formulario predial"
+        Formulario_Predial,
+        !!@ ili2db.dispName = "Promesa compraventa"
+        Promesa_Compraventa,
+        Reglamento,
+        !!@ ili2db.dispName = "Resolución"
+        Resolucion,
+        Sentencia,
+        Solicitud,
+        Acta,
+        Acuerdo,
+        Auto,
+        !!@ ili2db.dispName = "Estatuto social"
+        Estatuto_Social,
+        Decreto,
+        Providencia,
+        !!@ ili2db.dispName = "Acta colindancia"
+        Acta_Colindancia,
+        !!@ ili2db.dispName = "Libros antiguo sistema registral"
+        Libros_Antiguo_Sistema_Registral,
+        !!@ ili2db.dispName = "Carta venta"
+        Carta_Venta,
+        !!@ ili2db.dispName = "Informe colindancia"
+        Informe_Colindancia
+      );
+
+      JustificacionDerechoTipo = (
+        !!@ ili2db.dispName = "Tradición"
+        Tradicion,
+        !!@ ili2db.dispName = "Ocupación"
+        Ocupacion,
+        !!@ ili2db.dispName = "Sucesión"
+        Sucesion,
+        !!@ ili2db.dispName = "Prescripción"
+        Prescripcion,
+        !!@ ili2db.dispName = "Accesión"
+        Accesion
+      );
+
+      MurosTipo = (
+        !!@ ili2db.dispName = "Materiales de desecho o Esterilla"
+        Materiales_de_desecho_o_Esterilla,
+        !!@ ili2db.dispName = "bahareque o Adobe o Tapia"
+        Bahereque_o_adobe_o_tapia,
+        !!@ ili2db.dispName = "Concreto prefabricado"
+        Concreto_prefabricado,
+        !!@ ili2db.dispName = "Bloque ladrillo"
+        Bloque_ladrillo,
+        Madera
+      );
+
+      PisosTipo = (
+        !!@ ili2db.dispName = "Tierra pisada"
+        Tierra_pisada,
+        !!@ ili2db.dispName = "Cemento, Madera burda"
+        Cemento_Madera_burda,
+        !!@ ili2db.dispName = "Baldosa comun de cemento, tablón, Ladrillo"
+        Baldosa_comun_de_cemento_Tablon_Ladrillo,
+        !!@ ili2db.dispName = "Listón machihembrado"
+        Liston_machihembrado,
+        !!@ ili2db.dispName = "Tableta, Caucho, Acrilico, Granito, Baldosa fina"
+        Tableta_Caucho_Acrilico_Granito_Baldosa_fina,
+        !!@ ili2db.dispName = "Parquet, Alfombra, Retal de marmol (Grano peuqeño)"
+        Parquet_Alfombra_Retal_de_marmol,
+        !!@ ili2db.dispName = "Retal de marmol, marmol, otros"
+        Retal_de_marmol_marmol_otros_lujosos
+      );
+
+      PredioTipo = (
+        !!@ ili2db.dispName = "Privado"
+        Privado,
+        !!@ ili2db.dispName = "Público"
+        Publico(
+          !!@ ili2db.dispName = "Parque nacional"
+          Parque_Nacional,
+          !!@ ili2db.dispName = "Reserva natural"
+          Reserva_Natural,
+          !!@ ili2db.dispName = "Ejido"
+          Ejido,
+          !!@ ili2db.dispName = "Presunto baldio"
+          Presunto_Baldio,
+          !!@ ili2db.dispName = "Fiscal patrimonial"
+          Fiscal_Patrimonial,
+          !!@ ili2db.dispName = "Bien de uso público"
+          Bien_Uso_Publico,
+          !!@ ili2db.dispName = "Otro"
+          Otro
+        )
+      );
+
+      TamanoTipo = (
+        !!@ ili2db.dispName = "Sin baño"
+        Sin_bano,
+        !!@ ili2db.dispName = "Pequeño"
+        Pequeno,
+        Mediano,
+        sin_bano
+      );
+
+    CLASS Punto_Referencia_predio =
+      Identificador_Predio : TEXT*1000;
+      Geometria : ISO19107_V1_MAGNABOG.GM_Point2D;
+    END Punto_Referencia_predio;
+
+    CLASS Ficha_Predio =
+      /** Identificador del predio a usarse durante el trabajo de campo
+       */
+      Identificador_Predio : MANDATORY TEXT*1000;
+      Nombre_Predio : TEXT*255;
+      Direccion_Predio : TEXT*255;
+      Nombre_Quien_Atendio : TEXT*255;
+      Tipo_Documento_Quien_Atendio : DocumentoTipo;
+      Numero_Documento_Quien_Atendio : TEXT*20;
+      Categoria_Quien_Atendio : CategoriaQuienAtendioTipo;
+      NUPRE : TEXT*255;
+      Folio_Matricula_Inmobiliaria : TEXT*80;
+      Circulo_registral : TEXT*10;
+      Numero_Predial : TEXT*30;
+      Tipo_Predio : PredioTipo;
+      Destinacion_Economica : DestinacionEconomicaTipo;
+      Formalidad : FormalidadTipo;
+      Justificacion_Derecho : JustificacionDerechoTipo;
+      Observaciones : MTEXT*500;
+      Fecha_Visita_Predial : MANDATORY INTERLIS.XMLDate;
+      Nombre_Encuestador : MANDATORY TEXT*255;
+      Tipo_Documento_Encuestador : MANDATORY DocumentoTipo;
+      Numero_Documento_Encuestador : MANDATORY TEXT*20;
+    END Ficha_Predio;
+
+    CLASS Fuente_Administrativa =
+      Nombre : TEXT*50;
+      Fecha : INTERLIS.XMLDate;
+      Tipo_fuente : FuenteTipo;
+      Soporte_Multimedia : TEXT*20;
+    END Fuente_Administrativa;
+
+    CLASS Titular =
+      Primer_Nombre : TEXT*100;
+      Segundo_Nombre : TEXT*150;
+      Primer_Apellido : TEXT*100;
+      Segundo_Apellido : TEXT*150;
+      Razon_Social : MTEXT*255;
+      Tipo_Documento : MANDATORY DocumentoTipo;
+      Documento_Identidad : MANDATORY TEXT*50;
+      Domicilio_Notificaciones : TEXT*255;
+      Correo_Electronico : TEXT*100;
+      Telefono : TEXT*20;
+      Autoriza_Notificacion_Correo : BOOLEAN;
+    END Titular;
+
+    CLASS Unidad_Construccion =
+      Tipo_calificacion : CalificacionTipo;
+      Armazon : ArmazonTipo;
+      Puntos_Armazon : 1 .. 100;
+      Muros : MurosTipo;
+      Puntos_muros : 1 .. 100;
+      Cubierta : CubiertaTipo;
+      Puntos_cubierta : 1 .. 100;
+      Estructura_conservacion : ConservacionTipo;
+      Puntos_estructura_conservacion : 1 .. 100;
+      Fachada : FachadaMobiliarioTipo;
+      Puntos_fachada : 1 .. 100;
+      Cubrimiento_muros : CubrimientoMurosTipo;
+      Puntos_cubrimiento_muros : 1 .. 100;
+      Pisos : PisosTipo;
+      Puntos_pisos : 1 .. 100;
+      Acabados_conservacion : ConservacionTipo;
+      Puntos_acabados_conservacion : 1 .. 100;
+      Bano_tamano : TamanoTipo;
+      Puntos_bano_tipo : 1 .. 100;
+      Bano_enchapes : EnchapesTipo;
+      Puntos_bano_enchapes : 1 .. 100;
+      Bano_mobiliario : FachadaMobiliarioTipo;
+      Puntos_bano_mobiliario : 1 .. 100;
+      bano_conservacion : ConservacionTipo;
+      Puntos_bano_conservacion : 1 .. 100;
+      Cocina_tamano : TamanoTipo;
+      Puntos_cocina_tamano : 1 .. 100;
+      Cocina_enchapes : EnchapesTipo;
+      Puntos_cocina_enchapes : 1 .. 100;
+      Cocina_mobiliario : FachadaMobiliarioTipo;
+      Puntos_cocina_mobiliario : 1 .. 100;
+      Cocina_conservacion : ConservacionTipo;
+      Puntos_cocina_conservacion : 1 .. 100;
+      Cerchas : CerchasTipo;
+      Puntos_cerchas : 1 .. 100;
+      Num_pisos : 1 .. 100;
+      Num_habitaciones : 1 .. 100;
+      Num_banos : 1 .. 100;
+      Num_locales : 1 .. 100;
+      Ano_construccion : INTERLIS.XMLDate;
+      Tipo_construccion : TEXT*100;
+      Observaciones : MTEXT*1000;
+    END Unidad_Construccion;
+
+    ASSOCIATION construccion_ficha =
+      ficha_predio -- {1} Ficha_Predio;
+      construccion -- {0..*} Unidad_Construccion;
+    END construccion_ficha;
+
+    ASSOCIATION Derecho_Registro =
+      ficha_predio -- {1..*} Ficha_Predio;
+      titular -- {0..*} Titular;
+      Calidad_Derecho : MANDATORY CalidadDerechoTipo;
+      Tipo_Documento_Soporte : DocumentoSoporteTipo;
+    END Derecho_Registro;
+
+    ASSOCIATION Fuente_Ficha =
+      Ficha_Predio -- {1} Ficha_Predio;
+      Fuente_Administrativa -- {0..*} Fuente_Administrativa;
+    END Fuente_Ficha;
+
+    ASSOCIATION Punto_Referencia_ficha =
+      Punto_referencia -- {0..1} Punto_Referencia_predio;
+      Ficha_Predio -- {1} Ficha_Predio;
+    END Punto_Referencia_ficha;
+
+  END Captura_Alfanumerica;
+
+END Captura_Alfanumerica_V0_3.

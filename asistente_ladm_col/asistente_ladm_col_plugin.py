@@ -952,7 +952,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_dialog_project_configuration(self):
-        dlg = ProjectConfigurationFieldDataCaptureDialog(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg = ProjectConfigurationFieldDataCaptureDialog(self.iface, self.get_db_connection())
         dlg.exec_()
 
     @_qgis_model_baker_required

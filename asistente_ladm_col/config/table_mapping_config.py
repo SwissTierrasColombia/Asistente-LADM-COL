@@ -178,6 +178,15 @@ VALUATION_GEOECONOMIC_ZONE_TABLE = "zona_homogenea_geoeconomica"
 VALUATION_PHYSICAL_ZONE_TABLE = "zona_homogenea_fisica"
 
 """
+VALUATION MAPPING
+"""
+PLOT_REFERENCE_POINT = "punto_referencia_predio"
+POINT = "punto"
+LINE = "linea"
+POLYGON = "poligono"
+
+
+"""
 PLURAL WORDS, FOR DISPLAY PURPOSES
 """
 DICT_PLURAL = {

@@ -8,7 +8,11 @@ from .table_mapping_config import (BOUNDARY_TABLE,
                                    PLOT_TABLE,
                                    BUILDING_TABLE,
                                    BUILDING_UNIT_TABLE,
-                                   RIGHT_OF_WAY_TABLE)
+                                   RIGHT_OF_WAY_TABLE,
+                                   PLOT_REFERENCE_POINT,
+                                   POINT,
+                                   LINE,
+                                   POLYGON)
 
 ERROR_LAYER = 'error_layer'
 
@@ -45,6 +49,18 @@ LAYER_QML_STYLE = {
         QgsWkbTypes.PointGeometry: 'style_point_error',
         QgsWkbTypes.LineGeometry: 'style_line_error',
         QgsWkbTypes.PolygonGeometry: 'style_polygon_error'
+    },
+    PLOT_REFERENCE_POINT: {
+        QgsWkbTypes.PointGeometry: 'style_reference_point'
+    },
+    POINT: {
+        QgsWkbTypes.PointGeometry: 'style_point'
+    },
+    LINE: {
+        QgsWkbTypes.LineGeometry: 'style_line'
+    },
+    POLYGON: {
+        QgsWkbTypes.PolygonGeometry: 'style_polygon'
     }
 }
 
