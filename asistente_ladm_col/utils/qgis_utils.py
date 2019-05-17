@@ -274,7 +274,7 @@ class QGISUtils(QObject):
 
                 # If layer is in LayerTree, return it
                 for ladm_layer in ladm_layers:
-                    if layer_info['name'] == db.get_provider_layer_name(ladm_layer):
+                    if layer_info['name'] == db.get_ladm_layer_name(ladm_layer):
                         if layer_info['geometry'] is not None and layer_info['geometry'] != ladm_layer.geometryType():
                             continue
 
@@ -291,7 +291,7 @@ class QGISUtils(QObject):
                 if layers_to_load:
                     # Get related layers from cached relations and add them to
                     # list of layers to load, QGIS Model Baker will set relations
-                    already_loaded = [db.get_provider_layer_name(ladm_layer) for ladm_layer in ladm_layers]
+                    already_loaded = [db.get_ladm_layer_name(ladm_layer) for ladm_layer in ladm_layers]
                     profiler.start("related_layers")
                     additional_layers_to_load = self.get_related_layers(layers_to_load, already_loaded)
                     profiler.end()
@@ -317,7 +317,7 @@ class QGISUtils(QObject):
                     #    column loaded because one geometry was requested.
                     ladm_layers = self.get_ladm_layers_from_layer_tree(db)
                     for layer in ladm_layers:
-                        layer_name = db.get_provider_layer_name(layer)
+                        layer_name = db.get_ladm_layer_name(layer)
 
                         if layer_name in all_layers_to_load and layer.isSpatial():
                             remove_layer = True
@@ -341,7 +341,7 @@ class QGISUtils(QObject):
                     for additional_layer_name in additional_layers_to_load:
                         num_geometry_columns = 0
                         for layer in ladm_layers:
-                            if db.get_provider_layer_name(layer) == additional_layer_name and layer.isSpatial():
+                            if db.get_ladm_layer_name(layer) == additional_layer_name and layer.isSpatial():
                                 num_geometry_columns += 1
 
                         if num_geometry_columns > 1:
@@ -352,7 +352,7 @@ class QGISUtils(QObject):
                     # Apply post-load configs to all just loaded layers
                     requested_layer_names = [v['name'] for k,v in layers.items()]
                     for layer in ladm_layers:
-                        layer_name = db.get_provider_layer_name(layer)
+                        layer_name = db.get_ladm_layer_name(layer)
                         layer_geometry = layer.geometryType()
 
                         if layer_name in all_layers_to_load:
@@ -390,7 +390,7 @@ class QGISUtils(QObject):
 
     def get_layer_from_layer_tree(self, db, layer_name, geometry_type=None):
         for k, layer in QgsProject.instance().mapLayers().items():
-            result = db.get_ladm_provider_layer_name(layer)
+            result = db.get_ladm_layer_name(layer, validate_is_ladm=True)
             if result:
                 if result == layer_name:
                     if geometry_type is not None:
@@ -427,7 +427,7 @@ class QGISUtils(QObject):
         self.set_layer_constraints(db, layer)
         self.set_form_groups(db, layer)
         if layer.isSpatial():
-            self.symbology.set_layer_style_from_qml(layer, db=db)
+            self.symbology.set_layer_style_from_qml(db, layer)
             self.set_layer_visibility(layer, visible)
 
     def configure_missing_relations(self, db, layer):
@@ -436,7 +436,7 @@ class QGISUtils(QObject):
         be handled by qgis model baker (which only sets relations between
         loaded layers), so we do it in the Asistente LADM_COL.
         """
-        layer_name = db.get_provider_layer_name(layer)
+        layer_name = db.get_ladm_layer_name(layer)
 
         db_relations = list()
         for relation in self._relations:
@@ -448,7 +448,7 @@ class QGISUtils(QObject):
         for qgis_relation in qgis_relations:
             qgis_rel = dict()
             referenced_layer = qgis_relation.referencedLayer()
-            qgis_rel[REFERENCED_LAYER] = db.get_provider_layer_name(referenced_layer)
+            qgis_rel[REFERENCED_LAYER] = db.get_ladm_layer_name(referenced_layer)
             qgis_rel[REFERENCED_FIELD] = referenced_layer.fields()[qgis_relation.referencedFields()[0]].name()
             qgis_rel[REFERENCING_FIELD] = layer.fields()[qgis_relation.referencingFields()[0]].name()
             qgis_rels.append(qgis_rel)
@@ -492,7 +492,7 @@ class QGISUtils(QObject):
         cannot be handled by qgis model baker (which only sets relations
         between loaded layers), so we do it in the Asistente LADM_COL.
         """
-        layer_name = db.get_provider_layer_name(layer)
+        layer_name = db.get_ladm_layer_name(layer)
 
         if layer_name in self._bags_of_enum:
             for k,v in self._bags_of_enum[layer_name].items():
@@ -527,20 +527,20 @@ class QGISUtils(QObject):
                     layer.setEditorWidgetSetup(idx, setup)
 
     def set_display_expressions(self, db, layer):
-        layer_name = db.get_provider_layer_name(layer)
+        layer_name = db.get_ladm_layer_name(layer)
 
         if layer_name in DICT_DISPLAY_EXPRESSIONS:
             layer.setDisplayExpression(DICT_DISPLAY_EXPRESSIONS[layer_name])
 
     def set_layer_variables(self, db, layer):
-        layer_name = db.get_provider_layer_name(layer)
+        layer_name = db.get_ladm_layer_name(layer)
 
         if layer_name in LAYER_VARIABLES:
             for variable, value in LAYER_VARIABLES[layer_name].items():
                 QgsExpressionContextUtils.setLayerVariable(layer, variable, value)
 
     def set_custom_widgets(self, db, layer):
-        layer_name = db.get_provider_layer_name(layer)
+        layer_name = db.get_ladm_layer_name(layer)
 
         if layer_name in CUSTOM_WIDGET_CONFIGURATION:
             editor_widget_setup = QgsEditorWidgetSetup(
@@ -554,7 +554,7 @@ class QGISUtils(QObject):
             layer.setEditorWidgetSetup(index, editor_widget_setup)
 
     def set_custom_events(self, db, layer):
-        layer_name = db.get_provider_layer_name(layer)
+        layer_name = db.get_ladm_layer_name(layer)
 
         if layer_name == EXTFILE_TABLE:
             self._source_handler = self.get_source_handler()
@@ -562,7 +562,7 @@ class QGISUtils(QObject):
             self._source_handler.handle_source_upload(db, layer, EXTFILE_DATA_FIELD)
 
     def set_layer_constraints(self, db, layer):
-        layer_name = db.get_provider_layer_name(layer)
+        layer_name = db.get_ladm_layer_name(layer)
 
         if layer_name in LAYER_CONSTRAINTS:
             for field_name, value in LAYER_CONSTRAINTS[layer_name].items():
@@ -584,7 +584,7 @@ class QGISUtils(QObject):
                 #     QgsFieldConstraints.ConstraintStrengthSoft)
 
     def set_form_groups(self, db, layer):
-        layer_name = db.get_provider_layer_name(layer)
+        layer_name = db.get_ladm_layer_name(layer)
 
         if layer_name in FORM_GROUPS:
             # Preserve children, clear irc
@@ -650,7 +650,7 @@ class QGISUtils(QObject):
 
     def configure_automatic_fields(self, db, layer, list_dicts_field_expression):
 
-        layer_name = db.get_provider_layer_name(layer)
+        layer_name = db.get_ladm_layer_name(layer)
 
         for dict_field_expression in list_dicts_field_expression:
             for field, expression in dict_field_expression.items(): # There should be one key and one value
@@ -666,7 +666,7 @@ class QGISUtils(QObject):
         self.configure_automatic_fields(db, layer, [{field: ""}])
 
     def set_automatic_fields(self, db, layer):
-        layer_name = db.get_provider_layer_name(layer)
+        layer_name = db.get_ladm_layer_name(layer)
 
         self.set_automatic_fields_namespace_local_id(db, layer)
 
@@ -677,7 +677,7 @@ class QGISUtils(QObject):
             self.configure_automatic_fields(db, layer, DICT_AUTOMATIC_VALUES[layer_name])
 
     def set_automatic_fields_namespace_local_id(self, db, layer):
-        layer_name = db.get_provider_layer_name(layer)
+        layer_name = db.get_ladm_layer_name(layer)
 
         ns_enabled, ns_field, ns_value = self.get_namespace_field_and_value(layer_name)
         lid_enabled, lid_field, lid_value = self.get_local_id_field_and_value(layer_name)

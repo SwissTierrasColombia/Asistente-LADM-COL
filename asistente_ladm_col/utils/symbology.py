@@ -41,7 +41,7 @@ class SymbologyUtils(QObject):
     def __init__(self):
         QObject.__init__(self)
 
-    def set_layer_style_from_qml(self, layer, is_error_layer=False, emit=False, db=None):
+    def set_layer_style_from_qml(self, db, layer, is_error_layer=False, emit=False):
         qml_name = None
         if is_error_layer:
             if layer.name() in CUSTOM_ERROR_LAYERS:
@@ -53,8 +53,10 @@ class SymbologyUtils(QObject):
             else:
                 qml_name = LAYER_QML_STYLE[ERROR_LAYER][layer.geometryType()]
         else:
+            if db is None:
+                return
 
-            layer_name = db.get_ladm_provider_layer_name(layer)
+            layer_name = db.get_ladm_layer_name(layer, validate_is_ladm=True)
             if layer_name is None:
                 return
 

@@ -208,7 +208,7 @@ class SourceHandler(QObject):
 
     def handle_source_upload(self, db, layer, field_name):
 
-        layer_name = db.get_provider_layer_name(layer)
+        layer_name = db.get_ladm_layer_name(layer)
         field_index = layer.fields().indexFromName(field_name)
 
         def features_added(layer_id, features):
@@ -217,7 +217,7 @@ class SourceHandler(QObject):
             if modified_layer is None:
                 return
 
-            modified_layer_name = db.get_ladm_provider_layer_name(modified_layer)
+            modified_layer_name = db.get_ladm_layer_name(modified_layer, validate_is_ladm=True)
             if modified_layer_name is None:
                 return
 
