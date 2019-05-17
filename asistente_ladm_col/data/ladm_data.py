@@ -28,7 +28,18 @@ from ..config.table_mapping_config import (ID_FIELD,
                                            UEBAUNIT_TABLE_PARCEL_FIELD,
                                            UEBAUNIT_TABLE_PLOT_FIELD,
                                            UEBAUNIT_TABLE,
-                                           PARCEL_TABLE)
+                                           PARCEL_TABLE, PARCEL_NUMBER_FIELD, FMI_FIELD, PARCEL_NAME_FIELD,
+                                           DEPARTMENT_FIELD, ZONE_FIELD, PARCEL_TYPE_FIELD, MUNICIPALITY_FIELD)
+
+QGIS_ID = "_qgis_id_"
+PARCEL_FIELDS_TO_COMPARE = [PARCEL_NUMBER_FIELD,
+                            FMI_FIELD,
+                            PARCEL_NAME_FIELD,
+                            DEPARTMENT_FIELD,
+                            MUNICIPALITY_FIELD,
+                            ZONE_FIELD,
+                            #NUPRE_FIELD,
+                            PARCEL_TYPE_FIELD]
 
 class LADM_DATA():
     """
@@ -240,9 +251,15 @@ class LADM_DATA():
         for feature in parcel_features:
             dict_attrs = dict()
             for field in parcel_table.fields():
-                 dict_attrs[field.name()] = feature.attribute(field.name())
+                if field.name() in PARCEL_FIELDS_TO_COMPARE:
+                    dict_attrs[field.name()] = feature.attribute(field.name())
 
-            dict_features[feature.id()] = dict_attrs
+            dict_attrs[QGIS_ID] = feature.id()
+
+            if dict_attrs[PARCEL_NUMBER_FIELD] in dict_features:
+                dict_features[dict_attrs[PARCEL_NUMBER_FIELD]].append(dict_attrs)
+            else:
+                dict_features[dict_attrs[PARCEL_NUMBER_FIELD]] = [dict_attrs]
 
         # features = uebaunit_table.getFeatures("{} IN ({}) AND {} IS NOT NULL".format(
         #                                             UEBAUNIT_TABLE_PARCEL_FIELD,

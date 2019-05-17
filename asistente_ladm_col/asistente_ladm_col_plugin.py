@@ -1129,6 +1129,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_official_db_connection_required
     def query_changes_all_parcels(self):
         self.show_change_detection_dockwidget()
+        self._dock_widget_change_detection.show_main_panel()
 
     def show_change_detection_dockwidget(self):
         if self._dock_widget_change_detection is None:

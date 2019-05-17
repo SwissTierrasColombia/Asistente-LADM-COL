@@ -40,6 +40,33 @@
       </property>
       <item row="0" column="0">
        <widget class="QTableWidget" name="tbl_changes_all_parcels">
+        <property name="sizeAdjustPolicy">
+         <enum>QAbstractScrollArea::AdjustIgnored</enum>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="showDropIndicator" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="dragDropOverwriteMode">
+         <bool>false</bool>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="wordWrap">
+         <bool>false</bool>
+        </property>
+        <attribute name="horizontalHeaderMinimumSectionSize">
+         <number>42</number>
+        </attribute>
         <row>
          <property name="text">
           <string>1</string>
@@ -62,11 +89,6 @@
         </column>
         <column>
          <property name="text">
-          <string>FMI</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
           <string>Estado</string>
          </property>
         </column>
@@ -76,11 +98,6 @@
          </property>
         </item>
         <item row="0" column="1">
-         <property name="text">
-          <string>134213</string>
-         </property>
-        </item>
-        <item row="0" column="2">
          <property name="text">
           <string/>
          </property>
@@ -101,11 +118,6 @@
         </item>
         <item row="1" column="1">
          <property name="text">
-          <string>342-29972</string>
-         </property>
-        </item>
-        <item row="1" column="2">
-         <property name="text">
           <string/>
          </property>
          <property name="background">
@@ -124,11 +136,6 @@
          </property>
         </item>
         <item row="2" column="1">
-         <property name="text">
-          <string>645646</string>
-         </property>
-        </item>
-        <item row="2" column="2">
          <property name="text">
           <string/>
          </property>

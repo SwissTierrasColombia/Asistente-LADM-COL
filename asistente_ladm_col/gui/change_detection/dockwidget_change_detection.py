@@ -37,12 +37,18 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
 
-        self.main_panel = ChangesAllParcelsPanelWidget(self.iface)
+        # Configure panels
+        self.main_panel = ChangesAllParcelsPanelWidget(self.iface, self._db, self._official_db, self.qgis_utils, self.ladm_data)
         self.widget.setMainPanel(self.main_panel)
+        self.main_panel.changes_per_parcel_panel_requested.connect(self.show_parcel_panel)
+
         self.parcel_panel = None
 
-    def show_parcel_panel(self, parcel_t_id=None):
-        self.parcel_panel = ChangesPerParcelPanelWidget(self.iface, self._db, self._official_db, self.qgis_utils, self.ladm_data)
+    def show_main_panel(self):
+        self.main_panel.fill_table()
+
+    def show_parcel_panel(self, parcel_number=None):
+        self.parcel_panel = ChangesPerParcelPanelWidget(self.iface, self._db, self._official_db, self.qgis_utils, self.ladm_data, parcel_number)
         self.widget.showPanel(self.parcel_panel)
 
     def update_db_connection(self, db, ladm_col_db):

@@ -28,7 +28,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsExpression,
                        QgsRectangle)
 
-from qgis.gui import QgsPanelWidgetStack, QgsPanelWidget
+from qgis.gui import QgsPanelWidget
 
 from asistente_ladm_col.config.general_config import MAP_SWIPE_TOOL_PLUGIN_NAME
 from asistente_ladm_col.config.table_mapping_config import (PLOT_TABLE,
@@ -45,8 +45,8 @@ from asistente_ladm_col.utils import get_ui_class
 WIDGET_UI = get_ui_class('change_detection/changes_per_parcel_panel_widget.ui')
 
 class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
-    def __init__(self, iface, db, official_db, qgis_utils, ladm_data, parent=None):
-        QgsPanelWidget.__init__(self, parent)
+    def __init__(self, iface, db, official_db, qgis_utils, ladm_data, parcel_number=None):
+        QgsPanelWidget.__init__(self, None)
         self.setupUi(self)
         self.iface = iface
         self.canvas = iface.mapCanvas()
@@ -77,6 +77,10 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.cbo_parcel_fields.currentIndexChanged.connect(self.field_search_updated)
 
         self.initialize_field_values_line_edit()
+
+        if parcel_number is not None:
+            self.txt_alphanumeric_query.setValue(parcel_number)
+            self.search_data(parcel_number= parcel_number)
 
     def add_layers(self):
         self.qgis_utils.map_freeze_requested.emit(True)
@@ -169,7 +173,6 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.txt_alphanumeric_query.setLayer(self._official_parcel_layer)
         idx = self._official_parcel_layer.fields().indexOf(self.cbo_parcel_fields.currentData())
         self.txt_alphanumeric_query.setAttributeIndex(idx)
-        print("Set to field",idx)
 
     def initialize_layers(self):
         self._plot_layer = None
