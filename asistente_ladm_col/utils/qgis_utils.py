@@ -122,6 +122,7 @@ class QGISUtils(QObject):
     remove_error_group_requested = pyqtSignal()
     layer_symbology_changed = pyqtSignal(str) # layer id
     db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
+    report_selection_changed = pyqtSignal()
     message_emitted = pyqtSignal(str, int) # Message, level
     message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
@@ -163,6 +164,7 @@ class QGISUtils(QObject):
             self.__settings_dialog = SettingsDialog(qgis_utils=self)
             self.__settings_dialog.db_connection_changed.connect(self.cache_layers_and_relations)
             self.__settings_dialog.db_connection_changed.connect(self.db_connection_changed)
+            self.__settings_dialog.report_selection_changed.connect(self.report_selection_changed)
 
         return self.__settings_dialog
 

@@ -242,8 +242,6 @@ class ReportGenerator():
             print("### SCRIPT FILE WASN'T FOUND")
             return
 
-        button.setEnabled(False)
-
         # Update config file
         yaml_config_path = self.update_yaml_config(db, config_path)
         print("CONFIG FILE:", yaml_config_path)
@@ -326,7 +324,6 @@ class ReportGenerator():
                 progress.setValue(step * 100 / total)
 
         os.remove(yaml_config_path)
-        button.setEnabled(True)
         self.qgis_utils.clear_message_bar_emitted.emit()
 
         if total == count:
