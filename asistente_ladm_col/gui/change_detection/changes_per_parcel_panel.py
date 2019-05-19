@@ -19,7 +19,8 @@
 import qgis
 
 from qgis.PyQt.QtGui import QColor, QMouseEvent
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QEvent, QPoint
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QEvent, QPoint, NULL
+from qgis.PyQt.QtWidgets import QTableWidgetItem
 from qgis.core import (QgsWkbTypes,
                        Qgis,
                        QgsMessageLog,
@@ -80,7 +81,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         if parcel_number is not None:
             self.txt_alphanumeric_query.setValue(parcel_number)
-            self.search_data(parcel_number= parcel_number)
+            self.search_data(parcel_number=parcel_number)
 
     def add_layers(self):
         self.qgis_utils.map_freeze_requested.emit(True)
@@ -209,72 +210,117 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.chk_show_all_plots.setChecked(False)
 
         # Get official parcel's t_id and get related plot(s)
-        official_parcels = self._official_parcel_layer.getFeatures("{}='{}'".format(PARCEL_NUMBER_FIELD,
-                                                                                  kwargs['parcel_number']))
-        official_parcel = QgsFeature()
-        res = official_parcels.nextFeature(official_parcel)
+        search_field = self.cbo_parcel_fields.currentData()
+        search_value = list(kwargs.values())[0]
 
-        if res:
-            official_plot_t_ids = self.ladm_data.get_plots_related_to_parcels(self._official_db,
-                                                                              [official_parcel[ID_FIELD]],
-                                                                              field_name = ID_FIELD,
-                                                                              plot_layer = self._official_plot_layer,
-                                                                              uebaunit_table = None)
-            if official_plot_t_ids:
-                self.qgis_utils.map_freeze_requested.emit(True)
+        official_parcels = [feature for feature in self._official_parcel_layer.getFeatures("{}='{}'".format(search_field,
+                                                                                    search_value))]
 
-                self._current_official_substring = "\"{}\" IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in official_plot_t_ids]))
-                self._official_plot_layer.setSubsetString(self._current_official_substring)
-                self.zoom_to_features(self._official_plot_layer, t_ids=official_plot_t_ids)
+        if len(official_parcels) > 1:
+            # TODO: Show dialog to select only one
+            pass
+        elif len(official_parcels) == 0:
+            print("No parcel found!", search_field, search_value)
+            return
 
-                # Get parcel's t_id and get related plot(s)
-                parcels = self._parcel_layer.getFeatures("{}='{}'".format(PARCEL_NUMBER_FIELD,
-                                                                        kwargs['parcel_number']))
-                parcel = QgsFeature()
-                res = parcels.nextFeature(parcel)
-                if res:
-                    plot_t_ids = self.ladm_data.get_plots_related_to_parcels(self._db,
-                                                                             [parcel[ID_FIELD]],
-                                                                             field_name=ID_FIELD,
-                                                                             plot_layer=self._plot_layer,
-                                                                             uebaunit_table=None)
-                    self._current_substring = "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids]))
-                    self._plot_layer.setSubsetString(self._current_substring)
+        self.fill_table({search_field: search_value})
 
-                self.qgis_utils.activate_layer_requested.emit(self._official_plot_layer)
-                self.qgis_utils.map_freeze_requested.emit(False)
+        official_plot_t_ids = self.ladm_data.get_plots_related_to_parcels(self._official_db,
+                                                                          [official_parcels[0][ID_FIELD]],
+                                                                          field_name = ID_FIELD,
+                                                                          plot_layer = self._official_plot_layer,
+                                                                          uebaunit_table = None)
+        if official_plot_t_ids:
+            self.qgis_utils.map_freeze_requested.emit(True)
 
-                # Activate Swipe Tool and send mouse event
-                self.activate_mapswipe_tool()
+            self._current_official_substring = "\"{}\" IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in official_plot_t_ids]))
+            self._official_plot_layer.setSubsetString(self._current_official_substring)
+            self.zoom_to_features(self._official_plot_layer, t_ids=official_plot_t_ids)
 
-                if res: # plot_t_ids found
-                    plots = self.get_features_from_t_ids(self._plot_layer, plot_t_ids, True)
-                    plots_extent = QgsRectangle()
-                    for plot in plots:
-                        plots_extent.combineExtentWith(plot.geometry().boundingBox())
+            # Get parcel's t_id and get related plot(s)
+            parcels = self._parcel_layer.getFeatures("{}='{}'".format(PARCEL_NUMBER_FIELD,
+                                                                    kwargs['parcel_number']))
+            parcel = QgsFeature()
+            res = parcels.nextFeature(parcel)
+            if res:
+                plot_t_ids = self.ladm_data.get_plots_related_to_parcels(self._db,
+                                                                         [parcel[ID_FIELD]],
+                                                                         field_name=ID_FIELD,
+                                                                         plot_layer=self._plot_layer,
+                                                                         uebaunit_table=None)
+                self._current_substring = "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids]))
+                self._plot_layer.setSubsetString(self._current_substring)
 
-                    print(plots_extent)
-                    coord_x = plots_extent.xMaximum() - (plots_extent.xMaximum() - plots_extent.xMinimum()) / 9
-                    coord_y = plots_extent.yMaximum() - (plots_extent.yMaximum() - plots_extent.yMinimum()) / 2
+            self.qgis_utils.activate_layer_requested.emit(self._official_plot_layer)
+            self.qgis_utils.map_freeze_requested.emit(False)
 
-                    coord_transform = self.iface.mapCanvas().getCoordinateTransform()
-                    map_point = coord_transform.transform(coord_x, coord_y)
-                    widget_point = map_point.toQPointF().toPoint()
-                    global_point = self.canvas.mapToGlobal(widget_point)
+            # Activate Swipe Tool and send mouse event
+            self.activate_mapswipe_tool()
 
-                    print(coord_x, coord_y, global_point)
-                    #cursor = self.iface.mainWindow().cursor()
-                    #cursor.setPos(global_point.x(), global_point.y())
+            if res: # plot_t_ids found
+                plots = self.ladm_data.get_features_from_t_ids(self._plot_layer, plot_t_ids, True)
+                plots_extent = QgsRectangle()
+                for plot in plots:
+                    plots_extent.combineExtentWith(plot.geometry().boundingBox())
 
-                    self.canvas.mousePressEvent(QMouseEvent(QEvent.MouseButtonPress, global_point, Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
-                    # mc.mouseMoveEvent(QMouseEvent(QEvent.MouseMove, gp, Qt.NoButton, Qt.LeftButton, Qt.NoModifier))
-                    self.canvas.mouseMoveEvent(QMouseEvent(QEvent.MouseMove, widget_point + QPoint(1,0), Qt.NoButton, Qt.LeftButton, Qt.NoModifier))
-                    # QApplication.processEvents()
-                    self.canvas.mouseReleaseEvent(QMouseEvent(QEvent.MouseButtonRelease, widget_point + QPoint(1,0), Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
-                    # QApplication.processEvents()
+                print(plots_extent)
+                coord_x = plots_extent.xMaximum() - (plots_extent.xMaximum() - plots_extent.xMinimum()) / 9
+                coord_y = plots_extent.yMaximum() - (plots_extent.yMaximum() - plots_extent.yMinimum()) / 2
 
-                    # Once the query is done, activate the checkbox to alternate all plots/only selected plot
-                    self.chk_show_all_plots.setEnabled(True)
+                coord_transform = self.iface.mapCanvas().getCoordinateTransform()
+                map_point = coord_transform.transform(coord_x, coord_y)
+                widget_point = map_point.toQPointF().toPoint()
+                global_point = self.canvas.mapToGlobal(widget_point)
+
+                print(coord_x, coord_y, global_point)
+                #cursor = self.iface.mainWindow().cursor()
+                #cursor.setPos(global_point.x(), global_point.y())
+
+                self.canvas.mousePressEvent(QMouseEvent(QEvent.MouseButtonPress, global_point, Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
+                # mc.mouseMoveEvent(QMouseEvent(QEvent.MouseMove, gp, Qt.NoButton, Qt.LeftButton, Qt.NoModifier))
+                self.canvas.mouseMoveEvent(QMouseEvent(QEvent.MouseMove, widget_point + QPoint(1,0), Qt.NoButton, Qt.LeftButton, Qt.NoModifier))
+                # QApplication.processEvents()
+                self.canvas.mouseReleaseEvent(QMouseEvent(QEvent.MouseButtonRelease, widget_point + QPoint(1,0), Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
+                # QApplication.processEvents()
+
+                # Once the query is done, activate the checkbox to alternate all plots/only selected plot
+                self.chk_show_all_plots.setEnabled(True)
+
+    def fill_table(self, search_criterion):
+        dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._db, search_criterion)
+        dict_official_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._official_db, search_criterion)
+
+        collected_parcel_number = list(dict_collected_parcels.keys())[0]
+        # Before calling fill_table we make sure we get one and only one parcel attrs dict
+        collected_attrs = dict_collected_parcels[collected_parcel_number][0]
+        del collected_attrs[ID_FIELD]  # Remove this line if ID_FIELD is somehow needed
+
+        official_parcel_number = list(dict_official_parcels.keys())[0]
+        official_attrs = dict_official_parcels[official_parcel_number][0] if dict_official_parcels else []
+
+        self.tbl_changes_per_parcel.clearContents()
+        self.tbl_changes_per_parcel.setRowCount(len(collected_attrs))  # t_id shouldn't be counted
+        self.tbl_changes_per_parcel.setSortingEnabled(False)
+
+        for row, (collected_field, collected_value) in enumerate(collected_attrs.items()):
+            item = QTableWidgetItem(collected_field)
+            # item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
+            self.tbl_changes_per_parcel.setItem(row, 0, item)
+
+            official_value = official_attrs[collected_field] if collected_field in official_attrs else ''
+
+            item = QTableWidgetItem(official_value)
+            #item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
+            self.tbl_changes_per_parcel.setItem(row, 1, item)
+
+            item = QTableWidgetItem(collected_value)
+            # item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
+            self.tbl_changes_per_parcel.setItem(row, 2, item)
+
+            self.tbl_changes_per_parcel.setItem(row, 3, QTableWidgetItem())
+            self.tbl_changes_per_parcel.item(row, 3).setBackground(Qt.green if official_value == collected_value else Qt.red)
+
+        self.tbl_changes_per_parcel.setSortingEnabled(True)
 
     def alphanumeric_query(self):
         """

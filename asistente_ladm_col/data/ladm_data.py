@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, NULL
 from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsExpression,
@@ -238,9 +238,9 @@ class LADM_DATA():
             return
 
         if search_criterion is not None:
-            field_name = search_criterion.keys()[0]
-            field_value = search_criterion.values()[0]
-            request = QgsFeatureRequest(QgsExpression("{}={}".format(field_name, field_value)))
+            field_name = list(search_criterion.keys())[0]
+            field_value = list(search_criterion.values())[0]
+            request = QgsFeatureRequest(QgsExpression("{}='{}'".format(field_name, field_value)))
 
             parcel_features = parcel_table.getFeatures(request)
         else:
@@ -251,7 +251,8 @@ class LADM_DATA():
             dict_attrs = dict()
             for field in parcel_table.fields():
                 if field.name() in PARCEL_FIELDS_TO_COMPARE:
-                    dict_attrs[field.name()] = feature.attribute(field.name())
+                    value = feature.attribute(field.name())
+                    dict_attrs[field.name()] = value if value is not NULL else ''
 
             dict_attrs[ID_FIELD] = feature[ID_FIELD]
 

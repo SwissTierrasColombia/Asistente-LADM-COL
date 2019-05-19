@@ -33,7 +33,11 @@ PARCEL_STATUS = '_PARCEL_STATUS_'
 CHANGE_DETECTION_NEW_PARCEL = 'Alta'
 CHANGE_DETECTION_PARCEL_CHANGED = 'Cambio'
 CHANGE_DETECTION_PARCEL_REMAINS = 'OK'
-CHANGE_DETECTION_PARCEL_CHANGED = 'Cambio'
+CHANGE_DETECTION_SEVERAL_PARCELS = 'several'
+STATUS_COLORS = {CHANGE_DETECTION_NEW_PARCEL: Qt.red,
+                 CHANGE_DETECTION_PARCEL_CHANGED: Qt.red,
+                 CHANGE_DETECTION_PARCEL_REMAINS: Qt.green,
+                 CHANGE_DETECTION_SEVERAL_PARCELS: Qt.yellow}
 
 class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
     changes_per_parcel_panel_requested = pyqtSignal(str)
@@ -66,18 +70,17 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             item = QTableWidgetItem(parcel_number)
             item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
             self.tbl_changes_all_parcels.setItem(row, 0, item)
+
             item = QTableWidgetItem(parcel_attrs[PARCEL_STATUS])
             item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
             self.tbl_changes_all_parcels.setItem(row, 1, item)
+            color = STATUS_COLORS[parcel_attrs[PARCEL_STATUS] if parcel_attrs[PARCEL_STATUS] in STATUS_COLORS else CHANGE_DETECTION_SEVERAL_PARCELS]
+            self.tbl_changes_all_parcels.item(row, 1).setBackground(color)
 
         self.tbl_changes_all_parcels.setSortingEnabled(True)
 
-        # TODO
-        #   On Select: zoom to plots  itemSelectionChanged
-
     def get_compared_parcels_data(self):
         dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._db, None)
-        #print(dict_collected_parcels)
         dict_official_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._official_db, None)
 
         dict_compared_parcel_data = dict()
@@ -130,9 +133,10 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         plot_ids = self.ladm_data.get_plots_related_to_parcels(self._db, parcels_t_ids, field_name=None, plot_layer=plot_layer, uebaunit_table=res_layers[UEBAUNIT_TABLE])
 
-        action_zoom = QAction(QCoreApplication.translate("ChangesAllParcelsPanelWidget", "Zoom to related plots"))
-        action_zoom.triggered.connect(partial(self.zoom_to_features, plot_layer, plot_ids))
-        context_menu.addAction(action_zoom)
+        if plot_ids:
+            action_zoom = QAction(QCoreApplication.translate("ChangesAllParcelsPanelWidget", "Zoom to related plots"))
+            action_zoom.triggered.connect(partial(self.zoom_to_features, plot_layer, plot_ids))
+            context_menu.addAction(action_zoom)
 
         action_view_changes = QAction(QCoreApplication.translate("ChangesAllParcelsPanelWidget", "View changes for this parcel number"))
         action_view_changes.triggered.connect(partial(self.call_changes_per_parcel_panel, item))
