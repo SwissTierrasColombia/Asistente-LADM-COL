@@ -215,11 +215,11 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         res = official_parcels.nextFeature(official_parcel)
 
         if res:
-            official_plot_t_ids = self.ladm_data.get_plots_related_to_parcel(self._official_db,
-                                                       official_parcel[ID_FIELD],
-                                                       field_name = ID_FIELD,
-                                                       plot_layer = self._official_plot_layer,
-                                                       uebaunit_table = None)
+            official_plot_t_ids = self.ladm_data.get_plots_related_to_parcels(self._official_db,
+                                                                              [official_parcel[ID_FIELD]],
+                                                                              field_name = ID_FIELD,
+                                                                              plot_layer = self._official_plot_layer,
+                                                                              uebaunit_table = None)
             if official_plot_t_ids:
                 self.qgis_utils.map_freeze_requested.emit(True)
 
@@ -233,11 +233,11 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 parcel = QgsFeature()
                 res = parcels.nextFeature(parcel)
                 if res:
-                    plot_t_ids = self.ladm_data.get_plots_related_to_parcel(self._db,
-                                                                            parcel[ID_FIELD],
-                                                                            field_name=ID_FIELD,
-                                                                            plot_layer=self._plot_layer,
-                                                                            uebaunit_table=None)
+                    plot_t_ids = self.ladm_data.get_plots_related_to_parcels(self._db,
+                                                                             [parcel[ID_FIELD]],
+                                                                             field_name=ID_FIELD,
+                                                                             plot_layer=self._plot_layer,
+                                                                             uebaunit_table=None)
                     self._current_substring = "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids]))
                     self._plot_layer.setSubsetString(self._current_substring)
 
@@ -335,9 +335,9 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
     #                                 flashes=1,
     #                                 duration=500)
 
-    def zoom_to_features(self, layer, ids=[], t_ids=[]): # TODO move this to a proper utils class
+    def zoom_to_features(self, layer, ids=[], t_ids=[]):  # TODO move this to a proper utils class
         if t_ids:
-            features = self.get_features_from_t_ids(layer, t_ids, True, True)
+            features = self.ladm_data.get_features_from_t_ids(layer, t_ids, True, True)
             for feature in features:
                 ids.append(feature.id())
 
@@ -348,13 +348,3 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                                     QColor(255, 0, 0, 0),
                                     flashes=1,
                                     duration=500)
-
-    def get_features_from_t_ids(self, layer, t_ids, no_attributes=False, no_geometry=False): # TODO move this to a proper utils class
-        field_idx = layer.fields().indexFromName(ID_FIELD)
-        request = QgsFeatureRequest(QgsExpression("{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in t_ids]))))
-        if no_attributes:
-            request.setSubsetOfAttributes([field_idx])
-        if no_geometry:
-            request.setFlags(QgsFeatureRequest.NoGeometry)
-
-        return [feature for feature in layer.getFeatures(request)]

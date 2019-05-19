@@ -5,7 +5,7 @@
                              --------------------
         begin                : 2019-03-20
         git sha              : :%H$
-        copyright            : (C) 2018 by Germán Carrillo (BSF Swissphoto)
+        copyright            : (C) 2019 by Germán Carrillo (BSF Swissphoto)
         email                : gcarrillo@linuxmail.org
  ***************************************************************************/
 /***************************************************************************
@@ -31,7 +31,6 @@ from ..config.table_mapping_config import (ID_FIELD,
                                            PARCEL_TABLE, PARCEL_NUMBER_FIELD, FMI_FIELD, PARCEL_NAME_FIELD,
                                            DEPARTMENT_FIELD, ZONE_FIELD, PARCEL_TYPE_FIELD, MUNICIPALITY_FIELD)
 
-QGIS_ID = "_qgis_id_"
 PARCEL_FIELDS_TO_COMPARE = [PARCEL_NUMBER_FIELD,
                             FMI_FIELD,
                             PARCEL_NAME_FIELD,
@@ -49,10 +48,10 @@ class LADM_DATA():
         self.qgis_utils = qgis_utils
         self.log = QgsApplication.messageLog()
 
-    def get_plots_related_to_parcel(self, db, t_id, field_name=ID_FIELD, plot_layer=None, uebaunit_table=None):
+    def get_plots_related_to_parcels(self, db, t_ids, field_name=ID_FIELD, plot_layer=None, uebaunit_table=None):
         """
         :param db: DB Connector object
-        :param t_id: parcel t_id
+        :param t_ids: list of parcel t_ids
         :param field_name: The field name to get from DB for the matching features, use None for the QGIS internal ID
         :param plot_layer: Plot QGIS layer, in case it exists already in the caller
         :param uebaunit_table: UEBaunit QGIS table, in case it exists already in the caller
@@ -88,9 +87,9 @@ class LADM_DATA():
                         Qgis.Warning)
                     return
 
-        features = uebaunit_table.getFeatures("{}={} AND {} IS NOT NULL".format(
+        features = uebaunit_table.getFeatures("{} IN ({}) AND {} IS NOT NULL".format(
                                                     UEBAUNIT_TABLE_PARCEL_FIELD,
-                                                    t_id,
+                                                    ",".join([str(t_id) for t_id in t_ids]),
                                                     UEBAUNIT_TABLE_PLOT_FIELD))
 
         plot_t_ids = list()
@@ -126,10 +125,10 @@ class LADM_DATA():
 
         return plot_ids
 
-    def get_parcels_related_to_plot(self, db, t_id, field_name=ID_FIELD, parcel_table=None, uebaunit_table=None):
+    def get_parcels_related_to_plots(self, db, t_ids, field_name=ID_FIELD, parcel_table=None, uebaunit_table=None):
         """
         :param db: DB Connector object
-        :param t_id: plot t_id
+        :param t_ids: list of plot t_ids
         :param field_name: The field name to get from DB for the matching features, use None for the QGIS internal ID
         :param parcel_table: Parcel QGIS layer, in case it exists already in the caller
         :param uebaunit_table: UEBaunit QGIS table, in case it exists already in the caller
@@ -164,9 +163,9 @@ class LADM_DATA():
                     Qgis.Warning)
                 return
 
-        features = uebaunit_table.getFeatures("{}={} AND {} IS NOT NULL".format(
+        features = uebaunit_table.getFeatures("{} IN ({}) AND {} IS NOT NULL".format(
                                                     UEBAUNIT_TABLE_PLOT_FIELD,
-                                                    t_id,
+                                                    ",".join([str(t_id) for t_id in t_ids]),
                                                     UEBAUNIT_TABLE_PARCEL_FIELD))
 
         parcel_t_ids = list()
@@ -205,7 +204,7 @@ class LADM_DATA():
         """
         :param db: DB Connector object
         :param search_criterion: FieldName-Value pair to search in parcel layer (None for getting all parcels)
-        :return: list of plot ids related to the parcel
+        :return: dict with parcel info for comparisons
         """
         required_layers = {
             PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
@@ -254,7 +253,7 @@ class LADM_DATA():
                 if field.name() in PARCEL_FIELDS_TO_COMPARE:
                     dict_attrs[field.name()] = feature.attribute(field.name())
 
-            dict_attrs[QGIS_ID] = feature.id()
+            dict_attrs[ID_FIELD] = feature[ID_FIELD]
 
             if dict_attrs[PARCEL_NUMBER_FIELD] in dict_features:
                 dict_features[dict_attrs[PARCEL_NUMBER_FIELD]].append(dict_attrs)
@@ -267,3 +266,13 @@ class LADM_DATA():
         #                                             UEBAUNIT_TABLE_PLOT_FIELD))
 
         return dict_features
+
+    def get_features_from_t_ids(self, layer, t_ids, no_attributes=False, no_geometry=False):
+        field_idx = layer.fields().indexFromName(ID_FIELD)
+        request = QgsFeatureRequest(QgsExpression("{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in t_ids]))))
+        if no_attributes:
+            request.setSubsetOfAttributes([field_idx])
+        if no_geometry:
+            request.setFlags(QgsFeatureRequest.NoGeometry)
+
+        return [feature for feature in layer.getFeatures(request)]
