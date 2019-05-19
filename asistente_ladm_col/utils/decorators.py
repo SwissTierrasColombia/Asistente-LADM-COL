@@ -10,6 +10,7 @@ from qgis.core import (Qgis,
 from qgis.utils import (isPluginLoaded, loadPlugin, startPlugin)
 
 from ..config.general_config import (PLUGIN_NAME,
+                                     QGIS_MODEL_BAKER_PLUGIN_NAME,
                                      QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
                                      QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
                                      QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION, MAP_SWIPE_TOOL_PLUGIN_NAME,

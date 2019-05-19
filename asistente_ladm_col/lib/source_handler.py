@@ -206,12 +206,22 @@ class SourceHandler(QObject):
     def error_returned(self, error_code):
         self.log.logMessage("Qt network error code: {}".format(error_code), PLUGIN_NAME, Qgis.Critical)
 
-    def handle_source_upload(self, layer, field_name):
+    def handle_source_upload(self, db, layer, field_name):
+
+        layer_name = db.get_ladm_layer_name(layer)
         field_index = layer.fields().indexFromName(field_name)
 
         def features_added(layer_id, features):
             modified_layer = QgsProject.instance().mapLayer(layer_id)
-            if modified_layer is None or QgsDataSourceUri(modified_layer.source()).table().lower() != layer.name().lower():
+
+            if modified_layer is None:
+                return
+
+            modified_layer_name = db.get_ladm_layer_name(modified_layer, validate_is_ladm=True)
+            if modified_layer_name is None:
+                return
+
+            if modified_layer_name.lower() != layer_name.lower():
                 return
 
             with OverrideCursor(Qt.WaitCursor):
