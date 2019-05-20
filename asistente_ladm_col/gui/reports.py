@@ -114,7 +114,7 @@ class ReportGenerator():
             if layer_name == 'terreno':
                 return db.get_ant_map_plot_data(plot_id, 'only_id')
             elif layer_name == 'terrenos':
-                return db.get_annex17_plot_data(plot_id, 'all_but_id')
+                return db.get_ant_map_plot_data(plot_id, 'all_but_id')
             elif layer_name == 'terrenos_all':
                 return db.get_annex17_plot_data(plot_id, 'all')
             elif layer_name == 'construcciones':
