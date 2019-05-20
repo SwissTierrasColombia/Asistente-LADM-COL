@@ -61,7 +61,14 @@
           <item row="0" column="0">
            <widget class="QCheckBox" name="checkBox">
             <property name="text">
-             <string>Create Right of way</string>
+             <string>Geographic</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="checkBox_2">
+            <property name="text">
+             <string>Alfanumetic</string>
             </property>
            </widget>
           </item>

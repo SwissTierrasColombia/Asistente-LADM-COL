@@ -16,6 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 """
+import processing
+
 from QgisModelBaker.libili2db import iliimporter
 from QgisModelBaker.libili2db.ili2dbconfig import BaseConfiguration
 from QgisModelBaker.libqgsprojectgen.dataobjects import Project
@@ -24,9 +26,11 @@ from QgisModelBaker.libqgsprojectgen.generator.generator import Generator
 from qgis.core import (QgsProject,
                        QgsEditorWidgetSetup,
                        QgsDefaultValue,
+                       QgsApplication,
                        NULL)
 
 from .symbology import SymbologyUtils
+from ..config.refactor_fields_mappings import get_refactor_fields_mapping
               
 def import_capture_model(tool_name, model_name, gpkg_path):
     importer = iliimporter.Importer()
@@ -120,3 +124,24 @@ def load_default_value():
 def load_simbology():
     for k, layer in QgsProject.instance().mapLayers().items():
         SymbologyUtils().set_layer_style_from_qml(layer)
+
+def run_etl_model_input_load_data(input_layer, out_layer, ladm_col_layer_name, qgis_utils):
+
+    model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
+
+    if model:
+
+        mapping = get_refactor_fields_mapping(ladm_col_layer_name, qgis_utils)
+        params = {
+            'INPUT': input_layer,
+            'mapping': mapping,
+            'output': out_layer
+        }
+        res = processing.run("model:ETL-model", params)
+        print (res)
+
+    else:
+        print("Error: Model ETL-model was not found and cannot be opened!")
+        return
+
+    return out_layer
