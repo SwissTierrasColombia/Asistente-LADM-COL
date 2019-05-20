@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QCoreApplication, NULL
+from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsExpression,
@@ -87,9 +87,9 @@ class LADM_DATA():
                         Qgis.Warning)
                     return
 
-        features = uebaunit_table.getFeatures("{} IN ({}) AND {} IS NOT NULL".format(
+        features = uebaunit_table.getFeatures("{} IN ('{}') AND {} IS NOT NULL".format(
                                                     UEBAUNIT_TABLE_PARCEL_FIELD,
-                                                    ",".join([str(t_id) for t_id in t_ids]),
+                                                    "','".join([str(t_id) for t_id in t_ids]),
                                                     UEBAUNIT_TABLE_PLOT_FIELD))
 
         plot_t_ids = list()
@@ -102,8 +102,8 @@ class LADM_DATA():
         plot_ids = list()
         if plot_t_ids:
             request = QgsFeatureRequest(
-                        QgsExpression("{} IN ({})".format(ID_FIELD,
-                                                          ",".join([str(id) for id in plot_t_ids]))))
+                        QgsExpression("{} IN ('{}')".format(ID_FIELD,
+                                                          "','".join([str(id) for id in plot_t_ids]))))
 
             field_found = False
             if field_name is None: # We are only interested in the QGIS internal id, no need to get other fields
@@ -252,7 +252,7 @@ class LADM_DATA():
             for field in parcel_table.fields():
                 if field.name() in PARCEL_FIELDS_TO_COMPARE:
                     value = feature.attribute(field.name())
-                    dict_attrs[field.name()] = value if value is not NULL else ''
+                    dict_attrs[field.name()] = value if value != QVariant() else ''
 
             dict_attrs[ID_FIELD] = feature[ID_FIELD]
 

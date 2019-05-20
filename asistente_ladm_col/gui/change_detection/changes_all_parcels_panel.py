@@ -54,6 +54,8 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.setDockMode(True)
 
+        self.tbl_changes_all_parcels.setColumnWidth(0, 270)
+
         self.tbl_changes_all_parcels.itemDoubleClicked.connect(self.call_changes_per_parcel_panel)
 
         self.tbl_changes_all_parcels.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -84,7 +86,6 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         dict_official_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._official_db, None)
 
         dict_compared_parcel_data = dict()
-
         for collected_parcel_number, collected_attrs in dict_collected_parcels.items():
             dict_attrs_comparison = dict()
 
@@ -126,7 +127,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         res_layers=self.qgis_utils.get_layers(self._db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}, load=True, emit_map_freeze=False)
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}, load=True)
 
         plot_layer = res_layers[PLOT_TABLE]
         plot_layer.setSubsetString("")

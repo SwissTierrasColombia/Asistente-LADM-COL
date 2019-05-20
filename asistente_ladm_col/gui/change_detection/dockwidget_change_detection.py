@@ -43,13 +43,24 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.main_panel.changes_per_parcel_panel_requested.connect(self.show_parcel_panel)
 
         self.parcel_panel = None
+        self.parcel_panels = list()
 
     def show_main_panel(self):
         self.main_panel.fill_table()
 
     def show_parcel_panel(self, parcel_number=None):
+        if self.parcel_panels:
+            for panel in self.parcel_panels:
+                try:
+                    self.widget.closePanel(panel)
+                except RuntimeError as e:  # Panel in C++ could be already closed...
+                    pass
+
+            self.parcel_panels = list()
+
         self.parcel_panel = ChangesPerParcelPanelWidget(self.iface, self._db, self._official_db, self.qgis_utils, self.ladm_data, parcel_number)
         self.widget.showPanel(self.parcel_panel)
+        self.parcel_panels.append(self.parcel_panel)
 
     def update_db_connection(self, db, ladm_col_db):
         self._db = db

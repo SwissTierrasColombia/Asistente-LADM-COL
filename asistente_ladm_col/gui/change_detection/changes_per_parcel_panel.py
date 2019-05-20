@@ -16,6 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 """
+from functools import partial
+
 import qgis
 
 from qgis.PyQt.QtGui import QColor, QMouseEvent
@@ -76,8 +78,10 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.btn_alphanumeric_query.clicked.connect(self.alphanumeric_query)
         self.chk_show_all_plots.toggled.connect(self.show_all_plots)
         self.cbo_parcel_fields.currentIndexChanged.connect(self.field_search_updated)
+        self.panelAccepted.connect(self.initialize_tools_and_layers)
 
         self.initialize_field_values_line_edit()
+        self.initialize_tools_and_layers()
 
         if parcel_number is not None:
             self.txt_alphanumeric_query.setValue(parcel_number)
@@ -203,11 +207,12 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.add_layers()
 
     def search_data(self, **kwargs):
-        # TODO: use also FMI and previous_parcel_number?
         # TODO: optimize QgsFeatureRequest
 
         self.chk_show_all_plots.setEnabled(False)
-        self.chk_show_all_plots.setChecked(False)
+        self.chk_show_all_plots.setChecked(True)
+
+        self.initialize_tools_and_layers()
 
         # Get official parcel's t_id and get related plot(s)
         search_field = self.cbo_parcel_fields.currentData()
@@ -230,16 +235,19 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                                                                           field_name = ID_FIELD,
                                                                           plot_layer = self._official_plot_layer,
                                                                           uebaunit_table = None)
+
+        print(official_plot_t_ids)
+
         if official_plot_t_ids:
-            self.qgis_utils.map_freeze_requested.emit(True)
+            #self.qgis_utils.map_freeze_requested.emit(True)
 
             self._current_official_substring = "\"{}\" IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in official_plot_t_ids]))
-            self._official_plot_layer.setSubsetString(self._current_official_substring)
+            #self._official_plot_layer.setSubsetString(self._current_official_substring)
             self.zoom_to_features(self._official_plot_layer, t_ids=official_plot_t_ids)
+            #self.iface.zoomToActiveLayer()
 
             # Get parcel's t_id and get related plot(s)
-            parcels = self._parcel_layer.getFeatures("{}='{}'".format(PARCEL_NUMBER_FIELD,
-                                                                    kwargs['parcel_number']))
+            parcels = self._parcel_layer.getFeatures("{}='{}'".format(search_field, search_value))
             parcel = QgsFeature()
             res = parcels.nextFeature(parcel)
             if res:
@@ -249,10 +257,10 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                                                                          plot_layer=self._plot_layer,
                                                                          uebaunit_table=None)
                 self._current_substring = "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids]))
-                self._plot_layer.setSubsetString(self._current_substring)
+                #self._plot_layer.setSubsetString(self._current_substring)
 
             self.qgis_utils.activate_layer_requested.emit(self._official_plot_layer)
-            self.qgis_utils.map_freeze_requested.emit(False)
+            #self.qgis_utils.map_freeze_requested.emit(False)
 
             # Activate Swipe Tool and send mouse event
             self.activate_mapswipe_tool()
@@ -344,13 +352,18 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self._official_plot_layer.setSubsetString(self._current_official_substring if not state else "")
         self._plot_layer.setSubsetString(self._current_substring if not state else "")
 
-    def activate_mapswipe_tool(self):
+    def activate_mapswipe_tool(self):  # TODO: to superclass
         self.map_swipe_tool.run(True)
         self.iface.messageBar().clearWidgets()
 
-    def deactivate_mapswipe_tool(self):
+    def deactivate_mapswipe_tool(self):  # TODO: to superclass
         self.map_swipe_tool.run(False)
         self.qgis_utils.set_layer_visibility(self._official_plot_layer, True)
+        self.qgis_utils.set_layer_visibility(self._plot_layer, True)
+
+    def initialize_tools_and_layers(self, panel=None):
+        self.deactivate_mapswipe_tool()
+        self.show_all_plots(True)
 
     # def zoom_to_feature(self, layer, t_id):
     #     feature = self.get_feature_from_t_id(layer, t_id)
