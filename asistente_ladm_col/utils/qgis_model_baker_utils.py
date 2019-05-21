@@ -51,10 +51,10 @@ class QgisModelBakerUtils(QObject):
 
     def get_generator(self, db):
         if 'QgisModelBaker' in qgis.utils.plugins:
-            tool_name = self._conf_db.get_db_items()[db.mode].get_model_baker_tool_name()
+            tool = self._conf_db.get_db_items()[db.mode].get_mbaker_db_ili_mode()
 
             QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
-            generator = QgisModelBaker.get_generator()(tool_name,
+            generator = QgisModelBaker.get_generator()(tool,
                 db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             return generator
         else:
@@ -86,9 +86,9 @@ class QgisModelBakerUtils(QObject):
         if 'QgisModelBaker' in qgis.utils.plugins:
             QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
 
-            tool_name = self._conf_db.get_db_items()[db.mode].get_model_baker_tool_name()
+            tool = self._conf_db.get_db_items()[db.mode].get_mbaker_db_ili_mode()
 
-            generator = QgisModelBaker.get_generator()(tool_name,
+            generator = QgisModelBaker.get_generator()(tool,
                 db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             layers = generator.layers(layer_list)
             relations, bags_of_enum = generator.relations(layers, layer_list)

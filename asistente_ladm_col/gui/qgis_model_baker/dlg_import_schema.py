@@ -181,7 +181,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
             item_db = self._conf_db.get_db_items()[self.db.mode]
 
-            importer.tool_name = item_db.get_model_baker_tool_name()
+            importer.tool = item_db.get_mbaker_db_ili_mode()
             importer.configuration = configuration
             importer.stdout.connect(self.print_info)
             importer.stderr.connect(self.on_stderr)

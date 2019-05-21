@@ -18,8 +18,9 @@
 """
 from .db_factory import DbFactory
 
-from ...gui.db_panel.pg_config_panel import PgConfigPanel
-from ...lib.db.pg_connector import PGConnector
+from asistente_ladm_col.gui.db_panel.pg_config_panel import PgConfigPanel
+from asistente_ladm_col.lib.db.pg_connector import PGConnector
+from QgisModelBaker.libili2db.globals import DbIliMode
 
 
 class PgFactory(DbFactory):
@@ -33,8 +34,8 @@ class PgFactory(DbFactory):
     def get_id(self):
         return "pg"
 
-    def get_model_baker_tool_name(self):
-        return "ili2pg"
+    def get_mbaker_db_ili_mode(self):
+        return DbIliMode.ili2pg
 
     def get_config_panel(self):
         return PgConfigPanel()

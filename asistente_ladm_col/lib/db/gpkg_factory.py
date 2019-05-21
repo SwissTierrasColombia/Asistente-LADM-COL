@@ -17,8 +17,9 @@
  ***************************************************************************/
 """
 from .db_factory import DbFactory
-from ...gui.db_panel.gpkg_config_panel import GpkgConfigPanel
-from ...lib.db.gpkg_connector import GPKGConnector
+from asistente_ladm_col.gui.db_panel.gpkg_config_panel import GpkgConfigPanel
+from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
+from QgisModelBaker.libili2db.globals import DbIliMode
 
 
 class GpkgFactory(DbFactory):
@@ -32,8 +33,8 @@ class GpkgFactory(DbFactory):
     def get_name(self):
         return 'GeoPackage'
 
-    def get_model_baker_tool_name(self):
-        return "ili2gpkg"
+    def get_mbaker_db_ili_mode(self):
+        return DbIliMode.ili2gpkg
 
     def get_config_panel(self):
         return GpkgConfigPanel()

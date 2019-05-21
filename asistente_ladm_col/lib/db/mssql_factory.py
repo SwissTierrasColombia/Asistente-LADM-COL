@@ -18,8 +18,9 @@
 """
 from .db_factory import DbFactory
 
-from ...gui.db_panel.mssql_config_panel import MssqlConfigPanel
+from asistente_ladm_col.gui.db_panel.mssql_config_panel import MssqlConfigPanel
 from .mssql_connector import MssqlConnector
+from QgisModelBaker.libili2db.globals import DbIliMode
 
 
 class MssqlFactory(DbFactory):
@@ -34,8 +35,8 @@ class MssqlFactory(DbFactory):
     def get_id(self):
         return "mssql"
 
-    def get_model_baker_tool_name(self):
-        return "ili2mssql"
+    def get_mbaker_db_ili_mode(self):
+        return DbIliMode.ili2mssql
 
     def get_config_panel(self):
         return MssqlConfigPanel()

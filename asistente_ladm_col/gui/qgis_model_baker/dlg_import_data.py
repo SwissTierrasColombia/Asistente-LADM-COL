@@ -236,7 +236,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
             item_db = self._conf_db.get_db_items()[self.db.mode]
 
-            dataImporter.tool_name = item_db.get_model_baker_tool_name()
+            dataImporter.tool = item_db.get_mbaker_db_ili_mode()
             dataImporter.configuration = configuration
 
             self.save_configuration(configuration)
