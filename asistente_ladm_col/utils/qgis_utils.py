@@ -369,7 +369,10 @@ class QGISUtils(QObject):
             if response_layers[layer_name] is None:
                 self.message_emitted.emit(QCoreApplication.translate("AsistenteLADMCOLPlugin","{layer_name} layer couldn't be found... {description}").format(layer_name=layer_name,description=db.get_description()),Qgis.Warning)
                 return
-            layers[layer_name]['layer'] = response_layers[layer_name]
+
+            # Save reference to layer loaded
+            if 'layer' in layers[layer_name]:
+                layers[layer_name]['layer'] = response_layers[layer_name]
 
         # response_layers only has data about requested layers. Other layers,
         # i.e., those loaded as related ones, are not included
