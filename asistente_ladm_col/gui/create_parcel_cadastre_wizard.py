@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-import sip
 from functools import partial
 
 from qgis.PyQt.QtCore import (QCoreApplication,
@@ -67,13 +66,17 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.maptool = self.canvas.mapTool()
         self.select_maptool = None
         self._current_layer = None
-        self._plot_layer = None
-        self._parcel_layer = None
-        self._building_layer = None
-        self._building_unit_layer = None
-        self._spatial_unit_layers = None
+
+        self._layers = {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, 'layer': None},
+            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
+            BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, 'layer': None}
+        }
+
+        self._spatial_unit_layers = dict()
         self.type_of_parcel_selected = None
-        self._uebaunit_table = None
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
@@ -96,15 +99,14 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                                      QMessageBox.Yes, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
-            self.close()
+            self.close_wizard()
         else:
             # Continue creating the Parcel
             self.canvas.setMapTool(old_tool)
             self.canvas.mapToolSet.connect(self.map_tool_changed)
 
     def closeEvent(self, event):
-        # Close all open signal when object is destroyed
-        sip.delete(self)
+        self.close_wizard()
 
     def adjust_page_1_controls(self):
         self.gbx_page1.setTitle(QCoreApplication.translate("CreateParcelCadastreWizard", "How would you like to create parcels?    "))
@@ -141,6 +143,11 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         # Load layers
         result = self.prepare_parcel_creation_layers()
 
+        if result is None:
+            # if there was a problem loading the layers
+            self.close_wizard()
+            return
+
         if self.cb_parcel_type.count() == 0:
             for parcel_type in CONSTRAINT_TYPES_OF_PARCEL:
                 self.cb_parcel_type.addItem(parcel_type)
@@ -151,7 +158,6 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                 if index != -1:
                     self.cb_parcel_type.setCurrentIndex(index)
 
-
         self.cb_parcel_type.currentTextChanged.connect(self.validate_type_of_parcel)
         self.cb_parcel_type.currentTextChanged.emit(self.cb_parcel_type.currentText())
 
@@ -159,13 +165,13 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             # Check if a previous features are selected
             self.check_selected_features()
 
-            self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._plot_layer))
-            self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._building_layer))
-            self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._building_unit_layer))
+            self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[PLOT_TABLE]['layer']))
+            self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_TABLE]['layer']))
+            self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_UNIT_TABLE]['layer']))
 
-            self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._plot_layer))
-            self.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._building_layer))
-            self.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._building_unit_layer))
+            self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[PLOT_TABLE]['layer']))
+            self.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_TABLE]['layer']))
+            self.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_UNIT_TABLE]['layer']))
 
     def validate_type_of_parcel(self, parcel_type):
         # Activate all push buttons
@@ -213,23 +219,41 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             #         result = False
 
         # At least one feature must be selected
-        if self._plot_layer.selectedFeatureCount() == 0 and self._building_layer.selectedFeatureCount() == 0 and self._building_unit_layer.selectedFeatureCount() == 0:
+        if self._layers[PLOT_TABLE]['layer'].selectedFeatureCount() == 0 and self._layers[BUILDING_TABLE]['layer'].selectedFeatureCount() == 0 and self._layers[BUILDING_UNIT_TABLE]['layer'].selectedFeatureCount() == 0:
             result = False
 
         return result
 
     def disconnect_signals(self):
+        # GUI Wizard
         signals = [self.btn_plot_map.clicked,
                    self.btn_building_map.clicked,
                    self.btn_building_unit_map.clicked,
                    self.btn_plot_expression.clicked,
                    self.btn_building_expression.clicked,
                    self.btn_building_unit_expression.clicked,
-                   self.cb_parcel_type.currentTextChanged,
-                   self.canvas.mapToolSet]
+                   self.cb_parcel_type.currentTextChanged]
         for signal in signals:
             try:
                 signal.disconnect()
+            except:
+                pass
+
+        # QGIS APP
+        try:
+            self.canvas.mapToolSet.disconnect(self.map_tool_changed)
+        except:
+            pass
+
+        layers = [self._layers[PLOT_TABLE]['layer'],
+                  self._layers[PARCEL_TABLE]['layer'],
+                  self._layers[BUILDING_TABLE]['layer'],
+                  self._layers[BUILDING_UNIT_TABLE]['layer'],
+                  self._layers[UEBAUNIT_TABLE]['layer']]
+
+        for layer in layers:
+            try:
+                layer.willBeDeleted.disconnect(self.layer_removed)
             except:
                 pass
 
@@ -271,11 +295,11 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
 
     def check_selected_features(self):
 
-        self.lb_plot.setText(QCoreApplication.translate("CreateParcelCadastreWizard", "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._plot_layer.selectedFeatureCount()))
+        self.lb_plot.setText(QCoreApplication.translate("CreateParcelCadastreWizard", "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[PLOT_TABLE]['layer'].selectedFeatureCount()))
         self.lb_plot.setStyleSheet(COLOR_OKAY_LABEL)
-        self.lb_building.setText(QCoreApplication.translate("CreateParcelCadastreWizard","<b>Building(s)</b>: {count} Feature(s) Selected").format(count=self._building_layer.selectedFeatureCount()))
+        self.lb_building.setText(QCoreApplication.translate("CreateParcelCadastreWizard","<b>Building(s)</b>: {count} Feature(s) Selected").format(count=self._layers[BUILDING_TABLE]['layer'].selectedFeatureCount()))
         self.lb_building.setStyleSheet(COLOR_OKAY_LABEL)
-        self.lb_building_unit.setText(QCoreApplication.translate("CreateParcelCadastreWizard","<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=self._building_unit_layer.selectedFeatureCount()))
+        self.lb_building_unit.setText(QCoreApplication.translate("CreateParcelCadastreWizard","<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=self._layers[BUILDING_UNIT_TABLE]['layer'].selectedFeatureCount()))
         self.lb_building_unit.setStyleSheet(COLOR_OKAY_LABEL)
 
         parcel_type = self.cb_parcel_type.currentText()
@@ -327,93 +351,76 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             self.prepare_parcel_creation()
 
     def prepare_parcel_creation(self):
-
         # layers of interest are loaded
         result = self.prepare_parcel_creation_layers()
+        if result is None:
+            return
 
         if result:
             # Don't suppress (i.e., show) feature form
-            form_config = self._parcel_layer.editFormConfig()
+            form_config = self._layers[PARCEL_TABLE]['layer'].editFormConfig()
             form_config.setSuppress(QgsEditFormConfig.SuppressOff)
-            self._parcel_layer.setEditFormConfig(form_config)
+            self._layers[PARCEL_TABLE]['layer'].setEditFormConfig(form_config)
             self.edit_parcel()
 
     def prepare_parcel_creation_layers(self):
         # Load layers
-        res_layers = self.qgis_utils.get_layers(self._db, {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
-            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}, load=True)
-
-        self._plot_layer = res_layers[PLOT_TABLE]
-        if self._plot_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateParcelCadastreWizard",
-                                           "Plot layer couldn't be found... {}").format(self._db.get_description()),
-                Qgis.Warning)
+        res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
+        if res_layers is None:
             return
 
-        self._parcel_layer = res_layers[PARCEL_TABLE]
-        if self._parcel_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateParcelCadastreWizard",
-                                           "Parcel layer couldn't be found... {}").format(self._db.get_description()),
-                Qgis.Warning)
-            return
-
-        self._building_layer = res_layers[BUILDING_TABLE]
-        if self._building_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateParcelCadastreWizard",
-                                           "Building layer couldn't be found... {}").format(self._db.get_description()),
-                Qgis.Warning)
-            return
-
-        self._building_unit_layer = res_layers[BUILDING_UNIT_TABLE]
-        if self._building_unit_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateParcelCadastreWizard",
-                                           "Building unit layer couldn't be found... {}").format(self._db.get_description()),
-                Qgis.Warning)
-            return
-
-        self._uebaunit_table = res_layers[UEBAUNIT_TABLE]
-        if self._uebaunit_table is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateParcelCadastreWizard",
-                                           "UEBAUNIT table couldn't be found... {}").format(self._db.get_description()),
-                Qgis.Warning)
-            return
+        # Add signal to check if a layer was removed
+        self.validate_remove_layers()
 
         self._spatial_unit_layers = {
-            PLOT_TABLE:self._plot_layer,
-            BUILDING_TABLE: self._building_layer,
-            BUILDING_UNIT_TABLE: self._building_unit_layer
+            PLOT_TABLE: self._layers[PLOT_TABLE]['layer'],
+            BUILDING_TABLE: self._layers[BUILDING_TABLE]['layer'],
+            BUILDING_UNIT_TABLE: self._layers[BUILDING_UNIT_TABLE]['layer']
         }
 
         # All layers were successfully loaded
         return True
 
+    def validate_remove_layers(self):
+        for layer_name in self._layers:
+            if self._layers[layer_name]['layer']:
+                # Layer was found, listen to its removal so that we can update the variable properly
+                try:
+                    self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.layer_removed)
+                except:
+                    pass
+                self._layers[layer_name]['layer'].willBeDeleted.connect(self.layer_removed)
+
+    def layer_removed(self):
+        self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                                            QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                                       "Create parcel wizard stop because you remove a necessary layer!!!"),
+                                            Qgis.Info)
+        self.close_wizard()
+
+    def close_wizard(self):
+        self.init_map_tool()
+        self.disconnect_signals()
+        self.close()
+
+    def init_map_tool(self):
+        try:
+            self.canvas.mapToolSet.disconnect(self.map_tool_changed)
+        except:
+            pass
+        self.canvas.setMapTool(self.maptool)
 
     def edit_parcel(self):
-        if self._plot_layer.selectedFeatureCount() == 0 and self._building_layer.selectedFeatureCount() == 0 and self._building_unit_layer.selectedFeatureCount() == 0 :
+        if self._layers[PLOT_TABLE]['layer'].selectedFeatureCount() == 0 and self._layers[BUILDING_TABLE]['layer'].selectedFeatureCount() == 0 and self._layers[BUILDING_UNIT_TABLE]['layer'].selectedFeatureCount() == 0:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("CreateParcelCadastreWizard",
                                            "First select at least one Plot, one Building or one Building unit"),
                 Qgis.Warning)
             return
-        elif self._plot_layer.selectedFeatureCount() > 1:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateParcelCadastreWizard",
-                                           "First select only one Plot"),
-                Qgis.Warning)
-            return
 
         # Open Form
-        self.iface.layerTreeView().setCurrentLayer(self._parcel_layer)
-        self._parcel_layer.startEditing()
+        self.iface.layerTreeView().setCurrentLayer(self._layers[PARCEL_TABLE]['layer'])
+        self._layers[PARCEL_TABLE]['layer'].startEditing()
         self.iface.actionAddFeature().trigger()
 
         ## TODO: Show selection page when all three layers have selections
@@ -425,51 +432,57 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         # Apply restriction to the selection
         if PLOT_TABLE in CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()]:
             if CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()][PLOT_TABLE] is not None:
-                plot_ids = [f[ID_FIELD] for f in self._plot_layer.selectedFeatures()]
+                plot_ids = [f[ID_FIELD] for f in self._layers[PLOT_TABLE]['layer'].selectedFeatures()]
+        else:
+            plot_ids = [f[ID_FIELD] for f in self._layers[PLOT_TABLE]['layer'].selectedFeatures()]
 
         if BUILDING_TABLE in CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()]:
             if CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()][BUILDING_TABLE] is not None:
-                building_ids = [f[ID_FIELD] for f in self._building_layer.selectedFeatures()]
+                building_ids = [f[ID_FIELD] for f in self._layers[BUILDING_TABLE]['layer'].selectedFeatures()]
+        else:
+            building_ids = [f[ID_FIELD] for f in self._layers[BUILDING_TABLE]['layer'].selectedFeatures()]
 
         if BUILDING_UNIT_TABLE in CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()]:
             if CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()][BUILDING_UNIT_TABLE] is not None:
-                building_unit_ids = [f[ID_FIELD] for f in self._building_unit_layer.selectedFeatures()]
+                building_unit_ids = [f[ID_FIELD] for f in self._layers[BUILDING_UNIT_TABLE]['layer'].selectedFeatures()]
+        else:
+            building_unit_ids = [f[ID_FIELD] for f in self._layers[BUILDING_UNIT_TABLE]['layer'].selectedFeatures()]
 
         # Create connections to react when a feature is added to buffer and
         # when it gets stored into the DB
-        self._parcel_layer.featureAdded.connect(self.call_parcel_commit)
-        self._parcel_layer.committedFeaturesAdded.connect(partial(self.finish_parcel, plot_ids, building_ids, building_unit_ids))
+        self._layers[PARCEL_TABLE]['layer'].featureAdded.connect(self.call_parcel_commit)
+        self._layers[PARCEL_TABLE]['layer'].committedFeaturesAdded.connect(partial(self.finish_parcel, plot_ids, building_ids, building_unit_ids))
 
     def call_parcel_commit(self, fid):
         # assigns the type of parcel before to creating it
-        parcel_type_field_idx = self._parcel_layer.getFeature(fid).fieldNameIndex(PARCEL_TYPE_FIELD)
-        self._parcel_layer.changeAttributeValue(fid, parcel_type_field_idx, self.cb_parcel_type.currentText())
+        parcel_type_field_idx = self._layers[PARCEL_TABLE]['layer'].getFeature(fid).fieldNameIndex(PARCEL_TYPE_FIELD)
+        self._layers[PARCEL_TABLE]['layer'].changeAttributeValue(fid, parcel_type_field_idx, self.cb_parcel_type.currentText())
 
-        self._parcel_layer.featureAdded.disconnect(self.call_parcel_commit)
+        self._layers[PARCEL_TABLE]['layer'].featureAdded.disconnect(self.call_parcel_commit)
         self.log.logMessage("Parcel's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
-        res = self._parcel_layer.commitChanges()
+        res = self._layers[PARCEL_TABLE]['layer'].commitChanges()
 
     def finish_parcel(self, plot_ids, building_ids, building_unit_ids, layerId, features):
         if len(features) != 1:
             self.log.logMessage("We should have got only one predio... We cannot do anything with {} predios".format(len(features)), PLUGIN_NAME, Qgis.Warning)
         else:
             fid = features[0].id()
-            if not self._parcel_layer.getFeature(fid).isValid():
+            if not self._layers[PARCEL_TABLE]['layer'].getFeature(fid).isValid():
                 self.log.logMessage("Feature not found in layer Predio...", PLUGIN_NAME, Qgis.Warning)
             else:
-                parcel_id = self._parcel_layer.getFeature(fid)[ID_FIELD]
+                parcel_id = self._layers[PARCEL_TABLE]['layer'].getFeature(fid)[ID_FIELD]
 
                 # Fill uebaunit table
                 new_features = []
                 for plot_id in plot_ids:
-                    new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
+                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[UEBAUNIT_TABLE]['layer'])
                     new_feature.setAttribute(UEBAUNIT_TABLE_PLOT_FIELD, plot_id)
                     new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
                     self.log.logMessage("Saving Plot-Parcel: {}-{}".format(plot_id, parcel_id), PLUGIN_NAME, Qgis.Info)
                     new_features.append(new_feature)
 
                 for building_id in building_ids:
-                    new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
+                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[UEBAUNIT_TABLE]['layer'])
                     new_feature.setAttribute(UEBAUNIT_TABLE_BUILDING_FIELD, building_id)
                     new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
                     self.log.logMessage("Saving Building-Parcel: {}-{}".format(building_id, parcel_id), PLUGIN_NAME,
@@ -477,15 +490,14 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                     new_features.append(new_feature)
 
                 for building_unit_id in building_unit_ids:
-                    new_feature = QgsVectorLayerUtils().createFeature(self._uebaunit_table)
+                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[UEBAUNIT_TABLE]['layer'])
                     new_feature.setAttribute(UEBAUNIT_TABLE_BUILDING_UNIT_FIELD, building_unit_id)
                     new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
                     self.log.logMessage("Saving Building Unit-Parcel: {}-{}".format(building_unit_id, parcel_id),
                                         PLUGIN_NAME, Qgis.Info)
                     new_features.append(new_feature)
 
-                self._uebaunit_table.dataProvider().addFeatures(new_features)
-
+                self._layers[UEBAUNIT_TABLE]['layer'].dataProvider().addFeatures(new_features)
 
                 if plot_ids and building_ids and building_unit_ids:
                     self.iface.messageBar().pushMessage("Asistente LADM_COL",
@@ -523,7 +535,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                                                    "The new parcel (t_id={}) was successfully created and associated with its corresponding Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_unit_ids])),
                         Qgis.Info)
 
-        self._parcel_layer.committedFeaturesAdded.disconnect()
+        self._layers[PARCEL_TABLE]['layer'].committedFeaturesAdded.disconnect()
         self.log.logMessage("Parcel's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
 
     def save_settings(self):
