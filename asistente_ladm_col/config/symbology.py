@@ -6,14 +6,13 @@ from .table_mapping_config import (BOUNDARY_TABLE,
                                    CONTROL_POINT_TABLE,
                                    SURVEY_POINT_TABLE,
                                    PLOT_TABLE,
-                                   OFFICIAL_PLOT_TABLE,
                                    BUILDING_TABLE,
                                    BUILDING_UNIT_TABLE,
                                    RIGHT_OF_WAY_TABLE)
 
 ERROR_LAYER = 'error_layer'
 
-DEFAULT_GROUP_STYLE = {
+DEFAULT_STYLE_GROUP = {
     BOUNDARY_TABLE: {
         QgsWkbTypes.LineGeometry: 'style_boundary'
     },
@@ -49,7 +48,7 @@ DEFAULT_GROUP_STYLE = {
     }
 }
 
-OFFICIAL_GROUP_STYLE = {
+OFFICIAL_STYLE_GROUP = {
     PLOT_TABLE: {
         QgsWkbTypes.PolygonGeometry: 'style_official_plot_polygon'
     }

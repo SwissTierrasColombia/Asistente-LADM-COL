@@ -59,7 +59,7 @@ from .geometry import GeometryUtils
 from .qgis_model_baker_utils import QgisModelBakerUtils
 from .qt_utils import OverrideCursor
 from .symbology import SymbologyUtils
-from ..config.symbology import DEFAULT_GROUP_STYLE
+from ..config.symbology import DEFAULT_STYLE_GROUP
 from ..config.general_config import (DEFAULT_EPSG,
                                      FIELD_MAPPING_PATH,
                                      MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE,
@@ -74,6 +74,9 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      REFERENCED_FIELD,
                                      RELATION_TYPE,
                                      DOMAIN_CLASS_RELATION,
+                                     SUFFIX_LAYER_MODIFIERS,
+                                     PREFIX_LAYER_MODIFIERS,
+                                     VISIBLE_LAYER_MODIFIERS,
                                      PLUGIN_NAME,
                                      HELP_DIR_NAME,
                                      translated_strings)
@@ -244,22 +247,24 @@ class QGISUtils(QObject):
 
         return related_domains
 
-    def get_layer(self, db, layer_name, geometry_type=None, load=False, emit_map_freeze=True):
+    def get_layer(self, db, layer_name, geometry_type=None, load=False, emit_map_freeze=True, layer_modifiers=dict()):
         # Handy function to avoid sending a whole dict when all we need is a single table/layer
-        res_layer = self.get_layers(db, {layer_name: {'name': layer_name, 'geometry': geometry_type}}, load, emit_map_freeze)
+        res_layer = self.get_layers(db, {layer_name: {'name': layer_name, 'geometry': geometry_type}}, load, emit_map_freeze, layer_modifiers=layer_modifiers)
         return res_layer[layer_name]
 
-    def get_layers(self, db, layers, load=False, emit_map_freeze=True, style_group=DEFAULT_GROUP_STYLE):
-        # layers = {layer_id : {name: ABC, geometry: DEF}}
-        # layer_id should match layer_name most of the times, but if the same
-        # layer has multiple geometries, layer_id should contain the geometry
-        # type to make the layer_id unique
-        #
-        # emit_map_freeze = False can be used for subsequent calls to get_layers (e.g., from differente dbs), where
-        #     one could be interested in handling the map_freeze from the outside
-
-        # Response is a dict like this:
-        # layers = {layer_id: layer_object} layer_object might be None
+    def get_layers(self, db, layers, load=False, emit_map_freeze=True, layer_modifiers=dict()):
+        """
+        :param db: db connection instance
+        :param layers: {layer_id : {name: ABC, geometry: DEF}}
+        layer_id should match layer_name most of the times, but if the same layer has multiple geometries,
+        layer_id should contain the geometry type to make the layer_id unique
+        :param load: Load layer in the map canvas
+        :param emit_map_freeze: False can be used for subsequent calls to get_layers (e.g., from differente dbs), where
+        one could be interested in handling the map_freeze from the outside
+        :param layer_modifiers: is a dict that it have properties that modifie the layer properties
+        like prefix_layer_name, suffix_layer_name, symbology_group
+        :return: is a dict like this: {layer_id: layer_object} layer_object might be None
+        """
         response_layers = dict()
         additional_layers_to_load = list()
 
@@ -371,8 +376,8 @@ class QGISUtils(QObject):
                                     break
 
                             # Turn off layers loaded as related layers
-                            visible = layer_name in requested_layer_names
-                            self.post_load_configurations(db, layer, visible, style_group=style_group)
+                            layer_modifiers[VISIBLE_LAYER_MODIFIERS] = layer_name in requested_layer_names
+                            self.post_load_configurations(db, layer, layer_modifiers=layer_modifiers)
 
                     profiler.end()
                     print("Post load",profiler.totalTime())
@@ -415,7 +420,7 @@ class QGISUtils(QObject):
         for layer in layers:
             self.set_automatic_fields_namespace_local_id(db, layer)
 
-    def post_load_configurations(self, db, layer, visible, style_group=DEFAULT_GROUP_STYLE):
+    def post_load_configurations(self, db, layer, layer_modifiers=dict()):
         # Do some post-load work, such as setting styles or
         # setting automatic fields for that layer
         self.configure_missing_relations(db, layer)
@@ -427,9 +432,37 @@ class QGISUtils(QObject):
         self.set_automatic_fields(db, layer)
         self.set_layer_constraints(db, layer)
         self.set_form_groups(db, layer)
+        self.set_custom_layer_name(db, layer, layer_modifiers=layer_modifiers)
+
         if layer.isSpatial():
-            self.symbology.set_layer_style_from_qml(db, layer, style_group=style_group)
+            self.symbology.set_layer_style_from_qml(db, layer, layer_modifiers=layer_modifiers)
+
+            visible = False
+            if VISIBLE_LAYER_MODIFIERS in layer_modifiers:
+                if layer_modifiers[VISIBLE_LAYER_MODIFIERS]:
+                    visible = layer_modifiers[VISIBLE_LAYER_MODIFIERS]
             self.set_layer_visibility(layer, visible)
+
+    def set_custom_layer_name(self, db, layer, layer_modifiers=dict()):
+
+        if db is None:
+            return
+
+        full_layer_name = ''
+        layer_name = db.get_ladm_layer_name(layer)
+
+        if PREFIX_LAYER_MODIFIERS in layer_modifiers:
+            if layer_modifiers[PREFIX_LAYER_MODIFIERS]:
+                full_layer_name = layer_modifiers[PREFIX_LAYER_MODIFIERS]
+
+        full_layer_name += layer_name
+
+        if SUFFIX_LAYER_MODIFIERS in layer_modifiers:
+            if layer_modifiers[SUFFIX_LAYER_MODIFIERS]:
+                full_layer_name += layer_modifiers[SUFFIX_LAYER_MODIFIERS]
+
+        if full_layer_name and full_layer_name != layer_name:
+            layer.setName(full_layer_name)
 
     def configure_missing_relations(self, db, layer):
         """

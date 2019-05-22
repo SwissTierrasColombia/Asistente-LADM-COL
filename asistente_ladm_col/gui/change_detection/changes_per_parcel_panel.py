@@ -32,13 +32,16 @@ from qgis.core import (QgsWkbTypes,
                        QgsRectangle)
 
 from qgis.gui import QgsPanelWidget
-from ...config.symbology import OFFICIAL_GROUP_STYLE
-from asistente_ladm_col.config.general_config import MAP_SWIPE_TOOL_PLUGIN_NAME
+from ...config.symbology import OFFICIAL_STYLE_GROUP
+from asistente_ladm_col.config.general_config import (MAP_SWIPE_TOOL_PLUGIN_NAME,
+                                                      OFFICIAL_DB_PREFIX,
+                                                      OFFICIAL_DB_SUFFIX,
+                                                      PREFIX_LAYER_MODIFIERS,
+                                                      SUFFIX_LAYER_MODIFIERS,
+                                                      STYLE_GROUP_LAYER_MODIFIERS)
 from asistente_ladm_col.config.table_mapping_config import (PLOT_TABLE,
                                                             PARCEL_TABLE,
                                                             UEBAUNIT_TABLE,
-                                                            OFFICIAL_PLOT_TABLE,
-                                                            OFFICIAL_PARCEL_TABLE,
                                                             PARCEL_NUMBER_FIELD,
                                                             PARCEL_NUMBER_BEFORE_FIELD,
                                                             FMI_FIELD,
@@ -129,9 +132,16 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             self._parcel_layer.willBeDeleted.connect(self.layer_removed)
 
         # Now load official layers
+        # Set layer modifiers
+        layer_modifiers = {
+            PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
+            SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
+            STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
+        }
+
         res_layers = self.qgis_utils.get_layers(self._official_db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None}}, load=True, emit_map_freeze=False, style_group=OFFICIAL_GROUP_STYLE)
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None}}, load=True, emit_map_freeze=False, layer_modifiers=layer_modifiers)
 
         self._official_plot_layer = res_layers[PLOT_TABLE]
         if self._official_plot_layer is None:
@@ -142,8 +152,6 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                                                 Qgis.Warning)
             return
         else:
-            self._official_plot_layer.setName(OFFICIAL_PLOT_TABLE)
-
             # Layer was found, listen to its removal so that we can deactivate the custom tool when that occurs
             try:
                 self._official_plot_layer.willBeDeleted.disconnect(self.layer_removed)
@@ -160,7 +168,6 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                                                 Qgis.Warning)
             return
         else:
-            self._official_parcel_layer.setName(OFFICIAL_PARCEL_TABLE)
             # Layer was found, listen to its removal so that we can update the variable properly
             try:
                 self._official_parcel_layer.willBeDeleted.disconnect(self.layer_removed)
@@ -295,7 +302,15 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def fill_table(self, search_criterion):
         dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._db, search_criterion)
-        dict_official_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._official_db, search_criterion, style_group=OFFICIAL_GROUP_STYLE)
+
+        # Custom layer modifiers
+        layer_modifiers = {
+            PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
+            SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
+            STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
+        }
+
+        dict_official_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._official_db, search_criterion, layer_modifiers=layer_modifiers)
 
         collected_parcel_number = list(dict_collected_parcels.keys())[0]
         # Before calling fill_table we make sure we get one and only one parcel attrs dict

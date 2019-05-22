@@ -17,6 +17,13 @@ from .table_mapping_config import (MORE_BOUNDARY_FACE_STRING_TABLE,
                                    PARCEL_NUMBER_BEFORE_FIELD)
 from ..utils.qt_utils import get_plugin_metadata
 
+OFFICIAL_DB_PREFIX = None
+OFFICIAL_DB_SUFFIX = "_oficial"
+PREFIX_LAYER_MODIFIERS = 'prefix'
+SUFFIX_LAYER_MODIFIERS = 'suffix'
+STYLE_GROUP_LAYER_MODIFIERS = 'style_group'
+VISIBLE_LAYER_MODIFIERS = 'visible'
+
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
 CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
 PROPERTY_RECORD_CARD_MODEL_PREFIX = "Ficha_Predial_"

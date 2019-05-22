@@ -27,7 +27,12 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem, QMenu, QAction
 from asistente_ladm_col.config.table_mapping_config import PARCEL_NUMBER_FIELD, PLOT_TABLE, PARCEL_TABLE, \
     UEBAUNIT_TABLE, ID_FIELD
 from asistente_ladm_col.utils import get_ui_class
-from ...config.symbology import OFFICIAL_GROUP_STYLE
+from ...config.symbology import OFFICIAL_STYLE_GROUP
+from ...config.general_config import (OFFICIAL_DB_PREFIX,
+                                      OFFICIAL_DB_SUFFIX,
+                                      PREFIX_LAYER_MODIFIERS,
+                                      SUFFIX_LAYER_MODIFIERS,
+                                      STYLE_GROUP_LAYER_MODIFIERS)
 
 WIDGET_UI = get_ui_class('change_detection/changes_all_parcels_panel_widget.ui')
 PARCEL_STATUS = '_PARCEL_STATUS_'
@@ -84,7 +89,16 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def get_compared_parcels_data(self):
         dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._db, None)
-        dict_official_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._official_db, None, style_group=OFFICIAL_GROUP_STYLE)
+
+
+        # Set layer modifiers
+        layer_modifiers = {
+            PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
+            SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
+            STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
+        }
+
+        dict_official_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._official_db, None, layer_modifiers=layer_modifiers)
 
         dict_compared_parcel_data = dict()
         for collected_parcel_number, collected_attrs in dict_collected_parcels.items():
