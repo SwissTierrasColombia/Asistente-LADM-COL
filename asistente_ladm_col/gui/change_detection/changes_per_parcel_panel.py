@@ -32,7 +32,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsRectangle)
 
 from qgis.gui import QgsPanelWidget
-
+from ...config.symbology import OFFICIAL_GROUP_STYLE
 from asistente_ladm_col.config.general_config import MAP_SWIPE_TOOL_PLUGIN_NAME
 from asistente_ladm_col.config.table_mapping_config import (PLOT_TABLE,
                                                             PARCEL_TABLE,
@@ -131,7 +131,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         # Now load official layers
         res_layers = self.qgis_utils.get_layers(self._official_db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None}}, load=True, emit_map_freeze=False)
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None}}, load=True, emit_map_freeze=False, style_group=OFFICIAL_GROUP_STYLE)
 
         self._official_plot_layer = res_layers[PLOT_TABLE]
         if self._official_plot_layer is None:
@@ -143,7 +143,6 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             return
         else:
             self._official_plot_layer.setName(OFFICIAL_PLOT_TABLE)
-            self.qgis_utils.symbology.set_layer_style_from_qml(self._official_db, self._official_plot_layer)
 
             # Layer was found, listen to its removal so that we can deactivate the custom tool when that occurs
             try:
@@ -296,7 +295,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def fill_table(self, search_criterion):
         dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._db, search_criterion)
-        dict_official_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._official_db, search_criterion)
+        dict_official_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._official_db, search_criterion, style_group=OFFICIAL_GROUP_STYLE)
 
         collected_parcel_number = list(dict_collected_parcels.keys())[0]
         # Before calling fill_table we make sure we get one and only one parcel attrs dict

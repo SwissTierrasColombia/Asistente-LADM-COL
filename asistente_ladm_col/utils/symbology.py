@@ -29,7 +29,7 @@ from qgis.core import (QgsFeatureRenderer,
 
 from ..config.translator import QGIS_LANG, DEFAULT_LANGUAGE
 from ..config.general_config import STYLES_DIR
-from ..config.symbology import (LAYER_QML_STYLE,
+from ..config.symbology import (DEFAULT_GROUP_STYLE,
                                 CUSTOM_ERROR_LAYERS,
                                 ERROR_LAYER)
 
@@ -41,7 +41,7 @@ class SymbologyUtils(QObject):
     def __init__(self):
         QObject.__init__(self)
 
-    def set_layer_style_from_qml(self, db, layer, is_error_layer=False, emit=False):
+    def set_layer_style_from_qml(self, db, layer, is_error_layer=False, emit=False, style_group=DEFAULT_GROUP_STYLE):
         qml_name = None
         if is_error_layer:
             if layer.name() in CUSTOM_ERROR_LAYERS:
@@ -51,17 +51,22 @@ class SymbologyUtils(QObject):
                 else:
                     qml_name = CUSTOM_ERROR_LAYERS[layer.name()][DEFAULT_LANGUAGE]
             else:
-                qml_name = LAYER_QML_STYLE[ERROR_LAYER][layer.geometryType()]
+                qml_name = DEFAULT_GROUP_STYLE[ERROR_LAYER][layer.geometryType()]
         else:
             if db is None:
                 return
 
-            layer_name = db.get_ladm_layer_name(layer, validate_is_ladm=True)
-            if layer_name is None:
-                return
+            layer_name = db.get_ladm_layer_name(layer)
 
-            if layer_name in LAYER_QML_STYLE:
-                qml_name = LAYER_QML_STYLE[layer_name][layer.geometryType()]
+            if layer_name in style_group:
+                if layer.geometryType() in style_group[layer_name]:
+                    qml_name = style_group[layer_name][layer.geometryType()]
+
+            # If style not in style group then we use default simbology
+            if qml_name is None:
+                if layer_name in DEFAULT_GROUP_STYLE:
+                    if layer.geometryType() in DEFAULT_GROUP_STYLE[layer_name]:
+                        qml_name = DEFAULT_GROUP_STYLE[layer_name][layer.geometryType()]
 
         if qml_name is not None:
             renderer, labeling = self.get_style_from_qml(qml_name)

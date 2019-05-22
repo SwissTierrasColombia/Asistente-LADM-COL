@@ -59,6 +59,7 @@ from .geometry import GeometryUtils
 from .qgis_model_baker_utils import QgisModelBakerUtils
 from .qt_utils import OverrideCursor
 from .symbology import SymbologyUtils
+from ..config.symbology import DEFAULT_GROUP_STYLE
 from ..config.general_config import (DEFAULT_EPSG,
                                      FIELD_MAPPING_PATH,
                                      MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE,
@@ -248,7 +249,7 @@ class QGISUtils(QObject):
         res_layer = self.get_layers(db, {layer_name: {'name': layer_name, 'geometry': geometry_type}}, load, emit_map_freeze)
         return res_layer[layer_name]
 
-    def get_layers(self, db, layers, load=False, emit_map_freeze=True):
+    def get_layers(self, db, layers, load=False, emit_map_freeze=True, style_group=DEFAULT_GROUP_STYLE):
         # layers = {layer_id : {name: ABC, geometry: DEF}}
         # layer_id should match layer_name most of the times, but if the same
         # layer has multiple geometries, layer_id should contain the geometry
@@ -371,7 +372,7 @@ class QGISUtils(QObject):
 
                             # Turn off layers loaded as related layers
                             visible = layer_name in requested_layer_names
-                            self.post_load_configurations(db, layer, visible)
+                            self.post_load_configurations(db, layer, visible, style_group=style_group)
 
                     profiler.end()
                     print("Post load",profiler.totalTime())
@@ -414,7 +415,7 @@ class QGISUtils(QObject):
         for layer in layers:
             self.set_automatic_fields_namespace_local_id(db, layer)
 
-    def post_load_configurations(self, db, layer, visible):
+    def post_load_configurations(self, db, layer, visible, style_group=DEFAULT_GROUP_STYLE):
         # Do some post-load work, such as setting styles or
         # setting automatic fields for that layer
         self.configure_missing_relations(db, layer)
@@ -427,7 +428,7 @@ class QGISUtils(QObject):
         self.set_layer_constraints(db, layer)
         self.set_form_groups(db, layer)
         if layer.isSpatial():
-            self.symbology.set_layer_style_from_qml(db, layer)
+            self.symbology.set_layer_style_from_qml(db, layer, style_group=style_group)
             self.set_layer_visibility(layer, visible)
 
     def configure_missing_relations(self, db, layer):

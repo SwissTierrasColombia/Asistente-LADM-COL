@@ -22,7 +22,7 @@ from qgis.core import (QgsApplication,
                        QgsExpression,
                        QgsWkbTypes,
                        Qgis)
-
+from ..config.symbology import DEFAULT_GROUP_STYLE
 from ..config.table_mapping_config import (ID_FIELD,
                                            PLOT_TABLE,
                                            UEBAUNIT_TABLE_PARCEL_FIELD,
@@ -200,7 +200,7 @@ class LADM_DATA():
 
         return parcel_ids
 
-    def get_parcel_data_to_compare_changes(self, db, search_criterion=None):
+    def get_parcel_data_to_compare_changes(self, db, search_criterion=None, style_group=DEFAULT_GROUP_STYLE):
         """
         :param db: DB Connector object
         :param search_criterion: FieldName-Value pair to search in parcel layer (None for getting all parcels)
@@ -211,7 +211,7 @@ class LADM_DATA():
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}
 
-        res_layers = self.qgis_utils.get_layers(db, required_layers, load=True)
+        res_layers = self.qgis_utils.get_layers(db, required_layers, load=True, style_group=style_group)
 
         parcel_table = res_layers[PARCEL_TABLE]
         if parcel_table is None:
