@@ -818,51 +818,59 @@ Constrains for wizard create parcel
 """
 
 # Types of parcels
-PARCEL_TYPE_NO_PROPERTY_HORIZONTAL = "NPH"
-PARCEL_TYPE_PROPERTY_HORIZONTAL_MATRIX = "PropiedadHorizontal.Matriz"
-PARCEL_TYPE_PROPERTY_HORIZONTAL_UNIT_PREDIAL = "PropiedadHorizontal.UnidadPredial"
-PARCEL_TYPE_CONDOMINIUM_MATRIX = "Condominio.Matriz"
-PARCEL_TYPE_CONDOMINIUM_UNIT_PREDIAL = "Condominio.UnidadPredial"
+PARCEL_TYPE_NO_HORIZONTAL_PROPERTY = "NPH"
+PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT = "PropiedadHorizontal.Matriz"
+PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT = "PropiedadHorizontal.UnidadPredial"
+PARCEL_TYPE_CONDOMINIUM_PARENT = "Condominio.Matriz"
+PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT = "Condominio.UnidadPredial"
 PARCEL_TYPE_MEJORA = "Mejora"
-PARCEL_TYPE_CEMETERY_MATRIX = "ParqueCementerio.Matriz"
+PARCEL_TYPE_CEMETERY_PARENT = "ParqueCementerio.Matriz"
 PARCEL_TYPE_CEMETERY_PRIVATE_UNIT = "ParqueCementerio.UnidadPrivada"
 PARCEL_TYPE_ROAD = "Via"
 PARCEL_TYPE_PUBLIC_USE = "BienUsoPublico"
-PARCEL_TYPE_WAREHOUSE = "Deposito"
+PARCEL_TYPE_STORE = "Deposito"
 PARCEL_TYPE_PARKING = "Parqueadero"
-PARCEL_TYPE_WINERY = "Bodega"
+PARCEL_TYPE_WAREHOUSE = "Bodega"
 
 # Operations:
-# 1 = number of features must be selected
-# * = One or more features must be selected
-# None = There must be no features selected
+# 1 = One and only one feature must be selected
+# + = One or more features must be selected
+# * = Optional, i.e., zero or more features could be selected
+# None = Won't be stored as a related feature (selected features will be ignored)
 CONSTRAINT_TYPES_OF_PARCEL = {
-    PARCEL_TYPE_NO_PROPERTY_HORIZONTAL: {
-        PLOT_TABLE: 1
-    },
-    PARCEL_TYPE_PROPERTY_HORIZONTAL_MATRIX: {
+    PARCEL_TYPE_NO_HORIZONTAL_PROPERTY: {
         PLOT_TABLE: 1,
-        BUILDING_UNIT_TABLE: None
-    },
-    PARCEL_TYPE_PROPERTY_HORIZONTAL_UNIT_PREDIAL: {
-        PLOT_TABLE: None,
-        BUILDING_TABLE: None,
+        BUILDING_TABLE: '*',
         BUILDING_UNIT_TABLE: '*'
     },
-    PARCEL_TYPE_CONDOMINIUM_MATRIX: {
+    PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT: {
         PLOT_TABLE: 1,
+        BUILDING_TABLE: '*',
         BUILDING_UNIT_TABLE: None
     },
-    PARCEL_TYPE_CONDOMINIUM_UNIT_PREDIAL: {
+    PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT: {
+        PLOT_TABLE: None,
+        BUILDING_TABLE: None,
+        BUILDING_UNIT_TABLE: '+'
+    },
+    PARCEL_TYPE_CONDOMINIUM_PARENT: {
         PLOT_TABLE: 1,
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: None
+    },
+    PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT: {
+        PLOT_TABLE: 1,
+        BUILDING_TABLE: '*',
         BUILDING_UNIT_TABLE: None
     },
     PARCEL_TYPE_MEJORA: {
         PLOT_TABLE: None,
-        BUILDING_UNIT_TABLE: '*'
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: '+'
     },
-    PARCEL_TYPE_CEMETERY_MATRIX: {
+    PARCEL_TYPE_CEMETERY_PARENT: {
         PLOT_TABLE: 1,
+        BUILDING_TABLE: '*',
         BUILDING_UNIT_TABLE: None
     },
     PARCEL_TYPE_CEMETERY_PRIVATE_UNIT: {
@@ -877,12 +885,22 @@ CONSTRAINT_TYPES_OF_PARCEL = {
     },
     PARCEL_TYPE_PUBLIC_USE: {
         PLOT_TABLE: 1,
+        BUILDING_TABLE: '*',
         BUILDING_UNIT_TABLE: None
     },
-    PARCEL_TYPE_WAREHOUSE: {
+    PARCEL_TYPE_STORE: {
+        PLOT_TABLE: '*',
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: '*'
     },
     PARCEL_TYPE_PARKING: {
+        PLOT_TABLE: '*',
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: '*'
     },
-    PARCEL_TYPE_WINERY: {
+    PARCEL_TYPE_WAREHOUSE: {
+        PLOT_TABLE: '*',
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: '*'
     }
 }

@@ -31,9 +31,9 @@ from qgis.core import (QgsEditFormConfig,
 from qgis.gui import QgsExpressionSelectionDialog
 
 from ..config.general_config import (PLUGIN_NAME,
-                                     COLOR_ERROR_LABEL,
-                                     COLOR_OKAY_LABEL,
-                                     COLOR_INACTIVE_LABEL)
+                                     CSS_COLOR_ERROR_LABEL,
+                                     CSS_COLOR_OKAY_LABEL,
+                                     CSS_COLOR_INACTIVE_LABEL)
 from ..config.help_strings import HelpStrings
 from ..config.table_mapping_config import (BUILDING_TABLE,
                                            BUILDING_UNIT_TABLE,
@@ -207,20 +207,10 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         for spatial_unit in CONSTRAINT_TYPES_OF_PARCEL[type]:
             _layer = self._spatial_unit_layers[spatial_unit]
 
-            if isinstance(CONSTRAINT_TYPES_OF_PARCEL[type][spatial_unit], int):
-                if not _layer.selectedFeatureCount() == CONSTRAINT_TYPES_OF_PARCEL[type][spatial_unit]:
-                    result = False
-            elif CONSTRAINT_TYPES_OF_PARCEL[type][spatial_unit] == '*':
-                if not _layer.selectedFeatureCount() >= 1:
-                    result = False
-            # Include to validate None options
-            # elif CONSTRAINT_TYPES_OF_PARCEL[type][spatial_unit] == None:
-            #     if not _layer.selectedFeatureCount() == 0:
-            #         result = False
-
-        # At least one feature must be selected
-        if self._layers[PLOT_TABLE]['layer'].selectedFeatureCount() == 0 and self._layers[BUILDING_TABLE]['layer'].selectedFeatureCount() == 0 and self._layers[BUILDING_UNIT_TABLE]['layer'].selectedFeatureCount() == 0:
-            result = False
+            if CONSTRAINT_TYPES_OF_PARCEL[type][spatial_unit] == 1 and not _layer.selectedFeatureCount() == 1:
+                result = False
+            elif CONSTRAINT_TYPES_OF_PARCEL[type][spatial_unit] == '+' and _layer.selectedFeatureCount() < 1:
+                result = False
 
         return result
 
@@ -294,28 +284,25 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self._current_layer.selectionChanged.disconnect(self.check_selected_features)
 
     def check_selected_features(self):
-
         self.lb_plot.setText(QCoreApplication.translate("CreateParcelCadastreWizard", "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[PLOT_TABLE]['layer'].selectedFeatureCount()))
-        self.lb_plot.setStyleSheet(COLOR_OKAY_LABEL)
+        self.lb_plot.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
         self.lb_building.setText(QCoreApplication.translate("CreateParcelCadastreWizard","<b>Building(s)</b>: {count} Feature(s) Selected").format(count=self._layers[BUILDING_TABLE]['layer'].selectedFeatureCount()))
-        self.lb_building.setStyleSheet(COLOR_OKAY_LABEL)
+        self.lb_building.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
         self.lb_building_unit.setText(QCoreApplication.translate("CreateParcelCadastreWizard","<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=self._layers[BUILDING_UNIT_TABLE]['layer'].selectedFeatureCount()))
-        self.lb_building_unit.setStyleSheet(COLOR_OKAY_LABEL)
+        self.lb_building_unit.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
 
         parcel_type = self.cb_parcel_type.currentText()
         for spatial_unit in CONSTRAINT_TYPES_OF_PARCEL[parcel_type]:
             _layer = self._spatial_unit_layers[spatial_unit]
 
-            _color = COLOR_OKAY_LABEL
+            _color = CSS_COLOR_OKAY_LABEL
 
-            if isinstance(CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit], int):
-                if not _layer.selectedFeatureCount() == CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit]:
-                    _color = COLOR_ERROR_LABEL
-            elif CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == '*':
-                if not _layer.selectedFeatureCount() >= 1:
-                    _color = COLOR_ERROR_LABEL
+            if CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == 1 and not _layer.selectedFeatureCount() == 1:
+                    _color = CSS_COLOR_ERROR_LABEL
+            elif CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == '+' and _layer.selectedFeatureCount() < 1:
+                    _color = CSS_COLOR_ERROR_LABEL
             elif CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == None:
-                _color = COLOR_INACTIVE_LABEL
+                _color = CSS_COLOR_INACTIVE_LABEL
 
             if spatial_unit == PLOT_TABLE:
                 self.lb_plot.setStyleSheet(_color)
@@ -323,6 +310,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                 self.lb_building.setStyleSheet(_color)
             elif spatial_unit == BUILDING_UNIT_TABLE:
                 self.lb_building_unit.setStyleSheet(_color)
+
         self.button(self.FinishButton).setEnabled(self.constraint_is_okay(parcel_type))
 
     def finished_dialog(self):
@@ -411,19 +399,10 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.canvas.setMapTool(self.maptool)
 
     def edit_parcel(self):
-        if self._layers[PLOT_TABLE]['layer'].selectedFeatureCount() == 0 and self._layers[BUILDING_TABLE]['layer'].selectedFeatureCount() == 0 and self._layers[BUILDING_UNIT_TABLE]['layer'].selectedFeatureCount() == 0:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateParcelCadastreWizard",
-                                           "First select at least one Plot, one Building or one Building unit"),
-                Qgis.Warning)
-            return
-
         # Open Form
         self.iface.layerTreeView().setCurrentLayer(self._layers[PARCEL_TABLE]['layer'])
         self._layers[PARCEL_TABLE]['layer'].startEditing()
         self.iface.actionAddFeature().trigger()
-
-        ## TODO: Show selection page when all three layers have selections
 
         plot_ids = list()
         building_ids = list()
@@ -451,6 +430,11 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         # Create connections to react when a feature is added to buffer and
         # when it gets stored into the DB
         self._layers[PARCEL_TABLE]['layer'].featureAdded.connect(self.call_parcel_commit)
+
+        try:
+            self._layers[PARCEL_TABLE]['layer'].committedFeaturesAdded.disconnect()
+        except:
+            pass
         self._layers[PARCEL_TABLE]['layer'].committedFeaturesAdded.connect(partial(self.finish_parcel, plot_ids, building_ids, building_unit_ids))
 
     def call_parcel_commit(self, fid):

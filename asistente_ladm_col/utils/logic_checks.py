@@ -13,19 +13,19 @@ from ..config.table_mapping_config import (ID_FIELD,
                                            COL_PARTY_FIRST_NAME_FIELD,
                                            COL_PARTY_DOC_TYPE_FIELD,
                                            PARCEL_TYPE_FIELD,
-                                           PARCEL_TYPE_NO_PROPERTY_HORIZONTAL,
-                                           PARCEL_TYPE_PROPERTY_HORIZONTAL_MATRIX,
-                                           PARCEL_TYPE_PROPERTY_HORIZONTAL_UNIT_PREDIAL,
-                                           PARCEL_TYPE_CONDOMINIUM_MATRIX,
-                                           PARCEL_TYPE_CONDOMINIUM_UNIT_PREDIAL,
+                                           PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
+                                           PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT,
+                                           PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
+                                           PARCEL_TYPE_CONDOMINIUM_PARENT,
+                                           PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT,
                                            PARCEL_TYPE_MEJORA,
-                                           PARCEL_TYPE_CEMETERY_MATRIX,
+                                           PARCEL_TYPE_CEMETERY_PARENT,
                                            PARCEL_TYPE_CEMETERY_PRIVATE_UNIT,
                                            PARCEL_TYPE_ROAD,
                                            PARCEL_TYPE_PUBLIC_USE,
-                                           PARCEL_TYPE_WAREHOUSE,
+                                           PARCEL_TYPE_STORE,
                                            PARCEL_TYPE_PARKING,
-                                           PARCEL_TYPE_WINERY,
+                                           PARCEL_TYPE_WAREHOUSE,
                                            PARCEL_TABLE)
 from ..config.general_config import (DEFAULT_EPSG,
                                      translated_strings)
@@ -222,14 +222,14 @@ class LogicChecks(QObject):
         new_features = list()
         for record in records:
             mgs_error =  None
-            if record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_NO_PROPERTY_HORIZONTAL:
-                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 0").format(table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_NO_PROPERTY_HORIZONTAL)
-            elif record[PARCEL_TYPE_FIELD] in (PARCEL_TYPE_PROPERTY_HORIZONTAL_MATRIX, PARCEL_TYPE_PROPERTY_HORIZONTAL_UNIT_PREDIAL):
-                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 9").format(table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_PROPERTY_HORIZONTAL_MATRIX +" or "+PARCEL_TYPE_PROPERTY_HORIZONTAL_UNIT_PREDIAL)
-            elif record[PARCEL_TYPE_FIELD] in (PARCEL_TYPE_CONDOMINIUM_MATRIX, PARCEL_TYPE_CONDOMINIUM_UNIT_PREDIAL):
-                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 8").format(table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_CONDOMINIUM_MATRIX+ " or " +PARCEL_TYPE_CONDOMINIUM_UNIT_PREDIAL)
-            elif record[PARCEL_TYPE_FIELD] in (PARCEL_TYPE_CEMETERY_MATRIX, PARCEL_TYPE_CEMETERY_PRIVATE_UNIT):
-                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 7").format(table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_CEMETERY_MATRIX+" or "+PARCEL_TYPE_CEMETERY_PRIVATE_UNIT)
+            if record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_NO_HORIZONTAL_PROPERTY:
+                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 0").format(table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_NO_HORIZONTAL_PROPERTY)
+            elif record[PARCEL_TYPE_FIELD] in (PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT, PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT):
+                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 9").format(table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT + " or " + PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT)
+            elif record[PARCEL_TYPE_FIELD] in (PARCEL_TYPE_CONDOMINIUM_PARENT, PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT):
+                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 8").format(table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_CONDOMINIUM_PARENT + " or " + PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT)
+            elif record[PARCEL_TYPE_FIELD] in (PARCEL_TYPE_CEMETERY_PARENT, PARCEL_TYPE_CEMETERY_PRIVATE_UNIT):
+                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 7").format(table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_CEMETERY_PARENT + " or " + PARCEL_TYPE_CEMETERY_PRIVATE_UNIT)
             elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_MEJORA:
                 mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is {parcel_type} the 22nd position of the property code must be 5").format(table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_MEJORA)
             elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_ROAD:
@@ -269,24 +269,24 @@ class LogicChecks(QObject):
             building_count = record['sum_c'] # count of buildings associated to the parcel
             building_unit_count = record['sum_uc'] # count of building units associated to the parcel
 
-            if record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_NO_PROPERTY_HORIZONTAL:
-                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(plot_count=plot_count, building_unit_count=building_unit_count,table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_NO_PROPERTY_HORIZONTAL)
-            elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_PROPERTY_HORIZONTAL_MATRIX:
-                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(plot_count=plot_count, building_unit_count=building_unit_count, table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_PROPERTY_HORIZONTAL_MATRIX)
-            elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_CONDOMINIUM_MATRIX:
-                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(plot_count=plot_count, building_unit_count=building_unit_count, table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_CONDOMINIUM_MATRIX)
-            elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_CEMETERY_MATRIX:
-                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(plot_count=plot_count, building_unit_count=building_unit_count, table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_CEMETERY_MATRIX)
+            if record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_NO_HORIZONTAL_PROPERTY:
+                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(plot_count=plot_count, building_unit_count=building_unit_count, table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_NO_HORIZONTAL_PROPERTY)
+            elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT:
+                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(plot_count=plot_count, building_unit_count=building_unit_count, table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT)
+            elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_CONDOMINIUM_PARENT:
+                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(plot_count=plot_count, building_unit_count=building_unit_count, table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_CONDOMINIUM_PARENT)
+            elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_CEMETERY_PARENT:
+                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(plot_count=plot_count, building_unit_count=building_unit_count, table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_CEMETERY_PARENT)
             elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_PUBLIC_USE:
                 mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(plot_count=plot_count, building_unit_count=building_unit_count, table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_PUBLIC_USE)
-            elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_CONDOMINIUM_UNIT_PREDIAL:
-                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(plot_count=plot_count, building_unit_count=building_unit_count, table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_CONDOMINIUM_UNIT_PREDIAL)
+            elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT:
+                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building unit but you have {plot_count} plot(s) and {building_unit_count} building unit(s)").format(plot_count=plot_count, building_unit_count=building_unit_count, table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT)
             elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_ROAD:
                 mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building and 0 building unit but you have {plot_count} plot(s) and {building_count} building(s) and {building_unit_count} building unit(s)").format(plot_count=plot_count, building_count=building_count, building_unit_count=building_unit_count, table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_ROAD)
             elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_CEMETERY_PRIVATE_UNIT:
                 mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 1 plot and 0 building and 0 building unit but you have {plot_count} plot(s) and {building_count} building(s) and {building_unit_count} building unit(s)").format(plot_count=plot_count, building_count=building_count, building_unit_count=building_unit_count, table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_CEMETERY_PRIVATE_UNIT)
-            elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_PROPERTY_HORIZONTAL_UNIT_PREDIAL:
-                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 0 plot and 0 building but you have {plot_count} plot(s) and {building_count} building(s)").format(plot_count=plot_count, building_count=building_count, table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_PROPERTY_HORIZONTAL_UNIT_PREDIAL)
+            elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT:
+                mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 0 plot and 0 building but you have {plot_count} plot(s) and {building_count} building(s)").format(plot_count=plot_count, building_count=building_count, table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT)
             elif record[PARCEL_TYPE_FIELD] == PARCEL_TYPE_MEJORA:
                 mgs_error = QCoreApplication.translate("LogicChecksConfigStrings", "When the {parcel_type_field} of {table} is '{parcel_type}' you should have 0 plot and 1 building and 0 building unit but you have {plot_count} plot(s) and {building_count} building(s) and {building_unit_count} building unit(s)").format(plot_count=plot_count, building_count=building_count, building_unit_count=building_unit_count, table=PARCEL_TABLE, parcel_type_field=PARCEL_TYPE_FIELD, parcel_type=PARCEL_TYPE_MEJORA)
 
