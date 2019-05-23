@@ -585,13 +585,13 @@
      </widget>
      <widget class="QWidget" name="tab_reports">
       <attribute name="title">
-       <string>Reports</string>
+       <string>Advanced</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Choose which reports you want to keep active:</string>
+          <string>Choose the additional tools that you want to keep active by missionality:</string>
          </property>
         </widget>
        </item>
@@ -613,21 +613,17 @@
        </item>
        <item>
         <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="1">
-          <widget class="QCheckBox" name="chk_annex_17_report">
-           <property name="text">
-            <string>Annex 17</string>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="1">
-          <widget class="QCheckBox" name="chk_ant_map_report">
+          <widget class="QCheckBox" name="chk_ant_tools">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <property name="text">
-            <string>ANT Map</string>
+            <string>National Land Agency</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="0">
+         <item row="1" column="0">
           <spacer name="horizontalSpacer_9">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -668,7 +664,7 @@
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgis.gui</header>
+   <header>>qgis.gui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

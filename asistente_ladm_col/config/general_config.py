@@ -157,6 +157,7 @@ SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
 CADASTRE_MENU_OBJECTNAME = "ladm_col_cadastre"
 LADM_COL_MENU_OBJECTNAME = "ladm_col"
 PROPERTY_RECORD_CARD_MENU_OBJECTNAME = "ladm_col_property_record_card"
+QUERIES_ACTION_OBJECTNAME = "ladm_col_queries"
 REPORTS_MENU_OBJECTNAME = "ladm_col_reports"
 VALUATION_MENU_OBJECTNAME = "ladm_col_valuation"
 

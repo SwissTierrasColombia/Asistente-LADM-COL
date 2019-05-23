@@ -55,7 +55,7 @@ DIALOG_UI = get_ui_class('settings_dialog.ui')
 class SettingsDialog(QDialog, DIALOG_UI):
 
     db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
-    report_selection_changed = pyqtSignal()
+    advanced_tools_changed = pyqtSignal(str)
     fetcher_task = None
 
     def __init__(self, iface=None, parent=None, qgis_utils=None):
@@ -188,7 +188,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             # Save settings from tabs other than database connection
             self.save_settings()
             QDialog.accept(self)  # TODO remove?
-        self.report_selection_changed.emit()
+        self.advanced_tools_changed.emit("ANT")
 
     def reject(self):
         self.done(0)
@@ -230,8 +230,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
         settings.setValue('Asistente-LADM_COL/sources/document_repository', self.connection_box.isChecked())
 
-        settings.setValue('Asistente-LADM_COL/reports/annex_17', self.chk_annex_17_report.isChecked())
-        settings.setValue('Asistente-LADM_COL/reports/ant_map', self.chk_ant_map_report.isChecked())
+        settings.setValue('Asistente-LADM_COL/reports/ant', self.chk_ant_tools.isChecked())
 
         endpoint = self.txt_service_endpoint.text().strip()
         settings.setValue('Asistente-LADM_COL/sources/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
@@ -303,8 +302,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
 
-        self.chk_annex_17_report.setChecked(settings.value('Asistente-LADM_COL/reports/annex_17', True, bool))
-        self.chk_ant_map_report.setChecked(settings.value('Asistente-LADM_COL/reports/ant_map', True, bool))
+        self.chk_ant_tools.setChecked(settings.value('Asistente-LADM_COL/reports/ant', False, bool))
 
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
 

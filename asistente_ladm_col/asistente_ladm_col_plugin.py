@@ -46,6 +46,7 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
                                     PLUGIN_NAME,
                                     PLUGIN_VERSION,
+                                    QUERIES_ACTION_OBJECTNAME,
                                     RELEASE_URL,
                                     REPORTS_MENU_OBJECTNAME,
                                     VALUATION_MENU_OBJECTNAME)
@@ -140,6 +141,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.addSeparator()
         self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"), self.iface.mainWindow())
         self._queries_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Queries"), self.iface.mainWindow())
+        self._queries_action.setObjectName(QUERIES_ACTION_OBJECTNAME)
         self._menu.addActions([self._load_layers_action,
                               self._queries_action])
         self.add_reports_menu()
@@ -172,7 +174,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.qgis_utils.db_connection_changed.connect(self.refresh_menus)
-        self.qgis_utils.report_selection_changed.connect(self.refresh_report_menus)
+        self.qgis_utils.advanced_tools_changed.connect(self.refresh_report_menus)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
@@ -240,40 +242,23 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.addMenu(self._data_management_menu)
 
     def add_reports_menu(self):
-        self.remove_reports_menu()
-        valuation_menu = self.iface.mainWindow().findChild(QMenu, VALUATION_MENU_OBJECTNAME)
-        property_record_card_menu = self.iface.mainWindow().findChild(QMenu, PROPERTY_RECORD_CARD_MENU_OBJECTNAME)
+        #Gets queries_action index to load the menu after it
+        queries_action = self.iface.mainWindow().findChild(QAction, QUERIES_ACTION_OBJECTNAME)
+        queries_action_idx = self._menu.actions().index(queries_action)
+        self._report_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Reports"), self._menu)
+        self._report_menu.setObjectName(REPORTS_MENU_OBJECTNAME)
+        self._annex_17_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"), self._report_menu)
+        self._annex_17_action.triggered.connect(self.call_annex_17_report_generation)
+        self._report_menu.addActions([self._annex_17_action])
+        self._menu.addMenu(self._report_menu)
+        self._menu.insertMenu(self._menu.actions()[queries_action_idx + 1], self._report_menu)
 
-        annex_17_enabled = QSettings().value('Asistente-LADM_COL/reports/annex_17', True, bool)
-        ant_map_enabled = QSettings().value('Asistente-LADM_COL/reports/ant_map', True, bool)
-        report_actions = list()
+        ant_tools_enabled = QSettings().value('Asistente-LADM_COL/reports/ant', True, bool)
 
-        if annex_17_enabled or ant_map_enabled:
-            self._report_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Reports"), self._menu)
-        else:
-            self.remove_reports_menu()
-
-        if annex_17_enabled:
-            self._annex_17_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"), self._report_menu)
-            self._annex_17_action.triggered.connect(self.call_annex_17_report_generation)
-            report_actions.append(self._annex_17_action)
-        if ant_map_enabled:
-            self._ant_map_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"), self._report_menu)
-            self._ant_map_action.triggered.connect(self.call_ant_map_report_generation)
-            report_actions.append(self._ant_map_action)
-
-        if self._report_menu:
-            self._report_menu.setObjectName(REPORTS_MENU_OBJECTNAME)
-            self._report_menu.addActions(report_actions)
-            self._menu.addMenu(self._report_menu)
-            if valuation_menu and property_record_card_menu:
-                self._menu.insertMenu(self._menu.actions()[6], self._report_menu)
-            elif valuation_menu:
-                self._menu.insertMenu(self._menu.actions()[5], self._report_menu)
-            elif len(self._menu.actions()) > 1:
-                self._menu.insertMenu(self._menu.actions()[4], self._report_menu)
-            else: # Just in case...
-                self._menu.addMenu(self._report_menu)
+        if ant_tools_enabled:
+             self._ant_map_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"), self._report_menu)
+             self._ant_map_action.triggered.connect(self.call_ant_map_report_generation)
+             self._report_menu.addActions([self._ant_map_action])
 
     def add_cadastre_menu(self):
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
@@ -478,7 +463,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         menu.deleteLater()
 
-    def remove_reports_menu(self):
+    def remove_ant_action(self):
         menu = self.iface.mainWindow().findChild(QMenu, REPORTS_MENU_OBJECTNAME)
         if menu is None:
             return # Nothing to remove...
@@ -488,6 +473,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._ant_map_action = None
 
         menu.deleteLater()
+        self.add_reports_menu() #return to default menu
 
     def add_valuation_menu(self):
         menu = self.iface.mainWindow().findChild(QMenu, VALUATION_MENU_OBJECTNAME)
@@ -600,8 +586,15 @@ class AsistenteLADMCOLPlugin(QObject):
                 PLUGIN_NAME,
                 Qgis.Info)
 
-    def refresh_report_menus(self):
-        self.add_reports_menu()
+    def refresh_report_menus(self, advanced_tool):
+        ant_tools_enabled = QSettings().value('Asistente-LADM_COL/reports/ant', True, bool)
+
+        if advanced_tool == 'ANT' and ant_tools_enabled:
+             self._ant_map_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"), self._report_menu)
+             self._ant_map_action.triggered.connect(self.call_ant_map_report_generation)
+             self._report_menu.addActions([self._ant_map_action])
+        else:
+            self.remove_ant_action()
 
     def add_processing_models(self, provider_id):
         if not (provider_id == 'model' or provider_id is None):
