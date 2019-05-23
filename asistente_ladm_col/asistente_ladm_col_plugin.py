@@ -839,7 +839,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def call_ant_map_report_generation(self):
-        self.report_generator.generate_report(self.get_db_connection(), self._annex_17_action, ANT_MAP_REPORT)
+        self.report_generator.generate_report(self.get_db_connection(), self._ant_map_action, ANT_MAP_REPORT)
 
     @_qgis_model_baker_required
     @_db_connection_required
