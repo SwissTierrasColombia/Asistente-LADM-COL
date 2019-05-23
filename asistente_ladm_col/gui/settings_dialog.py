@@ -56,6 +56,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
     advanced_tools_changed = pyqtSignal(str)
+    ant_tools_chk_value = None
     fetcher_task = None
 
     def __init__(self, iface=None, parent=None, qgis_utils=None):
@@ -188,7 +189,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
             # Save settings from tabs other than database connection
             self.save_settings()
             QDialog.accept(self)  # TODO remove?
-        self.advanced_tools_changed.emit("ANT")
+        if self.chk_ant_tools.isChecked() != self.ant_tools_chk_value:
+            self.advanced_tools_changed.emit("ANT")
 
     def reject(self):
         self.done(0)
@@ -302,6 +304,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
 
+        self.ant_tools_chk_value = settings.value('Asistente-LADM_COL/reports/ant', False, bool)
         self.chk_ant_tools.setChecked(settings.value('Asistente-LADM_COL/reports/ant', False, bool))
 
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
