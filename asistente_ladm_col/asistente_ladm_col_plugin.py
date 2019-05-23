@@ -244,14 +244,18 @@ class AsistenteLADMCOLPlugin(QObject):
     def add_reports_menu(self):
         #Gets queries_action index to load the menu after it
         queries_action = self.iface.mainWindow().findChild(QAction, QUERIES_ACTION_OBJECTNAME)
-        queries_action_idx = self._menu.actions().index(queries_action)
+
         self._report_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Reports"), self._menu)
         self._report_menu.setObjectName(REPORTS_MENU_OBJECTNAME)
         self._annex_17_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"), self._report_menu)
         self._annex_17_action.triggered.connect(self.call_annex_17_report_generation)
         self._report_menu.addActions([self._annex_17_action])
-        self._menu.addMenu(self._report_menu)
-        self._menu.insertMenu(self._menu.actions()[queries_action_idx + 1], self._report_menu)
+        if queries_action in self._menu.actions():
+            queries_action_idx = self._menu.actions().index(queries_action)
+            self._menu.addMenu(self._report_menu)
+            self._menu.insertMenu(self._menu.actions()[queries_action_idx + 1], self._report_menu)
+        else:
+            self._menu.addMenu(self._report_menu)
 
         ant_tools_enabled = QSettings().value('Asistente-LADM_COL/reports/ant', True, bool)
 
