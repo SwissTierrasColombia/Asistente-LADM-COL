@@ -348,12 +348,12 @@ class ReportGenerator():
                     ", ".join(multi_polygons))
 
             if total == 1:
-                msg = QCoreApplication.translate("ReportGenerator", "The report for plot {} couldn't be generated!{} See QGIS log (tab 'Anexo_17') for details.").format(plot_id, details_msg)
+                msg = QCoreApplication.translate("ReportGenerator", "The report for plot {} couldn't be generated!{} See QGIS log (tab 'Reportes LADM-COL') for details.").format(plot_id, details_msg)
             else:
                 if count == 0:
-                    msg = QCoreApplication.translate("ReportGenerator", "No report could be generated!{} See QGIS log (tab 'Anexo_17') for details.").format(details_msg)
+                    msg = QCoreApplication.translate("ReportGenerator", "No report could be generated!{} See QGIS log (tab 'Reportes LADM-COL') for details.").format(details_msg)
                 else:
-                    msg = QCoreApplication.translate("ReportGenerator", "At least one report couldn't be generated!{details_msg} See QGIS log (tab 'Anexo_17') for details. Go to <a href='file:///{path}'>{path}</a> to see the reports that were generated.").format(details_msg=details_msg, path=normalize_local_url(save_into_folder))
+                    msg = QCoreApplication.translate("ReportGenerator", "At least one report couldn't be generated!{details_msg} See QGIS log (tab 'Reportes LADM-COL') for details. Go to <a href='file:///{path}'>{path}</a> to see the reports that were generated.").format(details_msg=details_msg, path=normalize_local_url(save_into_folder))
 
             self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Warning, 0)
 
