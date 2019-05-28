@@ -3,13 +3,13 @@ economic_query_test_results = {
         {
             "id": 764,
             "attributes": {
+                "Avalúo terreno [COP]": 1.0,
                 "Área de terreno [m2]": 4934.3,
-                "Avalúo terreno [COP]": 1,
                 "zona_homogenea_geoeconomica": [
                     {
                         "id": 100162,
                         "attributes": {
-                            "Porcentaje": 16.8,
+                            "Porcentaje": 16.80,
                             "Valor": 3,
                             "Identificador": "3"
                         }
@@ -73,13 +73,15 @@ economic_query_test_results = {
                                 {
                                     "id": 152,
                                     "attributes": {
+                                        "Avalúo [COP]": 2.1,
                                         "Área construcción": 0.9,
                                         "unidadconstruccion": [
                                             {
                                                 "id": 873,
                                                 "attributes": {
-                                                    "Número de pisos": 2,
+                                                    "Avalúo [COP]": None,
                                                     "Área construida [m2]": 25.8,
+                                                    "Número de pisos": 2,
                                                     "Uso": "Apartamentos_Mas_4_Pisos",
                                                     "Destino económico": "Comercial",
                                                     "Tipología": "Asamblea",
@@ -158,13 +160,15 @@ economic_query_test_results = {
                                 {
                                     "id": 2091,
                                     "attributes": {
+                                        "Avalúo [COP]": 0.5,
                                         "Área construcción": 0.3,
                                         "unidadconstruccion": [
                                             {
                                                 "id": 2248,
                                                 "attributes": {
-                                                    "Número de pisos": 7,
+                                                    "Avalúo [COP]": 15434354.3,
                                                     "Área construida [m2]": 343.4,
+                                                    "Número de pisos": 7,
                                                     "Uso": "Apartamentos_Mas_4_Pisos_PH",
                                                     "Destino económico": "Anexo",
                                                     "Tipología": "Almacenamiento",
@@ -202,8 +206,9 @@ economic_query_test_results = {
                                             {
                                                 "id": 2249,
                                                 "attributes": {
-                                                    "Número de pisos": 12,
+                                                    "Avalúo [COP]": 0.3,
                                                     "Área construida [m2]": 1.1,
+                                                    "Número de pisos": 12,
                                                     "Uso": None,
                                                     "Destino económico": None,
                                                     "Tipología": None,

@@ -98,7 +98,7 @@ property_record_card_query_test_results = {
                                     "attributes": {
                                         "Disponible en el mercado": True,
                                         "Tipo de oferta": "Alquiler",
-                                        "Valor": 10000,
+                                        "Valor": 10000.0,
                                         "Nombre oferente": "1985_2_nombre_oferente",
                                         "Teléfono contacto oferente": "5434354354",
                                         "Observaciones": "1985_2_observaciones"
