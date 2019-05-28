@@ -47,6 +47,7 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     PLUGIN_NAME,
                                     PLUGIN_VERSION,
                                     RELEASE_URL,
+                                    TOOL_BAR_NAME,
                                     VALUATION_MENU_OBJECTNAME)
 from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                           ID_FIELD,
@@ -201,6 +202,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._import_from_intermediate_structure_action.triggered.connect(self.call_import_from_intermediate_structure)
         self._ladm_col_toolbar = self.iface.addToolBar(QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"))
         self._ladm_col_toolbar.setObjectName("ladmcoltools")
+        self._ladm_col_toolbar.setToolTip(TOOL_BAR_NAME)
         self._ladm_col_toolbar.addActions([self._build_boundary_action,
                                            self._topological_editing_action,
                                            self._fill_point_BFS_action,

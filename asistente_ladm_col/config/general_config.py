@@ -17,6 +17,8 @@ from .table_mapping_config import (MORE_BOUNDARY_FACE_STRING_TABLE,
                                    PARCEL_NUMBER_BEFORE_FIELD)
 from ..utils.qt_utils import get_plugin_metadata
 
+TOOL_BAR_NAME = QCoreApplication.translate("TranslatableConfigStrings", "LADM COL Toolbar")
+
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
 CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
 PROPERTY_RECORD_CARD_MODEL_PREFIX = "Ficha_Predial_"
