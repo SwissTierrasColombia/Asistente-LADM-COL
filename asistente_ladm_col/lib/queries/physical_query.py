@@ -84,7 +84,6 @@ def get_igac_physical_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
                                                                   'Uso', unidad_construccion.uso,
                                                                   'Puntuación', unidad_construccion.puntuacion,
                                                                   'Tipología', unidad_construccion.tipologia,
-                                                                  'Puntuación', unidad_construccion.puntuacion,
                                                                   'Destino económico', unidad_construccion.destino_econo,
                                                                   'Tipo de construcción', unidad_construccion.construccion_tipo,
         """
@@ -93,7 +92,6 @@ def get_igac_physical_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
                                                                   'Uso', NULL,
                                                                   'Puntuación', NULL,
                                                                   'Tipología', NULL,
-                                                                  'Puntuación', NULL,
                                                                   'Destino económico', NULL,
                                                                   'Tipo de construcción', NULL,
         """
