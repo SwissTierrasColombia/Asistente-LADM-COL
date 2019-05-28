@@ -32,6 +32,7 @@ from qgis.PyQt.QtWidgets import (QProgressBar,
                                  QMessageBox)
 from qgis.core import (Qgis,
                        QgsApplication,
+                       QgsEditFormConfig,
                        QgsAttributeEditorContainer,
                        QgsAttributeEditorElement,
                        QgsDataSourceUri,
@@ -114,6 +115,7 @@ from ..lib.source_handler import SourceHandler
 
 
 class QGISUtils(QObject):
+    action_add_feature_requested = pyqtSignal()
     action_vertex_tool_requested = pyqtSignal()
     activate_layer_requested = pyqtSignal(QgsMapLayer)
     clear_status_bar_emitted = pyqtSignal()
@@ -1387,3 +1389,24 @@ class QGISUtils(QObject):
             url = web_url
 
         webbrowser.open("{}/{}".format(url, section))
+
+    def suppress_form(self, layer, suppress=True):
+        if layer:
+            form_config = layer.editFormConfig()
+            if suppress:
+                form_config.setSuppress(QgsEditFormConfig.SuppressOn)
+            else:
+                form_config.setSuppress(QgsEditFormConfig.SuppressOff)
+            layer.setEditFormConfig(form_config)
+
+    def get_new_feature(self, layer):
+        self.suppress_form(layer, True)
+        self.action_add_feature_requested.emit()
+
+        new_feature = None
+        for i in layer.editBuffer().addedFeatures():
+            new_feature = layer.editBuffer().addedFeatures()[i]
+            break
+
+        self.suppress_form(layer, False)
+        return new_feature

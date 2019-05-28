@@ -236,6 +236,11 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         except:
             pass
 
+        try:
+            self._layers[PARCEL_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_parcel)
+        except:
+            pass
+
         layers = [self._layers[PLOT_TABLE]['layer'],
                   self._layers[PARCEL_TABLE]['layer'],
                   self._layers[BUILDING_TABLE]['layer'],
@@ -401,12 +406,6 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
 
     def edit_parcel(self):
         self.iface.layerTreeView().setCurrentLayer(self._layers[PARCEL_TABLE]['layer'])
-
-        try:
-            self._layers[PARCEL_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_parcel)
-        except:
-            pass
-
         self._layers[PARCEL_TABLE]['layer'].committedFeaturesAdded.connect(self.finish_parcel)
         self.open_form(self._layers[PARCEL_TABLE]['layer'])
 
@@ -514,36 +513,13 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.log.logMessage("Parcel's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard()
 
-    def suppress_form(self, layer, suppress=True):
-        if layer:
-            form_config = layer.editFormConfig()
-            if suppress:
-                form_config.setSuppress(QgsEditFormConfig.SuppressOn)
-            else:
-                form_config.setSuppress(QgsEditFormConfig.SuppressOff)
-            layer.setEditFormConfig(form_config)
-
-    def get_new_feature(self, layer):
-        self.suppress_form(layer, True)
-        self.iface.actionAddFeature().trigger()
-
-        new_feature = None
-        for i in layer.editBuffer().addedFeatures():
-            new_feature = layer.editBuffer().addedFeatures()[i]
-            break
-
-        self.suppress_form(layer, False)
-        return new_feature
-
     def open_form(self, layer):
         if not layer.isEditable():
             layer.startEditing()
 
-        feature = self.get_new_feature(layer)
+        feature = self.qgis_utils.get_new_feature(layer)
         dialog = self.iface.getFeatureForm(layer, feature)
-
         dialog.rejected.connect(self.from_rejected)
-
         dialog.setModal(True)
 
         # TODO: Set custom size of dialog
