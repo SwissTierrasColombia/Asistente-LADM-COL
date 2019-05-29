@@ -859,6 +859,7 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = DialogExportData(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
+    @_qgis_model_baker_required
     @_activate_processing_plugin
     def show_dlg_controlled_measurement(self):
         dlg = ControlledMeasurementDialog(self.qgis_utils)
