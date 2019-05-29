@@ -47,6 +47,7 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     PLUGIN_NAME,
                                     PLUGIN_VERSION,
                                     RELEASE_URL,
+                                    URL_REPORTS_LIBRARIES,
                                     TOOL_BAR_NAME,
                                     VALUATION_MENU_OBJECTNAME)
 from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
@@ -645,13 +646,25 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
 
     def show_message_to_download_report_dependency(self, msg):
-        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
-        button = QPushButton(widget)
-        button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-            "Download and install dependency"))
-        button.pressed.connect(self.download_report_dependency)
-        widget.layout().addWidget(button)
-        self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
+
+        download_in_process = False
+        # Check if report dependency downloading is in process
+        for task in QgsApplication.taskManager().activeTasks():
+            if URL_REPORTS_LIBRARIES in task.description():
+                download_in_process = True
+
+        if not download_in_process:
+            widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+            button = QPushButton(widget)
+            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                      "Download and install dependency"))
+            button.pressed.connect(self.download_report_dependency)
+            widget.layout().addWidget(button)
+            self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
+        else:
+            self.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                         "Report dependency download is in progress..."),
+                              Qgis.Info)
 
     def show_message_to_remove_report_dependency(self, msg):
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)

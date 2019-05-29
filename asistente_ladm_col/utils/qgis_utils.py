@@ -1351,7 +1351,11 @@ class QGISUtils(QObject):
         except:
             pass
         finally:
-            s.close()
+            try:
+                # s might not exist if socket.create_connection breaks
+                s.close()
+            except:
+                pass
 
         return False
 
