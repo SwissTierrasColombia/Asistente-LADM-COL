@@ -37,7 +37,10 @@ from qgis.core import (QgsEditFormConfig,
 from qgis.gui import QgsExpressionSelectionDialog
 
 from ..config.general_config import (PLUGIN_NAME,
-                                     TranslatableConfigStrings)
+                                     TranslatableConfigStrings,
+                                     CSS_COLOR_ERROR_LABEL,
+                                     CSS_COLOR_OKAY_LABEL,
+                                     CSS_COLOR_INACTIVE_LABEL)
 from ..config.help_strings import HelpStrings
 from ..config.table_mapping_config import (EXTADDRESS_TABLE,
                                            EXTADDRESS_BUILDING_FIELD,
@@ -307,46 +310,46 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                     self._current_layer = self._plot_layer
 
         if self.rad_to_plot.isChecked():
-            self.rad_to_building.setStyleSheet('color:#000;')
-            self.rad_to_building_unit.setStyleSheet('color:#000;')
+            self.rad_to_building.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
+            self.rad_to_building_unit.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
 
             # Check selected features in plot layer
             if self._plot_layer.selectedFeatureCount() == 1:
-                self.rad_to_plot.setStyleSheet('color:#478046;')
+                self.rad_to_plot.setStyleSheet(CSS_COLOR_OKAY_LABEL)
             elif self._plot_layer.selectedFeatureCount() > 1:
                 # the color of the text is changed to highlight when there are more than one feature selected
-                self.rad_to_plot.setStyleSheet('color:#FF0000;')
+                self.rad_to_plot.setStyleSheet(CSS_COLOR_ERROR_LABEL)
             else:
                 # the color of the text is changed to highlight that there is no selection
-                self.rad_to_plot.setStyleSheet('color:#FF0000;')
+                self.rad_to_plot.setStyleSheet(CSS_COLOR_ERROR_LABEL)
 
         elif self.rad_to_building.isChecked():
-            self.rad_to_plot.setStyleSheet('color:#000;')
-            self.rad_to_building_unit.setStyleSheet('color:#000;')
+            self.rad_to_plot.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
+            self.rad_to_building_unit.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
 
             # Check selected features in building layer
             if self._building_layer.selectedFeatureCount() == 1:
-                self.rad_to_building.setStyleSheet('color:#478046;')
+                self.rad_to_building.setStyleSheet(CSS_COLOR_OKAY_LABEL)
             elif self._building_layer.selectedFeatureCount() > 1:
                 # the color of the text is changed to highlight when there are more than one feature selected
-                self.rad_to_building.setStyleSheet('color:#FF0000;')
+                self.rad_to_building.setStyleSheet(CSS_COLOR_ERROR_LABEL)
             else:
                 # the color of the text is changed to highlight that there is no selection
-                self.rad_to_building.setStyleSheet('color:#FF0000;')
+                self.rad_to_building.setStyleSheet(CSS_COLOR_ERROR_LABEL)
 
         elif self.rad_to_building_unit.isChecked():
-            self.rad_to_plot.setStyleSheet('color:#000;')
-            self.rad_to_building.setStyleSheet('color:#000;')
+            self.rad_to_plot.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
+            self.rad_to_building.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
 
             # Check selected features in building unit layer
             if self._building_unit_layer.selectedFeatureCount() == 1:
-                self.rad_to_building_unit.setStyleSheet('color:#478046;')
+                self.rad_to_building_unit.setStyleSheet(CSS_COLOR_OKAY_LABEL)
             elif self._building_unit_layer.selectedFeatureCount() > 1:
                 # the color of the text is changed to highlight when there are more than one features selected
-                self.rad_to_building_unit.setStyleSheet('color:#FF0000;')
+                self.rad_to_building_unit.setStyleSheet(CSS_COLOR_ERROR_LABEL)
             else:
                 # the color of the text is changed to highlight that there is no selection
-                self.rad_to_building_unit.setStyleSheet('color:#FF0000;')
+                self.rad_to_building_unit.setStyleSheet(CSS_COLOR_ERROR_LABEL)
 
         # Zoom to selected feature
         self.canvas.zoomToSelected(self._current_layer)

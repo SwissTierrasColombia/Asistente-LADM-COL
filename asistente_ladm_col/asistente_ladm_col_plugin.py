@@ -161,6 +161,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
 
+        self.qgis_utils.action_add_feature_requested.connect(self.trigger_add_feature)
         self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
         self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
         self.qgis_utils.clear_status_bar_emitted.connect(self.clear_status_bar)
@@ -581,6 +582,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def freeze_map(self, frozen):
         self.iface.mapCanvas().freeze(frozen)
+
+    def trigger_add_feature(self):
+        self.iface.actionAddFeature().trigger()
 
     def trigger_vertex_tool(self):
         self.iface.actionVertexTool().trigger()
