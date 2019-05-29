@@ -89,7 +89,7 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
         QgsProject.instance().addMapLayer(self.layer_r1)
 
         self.res_layers = self.qgis_utils.get_layers(self._db, {
-            #FDC_PLOT: {'name': FDC_PLOT, 'geometry': None},
+            FDC_PLOT: {'name': FDC_PLOT, 'geometry': None},
             FDC_PARTY: {'name': FDC_PARTY, 'geometry': None},
             FDC_RIGHT: {'name': FDC_RIGHT, 'geometry': None},
             FDC_ADMINISTRATIVE_SOURCE: {'name': FDC_ADMINISTRATIVE_SOURCE, 'geometry': None},
@@ -106,9 +106,7 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
         }, load=True)        """
 
     def mapping_fields_r1(self):
-        print (self.res_layers)
-        arreglo = [ FDC_PARTY, FDC_RIGHT, FDC_ADMINISTRATIVE_SOURCE, FDC_RRRSOURCE, FDC_UEBAUNIT]
+        arreglo = [ FDC_PLOT, FDC_PARTY, FDC_RIGHT, FDC_ADMINISTRATIVE_SOURCE, FDC_RRRSOURCE, FDC_UEBAUNIT]
         for name in arreglo:
-            print (name)
             run_etl_model_input_load_data(self.layer_r1, self.res_layers[name], name, self.qgis_utils)
             print ("Ejecutando etl" + self.res_layers[name].name())

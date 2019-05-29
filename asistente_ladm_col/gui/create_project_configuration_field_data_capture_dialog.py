@@ -60,9 +60,17 @@ class ProjectConfigurationFieldDataCaptureDialog(QDialog, WIZARD_UI):
         self.qgis_utils.show_help("create_points")
 
     def accepted(self):
-        import_capture_model('ili2gpkg', 'Captura_Geografica_V0_3', '/home/shade/Desktop/prueba10.gpkg')
+        settings = QSettings()
+        filename, filter = QFileDialog.getSaveFileName(self,
+                                   QCoreApplication.translate("ProjectConfigurationFieldDataCaptureDialog",
+                                                              "Save File"),
+                                   os.path.join(settings.value(
+                        'Asistente-LADM_COL/wizards/project_configuration_field_data_captura_path', '.')),
+                                   QCoreApplication.translate("ProjectConfigurationFieldDataCaptureDialog",
+                                                              "GeoPackage Database (*.gpkg)"))
+
+        import_capture_model('ili2gpkg', 'Captura_Geografica_V0_3', filename)
         organize_legend('Captura_Geografica_V0_3')
         change_multimedia_suppord()
         load_default_value()
         load_simbology()
-
