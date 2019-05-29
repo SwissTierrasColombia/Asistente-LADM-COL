@@ -1337,7 +1337,7 @@ class QGISUtils(QObject):
             pass
         finally:
             try:
-                # If it was broken before the object s was created
+                # s might not exist if socket.create_connection breaks
                 s.close()
             except:
                 pass

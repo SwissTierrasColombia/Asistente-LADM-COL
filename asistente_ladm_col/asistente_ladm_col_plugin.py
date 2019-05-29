@@ -659,7 +659,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
         else:
             self.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                         "Report dependency downloading is in process..."),
+                                                         "Report dependency download is in progress..."),
                               Qgis.Info)
 
     def show_message_to_remove_report_dependency(self, msg):
