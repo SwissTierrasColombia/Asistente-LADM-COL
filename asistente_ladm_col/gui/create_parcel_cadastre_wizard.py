@@ -153,7 +153,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             for parcel_type in CONSTRAINT_TYPES_OF_PARCEL:
                 self.cb_parcel_type.addItem(parcel_type)
 
-            # select save option
+            # Select previous option saved
             if self.type_of_parcel_selected:
                 index = self.cb_parcel_type.findText(self.type_of_parcel_selected)
                 if index != -1:
@@ -183,6 +183,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.btn_building_unit_map.setEnabled(True)
         self.btn_building_unit_expression.setEnabled(True)
 
+        # Disable labels/controls depending on parcel_type
         for spatial_unit in CONSTRAINT_TYPES_OF_PARCEL[parcel_type]:
             if CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == None:
                 if spatial_unit == PLOT_TABLE:
@@ -203,7 +204,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         msg_help = self.help_strings.WIZ_CREATE_PARCEL_CADASTRE_PAGE_2.format(msg_parcel_type=msg_parcel_type)
         self.txt_help_page_2.setHtml(msg_help)
 
-    def constraint_is_okay(self, type):
+    def is_constraint_satisfied(self, type):
         result = True
         for spatial_unit in CONSTRAINT_TYPES_OF_PARCEL[type]:
             _layer = self._spatial_unit_layers[spatial_unit]
@@ -317,7 +318,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             elif spatial_unit == BUILDING_UNIT_TABLE:
                 self.lb_building_unit.setStyleSheet(_color)
 
-        self.button(self.FinishButton).setEnabled(self.constraint_is_okay(parcel_type))
+        self.button(self.FinishButton).setEnabled(self.is_constraint_satisfied(parcel_type))
 
     def finished_dialog(self):
         self.save_settings()
@@ -388,7 +389,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
     def layer_removed(self):
         self.iface.messageBar().pushMessage("Asistente LADM_COL",
                                             QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                                       "Create parcel wizard stop because you remove a necessary layer!!!"),
+                                                                       "'Create parcel' tool has been closed because you just removed a required layer."),
                                             Qgis.Info)
         self.close_wizard()
 
@@ -519,7 +520,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
 
         feature = self.qgis_utils.get_new_feature(layer)
         dialog = self.iface.getFeatureForm(layer, feature)
-        dialog.rejected.connect(self.from_rejected)
+        dialog.rejected.connect(self.form_rejected)
         dialog.setModal(True)
 
         # TODO: Set custom size of dialog
@@ -539,7 +540,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                 layer.rollBack()
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                                                     QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                                               "Error in saving changes. Parcel could not be created."),
+                                                                               "Error while saving changes. Parcel could not be created."),
                                                     Qgis.Warning)
 
                 for e in layer.commitErrors():
@@ -549,10 +550,10 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         else:
             layer.rollBack()
 
-    def from_rejected(self):
+    def form_rejected(self):
         self.iface.messageBar().pushMessage("Asistente LADM_COL",
                                             QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                                       "Create parcel wizard stop because you closed the form!!!"),
+                                                                       "'Create parcel' tool has been closed because you just closed the form."),
                                             Qgis.Info)
         self.close_wizard()
 

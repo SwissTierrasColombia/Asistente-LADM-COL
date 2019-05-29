@@ -369,8 +369,11 @@ class QGISUtils(QObject):
         # Verifies that the layers have been successfully loaded
         for layer_name in layers:
             if response_layers[layer_name] is None:
-                self.message_emitted.emit(QCoreApplication.translate("AsistenteLADMCOLPlugin","{layer_name} layer couldn't be found... {description}").format(layer_name=layer_name,description=db.get_description()),Qgis.Warning)
-                return
+                self.message_emitted.emit(QCoreApplication.translate("QGISUtils", "{layer_name} layer couldn't be found... {description}").format(
+                        layer_name=layer_name,
+                        description=db.get_description()),
+                    Qgis.Warning)
+                return {}
 
             # Save reference to layer loaded
             if 'layer' in layers[layer_name]:
