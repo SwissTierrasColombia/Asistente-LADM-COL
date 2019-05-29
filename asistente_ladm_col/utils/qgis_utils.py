@@ -1336,7 +1336,11 @@ class QGISUtils(QObject):
         except:
             pass
         finally:
-            s.close()
+            try:
+                # If it was broken before the object s was created
+                s.close()
+            except:
+                pass
 
         return False
 
