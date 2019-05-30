@@ -19,7 +19,6 @@
 from functools import partial
 
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              Qt,
                               QSettings)
 from qgis.PyQt.QtWidgets import (QWizard,
                                  QMessageBox)
@@ -31,27 +30,27 @@ from qgis.core import (QgsEditFormConfig,
                        QgsApplication)
 from qgis.gui import QgsExpressionSelectionDialog
 
-from ..config.general_config import (PLUGIN_NAME,
-                                     CSS_COLOR_ERROR_LABEL,
-                                     CSS_COLOR_OKAY_LABEL,
-                                     CSS_COLOR_INACTIVE_LABEL)
-from ..config.help_strings import HelpStrings
-from ..config.table_mapping_config import (BUILDING_TABLE,
-                                           BUILDING_UNIT_TABLE,
-                                           ID_FIELD,
-                                           PARCEL_TABLE,
-                                           PARCEL_TYPE_FIELD,
-                                           PLOT_TABLE,
-                                           UEBAUNIT_TABLE,
-                                           UEBAUNIT_TABLE_BUILDING_FIELD,
-                                           UEBAUNIT_TABLE_BUILDING_UNIT_FIELD,
-                                           UEBAUNIT_TABLE_PARCEL_FIELD,
-                                           UEBAUNIT_TABLE_PLOT_FIELD,
-                                           CONSTRAINT_TYPES_OF_PARCEL)
-from ..utils import get_ui_class
-from ..utils.qt_utils import (enable_next_wizard,
-                              disable_next_wizard)
-from ..utils.select_map_tool import SelectMapTool
+from ....config.general_config import (PLUGIN_NAME,
+                                       CSS_COLOR_ERROR_LABEL,
+                                       CSS_COLOR_OKAY_LABEL,
+                                       CSS_COLOR_INACTIVE_LABEL)
+from ....config.help_strings import HelpStrings
+from ....config.table_mapping_config import (BUILDING_TABLE,
+                                             BUILDING_UNIT_TABLE,
+                                             ID_FIELD,
+                                             PARCEL_TABLE,
+                                             PARCEL_TYPE_FIELD,
+                                             PLOT_TABLE,
+                                             UEBAUNIT_TABLE,
+                                             UEBAUNIT_TABLE_BUILDING_FIELD,
+                                             UEBAUNIT_TABLE_BUILDING_UNIT_FIELD,
+                                             UEBAUNIT_TABLE_PARCEL_FIELD,
+                                             UEBAUNIT_TABLE_PLOT_FIELD,
+                                             CONSTRAINT_TYPES_OF_PARCEL)
+from ....utils import get_ui_class
+from ....utils.qt_utils import (enable_next_wizard,
+                                disable_next_wizard)
+from ....utils.select_map_tool import SelectMapTool
 
 WIZARD_UI = get_ui_class('wiz_create_parcel_cadastre.ui')
 
@@ -100,14 +99,13 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                                      QMessageBox.Yes, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
-            self.close_wizard()
+            message = QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                 "'Create parcel' tool has been closed because the map tool change.")
+            self.close_wizard(message)
         else:
             # Continue creating the Parcel
             self.canvas.setMapTool(old_tool)
             self.canvas.mapToolSet.connect(self.map_tool_changed)
-
-    def closeEvent(self, event):
-        self.close_wizard()
 
     def adjust_page_1_controls(self):
         self.gbx_page1.setTitle(QCoreApplication.translate("CreateParcelCadastreWizard", "How would you like to create parcels?    "))
@@ -146,7 +144,9 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
 
         if result is None:
             # if there was a problem loading the layers
-            self.close_wizard()
+            message = QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                 "'Create parcel' tool has been closed because there was a problem loading the requeries layers.")
+            self.close_wizard(message)
             return
 
         if self.cb_parcel_type.count() == 0:
@@ -387,13 +387,15 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                 self._layers[layer_name]['layer'].willBeDeleted.connect(self.layer_removed)
 
     def layer_removed(self):
-        self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                            QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                                       "'Create parcel' tool has been closed because you just removed a required layer."),
-                                            Qgis.Info)
-        self.close_wizard()
+        message = QCoreApplication.translate("CreateParcelCadastreWizard",
+                                             "'Create parcel' tool has been closed because you just removed a required layer.")
+        self.close_wizard(message)
 
-    def close_wizard(self):
+    def close_wizard(self, message=None):
+        if message is None:
+            message = QCoreApplication.translate("CreateParcelCadastreWizard", "'Create parcel' tool has been closed.")
+        self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
+
         self.init_map_tool()
         self.disconnect_signals()
         self.close()
@@ -411,6 +413,9 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.open_form(self._layers[PARCEL_TABLE]['layer'])
 
     def finish_parcel(self, layerId, features):
+
+        message = QCoreApplication.translate("CreateParcelCadastreWizard",
+                                             "'Create parcel' tool has been closed because an error occurred while trying to save the data.")
 
         if len(features) != 1:
             self.log.logMessage("We should have got only one predio... We cannot do anything with {} predios".format(len(features)), PLUGIN_NAME, Qgis.Warning)
@@ -475,44 +480,34 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                 self._layers[UEBAUNIT_TABLE]['layer'].dataProvider().addFeatures(new_features)
 
                 if plot_ids and building_ids and building_unit_ids:
-                    self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                        QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={}) and Building(s) (t_id={}) and Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in plot_ids]), ", ".join([str(b) for b in building_ids]), ", ".join([str(b) for b in building_unit_ids])),
-                        Qgis.Info)
+                    message = QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={}) and Building(s) (t_id={}) and Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in plot_ids]), ", ".join([str(b) for b in building_ids]), ", ".join([str(b) for b in building_unit_ids]))
                 elif plot_ids and building_ids and not building_unit_ids:
-                    self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                        QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={}) and Building(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in plot_ids]), ", ".join([str(b) for b in building_ids])),
-                        Qgis.Info)
+                    message = QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={}) and Building(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in plot_ids]), ", ".join([str(b) for b in building_ids]))
                 elif plot_ids and not building_ids and building_unit_ids:
-                    self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                        QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={}) and Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in plot_ids]), ", ".join([str(b) for b in building_unit_ids])),
-                        Qgis.Info)
+                    message = QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={}) and Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in plot_ids]), ", ".join([str(b) for b in building_unit_ids]))
                 elif plot_ids and not building_ids and not building_unit_ids:
-                    self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                        QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={})!").format(parcel_id, ", ".join([str(b) for b in plot_ids])),
-                        Qgis.Info)
+                    message = QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Plot (t_id={})!").format(parcel_id, ", ".join([str(b) for b in plot_ids]))
                 elif not plot_ids and building_ids and not building_unit_ids:
-                    self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                        QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Building(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_ids])),
-                        Qgis.Info)
+                    message = QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Building(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_ids]))
                 elif not plot_ids and building_ids and building_unit_ids:
-                    self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                        QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Building(s) (t_id={}) and Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_ids]), ", ".join([str(b) for b in building_unit_ids])),
-                        Qgis.Info)
+                    message = QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                         "The new parcel (t_id={}) was successfully created and associated with its corresponding Building(s) (t_id={}) and Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_ids]), ", ".join([str(b) for b in building_unit_ids]))
                 elif not plot_ids and not building_ids and building_unit_ids:
-                    self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                        QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                   "The new parcel (t_id={}) was successfully created and associated with its corresponding Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_unit_ids])),
-                        Qgis.Info)
+                    message = QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                         "The new parcel (t_id={}) was successfully created and associated with its corresponding Building Unit(s) (t_id={})!").format(parcel_id, ", ".join([str(b) for b in building_unit_ids]))
+                elif not plot_ids and not building_ids and not building_unit_ids:
+                    message = QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                         "The new parcel (t_id={}) was successfully created but this one wasn't associated with a spatial unit").format(parcel_id)
+
 
         self._layers[PARCEL_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_parcel)
         self.log.logMessage("Parcel's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
-        self.close_wizard()
+        self.close_wizard(message)
 
     def open_form(self, layer):
         if not layer.isEditable():
@@ -551,11 +546,9 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             layer.rollBack()
 
     def form_rejected(self):
-        self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                            QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                                       "'Create parcel' tool has been closed because you just closed the form."),
-                                            Qgis.Info)
-        self.close_wizard()
+        message = QCoreApplication.translate("CreateParcelCadastreWizard",
+                                             "'Create parcel' tool has been closed because you just closed the form.")
+        self.close_wizard(message)
 
     def save_settings(self):
         settings = QSettings()
