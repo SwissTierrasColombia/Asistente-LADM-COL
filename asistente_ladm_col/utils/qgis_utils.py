@@ -47,6 +47,8 @@ from qgis.core import (Qgis,
                        QgsMapLayer,
                        QgsOptionalExpression,
                        QgsProject,
+                       QgsTolerance,
+                       QgsSnappingConfig,
                        QgsProperty,
                        QgsRelation,
                        QgsVectorLayer,
@@ -1406,9 +1408,11 @@ class QGISUtils(QObject):
                 form_config.setSuppress(QgsEditFormConfig.SuppressOff)
             layer.setEditFormConfig(form_config)
 
-    def get_new_feature(self, layer):
+    def get_new_feature(self, layer, is_spatial=False):
         self.suppress_form(layer, True)
-        self.action_add_feature_requested.emit()
+
+        if not is_spatial:
+            self.action_add_feature_requested.emit()
 
         new_feature = None
         for i in layer.editBuffer().addedFeatures():
@@ -1417,3 +1421,13 @@ class QGISUtils(QObject):
 
         self.suppress_form(layer, False)
         return new_feature
+
+    def active_snapping(self):
+        # Configure Snapping
+        snapping = QgsProject.instance().snappingConfig()
+        snapping.setEnabled(True)
+        snapping.setMode(QgsSnappingConfig.AllLayers)
+        snapping.setType(QgsSnappingConfig.Vertex)
+        snapping.setUnits(QgsTolerance.Pixels)
+        snapping.setTolerance(12)
+        QgsProject.instance().setSnappingConfig(snapping)

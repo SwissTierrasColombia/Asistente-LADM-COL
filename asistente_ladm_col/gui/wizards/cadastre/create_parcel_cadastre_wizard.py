@@ -22,8 +22,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 from qgis.PyQt.QtWidgets import (QWizard,
                                  QMessageBox)
-from qgis.core import (QgsEditFormConfig,
-                       QgsVectorLayerUtils,
+from qgis.core import (QgsVectorLayerUtils,
                        Qgis,
                        QgsWkbTypes,
                        QgsMapLayerProxyModel,
@@ -56,16 +55,23 @@ WIZARD_UI = get_ui_class('wiz_create_parcel_cadastre.ui')
 
 
 class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
+    WIZARD_CREATES_SPATIAL_FEATURE = False
 
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
+        self._db = db
+        self.qgis_utils = qgis_utils
+        self.help_strings = HelpStrings()
+
         self.canvas = self.iface.mapCanvas()
         self.maptool = self.canvas.mapTool()
         self.select_maptool = None
         self._current_layer = None
+        self._spatial_unit_layers = dict()
+        self.type_of_parcel_selected = None
 
         self._layers = {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
@@ -75,40 +81,17 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, 'layer': None}
         }
 
-        self._spatial_unit_layers = dict()
-        self.type_of_parcel_selected = None
-        self._db = db
-        self.qgis_utils = qgis_utils
-        self.help_strings = HelpStrings()
-
         self.restore_settings()
-
         self.rad_parcel_from_plot.toggled.connect(self.adjust_page_1_controls)
         self.adjust_page_1_controls()
+
         self.button(QWizard.NextButton).clicked.connect(self.adjust_page_2_controls)
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
         self.rejected.connect(self.close_wizard)
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.NoGeometry)
 
-    def map_tool_changed(self, new_tool, old_tool):
-        self.canvas.mapToolSet.disconnect(self.map_tool_changed)
-        reply = QMessageBox.question(self,
-                                     QCoreApplication.translate("CreateParcelCadastreWizard", "Stop parcel creation?"),
-                                     QCoreApplication.translate("CreateParcelCadastreWizard","The map tool is about to change. Do you want to stop creating parcels?"),
-                                     QMessageBox.Yes, QMessageBox.No)
-
-        if reply == QMessageBox.Yes:
-            message = QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                 "'Create parcel' tool has been closed because the map tool change.")
-            self.close_wizard(message)
-        else:
-            # Continue creating the Parcel
-            self.canvas.setMapTool(old_tool)
-            self.canvas.mapToolSet.connect(self.map_tool_changed)
-
     def adjust_page_1_controls(self):
-        self.gbx_page1.setTitle(QCoreApplication.translate("CreateParcelCadastreWizard", "How would you like to create parcels?    "))
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
         self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(PARCEL_TABLE))
@@ -140,7 +123,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.disconnect_signals()
 
         # Load layers
-        result = self.prepare_parcel_creation_layers()
+        result = self.prepare_feature_creation_layers()
 
         if result is None:
             # if there was a problem loading the layers
@@ -162,17 +145,16 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.cb_parcel_type.currentTextChanged.connect(self.validate_type_of_parcel)
         self.cb_parcel_type.currentTextChanged.emit(self.cb_parcel_type.currentText())
 
-        if result:
-            # Check if a previous features are selected
-            self.check_selected_features()
+        # Check if a previous features are selected
+        self.check_selected_features()
 
-            self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[PLOT_TABLE]['layer']))
-            self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_TABLE]['layer']))
-            self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_UNIT_TABLE]['layer']))
+        self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[PLOT_TABLE]['layer']))
+        self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_TABLE]['layer']))
+        self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_UNIT_TABLE]['layer']))
 
-            self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[PLOT_TABLE]['layer']))
-            self.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_TABLE]['layer']))
-            self.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_UNIT_TABLE]['layer']))
+        self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[PLOT_TABLE]['layer']))
+        self.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_TABLE]['layer']))
+        self.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_UNIT_TABLE]['layer']))
 
     def validate_type_of_parcel(self, parcel_type):
         # Activate all push buttons
@@ -225,6 +207,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                    self.btn_building_expression.clicked,
                    self.btn_building_unit_expression.clicked,
                    self.cb_parcel_type.currentTextChanged]
+
         for signal in signals:
             try:
                 signal.disconnect()
@@ -238,7 +221,12 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             pass
 
         try:
-            self._layers[PARCEL_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_parcel)
+            self._layers[PARCEL_TABLE]['layer'].featureAdded.disconnect()
+        except:
+            pass
+
+        try:
+            self._layers[PARCEL_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
@@ -253,6 +241,22 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                 layer.willBeDeleted.disconnect(self.layer_removed)
             except:
                 pass
+
+    def map_tool_changed(self, new_tool, old_tool):
+        self.canvas.mapToolSet.disconnect(self.map_tool_changed)
+        reply = QMessageBox.question(self,
+                                     QCoreApplication.translate("CreateParcelCadastreWizard", "Stop parcel creation?"),
+                                     QCoreApplication.translate("CreateParcelCadastreWizard","The map tool is about to change. Do you want to stop creating parcels?"),
+                                     QMessageBox.Yes, QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            message = QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                 "'Create parcel' tool has been closed because the map tool change.")
+            self.close_wizard(message)
+        else:
+            # Continue creating the Parcel
+            self.canvas.setMapTool(old_tool)
+            self.canvas.mapToolSet.connect(self.map_tool_changed)
 
     def select_features_on_map(self, layer):
         self._current_layer = layer
@@ -338,27 +342,21 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                     self.qgis_utils.save_field_mapping(PARCEL_TABLE)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                    QCoreApplication.translate("CreateParcelCadastreWizard",
-                                               "Select a source layer to set the field mapping to '{}'.").format(PARCEL_TABLE),
-                    Qgis.Warning)
+                                                    QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                                               "Select a source layer to set the field mapping to '{}'.").format(PARCEL_TABLE),
+                                                    Qgis.Warning)
 
         elif self.rad_parcel_from_plot.isChecked():
-            self.prepare_parcel_creation()
+            self.prepare_feature_creation()
 
-    def prepare_parcel_creation(self):
+    def prepare_feature_creation(self):
         # layers of interest are loaded
-        result = self.prepare_parcel_creation_layers()
+        result = self.prepare_feature_creation_layers()
         if result is None:
             return
+        self.edit_feature()
 
-        if result:
-            # Don't suppress (i.e., show) feature form
-            form_config = self._layers[PARCEL_TABLE]['layer'].editFormConfig()
-            form_config.setSuppress(QgsEditFormConfig.SuppressOff)
-            self._layers[PARCEL_TABLE]['layer'].setEditFormConfig(form_config)
-            self.edit_parcel()
-
-    def prepare_parcel_creation_layers(self):
+    def prepare_feature_creation_layers(self):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if res_layers is None:
@@ -407,18 +405,20 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             pass
         self.canvas.setMapTool(self.maptool)
 
-    def edit_parcel(self):
+    def edit_feature(self):
         self.iface.layerTreeView().setCurrentLayer(self._layers[PARCEL_TABLE]['layer'])
-        self._layers[PARCEL_TABLE]['layer'].committedFeaturesAdded.connect(self.finish_parcel)
+        self._layers[PARCEL_TABLE]['layer'].committedFeaturesAdded.connect(self.finish_feature_creation)
         self.open_form(self._layers[PARCEL_TABLE]['layer'])
 
-    def finish_parcel(self, layerId, features):
+    def finish_feature_creation(self, layerId, features):
 
         message = QCoreApplication.translate("CreateParcelCadastreWizard",
                                              "'Create parcel' tool has been closed because an error occurred while trying to save the data.")
 
         if len(features) != 1:
-            self.log.logMessage("We should have got only one predio... We cannot do anything with {} predios".format(len(features)), PLUGIN_NAME, Qgis.Warning)
+            message = QCoreApplication.translate("CreateParcelCadastreWizard",
+                                                 "'Create parcel' tool has been closed. We should have got only one parcel... We cannot do anything with {} parcels").format(len(features))
+            self.log.logMessage("We should have got only one parcel... We cannot do anything with {} parcels".format(len(features)), PLUGIN_NAME, Qgis.Warning)
         else:
             fid = features[0].id()
 
@@ -505,13 +505,33 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                                                          "The new parcel (t_id={}) was successfully created but this one wasn't associated with a spatial unit").format(parcel_id)
 
 
-        self._layers[PARCEL_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_parcel)
+        self._layers[PARCEL_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Parcel's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 
     def open_form(self, layer):
         if not layer.isEditable():
             layer.startEditing()
+
+        if self.WIZARD_CREATES_SPATIAL_FEATURE:
+            # action add ExtAddress feature
+            self.qgis_utils.suppress_form(layer, True)
+            self.iface.actionAddFeature().trigger()
+
+            # Shows the form when the feature is created
+            layer.featureAdded.connect(partial(self.exec_form, layer))
+
+        else:
+            self.exec_form(layer)
+
+    def exec_form(self, layer):
+
+        try:
+            # Disconnect signal to prevent add features
+            layer.featureAdded.disconnect()
+            self.log.logMessage("Feature added SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+        except:
+            pass
 
         feature = self.qgis_utils.get_new_feature(layer)
         dialog = self.iface.getFeatureForm(layer, feature)
