@@ -87,12 +87,26 @@ class GeometryUtils(QObject):
 
                     if is_multipart:
                         multi_polygon = polygon_geom.get()
+
+                        # TODO: remove when the error is resolved
+                        if type(multi_polygon) != QgsMultiPolygon:
+                            geom = QgsMultiPolygon()
+                            geom.fromWkt(polygon_geom.asWkt())
+                            multi_polygon = geom
+
                         for part in range(multi_polygon.numGeometries()):
                             if multi_polygon.ringCount(part) > 1:
                                 has_inner_rings = True
                                 break
                     else:
                         single_polygon = polygon_geom.get()
+
+                        # TODO: remove when the error is resolved
+                        if type(single_polygon) != QgsPolygon:
+                            geom = QgsPolygon()
+                            geom.fromWkt(polygon_geom.asWkt())
+                            single_polygon = geom
+
                         if single_polygon.numInteriorRings() > 0:
                             has_inner_rings = True
 
@@ -829,8 +843,15 @@ class GeometryUtils(QObject):
             geoms = geoms.combine(feature.geometry())
         return geoms
 
-    def fix_selected_boundaries(self, boundary_layer, selected_ids=list(), id_field=ID_FIELD):
+    def get_unique_segments(self, layer):
+        # Since the alg needs a TOLERANCE, but we don't use tolerances at all, we use here 1e-9,
+        # enough to be lesser than our coordinate precision (1e-4 for meters, 1e-8 for degrees)
+        clean_layer = processing.run("native:removeduplicatevertices",{'INPUT': layer, 'TOLERANCE': 1e-9, 'USE_Z_VALUE': False, 'OUTPUT': 'memory:'})['OUTPUT']
+        tmp_segments_layer = processing.run("native:explodelines", {'INPUT': clean_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        segments_layer = processing.run("qgis:deleteduplicategeometries", {'INPUT': tmp_segments_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        return segments_layer
 
+    def fix_selected_boundaries(self, boundary_layer, selected_ids=list(), id_field=ID_FIELD):
         selected_features = list()
         if len(selected_ids) == 0:
             selected_features = [feature for feature in boundary_layer.selectedFeatures()]
@@ -838,10 +859,8 @@ class GeometryUtils(QObject):
             boundary_layer.selectByIds(selected_ids)
             selected_features = [feature for feature in boundary_layer.selectedFeatures()]
 
-        tmp_segments_layer = processing.run("native:explodelines", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-
         # remove duplicate segments (algorithm don't work with duplicate geometries)
-        segments_layer = processing.run("qgis:deleteduplicategeometries", {'INPUT': tmp_segments_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        segments_layer = self.get_unique_segments(boundary_layer)
 
         id_field_idx = segments_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
@@ -903,9 +922,8 @@ class GeometryUtils(QObject):
         return new_geometries, boundaries_to_del_unique_ids
 
     def fix_boundaries(self, layer, id_field=ID_FIELD):
-        tmp_segments_layer = processing.run("native:explodelines", {'INPUT': layer, 'OUTPUT': 'memory:'})['OUTPUT']
         # remove duplicate segments (algorithm don't with duplicate geometries)
-        segments_layer = processing.run("qgis:deleteduplicategeometries", {'INPUT': tmp_segments_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        segments_layer = self.get_unique_segments(layer)
         id_field_idx = segments_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_features = {feature.id(): feature for feature in segments_layer.getFeatures(request)}
