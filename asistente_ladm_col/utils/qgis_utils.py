@@ -32,6 +32,7 @@ from qgis.PyQt.QtWidgets import (QProgressBar,
                                  QMessageBox)
 from qgis.core import (Qgis,
                        QgsApplication,
+                       QgsEditFormConfig,
                        QgsAttributeEditorContainer,
                        QgsAttributeEditorElement,
                        QgsDataSourceUri,
@@ -114,6 +115,7 @@ from ..lib.source_handler import SourceHandler
 
 
 class QGISUtils(QObject):
+    action_add_feature_requested = pyqtSignal()
     action_vertex_tool_requested = pyqtSignal()
     activate_layer_requested = pyqtSignal(QgsMapLayer)
     clear_status_bar_emitted = pyqtSignal()
@@ -365,6 +367,19 @@ class QGISUtils(QObject):
         self.map_freeze_requested.emit(False)
         self.map_refresh_requested.emit()
         self.activate_layer_requested.emit(list(response_layers.values())[0])
+
+        # Verifies that the layers have been successfully loaded
+        for layer_name in layers:
+            if response_layers[layer_name] is None:
+                self.message_emitted.emit(QCoreApplication.translate("QGISUtils", "{layer_name} layer couldn't be found... {description}").format(
+                        layer_name=layer_name,
+                        description=db.get_description()),
+                    Qgis.Warning)
+                return {}
+
+            # Save reference to layer loaded
+            if 'layer' in layers[layer_name]:
+                layers[layer_name]['layer'] = response_layers[layer_name]
 
         # response_layers only has data about requested layers. Other layers,
         # i.e., those loaded as related ones, are not included
@@ -1338,7 +1353,11 @@ class QGISUtils(QObject):
         except:
             pass
         finally:
-            s.close()
+            try:
+                # s might not exist if socket.create_connection breaks
+                s.close()
+            except:
+                pass
 
         return False
 
@@ -1379,3 +1398,24 @@ class QGISUtils(QObject):
             url = web_url
 
         webbrowser.open("{}/{}".format(url, section))
+
+    def suppress_form(self, layer, suppress=True):
+        if layer:
+            form_config = layer.editFormConfig()
+            if suppress:
+                form_config.setSuppress(QgsEditFormConfig.SuppressOn)
+            else:
+                form_config.setSuppress(QgsEditFormConfig.SuppressOff)
+            layer.setEditFormConfig(form_config)
+
+    def get_new_feature(self, layer):
+        self.suppress_form(layer, True)
+        self.action_add_feature_requested.emit()
+
+        new_feature = None
+        for i in layer.editBuffer().addedFeatures():
+            new_feature = layer.editBuffer().addedFeatures()[i]
+            break
+
+        self.suppress_form(layer, False)
+        return new_feature

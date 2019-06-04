@@ -17,6 +17,8 @@ from .table_mapping_config import (MORE_BOUNDARY_FACE_STRING_TABLE,
                                    PARCEL_NUMBER_BEFORE_FIELD)
 from ..utils.qt_utils import get_plugin_metadata
 
+TOOL_BAR_NAME = QCoreApplication.translate("TranslatableConfigStrings", "LADM COL Toolbar")
+
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
 CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
 PROPERTY_RECORD_CARD_MODEL_PREFIX = "Ficha_Predial_"
@@ -138,6 +140,11 @@ DOMAIN_CLASS_RELATION = 'domain_class'
 CLASS_CLASS_RELATION = 'class_class'
 
 TEST_SERVER = "www.google.com"
+
+# Colors for labels in wizards and dialogs
+CSS_COLOR_ERROR_LABEL = "color:#FF0000"
+CSS_COLOR_OKAY_LABEL = "color:#478046"
+CSS_COLOR_INACTIVE_LABEL = "color:#646464"
 
 # DOWNLOAD PAGE URL IN QGIS PLUGIN REPO
 PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO = "https://plugins.qgis.org/plugins/asistente_ladm_col/"

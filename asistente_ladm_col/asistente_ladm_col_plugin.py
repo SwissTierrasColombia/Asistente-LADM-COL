@@ -49,6 +49,8 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     QUERIES_ACTION_OBJECTNAME,
                                     RELEASE_URL,
                                     REPORTS_MENU_OBJECTNAME,
+                                    URL_REPORTS_LIBRARIES,
+                                    TOOL_BAR_NAME,
                                     VALUATION_MENU_OBJECTNAME)
 from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                           ANNEX_17_REPORT,
@@ -166,6 +168,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
 
+        self.qgis_utils.action_add_feature_requested.connect(self.trigger_add_feature)
         self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
         self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
         self.qgis_utils.clear_status_bar_emitted.connect(self.clear_status_bar)
@@ -201,11 +204,14 @@ class AsistenteLADMCOLPlugin(QObject):
         self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
         self._fill_right_of_way_relations_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Right of Way Relations"), self.iface.mainWindow())
         self._fill_right_of_way_relations_action.triggered.connect(self.call_fill_right_of_way_relations)
+        self._report_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Generate Annex 17"), self.iface.mainWindow())
+        self._report_action.triggered.connect(self.call_report_generation)
         self._import_from_intermediate_structure_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import from intermediate structure"),
                                       self.iface.mainWindow())
         self._import_from_intermediate_structure_action.triggered.connect(self.call_import_from_intermediate_structure)
         self._ladm_col_toolbar = self.iface.addToolBar(QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"))
         self._ladm_col_toolbar.setObjectName("ladmcoltools")
+        self._ladm_col_toolbar.setToolTip(TOOL_BAR_NAME)
         self._ladm_col_toolbar.addActions([self._build_boundary_action,
                                            self._topological_editing_action,
                                            self._fill_point_BFS_action,
@@ -628,6 +634,9 @@ class AsistenteLADMCOLPlugin(QObject):
     def freeze_map(self, frozen):
         self.iface.mapCanvas().freeze(frozen)
 
+    def trigger_add_feature(self):
+        self.iface.actionAddFeature().trigger()
+
     def trigger_vertex_tool(self):
         self.iface.actionVertexTool().trigger()
 
@@ -687,13 +696,24 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
 
     def show_message_to_download_report_dependency(self, msg):
-        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
-        button = QPushButton(widget)
-        button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-            "Download and install dependency"))
-        button.pressed.connect(self.download_report_dependency)
-        widget.layout().addWidget(button)
-        self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
+        download_in_process = False
+        # Check if report dependency downloading is in process
+        for task in QgsApplication.taskManager().activeTasks():
+            if URL_REPORTS_LIBRARIES in task.description():
+                download_in_process = True
+
+        if not download_in_process:
+            widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+            button = QPushButton(widget)
+            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                      "Download and install dependency"))
+            button.pressed.connect(self.download_report_dependency)
+            widget.layout().addWidget(button)
+            self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
+        else:
+            self.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                         "Report dependency download is in progress..."),
+                              Qgis.Info)
 
     def show_message_to_remove_report_dependency(self, msg):
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
@@ -910,6 +930,7 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = DialogExportData(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
+    @_qgis_model_baker_required
     @_activate_processing_plugin
     def show_dlg_controlled_measurement(self):
         dlg = ControlledMeasurementDialog(self.qgis_utils)

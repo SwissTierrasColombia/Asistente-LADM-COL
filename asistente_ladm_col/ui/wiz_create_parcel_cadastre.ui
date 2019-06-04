@@ -244,14 +244,27 @@
            <bool>false</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
-           <item row="0" column="0">
-            <widget class="QLabel" name="lb_plot">
+           <item row="2" column="2">
+            <widget class="QPushButton" name="btn_building_expression">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Select building(s) based on an expression</string>
+             </property>
              <property name="text">
-              <string>Plot(s):</string>
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normaloff>:/Asistente-LADM_COL/resources/images/mIconExpressionSelect.svg</normaloff>:/Asistente-LADM_COL/resources/images/mIconExpressionSelect.svg</iconset>
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
+           <item row="1" column="1">
             <widget class="QPushButton" name="btn_plot_map">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -277,7 +290,7 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="2">
+           <item row="1" column="2">
             <widget class="QPushButton" name="btn_plot_expression">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -297,61 +310,7 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="lb_building">
-             <property name="text">
-              <string>Building(s):</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QPushButton" name="btn_building_map">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>Select building(s) on the map</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset>
-               <normaloff>:/Asistente-LADM_COL/resources/images/mActionSelectRectangle.svg</normaloff>:/Asistente-LADM_COL/resources/images/mActionSelectRectangle.svg</iconset>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <widget class="QPushButton" name="btn_building_expression">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>Select building(s) based on an expression</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset>
-               <normaloff>:/Asistente-LADM_COL/resources/images/mIconExpressionSelect.svg</normaloff>:/Asistente-LADM_COL/resources/images/mIconExpressionSelect.svg</iconset>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="lb_building_unit">
-             <property name="text">
-              <string>Building unit(s):</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
+           <item row="3" column="1">
             <widget class="QPushButton" name="btn_building_unit_map">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -371,7 +330,41 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="2">
+           <item row="3" column="0">
+            <widget class="QLabel" name="lb_building_unit">
+             <property name="text">
+              <string>Building unit(s):</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QPushButton" name="btn_building_map">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Select building(s) on the map</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normaloff>:/Asistente-LADM_COL/resources/images/mActionSelectRectangle.svg</normaloff>:/Asistente-LADM_COL/resources/images/mActionSelectRectangle.svg</iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="lb_plot">
+             <property name="text">
+              <string>Plot(s):</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2">
             <widget class="QPushButton" name="btn_building_unit_expression">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -390,6 +383,33 @@
                <normaloff>:/Asistente-LADM_COL/resources/images/mIconExpressionSelect.svg</normaloff>:/Asistente-LADM_COL/resources/images/mIconExpressionSelect.svg</iconset>
              </property>
             </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="lb_building">
+             <property name="text">
+              <string>Building(s):</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0" colspan="3">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Tipo de predio a crear: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="cb_parcel_type"/>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>

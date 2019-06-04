@@ -3,7 +3,7 @@ physical_query_test_results = {
         {
             "id": 764,
             "attributes": {
-                "Área registral [m2]": 4934,
+                "Área registral [m2]": 4934.0,
                 "Área calculada [m2]": 4934.3,
                 "predio": [
                     {
