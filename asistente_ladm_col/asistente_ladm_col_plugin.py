@@ -60,7 +60,7 @@ from .utils.decorators import (_db_connection_required,
 from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
-from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
+from .gui.wizards.cadastre.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
 from .gui.create_building_cadastre_wizard import CreateBuildingCadastreWizard
 from .gui.create_building_unit_cadastre_wizard import CreateBuildingUnitCadastreWizard
 from .gui.create_right_of_way_cadastre_wizard import CreateRightOfWayCadastreWizard

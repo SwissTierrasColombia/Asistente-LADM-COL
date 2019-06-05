@@ -1422,7 +1422,7 @@ class QGISUtils(QObject):
         self.suppress_form(layer, False)
         return new_feature
 
-    def active_snapping(self):
+    def active_snapping_all_layers(self):
         # Configure Snapping
         snapping = QgsProject.instance().snappingConfig()
         snapping.setEnabled(True)
@@ -1430,4 +1430,17 @@ class QGISUtils(QObject):
         snapping.setType(QgsSnappingConfig.Vertex)
         snapping.setUnits(QgsTolerance.Pixels)
         snapping.setTolerance(12)
+        QgsProject.instance().setSnappingConfig(snapping)
+
+    def active_snapping_layers(self, layers):
+        # Configure Snapping
+        snapping = QgsProject.instance().snappingConfig()
+        snapping.setEnabled(True)
+        snapping.setMode(QgsSnappingConfig.AdvancedConfiguration)
+
+        for layer in layers:
+            snapping.setIndividualLayerSettings(layer,
+                                                QgsSnappingConfig.IndividualLayerSettings(True,
+                                                                                          QgsSnappingConfig.Vertex, 15,
+                                                                                          QgsTolerance.Pixels))
         QgsProject.instance().setSnappingConfig(snapping)

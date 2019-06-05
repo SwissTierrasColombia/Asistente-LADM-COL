@@ -444,6 +444,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             # Open Form
             self.iface.layerTreeView().setCurrentLayer(self._layers[EXTADDRESS_TABLE]['layer'])
             self._layers[EXTADDRESS_TABLE]['layer'].committedFeaturesAdded.connect(self.finish_feature_creation)
+            self.qgis_utils.active_snapping_all_layers()
             self.open_form(self._layers[EXTADDRESS_TABLE]['layer'])
 
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
@@ -521,7 +522,6 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         dialog = self.iface.getFeatureForm(layer, feature)
         dialog.rejected.connect(self.form_rejected)
         dialog.setModal(True)
-        self.qgis_utils.active_snapping()
 
         if dialog.exec_():
             fid = feature.id()
