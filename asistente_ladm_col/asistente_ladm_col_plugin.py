@@ -73,7 +73,7 @@ from .gui.create_natural_party_prc import CreateNaturalPartyPRCWizard
 from .gui.create_nuclear_family_prc import CreateNuclearFamilyPRCWizard
 from .gui.wizards.cadastre.create_parcel_cadastre_wizard import CreateParcelCadastreWizard
 from .gui.create_plot_cadastre_wizard import CreatePlotCadastreWizard
-from .gui.create_points_cadastre_wizard import CreatePointsCadastreWizard
+from .gui.wizards.cadastre.create_points_cadastre_wizard import CreatePointsCadastreWizard
 from .gui.create_property_record_card_prc import CreatePropertyRecordCardPRCWizard
 from .gui.create_responsibility_cadastre_wizard import CreateResponsibilityCadastreWizard
 from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWizard

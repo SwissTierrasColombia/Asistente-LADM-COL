@@ -34,19 +34,18 @@ from qgis.core import (Qgis,
                        QgsWkbTypes)
 from qgis.gui import QgsMessageBar
 
-from ..config.general_config import (PLUGIN_NAME,
-                                     DEFAULT_EPSG,
-                                     FIELD_MAPPING_PATH)
-from ..config.help_strings import HelpStrings
-from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
-                                           SURVEY_POINT_TABLE,
-                                           CONTROL_POINT_TABLE)
+from ....config.general_config import (PLUGIN_NAME,
+                                       DEFAULT_EPSG)
+from ....config.help_strings import HelpStrings
+from ....config.table_mapping_config import (BOUNDARY_POINT_TABLE,
+                                             SURVEY_POINT_TABLE,
+                                             CONTROL_POINT_TABLE)
 
-from ..utils import get_ui_class
-from ..utils.qt_utils import (make_file_selector,
-                              enable_next_wizard,
-                              disable_next_wizard,
-                              normalize_local_url)
+from ....utils import get_ui_class
+from ....utils.qt_utils import (make_file_selector,
+                                enable_next_wizard,
+                                disable_next_wizard,
+                                normalize_local_url)
 
 WIZARD_UI = get_ui_class('wiz_create_points_cadastre.ui')
 
@@ -109,6 +108,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         self.txt_help_page_3.setHtml(self.help_strings.WIZ_ADD_POINTS_CADASTRE_PAGE_3_OPTION_CSV)
         self.txt_help_page_3.anchorClicked.connect(self.save_template)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
+        self.rejected.connect(self.close_wizard)
 
         # Set MessageBar for QWizard
         self.bar = QgsMessageBar()
@@ -256,6 +256,12 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             self.qgis_utils.check_if_and_enable_automatic_fields(self._db,
                                                         automatic_fields_definition,
                                                         self.current_point_name())
+
+    def close_wizard(self, message=None):
+        if message is None:
+            message = QCoreApplication.translate("CreatePointsCadastreWizard", "'Create point' tool has been closed.")
+        self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
+        self.close()
 
     def current_point_name(self):
         if self.rad_boundary_point.isChecked():
