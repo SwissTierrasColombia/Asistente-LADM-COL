@@ -29,27 +29,27 @@ from qgis.core import (QgsVectorLayerUtils,
                        QgsApplication)
 from qgis.gui import QgsExpressionSelectionDialog
 
-from ....config.general_config import (PLUGIN_NAME,
-                                       CSS_COLOR_ERROR_LABEL,
-                                       CSS_COLOR_OKAY_LABEL,
-                                       CSS_COLOR_INACTIVE_LABEL)
-from ....config.help_strings import HelpStrings
-from ....config.table_mapping_config import (BUILDING_TABLE,
-                                             BUILDING_UNIT_TABLE,
-                                             ID_FIELD,
-                                             PARCEL_TABLE,
-                                             PARCEL_TYPE_FIELD,
-                                             PLOT_TABLE,
-                                             UEBAUNIT_TABLE,
-                                             UEBAUNIT_TABLE_BUILDING_FIELD,
-                                             UEBAUNIT_TABLE_BUILDING_UNIT_FIELD,
-                                             UEBAUNIT_TABLE_PARCEL_FIELD,
-                                             UEBAUNIT_TABLE_PLOT_FIELD,
-                                             CONSTRAINT_TYPES_OF_PARCEL)
-from ....utils import get_ui_class
-from ....utils.qt_utils import (enable_next_wizard,
-                                disable_next_wizard)
-from ....utils.select_map_tool import SelectMapTool
+from .....config.general_config import (PLUGIN_NAME,
+                                        CSS_COLOR_ERROR_LABEL,
+                                        CSS_COLOR_OKAY_LABEL,
+                                        CSS_COLOR_INACTIVE_LABEL)
+from .....config.help_strings import HelpStrings
+from .....config.table_mapping_config import (BUILDING_TABLE,
+                                              BUILDING_UNIT_TABLE,
+                                              ID_FIELD,
+                                              PARCEL_TABLE,
+                                              PARCEL_TYPE_FIELD,
+                                              PLOT_TABLE,
+                                              UEBAUNIT_TABLE,
+                                              UEBAUNIT_TABLE_BUILDING_FIELD,
+                                              UEBAUNIT_TABLE_BUILDING_UNIT_FIELD,
+                                              UEBAUNIT_TABLE_PARCEL_FIELD,
+                                              UEBAUNIT_TABLE_PLOT_FIELD,
+                                              CONSTRAINT_TYPES_OF_PARCEL)
+from .....utils import get_ui_class
+from .....utils.qt_utils import (enable_next_wizard,
+                                 disable_next_wizard)
+from .....utils.select_map_tool import SelectMapTool
 
 WIZARD_UI = get_ui_class('wiz_create_parcel_cadastre.ui')
 

@@ -30,26 +30,26 @@ from qgis.core import (Qgis,
                        QgsVectorLayerUtils)
 from qgis.gui import QgsExpressionSelectionDialog
 
-from ....config.general_config import (PLUGIN_NAME,
-                                       TranslatableConfigStrings,
-                                       CSS_COLOR_ERROR_LABEL,
-                                       CSS_COLOR_OKAY_LABEL,
-                                       CSS_COLOR_INACTIVE_LABEL)
-from ....config.help_strings import HelpStrings
-from ....config.table_mapping_config import (EXTADDRESS_TABLE,
-                                             EXTADDRESS_BUILDING_FIELD,
-                                             EXTADDRESS_BUILDING_UNIT_FIELD,
-                                             EXTADDRESS_PLOT_FIELD,
-                                             BUILDING_TABLE,
-                                             BUILDING_UNIT_TABLE,
-                                             ID_FIELD,
-                                             OID_EXTADDRESS_ID_FIELD,
-                                             OID_TABLE,
-                                             PLOT_TABLE)
-from ....utils import get_ui_class
-from ....utils.qt_utils import (enable_next_wizard,
-                                disable_next_wizard)
-from ....utils.select_map_tool import SelectMapTool
+from .....config.general_config import (PLUGIN_NAME,
+                                        TranslatableConfigStrings,
+                                        CSS_COLOR_ERROR_LABEL,
+                                        CSS_COLOR_OKAY_LABEL,
+                                        CSS_COLOR_INACTIVE_LABEL)
+from .....config.help_strings import HelpStrings
+from .....config.table_mapping_config import (EXTADDRESS_TABLE,
+                                              EXTADDRESS_BUILDING_FIELD,
+                                              EXTADDRESS_BUILDING_UNIT_FIELD,
+                                              EXTADDRESS_PLOT_FIELD,
+                                              BUILDING_TABLE,
+                                              BUILDING_UNIT_TABLE,
+                                              ID_FIELD,
+                                              OID_EXTADDRESS_ID_FIELD,
+                                              OID_TABLE,
+                                              PLOT_TABLE)
+from .....utils import get_ui_class
+from .....utils.qt_utils import (enable_next_wizard,
+                                 disable_next_wizard)
+from .....utils.select_map_tool import SelectMapTool
 
 WIZARD_UI = get_ui_class('wiz_associate_extaddress_cadastre.ui')
 

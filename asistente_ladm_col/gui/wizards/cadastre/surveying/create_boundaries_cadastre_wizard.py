@@ -27,12 +27,12 @@ from qgis.core import (QgsProject,
                        QgsMapLayerProxyModel,
                        QgsWkbTypes)
 
-from ....config.general_config import PLUGIN_NAME
-from ....config.help_strings import HelpStrings
-from ....config.table_mapping_config import (BOUNDARY_TABLE,
-                                             ID_FIELD,
-                                             BOUNDARY_POINT_TABLE)
-from ....utils import get_ui_class
+from .....config.general_config import PLUGIN_NAME
+from .....config.help_strings import HelpStrings
+from .....config.table_mapping_config import (BOUNDARY_TABLE,
+                                              ID_FIELD,
+                                              BOUNDARY_POINT_TABLE)
+from .....utils import get_ui_class
 
 WIZARD_UI = get_ui_class('wiz_create_boundaries_cadastre.ui')
 
