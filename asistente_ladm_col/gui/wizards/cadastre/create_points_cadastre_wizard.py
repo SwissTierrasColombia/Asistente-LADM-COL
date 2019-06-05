@@ -51,6 +51,8 @@ WIZARD_UI = get_ui_class('wiz_create_points_cadastre.ui')
 
 
 class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
+    WIZARD_NAME = QCoreApplication.translate("CreatePointsCadastreWizard", "Create Point")
+
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
@@ -259,7 +261,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
     def close_wizard(self, message=None):
         if message is None:
-            message = QCoreApplication.translate("CreatePointsCadastreWizard", "'Create point' tool has been closed.")
+            message = QCoreApplication.translate("CreatePointsCadastreWizard", "'{}' tool has been closed.").format(self.WIZARD_NAME)
         self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
         self.close()
 

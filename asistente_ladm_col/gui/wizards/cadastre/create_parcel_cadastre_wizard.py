@@ -56,6 +56,7 @@ WIZARD_UI = get_ui_class('wiz_create_parcel_cadastre.ui')
 
 class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
     WIZARD_CREATES_SPATIAL_FEATURE = False
+    WIZARD_NAME = QCoreApplication.translate("CreateParcelCadastreWizard", "Create Parcel")
 
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
@@ -128,7 +129,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         if result is None:
             # if there was a problem loading the layers
             message = QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                 "'Create parcel' tool has been closed because there was a problem loading the requeries layers.")
+                                                 "'{}' tool has been closed because there was a problem loading the requeries layers.").format(self.WIZARD_NAME)
             self.close_wizard(message)
             return
 
@@ -251,7 +252,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
 
         if reply == QMessageBox.Yes:
             message = QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                 "'Create parcel' tool has been closed because the map tool change.")
+                                                 "'{}' tool has been closed because the map tool change.").format(self.WIZARD_NAME)
             self.close_wizard(message)
         else:
             # Continue creating the Parcel
@@ -386,12 +387,12 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
 
     def layer_removed(self):
         message = QCoreApplication.translate("CreateParcelCadastreWizard",
-                                             "'Create parcel' tool has been closed because you just removed a required layer.")
+                                             "'{}' tool has been closed because you just removed a required layer.").format(self.WIZARD_NAME)
         self.close_wizard(message)
 
     def close_wizard(self, message=None):
         if message is None:
-            message = QCoreApplication.translate("CreateParcelCadastreWizard", "'Create parcel' tool has been closed.")
+            message = QCoreApplication.translate("CreateParcelCadastreWizard", "'{}' tool has been closed.").format(self.WIZARD_NAME)
         self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
 
         self.init_map_tool()
@@ -413,11 +414,11 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
     def finish_feature_creation(self, layerId, features):
 
         message = QCoreApplication.translate("CreateParcelCadastreWizard",
-                                             "'Create parcel' tool has been closed because an error occurred while trying to save the data.")
+                                             "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_NAME)
 
         if len(features) != 1:
             message = QCoreApplication.translate("CreateParcelCadastreWizard",
-                                                 "'Create parcel' tool has been closed. We should have got only one parcel... We cannot do anything with {} parcels").format(len(features))
+                                                 "'{}' tool has been closed. We should have got only one parcel... We cannot do anything with {} parcels").format(self.WIZARD_NAME, len(features))
             self.log.logMessage("We should have got only one parcel... We cannot do anything with {} parcels".format(len(features)), PLUGIN_NAME, Qgis.Warning)
         else:
             fid = features[0].id()
@@ -567,7 +568,7 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
 
     def form_rejected(self):
         message = QCoreApplication.translate("CreateParcelCadastreWizard",
-                                             "'Create parcel' tool has been closed because you just closed the form.")
+                                             "'{}' tool has been closed because you just closed the form.").format(self.WIZARD_NAME)
         self.close_wizard(message)
 
     def save_settings(self):
