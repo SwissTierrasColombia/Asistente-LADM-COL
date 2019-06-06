@@ -90,26 +90,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'name': 'comienzo_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"comienzo_vida_util_version"'},
             {'name': 'fin_vida_util_version', 'type': 16, 'length': -1, 'precision': -1, 'expression': '"fin_vida_util_version"'}
         ]
-    elif layer_name == COL_PARTY_TABLE:
-        mapping = [
-            {'expression': '"documento_identidad"', 'length': 12, 'name': 'documento_identidad', 'precision': -1, 'type': 10},
-            {'expression': '"tipo_documento"', 'length': 255, 'name': 'tipo_documento', 'precision': -1, 'type': 10},
-            {'expression': '"organo_emisor"', 'length': 20, 'name': 'organo_emisor', 'precision': -1, 'type': 10},
-            {'expression': '"fecha_emision"', 'length': -1, 'name': 'fecha_emision', 'precision': -1, 'type': 14},
-            {'expression': '"primer_apellido"', 'length': 100, 'name': 'primer_apellido', 'precision': -1, 'type': 10},
-            {'expression': '"primer_nombre"', 'length': 100, 'name': 'primer_nombre', 'precision': -1, 'type': 10},
-            {'expression': '"segundo_apellido"', 'length': 100, 'name': 'segundo_apellido', 'precision': -1, 'type': 10},
-            {'expression': '"segundo_nombre"', 'length': 100, 'name': 'segundo_nombre', 'precision': -1, 'type': 10},
-            {'expression': '"razon_social"', 'length': 250, 'name': 'razon_social', 'precision': -1, 'type': 10},
-            {'expression': '"genero"', 'length': 255, 'name': 'genero', 'precision': -1, 'type': 10},
-            {'expression': '"tipo_interesado_juridico"', 'length': 255, 'name': 'tipo_interesado_juridico', 'precision': -1, 'type': 10},
-            {'expression': '"nombre"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10},
-            {'expression': '"tipo"', 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10},
-            {'expression': '"p_espacio_de_nombres"', 'length': 255, 'name': 'p_espacio_de_nombres', 'precision': -1, 'type': 10},
-            {'expression': '"p_local_id"', 'length': 255, 'name': 'p_local_id', 'precision': -1, 'type': 10},
-            {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
-        ]
     elif layer_name == ADMINISTRATIVE_SOURCE_TABLE:
         mapping = [
             {'name': 'texto', 'precision': -1, 'expression': '"texto"', 'type': 10, 'length': 255},
@@ -518,22 +498,6 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"terreno_ext_direccion_id"', 'length': -1, 'name': 'terreno_ext_direccion_id', 'precision': 0, 'type': 4},
             {'expression': '"unidadconstruccion_ext_direccion_id"', 'length': -1, 'name': 'unidadconstruccion_ext_direccion_id', 'precision': 0, 'type': 4}
         ]
-    elif layer_name == FDC_PARTY:
-        mapping = [
-            {'expression': '"NoDocumento"', 'length': 12, 'name': 'documento_identidad', 'precision': -1, 'type': 10}, 
-            {'expression': 'if("TipoDocumento" = \'C\', \'Cedula_Ciudadania\', if("TipoDocumento" = \'N\', \'NIT\', if("TipoDocumento" = \'T\', \'Tarjeta_Identidad\', if("TipoDocumento" = \'X\', \'Cedula_Extranjeria\',\'Pasaporte\'))))', 'length': 255, 'name': 'tipo_documento', 'precision': -1, 'type': 10}, 
-            {'expression': '$id', 'length': 20, 'name': 'organo_emisor', 'precision': -1, 'type': 10}, 
-            {'expression': 'my_name("Nombre",2)', 'length': 100, 'name': 'primer_apellido', 'precision': -1, 'type': 10}, 
-            {'expression': 'my_name("Nombre",0)', 'length': 100, 'name': 'primer_nombre', 'precision': -1, 'type': 10}, 
-            {'expression': 'my_name("Nombre",3)', 'length': 100, 'name': 'segundo_apellido', 'precision': -1, 'type': 10}, 
-            {'expression': 'my_name("Nombre",1)', 'length': 100, 'name': 'segundo_nombre', 'precision': -1, 'type': 10}, 
-            {'expression': 'if("TipoDocumento" = \'N\', "Nombre",\'\')', 'length': 250, 'name': 'razon_social', 'precision': -1, 'type': 10}, 
-            {'expression': '"nombre"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10}, 
-            {'expression': 'if("TipoDocumento" = \'N\', \'Persona_No_Natural\', \'Persona_Natural\')', 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
-            {'expression': "'IGAC_Interesado'", 'length': 255, 'name': 'p_espacio_de_nombres', 'precision': -1, 'type': 10}, 
-            {'expression': '0', 'length': 255, 'name': 'p_local_id', 'precision': -1, 'type': 10}, 
-            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
-        ]
 
     # If the user wants to enable automatic fields...
     if QSettings().value('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', True, bool):
@@ -553,4 +517,62 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             if field['name'] == VIDA_UTIL_FIELD:
                 field['expression'] = 'now()'
 
+    return mapping
+def get_refactor_fields_mapping_field_data_capture_to_ladm(layer_name, qgis_utils):
+    if layer_name == FDC_PLOT:
+         mapping = [
+            {'expression': '"Departamento"', 'length': 2, 'name': 'departamento', 'precision': -1, 'type': 10}, 
+            {'expression': '"municipio"', 'length': 3, 'name': 'municipio', 'precision': -1, 'type': 10}, 
+            {'expression': ' $id', 'length': 20, 'name': 'nupre', 'precision': -1, 'type': 10}, 
+            {'expression': '"NoPredial"', 'length': 30, 'name': 'numero_predial', 'precision': -1, 'type': 10}, 
+            {'expression': '"NoPredialAnterior"', 'length': 20, 'name': 'numero_predial_anterior', 'precision': -1, 'type': 10}, 
+            {'expression': '"Avaluo ($)"', 'length': 16, 'name': 'avaluo_predio', 'precision': 1, 'type': 6}, 
+            {'expression': '"nombre"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10}, 
+            {'expression': "'NPH'", 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
+            {'expression': "'IGAC_Predio'", 'length': 255, 'name': 'u_espacio_de_nombres', 'precision': -1, 'type': 10}
+        ]
+    elif layer_name == FDC_PARTY:
+        mapping = [
+            {'expression': '"NoDocumento"', 'length': 12, 'name': 'documento_identidad', 'precision': -1, 'type': 10}, 
+            {'expression': 'if("TipoDocumento" = \'C\', \'Cedula_Ciudadania\', if("TipoDocumento" = \'N\', \'NIT\', if("TipoDocumento" = \'T\', \'Tarjeta_Identidad\', if("TipoDocumento" = \'X\', \'Cedula_Extranjeria\',\'Pasaporte\'))))', 'length': 255, 'name': 'tipo_documento', 'precision': -1, 'type': 10}, 
+            {'expression': '$id', 'length': 20, 'name': 'organo_emisor', 'precision': -1, 'type': 10}, 
+            {'expression': 'my_name("Nombre",2)', 'length': 100, 'name': 'primer_apellido', 'precision': -1, 'type': 10}, 
+            {'expression': 'my_name("Nombre",0)', 'length': 100, 'name': 'primer_nombre', 'precision': -1, 'type': 10}, 
+            {'expression': 'my_name("Nombre",3)', 'length': 100, 'name': 'segundo_apellido', 'precision': -1, 'type': 10}, 
+            {'expression': 'my_name("Nombre",1)', 'length': 100, 'name': 'segundo_nombre', 'precision': -1, 'type': 10}, 
+            {'expression': 'if("TipoDocumento" = \'N\', "Nombre",\'\')', 'length': 250, 'name': 'razon_social', 'precision': -1, 'type': 10}, 
+            {'expression': '"nombre"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10}, 
+            {'expression': 'if("TipoDocumento" = \'N\', \'Persona_No_Natural\', \'Persona_Natural\')', 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
+            {'expression': "'IGAC_Interesado'", 'length': 255, 'name': 'p_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '0', 'length': 255, 'name': 'p_local_id', 'precision': -1, 'type': 10}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
+        ]
+    elif layer_name == FDC_RIGHT:
+        mapping = [
+            {'expression': "'Dominio'", 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
+            {'expression': "'Col_Derecho_IGAC'", 'length': 255, 'name': 'r_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '0', 'length': 255, 'name': 'r_local_id', 'precision': -1, 'type': 10}, 
+            {'expression': '"t_id"', 'length': -1, 'name': 'interesado_col_interesado', 'precision': 0, 'type': 4}, 
+            {'expression': '"predio_t_id"', 'length': -1, 'name': 'unidad_predio', 'precision': 0, 'type': 4}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
+        ]
+    elif layer_name == FDC_ADMINISTRATIVE_SOURCE:
+        mapping = [
+            {'expression': '"t_id"', 'length': 255, 'name': 'texto', 'precision': -1, 'type': 10}, 
+            {'expression': "'Certificado'", 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
+            {'expression': "'Desconocido'", 'length': 255, 'name': 'estado_disponibilidad', 'precision': -1, 'type': 10}, 
+            {'expression': "'Col_FuenteAdministrativa_IGAC'", 'length': 255, 'name': 's_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '0', 'length': 255, 'name': 's_local_id', 'precision': -1, 'type': 10}
+        ]
+    elif layer_name == FDC_RRRSOURCE:
+        mapping = [
+            {'expression': '"t_id"', 'length': -1, 'name': 'rfuente', 'precision': 0, 'type': 4}, 
+            {'expression': '"texto"', 'length': -1, 'name': 'rrr_col_derecho', 'precision': 0, 'type': 4}
+        ]
+    elif layer_name == FDC_UEBAUNIT:
+        mapping = [
+            {'expression': '"construccion_t_id"', 'length': -1, 'name': 'ue_construccion', 'precision': 0, 'type': 4}, 
+            {'expression': '"t_id"', 'length': -1, 'name': 'baunit_predio', 'precision': 0, 'type': 4}
+        ]
+    
     return mapping

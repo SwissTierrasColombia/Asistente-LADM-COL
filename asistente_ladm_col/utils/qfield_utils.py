@@ -30,7 +30,7 @@ from qgis.core import (QgsProject,
                        NULL)
 
 from .symbology import SymbologyUtils
-from ..config.refactor_fields_mappings import get_refactor_fields_mapping
+from ..config.refactor_fields_mappings import get_refactor_fields_mapping_field_data_capture_to_ladm
               
 def import_capture_model(tool_name, model_name, gpkg_path):
     if model_name == 'Captura_Geografica_V0_3':
@@ -140,8 +140,7 @@ def run_etl_model_input_load_data(input_layer, out_layer, ladm_col_layer_name, q
     model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
 
     if model:
-
-        mapping = get_refactor_fields_mapping(ladm_col_layer_name, qgis_utils)
+        mapping = get_refactor_fields_mapping_field_data_capture_to_ladm(ladm_col_layer_name, qgis_utils)
         params = {
             'INPUT': input_layer,
             'mapping': mapping,
