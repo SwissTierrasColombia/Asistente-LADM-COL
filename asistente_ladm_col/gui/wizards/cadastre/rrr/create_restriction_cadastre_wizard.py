@@ -30,22 +30,22 @@ from qgis.gui import QgsExpressionSelectionDialog
 from .....config.general_config import PLUGIN_NAME
 from .....config.help_strings import HelpStrings
 from .....config.table_mapping_config import (ID_FIELD,
-                                              RIGHT_TABLE,
+                                              RESTRICTION_TABLE,
                                               ADMINISTRATIVE_SOURCE_TABLE,
                                               RRR_SOURCE_RELATION_TABLE,
-                                              RRR_SOURCE_RIGHT_FIELD,
+                                              RRR_SOURCE_RESTRICTION_FIELD,
                                               RRR_SOURCE_SOURCE_FIELD)
 from .....utils import get_ui_class
 from .....utils.qt_utils import (enable_next_wizard,
                                  disable_next_wizard)
 
-WIZARD_UI = get_ui_class('wiz_create_right_cadastre.ui')
+WIZARD_UI = get_ui_class('wiz_create_restriction_cadastre.ui')
 
 
-class CreateRightCadastreWizard(QWizard, WIZARD_UI):
+class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
     WIZARD_CREATES_SPATIAL_FEATURE = False
-    WIZARD_NAME = "CreateRightCadastreWizard"
-    WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create Right")
+    WIZARD_NAME = "CreateRestrictionCadastreWizard"
+    WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create Restriction")
 
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
@@ -57,7 +57,7 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
         self.help_strings = HelpStrings()
 
         self._layers = {
-            RIGHT_TABLE: {'name': RIGHT_TABLE, 'geometry': None, 'layer': None},
+            RESTRICTION_TABLE: {'name': RESTRICTION_TABLE, 'geometry': None, 'layer': None},
             ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None, 'layer': None},
             RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None, 'layer': None}
         }
@@ -75,7 +75,7 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(RIGHT_TABLE))
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(RESTRICTION_TABLE))
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -85,7 +85,7 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(RIGHT_TABLE, False))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(RESTRICTION_TABLE, False))
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -95,14 +95,14 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
             enable_next_wizard(self)
             self.wizardPage1.setFinalPage(False)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
-            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_RIGHT_CADASTRE_PAGE_1_OPTION_FORM)
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_1_OPTION_FORM)
 
         self.wizardPage2.setButtonText(QWizard.FinishButton,finish_button_text)
 
     def adjust_page_2_controls(self):
         self.button(self.FinishButton).setDisabled(True)
         self.disconnect_signals()
-        self.txt_help_page_2.setHtml(self.help_strings.WIZ_CREATE_RIGHT_CADASTRE_PAGE_2)
+        self.txt_help_page_2.setHtml(self.help_strings.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_2)
 
         # Load layers
         result = self.prepare_feature_creation_layers()
@@ -141,18 +141,18 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
                 field_mapping = self.cbo_mapping.currentText()
                 res_etl_model = self.qgis_utils.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
-                                                               RIGHT_TABLE,
+                                                               RESTRICTION_TABLE,
                                                                field_mapping=field_mapping)
 
                 if res_etl_model:
                     if field_mapping:
                         self.qgis_utils.delete_old_field_mapping(field_mapping)
 
-                    self.qgis_utils.save_field_mapping(RIGHT_TABLE)
+                    self.qgis_utils.save_field_mapping(RESTRICTION_TABLE)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                     QCoreApplication.translate(self.WIZARD_NAME,
-                                               "Select a source layer to set the field mapping to '{}'.").format(RIGHT_TABLE),
+                                               "Select a source layer to set the field mapping to '{}'.").format(RESTRICTION_TABLE),
                     Qgis.Warning)
 
         elif self.rad_create_manually.isChecked():
@@ -165,7 +165,6 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
         self.edit_feature()
 
     def prepare_feature_creation_layers(self):
-        # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if res_layers is None:
             return
@@ -193,21 +192,21 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
 
         # QGIS APP
         try:
-            self._layers[RIGHT_TABLE]['layer'].featureAdded.disconnect()
+            self._layers[RESTRICTION_TABLE]['layer'].featureAdded.disconnect()
         except:
             pass
 
         try:
-            self._layers[RIGHT_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[RESTRICTION_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[RIGHT_TABLE]['layer'])
-        self._layers[RIGHT_TABLE]['layer'].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.iface.layerTreeView().setCurrentLayer(self._layers[RESTRICTION_TABLE]['layer'])
+        self._layers[RESTRICTION_TABLE]['layer'].committedFeaturesAdded.connect(self.finish_feature_creation)
 
         if self._layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'].selectedFeatureCount() >= 1:
-            self.open_form(self._layers[RIGHT_TABLE]['layer'])
+            self.open_form(self._layers[RESTRICTION_TABLE]['layer'])
         else:
             message = QCoreApplication.translate(self.WIZARD_NAME, "Please select an Administrative source")
             self.close_wizard(message)
@@ -218,32 +217,32 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
 
         if len(features) != 1:
             message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                 "'{}' tool has been closed. We should have got only one right... We cannot do anything with {} rights").format(self.WIZARD_TOOL_NAME, len(features))
-            self.log.logMessage("We should have got only one right... We cannot do anything with {} right".format(len(features)), PLUGIN_NAME, Qgis.Warning)
+                                                 "'{}' tool has been closed. We should have got only one restriction... We cannot do anything with {} restriction").format(self.WIZARD_TOOL_NAME, len(features))
+            self.log.logMessage("We should have got only one restriction... We cannot do anything with {} restriction".format(len(features)), PLUGIN_NAME, Qgis.Warning)
         else:
             fid = features[0].id()
             administrative_source_ids = [f['t_id'] for f in self._layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'].selectedFeatures()]
 
-            if not self._layers[RIGHT_TABLE]['layer'].getFeature(fid).isValid():
-                self.log.logMessage("Feature not found in layer Right...", PLUGIN_NAME, Qgis.Warning)
+            if not self._layers[RESTRICTION_TABLE]['layer'].getFeature(fid).isValid():
+                self.log.logMessage("Feature not found in layer Restriction...", PLUGIN_NAME, Qgis.Warning)
             else:
-                right_id = self._layers[RIGHT_TABLE]['layer'].getFeature(fid)[ID_FIELD]
+                restriction_id = self._layers[RESTRICTION_TABLE]['layer'].getFeature(fid)[ID_FIELD]
 
                 # Fill rrrfuente table
                 new_features = []
                 for administrative_source_id in administrative_source_ids:
                     new_feature = QgsVectorLayerUtils().createFeature(self._layers[RRR_SOURCE_RELATION_TABLE]['layer'])
                     new_feature.setAttribute(RRR_SOURCE_SOURCE_FIELD, administrative_source_id)
-                    new_feature.setAttribute(RRR_SOURCE_RIGHT_FIELD, right_id)
-                    self.log.logMessage("Saving Administrative_source-Right: {}-{}".format(administrative_source_id, right_id), PLUGIN_NAME, Qgis.Info)
+                    new_feature.setAttribute(RRR_SOURCE_RESTRICTION_FIELD, restriction_id)
+                    self.log.logMessage("Saving Administrative_source-Restriction: {}-{}".format(administrative_source_id, restriction_id), PLUGIN_NAME, Qgis.Info)
                     new_features.append(new_feature)
 
                 self._layers[RRR_SOURCE_RELATION_TABLE]['layer'].dataProvider().addFeatures(new_features)
                 message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                     "The new right (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!").format(right_id, ", ".join([str(b) for b in administrative_source_ids]))
+                                                     "The new restriction (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!").format(restriction_id, ", ".join([str(b) for b in administrative_source_ids]))
 
-        self._layers[RIGHT_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
-        self.log.logMessage("Right's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+        self._layers[RESTRICTION_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self.log.logMessage("Restriction's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 
     def open_form(self, layer):
@@ -282,7 +281,7 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
                 layer.rollBack()
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                                                     QCoreApplication.translate(self.WIZARD_NAME,
-                                                                               "Error while saving changes. Right could not be created."),
+                                                                               "Error while saving changes. Restriction could not be created."),
                                                     Qgis.Warning)
 
                 for e in layer.commitErrors():
@@ -299,16 +298,16 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/wizards/right_load_data_type', 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
+        settings.setValue('Asistente-LADM_COL/wizards/restriction_load_data_type', 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
 
     def restore_settings(self):
         settings = QSettings()
 
-        load_data_type = settings.value('Asistente-LADM_COL/wizards/right_load_data_type') or 'create_manually'
+        load_data_type = settings.value('Asistente-LADM_COL/wizards/restriction_load_data_type') or 'create_manually'
         if load_data_type == 'refactor':
             self.rad_refactor.setChecked(True)
         else:
             self.rad_create_manually.setChecked(True)
 
     def show_help(self):
-        self.qgis_utils.show_help("create_right")
+        self.qgis_utils.show_help("create_restriction")
