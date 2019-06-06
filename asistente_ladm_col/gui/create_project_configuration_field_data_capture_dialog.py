@@ -60,9 +60,15 @@ class ProjectConfigurationFieldDataCaptureDialog(QDialog, WIZARD_UI):
         self.qgis_utils.show_help("create_points")
 
     def accepted(self):
-        import_capture_model('ili2gpkg', 'Captura_Geografica_V0_3', '/home/shade/Desktop/prueba10.gpkg')
-        organize_legend('Captura_Geografica_V0_3')
-        change_multimedia_suppord()
-        load_default_value()
-        load_simbology()
-
+        if self.rad_geo.isChecked():
+            import_capture_model('ili2gpkg', 'Captura_Geografica_V0_3', '/home/shade/Desktop/prueba10.gpkg')
+            organize_legend('Captura_Geografica_V0_3')
+            change_multimedia_suppord()
+            load_default_value()
+            load_simbology()
+        elif self.rad_alfa.isChecked():
+            import_capture_model('ili2gpkg', 'Captura_Alfanumerica_V0_3', '/home/shade/Desktop/prueba12.gpkg')
+            organize_legend('Captura_Alfanumerica_V0_3')
+            change_multimedia_suppord()
+            load_default_value()
+            load_simbology()

@@ -33,12 +33,17 @@ from .symbology import SymbologyUtils
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
               
 def import_capture_model(tool_name, model_name, gpkg_path):
+    if model_name == 'Captura_Geografica_V0_3':
+        ili_path = '/home/shade/.local/share/QGIS/QGIS3/profiles/default/python/plugins/asistente_ladm_col/resources/ili/Captura_Geografica_V0_3.ili'
+    elif model_name == 'Captura_Alfanumerica_V0_3':
+        ili_path = '/home/shade/.local/share/QGIS/QGIS3/profiles/default/python/plugins/asistente_ladm_col/resources/ili/Captura_Alfanumerica_V0_3.ili'
+
     importer = iliimporter.Importer()
     importer.tool_name = tool_name
     base_config = BaseConfiguration()
     base_config.custom_model_directories_enabled = False
     importer.configuration.tool_name = tool_name
-    importer.configuration.ilifile = '/home/shade/.local/share/QGIS/QGIS3/profiles/default/python/plugins/asistente_ladm_col/resources/ili/Captura_Geografica_V0_3.ili'
+    importer.configuration.ilifile = ili_path
     importer.configuration.ilimodels = model_name
     importer.configuration.dbfile = gpkg_path
     importer.configuration.epsg = 3116
@@ -62,21 +67,26 @@ def import_capture_model(tool_name, model_name, gpkg_path):
     project.create(None, qgis_project)
 
 def organize_legend(model_name):
-    root = QgsProject.instance().layerTreeRoot()
-    group = root.findGroup('tables')
+    if model_name == 'Captura_Geografica_V0_3':
+        root = QgsProject.instance().layerTreeRoot()
+        group = root.findGroup('tables')
 
-    if group is not None:
-        layers = group.findLayers()
+        if group is not None:
+            layers = group.findLayers()
 
-        for l in layers:
-            if l.name() == 'fuente_espacial':
-                root.insertLayer(4, l.layer())
-                group.removeLayer(l.layer())
-        if group.findLayers() == []:
-            root.removeChildNode(group)
-            
-    group = root.findGroup('domains')
-    group.setExpanded(False)
+            for l in layers:
+                if l.name() == 'fuente_espacial':
+                    root.insertLayer(4, l.layer())
+                    group.removeLayer(l.layer())
+            if group.findLayers() == []:
+                root.removeChildNode(group)
+                
+        group = root.findGroup('domains')
+        group.setExpanded(False)
+    elif model_name == 'Captura_Alfanumerica_V0_3':
+        root = QgsProject.instance().layerTreeRoot()
+        group = root.findGroup('tables')
+        group.setExpanded(False)
 
 def change_multimedia_suppord():
     for k, layer in QgsProject.instance().mapLayers().items():
