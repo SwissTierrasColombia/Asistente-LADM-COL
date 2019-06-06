@@ -5,7 +5,7 @@
                              --------------------
         begin                : 2019-04-11
         git sha              : :%H$
-        copyright            : (C) 2017 by Jhon Galindo
+        copyright            : (C) 2019 by Jhon Galindo
         email                : jhonsigpjc@gmail.com
  ***************************************************************************/
 /***************************************************************************
@@ -82,6 +82,7 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
     def accepted(self):
         self.load_r1()
         self.mapping_fields_r1()
+        self.load_gdb()
         #run_etl_model_input_load_data()
 
     def load_r1(self):
@@ -98,15 +99,30 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
         }, load=True)
 
     def load_gdb(self):
-        print("gdb")
+        gdb_path = self.txt_file_path_gdb.text()
+        layer = QgsVectorLayer(gdb_path, 'layer name', 'ogr')
+        info = layer.dataProvider().subLayers()
 
-        """res_layers = self.qgis_utils.get_layers(self._db, {
-            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None},
-            EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None}
-        }, load=True)        """
+        root = QgsProject.instance().layerTreeRoot()
+        gdb_group = root.addGroup("GDB")
+
+        for data in info:
+            vlayer = QgsVectorLayer(gdb_path + '|layername=' + data.split('!!::!!')[1], data.split('!!::!!')[1], 'ogr')
+            QgsProject.instance().addMapLayer(vlayer, False)
+            gdb_group.addLayer(vlayer)
 
     def mapping_fields_r1(self):
-        arreglo = [ FDC_PLOT, FDC_PARTY, FDC_RIGHT, FDC_ADMINISTRATIVE_SOURCE, FDC_RRRSOURCE, FDC_UEBAUNIT]
+        arreglo = [ FDC_PLOT, FDC_PARTY, FDC_RIGHT, FDC_ADMINISTRATIVE_SOURCE, FDC_RRRSOURCE]
         for name in arreglo:
-            run_etl_model_input_load_data(self.layer_r1, self.res_layers[name], name, self.qgis_utils)
+            if name == FDC_ADMINISTRATIVE_SOURCE:
+                input_data = self.res_layers[FDC_RIGHT]
+            else:
+                if name == FDC_RRRSOURCE:
+                    input_data = self.res_layers[FDC_ADMINISTRATIVE_SOURCE]
+                    print (input_data.name())
+                else:
+                    input_data = self.layer_r1
+
+            output_data = self.res_layers[name]
+            run_etl_model_input_load_data(input_data, output_data, name, self.qgis_utils)
             print ("Ejecutando etl" + self.res_layers[name].name())
