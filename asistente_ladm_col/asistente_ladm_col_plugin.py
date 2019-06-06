@@ -39,7 +39,9 @@ from qgis.core import (Qgis,
                        QgsExpressionContext,
                        QgsProcessingModelAlgorithm)
 
-from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
+from .config.general_config import (ANNEX_17_REPORT,
+                                    ANT_MAP_REPORT,
+                                    CADASTRE_MENU_OBJECTNAME,
                                     LADM_COL_MENU_OBJECTNAME,
                                     QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
                                     QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
@@ -51,10 +53,8 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     REPORTS_MENU_OBJECTNAME,
                                     URL_REPORTS_LIBRARIES,
                                     TOOL_BAR_NAME,
-                                    VALUATION_MENU_OBJECTNAME)
+                                    VALUATION_MENU_OBJECTNAME, NATIONAL_LAND_AGENCY)
 from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
-                                          ANNEX_17_REPORT,
-                                          ANT_MAP_REPORT,
                                           ID_FIELD,
                                           COL_PARTY_TABLE)
 from .utils.decorators import (_db_connection_required,
@@ -117,6 +117,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dock_widget_queries = None
         self.toolbar = None
         self.wiz_address = None
+        self._report_menu = None
 
     def initGui(self):
         # Set Menus
@@ -146,7 +147,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._queries_action.setObjectName(QUERIES_ACTION_OBJECTNAME)
         self._menu.addActions([self._load_layers_action,
                               self._queries_action])
-        self.add_reports_menu()
+        self.configure_reports_menu()
         self._menu.addSeparator()
         self.add_data_management_menu()
         self._settings_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
@@ -168,6 +169,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
 
+        self.report_generator.disable_action_requested.connect(self.disable_action)
+
         self.qgis_utils.action_add_feature_requested.connect(self.trigger_add_feature)
         self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
         self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
@@ -177,7 +180,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.qgis_utils.db_connection_changed.connect(self.refresh_menus)
-        self.qgis_utils.advanced_tools_changed.connect(self.refresh_report_menus)
+        self.qgis_utils.organization_tools_changed.connect(self.refresh_organization_tools)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
@@ -204,8 +207,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
         self._fill_right_of_way_relations_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Right of Way Relations"), self.iface.mainWindow())
         self._fill_right_of_way_relations_action.triggered.connect(self.call_fill_right_of_way_relations)
-        self._report_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Generate Annex 17"), self.iface.mainWindow())
-        self._report_action.triggered.connect(self.call_report_generation)
         self._import_from_intermediate_structure_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import from intermediate structure"),
                                       self.iface.mainWindow())
         self._import_from_intermediate_structure_action.triggered.connect(self.call_import_from_intermediate_structure)
@@ -247,28 +248,28 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._menu.addMenu(self._data_management_menu)
 
-    def add_reports_menu(self):
-        #Gets queries_action index to load the menu after it
-        queries_action = self.iface.mainWindow().findChild(QAction, QUERIES_ACTION_OBJECTNAME)
+    def configure_reports_menu(self):
+        report_menu_exists = False
+        if self._report_menu:
+            report_menu_exists = True
+            self._report_menu.clear()
+        else:
+            self._report_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Reports"), self._menu)
+            self._report_menu.setObjectName(REPORTS_MENU_OBJECTNAME)
 
-        self._report_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Reports"), self._menu)
-        self._report_menu.setObjectName(REPORTS_MENU_OBJECTNAME)
         self._annex_17_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"), self._report_menu)
         self._annex_17_action.triggered.connect(self.call_annex_17_report_generation)
-        self._report_menu.addActions([self._annex_17_action])
-        if queries_action in self._menu.actions():
-            queries_action_idx = self._menu.actions().index(queries_action)
-            self._menu.addMenu(self._report_menu)
-            self._menu.insertMenu(self._menu.actions()[queries_action_idx + 1], self._report_menu)
-        else:
-            self._menu.addMenu(self._report_menu)
+        new_actions = [self._annex_17_action]
 
-        ant_tools_enabled = QSettings().value('Asistente-LADM_COL/reports/ant', True, bool)
-
-        if ant_tools_enabled:
+        if QSettings().value('Asistente-LADM_COL/reports/ant', False, bool):  # ant_tools_enabled
              self._ant_map_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"), self._report_menu)
              self._ant_map_action.triggered.connect(self.call_ant_map_report_generation)
-             self._report_menu.addActions([self._ant_map_action])
+             new_actions.append(self._ant_map_action)
+
+        self._report_menu.addActions(new_actions)
+
+        if not report_menu_exists:
+            self._menu.addMenu(self._report_menu)
 
     def add_cadastre_menu(self):
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
@@ -473,18 +474,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
         menu.deleteLater()
 
-    def remove_ant_action(self):
-        menu = self.iface.mainWindow().findChild(QMenu, REPORTS_MENU_OBJECTNAME)
-        if menu is None:
-            return # Nothing to remove...
-
-        self._report_menu = None
-        self._annex_17_action = None
-        self._ant_map_action = None
-
-        menu.deleteLater()
-        self.add_reports_menu() #return to default menu
-
     def add_valuation_menu(self):
         menu = self.iface.mainWindow().findChild(QMenu, VALUATION_MENU_OBJECTNAME)
         if menu:
@@ -576,8 +565,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def refresh_menus(self, db, ladm_col_db):
         """
-        Depending on the models available in the DB, some menus should appear or
-        disappear from the GUI.
+        Depending on the models available in the DB, some menus should appear or disappear from the GUI
         """
         if ladm_col_db:
             if db.property_record_card_model_exists():
@@ -596,15 +584,9 @@ class AsistenteLADMCOLPlugin(QObject):
                 PLUGIN_NAME,
                 Qgis.Info)
 
-    def refresh_report_menus(self, advanced_tool):
-        ant_tools_enabled = QSettings().value('Asistente-LADM_COL/reports/ant', True, bool)
-
-        if advanced_tool == 'ANT' and ant_tools_enabled:
-             self._ant_map_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"), self._report_menu)
-             self._ant_map_action.triggered.connect(self.call_ant_map_report_generation)
-             self._report_menu.addActions([self._ant_map_action])
-        else:
-            self.remove_ant_action()
+    def refresh_organization_tools(self, organization):
+        if organization == NATIONAL_LAND_AGENCY:
+             self.configure_reports_menu()
 
     def add_processing_models(self, provider_id):
         if not (provider_id == 'model' or provider_id is None):
@@ -627,6 +609,12 @@ class AsistenteLADMCOLPlugin(QObject):
             shutil.copyfile(filename, destFilename)
 
         QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
+
+    def disable_action(self, action_name, enable):
+        if action_name == ANT_MAP_REPORT:
+            self.self._ant_map_action.setEnabled(enable)
+        elif action_name == ANNEX_17_REPORT:
+            self._annex_17_action.setEnabled(enable)
 
     def refresh_map(self):
         self.iface.mapCanvas().refresh()
@@ -863,12 +851,12 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def call_ant_map_report_generation(self):
-        self.report_generator.generate_report(self.get_db_connection(), self._ant_map_action, ANT_MAP_REPORT)
+        self.report_generator.generate_report(self.get_db_connection(), ANT_MAP_REPORT)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def call_annex_17_report_generation(self):
-        self.report_generator.generate_report(self.get_db_connection(), self._annex_17_action, ANNEX_17_REPORT)
+        self.report_generator.generate_report(self.get_db_connection(), ANNEX_17_REPORT)
 
     @_qgis_model_baker_required
     @_db_connection_required

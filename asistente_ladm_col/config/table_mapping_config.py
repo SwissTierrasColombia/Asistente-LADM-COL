@@ -5,8 +5,6 @@ CADASTRE MAPPING
 """
 ADMINISTRATIVE_SOURCE_TABLE = "col_fuenteadministrativa"
 ADMINISTRATIVE_SOURCE_TYPE_TABLE = "col_fuenteadministrativatipo"
-ANNEX_17_REPORT = "Annex_17"
-ANT_MAP_REPORT = "ANT_Map"
 AVAILABILITY_STATE_TABLE = "col_estadodisponibilidadtipo"
 POINT_BFS_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 BFS_TABLE_BOUNDARY_POINT_FIELD = "punto_puntolindero"

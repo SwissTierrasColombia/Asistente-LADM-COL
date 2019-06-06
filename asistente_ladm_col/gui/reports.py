@@ -27,13 +27,14 @@ import time
 import zipfile
 
 from qgis.PyQt.QtCore import (Qt,
+                              QObject,
                               QCoreApplication,
                               QSettings,
                               QUrl,
                               QFile,
                               QProcess,
                               QEventLoop,
-                              QIODevice)
+                              QIODevice, pyqtSignal)
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QMessageBox,
                                  QProgressBar)
@@ -43,20 +44,24 @@ from qgis.core import (QgsWkbTypes,
                        QgsNetworkContentFetcherTask,
                        QgsApplication)
 
-from ..config.general_config import (TEST_SERVER,
+from ..config.general_config import (ANNEX_17_REPORT,
+                                     ANT_MAP_REPORT,
+                                     TEST_SERVER,
                                      PLUGIN_NAME,
                                      REPORTS_REQUIRED_VERSION,
                                      URL_REPORTS_LIBRARIES)
-from ..config.table_mapping_config import (ANNEX_17_REPORT,
-                                           ANT_MAP_REPORT,
-                                           ID_FIELD,
+from ..config.table_mapping_config import (ID_FIELD,
                                            PLOT_TABLE,
                                            PARCEL_NUMBER_FIELD)
 from ..utils.qt_utils import (remove_readonly,
                               normalize_local_url)
 
-class ReportGenerator():
+class ReportGenerator(QObject):
+
+    disable_action_requested = pyqtSignal(str, bool)
+
     def __init__(self, qgis_utils, ladm_data):
+        QObject.__init__(self)
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
         self.encoding = locale.getlocale()[1]
@@ -65,7 +70,7 @@ class ReportGenerator():
             self.encoding = 'UTF8'
 
         self.log = QgsApplication.messageLog()
-        self.LOG_TAB = 'Reportes LADM-COL'
+        self.LOG_TAB = 'LADM-COL Reports'
         self._downloading = False
 
     def stderr_ready(self, proc):
@@ -154,7 +159,7 @@ class ReportGenerator():
     def get_tmp_filename(self, basename, extension='gpkg'):
         return "{}_{}.{}".format(basename, str(time.time()).replace(".",""), extension)
 
-    def generate_report(self, db, button, report_type):
+    def generate_report(self, db, report_type):
         # Check if mapfish and Jasper are installed, otherwise show where to
         # download them from and return
         base_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'impresion')
@@ -224,10 +229,7 @@ class ReportGenerator():
             return
         QSettings().setValue("Asistente-LADM_COL/reports/save_into_dir", save_into_folder)
 
-        if report_type == ANNEX_17_REPORT:
-            config_path = os.path.join(base_path, ANNEX_17_REPORT)
-        else: #report_type == ANT_MAP_REPORT:
-            config_path = os.path.join(base_path, ANT_MAP_REPORT)
+        config_path = os.path.join(base_path, report_type)
 
         json_spec_file = os.path.join(config_path, 'spec_json_file.json')
 
@@ -242,7 +244,7 @@ class ReportGenerator():
             print("### SCRIPT FILE WASN'T FOUND")
             return
 
-        button.setEnabled(False)
+        self.disable_action_requested.emit(report_type, False)
 
         # Update config file
         yaml_config_path = self.update_yaml_config(db, config_path)
@@ -298,10 +300,7 @@ class ReportGenerator():
 
 
             parcel_number = self.ladm_data.get_parcels_related_to_plot(db, plot_id, PARCEL_NUMBER_FIELD) or ['']
-            if report_type == ANNEX_17_REPORT:
-                file_name = 'anexo_17_{}_{}.pdf'.format(plot_id, parcel_number[0])
-            else: #report_typre == ANT_MAP_REPORT:
-                file_name = 'plano_ant_{}_{}.pdf'.format(plot_id, parcel_number[0])
+            file_name = '{}_{}_{}.pdf'.format(report_type, plot_id, parcel_number[0])
             current_report_path = os.path.join(save_into_folder, file_name)
             proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', current_report_path])
 
@@ -326,7 +325,8 @@ class ReportGenerator():
                 progress.setValue(step * 100 / total)
 
         os.remove(yaml_config_path)
-        button.setEnabled(True)
+
+        self.disable_action_requested.emit(report_type, True)
         self.qgis_utils.clear_message_bar_emitted.emit()
 
         if total == count:
@@ -348,12 +348,12 @@ class ReportGenerator():
                     ", ".join(multi_polygons))
 
             if total == 1:
-                msg = QCoreApplication.translate("ReportGenerator", "The report for plot {} couldn't be generated!{} See QGIS log (tab 'Reportes LADM-COL') for details.").format(plot_id, details_msg)
+                msg = QCoreApplication.translate("ReportGenerator", "The report for plot {} couldn't be generated!{} See QGIS log (tab '{}') for details.").format(plot_id, details_msg, self.LOG_TAB)
             else:
                 if count == 0:
-                    msg = QCoreApplication.translate("ReportGenerator", "No report could be generated!{} See QGIS log (tab 'Reportes LADM-COL') for details.").format(details_msg)
+                    msg = QCoreApplication.translate("ReportGenerator", "No report could be generated!{} See QGIS log (tab '{}') for details.").format(details_msg, self.LOG_TAB)
                 else:
-                    msg = QCoreApplication.translate("ReportGenerator", "At least one report couldn't be generated!{details_msg} See QGIS log (tab 'Reportes LADM-COL') for details. Go to <a href='file:///{path}'>{path}</a> to see the reports that were generated.").format(details_msg=details_msg, path=normalize_local_url(save_into_folder))
+                    msg = QCoreApplication.translate("ReportGenerator", "At least one report couldn't be generated!{details_msg} See QGIS log (tab '{log_tab}') for details. Go to <a href='file:///{path}'>{path}</a> to see the reports that were generated.").format(details_msg=details_msg, path=normalize_local_url(save_into_folder), log_tab=self.LOG_TAB)
 
             self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Warning, 0)
 

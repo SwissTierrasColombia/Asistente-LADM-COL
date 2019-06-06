@@ -40,7 +40,7 @@ from ..config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANC
                                      PLUGIN_NAME,
                                      TEST_SERVER,
                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
-                                     SOURCE_SERVICE_EXPECTED_ID)
+                                     SOURCE_SERVICE_EXPECTED_ID, NATIONAL_LAND_AGENCY)
 from ..gui.custom_model_dir import CustomModelDirDialog
 from ..lib.db.db_connector import (DBConnector, EnumTestLevel)
 from ..utils import get_ui_class
@@ -55,9 +55,7 @@ DIALOG_UI = get_ui_class('settings_dialog.ui')
 class SettingsDialog(QDialog, DIALOG_UI):
 
     db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
-    advanced_tools_changed = pyqtSignal(str)
-    ant_tools_chk_value = None
-    fetcher_task = None
+    organization_tools_changed = pyqtSignal(str)
 
     def __init__(self, iface=None, parent=None, qgis_utils=None):
         QDialog.__init__(self, parent)
@@ -66,6 +64,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.log = QgsApplication.messageLog()
         self._db = None
         self.qgis_utils = qgis_utils
+
+        self.ant_tools_initial_chk_value = None
 
         self._action_type = None
         self.conf_db = ConfigDbSupported()
@@ -182,15 +182,16 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 self.db_connection_changed.emit(self._db, ladm_col_schema)
 
                 self.save_settings()
-                QDialog.accept(self)  # TODO remove?
+                QDialog.accept(self)
             else:
                 return  # Do not close the dialog
         else:
             # Save settings from tabs other than database connection
             self.save_settings()
-            QDialog.accept(self)  # TODO remove?
-        if self.chk_ant_tools.isChecked() != self.ant_tools_chk_value:
-            self.advanced_tools_changed.emit("ANT")
+            QDialog.accept(self)
+
+        if self.chk_ant_tools.isChecked() != self.ant_tools_initial_chk_value:
+            self.organization_tools_changed.emit(NATIONAL_LAND_AGENCY)
 
     def reject(self):
         self.done(0)
@@ -304,8 +305,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
 
-        self.ant_tools_chk_value = settings.value('Asistente-LADM_COL/reports/ant', False, bool)
-        self.chk_ant_tools.setChecked(settings.value('Asistente-LADM_COL/reports/ant', False, bool))
+        self.ant_tools_initial_chk_value = settings.value('Asistente-LADM_COL/reports/ant', False, bool)
+        self.chk_ant_tools.setChecked(self.ant_tools_initial_chk_value)
 
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
 
