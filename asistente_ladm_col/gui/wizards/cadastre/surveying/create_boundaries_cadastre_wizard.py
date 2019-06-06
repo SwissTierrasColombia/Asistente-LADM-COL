@@ -39,7 +39,8 @@ WIZARD_UI = get_ui_class('wiz_create_boundaries_cadastre.ui')
 
 class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
     WIZARD_CREATES_SPATIAL_FEATURE = True
-    WIZARD_NAME = QCoreApplication.translate("CreateBoundariesCadastreWizard", "Create boundary")
+    WIZARD_NAME = "CreateBoundariesCadastreWizard"
+    WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create boundary")
 
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
@@ -74,7 +75,7 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
             self.mMapLayerComboBox.setEnabled(True)
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
-            finish_button_text = QCoreApplication.translate("CreateBoundariesCadastreWizard", "Import")
+            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(BOUNDARY_TABLE, False))
 
         elif self.rad_digitizing.isChecked():
@@ -82,11 +83,11 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
             self.mMapLayerComboBox.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
-            finish_button_text = QCoreApplication.translate("CreateBoundariesCadastreWizard", "Start")
+            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Start")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_DEFINE_BOUNDARIES_CADASTRE_PAGE_1_OPTION_DIGITIZE)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton,
-                                       QCoreApplication.translate("CreateBoundariesCadastreWizard",
+                                       QCoreApplication.translate(self.WIZARD_NAME,
                                        finish_button_text))
 
     def disconnect_signals(self):
@@ -130,7 +131,7 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
                     self.qgis_utils.save_field_mapping(BOUNDARY_TABLE)
             else:
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                    QCoreApplication.translate("CreateBoundariesCadastreWizard",
+                    QCoreApplication.translate(self.WIZARD_NAME,
                                                "Select a source layer to set the field mapping to '{}'.").format(BOUNDARY_TABLE),
                     Qgis.Warning)
 
@@ -167,13 +168,13 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
                 self._layers[layer_name]['layer'].willBeDeleted.connect(self.layer_removed)
 
     def layer_removed(self):
-        message = QCoreApplication.translate("CreateBoundariesCadastreWizard",
-                                             "'{}' tool has been closed because you just removed a required layer.").format(self.WIZARD_NAME)
+        message = QCoreApplication.translate(self.WIZARD_NAME,
+                                             "'{}' tool has been closed because you just removed a required layer.").format(self.WIZARD_TOOL_NAME)
         self.close_wizard(message)
 
     def close_wizard(self, message=None):
         if message is None:
-            message = QCoreApplication.translate("CreateBoundariesCadastreWizard", "'{}' tool has been closed.").format(self.WIZARD_NAME)
+            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
 
         self.disconnect_signals()
@@ -192,17 +193,17 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         self.open_form(self._layers[BOUNDARY_TABLE]['layer'])
 
     def finish_feature_creation(self, layerId, features):
-        message = QCoreApplication.translate("CreateBoundariesCadastreWizard",
-                                             "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_NAME)
+        message = QCoreApplication.translate(self.WIZARD_NAME,
+                                             "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()
 
         if not self._layers[BOUNDARY_TABLE]['layer'].getFeature(fid).isValid():
-            message = QCoreApplication.translate("CreateBoundariesCadastreWizard",
-                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a boundary. ").format(self.WIZARD_NAME, BOUNDARY_TABLE)
+            message = QCoreApplication.translate(self.WIZARD_NAME,
+                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a boundary. ").format(self.WIZARD_TOOL_NAME, BOUNDARY_TABLE)
             self.log.logMessage("Feature not found in layer {} ...".format(BOUNDARY_TABLE), PLUGIN_NAME, Qgis.Warning)
         else:
             feature_tid = self._layers[BOUNDARY_TABLE]['layer'].getFeature(fid)[ID_FIELD]
-            message = QCoreApplication.translate("CreateBoundariesCadastreWizard", "The new boundary (t_id={}) was successfully created ").format(feature_tid)
+            message = QCoreApplication.translate(self.WIZARD_NAME, "The new boundary (t_id={}) was successfully created ").format(feature_tid)
 
         self._layers[BOUNDARY_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Boundary's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
@@ -241,7 +242,7 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
             if not saved:
                 layer.rollBack()
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                    QCoreApplication.translate("CreateBoundariesCadastreWizard",
+                                                    QCoreApplication.translate(self.WIZARD_NAME,
                                                                                "Error while saving changes. Parcel could not be created."),
                                                     Qgis.Warning)
 
@@ -257,8 +258,8 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
             pass
 
     def form_rejected(self):
-        message = QCoreApplication.translate("CreateBoundariesCadastreWizard",
-                                             "'{}' tool has been closed because you just closed the form.").format(self.WIZARD_NAME)
+        message = QCoreApplication.translate(self.WIZARD_NAME,
+                                             "'{}' tool has been closed because you just closed the form.").format(self.WIZARD_TOOL_NAME)
         self.close_wizard(message)
 
     def save_settings(self):

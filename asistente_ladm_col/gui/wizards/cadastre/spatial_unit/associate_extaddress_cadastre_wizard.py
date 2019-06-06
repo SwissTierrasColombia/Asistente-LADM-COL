@@ -56,7 +56,8 @@ WIZARD_UI = get_ui_class('wiz_associate_extaddress_cadastre.ui')
 
 class AssociateExtAddressWizard(QWizard, WIZARD_UI):
     WIZARD_CREATES_SPATIAL_FEATURE = True
-    WIZARD_NAME = QCoreApplication.translate("AssociateExtAddressWizard", "Create ExtAddress")
+    WIZARD_NAME = "AssociateExtAddressWizard"
+    WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create ExtAddress")
 
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
@@ -104,7 +105,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(EXTADDRESS_TABLE, True))
-            finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Import")
+            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
         elif self.rad_spatial_unit.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -114,7 +115,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.wizardPage1.setFinalPage(False)
             enable_next_wizard(self)
             self.wizardPage1.setFinalPage(False)
-            finish_button_text = QCoreApplication.translate("AssociateExtAddressWizard", "Associate address with spatial unit")
+            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Associate address with spatial unit")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1)
 
         self.wizardPage2.setButtonText(QWizard.FinishButton, finish_button_text)
@@ -128,8 +129,8 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
         if result is None:
             # if there was a problem loading the layers
-            message = QCoreApplication.translate("AssociateExtAddressWizard",
-                                                 "'{}' tool has been closed because there was a problem loading the requeries layers.").format_map(self.WIZARD_NAME)
+            message = QCoreApplication.translate(self.WIZARD_NAME,
+                                                 "'{}' tool has been closed because there was a problem loading the requeries layers.").format_map(self.WIZARD_TOOL_NAME)
             self.close_wizard(message)
             return
 
@@ -229,13 +230,13 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
     def map_tool_changed(self, new_tool, old_tool):
         self.canvas.mapToolSet.disconnect(self.map_tool_changed)
         reply = QMessageBox.question(self,
-                                     QCoreApplication.translate("AssociateExtAddressWizard", "Stop address creation?"),
-                                     QCoreApplication.translate("AssociateExtAddressWizard", "The map tool is about to change. Do you want to stop creating addresses?"),
+                                     QCoreApplication.translate(self.WIZARD_NAME, "Stop address creation?"),
+                                     QCoreApplication.translate(self.WIZARD_NAME, "The map tool is about to change. Do you want to stop creating addresses?"),
                                      QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.Yes:
             # Disconnect signal that check if map tool change
-            message = QCoreApplication.translate("AssociateExtAddressWizard",
-                                                 "'{}' tool has been closed because the map tool change.").format(self.WIZARD_NAME)
+            message = QCoreApplication.translate(self.WIZARD_NAME,
+                                                 "'{}' tool has been closed because the map tool change.").format(self.WIZARD_TOOL_NAME)
             self.close_wizard(message)
         else:
             # Continue creating the ExtAddress
@@ -280,9 +281,9 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
     def check_selected_features(self):
 
-        self.rad_to_plot.setText(QCoreApplication.translate("AssociateExtAddressWizard", "Plot(s): {count} Feature(s) Selected").format(count=self._layers[PLOT_TABLE]['layer'].selectedFeatureCount()))
-        self.rad_to_building.setText(QCoreApplication.translate("AssociateExtAddressWizard", "Building(s): {count} Feature(s) Selected").format(count=self._layers[BUILDING_TABLE]['layer'].selectedFeatureCount()))
-        self.rad_to_building_unit.setText(QCoreApplication.translate("AssociateExtAddressWizard", "Building unit(s): {count} Feature(s) Selected").format(count=self._layers[BUILDING_UNIT_TABLE]['layer'].selectedFeatureCount()))
+        self.rad_to_plot.setText(QCoreApplication.translate(self.WIZARD_NAME, "Plot(s): {count} Feature(s) Selected").format(count=self._layers[PLOT_TABLE]['layer'].selectedFeatureCount()))
+        self.rad_to_building.setText(QCoreApplication.translate(self.WIZARD_NAME, "Building(s): {count} Feature(s) Selected").format(count=self._layers[BUILDING_TABLE]['layer'].selectedFeatureCount()))
+        self.rad_to_building_unit.setText(QCoreApplication.translate(self.WIZARD_NAME, "Building unit(s): {count} Feature(s) Selected").format(count=self._layers[BUILDING_UNIT_TABLE]['layer'].selectedFeatureCount()))
 
         if self._current_layer is None:
             if self.iface.activeLayer().name() == PLOT_TABLE:
@@ -385,7 +386,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
             else:
                 self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                                                    QCoreApplication.translate("AssociateExtAddressWizard",
+                                                    QCoreApplication.translate(self.WIZARD_NAME,
                                                                                "Select a source layer to set the field mapping to '{}'.").format(EXTADDRESS_TABLE),
                                                     Qgis.Warning)
         else:
@@ -420,13 +421,13 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                 self._layers[layer_name]['layer'].willBeDeleted.connect(self.layer_removed)
 
     def layer_removed(self):
-        message = QCoreApplication.translate("AssociateExtAddressWizard",
-                                             "'{}' tool has been closed because you just removed a required layer.").format(self.WIZARD_NAME)
+        message = QCoreApplication.translate(self.WIZARD_NAME,
+                                             "'{}' tool has been closed because you just removed a required layer.").format(self.WIZARD_TOOL_NAME)
         self.close_wizard(message)
 
     def close_wizard(self, message=None):
         if message is None:
-            message = QCoreApplication.translate("AssociateExtAddressWizard", "'{}' tool has been closed.").format(self.WIZARD_NAME)
+            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
 
         self.init_map_tool()
@@ -449,29 +450,29 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.open_form(self._layers[EXTADDRESS_TABLE]['layer'])
 
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("AssociateExtAddressWizard",
+                                                QCoreApplication.translate(self.WIZARD_NAME,
                                                                            "Now you can click on the map to locate the new address..."),
                                                 Qgis.Info)
         else:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("AssociateExtAddressWizard",
+                                                QCoreApplication.translate(self.WIZARD_NAME,
                                                                            "First select a {}.").format(self._current_layer.name()),
                                                 Qgis.Warning)
 
     def finish_feature_creation(self, layerId, features):
-        message = QCoreApplication.translate("AssociateExtAddressWizard",
-                                             "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_NAME)
+        message = QCoreApplication.translate(self.WIZARD_NAME,
+                                             "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
 
         if len(features) != 1:
-            message = QCoreApplication.translate("AssociateExtAddressWizard",
-                                                 "'{}' tool has been closed. We should have got only one spatial unit... We cannot do anything with {} spatials units").format(self.WIZARD_NAME, len(features))
+            message = QCoreApplication.translate(self.WIZARD_NAME,
+                                                 "'{}' tool has been closed. We should have got only one spatial unit... We cannot do anything with {} spatials units").format(self.WIZARD_TOOL_NAME, len(features))
             self.log.logMessage("We should have got only one spatial unit... We cannot do anything with {} spatials units".format(len(features)), PLUGIN_NAME, Qgis.Warning)
         else:
             fid = features[0].id()
 
             if not self._layers[EXTADDRESS_TABLE]['layer'].getFeature(fid).isValid():
-                message = QCoreApplication.translate("AssociateExtAddressWizard",
-                                                     "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a ExtAddress. ").format(self.WIZARD_NAME, EXTADDRESS_TABLE)
+                message = QCoreApplication.translate(self.WIZARD_NAME,
+                                                     "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a ExtAddress. ").format(self.WIZARD_TOOL_NAME, EXTADDRESS_TABLE)
                 self.log.logMessage("Feature not found in layer {} ...".format(EXTADDRESS_TABLE), PLUGIN_NAME, Qgis.Warning)
             else:
                 extaddress_tid = self._layers[EXTADDRESS_TABLE]['layer'].getFeature(fid)[ID_FIELD]
@@ -489,7 +490,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                 # Don't suppress (i.e., show) feature form
                 self.qgis_utils.suppress_form(self._layers[OID_TABLE]['layer'], False)
 
-                message = QCoreApplication.translate("AssociateExtAddressWizard",
+                message = QCoreApplication.translate(self.WIZARD_NAME,
                                                      "The new extaddress (t_id={}) was successfully created ").format(extaddress_tid)
 
         self._layers[EXTADDRESS_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
@@ -545,8 +546,8 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             else:
                 # if the field of the spatial unit does not exist
                 layer.rollBack()
-                message = QCoreApplication.translate("AssociateExtAddressWizard",
-                                                     "'{}' tool has been closed because when try to create ExtAddress it was not possible to associate a space unit.").format(self.WIZARD_NAME)
+                message = QCoreApplication.translate(self.WIZARD_NAME,
+                                                     "'{}' tool has been closed because when try to create ExtAddress it was not possible to associate a space unit.").format(self.WIZARD_TOOL_NAME)
                 self.close_wizard(message)
 
             saved = layer.commitChanges()
@@ -554,7 +555,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             if not saved:
                 layer.rollBack()
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                    QCoreApplication.translate("AssociateExtAddressWizard",
+                                                    QCoreApplication.translate(self.WIZARD_NAME,
                                                                                "Error while saving changes. ExtAddress could not be created."),
                                                     Qgis.Warning)
                 for e in layer.commitErrors():
@@ -569,8 +570,8 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             pass
 
     def form_rejected(self):
-        message = QCoreApplication.translate("AssociateExtAddressWizard",
-                                             "'{}' tool has been closed because you just closed the form.").format(self.WIZARD_NAME)
+        message = QCoreApplication.translate(self.WIZARD_NAME,
+                                             "'{}' tool has been closed because you just closed the form.").format(self.WIZARD_TOOL_NAME)
         self.close_wizard(message)
 
     def save_settings(self):
