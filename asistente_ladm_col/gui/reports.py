@@ -58,7 +58,7 @@ from ..utils.qt_utils import (remove_readonly,
 
 class ReportGenerator(QObject):
 
-    disable_action_requested = pyqtSignal(str, bool)
+    enable_action_requested = pyqtSignal(str, bool)
 
     def __init__(self, qgis_utils, ladm_data):
         QObject.__init__(self)
@@ -244,7 +244,7 @@ class ReportGenerator(QObject):
             print("### SCRIPT FILE WASN'T FOUND")
             return
 
-        self.disable_action_requested.emit(report_type, False)
+        self.enable_action_requested.emit(report_type, False)
 
         # Update config file
         yaml_config_path = self.update_yaml_config(db, config_path)
@@ -326,7 +326,7 @@ class ReportGenerator(QObject):
 
         os.remove(yaml_config_path)
 
-        self.disable_action_requested.emit(report_type, True)
+        self.enable_action_requested.emit(report_type, True)
         self.qgis_utils.clear_message_bar_emitted.emit()
 
         if total == count:

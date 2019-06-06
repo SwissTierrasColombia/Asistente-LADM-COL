@@ -169,7 +169,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
 
-        self.report_generator.disable_action_requested.connect(self.disable_action)
+        self.report_generator.enable_action_requested.connect(self.enable_action)
 
         self.qgis_utils.action_add_feature_requested.connect(self.trigger_add_feature)
         self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
@@ -610,7 +610,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
 
-    def disable_action(self, action_name, enable):
+    def enable_action(self, action_name, enable):
         if action_name == ANT_MAP_REPORT:
             self.self._ant_map_action.setEnabled(enable)
         elif action_name == ANNEX_17_REPORT:
