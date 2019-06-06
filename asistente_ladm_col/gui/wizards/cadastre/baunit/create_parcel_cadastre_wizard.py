@@ -71,7 +71,6 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.canvas = self.iface.mapCanvas()
         self.maptool = self.canvas.mapTool()
         self.select_maptool = None
-        self._current_layer = None
         self._spatial_unit_layers = dict()
         self.type_of_parcel_selected = None
 
@@ -261,12 +260,11 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             self.canvas.mapToolSet.connect(self.map_tool_changed)
 
     def select_features_on_map(self, layer):
-        self._current_layer = layer
-        self.iface.setActiveLayer(self._current_layer)
+        self.iface.setActiveLayer(layer)
         self.setVisible(False)  # Make wizard disappear
 
         # Enable Select Map Tool
-        self.select_maptool = SelectMapTool(self.canvas, self._current_layer, multi=True)
+        self.select_maptool = SelectMapTool(self.canvas, layer, multi=True)
 
         self.canvas.setMapTool(self.select_maptool)
         # Connect signal that check if map tool change
@@ -289,12 +287,11 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.select_maptool.features_selected_signal.disconnect(self.features_selected)
 
     def select_features_by_expression(self, layer):
-        self._current_layer = layer
-        self.iface.setActiveLayer(self._current_layer)
-        dlg_expression_selection = QgsExpressionSelectionDialog(self._current_layer)
-        self._current_layer.selectionChanged.connect(self.check_selected_features)
+        self.iface.setActiveLayer(layer)
+        dlg_expression_selection = QgsExpressionSelectionDialog(layer)
+        layer.selectionChanged.connect(self.check_selected_features)
         dlg_expression_selection.exec()
-        self._current_layer.selectionChanged.disconnect(self.check_selected_features)
+        layer.selectionChanged.disconnect(self.check_selected_features)
 
     def check_selected_features(self):
         self.lb_plot.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[PLOT_TABLE]['layer'].selectedFeatureCount()))
