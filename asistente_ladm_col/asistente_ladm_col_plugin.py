@@ -77,7 +77,7 @@ from .gui.wizards.cadastre.surveying.create_points_cadastre_wizard import Create
 from .gui.create_property_record_card_prc import CreatePropertyRecordCardPRCWizard
 from .gui.create_responsibility_cadastre_wizard import CreateResponsibilityCadastreWizard
 from .gui.create_restriction_cadastre_wizard import CreateRestrictionCadastreWizard
-from .gui.create_right_cadastre_wizard import CreateRightCadastreWizard
+from .gui.wizards.cadastre.rrr.create_right_cadastre_wizard import CreateRightCadastreWizard
 from .gui.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
 from .gui.create_parcel_valuation_wizard import CreateParcelValuationWizard
 from .gui.create_horizontal_property_valuation_wizard import CreateHorizontalPropertyValuationWizard
