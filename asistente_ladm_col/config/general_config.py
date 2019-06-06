@@ -19,6 +19,10 @@ from ..utils.qt_utils import get_plugin_metadata
 
 TOOL_BAR_NAME = QCoreApplication.translate("TranslatableConfigStrings", "LADM COL Toolbar")
 
+NATIONAL_LAND_AGENCY = "ANT"
+ANNEX_17_REPORT = "Anexo_17"
+ANT_MAP_REPORT = "Plano_ANT"
+
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
 CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
 PROPERTY_RECORD_CARD_MODEL_PREFIX = "Ficha_Predial_"
@@ -58,10 +62,10 @@ STROKE_ARCS = True
 SETTINGS_CONNECTION_TAB_INDEX = 0
 
 
-# Version to be installed when creating reports (annex 17)
+# Version to be installed when creating reports (annex 17 - ANT Map)
 # (Other versions, if found, will be dropped in favor of this one)
-REPORTS_REQUIRED_VERSION = '0.2'
-URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/annex_17/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
+REPORTS_REQUIRED_VERSION = '0.4'
+URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/LADM_COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
@@ -164,6 +168,8 @@ SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
 CADASTRE_MENU_OBJECTNAME = "ladm_col_cadastre"
 LADM_COL_MENU_OBJECTNAME = "ladm_col"
 PROPERTY_RECORD_CARD_MENU_OBJECTNAME = "ladm_col_property_record_card"
+QUERIES_ACTION_OBJECTNAME = "ladm_col_queries"
+REPORTS_MENU_OBJECTNAME = "ladm_col_reports"
 VALUATION_MENU_OBJECTNAME = "ladm_col_valuation"
 
 # Documentation
