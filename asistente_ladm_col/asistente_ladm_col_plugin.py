@@ -65,7 +65,7 @@ from .gui.create_building_cadastre_wizard import CreateBuildingCadastreWizard
 from .gui.create_building_unit_cadastre_wizard import CreateBuildingUnitCadastreWizard
 from .gui.create_right_of_way_cadastre_wizard import CreateRightOfWayCadastreWizard
 from .gui.wizards.cadastre.spatial_unit.associate_extaddress_cadastre_wizard import AssociateExtAddressWizard
-from .gui.create_col_party_cadastre_wizard import CreateColPartyCadastreWizard
+from .gui.wizards.cadastre.party.create_col_party_cadastre_wizard import CreateColPartyCadastreWizard
 from .gui.create_group_party_cadastre import CreateGroupPartyCadastre
 from .gui.create_legal_party_prc import CreateLegalPartyPRCWizard
 from .gui.create_market_research_prc import CreateMarketResearchPRCWizard
