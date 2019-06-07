@@ -231,15 +231,9 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         except:
             pass
 
-        layers = [self._layers[PLOT_TABLE]['layer'],
-                  self._layers[PARCEL_TABLE]['layer'],
-                  self._layers[BUILDING_TABLE]['layer'],
-                  self._layers[BUILDING_UNIT_TABLE]['layer'],
-                  self._layers[UEBAUNIT_TABLE]['layer']]
-
-        for layer in layers:
+        for layer_name in self._layers:
             try:
-                layer.willBeDeleted.disconnect(self.layer_removed)
+                self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.layer_removed)
             except:
                 pass
 
@@ -410,7 +404,6 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         self.open_form(self._layers[PARCEL_TABLE]['layer'])
 
     def finish_feature_creation(self, layerId, features):
-
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
 
@@ -524,7 +517,6 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             self.exec_form(layer)
 
     def exec_form(self, layer):
-
         try:
             # Disconnect signal to prevent add features
             layer.featureAdded.disconnect()

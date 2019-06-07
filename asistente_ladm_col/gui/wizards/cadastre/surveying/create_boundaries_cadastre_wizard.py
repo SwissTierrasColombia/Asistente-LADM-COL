@@ -102,12 +102,9 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         except:
             pass
 
-        layers = [self._layers[BOUNDARY_TABLE]['layer'],
-                  self._layers[BOUNDARY_POINT_TABLE]['layer']]
-
-        for layer in layers:
+        for layer_name in self._layers:
             try:
-                layer.willBeDeleted.disconnect(self.layer_removed)
+                self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.layer_removed)
             except:
                 pass
 

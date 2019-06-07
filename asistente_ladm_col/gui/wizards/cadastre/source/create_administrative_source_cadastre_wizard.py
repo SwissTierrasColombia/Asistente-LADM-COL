@@ -185,7 +185,6 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
             self.exec_form(layer)
 
     def exec_form(self, layer):
-
         try:
             # Disconnect signal to prevent add features
             layer.featureAdded.disconnect()
