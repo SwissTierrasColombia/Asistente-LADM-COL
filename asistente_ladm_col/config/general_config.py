@@ -24,6 +24,13 @@ SUFFIX_LAYER_MODIFIERS = 'suffix'
 STYLE_GROUP_LAYER_MODIFIERS = 'style_group'
 VISIBLE_LAYER_MODIFIERS = 'visible'
 
+TOOL_BAR_NAME = QCoreApplication.translate("TranslatableConfigStrings", "LADM COL Toolbar")
+
+# Constants for reports
+NATIONAL_LAND_AGENCY = "ANT"
+ANNEX_17_REPORT = "Anexo_17"
+ANT_MAP_REPORT = "Plano_ANT"
+
 CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
 CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
 PROPERTY_RECORD_CARD_MODEL_PREFIX = "Ficha_Predial_"
@@ -63,10 +70,10 @@ STROKE_ARCS = True
 SETTINGS_CONNECTION_TAB_INDEX = 0
 
 
-# Version to be installed when creating reports (annex 17)
+# Version to be installed when creating reports (annex 17 - ANT Map)
 # (Other versions, if found, will be dropped in favor of this one)
-REPORTS_REQUIRED_VERSION = '0.2'
-URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/annex_17/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
+REPORTS_REQUIRED_VERSION = '0.4'
+URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/LADM_COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
@@ -153,6 +160,11 @@ CLASS_CLASS_RELATION = 'class_class'
 
 TEST_SERVER = "www.google.com"
 
+# Colors for labels in wizards and dialogs
+CSS_COLOR_ERROR_LABEL = "color:#FF0000"
+CSS_COLOR_OKAY_LABEL = "color:#478046"
+CSS_COLOR_INACTIVE_LABEL = "color:#646464"
+
 # DOWNLOAD PAGE URL IN QGIS PLUGIN REPO
 PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO = "https://plugins.qgis.org/plugins/asistente_ladm_col/"
 
@@ -171,6 +183,8 @@ SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
 CADASTRE_MENU_OBJECTNAME = "ladm_col_cadastre"
 LADM_COL_MENU_OBJECTNAME = "ladm_col"
 PROPERTY_RECORD_CARD_MENU_OBJECTNAME = "ladm_col_property_record_card"
+QUERIES_ACTION_OBJECTNAME = "ladm_col_queries"
+REPORTS_MENU_OBJECTNAME = "ladm_col_reports"
 VALUATION_MENU_OBJECTNAME = "ladm_col_valuation"
 
 # Documentation

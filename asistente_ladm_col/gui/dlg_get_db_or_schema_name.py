@@ -28,7 +28,8 @@ from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
 from ..utils import get_ui_class
-from ..utils.qt_utils import Validators
+from ..utils.qt_utils import (Validators,
+                              OverrideCursor)
 
 DIALOG_UI = get_ui_class('dlg_get_db_or_schema_name.ui')
 
@@ -51,10 +52,15 @@ class DialogGetDBOrSchemaName(QDialog, DIALOG_UI):
         self.uri = uri
         self.parent = parent
         self.setupUi(self)
-        self.message_label.setText(QCoreApplication.translate("DialogGetDBOrSchemaName", "Enter the name of the {type}:").format(type=self.type))
-        self.setWindowTitle(QCoreApplication.translate("DialogGetDBOrSchemaName", "Create {type}").format(type=self.type))
 
-        self.parameter_line_edit.setPlaceholderText(QCoreApplication.translate("DialogGetDBOrSchemaName", "[Name of the {type} to be created]").format(type=self.type))
+        if self.type == 'database':
+            self.message_label.setText(QCoreApplication.translate("DialogGetDBOrSchemaName", "Enter the name of the database:"))
+            self.parameter_line_edit.setPlaceholderText(QCoreApplication.translate("DialogGetDBOrSchemaName", "[Name of the database to be created]"))
+        else:
+            self.message_label.setText(QCoreApplication.translate("DialogGetDBOrSchemaName", "Enter the name of the schema:"))
+            self.parameter_line_edit.setPlaceholderText(QCoreApplication.translate("DialogGetDBOrSchemaName", "[Name of the schema to be created]"))
+
+        self.setWindowTitle(QCoreApplication.translate("DialogGetDBOrSchemaName", "Create {type}").format(type=self.type))
         self.validators = Validators()
 
         # schema name mustn't have special characters
@@ -78,19 +84,23 @@ class DialogGetDBOrSchemaName(QDialog, DIALOG_UI):
     def accepted(self):
         parameter_value = self.parameter_line_edit.text().strip()
         if not parameter_value:
-            self.show_message(QCoreApplication.translate("DialogGetDBOrSchemaName", "The name of the {type} cannot be empty.").format(type=self.type), Qgis.Warning)
+            if self.type == 'database':
+                self.show_message(QCoreApplication.translate("DialogGetDBOrSchemaName", "The name of the database cannot be empty."), Qgis.Warning)
+            else:
+                self.show_message(QCoreApplication.translate("DialogGetDBOrSchemaName", "The name of the schema cannot be empty."), Qgis.Warning)
             return
 
         tmp_db_conn = self.db_connector
         self.buttonBox.setEnabled(False)
         self.parameter_line_edit.setEnabled(False)
 
-        if self.type == 'database':
-            db_name = parameter_value
-            result = tmp_db_conn.create_database(self.uri, db_name)
-        elif self.type == 'schema':
-            schema_name = parameter_value
-            result = tmp_db_conn.create_schema(self.uri, schema_name)
+        with OverrideCursor(Qt.WaitCursor):
+            if self.type == 'database':
+                db_name = parameter_value
+                result = tmp_db_conn.create_database(self.uri, db_name)
+            elif self.type == 'schema':
+                schema_name = parameter_value
+                result = tmp_db_conn.create_schema(self.uri, schema_name)
 
         if result[0]:
             self.buttonBox.clear()

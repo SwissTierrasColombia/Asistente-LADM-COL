@@ -11,8 +11,14 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
      unidad_area_calculada_terreno AS (
          SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = 'terreno' AND columnname = 'area_calculada' LIMIT 1
      ),
+     unidad_avaluo_construccion AS (
+         SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = 'construccion' AND columnname = 'avaluo_construccion' LIMIT 1
+     ),
      unidad_area_construida_uc AS (
          SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = 'unidadconstruccion' AND columnname = 'area_construida' LIMIT 1
+     ),
+     unidad_avaluo_uc AS (
+         SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = 'unidadconstruccion' AND columnname = 'avaluo_unidad_construccion' LIMIT 1
      ),
      unidad_valor_m2_construccion_u_c AS (
          SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = 'unidad_construccion' AND columnname = 'valor_m2_construccion' LIMIT 1
@@ -111,8 +117,9 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
      info_uc AS (
          SELECT unidadconstruccion.construccion,
                 json_agg(json_build_object('id', unidadconstruccion.t_id,
-                                  'attributes', json_build_object('Número de pisos', unidadconstruccion.numero_pisos
+                                  'attributes', json_build_object(CONCAT('Avalúo' , (SELECT * FROM unidad_avaluo_uc)), unidadconstruccion.avaluo_unidad_construccion
                                                                   , CONCAT('Área construida' , (SELECT * FROM unidad_area_construida_uc)), unidadconstruccion.area_construida
+                                                                  , 'Número de pisos', unidadconstruccion.numero_pisos
     """
 
     if valuation_model:
@@ -168,7 +175,8 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
      info_construccion as (
          SELECT uebaunit.baunit_predio,
                 json_agg(json_build_object('id', construccion.t_id,
-                                  'attributes', json_build_object('Área construcción', construccion.area_construccion,
+                                  'attributes', json_build_object(CONCAT('Avalúo' , (SELECT * FROM unidad_avaluo_construccion)), construccion.avaluo_construccion,
+                                                                  'Área construcción', construccion.area_construccion,
                                                                   'unidadconstruccion', COALESCE(info_uc.unidadconstruccion, '[]')
                                                                  )) ORDER BY construccion.t_id) FILTER(WHERE construccion.t_id IS NOT NULL) as construccion
          FROM {schema}.construccion LEFT JOIN info_uc ON construccion.t_id = info_uc.construccion
@@ -252,8 +260,8 @@ def get_igac_economic_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
      info_terreno AS (
         SELECT terreno.t_id,
           json_build_object('id', terreno.t_id,
-                            'attributes', json_build_object(CONCAT('Área de terreno' , (SELECT * FROM unidad_area_calculada_terreno)), terreno.area_calculada
-                                                            , CONCAT('Avalúo terreno', (SELECT * FROM unidad_avaluo_terreno)), terreno.Avaluo_Terreno
+                            'attributes', json_build_object(CONCAT('Avalúo terreno', (SELECT * FROM unidad_avaluo_terreno)), terreno.Avaluo_Terreno
+                                                            , CONCAT('Área de terreno' , (SELECT * FROM unidad_area_calculada_terreno)), terreno.area_calculada
     """
 
     if valuation_model:
