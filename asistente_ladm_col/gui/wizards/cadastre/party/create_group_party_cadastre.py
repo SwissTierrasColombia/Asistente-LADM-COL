@@ -32,37 +32,37 @@ from qgis.core import (QgsVectorLayerUtils,
                        QgsApplication)
 from qgis.gui import QgsMessageBar
 
-from ..config.general_config import PLUGIN_NAME
-from ..config.help_strings import HelpStrings
-from ..config.table_mapping_config import (DOMAIN_KEY_FIELD,
-                                           FRACTION_DENOMINATOR_FIELD,
-                                           FRACTION_MEMBER_FIELD,
-                                           FRACTION_NUMERATOR_FIELD,
-                                           FRACTION_TABLE,
-                                           ID_FIELD,
-                                           LA_GROUP_PARTY_NAME_FIELD,
-                                           LA_GROUP_PARTY_GPTYPE_FIELD,
-                                           LA_GROUP_PARTY_TABLE,
-                                           LA_GROUP_PARTY_TYPE_FIELD,
-                                           LA_GROUP_PARTY_TYPE_TABLE,
-                                           LA_GROUP_PARTY_TYPE_VALUE,
-                                           MEMBERS_GROUP_PARTY_FIELD,
-                                           MEMBERS_PARTY_FIELD,
-                                           MEMBERS_TABLE)
-from ..utils import get_ui_class
+from .....config.general_config import PLUGIN_NAME
+from .....config.help_strings import HelpStrings
+from .....config.table_mapping_config import (DOMAIN_KEY_FIELD,
+                                              FRACTION_DENOMINATOR_FIELD,
+                                              FRACTION_MEMBER_FIELD,
+                                              FRACTION_NUMERATOR_FIELD,
+                                              FRACTION_TABLE,
+                                              ID_FIELD,
+                                              LA_GROUP_PARTY_NAME_FIELD,
+                                              LA_GROUP_PARTY_GPTYPE_FIELD,
+                                              LA_GROUP_PARTY_TABLE,
+                                              LA_GROUP_PARTY_TYPE_FIELD,
+                                              LA_GROUP_PARTY_TYPE_TABLE,
+                                              LA_GROUP_PARTY_TYPE_VALUE,
+                                              MEMBERS_GROUP_PARTY_FIELD,
+                                              MEMBERS_PARTY_FIELD,
+                                              MEMBERS_TABLE)
+from .....utils import get_ui_class
 
 DIALOG_UI = get_ui_class('dlg_group_party.ui')
 
 class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
+    WIZARD_CREATES_SPATIAL_FEATURE = False
+    WIZARD_NAME = "CreateGroupPartyCadastreWizard"
+    WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create group party")
+
     def __init__(self, iface, db, qgis_utils, parent=None):
         QDialog.__init__(self)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
-        self._la_group_party_table = None
-        self._members_table = None
-        self._fraction_table = None
-        self._col_party_layer = None
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
@@ -71,13 +71,15 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         self.current_selected_parties = [] #  [t_ids]
         self.parties_to_group = {} # {t_id: [denominator, numerator]}
 
+        self._layers = {
+            LA_GROUP_PARTY_TABLE: {'name': LA_GROUP_PARTY_TABLE, 'geometry': None, 'layer': None},
+            MEMBERS_TABLE: {'name': MEMBERS_TABLE, 'geometry': None, 'layer': None},
+            FRACTION_TABLE: {'name': FRACTION_TABLE, 'geometry': None, 'layer': None}
+        }
+
         # Fill combo of types
         la_group_party_type_table = self.qgis_utils.get_layer(self._db, LA_GROUP_PARTY_TYPE_TABLE, None, True)
         if la_group_party_type_table is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                QCoreApplication.translate("CreateGroupPartyCadastreWizard",
-                                           "Group Party Type Table couldn't be found... {}").format(self._db.get_description()),
-                Qgis.Warning)
             return
 
         domain_key_index = la_group_party_type_table.fields().indexOf(DOMAIN_KEY_FIELD[self._db.mode])
@@ -109,41 +111,23 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.setLayout(QGridLayout())
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
+        self.rejected.connect(self.close_wizard)
+
+    def closeEvent(self, e):
+        # It's necessary to prevent message bar alert
+        pass
 
     def validate_target_layers(self):
         # Get the required target layers and validate if edit session is closed
-        res_layers = self.qgis_utils.get_layers(self._db, {
-            LA_GROUP_PARTY_TABLE: {'name': LA_GROUP_PARTY_TABLE, 'geometry': None},
-            MEMBERS_TABLE: {'name': MEMBERS_TABLE, 'geometry': None},
-            FRACTION_TABLE: {'name': FRACTION_TABLE, 'geometry': None}}, load=True)
+        res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
+        if res_layers is None:
+            return
 
-        self._la_group_party_table = res_layers[LA_GROUP_PARTY_TABLE]
-        if self._la_group_party_table is None:
-            return (False, QCoreApplication.translate("CreateGroupPartyCadastre",
-                                       "Group party table couldn't be found... {}").format(self._db.get_description()))
-
-        if self._la_group_party_table.isEditable():
-            return (False, QCoreApplication.translate("CreateGroupPartyCadastre",
-                "Close the edit session in table {} before creating group parties.").format(self._la_group_party_table.name()))
-
-        self._members_table = res_layers[MEMBERS_TABLE]
-        if self._members_table is None:
-            return (False, QCoreApplication.translate("CreateGroupPartyCadastre",
-                                       "Members table couldn't be found... {}").format(self._db.get_description()))
-
-        if self._members_table.isEditable():
-            return (False, QCoreApplication.translate("CreateGroupPartyCadastre",
-                "Close the edit session in table {} before creating group parties.").format(self._members_table.name()))
-
-        self._fraction_table = res_layers[FRACTION_TABLE]
-        if self._fraction_table is None:
-            return (False, QCoreApplication.translate("CreateGroupPartyCadastre",
-                                       "Fraction table couldn't be found... {}").format(self._db.get_description()))
-
-        if self._fraction_table.isEditable():
-            return (False, QCoreApplication.translate("CreateGroupPartyCadastre",
-                "Close the edit session in table {} before creating group parties.").format(self._fraction_table.name()))
-
+        # Verify that layers are not in edit mode
+        for layer_name in self._layers:
+            if self._layers[layer_name]['layer'].isEditable():
+                return (False, QCoreApplication.translate(self.WIZARD_NAME,
+                                                          "Close the edit session in table {} before creating group parties.").format(self._layers[layer_name]['layer'].name()))
         return (True, None)
 
     def set_parties_data(self, parties_data):
@@ -281,13 +265,13 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
              try:
                  v_n = int(self.tbl_selected_parties.item(index, 1).text())
              except ValueError as e:
-                 self.show_message(QCoreApplication.translate("CreateGroupPartyCadastreWizard",
+                 self.show_message(QCoreApplication.translate(self.WIZARD_NAME,
                     "There are some invalid values in the numerator column. Fix them before continuing..."), Qgis.Warning)
                  return
              try:
                  v_d = int(self.tbl_selected_parties.item(index, 2).text())
              except ValueError as e:
-                 self.show_message(QCoreApplication.translate("CreateGroupPartyCadastreWizard",
+                 self.show_message(QCoreApplication.translate(self.WIZARD_NAME,
                     "There are some invalid values in the denominator column. Fix them before continuing..."), Qgis.Warning)
                  return
 
@@ -308,8 +292,6 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
             return
 
         self.save_group_party(self._db, [dict_params])
-
-        self.close()
 
     def validate_group_party(self, params):
         name = params[LA_GROUP_PARTY_NAME_FIELD]
@@ -369,21 +351,14 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
             }
         """
         # Disconnect from previous runs
-        try:
-            self._la_group_party_table.committedFeaturesAdded.disconnect()
-        except TypeError as e:
-            pass
-        try:
-            self._members_table.committedFeaturesAdded.disconnect()
-        except TypeError as e:
-            pass
+        self.disconnect_signals()
 
         for group in params:
             # Create connections to react when a group party is stored to the DB
-            self._la_group_party_table.committedFeaturesAdded.connect(partial(self.finish_group_party_saving, group['porcentajes']))
+            self._layers[LA_GROUP_PARTY_TABLE]['layer'].committedFeaturesAdded.connect(partial(self.finish_group_party_saving, group['porcentajes']))
 
             # First save the group party
-            new_feature = QgsVectorLayerUtils().createFeature(self._la_group_party_table)
+            new_feature = QgsVectorLayerUtils().createFeature(self._layers[LA_GROUP_PARTY_TABLE]['layer'])
             new_feature.setAttribute(LA_GROUP_PARTY_GPTYPE_FIELD, group[LA_GROUP_PARTY_GPTYPE_FIELD])
             new_feature.setAttribute(LA_GROUP_PARTY_NAME_FIELD, group[LA_GROUP_PARTY_NAME_FIELD])
             new_feature.setAttribute(LA_GROUP_PARTY_TYPE_FIELD, LA_GROUP_PARTY_TYPE_VALUE)
@@ -394,39 +369,53 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
             #new_feature.setAttribute("comienzo_vida_util_version", 'now()')
 
             self.log.logMessage("Saving Group Party: {}".format(group), PLUGIN_NAME, Qgis.Info)
-            with edit(self._la_group_party_table):
-                self._la_group_party_table.addFeature(new_feature)
+            with edit(self._layers[LA_GROUP_PARTY_TABLE]['layer']):
+                self._layers[LA_GROUP_PARTY_TABLE]['layer'].addFeature(new_feature)
 
     def finish_group_party_saving(self, members, layer_id, features):
         try:
-            self._la_group_party_table.committedFeaturesAdded.disconnect()
+            self._layers[LA_GROUP_PARTY_TABLE]['layer'].committedFeaturesAdded.disconnect()
         except TypeError as e:
             pass
 
+        message = QCoreApplication.translate(self.WIZARD_NAME,
+                                             "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         if len(features) != 1:
+            message = QCoreApplication.translate(self.WIZARD_NAME,
+                                                 "'{}' tool has been closed. We should have got only one group party... We cannot do anything with {} group parties").format(self.WIZARD_TOOL_NAME, len(features))
             self.log.logMessage("We should have got only one group party... We cannot do anything with {} group parties".format(len(features)), PLUGIN_NAME, Qgis.Warning)
         else:
             fid = features[0].id()
-            if not self._la_group_party_table.getFeature(fid).isValid():
+            if not self._layers[LA_GROUP_PARTY_TABLE]['layer'].getFeature(fid).isValid():
                 self.log.logMessage("Feature not found in table Group Party...", PLUGIN_NAME, Qgis.Warning)
             else:
-                group_party_id = self._la_group_party_table.getFeature(fid)[ID_FIELD]
+                group_party_id = self._layers[LA_GROUP_PARTY_TABLE]['layer'].getFeature(fid)[ID_FIELD]
 
                 # Now save members
+                party_ids = list()
                 for party_id, fraction in members.items():
                     # Create connections to react when a group party is stored to the DB
-                    self._members_table.committedFeaturesAdded.connect(partial(self.finish_member_saving, fraction))
+                    self._layers[MEMBERS_TABLE]['layer'].committedFeaturesAdded.connect(partial(self.finish_member_saving, fraction))
 
-                    new_feature = QgsVectorLayerUtils().createFeature(self._members_table)
+                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[MEMBERS_TABLE]['layer'])
                     new_feature.setAttribute(MEMBERS_GROUP_PARTY_FIELD, group_party_id)
                     new_feature.setAttribute(MEMBERS_PARTY_FIELD, party_id)
                     self.log.logMessage("Saving group party's member ({}: {}).".format(group_party_id, party_id), PLUGIN_NAME, Qgis.Info)
-                    with edit(self._members_table):
-                        self._members_table.addFeature(new_feature)
+                    with edit(self._layers[MEMBERS_TABLE]['layer']):
+                        self._layers[MEMBERS_TABLE]['layer'].addFeature(new_feature)
+                        party_ids.append(party_id)
+
+                if len(party_ids):
+                    message = QCoreApplication.translate(self.WIZARD_NAME,
+                                                         "The new group party (t_id={}) was successfully created and associated with its corresponding party(ies) (t_id={})!").format(group_party_id, ", ".join([str(b) for b in party_ids]))
+                else:
+                    message = QCoreApplication.translate(self.WIZARD_NAME,
+                                                     "The new group party (t_id={}) was successfully created but this one wasn't associated with a party(ies)").format(group_party_id)
+        self.close_wizard(message)
 
     def finish_member_saving(self, fraction, layer_id, features):
         try:
-            self._members_table.committedFeaturesAdded.disconnect()
+            self._layers[MEMBERS_TABLE]['layer'].committedFeaturesAdded.disconnect()
         except TypeError as e:
             pass
 
@@ -434,22 +423,39 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
             self.log.logMessage("We should have got only one member... We cannot do anything with {} members".format(len(features)), PLUGIN_NAME, Qgis.Warning)
         else:
             fid = features[0].id()
-            if not self._members_table.getFeature(fid).isValid():
+            if not self._layers[MEMBERS_TABLE]['layer'].getFeature(fid).isValid():
                 self.log.logMessage("Feature not found in table Members...", PLUGIN_NAME, Qgis.Warning)
             else:
-                member_id = self._members_table.getFeature(fid)[ID_FIELD]
+                member_id = self._layers[MEMBERS_TABLE]['layer'].getFeature(fid)[ID_FIELD]
 
                 if fraction == [0, 0]:
                     return
 
                 # And finally save fractions
-                new_feature = QgsVectorLayerUtils().createFeature(self._fraction_table)
+                new_feature = QgsVectorLayerUtils().createFeature(self._layers[FRACTION_TABLE]['layer'])
                 new_feature.setAttribute(FRACTION_MEMBER_FIELD, member_id)
                 new_feature.setAttribute(FRACTION_NUMERATOR_FIELD, fraction[0])
                 new_feature.setAttribute(FRACTION_DENOMINATOR_FIELD, fraction[1])
-                with edit(self._fraction_table):
+                with edit(self._layers[FRACTION_TABLE]['layer']):
                     self.log.logMessage("Saving member's fraction ({}: {}).".format(member_id, fraction), PLUGIN_NAME, Qgis.Info)
-                    self._fraction_table.addFeature(new_feature)
+                    self._layers[FRACTION_TABLE]['layer'].addFeature(new_feature)
+
+    def close_wizard(self, message=None):
+        if message is None:
+            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
+        self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
+        self.disconnect_signals()
+        self.close()
+
+    def disconnect_signals(self):
+        try:
+            self._layers[LA_GROUP_PARTY_TABLE]['layer'].committedFeaturesAdded.disconnect()
+        except TypeError as e:
+            pass
+        try:
+            self._layers[MEMBERS_TABLE]['layer'].committedFeaturesAdded.disconnect()
+        except TypeError as e:
+            pass
 
     def show_help(self):
         self.qgis_utils.show_help("group_party")

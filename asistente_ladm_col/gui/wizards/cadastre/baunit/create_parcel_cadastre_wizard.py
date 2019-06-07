@@ -496,7 +496,6 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                     message = QCoreApplication.translate(self.WIZARD_NAME,
                                                          "The new parcel (t_id={}) was successfully created but this one wasn't associated with a spatial unit").format(parcel_id)
 
-
         self._layers[PARCEL_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Parcel's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
