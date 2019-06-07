@@ -612,7 +612,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def enable_action(self, action_name, enable):
         if action_name == ANT_MAP_REPORT:
-            self.self._ant_map_action.setEnabled(enable)
+            self._ant_map_action.setEnabled(enable)
         elif action_name == ANNEX_17_REPORT:
             self._annex_17_action.setEnabled(enable)
 
