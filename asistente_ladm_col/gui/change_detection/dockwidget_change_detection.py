@@ -132,7 +132,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.add_layers()
         self.main_panel.fill_data()
 
-    def show_all_parcels_panel(self, filter_parcels=list()):
+    def show_all_parcels_panel(self, filter_parcels=dict()):
         if self.lst_all_parcels_panels:
             for panel in self.lst_all_parcels_panels:
                 try:

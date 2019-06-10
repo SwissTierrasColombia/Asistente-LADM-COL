@@ -52,7 +52,7 @@
       <item row="7" column="0">
        <widget class="QLabel" name="lbl_total_parcels">
         <property name="text">
-         <string>TOTAL PARCELS</string>
+         <string>TOTAL PARCEL CHANGES</string>
         </property>
        </widget>
       </item>

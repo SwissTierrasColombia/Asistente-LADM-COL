@@ -25,11 +25,13 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem, QMenu, QAction
 
 from asistente_ladm_col.config.general_config import (PARCEL_STATUS_DISPLAY,
                                                       PARCEL_STATUS,
-                                                      STATUS_COLORS)
+                                                      STATUS_COLORS, SOURCE_DB, COLLECTED_DB_SOURCE,
+                                                      CHANGE_DETECTION_MISSING_PARCEL, CHANGE_DETECTION_NEW_PARCEL,
+                                                      OFFICIAL_DB_SOURCE)
 from asistente_ladm_col.config.table_mapping_config import (PLOT_TABLE,
                                                             PARCEL_TABLE,
                                                             UEBAUNIT_TABLE,
-                                                            ID_FIELD)
+                                                            ID_FIELD, PARCEL_NUMBER_FIELD)
 from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_all_parcels_panel_widget.ui')
@@ -38,7 +40,7 @@ WIDGET_UI = get_ui_class('change_detection/changes_all_parcels_panel_widget.ui')
 class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
     changes_per_parcel_panel_requested = pyqtSignal(str)
 
-    def __init__(self, parent, utils, filter_parcels=list()):
+    def __init__(self, parent, utils, filter_parcels=dict()):
         QgsPanelWidget.__init__(self, parent)
         self.setupUi(self)
         self.parent = parent
@@ -55,29 +57,63 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.fill_table(filter_parcels)
 
-    def fill_table(self, filter_parcels=list()):
-        compared_parcels_data = self.utils.get_compared_parcels_data(self.utils._db, self.utils._official_db)
+    def fill_table(self, filter_parcels=dict()):
+        if not filter_parcels or (filter_parcels and filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE):
+            base_db = self.utils._db
+            compare_db = self.utils._official_db
+        else:
+            base_db = self.utils._official_db
+            compare_db = self.utils._db
+
+        compared_parcels_data = self.utils.get_compared_parcels_data(base_db, compare_db)
 
         self.tbl_changes_all_parcels.clearContents()
-        self.tbl_changes_all_parcels.setRowCount(len(filter_parcels) or len(compared_parcels_data))
+        self.tbl_changes_all_parcels.setRowCount(len(filter_parcels[PARCEL_NUMBER_FIELD]) if filter_parcels else len(compared_parcels_data))
         self.tbl_changes_all_parcels.setSortingEnabled(False)
 
         row = 0
         for parcel_number, parcel_attrs in compared_parcels_data.items():
-            if not filter_parcels or (filter_parcels and parcel_number in filter_parcels):
+            if not filter_parcels or (filter_parcels and parcel_number in filter_parcels[PARCEL_NUMBER_FIELD]):
                 item = QTableWidgetItem(parcel_number)
                 item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
                 self.tbl_changes_all_parcels.setItem(row, 0, item)
 
-                item = QTableWidgetItem(parcel_attrs[PARCEL_STATUS_DISPLAY])
+                status = parcel_attrs[PARCEL_STATUS]
+                status_display = parcel_attrs[PARCEL_STATUS_DISPLAY]
+                if filter_parcels:
+                    if filter_parcels[SOURCE_DB] == OFFICIAL_DB_SOURCE and parcel_attrs[PARCEL_STATUS_DISPLAY] == CHANGE_DETECTION_NEW_PARCEL:
+                        status_display = CHANGE_DETECTION_MISSING_PARCEL
+                        status = CHANGE_DETECTION_MISSING_PARCEL
+                    
+                item = QTableWidgetItem(status_display)
                 item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
                 self.tbl_changes_all_parcels.setItem(row, 1, item)
-                color = STATUS_COLORS[parcel_attrs[PARCEL_STATUS]]
+                color = STATUS_COLORS[status]
                 self.tbl_changes_all_parcels.item(row, 1).setBackground(color)
 
                 row += 1
 
         self.tbl_changes_all_parcels.setSortingEnabled(True)
+
+        # Zoom and select
+        if filter_parcels:
+            plot_layer = None
+            if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
+                plot_layer = self.parent._layers[PLOT_TABLE]['layer']
+            else:
+                plot_layer = self.parent._official_layers[PLOT_TABLE]['layer']
+
+            plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE else self.utils._official_db,
+                          filter_parcels[ID_FIELD],
+                          None, # Get QGIS plot ids
+                          plot_layer,
+                          self.parent._layers[UEBAUNIT_TABLE]['layer'] if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE else self.parent._official_layers[UEBAUNIT_TABLE]['layer'])
+            self.parent.request_zoom_to_features(plot_layer, ids=plot_ids)
+
+            plot_layer.select(plot_ids)
+        else:
+            self.utils.qgis_utils.activate_layer_requested.emit(self.parent._layers[PLOT_TABLE]['layer'])
+            self.utils.iface.zoomToActiveLayer()
 
     def show_context_menu(self, point):
         table_widget = self.sender()
@@ -90,7 +126,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         if parcels_t_ids is None:
             return
 
-        res_layers=self.utils.qgis_utils.get_layers(self._db, {
+        res_layers=self.utils.qgis_utils.get_layers(self.utils._db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
             UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}, load=True)
@@ -98,7 +134,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         plot_layer = res_layers[PLOT_TABLE]
         plot_layer.setSubsetString("")
 
-        plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self._db, parcels_t_ids, field_name=None, plot_layer=plot_layer, uebaunit_table=res_layers[UEBAUNIT_TABLE])
+        plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db, parcels_t_ids, field_name=None, plot_layer=plot_layer, uebaunit_table=res_layers[UEBAUNIT_TABLE])
 
         if plot_ids:
             action_zoom = QAction(QCoreApplication.translate("ChangesAllParcelsPanelWidget", "Zoom to related plots"))
