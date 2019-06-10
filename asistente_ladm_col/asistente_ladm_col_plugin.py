@@ -63,7 +63,7 @@ from .gui.wizards.cadastre.source.create_administrative_source_cadastre_wizard i
 from .gui.wizards.cadastre.surveying.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
 from .gui.create_building_cadastre_wizard import CreateBuildingCadastreWizard
 from .gui.create_building_unit_cadastre_wizard import CreateBuildingUnitCadastreWizard
-from .gui.create_right_of_way_cadastre_wizard import CreateRightOfWayCadastreWizard
+from .gui.wizards.cadastre.spatial_unit.create_right_of_way_cadastre_wizard import CreateRightOfWayCadastreWizard
 from .gui.wizards.cadastre.spatial_unit.associate_extaddress_cadastre_wizard import AssociateExtAddressWizard
 from .gui.wizards.cadastre.party.create_col_party_cadastre_wizard import CreateColPartyCadastreWizard
 from .gui.wizards.cadastre.party.create_group_party_cadastre import CreateGroupPartyCadastre
@@ -92,7 +92,6 @@ from .gui.dialog_quality import DialogQuality
 from .gui.dialog_import_from_excel import DialogImportFromExcel
 from .gui.dockwidget_queries import DockWidgetQueries
 from .gui.log_quality_dialog import LogQualityDialog
-from .gui.right_of_way import RightOfWay
 from .gui.reports import ReportGenerator
 from .gui.toolbar import ToolBar
 from .gui.log_excel_dialog import LogExcelDialog
@@ -127,7 +126,6 @@ class AsistenteLADMCOLPlugin(QObject):
             self.iface.mainWindow().menuBar().addMenu(self._menu)
 
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
-        self.right_of_way = RightOfWay(self.iface, self.qgis_utils)
         self.quality = QualityUtils(self.qgis_utils)
         self.toolbar = ToolBar(self.iface, self.qgis_utils)
         self.ladm_data = LADM_DATA(self.qgis_utils)
@@ -809,7 +807,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_activate_processing_plugin
     def call_fill_right_of_way_relations(self):
-        self.right_of_way.fill_right_of_way_relations(self.get_db_connection())
+        self.qgis_utils.fill_right_of_way_relations(self.get_db_connection())
 
     @_qgis_model_baker_required
     @_db_connection_required

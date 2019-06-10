@@ -28,7 +28,7 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
                               QCoreApplication,
                               QSettings)
-from qgis.PyQt.QtWidgets import (QProgressBar, 
+from qgis.PyQt.QtWidgets import (QProgressBar,
                                  QMessageBox)
 from qgis.core import (Qgis,
                        QgsApplication,
@@ -46,6 +46,7 @@ from qgis.core import (Qgis,
                        QgsLayerTreeNode,
                        QgsMapLayer,
                        QgsOptionalExpression,
+                       QgsProcessingFeatureSourceDefinition,
                        QgsProject,
                        QgsTolerance,
                        QgsSnappingConfig,
@@ -90,7 +91,6 @@ from ..config.table_mapping_config import (POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            EXTFILE_DATA_FIELD,
                                            EXTFILE_TABLE,
                                            FORM_GROUPS,
-                                           ID_FIELD,
                                            LAYER_CONSTRAINTS,
                                            LAYER_VARIABLES,
                                            LESS_TABLE,
@@ -103,10 +103,27 @@ from ..config.table_mapping_config import (POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            NAMESPACE_FIELD,
                                            NAMESPACE_PREFIX,
                                            NUMBER_OF_FLOORS,
-                                           PLOT_TABLE,
                                            POINT_BOUNDARY_FACE_STRING_TABLE,
+                                           VIDA_UTIL_FIELD,
+                                           ADMINISTRATIVE_SOURCE_TABLE,
+                                           COL_RESTRICTION_TYPE_RIGHT_OF_WAY_VALUE,
+                                           ID_FIELD,
+                                           PARCEL_TABLE,
+                                           PLOT_TABLE,
+                                           UEBAUNIT_TABLE,
+                                           UEBAUNIT_TABLE_PARCEL_FIELD,
+                                           UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD,
+                                           UEBAUNIT_TABLE_PLOT_FIELD,
+                                           RESTRICTION_TABLE_PARCEL_FIELD,
+                                           RESTRICTION_TABLE_DESCRIPTION_FIELD,
+                                           RESTRICTION_TABLE,
+                                           RIGHT_OF_WAY_TABLE,
+                                           RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD,
+                                           RRR_SOURCE_RELATION_TABLE,
+                                           RRR_SOURCE_RESTRICTION_FIELD,
+                                           RRR_SOURCE_SOURCE_FIELD,
                                            SURVEY_POINT_TABLE,
-                                           VIDA_UTIL_FIELD)
+                                           TYPE_FIELD)
 from ..config.translator import (
     QGIS_LANG,
     PLUGIN_DIR
@@ -142,6 +159,7 @@ class QGISUtils(QObject):
     def __init__(self, layer_tree_view=None):
         QObject.__init__(self)
         self.qgis_model_baker_utils = QgisModelBakerUtils()
+        self.log = QgsApplication.messageLog()
         self.symbology = SymbologyUtils()
         self.geometry = GeometryUtils()
         self.layer_tree_view = layer_tree_view
@@ -1280,6 +1298,167 @@ class QGISUtils(QObject):
         else:
             self.message_emitted.emit(QCoreApplication.translate("QGISUtils", "There are no boundaries to build."), Qgis.Info)
 
+    def fill_right_of_way_relations(self, db):
+        layers = {
+            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None, 'layer': None},
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, 'layer': None},
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
+            RESTRICTION_TABLE: {'name': RESTRICTION_TABLE, 'geometry': None, 'layer': None},
+            RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
+            RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None, 'layer': None},
+            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, 'layer': None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, 'layer': None}
+        }
+
+        # Load layers
+        res_layers = self.get_layers(db, layers, load=True)
+        if res_layers is None:
+            return
+
+        if layers[PLOT_TABLE]['layer'].selectedFeatureCount() == 0 or layers[RIGHT_OF_WAY_TABLE]['layer'].selectedFeatureCount() == 0 or layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'].selectedFeatureCount() == 0:
+            if self.get_layer_from_layer_tree(PLOT_TABLE, schema=db.schema, geometry_type=QgsWkbTypes.PolygonGeometry) is None:
+                self.message_with_button_load_layer_emitted.emit(
+                    QCoreApplication.translate("RightOfWay",
+                                               "First load the layer {} into QGIS and select at least one plot!").format(PLOT_TABLE),
+                    QCoreApplication.translate("RightOfWay", "Load layer {} now").format(PLOT_TABLE),
+                    [PLOT_TABLE, None],
+                    Qgis.Warning)
+            else:
+                self.message_emitted.emit(
+                    QCoreApplication.translate("RightOfWay", "Select at least one benefited plot, one right of way and at least one administrative source to create relations!"),
+                    Qgis.Warning)
+                return
+        else:
+            ue_baunit_features = layers[UEBAUNIT_TABLE]['layer'].getFeatures()
+            # Get unique pairs id_right_of_way-id_parcel
+            existing_pairs = [(ue_baunit_feature[UEBAUNIT_TABLE_PARCEL_FIELD], ue_baunit_feature[UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD]) for ue_baunit_feature in ue_baunit_features]
+            existing_pairs = set(existing_pairs)
+
+            plot_ids = [f[ID_FIELD] for f in layers[PLOT_TABLE]['layer'].selectedFeatures()]
+
+            right_of_way_id = layers[RIGHT_OF_WAY_TABLE]['layer'].selectedFeatures()[0].attribute(ID_FIELD)
+            id_pairs = list()
+            for plot in plot_ids:
+                exp = "\"{uebaunit}\" = {plot}".format(uebaunit=UEBAUNIT_TABLE_PLOT_FIELD, plot=plot)
+                parcels = layers[UEBAUNIT_TABLE]['layer'].getFeatures(exp)
+                for parcel in parcels:
+                    id_pair = (parcel.attribute(UEBAUNIT_TABLE_PARCEL_FIELD), right_of_way_id)
+                    id_pairs.append(id_pair)
+
+            if len(id_pairs) < len(plot_ids):
+                # If any relationship plot-parcel is not found, we don't need to continue
+                self.message_emitted.emit(
+                    QCoreApplication.translate("RightOfWay", "One or more pairs id_plot-id_parcel weren't found, this is needed to create benefited and restriction relations."),
+                    Qgis.Warning)
+                return
+
+            if id_pairs:
+                new_features = list()
+                for id_pair in id_pairs:
+                    if not id_pair in existing_pairs:
+                        #Create feature
+                        new_feature = QgsVectorLayerUtils().createFeature(layers[UEBAUNIT_TABLE]['layer'])
+                        new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, id_pair[0])
+                        new_feature.setAttribute(UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD, id_pair[1])
+                        self.log.logMessage("Saving RightOfWay-Parcel: {}-{}".format(id_pair[1], id_pair[0]), PLUGIN_NAME, Qgis.Info)
+                        new_features.append(new_feature)
+
+                layers[UEBAUNIT_TABLE]['layer'].dataProvider().addFeatures(new_features)
+                self.message_emitted.emit(
+                    QCoreApplication.translate("RightOfWay",
+                                       "{} out of {} records were saved into {}! {} out of {} records already existed in the database.").format(
+                        len(new_features),
+                        len(id_pairs),
+                        UEBAUNIT_TABLE,
+                        len(id_pairs) - len(new_features),
+                        len(id_pairs)
+                        ),
+                        Qgis.Info)
+
+            spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+                                                {
+                                                    'INPUT': layers[PLOT_TABLE]['layer'],
+                                                    'JOIN': QgsProcessingFeatureSourceDefinition(layers[RIGHT_OF_WAY_TABLE]['layer'].id(), True),
+                                                    'PREDICATE': [0],
+                                                    'JOIN_FIELDS': [ID_FIELD, RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD],
+                                                    'METHOD': 0,
+                                                    'DISCARD_NONMATCHING': True,
+                                                    'PREFIX': '',
+                                                    'OUTPUT': 'memory:'})['OUTPUT']
+
+            restriction_features = layers[RESTRICTION_TABLE]['layer'].getFeatures()
+            existing_restriction_pairs = [(restriction_feature[RESTRICTION_TABLE_PARCEL_FIELD], restriction_feature[RESTRICTION_TABLE_DESCRIPTION_FIELD]) for restriction_feature in restriction_features]
+            existing_restriction_pairs = set(existing_restriction_pairs)
+            id_pairs_restriction = list()
+            plot_ids = spatial_join_layer.getFeatures()
+
+            for plot in plot_ids:
+                exp = "\"uebaunit\" = {plot}".format(uebaunit=UEBAUNIT_TABLE_PLOT_FIELD, plot=plot.attribute(ID_FIELD))
+                parcels = layers[UEBAUNIT_TABLE]['layer'].getFeatures(exp)
+                for parcel in parcels:
+                    id_pair_restriction = (parcel.attribute(UEBAUNIT_TABLE_PARCEL_FIELD), "Asociada a la servidumbre {}".format(plot.attribute(RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD)))
+                    id_pairs_restriction.append(id_pair_restriction)
+
+            new_restriction_features = list()
+            if id_pairs_restriction:
+                for id_pair in id_pairs_restriction:
+                    if not id_pair in existing_restriction_pairs:
+                        #Create feature
+                        new_feature = QgsVectorLayerUtils().createFeature(layers[RESTRICTION_TABLE]['layer'])
+                        new_feature.setAttribute(RESTRICTION_TABLE_PARCEL_FIELD, id_pair[0])
+                        new_feature.setAttribute(RESTRICTION_TABLE_DESCRIPTION_FIELD, id_pair[1])
+                        new_feature.setAttribute(TYPE_FIELD, COL_RESTRICTION_TYPE_RIGHT_OF_WAY_VALUE)
+                        self.log.logMessage("Saving RightOfWay-Parcel: {}-{}".format(id_pair[1], id_pair[0]), PLUGIN_NAME, Qgis.Info)
+                        new_restriction_features.append(new_feature)
+
+                layers[RESTRICTION_TABLE]['layer'].dataProvider().addFeatures(new_restriction_features)
+                self.message_emitted.emit(
+                    QCoreApplication.translate("RightOfWay",
+                                       "{} out of {} records were saved into {}! {} out of {} records already existed in the database.").format(
+                        len(new_restriction_features),
+                        len(id_pairs_restriction),
+                        RESTRICTION_TABLE,
+                        len(id_pairs_restriction) - len(new_restriction_features),
+                        len(id_pairs_restriction)
+                        ),
+                        Qgis.Info)
+
+            administrative_source_ids = [f[ID_FIELD] for f in layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'].selectedFeatures()]
+
+            source_relation_features = layers[RRR_SOURCE_RELATION_TABLE]['layer'].getFeatures()
+
+            existing_source_pairs = [(source_relation_feature[RRR_SOURCE_SOURCE_FIELD], source_relation_feature[RRR_SOURCE_RESTRICTION_FIELD]) for source_relation_feature in source_relation_features]
+            existing_source_pairs = set(existing_source_pairs)
+
+            rrr_source_relation_pairs = list()
+
+            for administrative_source_id in administrative_source_ids:
+                for restriction_feature in new_restriction_features:
+                    rrr_source_relation_pair = (administrative_source_id, restriction_feature.attribute(ID_FIELD))
+                    rrr_source_relation_pairs.append(rrr_source_relation_pair)
+
+            new_rrr_source_relation_features = list()
+            if rrr_source_relation_pairs:
+                for id_pair in rrr_source_relation_pairs:
+                    if not id_pair in existing_source_pairs:
+                        new_feature = QgsVectorLayerUtils().createFeature(layers[RRR_SOURCE_RELATION_TABLE]['layer'])
+                        new_feature.setAttribute(RRR_SOURCE_SOURCE_FIELD, id_pair[0])
+                        new_feature.setAttribute(RRR_SOURCE_RESTRICTION_FIELD, id_pair[1])
+                        self.log.logMessage("Saving Restriction-Source: {}-{}".format(id_pair[1], id_pair[0]), PLUGIN_NAME, Qgis.Info)
+                        new_rrr_source_relation_features.append(new_feature)
+
+                layers[RRR_SOURCE_RELATION_TABLE]['layer'].dataProvider().addFeatures(new_rrr_source_relation_features)
+                self.message_emitted.emit(
+                    QCoreApplication.translate("RightOfWay",
+                                       "{} out of {} records were saved into {}! {} out of {} records already existed in the database.").format(
+                        len(new_rrr_source_relation_features),
+                        len(rrr_source_relation_pairs),
+                        RRR_SOURCE_RELATION_TABLE,
+                        len(rrr_source_relation_pairs) - len(new_rrr_source_relation_features),
+                        len(rrr_source_relation_pairs)
+                        ),
+                        Qgis.Info)
+
     def polygonize_boundaries(self, db):
         res_layers = self.get_layers(db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
@@ -1425,14 +1604,14 @@ class QGISUtils(QObject):
         self.suppress_form(layer, False)
         return new_feature
 
-    def active_snapping_all_layers(self):
+    def active_snapping_all_layers(self, tolerance=12):
         # Configure Snapping
         snapping = QgsProject.instance().snappingConfig()
         snapping.setEnabled(True)
         snapping.setMode(QgsSnappingConfig.AllLayers)
         snapping.setType(QgsSnappingConfig.Vertex)
         snapping.setUnits(QgsTolerance.Pixels)
-        snapping.setTolerance(12)
+        snapping.setTolerance(tolerance)
         QgsProject.instance().setSnappingConfig(snapping)
 
     def active_snapping_layers(self, layers):
