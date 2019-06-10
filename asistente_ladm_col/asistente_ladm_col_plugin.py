@@ -27,7 +27,7 @@ from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               QCoreApplication,
                               QSettings)
-from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import (QAction,
                                  QMenu,
                                  QPushButton,
@@ -751,6 +751,20 @@ class AsistenteLADMCOLPlugin(QObject):
     def load_layers(self, layers):
         self.qgis_utils.get_layers(self.get_db_connection(), layers, True)
 
+    def zoom_to_features(self, layer, ids=list(), t_ids=list()):
+        if t_ids:
+            features = self.ladm_data.get_features_from_t_ids(layer, t_ids, True, True)
+            for feature in features:
+                ids.append(feature.id())
+
+        self.iface.mapCanvas().zoomToFeatureIds(layer, ids)
+        self.iface.mapCanvas().flashFeatureIds(layer,
+                                               ids,
+                                               QColor(255, 0, 0, 255),
+                                               QColor(255, 0, 0, 0),
+                                               flashes=1,
+                                               duration=500)
+
     def show_log_quality_message(self, msg, count):
         self.progressMessageBar = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         self.progress = QProgressBar()
@@ -1202,6 +1216,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                                                            self.qgis_utils,
                                                                            self.ladm_data)
             self.qgis_utils.db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
+            self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
 
         if not self._dock_widget_change_detection.isVisible():

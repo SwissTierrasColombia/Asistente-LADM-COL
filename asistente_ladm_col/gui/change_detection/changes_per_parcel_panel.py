@@ -20,8 +20,8 @@ from functools import partial
 
 import qgis
 
-from qgis.PyQt.QtGui import QColor, QMouseEvent
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QEvent, QPoint, NULL
+from qgis.PyQt.QtGui import QMouseEvent
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QEvent, QPoint
 from qgis.PyQt.QtWidgets import QTableWidgetItem
 from qgis.core import (QgsWkbTypes,
                        Qgis,
@@ -33,48 +33,32 @@ from qgis.core import (QgsWkbTypes,
 
 from qgis.gui import QgsPanelWidget
 from ...config.symbology import OFFICIAL_STYLE_GROUP
-from asistente_ladm_col.config.general_config import (MAP_SWIPE_TOOL_PLUGIN_NAME,
-                                                      OFFICIAL_DB_PREFIX,
+from asistente_ladm_col.config.general_config import (OFFICIAL_DB_PREFIX,
                                                       OFFICIAL_DB_SUFFIX,
                                                       PREFIX_LAYER_MODIFIERS,
                                                       SUFFIX_LAYER_MODIFIERS,
                                                       STYLE_GROUP_LAYER_MODIFIERS)
-from asistente_ladm_col.config.table_mapping_config import (PLOT_TABLE,
-                                                            PARCEL_TABLE,
-                                                            UEBAUNIT_TABLE,
-                                                            PARCEL_NUMBER_FIELD,
+from asistente_ladm_col.config.table_mapping_config import (PARCEL_NUMBER_FIELD,
                                                             PARCEL_NUMBER_BEFORE_FIELD,
                                                             FMI_FIELD,
-                                                            ID_FIELD)
+                                                            ID_FIELD, PARCEL_TABLE, PLOT_TABLE, UEBAUNIT_TABLE)
 from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_per_parcel_panel_widget.ui')
 
 class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
-    def __init__(self, iface, db, official_db, qgis_utils, ladm_data, parcel_number=None):
+    def __init__(self, parent, utils, parcel_number=None):
         QgsPanelWidget.__init__(self, None)
         self.setupUi(self)
-        self.iface = iface
-        self.canvas = iface.mapCanvas()
-        self._db = db
-        self._official_db = official_db
-        self.qgis_utils = qgis_utils
-        self.ladm_data = ladm_data
+        self.parent = parent
+        self.utils = utils
 
         self.setDockMode(True)
-
-        self.map_swipe_tool = qgis.utils.plugins[MAP_SWIPE_TOOL_PLUGIN_NAME]
-
-        # Required layers
-        self._plot_layer = None
-        self._parcel_layer = None
-        self._official_plot_layer = None
-        self._official_parcel_layer = None
 
         self._current_official_substring = ""
         self._current_substring = ""
 
-        self.add_layers()
+        self.parent.add_layers()
         self.fill_combos()
 
         # Set connections
@@ -90,127 +74,23 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.txt_alphanumeric_query.setValue(parcel_number)
             self.search_data(parcel_number=parcel_number)
 
-    def add_layers(self):
-        self.qgis_utils.map_freeze_requested.emit(True)
-
-        # Load layers from the new BD
-        res_layers = self.qgis_utils.get_layers(self._db, {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}, load=True, emit_map_freeze=False)
-
-        self._plot_layer = res_layers[PLOT_TABLE]
-        if self._plot_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("DockWidgetChanges",
-                                                                           "Plot layer couldn't be found... {}").format(
-                                                    self._db.get_description()),
-                                                Qgis.Warning)
-            return
-        else:
-            # Layer was found, listen to its removal so that we can deactivate the custom tool when that occurs
-            try:
-                self._plot_layer.willBeDeleted.disconnect(self.layer_removed)
-            except TypeError as e:
-                pass
-            self._plot_layer.willBeDeleted.connect(self.layer_removed)
-
-        self._parcel_layer = res_layers[PARCEL_TABLE]
-        if self._parcel_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("DockWidgetChanges",
-                                                                           "Parcel layer couldn't be found... {}").format(
-                                                    self._db.get_description()),
-                                                Qgis.Warning)
-            return
-        else:
-            # Layer was found, listen to its removal so that we can update the variable properly
-            try:
-                self._parcel_layer.willBeDeleted.disconnect(self.layer_removed)
-            except TypeError as e:
-                pass
-            self._parcel_layer.willBeDeleted.connect(self.layer_removed)
-
-        # Now load official layers
-        # Set layer modifiers
-        layer_modifiers = {
-            PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
-            SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
-            STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
-        }
-
-        res_layers = self.qgis_utils.get_layers(self._official_db, {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None}}, load=True, emit_map_freeze=False, layer_modifiers=layer_modifiers)
-
-        self._official_plot_layer = res_layers[PLOT_TABLE]
-        if self._official_plot_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("DockWidgetChanges",
-                                                                           "Plot layer couldn't be found... {}").format(
-                                                    self._db.get_description()),
-                                                Qgis.Warning)
-            return
-        else:
-            # Layer was found, listen to its removal so that we can deactivate the custom tool when that occurs
-            try:
-                self._official_plot_layer.willBeDeleted.disconnect(self.layer_removed)
-            except TypeError as e:
-                pass
-            self._official_plot_layer.willBeDeleted.connect(self.layer_removed)
-
-        self._official_parcel_layer = res_layers[PARCEL_TABLE]
-        if self._official_parcel_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("DockWidgetChanges",
-                                                                           "Parcel layer couldn't be found... {}").format(
-                                                    self._db.get_description()),
-                                                Qgis.Warning)
-            return
-        else:
-            # Layer was found, listen to its removal so that we can update the variable properly
-            try:
-                self._official_parcel_layer.willBeDeleted.disconnect(self.layer_removed)
-            except TypeError as e:
-                pass
-            self._official_parcel_layer.willBeDeleted.connect(self.layer_removed)
-
-        self.qgis_utils.map_freeze_requested.emit(False)
-
     def field_search_updated(self, index=None):
         self.initialize_field_values_line_edit()
 
     def initialize_field_values_line_edit(self):
-        self.txt_alphanumeric_query.setLayer(self._official_parcel_layer)
-        idx = self._official_parcel_layer.fields().indexOf(self.cbo_parcel_fields.currentData())
+        self.txt_alphanumeric_query.setLayer(self.parent._official_layers[PARCEL_TABLE]['layer'])
+        idx = self.parent._official_layers[PARCEL_TABLE]['layer'].fields().indexOf(self.cbo_parcel_fields.currentData())
         self.txt_alphanumeric_query.setAttributeIndex(idx)
-
-    def initialize_layers(self):
-        self._plot_layer = None
-        self._parcel_layer = None
-        self._official_plot_layer = None
-        self._official_parcel_layer = None
-
-    def update_db_connection(self, db, ladm_col_db):
-        self._db = db
-        self.initialize_layers()
-
-        if not ladm_col_db:
-            self.setVisible(False)
-
-    def layer_removed(self):
-        # A required layer was removed, initialize variables so that next time we reload the layers
-        self.initialize_layers()
 
     def fill_combos(self):
         self.cbo_parcel_fields.clear()
 
-        if self._official_parcel_layer is not None:
+        if self.parent._official_layers[PARCEL_TABLE]['layer'] is not None:
             self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Parcel Number"), PARCEL_NUMBER_FIELD)
             self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Previous Parcel Number"), PARCEL_NUMBER_BEFORE_FIELD)
             self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Folio de Matrícula Inmobiliaria"), FMI_FIELD)
         else:
-            self.add_layers()
+            self.parent.add_layers()
 
     def search_data(self, **kwargs):
         # TODO: optimize QgsFeatureRequest
@@ -224,8 +104,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         search_field = self.cbo_parcel_fields.currentData()
         search_value = list(kwargs.values())[0]
 
-        official_parcels = [feature for feature in self._official_parcel_layer.getFeatures("{}='{}'".format(search_field,
-                                                                                    search_value))]
+        official_parcels = [feature for feature in self.parent._official_layers[PARCEL_TABLE]['layer'].getFeatures(
+                            "{}='{}'".format(search_field, search_value))]
 
         if len(official_parcels) > 1:
             # TODO: Show dialog to select only one
@@ -236,11 +116,11 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.fill_table({search_field: search_value})
 
-        official_plot_t_ids = self.ladm_data.get_plots_related_to_parcels(self._official_db,
+        official_plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._official_db,
                                                                           [official_parcels[0][ID_FIELD]],
                                                                           field_name = ID_FIELD,
-                                                                          plot_layer = self._official_plot_layer,
-                                                                          uebaunit_table = None)
+                                                                          plot_layer = self.parent._official_layers[PLOT_TABLE]['layer'],
+                                                                          uebaunit_table = self.parent._official_layers[UEBAUNIT_TABLE]['layer'])
 
         print(official_plot_t_ids)
 
@@ -249,30 +129,30 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
             self._current_official_substring = "\"{}\" IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in official_plot_t_ids]))
             #self._official_plot_layer.setSubsetString(self._current_official_substring)
-            self.zoom_to_features(self._official_plot_layer, t_ids=official_plot_t_ids)
+            self.parent.request_zoom_to_features(self.parent._official_layers[PLOT_TABLE]['layer'], list(), official_plot_t_ids)
             #self.iface.zoomToActiveLayer()
 
             # Get parcel's t_id and get related plot(s)
-            parcels = self._parcel_layer.getFeatures("{}='{}'".format(search_field, search_value))
+            parcels = self.parent._layers[PARCEL_TABLE]['layer'].getFeatures("{}='{}'".format(search_field, search_value))
             parcel = QgsFeature()
             res = parcels.nextFeature(parcel)
             if res:
-                plot_t_ids = self.ladm_data.get_plots_related_to_parcels(self._db,
+                plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
                                                                          [parcel[ID_FIELD]],
                                                                          field_name=ID_FIELD,
-                                                                         plot_layer=self._plot_layer,
+                                                                         plot_layer=self.parent._layers[PLOT_TABLE]['layer'],
                                                                          uebaunit_table=None)
                 self._current_substring = "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids]))
                 #self._plot_layer.setSubsetString(self._current_substring)
 
-            self.qgis_utils.activate_layer_requested.emit(self._official_plot_layer)
+            self.utils.qgis_utils.activate_layer_requested.emit(self.parent._official_layers[PLOT_TABLE]['layer'])
             #self.qgis_utils.map_freeze_requested.emit(False)
 
             # Activate Swipe Tool and send mouse event
-            self.activate_mapswipe_tool()
+            self.parent.activate_mapswipe_tool()
 
             if res: # plot_t_ids found
-                plots = self.ladm_data.get_features_from_t_ids(self._plot_layer, plot_t_ids, True)
+                plots = self.utils.ladm_data.get_features_from_t_ids(self.parent._layers[PLOT_TABLE]['layer'], plot_t_ids, True)
                 plots_extent = QgsRectangle()
                 for plot in plots:
                     plots_extent.combineExtentWith(plot.geometry().boundingBox())
@@ -281,27 +161,27 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 coord_x = plots_extent.xMaximum() - (plots_extent.xMaximum() - plots_extent.xMinimum()) / 9
                 coord_y = plots_extent.yMaximum() - (plots_extent.yMaximum() - plots_extent.yMinimum()) / 2
 
-                coord_transform = self.iface.mapCanvas().getCoordinateTransform()
+                coord_transform = self.utils.iface.mapCanvas().getCoordinateTransform()
                 map_point = coord_transform.transform(coord_x, coord_y)
                 widget_point = map_point.toQPointF().toPoint()
-                global_point = self.canvas.mapToGlobal(widget_point)
+                global_point = self.utils.canvas.mapToGlobal(widget_point)
 
                 print(coord_x, coord_y, global_point)
                 #cursor = self.iface.mainWindow().cursor()
                 #cursor.setPos(global_point.x(), global_point.y())
 
-                self.canvas.mousePressEvent(QMouseEvent(QEvent.MouseButtonPress, global_point, Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
+                self.utils.canvas.mousePressEvent(QMouseEvent(QEvent.MouseButtonPress, global_point, Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
                 # mc.mouseMoveEvent(QMouseEvent(QEvent.MouseMove, gp, Qt.NoButton, Qt.LeftButton, Qt.NoModifier))
-                self.canvas.mouseMoveEvent(QMouseEvent(QEvent.MouseMove, widget_point + QPoint(1,0), Qt.NoButton, Qt.LeftButton, Qt.NoModifier))
+                self.utils.canvas.mouseMoveEvent(QMouseEvent(QEvent.MouseMove, widget_point + QPoint(1,0), Qt.NoButton, Qt.LeftButton, Qt.NoModifier))
                 # QApplication.processEvents()
-                self.canvas.mouseReleaseEvent(QMouseEvent(QEvent.MouseButtonRelease, widget_point + QPoint(1,0), Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
+                self.utils.canvas.mouseReleaseEvent(QMouseEvent(QEvent.MouseButtonRelease, widget_point + QPoint(1,0), Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
                 # QApplication.processEvents()
 
                 # Once the query is done, activate the checkbox to alternate all plots/only selected plot
                 self.chk_show_all_plots.setEnabled(True)
 
     def fill_table(self, search_criterion):
-        dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._db, search_criterion)
+        dict_collected_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._db, search_criterion)
 
         # Custom layer modifiers
         layer_modifiers = {
@@ -310,7 +190,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
         }
 
-        dict_official_parcels = self.ladm_data.get_parcel_data_to_compare_changes(self._official_db, search_criterion, layer_modifiers=layer_modifiers)
+        dict_official_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._official_db, search_criterion, layer_modifiers=layer_modifiers)
 
         collected_parcel_number = list(dict_collected_parcels.keys())[0]
         # Before calling fill_table we make sure we get one and only one parcel attrs dict
@@ -359,65 +239,13 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 self.search_data(previous_parcel_number=query)
 
         else:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+            self.utils.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("DockWidgetChanges", "First enter a query"))
 
     def show_all_plots(self, state):
-        self._official_plot_layer.setSubsetString(self._current_official_substring if not state else "")
-        self._plot_layer.setSubsetString(self._current_substring if not state else "")
-
-    def activate_mapswipe_tool(self):  # TODO: to superclass
-        self.map_swipe_tool.run(True)
-        self.iface.messageBar().clearWidgets()
-
-    def deactivate_mapswipe_tool(self):  # TODO: to superclass
-        self.map_swipe_tool.run(False)
-        self.qgis_utils.set_layer_visibility(self._official_plot_layer, True)
-        self.qgis_utils.set_layer_visibility(self._plot_layer, True)
+        self.parent._official_layers[PLOT_TABLE]['layer'].setSubsetString(self._current_official_substring if not state else "")
+        self.parent._layers[PLOT_TABLE]['layer'].setSubsetString(self._current_substring if not state else "")
 
     def initialize_tools_and_layers(self, panel=None):
-        self.deactivate_mapswipe_tool()
+        self.parent.deactivate_mapswipe_tool()
         self.show_all_plots(True)
-
-    # def zoom_to_feature(self, layer, t_id):
-    #     feature = self.get_feature_from_t_id(layer, t_id)
-    #     self.iface.mapCanvas().zoomToFeatureIds(layer, [feature.id()])
-    #     self.canvas.flashFeatureIds(layer,
-    #                                 [feature.id()],
-    #                                 QColor(255, 0, 0, 255),
-    #                                 QColor(255, 0, 0, 0),
-    #                                 flashes=1,
-    #                                 duration=500)
-
-    # plot_ids = self.ladm_data.get_plots_related_to_parcel(self._db, t_id, None, self._plot_layer, self._uebaunit_table)
-    # if plot_ids:
-    #     action_zoom_to_plots = QAction(QCoreApplication.translate("DockWidgetQueries", "Zoom to related plot(s)"))
-    #     action_zoom_to_plots.triggered.connect(partial(self.zoom_to_plots, plot_ids))
-
-    # def open_feature_form(self, layer, t_id):
-    #     feature = self.get_feature_from_t_id(layer, t_id)
-    #     self.iface.openFeatureForm(layer, feature)
-    #
-
-    # def zoom_to_plots(self, plot_ids):
-    #     self.iface.mapCanvas().zoomToFeatureIds(self._plot_layer, plot_ids)
-    #     self.canvas.flashFeatureIds(self._plot_layer,
-    #                                 plot_ids,
-    #                                 QColor(255, 0, 0, 255),
-    #                                 QColor(255, 0, 0, 0),
-    #                                 flashes=1,
-    #                                 duration=500)
-
-    def zoom_to_features(self, layer, ids=[], t_ids=[]):  # TODO move this to a proper utils class
-        if t_ids:
-            features = self.ladm_data.get_features_from_t_ids(layer, t_ids, True, True)
-            for feature in features:
-                ids.append(feature.id())
-
-        self.iface.mapCanvas().zoomToFeatureIds(layer, ids)
-        self.canvas.flashFeatureIds(layer,
-                                    ids,
-                                    QColor(255, 0, 0, 255),
-                                    QColor(255, 0, 0, 0),
-                                    flashes=1,
-                                    duration=500)
