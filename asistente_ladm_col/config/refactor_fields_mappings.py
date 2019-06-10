@@ -519,7 +519,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
 
     return mapping
 def get_refactor_fields_mapping_field_data_capture_to_ladm(layer_name, qgis_utils):
-    if layer_name == FDC_PLOT:
+    if layer_name == FDC_PARCEL:
          mapping = [
             {'expression': '"Departamento"', 'length': 2, 'name': 'departamento', 'precision': -1, 'type': 10}, 
             {'expression': '"municipio"', 'length': 3, 'name': 'municipio', 'precision': -1, 'type': 10}, 
@@ -574,5 +574,16 @@ def get_refactor_fields_mapping_field_data_capture_to_ladm(layer_name, qgis_util
             {'expression': '"construccion_t_id"', 'length': -1, 'name': 'ue_construccion', 'precision': 0, 'type': 4}, 
             {'expression': '"t_id"', 'length': -1, 'name': 'baunit_predio', 'precision': 0, 'type': 4}
         ]
+    elif layer_name == FDC_PLOT:
+        mapping = [
+            {'expression': '"SHAPE_Area"', 'length': 15, 'name': 'area_calculada', 'precision': 1, 'type': 6}, 
+            {'expression': '0.1', 'length': 16, 'name': 'avaluo_terreno', 'precision': 1, 'type': 6}, 
+            {'expression': '"Codigo"', 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}
+        ]
+    elif layer_name == FDC_SECTOR:
+        mapping = [
+            {'expression': 'substr( Codigo,0,2)', 'length': 2, 'name': 'codigo', 'precision': -1, 'type': 10}, 
+            {'expression': "concat('sector', Codigo)", 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10}
+            ]
     
     return mapping
