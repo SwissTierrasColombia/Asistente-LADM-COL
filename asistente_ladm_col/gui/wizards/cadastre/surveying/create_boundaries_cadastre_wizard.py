@@ -51,6 +51,11 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
 
+        # Necessary to control featureAdded bug (crash QGIS)
+        # https://gis.stackexchange.com/a/229949/120426
+        self.added_features = None
+        self.rollback_changes = False
+
         self._layers = {
             BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': QgsWkbTypes.LineGeometry, 'layer': None},
             BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': QgsWkbTypes.PointGeometry, 'layer': None}
@@ -98,6 +103,11 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
             pass
 
         try:
+            self._layers[BOUNDARY_TABLE]['layer'].editCommandEnded.connect(self.confirm_commit)
+        except:
+            pass
+
+        try:
             self._layers[BOUNDARY_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
@@ -138,15 +148,14 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
     def prepare_feature_creation(self):
         # layers of interest are loaded
         result = self.prepare_feature_creation_layers()
-        if result is None:
-            return
-        self.edit_feature()
+        if result:
+            self.edit_feature()
 
     def prepare_feature_creation_layers(self):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if res_layers is None:
-            return
+            return False
 
         # Add signal to check if a layer was removed
         self.validate_remove_layers()
@@ -210,23 +219,20 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         if not layer.isEditable():
             layer.startEditing()
 
-        if self.WIZARD_CREATES_SPATIAL_FEATURE:
-            # action add feature
-            self.qgis_utils.suppress_form(layer, True)
-            self.iface.actionAddFeature().trigger()
+        # action add feature
+        self.qgis_utils.suppress_form(layer, True)
+        self.iface.actionAddFeature().trigger()
 
-            # Shows the form when the feature is created
-            layer.featureAdded.connect(partial(self.exec_form, layer))
-        else:
-            self.exec_form(layer)
+        # Shows the form when the feature is created
+        layer.featureAdded.connect(partial(self.exec_form, layer))
+        layer.editCommandEnded.connect(self.confirm_commit)
 
-    def exec_form(self, layer):
-        try:
-            # Disconnect signal to prevent add features
-            layer.featureAdded.disconnect()
-            self.log.logMessage("Feature added SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
-        except:
-            pass
+    def exec_form(self, layer, f_id):
+        """
+        This method only stores featIds in a class variable. It's required to avoid a bug with SLOTS connected to
+        featureAdded.
+        """
+        self.added_features = f_id
 
         feature = self.qgis_utils.get_new_feature(layer)
         dialog = self.iface.getFeatureForm(layer, feature)
@@ -234,6 +240,22 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         dialog.setModal(True)
 
         if dialog.exec_():
+            self.rollback_changes = False
+        else:
+            self.rollback_changes = True
+
+    def confirm_commit(self):
+        layer = self.sender() # Get the layer that has sent the signal
+
+        try:
+            layer.featureAdded.disconnect()
+            self.log.logMessage("Boundary's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+        except:
+            pass
+
+        if self.rollback_changes:
+            layer.rollBack()
+        else:
             saved = layer.commitChanges()
 
             if not saved:
@@ -246,13 +268,8 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
                 for e in layer.commitErrors():
                     self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
 
-            self.iface.mapCanvas().refresh()
-        else:
-            # TODO: implement when the bug is removed
-            # When feature form is cancel QGIS close sudenlly
-            # self.iface.actionRollbackEdits().trigger()
-            # layer.rollBack(True)
-            pass
+        self.iface.mapCanvas().refresh()
+        self.added_features = None
 
     def form_rejected(self):
         message = QCoreApplication.translate(self.WIZARD_NAME,
