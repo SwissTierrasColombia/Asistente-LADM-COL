@@ -705,7 +705,7 @@ class PGConnector(DBConnector):
 
         where_id = ""
         if mode != 'all':
-            where_id = "WHERE l.t_id {} {}".format('=' if mode=='only_id' else '!=', plot_id)
+            where_id = "WHERE terreno.t_id {} {}".format('=' if mode=='only_id' else '!=', plot_id)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
