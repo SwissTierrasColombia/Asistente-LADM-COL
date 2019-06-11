@@ -233,7 +233,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
         settings.setValue('Asistente-LADM_COL/sources/document_repository', self.connection_box.isChecked())
 
-        settings.setValue('Asistente-LADM_COL/reports/ant', self.chk_ant_tools.isChecked())
+        settings.setValue('Asistente-LADM_COL/advanced_settings/ant_tools', self.chk_ant_tools.isChecked())
+        settings.setValue('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
 
         endpoint = self.txt_service_endpoint.text().strip()
         settings.setValue('Asistente-LADM_COL/sources/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
@@ -305,8 +306,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
 
-        self.ant_tools_initial_chk_value = settings.value('Asistente-LADM_COL/reports/ant', False, bool)
+        self.ant_tools_initial_chk_value = settings.value('Asistente-LADM_COL/advanced_settings/ant_tools', False, bool)
         self.chk_ant_tools.setChecked(self.ant_tools_initial_chk_value)
+
+        self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', True, bool))
 
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
 
