@@ -58,7 +58,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self._current_official_substring = ""
         self._current_substring = ""
 
-        self.parent.add_layers()
+        self.utils.add_layers()
         self.fill_combos()
 
         # Set connections
@@ -78,19 +78,19 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.initialize_field_values_line_edit()
 
     def initialize_field_values_line_edit(self):
-        self.txt_alphanumeric_query.setLayer(self.parent._official_layers[PARCEL_TABLE]['layer'])
-        idx = self.parent._official_layers[PARCEL_TABLE]['layer'].fields().indexOf(self.cbo_parcel_fields.currentData())
+        self.txt_alphanumeric_query.setLayer(self.utils._official_layers[PARCEL_TABLE]['layer'])
+        idx = self.utils._official_layers[PARCEL_TABLE]['layer'].fields().indexOf(self.cbo_parcel_fields.currentData())
         self.txt_alphanumeric_query.setAttributeIndex(idx)
 
     def fill_combos(self):
         self.cbo_parcel_fields.clear()
 
-        if self.parent._official_layers[PARCEL_TABLE]['layer'] is not None:
+        if self.utils._official_layers[PARCEL_TABLE]['layer'] is not None:
             self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Parcel Number"), PARCEL_NUMBER_FIELD)
             self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Previous Parcel Number"), PARCEL_NUMBER_BEFORE_FIELD)
             self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Folio de Matrícula Inmobiliaria"), FMI_FIELD)
         else:
-            self.parent.add_layers()
+            self.utils.add_layers()
 
     def search_data(self, **kwargs):
         # TODO: optimize QgsFeatureRequest
@@ -104,7 +104,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         search_field = self.cbo_parcel_fields.currentData()
         search_value = list(kwargs.values())[0]
 
-        official_parcels = [feature for feature in self.parent._official_layers[PARCEL_TABLE]['layer'].getFeatures(
+        official_parcels = [feature for feature in self.utils._official_layers[PARCEL_TABLE]['layer'].getFeatures(
                             "{}='{}'".format(search_field, search_value))]
 
         if len(official_parcels) > 1:
@@ -119,40 +119,38 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         official_plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._official_db,
                                                                           [official_parcels[0][ID_FIELD]],
                                                                           field_name = ID_FIELD,
-                                                                          plot_layer = self.parent._official_layers[PLOT_TABLE]['layer'],
-                                                                          uebaunit_table = self.parent._official_layers[UEBAUNIT_TABLE]['layer'])
-
-        print(official_plot_t_ids)
+                                                                          plot_layer = self.utils._official_layers[PLOT_TABLE]['layer'],
+                                                                          uebaunit_table = self.utils._official_layers[UEBAUNIT_TABLE]['layer'])
 
         if official_plot_t_ids:
             #self.qgis_utils.map_freeze_requested.emit(True)
 
             self._current_official_substring = "\"{}\" IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in official_plot_t_ids]))
             #self._official_plot_layer.setSubsetString(self._current_official_substring)
-            self.parent.request_zoom_to_features(self.parent._official_layers[PLOT_TABLE]['layer'], list(), official_plot_t_ids)
+            self.parent.request_zoom_to_features(self.utils._official_layers[PLOT_TABLE]['layer'], list(), official_plot_t_ids)
             #self.iface.zoomToActiveLayer()
 
             # Get parcel's t_id and get related plot(s)
-            parcels = self.parent._layers[PARCEL_TABLE]['layer'].getFeatures("{}='{}'".format(search_field, search_value))
+            parcels = self.utils._layers[PARCEL_TABLE]['layer'].getFeatures("{}='{}'".format(search_field, search_value))
             parcel = QgsFeature()
             res = parcels.nextFeature(parcel)
             if res:
                 plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
                                                                          [parcel[ID_FIELD]],
                                                                          field_name=ID_FIELD,
-                                                                         plot_layer=self.parent._layers[PLOT_TABLE]['layer'],
+                                                                         plot_layer=self.utils._layers[PLOT_TABLE]['layer'],
                                                                          uebaunit_table=None)
                 self._current_substring = "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids]))
                 #self._plot_layer.setSubsetString(self._current_substring)
 
-            self.utils.qgis_utils.activate_layer_requested.emit(self.parent._official_layers[PLOT_TABLE]['layer'])
+            self.utils.qgis_utils.activate_layer_requested.emit(self.utils._official_layers[PLOT_TABLE]['layer'])
             #self.qgis_utils.map_freeze_requested.emit(False)
 
             # Activate Swipe Tool and send mouse event
             self.parent.activate_mapswipe_tool()
 
             if res: # plot_t_ids found
-                plots = self.utils.ladm_data.get_features_from_t_ids(self.parent._layers[PLOT_TABLE]['layer'], plot_t_ids, True)
+                plots = self.utils.ladm_data.get_features_from_t_ids(self.utils._layers[PLOT_TABLE]['layer'], plot_t_ids, True)
                 plots_extent = QgsRectangle()
                 for plot in plots:
                     plots_extent.combineExtentWith(plot.geometry().boundingBox())
@@ -243,8 +241,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 QCoreApplication.translate("DockWidgetChanges", "First enter a query"))
 
     def show_all_plots(self, state):
-        self.parent._official_layers[PLOT_TABLE]['layer'].setSubsetString(self._current_official_substring if not state else "")
-        self.parent._layers[PLOT_TABLE]['layer'].setSubsetString(self._current_substring if not state else "")
+        self.utils._official_layers[PLOT_TABLE]['layer'].setSubsetString(self._current_official_substring if not state else "")
+        self.utils._layers[PLOT_TABLE]['layer'].setSubsetString(self._current_substring if not state else "")
 
     def initialize_tools_and_layers(self, panel=None):
         self.parent.deactivate_mapswipe_tool()

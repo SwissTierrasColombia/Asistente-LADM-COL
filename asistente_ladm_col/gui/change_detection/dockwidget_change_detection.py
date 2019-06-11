@@ -18,7 +18,7 @@
 """
 import qgis
 from qgis.PyQt.QtCore import (Qt,
-                              pyqtSignal, QCoreApplication)
+                              pyqtSignal, QCoreApplication, QObject)
 from qgis.core import (QgsVectorLayer,
                        QgsWkbTypes,
                        Qgis)
@@ -56,7 +56,7 @@ DOCKWIDGET_UI = get_ui_class('change_detection/dockwidget_change_detection.ui')
 
 class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
 
-    zoom_to_features_requested = pyqtSignal(QgsVectorLayer, list, list)
+    zoom_to_features_requested = pyqtSignal(QgsVectorLayer, list, list, int)  # layer, ids, t_ids, duration
 
     def __init__(self, iface, db, official_db, qgis_utils, ladm_data):
         super(DockWidgetChangeDetection, self).__init__(None)
@@ -64,12 +64,10 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
         self.utils = ChangeDetectionUtils(iface, db, official_db, qgis_utils, ladm_data)
+        self.utils.change_detection_layer_removed.connect(self.layer_removed)
+        self.initialize_layers()
 
         self.map_swipe_tool = qgis.utils.plugins[MAP_SWIPE_TOOL_PLUGIN_NAME]
-
-        self._layers = dict()
-        self._official_layers = dict()
-        self.initialize_layers()
 
         # Configure panels
         self.main_panel = ParcelsChangesSummaryPanelWidget(self, self.utils)
@@ -82,46 +80,10 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.lst_parcel_panels = list()
 
     def add_layers(self):
-        self.utils.qgis_utils.map_freeze_requested.emit(True)
-
-        res_layers = self.utils.qgis_utils.get_layers(self.utils._db, self._layers, load=True, emit_map_freeze=False)
-        if res_layers is None:
-            return
-
-        # Now load official layers
-        # Set layer modifiers
-        layer_modifiers = {
-            PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
-            SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
-            STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
-        }
-        res_layers = self.utils.qgis_utils.get_layers(self.utils._official_db,
-                                                      self._official_layers,
-                                                      load=True,
-                                                      emit_map_freeze=False,
-                                                      layer_modifiers=layer_modifiers)
-        if res_layers is None:
-            return
-
-        self.utils.qgis_utils.map_freeze_requested.emit(False)
-
-        for layer_name in self._layers:
-            if self._layers[layer_name]['layer']: # Layer was found, listen to its removal so that we can react properly
-                try:
-                    self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.layer_removed)
-                except:
-                    pass
-                self._layers[layer_name]['layer'].willBeDeleted.connect(self.layer_removed)
-
-        for layer_name in self._official_layers:
-            if self._official_layers[layer_name]['layer']: # Layer was found, listen to its removal so that we can react properly
-                try:
-                    self._official_layers[layer_name]['layer'].willBeDeleted.disconnect(self.layer_removed)
-                except:
-                    pass
-                self._official_layers[layer_name]['layer'].willBeDeleted.connect(self.layer_removed)
+        self.utils.add_layers()
 
     def layer_removed(self):
+        self.utils.change_detection_layer_removed.disconnect(self.layer_removed)
         self.utils.iface.messageBar().pushMessage("Asistente LADM_COL",
                                             QCoreApplication.translate("CreateParcelCadastreWizard",
                                                                        "'Change detection' has been closed because you just removed a required layer."),
@@ -171,6 +133,38 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         # TODO update_official_db_connection
 
     def initialize_layers(self):
+        self.utils.initialize_layers()
+
+    def request_zoom_to_features(self, layer, ids=list(), t_ids=list(), duration=500):
+        self.zoom_to_features_requested.emit(layer, ids, t_ids, duration)
+
+    def activate_mapswipe_tool(self):
+        self.map_swipe_tool.run(True)
+        self.utils.iface.messageBar().clearWidgets()
+
+    def deactivate_mapswipe_tool(self):
+        self.map_swipe_tool.run(False)
+        self.utils.qgis_utils.set_layer_visibility(self.utils._official_layers[PLOT_TABLE]['layer'], True)
+        self.utils.qgis_utils.set_layer_visibility(self.utils._layers[PLOT_TABLE]['layer'], True)
+
+
+class ChangeDetectionUtils(QObject):
+
+    change_detection_layer_removed = pyqtSignal()
+
+    def __init__(self, iface, db, official_db, qgis_utils, ladm_data):
+        QObject.__init__(self)
+        self.iface = iface
+        self.canvas = iface.mapCanvas()
+        self._db = db
+        self._official_db = official_db
+        self.qgis_utils = qgis_utils
+        self.ladm_data = ladm_data
+
+        self._layers = dict()
+        self._official_layers = dict()
+
+    def initialize_layers(self):
         self._layers = {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
             PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, 'layer': None},
@@ -183,27 +177,45 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
             UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, 'layer': None}
         }
 
-    def request_zoom_to_features(self, layer, ids=list(), t_ids=list()):
-        self.zoom_to_features_requested.emit(layer, ids, t_ids)
+    def add_layers(self):
+        self.qgis_utils.map_freeze_requested.emit(True)
 
-    def activate_mapswipe_tool(self):
-        self.map_swipe_tool.run(True)
-        self.utils.iface.messageBar().clearWidgets()
+        res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True, emit_map_freeze=False)
 
-    def deactivate_mapswipe_tool(self):
-        self.map_swipe_tool.run(False)
-        self.utils.qgis_utils.set_layer_visibility(self._official_layers[PLOT_TABLE]['layer'], True)
-        self.utils.qgis_utils.set_layer_visibility(self._layers[PLOT_TABLE]['layer'], True)
+        # Now load official layers
+        # Set layer modifiers
+        layer_modifiers = {
+            PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
+            SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
+            STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
+        }
+        res_official_layers = self.qgis_utils.get_layers(self._official_db,
+                                                      self._official_layers,
+                                                      load=True,
+                                                      emit_map_freeze=False,
+                                                      layer_modifiers=layer_modifiers)
+
+        self.qgis_utils.map_freeze_requested.emit(False)
 
 
-class ChangeDetectionUtils():
-    def __init__(self, iface, db, official_db, qgis_utils, ladm_data):
-        self.iface = iface
-        self.canvas = iface.mapCanvas()
-        self._db = db
-        self._official_db = official_db
-        self.qgis_utils = qgis_utils
-        self.ladm_data = ladm_data
+        if res_layers is None or res_official_layers is None:
+            return
+
+        for layer_name in self._layers:
+            if self._layers[layer_name]['layer']: # Layer was found, listen to its removal so that we can react properly
+                try:
+                    self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.change_detection_layer_removed)
+                except:
+                    pass
+                self._layers[layer_name]['layer'].willBeDeleted.connect(self.change_detection_layer_removed)
+
+        for layer_name in self._official_layers:
+            if self._official_layers[layer_name]['layer']: # Layer was found, listen to its removal so that we can react properly
+                try:
+                    self._official_layers[layer_name]['layer'].willBeDeleted.disconnect(self.change_detection_layer_removed)
+                except:
+                    pass
+                self._official_layers[layer_name]['layer'].willBeDeleted.connect(self.change_detection_layer_removed)
 
     def get_compared_parcels_data(self, base_db, compare_db):
         """

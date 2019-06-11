@@ -95,24 +95,24 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.tbl_changes_all_parcels.setSortingEnabled(True)
 
-        # Zoom and select
+        # Zoom and flash features
         if filter_parcels:
             plot_layer = None
             if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
-                plot_layer = self.parent._layers[PLOT_TABLE]['layer']
+                plot_layer = self.utils._layers[PLOT_TABLE]['layer']
             else:
-                plot_layer = self.parent._official_layers[PLOT_TABLE]['layer']
+                plot_layer = self.utils._official_layers[PLOT_TABLE]['layer']
 
             plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE else self.utils._official_db,
                           filter_parcels[ID_FIELD],
                           None, # Get QGIS plot ids
                           plot_layer,
-                          self.parent._layers[UEBAUNIT_TABLE]['layer'] if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE else self.parent._official_layers[UEBAUNIT_TABLE]['layer'])
-            self.parent.request_zoom_to_features(plot_layer, ids=plot_ids)
+                          self.utils._layers[UEBAUNIT_TABLE]['layer'] if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE else self.utils._official_layers[UEBAUNIT_TABLE]['layer'])
+            self.parent.request_zoom_to_features(plot_layer, ids=plot_ids, duration=3000)
 
-            plot_layer.select(plot_ids)
+            # plot_layer.select(plot_ids)
         else:
-            self.utils.qgis_utils.activate_layer_requested.emit(self.parent._layers[PLOT_TABLE]['layer'])
+            self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[PLOT_TABLE]['layer'])
             self.utils.iface.zoomToActiveLayer()
 
     def show_context_menu(self, point):

@@ -751,7 +751,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def load_layers(self, layers):
         self.qgis_utils.get_layers(self.get_db_connection(), layers, True)
 
-    def zoom_to_features(self, layer, ids=list(), t_ids=list()):
+    def zoom_to_features(self, layer, ids=list(), t_ids=list(), duration=500):
         if t_ids:
             features = self.ladm_data.get_features_from_t_ids(layer, t_ids, True, True)
             for feature in features:
@@ -763,7 +763,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                                QColor(255, 0, 0, 255),
                                                QColor(255, 0, 0, 0),
                                                flashes=1,
-                                               duration=500)
+                                               duration=duration)
 
     def show_log_quality_message(self, msg, count):
         self.progressMessageBar = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
