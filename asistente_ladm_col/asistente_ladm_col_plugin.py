@@ -261,7 +261,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._annex_17_action.triggered.connect(self.call_annex_17_report_generation)
         new_actions = [self._annex_17_action]
 
-        if QSettings().value('Asistente-LADM_COL/reports/ant', False, bool):  # ant_tools_enabled
+        if QSettings().value('Asistente-LADM_COL/advanced_settings/ant_tools', False, bool):  # ant_tools_enabled
              self._ant_map_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"), self._report_menu)
              self._ant_map_action.triggered.connect(self.call_ant_map_report_generation)
              new_actions.append(self._ant_map_action)
