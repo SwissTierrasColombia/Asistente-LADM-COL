@@ -16,20 +16,24 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsExpression,
-                       QgsWkbTypes,
-                       Qgis)
-from ..config.symbology import DEFAULT_STYLE_GROUP
+                       QgsWkbTypes)
 from ..config.table_mapping_config import (ID_FIELD,
                                            PLOT_TABLE,
                                            UEBAUNIT_TABLE_PARCEL_FIELD,
                                            UEBAUNIT_TABLE_PLOT_FIELD,
                                            UEBAUNIT_TABLE,
-                                           PARCEL_TABLE, PARCEL_NUMBER_FIELD, FMI_FIELD, PARCEL_NAME_FIELD,
-                                           DEPARTMENT_FIELD, ZONE_FIELD, PARCEL_TYPE_FIELD, MUNICIPALITY_FIELD)
+                                           PARCEL_TABLE,
+                                           PARCEL_NUMBER_FIELD,
+                                           FMI_FIELD,
+                                           PARCEL_NAME_FIELD,
+                                           DEPARTMENT_FIELD,
+                                           ZONE_FIELD,
+                                           PARCEL_TYPE_FIELD,
+                                           MUNICIPALITY_FIELD)
 
 PARCEL_FIELDS_TO_COMPARE = [PARCEL_NUMBER_FIELD,
                             FMI_FIELD,
@@ -58,8 +62,8 @@ class LADM_DATA():
         :return: list of plot ids related to the parcel
         """
         required_layers = {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, 'layer': None}}
 
         if plot_layer is not None:
             del required_layers[PLOT_TABLE]
@@ -68,24 +72,13 @@ class LADM_DATA():
 
         if required_layers:
             res_layers = self.qgis_utils.get_layers(db, required_layers, load=True)
+            if res_layers is None:
+                return
 
             if PLOT_TABLE in required_layers:
                 plot_layer = res_layers[PLOT_TABLE]
-                if plot_layer is None:
-                    self.qgis_utils.message_emitted.emit(
-                        QCoreApplication.translate("LADM_DATA", "Plot layer couldn't be found... {}").format(
-                                                            db.get_description()),
-                                                   Qgis.Warning)
-                    return
-
             if UEBAUNIT_TABLE in required_layers:
                 uebaunit_table = res_layers[UEBAUNIT_TABLE]
-                if uebaunit_table is None:
-                    self.qgis_utils.message_emitted.emit(
-                        QCoreApplication.translate("LADM_DATA", "UEBAUnit table couldn't be found... {}").format(
-                            db.get_description()),
-                        Qgis.Warning)
-                    return
 
         features = uebaunit_table.getFeatures("{} IN ('{}') AND {} IS NOT NULL".format(
                                                     UEBAUNIT_TABLE_PARCEL_FIELD,
@@ -135,8 +128,8 @@ class LADM_DATA():
         :return: list of parcel ids related to the parcel
         """
         required_layers = {
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, 'layer': None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, 'layer': None}}
 
         if parcel_table is not None:
             del required_layers[PARCEL_TABLE]
@@ -145,23 +138,13 @@ class LADM_DATA():
 
         if required_layers:
             res_layers = self.qgis_utils.get_layers(db, required_layers, load=True)
+            if res_layers is None:
+                return
 
             if PARCEL_TABLE in required_layers:
                 parcel_table = res_layers[PARCEL_TABLE]
-                if parcel_table is None:
-                    self.qgis_utils.message_emitted.emit(
-                        QCoreApplication.translate("LADM_DATA", "Parcel table couldn't be found... {}").format(
-                                                            db.get_description()),
-                                                   Qgis.Warning)
-                    return
-
-            uebaunit_table = res_layers[UEBAUNIT_TABLE]
-            if uebaunit_table is None:
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate("LADM_DATA", "UEBAUnit table couldn't be found... {}").format(
-                        db.get_description()),
-                    Qgis.Warning)
-                return
+            if UEBAUNIT_TABLE in required_layers:
+                uebaunit_table = res_layers[UEBAUNIT_TABLE]
 
         features = uebaunit_table.getFeatures("{} IN ({}) AND {} IS NOT NULL".format(
                                                     UEBAUNIT_TABLE_PLOT_FIELD,
@@ -206,35 +189,13 @@ class LADM_DATA():
         :param search_criterion: FieldName-Value pair to search in parcel layer (None for getting all parcels)
         :return: dict with parcel info for comparisons
         """
-        required_layers = {
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}
+        layers = {
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, 'layer': None},
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, 'layer': None}}
 
-        res_layers = self.qgis_utils.get_layers(db, required_layers, load=True, layer_modifiers=layer_modifiers)
-
-        parcel_table = res_layers[PARCEL_TABLE]
-        if parcel_table is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("LADM_DATA", "Parcel table couldn't be found... {}").format(
-                    db.get_description()),
-                Qgis.Warning)
-            return
-
-        plot_layer = res_layers[PLOT_TABLE]
-        if plot_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("LADM_DATA", "Plot layer couldn't be found... {}").format(
-                                                    db.get_description()),
-                                           Qgis.Warning)
-            return
-
-        uebaunit_table = res_layers[UEBAUNIT_TABLE]
-        if uebaunit_table is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("LADM_DATA", "UEBAUnit table couldn't be found... {}").format(
-                    db.get_description()),
-                Qgis.Warning)
+        res_layers = self.qgis_utils.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
+        if res_layers is None:
             return
 
         if search_criterion is not None:
@@ -242,14 +203,14 @@ class LADM_DATA():
             field_value = list(search_criterion.values())[0]
             request = QgsFeatureRequest(QgsExpression("{}='{}'".format(field_name, field_value)))
 
-            parcel_features = parcel_table.getFeatures(request)
+            parcel_features = layers[PARCEL_TABLE]['layer'].getFeatures(request)
         else:
-            parcel_features = parcel_table.getFeatures()
+            parcel_features = layers[PARCEL_TABLE]['layer'].getFeatures()
 
         dict_features = dict()
         for feature in parcel_features:
             dict_attrs = dict()
-            for field in parcel_table.fields():
+            for field in layers[PARCEL_TABLE]['layer'].fields():
                 if field.name() in PARCEL_FIELDS_TO_COMPARE:
                     value = feature.attribute(field.name())
                     dict_attrs[field.name()] = value if value != QVariant() else ''
