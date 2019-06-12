@@ -64,7 +64,7 @@ SETTINGS_CONNECTION_TAB_INDEX = 0
 
 # Version to be installed when creating reports (annex 17 - ANT Map)
 # (Other versions, if found, will be dropped in favor of this one)
-REPORTS_REQUIRED_VERSION = '0.4'
+REPORTS_REQUIRED_VERSION = '0.5'
 URL_REPORTS_LIBRARIES = 'https://github.com/AgenciaImplementacion/LADM_COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
 
 MODULE_HELP_MAPPING = {
@@ -113,7 +113,7 @@ QGIS_REQUIRED_VERSION_INT = 30406
 JAVA_REQUIRED_VERSION = 1.8
 
 # Configure QGIS Model Baker Dependency
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.2.2"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.2.3"
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
