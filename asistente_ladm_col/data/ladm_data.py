@@ -213,10 +213,11 @@ class LADM_DATA():
             for field in layers[PARCEL_TABLE]['layer'].fields():
                 if field.name() in PARCEL_FIELDS_TO_COMPARE:
                     value = feature.attribute(field.name())
-                    dict_attrs[field.name()] = value if value != QVariant() else ''
+                    dict_attrs[field.name()] = value if value != QVariant() else ''  # Transform NULL into empty string
 
             dict_attrs[ID_FIELD] = feature[ID_FIELD]
 
+            # Group attrs by parcel number
             if dict_attrs[PARCEL_NUMBER_FIELD] in dict_features:
                 dict_features[dict_attrs[PARCEL_NUMBER_FIELD]].append(dict_attrs)
             else:

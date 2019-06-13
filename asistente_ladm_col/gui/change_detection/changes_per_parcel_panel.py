@@ -64,17 +64,17 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         # Set connections
         self.btn_alphanumeric_query.clicked.connect(self.alphanumeric_query)
         self.chk_show_all_plots.toggled.connect(self.show_all_plots)
-        self.cbo_parcel_fields.currentIndexChanged.connect(self.field_search_updated)
+        self.cbo_parcel_fields.currentIndexChanged.connect(self.search_field_updated)
         self.panelAccepted.connect(self.initialize_tools_and_layers)
 
         self.initialize_field_values_line_edit()
         self.initialize_tools_and_layers()
 
-        if parcel_number is not None:
+        if parcel_number is not None:  # Do a search!
             self.txt_alphanumeric_query.setValue(parcel_number)
             self.search_data(parcel_number=parcel_number)
 
-    def field_search_updated(self, index=None):
+    def search_field_updated(self, index=None):
         self.initialize_field_values_line_edit()
 
     def initialize_field_values_line_edit(self):
@@ -85,12 +85,9 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
     def fill_combos(self):
         self.cbo_parcel_fields.clear()
 
-        if self.utils._official_layers[PARCEL_TABLE]['layer'] is not None:
-            self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Parcel Number"), PARCEL_NUMBER_FIELD)
-            self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Previous Parcel Number"), PARCEL_NUMBER_BEFORE_FIELD)
-            self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Folio de Matrícula Inmobiliaria"), FMI_FIELD)
-        else:
-            self.utils.add_layers()
+        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Parcel Number"), PARCEL_NUMBER_FIELD)
+        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Previous Parcel Number"), PARCEL_NUMBER_BEFORE_FIELD)
+        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Folio de Matrícula Inmobiliaria"), FMI_FIELD)
 
     def search_data(self, **kwargs):
         # TODO: optimize QgsFeatureRequest
@@ -98,12 +95,11 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.chk_show_all_plots.setEnabled(False)
         self.chk_show_all_plots.setChecked(True)
 
-        self.initialize_tools_and_layers()
+        self.initialize_tools_and_layers()  # Reset any filter on layers
 
         # Get official parcel's t_id and get related plot(s)
         search_field = self.cbo_parcel_fields.currentData()
         search_value = list(kwargs.values())[0]
-
         official_parcels = [feature for feature in self.utils._official_layers[PARCEL_TABLE]['layer'].getFeatures(
                             "{}='{}'".format(search_field, search_value))]
 
@@ -123,12 +119,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                                                                           uebaunit_table = self.utils._official_layers[UEBAUNIT_TABLE]['layer'])
 
         if official_plot_t_ids:
-            #self.qgis_utils.map_freeze_requested.emit(True)
-
             self._current_official_substring = "\"{}\" IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in official_plot_t_ids]))
-            #self._official_plot_layer.setSubsetString(self._current_official_substring)
             self.parent.request_zoom_to_features(self.utils._official_layers[PLOT_TABLE]['layer'], list(), official_plot_t_ids)
-            #self.iface.zoomToActiveLayer()
 
             # Get parcel's t_id and get related plot(s)
             parcels = self.utils._layers[PARCEL_TABLE]['layer'].getFeatures("{}='{}'".format(search_field, search_value))
@@ -139,46 +131,37 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                                                                          [parcel[ID_FIELD]],
                                                                          field_name=ID_FIELD,
                                                                          plot_layer=self.utils._layers[PLOT_TABLE]['layer'],
-                                                                         uebaunit_table=None)
+                                                                         uebaunit_table=self.utils._layers[UEBAUNIT_TABLE]['layer'])
                 self._current_substring = "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids]))
-                #self._plot_layer.setSubsetString(self._current_substring)
 
             self.utils.qgis_utils.activate_layer_requested.emit(self.utils._official_layers[PLOT_TABLE]['layer'])
-            #self.qgis_utils.map_freeze_requested.emit(False)
 
-            # Activate Swipe Tool and send mouse event
-            self.parent.activate_mapswipe_tool()
+            # Activate Swipe Tool
+            self.parent.activate_map_swipe_tool()
 
+            # Send a custom mouse move on the map to make the map swipe tool's limit appear on the canvas
             if res: # plot_t_ids found
                 plots = self.utils.ladm_data.get_features_from_t_ids(self.utils._layers[PLOT_TABLE]['layer'], plot_t_ids, True)
                 plots_extent = QgsRectangle()
                 for plot in plots:
                     plots_extent.combineExtentWith(plot.geometry().boundingBox())
 
-                print(plots_extent)
-                coord_x = plots_extent.xMaximum() - (plots_extent.xMaximum() - plots_extent.xMinimum()) / 9
-                coord_y = plots_extent.yMaximum() - (plots_extent.yMaximum() - plots_extent.yMinimum()) / 2
+                coord_x = plots_extent.xMaximum() - (plots_extent.xMaximum() - plots_extent.xMinimum()) / 9  # 90%
+                coord_y = plots_extent.yMaximum() - (plots_extent.yMaximum() - plots_extent.yMinimum()) / 2  # 50%
 
                 coord_transform = self.utils.iface.mapCanvas().getCoordinateTransform()
                 map_point = coord_transform.transform(coord_x, coord_y)
                 widget_point = map_point.toQPointF().toPoint()
                 global_point = self.utils.canvas.mapToGlobal(widget_point)
 
-                print(coord_x, coord_y, global_point)
-                #cursor = self.iface.mainWindow().cursor()
-                #cursor.setPos(global_point.x(), global_point.y())
-
                 self.utils.canvas.mousePressEvent(QMouseEvent(QEvent.MouseButtonPress, global_point, Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
-                # mc.mouseMoveEvent(QMouseEvent(QEvent.MouseMove, gp, Qt.NoButton, Qt.LeftButton, Qt.NoModifier))
                 self.utils.canvas.mouseMoveEvent(QMouseEvent(QEvent.MouseMove, widget_point + QPoint(1,0), Qt.NoButton, Qt.LeftButton, Qt.NoModifier))
-                # QApplication.processEvents()
                 self.utils.canvas.mouseReleaseEvent(QMouseEvent(QEvent.MouseButtonRelease, widget_point + QPoint(1,0), Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
-                # QApplication.processEvents()
 
-                # Once the query is done, activate the checkbox to alternate all plots/only selected plot
-                self.chk_show_all_plots.setEnabled(True)
+            # Once the query is done, activate the checkbox to alternate all plots/only selected plot
+            self.chk_show_all_plots.setEnabled(True)
 
-    def fill_table(self, search_criterion):
+    def fill_table(self, search_criterion):  # Shouldn't handle 'inverse' mode
         dict_collected_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._db, search_criterion)
 
         # Custom layer modifiers
@@ -190,24 +173,32 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         dict_official_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._official_db, search_criterion, layer_modifiers=layer_modifiers)
 
-        collected_parcel_number = list(dict_collected_parcels.keys())[0]
-        # Before calling fill_table we make sure we get one and only one parcel attrs dict
-        collected_attrs = dict_collected_parcels[collected_parcel_number][0]
-        del collected_attrs[ID_FIELD]  # Remove this line if ID_FIELD is somehow needed
+        # Before filling the table we make sure we get one and only one parcel attrs dict
+        collected_attrs = dict()
+        if dict_collected_parcels:
+            collected_parcel_number = list(dict_collected_parcels.keys())[0]
+            collected_attrs = dict_collected_parcels[collected_parcel_number][0]
+            del collected_attrs[ID_FIELD]  # Remove this line if ID_FIELD is somehow needed
 
-        official_parcel_number = list(dict_official_parcels.keys())[0]
-        official_attrs = dict_official_parcels[official_parcel_number][0] if dict_official_parcels else []
+        official_attrs = dict()
+        if dict_official_parcels:
+            official_parcel_number = list(dict_official_parcels.keys())[0]
+            official_attrs = dict_official_parcels[official_parcel_number][0] if dict_official_parcels else []
+            del official_attrs[ID_FIELD]  # Remove this line if ID_FIELD is somehow needed
 
         self.tbl_changes_per_parcel.clearContents()
-        self.tbl_changes_per_parcel.setRowCount(len(collected_attrs))  # t_id shouldn't be counted
+        self.tbl_changes_per_parcel.setRowCount(len(collected_attrs) or len(official_attrs))  # t_id shouldn't be counted
         self.tbl_changes_per_parcel.setSortingEnabled(False)
 
-        for row, (collected_field, collected_value) in enumerate(collected_attrs.items()):
-            item = QTableWidgetItem(collected_field)
+        field_names = list(collected_attrs.keys()) if collected_attrs else list(official_attrs.keys())
+
+        for row, field_name in enumerate(field_names):
+            item = QTableWidgetItem(field_name)
             # item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
             self.tbl_changes_per_parcel.setItem(row, 0, item)
 
-            official_value = official_attrs[collected_field] if collected_field in official_attrs else ''
+            official_value = official_attrs[field_name] if field_name in official_attrs else ''
+            collected_value = collected_attrs[field_name] if field_name in collected_attrs else ''
 
             item = QTableWidgetItem(official_value)
             #item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
@@ -245,5 +236,5 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.utils._layers[PLOT_TABLE]['layer'].setSubsetString(self._current_substring if not state else "")
 
     def initialize_tools_and_layers(self, panel=None):
-        self.parent.deactivate_mapswipe_tool()
+        self.parent.deactivate_map_swipe_tool()
         self.show_all_plots(True)

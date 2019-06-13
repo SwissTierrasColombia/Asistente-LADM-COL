@@ -137,12 +137,15 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
     def request_zoom_to_features(self, layer, ids=list(), t_ids=list(), duration=500):
         self.zoom_to_features_requested.emit(layer, ids, t_ids, duration)
 
-    def activate_mapswipe_tool(self):
-        self.map_swipe_tool.run(True)
-        self.utils.iface.messageBar().clearWidgets()
+    def activate_map_swipe_tool(self):
+        if not self.map_swipe_tool.action.isChecked():
+            self.map_swipe_tool.run(True)
+            self.utils.iface.messageBar().clearWidgets()
 
-    def deactivate_mapswipe_tool(self):
-        self.map_swipe_tool.run(False)
+    def deactivate_map_swipe_tool(self):
+        if self.map_swipe_tool.action.isChecked():
+            self.map_swipe_tool.run(False)
+
         self.utils.qgis_utils.set_layer_visibility(self.utils._official_layers[PLOT_TABLE]['layer'], True)
         self.utils.qgis_utils.set_layer_visibility(self.utils._layers[PLOT_TABLE]['layer'], True)
 
@@ -185,44 +188,46 @@ class ChangeDetectionUtils(QObject):
         self._compared_parcels_data_inverse = dict()
 
     def add_layers(self):
-        self.qgis_utils.map_freeze_requested.emit(True)
+        # We can pick any required layer, if it is None, no prior load has been done, otherwise skip...
+        if self._layers[PLOT_TABLE]['layer'] is None:
+            self.qgis_utils.map_freeze_requested.emit(True)
 
-        res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True, emit_map_freeze=False)
+            res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True, emit_map_freeze=False)
 
-        # Now load official layers
-        # Set layer modifiers
-        layer_modifiers = {
-            PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
-            SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
-            STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
-        }
-        res_official_layers = self.qgis_utils.get_layers(self._official_db,
-                                                      self._official_layers,
-                                                      load=True,
-                                                      emit_map_freeze=False,
-                                                      layer_modifiers=layer_modifiers)
+            # Now load official layers
+            # Set layer modifiers
+            layer_modifiers = {
+                PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
+                SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
+                STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
+            }
+            res_official_layers = self.qgis_utils.get_layers(self._official_db,
+                                                          self._official_layers,
+                                                          load=True,
+                                                          emit_map_freeze=False,
+                                                          layer_modifiers=layer_modifiers)
 
-        self.qgis_utils.map_freeze_requested.emit(False)
+            self.qgis_utils.map_freeze_requested.emit(False)
 
 
-        if res_layers is None or res_official_layers is None:
-            return
+            if res_layers is None or res_official_layers is None:
+                return
 
-        for layer_name in self._layers:
-            if self._layers[layer_name]['layer']: # Layer was found, listen to its removal so that we can react properly
-                try:
-                    self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.change_detection_layer_removed)
-                except:
-                    pass
-                self._layers[layer_name]['layer'].willBeDeleted.connect(self.change_detection_layer_removed)
+            for layer_name in self._layers:
+                if self._layers[layer_name]['layer']: # Layer was found, listen to its removal so that we can react properly
+                    try:
+                        self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.change_detection_layer_removed)
+                    except:
+                        pass
+                    self._layers[layer_name]['layer'].willBeDeleted.connect(self.change_detection_layer_removed)
 
-        for layer_name in self._official_layers:
-            if self._official_layers[layer_name]['layer']: # Layer was found, listen to its removal so that we can react properly
-                try:
-                    self._official_layers[layer_name]['layer'].willBeDeleted.disconnect(self.change_detection_layer_removed)
-                except:
-                    pass
-                self._official_layers[layer_name]['layer'].willBeDeleted.connect(self.change_detection_layer_removed)
+            for layer_name in self._official_layers:
+                if self._official_layers[layer_name]['layer']: # Layer was found, listen to its removal so that we can react properly
+                    try:
+                        self._official_layers[layer_name]['layer'].willBeDeleted.disconnect(self.change_detection_layer_removed)
+                    except:
+                        pass
+                    self._official_layers[layer_name]['layer'].willBeDeleted.connect(self.change_detection_layer_removed)
 
     def get_compared_parcels_data(self, inverse=False):
         if inverse:
