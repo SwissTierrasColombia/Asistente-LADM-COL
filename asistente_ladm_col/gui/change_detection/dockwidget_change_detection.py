@@ -65,7 +65,6 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
 
         self.utils = ChangeDetectionUtils(iface, db, official_db, qgis_utils, ladm_data)
         self.utils.change_detection_layer_removed.connect(self.layer_removed)
-        self.initialize_layers()
 
         self.map_swipe_tool = qgis.utils.plugins[MAP_SWIPE_TOOL_PLUGIN_NAME]
 
@@ -163,6 +162,10 @@ class ChangeDetectionUtils(QObject):
 
         self._layers = dict()
         self._official_layers = dict()
+        self.initialize_layers()
+
+        self._compared_parcels_data = dict()
+        self._compared_parcels_data_inverse = dict()
 
     def initialize_layers(self):
         self._layers = {
@@ -176,6 +179,10 @@ class ChangeDetectionUtils(QObject):
             PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, 'layer': None},
             UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, 'layer': None}
         }
+
+    def initialize_data(self):
+        self._compared_parcels_data = dict()
+        self._compared_parcels_data_inverse = dict()
 
     def add_layers(self):
         self.qgis_utils.map_freeze_requested.emit(True)
@@ -217,16 +224,30 @@ class ChangeDetectionUtils(QObject):
                     pass
                 self._official_layers[layer_name]['layer'].willBeDeleted.connect(self.change_detection_layer_removed)
 
-    def get_compared_parcels_data(self, base_db, compare_db):
+    def get_compared_parcels_data(self, inverse=False):
+        if inverse:
+            if not self._compared_parcels_data_inverse:
+                self._compared_parcels_data_inverse = self._get_compared_parcels_data(inverse)
+
+            return self._compared_parcels_data_inverse
+        else:
+            if not self._compared_parcels_data:
+                self._compared_parcels_data = self._get_compared_parcels_data()
+
+            return self._compared_parcels_data
+
+    def _get_compared_parcels_data(self, inverse=False):
         """
-        base_db: normally the collected db
-        compare_db: normally the official_db
+        inverse: By default False, which takes the collected db as base_db and the official_db as compare_db
+                 Inverse True is useful to find missing parcels (from the official authority's perspective)
 
         :return: dict() --> {PARCEL_NUMBER: X,
                              PARCEL_ATTRIBUTES: {PARCEL_ID: [ID_FIELD], PARCEL_STATUS: '', PARCEL_STATUS_DISPLAY: ''}]
         """
-        dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(base_db, None)
+        base_db = self._official_db if inverse else self._db
+        compare_db = self._db if inverse else self._official_db
 
+        dict_collected_parcels = self.ladm_data.get_parcel_data_to_compare_changes(base_db, None)
         dict_official_parcels = self.ladm_data.get_parcel_data_to_compare_changes(compare_db, None)
 
         dict_compared_parcel_data = dict()

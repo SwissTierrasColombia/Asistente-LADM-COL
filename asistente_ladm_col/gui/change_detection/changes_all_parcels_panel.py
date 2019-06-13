@@ -59,13 +59,11 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def fill_table(self, filter_parcels=dict()):
         if not filter_parcels or (filter_parcels and filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE):
-            base_db = self.utils._db
-            compare_db = self.utils._official_db
+            inverse = False
         else:
-            base_db = self.utils._official_db
-            compare_db = self.utils._db
+            inverse = True
 
-        compared_parcels_data = self.utils.get_compared_parcels_data(base_db, compare_db)
+        compared_parcels_data = self.utils.get_compared_parcels_data(inverse)
 
         self.tbl_changes_all_parcels.clearContents()
         self.tbl_changes_all_parcels.setRowCount(len(filter_parcels[PARCEL_NUMBER_FIELD]) if filter_parcels else len(compared_parcels_data))

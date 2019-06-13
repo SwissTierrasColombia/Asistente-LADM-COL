@@ -47,9 +47,8 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.setDockMode(True)
 
     def fill_data(self):
-        compared_parcels_data = self.utils.get_compared_parcels_data(self.utils._db, self.utils._official_db)
-
-        inverse_compared_parcels_data = self.utils.get_compared_parcels_data(self.utils._official_db, self.utils._db)
+        compared_parcels_data = self.utils.get_compared_parcels_data()
+        inverse_compared_parcels_data = self.utils.get_compared_parcels_data(inverse=True)
 
         # Summarize and show in its proper control
         summary = {CHANGE_DETECTION_NEW_PARCEL: {PARCEL_NUMBER_FIELD: list(), ID_FIELD: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
