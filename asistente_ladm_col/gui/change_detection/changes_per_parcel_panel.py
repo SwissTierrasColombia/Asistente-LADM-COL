@@ -90,76 +90,94 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Folio de Matrícula Inmobiliaria"), FMI_FIELD)
 
     def search_data(self, **kwargs):
-        # TODO: optimize QgsFeatureRequest
+        """
+        Get plot geometries associated with parcels, both collected and official, zoom to them, activate map swipe tool
+            and fill comparison table.
 
+        :param kwargs: key-value (field name-field value) to search in parcel tables, both collected and official
+        """
         self.chk_show_all_plots.setEnabled(False)
         self.chk_show_all_plots.setChecked(True)
-
         self.initialize_tools_and_layers()  # Reset any filter on layers
+        already_zoomed_in = False
 
-        # Get official parcel's t_id and get related plot(s)
         search_field = self.cbo_parcel_fields.currentData()
         search_value = list(kwargs.values())[0]
-        official_parcels = [feature for feature in self.utils._official_layers[PARCEL_TABLE]['layer'].getFeatures(
-                            "{}='{}'".format(search_field, search_value))]
+
+        # Get OFFICIAL parcel's t_id and get related plot(s)
+        request = QgsFeatureRequest(QgsExpression("{}='{}'".format(search_field, search_value)))
+        field_idx = self.utils._official_layers[PARCEL_TABLE]['layer'].fields().indexFromName(ID_FIELD)
+        request.setSubsetOfAttributes([field_idx])
+        request.setFlags(QgsFeatureRequest.NoGeometry)
+        official_parcels = [feature for feature in self.utils._official_layers[PARCEL_TABLE]['layer'].getFeatures(request)]
 
         if len(official_parcels) > 1:
             # TODO: Show dialog to select only one
             pass
         elif len(official_parcels) == 0:
             print("No parcel found!", search_field, search_value)
-            return
 
         self.fill_table({search_field: search_value})
 
-        official_plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._official_db,
-                                                                          [official_parcels[0][ID_FIELD]],
-                                                                          field_name = ID_FIELD,
-                                                                          plot_layer = self.utils._official_layers[PLOT_TABLE]['layer'],
-                                                                          uebaunit_table = self.utils._official_layers[UEBAUNIT_TABLE]['layer'])
+        official_plot_t_ids = []
+        if official_parcels:
+            official_plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._official_db,
+                                              [official_parcels[0][ID_FIELD]],
+                                              field_name = ID_FIELD,
+                                              plot_layer = self.utils._official_layers[PLOT_TABLE]['layer'],
+                                              uebaunit_table = self.utils._official_layers[UEBAUNIT_TABLE]['layer'])
 
-        if official_plot_t_ids:
-            self._current_official_substring = "\"{}\" IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in official_plot_t_ids]))
-            self.parent.request_zoom_to_features(self.utils._official_layers[PLOT_TABLE]['layer'], list(), official_plot_t_ids)
+            if official_plot_t_ids:
+                self._current_official_substring = "\"{}\" IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in official_plot_t_ids]))
+                self.parent.request_zoom_to_features(self.utils._official_layers[PLOT_TABLE]['layer'], list(), official_plot_t_ids)
+                already_zoomed_in = True
 
-            # Get parcel's t_id and get related plot(s)
-            parcels = self.utils._layers[PARCEL_TABLE]['layer'].getFeatures("{}='{}'".format(search_field, search_value))
-            parcel = QgsFeature()
-            res = parcels.nextFeature(parcel)
-            if res:
-                plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
-                                                                         [parcel[ID_FIELD]],
-                                                                         field_name=ID_FIELD,
-                                                                         plot_layer=self.utils._layers[PLOT_TABLE]['layer'],
-                                                                         uebaunit_table=self.utils._layers[UEBAUNIT_TABLE]['layer'])
+        # Now get COLLECTED parcel's t_id and get related plot(s)
+        request = QgsFeatureRequest(QgsExpression("{}='{}'".format(search_field, search_value)))
+        field_idx = self.utils._layers[PARCEL_TABLE]['layer'].fields().indexFromName(ID_FIELD)
+        request.setSubsetOfAttributes([field_idx])
+        request.setFlags(QgsFeatureRequest.NoGeometry)
+        parcels = self.utils._layers[PARCEL_TABLE]['layer'].getFeatures(request)
+        parcel = QgsFeature()
+        res = parcels.nextFeature(parcel)
+
+        if res:
+            plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
+                                                                     [parcel[ID_FIELD]],
+                                                                     field_name=ID_FIELD,
+                                                                     plot_layer=self.utils._layers[PLOT_TABLE]['layer'],
+                                                                     uebaunit_table=self.utils._layers[UEBAUNIT_TABLE]['layer'])
+            if plot_t_ids:
                 self._current_substring = "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids]))
+                if not already_zoomed_in:
+                    self.parent.request_zoom_to_features(self.utils._layers[PLOT_TABLE]['layer'], list(), plot_t_ids)
 
-            self.utils.qgis_utils.activate_layer_requested.emit(self.utils._official_layers[PLOT_TABLE]['layer'])
+                # Send a custom mouse move on the map to make the map swipe tool's limit appear on the canvas
 
-            # Activate Swipe Tool
-            self.parent.activate_map_swipe_tool()
+                # Activate Swipe Tool
+                self.utils.qgis_utils.activate_layer_requested.emit(self.utils._official_layers[PLOT_TABLE]['layer'])
+                if official_plot_t_ids:  # Otherwise the map swipe tool doesn't add any value :)
+                    self.parent.activate_map_swipe_tool()
 
-            # Send a custom mouse move on the map to make the map swipe tool's limit appear on the canvas
-            if res: # plot_t_ids found
-                plots = self.utils.ladm_data.get_features_from_t_ids(self.utils._layers[PLOT_TABLE]['layer'], plot_t_ids, True)
-                plots_extent = QgsRectangle()
-                for plot in plots:
-                    plots_extent.combineExtentWith(plot.geometry().boundingBox())
+                    plots = self.utils.ladm_data.get_features_from_t_ids(self.utils._layers[PLOT_TABLE]['layer'], plot_t_ids, True)
+                    plots_extent = QgsRectangle()
+                    for plot in plots:
+                        plots_extent.combineExtentWith(plot.geometry().boundingBox())
 
-                coord_x = plots_extent.xMaximum() - (plots_extent.xMaximum() - plots_extent.xMinimum()) / 9  # 90%
-                coord_y = plots_extent.yMaximum() - (plots_extent.yMaximum() - plots_extent.yMinimum()) / 2  # 50%
+                    coord_x = plots_extent.xMaximum() - (plots_extent.xMaximum() - plots_extent.xMinimum()) / 9  # 90%
+                    coord_y = plots_extent.yMaximum() - (plots_extent.yMaximum() - plots_extent.yMinimum()) / 2  # 50%
 
-                coord_transform = self.utils.iface.mapCanvas().getCoordinateTransform()
-                map_point = coord_transform.transform(coord_x, coord_y)
-                widget_point = map_point.toQPointF().toPoint()
-                global_point = self.utils.canvas.mapToGlobal(widget_point)
+                    coord_transform = self.utils.iface.mapCanvas().getCoordinateTransform()
+                    map_point = coord_transform.transform(coord_x, coord_y)
+                    widget_point = map_point.toQPointF().toPoint()
+                    global_point = self.utils.canvas.mapToGlobal(widget_point)
 
-                self.utils.canvas.mousePressEvent(QMouseEvent(QEvent.MouseButtonPress, global_point, Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
-                self.utils.canvas.mouseMoveEvent(QMouseEvent(QEvent.MouseMove, widget_point + QPoint(1,0), Qt.NoButton, Qt.LeftButton, Qt.NoModifier))
-                self.utils.canvas.mouseReleaseEvent(QMouseEvent(QEvent.MouseButtonRelease, widget_point + QPoint(1,0), Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
+                    self.utils.canvas.mousePressEvent(QMouseEvent(QEvent.MouseButtonPress, global_point, Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
+                    self.utils.canvas.mouseMoveEvent(QMouseEvent(QEvent.MouseMove, widget_point + QPoint(1,0), Qt.NoButton, Qt.LeftButton, Qt.NoModifier))
+                    self.utils.canvas.mouseReleaseEvent(QMouseEvent(QEvent.MouseButtonRelease, widget_point + QPoint(1,0), Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
 
-            # Once the query is done, activate the checkbox to alternate all plots/only selected plot
-            self.chk_show_all_plots.setEnabled(True)
+        # Once the query is done, activate the checkbox to alternate all plots/only selected plot
+        self.chk_show_all_plots.setEnabled(True)
 
     def fill_table(self, search_criterion):  # Shouldn't handle 'inverse' mode
         dict_collected_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._db, search_criterion)
