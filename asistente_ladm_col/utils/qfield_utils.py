@@ -141,13 +141,13 @@ def run_etl_model_input_load_data(input_layer, out_layer, ladm_col_layer_name, q
 
     if model:
         mapping = get_refactor_fields_mapping_field_data_capture_to_ladm(ladm_col_layer_name, qgis_utils)
+        print (mapping)
         params = {
             'INPUT': input_layer,
             'mapping': mapping,
             'output': out_layer
         }
         res = processing.run("model:ETL-model", params)
-        print (res)
 
     else:
         print("Error: Model ETL-model was not found and cannot be opened!")

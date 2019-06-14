@@ -585,5 +585,54 @@ def get_refactor_fields_mapping_field_data_capture_to_ladm(layer_name, qgis_util
             {'expression': 'substr( Codigo,0,2)', 'length': 2, 'name': 'codigo', 'precision': -1, 'type': 10}, 
             {'expression': "concat('sector', Codigo)", 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10}
             ]
-    
+    elif layer_name == FDC_VILLAGE:
+        mapping = [
+            {'expression': 'substr("Codigo",length(Codigo)-3)', 'length': 4, 'name': 'codigo', 'precision': -1, 'type': 10},
+            {'expression': '"Nombre"', 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10}
+            ]
+    elif layer_name == FDC_BLOCK:
+        mapping = [
+            {'expression': 'substr("Codigo",length(Codigo)-3)', 'length': 4, 'name': 'codigo', 'precision': -1, 'type': 10}, 
+            {'expression': 'concat(\'Manzana\' ,\' \', substr("Codigo",length(Codigo)-3))', 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10}
+            ]
+    elif layer_name == FDC_NEIGHBOURHOOD:
+        mapping = [
+            {'expression': 'substr("Codigo",length(Codigo)-1)', 'length': 2, 'name': 'codigo', 'precision': -1, 'type': 10},
+            {'expression': '"nombre"', 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10}
+            ]
+    elif layer_name == FDC_BUILDING:
+        mapping = [
+            {'expression': '0.1', 'length': 16, 'name': 'avaluo_construccion', 'precision': 1, 'type': 6}, 
+            {'expression': '"SHAPE_Area"', 'length': 15, 'name': 'area_construccion', 'precision': 1, 'type': 6}, 
+            {'expression': '"etiqueta"', 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}, 
+            {'expression': "'IGAC_Construcción'", 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '0', 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}, 
+            {'expression': '"OBJECTID"', 'length': 50, 'name': 'codigo', 'precision': -1, 'type': 10}, 
+            {'expression': '"Codigo"', 'length': 50, 'name': 'codigo_numero_predial', 'precision': -1, 'type': 10}
+            ]
+    elif layer_name == FDC_VALUATION_BUILDING:
+        mapping = [
+            {'expression': 'if("Numero_Pisos" = 0, 99, "Numero_Pisos")', 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2}
+            ]
+    elif layer_name == FDC_BUILDING_UNIT_VALUATION_TABLE:
+        mapping = [
+            {'expression': 'Tipo_Construccion', 'length': 255, 'name': 'construccion_tipo', 'precision': -1, 'type': 10}, 
+            {'expression': "'Aulas_Clases'", 'length': 255, 'name': 'uso', 'precision': -1, 'type': 10}, 
+            {'expression': "'Anexo'", 'length': 255, 'name': 'destino_econo', 'precision': -1, 'type': 10}, 
+            {'expression': "'De_Alto_Riesgo'", 'length': 255, 'name': 'tipologia', 'precision': -1, 'type': 10}, 
+            {'expression': '0', 'length': -1, 'name': 'puntuacion', 'precision': 0, 'type': 2}, 
+            {'expression': 'now()', 'length': -1, 'name': 'anio_construction', 'precision': -1, 'type': 14}, 
+            {'expression': "'Bueno'", 'length': 255, 'name': 'estado_conservacion', 'precision': -1, 'type': 10}, 
+            {'expression': '"OBJECTID"', 'length': 50, 'name': 'codigo', 'precision': -1, 'type': 10}
+            ]
+    elif layer_name == FDC_BUILDING_UNIT_CADASTRE_TABLE:
+        mapping = [
+            {'expression': '99', 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2}, 
+            {'expression': '"construccion_t_id"', 'length': -1, 'name': 'construccion', 'precision': 0, 'type': 4}, 
+            {'expression': '"etiqueta"', 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}, 
+            {'expression': "'Unidad_Construcción'", 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '"OBJECTID"', 'length': 50, 'name': 'codigo', 'precision': -1, 'type': 10}
+            ]
+
     return mapping

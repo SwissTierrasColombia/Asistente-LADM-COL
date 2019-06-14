@@ -35,7 +35,14 @@ from ..config.table_mapping_config import (FDC_PARCEL,
                                            FDC_RRRSOURCE,
                                            FDC_UEBAUNIT,
                                            FDC_PLOT, 
-                                           FDC_SECTOR)
+                                           FDC_SECTOR,
+                                           FDC_VILLAGE,
+                                           FDC_BLOCK,
+                                           FDC_NEIGHBOURHOOD,
+                                           FDC_BUILDING,
+                                           FDC_VALUATION_BUILDING,
+                                           FDC_BUILDING_UNIT_VALUATION_TABLE,
+                                           FDC_BUILDING_UNIT_CADASTRE_TABLE)
 
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
@@ -118,7 +125,13 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
 
         self.res_layers_gdb = self.qgis_utils.get_layers(self._db, {
             FDC_PLOT: {'name': FDC_PLOT, 'geometry': QgsWkbTypes.PolygonGeometry},
-            FDC_SECTOR: {'name': FDC_SECTOR, 'geometry': None}
+            FDC_SECTOR: {'name': FDC_SECTOR, 'geometry': None},
+            FDC_VILLAGE: {'name': FDC_VILLAGE, 'geometry': None},
+            FDC_NEIGHBOURHOOD: {'name': FDC_NEIGHBOURHOOD, 'geometry': None},
+            FDC_BUILDING: {'name': FDC_BUILDING, 'geometry': QgsWkbTypes.PolygonGeometry},
+            FDC_VALUATION_BUILDING: {'name': FDC_VALUATION_BUILDING, 'geometry': None},
+            FDC_BUILDING_UNIT_VALUATION_TABLE: {'name': FDC_BUILDING_UNIT_VALUATION_TABLE, 'geometry': None},
+            FDC_BUILDING_UNIT_CADASTRE_TABLE: {'name': FDC_BUILDING_UNIT_CADASTRE_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
         }, load=True)
 
     def mapping_fields_r1(self):
@@ -139,21 +152,52 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
 
     def mapping_fields_gbb(self):
 
-        terreno = QgsProject.instance().mapLayersByName('U_TERRENO')[0].id()
-        sector = QgsProject.instance().mapLayersByName('U_SECTOR')[0].id()
+        rterreno = QgsProject.instance().mapLayersByName('R_TERRENO')[0].id()
+        uterreno = QgsProject.instance().mapLayersByName('U_TERRENO')[0].id()
+        rsector = QgsProject.instance().mapLayersByName('R_SECTOR')[0].id()
+        usector = QgsProject.instance().mapLayersByName('U_SECTOR')[0].id()
+        vereda = QgsProject.instance().mapLayersByName('R_VEREDA')[0].id()
+        manzana = QgsProject.instance().mapLayersByName('U_MANZANA')[0].id()
+        barrio = QgsProject.instance().mapLayersByName('U_BARRIO')[0].id()
+        uconstruccion = QgsProject.instance().mapLayersByName('U_CONSTRUCCION')[0].id()
+        rconstruccion = QgsProject.instance().mapLayersByName('R_CONSTRUCCION')[0].id()
+        uunidad = QgsProject.instance().mapLayersByName('U_UNIDAD')[0].id()
 
-        arreglo = [ FDC_PLOT, FDC_SECTOR]
+        arreglo = [ FDC_PLOT, FDC_SECTOR, FDC_VILLAGE, FDC_BLOCK, FDC_NEIGHBOURHOOD, FDC_BUILDING, FDC_VALUATION_BUILDING,
+                    FDC_BUILDING_UNIT_VALUATION_TABLE, FDC_BUILDING_UNIT_CADASTRE_TABLE]
         for name in arreglo:
             if name == FDC_PLOT:
-                input_data = self.fix_polygon_layers(terreno)
+                input_data = [self.fix_polygon_layers(rterreno), self.fix_polygon_layers(uterreno)]
                 output_data = self.res_layers_gdb[FDC_PLOT]
             elif name == FDC_SECTOR:
-                input_data = self.fix_polygon_layers(sector)
+                input_data = [self.fix_polygon_layers(rsector), self.fix_polygon_layers(usector)]
                 output_data = self.res_layers_gdb[FDC_SECTOR]
+            if name == FDC_VILLAGE:
+                input_data = [self.fix_polygon_layers(vereda)]
+                output_data = self.res_layers_gdb[FDC_VILLAGE]
+            if name == FDC_BLOCK:
+                input_data = [self.fix_polygon_layers(manzana)]
+                output_data = self.res_layers_gdb[FDC_VILLAGE]
+            elif name == FDC_NEIGHBOURHOOD:
+                input_data = [self.fix_polygon_layers(barrio)]
+                output_data = self.res_layers_gdb[FDC_NEIGHBOURHOOD]
+            elif name == FDC_BUILDING:
+                input_data = [self.fix_polygon_layers(rconstruccion), self.fix_polygon_layers(uconstruccion)]
+                output_data = self.res_layers_gdb[FDC_BUILDING]
+            elif name == FDC_VALUATION_BUILDING:
+                input_data = [self.fix_polygon_layers(rconstruccion), self.fix_polygon_layers(uconstruccion)]
+                output_data = self.res_layers_gdb[FDC_VALUATION_BUILDING]
+            elif name == FDC_BUILDING_UNIT_VALUATION_TABLE:
+                input_data = [self.fix_polygon_layers(uunidad)]
+                output_data = self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE]
+            elif name == FDC_BUILDING_UNIT_CADASTRE_TABLE:
+                input_data = [self.fix_polygon_layers(uunidad)]
+                output_data = self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE]
 
-            run_etl_model_input_load_data(input_data, output_data, name, self.qgis_utils)
-            print ("Ejecutando etl" + self.res_layers_gdb[name].name())
-
+            for data in input_data:
+                run_etl_model_input_load_data(data, output_data, name, self.qgis_utils)
+                print ("Ejecutado etl" + name)
+            
     def fix_polygon_layers(self, layer):
 
         params = {'INPUT': layer, 'OUTPUT':'memory:'}
