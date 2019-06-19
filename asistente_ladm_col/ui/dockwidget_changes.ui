@@ -169,7 +169,7 @@
                <item row="0" column="0">
                 <widget class="QLineEdit" name="txt_alphanumeric_query">
                  <property name="text">
-                  <string>705080002000000030134000000000</string>
+                  <string/>
                  </property>
                  <property name="placeholderText">
                   <string>Search for...</string>
@@ -213,143 +213,26 @@
        </property>
        <item row="0" column="0">
         <widget class="QTableWidget" name="tableWidget">
-         <row>
-          <property name="text">
-           <string>1</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>2</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>3</string>
-          </property>
-         </row>
          <column>
           <property name="text">
-           <string>Atributo</string>
+           <string>Attribute</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Valor oficial</string>
+           <string>Official value</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Valor barrido</string>
+           <string>Collected value</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Estado</string>
+           <string>Status</string>
           </property>
          </column>
-         <item row="0" column="0">
-          <property name="text">
-           <string>Área</string>
-          </property>
-         </item>
-         <item row="0" column="1">
-          <property name="text">
-           <string>134213</string>
-          </property>
-         </item>
-         <item row="0" column="2">
-          <property name="text">
-           <string>174732</string>
-          </property>
-         </item>
-         <item row="0" column="3">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="background">
-           <brush brushstyle="SolidPattern">
-            <color alpha="255">
-             <red>255</red>
-             <green>0</green>
-             <blue>0</blue>
-            </color>
-           </brush>
-          </property>
-          <property name="foreground">
-           <brush brushstyle="NoBrush">
-            <color alpha="255">
-             <red>255</red>
-             <green>0</green>
-             <blue>0</blue>
-            </color>
-           </brush>
-          </property>
-         </item>
-         <item row="1" column="0">
-          <property name="text">
-           <string>FMI</string>
-          </property>
-         </item>
-         <item row="1" column="1">
-          <property name="text">
-           <string>342-29972</string>
-          </property>
-         </item>
-         <item row="1" column="2">
-          <property name="text">
-           <string>34229972</string>
-          </property>
-         </item>
-         <item row="1" column="3">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="background">
-           <brush brushstyle="SolidPattern">
-            <color alpha="255">
-             <red>255</red>
-             <green>0</green>
-             <blue>0</blue>
-            </color>
-           </brush>
-          </property>
-          <property name="foreground">
-           <brush brushstyle="NoBrush">
-            <color alpha="255">
-             <red>0</red>
-             <green>255</green>
-             <blue>0</blue>
-            </color>
-           </brush>
-          </property>
-         </item>
-         <item row="2" column="0">
-          <property name="text">
-           <string>Nombre</string>
-          </property>
-         </item>
-         <item row="2" column="1">
-          <property name="text">
-           <string>Las Marías</string>
-          </property>
-         </item>
-         <item row="2" column="2">
-          <property name="text">
-           <string>Las Marías</string>
-          </property>
-         </item>
-         <item row="2" column="3">
-          <property name="background">
-           <brush brushstyle="SolidPattern">
-            <color alpha="255">
-             <red>85</red>
-             <green>170</green>
-             <blue>0</blue>
-            </color>
-           </brush>
-          </property>
-         </item>
         </widget>
        </item>
       </layout>

@@ -36,7 +36,13 @@ FORMS = ../ui/dlg_load_layers.ui \
         ../ui/wiz_create_market_research_prc.ui \
         ../ui/wiz_create_natural_party_prc.ui \
         ../ui/wiz_create_nuclear_family_prc.ui \
-        ../ui/wiz_create_property_record_card_prc.ui
+        ../ui/wiz_create_property_record_card_prc.ui \
+        ../ui/change_detection/changes_all_parcels_panel_widget.ui \
+        ../ui/change_detection/changes_per_parcel_panel_widget.ui \
+        ../ui/change_detection/dockwidget_change_detection.ui \
+        ../ui/change_detection/parcels_changes_summary_panel_widget.ui \
+        ../ui/dockwidget_changes.ui \
+        ../ui/official_data_settings_dialog.ui
 
 SOURCES = ../__init__.py \
           ../asistente_ladm_col_plugin.py \
@@ -97,6 +103,11 @@ SOURCES = ../__init__.py \
           ../lib/source_handler.py \
           ../config/general_config.py \
           ../config/help_strings.py \
-          ../data/ladm_data.py
+          ../data/ladm_data.py \
+          ../gui/official_data_settings_dialog.py \
+          ../gui/change_detection/changes_all_parcels_panel.py \
+          ../gui/change_detection/changes_per_parcel_panel.py \
+          ../gui/change_detection/dockwidget_change_detection.py \
+          ../gui/change_detection/parcels_changes_summary_panel.py
 
 TRANSLATIONS = Asistente-LADM_COL_es.ts
