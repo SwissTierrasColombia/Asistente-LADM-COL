@@ -1,5 +1,5 @@
-ARG QGIS_TEST_VERSION=latest
-FROM  agenciaimplementacion/qgis:${QGIS_TEST_VERSION}
+ARG QGIS_TEST_VERSION=latest_disco
+FROM  qgis/QGIS:${QGIS_TEST_VERSION}
 MAINTAINER Agencia Implementacion <agenciadeimplementacion@incige.com>
 
 #RUN apt-get update && \
