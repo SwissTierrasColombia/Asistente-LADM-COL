@@ -20,13 +20,17 @@ import os
 import stat
 import processing
 
+from qgis.PyQt.QtCore import QVariant
+
 from asistente_ladm_col.utils.qt_utils import (make_file_selector,
                                                make_folder_selector)
 
 from ..utils.qfield_utils import run_etl_model_input_load_data
 
 from qgis.core import (QgsProject,
-                       QgsVectorLayer)
+                       QgsField,
+                       QgsVectorLayer,
+                       QgsVectorLayerJoinInfo)
 
 from ..config.table_mapping_config import (FDC_PARCEL,
                                            FDC_PARTY,
@@ -162,6 +166,7 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
         uconstruccion = QgsProject.instance().mapLayersByName('U_CONSTRUCCION')[0].id()
         rconstruccion = QgsProject.instance().mapLayersByName('R_CONSTRUCCION')[0].id()
         uunidad = QgsProject.instance().mapLayersByName('U_UNIDAD')[0].id()
+        runidad = QgsProject.instance().mapLayersByName('R_UNIDAD')[0].id()
 
         arreglo = [ FDC_PLOT, FDC_SECTOR, FDC_VILLAGE, FDC_BLOCK, FDC_NEIGHBOURHOOD, FDC_BUILDING, FDC_VALUATION_BUILDING,
                     FDC_BUILDING_UNIT_VALUATION_TABLE, FDC_BUILDING_UNIT_CADASTRE_TABLE]
@@ -185,13 +190,16 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
                 input_data = [self.fix_polygon_layers(rconstruccion), self.fix_polygon_layers(uconstruccion)]
                 output_data = self.res_layers_gdb[FDC_BUILDING]
             elif name == FDC_VALUATION_BUILDING:
+                self.create_column(self.res_layers_gdb[FDC_VALUATION_BUILDING], 'Codigo')
                 input_data = [self.fix_polygon_layers(rconstruccion), self.fix_polygon_layers(uconstruccion)]
                 output_data = self.res_layers_gdb[FDC_VALUATION_BUILDING]
             elif name == FDC_BUILDING_UNIT_VALUATION_TABLE:
-                input_data = [self.fix_polygon_layers(uunidad)]
+                self.join_layers(uunidad, self.res_layers_gdb[FDC_BUILDING], 'codigo', 'tipo')
+                self.join_layers(runidad, self.res_layers_gdb[FDC_BUILDING], 'codigo', 'tipo')
+                input_data = [self.fix_polygon_layers(uunidad), self.fix_polygon_layers(runidad)]
                 output_data = self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE]
             elif name == FDC_BUILDING_UNIT_CADASTRE_TABLE:
-                input_data = [self.fix_polygon_layers(uunidad)]
+                input_data = [self.fix_polygon_layers(uunidad), self.fix_polygon_layers(runidad)]
                 output_data = self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE]
 
             for data in input_data:
@@ -206,3 +214,17 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
         fix = processing.run("native:fixgeometries", params)
 
         return fix['OUTPUT']
+
+    def create_column(self, layer, name):
+        layer.dataProvider().addAttributes([QgsField(name, QVariant.String, "VARCHAR")])
+        layer.updateFields()
+
+    def join_layers(self, initial, target, join_name, target_name):
+        joinObject = QgsVectorLayerJoinInfo()
+        joinObject.setJoinLayerId(target.id())
+        joinObject.setJoinFieldName(target_name)
+        joinObject.setTargetFieldName(join_name)
+        joinObject.setJoinLayer(target)
+        print (initial)
+        print (initial.name())
+        initial.addJoin(joinObject)
