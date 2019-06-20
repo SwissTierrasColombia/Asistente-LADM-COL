@@ -50,7 +50,7 @@
          <enum>QTabWidget::South</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab_plot_coordinates">
          <attribute name="title">
@@ -206,6 +206,9 @@
       </property>
       <item row="0" column="0">
        <widget class="QTableWidget" name="tbl_changes_per_parcel">
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
         <column>
          <property name="text">
           <string>Atributo</string>

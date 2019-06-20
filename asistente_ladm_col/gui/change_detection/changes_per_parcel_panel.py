@@ -61,6 +61,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.utils.add_layers()
         self.fill_combos()
 
+        self.tab_plot_options.setTabEnabled(0, False)
+
         # Set connections
         self.btn_alphanumeric_query.clicked.connect(self.alphanumeric_query)
         self.chk_show_all_plots.toggled.connect(self.show_all_plots)
@@ -204,6 +206,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             official_attrs = dict_official_parcels[official_parcel_number][0] if dict_official_parcels else []
             del official_attrs[ID_FIELD]  # Remove this line if ID_FIELD is somehow needed
 
+        print(collected_attrs)
+        print(official_attrs)
         self.tbl_changes_per_parcel.clearContents()
         self.tbl_changes_per_parcel.setRowCount(len(collected_attrs) or len(official_attrs))  # t_id shouldn't be counted
         self.tbl_changes_per_parcel.setSortingEnabled(False)
@@ -218,11 +222,11 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             official_value = official_attrs[field_name] if field_name in official_attrs else ''
             collected_value = collected_attrs[field_name] if field_name in collected_attrs else ''
 
-            item = QTableWidgetItem(official_value)
+            item = QTableWidgetItem(str(official_value))
             #item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
             self.tbl_changes_per_parcel.setItem(row, 1, item)
 
-            item = QTableWidgetItem(collected_value)
+            item = QTableWidgetItem(str(collected_value))
             # item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
             self.tbl_changes_per_parcel.setItem(row, 2, item)
 
