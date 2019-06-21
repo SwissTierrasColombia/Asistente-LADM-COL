@@ -12,7 +12,7 @@ from .table_mapping_config import (BOUNDARY_TABLE,
 
 ERROR_LAYER = 'error_layer'
 
-LAYER_QML_STYLE = {
+DEFAULT_STYLE_GROUP = {
     BOUNDARY_TABLE: {
         QgsWkbTypes.LineGeometry: 'style_boundary'
     },
@@ -45,6 +45,12 @@ LAYER_QML_STYLE = {
         QgsWkbTypes.PointGeometry: 'style_point_error',
         QgsWkbTypes.LineGeometry: 'style_line_error',
         QgsWkbTypes.PolygonGeometry: 'style_polygon_error'
+    }
+}
+
+OFFICIAL_STYLE_GROUP = {
+    PLOT_TABLE: {
+        QgsWkbTypes.PolygonGeometry: 'style_official_plot_polygon'
     }
 }
 

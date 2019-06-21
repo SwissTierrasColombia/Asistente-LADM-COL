@@ -321,7 +321,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
                 if table_name == PARCEL_TABLE:
                     # We show a handy option to zoom to related plots
-                    plot_ids = self.ladm_data.get_plots_related_to_parcel(self._db, t_id, None, self._plot_layer, self._uebaunit_table)
+                    plot_ids = self.ladm_data.get_plots_related_to_parcels(self._db, [t_id], None, self._plot_layer, self._uebaunit_table)
                     if plot_ids:
                         action_zoom_to_plots = QAction(QCoreApplication.translate("DockWidgetQueries", "Zoom to related plot(s)"))
                         action_zoom_to_plots.triggered.connect(partial(self.zoom_to_plots, plot_ids))

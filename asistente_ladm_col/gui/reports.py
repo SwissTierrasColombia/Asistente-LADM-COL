@@ -298,9 +298,9 @@ class ReportGenerator(QObject):
             proc.readyReadStandardOutput.connect(
                 functools.partial(self.stdout_ready, proc=proc))
 
-
-            parcel_number = self.ladm_data.get_parcels_related_to_plot(db, plot_id, PARCEL_NUMBER_FIELD) or ['']
+            parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], PARCEL_NUMBER_FIELD) or ['']
             file_name = '{}_{}_{}.pdf'.format(report_type, plot_id, parcel_number[0])
+
             current_report_path = os.path.join(save_into_folder, file_name)
             proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', current_report_path])
 

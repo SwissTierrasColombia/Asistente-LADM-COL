@@ -18,7 +18,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([1.7.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.7.0)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v4.2.3](https://github.com/opengisch/QgisModelBaker/releases/download/v4.2.3/QgisModelBaker.v4.2.3.zip) y permite:
+La versión actual ([1.8.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.8.0)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v4.2.3](https://github.com/opengisch/QgisModelBaker/releases/download/v4.2.3/QgisModelBaker.v4.2.3.zip) y permite:
 
  - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
  - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
@@ -126,6 +126,8 @@ La versión actual ([1.7.0](https://github.com/AgenciaImplementacion/Asistente-L
  - Generar reporte de revisiones de calidad.
  - Generar Informes de Colindancia con base en `Terrenos` seleccionados (Anexo 17).
  - Generar reporte 'Plano ANT' con base en `Terrenos` seleccionados.
+ - Identificar novedades:
+   - Comparar base de datos del barrido contra base de datos oficial y mostrar diferencias masivas y por predio.
  - Importar datos alfanuméricos desde [estructura intermedia en Excel](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
  - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
  - Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.

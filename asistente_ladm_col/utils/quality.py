@@ -1972,7 +1972,8 @@ class QualityUtils(QObject):
         index = self.qgis_model_baker_utils.get_suggested_index_for_layer(added_layer, group)
         added_layer = group.insertLayer(index, added_layer).layer()
         if added_layer.isSpatial():
-            self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
+            # db connection is none because we are using a memory layer
+            self.qgis_utils.symbology.set_layer_style_from_qml(None, added_layer, is_error_layer=True)
         return added_layer
 
     @_log_quality_checks
