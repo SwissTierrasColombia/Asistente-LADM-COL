@@ -1209,18 +1209,18 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dock_widget_change_detection.show_main_panel()
 
     def show_change_detection_dockwidget(self):
-        if self._dock_widget_change_detection is None:
-            self._dock_widget_change_detection = DockWidgetChangeDetection(self.iface,
-                                                                           self.get_db_connection(),
-                                                                           self.get_official_db_connection(),
-                                                                           self.qgis_utils,
-                                                                           self.ladm_data)
-            self.qgis_utils.db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
-            self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
-            self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
+        if self._dock_widget_change_detection is not None:
+            self._dock_widget_change_detection.close()
+            self._dock_widget_change_detection = None
 
-        if not self._dock_widget_change_detection.isVisible():
-            self._dock_widget_change_detection.setVisible(True)
+        self._dock_widget_change_detection = DockWidgetChangeDetection(self.iface,
+                                                                       self.get_db_connection(),
+                                                                       self.get_official_db_connection(),
+                                                                       self.qgis_utils,
+                                                                       self.ladm_data)
+        self.qgis_utils.db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
+        self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
+        self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
 
     def show_official_data_settings(self):
         self.qgis_utils.get_official_data_settings_dialog().exec_()

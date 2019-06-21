@@ -206,8 +206,6 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             official_attrs = dict_official_parcels[official_parcel_number][0] if dict_official_parcels else []
             del official_attrs[ID_FIELD]  # Remove this line if ID_FIELD is somehow needed
 
-        print(collected_attrs)
-        print(official_attrs)
         self.tbl_changes_per_parcel.clearContents()
         self.tbl_changes_per_parcel.setRowCount(len(collected_attrs) or len(official_attrs))  # t_id shouldn't be counted
         self.tbl_changes_per_parcel.setSortingEnabled(False)
