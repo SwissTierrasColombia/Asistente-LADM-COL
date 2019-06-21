@@ -382,17 +382,17 @@ class LADM_DATA():
             expr_property_record_card_features = QgsExpression("{} IN ({})".format(PROPERTY_RECORD_CARD_PARCEL_ID_FIELD, ",".join([str(id) for id in parcel_t_ids])))
             property_record_card_features = LADM_DATA.get_features_by_expression(layers[PROPERTY_RECORD_CARD_TABLE]['layer'], expr_property_record_card_features, with_attributes=True)
 
-        dict_property_record_card_features = {property_record_card_feature[PROPERTY_RECORD_CARD_PARCEL_ID_FIELD]: property_record_card_feature for property_record_card_feature in property_record_card_features}
+            dict_property_record_card_features = {property_record_card_feature[PROPERTY_RECORD_CARD_PARCEL_ID_FIELD]: property_record_card_feature for property_record_card_feature in property_record_card_features}
 
-        for feature in dict_features:
-            for item in dict_features[feature]:
-                if item[ID_FIELD] in dict_property_record_card_features:
-                    property_record_card_feature = dict_property_record_card_features[item[ID_FIELD]]
-                    for PROPERTY_RECORD_CARD_FIELD in PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE:
-                        if property_record_card_feature[PROPERTY_RECORD_CARD_FIELD] != NULL:
-                            item[PROPERTY_RECORD_CARD_FIELD] = property_record_card_feature[PROPERTY_RECORD_CARD_FIELD]
-                        else:
-                            item[PROPERTY_RECORD_CARD_FIELD] = None
+            for feature in dict_features:
+                for item in dict_features[feature]:
+                    if item[ID_FIELD] in dict_property_record_card_features:
+                        property_record_card_feature = dict_property_record_card_features[item[ID_FIELD]]
+                        for PROPERTY_RECORD_CARD_FIELD in PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE:
+                            if property_record_card_feature[PROPERTY_RECORD_CARD_FIELD] != NULL:
+                                item[PROPERTY_RECORD_CARD_FIELD] = property_record_card_feature[PROPERTY_RECORD_CARD_FIELD]
+                            else:
+                                item[PROPERTY_RECORD_CARD_FIELD] = None
 
         return dict_features
 

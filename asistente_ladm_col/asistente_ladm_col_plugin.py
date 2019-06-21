@@ -1219,6 +1219,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                                                        self.qgis_utils,
                                                                        self.ladm_data)
         self.qgis_utils.db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
+        self.qgis_utils.official_db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
         self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
 

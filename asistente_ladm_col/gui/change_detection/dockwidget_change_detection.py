@@ -82,12 +82,11 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.utils.add_layers()
 
     def layer_removed(self):
-        self.utils.change_detection_layer_removed.disconnect(self.layer_removed)
         self.utils.iface.messageBar().pushMessage("Asistente LADM_COL",
                                             QCoreApplication.translate("CreateParcelCadastreWizard",
                                                                        "'Change detection' has been closed because you just removed a required layer."),
                                             Qgis.Info)
-        self.close()
+        self.close_dock_widget()
 
     def show_main_panel(self):
         self.add_layers()
@@ -123,13 +122,15 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.lst_parcel_panels.append(self.parcel_panel)
 
     def update_db_connection(self, db, ladm_col_db):
-        self.utils._db = db
-        self.initialize_layers()
+        self.close_dock_widget()  # The user needs to use the menus again, which will start everything from scratch
 
-        if not ladm_col_db:
-            self.setVisible(False)
+    def close_dock_widget(self):
+        try:
+            self.utils.change_detection_layer_removed.disconnect()  # disconnect layer signals
+        except:
+            pass
 
-        # TODO update_official_db_connection
+        self.close()  # The user needs to use the menus again, which will start everything from scratch
 
     def initialize_layers(self):
         self.utils.initialize_layers()

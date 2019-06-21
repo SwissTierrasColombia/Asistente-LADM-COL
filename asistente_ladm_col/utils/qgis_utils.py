@@ -139,6 +139,7 @@ class QGISUtils(QObject):
     message_with_button_remove_report_dependency_emitted = pyqtSignal(str) # Message
     map_refresh_requested = pyqtSignal()
     map_freeze_requested = pyqtSignal(bool)
+    official_db_connection_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db
     set_node_visibility_requested = pyqtSignal(QgsLayerTreeNode, bool)
     status_bar_message_emitted = pyqtSignal(str, int) # Message, duration
     zoom_full_requested = pyqtSignal()
@@ -184,7 +185,7 @@ class QGISUtils(QObject):
     def get_official_data_settings_dialog(self):
         if self.__official_data_settings_dialog is None:
             self.__official_data_settings_dialog = OfficialDataSettingsDialog(self, None)
-            #self.__official_data_settings_dialog.official_db_connection_changed.connect(self.official_db_connection_changed)
+            self.__official_data_settings_dialog.official_db_connection_changed.connect(self.official_db_connection_changed)
 
         return self.__official_data_settings_dialog
 
