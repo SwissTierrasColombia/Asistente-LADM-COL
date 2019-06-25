@@ -46,7 +46,12 @@ from ..config.table_mapping_config import (FDC_PARCEL,
                                            FDC_BUILDING,
                                            FDC_VALUATION_BUILDING,
                                            FDC_BUILDING_UNIT_VALUATION_TABLE,
-                                           FDC_BUILDING_UNIT_CADASTRE_TABLE)
+                                           FDC_BUILDING_UNIT_CADASTRE_TABLE,
+                                           FDC_VALUATION_UNIT_BUILDING_CONNECTION,
+                                           FDC_VALUATION_BUILDING_CONNECTION,
+                                           FDC_QUALIFICATION_CONVENTIONAL,
+                                           FDC_QUALIFICATION_NO_CONVENTIONAL,
+                                           FDC_EXTADDRESS)
 
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
@@ -135,7 +140,12 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
             FDC_BUILDING: {'name': FDC_BUILDING, 'geometry': QgsWkbTypes.PolygonGeometry},
             FDC_VALUATION_BUILDING: {'name': FDC_VALUATION_BUILDING, 'geometry': None},
             FDC_BUILDING_UNIT_VALUATION_TABLE: {'name': FDC_BUILDING_UNIT_VALUATION_TABLE, 'geometry': None},
-            FDC_BUILDING_UNIT_CADASTRE_TABLE: {'name': FDC_BUILDING_UNIT_CADASTRE_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
+            FDC_BUILDING_UNIT_CADASTRE_TABLE: {'name': FDC_BUILDING_UNIT_CADASTRE_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            FDC_VALUATION_UNIT_BUILDING_CONNECTION: {'name': FDC_VALUATION_UNIT_BUILDING_CONNECTION, 'geometry': None},
+            FDC_VALUATION_BUILDING_CONNECTION: {'name': FDC_VALUATION_BUILDING_CONNECTION, 'geometry': None},
+            FDC_QUALIFICATION_CONVENTIONAL: {'name': FDC_QUALIFICATION_CONVENTIONAL, 'geometry': None},
+            FDC_QUALIFICATION_NO_CONVENTIONAL: {'name': FDC_QUALIFICATION_NO_CONVENTIONAL, 'geometry': None},
+            FDC_EXTADDRESS: {'name': FDC_EXTADDRESS, 'geometry': QgsWkbTypes.PointGeometry}
         }, load=True)
 
     def mapping_fields_r1(self):
@@ -146,7 +156,6 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
             else:
                 if name == FDC_RRRSOURCE:
                     input_data = self.res_layers[FDC_ADMINISTRATIVE_SOURCE]
-                    print (input_data.name())
                 else:
                     input_data = self.layer_r1
 
@@ -156,20 +165,23 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
 
     def mapping_fields_gbb(self):
 
-        rterreno = QgsProject.instance().mapLayersByName('R_TERRENO')[0].id()
-        uterreno = QgsProject.instance().mapLayersByName('U_TERRENO')[0].id()
-        rsector = QgsProject.instance().mapLayersByName('R_SECTOR')[0].id()
-        usector = QgsProject.instance().mapLayersByName('U_SECTOR')[0].id()
-        vereda = QgsProject.instance().mapLayersByName('R_VEREDA')[0].id()
-        manzana = QgsProject.instance().mapLayersByName('U_MANZANA')[0].id()
-        barrio = QgsProject.instance().mapLayersByName('U_BARRIO')[0].id()
-        uconstruccion = QgsProject.instance().mapLayersByName('U_CONSTRUCCION')[0].id()
-        rconstruccion = QgsProject.instance().mapLayersByName('R_CONSTRUCCION')[0].id()
-        uunidad = QgsProject.instance().mapLayersByName('U_UNIDAD')[0].id()
-        runidad = QgsProject.instance().mapLayersByName('R_UNIDAD')[0].id()
+        rterreno = QgsProject.instance().mapLayersByName('R_TERRENO')[0]
+        uterreno = QgsProject.instance().mapLayersByName('U_TERRENO')[0]
+        rsector = QgsProject.instance().mapLayersByName('R_SECTOR')[0]
+        usector = QgsProject.instance().mapLayersByName('U_SECTOR')[0]
+        vereda = QgsProject.instance().mapLayersByName('R_VEREDA')[0]
+        manzana = QgsProject.instance().mapLayersByName('U_MANZANA')[0]
+        barrio = QgsProject.instance().mapLayersByName('U_BARRIO')[0]
+        uconstruccion = QgsProject.instance().mapLayersByName('U_CONSTRUCCION')[0]
+        rconstruccion = QgsProject.instance().mapLayersByName('R_CONSTRUCCION')[0]
+        uunidad = QgsProject.instance().mapLayersByName('U_UNIDAD')[0]
+        runidad = QgsProject.instance().mapLayersByName('R_UNIDAD')[0]
+        unomen = QgsProject.instance().mapLayersByName('U_NOMENCLATURA_DOMICILIARIA')[0]
+        rnomen = QgsProject.instance().mapLayersByName('R_NOMENCLATURA_DOMICILIARIA')[0]
 
         arreglo = [ FDC_PLOT, FDC_SECTOR, FDC_VILLAGE, FDC_BLOCK, FDC_NEIGHBOURHOOD, FDC_BUILDING, FDC_VALUATION_BUILDING,
-                    FDC_BUILDING_UNIT_VALUATION_TABLE, FDC_BUILDING_UNIT_CADASTRE_TABLE]
+                    FDC_BUILDING_UNIT_VALUATION_TABLE, FDC_BUILDING_UNIT_CADASTRE_TABLE, FDC_VALUATION_UNIT_BUILDING_CONNECTION,
+                    FDC_VALUATION_BUILDING_CONNECTION, FDC_QUALIFICATION_CONVENTIONAL, FDC_QUALIFICATION_NO_CONVENTIONAL, FDC_EXTADDRESS]
         for name in arreglo:
             if name == FDC_PLOT:
                 input_data = [self.fix_polygon_layers(rterreno), self.fix_polygon_layers(uterreno)]
@@ -187,31 +199,70 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
                 input_data = [self.fix_polygon_layers(barrio)]
                 output_data = self.res_layers_gdb[FDC_NEIGHBOURHOOD]
             elif name == FDC_BUILDING:
-                input_data = [self.fix_polygon_layers(rconstruccion), self.fix_polygon_layers(uconstruccion)]
+                self.create_column(self.res_layers_gdb[FDC_BUILDING], 'Codigo')
+                input_data = [self.fix_polygon_layers(uconstruccion), self.fix_polygon_layers(rconstruccion)]
                 output_data = self.res_layers_gdb[FDC_BUILDING]
             elif name == FDC_VALUATION_BUILDING:
                 self.create_column(self.res_layers_gdb[FDC_VALUATION_BUILDING], 'Codigo')
                 input_data = [self.fix_polygon_layers(rconstruccion), self.fix_polygon_layers(uconstruccion)]
                 output_data = self.res_layers_gdb[FDC_VALUATION_BUILDING]
             elif name == FDC_BUILDING_UNIT_VALUATION_TABLE:
-                self.join_layers(uunidad, self.res_layers_gdb[FDC_BUILDING], 'codigo', 'tipo')
-                self.join_layers(runidad, self.res_layers_gdb[FDC_BUILDING], 'codigo', 'tipo')
                 input_data = [self.fix_polygon_layers(uunidad), self.fix_polygon_layers(runidad)]
                 output_data = self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE]
             elif name == FDC_BUILDING_UNIT_CADASTRE_TABLE:
-                input_data = [self.fix_polygon_layers(uunidad), self.fix_polygon_layers(runidad)]
+                self.create_column(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 'Codigo')
+                self.join_layers(uunidad, self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
+                self.join_layers(runidad, self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
+                uunidad_filter = self.fix_polygon_layers(uunidad)
+                runidad_filter = self.fix_polygon_layers(runidad)
+                uunidad_filter.setSubsetString("construccion_t_id != 'NULL'")
+                runidad_filter.setSubsetString("construccion_t_id != 'NULL'")
+                input_data = [uunidad_filter, runidad_filter]
                 output_data = self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE]
+            elif name == FDC_VALUATION_UNIT_BUILDING_CONNECTION:
+                self.join_layers(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 
+                        self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE], 'Codigo', 'material')
+                input_data = [self.fix_polygon_layers(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE])]
+                output_data = self.res_layers_gdb[FDC_VALUATION_UNIT_BUILDING_CONNECTION]
+            elif name == FDC_VALUATION_BUILDING_CONNECTION:
+                self.join_layers(self.res_layers_gdb[FDC_BUILDING], 
+                        self.res_layers_gdb[FDC_VALUATION_BUILDING], 'Codigo', 'Codigo')
+                input_data = [self.fix_polygon_layers(self.res_layers_gdb[FDC_BUILDING])]
+                output_data = self.res_layers_gdb[FDC_VALUATION_BUILDING_CONNECTION]
+            elif name == FDC_QUALIFICATION_CONVENTIONAL:
+                layer_filter = self.fix_polygon_layers(self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE])
+                layer_filter.setSubsetString("construccion_tipo = 'Convencional'")
+                input_data = [layer_filter]
+                output_data = self.res_layers_gdb[FDC_QUALIFICATION_CONVENTIONAL]
+            elif name == FDC_QUALIFICATION_NO_CONVENTIONAL:
+                layer_filter = self.fix_polygon_layers(self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE])
+                layer_filter.setSubsetString("construccion_tipo = 'noConvencional'")
+                input_data = [layer_filter]
+                output_data = self.res_layers_gdb[FDC_QUALIFICATION_NO_CONVENTIONAL]
+
+            elif name == FDC_EXTADDRESS:
+                input_data = [self.get_directions(unomen, self.res_layers_gdb[FDC_BUILDING]), self.get_directions(rnomen, self.res_layers_gdb[FDC_PLOT])]
+                output_data = self.res_layers_gdb[FDC_EXTADDRESS]
 
             for data in input_data:
                 run_etl_model_input_load_data(data, output_data, name, self.qgis_utils)
                 print ("Ejecutado etl" + name)
             
-    def fix_polygon_layers(self, layer):
+    def get_directions(self, layer, reference):
+        reference = self.fix_polygon_layers(reference)
+        params = {'INPUT':layer,'ALL_PARTS':False,'OUTPUT':'TEMPORARY_OUTPUT'}
+        centroids = processing.run("native:centroids", params)
+        params = {'INPUT':centroids['OUTPUT'],'REFERENCE_LAYER':reference,'TOLERANCE':10,'BEHAVIOR':0,'OUTPUT':'TEMPORARY_OUTPUT'}
+        direction = processing.run("qgis:snapgeometries", params)
 
+        return direction['OUTPUT']
+
+    def fix_polygon_layers(self, layer):
         params = {'INPUT': layer, 'OUTPUT':'memory:'}
         multipart = processing.run("native:multiparttosingleparts", params)
         params = {'INPUT': multipart['OUTPUT'], 'OUTPUT':'memory:'}
         fix = processing.run("native:fixgeometries", params)
+        print ('Finish Fix')
 
         return fix['OUTPUT']
 
@@ -220,11 +271,19 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
         layer.updateFields()
 
     def join_layers(self, initial, target, join_name, target_name):
+        print ('Join Layers ' + initial.name() + target.name())
         joinObject = QgsVectorLayerJoinInfo()
         joinObject.setJoinLayerId(target.id())
         joinObject.setJoinFieldName(target_name)
         joinObject.setTargetFieldName(join_name)
         joinObject.setJoinLayer(target)
-        print (initial)
-        print (initial.name())
         initial.addJoin(joinObject)
+        print ('Finish Join Layers ' + initial.name() + target.name())
+    
+    def filter_virtual_layer(self, name):
+        vlayer = QgsVectorLayer("?query=SELECT * FROM {}".format(name), "vlayer", "virtual" )
+        QgsProject.instance().addMapLayer(vlayer)
+
+        vlayer.setSubsetString("construccion_t_id != 'NULL'")
+
+        return vlayer
