@@ -172,7 +172,6 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
 
             output_data = self.res_layers[name]
             run_etl_model_input_load_data(input_data, output_data, name, self.qgis_utils)
-            print ("Ejecutando etl" + self.res_layers[name].name())
 
     def mapping_fields_gbb(self):
 
@@ -288,7 +287,6 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
 
             for data in input_data:
                 run_etl_model_input_load_data(data, output_data, name, self.qgis_utils)
-                print ("Ejecutado etl" + name)
             
     def get_directions(self, layer, reference):
         reference = self.fix_polygon_layers(reference)
@@ -304,7 +302,6 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
         multipart = processing.run("native:multiparttosingleparts", params)
         params = {'INPUT': multipart['OUTPUT'], 'OUTPUT':'memory:'}
         fix = processing.run("native:fixgeometries", params)
-        print ('Finish Fix')
 
         return fix['OUTPUT']
 
@@ -313,14 +310,12 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
         layer.updateFields()
 
     def join_layers(self, initial, target, join_name, target_name):
-        print ('Join Layers ' + initial.name() + target.name())
         joinObject = QgsVectorLayerJoinInfo()
         joinObject.setJoinLayerId(target.id())
         joinObject.setJoinFieldName(target_name)
         joinObject.setTargetFieldName(join_name)
         joinObject.setJoinLayer(target)
         initial.addJoin(joinObject)
-        print ('Finish Join Layers ' + initial.name() + target.name())
     
     def filter_virtual_layer(self, name):
         vlayer = QgsVectorLayer("?query=SELECT * FROM {}".format(name), "vlayer", "virtual" )

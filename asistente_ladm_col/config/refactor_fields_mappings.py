@@ -538,16 +538,16 @@ def get_refactor_fields_mapping_field_data_capture_to_ladm(layer_name, qgis_util
             {'expression': '"NoDocumento"', 'length': 12, 'name': 'documento_identidad', 'precision': -1, 'type': 10}, 
             {'expression': 'if("TipoDocumento" = \'C\', \'Cedula_Ciudadania\', if("TipoDocumento" = \'N\', \'NIT\', if("TipoDocumento" = \'T\', \'Tarjeta_Identidad\', if("TipoDocumento" = \'X\', \'Cedula_Extranjeria\',\'Pasaporte\'))))', 'length': 255, 'name': 'tipo_documento', 'precision': -1, 'type': 10}, 
             {'expression': '$id', 'length': 20, 'name': 'organo_emisor', 'precision': -1, 'type': 10}, 
-            {'expression': 'my_name("Nombre",2)', 'length': 100, 'name': 'primer_apellido', 'precision': -1, 'type': 10}, 
-            {'expression': 'my_name("Nombre",0)', 'length': 100, 'name': 'primer_nombre', 'precision': -1, 'type': 10}, 
-            {'expression': 'my_name("Nombre",3)', 'length': 100, 'name': 'segundo_apellido', 'precision': -1, 'type': 10}, 
-            {'expression': 'my_name("Nombre",1)', 'length': 100, 'name': 'segundo_nombre', 'precision': -1, 'type': 10}, 
-            {'expression': 'if("TipoDocumento" = \'N\', "Nombre",\'\')', 'length': 250, 'name': 'razon_social', 'precision': -1, 'type': 10}, 
+            {'expression': "string_to_array(Nombre, ' ')[2]", 'length': 100, 'name': 'primer_apellido', 'precision': -1, 'type': 10}, 
+            {'expression': "string_to_array(Nombre, ' ')[0]", 'length': 100, 'name': 'primer_nombre', 'precision': -1, 'type': 10}, 
+            {'expression': "string_to_array(Nombre, ' ')[3]", 'length': 100, 'name': 'segundo_apellido', 'precision': -1, 'type': 10}, 
+            {'expression': "string_to_array(Nombre, ' ')[1]", 'length': 100, 'name': 'segundo_nombre', 'precision': -1, 'type': 10}, 
+            {'expression': 'if("TipoDocumento" = \'N\', "Nombre",\' \')', 'length': 250, 'name': 'razon_social', 'precision': -1, 'type': 10}, 
             {'expression': '"nombre"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10}, 
             {'expression': 'if("TipoDocumento" = \'N\', \'Persona_No_Natural\', \'Persona_Natural\')', 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
             {'expression': "'IGAC_Interesado'", 'length': 255, 'name': 'p_espacio_de_nombres', 'precision': -1, 'type': 10}, 
             {'expression': '0', 'length': 255, 'name': 'p_local_id', 'precision': -1, 'type': 10}, 
-            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}, 
             {'expression': 'concat(Departamento, Municipio, NoPredial)', 'length': -1, 'name': 'Codigo', 'precision': -1, 'type': 10}
         ]
     elif layer_name == FDC_RIGHT:
@@ -622,13 +622,13 @@ def get_refactor_fields_mapping_field_data_capture_to_ladm(layer_name, qgis_util
             {'expression': "'IGAC_Construcción'", 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10}, 
             {'expression': '0', 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10}, 
             {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"OBJECTID"', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
+            {'expression': '$id', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
             ]
     elif layer_name == FDC_VALUATION_BUILDING:
         mapping = [
             {'expression': 'if("Numero_Pisos" = 0, 99, "Numero_Pisos")', 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2}, 
             {'expression': '"Codigo"', 'length': -1, 'name': 'Codigo', 'precision': -1, 'type': 10},
-            {'expression': '"OBJECTID"', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
+            {'expression': '$id', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
             ]
     elif layer_name == FDC_BUILDING_UNIT_VALUATION_TABLE:
         mapping = [
@@ -640,7 +640,7 @@ def get_refactor_fields_mapping_field_data_capture_to_ladm(layer_name, qgis_util
             {'expression': 'now()', 'length': -1, 'name': 'anio_construction', 'precision': -1, 'type': 14}, 
             {'expression': "'Bueno'", 'length': 255, 'name': 'estado_conservacion', 'precision': -1, 'type': 10}, 
             {'expression': '"Codigo"', 'length': 255, 'name': 'material', 'precision': -1, 'type': 10},
-            {'expression': '"OBJECTID"', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
+            {'expression': '$id', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
             ]
     elif layer_name == FDC_BUILDING_UNIT_CADASTRE_TABLE:
         mapping = [
@@ -651,7 +651,7 @@ def get_refactor_fields_mapping_field_data_capture_to_ladm(layer_name, qgis_util
              {'expression': "'Unidad_Construcción'", 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10}, 
              {'expression': '0', 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10}, 
              {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-             {'expression': '"OBJECTID"', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
+             {'expression': '$id', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
              ]
     elif layer_name == FDC_VALUATION_UNIT_BUILDING_CONNECTION:
         mapping = [
