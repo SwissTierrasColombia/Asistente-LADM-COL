@@ -20,19 +20,18 @@ from functools import partial
 
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
-from qgis.PyQt.QtWidgets import (QWizard,
-                                 QMessageBox)
+from qgis.PyQt.QtWidgets import QWizard
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsMapLayerProxyModel,
                        QgsProject,
                        QgsVectorLayer,
-                       QgsEditFormConfig,
                        QgsWkbTypes,
                        QgsVectorLayerUtils)
 
 import processing
 from .....config.general_config import (TranslatableConfigStrings,
+                                        LAYER,
                                         DEFAULT_EPSG,
                                         PLUGIN_NAME)
 from .....config.help_strings import HelpStrings
@@ -64,9 +63,9 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         self.addedFeatures = None
 
         self._layers = {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
-            RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
-            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, 'layer': None}
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None}
         }
 
         self.restore_settings()
@@ -120,18 +119,18 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
     def disconnect_signals(self):
         # QGIS APP
         try:
-            self._layers[RIGHT_OF_WAY_TABLE]['layer'].featureAdded.disconnect()
+            self._layers[RIGHT_OF_WAY_TABLE][LAYER].featureAdded.disconnect()
         except:
             pass
 
         try:
-            self._layers[RIGHT_OF_WAY_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[RIGHT_OF_WAY_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
         for layer_name in self._layers:
             try:
-                self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.layer_removed)
+                self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
             except:
                 pass
 
@@ -186,13 +185,13 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
 
     def validate_remove_layers(self):
         for layer_name in self._layers:
-            if self._layers[layer_name]['layer']:
+            if self._layers[layer_name][LAYER]:
                 # Layer was found, listen to its removal so that we can update the variable properly
                 try:
-                    self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.layer_removed)
+                    self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
                 except:
                     pass
-                self._layers[layer_name]['layer'].willBeDeleted.connect(self.layer_removed)
+                self._layers[layer_name][LAYER].willBeDeleted.connect(self.layer_removed)
 
     def layer_removed(self):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -215,7 +214,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
 
         layer = None
         if self.type_geometry_creation == "digitizing_polygon":
-            layer = self._layers[RIGHT_OF_WAY_TABLE]['layer']
+            layer = self._layers[RIGHT_OF_WAY_TABLE][LAYER]
         elif self.type_geometry_creation == "digitizing_line":
             # Add Memory line layer
             layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG), self.translatable_config_strings.RIGHT_OF_WAY_LINE_LAYER, "memory")
@@ -225,7 +224,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
 
         if layer:
             self.iface.layerTreeView().setCurrentLayer(layer)
-            self._layers[RIGHT_OF_WAY_TABLE]['layer'].committedFeaturesAdded.connect(self.finish_feature_creation)
+            self._layers[RIGHT_OF_WAY_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
             self.open_form(layer)
 
     def store_features_ids(self, featId):
@@ -249,19 +248,19 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             self.WIZARD_TOOL_NAME)
         fid = features[0].id()
 
-        if not self._layers[RIGHT_OF_WAY_TABLE]['layer'].getFeature(fid).isValid():
+        if not self._layers[RIGHT_OF_WAY_TABLE][LAYER].getFeature(fid).isValid():
             message = QCoreApplication.translate(self.WIZARD_NAME,
                                                  "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a right of way. ").format(
                 self.WIZARD_TOOL_NAME, RIGHT_OF_WAY_TABLE)
             self.log.logMessage("Feature not found in layer {} ...".format(RIGHT_OF_WAY_TABLE), PLUGIN_NAME,
                                 Qgis.Warning)
         else:
-            feature_tid = self._layers[RIGHT_OF_WAY_TABLE]['layer'].getFeature(fid)[ID_FIELD]
+            feature_tid = self._layers[RIGHT_OF_WAY_TABLE][LAYER].getFeature(fid)[ID_FIELD]
             message = QCoreApplication.translate(self.WIZARD_NAME,
                                                  "The new right of way (t_id={}) was successfully created ").format(
                 feature_tid)
 
-        self._layers[RIGHT_OF_WAY_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self._layers[RIGHT_OF_WAY_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Right of way's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 
@@ -303,7 +302,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
 
             # Remove temporal layer and set right of way as layer
             QgsProject.instance().removeMapLayer(layer)
-            layer = self._layers[RIGHT_OF_WAY_TABLE]['layer']
+            layer = self._layers[RIGHT_OF_WAY_TABLE][LAYER]
 
             # Add temporal geometry create
             if not layer.isEditable():
@@ -347,7 +346,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
                   'OUTPUT': 'memory:'}
         buffered_right_of_way_layer = processing.run("native:buffer", params)['OUTPUT']
         buffer_geometry = buffered_right_of_way_layer.getFeature(1).geometry()
-        feature = QgsVectorLayerUtils().createFeature(self._layers[RIGHT_OF_WAY_TABLE]['layer'], buffer_geometry)
+        feature = QgsVectorLayerUtils().createFeature(self._layers[RIGHT_OF_WAY_TABLE][LAYER], buffer_geometry)
         return feature
 
     def form_rejected(self):

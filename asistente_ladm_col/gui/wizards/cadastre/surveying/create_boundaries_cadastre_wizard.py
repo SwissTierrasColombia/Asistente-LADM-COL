@@ -27,7 +27,8 @@ from qgis.core import (QgsProject,
                        QgsMapLayerProxyModel,
                        QgsWkbTypes)
 
-from .....config.general_config import PLUGIN_NAME
+from .....config.general_config import (PLUGIN_NAME,
+                                        LAYER)
 from .....config.help_strings import HelpStrings
 from .....config.table_mapping_config import (BOUNDARY_TABLE,
                                               ID_FIELD,
@@ -57,8 +58,8 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         self.rollback_changes = False
 
         self._layers = {
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': QgsWkbTypes.LineGeometry, 'layer': None},
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': QgsWkbTypes.PointGeometry, 'layer': None}
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': QgsWkbTypes.LineGeometry, LAYER: None},
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': QgsWkbTypes.PointGeometry, LAYER: None}
         }
 
         self.restore_settings()
@@ -98,23 +99,23 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
     def disconnect_signals(self):
         # QGIS APP
         try:
-            self._layers[BOUNDARY_TABLE]['layer'].featureAdded.disconnect()
+            self._layers[BOUNDARY_TABLE][LAYER].featureAdded.disconnect()
         except:
             pass
 
         try:
-            self._layers[BOUNDARY_TABLE]['layer'].editCommandEnded.connect(self.confirm_commit)
+            self._layers[BOUNDARY_TABLE][LAYER].editCommandEnded.connect(self.confirm_commit)
         except:
             pass
 
         try:
-            self._layers[BOUNDARY_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[BOUNDARY_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
         for layer_name in self._layers:
             try:
-                self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.layer_removed)
+                self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
             except:
                 pass
 
@@ -165,13 +166,13 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
 
     def validate_remove_layers(self):
         for layer_name in self._layers:
-            if self._layers[layer_name]['layer']:
+            if self._layers[layer_name][LAYER]:
                 # Layer was found, listen to its removal so that we can update the variable properly
                 try:
-                    self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.layer_removed)
+                    self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
                 except:
                     pass
-                self._layers[layer_name]['layer'].willBeDeleted.connect(self.layer_removed)
+                self._layers[layer_name][LAYER].willBeDeleted.connect(self.layer_removed)
 
     def layer_removed(self):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -187,31 +188,31 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         self.close()
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[BOUNDARY_TABLE]['layer'])
-        self._layers[BOUNDARY_TABLE]['layer'].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.iface.layerTreeView().setCurrentLayer(self._layers[BOUNDARY_TABLE][LAYER])
+        self._layers[BOUNDARY_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
 
         # Disable transactions groups
         QgsProject.instance().setAutoTransaction(False)
 
         # Activate snapping
-        self.qgis_utils.active_snapping_layers([self._layers[BOUNDARY_POINT_TABLE]['layer'],
-                                                self._layers[BOUNDARY_TABLE]['layer']])
-        self.open_form(self._layers[BOUNDARY_TABLE]['layer'])
+        self.qgis_utils.active_snapping_layers([self._layers[BOUNDARY_POINT_TABLE][LAYER],
+                                                self._layers[BOUNDARY_TABLE][LAYER]])
+        self.open_form(self._layers[BOUNDARY_TABLE][LAYER])
 
     def finish_feature_creation(self, layerId, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()
 
-        if not self._layers[BOUNDARY_TABLE]['layer'].getFeature(fid).isValid():
+        if not self._layers[BOUNDARY_TABLE][LAYER].getFeature(fid).isValid():
             message = QCoreApplication.translate(self.WIZARD_NAME,
                                                  "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a boundary. ").format(self.WIZARD_TOOL_NAME, BOUNDARY_TABLE)
             self.log.logMessage("Feature not found in layer {} ...".format(BOUNDARY_TABLE), PLUGIN_NAME, Qgis.Warning)
         else:
-            feature_tid = self._layers[BOUNDARY_TABLE]['layer'].getFeature(fid)[ID_FIELD]
+            feature_tid = self._layers[BOUNDARY_TABLE][LAYER].getFeature(fid)[ID_FIELD]
             message = QCoreApplication.translate(self.WIZARD_NAME, "The new boundary (t_id={}) was successfully created ").format(feature_tid)
 
-        self._layers[BOUNDARY_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self._layers[BOUNDARY_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Boundary's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 

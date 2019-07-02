@@ -29,7 +29,7 @@ from qgis.core import (QgsVectorLayerUtils,
                        QgsApplication)
 from qgis.gui import QgsExpressionSelectionDialog
 
-from .....config.general_config import PLUGIN_NAME
+from .....config.general_config import (PLUGIN_NAME, LAYER)
 from .....config.help_strings import HelpStrings
 from .....config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                               BOUNDARY_TABLE,
@@ -77,16 +77,16 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
         self.select_maptool = None
 
         self._layers = {
-            SPATIAL_SOURCE_TABLE: {'name': SPATIAL_SOURCE_TABLE, 'geometry': None, 'layer': None},
-            EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None, 'layer': None},
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
-            UESOURCE_TABLE: {'name': UESOURCE_TABLE, 'geometry': None, 'layer': None},
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, 'layer': None},
-            CCLSOURCE_TABLE: {'name': CCLSOURCE_TABLE, 'geometry': None, 'layer': None},
-            POINTSOURCE_TABLE: {'name': POINTSOURCE_TABLE, 'geometry': None, 'layer': None},
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, 'layer': None},
-            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, 'layer': None},
-            CONTROL_POINT_TABLE: {'name': CONTROL_POINT_TABLE, 'geometry': None, 'layer': None}
+            SPATIAL_SOURCE_TABLE: {'name': SPATIAL_SOURCE_TABLE, 'geometry': None, LAYER: None},
+            EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None, LAYER: None},
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            UESOURCE_TABLE: {'name': UESOURCE_TABLE, 'geometry': None, LAYER: None},
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None},
+            CCLSOURCE_TABLE: {'name': CCLSOURCE_TABLE, 'geometry': None, LAYER: None},
+            POINTSOURCE_TABLE: {'name': POINTSOURCE_TABLE, 'geometry': None, LAYER: None},
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None},
+            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None},
+            CONTROL_POINT_TABLE: {'name': CONTROL_POINT_TABLE, 'geometry': None, LAYER: None}
         }
 
         self.restore_settings()
@@ -143,20 +143,20 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
         # Check if a previous features are selected
         self.check_selected_features()
 
-        self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[PLOT_TABLE]['layer']))
-        self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[PLOT_TABLE]['layer']))
+        self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[PLOT_TABLE][LAYER]))
+        self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[PLOT_TABLE][LAYER]))
 
-        self.btn_boundary_map.clicked.connect(partial(self.select_features_on_map, self._layers[BOUNDARY_TABLE]['layer']))
-        self.btn_boundary_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BOUNDARY_TABLE]['layer']))
+        self.btn_boundary_map.clicked.connect(partial(self.select_features_on_map, self._layers[BOUNDARY_TABLE][LAYER]))
+        self.btn_boundary_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BOUNDARY_TABLE][LAYER]))
 
-        self.btn_boundary_point_map.clicked.connect(partial(self.select_features_on_map, self._layers[BOUNDARY_POINT_TABLE]['layer']))
-        self.btn_boundary_point_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BOUNDARY_POINT_TABLE]['layer']))
+        self.btn_boundary_point_map.clicked.connect(partial(self.select_features_on_map, self._layers[BOUNDARY_POINT_TABLE][LAYER]))
+        self.btn_boundary_point_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BOUNDARY_POINT_TABLE][LAYER]))
 
-        self.btn_survey_point_map.clicked.connect(partial(self.select_features_on_map, self._layers[SURVEY_POINT_TABLE]['layer']))
-        self.btn_survey_point_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[SURVEY_POINT_TABLE]['layer']))
+        self.btn_survey_point_map.clicked.connect(partial(self.select_features_on_map, self._layers[SURVEY_POINT_TABLE][LAYER]))
+        self.btn_survey_point_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[SURVEY_POINT_TABLE][LAYER]))
 
-        self.btn_control_point_map.clicked.connect(partial(self.select_features_on_map, self._layers[CONTROL_POINT_TABLE]['layer']))
-        self.btn_control_point_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[CONTROL_POINT_TABLE]['layer']))
+        self.btn_control_point_map.clicked.connect(partial(self.select_features_on_map, self._layers[CONTROL_POINT_TABLE][LAYER]))
+        self.btn_control_point_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[CONTROL_POINT_TABLE][LAYER]))
 
     def disconnect_signals(self):
         # GUI Wizard
@@ -184,18 +184,18 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
             pass
 
         try:
-            self._layers[SPATIAL_SOURCE_TABLE]['layer'].featureAdded.disconnect()
+            self._layers[SPATIAL_SOURCE_TABLE][LAYER].featureAdded.disconnect()
         except:
             pass
 
         try:
-            self._layers[SPATIAL_SOURCE_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[SPATIAL_SOURCE_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
         for layer_name in self._layers:
             try:
-                self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.layer_removed)
+                self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
             except:
                 pass
 
@@ -251,18 +251,18 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
 
     def check_selected_features(self):
         # Check selected features in plot layer
-        self.lb_plot.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[PLOT_TABLE]['layer'].selectedFeatureCount()))
+        self.lb_plot.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[PLOT_TABLE][LAYER].selectedFeatureCount()))
         # Check selected features in boundary layer
-        self.lb_boundary.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Boundary(ies)</b>: {count} Feature(s) Selected").format(count=self._layers[BOUNDARY_TABLE]['layer'].selectedFeatureCount()))
+        self.lb_boundary.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Boundary(ies)</b>: {count} Feature(s) Selected").format(count=self._layers[BOUNDARY_TABLE][LAYER].selectedFeatureCount()))
         # Check selected features in boundary point layer
-        self.lb_boundary_point.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Boundary</b>: {count} Feature(s) Selected").format(count=self._layers[BOUNDARY_POINT_TABLE]['layer'].selectedFeatureCount()))
+        self.lb_boundary_point.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Boundary</b>: {count} Feature(s) Selected").format(count=self._layers[BOUNDARY_POINT_TABLE][LAYER].selectedFeatureCount()))
         # Check selected features in survey point layer
-        self.lb_survey_point.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Survey</b>: {count} Feature(s) Selected").format(count=self._layers[SURVEY_POINT_TABLE]['layer'].selectedFeatureCount()))
+        self.lb_survey_point.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Survey</b>: {count} Feature(s) Selected").format(count=self._layers[SURVEY_POINT_TABLE][LAYER].selectedFeatureCount()))
         # Check selected features in control point layer
-        self.lb_control_point.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Control</b>: {count} Feature(s) Selected").format(count=self._layers[CONTROL_POINT_TABLE]['layer'].selectedFeatureCount()))
+        self.lb_control_point.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Control</b>: {count} Feature(s) Selected").format(count=self._layers[CONTROL_POINT_TABLE][LAYER].selectedFeatureCount()))
 
         # Verifies that an feature has been selected
-        if self._layers[PLOT_TABLE]['layer'].selectedFeatureCount() + self._layers[BOUNDARY_TABLE]['layer'].selectedFeatureCount() + self._layers[BOUNDARY_POINT_TABLE]['layer'].selectedFeatureCount() + self._layers[SURVEY_POINT_TABLE]['layer'].selectedFeatureCount() + self._layers[CONTROL_POINT_TABLE]['layer'].selectedFeatureCount() >= 1:
+        if self._layers[PLOT_TABLE][LAYER].selectedFeatureCount() + self._layers[BOUNDARY_TABLE][LAYER].selectedFeatureCount() + self._layers[BOUNDARY_POINT_TABLE][LAYER].selectedFeatureCount() + self._layers[SURVEY_POINT_TABLE][LAYER].selectedFeatureCount() + self._layers[CONTROL_POINT_TABLE][LAYER].selectedFeatureCount() >= 1:
             self.button(self.FinishButton).setDisabled(False)
         else:
             self.button(self.FinishButton).setDisabled(True)
@@ -312,13 +312,13 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
 
     def validate_remove_layers(self):
         for layer_name in self._layers:
-            if self._layers[layer_name]['layer']:
+            if self._layers[layer_name][LAYER]:
                 # Layer was found, listen to its removal so that we can update the variable properly
                 try:
-                    self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.layer_removed)
+                    self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
                 except:
                     pass
-                self._layers[layer_name]['layer'].willBeDeleted.connect(self.layer_removed)
+                self._layers[layer_name][LAYER].willBeDeleted.connect(self.layer_removed)
 
     def layer_removed(self):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -342,9 +342,9 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
         self.canvas.setMapTool(self.maptool)
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[SPATIAL_SOURCE_TABLE]['layer'])
-        self._layers[SPATIAL_SOURCE_TABLE]['layer'].committedFeaturesAdded.connect(self.finish_feature_creation)
-        self.open_form(self._layers[SPATIAL_SOURCE_TABLE]['layer'])
+        self.iface.layerTreeView().setCurrentLayer(self._layers[SPATIAL_SOURCE_TABLE][LAYER])
+        self._layers[SPATIAL_SOURCE_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.open_form(self._layers[SPATIAL_SOURCE_TABLE][LAYER])
 
     def finish_feature_creation(self, layerId, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -359,25 +359,25 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
             feature = features[0]
             feature_ids_dict = dict()
 
-            if self._layers[PLOT_TABLE]['layer'] is not None:
-                if self._layers[PLOT_TABLE]['layer'].selectedFeatureCount() > 0:
-                    feature_ids_dict[PLOT_TABLE] = [f[ID_FIELD] for f in self._layers[PLOT_TABLE]['layer'].selectedFeatures()]
+            if self._layers[PLOT_TABLE][LAYER] is not None:
+                if self._layers[PLOT_TABLE][LAYER].selectedFeatureCount() > 0:
+                    feature_ids_dict[PLOT_TABLE] = [f[ID_FIELD] for f in self._layers[PLOT_TABLE][LAYER].selectedFeatures()]
 
-            if self._layers[BOUNDARY_TABLE]['layer'] is not None:
-                if self._layers[BOUNDARY_TABLE]['layer'].selectedFeatureCount() > 0:
-                    feature_ids_dict[BOUNDARY_TABLE] = [f[ID_FIELD] for f in self._layers[BOUNDARY_TABLE]['layer'].selectedFeatures()]
+            if self._layers[BOUNDARY_TABLE][LAYER] is not None:
+                if self._layers[BOUNDARY_TABLE][LAYER].selectedFeatureCount() > 0:
+                    feature_ids_dict[BOUNDARY_TABLE] = [f[ID_FIELD] for f in self._layers[BOUNDARY_TABLE][LAYER].selectedFeatures()]
 
-            if self._layers[BOUNDARY_POINT_TABLE]['layer'] is not None:
-                if self._layers[BOUNDARY_POINT_TABLE]['layer'].selectedFeatureCount() > 0:
-                    feature_ids_dict[BOUNDARY_POINT_TABLE] = [f[ID_FIELD] for f in self._layers[BOUNDARY_POINT_TABLE]['layer'].selectedFeatures()]
+            if self._layers[BOUNDARY_POINT_TABLE][LAYER] is not None:
+                if self._layers[BOUNDARY_POINT_TABLE][LAYER].selectedFeatureCount() > 0:
+                    feature_ids_dict[BOUNDARY_POINT_TABLE] = [f[ID_FIELD] for f in self._layers[BOUNDARY_POINT_TABLE][LAYER].selectedFeatures()]
 
-            if self._layers[SURVEY_POINT_TABLE]['layer'] is not None:
-                if self._layers[SURVEY_POINT_TABLE]['layer'].selectedFeatureCount() > 0:
-                    feature_ids_dict[SURVEY_POINT_TABLE] = [f[ID_FIELD] for f in self._layers[SURVEY_POINT_TABLE]['layer'].selectedFeatures()]
+            if self._layers[SURVEY_POINT_TABLE][LAYER] is not None:
+                if self._layers[SURVEY_POINT_TABLE][LAYER].selectedFeatureCount() > 0:
+                    feature_ids_dict[SURVEY_POINT_TABLE] = [f[ID_FIELD] for f in self._layers[SURVEY_POINT_TABLE][LAYER].selectedFeatures()]
 
-            if self._layers[CONTROL_POINT_TABLE]['layer'] is not None:
-                if self._layers[CONTROL_POINT_TABLE]['layer'].selectedFeatureCount() > 0:
-                    feature_ids_dict[CONTROL_POINT_TABLE] = [f[ID_FIELD] for f in self._layers[CONTROL_POINT_TABLE]['layer'].selectedFeatures()]
+            if self._layers[CONTROL_POINT_TABLE][LAYER] is not None:
+                if self._layers[CONTROL_POINT_TABLE][LAYER].selectedFeatureCount() > 0:
+                    feature_ids_dict[CONTROL_POINT_TABLE] = [f[ID_FIELD] for f in self._layers[CONTROL_POINT_TABLE][LAYER].selectedFeatures()]
 
             if not feature.isValid():
                 self.log.logMessage("Feature not found in layer Spatial Source...", PLUGIN_NAME, Qgis.Warning)
@@ -390,62 +390,62 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
                 if PLOT_TABLE in feature_ids_dict:
                     # Fill uesource table
                     for plot_id in feature_ids_dict[PLOT_TABLE]:
-                        new_feature = QgsVectorLayerUtils().createFeature(self._layers[UESOURCE_TABLE]['layer'])
+                        new_feature = QgsVectorLayerUtils().createFeature(self._layers[UESOURCE_TABLE][LAYER])
                         new_feature.setAttribute(UESOURCE_TABLE_PLOT_FIELD, plot_id)
                         new_feature.setAttribute(UESOURCE_TABLE_SOURCE_FIELD, spatial_source_id)
                         self.log.logMessage("Saving Plot-SpatialSource: {}-{}".format(plot_id, spatial_source_id), PLUGIN_NAME, Qgis.Info)
                         new_features.append(new_feature)
 
-                    self._layers[UESOURCE_TABLE]['layer'].dataProvider().addFeatures(new_features)
+                    self._layers[UESOURCE_TABLE][LAYER].dataProvider().addFeatures(new_features)
                     all_new_features.extend(new_feature)
 
                 new_features = list()
                 if BOUNDARY_TABLE in feature_ids_dict:
                     # Fill cclsource table
                     for boundary_id in feature_ids_dict[BOUNDARY_TABLE]:
-                        new_feature = QgsVectorLayerUtils().createFeature(self._layers[CCLSOURCE_TABLE]['layer'])
+                        new_feature = QgsVectorLayerUtils().createFeature(self._layers[CCLSOURCE_TABLE][LAYER])
                         new_feature.setAttribute(CCLSOURCE_TABLE_BOUNDARY_FIELD, boundary_id)
                         new_feature.setAttribute(CCLSOURCE_TABLE_SOURCE_FIELD, spatial_source_id)
                         self.log.logMessage("Saving Boundary-SpatialSource: {}-{}".format(boundary_id, spatial_source_id), PLUGIN_NAME, Qgis.Info)
                         new_features.append(new_feature)
 
-                    self._layers[CCLSOURCE_TABLE]['layer'].dataProvider().addFeatures(new_features)
+                    self._layers[CCLSOURCE_TABLE][LAYER].dataProvider().addFeatures(new_features)
                     all_new_features.extend(new_feature)
 
                 new_features = list()
                 if BOUNDARY_POINT_TABLE in feature_ids_dict:
                     for boundary_point_id in feature_ids_dict[BOUNDARY_POINT_TABLE]:
-                        new_feature = QgsVectorLayerUtils().createFeature(self._layers[POINTSOURCE_TABLE]['layer'])
+                        new_feature = QgsVectorLayerUtils().createFeature(self._layers[POINTSOURCE_TABLE][LAYER])
                         new_feature.setAttribute(POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD, boundary_point_id)
                         new_feature.setAttribute(POINTSOURCE_TABLE_SOURCE_FIELD, spatial_source_id)
                         self.log.logMessage("Saving BoundaryPoint-SpatialSource: {}-{}".format(boundary_point_id, spatial_source_id), PLUGIN_NAME, Qgis.Info)
                         new_features.append(new_feature)
 
-                    self._layers[POINTSOURCE_TABLE]['layer'].dataProvider().addFeatures(new_features)
+                    self._layers[POINTSOURCE_TABLE][LAYER].dataProvider().addFeatures(new_features)
                     all_new_features.extend(new_feature)
 
                 new_features = list()
                 if SURVEY_POINT_TABLE in feature_ids_dict:
                     for survey_point_id in feature_ids_dict[SURVEY_POINT_TABLE]:
-                        new_feature = QgsVectorLayerUtils().createFeature(self._layers[POINTSOURCE_TABLE]['layer'])
+                        new_feature = QgsVectorLayerUtils().createFeature(self._layers[POINTSOURCE_TABLE][LAYER])
                         new_feature.setAttribute(POINTSOURCE_TABLE_SURVEYPOINT_FIELD, survey_point_id)
                         new_feature.setAttribute(POINTSOURCE_TABLE_SOURCE_FIELD, spatial_source_id)
                         self.log.logMessage("Saving SurveyPoint-SpatialSource: {}-{}".format(survey_point_id, spatial_source_id), PLUGIN_NAME, Qgis.Info)
                         new_features.append(new_feature)
 
-                    self._layers[POINTSOURCE_TABLE]['layer'].dataProvider().addFeatures(new_features)
+                    self._layers[POINTSOURCE_TABLE][LAYER].dataProvider().addFeatures(new_features)
                     all_new_features.extend(new_feature)
 
                 new_features = list()
                 if CONTROL_POINT_TABLE in feature_ids_dict:
                     for control_point_id in feature_ids_dict[CONTROL_POINT_TABLE]:
-                        new_feature = QgsVectorLayerUtils().createFeature(self._layers[POINTSOURCE_TABLE]['layer'])
+                        new_feature = QgsVectorLayerUtils().createFeature(self._layers[POINTSOURCE_TABLE][LAYER])
                         new_feature.setAttribute(POINTSOURCE_TABLE_CONTROLPOINT_FIELD, control_point_id)
                         new_feature.setAttribute(POINTSOURCE_TABLE_SOURCE_FIELD, spatial_source_id)
                         self.log.logMessage("Saving ControlPoint-SpatialSource: {}-{}".format(control_point_id, spatial_source_id), PLUGIN_NAME, Qgis.Info)
                         new_features.append(new_feature)
 
-                    self._layers[POINTSOURCE_TABLE]['layer'].dataProvider().addFeatures(new_features)
+                    self._layers[POINTSOURCE_TABLE][LAYER].dataProvider().addFeatures(new_features)
                     all_new_features.extend(new_feature)
 
                 if all_new_features:
@@ -455,7 +455,7 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
                     message = QCoreApplication.translate(self.WIZARD_NAME,
                                                    "The new spatial source (t_id={}) was successfully created and it wasn't associated with a spatial unit").format(spatial_source_id)
 
-        self._layers[SPATIAL_SOURCE_TABLE]['layer'].committedFeaturesAdded.disconnect()
+        self._layers[SPATIAL_SOURCE_TABLE][LAYER].committedFeaturesAdded.disconnect()
         self.log.logMessage("Spatial Source's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 
@@ -490,8 +490,8 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
         if dialog.exec_():
             saved = layer.commitChanges()
 
-            if self._layers[EXTFILE_TABLE]['layer'].isEditable():
-                res = self._layers[EXTFILE_TABLE]['layer'].commitChanges()
+            if self._layers[EXTFILE_TABLE][LAYER].isEditable():
+                res = self._layers[EXTFILE_TABLE][LAYER].commitChanges()
 
             if not saved:
                 layer.rollBack()

@@ -31,6 +31,7 @@ from qgis.core import (Qgis,
 from qgis.gui import QgsExpressionSelectionDialog
 
 from .....config.general_config import (PLUGIN_NAME,
+                                        LAYER,
                                         TranslatableConfigStrings,
                                         CSS_COLOR_ERROR_LABEL,
                                         CSS_COLOR_OKAY_LABEL,
@@ -75,11 +76,11 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self._current_layer = None
 
         self._layers = {
-            EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry, 'layer': None},
-            OID_TABLE: {'name': OID_TABLE, 'geometry': None, 'layer': None},
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
-            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
-            BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None}
+            EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry, LAYER: None},
+            OID_TABLE: {'name': OID_TABLE, 'geometry': None, LAYER: None},
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
         }
 
         self.restore_settings()
@@ -137,13 +138,13 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         # Check if a previous features are selected
         self.check_selected_features()
 
-        self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[PLOT_TABLE]['layer']))
-        self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_TABLE]['layer']))
-        self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_UNIT_TABLE]['layer']))
+        self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[PLOT_TABLE][LAYER]))
+        self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_TABLE][LAYER]))
+        self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_UNIT_TABLE][LAYER]))
 
-        self.btn_plot_expression.clicked.connect(partial(self.select_feature_by_expression, self._layers[PLOT_TABLE]['layer']))
-        self.btn_building_expression.clicked.connect(partial(self.select_feature_by_expression, self._layers[BUILDING_TABLE]['layer']))
-        self.btn_building_unit_expression.clicked.connect(partial(self.select_feature_by_expression, self._layers[BUILDING_UNIT_TABLE]['layer']))
+        self.btn_plot_expression.clicked.connect(partial(self.select_feature_by_expression, self._layers[PLOT_TABLE][LAYER]))
+        self.btn_building_expression.clicked.connect(partial(self.select_feature_by_expression, self._layers[BUILDING_TABLE][LAYER]))
+        self.btn_building_unit_expression.clicked.connect(partial(self.select_feature_by_expression, self._layers[BUILDING_UNIT_TABLE][LAYER]))
 
         self.rad_to_plot.toggled.connect(self.toggle_spatial_unit)
         self.rad_to_building.toggled.connect(self.toggle_spatial_unit)
@@ -162,21 +163,21 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
         if self.rad_to_plot.isChecked():
             self.txt_help_page_2.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_1)
-            self._current_layer = self._layers[PLOT_TABLE]['layer']
+            self._current_layer = self._layers[PLOT_TABLE][LAYER]
 
             self.btn_plot_map.setEnabled(True)
             self.btn_plot_expression.setEnabled(True)
 
         elif self.rad_to_building.isChecked():
             self.txt_help_page_2.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_2)
-            self._current_layer = self._layers[BUILDING_TABLE]['layer']
+            self._current_layer = self._layers[BUILDING_TABLE][LAYER]
 
             self.btn_building_map.setEnabled(True)
             self.btn_building_expression.setEnabled(True)
 
         elif self.rad_to_building_unit.isChecked():
             self.txt_help_page_2.setHtml(self.help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_3)
-            self._current_layer = self._layers[BUILDING_UNIT_TABLE]['layer']
+            self._current_layer = self._layers[BUILDING_UNIT_TABLE][LAYER]
 
             self.btn_building_unit_map.setEnabled(True)
             self.btn_building_unit_expression.setEnabled(True)
@@ -206,18 +207,18 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             pass
 
         try:
-            self._layers[EXTADDRESS_TABLE]['layer'].featureAdded.disconnect()
+            self._layers[EXTADDRESS_TABLE][LAYER].featureAdded.disconnect()
         except:
             pass
 
         try:
-            self._layers[EXTADDRESS_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[EXTADDRESS_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
         for layer_name in self._layers:
             try:
-                self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.layer_removed)
+                self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
             except:
                 pass
 
@@ -275,45 +276,45 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
     def check_selected_features(self):
 
-        self.rad_to_plot.setText(QCoreApplication.translate(self.WIZARD_NAME, "Plot(s): {count} Feature(s) Selected").format(count=self._layers[PLOT_TABLE]['layer'].selectedFeatureCount()))
-        self.rad_to_building.setText(QCoreApplication.translate(self.WIZARD_NAME, "Building(s): {count} Feature(s) Selected").format(count=self._layers[BUILDING_TABLE]['layer'].selectedFeatureCount()))
-        self.rad_to_building_unit.setText(QCoreApplication.translate(self.WIZARD_NAME, "Building unit(s): {count} Feature(s) Selected").format(count=self._layers[BUILDING_UNIT_TABLE]['layer'].selectedFeatureCount()))
+        self.rad_to_plot.setText(QCoreApplication.translate(self.WIZARD_NAME, "Plot(s): {count} Feature(s) Selected").format(count=self._layers[PLOT_TABLE][LAYER].selectedFeatureCount()))
+        self.rad_to_building.setText(QCoreApplication.translate(self.WIZARD_NAME, "Building(s): {count} Feature(s) Selected").format(count=self._layers[BUILDING_TABLE][LAYER].selectedFeatureCount()))
+        self.rad_to_building_unit.setText(QCoreApplication.translate(self.WIZARD_NAME, "Building unit(s): {count} Feature(s) Selected").format(count=self._layers[BUILDING_UNIT_TABLE][LAYER].selectedFeatureCount()))
 
         if self._current_layer is None:
             if self.iface.activeLayer().name() == PLOT_TABLE:
                 self.rad_to_plot.setChecked(True)
-                self._current_layer = self._layers[PLOT_TABLE]['layer']
+                self._current_layer = self._layers[PLOT_TABLE][LAYER]
             elif self.iface.activeLayer().name() == BUILDING_TABLE:
                 self.rad_to_building.setChecked(True)
-                self._current_layer = self._layers[BUILDING_TABLE]['layer']
+                self._current_layer = self._layers[BUILDING_TABLE][LAYER]
             elif self.iface.activeLayer().name() == BUILDING_UNIT_TABLE:
                 self.rad_to_building_unit.setChecked(True)
-                self._current_layer = self._layers[BUILDING_UNIT_TABLE]['layer']
+                self._current_layer = self._layers[BUILDING_UNIT_TABLE][LAYER]
             else:
                 # Select layer that have least one feature selected
                 # as current layer when current layer is not defined
-                if self._layers[PLOT_TABLE]['layer'].selectedFeatureCount():
+                if self._layers[PLOT_TABLE][LAYER].selectedFeatureCount():
                     self.rad_to_plot.setChecked(True)
-                    self._current_layer = self._layers[PLOT_TABLE]['layer']
-                elif self._layers[BUILDING_TABLE]['layer'].selectedFeatureCount():
+                    self._current_layer = self._layers[PLOT_TABLE][LAYER]
+                elif self._layers[BUILDING_TABLE][LAYER].selectedFeatureCount():
                     self.rad_to_building.setChecked(True)
-                    self._current_layer = self._layers[BUILDING_TABLE]['layer']
-                elif self._layers[BUILDING_UNIT_TABLE]['layer'].selectedFeatureCount():
+                    self._current_layer = self._layers[BUILDING_TABLE][LAYER]
+                elif self._layers[BUILDING_UNIT_TABLE][LAYER].selectedFeatureCount():
                     self.rad_to_building_unit.setChecked(True)
-                    self._current_layer = self._layers[BUILDING_UNIT_TABLE]['layer']
+                    self._current_layer = self._layers[BUILDING_UNIT_TABLE][LAYER]
                 else:
                     # By default current_layer will be plot layer
                     self.rad_to_plot.setChecked(True)
-                    self._current_layer = self._layers[PLOT_TABLE]['layer']
+                    self._current_layer = self._layers[PLOT_TABLE][LAYER]
 
         if self.rad_to_plot.isChecked():
             self.rad_to_building.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
             self.rad_to_building_unit.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
 
             # Check selected features in plot layer
-            if self._layers[PLOT_TABLE]['layer'].selectedFeatureCount() == 1:
+            if self._layers[PLOT_TABLE][LAYER].selectedFeatureCount() == 1:
                 self.rad_to_plot.setStyleSheet(CSS_COLOR_OKAY_LABEL)
-            elif self._layers[PLOT_TABLE]['layer'].selectedFeatureCount() > 1:
+            elif self._layers[PLOT_TABLE][LAYER].selectedFeatureCount() > 1:
                 # the color of the text is changed to highlight when there are more than one feature selected
                 self.rad_to_plot.setStyleSheet(CSS_COLOR_ERROR_LABEL)
             else:
@@ -325,9 +326,9 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.rad_to_building_unit.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
 
             # Check selected features in building layer
-            if self._layers[BUILDING_TABLE]['layer'].selectedFeatureCount() == 1:
+            if self._layers[BUILDING_TABLE][LAYER].selectedFeatureCount() == 1:
                 self.rad_to_building.setStyleSheet(CSS_COLOR_OKAY_LABEL)
-            elif self._layers[BUILDING_TABLE]['layer'].selectedFeatureCount() > 1:
+            elif self._layers[BUILDING_TABLE][LAYER].selectedFeatureCount() > 1:
                 # the color of the text is changed to highlight when there are more than one feature selected
                 self.rad_to_building.setStyleSheet(CSS_COLOR_ERROR_LABEL)
             else:
@@ -339,9 +340,9 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.rad_to_building.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
 
             # Check selected features in building unit layer
-            if self._layers[BUILDING_UNIT_TABLE]['layer'].selectedFeatureCount() == 1:
+            if self._layers[BUILDING_UNIT_TABLE][LAYER].selectedFeatureCount() == 1:
                 self.rad_to_building_unit.setStyleSheet(CSS_COLOR_OKAY_LABEL)
-            elif self._layers[BUILDING_UNIT_TABLE]['layer'].selectedFeatureCount() > 1:
+            elif self._layers[BUILDING_UNIT_TABLE][LAYER].selectedFeatureCount() > 1:
                 # the color of the text is changed to highlight when there are more than one features selected
                 self.rad_to_building_unit.setStyleSheet(CSS_COLOR_ERROR_LABEL)
             else:
@@ -352,11 +353,11 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self.canvas.zoomToSelected(self._current_layer)
 
         # Condition for enabling the finish button
-        if self.rad_to_plot.isChecked() and self._layers[PLOT_TABLE]['layer'].selectedFeatureCount() == 1:
+        if self.rad_to_plot.isChecked() and self._layers[PLOT_TABLE][LAYER].selectedFeatureCount() == 1:
             self.button(self.FinishButton).setDisabled(False)
-        elif self.rad_to_building.isChecked() and self._layers[BUILDING_TABLE]['layer'].selectedFeatureCount() == 1:
+        elif self.rad_to_building.isChecked() and self._layers[BUILDING_TABLE][LAYER].selectedFeatureCount() == 1:
             self.button(self.FinishButton).setDisabled(False)
-        elif self.rad_to_building_unit.isChecked() and self._layers[BUILDING_UNIT_TABLE]['layer'].selectedFeatureCount() == 1:
+        elif self.rad_to_building_unit.isChecked() and self._layers[BUILDING_UNIT_TABLE][LAYER].selectedFeatureCount() == 1:
             self.button(self.FinishButton).setDisabled(False)
         else:
             self.button(self.FinishButton).setDisabled(True)
@@ -406,13 +407,13 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
     def validate_remove_layers(self):
         for layer_name in self._layers:
-            if self._layers[layer_name]['layer']:
+            if self._layers[layer_name][LAYER]:
                 # Layer was found, listen to its removal so that we can update the variable properly
                 try:
-                    self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.layer_removed)
+                    self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
                 except:
                     pass
-                self._layers[layer_name]['layer'].willBeDeleted.connect(self.layer_removed)
+                self._layers[layer_name][LAYER].willBeDeleted.connect(self.layer_removed)
 
     def layer_removed(self):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -438,10 +439,10 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
     def edit_feature(self):
         if self._current_layer.selectedFeatureCount() == 1:
             # Open Form
-            self.iface.layerTreeView().setCurrentLayer(self._layers[EXTADDRESS_TABLE]['layer'])
-            self._layers[EXTADDRESS_TABLE]['layer'].committedFeaturesAdded.connect(self.finish_feature_creation)
+            self.iface.layerTreeView().setCurrentLayer(self._layers[EXTADDRESS_TABLE][LAYER])
+            self._layers[EXTADDRESS_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
             self.qgis_utils.active_snapping_all_layers()
-            self.open_form(self._layers[EXTADDRESS_TABLE]['layer'])
+            self.open_form(self._layers[EXTADDRESS_TABLE][LAYER])
 
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                                                 QCoreApplication.translate(self.WIZARD_NAME,
@@ -464,30 +465,30 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         else:
             fid = features[0].id()
 
-            if not self._layers[EXTADDRESS_TABLE]['layer'].getFeature(fid).isValid():
+            if not self._layers[EXTADDRESS_TABLE][LAYER].getFeature(fid).isValid():
                 message = QCoreApplication.translate(self.WIZARD_NAME,
                                                      "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a ExtAddress. ").format(self.WIZARD_TOOL_NAME, EXTADDRESS_TABLE)
                 self.log.logMessage("Feature not found in layer {} ...".format(EXTADDRESS_TABLE), PLUGIN_NAME, Qgis.Warning)
             else:
-                extaddress_tid = self._layers[EXTADDRESS_TABLE]['layer'].getFeature(fid)[ID_FIELD]
+                extaddress_tid = self._layers[EXTADDRESS_TABLE][LAYER].getFeature(fid)[ID_FIELD]
 
                 # Suppress (i.e., hide) feature form
-                self.qgis_utils.suppress_form(self._layers[OID_TABLE]['layer'], True)
+                self.qgis_utils.suppress_form(self._layers[OID_TABLE][LAYER], True)
 
                 # Add OID record
-                self._layers[OID_TABLE]['layer'].startEditing()
-                feature = QgsVectorLayerUtils().createFeature(self._layers[OID_TABLE]['layer'])
+                self._layers[OID_TABLE][LAYER].startEditing()
+                feature = QgsVectorLayerUtils().createFeature(self._layers[OID_TABLE][LAYER])
                 feature.setAttribute(OID_EXTADDRESS_ID_FIELD, extaddress_tid)
-                self._layers[OID_TABLE]['layer'].addFeature(feature)
-                self._layers[OID_TABLE]['layer'].commitChanges()
+                self._layers[OID_TABLE][LAYER].addFeature(feature)
+                self._layers[OID_TABLE][LAYER].commitChanges()
 
                 # Don't suppress (i.e., show) feature form
-                self.qgis_utils.suppress_form(self._layers[OID_TABLE]['layer'], False)
+                self.qgis_utils.suppress_form(self._layers[OID_TABLE][LAYER], False)
 
                 message = QCoreApplication.translate(self.WIZARD_NAME,
                                                      "The new extaddress (t_id={}) was successfully created ").format(extaddress_tid)
 
-        self._layers[EXTADDRESS_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self._layers[EXTADDRESS_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("ExtAddress's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 

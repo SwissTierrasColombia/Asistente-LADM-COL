@@ -27,7 +27,8 @@ from qgis.core import (QgsVectorLayerUtils,
                        QgsApplication)
 from qgis.gui import QgsExpressionSelectionDialog
 
-from .....config.general_config import PLUGIN_NAME
+from .....config.general_config import (PLUGIN_NAME,
+                                        LAYER)
 from .....config.help_strings import HelpStrings
 from .....config.table_mapping_config import (ID_FIELD,
                                               RIGHT_TABLE,
@@ -57,9 +58,9 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
         self.help_strings = HelpStrings()
 
         self._layers = {
-            RIGHT_TABLE: {'name': RIGHT_TABLE, 'geometry': None, 'layer': None},
-            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None, 'layer': None},
-            RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None, 'layer': None}
+            RIGHT_TABLE: {'name': RIGHT_TABLE, 'geometry': None, LAYER: None},
+            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None, LAYER: None},
+            RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None, LAYER: None}
         }
 
         self.restore_settings()
@@ -115,7 +116,7 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
 
         # Check if a previous features are selected
         self.check_selected_features()
-        self.btn_admin_source_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[ADMINISTRATIVE_SOURCE_TABLE]['layer']))
+        self.btn_admin_source_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER]))
 
     def select_features_by_expression(self, layer):
         self.iface.setActiveLayer(layer)
@@ -126,8 +127,8 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
 
     def check_selected_features(self):
         # Check selected features in administrative source layer
-        if self._layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'].selectedFeatureCount():
-            self.lb_admin_source.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Administrative Source(s)</b>: {count} Feature Selected").format(count=self._layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'].selectedFeatureCount()))
+        if self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatureCount():
+            self.lb_admin_source.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Administrative Source(s)</b>: {count} Feature Selected").format(count=self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatureCount()))
             self.button(self.FinishButton).setDisabled(False)
         else:
             self.lb_admin_source.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Administrative Source(s)</b>: 0 Features Selected"))
@@ -193,21 +194,21 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
 
         # QGIS APP
         try:
-            self._layers[RIGHT_TABLE]['layer'].featureAdded.disconnect()
+            self._layers[RIGHT_TABLE][LAYER].featureAdded.disconnect()
         except:
             pass
 
         try:
-            self._layers[RIGHT_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[RIGHT_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[RIGHT_TABLE]['layer'])
-        self._layers[RIGHT_TABLE]['layer'].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.iface.layerTreeView().setCurrentLayer(self._layers[RIGHT_TABLE][LAYER])
+        self._layers[RIGHT_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
 
-        if self._layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'].selectedFeatureCount() >= 1:
-            self.open_form(self._layers[RIGHT_TABLE]['layer'])
+        if self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatureCount() >= 1:
+            self.open_form(self._layers[RIGHT_TABLE][LAYER])
         else:
             message = QCoreApplication.translate(self.WIZARD_NAME, "Please select an Administrative source")
             self.close_wizard(message)
@@ -222,27 +223,27 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
             self.log.logMessage("We should have got only one right... We cannot do anything with {} right".format(len(features)), PLUGIN_NAME, Qgis.Warning)
         else:
             fid = features[0].id()
-            administrative_source_ids = [f['t_id'] for f in self._layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'].selectedFeatures()]
+            administrative_source_ids = [f['t_id'] for f in self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatures()]
 
-            if not self._layers[RIGHT_TABLE]['layer'].getFeature(fid).isValid():
+            if not self._layers[RIGHT_TABLE][LAYER].getFeature(fid).isValid():
                 self.log.logMessage("Feature not found in layer Right...", PLUGIN_NAME, Qgis.Warning)
             else:
-                right_id = self._layers[RIGHT_TABLE]['layer'].getFeature(fid)[ID_FIELD]
+                right_id = self._layers[RIGHT_TABLE][LAYER].getFeature(fid)[ID_FIELD]
 
                 # Fill rrrfuente table
                 new_features = []
                 for administrative_source_id in administrative_source_ids:
-                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[RRR_SOURCE_RELATION_TABLE]['layer'])
+                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[RRR_SOURCE_RELATION_TABLE][LAYER])
                     new_feature.setAttribute(RRR_SOURCE_SOURCE_FIELD, administrative_source_id)
                     new_feature.setAttribute(RRR_SOURCE_RIGHT_FIELD, right_id)
                     self.log.logMessage("Saving Administrative_source-Right: {}-{}".format(administrative_source_id, right_id), PLUGIN_NAME, Qgis.Info)
                     new_features.append(new_feature)
 
-                self._layers[RRR_SOURCE_RELATION_TABLE]['layer'].dataProvider().addFeatures(new_features)
+                self._layers[RRR_SOURCE_RELATION_TABLE][LAYER].dataProvider().addFeatures(new_features)
                 message = QCoreApplication.translate(self.WIZARD_NAME,
                                                      "The new right (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!").format(right_id, ", ".join([str(b) for b in administrative_source_ids]))
 
-        self._layers[RIGHT_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self._layers[RIGHT_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Right's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 

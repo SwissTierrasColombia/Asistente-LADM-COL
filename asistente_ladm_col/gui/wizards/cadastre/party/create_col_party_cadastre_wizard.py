@@ -25,7 +25,8 @@ from qgis.core import (QgsApplication,
                        Qgis,
                        QgsMapLayerProxyModel)
 
-from .....config.general_config import PLUGIN_NAME
+from .....config.general_config import (PLUGIN_NAME,
+                                        LAYER)
 from .....config.help_strings import HelpStrings
 from .....config.table_mapping_config import (ID_FIELD,
                                               COL_PARTY_TABLE)
@@ -49,7 +50,7 @@ class CreateColPartyCadastreWizard(QWizard, WIZARD_UI):
         self.help_strings = HelpStrings()
 
         self._layers = {
-            COL_PARTY_TABLE: {'name': COL_PARTY_TABLE, 'geometry': None, 'layer': None}
+            COL_PARTY_TABLE: {'name': COL_PARTY_TABLE, 'geometry': None, LAYER: None}
         }
 
         self.restore_settings()
@@ -134,35 +135,35 @@ class CreateColPartyCadastreWizard(QWizard, WIZARD_UI):
     def disconnect_signals(self):
         # QGIS APP
         try:
-            self._layers[COL_PARTY_TABLE]['layer'].featureAdded.disconnect()
+            self._layers[COL_PARTY_TABLE][LAYER].featureAdded.disconnect()
         except:
             pass
 
         try:
-            self._layers[COL_PARTY_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[COL_PARTY_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[COL_PARTY_TABLE]['layer'])
-        self._layers[COL_PARTY_TABLE]['layer'].committedFeaturesAdded.connect(self.finish_feature_creation)
-        self.open_form(self._layers[COL_PARTY_TABLE]['layer'])
+        self.iface.layerTreeView().setCurrentLayer(self._layers[COL_PARTY_TABLE][LAYER])
+        self._layers[COL_PARTY_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.open_form(self._layers[COL_PARTY_TABLE][LAYER])
 
     def finish_feature_creation(self, layerId, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()
 
-        if not self._layers[COL_PARTY_TABLE]['layer'].getFeature(fid).isValid():
+        if not self._layers[COL_PARTY_TABLE][LAYER].getFeature(fid).isValid():
             message = QCoreApplication.translate(self.WIZARD_NAME,
                                                  "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a boundary. ").format(self.WIZARD_TOOL_NAME, COL_PARTY_TABLE)
             self.log.logMessage("Feature not found in layer {} ...".format(COL_PARTY_TABLE), PLUGIN_NAME, Qgis.Warning)
         else:
-            feature_tid = self._layers[COL_PARTY_TABLE]['layer'].getFeature(fid)[ID_FIELD]
+            feature_tid = self._layers[COL_PARTY_TABLE][LAYER].getFeature(fid)[ID_FIELD]
             message = QCoreApplication.translate(self.WIZARD_NAME,
                                                  "The new party (t_id={}) was successfully created ").format(feature_tid)
 
-        self._layers[COL_PARTY_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self._layers[COL_PARTY_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Party's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 

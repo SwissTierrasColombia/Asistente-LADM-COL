@@ -25,7 +25,8 @@ from qgis.core import (Qgis,
                        QgsApplication,
                        QgsMapLayerProxyModel)
 
-from .....config.general_config import PLUGIN_NAME
+from .....config.general_config import (PLUGIN_NAME,
+                                        LAYER)
 from .....config.help_strings import HelpStrings
 from .....config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                               ID_FIELD,
@@ -50,8 +51,8 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
         self.help_strings = HelpStrings()
 
         self._layers = {
-            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None, 'layer': None},
-            EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None, 'layer': None}
+            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None, LAYER: None},
+            EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None, LAYER: None}
         }
 
         self.restore_settings()
@@ -137,35 +138,35 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
     def disconnect_signals(self):
         # QGIS APP
         try:
-            self._layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'].featureAdded.disconnect()
+            self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].featureAdded.disconnect()
         except:
             pass
 
         try:
-            self._layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'])
-        self._layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'].committedFeaturesAdded.connect(self.finish_feature_creation)
-        self.open_form(self._layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'])
+        self.iface.layerTreeView().setCurrentLayer(self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER])
+        self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.open_form(self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER])
 
     def finish_feature_creation(self, layerId, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()
 
-        if not self._layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'].getFeature(fid).isValid():
+        if not self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].getFeature(fid).isValid():
             message = QCoreApplication.translate(self.WIZARD_NAME,
                                                  "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a administrative source. ").format(self.WIZARD_TOOL_NAME, ADMINISTRATIVE_SOURCE_TABLE)
             self.log.logMessage("Feature not found in layer {} ...".format(ADMINISTRATIVE_SOURCE_TABLE), PLUGIN_NAME, Qgis.Warning)
         else:
-            feature_tid = self._layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'].getFeature(fid)[ID_FIELD]
+            feature_tid = self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].getFeature(fid)[ID_FIELD]
             message = QCoreApplication.translate(self.WIZARD_NAME,
                                                  "The new administrative source (t_id={}) was successfully created ").format(feature_tid)
 
-        self._layers[ADMINISTRATIVE_SOURCE_TABLE]['layer'].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Administrative Source's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 
