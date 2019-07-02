@@ -1,5 +1,5 @@
 ARG QGIS_TEST_VERSION=latest_disco
-FROM  qgis/QGIS:${QGIS_TEST_VERSION}
+FROM  qgis/qgis:${QGIS_TEST_VERSION}
 MAINTAINER Agencia Implementacion <agenciadeimplementacion@incige.com>
 
 #RUN apt-get update && \
@@ -32,8 +32,8 @@ RUN apt-get -y install \
 
 # Python pip installs
 # temporally pip==9.0.3 version
-RUN pip3 install --upgrade pip==9.0.3 && \
-    pip3 install --upgrade psycopg2
+#RUN pip3 install --upgrade pip==9.0.3 && \
+#    pip3 install --upgrade psycopg2
 
 # When our PRs get merged in time!
 RUN wget https://github.com/opengisch/QgisModelBaker/releases/download/v4.2.3/QgisModelBaker.v4.2.3.zip -O /tmp/QgisModelBaker.zip
