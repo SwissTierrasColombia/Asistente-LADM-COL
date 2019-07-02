@@ -176,10 +176,10 @@ def _map_swipe_tool_required(func_to_decorate):
             if MAP_SWIPE_TOOL_REQUIRED_VERSION_URL:
                 # If we depend on a specific version of Map Swipe Tool (only on that one)
                 # and it is not the latest version, show a download link
-                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'Map Swipe Tool' version {} is required, but couldn't be found. Download it <a href=\"{}\">from this link</a> and use 'Install from ZIP'.").format(MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION, MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
+                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'MapSwipe Tool' version {} is required, but couldn't be found. Download it <a href=\"{}\">from this link</a> and use 'Install from ZIP'.").format(MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION, MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
                 inst.iface.messageBar().pushMessage("Asistente LADM_COL", msg, Qgis.Warning, 15)
             else:
-                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'Map Swipe Tool' version {} {}is required, but couldn't be found. Click the button to show the Plugin Manager.").format(MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION, '' if MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION else '(or higher) ')
+                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'MapSwipe Tool' version {} {}is required, but couldn't be found. Click the button to show the Plugin Manager.").format(MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION, '' if MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION else '(or higher) ')
 
                 widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", msg)
                 button = QPushButton(widget)
@@ -189,7 +189,7 @@ def _map_swipe_tool_required(func_to_decorate):
                 inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
 
             inst.log.logMessage(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, Map Swipe Tool not found."),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, MapSwipe Tool not found."),
                 PLUGIN_NAME,
                 Qgis.Warning
             )
