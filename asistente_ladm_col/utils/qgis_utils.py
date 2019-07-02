@@ -254,9 +254,13 @@ class QGISUtils(QObject):
 
     def get_layer(self, db, layer_name, geometry_type=None, load=False):
         # Handy function to avoid sending a whole dict when all we need is a single table/layer
-        res_layer = self.get_layers(db, {layer_name: {'name': layer_name, 'geometry': geometry_type}}, load)
-        if len(res_layer):
-            return res_layer[layer_name]
+        layer = {layer_name: {'name': layer_name, 'geometry': geometry_type, LAYER: None}}
+        res_layer = self.get_layers(db, layer, load)
+        if res_layer is None:
+            return None
+
+        if layer[layer_name]:
+            return layer[layer_name][LAYER]
         else:
             return None
 
