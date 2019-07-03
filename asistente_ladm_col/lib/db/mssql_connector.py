@@ -317,7 +317,7 @@ class MssqlConnector(DBConnector):
     def get_connection_uri(self, dict_conn, level=1):
         uri = []
 
-        uri += ['DRIVER={SQL Server}']
+        uri += ['DRIVER={{{}}}'.format(dict_conn['db_odbc_driver'])]
         host = dict_conn['host'] or self._DEFAULT_HOST
         if dict_conn['instance']:
             host += '\\' + dict_conn['instance']
