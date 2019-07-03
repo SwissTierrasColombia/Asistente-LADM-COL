@@ -56,7 +56,6 @@ WIZARD_UI = get_ui_class('wiz_associate_extaddress_cadastre.ui')
 
 
 class AssociateExtAddressWizard(QWizard, WIZARD_UI):
-    WIZARD_CREATES_SPATIAL_FEATURE = True
     WIZARD_NAME = "AssociateExtAddressWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create ExtAddress")
 
@@ -69,6 +68,11 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
+
+        # Necessary to control featureAdded bug (crash QGIS)
+        # https://gis.stackexchange.com/a/229949/120426
+        self.added_features = None
+        self.rollback_changes = False
 
         self.canvas = self.iface.mapCanvas()
         self.maptool = self.canvas.mapTool()
@@ -187,12 +191,12 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
     def disconnect_signals(self):
         # GUI Wizard
-        signals = [self.btn_plot_map,
-                   self.btn_building_map,
-                   self.btn_building_unit_map,
-                   self.btn_plot_expression,
-                   self.btn_building_expression,
-                   self.btn_building_unit_expression]
+        signals = [self.btn_plot_map.clicked,
+                   self.btn_building_map.clicked,
+                   self.btn_building_unit_map.clicked,
+                   self.btn_plot_expression.clicked,
+                   self.btn_building_expression.clicked,
+                   self.btn_building_unit_expression.clicked]
 
         for signal in signals:
             try:
@@ -207,7 +211,12 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             pass
 
         try:
-            self._layers[EXTADDRESS_TABLE][LAYER].featureAdded.disconnect()
+            self._layers[EXTADDRESS_TABLE][LAYER].featureAdded.disconnect(self.exec_form)
+        except:
+            pass
+
+        try:
+            self._layers[EXTADDRESS_TABLE][LAYER].editCommandEnded.disconnect(self.confirm_commit)
         except:
             pass
 
@@ -389,15 +398,14 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
     def prepare_feature_creation(self):
         result = self.prepare_feature_creation_layers()
-        if result is None:
-            return
-        self.edit_feature()
+        if result:
+            self.edit_feature()
 
     def prepare_feature_creation_layers(self):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if res_layers is None:
-            return
+            return False
 
         # Add signal to check if a layer was removed
         self.validate_remove_layers()
@@ -496,43 +504,63 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         if not layer.isEditable():
             layer.startEditing()
 
-        if self.WIZARD_CREATES_SPATIAL_FEATURE:
-            # action add ExtAddress feature
-            self.qgis_utils.suppress_form(layer, True)
-            self.iface.actionAddFeature().trigger()
+        # action add ExtAddress feature
+        self.qgis_utils.suppress_form(layer, True)
+        self.iface.actionAddFeature().trigger()
 
-            # Shows the form when the feature is created
-            layer.featureAdded.connect(partial(self.exec_form, layer))
-        else:
-            self.exec_form(layer)
+        # Shows the form when the feature is created
+        layer.featureAdded.connect(self.exec_form)
+        layer.editCommandEnded.connect(self.confirm_commit)
 
-    def exec_form(self, layer):
-        try:
-            # Disconnect signal to prevent add features
-            layer.featureAdded.disconnect()
-            self.log.logMessage("Feature added SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
-        except:
-            pass
+    def exec_form(self, f_id):
 
-        feature = self.qgis_utils.get_new_feature(layer, self.WIZARD_CREATES_SPATIAL_FEATURE)
+        layer = self.sender()  # Get the layer that has sent the signal
+
+        """
+        This method only stores featIds in a class variable.
+        It's required to avoid a bug with SLOTS connected to featureAdded.
+        """
+        self.added_features = f_id
+
+        feature = self.qgis_utils.get_new_feature(layer)
         dialog = self.iface.getFeatureForm(layer, feature)
-        dialog.rejected.connect(self.form_rejected)
         dialog.setModal(True)
 
         if dialog.exec_():
-            fid = feature.id()
+            self.rollback_changes = False
+        else:
+            self.rollback_changes = True
 
-            # Get t_id of spatial unit to associate
-            feature_id = self._current_layer.selectedFeatures()[0][ID_FIELD]
+    def confirm_commit(self):
 
-            # TODO: Update way to obtain the layer name when master merge with branch "change_detection"
+        layer = self.sender() # Get the layer that has sent the signal
+
+        try:
+            layer.featureAdded.disconnect(self.exec_form)
+            self.log.logMessage("ExtAddress's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+        except:
+            pass
+
+        if not self.rollback_changes:
+
+            for f in layer.editBuffer().addedFeatures():
+                feature = layer.editBuffer().addedFeatures()[f]
+                break
+
             spatial_unit_field_idx = None
-            if self._current_layer.name() == PLOT_TABLE:
-                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(EXTADDRESS_PLOT_FIELD)
-            elif self._current_layer.name() == BUILDING_TABLE:
-                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(EXTADDRESS_BUILDING_FIELD)
-            elif self._current_layer.name() == BUILDING_UNIT_TABLE:
-                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(EXTADDRESS_BUILDING_UNIT_FIELD)
+            if feature:
+
+                # Get t_id of spatial unit to associate
+                feature_id = self._current_layer.selectedFeatures()[0][ID_FIELD]
+                fid = feature.id()
+
+                # TODO: Update way to obtain the layer name when master merge with branch "change_detection"
+                if self._current_layer.name() == PLOT_TABLE:
+                    spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(EXTADDRESS_PLOT_FIELD)
+                elif self._current_layer.name() == BUILDING_TABLE:
+                    spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(EXTADDRESS_BUILDING_FIELD)
+                elif self._current_layer.name() == BUILDING_UNIT_TABLE:
+                    spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(EXTADDRESS_BUILDING_UNIT_FIELD)
 
             if spatial_unit_field_idx:
                 # assign the relation with the spatial unit
@@ -541,7 +569,8 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                 # if the field of the spatial unit does not exist
                 layer.rollBack()
                 message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                     "'{}' tool has been closed because when try to create ExtAddress it was not possible to associate a space unit.").format(self.WIZARD_TOOL_NAME)
+                                                     "'{}' tool has been closed because when try to create ExtAddress it was not possible to associate a space unit.").format(
+                    self.WIZARD_TOOL_NAME)
                 self.close_wizard(message)
 
             saved = layer.commitChanges()
@@ -554,14 +583,12 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                                                     Qgis.Warning)
                 for e in layer.commitErrors():
                     self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
-
-            self.iface.mapCanvas().refresh()
         else:
-            # TODO: implement when the bug is removed
-            # When feature form is cancel QGIS close sudenlly
-            #layer.editBuffer().rollBack()
-            #layer.rollBack()
-            pass
+            layer.rollBack()
+            self.form_rejected()
+
+        self.iface.mapCanvas().refresh()
+        self.added_features = None
 
     def form_rejected(self):
         message = QCoreApplication.translate(self.WIZARD_NAME,

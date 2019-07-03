@@ -39,7 +39,6 @@ WIZARD_UI = get_ui_class('wiz_create_boundaries_cadastre.ui')
 
 
 class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
-    WIZARD_CREATES_SPATIAL_FEATURE = True
     WIZARD_NAME = "CreateBoundariesCadastreWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create boundary")
 
@@ -104,7 +103,7 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
             pass
 
         try:
-            self._layers[BOUNDARY_TABLE][LAYER].editCommandEnded.connect(self.confirm_commit)
+            self._layers[BOUNDARY_TABLE][LAYER].editCommandEnded.disconnect(self.confirm_commit)
         except:
             pass
 
@@ -237,7 +236,6 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
 
         feature = self.qgis_utils.get_new_feature(layer)
         dialog = self.iface.getFeatureForm(layer, feature)
-        dialog.rejected.connect(self.form_rejected)
         dialog.setModal(True)
 
         if dialog.exec_():
@@ -254,9 +252,7 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         except:
             pass
 
-        if self.rollback_changes:
-            layer.rollBack()
-        else:
+        if not self.rollback_changes:
             saved = layer.commitChanges()
 
             if not saved:
@@ -268,6 +264,9 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
 
                 for e in layer.commitErrors():
                     self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
+        else:
+            layer.rollBack()
+            self.form_rejected()
 
         self.iface.mapCanvas().refresh()
         self.added_features = None
