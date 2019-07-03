@@ -53,3 +53,4 @@ class MssqlFactory(DbFactory):
         configuration.database = params['database']
         configuration.dbschema = params['schema']
         configuration.dbpwd = params['password']
+        configuration.db_odbc_driver = params['db_odbc_driver']
