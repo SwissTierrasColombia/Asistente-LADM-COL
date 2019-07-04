@@ -71,6 +71,9 @@ class DBConnector(QObject):
     def uri(self, value):
         raise NotImplementedError
 
+    def equals(self, db):
+        return self.dict_conn_params == db.dict_conn_params
+
     def test_connection(self, test_level=EnumTestLevel.LADM):
         raise NotImplementedError
 

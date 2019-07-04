@@ -61,7 +61,8 @@ from .utils.decorators import (_db_connection_required,
                                _qgis_model_baker_required,
                                _activate_processing_plugin,
                                _map_swipe_tool_required,
-                               _official_db_connection_required)
+                               _official_db_connection_required,
+                               _different_db_connections_required)
 
 from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
@@ -1196,6 +1197,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_map_swipe_tool_required
     @_db_connection_required
     @_official_db_connection_required
+    @_different_db_connections_required
     def query_changes_per_parcel(self):
         self.show_change_detection_dockwidget()
         self._dock_widget_change_detection.show_parcel_panel()
@@ -1204,6 +1206,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_map_swipe_tool_required
     @_db_connection_required
     @_official_db_connection_required
+    @_different_db_connections_required
     def query_changes_all_parcels(self):
         self.show_change_detection_dockwidget()
         self._dock_widget_change_detection.show_main_panel()
