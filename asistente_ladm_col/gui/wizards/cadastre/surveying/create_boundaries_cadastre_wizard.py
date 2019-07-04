@@ -196,6 +196,11 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
                                                 self._layers[BOUNDARY_TABLE][LAYER]])
         self.open_form(self._layers[BOUNDARY_TABLE][LAYER])
 
+        self.iface.messageBar().pushMessage('Asistente LADM_COL',
+                                            QCoreApplication.translate(self.WIZARD_NAME,
+                                                                       "You can now start capturing boundary digitizing on the map..."),
+                                            Qgis.Info)
+
     def finish_feature_creation(self, layerId, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)

@@ -3,7 +3,7 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 09/05/18
+        begin                : 19/04/18
         git sha              : :%H$
         copyright            : (C) 2018 by Jorge Useche (Incige SAS)
         email                : naturalmentejorge@gmail.com
@@ -17,7 +17,6 @@
  ***************************************************************************/
 """
 from functools import partial
-
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 from qgis.PyQt.QtWidgets import QWizard
@@ -26,21 +25,20 @@ from qgis.core import (QgsProject,
                        Qgis,
                        QgsMapLayerProxyModel,
                        QgsWkbTypes)
-
 from .....config.general_config import (PLUGIN_NAME,
                                         LAYER)
 from .....config.help_strings import HelpStrings
-from .....config.table_mapping_config import (BUILDING_UNIT_TABLE,
+from .....config.table_mapping_config import (BUILDING_TABLE,
                                               ID_FIELD,
                                               SURVEY_POINT_TABLE)
 from .....utils import get_ui_class
 
-WIZARD_UI = get_ui_class('wiz_create_building_unit_cadastre.ui')
+WIZARD_UI = get_ui_class('wiz_create_building_cadastre.ui')
 
 
-class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
-    WIZARD_NAME = "CreateBuildingUnitCadastreWizard"
-    WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create building unit")
+class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
+    WIZARD_NAME = "CreateBuildingCadastreWizard"
+    WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create building")
 
     def __init__(self, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
@@ -57,7 +55,7 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
         self.rollback_changes = False
 
         self._layers = {
-            BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
             SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None}
         }
 
@@ -73,7 +71,7 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(BUILDING_UNIT_TABLE))
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(BUILDING_TABLE))
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -81,7 +79,7 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(BUILDING_UNIT_TABLE, True))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(BUILDING_TABLE, True))
 
         elif self.rad_digitizing.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -89,24 +87,24 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Start")
-            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_BUILDING_UNIT_CADASTRE_PAGE_1_OPTION_POINTS)
+            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_BUILDING_CADASTRE_PAGE_1_OPTION_POINTS)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
 
     def disconnect_signals(self):
         # QGIS APP
         try:
-            self._layers[BUILDING_UNIT_TABLE][LAYER].featureAdded.disconnect()
+            self._layers[BUILDING_TABLE][LAYER].featureAdded.disconnect()
         except:
             pass
 
         try:
-            self._layers[BUILDING_UNIT_TABLE][LAYER].editCommandEnded.disconnect(self.confirm_commit)
+            self._layers[BUILDING_TABLE][LAYER].editCommandEnded.disconnect(self.confirm_commit)
         except:
             pass
 
         try:
-            self._layers[BUILDING_UNIT_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[BUILDING_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
@@ -124,7 +122,7 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
                 field_mapping = self.cbo_mapping.currentText()
                 res_etl_model = self.qgis_utils.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
-                                                               BUILDING_UNIT_TABLE,
+                                                               BUILDING_TABLE,
                                                                QgsWkbTypes.PolygonGeometry,
                                                                field_mapping)
 
@@ -132,11 +130,11 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
                     if field_mapping:
                         self.qgis_utils.delete_old_field_mapping(field_mapping)
 
-                    self.qgis_utils.save_field_mapping(BUILDING_UNIT_TABLE)
+                    self.qgis_utils.save_field_mapping(BUILDING_TABLE)
             else:
                 self.iface.messageBar().pushMessage('Asistente LADM_COL',
                     QCoreApplication.translate(self.WIZARD_NAME,
-                                               "Select a source layer to set the field mapping to '{}'.").format(BUILDING_UNIT_TABLE),
+                                               "Select a source layer to set the field mapping to '{}'.").format(BUILDING_TABLE),
                     Qgis.Warning)
 
         elif self.rad_digitizing.isChecked():
@@ -184,19 +182,19 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
         self.close()
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[BUILDING_UNIT_TABLE][LAYER])
-        self._layers[BUILDING_UNIT_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.iface.layerTreeView().setCurrentLayer(self._layers[BUILDING_TABLE][LAYER])
+        self._layers[BUILDING_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
 
         # Disable transactions groups
         QgsProject.instance().setAutoTransaction(False)
 
         # Activate snapping
         self.qgis_utils.active_snapping_all_layers(tolerance=9)
-        self.open_form(self._layers[BUILDING_UNIT_TABLE][LAYER])
+        self.open_form(self._layers[BUILDING_TABLE][LAYER])
 
         self.iface.messageBar().pushMessage('Asistente LADM_COL',
                                             QCoreApplication.translate(self.WIZARD_NAME,
-                                                                       "You can now start capturing building unit digitizing on the map..."),
+                                                                       "You can now start capturing building digitizing on the map..."),
                                             Qgis.Info)
 
     def finish_feature_creation(self, layerId, features):
@@ -204,15 +202,15 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()
 
-        if not self._layers[BUILDING_UNIT_TABLE][LAYER].getFeature(fid).isValid():
+        if not self._layers[BUILDING_TABLE][LAYER].getFeature(fid).isValid():
             message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a building unit. ").format(self.WIZARD_TOOL_NAME, BUILDING_UNIT_TABLE)
-            self.log.logMessage("Feature not found in layer {} ...".format(BUILDING_UNIT_TABLE), PLUGIN_NAME, Qgis.Warning)
+                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a building unit. ").format(self.WIZARD_TOOL_NAME, BUILDING_TABLE)
+            self.log.logMessage("Feature not found in layer {} ...".format(BUILDING_TABLE), PLUGIN_NAME, Qgis.Warning)
         else:
-            feature_tid = self._layers[BUILDING_UNIT_TABLE][LAYER].getFeature(fid)[ID_FIELD]
+            feature_tid = self._layers[BUILDING_TABLE][LAYER].getFeature(fid)[ID_FIELD]
             message = QCoreApplication.translate(self.WIZARD_NAME, "The new building unit (t_id={}) was successfully created ").format(feature_tid)
 
-        self._layers[BUILDING_UNIT_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self._layers[BUILDING_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Building unit's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 
@@ -279,16 +277,16 @@ class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/wizards/building_unit_load_data_type', 'digitizing' if self.rad_digitizing.isChecked() else 'refactor')
+        settings.setValue('Asistente-LADM_COL/wizards/building_load_data_type', 'digitizing' if self.rad_digitizing.isChecked() else 'refactor')
 
     def restore_settings(self):
         settings = QSettings()
 
-        load_data_type = settings.value('Asistente-LADM_COL/wizards/building_unit_load_data_type') or 'digitizing'
+        load_data_type = settings.value('Asistente-LADM_COL/wizards/building_load_data_type') or 'digitizing'
         if load_data_type == 'refactor':
             self.rad_refactor.setChecked(True)
         else:
             self.rad_digitizing.setChecked(True)
 
     def show_help(self):
-        self.qgis_utils.show_help("create_building_unit")
+        self.qgis_utils.show_help("create_building")

@@ -61,7 +61,7 @@ from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .gui.wizards.cadastre.source.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.wizards.cadastre.surveying.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
-from .gui.create_building_cadastre_wizard import CreateBuildingCadastreWizard
+from .gui.wizards.cadastre.spatial_unit.create_building_cadastre_wizard import CreateBuildingCadastreWizard
 from .gui.wizards.cadastre.spatial_unit.create_building_unit_cadastre_wizard import CreateBuildingUnitCadastreWizard
 from .gui.wizards.cadastre.spatial_unit.create_right_of_way_cadastre_wizard import CreateRightOfWayCadastreWizard
 from .gui.wizards.cadastre.spatial_unit.associate_extaddress_cadastre_wizard import AssociateExtAddressWizard
