@@ -1619,7 +1619,7 @@ class QGISUtils(QObject):
         snapping.setTolerance(tolerance)
         QgsProject.instance().setSnappingConfig(snapping)
 
-    def active_snapping_layers(self, layers):
+    def active_snapping_layers(self, layers, tolerance=15):
         # Configure Snapping
         snapping = QgsProject.instance().snappingConfig()
         snapping.setEnabled(True)
@@ -1628,6 +1628,6 @@ class QGISUtils(QObject):
         for layer in layers:
             snapping.setIndividualLayerSettings(layer,
                                                 QgsSnappingConfig.IndividualLayerSettings(True,
-                                                                                          QgsSnappingConfig.Vertex, 15,
+                                                                                          QgsSnappingConfig.Vertex, tolerance,
                                                                                           QgsTolerance.Pixels))
         QgsProject.instance().setSnappingConfig(snapping)
