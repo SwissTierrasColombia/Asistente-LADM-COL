@@ -914,6 +914,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.get_settings_dialog().set_action_type(EnumDbActionType.CONFIG)
         self.qgis_utils.get_settings_dialog().exec_()
 
+    def show_settings_clear_message_bar(self):
+        self.clear_message_bar()
+        self.show_settings()
+
     def show_plugin_manager(self):
         self.iface.actionManagePlugins().trigger()
 
@@ -1228,6 +1232,10 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def show_official_data_settings(self):
         self.qgis_utils.get_official_data_settings_dialog().exec_()
+
+    def show_official_data_settings_clear_message_bar(self):
+        self.clear_message_bar()
+        self.show_official_data_settings()
 
     def download_report_dependency(self):
         self.report_generator.download_report_dependency()

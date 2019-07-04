@@ -178,12 +178,12 @@ def _different_db_connections_required(func_to_decorate):
 
             button1 = QPushButton(widget)
             button1.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", " Change official settings"))
-            button1.pressed.connect(inst.show_official_data_settings)
+            button1.pressed.connect(inst.show_official_data_settings_clear_message_bar)
             widget.layout().addWidget(button1)
 
             button2 = QPushButton(widget)
             button2.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change collected settings"))
-            button2.pressed.connect(inst.show_settings)
+            button2.pressed.connect(inst.show_settings_clear_message_bar)
             widget.layout().addWidget(button2)
 
             inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 20)
