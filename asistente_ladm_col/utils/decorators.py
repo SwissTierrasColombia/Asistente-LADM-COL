@@ -162,6 +162,39 @@ def _official_db_connection_required(func_to_decorate):
 
     return decorated_function
 
+def _different_db_connections_required(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(inst, *args, **kwargs):
+        db = inst.get_db_connection()
+        official_db = inst.get_official_db_connection()
+        res = db.equals(official_db)
+
+        if not res:
+            func_to_decorate(inst)
+        else:
+            widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
+                         QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                         "Your 'official' database is the same 'collected' database!!! Click the proper button to change connection settings."))
+
+            button1 = QPushButton(widget)
+            button1.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", " Change official settings"))
+            button1.pressed.connect(inst.show_official_data_settings_clear_message_bar)
+            widget.layout().addWidget(button1)
+
+            button2 = QPushButton(widget)
+            button2.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change collected settings"))
+            button2.pressed.connect(inst.show_settings_clear_message_bar)
+            widget.layout().addWidget(button2)
+
+            inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 20)
+            inst.log.logMessage(
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, official DB is the same collected DB!"),
+                PLUGIN_NAME,
+                Qgis.Warning
+            )
+
+    return decorated_function
+
 def _map_swipe_tool_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(inst, *args, **kwargs):
