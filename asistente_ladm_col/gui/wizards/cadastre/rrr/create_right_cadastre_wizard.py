@@ -44,7 +44,6 @@ WIZARD_UI = get_ui_class('wiz_create_right_cadastre.ui')
 
 
 class CreateRightCadastreWizard(QWizard, WIZARD_UI):
-    WIZARD_CREATES_SPATIAL_FEATURE = False
     WIZARD_NAME = "CreateRightCadastreWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create Right")
 
@@ -194,11 +193,6 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
 
         # QGIS APP
         try:
-            self._layers[RIGHT_TABLE][LAYER].featureAdded.disconnect()
-        except:
-            pass
-
-        try:
             self._layers[RIGHT_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
@@ -251,25 +245,9 @@ class CreateRightCadastreWizard(QWizard, WIZARD_UI):
         if not layer.isEditable():
             layer.startEditing()
 
-        if self.WIZARD_CREATES_SPATIAL_FEATURE:
-            # action add feature
-            self.qgis_utils.suppress_form(layer, True)
-            self.iface.actionAddFeature().trigger()
-
-            # Shows the form when the feature is created
-            layer.featureAdded.connect(partial(self.exec_form, layer))
-
-        else:
-            self.exec_form(layer)
+        self.exec_form(layer)
 
     def exec_form(self, layer):
-        try:
-            # Disconnect signal to prevent add features
-            layer.featureAdded.disconnect()
-            self.log.logMessage("Feature added SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
-        except:
-            pass
-
         feature = self.qgis_utils.get_new_feature(layer)
         dialog = self.iface.getFeatureForm(layer, feature)
         dialog.rejected.connect(self.form_rejected)

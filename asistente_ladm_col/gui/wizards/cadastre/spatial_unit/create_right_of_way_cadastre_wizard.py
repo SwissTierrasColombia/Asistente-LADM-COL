@@ -45,7 +45,6 @@ WIZARD_UI = get_ui_class('wiz_create_right_of_way_cadastre.ui')
 
 
 class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
-    WIZARD_CREATES_SPATIAL_FEATURE = True
     WIZARD_NAME = "CreateRightOfWayCadastreWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create Right of way")
 
@@ -59,8 +58,14 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
 
+        # Necessary to control featureAdded bug (crash QGIS)
+        # https://gis.stackexchange.com/a/229949/120426
+        self.added_features = None
+        self.rollback_changes = False
+
         self.type_geometry_creation = None
         self.addedFeatures = None
+        self.temporal_layer = None
 
         self._layers = {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
@@ -124,6 +129,11 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             pass
 
         try:
+            self._layers[RIGHT_OF_WAY_TABLE][LAYER].editCommandEnded.disconnect(self.confirm_commit)
+        except:
+            pass
+
+        try:
             self._layers[RIGHT_OF_WAY_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
@@ -167,15 +177,14 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
 
     def prepare_feature_creation(self):
         result = self.prepare_feature_creation_layers()
-        if result is None:
-            return
-        self.edit_feature()
+        if result:
+            self.edit_feature()
 
     def prepare_feature_creation_layers(self):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if res_layers is None:
-            return
+            return False
 
         # Add signal to check if a layer was removed
         self.validate_remove_layers()
@@ -217,8 +226,9 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             layer = self._layers[RIGHT_OF_WAY_TABLE][LAYER]
         elif self.type_geometry_creation == "digitizing_line":
             # Add Memory line layer
-            layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG), self.translatable_config_strings.RIGHT_OF_WAY_LINE_LAYER, "memory")
-            QgsProject.instance().addMapLayer(layer, True)
+            self.temporal_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG), self.translatable_config_strings.RIGHT_OF_WAY_LINE_LAYER, "memory")
+            layer = self.temporal_layer
+            QgsProject.instance().addMapLayer(self.temporal_layer, True)
         else:
             return
 
@@ -227,20 +237,10 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             self._layers[RIGHT_OF_WAY_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
             self.open_form(layer)
 
-    def store_features_ids(self, featId):
-        """
-        This method only stores featIds in a class variable. It's required to avoid a bug with SLOTS connected to
-        featureAdded.
-        """
-        self.addedFeatures = featId
-
-    def update_attributes_after_adding(self):
-        layer = self.sender()  # Get the layer that has sent the signal
-        layer.featureAdded.disconnect(self.store_features_ids)
-        self.log.logMessage("RigthOfWayLine's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
-        res = layer.commitChanges()
-        QgsProject.instance().removeMapLayer(layer)
-        self.addedFeatures = None
+        self.iface.messageBar().pushMessage('Asistente LADM_COL',
+                                            QCoreApplication.translate(self.WIZARD_NAME,
+                                                                       "You can now start capturing right of ways digitizing on the map..."),
+                                            Qgis.Info)
 
     def finish_feature_creation(self, layerId, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -268,40 +268,37 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         if not layer.isEditable():
             layer.startEditing()
 
-        if self.WIZARD_CREATES_SPATIAL_FEATURE:
-            self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                                           QCoreApplication.translate(self.WIZARD_NAME,
-                                                                      "You can now start capturing right of ways digitizing on the map..."),
-                                           Qgis.Info)
+        # action add ExtAddress feature
+        self.qgis_utils.suppress_form(layer, True)
+        self.iface.actionAddFeature().trigger()
 
-            # action add ExtAddress feature
-            self.qgis_utils.suppress_form(layer, True)
-            self.iface.actionAddFeature().trigger()
+        # Shows the form when the feature is created
+        layer.featureAdded.connect(partial(self.exec_form, layer))
+        layer.editCommandEnded.connect(self.confirm_commit)
 
-            # Shows the form when the feature is created
-            layer.featureAdded.connect(partial(self.exec_form, layer))
+    def exec_form(self, layer, f_id):
 
-        else:
-            self.exec_form(layer)
-
-    def exec_form(self, layer):
         try:
-            # Disconnect signal to prevent add features
             layer.featureAdded.disconnect()
-            self.log.logMessage("Feature added SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+            self.log.logMessage("ExtAddress's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         except:
             pass
 
+        """
+        This method only stores featIds in a class variable. 
+        It's required to avoid a bug with SLOTS connected to featureAdded.
+        """
+        self.added_features = f_id
+
         if self.type_geometry_creation == "digitizing_polygon":
-            feature = self.qgis_utils.get_new_feature(layer, self.WIZARD_CREATES_SPATIAL_FEATURE)
+            feature = self.qgis_utils.get_new_feature(layer, True)
         elif self.type_geometry_creation == "digitizing_line":
 
             # Get temporal right of way geometry
             feature = self.get_feature_with_buffer_right_of_way(layer)
             layer.commitChanges()
 
-            # Remove temporal layer and set right of way as layer
-            QgsProject.instance().removeMapLayer(layer)
+            # Change target layer (temporal by db layer)
             layer = self._layers[RIGHT_OF_WAY_TABLE][LAYER]
 
             # Add temporal geometry create
@@ -312,12 +309,27 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             layer.addFeature(feature)
 
         dialog = self.iface.getFeatureForm(layer, feature)
-        dialog.rejected.connect(self.form_rejected)
         dialog.setModal(True)
 
         if dialog.exec_():
-            saved = layer.commitChanges()
+            self.rollback_changes = False
+        else:
+            self.rollback_changes = True
 
+    def confirm_commit(self):
+
+        layer = self.sender()  # Get the layer that has sent the signal
+
+        try:
+            layer.featureAdded.disconnect()
+            self.log.logMessage("Right of way's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+        except:
+            pass
+
+        layer = self._layers[RIGHT_OF_WAY_TABLE][LAYER]
+
+        if not self.rollback_changes:
+            saved = layer.commitChanges()
             if not saved:
                 layer.rollBack()
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
@@ -326,14 +338,26 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
                                                     Qgis.Warning)
                 for e in layer.commitErrors():
                     self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
-
-            self.iface.mapCanvas().refresh()
         else:
-            # TODO: implement when the bug is removed
-            # When feature form is cancel QGIS close sudenlly
-            #layer.editBuffer().rollBack()
-            # layer.rollBack()
-            pass
+            layer.rollBack()
+            self.form_rejected()
+
+        #TODO: Remove temporal layer
+        # if self.temporal_layer:
+        #     try:
+        #         self.temporal_layer.featureAdded.disconnect()
+        #     except:
+        #         pass
+        #
+        #     try:
+        #         self.temporal_layer.editCommandEnded.disconnect(self.confirm_commit)
+        #     except:
+        #         pass
+        #
+        #     QgsProject.instance().removeMapLayer(self.temporal_layer)
+
+        self.iface.mapCanvas().refresh()
+        self.added_features = None
 
     def get_feature_with_buffer_right_of_way(self, layer):
         params = {'INPUT': layer,

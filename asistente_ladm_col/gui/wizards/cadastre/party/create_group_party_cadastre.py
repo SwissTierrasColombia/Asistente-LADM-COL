@@ -54,8 +54,8 @@ from .....utils import get_ui_class
 
 DIALOG_UI = get_ui_class('dlg_group_party.ui')
 
+
 class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
-    WIZARD_CREATES_SPATIAL_FEATURE = False
     WIZARD_NAME = "CreateGroupPartyCadastreWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create group party")
 
@@ -331,7 +331,6 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
 
         return (True, QCoreApplication.translate("CreateGroupParty",
                 "Validation passed!"))
-
 
     def show_message(self, message, level):
         self.bar.pushMessage(message, level, 10)

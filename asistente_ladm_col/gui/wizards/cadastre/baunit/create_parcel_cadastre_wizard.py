@@ -56,7 +56,6 @@ WIZARD_UI = get_ui_class('wiz_create_parcel_cadastre.ui')
 
 
 class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
-    WIZARD_CREATES_SPATIAL_FEATURE = False
     WIZARD_NAME = "CreateParcelCadastreWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create Parcel")
 
@@ -219,11 +218,6 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         # QGIS APP
         try:
             self.canvas.mapToolSet.disconnect(self.map_tool_changed)
-        except:
-            pass
-
-        try:
-            self._layers[PARCEL_TABLE][LAYER].featureAdded.disconnect()
         except:
             pass
 
@@ -505,25 +499,9 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         if not layer.isEditable():
             layer.startEditing()
 
-        if self.WIZARD_CREATES_SPATIAL_FEATURE:
-            # action add ExtAddress feature
-            self.qgis_utils.suppress_form(layer, True)
-            self.iface.actionAddFeature().trigger()
-
-            # Shows the form when the feature is created
-            layer.featureAdded.connect(partial(self.exec_form, layer))
-
-        else:
-            self.exec_form(layer)
+        self.exec_form(layer)
 
     def exec_form(self, layer):
-        try:
-            # Disconnect signal to prevent add features
-            layer.featureAdded.disconnect()
-            self.log.logMessage("Feature added SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
-        except:
-            pass
-
         feature = self.qgis_utils.get_new_feature(layer)
         dialog = self.iface.getFeatureForm(layer, feature)
         dialog.rejected.connect(self.form_rejected)
