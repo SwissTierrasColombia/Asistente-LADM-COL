@@ -18,41 +18,48 @@ from asistente_ladm_col.config.table_mapping_config import BOUNDARY_POINT_TABLE
 
 import_qgis_model_baker()
 
+SCHEMA_DISTINCT_GEOMS = 'test_distinct_geoms'
+SCHEMA_LADM_COL = 'test_ladm_col'
+SCHEMA_LADM_COL_3D = 'test_ladm_col_3d'
+
 
 class TestGeomsLoad(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        print("\nINFO: Setting up copy Layer With different Geometries to DB validation...")
+        print("\nINFO: Setting up copy layer With different Geometries to DB validation...")
         self.qgis_utils = QGISUtils()
 
         # resore schemas
-        restore_schema('test_distinct_geoms')
-        restore_schema('test_ladm_col')
-        restore_schema('test_ladm_col_3d')
+        restore_schema(SCHEMA_DISTINCT_GEOMS)
+        restore_schema(SCHEMA_LADM_COL)
+        restore_schema(SCHEMA_LADM_COL_3D)
 
-        self.db_distinct_geoms = get_dbconn('test_distinct_geoms')
+        self.db_distinct_geoms = get_dbconn(SCHEMA_DISTINCT_GEOMS)
         result = self.db_distinct_geoms.test_connection()
-        print('test_connection for: '.format('test_distinct_geoms'), result)
+        print('Test_connection for: '.format(SCHEMA_DISTINCT_GEOMS), result)
         if not result[1]:
-            print('The test connection with  {} db is not working'.format("test_distinct_geoms"))
+            print('The test connection with  {} db is not working'.format(SCHEMA_DISTINCT_GEOMS))
             return
 
-        self.db_connection = get_dbconn('test_ladm_col')
+        self.db_connection = get_dbconn(SCHEMA_LADM_COL)
         result = self.db_connection.test_connection()
-        print('test_connection for: '.format('test_ladm_col'), result)
+        print('Test_connection for: '.format(SCHEMA_LADM_COL), result)
         if not result[1]:
-            print('The test connection with  {} db is not working'.format("test_ladm_col"))
+            print('The test connection with  {} db is not working'.format(SCHEMA_LADM_COL))
             return
 
-        self.db_connection_3d = get_dbconn('test_ladm_col_3d')
+        self.db_connection_3d = get_dbconn(SCHEMA_LADM_COL_3D)
         result = self.db_connection_3d.test_connection()
-        print('test_connection for: '.format('test_ladm_col_3d'), result)
+        print('Test_connection for: '.format(SCHEMA_LADM_COL_3D), result)
         if not result[1]:
-            print('The test connection with  {} db is not working'.format("test_ladm_col_3d"))
+            print('The test connection with {} db is not working'.format(SCHEMA_LADM_COL_3D))
             return
 
         self.gpkg_path = get_test_copy_path('geopackage/points_z_m_zm.gpkg')
+
+        clean_table(SCHEMA_LADM_COL, BOUNDARY_POINT_TABLE)
+        clean_table(SCHEMA_LADM_COL_3D, BOUNDARY_POINT_TABLE)
 
 
     def test_valid_import_geom_2d_to_db_gpkg(self):
@@ -65,58 +72,61 @@ class TestGeomsLoad(unittest.TestCase):
         print("Validating Point to Point")
         uri = self.gpkg_path + '|layername={layername}'.format(layername='points')
         point_layer = QgsVectorLayer(uri, 'points', 'ogr')
-        print("Is Valid layer :", point_layer.isValid())
+        self.assertTrue(point_layer.isValid())
         run_etl_model(point_layer, out_layer=test_layer)
-        test_layer.startEditing()
         print("Info: Validating geometry Point...")
         self.assertEqual(QgsWkbTypes.PointGeometry, test_layer.type())
         self.assertEqual(QgsWkbTypes.Point, point_layer.wkbType())
         self.assertEqual(QgsWkbTypes.Point, test_layer.wkbType())
         self.assertEqual(test_layer.featureCount(), 51)
-        clean_table('test_ladm_col', BOUNDARY_POINT_TABLE)
-        test_layer.dataProvider().truncate()
+
+        self.delete_features(test_layer)
+        self.assertEqual(test_layer.featureCount(), 0)
 
         # PointZ To Point
         print("Validating PointZ to Point")
         uri = self.gpkg_path + '|layername={layername}'.format(layername='points_Z')
         point_layer = QgsVectorLayer(uri, 'points_Z', 'ogr')
-        print("Is Valid layer :", point_layer.isValid())
+        self.assertTrue(point_layer.isValid())
         self.assertIn(point_layer.wkbType(), [QgsWkbTypes.PointZ, QgsWkbTypes.Point25D])
         output = run_etl_model(point_layer, out_layer=test_layer)
         print("Info: Validating geometry PointZ...", test_layer.wkbType())
         self.assertEqual(QgsWkbTypes.PointGeometry, test_layer.type())
         self.assertEqual(QgsWkbTypes.Point, test_layer.wkbType())
         self.assertEqual(test_layer.featureCount(), 51)
-        clean_table('test_ladm_col', BOUNDARY_POINT_TABLE)
-        test_layer.dataProvider().truncate()
+
+        self.delete_features(test_layer)
+        self.assertEqual(test_layer.featureCount(), 0)
 
         # PointM To Point
         print("Validating PointM To Point")
         uri = self.gpkg_path + '|layername={layername}'.format(layername='points_M')
         point_layer = QgsVectorLayer(uri, 'points', 'ogr')
-        print("Is Valid layer :", point_layer.isValid())
+        self.assertTrue(point_layer.isValid())
         run_etl_model(point_layer, out_layer=test_layer)
         print("Info: Validating geometry PointZ...", test_layer.wkbType())
         self.assertEqual(QgsWkbTypes.PointGeometry, test_layer.type())
         self.assertEqual(QgsWkbTypes.PointM, point_layer.wkbType())
         self.assertEqual(QgsWkbTypes.Point, test_layer.wkbType())
         self.assertEqual(test_layer.featureCount(), 51)
-        clean_table('test_ladm_col', BOUNDARY_POINT_TABLE)
-        test_layer.dataProvider().truncate()
+
+        self.delete_features(test_layer)
+        self.assertEqual(test_layer.featureCount(), 0)
 
         # PointZM To Point
         print("Validating PointZM To Point")
         uri = self.gpkg_path + '|layername={layername}'.format(layername='points_ZM')
         point_layer = QgsVectorLayer(uri, 'points', 'ogr')
-        print("Is Valid layer :", point_layer.isValid())
+        self.assertTrue(point_layer.isValid())
         run_etl_model(point_layer, out_layer=test_layer)
         print("Info: Validating geometry PointZ...", test_layer.wkbType())
         self.assertEqual(QgsWkbTypes.PointGeometry, test_layer.type())
         self.assertEqual(QgsWkbTypes.PointZM, point_layer.wkbType())
         self.assertEqual(QgsWkbTypes.Point, test_layer.wkbType())
         self.assertEqual(test_layer.featureCount(), 51)
-        clean_table('test_ladm_col', BOUNDARY_POINT_TABLE)
-        test_layer.dataProvider().truncate()
+
+        self.delete_features(test_layer)
+        self.assertEqual(test_layer.featureCount(), 0)
 
 
     def test_valid_import_geom_3d_to_db_gpkg(self):
@@ -128,16 +138,16 @@ class TestGeomsLoad(unittest.TestCase):
         print("Validating Point to PointZ")
         uri = self.gpkg_path + '|layername={layername}'.format(layername='points')
         point_layer = QgsVectorLayer(uri, 'points', 'ogr')
-        print("Is Valid layer :", point_layer.isValid())
+        self.assertTrue(point_layer.isValid())
         run_etl_model(point_layer, out_layer=test_layer_3d)
         print("Info: Validating geometry Point...")
         self.assertEqual(QgsWkbTypes.PointGeometry, test_layer_3d.type())
         self.assertEqual(QgsWkbTypes.Point, point_layer.wkbType())
         self.assertEqual(QgsWkbTypes.PointZ, test_layer_3d.wkbType())
         self.assertEqual(test_layer_3d.featureCount(), 51)
-        test_layer_3d.startEditing()
-        clean_table('test_ladm_col_3d', BOUNDARY_POINT_TABLE)
-        test_layer_3d.dataProvider().truncate()
+
+        self.delete_features(test_layer_3d)
+        self.assertEqual(test_layer_3d.featureCount(), 0)
 
         # PointZ To PointZ
         print("Validating PointZ to PointZ")
@@ -149,8 +159,9 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertIn(point_layer.wkbType(), [QgsWkbTypes.PointZ, QgsWkbTypes.Point25D])
         self.assertEqual(QgsWkbTypes.PointZ, test_layer_3d.wkbType())
         self.assertEqual(test_layer_3d.featureCount(), 51)
-        clean_table('test_ladm_col_3d', BOUNDARY_POINT_TABLE)
-        test_layer_3d.dataProvider().truncate()
+
+        self.delete_features(test_layer_3d)
+        self.assertEqual(test_layer_3d.featureCount(), 0)
 
         # PointM To PointZ
         print("Validating PointM To PointZ")
@@ -162,8 +173,9 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.PointM, point_layer.wkbType())
         self.assertEqual(QgsWkbTypes.PointZ, test_layer_3d.wkbType())
         self.assertEqual(test_layer_3d.featureCount(), 51)
-        clean_table('test_ladm_col_3d', BOUNDARY_POINT_TABLE)
-        test_layer_3d.dataProvider().truncate()
+
+        self.delete_features(test_layer_3d)
+        self.assertEqual(test_layer_3d.featureCount(), 0)
 
         # PointZM To PointZ
         print("Validating PointZM To PointZ")
@@ -175,8 +187,10 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.PointZM, point_layer.wkbType())
         self.assertEqual(QgsWkbTypes.PointZ, test_layer_3d.wkbType())
         self.assertEqual(test_layer_3d.featureCount(), 51)
-        clean_table('test_ladm_col_3d', BOUNDARY_POINT_TABLE)
-        test_layer_3d.dataProvider().truncate()
+
+        self.delete_features(test_layer_3d)
+        self.assertEqual(test_layer_3d.featureCount(), 0)
+
 
     def test_valid_import_geom_2d_to_db_postgres(self):
         print('\nINFO: Validating ETL-Model from [ Point, PointZ, PointM, PointZM ] to Point (Postgres) geometries...')
@@ -187,18 +201,20 @@ class TestGeomsLoad(unittest.TestCase):
         # Point To Point
         print("Validating Point to Point")
         point_layer = self.qgis_utils.get_layer(self.db_distinct_geoms, 'points', load=True)
-        print("Is Valid layer :", point_layer.isValid())
+        self.assertTrue(point_layer.isValid())
         run_etl_model(point_layer, out_layer=test_layer)
-        test_layer.startEditing()
         print("Info: Validating geometry Point...")
         self.assertEqual(QgsWkbTypes.PointGeometry, test_layer.type())
         self.assertEqual(QgsWkbTypes.Point, test_layer.wkbType())
         self.assertEqual(test_layer.featureCount(), 51)
 
+        self.delete_features(test_layer)
+        self.assertEqual(test_layer.featureCount(), 0)
+
         # PointZ To Point
         print("Validating PointZ to Point")
         point_layer = self.qgis_utils.get_layer(self.db_distinct_geoms, 'points_z', load=True)
-        print("Is Valid layer :", point_layer.isValid())
+        self.assertTrue(point_layer.isValid())
         self.assertIn(point_layer.wkbType(), [QgsWkbTypes.PointZ, QgsWkbTypes.Point25D])
         run_etl_model(point_layer, out_layer=test_layer)
         print("Info: Validating geometry PointZ...", test_layer.wkbType())
@@ -206,10 +222,13 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.Point, test_layer.wkbType())
         self.assertEqual(test_layer.featureCount(), 51)
 
+        self.delete_features(test_layer)
+        self.assertEqual(test_layer.featureCount(), 0)
+
         # PointM To Point
         print("Validating PointM To Point")
         point_layer = self.qgis_utils.get_layer(self.db_distinct_geoms, 'points_m', load=True)
-        print("Is Valid layer :", point_layer.isValid())
+        self.assertTrue(point_layer.isValid())
         run_etl_model(point_layer, out_layer=test_layer)
         print("Info: Validating geometry PointZ...", test_layer.wkbType())
         self.assertEqual(QgsWkbTypes.PointGeometry, test_layer.type())
@@ -217,10 +236,13 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.Point, test_layer.wkbType())
         self.assertEqual(test_layer.featureCount(), 51)
 
+        self.delete_features(test_layer)
+        self.assertEqual(test_layer.featureCount(), 0)
+
         # PointZM To Point
         print("Validating PointZM To Point")
         point_layer = self.qgis_utils.get_layer(self.db_distinct_geoms, 'points_zm', load=True)
-        print("Is Valid layer :", point_layer.isValid())
+        self.assertTrue(point_layer.isValid())
         run_etl_model(point_layer, out_layer=test_layer)
         print("Info: Validating geometry PointZ...", test_layer.wkbType())
         self.assertEqual(QgsWkbTypes.PointGeometry, test_layer.type())
@@ -228,11 +250,13 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.Point, test_layer.wkbType())
         self.assertEqual(test_layer.featureCount(), 51)
 
+        self.delete_features(test_layer)
+        self.assertEqual(test_layer.featureCount(), 0)
+
     def test_valid_import_geom_3d_to_db_postgres(self):
         print('\nINFO: Validating ETL-Model from [ Point, PointZ, PointM, PointZM ] to PointZ (Postgres) geometries...')
 
         test_layer_3d = self.qgis_utils.get_layer(self.db_connection_3d, BOUNDARY_POINT_TABLE, load=True)
-        test_layer_3d.startEditing()
 
         # Point To PointZ
         print("Validating Point to PointZ")
@@ -244,6 +268,9 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.PointZ, test_layer_3d.wkbType())
         self.assertEqual(test_layer_3d.featureCount(), 51)
 
+        self.delete_features(test_layer_3d)
+        self.assertEqual(test_layer_3d.featureCount(), 0)
+
         # PointZ To PointZ
         print("Validating PointZ to PointZ")
         point_layer = self.qgis_utils.get_layer(self.db_distinct_geoms, 'points_z', load=True)
@@ -253,6 +280,9 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertIn(point_layer.wkbType(), [QgsWkbTypes.PointZ, QgsWkbTypes.Point25D])
         self.assertEqual(QgsWkbTypes.PointZ, test_layer_3d.wkbType())
         self.assertEqual(test_layer_3d.featureCount(), 51)
+
+        self.delete_features(test_layer_3d)
+        self.assertEqual(test_layer_3d.featureCount(), 0)
 
         # PointM To PointZ
         print("Validating PointM To PointZ")
@@ -264,6 +294,9 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.PointZ, test_layer_3d.wkbType())
         self.assertEqual(test_layer_3d.featureCount(), 51)
 
+        self.delete_features(test_layer_3d)
+        self.assertEqual(test_layer_3d.featureCount(), 0)
+
         # PointZM To PointZ
         print("Validating PointZM To PointZ")
         point_layer = self.qgis_utils.get_layer(self.db_distinct_geoms, 'points_zm', load=True)
@@ -273,6 +306,13 @@ class TestGeomsLoad(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.PointZM, point_layer.wkbType())
         self.assertEqual(QgsWkbTypes.PointZ, test_layer_3d.wkbType())
         self.assertEqual(test_layer_3d.featureCount(), 51)
+
+        self.delete_features(test_layer_3d)
+        self.assertEqual(test_layer_3d.featureCount(), 0)
+
+    def delete_features(self, layer):
+        fids = [f.id() for f in layer.getFeatures()]
+        return layer.dataProvider().deleteFeatures(fids)
 
     @classmethod
     def tearDownClass(self):

@@ -16,11 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-import time
-from functools import wraps
-
-from qgis.PyQt.QtCore import (Qt,
-                              QObject,
+from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication,
                               QVariant,
                               QSettings,
@@ -46,11 +42,6 @@ from .qgis_model_baker_utils import QgisModelBakerUtils
 from ..config.general_config import (DEFAULT_EPSG,
                                      DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
                                      DEFAULT_USE_ROADS_VALUE,
-                                     LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
-                                     LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE,
-                                     LOG_QUALITY_LIST_CONTAINER_OPEN,
-                                     LOG_QUALITY_LIST_CONTAINER_CLOSE,
-                                     LOG_QUALITY_CONTENT_SEPARATOR,
                                      LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
                                      LOG_QUALITY_LIST_ITEM_CORRECT_OPEN,
                                      translated_strings,
@@ -63,11 +54,8 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            BUILDING_TABLE,
                                            BUILDING_UNIT_TABLE,
                                            CONTROL_POINT_TABLE,
-                                           DEPARTMENT_FIELD,
                                            ID_FIELD,
                                            LOGIC_CONSISTENCY_TABLES,
-                                           PARCEL_NUMBER_FIELD,
-                                           PARCEL_NUMBER_BEFORE_FIELD,
                                            PARCEL_TABLE,
                                            POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            MOREBFS_TABLE_PLOT_FIELD,
@@ -78,14 +66,12 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            MOREBFS_TABLE_BOUNDARY_FIELD,
                                            MORE_BOUNDARY_FACE_STRING_TABLE,
-                                           MUNICIPALITY_FIELD,
                                            LESS_TABLE,
                                            PLOT_TABLE,
                                            RIGHT_OF_WAY_TABLE,
-                                           SURVEY_POINT_TABLE,
-                                           ZONE_FIELD)
-from .qt_utils import OverrideCursor
+                                           SURVEY_POINT_TABLE)
 from .utils import Utils
+from .decorators import _log_quality_checks
 
 class QualityUtils(QObject):
     log_quality_show_message_emitted = pyqtSignal(str, int)
@@ -116,31 +102,6 @@ class QualityUtils(QObject):
         self.log_dialog_quality_text = ""
         self.total_time = 0
 
-    def _log_quality_checks(func_to_decorate):
-        @wraps(func_to_decorate)
-        def add_format_to_text(self, db, **args):
-            rule_name = args['rule_name']
-            self.log_quality_set_initial_progress_emitted.emit(rule_name)
-            self.log_dialog_quality_text_content += LOG_QUALITY_LIST_CONTAINER_OPEN
-
-            start_time = time.time()
-            with OverrideCursor(Qt.WaitCursor):
-                func_to_decorate(self, db, **args)
-            end_time = time.time()
-
-            self.total_time = self.total_time + (end_time - start_time)
-
-            self.log_dialog_quality_text_content += LOG_QUALITY_LIST_CONTAINER_CLOSE
-            self.log_dialog_quality_text_content += LOG_QUALITY_CONTENT_SEPARATOR
-
-            self.log_dialog_quality_text += "{}{} [{}]{}".format(LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
-                                                                  rule_name, self.utils.set_time_format(end_time - start_time), LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE)
-            self.log_dialog_quality_text += self.log_dialog_quality_text_content
-            self.log_dialog_quality_text_content = ""
-
-            self.log_quality_set_final_progress_emitted.emit(rule_name)
-
-        return add_format_to_text
 
     def log_message(self, msg, type=Qgis.Critical):
         if type == Qgis.Critical:
@@ -2011,7 +1972,8 @@ class QualityUtils(QObject):
         index = self.qgis_model_baker_utils.get_suggested_index_for_layer(added_layer, group)
         added_layer = group.insertLayer(index, added_layer).layer()
         if added_layer.isSpatial():
-            self.qgis_utils.symbology.set_layer_style_from_qml(added_layer, is_error_layer=True)
+            # db connection is none because we are using a memory layer
+            self.qgis_utils.symbology.set_layer_style_from_qml(None, added_layer, is_error_layer=True)
         return added_layer
 
     @_log_quality_checks

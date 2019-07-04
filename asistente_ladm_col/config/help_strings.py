@@ -1,6 +1,23 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject)
 
+from .table_mapping_config import (PLOT_TABLE,
+                                   BUILDING_TABLE,
+                                   BUILDING_UNIT_TABLE,
+                                   PARCEL_TYPE_NO_HORIZONTAL_PROPERTY,
+                                   PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT,
+                                   PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
+                                   PARCEL_TYPE_CONDOMINIUM_PARENT,
+                                   PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT,
+                                   PARCEL_TYPE_MEJORA,
+                                   PARCEL_TYPE_CEMETERY_PARENT,
+                                   PARCEL_TYPE_CEMETERY_PRIVATE_UNIT,
+                                   PARCEL_TYPE_ROAD,
+                                   PARCEL_TYPE_PUBLIC_USE,
+                                   PARCEL_TYPE_STORE,
+                                   PARCEL_TYPE_PARKING,
+                                   PARCEL_TYPE_WAREHOUSE)
+
 # For this module use multiline "\" instead of triple double quotes
 
 class HelpStrings(QObject):
@@ -81,8 +98,10 @@ It is formed by the terrain and may or may not have associated constructions.\
 ")
 
         self.WIZ_CREATE_PARCEL_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
-Before creating a <b>Parcel</b>  you must associate with one or more existing <b>Spatial Units</b>, First you must select the Spatial Unit(s) of interest\
+Before creating a <b>Parcel</b>  you must associate with one or more existing <b>Spatial Units</b>.\
 <br><br>\
+{msg_parcel_type}\
+<br>\
 There are two ways to associate:\
 <br><br>\
 1. <b>Selecting Spatial Unit(s) on the map</b>: Here you can select on the map and immediately it will come back to wizard, \
@@ -179,29 +198,72 @@ the association will not be activated.\
 
 # Clase de tipo LA_RRR que registra las responsabilidades que las instancias de los interesados tienen sobre los predios.
         self.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you have selected at least one <i>Administrative Source</i> and want to link such selected sources to a new <b>Responsibility</b> that you will create using a form.\
+Choose this option if you want to create a <b>Responsibility</b> based on existing <b>Administrative Source(s)</b>.\
 <br><br>\
 <b>COL_Responsibility</b> is a class of type <i>LA_RRR</i> which stores responsibilities that parties have over parcels.\
 ")
 
+        self.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
+Before creating a <b>Responsibility</b> you must associate with one or more existing <b>Administrative Sources</b>, First you must select the Administrative Source(s) of interest\
+<br><br>\
+You can select an Administrative Source(s) by:\
+<br><br>\
+<b> * Expression</b>: Here you can select using an expression, this has to be valid and \
+the selection should take one feature. If the expression gets zero features or more than one, the button for create \
+the association will not be activated.\
+")
+
 # Restricciones a las que está sometido un predio y que inciden sobre los derechos que pueden ejercerse sobre él.
         self.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you have selected at least one <i>Administrative Source</i> and want to link such selected sources to a new <b>Restriction</b> that you will create using a form.\
+Choose this option if you want to create a <b>Restriction</b> based on existing <b>Administrative Source(s)</b>.\
 <br><br>\
 <b>COL_Restriction</b> are the restrictions on a parcel that affect rights that parties may have over it.\
 ")
 
+        self.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
+Before creating a <b>Restriction</b> you must associate with one or more existing <b>Administrative Sources</b>, First you must select the Administrative Source(s) of interest\
+<br><br>\
+You can select an Administrative Source(s) by:\
+<br><br>\
+<b> * Expression</b>: Here you can select using an expression, this has to be valid and \
+the selection should take one feature. If the expression gets zero features or more than one, the button for create \
+the association will not be activated.\
+")
+
 # <b>COL_Derecho</b> es una clase que registra las instancias de los derechos que un interesado ejerce sobre un predio. Es una especialización de la clase LA_RRR del propio modelo.
         self.WIZ_CREATE_RIGHT_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you have selected at least one <i>Administrative Source</i> and want to link such selected sources to a new <b>Right</b> that you will create using a form.\
+Choose this option if you want to create a <b>Right</b> based on existing <b>Administrative Source(s)</b>.\
 <br><br>\
 <b>COL_Right</b> is a class that stores right instances that a party has over a parcel. It is a specialization of the class LA_RRR.\
 ")
 
+        self.WIZ_CREATE_RIGHT_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
+Before creating a <b>Right</b> you must associate with one or more existing <b>Administrative Sources</b>, First you must select the Administrative Source(s) of interest\
+<br><br>\
+You can select an Administrative Source(s) by:\
+<br><br>\
+<b> * Expression</b>: Here you can select using an expression, this has to be valid and \
+the selection should take one feature. If the expression gets zero features or more than one, the button for create \
+the association will not be activated.\
+")
+
         self.WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Spatial Source</b> using a form. Then select a layer to get all its selected features associated with the newly created <b>Spatial Source</b>.\
+Choose this option if you want to create a <b>Spatial Source</b> using a form. Then select the <b>Spatial Features</b> that you want to associate with the Spatial Source to create.\
 <br><br>\
 <b>Spatial Source</b> is a specialization of the <i>COL_Fuente</i> class to store those sources corresponding to spatial data (geographic features, satellite imagery, photogrammetric flights, maps, coordinate listings, ancient or modern plans, location descriptions, and the like) that technically document the relationship between parties and parcels.\
+")
+
+        self.WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
+Before creating a <b>Spatial Source</b>  you must associate with one or more existing <b>Spatial Features</b>, First you must select the Spatial feature(s) of interest\
+<br><br>\
+There are two ways to associate:\
+<br><br>\
+1. <b>Selecting Spatial Feature(s) on the map</b>: Here you can select on the map and immediately it will come back to wizard, \
+this enables the button for create the association.\
+<br><br>\
+2. <b>Selecting Spatial Unit(s) by expression</b>: Here you can select using an expression, this has to be valid and \
+the selection should take one feature. If the expression gets zero features or more than one, the button for create \
+the association will not be activated.\
 ")
 
         self.WIZ_DEFINE_BOUNDARIES_CADASTRE_PAGE_1_OPTION_DIGITIZE = QCoreApplication.translate("HelpStrings", "\
@@ -297,6 +359,22 @@ Choose this option if you want to create a <b>Conventional Building Unit Qualifi
 
         self.WIZ_USING_FORM_BUILDING_UNIT_NO_QUALIFICATION_PAGE_2_OPTION = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create an <b>Unconventional Building Unit Qualification</b> using a form.")
+
+        self.MESSAGE_PARCEL_TYPES = {
+            PARCEL_TYPE_NO_HORIZONTAL_PROPERTY: QCoreApplication.translate("HelpStrings", "Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o mas '{building_table}es' y '{building_unit_table}'").format(parcel_type=PARCEL_TYPE_NO_HORIZONTAL_PROPERTY, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE, building_unit_table=BUILDING_UNIT_TABLE),
+            PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT: QCoreApplication.translate("HelpStrings", "Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o más '{building_table}es'").format(parcel_type=PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE),
+            PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT: QCoreApplication.translate("HelpStrings", "Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada deber una o más '{building_unit_table}'").format(parcel_type=PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT, building_unit_table=BUILDING_UNIT_TABLE),
+            PARCEL_TYPE_CONDOMINIUM_PARENT: QCoreApplication.translate("HelpStrings", "Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o más '{building_table}es'").format(parcel_type=PARCEL_TYPE_CONDOMINIUM_PARENT, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE),
+            PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT: QCoreApplication.translate("HelpStrings", "Cuando el tipo de predio es  <b>'{parcel_type}'</b> la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o más '{building_table}es'").format(parcel_type=PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE),
+            PARCEL_TYPE_MEJORA: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada debe ser una '{building_table}' o '{building_unit_table}'").format(parcel_type=PARCEL_TYPE_MEJORA, building_table=BUILDING_TABLE, building_unit_table=BUILDING_UNIT_TABLE),
+            PARCEL_TYPE_CEMETERY_PARENT: QCoreApplication.translate("HelpStrings", "Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o más '{building_table}es'").format(parcel_type=PARCEL_TYPE_CEMETERY_PARENT, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE),
+            PARCEL_TYPE_CEMETERY_PRIVATE_UNIT: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada la unidad espacial asociada debe ser un '{plot_table}'").format(parcel_type=PARCEL_TYPE_CEMETERY_PRIVATE_UNIT, plot_table=PLOT_TABLE),
+            PARCEL_TYPE_ROAD: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada la unidad espacial asociada debe ser un '{plot_table}'").format(parcel_type=PARCEL_TYPE_ROAD, plot_table=PLOT_TABLE),
+            PARCEL_TYPE_PUBLIC_USE: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o más '{building_table}es'").format(parcel_type=PARCEL_TYPE_PUBLIC_USE, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE),
+            PARCEL_TYPE_STORE: QCoreApplication.translate("HelpStrings", ""),
+            PARCEL_TYPE_PARKING: QCoreApplication.translate("HelpStrings",""),
+            PARCEL_TYPE_WAREHOUSE: QCoreApplication.translate("HelpStrings", "")
+        }
 
     def get_refactor_help_string(self, layer_name, layer_is_spatial):
         # Abre una ventana que te permite establecer una asignación entre la entrada (fuente) {type} y el tipo {type} <b>{name}</b> de LADM_COL.

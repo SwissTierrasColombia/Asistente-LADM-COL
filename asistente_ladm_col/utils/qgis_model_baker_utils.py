@@ -19,6 +19,7 @@
 import os
 import qgis
 from qgis.PyQt.QtCore import (QObject,
+                              QCoreApplication,
                               QSettings)
 from qgis.core import (QgsProject,
                        Qgis,
@@ -59,7 +60,7 @@ class QgisModelBakerUtils(QObject):
             return generator
         else:
             self.log.logMessage(
-                "El plugin QGIS Model Baker es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",
+                QCoreApplication.translate("AsistenteLADMCOLPlugin","The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."),
                 PLUGIN_NAME,
                 Qgis.Critical
             )
@@ -96,7 +97,7 @@ class QgisModelBakerUtils(QObject):
             QgisModelBaker.create_project(layers, relations, bags_of_enum, legend, auto_transaction=False)
         else:
             self.log.logMessage(
-                "El plugin QGIS Model Baker es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",
+                QCoreApplication.translate("AsistenteLADMCOLPlugin","The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."),
                 PLUGIN_NAME,
                 Qgis.Critical
             )
@@ -123,7 +124,7 @@ class QgisModelBakerUtils(QObject):
             return (layers, relations + domains, bags_of_enum)
         else:
             self.log.logMessage(
-                "El plugin QGIS Model Baker es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",
+                QCoreApplication.translate("AsistenteLADMCOLPlugin","The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."),
                 PLUGIN_NAME,
                 Qgis.Critical
             )
@@ -151,7 +152,7 @@ class QgisModelBakerUtils(QObject):
             return generator.get_tables_info_without_ignored_tables()
         else:
             self.log.logMessage(
-                "El plugin QGIS Model Baker es un prerrequisito, instálalo antes de usar Asistente LADM_COL.",
+                QCoreApplication.translate("AsistenteLADMCOLPlugin","The QGIS Model Baker plugin is a prerequisite, install it before using LADM_COL Assistant."),
                 PLUGIN_NAME,
                 Qgis.Critical
             )

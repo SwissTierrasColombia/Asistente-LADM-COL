@@ -15,3 +15,6 @@ hidden="True"
 
 ["LADM_COL_V1_1.LADM_Nucleo.ExtInteresado.Ext_Direccion_ID"]
 hidden="True"
+
+["LADM_COL_V1_1.LADM_Nucleo.LA_BAUnit.Tipo"]
+hidden="True"

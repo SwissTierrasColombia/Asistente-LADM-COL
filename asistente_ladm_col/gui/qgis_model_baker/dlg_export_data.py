@@ -36,8 +36,6 @@ from qgis.PyQt.QtGui import (QColor,
                              QStandardItem)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
-                                 QLayout,
-                                 QListWidgetItem,
                                  QMessageBox,
                                  QDialogButtonBox)
 from qgis.core import Qgis
@@ -66,7 +64,6 @@ class DialogExportData(QDialog, DIALOG_UI):
     def __init__(self, iface, db, qgis_utils):
         QDialog.__init__(self)
         self.setupUi(self)
-        self.layout().setSizeConstraint(QLayout.SetFixedSize)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
@@ -166,7 +163,6 @@ class DialogExportData(QDialog, DIALOG_UI):
 
     def accepted(self):
         configuration = self.update_configuration()
-
 
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
             message_error = QCoreApplication.translate("DialogExportData", "Please set a valid XTF file before exporting data.")
@@ -301,6 +297,8 @@ class DialogExportData(QDialog, DIALOG_UI):
         if self.get_ili_models():
             configuration.iliexportmodels = ';'.join(self.get_ili_models())
             configuration.ilimodels = ';'.join(self.get_ili_models())
+
+        configuration.disable_validation = not QSettings().value('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', True, bool)
 
         return configuration
 

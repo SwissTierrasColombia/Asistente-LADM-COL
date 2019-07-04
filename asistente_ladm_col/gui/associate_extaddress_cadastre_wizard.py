@@ -37,7 +37,10 @@ from qgis.core import (QgsEditFormConfig,
 from qgis.gui import QgsExpressionSelectionDialog
 
 from ..config.general_config import (PLUGIN_NAME,
-                                     TranslatableConfigStrings)
+                                     TranslatableConfigStrings,
+                                     CSS_COLOR_ERROR_LABEL,
+                                     CSS_COLOR_OKAY_LABEL,
+                                     CSS_COLOR_INACTIVE_LABEL)
 from ..config.help_strings import HelpStrings
 from ..config.table_mapping_config import (EXTADDRESS_TABLE,
                                            EXTADDRESS_BUILDING_FIELD,
@@ -90,6 +93,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.PolygonLayer)
 
     def map_tool_changed(self, new_tool, old_tool):
+        self.canvas.mapToolSet.disconnect(self.map_tool_changed)
         reply = QMessageBox.question(self,
                                      QCoreApplication.translate("AssociateExtAddressWizard", "Stop address creation?"),
                                      QCoreApplication.translate("AssociateExtAddressWizard",
@@ -97,11 +101,9 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                                      QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.Yes:
             # Disconnect signal that check if map tool change
-            self.canvas.mapToolSet.disconnect(self.map_tool_changed)
             self.close()
         else:
             # Continue creating the ExtAddress
-            self.canvas.mapToolSet.disconnect(self.map_tool_changed)
             self.canvas.setMapTool(old_tool)
             self.canvas.mapToolSet.connect(self.map_tool_changed)
 
@@ -145,11 +147,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self.gbx_page2.setTitle(QCoreApplication.translate("AssociateExtAddressWizard",
                                                            "Associate the new address with these spatial unit(s):"))
         self.button(self.FinishButton).setDisabled(True)
-
-        # TODO:
-        #  It is necesary becasuse when I go back signal map_tool_changed is not disconnected
-        #  Remove when error are fixed
-        self.button(QWizard.BackButton).hide()
+        self.disconnect_signals()
 
         # Load layers
         result = self.prepare_extaddress_creation_layers()
@@ -170,6 +168,21 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self.rad_to_building.toggled.connect(self.toggle_spatial_unit)
         self.rad_to_building_unit.toggled.connect(self.toggle_spatial_unit)
         self.toggle_spatial_unit()
+
+    def disconnect_signals(self):
+        signals = [self.btn_plot_map,
+                   self.btn_building_map,
+                   self.btn_building_unit_map,
+                   self.btn_plot_expression,
+                   self.btn_building_expression,
+                   self.btn_building_unit_expression,
+                   self.canvas.mapToolSet]
+
+        for signal in signals:
+            try:
+                signal.disconnect()
+            except:
+                pass
 
     def toggle_spatial_unit(self):
 
@@ -264,116 +277,89 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         return True
 
     def check_selected_features(self):
-        self.rad_to_plot.setText(QCoreApplication.translate("AssociateExtAddressWizard", "Plots: 0 Features Selected"))
-        self.rad_to_building.setText(QCoreApplication.translate("AssociateExtAddressWizard", "Buildings: 0 Features Selected"))
-        self.rad_to_building_unit.setText(QCoreApplication.translate("AssociateExtAddressWizard", "Building units: 0 Features Selected"))
+
+        self.rad_to_plot.setText(QCoreApplication.translate("AssociateExtAddressWizard", "Plot(s): {count} Feature(s) Selected").format(count=self._plot_layer.selectedFeatureCount()))
+        self.rad_to_building.setText(QCoreApplication.translate("AssociateExtAddressWizard", "Building(s): {count} Feature(s) Selected").format(count=self._building_layer.selectedFeatureCount()))
+        self.rad_to_building_unit.setText(QCoreApplication.translate("AssociateExtAddressWizard", "Building unit(s): {count} Feature(s) Selected").format(count=self._building_unit_layer.selectedFeatureCount()))
 
         if self._current_layer is None:
-            if self.iface.activeLayer().name() == PLOT_TABLE or self.iface.activeLayer().name() == BUILDING_TABLE or self.iface.activeLayer().name() == BUILDING_UNIT_TABLE:
-                self._current_layer = self.iface.activeLayer()
+            if self.iface.activeLayer().name() == PLOT_TABLE:
+                self.rad_to_plot.setChecked(True)
+                self._current_layer = self._plot_layer
+            elif self.iface.activeLayer().name() == BUILDING_TABLE:
+                self.rad_to_building.setChecked(True)
+                self._current_layer = self._building_layer
+            elif self.iface.activeLayer().name() == BUILDING_UNIT_TABLE:
+                self.rad_to_building_unit.setChecked(True)
+                self._current_layer = self._building_unit_layer
             else:
                 # Select layer that have least one feature selected
                 # as current layer when current layer is not defined
                 if self._plot_layer.selectedFeatureCount():
+                    self.rad_to_plot.setChecked(True)
                     self._current_layer = self._plot_layer
                 elif self._building_layer.selectedFeatureCount():
+                    self.rad_to_building.setChecked(True)
                     self._current_layer = self._building_layer
                 elif self._building_unit_layer.selectedFeatureCount():
+                    self.rad_to_building_unit.setChecked(True)
                     self._current_layer = self._building_unit_layer
                 else:
-                    # By default current_layer is plot layer
+                    # By default current_layer will be plot layer
+                    self.rad_to_plot.setChecked(True)
                     self._current_layer = self._plot_layer
 
-        if self._current_layer.name() == PLOT_TABLE:
-            self.rad_to_plot.setChecked(True)
-
-            # Remove selection in others layers    # TODO: Why? There's is only one radio button active anyways...
-            # ExtAddress can only be associated with one layer
-            self._building_layer.removeSelection()
-            self.rad_to_building.setStyleSheet('color:#000;')
-
-            self._building_unit_layer.removeSelection()
-            self.rad_to_building_unit.setStyleSheet('color:#000;')
+        if self.rad_to_plot.isChecked():
+            self.rad_to_building.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
+            self.rad_to_building_unit.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
 
             # Check selected features in plot layer
             if self._plot_layer.selectedFeatureCount() == 1:
-                self.rad_to_plot.setText(
-                    QCoreApplication.translate("AssociateExtAddressWizard", "Plots: {count} Feature Selected").format(
-                        count=self._plot_layer.selectedFeatureCount()))
-                self.rad_to_plot.setStyleSheet('color:#478046;')
+                self.rad_to_plot.setStyleSheet(CSS_COLOR_OKAY_LABEL)
             elif self._plot_layer.selectedFeatureCount() > 1:
                 # the color of the text is changed to highlight when there are more than one feature selected
-                self.rad_to_plot.setText(
-                    QCoreApplication.translate("AssociateExtAddressWizard", "Plots: {count} Feature Selected").format(
-                        count=self._plot_layer.selectedFeatureCount()))
-                self.rad_to_plot.setStyleSheet('color:#FF0000;')
+                self.rad_to_plot.setStyleSheet(CSS_COLOR_ERROR_LABEL)
             else:
                 # the color of the text is changed to highlight that there is no selection
-                self.rad_to_plot.setText(
-                    QCoreApplication.translate("AssociateExtAddressWizard", "Plots: 0 Features Selected"))
-                self.rad_to_plot.setStyleSheet('color:#FF0000;')
-        elif self._current_layer.name() == BUILDING_TABLE:
-            self.rad_to_building.setChecked(True)
+                self.rad_to_plot.setStyleSheet(CSS_COLOR_ERROR_LABEL)
 
-            # Remove selection in others layers
-            # ExtAddress can only be associated with one layer
-            self._plot_layer.removeSelection()
-            self.rad_to_plot.setStyleSheet('color:#000;')
-
-            self._building_unit_layer.removeSelection()
-            self.rad_to_building_unit.setStyleSheet('color:#000;')
+        elif self.rad_to_building.isChecked():
+            self.rad_to_plot.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
+            self.rad_to_building_unit.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
 
             # Check selected features in building layer
             if self._building_layer.selectedFeatureCount() == 1:
-                self.rad_to_building.setText(QCoreApplication.translate("AssociateExtAddressWizard",
-                                                                        "Buildings: {count} Feature Selected").format(
-                    count=self._building_layer.selectedFeatureCount()))
-                self.rad_to_building.setStyleSheet('color:#478046;')
+                self.rad_to_building.setStyleSheet(CSS_COLOR_OKAY_LABEL)
             elif self._building_layer.selectedFeatureCount() > 1:
                 # the color of the text is changed to highlight when there are more than one feature selected
-                self.rad_to_building.setText(QCoreApplication.translate("AssociateExtAddressWizard",
-                                                                        "Buildings: {count} Feature Selected").format(
-                    count=self._building_layer.selectedFeatureCount()))
-                self.rad_to_building.setStyleSheet('color:#FF0000;')
+                self.rad_to_building.setStyleSheet(CSS_COLOR_ERROR_LABEL)
             else:
                 # the color of the text is changed to highlight that there is no selection
-                self.rad_to_building.setText(
-                    QCoreApplication.translate("AssociateExtAddressWizard", "Buildings: 0 Features Selected"))
-                self.rad_to_building.setStyleSheet('color:#FF0000;')
-        elif self._current_layer.name() == BUILDING_UNIT_TABLE:
-            self.rad_to_building_unit.setChecked(True)
+                self.rad_to_building.setStyleSheet(CSS_COLOR_ERROR_LABEL)
 
-            # Remove selection in others layers
-            # ExtAddress can only be associated with one layer
-            self._plot_layer.removeSelection()
-            self.rad_to_plot.setStyleSheet('color:#000;')
-
-            self._building_layer.removeSelection()
-            self.rad_to_building.setStyleSheet('color:#000;')
+        elif self.rad_to_building_unit.isChecked():
+            self.rad_to_plot.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
+            self.rad_to_building.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
 
             # Check selected features in building unit layer
             if self._building_unit_layer.selectedFeatureCount() == 1:
-                self.rad_to_building_unit.setText(QCoreApplication.translate("AssociateExtAddressWizard",
-                                                                             "Building units: {count} Feature Selected").format(
-                    count=self._building_unit_layer.selectedFeatureCount()))
-                self.rad_to_building_unit.setStyleSheet('color:#478046;')
+                self.rad_to_building_unit.setStyleSheet(CSS_COLOR_OKAY_LABEL)
             elif self._building_unit_layer.selectedFeatureCount() > 1:
                 # the color of the text is changed to highlight when there are more than one features selected
-                self.rad_to_building_unit.setText(QCoreApplication.translate("AssociateExtAddressWizard",
-                                                                             "Building units: {count} Feature Selected").format(
-                    count=self._building_unit_layer.selectedFeatureCount()))
-                self.rad_to_building_unit.setStyleSheet('color:#FF0000;')
+                self.rad_to_building_unit.setStyleSheet(CSS_COLOR_ERROR_LABEL)
             else:
                 # the color of the text is changed to highlight that there is no selection
-                self.rad_to_building_unit.setText(
-                    QCoreApplication.translate("AssociateExtAddressWizard", "Building units: 0 Features Selected"))
-                self.rad_to_building_unit.setStyleSheet('color:#FF0000;')
+                self.rad_to_building_unit.setStyleSheet(CSS_COLOR_ERROR_LABEL)
 
         # Zoom to selected feature
         self.canvas.zoomToSelected(self._current_layer)
 
         # Condition for enabling the finish button
-        if self._plot_layer.selectedFeatureCount() + self._building_layer.selectedFeatureCount() + self._building_unit_layer.selectedFeatureCount() == 1:
+        if self.rad_to_plot.isChecked() and self._plot_layer.selectedFeatureCount() == 1:
+            self.button(self.FinishButton).setDisabled(False)
+        elif self.rad_to_building.isChecked() and self._building_layer.selectedFeatureCount() == 1:
+            self.button(self.FinishButton).setDisabled(False)
+        elif self.rad_to_building_unit.isChecked() and self._building_unit_layer.selectedFeatureCount() == 1:
             self.button(self.FinishButton).setDisabled(False)
         else:
             self.button(self.FinishButton).setDisabled(True)

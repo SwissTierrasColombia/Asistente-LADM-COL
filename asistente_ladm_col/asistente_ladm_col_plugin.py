@@ -19,8 +19,7 @@
 import glob
 import os.path
 import shutil
-from functools import (partial,
-                       wraps)
+from functools import partial
 
 import qgis.utils
 from processing.modeler.ModelerUtils import ModelerUtils
@@ -28,7 +27,7 @@ from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               QCoreApplication,
                               QSettings)
-from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import (QAction,
                                  QMenu,
                                  QPushButton,
@@ -40,27 +39,31 @@ from qgis.core import (Qgis,
                        QgsExpressionContext,
                        QgsProcessingModelAlgorithm)
 
-from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
+from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
+from .config.general_config import (ANNEX_17_REPORT,
+                                    ANT_MAP_REPORT,
+                                    CADASTRE_MENU_OBJECTNAME,
                                     LADM_COL_MENU_OBJECTNAME,
-                                    QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                    QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
-                                    QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
                                     PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
                                     PLUGIN_NAME,
                                     PLUGIN_VERSION,
+                                    QUERIES_ACTION_OBJECTNAME,
                                     RELEASE_URL,
-                                    VALUATION_MENU_OBJECTNAME)
+                                    REPORTS_MENU_OBJECTNAME,
+                                    URL_REPORTS_LIBRARIES,
+                                    TOOL_BAR_NAME,
+                                    VALUATION_MENU_OBJECTNAME, 
+                                    NATIONAL_LAND_AGENCY)
 from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                           ID_FIELD,
                                           COL_PARTY_TABLE)
-from .gui.about_dialog import AboutDialog
-try:
-    from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
-    from .gui.qgis_model_baker.dlg_import_data import DialogImportData
-    from .gui.qgis_model_baker.dlg_export_data import DialogExportData
-except ModuleNotFoundError as e:
-    pass # The plugin will take care of validating the presence/absence of QGIS Model Baker
+from .utils.decorators import (_db_connection_required,
+                               _qgis_model_baker_required,
+                               _activate_processing_plugin,
+                               _map_swipe_tool_required,
+                               _official_db_connection_required)
 
+from .gui.about_dialog import AboutDialog
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
@@ -101,7 +104,6 @@ from .gui.toolbar import ToolBar
 from .gui.log_excel_dialog import LogExcelDialog
 from .data.ladm_data import LADM_DATA
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
-from .utils.model_parser import ModelParser
 from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
@@ -114,8 +116,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.log = QgsApplication.messageLog()
         self._about_dialog = None
         self._dock_widget_queries = None
+        self._dock_widget_change_detection = None
         self.toolbar = None
         self.wiz_address = None
+        self._report_menu = None
 
     def initGui(self):
         # Set Menus
@@ -142,8 +146,12 @@ class AsistenteLADMCOLPlugin(QObject):
         self._menu.addSeparator()
         self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"), self.iface.mainWindow())
         self._queries_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Queries"), self.iface.mainWindow())
+        self._queries_action.setObjectName(QUERIES_ACTION_OBJECTNAME)
         self._menu.addActions([self._load_layers_action,
                               self._queries_action])
+        self.configure_reports_menu()
+        self._menu.addSeparator()
+        self.add_changes_menu()
         self._menu.addSeparator()
         self.add_data_management_menu()
         self._settings_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
@@ -154,7 +162,6 @@ class AsistenteLADMCOLPlugin(QObject):
                                self._about_action])
 
         # Connections
-
         self._import_schema_action.triggered.connect(self.show_dlg_import_schema)
         self._import_data_action.triggered.connect(self.show_dlg_import_data)
         self._export_data_action.triggered.connect(self.show_dlg_export_data)
@@ -165,6 +172,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self._help_action.triggered.connect(self.show_help)
         self._about_action.triggered.connect(self.show_about_dialog)
 
+        self.report_generator.enable_action_requested.connect(self.enable_action)
+
+        self.qgis_utils.action_add_feature_requested.connect(self.trigger_add_feature)
         self.qgis_utils.action_vertex_tool_requested.connect(self.trigger_vertex_tool)
         self.qgis_utils.activate_layer_requested.connect(self.activate_layer)
         self.qgis_utils.clear_status_bar_emitted.connect(self.clear_status_bar)
@@ -173,6 +183,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.qgis_utils.db_connection_changed.connect(self.refresh_menus)
+        self.qgis_utils.organization_tools_changed.connect(self.refresh_organization_tools)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
@@ -188,8 +199,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
         self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
 
-        self.iface.initializationCompleted.connect(self.qgis_initialized)
-
         # Toolbar
         self._build_boundary_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Build boundaries..."), self.iface.mainWindow())
         self._build_boundary_action.triggered.connect(self.call_explode_boundaries)
@@ -201,20 +210,23 @@ class AsistenteLADMCOLPlugin(QObject):
         self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
         self._fill_right_of_way_relations_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Right of Way Relations"), self.iface.mainWindow())
         self._fill_right_of_way_relations_action.triggered.connect(self.call_fill_right_of_way_relations)
-        self._report_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Generate Annex 17"), self.iface.mainWindow())
-        self._report_action.triggered.connect(self.call_report_generation)
         self._import_from_intermediate_structure_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import from intermediate structure"),
                                       self.iface.mainWindow())
         self._import_from_intermediate_structure_action.triggered.connect(self.call_import_from_intermediate_structure)
         self._ladm_col_toolbar = self.iface.addToolBar(QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"))
         self._ladm_col_toolbar.setObjectName("ladmcoltools")
+        self._ladm_col_toolbar.setToolTip(TOOL_BAR_NAME)
         self._ladm_col_toolbar.addActions([self._build_boundary_action,
                                            self._topological_editing_action,
                                            self._fill_point_BFS_action,
                                            self._fill_more_BFS_less_action,
                                            self._fill_right_of_way_relations_action,
-                                           self._import_from_intermediate_structure_action,
-                                           self._report_action])
+                                           self._import_from_intermediate_structure_action])
+
+        if not qgis.utils.active_plugins:
+            self.iface.initializationCompleted.connect(self.call_refresh_menus)
+        else:
+            self.call_refresh_menus()
 
         # Add LADM_COL provider and models to QGIS
         self.ladm_col_provider = LADMCOLAlgorithmProvider()
@@ -224,7 +236,7 @@ class AsistenteLADMCOLPlugin(QObject):
         else: # We need to wait until processing is initialized
             QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_models)
 
-    def qgis_initialized(self):
+    def call_refresh_menus(self):
         # Refresh menus on QGIS start
         db = self.get_db_connection()
         res, msg = db.test_connection()
@@ -239,6 +251,28 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._menu.addMenu(self._data_management_menu)
 
+    def configure_reports_menu(self):
+        report_menu_exists = False
+        if self._report_menu:
+            report_menu_exists = True
+            self._report_menu.clear()
+        else:
+            self._report_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Reports"), self._menu)
+            self._report_menu.setObjectName(REPORTS_MENU_OBJECTNAME)
+
+        self._annex_17_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"), self._report_menu)
+        self._annex_17_action.triggered.connect(self.call_annex_17_report_generation)
+        new_actions = [self._annex_17_action]
+
+        if QSettings().value('Asistente-LADM_COL/advanced_settings/ant_tools', False, bool):  # ant_tools_enabled
+             self._ant_map_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"), self._report_menu)
+             self._ant_map_action.triggered.connect(self.call_ant_map_report_generation)
+             new_actions.append(self._ant_map_action)
+
+        self._report_menu.addActions(new_actions)
+
+        if not report_menu_exists:
+            self._menu.addMenu(self._report_menu)
 
     def add_cadastre_menu(self):
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
@@ -532,10 +566,28 @@ class AsistenteLADMCOLPlugin(QObject):
 
         menu.deleteLater()
 
+    def add_changes_menu(self):
+        self._change_detection_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change detection"), self._menu)
+        self._query_changes_per_parcel_action = QAction(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query per parcel"), self._change_detection_menu)
+        self._query_changes_all_parcels_action = QAction(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query all parcels"), self._change_detection_menu)
+        self._settings_changes_action = QAction(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Official data settings"), self._change_detection_menu)
+
+        self._change_detection_menu.addActions([self._query_changes_per_parcel_action, self._query_changes_all_parcels_action,
+                                                self._change_detection_menu.addSeparator(), self._settings_changes_action])
+
+        self._menu.addMenu(self._change_detection_menu)
+
+        # Set connections
+        self._query_changes_per_parcel_action.triggered.connect(self.query_changes_per_parcel)
+        self._query_changes_all_parcels_action.triggered.connect(self.query_changes_all_parcels)
+        self._settings_changes_action.triggered.connect(self.show_official_data_settings)
+
     def refresh_menus(self, db, ladm_col_db):
         """
-        Depending on the models available in the DB, some menus should appear or
-        disappear from the GUI.
+        Depending on the models available in the DB, some menus should appear or disappear from the GUI
         """
         if ladm_col_db:
             if db.property_record_card_model_exists():
@@ -553,6 +605,10 @@ class AsistenteLADMCOLPlugin(QObject):
                     db.property_record_card_model_exists()),
                 PLUGIN_NAME,
                 Qgis.Info)
+
+    def refresh_organization_tools(self, organization):
+        if organization == NATIONAL_LAND_AGENCY:
+             self.configure_reports_menu()
 
     def add_processing_models(self, provider_id):
         if not (provider_id == 'model' or provider_id is None):
@@ -576,11 +632,20 @@ class AsistenteLADMCOLPlugin(QObject):
 
         QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
 
+    def enable_action(self, action_name, enable):
+        if action_name == ANT_MAP_REPORT:
+            self._ant_map_action.setEnabled(enable)
+        elif action_name == ANNEX_17_REPORT:
+            self._annex_17_action.setEnabled(enable)
+
     def refresh_map(self):
         self.iface.mapCanvas().refresh()
 
     def freeze_map(self, frozen):
         self.iface.mapCanvas().freeze(frozen)
+
+    def trigger_add_feature(self):
+        self.iface.actionAddFeature().trigger()
 
     def trigger_vertex_tool(self):
         self.iface.actionVertexTool().trigger()
@@ -641,13 +706,24 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
 
     def show_message_to_download_report_dependency(self, msg):
-        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
-        button = QPushButton(widget)
-        button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
-            "Download and install dependency"))
-        button.pressed.connect(self.download_report_dependency)
-        widget.layout().addWidget(button)
-        self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
+        download_in_process = False
+        # Check if report dependency downloading is in process
+        for task in QgsApplication.taskManager().activeTasks():
+            if URL_REPORTS_LIBRARIES in task.description():
+                download_in_process = True
+
+        if not download_in_process:
+            widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+            button = QPushButton(widget)
+            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                      "Download and install dependency"))
+            button.pressed.connect(self.download_report_dependency)
+            widget.layout().addWidget(button)
+            self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
+        else:
+            self.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                         "Report dependency download is in progress..."),
+                              Qgis.Info)
 
     def show_message_to_remove_report_dependency(self, msg):
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
@@ -674,6 +750,20 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def load_layers(self, layers):
         self.qgis_utils.get_layers(self.get_db_connection(), layers, True)
+
+    def zoom_to_features(self, layer, ids=list(), t_ids=list(), duration=500):
+        if t_ids:
+            features = self.ladm_data.get_features_from_t_ids(layer, t_ids, True, True)
+            for feature in features:
+                ids.append(feature.id())
+
+        self.iface.mapCanvas().zoomToFeatureIds(layer, ids)
+        self.iface.mapCanvas().flashFeatureIds(layer,
+                                               ids,
+                                               QColor(255, 0, 0, 255),
+                                               QColor(255, 0, 0, 0),
+                                               flashes=1,
+                                               duration=duration)
 
     def show_log_quality_message(self, msg, count):
         self.progressMessageBar = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
@@ -734,77 +824,16 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = LogExcelDialog(self.qgis_utils, self.text)
         dlg.exec_()
 
-    def _db_connection_required(func_to_decorate):
-        @wraps(func_to_decorate)
-        def decorated_function(inst, *args, **kwargs):
-            # Check if current connection is valid and disable access if not
-            db = inst.get_db_connection()
-            res, msg = db.test_connection()
-            if res:
-                if not inst.qgis_utils._layers and not inst.qgis_utils._relations:
-                    inst.qgis_utils.cache_layers_and_relations(db, ladm_col_db=True)
-
-                func_to_decorate(inst)
-            else:
-                widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
-                             QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                             "Check your database connection, since there was a problem accessing a valid Cadastre-Registry model in the database. Click the button to go to Settings."))
-                button = QPushButton(widget)
-                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
-                button.pressed.connect(inst.show_settings)
-                widget.layout().addWidget(button)
-                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
-                inst.log.logMessage(
-                    QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, connection to DB was not valid."),
-                    PLUGIN_NAME,
-                    Qgis.Warning
-                )
-
-        return decorated_function
-
-    def _qgis_model_baker_required(func_to_decorate):
-        @wraps(func_to_decorate)
-        def decorated_function(inst, *args, **kwargs):
-            # Check if QGIS Model Baker is installed and active, disable access if not
-            plugin_version_right = inst.is_plugin_version_valid()
-
-            if plugin_version_right:
-                func_to_decorate(inst)
-            else:
-                if QGIS_MODEL_BAKER_REQUIRED_VERSION_URL:
-                    # If we depend on a specific version of QGIS Model Baker (only on that one)
-                    # and it is not the latest version, show a download link
-                    msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'QGIS Model Baker' version {} is required, but couldn't be found. Download it <a href=\"{}\">from this link</a> and use 'Install from ZIP'.").format(QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION, QGIS_MODEL_BAKER_REQUIRED_VERSION_URL)
-                    inst.iface.messageBar().pushMessage("Asistente LADM_COL", msg, Qgis.Warning, 15)
-                else:
-                    msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'QGIS Model Baker' version {} {}is required, but couldn't be found. Click the button to show the Plugin Manager.").format(QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION, '' if QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION else '(or higher) ')
-
-                    widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", msg)
-                    button = QPushButton(widget)
-                    button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
-                    button.pressed.connect(inst.show_plugin_manager)
-                    widget.layout().addWidget(button)
-                    inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
-
-                inst.log.logMessage(
-                    QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, QGIS Model Baker not found."),
-                    PLUGIN_NAME,
-                    Qgis.Warning
-                )
-
-        return decorated_function
-
-    def is_plugin_version_valid(self):
-        plugin_found = 'QgisModelBaker' in qgis.utils.plugins
+    def is_plugin_version_valid(self, plugin_name, min_required_version, exact_required_version):
+        plugin_found = plugin_name in qgis.utils.plugins
         if not plugin_found:
             return False
-        current_version = get_plugin_metadata('QgisModelBaker', 'version')
-        min_required_version = QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION
+        current_version = get_plugin_metadata(plugin_name, 'version')
         if current_version is None:
             return False
 
         current_version_splitted = current_version.split(".")
-        if len(current_version_splitted) < 4: # We could need 4 places for custom QGIS Model Baker versions
+        if len(current_version_splitted) < 4: # We could need 4 places for our custom plugin versions
             current_version_splitted = current_version_splitted + ['0','0','0','0']
             current_version_splitted = current_version_splitted[:4]
 
@@ -813,9 +842,10 @@ class AsistenteLADMCOLPlugin(QObject):
             min_required_version_splitted = min_required_version_splitted + ['0','0','0','0']
             min_required_version_splitted = min_required_version_splitted[:4]
 
-        self.log.logMessage("[QGIS Model Baker] Min required version: {}, current_version: {}".format(min_required_version_splitted, current_version_splitted), PLUGIN_NAME, Qgis.Info)
+        self.log.logMessage("[{}] Min required version: {}, current_version: {}".format(
+            plugin_name, min_required_version_splitted, current_version_splitted), PLUGIN_NAME, Qgis.Info)
 
-        if QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION:
+        if exact_required_version:
             return min_required_version_splitted == current_version_splitted
 
         else: # Min version and subsequent versions should work
@@ -849,16 +879,23 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_qgis_model_baker_required
     @_db_connection_required
+    @_activate_processing_plugin
     def call_fill_right_of_way_relations(self):
         self.right_of_way.fill_right_of_way_relations(self.get_db_connection())
 
     @_qgis_model_baker_required
     @_db_connection_required
-    def call_report_generation(self):
-        self.report_generator.generate_report(self.get_db_connection(), self._report_action)
+    def call_ant_map_report_generation(self):
+        self.report_generator.generate_report(self.get_db_connection(), ANT_MAP_REPORT)
 
     @_qgis_model_baker_required
     @_db_connection_required
+    def call_annex_17_report_generation(self):
+        self.report_generator.generate_report(self.get_db_connection(), ANNEX_17_REPORT)
+
+    @_qgis_model_baker_required
+    @_db_connection_required
+    @_activate_processing_plugin
     def call_import_from_intermediate_structure(self):
         self._dlg = DialogImportFromExcel(self.iface, self.get_db_connection(), self.qgis_utils)
         self._dlg.log_excel_show_message_emitted.connect(self.show_log_excel_button)
@@ -897,22 +934,30 @@ class AsistenteLADMCOLPlugin(QObject):
     def get_db_connection(self):
         return self.qgis_utils.get_db_connection()
 
+    def get_official_db_connection(self):
+        return self.qgis_utils.get_official_db_connection()
+
     @_qgis_model_baker_required
     def show_dlg_import_schema(self):
+        from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
         dlg = DialogImportSchema(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.models_have_changed.connect(self.refresh_menus)
         dlg.exec_()
 
     @_qgis_model_baker_required
     def show_dlg_import_data(self):
+        from .gui.qgis_model_baker.dlg_import_data import DialogImportData
         dlg = DialogImportData(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
     @_qgis_model_baker_required
     def show_dlg_export_data(self):
+        from .gui.qgis_model_baker.dlg_export_data import DialogExportData
         dlg = DialogExportData(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
+    @_qgis_model_baker_required
+    @_activate_processing_plugin
     def show_dlg_controlled_measurement(self):
         dlg = ControlledMeasurementDialog(self.qgis_utils)
         dlg.exec_()
@@ -949,6 +994,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_qgis_model_baker_required
     @_db_connection_required
+    @_activate_processing_plugin
     def show_wiz_right_of_way_cad(self):
         wiz = CreateRightOfWayCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
@@ -1063,6 +1109,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_qgis_model_baker_required
     @_db_connection_required
+    @_activate_processing_plugin
     def show_dlg_quality(self):
         dlg = DialogQuality(self.get_db_connection(), self.qgis_utils, self.quality)
         dlg.exec_()
@@ -1144,6 +1191,40 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_wiz_physical_zone_valuation_action(self):
         wiz = CreatePhysicalZoneValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
+
+    @_qgis_model_baker_required
+    @_map_swipe_tool_required
+    @_db_connection_required
+    @_official_db_connection_required
+    def query_changes_per_parcel(self):
+        self.show_change_detection_dockwidget()
+        self._dock_widget_change_detection.show_parcel_panel()
+
+    @_qgis_model_baker_required
+    @_map_swipe_tool_required
+    @_db_connection_required
+    @_official_db_connection_required
+    def query_changes_all_parcels(self):
+        self.show_change_detection_dockwidget()
+        self._dock_widget_change_detection.show_main_panel()
+
+    def show_change_detection_dockwidget(self):
+        if self._dock_widget_change_detection is not None:
+            self._dock_widget_change_detection.close()
+            self._dock_widget_change_detection = None
+
+        self._dock_widget_change_detection = DockWidgetChangeDetection(self.iface,
+                                                                       self.get_db_connection(),
+                                                                       self.get_official_db_connection(),
+                                                                       self.qgis_utils,
+                                                                       self.ladm_data)
+        self.qgis_utils.db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
+        self.qgis_utils.official_db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
+        self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
+        self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
+
+    def show_official_data_settings(self):
+        self.qgis_utils.get_official_data_settings_dialog().exec_()
 
     def download_report_dependency(self):
         self.report_generator.download_report_dependency()

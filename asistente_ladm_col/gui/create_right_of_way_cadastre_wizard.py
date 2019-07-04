@@ -16,27 +16,18 @@
  *                                                                         *
  ***************************************************************************/
 """
-from functools import partial
 
-from qgis.core import (QgsProject, QgsVectorLayer, QgsEditFormConfig,
-                       QgsSnappingConfig, QgsTolerance, QgsFeature, Qgis,
-                       QgsMapLayerProxyModel, QgsWkbTypes, QgsApplication,
-                       QgsProcessingException, QgsProcessingFeedback,
-                       QgsVectorLayerUtils)
+from qgis.PyQt.QtCore import QCoreApplication, QSettings
+from qgis.PyQt.QtWidgets import QWizard
+from qgis.core import (Qgis,
+                       QgsMapLayerProxyModel,
+                       QgsApplication)
 
-from qgis.PyQt.QtCore import Qt, QPoint, QCoreApplication, QSettings
-from qgis.PyQt.QtWidgets import QAction, QWizard
-
-import processing
-from ..utils import get_ui_class
-from ..config.table_mapping_config import RIGHT_OF_WAY_TABLE, SURVEY_POINT_TABLE
-from ..config.general_config import (
-    DEFAULT_EPSG,
-    PLUGIN_NAME,
-    TranslatableConfigStrings
-)
-from ..config.help_strings import HelpStrings
 from .right_of_way import RightOfWay
+from ..config.general_config import TranslatableConfigStrings
+from ..config.help_strings import HelpStrings
+from ..config.table_mapping_config import RIGHT_OF_WAY_TABLE
+from ..utils import get_ui_class
 
 WIZARD_UI = get_ui_class('wiz_create_right_of_way_cadastre.ui')
 

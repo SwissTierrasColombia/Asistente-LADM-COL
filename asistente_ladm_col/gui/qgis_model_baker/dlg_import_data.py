@@ -36,8 +36,6 @@ from qgis.PyQt.QtGui import (QColor,
                              QStandardItem)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
-                                 QLayout,
-                                 QListWidgetItem,
                                  QDialogButtonBox)
 from qgis.core import Qgis
 from qgis.gui import QgsGui
@@ -63,14 +61,12 @@ from ...lib.db.enum_db_action_type import EnumDbActionType
 
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_data.ui')
 
+
 class DialogImportData(QDialog, DIALOG_UI):
-
-
 
     def __init__(self, iface, db, qgis_utils):
         QDialog.__init__(self)
         self.setupUi(self)
-        self.layout().setSizeConstraint(QLayout.SetFixedSize)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
@@ -208,7 +204,6 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.xtf_file_line_edit.setFocus()
             return
 
-
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
             message_error = 'Please set a valid XTF before importing data.'
             self.txtStdout.setText(QCoreApplication.translate("DialogImportData", message_error))
@@ -223,7 +218,6 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.import_models_list_view.setFocus()
             return
 
-            
         with OverrideCursor(Qt.WaitCursor):
             self.progress_bar.show()
             self.progress_bar.setValue(0)
@@ -284,7 +278,6 @@ class DialogImportData(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_import', configuration.xtffile)
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
 
-
     def restore_configuration(self):
         settings = QSettings()
         self.xtf_file_line_edit.setText(settings.value('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_import'))
@@ -333,6 +326,8 @@ class DialogImportData(QDialog, DIALOG_UI):
         configuration.base_configuration = self.base_configuration
         if self.get_ili_models():
             configuration.ilimodels = ';'.join(self.get_ili_models())
+
+        configuration.disable_validation = not QSettings().value('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', True, bool)
 
         return configuration
 

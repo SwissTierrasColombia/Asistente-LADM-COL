@@ -143,3 +143,5 @@ class DBConnector(QObject):
     def is_ladm_layer(self, layer):
         raise NotImplementedError
 
+    def get_ladm_layer_name(self, layer, validate_is_ladm=False):
+        raise NotImplementedError

@@ -123,6 +123,9 @@ RRR_SOURCE_RESTRICTION_FIELD = "rrr_col_restriccion"
 RRR_SOURCE_RIGHT_FIELD = "rrr_col_derecho"
 RRR_SOURCE_SOURCE_FIELD = "rfuente"
 RIGHT_TABLE = "col_derecho"
+RIGHT_TABLE_PARCEL_FIELD = "unidad_predio"
+RIGHT_TABLE_PARTY_FIELD = "interesado_col_interesado"
+RIGHT_TABLE_GROUP_PARTY_FIELD = "interesado_la_agrupacion_interesados"
 RIGHT_TYPE_TABLE = "col_derechotipo"
 RIGHT_OF_WAY_TABLE="servidumbrepaso"
 RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD = "identificador"
@@ -154,6 +157,11 @@ ZONE_FIELD = "zona"
 PROPERTY RECORD CARD MAPPING
 """
 PROPERTY_RECORD_CARD_TABLE = "predio_ficha"
+PROPERTY_RECORD_CARD_PARCEL_ID_FIELD = "crpredio"
+PROPERTY_RECORD_CARD_SECTOR_FIELD = "sector"
+PROPERTY_RECORD_CARD_BLOCK_TOWN_FIELD = "manzana_vereda"
+PROPERTY_RECORD_CARD_ECONOMIC_DESTINATION_FIELD = "destinacion_economica"
+PROPERTY_RECORD_CARD_LOCALITY_FIELD = "localidad_comuna"
 PRC_PUBLIC_PARCEL_TYPE_FIELD = "tipo_predio_publico"
 PRC_PARCEL_TYPE_FIELD = "predio_tipo"
 MARKET_RESEARCH_TABLE = "investigacionmercado"
@@ -809,4 +817,98 @@ LOGIC_CONSISTENCY_TABLES = {
                                   'fecha_grabacion',
                                   'fecha_entrega',
                                   'oficialidad']
+}
+
+
+
+"""
+Constrains for wizard create parcel
+"""
+
+# Types of parcels
+PARCEL_TYPE_NO_HORIZONTAL_PROPERTY = "NPH"
+PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT = "PropiedadHorizontal.Matriz"
+PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT = "PropiedadHorizontal.UnidadPredial"
+PARCEL_TYPE_CONDOMINIUM_PARENT = "Condominio.Matriz"
+PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT = "Condominio.UnidadPredial"
+PARCEL_TYPE_MEJORA = "Mejora"
+PARCEL_TYPE_CEMETERY_PARENT = "ParqueCementerio.Matriz"
+PARCEL_TYPE_CEMETERY_PRIVATE_UNIT = "ParqueCementerio.UnidadPrivada"
+PARCEL_TYPE_ROAD = "Via"
+PARCEL_TYPE_PUBLIC_USE = "BienUsoPublico"
+PARCEL_TYPE_STORE = "Deposito"
+PARCEL_TYPE_PARKING = "Parqueadero"
+PARCEL_TYPE_WAREHOUSE = "Bodega"
+
+# Operations:
+# 1 = One and only one feature must be selected
+# + = One or more features must be selected
+# * = Optional, i.e., zero or more features could be selected
+# None = Won't be stored as a related feature (selected features will be ignored)
+CONSTRAINT_TYPES_OF_PARCEL = {
+    PARCEL_TYPE_NO_HORIZONTAL_PROPERTY: {
+        PLOT_TABLE: 1,
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: '*'
+    },
+    PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT: {
+        PLOT_TABLE: 1,
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: None
+    },
+    PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT: {
+        PLOT_TABLE: None,
+        BUILDING_TABLE: None,
+        BUILDING_UNIT_TABLE: '+'
+    },
+    PARCEL_TYPE_CONDOMINIUM_PARENT: {
+        PLOT_TABLE: 1,
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: None
+    },
+    PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT: {
+        PLOT_TABLE: 1,
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: None
+    },
+    PARCEL_TYPE_MEJORA: {
+        PLOT_TABLE: None,
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: '+'
+    },
+    PARCEL_TYPE_CEMETERY_PARENT: {
+        PLOT_TABLE: 1,
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: None
+    },
+    PARCEL_TYPE_CEMETERY_PRIVATE_UNIT: {
+        PLOT_TABLE: 1,
+        BUILDING_TABLE: None,
+        BUILDING_UNIT_TABLE: None
+    },
+    PARCEL_TYPE_ROAD: {
+        PLOT_TABLE: 1,
+        BUILDING_TABLE: None,
+        BUILDING_UNIT_TABLE: None
+    },
+    PARCEL_TYPE_PUBLIC_USE: {
+        PLOT_TABLE: 1,
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: None
+    },
+    PARCEL_TYPE_STORE: {
+        PLOT_TABLE: '*',
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: '*'
+    },
+    PARCEL_TYPE_PARKING: {
+        PLOT_TABLE: '*',
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: '*'
+    },
+    PARCEL_TYPE_WAREHOUSE: {
+        PLOT_TABLE: '*',
+        BUILDING_TABLE: '*',
+        BUILDING_UNIT_TABLE: '*'
+    }
 }

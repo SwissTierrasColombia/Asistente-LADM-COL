@@ -1,7 +1,6 @@
 import nose2
 import itertools
 from qgis.core import QgsProject, QgsWkbTypes
-from processing.core.Processing import Processing
 from qgis.testing import (unittest,
                           start_app)
 
@@ -21,7 +20,6 @@ class TestGetLayers(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        Processing.initialize()
         self.qgis_utils = QGISUtils()
         self.db_connection = get_dbconn('test_ladm_col')
         result = self.db_connection.test_connection()
@@ -84,7 +82,7 @@ class TestGetLayers(unittest.TestCase):
         for pre_load in ["la_nivel", "la_relacionsuperficietipo"]: # preload some layers
             self.qgis_utils.get_layer(self.db_connection, pre_load, load=True)
 
-        self.qgis_utils.get_layer(self.db_connection, PLOT_TABLE, geometry_type=QgsWkbTypes.Polygon, load=True)
+        self.qgis_utils.get_layer(self.db_connection, PLOT_TABLE, geometry_type=QgsWkbTypes.PolygonGeometry, load=True)
 
         # check number if element in Layer Tree and needed element are the same.
         loaded_layers_tree_names = len(RELATED_TABLES[PLOT_TABLE])

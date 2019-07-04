@@ -18,7 +18,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([1.6.2](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.6.2)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v4.2.2](https://github.com/opengisch/QgisModelBaker/releases/download/v4.2.2/QgisModelBaker.v4.2.2.zip) y permite:
+La versión actual ([1.8.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.8.0)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v4.2.3](https://github.com/opengisch/QgisModelBaker/releases/download/v4.2.3/QgisModelBaker.v4.2.3.zip) y permite:
 
  - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
  - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
@@ -26,6 +26,7 @@ La versión actual ([1.6.2](https://github.com/AgenciaImplementacion/Asistente-L
  - Crear estructura de base de datos conforme con los modelos mencionados.
  - Importar datos desde archivo de transferencia (.XTF).
  - Exportar datos a archivo de transferencia (.XTF).
+ - Importar/exportar datos desde y hacia archivos de transferencia (.XTF) desactivando la validación de los mismos. 
  - Consultar datos LADM_COL por componentes:
    - Información Básica.
    - Información Jurídica.
@@ -72,7 +73,7 @@ La versión actual ([1.6.2](https://github.com/AgenciaImplementacion/Asistente-L
    - Usando formularios preconfigurados.
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
  - Crear `Agrupaciones de Interesados`:
-   - Usando un formularios preconfigurado.
+   - Usando un formulario preconfigurado.
  - Crear `Fuente Espacial` y `Fuente Administrativa`:
    - Usando formularios preconfigurados.
      - Y relacionando la nueva `Fuente Espacial` a `Terrenos`, `Linderos` o `Puntos` previamente seleccionados.
@@ -124,6 +125,9 @@ La versión actual ([1.6.2](https://github.com/AgenciaImplementacion/Asistente-L
    - Revisar que las Unidades Espaciales asociadas a Predios correspondan al tipo de predio
  - Generar reporte de revisiones de calidad.
  - Generar Informes de Colindancia con base en `Terrenos` seleccionados (Anexo 17).
+ - Generar reporte 'Plano ANT' con base en `Terrenos` seleccionados.
+ - Identificar novedades:
+   - Comparar base de datos del barrido contra base de datos oficial y mostrar diferencias masivas y por predio.
  - Importar datos alfanuméricos desde [estructura intermedia en Excel](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
  - Configurar valores automáticos para campos `espacio_de_nombres` y `local_id`.
  - Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.
@@ -137,13 +141,13 @@ Para usar el Asistente LADM_COL se requiere:
    - Windows 8 o Windows 10
    - GNU/Linux
  - Software base:
-   - QGIS v3.4.x
+   - QGIS v3.4.6-Madeira o superior
    - Java v1.8
    - PostgreSQL 9.5 o superior (funciona PostgreSQL 10 y PostgreSQL 11).
    - PostGIS 2.4 o superior.
  - Plugins de QGIS:
    - Asistente LADM_COL
-   - QGIS Model Baker v4.2.2
+   - QGIS Model Baker v4.2.3
  
 ## Pruebas automatizadas al software
 
@@ -181,7 +185,7 @@ NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
 
 ## ¿Cómo recibir notificaciones de nuevas versiones del Asistente LADM_COL?
 
- + Si tienes cuenta de GitHub o si puedes crear una, ve a https://github.com/AgenciaImplementacion/Asistente-LADM_COL/ y haz click en el botón `Watch` de la parte superior de la página web para seguir las novedades del repositorio.
+ + Si tienes cuenta de GitHub o si puedes crear una, ve a https://github.com/AgenciaImplementacion/Asistente-LADM_COL/ y haz clic en el botón `Watch` de la parte superior de la página web para seguir las novedades del repositorio.
 
  + Si no tienes cuenta de GitHub, tienes dos opciones:
 
@@ -190,7 +194,7 @@ NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
    b) Usa gitpunch!
 
       + Ve a la página https://gitpunch.com/
-      + Espera a que termine la animación o haz click en `Skip` (en la parte inferior de la página).
+      + Espera a que termine la animación o haz clic en `Skip` (en la parte inferior de la página).
       + Regístrate usando tu correo electrónico.
       + Busca por "Asistente LADM_COL" y elige el repositorio `AgenciaImplementacion/Asistente-LADM_COL`.
       + Eso es todo. Después de recibir un correo que te notifique una nueva versión del plugin, pasarán unas horas hasta que el mismo esté disponible en el repositorio oficial de plugins de QGIS.
