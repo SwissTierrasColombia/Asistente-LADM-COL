@@ -99,7 +99,7 @@ class PgConfigPanel(QWidget, DbSchemaDbPanel):
 
         dict_conn['host'] = self.txt_host.text().strip()
         dict_conn['port'] = self.txt_port.text().strip()
-        dict_conn['database'] = "'{}'".format(self.selected_db_combobox.currentText().strip())
+        dict_conn['database'] = self.selected_db_combobox.currentText().strip()
         dict_conn['schema'] = self.selected_schema_combobox.currentText().strip()
         dict_conn['username'] = self.txt_user.text().strip()
         dict_conn['password'] = self.txt_password.text().strip()
@@ -121,7 +121,7 @@ class PgConfigPanel(QWidget, DbSchemaDbPanel):
             self._connect_change_signals()
             return
 
-        db_name_setting = dict_conn['database'].strip("'")
+        db_name_setting = dict_conn['database']
 
         self.selected_db_combobox.clear()
         self.selected_schema_combobox.clear()
@@ -139,7 +139,7 @@ class PgConfigPanel(QWidget, DbSchemaDbPanel):
         if self.state:
             result = (self.state['host'] != self.txt_host.text().strip() or \
                 self.state['port'] != self.txt_port.text().strip() or \
-                self.state['database'] != "'{}'".format(self.selected_db_combobox.currentText().strip()) or \
+                self.state['database'] != self.selected_db_combobox.currentText().strip() or \
                 self.state['schema'] != (self.selected_schema_combobox.currentText().strip() or 'public') or \
                 self.state['username'] != self.txt_user.text().strip() or \
                 self.state['password'] != self.txt_password.text().strip())
