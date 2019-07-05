@@ -148,6 +148,7 @@ class QGISUtils(QObject):
     message_with_duration_emitted = pyqtSignal(str, int, int) # Message, level, duration
     message_with_button_load_layer_emitted = pyqtSignal(str, str, list, int) # Message, button text, [layer_name, geometry_type], level
     message_with_button_load_layers_emitted = pyqtSignal(str, str, dict, int) # Message, button text, layers_dict, level
+    message_with_open_table_attributes_button_emitted = pyqtSignal(str, str, int, QgsVectorLayer, str)  # Message, button text, layers_dict, level
     message_with_button_download_report_dependency_emitted = pyqtSignal(str) # Message
     message_with_button_remove_report_dependency_emitted = pyqtSignal(str) # Message
     map_refresh_requested = pyqtSignal()
@@ -1463,51 +1464,6 @@ class QGISUtils(QObject):
                         len(rrr_source_relation_pairs)
                         ),
                         Qgis.Info)
-
-    def polygonize_boundaries(self, db):
-        res_layers = self.get_layers(db, {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            BOUNDARY_TABLE: {'name':BOUNDARY_TABLE, 'geometry':None}}, load=True)
-
-        boundaries = res_layers[BOUNDARY_TABLE]
-        if boundaries is None:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "Layer {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
-        selected_boundaries = boundaries.selectedFeatures()
-        if not selected_boundaries:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "First select boundaries!"),
-                Qgis.Warning)
-            return
-
-        plots = res_layers[PLOT_TABLE]
-        if plots is None:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "Layer {} not found in the DB! {}").format(PLOT_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
-
-        boundary_geometries = [f.geometry() for f in selected_boundaries]
-        collection = QgsGeometry().polygonize(boundary_geometries)
-        features = list()
-        for polygon in collection.asGeometryCollection():
-            feature = QgsVectorLayerUtils().createFeature(plots, polygon)
-            features.append(feature)
-
-        if features:
-            plots.startEditing()
-            plots.addFeatures(features)
-            self.map_refresh_requested.emit()
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "{} new plot(s) has(have) been created!").format(len(features)),
-                Qgis.Info)
-        else:
-            self.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils", "No plot could be created. Make sure selected boundaries are closed!"),
-                Qgis.Warning)
-            return
 
     def upload_source_files(self, db):
         extfile_layer = self.get_layer(db, EXTFILE_TABLE, None, True)

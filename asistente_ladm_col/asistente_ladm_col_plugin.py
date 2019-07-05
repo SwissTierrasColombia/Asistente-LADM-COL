@@ -72,7 +72,7 @@ from .gui.create_market_research_prc import CreateMarketResearchPRCWizard
 from .gui.create_natural_party_prc import CreateNaturalPartyPRCWizard
 from .gui.create_nuclear_family_prc import CreateNuclearFamilyPRCWizard
 from .gui.wizards.cadastre.baunit.create_parcel_cadastre_wizard import CreateParcelCadastreWizard
-from .gui.create_plot_cadastre_wizard import CreatePlotCadastreWizard
+from .gui.wizards.cadastre.spatial_unit.create_plot_cadastre_wizard import CreatePlotCadastreWizard
 from .gui.wizards.cadastre.surveying.create_points_cadastre_wizard import CreatePointsCadastreWizard
 from .gui.create_property_record_card_prc import CreatePropertyRecordCardPRCWizard
 from .gui.wizards.cadastre.rrr.create_responsibility_cadastre_wizard import CreateResponsibilityCadastreWizard
@@ -173,6 +173,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
+        self.qgis_utils.message_with_open_table_attributes_button_emitted.connect(self.show_message_with_open_table_attributes_button)
         self.qgis_utils.message_with_button_download_report_dependency_emitted.connect(self.show_message_to_download_report_dependency)
         self.qgis_utils.message_with_button_remove_report_dependency_emitted.connect(self.show_message_to_remove_report_dependency)
         self.qgis_utils.status_bar_message_emitted.connect(self.show_status_bar_message)
@@ -631,6 +632,14 @@ class AsistenteLADMCOLPlugin(QObject):
         button = QPushButton(widget)
         button.setText(button_text)
         button.pressed.connect(partial(self.load_layers, layers))
+        widget.layout().addWidget(button)
+        self.iface.messageBar().pushWidget(widget, level, 15)
+
+    def show_message_with_open_table_attributes_button(self, msg, button_text, level, layer, filter):
+        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        button = QPushButton(widget)
+        button.setText(button_text)
+        button.pressed.connect(partial(self.open_table, layer, filter))
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, level, 15)
 
@@ -1109,6 +1118,9 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_wiz_physical_zone_valuation_action(self):
         wiz = CreatePhysicalZoneValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         wiz.exec_()
+
+    def open_table(self, layer, filter=None):
+        self.iface.showAttributeTable(layer, filter)
 
     def download_report_dependency(self):
         self.report_generator.download_report_dependency()
