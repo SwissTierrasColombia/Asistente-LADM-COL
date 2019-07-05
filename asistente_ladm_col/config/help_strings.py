@@ -124,6 +124,20 @@ Choose this option if you want to create a <b>Plot</b> from existing <i>Boundari
 <b>Plot</b> is a portion of land with a defined geographical extension.\
 ")
 
+        self.WIZ_CREATE_PLOT_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
+To create a <b>plot</b> you can use the existing boundaries, first you have at least one.\
+<br><br>\
+There are three ways to select boundaries:\
+<br><br>\
+1. <b>Selecting Boundaries on the map</b>: select one o more <i>Boundaries</i> and right click on the map to go back to the wizard, \
+which enables the button for creating the plots.\
+<br><br>\
+2. <b>Selecting by expression</b>: select one o more <i>Boundaries</i> using an expression.\
+If one or more boundaries were selected the button for creating the plots will be enable.\
+<br><br>\
+3. <b>Select all boundaries</b>: Select all boundaries available, If one or more boundaries were selected the button for creating the plots will be enable.\
+")
+
         self.WIZ_CREATE_BUILDING_CADASTRE_PAGE_1_OPTION_POINTS = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create a <b>Building</b> from existing <i>Survey Points</i>.\
 <br><br>\

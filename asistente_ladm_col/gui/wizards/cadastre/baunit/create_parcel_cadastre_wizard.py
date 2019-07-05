@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+import sip
 from functools import partial
 
 from qgis.PyQt.QtCore import (QCoreApplication,
@@ -82,6 +83,10 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
             UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
         }
 
+        if not self.is_enable_layers_wizard():
+            self.close_wizard(show_message=False)
+            return
+
         self.restore_settings()
         self.rad_parcel_from_plot.toggled.connect(self.adjust_page_1_controls)
         self.adjust_page_1_controls()
@@ -125,13 +130,8 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
 
         # Load layers
         result = self.prepare_feature_creation_layers()
-
         if result is None:
-            # if there was a problem loading the layers
-            message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                 "'{}' tool has been closed because there was a problem loading the requeries layers.").format(self.WIZARD_TOOL_NAME)
-            self.close_wizard(message)
-            return
+            self.close_wizard(show_message=False)
 
         if self.cb_parcel_type.count() == 0:
             for parcel_type in CONSTRAINT_TYPES_OF_PARCEL:
@@ -340,15 +340,15 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
     def prepare_feature_creation(self):
         # layers of interest are loaded
         result = self.prepare_feature_creation_layers()
-        if result is None:
-            return
-        self.edit_feature()
+        if result:
+            self.edit_feature()
+        else:
+            self.close_wizard(show_message=False)
 
     def prepare_feature_creation_layers(self):
-        # Load layers
-        res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
-        if res_layers is None:
-            return
+        is_loaded = self.is_enable_layers_wizard()
+        if not is_loaded:
+            return False
 
         # Add signal to check if a layer was removed
         self.validate_remove_layers()
@@ -360,6 +360,33 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
         }
 
         # All layers were successfully loaded
+        return True
+
+    def is_enable_layers_wizard(self):
+        # Load layers
+        res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
+        if res_layers is None:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                                                QCoreApplication.translate(self.WIZARD_NAME,
+                                                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
+                                                    self.WIZARD_TOOL_NAME),
+                                                Qgis.Info)
+            return False
+
+        # Check if layers any layer is in editing mode
+        layers_name = list()
+        for layer in self._layers:
+            if self._layers[layer]['layer'].isEditable():
+                layers_name.append(self._layers[layer]['layer'].name())
+
+        if layers_name:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                                                QCoreApplication.translate(self.WIZARD_NAME,
+                                                                           "Wizard cannot be opened until the following layers are not in edit mode '{}'.").format(
+                                                    '; '.join([layer_name for layer_name in layers_name])),
+                                                Qgis.Info)
+            return False
+
         return True
 
     def validate_remove_layers(self):
@@ -377,11 +404,15 @@ class CreateParcelCadastreWizard(QWizard, WIZARD_UI):
                                              "'{}' tool has been closed because you just removed a required layer.").format(self.WIZARD_TOOL_NAME)
         self.close_wizard(message)
 
-    def close_wizard(self, message=None):
+    def closeEvent(self, event):
+        # Close all open signal when object is destroyed
+        sip.delete(self)
+
+    def close_wizard(self, message=None, show_message=True):
         if message is None:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
-        self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
-
+        if show_message:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
         self.init_map_tool()
         self.disconnect_signals()
         self.close()

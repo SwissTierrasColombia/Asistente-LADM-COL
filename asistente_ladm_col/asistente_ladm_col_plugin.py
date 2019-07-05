@@ -899,50 +899,82 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_wiz_boundaries_cad(self):
         wiz = CreateBoundariesCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        try:
+            # Wizard is destroy in __init__ because requested layers are not enable to use
+            wiz.exec_()
+        except:
+            pass
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_plot_cad(self):
         wiz = CreatePlotCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        try:
+            # Wizard is destroy in __init__ because requested layers are not enable to use
+            wiz.exec_()
+        except:
+            pass
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_cad(self):
         wiz = CreateBuildingCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        try:
+            # Wizard is destroy in __init__ because requested layers are not enable to use
+            wiz.exec_()
+        except:
+            pass
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_unit_cad(self):
         wiz = CreateBuildingUnitCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        try:
+            # Wizard is destroy in __init__ because requested layers are not enable to use
+            wiz.exec_()
+        except:
+            pass
 
     @_qgis_model_baker_required
     @_db_connection_required
     @_activate_processing_plugin
     def show_wiz_right_of_way_cad(self):
         wiz = CreateRightOfWayCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        try:
+            # Wizard is destroy in __init__ because requested layers are not enable to use
+            wiz.exec_()
+        except:
+            pass
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_extaddress_cad(self):
         self.wiz_address = AssociateExtAddressWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.wiz_address.exec_()
+        try:
+            # Wizard is destroy in __init__ because requested layers are not enable to use
+            self.wiz_address.exec_()
+        except:
+            pass
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_parcel_cad(self):
         self._wiz_create_parcel = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self._wiz_create_parcel.exec_()
+        try:
+            # Wizard is destroy in __init__ because requested layers are not enable to use
+            self._wiz_create_parcel.exec_()
+        except:
+            pass
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_col_party_cad(self):
         wiz = CreateColPartyCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        try:
+            # Wizard is destroy in __init__ because requested layers are not enable to use
+            wiz.exec_()
+        except:
+            pass
 
     @_qgis_model_baker_required
     @_db_connection_required
@@ -1003,31 +1035,51 @@ class AsistenteLADMCOLPlugin(QObject):
             return
 
         wiz = CreateRightCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        try:
+            # Wizard is destroy in __init__ because requested layers are not enable to use
+            wiz.exec_()
+        except:
+            pass
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_responsibility_rrr_cad(self):
         wiz = CreateResponsibilityCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        try:
+            # Wizard is destroy in __init__ because requested layers are not enable to use
+            wiz.exec_()
+        except:
+            pass
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_restriction_rrr_cad(self):
         wiz = CreateRestrictionCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        try:
+            # Wizard is destroy in __init__ because requested layers are not enable to use
+            wiz.exec_()
+        except:
+            pass
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_administrative_source_cad(self):
         wiz = CreateAdministrativeSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        try:
+            # Wizard is destroy in __init__ because requested layers are not enable to use
+            wiz.exec_()
+        except:
+            pass
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_spatial_source_cad(self):
         wiz = CreateSpatialSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        try:
+            # Wizard is destroy in __init__ because requested layers are not enable to use
+            wiz.exec_()
+        except:
+            pass
 
     @_qgis_model_baker_required
     @_db_connection_required

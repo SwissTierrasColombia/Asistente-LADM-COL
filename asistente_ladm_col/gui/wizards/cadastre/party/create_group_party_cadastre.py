@@ -440,10 +440,11 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
                     self.log.logMessage("Saving member's fraction ({}: {}).".format(member_id, fraction), PLUGIN_NAME, Qgis.Info)
                     self._layers[FRACTION_TABLE][LAYER].addFeature(new_feature)
 
-    def close_wizard(self, message=None):
+    def close_wizard(self, message=None, show_message=True):
         if message is None:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
-        self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
+        if show_message:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
         self.disconnect_signals()
         self.close()
 

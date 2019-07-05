@@ -259,10 +259,11 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                                                         automatic_fields_definition,
                                                         self.current_point_name())
 
-    def close_wizard(self, message=None):
+    def close_wizard(self, message=None, show_message=True):
         if message is None:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
-        self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
+        if show_message:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
         self.close()
 
     def current_point_name(self):
