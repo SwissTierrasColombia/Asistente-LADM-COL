@@ -46,7 +46,7 @@ from .....utils.qt_utils import (make_file_selector,
                                  disable_next_wizard,
                                  normalize_local_url)
 
-WIZARD_UI = get_ui_class('wiz_create_points_cadastre.ui')
+WIZARD_UI = get_ui_class('wizards/cadastre/surveying/wiz_create_points_cadastre.ui')
 
 
 class CreatePointsCadastreWizard(QWizard, WIZARD_UI):

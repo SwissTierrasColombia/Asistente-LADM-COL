@@ -52,7 +52,7 @@ from .....utils.qt_utils import (enable_next_wizard,
                                  disable_next_wizard)
 from .....utils.select_map_tool import SelectMapTool
 
-WIZARD_UI = get_ui_class('wiz_associate_extaddress_cadastre.ui')
+WIZARD_UI = get_ui_class('wizards/cadastre/spatial_unit/wiz_associate_extaddress_cadastre.ui')
 
 
 class AssociateExtAddressWizard(QWizard, WIZARD_UI):

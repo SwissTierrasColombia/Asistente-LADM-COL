@@ -31,7 +31,7 @@ from .....config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                               EXTFILE_TABLE)
 from .....utils import get_ui_class
 
-WIZARD_UI = get_ui_class('wiz_create_administrative_source_cadastre.ui')
+WIZARD_UI = get_ui_class('wizards/cadastre/source/wiz_create_administrative_source_cadastre.ui')
 
 
 class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):

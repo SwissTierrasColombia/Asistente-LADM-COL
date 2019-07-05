@@ -30,7 +30,7 @@ from .....config.table_mapping_config import (ID_FIELD,
                                               COL_PARTY_TABLE)
 from .....utils import get_ui_class
 
-WIZARD_UI = get_ui_class('wiz_create_col_party_cadastre.ui')
+WIZARD_UI = get_ui_class('wizards/cadastre/party/wiz_create_col_party_cadastre.ui')
 
 
 class CreateColPartyCadastreWizard(QWizard, WIZARD_UI):

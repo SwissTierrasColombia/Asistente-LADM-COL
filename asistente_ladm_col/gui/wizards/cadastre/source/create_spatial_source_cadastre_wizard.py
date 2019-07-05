@@ -55,7 +55,7 @@ from .....utils.qt_utils import (enable_next_wizard,
                                  disable_next_wizard)
 from .....utils.select_map_tool import SelectMapTool
 
-WIZARD_UI = get_ui_class('wiz_create_spatial_source_cadastre.ui')
+WIZARD_UI = get_ui_class('wizards/cadastre/source/wiz_create_spatial_source_cadastre.ui')
 
 
 class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):

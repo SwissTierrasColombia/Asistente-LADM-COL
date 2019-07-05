@@ -40,7 +40,7 @@ from .....utils import get_ui_class
 from .....utils.qt_utils import (enable_next_wizard,
                                  disable_next_wizard)
 
-WIZARD_UI = get_ui_class('wiz_create_restriction_cadastre.ui')
+WIZARD_UI = get_ui_class('wizards/cadastre/rrr/wiz_create_restriction_cadastre.ui')
 
 
 class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):

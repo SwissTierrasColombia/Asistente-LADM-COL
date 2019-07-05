@@ -52,7 +52,7 @@ from .....config.table_mapping_config import (DOMAIN_KEY_FIELD,
                                               MEMBERS_TABLE)
 from .....utils import get_ui_class
 
-DIALOG_UI = get_ui_class('dlg_group_party.ui')
+DIALOG_UI = get_ui_class('wizards/cadastre/party/dlg_group_party.ui')
 
 
 class CreateGroupPartyCadastre(QDialog, DIALOG_UI):

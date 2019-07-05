@@ -35,7 +35,7 @@ from .....config.table_mapping_config import (BOUNDARY_TABLE,
                                               BOUNDARY_POINT_TABLE)
 from .....utils import get_ui_class
 
-WIZARD_UI = get_ui_class('wiz_create_boundaries_cadastre.ui')
+WIZARD_UI = get_ui_class('wizards/cadastre/surveying/wiz_create_boundaries_cadastre.ui')
 
 
 class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):

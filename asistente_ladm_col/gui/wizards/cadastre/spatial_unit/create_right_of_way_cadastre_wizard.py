@@ -41,7 +41,7 @@ from .....config.table_mapping_config import (ID_FIELD,
                                               SURVEY_POINT_TABLE)
 from .....utils import get_ui_class
 
-WIZARD_UI = get_ui_class('wiz_create_right_of_way_cadastre.ui')
+WIZARD_UI = get_ui_class('wizards/cadastre/spatial_unit/wiz_create_right_of_way_cadastre.ui')
 
 
 class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):

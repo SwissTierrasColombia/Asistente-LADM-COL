@@ -35,7 +35,7 @@ from .....config.table_mapping_config import (BUILDING_UNIT_TABLE,
                                               SURVEY_POINT_TABLE)
 from .....utils import get_ui_class
 
-WIZARD_UI = get_ui_class('wiz_create_building_unit_cadastre.ui')
+WIZARD_UI = get_ui_class('wizards/cadastre/spatial_unit/wiz_create_building_unit_cadastre.ui')
 
 
 class CreateBuildingUnitCadastreWizard(QWizard, WIZARD_UI):
