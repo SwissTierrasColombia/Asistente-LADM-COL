@@ -36,7 +36,7 @@ RUN pip3 install --upgrade pip==9.0.3 && \
     pip3 install --upgrade psycopg2
 
 # When our PRs get merged in time!
-RUN wget https://github.com/opengisch/QgisModelBaker/releases/download/v4.2.3/QgisModelBaker.v4.2.3.zip -O /tmp/QgisModelBaker.zip
+RUN wget https://github.com/opengisch/QgisModelBaker/releases/download/4.3.0-beta/QgisModelBaker.4.3.0-beta.zip -O /tmp/QgisModelBaker.zip
 
 # When we need a custom release
 #RUN wget https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip -O /tmp/QgisModelBaker.zip
