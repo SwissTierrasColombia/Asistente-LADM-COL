@@ -62,24 +62,24 @@ from .gui.wizards.cadastre.spatial_unit.create_right_of_way_cadastre_wizard impo
 from .gui.wizards.cadastre.spatial_unit.associate_extaddress_cadastre_wizard import AssociateExtAddressWizard
 from .gui.wizards.cadastre.party.create_col_party_cadastre_wizard import CreateColPartyCadastreWizard
 from .gui.wizards.cadastre.party.create_group_party_cadastre import CreateGroupPartyCadastre
-from .gui.create_legal_party_prc import CreateLegalPartyPRCWizard
-from .gui.create_market_research_prc import CreateMarketResearchPRCWizard
-from .gui.create_natural_party_prc import CreateNaturalPartyPRCWizard
-from .gui.create_nuclear_family_prc import CreateNuclearFamilyPRCWizard
+from .gui.wizards.property_record_card.create_legal_party_prc import CreateLegalPartyPRCWizard
+from .gui.wizards.property_record_card.create_market_research_prc import CreateMarketResearchPRCWizard
+from .gui.wizards.property_record_card.create_natural_party_prc import CreateNaturalPartyPRCWizard
+from .gui.wizards.property_record_card.create_nuclear_family_prc import CreateNuclearFamilyPRCWizard
 from .gui.wizards.cadastre.baunit.create_parcel_cadastre_wizard import CreateParcelCadastreWizard
 from .gui.wizards.cadastre.spatial_unit.create_plot_cadastre_wizard import CreatePlotCadastreWizard
 from .gui.wizards.cadastre.surveying.create_points_cadastre_wizard import CreatePointsCadastreWizard
-from .gui.create_property_record_card_prc import CreatePropertyRecordCardPRCWizard
+from .gui.wizards.property_record_card.create_property_record_card_prc import CreatePropertyRecordCardPRCWizard
 from .gui.wizards.cadastre.rrr.create_responsibility_cadastre_wizard import CreateResponsibilityCadastreWizard
 from .gui.wizards.cadastre.rrr.create_restriction_cadastre_wizard import CreateRestrictionCadastreWizard
 from .gui.wizards.cadastre.rrr.create_right_cadastre_wizard import CreateRightCadastreWizard
 from .gui.wizards.cadastre.source.create_spatial_source_cadastre_wizard import CreateSpatialSourceCadastreWizard
-from .gui.create_parcel_valuation_wizard import CreateParcelValuationWizard
-from .gui.create_horizontal_property_valuation_wizard import CreateHorizontalPropertyValuationWizard
-from .gui.create_common_equipment_valuation_wizard import CreateCommonEquipmentValuationWizard
-from .gui.create_building_valuation_wizard import CreateBuildingValuationWizard
-from .gui.create_building_unit_valuation_wizard import CreateBuildingUnitValuationWizard
-from .gui.create_building_unit_qualification_valuation_wizard import CreateBuildingUnitQualificationValuationWizard
+from .gui.wizards.valuation.create_parcel_valuation_wizard import CreateParcelValuationWizard
+from .gui.wizards.valuation.create_horizontal_property_valuation_wizard import CreateHorizontalPropertyValuationWizard
+from .gui.wizards.valuation.create_common_equipment_valuation_wizard import CreateCommonEquipmentValuationWizard
+from .gui.wizards.valuation.create_building_valuation_wizard import CreateBuildingValuationWizard
+from .gui.wizards.valuation.create_building_unit_valuation_wizard import CreateBuildingUnitValuationWizard
+from .gui.wizards.valuation.create_building_unit_qualification_valuation_wizard import CreateBuildingUnitQualificationValuationWizard
 from .gui.create_geoeconomic_zone_valuation_wizard import CreateGeoeconomicZoneValuationWizard
 from .gui.create_physical_zone_valuation_wizard import CreatePhysicalZoneValuationWizard
 from .gui.dialog_load_layers import DialogLoadLayers
@@ -893,90 +893,50 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_wiz_boundaries_cad(self):
         wiz = CreateBoundariesCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-
-        # Check if requied layers are available
-        if wiz.is_enable_layers_wizard():
-            wiz.exec_()
-        else:
-            del wiz
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_plot_cad(self):
         wiz = CreatePlotCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-
-        # Check if requied layers are available
-        if wiz.is_enable_layers_wizard():
-            wiz.exec_()
-        else:
-            del wiz
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_cad(self):
         wiz = CreateBuildingCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-
-        # Check if requied layers are available
-        if wiz.is_enable_layers_wizard():
-            wiz.exec_()
-        else:
-            del wiz
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_unit_cad(self):
         wiz = CreateBuildingUnitCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-
-        # Check if requied layers are available
-        if wiz.is_enable_layers_wizard():
-            wiz.exec_()
-        else:
-            del wiz
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     @_activate_processing_plugin
     def show_wiz_right_of_way_cad(self):
         wiz = CreateRightOfWayCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-
-        # Check if requied layers are available
-        if wiz.is_enable_layers_wizard():
-            wiz.exec_()
-        else:
-            del wiz
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_extaddress_cad(self):
         self.wiz_address = AssociateExtAddressWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-
-        # Check if requied layers are available
-        if self.wiz_address.is_enable_layers_wizard():
-            self.wiz_address.exec_()
-        else:
-            del self.wiz_address
+        self.exec_wizard(self.wiz_address)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_parcel_cad(self):
         self._wiz_create_parcel = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-
-        # Check if requied layers are available
-        if self._wiz_create_parcel.is_enable_layers_wizard():
-            self._wiz_create_parcel.exec_()
-        else:
-            del self._wiz_create_parcel
+        self.exec_wizard(self._wiz_create_parcel)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_col_party_cad(self):
         wiz = CreateColPartyCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-
-        # Check if requied layers are available
-        if wiz.is_enable_layers_wizard():
-            wiz.exec_()
-        else:
-            del wiz
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
@@ -1005,56 +965,31 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_wiz_right_rrr_cad(self):
         wiz = CreateRightCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-
-        # Check if requied layers are available
-        if wiz.is_enable_layers_wizard():
-            wiz.exec_()
-        else:
-            del wiz
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_responsibility_rrr_cad(self):
         wiz = CreateResponsibilityCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-
-        # Check if requied layers are available
-        if wiz.is_enable_layers_wizard():
-            wiz.exec_()
-        else:
-            del wiz
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_restriction_rrr_cad(self):
         wiz = CreateRestrictionCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-
-        # Check if requied layers are available
-        if wiz.is_enable_layers_wizard():
-            wiz.exec_()
-        else:
-            del wiz
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_administrative_source_cad(self):
         wiz = CreateAdministrativeSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-
-        # Check if requied layers are available
-        if wiz.is_enable_layers_wizard():
-            wiz.exec_()
-        else:
-            del wiz
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_spatial_source_cad(self):
         wiz = CreateSpatialSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-
-        # Check if requied layers are available
-        if wiz.is_enable_layers_wizard():
-            wiz.exec_()
-        else:
-            del wiz
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
@@ -1072,67 +1007,67 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_wiz_property_record_card(self):
         wiz = CreatePropertyRecordCardPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_market_research_prc(self):
         wiz = CreateMarketResearchPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_nuclear_family_prc(self):
         wiz = CreateNuclearFamilyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_natural_party_prc(self):
         wiz = CreateNaturalPartyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_legal_party_prc(self):
         wiz = CreateLegalPartyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_parcel_valuation(self):
         wiz = CreateParcelValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_horizontal_property_main_parcel_valuation(self):
         wiz = CreateHorizontalPropertyValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_common_equipment_valuation(self):
         wiz = CreateCommonEquipmentValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_valuation(self):
         wiz = CreateBuildingValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_unit_valuation(self):
         wiz = CreateBuildingUnitValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_unit_qualification_valuation(self):
         wiz = CreateBuildingUnitQualificationValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
@@ -1168,3 +1103,10 @@ class AsistenteLADMCOLPlugin(QObject):
         rich_text = '<html><head/><body><p align="center"><a href="{release_url}{version}"><span style=" font-size:10pt; text-decoration: underline; color:#0000ff;">v{version}</span></a></p></body></html>'
         self._about_dialog.lbl_version.setText(rich_text.format(release_url=RELEASE_URL, version=PLUGIN_VERSION))
         self._about_dialog.exec_()
+
+    def exec_wizard(self, wiz):
+        # Check if requied layers are available
+        if wiz.is_enable_layers_wizard():
+            wiz.exec_()
+        else:
+            del wiz
