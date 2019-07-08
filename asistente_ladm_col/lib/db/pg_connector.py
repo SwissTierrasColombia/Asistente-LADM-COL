@@ -319,8 +319,7 @@ class PGConnector(DBConnector):
 
         try:
             self.close_connection()
-            self.conn = psycopg2.connect(uri)
-            self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+            self.create_connection(uri)
         except Exception as e:
             return (False, QCoreApplication.translate("PGConnector",
                     "There was an error connecting to the database: {}").format(e))
@@ -373,9 +372,9 @@ class PGConnector(DBConnector):
 
         return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS database successful!"))
 
-    def save_connection(self):
-        if self.conn is None:
-            self.conn = psycopg2.connect(self._uri)
+    def create_connection(self, uri):
+        if self.conn is None or self.conn.closed:
+            self.conn = psycopg2.connect(uri)
             self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
 
     def close_connection(self):
@@ -429,7 +428,7 @@ class PGConnector(DBConnector):
         return (False, QCoreApplication.translate("PGConnector", "Layer '{}' was not found in the database (schema: {}).").format(layer_name, self.schema))
 
     def get_tables_info(self):
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -488,7 +487,7 @@ class PGConnector(DBConnector):
                              valuation_model=self.valuation_model_exists(),
                              property_record_card_model=self.property_record_card_model_exists())
 
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -496,8 +495,6 @@ class PGConnector(DBConnector):
         cur.execute(query)
         records = cur.fetchall()
         res = [record._asdict() for record in records]
-
-        #print("BASIC QUERY:", query)
 
         return res
 
@@ -525,7 +522,7 @@ class PGConnector(DBConnector):
                              parcel_number=params['parcel_number'],
                              previous_parcel_number=params['previous_parcel_number'])
 
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -563,7 +560,7 @@ class PGConnector(DBConnector):
                                                  previous_parcel_number=params['previous_parcel_number'],
                                                  property_record_card_model=self.property_record_card_model_exists())
 
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -601,7 +598,7 @@ class PGConnector(DBConnector):
                                                        previous_parcel_number=params['previous_parcel_number'],
                                                        valuation_model=self.valuation_model_exists())
 
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -640,7 +637,7 @@ class PGConnector(DBConnector):
                                                        valuation_model=self.valuation_model_exists(),
                                                        property_record_card_model=self.property_record_card_model_exists())
 
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -654,7 +651,7 @@ class PGConnector(DBConnector):
         return res
 
     def get_annex17_plot_data(self, plot_id, mode='only_id'):
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -674,7 +671,7 @@ class PGConnector(DBConnector):
             return cur.fetchall()[0][0]
 
     def get_annex17_building_data(self):
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -686,7 +683,7 @@ class PGConnector(DBConnector):
         return cur.fetchall()[0][0]
 
     def get_annex17_point_data(self, plot_id):
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -698,7 +695,7 @@ class PGConnector(DBConnector):
         return cur.fetchone()[0]
 
     def get_ant_map_plot_data(self, plot_id, mode='only_id'):
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -718,7 +715,7 @@ class PGConnector(DBConnector):
             return cur.fetchall()[0][0]
 
     def get_ant_map_neighbouring_change_data(self, plot_id, mode='only_id'):
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -743,7 +740,7 @@ class PGConnector(DBConnector):
         :param query: SQL Statement
         :return: List of RealDictRow
         """
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -761,7 +758,7 @@ class PGConnector(DBConnector):
         :param query: SQL Statement
         :return: List of DictRow
         """
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
