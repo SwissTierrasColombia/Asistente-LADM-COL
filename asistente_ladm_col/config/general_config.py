@@ -126,18 +126,18 @@ QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.3.0"
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
-QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = False
+QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = True
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = '' # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip'
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/opengisch/QgisModelBaker/releases/download/4.3.0-beta/QgisModelBaker.4.3.0-beta.zip' # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip'
 
 # Configure Map Swipe Tool Dependency
 MAP_SWIPE_TOOL_PLUGIN_NAME = "mapswipetool_plugin"
 MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION = "1.2"
-MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION = False
-MAP_SWIPE_TOOL_REQUIRED_VERSION_URL = '' # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip'
+MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION = True
+MAP_SWIPE_TOOL_REQUIRED_VERSION_URL = 'https://plugins.qgis.org/plugins/mapswipetool_plugin/version/1.2/download/' # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip'
 
 # Change detection
 PARCEL_STATUS = '_PARCEL_STATUS_'

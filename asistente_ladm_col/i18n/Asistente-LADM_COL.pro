@@ -51,6 +51,7 @@ SOURCES = ../__init__.py \
           ../utils/qt_utils.py \
           ../utils/quality.py \
           ../utils/model_parser.py \
+          ../utils/decorators.py \
           ../gui/custom_model_dir.py \
           ../gui/dialog_import_from_excel.py \
           ../gui/dlg_get_db_or_schema_name.py \

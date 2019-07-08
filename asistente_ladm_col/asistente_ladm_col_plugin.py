@@ -843,8 +843,12 @@ class AsistenteLADMCOLPlugin(QObject):
             min_required_version_splitted = min_required_version_splitted + ['0','0','0','0']
             min_required_version_splitted = min_required_version_splitted[:4]
 
-        self.log.logMessage("[{}] Min required version: {}, current_version: {}".format(
-            plugin_name, min_required_version_splitted, current_version_splitted), PLUGIN_NAME, Qgis.Info)
+        self.log.logMessage("[{}] {}equired version: {}, current_version: {}".format(
+                plugin_name,
+                'R' if exact_required_version else 'Min r',
+                min_required_version_splitted,
+                current_version_splitted),
+            PLUGIN_NAME, Qgis.Info)
 
         if exact_required_version:
             return min_required_version_splitted == current_version_splitted
@@ -927,6 +931,7 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = DialogLoadLayers(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
+    @_qgis_model_baker_required
     @_db_connection_required
     def show_queries(self):
         if self._dock_widget_queries is None:

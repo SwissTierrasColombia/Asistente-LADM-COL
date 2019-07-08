@@ -97,12 +97,12 @@
 <context>
     <name>AsistenteLADMCOLPlugin</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="278"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="279"/>
         <source>Cadastre</source>
         <translation>Catastro</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="298"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="299"/>
         <source>Spatial Unit</source>
         <translation>Unidad Espacial</translation>
     </message>
@@ -115,135 +115,135 @@
         <translation type="vanished">Definir Linderos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="328"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="329"/>
         <source>BA Unit</source>
         <translation>Unidad Administrativa Básica</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="336"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="337"/>
         <source>Party</source>
         <translation>Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="340"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="341"/>
         <source>Create Party</source>
         <translation>Crear Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="344"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="345"/>
         <source>Create Group Party</source>
         <translation>Crear Agrupación de Interesados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="365"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="366"/>
         <source>RRR</source>
         <translation>RRR</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="349"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="350"/>
         <source>Source</source>
         <translation>Fuente</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="302"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="303"/>
         <source>Create Plot</source>
         <translation>Crear Terreno</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="281"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="282"/>
         <source>Preprocessing</source>
         <translation>Pre-procesamiento</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="148"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="149"/>
         <source>Queries</source>
         <translation>Consultar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="203"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="204"/>
         <source>Build boundaries...</source>
         <translation>Construir linderos...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="282"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="283"/>
         <source>Controlled Measurement</source>
         <translation>Medición Controlada</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="285"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="286"/>
         <source>Surveying and Representation</source>
         <translation>Topografía y Representación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="289"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="290"/>
         <source>Create Point</source>
         <translation>Crear Punto</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="293"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="294"/>
         <source>Create Boundary</source>
         <translation>Crear Lindero</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="306"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="503"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="307"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="504"/>
         <source>Create Building</source>
         <translation>Crear Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="310"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="507"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="311"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="508"/>
         <source>Create Building Unit</source>
         <translation>Crear Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="332"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="491"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="333"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="492"/>
         <source>Create Parcel</source>
         <translation>Crear Predio</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="440"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="441"/>
         <source>Create Natural Party</source>
         <translation>Crear Interesado Natural</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="444"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="445"/>
         <source>Create Legal Party</source>
         <translation>Crear Interesado Jurídico</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="359"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="360"/>
         <source>Upload Pending Source Files</source>
         <translation>Subir Archivos Fuente Pendientes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="369"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="370"/>
         <source>Create Right</source>
         <translation>Crear Derecho</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="373"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="374"/>
         <source>Create Restriction</source>
         <translation>Crear Restricción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="377"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="378"/>
         <source>Create Responsibility</source>
         <translation>Crear Responsabilidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="383"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="384"/>
         <source>Check Quality Rules</source>
         <translation>Revisar Reglas de Calidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="353"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="354"/>
         <source>Create Administrative Source</source>
         <translation>Crear Fuente Administrativa</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="357"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="358"/>
         <source>Create Spatial Source</source>
         <translation>Crear Fuente Espacial</translation>
     </message>
@@ -284,22 +284,23 @@
         <translation type="vanished">Revisar todo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="147"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="148"/>
         <source>Load layers</source>
         <translation>Cargar capas</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="157"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="158"/>
+        <location filename="../utils/decorators.py" line="44"/>
         <source>Settings</source>
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="158"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="159"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="159"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="160"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
@@ -312,22 +313,22 @@
         <translation type="vanished">Unir...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="205"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="206"/>
         <source>Move nodes...</source>
         <translation>Mover nodos...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="207"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="208"/>
         <source>Fill Point BFS</source>
         <translation>Llenar PuntosCCL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="209"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="210"/>
         <source>Fill More BFS and Less</source>
         <translation>Llenar más CCL y menos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="211"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="212"/>
         <source>Fill Right of Way Relations</source>
         <translation>Llenar relaciones de Servidumbre de Paso</translation>
     </message>
@@ -336,177 +337,239 @@
         <translation type="vanished">Generar Anexo 17</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="213"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="214"/>
         <source>Import from intermediate structure</source>
         <translation>Importar desde estructura intermedia</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="216"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="217"/>
         <source>LADM-COL tools</source>
         <translation>Herramientas LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="246"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="247"/>
         <source>Data Management</source>
         <translation>Administración de datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="247"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="248"/>
         <source>Create LADM-COL structure</source>
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="248"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="249"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="249"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="250"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="260"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="261"/>
         <source>Reports</source>
         <translation>Reportes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="263"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="264"/>
         <source>Annex 17</source>
         <translation>Anexo 17</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="268"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="269"/>
         <source>ANT Map</source>
         <translation>Plano ANT</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="314"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="315"/>
         <source>Create Right of Way</source>
         <translation>Crear Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="318"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="319"/>
         <source>Associate Address</source>
         <translation>Relacionar Dirección</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="423"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="424"/>
         <source>Property record card</source>
         <translation>Ficha predial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="428"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="429"/>
         <source>Create Property Record Card</source>
         <translation>Crear Ficha Predial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="432"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="433"/>
         <source>Create Market Research</source>
         <translation>Crear Investigación de Mercado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="436"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="437"/>
         <source>Create Nuclear Family</source>
         <translation>Crear Núcleo Familiar</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="486"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="487"/>
         <source>Valuation</source>
         <translation>Avalúos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="495"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="496"/>
         <source>Create Horizontal Property main Parcel</source>
         <translation>Crear Predio Matriz PH</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="499"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="500"/>
         <source>Create Common Equipment</source>
         <translation>Crear Equipamiento Comunal</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="511"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="512"/>
         <source>Create Building Unit Qualification</source>
         <translation>Crear Calificación de Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="515"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="516"/>
         <source>Create Geoeconomic Zone</source>
         <translation>Crear Zona Homogénea Geoeconómica</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="519"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="520"/>
         <source>Create Physical Zone</source>
         <translation>Crear Zona Homogénea Física</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="570"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="571"/>
         <source>Change detection</source>
         <translation>Identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="572"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="573"/>
         <source>Query per parcel</source>
         <translation>Consulta por predio</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="574"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="575"/>
         <source>Query all parcels</source>
         <translation>Consulta masiva</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="576"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="577"/>
         <source>Official data settings</source>
         <translation>Configuración de datos oficiales</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="702"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="703"/>
         <source>Open About Dialog</source>
         <translation>Abrir diálogo Acerca de</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="718"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="719"/>
         <source>Download and install dependency</source>
         <translation>Descargar e instalar dependencias</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="724"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="725"/>
         <source>Report dependency download is in progress...</source>
         <translation>La descarga de las dependencias para generar reportes está en progreso...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="731"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="732"/>
         <source>Remove dependency</source>
         <translation>Borrar dependencias</translation>
     </message>
     <message>
+        <location filename="../utils/decorators.py" line="41"/>
         <source>Check your database connection, since there was a problem accessing a valid Cadastre-Registry model in the database. Click the button to go to Settings.</source>
-        <translation type="vanished">Revisa tu conexión a la base de datos. Hubo un problema accediendo a un modelo válido de Catastro-Registro en la base de datos. Clic en el botón para ir a Configuración.</translation>
+        <translation>Revisa tu conexión a la base de datos. Hubo un problema accediendo a un modelo válido de Catastro-Registro en la base de datos. Clic en el botón para ir a Configuración.</translation>
     </message>
     <message>
+        <location filename="../utils/decorators.py" line="49"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, connection to DB was not valid.</source>
-        <translation type="vanished">No se pudo ejecutar una funcionalidad, la conexión a la base de datos no fue válida.</translation>
+        <translation>No se pudo ejecutar una funcionalidad, la conexión a la base de datos no fue válida.</translation>
     </message>
     <message>
-        <source>The plugin &apos;QGIS Model Baker&apos; version {} is required, but couldn&apos;t be found. Download it &lt;a href=&quot;{}&quot;&gt;from this link&lt;/a&gt; and use &apos;Install from ZIP&apos;.</source>
-        <translation type="vanished">Se requiere el plugin &apos;QGIS Model Baker&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar desde ZIP&quot;.</translation>
+        <location filename="../utils/decorators.py" line="71"/>
+        <source>The plugin &apos;QGIS Model Baker&apos; version {} is required, but couldn&apos;t be found. Download it &lt;a href=&quot;{}&quot;&gt;from this link&lt;/a&gt; and use &apos;Install from ZIP&apos; in the Plugin Manager.</source>
+        <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar a partir de ZIP&quot; desde el Administrador de Complementos.</translation>
     </message>
     <message>
+        <location filename="../utils/decorators.py" line="76"/>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
-        <translation type="vanished">Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Plugins.</translation>
+        <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Plugins.</translation>
     </message>
     <message>
+        <location filename="../utils/decorators.py" line="89"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, QGIS Model Baker not found.</source>
-        <translation type="vanished">No se pudo ejecutar una funcionalidad, no se encontró QGIS Model Baker.</translation>
+        <translation>No se pudo ejecutar una funcionalidad, no se encontró QGIS Model Baker.</translation>
+    </message>
+    <message>
+        <location filename="../utils/decorators.py" line="104"/>
+        <source>The processing plugin has been activated!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../utils/decorators.py" line="150"/>
+        <source>Check your official database connection, since there was a problem accessing a valid Cadastre-Registry model in the database. Click the button to go to Settings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../utils/decorators.py" line="153"/>
+        <source> Official Data Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../utils/decorators.py" line="158"/>
+        <source>A dialog/tool couldn&apos;t be opened/executed, connection to official DB was not valid.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../utils/decorators.py" line="176"/>
+        <source>Your &apos;official&apos; database is the same &apos;collected&apos; database!!! Click the proper button to change connection settings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../utils/decorators.py" line="180"/>
+        <source> Change official settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../utils/decorators.py" line="185"/>
+        <source>Change collected settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../utils/decorators.py" line="191"/>
+        <source>A dialog/tool couldn&apos;t be opened/executed, official DB is the same collected DB!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../utils/decorators.py" line="212"/>
+        <source>The plugin &apos;MapSwipe Tool&apos; version {} is required, but couldn&apos;t be found. Download it &lt;a href=&quot;{}&quot;&gt;from this link&lt;/a&gt; and use &apos;Install from ZIP&apos; in the Plugin Manager.</source>
+        <translation>Se requiere el plugin &apos;MapSwipe Tool&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar a partir de ZIP&quot; desde el Administrador de Complementos.</translation>
+    </message>
+    <message>
+        <location filename="../utils/decorators.py" line="215"/>
+        <source>The plugin &apos;MapSwipe Tool&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../utils/decorators.py" line="225"/>
+        <source>A dialog/tool couldn&apos;t be opened/executed, MapSwipe Tool not found.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} (or higher) is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
         <translation type="vanished">Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} (o superior), pero no está instalado. Clic en el botón para mostrar el Administrador de Plugins.</translation>
     </message>
     <message>
+        <location filename="../utils/decorators.py" line="83"/>
+        <location filename="../utils/decorators.py" line="219"/>
         <source>Plugin Manager</source>
-        <translation type="vanished">Administrador de Plugins</translation>
+        <translation>Administrador de Plugins</translation>
     </message>
     <message>
         <source>A dialog couldn&apos;t be open, QGIS Model Baker not found.</source>
@@ -1039,17 +1102,17 @@
         <translation>No se pudo encontrar la tabla Agrupación de Interesados... {}</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1027"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1037"/>
         <source>First enable automatic values for both namespace and local_id fields before creating group parties. Click the button to open the settings dialog.</source>
         <translation>Primero habilita los valores automáticos para los campos &apos;espacio de nombres&apos; y &apos;local_id&apos; antes de crear agrupaciones de interesados. Haz clic en el botón para abrir el diálogo de configuración.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1029"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1039"/>
         <source>Open Settings</source>
         <translation>Abrir Configuración</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1047"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1057"/>
         <location filename="../gui/create_group_party_cadastre.py" line="126"/>
         <location filename="../gui/create_group_party_cadastre.py" line="135"/>
         <location filename="../gui/create_group_party_cadastre.py" line="144"/>
@@ -1404,7 +1467,7 @@
         <translation type="vanished">Por favor selecciona solo un terreno</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/dockwidget_change_detection.py" line="87"/>
+        <location filename="../gui/change_detection/dockwidget_change_detection.py" line="86"/>
         <source>&apos;Change detection&apos; has been closed because you just removed a required layer.</source>
         <translation>La herramienta &apos;Identificación de novedades&apos; ha sido cerrada porque acabas de remover una capa necesaria.</translation>
     </message>
@@ -1733,12 +1796,12 @@
         <translation>¡El nuevo derecho (t_id={}) se creó exitosamente y fue asociado con su fuente administrativa correspondiente (t_id={})!</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1067"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1077"/>
         <source>Administrative Source table couldn&apos;t be found... {}</source>
         <translation>No se pudo encontrar la capa Fuente Administrativa... {}</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1073"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1083"/>
         <source>Close the edit session in table {} before creating rights.</source>
         <translation>Cierra la sesión de edición en la tabla {} antes de continuar creando derechos.</translation>
     </message>
@@ -2815,12 +2878,12 @@ Do you want to replace it?</source>
         <translation>No se pudo guardar el archivo.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="814"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="815"/>
         <source>Some errors were found while importing from the intermediate Excel file into LADM-COL!</source>
         <translation>¡Se encontraron errores importando desde la estructura intermedia de Excel a LADM-COL!</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="818"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="819"/>
         <source>Show errors found</source>
         <translation>Mostrar errores encontrados</translation>
     </message>
@@ -3105,22 +3168,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>DockWidgetChanges</name>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="88"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="90"/>
         <source>Parcel Number</source>
         <translation>Número Predial</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="89"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="91"/>
         <source>Previous Parcel Number</source>
         <translation>Número Predial Anterior</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="90"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="92"/>
         <source>Folio de Matrícula Inmobiliaria</source>
         <translation>Folio de Matrícula Inmobiliaria</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="250"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="252"/>
         <source>First enter a query</source>
         <translation>Primero ingresa una consulta</translation>
     </message>
@@ -3218,7 +3281,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../ui/change_detection/changes_all_parcels_panel_widget.ui" line="92"/>
-        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="226"/>
+        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="229"/>
         <source>Estado</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3288,17 +3351,17 @@ p, li { white-space: pre-wrap; }
         <translation>Resultados</translation>
     </message>
     <message>
-        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="211"/>
+        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="214"/>
         <source>Atributo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="216"/>
+        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="219"/>
         <source>Valor oficial</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="221"/>
+        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="224"/>
         <source>Valor barrido</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4140,17 +4203,17 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>LogQualityDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="782"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="783"/>
         <source>Show Results</source>
         <translation>Mostrar Resultados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="790"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="791"/>
         <source>Checking {} out of {}: &apos;{}&apos;</source>
         <translation>Revisando {} de {}: &apos;{}&apos;</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="802"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="803"/>
         <source>All the {} quality rules were checked! Click the button at the right-hand side to see a report.</source>
         <translation>¡Se terminaron de revisar las {} reglas de calidad! Haz clic en el botón de la derecha para ver un reporte.</translation>
     </message>
@@ -4465,24 +4528,24 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>QGISUtils</name>
     <message>
-        <location filename="../utils/qgis_utils.py" line="887"/>
+        <location filename="../utils/qgis_utils.py" line="888"/>
         <source>The point layer &apos;{}&apos; couldn&apos;t be found in the DB... {}</source>
         <translation>No se encontró la capa de puntos &apos;{}&apos; en la base de datos... {}</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1290"/>
+        <location filename="../utils/qgis_utils.py" line="1291"/>
         <source>First load the layer {} into QGIS!</source>
         <translation>¡Primero carga la capa {} a QGIS!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="948"/>
-        <location filename="../utils/qgis_utils.py" line="1040"/>
-        <location filename="../utils/qgis_utils.py" line="1291"/>
+        <location filename="../utils/qgis_utils.py" line="949"/>
+        <location filename="../utils/qgis_utils.py" line="1041"/>
+        <location filename="../utils/qgis_utils.py" line="1292"/>
         <source>Load layer {} now</source>
         <translation>Cargar la capa {} ahora</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="202"/>
+        <location filename="../utils/qgis_utils.py" line="203"/>
         <source>Extracting relations and domains from the database... This is done only once per session!</source>
         <translation>Extrayendo relaciones y dominios de la base de datos... ¡Esto se realiza solo una vez por sesión!</translation>
     </message>
@@ -4499,31 +4562,31 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">¡Se unieron {} objetos espaciales!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1345"/>
-        <location filename="../utils/qgis_utils.py" line="1358"/>
-        <location filename="../utils/qgis_utils.py" line="1386"/>
+        <location filename="../utils/qgis_utils.py" line="1346"/>
+        <location filename="../utils/qgis_utils.py" line="1359"/>
+        <location filename="../utils/qgis_utils.py" line="1387"/>
         <source>Layer {} not found in the DB! {}</source>
         <translation>¡No se encontró la capa {} en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1224"/>
+        <location filename="../utils/qgis_utils.py" line="1225"/>
         <source>Model ETL-model was not found and cannot be opened!</source>
         <translation>¡No se encontró el modelo &apos;ETL-model&apos; y por ello no puede ser abierto!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="946"/>
+        <location filename="../utils/qgis_utils.py" line="947"/>
         <source>First load the layer {} into QGIS and select at least one boundary!</source>
         <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un lindero!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1110"/>
-        <location filename="../utils/qgis_utils.py" line="1136"/>
+        <location filename="../utils/qgis_utils.py" line="1111"/>
+        <location filename="../utils/qgis_utils.py" line="1137"/>
         <source>{} out of {} records were saved into &apos;{}&apos;! {} out of {} records already existed in the database.</source>
         <translation>¡{} de {} registros fueron guardados en &apos;{}&apos;! {} de {} registros ya existían en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="963"/>
-        <location filename="../utils/qgis_utils.py" line="1304"/>
+        <location filename="../utils/qgis_utils.py" line="964"/>
+        <location filename="../utils/qgis_utils.py" line="1305"/>
         <source>First select at least one boundary!</source>
         <translation>¡Primero selecciona por lo menos un lindero!</translation>
     </message>
@@ -4532,46 +4595,46 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation type="vanished">Extrayendo datos de la base de datos... ¡Esto se realiza solamente una vez por cada sesión de QGIS!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="312"/>
+        <location filename="../utils/qgis_utils.py" line="313"/>
         <source>Loading LADM_COL layers to QGIS and configuring their relations and forms...</source>
         <translation>Cargando capas LADM_COL a QGIS y configurando sus formularios y relaciones...</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="400"/>
+        <location filename="../utils/qgis_utils.py" line="401"/>
         <source>{layer_name} layer couldn&apos;t be found... {description}</source>
         <translation>No se encontró la capa {layer_name}... {description}</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="829"/>
+        <location filename="../utils/qgis_utils.py" line="830"/>
         <source>No CSV file given or file doesn&apos;t exist.</source>
         <translation>No se especificó un archivo CSV o el archivo no existe.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="864"/>
+        <location filename="../utils/qgis_utils.py" line="865"/>
         <source>CSV layer not valid!</source>
         <translation>¡La capa CSV no es válida!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="876"/>
+        <location filename="../utils/qgis_utils.py" line="877"/>
         <source>There are overlapping points, we cannot import them into the DB! See selected points.</source>
         <translation>Hay puntos superpuestos, ¡no podemos importarlos a la base de datos! Revisa los puntos seleccionados en el mapa.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="915"/>
+        <location filename="../utils/qgis_utils.py" line="916"/>
         <source>{} points were added succesfully to &apos;{}&apos;.</source>
         <translation>Se agregaron {} puntos a &apos;{}&apos; satisfactoriamente.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="921"/>
+        <location filename="../utils/qgis_utils.py" line="922"/>
         <source>No point was added to &apos;{}&apos;.</source>
         <translation>No se agregó ningún punto a &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="937"/>
-        <location filename="../utils/qgis_utils.py" line="980"/>
-        <location filename="../utils/qgis_utils.py" line="1030"/>
-        <location filename="../utils/qgis_utils.py" line="1074"/>
-        <location filename="../utils/qgis_utils.py" line="1081"/>
+        <location filename="../utils/qgis_utils.py" line="938"/>
+        <location filename="../utils/qgis_utils.py" line="981"/>
+        <location filename="../utils/qgis_utils.py" line="1031"/>
+        <location filename="../utils/qgis_utils.py" line="1075"/>
+        <location filename="../utils/qgis_utils.py" line="1082"/>
         <location filename="../utils/quality.py" line="666"/>
         <location filename="../utils/quality.py" line="670"/>
         <location filename="../utils/quality.py" line="976"/>
@@ -4582,21 +4645,21 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation>¡No se encontró la tabla {} en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="953"/>
-        <location filename="../utils/qgis_utils.py" line="968"/>
-        <location filename="../utils/qgis_utils.py" line="1045"/>
-        <location filename="../utils/qgis_utils.py" line="1061"/>
-        <location filename="../utils/qgis_utils.py" line="1296"/>
+        <location filename="../utils/qgis_utils.py" line="954"/>
+        <location filename="../utils/qgis_utils.py" line="969"/>
+        <location filename="../utils/qgis_utils.py" line="1046"/>
+        <location filename="../utils/qgis_utils.py" line="1062"/>
+        <location filename="../utils/qgis_utils.py" line="1297"/>
         <source>Continue?</source>
         <translation>¿Continuar?</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="954"/>
+        <location filename="../utils/qgis_utils.py" line="955"/>
         <source>There are no selected boundaries, do you like to fill the &apos;{}&apos; table for all the {} boundaries in the data base?</source>
         <translation>No hay linderos seleccionados. ¿Quieres llenar la tabla &apos;{}&apos; para todos los {} linderos en la base de datos?</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="969"/>
+        <location filename="../utils/qgis_utils.py" line="970"/>
         <source>There are {selected} boundaries selected, do you like to fill the &apos;{table}&apos; table just for the selected boundaries?
 
 If you say &apos;No&apos;, the &apos;{table}&apos; table will be filled for all boundaries in the database.</source>
@@ -4605,32 +4668,32 @@ If you say &apos;No&apos;, the &apos;{table}&apos; table will be filled for all 
 Si eliges &apos;No&apos;, se llenará la tabla &apos;{table}&apos; para todos los linderos en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1006"/>
+        <location filename="../utils/qgis_utils.py" line="1007"/>
         <source>{} out of {} records were saved into {}! {} out of {} records already existed in the database.</source>
         <translation>¡{} de {} registros fueron guardados en {}! {} de {} registros ya existían en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1017"/>
+        <location filename="../utils/qgis_utils.py" line="1018"/>
         <source>No pairs id_boundary-id_boundary_point found.</source>
         <translation>No se encontraron parejas id_lindero-id_punto_lindero.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1038"/>
+        <location filename="../utils/qgis_utils.py" line="1039"/>
         <source>First load the layer {} into QGIS and select at least one plot!</source>
         <translation>¡Primero carga la capa {} a QGIS y selecciona por lo menos un terreno!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1046"/>
+        <location filename="../utils/qgis_utils.py" line="1047"/>
         <source>There are no selected plots, do you like to fill the &apos;{more}&apos; and &apos;{less}&apos; tables for all the {all} plots in the data base?</source>
         <translation>No hay terrenos seleccionados. ¿Quieres llenar las tablas &apos;{more}&apos; y &apos;{less}&apos; para todos los {all} terrenos en la base de datos?</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1056"/>
+        <location filename="../utils/qgis_utils.py" line="1057"/>
         <source>First select at least one plot!</source>
         <translation>¡Primero selecciona por lo menos un terreno!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1062"/>
+        <location filename="../utils/qgis_utils.py" line="1063"/>
         <source>There are {selected} plots selected, do you like to fill the &apos;{more}&apos; and &apos;{less}&apos; tables just for the selected plots?
 
 If you say &apos;No&apos;, the &apos;{more}&apos; and &apos;{less}&apos; tables will be filled for all plots in the database.</source>
@@ -4639,53 +4702,53 @@ If you say &apos;No&apos;, the &apos;{more}&apos; and &apos;{less}&apos; tables 
 Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{less}&apos; para todos los terrenos en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1120"/>
-        <location filename="../utils/qgis_utils.py" line="1146"/>
+        <location filename="../utils/qgis_utils.py" line="1121"/>
+        <location filename="../utils/qgis_utils.py" line="1147"/>
         <source>No pairs id_boundary-id_plot found for &apos;{}&apos; table.</source>
         <translation>No se encontraron parejas id_lindero-id_terreno para la tabla &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1185"/>
+        <location filename="../utils/qgis_utils.py" line="1186"/>
         <source>You need to close the edit session on layer &apos;{}&apos; before using this tool!</source>
         <translation>¡Necesitas cerrar la sesión de edición sobre la capa {} antes de usar esta herramienta!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1297"/>
+        <location filename="../utils/qgis_utils.py" line="1298"/>
         <source>There are no selected boundaries, do you like to use all the {} boundaries in the data base?</source>
         <translation>No hay linderos seleccionados. ¿Quieres usar todos los {} linderos en la base de datos?</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1330"/>
+        <location filename="../utils/qgis_utils.py" line="1331"/>
         <source>{} feature(s) was(were) analyzed generating {} boundary(ies)!</source>
         <translation>¡Se analizaron {} líneas generando {} lindero(s)!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1335"/>
+        <location filename="../utils/qgis_utils.py" line="1336"/>
         <source>There are no boundaries to build.</source>
         <translation>No hay linderos para construir.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1351"/>
+        <location filename="../utils/qgis_utils.py" line="1352"/>
         <source>First select boundaries!</source>
         <translation>¡Primero selecciona linderos!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1374"/>
+        <location filename="../utils/qgis_utils.py" line="1375"/>
         <source>{} new plot(s) has(have) been created!</source>
         <translation>¡{} nuevo(s) terreno(s) ha(n) sido creado(s)!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1378"/>
+        <location filename="../utils/qgis_utils.py" line="1379"/>
         <source>No plot could be created. Make sure selected boundaries are closed!</source>
         <translation>No se pudieron crear terrenos. ¡Asegúrate que los linderos seleccionados formen polígonos cerrados!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1443"/>
+        <location filename="../utils/qgis_utils.py" line="1444"/>
         <source>The local help could not be found in &apos;{}&apos; and cannot be open.</source>
         <translation>No se encontró la ayuda local en &apos;{}&apos; y por lo tanto no se pudo abrir.</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1449"/>
+        <location filename="../utils/qgis_utils.py" line="1450"/>
         <source>Is your computer connected to Internet? If so, go to &lt;a href=&quot;{}&quot;&gt;online help&lt;/a&gt;.</source>
         <translation>¿Está tu computador conectado a Internet? Si es así, ve a la&lt;a href=&quot;{}&quot;&gt;ayuda en línea&lt;/a&gt;.</translation>
     </message>
@@ -4739,7 +4802,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>¡No hay puntos superpuestos en la capa &apos;{}&apos;!</translation>
     </message>
     <message>
-        <location filename="../utils/qgis_utils.py" line="1178"/>
+        <location filename="../utils/qgis_utils.py" line="1179"/>
         <location filename="../utils/quality.py" line="131"/>
         <location filename="../utils/quality.py" line="135"/>
         <location filename="../utils/quality.py" line="448"/>
