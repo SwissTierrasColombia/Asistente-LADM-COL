@@ -499,7 +499,7 @@
     <message>
         <location filename="../utils/decorators.py" line="76"/>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
-        <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Plugins.</translation>
+        <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Complementos.</translation>
     </message>
     <message>
         <location filename="../utils/decorators.py" line="89"/>
@@ -509,42 +509,42 @@
     <message>
         <location filename="../utils/decorators.py" line="104"/>
         <source>The processing plugin has been activated!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡El plugin &apos;Processing&apos; ha sido activado!</translation>
     </message>
     <message>
         <location filename="../utils/decorators.py" line="150"/>
         <source>Check your official database connection, since there was a problem accessing a valid Cadastre-Registry model in the database. Click the button to go to Settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Revisa tu conexión a la base de datos oficial. Hubo un problema accediendo a un modelo válido de Catastro-Registro en la base de datos. Clic en el botón para ir a Configuración.</translation>
     </message>
     <message>
         <location filename="../utils/decorators.py" line="153"/>
         <source> Official Data Settings</source>
-        <translation type="unfinished"></translation>
+        <translation> Configuración de datos oficiales</translation>
     </message>
     <message>
         <location filename="../utils/decorators.py" line="158"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, connection to official DB was not valid.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo abrir/ejecutar un diálogo/herramienta, la conexión a la base de datos oficial no es válida.</translation>
     </message>
     <message>
         <location filename="../utils/decorators.py" line="176"/>
         <source>Your &apos;official&apos; database is the same &apos;collected&apos; database!!! Click the proper button to change connection settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>¡¡¡Tu base de datos &apos;oficial&apos; es la misma que la del barrido!!! Clic en el botón correspondiente para cambiar la conexión.</translation>
     </message>
     <message>
         <location filename="../utils/decorators.py" line="180"/>
         <source> Change official settings</source>
-        <translation type="unfinished"></translation>
+        <translation> Cambiar conexión oficial</translation>
     </message>
     <message>
         <location filename="../utils/decorators.py" line="185"/>
         <source>Change collected settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar conexión del barrido</translation>
     </message>
     <message>
         <location filename="../utils/decorators.py" line="191"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, official DB is the same collected DB!</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo abrir/ejecutar un diálogo/herramienta, ¡la base de datos oficial es la misma del barrido!</translation>
     </message>
     <message>
         <location filename="../utils/decorators.py" line="212"/>
@@ -554,12 +554,12 @@
     <message>
         <location filename="../utils/decorators.py" line="215"/>
         <source>The plugin &apos;MapSwipe Tool&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se requiere el plugin &apos;MapSwipe Tool&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Complementos.</translation>
     </message>
     <message>
         <location filename="../utils/decorators.py" line="225"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, MapSwipe Tool not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo abrir/ejecutar un diálogo/herramienta, no se encontró el plugin MapSwipe Tool.</translation>
     </message>
     <message>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} (or higher) is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
@@ -3384,7 +3384,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../ui/change_detection/parcels_changes_summary_panel_widget.ui" line="188"/>
         <location filename="../ui/change_detection/parcels_changes_summary_panel_widget.ui" line="232"/>
         <source>0</source>
-        <translation type="unfinished">0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <location filename="../ui/change_detection/parcels_changes_summary_panel_widget.ui" line="55"/>
