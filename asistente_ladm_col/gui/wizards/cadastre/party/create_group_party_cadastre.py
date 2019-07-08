@@ -27,6 +27,8 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
                                  QGridLayout)
 from qgis.core import (QgsVectorLayerUtils,
+                       QgsExpression,
+                       QgsExpressionContext,
                        Qgis,
                        edit,
                        QgsApplication)
@@ -44,6 +46,7 @@ from .....config.table_mapping_config import (DOMAIN_KEY_FIELD,
                                               LA_GROUP_PARTY_NAME_FIELD,
                                               LA_GROUP_PARTY_GPTYPE_FIELD,
                                               LA_GROUP_PARTY_TABLE,
+                                              COL_PARTY_TABLE,
                                               LA_GROUP_PARTY_TYPE_FIELD,
                                               LA_GROUP_PARTY_TYPE_TABLE,
                                               LA_GROUP_PARTY_TYPE_VALUE,
@@ -74,8 +77,10 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
 
         self._layers = {
             LA_GROUP_PARTY_TABLE: {'name': LA_GROUP_PARTY_TABLE, 'geometry': None, LAYER: None},
+            COL_PARTY_TABLE: {'name': COL_PARTY_TABLE, 'geometry': None, LAYER: None},
             MEMBERS_TABLE: {'name': MEMBERS_TABLE, 'geometry': None, LAYER: None},
-            FRACTION_TABLE: {'name': FRACTION_TABLE, 'geometry': None, LAYER: None}
+            FRACTION_TABLE: {'name': FRACTION_TABLE, 'geometry': None, LAYER: None},
+            LA_GROUP_PARTY_TYPE_TABLE: {'name': LA_GROUP_PARTY_TYPE_TABLE, 'geometry': None, LAYER: None}
         }
 
         # Fill combo of types
@@ -118,18 +123,43 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         # It's necessary to prevent message bar alert
         pass
 
-    def validate_target_layers(self):
-        # Get the required target layers and validate if edit session is closed
+    def is_enable_layers_wizard(self):
+        # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if res_layers is None:
-            return
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                                                QCoreApplication.translate(self.WIZARD_NAME,
+                                                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
+                                                    self.WIZARD_TOOL_NAME),
+                                                Qgis.Warning)
+            return False
 
-        # Verify that layers are not in edit mode
-        for layer_name in self._layers:
-            if self._layers[layer_name][LAYER].isEditable():
-                return (False, QCoreApplication.translate(self.WIZARD_NAME,
-                                                          "Close the edit session in table {} before creating group parties.").format(self._layers[layer_name][LAYER].name()))
-        return (True, None)
+        # Check if layers any layer is in editing mode
+        layers_name = list()
+        for layer in self._layers:
+            if self._layers[layer]['layer'].isEditable():
+                layers_name.append(self._layers[layer]['layer'].name())
+
+        if layers_name:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                                                QCoreApplication.translate(self.WIZARD_NAME,
+                                                                           "Wizard cannot be opened until the following layers are not in edit mode '{}'.").format(
+                                                    '; '.join([layer_name for layer_name in layers_name])),
+                                                Qgis.Warning)
+            return False
+
+        return True
+
+    def load_parties_data(self):
+        expression = QgsExpression(self._layers[COL_PARTY_TABLE][LAYER].displayExpression())
+        context = QgsExpressionContext()
+        data = dict()
+        for feature in self._layers[COL_PARTY_TABLE][LAYER].getFeatures():
+            context.setFeature(feature)
+            expression.prepare(context)
+            data[feature[ID_FIELD]] = [expression.evaluate(context), 0, 0]
+
+        self.set_parties_data(data)
 
     def set_parties_data(self, parties_data):
         """

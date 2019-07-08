@@ -35,8 +35,6 @@ from qgis.PyQt.QtWidgets import (QAction,
 
 from qgis.core import (Qgis,
                        QgsApplication,
-                       QgsExpression,
-                       QgsExpressionContext,
                        QgsProcessingModelAlgorithm)
 
 from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
@@ -50,9 +48,6 @@ from .config.general_config import (CADASTRE_MENU_OBJECTNAME,
                                     URL_REPORTS_LIBRARIES,
                                     TOOL_BAR_NAME,
                                     VALUATION_MENU_OBJECTNAME)
-from .config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
-                                          ID_FIELD,
-                                          COL_PARTY_TABLE)
 from .utils.decorators import (_db_connection_required,
                                _qgis_model_baker_required,
                                _activate_processing_plugin)
@@ -97,7 +92,6 @@ from .gui.toolbar import ToolBar
 from .gui.log_excel_dialog import LogExcelDialog
 from .data.ladm_data import LADM_DATA
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
-from .utils.model_parser import ModelParser
 from .utils.qgis_utils import QGISUtils
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
@@ -899,82 +893,90 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_wiz_boundaries_cad(self):
         wiz = CreateBoundariesCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        try:
-            # Wizard is destroy in __init__ because requested layers are not enable to use
+
+        # Check if requied layers are available
+        if wiz.is_enable_layers_wizard():
             wiz.exec_()
-        except:
-            pass
+        else:
+            del wiz
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_plot_cad(self):
         wiz = CreatePlotCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        try:
-            # Wizard is destroy in __init__ because requested layers are not enable to use
+
+        # Check if requied layers are available
+        if wiz.is_enable_layers_wizard():
             wiz.exec_()
-        except:
-            pass
+        else:
+            del wiz
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_cad(self):
         wiz = CreateBuildingCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        try:
-            # Wizard is destroy in __init__ because requested layers are not enable to use
+
+        # Check if requied layers are available
+        if wiz.is_enable_layers_wizard():
             wiz.exec_()
-        except:
-            pass
+        else:
+            del wiz
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_unit_cad(self):
         wiz = CreateBuildingUnitCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        try:
-            # Wizard is destroy in __init__ because requested layers are not enable to use
+
+        # Check if requied layers are available
+        if wiz.is_enable_layers_wizard():
             wiz.exec_()
-        except:
-            pass
+        else:
+            del wiz
 
     @_qgis_model_baker_required
     @_db_connection_required
     @_activate_processing_plugin
     def show_wiz_right_of_way_cad(self):
         wiz = CreateRightOfWayCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        try:
-            # Wizard is destroy in __init__ because requested layers are not enable to use
+
+        # Check if requied layers are available
+        if wiz.is_enable_layers_wizard():
             wiz.exec_()
-        except:
-            pass
+        else:
+            del wiz
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_extaddress_cad(self):
         self.wiz_address = AssociateExtAddressWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        try:
-            # Wizard is destroy in __init__ because requested layers are not enable to use
+
+        # Check if requied layers are available
+        if self.wiz_address.is_enable_layers_wizard():
             self.wiz_address.exec_()
-        except:
-            pass
+        else:
+            del self.wiz_address
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_parcel_cad(self):
         self._wiz_create_parcel = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        try:
-            # Wizard is destroy in __init__ because requested layers are not enable to use
+
+        # Check if requied layers are available
+        if self._wiz_create_parcel.is_enable_layers_wizard():
             self._wiz_create_parcel.exec_()
-        except:
-            pass
+        else:
+            del self._wiz_create_parcel
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_col_party_cad(self):
         wiz = CreateColPartyCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        try:
-            # Wizard is destroy in __init__ because requested layers are not enable to use
+
+        # Check if requied layers are available
+        if wiz.is_enable_layers_wizard():
             wiz.exec_()
-        except:
-            pass
+        else:
+            del wiz
 
     @_qgis_model_baker_required
     @_db_connection_required
@@ -991,95 +993,68 @@ class AsistenteLADMCOLPlugin(QObject):
 
         dlg = CreateGroupPartyCadastre(self.iface, self.get_db_connection(), self.qgis_utils)
 
-        res, msg = dlg.validate_target_layers()
-
-        if not res:
-            self.show_message(msg, Qgis.Warning, 10)
-            return
-
-        layer = self.qgis_utils.get_layer(self.get_db_connection(), COL_PARTY_TABLE, load=True)
-        if layer is None:
-            print("Table not found in group party dialog")
-            return
-
-        if layer.isEditable():
-            self.show_message(QCoreApplication.translate("CreateGroupPartyCadastre",
-                "Close the edit session in table {} before creating group parties.").format(layer.name()), Qgis.Warning, 10)
-            return
-
-        expression = QgsExpression(layer.displayExpression())
-        context = QgsExpressionContext()
-        data = dict()
-        for feature in layer.getFeatures():
-            context.setFeature(feature)
-            expression.prepare(context)
-            data[feature[ID_FIELD]] = [expression.evaluate(context), 0, 0]
-
-        dlg.set_parties_data(data)
-        dlg.exec_()
+        # Check if requied layers are available
+        if dlg.is_enable_layers_wizard():
+            # Load required data, it is necessary in the dlg
+            dlg.load_parties_data()
+            dlg.exec_()
+        else:
+            del dlg
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_right_rrr_cad(self):
-        layer = self.qgis_utils.get_layer(self.get_db_connection(), ADMINISTRATIVE_SOURCE_TABLE, load=True)
-        if layer is None:
-            self.show_message(QCoreApplication.translate("CreateRightCadastreWizard",
-                                                         "Administrative Source table couldn't be found... {}").format(
-                self.get_db_connection().get_description()), Qgis.Warning, 10)
-            return
-
-        if layer.isEditable():
-            self.show_message(QCoreApplication.translate("CreateRightCadastreWizard",
-                                                         "Close the edit session in table {} before creating rights.").format(
-                ADMINISTRATIVE_SOURCE_TABLE), Qgis.Warning, 10)
-            return
-
         wiz = CreateRightCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        try:
-            # Wizard is destroy in __init__ because requested layers are not enable to use
+
+        # Check if requied layers are available
+        if wiz.is_enable_layers_wizard():
             wiz.exec_()
-        except:
-            pass
+        else:
+            del wiz
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_responsibility_rrr_cad(self):
         wiz = CreateResponsibilityCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        try:
-            # Wizard is destroy in __init__ because requested layers are not enable to use
+
+        # Check if requied layers are available
+        if wiz.is_enable_layers_wizard():
             wiz.exec_()
-        except:
-            pass
+        else:
+            del wiz
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_restriction_rrr_cad(self):
         wiz = CreateRestrictionCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        try:
-            # Wizard is destroy in __init__ because requested layers are not enable to use
+
+        # Check if requied layers are available
+        if wiz.is_enable_layers_wizard():
             wiz.exec_()
-        except:
-            pass
+        else:
+            del wiz
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_administrative_source_cad(self):
         wiz = CreateAdministrativeSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        try:
-            # Wizard is destroy in __init__ because requested layers are not enable to use
+
+        # Check if requied layers are available
+        if wiz.is_enable_layers_wizard():
             wiz.exec_()
-        except:
-            pass
+        else:
+            del wiz
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_spatial_source_cad(self):
         wiz = CreateSpatialSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        try:
-            # Wizard is destroy in __init__ because requested layers are not enable to use
+
+        # Check if requied layers are available
+        if wiz.is_enable_layers_wizard():
             wiz.exec_()
-        except:
-            pass
+        else:
+            del wiz
 
     @_qgis_model_baker_required
     @_db_connection_required

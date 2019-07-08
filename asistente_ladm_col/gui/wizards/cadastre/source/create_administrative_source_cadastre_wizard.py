@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-import sip
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 from qgis.PyQt.QtWidgets import QWizard
@@ -52,10 +51,6 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
             ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None, LAYER: None},
             EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None, LAYER: None}
         }
-
-        if not self.is_enable_layers_wizard():
-            self.close_wizard(show_message=False)
-            return
 
         self.restore_settings()
         self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
@@ -138,7 +133,7 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
                                                 QCoreApplication.translate(self.WIZARD_NAME,
                                                                            "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
                                                     self.WIZARD_TOOL_NAME),
-                                                Qgis.Info)
+                                                Qgis.Warning)
             return False
 
         # Check if layers any layer is in editing mode
@@ -152,14 +147,10 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
                                                 QCoreApplication.translate(self.WIZARD_NAME,
                                                                            "Wizard cannot be opened until the following layers are not in edit mode '{}'.").format(
                                                     '; '.join([layer_name for layer_name in layers_name])),
-                                                Qgis.Info)
+                                                Qgis.Warning)
             return False
 
         return True
-
-    def closeEvent(self, event):
-        # Close all open signal when object is destroyed
-        sip.delete(self)
 
     def close_wizard(self, message=None, show_message=True):
         if message is None:
