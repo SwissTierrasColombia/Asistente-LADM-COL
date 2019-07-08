@@ -122,7 +122,7 @@ JAVA_REQUIRED_VERSION = 1.8
 
 # Configure QGIS Model Baker Dependency
 QGIS_MODEL_BAKER_PLUGIN_NAME = "QgisModelBaker"
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.2.3"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.3.0"
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
@@ -222,7 +222,7 @@ LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE = "</li>"
 LOG_QUALITY_LIST_ITEM_OPEN = "<li style='color:#ffd356;'>"
 LOG_QUALITY_LIST_ITEM_CLOSE = "</li>"
 
-# Excel titles 
+# Excel titles
 EXCEL_SHEET_NAME_PLOT = 'predio'
 EXCEL_SHEET_NAME_PARTY = 'interesado'
 EXCEL_SHEET_NAME_GROUP = 'agrupacion'
@@ -237,8 +237,8 @@ EXCEL_SHEET_TITLE_PLOT_NAME = 'nombre predio'
 EXCEL_SHEET_TITLE_VALUATION = 'avaluo'
 EXCEL_SHEET_TITLE_PLOT_TYPE = 'tipo predio'
 EXCEL_SHEET_TITLE_FIRST_NAME = 'nombre1'
-EXCEL_SHEET_TITLE_MIDDLE = 'nombre2' 
-EXCEL_SHEET_TITLE_FIRST_SURNAME = 'apellido1' 
+EXCEL_SHEET_TITLE_MIDDLE = 'nombre2'
+EXCEL_SHEET_TITLE_FIRST_SURNAME = 'apellido1'
 EXCEL_SHEET_TITLE_SECOND_SURNAME = 'apellido2'
 EXCEL_SHEET_TITLE_BUSINESS_NAME = 'razon social'
 EXCEL_SHEET_TITLE_SEX = 'sexo persona'

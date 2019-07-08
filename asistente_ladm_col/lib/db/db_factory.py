@@ -33,7 +33,7 @@ class DbFactory(QObject):
     def get_config_panel(self):
         raise NotImplementedError
 
-    def get_model_baker_tool_name(self):
+    def get_mbaker_db_ili_mode(self):
         raise NotImplementedError
 
     def get_db_connector(self, parameters):

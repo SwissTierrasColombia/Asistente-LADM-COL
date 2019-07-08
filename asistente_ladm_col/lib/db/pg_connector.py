@@ -925,6 +925,6 @@ class PGConnector(DBConnector):
         else:
             # It is necessary to define the database name for listing databases
             # PostgreSQL uses the db 'postgres' by default and it cannot be deleted, so we use it as last resort
-            uri += ["dbname='{}'".format(self._PROVIDER_NAME)]
+            uri += ["dbname={}".format(self._PROVIDER_NAME)]
 
         return ' '.join(uri)
