@@ -10,6 +10,7 @@ Plugin de [QGIS](http://qgis.org) que ayuda a capturar y mantener datos conforme
 
 Licencia: [GNU General Public License v3.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE)
 
+Enlaces de interés: [Documentación](https://agenciaimplementacion.github.io/Asistente-LADM_COL), [Galería](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/README.md#galería)
 
 Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
 
@@ -199,3 +200,23 @@ NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
       + Regístrate usando tu correo electrónico.
       + Busca por "Asistente LADM_COL" y elige el repositorio `AgenciaImplementacion/Asistente-LADM_COL`.
       + Eso es todo. Después de recibir un correo que te notifique una nueva versión del plugin, pasarán unas horas hasta que el mismo esté disponible en el repositorio oficial de plugins de QGIS.
+      
+      
+## Galería
+
+ + Reglas de Calidad:
+
+  ![Reglas de Calidad](https://s3.amazonaws.com/media-p.slid.es/uploads/308098/images/6343636/quality_rules_25-min.gif)
+
++ Consultas:
+
+  ![Consultas](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290636/query_25.gif)
+
++ Reportes:
+
+  ![Reportes](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290657/report_25.gif)
+
++ Identificación de Novedades:
+
+  ![Identificación de Novedades](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6293473/novedades_short_40_slides.gif)
+      
