@@ -8,6 +8,7 @@
 
 License: [GNU General Public License v3.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE)
 
+Links of interest: [Documentation](https://agenciaimplementacion.github.io/Asistente-LADM_COL/), [Gallery](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/README_en.md#gallery)
 
 A project of: [Agencia de Implementación](https://www.proadmintierra.info/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE SAS](http://www.incige.com/))
 
@@ -185,3 +186,23 @@ docker-compose down --rmi local && docker-compose build
       + Sign in using your e-mail.
       + Search for "Asistente LADM_COL" and choose the `AgenciaImplementacion/Asistente-LADM_COL` repository.
       + That's it! After getting notifications, you will need to wait some hours until the plugin is accepted and available in the QGIS plugin repo.
+
+
+      
+## Galería
+
+ + Quality Rules:
+
+  ![Quality Rules](https://s3.amazonaws.com/media-p.slid.es/uploads/308098/images/6343636/quality_rules_25-min.gif)
+
++ Queries:
+
+  ![Queries](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290636/query_25.gif)
+
++ Reports:
+
+  ![Reports](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290657/report_25.gif)
+
++ Change detection:
+
+  ![Change detection](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6293473/novedades_short_40_slides.gif)
