@@ -117,14 +117,14 @@ class CreateParcelValuationWizard(QWizard, WIZARD_UI):
             self.close_wizard(show_message=False)
 
     def prepare_feature_creation_layers(self):
-        is_loaded = self.is_available_requered_layers()
+        is_loaded = self.required_layers_are_available()
         if not is_loaded:
             return False
 
         # All layers were successfully loaded
         return True
 
-    def is_available_requered_layers(self):
+    def required_layers_are_available(self):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if res_layers is None:
