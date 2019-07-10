@@ -117,14 +117,14 @@ class CreateCommonEquipmentValuationWizard(QWizard, WIZARD_UI):
             self.close_wizard(show_message=False)
 
     def prepare_feature_creation_layers(self):
-        is_loaded = self.is_enable_layers_wizard()
+        is_loaded = self.is_available_requered_layers()
         if not is_loaded:
             return False
 
         # All layers were successfully loaded
         return True
 
-    def is_enable_layers_wizard(self):
+    def is_available_requered_layers(self):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if res_layers is None:

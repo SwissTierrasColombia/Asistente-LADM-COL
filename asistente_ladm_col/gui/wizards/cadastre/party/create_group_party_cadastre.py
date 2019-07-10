@@ -123,7 +123,7 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         # It's necessary to prevent message bar alert
         pass
 
-    def is_enable_layers_wizard(self):
+    def is_available_requered_layers(self):
         # Load layers
         res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if res_layers is None:
