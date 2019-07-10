@@ -32,6 +32,7 @@ from ....utils import get_ui_class
 
 WIZARD_UI = get_ui_class('wizards/valuation/wiz_create_common_equipment_valuation.ui')
 
+
 class CreateCommonEquipmentValuationWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "CreateCommonEquipmentValuationWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create common equipment valuation")

@@ -80,8 +80,8 @@ from .gui.wizards.valuation.create_common_equipment_valuation_wizard import Crea
 from .gui.wizards.valuation.create_building_valuation_wizard import CreateBuildingValuationWizard
 from .gui.wizards.valuation.create_building_unit_valuation_wizard import CreateBuildingUnitValuationWizard
 from .gui.wizards.valuation.create_building_unit_qualification_valuation_wizard import CreateBuildingUnitQualificationValuationWizard
-from .gui.create_geoeconomic_zone_valuation_wizard import CreateGeoeconomicZoneValuationWizard
-from .gui.create_physical_zone_valuation_wizard import CreatePhysicalZoneValuationWizard
+from .gui.wizards.valuation.create_geoeconomic_zone_valuation_wizard import CreateGeoeconomicZoneValuationWizard
+from .gui.wizards.valuation.create_physical_zone_valuation_wizard import CreatePhysicalZoneValuationWizard
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
 from .gui.dialog_import_from_excel import DialogImportFromExcel
@@ -1073,13 +1073,13 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_wiz_geoeconomic_zone_valuation(self):
         wiz = CreateGeoeconomicZoneValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_physical_zone_valuation_action(self):
         wiz = CreatePhysicalZoneValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self.exec_wizard(wiz)
 
     def open_table(self, layer, filter=None):
         self.iface.showAttributeTable(layer, filter)
