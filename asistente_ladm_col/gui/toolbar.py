@@ -20,7 +20,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog
 from qgis.core import (QgsProject,
                        Qgis)
-
+from ..config.general_config import LAYER
 from .dlg_topological_edition import LayersForTopologicalEdition
 
 
@@ -36,26 +36,24 @@ class ToolBar():
         dlg = LayersForTopologicalEdition()
         if dlg.exec_() == QDialog.Accepted:
             # Load layers selected in the dialog
-            res_layers = self.qgis_utils.get_layers(db, dlg.selected_layers_info, load=True)
 
-            layers = list()
+            layers = dlg.selected_layers_info
+            res_layers = self.qgis_utils.get_layers(db, layers, load=True)
+            if res_layers is None:
+                return None
+
+            list_layers = list()
             # Open edit session in all layers
-            for layer_name, layer_info in dlg.selected_layers_info.items():
-                layer = res_layers[layer_name]
-                if layer is None:
-                    self.qgis_utils.message_emitted.emit(
-                        QCoreApplication.translate("QGISUtils", "{} layer couldn't be found... {}").format(layer_name, db.get_description()),
-                        Qgis.Warning)
-                    return
-
+            for layer_name, layer_info in layers.items():
+                layer = layers[layer_name][LAYER]
                 layer.startEditing()
-                layers.append(layer)
+                list_layers.append(layer)
 
             # Activate "Vertex Tool (All Layers)"
-            self.qgis_utils.activate_layer_requested.emit(layers[0])
+            self.qgis_utils.activate_layer_requested.emit(list_layers[0])
             self.qgis_utils.action_vertex_tool_requested.emit()
 
             self.qgis_utils.message_with_duration_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "You can start moving nodes in layers {} and {}, simultaneously!").format(
-                    ", ".join(layer.name() for layer in layers[:-1]), layers[-1].name()),
+                    ", ".join(layer.name() for layer in list_layers[:-1]), list_layers[-1].name()),
                 Qgis.Info, 30)

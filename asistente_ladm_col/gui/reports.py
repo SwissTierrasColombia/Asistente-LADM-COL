@@ -179,10 +179,6 @@ class ReportGenerator():
 
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
         if plot_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ReportGenerator",
-                                           "Layer 'Plot' not found in DB! {}").format(db.get_description()),
-                Qgis.Warning)
             return
 
         selected_plots = plot_layer.selectedFeatures()

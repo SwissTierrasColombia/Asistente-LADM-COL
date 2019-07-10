@@ -24,6 +24,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QDialogButtonBox)
 from qgis.core import QgsWkbTypes
 
+from ..config.general_config import LAYER
 from ..config.table_mapping_config import (BOUNDARY_TABLE,
                                            BOUNDARY_POINT_TABLE,
                                            BUILDING_TABLE,
@@ -45,15 +46,15 @@ class LayersForTopologicalEdition(QDialog, DIALOG_UI):
         self.lst_buildings.clear()
 
         self.plots = {
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None},
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None},
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None},
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
         }
 
         self.buildings = {
-            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None},
-            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}
+            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None},
+            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
         }
 
         icons = {

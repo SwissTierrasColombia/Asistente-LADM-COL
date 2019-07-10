@@ -78,6 +78,7 @@ from ..config.general_config import (EXCEL_SHEET_TITLE_DEPARTMENT,
                                     EXCEL_SHEET_TITLE_STATE_SOURCE,
                                     EXCEL_SHEET_TITLE_OFFICIALITY_SOURCE,
                                     EXCEL_SHEET_TITLE_STORAGE_PATH,
+                                    LAYER,
                                     LOG_QUALITY_LIST_CONTAINER_OPEN,
                                     LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
                                     LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
@@ -207,97 +208,30 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         self.progress.setValue(step/steps * 100)
 
         # GET LADM LAYERS
-        res_layers = self.qgis_utils.get_layers(self._db, {
-            COL_PARTY_TABLE: {'name': COL_PARTY_TABLE, 'geometry': None},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
-            RIGHT_TABLE: {'name': RIGHT_TABLE, 'geometry': None},
-            EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None},
-            RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None},
-            LA_GROUP_PARTY_TABLE: {'name': LA_GROUP_PARTY_TABLE, 'geometry': None},
-            MEMBERS_TABLE: {'name': MEMBERS_TABLE, 'geometry': None},
-            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None}}, load=True)
+        layers = {
+            COL_PARTY_TABLE: {'name': COL_PARTY_TABLE, 'geometry': None, LAYER: None},
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
+            RIGHT_TABLE: {'name': RIGHT_TABLE, 'geometry': None, LAYER: None},
+            EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None, LAYER: None},
+            RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None, LAYER: None},
+            LA_GROUP_PARTY_TABLE: {'name': LA_GROUP_PARTY_TABLE, 'geometry': None, LAYER: None},
+            MEMBERS_TABLE: {'name': MEMBERS_TABLE, 'geometry': None, LAYER: None},
+            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None, LAYER: None}
+        }
 
-        col_party_table = res_layers[COL_PARTY_TABLE]
-        if col_party_table is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("QGISUtils",
-                                                                           "Col_Party table couldn't be found... {}").format(
-                                                    self._db.get_description()),
-                                                Qgis.Warning)
-            return
-
-        parcel_table = res_layers[PARCEL_TABLE]
-        if parcel_table is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("QGISUtils",
-                                                                           "Parcel table couldn't be found... {}").format(
-                                                    self._db.get_description()),
-                                                Qgis.Warning)
-            return
-
-        right_table = res_layers[RIGHT_TABLE]
-        if right_table is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("QGISUtils",
-                                                                           "Right table couldn't be found... {}").format(
-                                                    self._db.get_description()),
-                                                Qgis.Warning)
-            return
-
-        extfile_table = res_layers[EXTFILE_TABLE]
-        if extfile_table is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("QGISUtils",
-                                                                           "EXT_FILE table couldn't be found... {}").format(
-                                                    self._db.get_description()),
-                                                Qgis.Warning)
-            return
-
-        rrr_source_table = res_layers[RRR_SOURCE_RELATION_TABLE]
-        if rrr_source_table is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("QGISUtils",
-                                                                           "RRR-SOURCE table couldn't be found... {}").format(
-                                                    self._db.get_description()),
-                                                Qgis.Warning)
-            return
-
-        group_party_table = res_layers[LA_GROUP_PARTY_TABLE]
-        if group_party_table is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("QGISUtils",
-                                                                           "Group party table couldn't be found... {}").format(
-                                                    self._db.get_description()),
-                                                Qgis.Warning)
-            return
-
-        members_table = res_layers[MEMBERS_TABLE]
-        if members_table is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("QGISUtils",
-                                                                           "Members table couldn't be found... {}").format(
-                                                    self._db.get_description()),
-                                                Qgis.Warning)
-            return
-
-        administrative_source_table = res_layers[ADMINISTRATIVE_SOURCE_TABLE]
-        if administrative_source_table is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("QGISUtils",
-                                                                           "Administrative Source table couldn't be found... {}").format(
-                                                    self._db.get_description()),
-                                                Qgis.Warning)
-            return
+        res_layers = self.qgis_utils.get_layers(self._db, layers, load=True)
+        if res_layers is None:
+            return None
 
 
         # Get feature counts to compare after the ETL and know how many records were imported to each ladm_col table
-        ladm_tables = [parcel_table,
-                       col_party_table,
-                       right_table,
-                       administrative_source_table,
-                       rrr_source_table,
-                       group_party_table,
-                       members_table]
+        ladm_tables = [layers[PARCEL_TABLE][LAYER],
+                       layers[COL_PARTY_TABLE][LAYER],
+                       layers[RIGHT_TABLE][LAYER],
+                       layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER],
+                       layers[RRR_SOURCE_RELATION_TABLE][LAYER],
+                       layers[LA_GROUP_PARTY_TABLE][LAYER],
+                       layers[MEMBERS_TABLE][LAYER]]
         ladm_tables_feature_count_before = {t.name(): t.featureCount() for t in ladm_tables}
 
 
@@ -343,7 +277,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                 'precision': -1, 'type': 16},
                                {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version',
                                 'precision': -1, 'type': 16}],
-                           'output': col_party_table
+                           'output': layers[COL_PARTY_TABLE][LAYER]
                        })
 
         # 2
@@ -375,7 +309,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                {'expression': '"id agrupación"', 'length': 255, 'name': 'p_local_id', 'precision': -1, 'type': 10},
                                {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
                                {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}],
-                           'output': group_party_table
+                           'output': layers[LA_GROUP_PARTY_TABLE][LAYER]
                        })
 
         # 4
@@ -389,7 +323,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                                   'FIELDS_TO_COPY': 't_id',
                                                   'FIELD_2': 'p_local_id',
                                                   'INPUT': layer_group_party,
-                                                  'INPUT_2': group_party_table,
+                                                  'INPUT_2': layers[LA_GROUP_PARTY_TABLE][LAYER],
                                                   'METHOD': 1,
                                                   'OUTPUT': 'memory:',
                                                   'PREFIX': 'agrupacion_' })['OUTPUT']
@@ -405,7 +339,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                                           'FIELDS_TO_COPY': 't_id',
                                                           'FIELD_2': 'documento_identidad',
                                                           'INPUT': group_party_tid_layer,
-                                                          'INPUT_2': col_party_table,
+                                                          'INPUT_2': layers[COL_PARTY_TABLE][LAYER],
                                                           'METHOD': 1,
                                                           'OUTPUT': 'memory:',
                                                           'PREFIX': 'interesado_' })['OUTPUT']
@@ -421,7 +355,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                            'mapping': [
                                {'expression': '"interesado_t_id"', 'length': -1, 'name': 'interesados_col_interesado', 'precision': 0, 'type': 4},
                                {'expression': '"agrupacion_t_id"', 'length': -1, 'name': 'agrupacion', 'precision': 0, 'type': 4}],
-                           'output': members_table
+                           'output': layers[MEMBERS_TABLE][LAYER]
                        })
 
         # 7
@@ -447,7 +381,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                {'expression': "'ANT_PREDIO'", 'length': 255, 'name': 'u_espacio_de_nombres', 'precision': -1, 'type': 10},
                                {'expression': '$id', 'length': 255, 'name': 'u_local_id', 'precision': -1, 'type': 10},
                                {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}],
-                           'output': parcel_table
+                           'output': layers[PARCEL_TABLE][LAYER]
                        })
 
         # 8
@@ -488,7 +422,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                {'expression': "'ANT_COLFUENTEADMINISTRATIVA'", 'length': 255, 'name': 's_espacio_de_nombres', 'precision': -1, 'type': 10},
                                {'expression': '"concat_"', 'length': 255, 'name': 's_local_id', 'precision': -1, 'type': 10},
                                {'expression': '"oficialidad"', 'length': -1, 'name': 'oficialidad', 'precision': -1, 'type': 1}],
-                           'output': administrative_source_table
+                           'output': layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER]
                        })
 
         # 10
@@ -503,7 +437,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                                'FIELDS_TO_COPY': 't_id',
                                                'FIELD_2': 's_local_id',
                                                'INPUT': concat_right_source_layer,
-                                               'INPUT_2': administrative_source_table,
+                                               'INPUT_2': layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER],
                                                'METHOD': 1,
                                                'OUTPUT': 'memory:',
                                                'PREFIX': 'fuente_' })['OUTPUT']
@@ -542,7 +476,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                                      'FIELDS_TO_COPY': 't_id',
                                                      'FIELD_2': 'documento_identidad',
                                                      'INPUT': source_tid_layer,
-                                                     'INPUT_2': col_party_table,
+                                                     'INPUT_2': layers[COL_PARTY_TABLE][LAYER],
                                                      'METHOD': 1,
                                                      'OUTPUT': 'memory:',
                                                      'PREFIX': 'interesado_'})['OUTPUT']
@@ -559,7 +493,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                                            'FIELDS_TO_COPY': 't_id',
                                                            'FIELD_2': 'p_local_id',
                                                            'INPUT': source_party_tid_layer,
-                                                           'INPUT_2': group_party_table,
+                                                           'INPUT_2': layers[LA_GROUP_PARTY_TABLE][LAYER],
                                                            'METHOD': 1,
                                                            'OUTPUT': 'memory:',
                                                            'PREFIX': 'agrupacion_' })['OUTPUT']
@@ -576,7 +510,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                                                   'FIELDS_TO_COPY': 't_id',
                                                                   'FIELD_2': 'numero_predial',
                                                                   'INPUT': source_party_group_tid_layer,
-                                                                  'INPUT_2': parcel_table,
+                                                                  'INPUT_2': layers[PARCEL_TABLE][LAYER],
                                                                   'METHOD': 1,
                                                                   'OUTPUT': 'memory:',
                                                                   'PREFIX': 'predio_' })['OUTPUT']
@@ -604,7 +538,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                {'expression': '"predio_t_id"', 'length': -1, 'name': 'unidad_predio', 'precision': 0, 'type': 4},
                                {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
                                {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}],
-                           'output': right_table
+                           'output': layers[RIGHT_TABLE][LAYER]
                        })
 
         # 16
@@ -619,7 +553,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                                                         'FIELDS_TO_COPY': 't_id',
                                                                         'FIELD_2': 'r_local_id',
                                                                         'INPUT': source_party_group_parcel_tid_layer,
-                                                                        'INPUT_2': right_table,
+                                                                        'INPUT_2': layers[RIGHT_TABLE][LAYER],
                                                                         'METHOD': 1,
                                                                         'OUTPUT': 'memory:',
                                                                         'PREFIX': 'derecho_' })['OUTPUT']
@@ -639,7 +573,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
                                {'expression': '"derecho_t_id"', 'length': -1, 'name': 'rrr_col_derecho', 'precision': 0, 'type': 4},
                                {'expression': '"rrr_col_restriccion"', 'length': -1, 'name': 'rrr_col_restriccion', 'precision': 0, 'type': 4},
                                {'expression': '"rrr_col_hipoteca"', 'length': -1, 'name': 'rrr_col_hipoteca', 'precision': 0, 'type': 4}],
-                           'output': rrr_source_table
+                           'output': layers[RRR_SOURCE_RELATION_TABLE][LAYER]
                        })
 
 

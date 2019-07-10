@@ -31,6 +31,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.core import QgsWkbTypes
 
 from ..config.general_config import (TABLE_NAME,
+                                     LAYER,
                                      GEOMETRY_COLUMN,
                                      GEOMETRY_TYPE,
                                      KIND_SETTINGS,
@@ -243,7 +244,8 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
             for item_text, data in self.selected_items_dict.items():
                 layers_dict[item_text] = {
                     'name': data[TABLE_NAME],
-                    'geometry': QgsWkbTypes().geometryType(QgsWkbTypes().parseType(data[GEOMETRY_TYPE])) if data[GEOMETRY_TYPE] else None
+                    'geometry': QgsWkbTypes().geometryType(QgsWkbTypes().parseType(data[GEOMETRY_TYPE])) if data[GEOMETRY_TYPE] else None,
+                    LAYER: None
                 }
 
             self.selected_items_dict = dict() # Reset

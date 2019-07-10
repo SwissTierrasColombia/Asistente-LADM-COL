@@ -40,6 +40,7 @@ import processing
 from .logic_checks import LogicChecks
 from .qgis_model_baker_utils import QgisModelBakerUtils
 from ..config.general_config import (DEFAULT_EPSG,
+                                     LAYER,
                                      DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
                                      DEFAULT_USE_ROADS_VALUE,
                                      LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
@@ -72,6 +73,7 @@ from ..config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                            SURVEY_POINT_TABLE)
 from .utils import Utils
 from .decorators import _log_quality_checks
+
 
 class QualityUtils(QObject):
     log_quality_show_message_emitted = pyqtSignal(str, int)
@@ -118,28 +120,18 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def check_boundary_points_covered_by_boundary_nodes(self, db, rule_name):
-        res_layers = self.qgis_utils.get_layers(db, {
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
-            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None},
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None}}, load=True)
 
-        boundary_layer = res_layers[BOUNDARY_TABLE]
-        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
-        point_bfs_layer = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
+        layers = {
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None},
+            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None, LAYER: None},
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None}
+        }
 
-        if boundary_point_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Layer {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()))
+        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
+        if res_layers is None:
+            return None
 
-        elif boundary_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Layer {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
-
-        elif point_bfs_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in DB! {}").format(POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()))
-
-        elif boundary_point_layer.featureCount() == 0:
+        elif layers[BOUNDARY_POINT_TABLE][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no boundary points to check 'boundary points should be covered by boundary nodes'."), Qgis.Info)
         else:
@@ -153,7 +145,7 @@ class QualityUtils(QObject):
                                          QgsField('error_type', QVariant.String)])
             error_layer.updateFields()
 
-            features = self.get_boundary_points_features_not_covered_by_boundary_nodes(boundary_point_layer, boundary_layer, point_bfs_layer, error_layer)
+            features = self.get_boundary_points_features_not_covered_by_boundary_nodes(layers[BOUNDARY_POINT_TABLE][LAYER], layers[BOUNDARY_TABLE][LAYER], layers[POINT_BOUNDARY_FACE_STRING_TABLE][LAYER], error_layer)
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
@@ -273,31 +265,19 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def check_boundary_nodes_covered_by_boundary_points(self, db, rule_name):
-        res_layers = self.qgis_utils.get_layers(db, {
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None},
-            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None},
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}}, load=True)
+        layers = {
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None},
+            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None, LAYER: None},
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None}
+        }
 
-        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
-        boundary_layer = res_layers[BOUNDARY_TABLE]
-        point_bfs = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
+        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
+        if res_layers is None:
+            return None
 
-        if boundary_point_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()))
-
-        elif boundary_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
-
-        elif boundary_layer.featureCount() == 0:
+        elif layers[BOUNDARY_TABLE][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no boundaries to check 'missing boundary points in boundaries'."), Qgis.Info)
-
-        elif point_bfs is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in DB! {}").format(POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()))
-
         else:
             error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
                                          translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
@@ -309,7 +289,7 @@ class QualityUtils(QObject):
 
             error_layer.updateFields()
 
-            features = self.get_boundary_nodes_features_not_covered_by_boundary_points(boundary_point_layer, boundary_layer, point_bfs, error_layer)
+            features = self.get_boundary_nodes_features_not_covered_by_boundary_points(layers[BOUNDARY_POINT_TABLE][LAYER], layers[BOUNDARY_TABLE][LAYER], layers[POINT_BOUNDARY_FACE_STRING_TABLE][LAYER], error_layer)
             data_provider.addFeatures(features)
 
             if error_layer.featureCount() > 0:
@@ -437,25 +417,17 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def check_plot_nodes_covered_by_boundary_points(self, db, rule_name):
-        res_layers = self.qgis_utils.get_layers(db, {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None}}, load=True)
+        layers = {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None}
+        }
+        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
+        if res_layers is None:
+            return None
 
-        plot_layer = res_layers[PLOT_TABLE]
-        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
-
-        if boundary_point_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Layer {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()))
-
-        elif plot_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
-
-        elif plot_layer.featureCount() == 0:
+        if layers[PLOT_TABLE][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no plots to check 'Plots should be covered by boundary points'."), Qgis.Info)
-
         else:
             error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
                                          translated_strings.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS,
@@ -466,7 +438,7 @@ class QualityUtils(QObject):
             error_layer.updateFields()
 
             topology_rule = 'plot_nodes_covered_by_boundary_points'
-            features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule)
+            features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(layers[BOUNDARY_POINT_TABLE][LAYER], layers[PLOT_TABLE][LAYER], error_layer, topology_rule)
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
@@ -482,22 +454,16 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def check_boundary_points_covered_by_plot_nodes(self, db, rule_name):
-        res_layers = self.qgis_utils.get_layers(db, {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None}}, load=True)
+        layers = {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None}
+        }
 
-        plot_layer = res_layers[PLOT_TABLE]
-        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
+        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
+        if res_layers is None:
+            return None
 
-        if boundary_point_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Layer {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()))
-
-        elif plot_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
-
-        elif boundary_point_layer.featureCount() == 0:
+        if layers[BOUNDARY_POINT_TABLE][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no boundary points to check 'boundary points should be covered by Plot nodes'."), Qgis.Info)
 
@@ -511,7 +477,7 @@ class QualityUtils(QObject):
             error_layer.updateFields()
 
             topology_rule = 'boundary_points_covered_by_plot_nodes'
-            features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule)
+            features = self.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(layers[BOUNDARY_POINT_TABLE][LAYER], layers[PLOT_TABLE][LAYER], error_layer, topology_rule)
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
@@ -587,12 +553,10 @@ class QualityUtils(QObject):
         """
         features = []
         point_layer = self.qgis_utils.get_layer(db, point_layer_name, load=True)
-
         if point_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in DB! {}").format(point_layer_name, db.get_description()))
+            return
 
-        elif point_layer.featureCount() == 0:
+        if point_layer.featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no points in layer '{}' to check for overlaps!").format(point_layer_name), Qgis.Info)
 
@@ -638,38 +602,19 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_plots_covered_by_boundaries(self, db, rule_name):
         # read data
-        res_layers = self.qgis_utils.get_layers(db, {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
-            LESS_TABLE: {'name': LESS_TABLE, 'geometry': None},
-            MORE_BOUNDARY_FACE_STRING_TABLE: {'name': MORE_BOUNDARY_FACE_STRING_TABLE, 'geometry': None}
-        }, load=True)
+        layers = {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None},
+            LESS_TABLE: {'name': LESS_TABLE, 'geometry': None, LAYER: None},
+            MORE_BOUNDARY_FACE_STRING_TABLE: {'name': MORE_BOUNDARY_FACE_STRING_TABLE, 'geometry': None, LAYER: None}
+        }
+        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
+        if res_layers is None:
+            return None
 
-        plot_layer = res_layers[PLOT_TABLE]
-        boundary_layer = res_layers[BOUNDARY_TABLE]
-        more_bfs_layer = res_layers[MORE_BOUNDARY_FACE_STRING_TABLE]
-        less_layer = res_layers[LESS_TABLE]
-
-        if plot_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
-
-        elif boundary_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Layer {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
-
-        elif plot_layer.featureCount() == 0:
+        if layers[PLOT_TABLE][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no plots to check 'plots should be covered by boundaries'."), Qgis.Info)
-
-        elif more_bfs_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils", "Table {} not found in the DB! {}").format(
-                             MORE_BOUNDARY_FACE_STRING_TABLE, db.get_description()))
-
-        elif less_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in the DB! {}").format(LESS_TABLE, db.get_description()))
-
         else:
             error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
                                          translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES,
@@ -681,8 +626,11 @@ class QualityUtils(QObject):
                                          QgsField('error_type', QVariant.String)])
             error_layer.updateFields()
 
-            features = self.get_plot_features_not_covered_by_boundaries(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
-
+            features = self.get_plot_features_not_covered_by_boundaries(layers[PLOT_TABLE][LAYER],
+                                                                        layers[BOUNDARY_TABLE][LAYER],
+                                                                        layers[MORE_BOUNDARY_FACE_STRING_TABLE][LAYER],
+                                                                        layers[LESS_TABLE][LAYER],
+                                                                        error_layer)
             if features:
                 error_layer.dataProvider().addFeatures(features)
                 added_layer = self.add_error_layer(error_layer)
@@ -947,39 +895,21 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_boundaries_covered_by_plots(self, db, rule_name):
         # read data
-        res_layers = self.qgis_utils.get_layers(db, {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None},
-            LESS_TABLE: {'name': LESS_TABLE, 'geometry': None},
-            MORE_BOUNDARY_FACE_STRING_TABLE: {'name': MORE_BOUNDARY_FACE_STRING_TABLE, 'geometry': None}
-        }, load=True)
+        layers = {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None},
+            LESS_TABLE: {'name': LESS_TABLE, 'geometry': None, LAYER: None},
+            MORE_BOUNDARY_FACE_STRING_TABLE: {'name': MORE_BOUNDARY_FACE_STRING_TABLE, 'geometry': None, LAYER: None}
+        }
 
-        plot_layer = res_layers[PLOT_TABLE]
-        boundary_layer = res_layers[BOUNDARY_TABLE]
-        more_bfs_layer = res_layers[MORE_BOUNDARY_FACE_STRING_TABLE]
-        less_layer = res_layers[LESS_TABLE]
+        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
+        if res_layers is None:
+            return None
 
         # validate data
-        if plot_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
-
-        elif boundary_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Layer {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
-
-        elif boundary_layer.featureCount() == 0:
+        if layers[BOUNDARY_TABLE][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no boundaries to check 'boundaries should be covered by plots'."), Qgis.Info)
-
-        elif more_bfs_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in the DB! {}").format(MORE_BOUNDARY_FACE_STRING_TABLE, db.get_description()))
-
-        elif less_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in the DB! {}").format(LESS_TABLE, db.get_description()))
-
         else:
             error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
                                          translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS,
@@ -991,7 +921,11 @@ class QualityUtils(QObject):
                                          QgsField('error_type', QVariant.String)])
             error_layer.updateFields()
 
-            features = self.get_boundary_features_not_covered_by_plots(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
+            features = self.get_boundary_features_not_covered_by_plots(layers[PLOT_TABLE][LAYER],
+                                                                       layers[BOUNDARY_TABLE][LAYER],
+                                                                       layers[MORE_BOUNDARY_FACE_STRING_TABLE][LAYER],
+                                                                       layers[LESS_TABLE][LAYER],
+                                                                       error_layer)
 
             if features:
                 error_layer.dataProvider().addFeatures(features)
@@ -1276,12 +1210,10 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_overlapping_polygons(self, db, polygon_layer_name, rule_name):
         polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, QgsWkbTypes.PolygonGeometry, load=True)
-
         if polygon_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in DB! {}").format(polygon_layer_name, db.get_description()))
+            return
 
-        else:
+        if polygon_layer:
             error_layer_name = ''
             if polygon_layer_name == PLOT_TABLE:
                 error_layer_name = translated_strings.CHECK_OVERLAPS_IN_PLOTS
@@ -1344,12 +1276,10 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_overlaps_in_boundaries(self, db, rule_name):
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
-
         if boundary_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
+            return
 
-        else:
+        if boundary_layer:
             overlapping = self.qgis_utils.geometry.get_overlapping_lines(boundary_layer)
             if overlapping is None:
                 self.log_message(QCoreApplication.translate("QGISUtils",
@@ -1406,12 +1336,10 @@ class QualityUtils(QObject):
         """
         features = []
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
-
         if boundary_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Layer {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()))
+            return
 
-        elif boundary_layer.featureCount() == 0:
+        if boundary_layer.featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no boundaries to check 'boundaries should not be split'!"), Qgis.Info)
 
@@ -1448,12 +1376,10 @@ class QualityUtils(QObject):
         tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
         features = []
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
-
         if boundary_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()))
+            return
 
-        elif boundary_layer.featureCount() == 0:
+        if boundary_layer.featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no boundaries to check for too long segments!"), Qgis.Info)
 
@@ -1497,41 +1423,21 @@ class QualityUtils(QObject):
         """
         Not used anymore but kept for reference
         """
-        res_layers = self.qgis_utils.get_layers(db, {
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None},
-            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None},
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None}}, load=True)
+        layers = {
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None},
+            POINT_BOUNDARY_FACE_STRING_TABLE: {'name': POINT_BOUNDARY_FACE_STRING_TABLE, 'geometry': None, LAYER: None},
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None}
+        }
 
-        boundary_point_layer = res_layers[BOUNDARY_POINT_TABLE]
-        boundary_layer = res_layers[BOUNDARY_TABLE]
-        point_ccl_table = res_layers[POINT_BOUNDARY_FACE_STRING_TABLE]
+        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
+        if res_layers is None:
+            return None
 
-        if boundary_point_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(BOUNDARY_POINT_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
-
-        if boundary_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(BOUNDARY_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
-
-        if boundary_layer.featureCount() == 0:
+        if layers[BOUNDARY_TABLE][LAYER].featureCount() == 0:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "There are no boundaries to check 'missing boundary points in boundaries'."),
                 Qgis.Info)
-            return
-
-        if point_ccl_table is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(
-                    POINT_BOUNDARY_FACE_STRING_TABLE, db.get_description()), Qgis.Warning)
             return
 
         error_layer = QgsVectorLayer("Point?crs=EPSG:{}".format(DEFAULT_EPSG),
@@ -1545,7 +1451,7 @@ class QualityUtils(QObject):
         error_layer.updateFields()
 
         # check missing points
-        missing_points = self.get_missing_boundary_points_in_boundaries(boundary_point_layer, boundary_layer)
+        missing_points = self.get_missing_boundary_points_in_boundaries(layers[BOUNDARY_POINT_TABLE][LAYER], layers[BOUNDARY_TABLE][LAYER])
 
         new_features = list()
         for key, point_list in missing_points.items():
@@ -1560,7 +1466,7 @@ class QualityUtils(QObject):
                 new_features.append(new_feature)
 
         dic_points_ccl = dict()
-        for feature_point_ccl in point_ccl_table.getFeatures():
+        for feature_point_ccl in layers[POINT_BOUNDARY_FACE_STRING_TABLE][LAYER].getFeatures():
             key = "{}-{}".format(feature_point_ccl[POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD], feature_point_ccl[POINT_BFS_TABLE_BOUNDARY_FIELD])
             if key in dic_points_ccl:
                 dic_points_ccl[key] += 1
@@ -1568,7 +1474,7 @@ class QualityUtils(QObject):
                 dic_points_ccl.update({key:1})
 
         # verify that the relation between boundary point and boundary is registered in the topology table
-        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_point_layer, boundary_layer)
+        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(layers[BOUNDARY_POINT_TABLE][LAYER], layers[BOUNDARY_TABLE][LAYER])
 
         for point_selected in points_selected:
             boundary_point_id = point_selected[ID_FIELD]
@@ -1603,28 +1509,15 @@ class QualityUtils(QObject):
         """
         Not used anymore but kept for reference.
         """
-        res_layers = self.qgis_utils.get_layers(db, {
-            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None},
-            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}}, load=True)
+        layers = {
+            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None},
+            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+        }
+        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
+        if res_layers is None:
+            return None
 
-        survey_point_layer = res_layers[SURVEY_POINT_TABLE]
-        building_layer = res_layers[BUILDING_TABLE]
-
-        if survey_point_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(SURVEY_POINT_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
-
-        if building_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("QGISUtils",
-                                           "Table {} not found in DB! {}").format(BUILDING_TABLE, db.get_description()),
-                Qgis.Warning)
-            return
-
-        if building_layer.featureCount() == 0:
+        if layers[BUILDING_TABLE][LAYER].featureCount() == 0:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate("QGISUtils",
                                            "There are no buildings to check 'missing survey points in buildings'."),
@@ -1638,7 +1531,7 @@ class QualityUtils(QObject):
         data_provider.addAttributes([QgsField("building_id", QVariant.Int)])
         error_layer.updateFields()
 
-        missing_points = self.get_missing_boundary_points_in_boundaries(survey_point_layer, building_layer)
+        missing_points = self.get_missing_boundary_points_in_boundaries(layers[SURVEY_POINT_TABLE][LAYER], layers[BUILDING_TABLE][LAYER])
 
         new_features = list()
         for key, point_list in missing_points.items():
@@ -1662,12 +1555,10 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_dangles_in_boundaries(self, db, rule_name):
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
-
         if boundary_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                                       "Table {} not found in the DB! {}").format(BOUNDARY_TABLE, db.get_description()))
+            return
 
-        elif boundary_layer.featureCount() == 0:
+        if boundary_layer.featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no boundaries to check for dangles."), Qgis.Info)
 
@@ -1756,26 +1647,21 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def check_right_of_way_overlaps_buildings(self, db, rule_name):
-        res_layers = self.qgis_utils.get_layers(db, {
-            RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}}, load=True)
 
-        right_of_way_layer = res_layers[RIGHT_OF_WAY_TABLE]
-        building_layer = res_layers[BUILDING_TABLE]
+        layers = {
+            RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+        }
 
-        if right_of_way_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in DB! {}").format(RIGHT_OF_WAY_TABLE, db.get_description()))
+        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
+        if res_layers is None:
+            return None
 
-        elif building_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in DB! {}").format(BUILDING_TABLE, db.get_description()))
-
-        elif right_of_way_layer.featureCount() == 0:
+        if layers[RIGHT_OF_WAY_TABLE][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no Right of Way features to check 'Right of Way should not overlap buildings'."), Qgis.Info)
 
-        elif building_layer.featureCount() == 0:
+        elif layers[BUILDING_TABLE][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no buildings to check 'Right of Way should not overlap buildings'."), Qgis.Info)
 
@@ -1788,7 +1674,7 @@ class QualityUtils(QObject):
             data_provider.addAttributes([QgsField("building_id", QVariant.Int)])
             error_layer.updateFields()
 
-            ids, overlapping_polygons = self.qgis_utils.geometry.get_inner_intersections_between_polygons(right_of_way_layer, building_layer)
+            ids, overlapping_polygons = self.qgis_utils.geometry.get_inner_intersections_between_polygons(layers[RIGHT_OF_WAY_TABLE][LAYER], layers[BUILDING_TABLE][LAYER])
 
             if overlapping_polygons is not None:
                 new_features = list()
@@ -1812,12 +1698,10 @@ class QualityUtils(QObject):
     def check_gaps_in_plots(self, db, rule_name):
         use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, True)
-
         if plot_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Layer {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
+            return
 
-        elif plot_layer.featureCount() == 0:
+        if plot_layer.featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no Plot features to check 'Plot should not have gaps'."), Qgis.Info)
 
@@ -1852,12 +1736,10 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_multiparts_in_right_of_way(self, db, rule_name):
         right_of_way_layer = self.qgis_utils.get_layer(db, RIGHT_OF_WAY_TABLE, QgsWkbTypes.PolygonGeometry, True)
-
         if right_of_way_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Layer {} not found in DB! {}").format(RIGHT_OF_WAY_TABLE, db.get_description()))
+            return
 
-        elif right_of_way_layer.featureCount() == 0:
+        if right_of_way_layer.featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no Right Of Way features to check 'Right Of Way should not have Multipart geometries'."), Qgis.Info)
 
@@ -2085,23 +1967,15 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def check_building_within_plots(self, db, rule_name):
+        layers = {
+            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+        }
+        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
+        if res_layers is None:
+            return None
 
-        res_layers = self.qgis_utils.get_layers(db, {
-            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}}, load=True)
-
-        building_layer = res_layers[BUILDING_TABLE]
-        plot_layer = res_layers[PLOT_TABLE]
-
-        if building_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in DB! {}").format(BUILDING_TABLE, db.get_description()))
-          
-        elif plot_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
-          
-        elif building_layer.featureCount() == 0:
+        if layers[BUILDING_TABLE][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no buildings to check 'Building should be within Plots'."), Qgis.Info)
 
@@ -2115,7 +1989,7 @@ class QualityUtils(QObject):
 
             error_layer.updateFields()
 
-            buildings_with_no_plot, buildings_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(building_layer, plot_layer)
+            buildings_with_no_plot, buildings_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(layers[BUILDING_TABLE][LAYER], layers[PLOT_TABLE][LAYER])
 
             new_features = list()
             for building_with_no_plot in buildings_with_no_plot:
@@ -2148,22 +2022,16 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def check_building_unit_within_plots(self, db, rule_name):
-        res_layers = self.qgis_utils.get_layers(db, {
-            BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry}}, load=True)
+        layers = {
+            BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+        }
 
-        building_unit_layer = res_layers[BUILDING_UNIT_TABLE]
-        plot_layer = res_layers[PLOT_TABLE]
+        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
+        if res_layers is None:
+            return None
 
-        if building_unit_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in DB! {}").format(BUILDING_UNIT_TABLE, db.get_description()))
-
-        elif plot_layer is None:
-            self.log_message(QCoreApplication.translate("QGISUtils",
-                             "Table {} not found in DB! {}").format(PLOT_TABLE, db.get_description()))
-          
-        elif building_unit_layer.featureCount() == 0:
+        if layers[BUILDING_UNIT_TABLE][LAYER].featureCount() == 0:
             self.log_message(QCoreApplication.translate("QGISUtils",
                              "There are no buildings to check 'Building should be within Plots'."), Qgis.Info)
 
@@ -2177,7 +2045,7 @@ class QualityUtils(QObject):
 
             error_layer.updateFields()
 
-            building_units_with_no_plot, building_units_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(building_unit_layer, plot_layer)
+            building_units_with_no_plot, building_units_not_within_plot = self.qgis_utils.geometry.get_buildings_out_of_plots(layers[BUILDING_UNIT_TABLE][LAYER], layers[PLOT_TABLE][LAYER])
 
             new_features = list()
             for building_unit_with_no_plot in building_units_with_no_plot:

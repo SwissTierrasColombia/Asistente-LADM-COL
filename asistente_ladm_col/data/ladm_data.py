@@ -16,13 +16,11 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsExpression,
-                       QgsWkbTypes,
-                       Qgis)
-
+                       QgsWkbTypes)
+from ..config.general_config import LAYER
 from ..config.table_mapping_config import (ID_FIELD,
                                            PLOT_TABLE,
                                            UEBAUNIT_TABLE_PARCEL_FIELD,
@@ -47,35 +45,26 @@ class LADM_DATA():
         :param uebaunit_table: UEBaunit QGIS table, in case it exists already in the caller
         :return: list of plot ids related to the parcel
         """
-        required_layers = {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}
+        layers = {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
+        }
 
         if plot_layer is not None:
-            del required_layers[PLOT_TABLE]
+            del layers[PLOT_TABLE]
         if uebaunit_table is not None:
-            del required_layers[UEBAUNIT_TABLE]
+            del layers[UEBAUNIT_TABLE]
 
-        if required_layers:
-            res_layers = self.qgis_utils.get_layers(db, required_layers, load=True)
+        if layers:
+            res_layers = self.qgis_utils.get_layers(db, layers, load=True)
+            if res_layers is None:
+                return None
 
-            if PLOT_TABLE in required_layers:
-                plot_layer = res_layers[PLOT_TABLE]
-                if plot_layer is None:
-                    self.qgis_utils.message_emitted.emit(
-                        QCoreApplication.translate("LADM_DATA", "Plot layer couldn't be found... {}").format(
-                                                            db.get_description()),
-                                                   Qgis.Warning)
-                    return
+            if PLOT_TABLE in layers:
+                plot_layer = layers[PLOT_TABLE][LAYER]
 
-            if UEBAUNIT_TABLE in required_layers:
-                uebaunit_table = res_layers[UEBAUNIT_TABLE]
-                if uebaunit_table is None:
-                    self.qgis_utils.message_emitted.emit(
-                        QCoreApplication.translate("LADM_DATA", "UEBAUnit table couldn't be found... {}").format(
-                            db.get_description()),
-                        Qgis.Warning)
-                    return
+            if UEBAUNIT_TABLE in layers:
+                uebaunit_table = layers[UEBAUNIT_TABLE][LAYER]
 
         features = uebaunit_table.getFeatures("{}={} AND {} IS NOT NULL".format(
                                                     UEBAUNIT_TABLE_PARCEL_FIELD,
@@ -124,34 +113,26 @@ class LADM_DATA():
         :param uebaunit_table: UEBaunit QGIS table, in case it exists already in the caller
         :return: list of parcel ids related to the parcel
         """
-        required_layers = {
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}
+        layers = {
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
+        }
 
         if parcel_table is not None:
-            del required_layers[PARCEL_TABLE]
+            del layers[PARCEL_TABLE]
         if uebaunit_table is not None:
-            del required_layers[UEBAUNIT_TABLE]
+            del layers[UEBAUNIT_TABLE]
 
-        if required_layers:
-            res_layers = self.qgis_utils.get_layers(db, required_layers, load=True)
+        if layers:
+            res_layers = self.qgis_utils.get_layers(db, layers, load=True)
+            if res_layers is None:
+                return None
 
-            if PARCEL_TABLE in required_layers:
-                parcel_table = res_layers[PARCEL_TABLE]
-                if parcel_table is None:
-                    self.qgis_utils.message_emitted.emit(
-                        QCoreApplication.translate("LADM_DATA", "Parcel table couldn't be found... {}").format(
-                                                            db.get_description()),
-                                                   Qgis.Warning)
-                    return
+            if PARCEL_TABLE in layers:
+                parcel_table = layers[PARCEL_TABLE][LAYER]
 
-            uebaunit_table = res_layers[UEBAUNIT_TABLE]
-            if uebaunit_table is None:
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate("LADM_DATA", "UEBAUnit table couldn't be found... {}").format(
-                        db.get_description()),
-                    Qgis.Warning)
-                return
+            if UEBAUNIT_TABLE in layers:
+                uebaunit_table = layers[UEBAUNIT_TABLE][LAYER]
 
         features = uebaunit_table.getFeatures("{}={} AND {} IS NOT NULL".format(
                                                     UEBAUNIT_TABLE_PLOT_FIELD,
