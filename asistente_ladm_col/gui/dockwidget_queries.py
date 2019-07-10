@@ -106,8 +106,16 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.tree_view_economic.customContextMenuRequested.connect(self.show_context_menu)
 
     def add_layers(self):
-        res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
-        if res_layers is None:
+        self.qgis_utils.get_layers(self._db, self._layers, load=True)
+        if not self._layers:
+
+            # Restart dictionary It is necessary
+            self._layers = {
+                PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
+                UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
+            }
+
             return None
 
         # Layer was found, listen to its removal so that we can deactivate the custom tool when that occurs

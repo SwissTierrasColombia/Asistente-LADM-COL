@@ -169,7 +169,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
     def check_z_in_geometry(self):
         self.target_layer = self.qgis_utils.get_layer(self._db, self.current_point_name(), load=True)
-        if self.target_layer is None:
+        if not self.target_layer:
             return
 
         if not QgsWkbTypes().hasZ(self.target_layer.wkbType()):

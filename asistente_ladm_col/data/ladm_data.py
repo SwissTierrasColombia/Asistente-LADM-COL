@@ -56,8 +56,8 @@ class LADM_DATA():
             del layers[UEBAUNIT_TABLE]
 
         if layers:
-            res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-            if res_layers is None:
+            self.qgis_utils.get_layers(db, layers, load=True)
+            if not layers:
                 return None
 
             if PLOT_TABLE in layers:
@@ -124,8 +124,8 @@ class LADM_DATA():
             del layers[UEBAUNIT_TABLE]
 
         if layers:
-            res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-            if res_layers is None:
+            self.qgis_utils.get_layers(db, layers, load=True)
+            if not layers:
                 return None
 
             if PARCEL_TABLE in layers:

@@ -255,8 +255,8 @@ class QGISUtils(QObject):
     def get_layer(self, db, layer_name, geometry_type=None, load=False):
         # Handy function to avoid sending a whole dict when all we need is a single table/layer
         layer = {layer_name: {'name': layer_name, 'geometry': geometry_type, LAYER: None}}
-        res_layer = self.get_layers(db, layer, load)
-        if res_layer is None:
+        self.get_layers(db, layer, load)
+        if not layer:
             return None
 
         if layer[layer_name]:
@@ -401,6 +401,9 @@ class QGISUtils(QObject):
                         layer_name=layer_name,
                         description=db.get_description()),
                     Qgis.Warning)
+
+                # If it is not possible to obtain the requested layers we make null the variable "layers"
+                layers = None
                 return {}
 
             # Save reference to layer loaded
@@ -851,7 +854,7 @@ class QGISUtils(QObject):
                 return False
 
         target_point_layer = self.get_layer(db, target_layer_name, load=True)
-        if target_point_layer is None:
+        if not target_point_layer:
             return False
 
         # Define a mapping between CSV and target layer
@@ -898,8 +901,8 @@ class QGISUtils(QObject):
             BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None}
         }
 
-        res_layers = self.get_layers(db, layers, load=True)
-        if res_layers is None:
+        self.get_layers(db, layers, load=True)
+        if not layers:
             return None
 
         if use_selection:
@@ -980,8 +983,8 @@ class QGISUtils(QObject):
             BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None}
         }
 
-        res_layers = self.get_layers(db, layers, load=True)
-        if res_layers is None:
+        self.get_layers(db, layers, load=True)
+        if not layers:
             return None
 
         if use_selection:
@@ -1111,7 +1114,7 @@ class QGISUtils(QObject):
     @_activate_processing_plugin
     def show_etl_model(self, db, input_layer, ladm_col_layer_name, geometry_type=None, field_mapping=''):
         output = self.get_layer(db, ladm_col_layer_name, geometry_type, load=True)
-        if output is None:
+        if not output:
             return False
 
         if output.isEditable():
@@ -1281,9 +1284,9 @@ class QGISUtils(QObject):
         }
 
         # Load layers
-        res_layers = self.get_layers(db, layers, load=True)
-        if res_layers is None:
-            return
+        self.get_layers(db, layers, load=True)
+        if not layers:
+            return None
 
         if layers[PLOT_TABLE][LAYER].selectedFeatureCount() == 0 or layers[RIGHT_OF_WAY_TABLE][LAYER].selectedFeatureCount() == 0 or layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatureCount() == 0:
             if self.get_layer_from_layer_tree(PLOT_TABLE, schema=db.schema, geometry_type=QgsWkbTypes.PolygonGeometry) is None:
@@ -1431,7 +1434,7 @@ class QGISUtils(QObject):
 
     def upload_source_files(self, db):
         extfile_layer = self.get_layer(db, EXTFILE_TABLE, None, True)
-        if extfile_layer is None:
+        if not extfile_layer:
             return
 
         field_index = extfile_layer.fields().indexFromName(EXTFILE_DATA_FIELD)

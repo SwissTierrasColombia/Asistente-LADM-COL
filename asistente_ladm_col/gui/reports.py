@@ -178,7 +178,7 @@ class ReportGenerator():
                 return
 
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
-        if plot_layer is None:
+        if not plot_layer:
             return
 
         selected_plots = plot_layer.selectedFeatures()

@@ -126,8 +126,8 @@ class CreateHorizontalPropertyValuationWizard(QWizard, WIZARD_UI):
 
     def required_layers_are_available(self):
         # Load layers
-        res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
-        if res_layers is None:
+        self.qgis_utils.get_layers(self._db, self._layers, load=True)
+        if not self._layers:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                                                 QCoreApplication.translate(self.WIZARD_NAME,
                                                                            "'{}' tool has been closed because there was a problem loading the requeries layers.").format(

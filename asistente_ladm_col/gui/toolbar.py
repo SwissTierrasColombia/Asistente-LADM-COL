@@ -38,8 +38,8 @@ class ToolBar():
             # Load layers selected in the dialog
 
             layers = dlg.selected_layers_info
-            res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-            if res_layers is None:
+            self.qgis_utils.get_layers(db, layers, load=True)
+            if not layers:
                 return None
 
             list_layers = list()

@@ -219,10 +219,9 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
             ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None, LAYER: None}
         }
 
-        res_layers = self.qgis_utils.get_layers(self._db, layers, load=True)
-        if res_layers is None:
+        self.qgis_utils.get_layers(self._db, layers, load=True)
+        if not layers:
             return None
-
 
         # Get feature counts to compare after the ETL and know how many records were imported to each ladm_col table
         ladm_tables = [layers[PARCEL_TABLE][LAYER],

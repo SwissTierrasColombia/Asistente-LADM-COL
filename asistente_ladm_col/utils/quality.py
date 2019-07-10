@@ -127,8 +127,8 @@ class QualityUtils(QObject):
             BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None}
         }
 
-        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-        if res_layers is None:
+        self.qgis_utils.get_layers(db, layers, load=True)
+        if not layers:
             return None
 
         elif layers[BOUNDARY_POINT_TABLE][LAYER].featureCount() == 0:
@@ -271,8 +271,8 @@ class QualityUtils(QObject):
             BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None}
         }
 
-        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-        if res_layers is None:
+        self.qgis_utils.get_layers(db, layers, load=True)
+        if not layers:
             return None
 
         elif layers[BOUNDARY_TABLE][LAYER].featureCount() == 0:
@@ -421,8 +421,8 @@ class QualityUtils(QObject):
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
             BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None}
         }
-        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-        if res_layers is None:
+        self.qgis_utils.get_layers(db, layers, load=True)
+        if not layers:
             return None
 
         if layers[PLOT_TABLE][LAYER].featureCount() == 0:
@@ -459,8 +459,8 @@ class QualityUtils(QObject):
             BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None}
         }
 
-        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-        if res_layers is None:
+        self.qgis_utils.get_layers(db, layers, load=True)
+        if not layers:
             return None
 
         if layers[BOUNDARY_POINT_TABLE][LAYER].featureCount() == 0:
@@ -553,7 +553,7 @@ class QualityUtils(QObject):
         """
         features = []
         point_layer = self.qgis_utils.get_layer(db, point_layer_name, load=True)
-        if point_layer is None:
+        if not point_layer:
             return
 
         if point_layer.featureCount() == 0:
@@ -608,8 +608,8 @@ class QualityUtils(QObject):
             LESS_TABLE: {'name': LESS_TABLE, 'geometry': None, LAYER: None},
             MORE_BOUNDARY_FACE_STRING_TABLE: {'name': MORE_BOUNDARY_FACE_STRING_TABLE, 'geometry': None, LAYER: None}
         }
-        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-        if res_layers is None:
+        self.qgis_utils.get_layers(db, layers, load=True)
+        if not layers:
             return None
 
         if layers[PLOT_TABLE][LAYER].featureCount() == 0:
@@ -902,8 +902,8 @@ class QualityUtils(QObject):
             MORE_BOUNDARY_FACE_STRING_TABLE: {'name': MORE_BOUNDARY_FACE_STRING_TABLE, 'geometry': None, LAYER: None}
         }
 
-        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-        if res_layers is None:
+        self.qgis_utils.get_layers(db, layers, load=True)
+        if not layers:
             return None
 
         # validate data
@@ -1210,7 +1210,7 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_overlapping_polygons(self, db, polygon_layer_name, rule_name):
         polygon_layer = self.qgis_utils.get_layer(db, polygon_layer_name, QgsWkbTypes.PolygonGeometry, load=True)
-        if polygon_layer is None:
+        if not polygon_layer:
             return
 
         if polygon_layer:
@@ -1276,7 +1276,7 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_overlaps_in_boundaries(self, db, rule_name):
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
-        if boundary_layer is None:
+        if not boundary_layer:
             return
 
         if boundary_layer:
@@ -1336,7 +1336,7 @@ class QualityUtils(QObject):
         """
         features = []
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
-        if boundary_layer is None:
+        if not boundary_layer:
             return
 
         if boundary_layer.featureCount() == 0:
@@ -1376,7 +1376,7 @@ class QualityUtils(QObject):
         tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
         features = []
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
-        if boundary_layer is None:
+        if not boundary_layer:
             return
 
         if boundary_layer.featureCount() == 0:
@@ -1429,8 +1429,8 @@ class QualityUtils(QObject):
             BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None}
         }
 
-        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-        if res_layers is None:
+        self.qgis_utils.get_layers(db, layers, load=True)
+        if not layers:
             return None
 
         if layers[BOUNDARY_TABLE][LAYER].featureCount() == 0:
@@ -1513,8 +1513,8 @@ class QualityUtils(QObject):
             SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None},
             BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
         }
-        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-        if res_layers is None:
+        self.qgis_utils.get_layers(db, layers, load=True)
+        if not layers:
             return None
 
         if layers[BUILDING_TABLE][LAYER].featureCount() == 0:
@@ -1555,7 +1555,7 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_dangles_in_boundaries(self, db, rule_name):
         boundary_layer = self.qgis_utils.get_layer(db, BOUNDARY_TABLE, load=True)
-        if boundary_layer is None:
+        if not boundary_layer:
             return
 
         if boundary_layer.featureCount() == 0:
@@ -1653,8 +1653,8 @@ class QualityUtils(QObject):
             BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
         }
 
-        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-        if res_layers is None:
+        self.qgis_utils.get_layers(db, layers, load=True)
+        if not layers:
             return None
 
         if layers[RIGHT_OF_WAY_TABLE][LAYER].featureCount() == 0:
@@ -1698,7 +1698,7 @@ class QualityUtils(QObject):
     def check_gaps_in_plots(self, db, rule_name):
         use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, True)
-        if plot_layer is None:
+        if not plot_layer:
             return
 
         if plot_layer.featureCount() == 0:
@@ -1736,7 +1736,7 @@ class QualityUtils(QObject):
     @_log_quality_checks
     def check_multiparts_in_right_of_way(self, db, rule_name):
         right_of_way_layer = self.qgis_utils.get_layer(db, RIGHT_OF_WAY_TABLE, QgsWkbTypes.PolygonGeometry, True)
-        if right_of_way_layer is None:
+        if not right_of_way_layer:
             return
 
         if right_of_way_layer.featureCount() == 0:
@@ -1971,8 +1971,8 @@ class QualityUtils(QObject):
             BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
         }
-        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-        if res_layers is None:
+        self.qgis_utils.get_layers(db, layers, load=True)
+        if not layers:
             return None
 
         if layers[BUILDING_TABLE][LAYER].featureCount() == 0:
@@ -2027,8 +2027,8 @@ class QualityUtils(QObject):
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
         }
 
-        res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-        if res_layers is None:
+        self.qgis_utils.get_layers(db, layers, load=True)
+        if not layers:
             return None
 
         if layers[BUILDING_UNIT_TABLE][LAYER].featureCount() == 0:

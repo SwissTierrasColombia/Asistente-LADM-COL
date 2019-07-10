@@ -28,7 +28,8 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QLineEdit,
                                  QTreeWidgetItemIterator,
                                  QComboBox)
-from qgis.core import QgsWkbTypes
+from qgis.core import (QgsWkbTypes,
+                       Qgis)
 
 from ..config.general_config import (TABLE_NAME,
                                      LAYER,
@@ -250,6 +251,10 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
 
             self.selected_items_dict = dict() # Reset
             self.qgis_utils.get_layers(self._db, layers_dict, load=True)
+            if not layers_dict:
+                self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                                                    QCoreApplication.translate("DialogLoadLayers", "Required layer(s) couldn't be found... "),
+                                                    Qgis.Warning)
 
     def rejected(self):
         self.selected_items_dict = dict()

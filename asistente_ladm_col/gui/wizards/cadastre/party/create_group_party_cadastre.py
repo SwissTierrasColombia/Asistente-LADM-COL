@@ -85,7 +85,7 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
 
         # Fill combo of types
         la_group_party_type_table = self.qgis_utils.get_layer(self._db, LA_GROUP_PARTY_TYPE_TABLE, None, True)
-        if la_group_party_type_table is None:
+        if not la_group_party_type_table:
             return
 
         domain_key_index = la_group_party_type_table.fields().indexOf(DOMAIN_KEY_FIELD[self._db.mode])
@@ -125,8 +125,8 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
 
     def required_layers_are_available(self):
         # Load layers
-        res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True)
-        if res_layers is None:
+        self.qgis_utils.get_layers(self._db, self._layers, load=True)
+        if not self._layers:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                                                 QCoreApplication.translate(self.WIZARD_NAME,
                                                                            "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
