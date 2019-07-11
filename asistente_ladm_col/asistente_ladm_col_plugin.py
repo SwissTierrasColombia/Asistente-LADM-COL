@@ -52,8 +52,8 @@ from .utils.decorators import (_db_connection_required,
                                _qgis_model_baker_required,
                                _activate_processing_plugin)
 
-from .gui.about_dialog import AboutDialog
-from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
+from .gui.dialogs.dlg_about import AboutDialog
+from .gui.dialogs.dlg_controlled_measurement import ControlledMeasurementDialog
 from .gui.wizards.cadastre.source.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.wizards.cadastre.surveying.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
 from .gui.wizards.cadastre.spatial_unit.create_building_cadastre_wizard import CreateBuildingCadastreWizard
@@ -82,14 +82,14 @@ from .gui.wizards.valuation.create_building_unit_valuation_wizard import CreateB
 from .gui.wizards.valuation.create_building_unit_qualification_valuation_wizard import CreateBuildingUnitQualificationValuationWizard
 from .gui.wizards.valuation.create_geoeconomic_zone_valuation_wizard import CreateGeoeconomicZoneValuationWizard
 from .gui.wizards.valuation.create_physical_zone_valuation_wizard import CreatePhysicalZoneValuationWizard
-from .gui.dialog_load_layers import DialogLoadLayers
-from .gui.dialog_quality import DialogQuality
-from .gui.dialog_import_from_excel import DialogImportFromExcel
+from .gui.dialogs.dlg_load_layers import DialogLoadLayers
+from .gui.dialogs.dlg_quality import DialogQuality
+from .gui.dialogs.dlg_import_from_excel import DialogImportFromExcel
 from .gui.dockwidget_queries import DockWidgetQueries
-from .gui.log_quality_dialog import LogQualityDialog
+from .gui.dialogs.dlg_log_quality import LogQualityDialog
 from .gui.reports import ReportGenerator
 from .gui.toolbar import ToolBar
-from .gui.log_excel_dialog import LogExcelDialog
+from .gui.dialogs.dlg_log_excel import LogExcelDialog
 from .data.ladm_data import LADM_DATA
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils

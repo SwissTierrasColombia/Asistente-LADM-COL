@@ -19,10 +19,11 @@
 from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtWidgets import QDialogButtonBox
 from qgis.PyQt.QtCore import QCoreApplication
-from ..utils import get_ui_class
-from ..utils.qt_utils import save_pdf_format
+from ...utils import get_ui_class
+from ...utils.qt_utils import save_pdf_format
 
-LOG_DIALOG_EXCEL_UI = get_ui_class('dlg_log_excel.ui')
+LOG_DIALOG_EXCEL_UI = get_ui_class('dialogs/dlg_log_excel.ui')
+
 
 class LogExcelDialog(QDialog, LOG_DIALOG_EXCEL_UI):
     def __init__(self, qgis_utils, text, parent=None):

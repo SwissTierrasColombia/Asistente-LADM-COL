@@ -44,7 +44,7 @@ from ...config.general_config import (DEFAULT_EPSG,
                                       CREATE_BASKET_COL,
                                       CREATE_IMPORT_TID,
                                       STROKE_ARCS)
-from ...gui.dlg_get_java_path import DialogGetJavaPath
+from ...gui.dialogs.dlg_get_java_path import DialogGetJavaPath
 from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
@@ -57,7 +57,6 @@ DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_schema.ui')
 
 
 class DialogImportSchema(QDialog, DIALOG_UI):
-
     models_have_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
 
     def __init__(self, iface, db, qgis_utils):

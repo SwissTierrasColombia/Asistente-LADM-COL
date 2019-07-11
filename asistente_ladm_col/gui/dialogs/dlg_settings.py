@@ -19,7 +19,7 @@
 import json
 
 from qgis.PyQt.QtNetwork import (QNetworkRequest,
-                          QNetworkAccessManager)
+                                 QNetworkAccessManager)
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               pyqtSignal,
@@ -27,8 +27,7 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QTextStream,
                               QIODevice,
-                              QEventLoop,
-                              QTimer)
+                              QEventLoop)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
                                  QGridLayout)
@@ -36,24 +35,22 @@ from qgis.core import (Qgis,
                        QgsApplication)
 from qgis.gui import QgsMessageBar
 
-from ..config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-                                     PLUGIN_NAME,
-                                     TEST_SERVER,
-                                     DEFAULT_ENDPOINT_SOURCE_SERVICE,
-                                     SOURCE_SERVICE_EXPECTED_ID)
-from ..gui.custom_model_dir import CustomModelDirDialog
-from ..lib.db.db_connector import (DBConnector, EnumTestLevel)
-from ..utils import get_ui_class
-from ..utils.qt_utils import OverrideCursor
-from ..resources_rc import *
-from ..config.config_db_supported import ConfigDbSupported
-from ..lib.db.enum_db_action_type import EnumDbActionType
+from ...config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+                                      PLUGIN_NAME,
+                                      TEST_SERVER,
+                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
+                                      SOURCE_SERVICE_EXPECTED_ID)
+from ...gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
+from ...lib.db.db_connector import (DBConnector, EnumTestLevel)
+from ...utils import get_ui_class
+from ...utils.qt_utils import OverrideCursor
+from ...config.config_db_supported import ConfigDbSupported
+from ...lib.db.enum_db_action_type import EnumDbActionType
 
-DIALOG_UI = get_ui_class('settings_dialog.ui')
+DIALOG_UI = get_ui_class('dialogs/dlg_settings.ui')
 
 
 class SettingsDialog(QDialog, DIALOG_UI):
-
     db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
     fetcher_task = None
 

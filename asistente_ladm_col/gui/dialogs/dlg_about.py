@@ -30,25 +30,23 @@ from qgis.PyQt.QtCore import (QUrl,
                               QIODevice,
                               QCoreApplication,
                               pyqtSignal)
-from qgis.PyQt.QtWidgets import (QDialog, QLayout)
+from qgis.PyQt.QtWidgets import QDialog
 from qgis.core import (QgsNetworkContentFetcherTask,
                        QgsApplication,
                        Qgis)
 
-from ..config.general_config import (HELP_DIR_NAME,
-                                     HELP_DOWNLOAD,
-                                     PLUGIN_VERSION,
-                                     TEST_SERVER)
-from ..config.translator import (
-    QGIS_LANG,
-    PLUGIN_DIR
-)
-from ..utils import get_ui_class
+from ...config.general_config import (HELP_DIR_NAME,
+                                      HELP_DOWNLOAD,
+                                      PLUGIN_VERSION,
+                                      TEST_SERVER)
+from ...config.translator import (QGIS_LANG,
+                                  PLUGIN_DIR)
+from ...utils import get_ui_class
 
-DIALOG_UI = get_ui_class('about_dialog.ui')
+DIALOG_UI = get_ui_class('dialogs/dlg_about.ui')
+
 
 class AboutDialog(QDialog, DIALOG_UI):
-
     message_with_button_open_about_emitted = pyqtSignal(str)
 
     def __init__(self, qgis_utils):

@@ -20,10 +20,11 @@
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog
 
-from ..utils import get_ui_class
-from ..resources_rc import *
+from ...utils import get_ui_class
+from ...resources_rc import *
 
-DIALOG_UI = get_ui_class('upload_progress_dialog.ui')
+DIALOG_UI = get_ui_class('dialogs/dlg_upload_progress.ui')
+
 
 class UploadProgressDialog(QDialog, DIALOG_UI):
     def __init__(self, total_steps, not_found, parent=None):

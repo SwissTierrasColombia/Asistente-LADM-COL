@@ -128,7 +128,7 @@ from ..config.translator import (
     QGIS_LANG,
     PLUGIN_DIR
 )
-from ..gui.settings_dialog import SettingsDialog
+from ..gui.dialogs.dlg_settings import SettingsDialog
 from ..lib.db.db_connector import DBConnector
 from ..lib.source_handler import SourceHandler
 

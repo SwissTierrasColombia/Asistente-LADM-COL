@@ -27,15 +27,14 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
-from ..utils import get_ui_class
-from ..utils.qt_utils import (Validators,
-                              OverrideCursor)
+from ...utils import get_ui_class
+from ...utils.qt_utils import (Validators,
+                               OverrideCursor)
 
-DIALOG_UI = get_ui_class('dlg_get_db_or_schema_name.ui')
+DIALOG_UI = get_ui_class('dialogs/dlg_get_db_or_schema_name.ui')
 
 
 class DialogGetDBOrSchemaName(QDialog, DIALOG_UI):
-
     db_or_schema_created = pyqtSignal(str)
 
     def __init__(self, db_connector, uri, type, parent=None):

@@ -21,7 +21,7 @@ from qgis.PyQt.QtWidgets import QDialog
 from qgis.core import (QgsProject,
                        Qgis)
 from ..config.general_config import LAYER
-from .dlg_topological_edition import LayersForTopologicalEdition
+from ..gui.dialogs.dlg_topological_edition import LayersForTopologicalEdition
 
 
 class ToolBar():

@@ -44,7 +44,7 @@ from qgis.gui import QgsMessageBar
 
 from ...config.general_config import (DEFAULT_HIDDEN_MODELS,
                                       SETTINGS_CONNECTION_TAB_INDEX)
-from ...gui.dlg_get_java_path import DialogGetJavaPath
+from ...gui.dialogs.dlg_get_java_path import DialogGetJavaPath
 from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,

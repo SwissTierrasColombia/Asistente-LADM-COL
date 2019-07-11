@@ -31,21 +31,22 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.core import (QgsWkbTypes,
                        Qgis)
 
-from ..config.general_config import (TABLE_NAME,
-                                     LAYER,
-                                     GEOMETRY_COLUMN,
-                                     GEOMETRY_TYPE,
-                                     KIND_SETTINGS,
-                                     TABLE_ALIAS,
-                                     MODEL)
-from ..config.layer_sets import LAYER_SETS
-from ..config.table_mapping_config import (TABLE_PROP_ASSOCIATION,
-                                           TABLE_PROP_DOMAIN,
-                                           TABLE_PROP_STRUCTURE)
-from ..utils import get_ui_class
-from ..resources_rc import *
+from ...config.general_config import (TABLE_NAME,
+                                      LAYER,
+                                      GEOMETRY_COLUMN,
+                                      GEOMETRY_TYPE,
+                                      KIND_SETTINGS,
+                                      TABLE_ALIAS,
+                                      MODEL)
+from ...config.layer_sets import LAYER_SETS
+from ...config.table_mapping_config import (TABLE_PROP_ASSOCIATION,
+                                            TABLE_PROP_DOMAIN,
+                                            TABLE_PROP_STRUCTURE)
+from ...utils import get_ui_class
+from ...resources_rc import *
 
-DIALOG_UI = get_ui_class('dlg_load_layers.ui')
+DIALOG_UI = get_ui_class('dialogs/dlg_load_layers.ui')
+
 
 class DialogLoadLayers(QDialog, DIALOG_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):

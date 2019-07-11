@@ -28,13 +28,13 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
-from ..config.general_config import JAVA_REQUIRED_VERSION
-from ..utils import get_ui_class
-from ..utils.qt_utils import (Validators,
-                              FileValidator,
-                              make_file_selector)
+from ...config.general_config import JAVA_REQUIRED_VERSION
+from ...utils import get_ui_class
+from ...utils.qt_utils import (Validators,
+                               FileValidator,
+                               make_file_selector)
 
-DIALOG_UI = get_ui_class('dlg_get_java_path.ui')
+DIALOG_UI = get_ui_class('dialogs/dlg_get_java_path.ui')
 
 
 class DialogGetJavaPath(QDialog, DIALOG_UI):

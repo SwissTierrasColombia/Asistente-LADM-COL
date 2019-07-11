@@ -33,64 +33,66 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.gui import QgsMessageBar
 import processing
 
-from asistente_ladm_col import PLUGIN_NAME
-from asistente_ladm_col.utils.qt_utils import make_file_selector, normalize_local_url
-from ..config.help_strings import HelpStrings
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
                                  QGridLayout,
                                  QDialogButtonBox,
                                  QFileDialog)
-from ..config.table_mapping_config import (COL_PARTY_TABLE,
-                                           PARCEL_TABLE,
-                                           RIGHT_TABLE,
-                                           RRR_SOURCE_RELATION_TABLE,
-                                           EXTFILE_TABLE,
-                                           LA_GROUP_PARTY_TABLE,
-                                           ADMINISTRATIVE_SOURCE_TABLE,
-                                           MEMBERS_TABLE)
-from ..config.general_config import (EXCEL_SHEET_TITLE_DEPARTMENT,
-                                    EXCEL_SHEET_TITLE_MUNICIPALITY,
-                                    EXCEL_SHEET_TITLE_ZONE,
-                                    EXCEL_SHEET_TITLE_REGISTRATION_PLOT,
-                                    EXCEL_SHEET_TITLE_NPN,
-                                    EXCEL_SHEET_TITLE_NPV,
-                                    EXCEL_SHEET_TITLE_PLOT_NAME,
-                                    EXCEL_SHEET_TITLE_VALUATION,
-                                    EXCEL_SHEET_TITLE_PLOT_TYPE,
-                                    EXCEL_SHEET_TITLE_FIRST_NAME,
-                                    EXCEL_SHEET_TITLE_MIDDLE,
-                                    EXCEL_SHEET_TITLE_FIRST_SURNAME,
-                                    EXCEL_SHEET_TITLE_SECOND_SURNAME,
-                                    EXCEL_SHEET_TITLE_BUSINESS_NAME,
-                                    EXCEL_SHEET_TITLE_SEX,
-                                    EXCEL_SHEET_TITLE_DOCUMENT_TYPE,
-                                    EXCEL_SHEET_TITLE_DOCUMENT_NUMBER,
-                                    EXCEL_SHEET_TITLE_KIND_PERSON,
-                                    EXCEL_SHEET_TITLE_ISSUING_ENTITY,
-                                    EXCEL_SHEET_TITLE_DATE_ISSUE,
-                                    EXCEL_SHEET_TITLE_ID_GROUP,
-                                    EXCEL_SHEET_TITLE_TYPE,
-                                    EXCEL_SHEET_TITLE_GROUP,
-                                    EXCEL_SHEET_TITLE_SOURCE_TYPE,
-                                    EXCEL_SHEET_TITLE_PARTY_DOCUMENT_NUMBER,
-                                    EXCEL_SHEET_TITLE_DESCRIPTION_SOURCE,
-                                    EXCEL_SHEET_TITLE_STATE_SOURCE,
-                                    EXCEL_SHEET_TITLE_OFFICIALITY_SOURCE,
-                                    EXCEL_SHEET_TITLE_STORAGE_PATH,
-                                    LAYER,
-                                    LOG_QUALITY_LIST_CONTAINER_OPEN,
-                                    LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
-                                    LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
-                                    LOG_QUALITY_LIST_CONTAINER_CLOSE,
-                                    LOG_QUALITY_CONTENT_SEPARATOR,
-                                    EXCEL_SHEET_NAME_PLOT,
-                                    EXCEL_SHEET_NAME_PARTY,
-                                    EXCEL_SHEET_NAME_GROUP,
-                                    EXCEL_SHEET_NAME_RIGHT)
-from ..utils import get_ui_class
 
-DIALOG_UI = get_ui_class('dlg_import_from_excel.ui')
+from ...utils.qt_utils import make_file_selector, normalize_local_url
+from ...config.help_strings import HelpStrings
+from ...config.table_mapping_config import (COL_PARTY_TABLE,
+                                         PARCEL_TABLE,
+                                         RIGHT_TABLE,
+                                         RRR_SOURCE_RELATION_TABLE,
+                                         EXTFILE_TABLE,
+                                         LA_GROUP_PARTY_TABLE,
+                                         ADMINISTRATIVE_SOURCE_TABLE,
+                                         MEMBERS_TABLE)
+from ...config.general_config import (EXCEL_SHEET_TITLE_DEPARTMENT,
+                                      EXCEL_SHEET_TITLE_MUNICIPALITY,
+                                      EXCEL_SHEET_TITLE_ZONE,
+                                      EXCEL_SHEET_TITLE_REGISTRATION_PLOT,
+                                      EXCEL_SHEET_TITLE_NPN,
+                                      EXCEL_SHEET_TITLE_NPV,
+                                      EXCEL_SHEET_TITLE_PLOT_NAME,
+                                      EXCEL_SHEET_TITLE_VALUATION,
+                                      EXCEL_SHEET_TITLE_PLOT_TYPE,
+                                      EXCEL_SHEET_TITLE_FIRST_NAME,
+                                      EXCEL_SHEET_TITLE_MIDDLE,
+                                      EXCEL_SHEET_TITLE_FIRST_SURNAME,
+                                      EXCEL_SHEET_TITLE_SECOND_SURNAME,
+                                      EXCEL_SHEET_TITLE_BUSINESS_NAME,
+                                      EXCEL_SHEET_TITLE_SEX,
+                                      EXCEL_SHEET_TITLE_DOCUMENT_TYPE,
+                                      EXCEL_SHEET_TITLE_DOCUMENT_NUMBER,
+                                      EXCEL_SHEET_TITLE_KIND_PERSON,
+                                      EXCEL_SHEET_TITLE_ISSUING_ENTITY,
+                                      EXCEL_SHEET_TITLE_DATE_ISSUE,
+                                      EXCEL_SHEET_TITLE_ID_GROUP,
+                                      EXCEL_SHEET_TITLE_TYPE,
+                                      EXCEL_SHEET_TITLE_GROUP,
+                                      EXCEL_SHEET_TITLE_SOURCE_TYPE,
+                                      EXCEL_SHEET_TITLE_PARTY_DOCUMENT_NUMBER,
+                                      EXCEL_SHEET_TITLE_DESCRIPTION_SOURCE,
+                                      EXCEL_SHEET_TITLE_STATE_SOURCE,
+                                      EXCEL_SHEET_TITLE_OFFICIALITY_SOURCE,
+                                      EXCEL_SHEET_TITLE_STORAGE_PATH,
+                                      LAYER,
+                                      PLUGIN_NAME,
+                                      LOG_QUALITY_LIST_CONTAINER_OPEN,
+                                      LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
+                                      LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
+                                      LOG_QUALITY_LIST_CONTAINER_CLOSE,
+                                      LOG_QUALITY_CONTENT_SEPARATOR,
+                                      EXCEL_SHEET_NAME_PLOT,
+                                      EXCEL_SHEET_NAME_PARTY,
+                                      EXCEL_SHEET_NAME_GROUP,
+                                      EXCEL_SHEET_NAME_RIGHT)
+from ...utils import get_ui_class
+
+DIALOG_UI = get_ui_class('dialogs/dlg_import_from_excel.ui')
+
 
 class DialogImportFromExcel(QDialog, DIALOG_UI):
     log_excel_show_message_emitted = pyqtSignal(str)

@@ -24,17 +24,18 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QDialogButtonBox)
 from qgis.core import QgsWkbTypes
 
-from ..config.general_config import LAYER
-from ..config.table_mapping_config import (BOUNDARY_TABLE,
-                                           BOUNDARY_POINT_TABLE,
-                                           BUILDING_TABLE,
-                                           BUILDING_UNIT_TABLE,
-                                           PLOT_TABLE,
-                                           SURVEY_POINT_TABLE)
-from ..utils import get_ui_class
-from ..resources_rc import *
+from ...config.general_config import LAYER
+from ...config.table_mapping_config import (BOUNDARY_TABLE,
+                                            BOUNDARY_POINT_TABLE,
+                                            BUILDING_TABLE,
+                                            BUILDING_UNIT_TABLE,
+                                            PLOT_TABLE,
+                                            SURVEY_POINT_TABLE)
+from ...utils import get_ui_class
+from ...resources_rc import *
 
-DIALOG_UI = get_ui_class('dlg_topological_edition.ui')
+DIALOG_UI = get_ui_class('dialogs/dlg_topological_edition.ui')
+
 
 class LayersForTopologicalEdition(QDialog, DIALOG_UI):
     def __init__(self, parent=None):

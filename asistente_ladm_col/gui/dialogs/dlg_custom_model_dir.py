@@ -17,17 +17,14 @@
  *                                                                         *
  ***************************************************************************/
 """
-
-from ..utils import get_ui_class
-from ..utils.qt_utils import selectFolder
-
 from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import QDialog, QListWidgetItem
-
 from qgis.gui import QgsGui
 
+from ...utils import get_ui_class
+from ...utils.qt_utils import selectFolder
 
-DIALOG_UI = get_ui_class('custom_model_dir.ui')
+DIALOG_UI = get_ui_class('dialogs/dlg_custom_model_dir.ui')
 
 
 class CustomModelDirDialog(QDialog, DIALOG_UI):
