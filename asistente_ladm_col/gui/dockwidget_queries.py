@@ -18,15 +18,28 @@
 """
 from functools import partial
 
-from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtCore import QCoreApplication, Qt, pyqtSignal
 from PyQt5.QtGui import QColor, QIcon, QCursor
 from PyQt5.QtWidgets import QMenu, QAction, QApplication
-from qgis.core import QgsWkbTypes, Qgis, QgsMessageLog, QgsFeature, QgsFeatureRequest, QgsExpression
+from qgis.core import QgsWkbTypes, Qgis, QgsMessageLog, QgsFeature, QgsFeatureRequest, QgsExpression, QgsVectorLayer
 from qgis.gui import QgsDockWidget, QgsMapToolIdentifyFeature
 
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
-from ..config.table_mapping_config import PLOT_TABLE, UEBAUNIT_TABLE, PARCEL_TABLE, ID_FIELD, DICT_TABLE_PACKAGE, \
-    SPATIAL_UNIT_PACKAGE, UEBAUNIT_TABLE_PARCEL_FIELD, UEBAUNIT_TABLE_PLOT_FIELD
+from ..config.table_mapping_config import (PLOT_TABLE,
+                                           UEBAUNIT_TABLE,
+                                           PARCEL_TABLE,
+                                           ID_FIELD,
+                                           DICT_TABLE_PACKAGE,
+                                           SPATIAL_UNIT_PACKAGE,
+                                           UEBAUNIT_TABLE_PARCEL_FIELD,
+                                           UEBAUNIT_TABLE_PLOT_FIELD,
+                                           PARCEL_NUMBER_FIELD,
+                                           PARCEL_NUMBER_BEFORE_FIELD,
+                                           FMI_FIELD,
+                                           ID_FIELD,
+                                           PARCEL_TABLE,
+                                           PLOT_TABLE,
+                                           UEBAUNIT_TABLE)
 
 from ..utils import get_ui_class
 
@@ -35,6 +48,9 @@ from ..data.tree_models import TreeModel
 DOCKWIDGET_UI = get_ui_class('dockwidget_queries.ui')
 
 class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
+
+    zoom_to_features_requested = pyqtSignal(QgsVectorLayer, list, list, int)  # layer, ids, t_ids, duration
+
     def __init__(self, iface, db, qgis_utils, ladm_data, parent=None):
         super(DockWidgetQueries, self).__init__(None)
         self.setupUi(self)
@@ -63,7 +79,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         # Set connections
         self.btn_alphanumeric_query.clicked.connect(self.alphanumeric_query)
-        self.btn_clear_alphanumeric_query.clicked.connect(self.clear_alphanumeric_query)
+        self.cbo_parcel_fields.currentIndexChanged.connect(self.search_field_updated)
         self.btn_identify_plot.clicked.connect(self.btn_plot_toggled)
 
         # Context menu
@@ -71,6 +87,16 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         # Create maptool
         self.maptool_identify = QgsMapToolIdentifyFeature(self.canvas)
+
+        self.initialize_field_values_line_edit()
+
+    def search_field_updated(self, index=None):
+        self.initialize_field_values_line_edit()
+
+    def initialize_field_values_line_edit(self):
+        self.txt_alphanumeric_query.setLayer(self._parcel_layer)
+        idx = self._parcel_layer.fields().indexOf(self.cbo_parcel_fields.currentData())
+        self.txt_alphanumeric_query.setAttributeIndex(idx)
 
     def _set_context_menus(self):
         self.tree_view_basic.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -164,12 +190,9 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
     def fill_combos(self):
         self.cbo_parcel_fields.clear()
 
-        if self._parcel_layer is not None:
-            self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Parcel Number"), 'parcel_number')
-            self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Previous Parcel Number"), 'previous_parcel_number')
-            self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Folio de Matrícula Inmobiliaria"), 'fmi')
-        else:
-            self.add_layers()
+        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Parcel Number"), PARCEL_NUMBER_FIELD)
+        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Previous Parcel Number"), PARCEL_NUMBER_BEFORE_FIELD)
+        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Folio de Matrícula Inmobiliaria"), FMI_FIELD)
 
     def initialize_tools(self, new_tool, old_tool):
         if self.maptool_identify == old_tool:
@@ -238,9 +261,19 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             self.search_data_by_component(plot_t_id=plot_t_id)
 
     def search_data_by_component(self, **kwargs):
+        self._plot_layer.removeSelection()
+
         records = self._db.get_igac_basic_info(**kwargs)
         self.tree_view_basic.setModel(TreeModel(data=records))
         self.tree_view_basic.expandAll()
+
+        # Zoom to resulting plots
+        plot_t_ids = self.get_plot_t_ids_from_basic_info(records)
+        if plot_t_ids:
+            features = self.ladm_data.get_features_from_t_ids(self._plot_layer, plot_t_ids, True, True)
+            plot_ids = [feature.id() for feature in features]
+            self.zoom_to_features_requested.emit(self._plot_layer, plot_ids, list(), 500)
+            self._plot_layer.selectByIds(plot_ids)
 
         records = self._db.get_igac_legal_info(**kwargs)
         self.tree_view_legal.setModel(TreeModel(data=records))
@@ -258,16 +291,26 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.tree_view_economic.setModel(TreeModel(data=records))
         self.tree_view_economic.expandAll()
 
+    def get_plot_t_ids_from_basic_info(self, records):
+        res = []
+        if records:
+            for record in records:
+                if PLOT_TABLE in record:
+                    for element in record[PLOT_TABLE]:
+                        res.append(element['id'])
+
+        return res
+
     def alphanumeric_query(self):
         """
         Alphanumeric query
         """
         option = self.cbo_parcel_fields.currentData()
-        query = self.txt_alphanumeric_query.text().strip()
+        query = self.txt_alphanumeric_query.value()
         if query:
-            if option == 'fmi':
+            if option == FMI_FIELD:
                 self.search_data_by_component(parcel_fmi=query)
-            elif option == 'parcel_number':
+            elif option == PARCEL_NUMBER_FIELD:
                 self.search_data_by_component(parcel_number=query)
             else: # previous_parcel_number
                 self.search_data_by_component(previous_parcel_number=query)
@@ -275,9 +318,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         else:
             self.iface.messageBar().pushMessage("Asistente LADM_COL",
                 QCoreApplication.translate("DockWidgetQueries", "First enter a query"))
-
-    def clear_alphanumeric_query(self):
-        self.txt_alphanumeric_query.setText('')
 
     def show_context_menu(self, point):
         tree_view = self.sender()

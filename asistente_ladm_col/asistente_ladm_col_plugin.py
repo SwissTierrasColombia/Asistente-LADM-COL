@@ -934,12 +934,17 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_queries(self):
-        if self._dock_widget_queries is None:
-            self._dock_widget_queries = DockWidgetQueries(self.iface, self.get_db_connection(), self.qgis_utils, self.ladm_data)
-            self.qgis_utils.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
-            self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_queries)
-        else:
-            self._dock_widget_queries.toggleUserVisible()
+        if self._dock_widget_queries is not None:
+            self._dock_widget_queries.close()
+            self._dock_widget_queries = None
+
+        self._dock_widget_queries = DockWidgetQueries(self.iface,
+                                                      self.get_db_connection(),
+                                                      self.qgis_utils,
+                                                      self.ladm_data)
+        self.qgis_utils.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
+        self._dock_widget_queries.zoom_to_features_requested.connect(self.zoom_to_features)
+        self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_queries)
 
     def get_db_connection(self):
         return self.qgis_utils.get_db_connection()

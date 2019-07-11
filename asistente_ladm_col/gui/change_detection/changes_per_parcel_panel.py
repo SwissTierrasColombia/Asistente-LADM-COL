@@ -41,7 +41,10 @@ from asistente_ladm_col.config.general_config import (OFFICIAL_DB_PREFIX,
 from asistente_ladm_col.config.table_mapping_config import (PARCEL_NUMBER_FIELD,
                                                             PARCEL_NUMBER_BEFORE_FIELD,
                                                             FMI_FIELD,
-                                                            ID_FIELD, PARCEL_TABLE, PLOT_TABLE, UEBAUNIT_TABLE)
+                                                            ID_FIELD,
+                                                            PARCEL_TABLE,
+                                                            PLOT_TABLE,
+                                                            UEBAUNIT_TABLE)
 from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_per_parcel_panel_widget.ui')
