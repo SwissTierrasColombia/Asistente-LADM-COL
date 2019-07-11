@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+import secrets
 from functools import partial
 
 from qgis.PyQt.QtCore import (QCoreApplication,
@@ -68,8 +69,8 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         self.temporal_layer = None
 
         self._layers = {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
             RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
             SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None}
         }
 
@@ -243,6 +244,23 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         self.disconnect_signals()
         self.close()
 
+    def remove_temporal_layer(self):
+        # TODO: Remove temporal layer
+        if self.temporal_layer:
+            self.temporal_layer.undoStack().clear()
+
+            try:
+                self.temporal_layer.featureAdded.disconnect()
+            except:
+                pass
+
+            try:
+                self.temporal_layer.editCommandEnded.disconnect(self.confirm_commit)
+            except:
+                pass
+
+            QgsProject.instance().removeMapLayer(self.temporal_layer)
+
     def edit_feature(self):
 
         # Disable transactions groups and configure Snapping
@@ -254,7 +272,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             layer = self._layers[RIGHT_OF_WAY_TABLE][LAYER]
         elif self.type_geometry_creation == "digitizing_line":
             # Add Memory line layer
-            self.temporal_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG), self.translatable_config_strings.RIGHT_OF_WAY_LINE_LAYER, "memory")
+            self.temporal_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG), '{}_{}'.format(self.translatable_config_strings.RIGHT_OF_WAY_LINE_LAYER, secrets.randbits(24)), "memory")
             layer = self.temporal_layer
             QgsProject.instance().addMapLayer(self.temporal_layer, True)
         else:
@@ -262,7 +280,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
 
         if layer:
             self.iface.layerTreeView().setCurrentLayer(layer)
-            self._layers[RIGHT_OF_WAY_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+            #self._layers[RIGHT_OF_WAY_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
             self.open_form(layer)
 
         self.iface.messageBar().pushMessage('Asistente LADM_COL',
@@ -285,8 +303,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         else:
             feature_tid = self._layers[RIGHT_OF_WAY_TABLE][LAYER].getFeature(fid)[ID_FIELD]
             message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                 "The new right of way (t_id={}) was successfully created ").format(
-                feature_tid)
+                                                 "The new right of way (t_id={}) was successfully created ").format(feature_tid)
 
         self._layers[RIGHT_OF_WAY_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Right of way's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
@@ -296,19 +313,19 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         if not layer.isEditable():
             layer.startEditing()
 
-        # action add ExtAddress feature
+        # action add Right of way feature
         self.qgis_utils.suppress_form(layer, True)
         self.iface.actionAddFeature().trigger()
 
         # Shows the form when the feature is created
         layer.featureAdded.connect(partial(self.exec_form, layer))
-        layer.editCommandEnded.connect(self.confirm_commit)
+        #layer.editCommandEnded.connect(self.confirm_commit)
 
     def exec_form(self, layer, f_id):
 
         try:
             layer.featureAdded.disconnect()
-            self.log.logMessage("ExtAddress's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+            self.log.logMessage("Right of way's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         except:
             pass
 
@@ -339,10 +356,14 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         dialog = self.iface.getFeatureForm(layer, feature)
         dialog.setModal(True)
 
+        message = None
         if dialog.exec_():
             self.rollback_changes = False
+            message = QCoreApplication.translate(self.WIZARD_NAME,
+                                                 "Right of way was created, but no changes have been saved.")
         else:
             self.rollback_changes = True
+        self.close_wizard(message)
 
     def confirm_commit(self):
 
@@ -362,27 +383,13 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
                 layer.rollBack()
                 self.iface.messageBar().pushMessage("Asistente LADM_COL",
                                                     QCoreApplication.translate(self.WIZARD_NAME,
-                                                                               "Error while saving changes. ExtAddress could not be created."),
+                                                                               "Error while saving changes. Right of way could not be created."),
                                                     Qgis.Warning)
                 for e in layer.commitErrors():
                     self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
         else:
             layer.rollBack()
             self.form_rejected()
-
-        #TODO: Remove temporal layer
-        # if self.temporal_layer:
-        #     try:
-        #         self.temporal_layer.featureAdded.disconnect()
-        #     except:
-        #         pass
-        #
-        #     try:
-        #         self.temporal_layer.editCommandEnded.disconnect(self.confirm_commit)
-        #     except:
-        #         pass
-        #
-        #     QgsProject.instance().removeMapLayer(self.temporal_layer)
 
         self.iface.mapCanvas().refresh()
         self.added_features = None

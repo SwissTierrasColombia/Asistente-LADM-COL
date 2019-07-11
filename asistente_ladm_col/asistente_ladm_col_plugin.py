@@ -887,7 +887,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_wiz_point_cad(self):
         wiz = CreatePointsCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        wiz.exec_()
+        self.exec_wizard(wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required

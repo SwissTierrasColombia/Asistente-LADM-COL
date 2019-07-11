@@ -35,6 +35,7 @@ from qgis.core import (Qgis,
 from qgis.gui import QgsMessageBar
 
 from .....config.general_config import (PLUGIN_NAME,
+                                        LAYER,
                                         DEFAULT_EPSG)
 from .....config.help_strings import HelpStrings
 from .....config.table_mapping_config import (BOUNDARY_POINT_TABLE,
@@ -61,6 +62,12 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
+
+        self._layers = {
+            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None},
+            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None},
+            CONTROL_POINT_TABLE: {'name': CONTROL_POINT_TABLE, 'geometry': None, LAYER: None}
+        }
 
         self.target_layer = None
 
@@ -297,6 +304,33 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                                              target_layer,
                                              self.cbo_elevation.currentText() or None,
                                              self.detect_decimal_point(csv_path))
+
+    def required_layers_are_available(self):
+        # Load layers
+        self.qgis_utils.get_layers(self._db, self._layers, load=True)
+        if not self._layers:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                                                QCoreApplication.translate(self.WIZARD_NAME,
+                                                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
+                                                    self.WIZARD_TOOL_NAME),
+                                                Qgis.Warning)
+            return False
+
+        # Check if layers any layer is in editing mode
+        layers_name = list()
+        for layer in self._layers:
+            if self._layers[layer]['layer'].isEditable():
+                layers_name.append(self._layers[layer]['layer'].name())
+
+        if layers_name:
+            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                                                QCoreApplication.translate(self.WIZARD_NAME,
+                                                                           "Wizard cannot be opened until the following layers are not in edit mode '{}'.").format(
+                                                    '; '.join([layer_name for layer_name in layers_name])),
+                                                Qgis.Warning)
+            return False
+
+        return True
 
     def file_path_changed(self):
         self.autodetect_separator()
