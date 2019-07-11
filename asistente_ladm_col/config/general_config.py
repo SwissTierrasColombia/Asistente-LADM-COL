@@ -94,8 +94,8 @@ MODULE_HELP_MAPPING = {
     'load_layers': 'load_layers.html#load-layers',
     'col_party': 'cadastre/Party.html#col-party',
     'group_party': 'cadastre/Party.html#group-party',
-    'quality_rules': 'index.html', # TODO: Add this to help sections
-    'settings': 'help.html#settings',
+    'quality_rules': 'cadastre/Quality.html',
+    'settings': 'settings.html',
     'create_property_record_card': 'property_record_card/Property_record_card.html',
     'create_nuclear_family': 'property_record_card/Nuclear_family.html',
     'create_natural_party': 'property_record_card/Natural_party.html',
