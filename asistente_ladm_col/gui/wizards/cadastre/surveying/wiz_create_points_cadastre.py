@@ -254,9 +254,10 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                     self.qgis_utils.save_field_mapping(output_layer_name)
 
             else:
-                self.iface.messageBar().pushMessage("Asistente LADM_COL",
+                self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate(self.WIZARD_NAME,
-                                               "Select a source layer to set the field mapping to '{}'.").format(output_layer_name),
+                                               "Select a source layer to set the field mapping to '{}'.").format(
+                        output_layer_name),
                     Qgis.Warning)
 
         elif self.rad_csv.isChecked():
@@ -272,7 +273,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         if message is None:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
+            self.qgis_utils.message_emitted.emit(message, Qgis.Info)
         self.close()
 
     def current_point_name(self):
@@ -287,7 +288,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         csv_path = self.txt_file_path.text().strip()
 
         if not csv_path or not os.path.exists(csv_path):
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+            self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate(self.WIZARD_NAME,
                                            "No CSV file given or file doesn't exist."),
                 Qgis.Warning)
@@ -309,11 +310,11 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         # Load layers
         self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if not self._layers:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate(self.WIZARD_NAME,
-                                                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
-                                                    self.WIZARD_TOOL_NAME),
-                                                Qgis.Warning)
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate(self.WIZARD_NAME,
+                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
+                    self.WIZARD_TOOL_NAME),
+                Qgis.Warning)
             return False
 
         # Check if layers any layer is in editing mode
@@ -323,11 +324,11 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                 layers_name.append(self._layers[layer]['layer'].name())
 
         if layers_name:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate(self.WIZARD_NAME,
-                                                                           "Wizard cannot be opened until the following layers are not in edit mode '{}'.").format(
-                                                    '; '.join([layer_name for layer_name in layers_name])),
-                                                Qgis.Warning)
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate(self.WIZARD_NAME,
+                                           "Wizard cannot be opened until the following layers are not in edit mode '{}'.").format(
+                    '; '.join([layer_name for layer_name in layers_name])),
+                Qgis.Warning)
             return False
 
         return True
@@ -433,7 +434,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
             return line.split(self.txt_delimiter.text())
 
         if error_reading:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
+            self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate(self.WIZARD_NAME,
                                            "It was not possible to read field names from the CSV. Check the file and try again."),
                 Qgis.Warning)

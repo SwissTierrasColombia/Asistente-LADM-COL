@@ -384,10 +384,11 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                     self.qgis_utils.save_field_mapping(EXTADDRESS_TABLE)
 
             else:
-                self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                                                    QCoreApplication.translate(self.WIZARD_NAME,
-                                                                               "Select a source layer to set the field mapping to '{}'.").format(EXTADDRESS_TABLE),
-                                                    Qgis.Warning)
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate(self.WIZARD_NAME,
+                                               "Select a source layer to set the field mapping to '{}'.").format(
+                        EXTADDRESS_TABLE),
+                    Qgis.Warning)
         else:
             self.prepare_feature_creation()
 
@@ -413,11 +414,11 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         # Load layers
         self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if not self._layers:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate(self.WIZARD_NAME,
-                                                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
-                                                    self.WIZARD_TOOL_NAME),
-                                                Qgis.Warning)
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate(self.WIZARD_NAME,
+                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
+                    self.WIZARD_TOOL_NAME),
+                Qgis.Warning)
             return False
 
         # Check if layers any layer is in editing mode
@@ -427,11 +428,11 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                 layers_name.append(self._layers[layer]['layer'].name())
 
         if layers_name:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate(self.WIZARD_NAME,
-                                                                           "Wizard cannot be opened until the following layers are not in edit mode '{}'.").format(
-                                                    '; '.join([layer_name for layer_name in layers_name])),
-                                                Qgis.Warning)
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate(self.WIZARD_NAME,
+                                           "Wizard cannot be opened until the following layers are not in edit mode '{}'.").format(
+                    '; '.join([layer_name for layer_name in layers_name])),
+                Qgis.Warning)
             return False
 
         return True
@@ -455,7 +456,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         if message is None:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
+            self.qgis_utils.message_emitted.emit(message, Qgis.Info)
         self.init_map_tool()
         self.disconnect_signals()
         self.close()
@@ -475,15 +476,15 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.qgis_utils.active_snapping_all_layers()
             self.open_form(self._layers[EXTADDRESS_TABLE][LAYER])
 
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate(self.WIZARD_NAME,
-                                                                           "Now you can click on the map to locate the new address..."),
-                                                Qgis.Info)
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate(self.WIZARD_NAME,
+                                           "Now you can click on the map to locate the new address..."),
+                Qgis.Info)
         else:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate(self.WIZARD_NAME,
-                                                                           "First select a {}.").format(self._current_layer.name()),
-                                                Qgis.Warning)
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate(self.WIZARD_NAME,
+                                           "First select a {}.").format(self._current_layer.name()),
+                Qgis.Warning)
 
     def finish_feature_creation(self, layerId, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -600,10 +601,10 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
             if not saved:
                 layer.rollBack()
-                self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                    QCoreApplication.translate(self.WIZARD_NAME,
-                                                                               "Error while saving changes. ExtAddress could not be created."),
-                                                    Qgis.Warning)
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate(self.WIZARD_NAME,
+                                               "Error while saving changes. ExtAddress could not be created."),
+                    Qgis.Warning)
                 for e in layer.commitErrors():
                     self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
         else:

@@ -112,14 +112,14 @@ class CreateBuildingUnitQualificationValuationWizard(QWizard, WIZARD_UI):
             self.mMapLayerComboBox.setEnabled(True)
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
-            finish_button_text = QCoreApplication.translate("create_building_unit_qualification_valuation_wizard", "Import")
+            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
             self.txt_help_page_2.setHtml(self.help_strings.get_refactor_help_string(self.current_building_unit_qualification_valuation_name(), False))
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
-            finish_button_text = QCoreApplication.translate("create_building_unit_qualification_valuation_wizard", "Create")
+            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
 
             output_layer_name = self.current_building_unit_qualification_valuation_name()
             if output_layer_name == "calificacion_convencional":
@@ -161,9 +161,10 @@ class CreateBuildingUnitQualificationValuationWizard(QWizard, WIZARD_UI):
 
 
             else:
-                self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                    QCoreApplication.translate("create_building_unit_qualification_valuation_wizard",
-                                               "Select a source layer to set the field mapping to '{}'.").format(self.current_building_unit_qualification_valuation_name()),
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate(self.WIZARD_NAME,
+                                               "Select a source layer to set the field mapping to '{}'.").format(
+                        self.current_building_unit_qualification_valuation_name()),
                     Qgis.Warning)
 
         elif self.rad_create_manually.isChecked():
@@ -194,11 +195,11 @@ class CreateBuildingUnitQualificationValuationWizard(QWizard, WIZARD_UI):
         # Load layers
         self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if not self._layers:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate(self.WIZARD_NAME,
-                                                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
-                                                    self.WIZARD_TOOL_NAME),
-                                                Qgis.Warning)
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate(self.WIZARD_NAME,
+                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
+                    self.WIZARD_TOOL_NAME),
+                Qgis.Warning)
             return False
 
         # Check if layers any layer is in editing mode
@@ -208,11 +209,11 @@ class CreateBuildingUnitQualificationValuationWizard(QWizard, WIZARD_UI):
                 layers_name.append(self._layers[layer]['layer'].name())
 
         if layers_name:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate(self.WIZARD_NAME,
-                                                                           "Wizard cannot be opened until the following layers are not in edit mode '{}'.").format(
-                                                    '; '.join([layer_name for layer_name in layers_name])),
-                                                Qgis.Warning)
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate(self.WIZARD_NAME,
+                                           "Wizard cannot be opened until the following layers are not in edit mode '{}'.").format(
+                    '; '.join([layer_name for layer_name in layers_name])),
+                Qgis.Warning)
             return False
 
         return True
@@ -221,7 +222,7 @@ class CreateBuildingUnitQualificationValuationWizard(QWizard, WIZARD_UI):
         if message is None:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
+            self.qgis_utils.message_emitted.emit(message, Qgis.Info)
         self.disconnect_signals()
         self.close()
 
@@ -272,10 +273,10 @@ class CreateBuildingUnitQualificationValuationWizard(QWizard, WIZARD_UI):
 
             if not saved:
                 layer.rollBack()
-                self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                    QCoreApplication.translate(self.WIZARD_NAME,
-                                                                               "Error while saving changes. Party could not be created."),
-                                                    Qgis.Warning)
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate(self.WIZARD_NAME,
+                                               "Error while saving changes. Party could not be created."),
+                    Qgis.Warning)
 
                 for e in layer.commitErrors():
                     self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)

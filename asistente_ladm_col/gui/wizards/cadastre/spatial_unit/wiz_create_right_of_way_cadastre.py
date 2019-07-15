@@ -164,9 +164,10 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
                     self.qgis_utils.save_field_mapping(RIGHT_OF_WAY_TABLE)
 
             else:
-                self.iface.messageBar().pushMessage('Asistente LADM_COL',
+                self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate(self.WIZARD_NAME,
-                                               "Select a source layer to set the field mapping to '{}'.").format(RIGHT_OF_WAY_TABLE),
+                                               "Select a source layer to set the field mapping to '{}'.").format(
+                        RIGHT_OF_WAY_TABLE),
                     Qgis.Warning)
 
         elif self.rad_digitizing.isChecked():
@@ -198,11 +199,11 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         # Load layers
         self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if not self._layers:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate(self.WIZARD_NAME,
-                                                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
-                                                    self.WIZARD_TOOL_NAME),
-                                                Qgis.Warning)
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate(self.WIZARD_NAME,
+                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
+                    self.WIZARD_TOOL_NAME),
+                Qgis.Warning)
             return False
 
         # Check if layers any layer is in editing mode
@@ -212,11 +213,11 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
                 layers_name.append(self._layers[layer]['layer'].name())
 
         if layers_name:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate(self.WIZARD_NAME,
-                                                                           "Wizard cannot be opened until the following layers are not in edit mode '{}'.").format(
-                                                    '; '.join([layer_name for layer_name in layers_name])),
-                                                Qgis.Warning)
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate(self.WIZARD_NAME,
+                                           "Wizard cannot be opened until the following layers are not in edit mode '{}'.").format(
+                    '; '.join([layer_name for layer_name in layers_name])),
+                Qgis.Warning)
             return False
 
         return True
@@ -240,7 +241,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         if message is None:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL", message, Qgis.Info)
+            self.qgis_utils.message_emitted.emit(message, Qgis.Info)
         self.disconnect_signals()
         self.close()
 
@@ -283,10 +284,10 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             #self._layers[RIGHT_OF_WAY_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
             self.open_form(layer)
 
-        self.iface.messageBar().pushMessage('Asistente LADM_COL',
-                                            QCoreApplication.translate(self.WIZARD_NAME,
-                                                                       "You can now start capturing right of ways digitizing on the map..."),
-                                            Qgis.Info)
+        self.qgis_utils.message_emitted.emit(
+            QCoreApplication.translate(self.WIZARD_NAME,
+                                       "You can now start capturing right of ways digitizing on the map..."),
+            Qgis.Info)
 
     def finish_feature_creation(self, layerId, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -381,10 +382,10 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             saved = layer.commitChanges()
             if not saved:
                 layer.rollBack()
-                self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                    QCoreApplication.translate(self.WIZARD_NAME,
-                                                                               "Error while saving changes. Right of way could not be created."),
-                                                    Qgis.Warning)
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate(self.WIZARD_NAME,
+                                               "Error while saving changes. Right of way could not be created."),
+                    Qgis.Warning)
                 for e in layer.commitErrors():
                     self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
         else:
