@@ -211,7 +211,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
 
     def edit_feature(self):
         self.iface.layerTreeView().setCurrentLayer(self._layers[BUILDING_TABLE][LAYER])
-        self._layers[BUILDING_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+        #self._layers[BUILDING_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
 
         # Disable transactions groups
         QgsProject.instance().setAutoTransaction(False)
@@ -252,7 +252,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
 
         # Shows the form when the feature is created
         layer.featureAdded.connect(partial(self.exec_form, layer))
-        layer.editCommandEnded.connect(self.confirm_commit)
+        #layer.editCommandEnded.connect(self.confirm_commit)
 
     def exec_form(self, layer, f_id):
         """
@@ -265,10 +265,13 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
         dialog = self.iface.getFeatureForm(layer, feature)
         dialog.setModal(True)
 
+        message = None
         if dialog.exec_():
+            message = QCoreApplication.translate(self.WIZARD_NAME, "Building was created, but no changes have been saved.")
             self.rollback_changes = False
         else:
             self.rollback_changes = True
+        self.close_wizard(message)
 
     def confirm_commit(self):
         layer = self.sender() # Get the layer that has sent the signal
