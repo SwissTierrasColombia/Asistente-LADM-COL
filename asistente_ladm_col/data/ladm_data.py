@@ -23,12 +23,14 @@ from qgis.core import (QgsApplication,
                        QgsExpression,
                        QgsWkbTypes)
 from ..config.table_mapping_config import (ID_FIELD,
+                                           DICT_PLURAL,
                                            PLOT_TABLE,
                                            PLOT_CALCULATED_AREA_FIELD,
                                            RIGHT_TABLE,
                                            RIGHT_TABLE_PARCEL_FIELD,
                                            RIGHT_TABLE_PARTY_FIELD,
                                            RIGHT_TABLE_GROUP_PARTY_FIELD,
+                                           RIGHT_TABLE_TYPE_FIELD,
                                            COL_PARTY_TABLE,
                                            COL_PARTY_DOC_TYPE_FIELD,
                                            LA_GROUP_PARTY_TABLE,
@@ -236,7 +238,7 @@ class LADM_DATA():
             for field in layers[PARCEL_TABLE]['layer'].fields():
                 if field.name() in PARCEL_FIELDS_TO_COMPARE:
                     value = feature.attribute(field.name())
-                    dict_attrs[field.name()] = value  # if value != QVariant() else ''
+                    dict_attrs[field.name()] = value
 
             dict_attrs[ID_FIELD] = feature[ID_FIELD]
 
@@ -268,10 +270,11 @@ class LADM_DATA():
                             else:
                                 item[PLOT_FIELD] = NULL
 
-        # # ===================== Start add party info ==================================================
+        # ===================== Start add party info ==================================================
         expression_right_features = QgsExpression("{} IN ({})".format(RIGHT_TABLE_PARCEL_FIELD, ",".join([str(id) for id in parcel_t_ids])))
         right_features = LADM_DATA.get_features_by_expression(layers[RIGHT_TABLE]['layer'], expression_right_features, with_attributes=True)
 
+        dict_party_right = {right_feature[RIGHT_TABLE_PARTY_FIELD]: right_feature for right_feature in right_features if right_feature[RIGHT_TABLE_PARTY_FIELD] != NULL}
         party_t_ids = [right_feature[RIGHT_TABLE_PARTY_FIELD] for right_feature in right_features if right_feature[RIGHT_TABLE_PARTY_FIELD] != NULL]
         expression_party_features = QgsExpression("{} IN ({})".format(ID_FIELD, ",".join([str(id) for id in party_t_ids])))
         party_features = LADM_DATA.get_features_by_expression(layers[COL_PARTY_TABLE]['layer'], expression_party_features, with_attributes=True)
@@ -290,6 +293,8 @@ class LADM_DATA():
             dict_party = dict()
             for PARTY_FIELD in PARTY_FIELDS_TO_COMPARE:
                 dict_party[PARTY_FIELD] = party_feature[PARTY_FIELD]
+            # Add extra attribute from right table
+            dict_party[RIGHT_TABLE_TYPE_FIELD] = dict_party_right[party_feature[ID_FIELD]][RIGHT_TABLE_TYPE_FIELD]
             dict_parties[party_feature[ID_FIELD]] = dict_party
 
         for id_parcel in dict_parcel_parties:
@@ -301,7 +306,7 @@ class LADM_DATA():
             dict_parcel_parties[id_parcel] = party_info
 
         # Append party info
-        tag_party = 'Interesados'
+        tag_party = DICT_PLURAL[COL_PARTY_TABLE]
         for feature in dict_features:
             for item in dict_features[feature]:
                 if item[ID_FIELD] in dict_parcel_parties:
@@ -311,7 +316,7 @@ class LADM_DATA():
                     else:
                         item[tag_party] = dict_parcel_parties[item[ID_FIELD]]
                 else:
-                    item[tag_party] = None
+                    item[tag_party] = NULL
 
         # =====================  Start add group party info ==================================================
         dict_parcel_group_parties = dict()
@@ -323,6 +328,7 @@ class LADM_DATA():
                 else:
                     dict_parcel_group_parties[right_feature[RIGHT_TABLE_PARCEL_FIELD]] = [right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD]]
 
+        dict_group_party_right = {right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD]: right_feature for right_feature in right_features if right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD] != NULL}
         group_party_t_ids = [right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD] for right_feature in right_features if right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD] != NULL]
         expression_members_features = QgsExpression("{} IN ({})".format(MEMBERS_GROUP_PARTY_FIELD, ",".join([str(id) for id in group_party_t_ids])))
         members_features = LADM_DATA.get_features_by_expression(layers[MEMBERS_TABLE]['layer'], expression_members_features, with_attributes=True)
@@ -353,6 +359,8 @@ class LADM_DATA():
             party_info = list()
             for id_party in dict_group_party_parties[id_group_party]:
                 if id_party in dict_parties:
+                    # Add extra attribute from right table
+                    dict_parties[id_party][RIGHT_TABLE_TYPE_FIELD] = dict_group_party_right[id_group_party][RIGHT_TABLE_TYPE_FIELD]
                     party_info.append(dict_parties[id_party])
             dict_group_party_parties[id_group_party] = party_info
 
@@ -364,7 +372,7 @@ class LADM_DATA():
             dict_parcel_group_parties[id_parcel] = group_party_info
 
         # Append group party info
-        tag_group_party = 'Interesados'
+        tag_group_party = DICT_PLURAL[COL_PARTY_TABLE]
         for feature in dict_features:
             for item in dict_features[feature]:
                 if item[ID_FIELD] in dict_parcel_group_parties:
@@ -392,7 +400,7 @@ class LADM_DATA():
                             if property_record_card_feature[PROPERTY_RECORD_CARD_FIELD] != NULL:
                                 item[PROPERTY_RECORD_CARD_FIELD] = property_record_card_feature[PROPERTY_RECORD_CARD_FIELD]
                             else:
-                                item[PROPERTY_RECORD_CARD_FIELD] = None
+                                item[PROPERTY_RECORD_CARD_FIELD] = NULL
 
         return dict_features
 
