@@ -28,7 +28,9 @@ from asistente_ladm_col.config.general_config import (CHANGE_DETECTION_NEW_PARCE
                                                       CHANGE_DETECTION_SEVERAL_PARCELS,
                                                       CHANGE_DETECTION_NULL_PARCEL,
                                                       PARCEL_STATUS, SOURCE_DB, COLLECTED_DB_SOURCE, OFFICIAL_DB_SOURCE)
-from asistente_ladm_col.config.table_mapping_config import PARCEL_NUMBER_FIELD, ID_FIELD
+from asistente_ladm_col.config.table_mapping_config import (PARCEL_NUMBER_FIELD,
+                                                            ID_FIELD,
+                                                            PLOT_TABLE)
 from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/parcels_changes_summary_panel_widget.ui')
@@ -76,8 +78,6 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
                 summary[CHANGE_DETECTION_MISSING_PARCEL][ID_FIELD].extend(parcel_attrs[ID_FIELD])
                 summary[CHANGE_DETECTION_MISSING_PARCEL][SOURCE_DB] = OFFICIAL_DB_SOURCE
 
-        print(summary)
-
         self.lbl_new_parcels_count.setText(str(summary[CHANGE_DETECTION_NEW_PARCEL][COUNT_KEY]))
         self.lbl_missing_parcels_count.setText(str(summary[CHANGE_DETECTION_MISSING_PARCEL][COUNT_KEY]))
         self.lbl_parcels_that_changed_count.setText(str(summary[CHANGE_DETECTION_PARCEL_CHANGED][COUNT_KEY]))
@@ -118,3 +118,9 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
             partial(self.parent.show_all_parcels_panel, summary[CHANGE_DETECTION_NULL_PARCEL]))
         self.btn_total_parcels.clicked.connect(
             partial(self.parent.show_all_parcels_panel, dict()))
+
+        # Zoom to plot layer, remove selections
+        self.utils._layers[PLOT_TABLE]['layer'].removeSelection()
+        self.utils._official_layers[PLOT_TABLE]['layer'].removeSelection()
+        self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[PLOT_TABLE]['layer'])
+        self.utils.iface.zoomToActiveLayer()

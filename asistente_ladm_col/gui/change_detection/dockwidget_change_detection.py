@@ -283,6 +283,8 @@ class ChangeDetectionUtils(QObject):
 
                         del collected_attrs[0][ID_FIELD]
                         del official_attrs[0][ID_FIELD]
+
+                        # TODO: Compare parties also at this summary level
                         dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_PARCEL_REMAINS if collected_attrs[0] == official_attrs[0] else CHANGE_DETECTION_PARCEL_CHANGED
                         dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = CHANGE_DETECTION_PARCEL_REMAINS if collected_attrs[0] == official_attrs[0] else CHANGE_DETECTION_PARCEL_CHANGED
 

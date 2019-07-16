@@ -67,6 +67,10 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.utils.add_layers()
         self.fill_combos()
 
+        # Remove selection in plot layers
+        self.utils._layers[PLOT_TABLE]['layer'].removeSelection()
+        self.utils._official_layers[PLOT_TABLE]['layer'].removeSelection()
+
         self.tab_plot_options.setTabEnabled(0, False)
 
         # Set connections
