@@ -21,7 +21,8 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal, QCoreApplication, QObject)
 from qgis.core import (QgsVectorLayer,
                        QgsWkbTypes,
-                       Qgis)
+                       Qgis,
+                       NULL)
 from qgis.gui import QgsDockWidget, QgsMapToolIdentifyFeature
 
 from asistente_ladm_col.gui.change_detection.changes_all_parcels_panel import ChangesAllParcelsPanelWidget
@@ -261,7 +262,7 @@ class ChangeDetectionUtils(QObject):
             dict_attrs_comparison = dict()
 
             if not collected_parcel_number: # NULL parcel numbers
-                dict_attrs_comparison[PARCEL_NUMBER_FIELD] = 'NULL'
+                dict_attrs_comparison[PARCEL_NUMBER_FIELD] = NULL
                 dict_attrs_comparison[ID_FIELD] = [attr[ID_FIELD] for attr in collected_attrs]
                 dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_NULL_PARCEL
                 dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = "({})".format(len(collected_attrs))
@@ -285,6 +286,6 @@ class ChangeDetectionUtils(QObject):
                         dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_PARCEL_REMAINS if collected_attrs[0] == official_attrs[0] else CHANGE_DETECTION_PARCEL_CHANGED
                         dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = CHANGE_DETECTION_PARCEL_REMAINS if collected_attrs[0] == official_attrs[0] else CHANGE_DETECTION_PARCEL_CHANGED
 
-            dict_compared_parcel_data[collected_parcel_number or 'NULL'] = dict_attrs_comparison
+            dict_compared_parcel_data[collected_parcel_number or NULL] = dict_attrs_comparison
 
         return dict_compared_parcel_data

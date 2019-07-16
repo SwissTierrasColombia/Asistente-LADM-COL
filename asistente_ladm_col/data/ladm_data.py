@@ -236,7 +236,7 @@ class LADM_DATA():
             for field in layers[PARCEL_TABLE]['layer'].fields():
                 if field.name() in PARCEL_FIELDS_TO_COMPARE:
                     value = feature.attribute(field.name())
-                    dict_attrs[field.name()] = value if value != QVariant() else ''
+                    dict_attrs[field.name()] = value  # if value != QVariant() else ''
 
             dict_attrs[ID_FIELD] = feature[ID_FIELD]
 
@@ -266,116 +266,116 @@ class LADM_DATA():
                             if plot_feature[PLOT_FIELD] != NULL:
                                 item[PLOT_FIELD] = plot_feature[PLOT_FIELD]
                             else:
-                                item[PLOT_FIELD] = None
+                                item[PLOT_FIELD] = NULL
 
         # # ===================== Start add party info ==================================================
-        # expression_right_features = QgsExpression("{} IN ({})".format(RIGHT_TABLE_PARCEL_FIELD, ",".join([str(id) for id in parcel_t_ids])))
-        # right_features = LADM_DATA.get_features_by_expression(layers[RIGHT_TABLE]['layer'], expression_right_features, with_attributes=True)
-        #
-        # party_t_ids = [right_feature[RIGHT_TABLE_PARTY_FIELD] for right_feature in right_features if right_feature[RIGHT_TABLE_PARTY_FIELD] != NULL]
-        # expression_party_features = QgsExpression("{} IN ({})".format(ID_FIELD, ",".join([str(id) for id in party_t_ids])))
-        # party_features = LADM_DATA.get_features_by_expression(layers[COL_PARTY_TABLE]['layer'], expression_party_features, with_attributes=True)
-        #
-        # dict_parcel_parties = dict()
-        # for right_feature in right_features:
-        #     if right_feature[RIGHT_TABLE_PARCEL_FIELD] != NULL and right_feature[RIGHT_TABLE_PARTY_FIELD] != NULL:
-        #         if right_feature[RIGHT_TABLE_PARCEL_FIELD] in dict_parcel_parties:
-        #             if right_feature[RIGHT_TABLE_PARTY_FIELD] not in dict_parcel_parties[right_feature[RIGHT_TABLE_PARCEL_FIELD]]:
-        #                 dict_parcel_parties[right_feature[RIGHT_TABLE_PARCEL_FIELD]].append(right_feature[RIGHT_TABLE_PARTY_FIELD])
-        #         else:
-        #             dict_parcel_parties[right_feature[RIGHT_TABLE_PARCEL_FIELD]] = [right_feature[RIGHT_TABLE_PARTY_FIELD]]
-        #
-        # dict_parties = dict()
-        # for party_feature in party_features:
-        #     dict_party = dict()
-        #     for PARTY_FIELD in PARTY_FIELDS_TO_COMPARE:
-        #         dict_party[PARTY_FIELD] = party_feature[PARTY_FIELD]
-        #     dict_parties[party_feature[ID_FIELD]] = dict_party
-        #
-        # for id_parcel in dict_parcel_parties:
-        #     party_info = list()
-        #     for id_party in dict_parcel_parties[id_parcel]:
-        #         if id_party in dict_parties:
-        #             party_info.append(dict_parties[id_party])
-        #
-        #     dict_parcel_parties[id_parcel] = party_info
-        #
-        # # Append party info
-        # tag_party = 'interesados'
-        # for feature in dict_features:
-        #     for item in dict_features[feature]:
-        #         if item[ID_FIELD] in dict_parcel_parties:
-        #             # Make join
-        #             if tag_party in item:
-        #                 item[tag_party].append(dict_parcel_parties[item[ID_FIELD]])
-        #             else:
-        #                 item[tag_party] = dict_parcel_parties[item[ID_FIELD]]
-        #         else:
-        #             item[tag_party] = None
-        #
-        # # =====================  Start add group party info ==================================================
-        # dict_parcel_group_parties = dict()
-        # for right_feature in right_features:
-        #     if right_feature[RIGHT_TABLE_PARCEL_FIELD] != NULL and right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD] != NULL:
-        #         if right_feature[RIGHT_TABLE_PARCEL_FIELD] in dict_parcel_group_parties:
-        #             if right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD] not in dict_parcel_group_parties[right_feature[RIGHT_TABLE_PARCEL_FIELD]]:
-        #                 dict_parcel_group_parties[right_feature[RIGHT_TABLE_PARCEL_FIELD]].append(right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD])
-        #         else:
-        #             dict_parcel_group_parties[right_feature[RIGHT_TABLE_PARCEL_FIELD]] = [right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD]]
-        #
-        # group_party_t_ids = [right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD] for right_feature in right_features if right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD] != NULL]
-        # expression_members_features = QgsExpression("{} IN ({})".format(MEMBERS_GROUP_PARTY_FIELD, ",".join([str(id) for id in group_party_t_ids])))
-        # members_features = LADM_DATA.get_features_by_expression(layers[MEMBERS_TABLE]['layer'], expression_members_features, with_attributes=True)
-        #
-        # dict_group_party_parties = dict()
-        # for members_feature in members_features:
-        #     if members_feature[MEMBERS_GROUP_PARTY_FIELD] != NULL and members_feature[MEMBERS_PARTY_FIELD] != NULL:
-        #         if members_feature[MEMBERS_GROUP_PARTY_FIELD] in dict_group_party_parties:
-        #             if members_feature[MEMBERS_PARTY_FIELD] not in dict_group_party_parties[members_feature[MEMBERS_GROUP_PARTY_FIELD]]:
-        #                 dict_group_party_parties[members_feature[MEMBERS_GROUP_PARTY_FIELD]].append(members_feature[MEMBERS_PARTY_FIELD])
-        #         else:
-        #             dict_group_party_parties[members_feature[MEMBERS_GROUP_PARTY_FIELD]] = [members_feature[MEMBERS_PARTY_FIELD]]
-        #
-        # party_t_ids = [members_feature[MEMBERS_PARTY_FIELD] for members_feature in members_features if members_feature[MEMBERS_PARTY_FIELD] != NULL]
-        # party_t_ids = list(set(party_t_ids))
-        #
-        # expression_party_features = QgsExpression("{} IN ({})".format(ID_FIELD, ",".join([str(id) for id in party_t_ids])))
-        # party_features = LADM_DATA.get_features_by_expression(layers[COL_PARTY_TABLE]['layer'], expression_party_features, with_attributes=True)
-        #
-        # dict_parties = dict()
-        # for party_feature in party_features:
-        #     dict_party = dict()
-        #     for PARTY_FIELD in PARTY_FIELDS_TO_COMPARE:
-        #         dict_party[PARTY_FIELD] = party_feature[PARTY_FIELD]
-        #     dict_parties[party_feature[ID_FIELD]] = dict_party
-        #
-        # for id_group_party in dict_group_party_parties:
-        #     party_info = list()
-        #     for id_party in dict_group_party_parties[id_group_party]:
-        #         if id_party in dict_parties:
-        #             party_info.append(dict_parties[id_party])
-        #     dict_group_party_parties[id_group_party] = party_info
-        #
-        # for id_parcel in dict_parcel_group_parties:
-        #     group_party_info = list()
-        #     for id_group_party in dict_parcel_group_parties[id_parcel]:
-        #         if id_group_party in dict_group_party_parties:
-        #             group_party_info.append(dict_group_party_parties[id_group_party])
-        #     dict_parcel_group_parties[id_parcel] = group_party_info
-        #
-        # # Append group party info
-        # tag_group_party = 'interesados'
-        # for feature in dict_features:
-        #     for item in dict_features[feature]:
-        #         if item[ID_FIELD] in dict_parcel_group_parties:
-        #             # Make join
-        #             if tag_group_party in item:
-        #                 if item[tag_group_party]:
-        #                     item[tag_group_party].append(dict_parcel_group_parties[item[ID_FIELD]])
-        #                 else:
-        #                     item[tag_group_party] = dict_parcel_group_parties[item[ID_FIELD]]
-        #             else:
-        #                 item[tag_group_party] = dict_parcel_group_parties[item[ID_FIELD]]
+        expression_right_features = QgsExpression("{} IN ({})".format(RIGHT_TABLE_PARCEL_FIELD, ",".join([str(id) for id in parcel_t_ids])))
+        right_features = LADM_DATA.get_features_by_expression(layers[RIGHT_TABLE]['layer'], expression_right_features, with_attributes=True)
+
+        party_t_ids = [right_feature[RIGHT_TABLE_PARTY_FIELD] for right_feature in right_features if right_feature[RIGHT_TABLE_PARTY_FIELD] != NULL]
+        expression_party_features = QgsExpression("{} IN ({})".format(ID_FIELD, ",".join([str(id) for id in party_t_ids])))
+        party_features = LADM_DATA.get_features_by_expression(layers[COL_PARTY_TABLE]['layer'], expression_party_features, with_attributes=True)
+
+        dict_parcel_parties = dict()
+        for right_feature in right_features:
+            if right_feature[RIGHT_TABLE_PARCEL_FIELD] != NULL and right_feature[RIGHT_TABLE_PARTY_FIELD] != NULL:
+                if right_feature[RIGHT_TABLE_PARCEL_FIELD] in dict_parcel_parties:
+                    if right_feature[RIGHT_TABLE_PARTY_FIELD] not in dict_parcel_parties[right_feature[RIGHT_TABLE_PARCEL_FIELD]]:
+                        dict_parcel_parties[right_feature[RIGHT_TABLE_PARCEL_FIELD]].append(right_feature[RIGHT_TABLE_PARTY_FIELD])
+                else:
+                    dict_parcel_parties[right_feature[RIGHT_TABLE_PARCEL_FIELD]] = [right_feature[RIGHT_TABLE_PARTY_FIELD]]
+
+        dict_parties = dict()
+        for party_feature in party_features:
+            dict_party = dict()
+            for PARTY_FIELD in PARTY_FIELDS_TO_COMPARE:
+                dict_party[PARTY_FIELD] = party_feature[PARTY_FIELD]
+            dict_parties[party_feature[ID_FIELD]] = dict_party
+
+        for id_parcel in dict_parcel_parties:
+            party_info = list()
+            for id_party in dict_parcel_parties[id_parcel]:
+                if id_party in dict_parties:
+                    party_info.append(dict_parties[id_party])
+
+            dict_parcel_parties[id_parcel] = party_info
+
+        # Append party info
+        tag_party = 'Interesados'
+        for feature in dict_features:
+            for item in dict_features[feature]:
+                if item[ID_FIELD] in dict_parcel_parties:
+                    # Make join
+                    if tag_party in item:
+                        item[tag_party].append(dict_parcel_parties[item[ID_FIELD]])
+                    else:
+                        item[tag_party] = dict_parcel_parties[item[ID_FIELD]]
+                else:
+                    item[tag_party] = None
+
+        # =====================  Start add group party info ==================================================
+        dict_parcel_group_parties = dict()
+        for right_feature in right_features:
+            if right_feature[RIGHT_TABLE_PARCEL_FIELD] != NULL and right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD] != NULL:
+                if right_feature[RIGHT_TABLE_PARCEL_FIELD] in dict_parcel_group_parties:
+                    if right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD] not in dict_parcel_group_parties[right_feature[RIGHT_TABLE_PARCEL_FIELD]]:
+                        dict_parcel_group_parties[right_feature[RIGHT_TABLE_PARCEL_FIELD]].append(right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD])
+                else:
+                    dict_parcel_group_parties[right_feature[RIGHT_TABLE_PARCEL_FIELD]] = [right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD]]
+
+        group_party_t_ids = [right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD] for right_feature in right_features if right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD] != NULL]
+        expression_members_features = QgsExpression("{} IN ({})".format(MEMBERS_GROUP_PARTY_FIELD, ",".join([str(id) for id in group_party_t_ids])))
+        members_features = LADM_DATA.get_features_by_expression(layers[MEMBERS_TABLE]['layer'], expression_members_features, with_attributes=True)
+
+        dict_group_party_parties = dict()
+        for members_feature in members_features:
+            if members_feature[MEMBERS_GROUP_PARTY_FIELD] != NULL and members_feature[MEMBERS_PARTY_FIELD] != NULL:
+                if members_feature[MEMBERS_GROUP_PARTY_FIELD] in dict_group_party_parties:
+                    if members_feature[MEMBERS_PARTY_FIELD] not in dict_group_party_parties[members_feature[MEMBERS_GROUP_PARTY_FIELD]]:
+                        dict_group_party_parties[members_feature[MEMBERS_GROUP_PARTY_FIELD]].append(members_feature[MEMBERS_PARTY_FIELD])
+                else:
+                    dict_group_party_parties[members_feature[MEMBERS_GROUP_PARTY_FIELD]] = [members_feature[MEMBERS_PARTY_FIELD]]
+
+        party_t_ids = [members_feature[MEMBERS_PARTY_FIELD] for members_feature in members_features if members_feature[MEMBERS_PARTY_FIELD] != NULL]
+        party_t_ids = list(set(party_t_ids))
+
+        expression_party_features = QgsExpression("{} IN ({})".format(ID_FIELD, ",".join([str(id) for id in party_t_ids])))
+        party_features = LADM_DATA.get_features_by_expression(layers[COL_PARTY_TABLE]['layer'], expression_party_features, with_attributes=True)
+
+        dict_parties = dict()
+        for party_feature in party_features:
+            dict_party = dict()
+            for PARTY_FIELD in PARTY_FIELDS_TO_COMPARE:
+                dict_party[PARTY_FIELD] = party_feature[PARTY_FIELD]
+            dict_parties[party_feature[ID_FIELD]] = dict_party
+
+        for id_group_party in dict_group_party_parties:
+            party_info = list()
+            for id_party in dict_group_party_parties[id_group_party]:
+                if id_party in dict_parties:
+                    party_info.append(dict_parties[id_party])
+            dict_group_party_parties[id_group_party] = party_info
+
+        for id_parcel in dict_parcel_group_parties:
+            group_party_info = list()
+            for id_group_party in dict_parcel_group_parties[id_parcel]:
+                if id_group_party in dict_group_party_parties:
+                    group_party_info.append(dict_group_party_parties[id_group_party])
+            dict_parcel_group_parties[id_parcel] = group_party_info
+
+        # Append group party info
+        tag_group_party = 'Interesados'
+        for feature in dict_features:
+            for item in dict_features[feature]:
+                if item[ID_FIELD] in dict_parcel_group_parties:
+                    # Make join
+                    if tag_group_party in item:
+                        if item[tag_group_party]:
+                            item[tag_group_party].append(dict_parcel_group_parties[item[ID_FIELD]])
+                        else:
+                            item[tag_group_party] = dict_parcel_group_parties[item[ID_FIELD]]
+                    else:
+                        item[tag_group_party] = dict_parcel_group_parties[item[ID_FIELD]]
 
         # =====================  Start add record card info ==================================================
         if db.property_record_card_model_exists():

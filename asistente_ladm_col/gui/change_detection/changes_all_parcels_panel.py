@@ -19,7 +19,7 @@
 from functools import partial
 
 from qgis.gui import QgsPanelWidget
-from qgis.core import QgsWkbTypes, QgsFeatureRequest, QgsExpression
+from qgis.core import QgsWkbTypes, QgsFeatureRequest, QgsExpression, QgsApplication
 from qgis.PyQt.QtCore import Qt, pyqtSignal, QCoreApplication
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QMenu, QAction
 
@@ -72,7 +72,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         row = 0
         for parcel_number, parcel_attrs in compared_parcels_data.items():
             if not filter_parcels or (filter_parcels and parcel_number in filter_parcels[PARCEL_NUMBER_FIELD]):
-                item = QTableWidgetItem(parcel_number)
+                item = QTableWidgetItem(parcel_number) if parcel_number else QTableWidgetItem(QgsApplication.nullRepresentation())
                 item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
                 self.tbl_changes_all_parcels.setItem(row, 0, item)
 

@@ -29,7 +29,8 @@ from qgis.core import (QgsWkbTypes,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsExpression,
-                       QgsRectangle)
+                       QgsRectangle,
+                       NULL)
 
 from qgis.gui import QgsPanelWidget
 from ...config.symbology import OFFICIAL_STYLE_GROUP
@@ -41,7 +42,12 @@ from asistente_ladm_col.config.general_config import (OFFICIAL_DB_PREFIX,
 from asistente_ladm_col.config.table_mapping_config import (PARCEL_NUMBER_FIELD,
                                                             PARCEL_NUMBER_BEFORE_FIELD,
                                                             FMI_FIELD,
-                                                            ID_FIELD, PARCEL_TABLE, PLOT_TABLE, UEBAUNIT_TABLE)
+                                                            ID_FIELD,
+                                                            PARCEL_TABLE,
+                                                            PLOT_TABLE,
+                                                            UEBAUNIT_TABLE,
+                                                            COL_PARTY_TABLE,
+                                                            DICT_PLURAL)
 from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_per_parcel_panel_widget.ui')
@@ -203,7 +209,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         official_attrs = dict()
         if dict_official_parcels:
             official_parcel_number = list(dict_official_parcels.keys())[0]
-            official_attrs = dict_official_parcels[official_parcel_number][0] if dict_official_parcels else []
+            official_attrs = dict_official_parcels[official_parcel_number][0]
             del official_attrs[ID_FIELD]  # Remove this line if ID_FIELD is somehow needed
 
         self.tbl_changes_per_parcel.clearContents()
@@ -213,25 +219,58 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         field_names = list(collected_attrs.keys()) if collected_attrs else list(official_attrs.keys())
 
         for row, field_name in enumerate(field_names):
-            item = QTableWidgetItem(field_name)
-            # item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
-            self.tbl_changes_per_parcel.setItem(row, 0, item)
+            official_value = official_attrs[field_name] if field_name in official_attrs else NULL
+            collected_value = collected_attrs[field_name] if field_name in collected_attrs else NULL
 
-            official_value = official_attrs[field_name] if field_name in official_attrs else ''
-            collected_value = collected_attrs[field_name] if field_name in collected_attrs else ''
+            self.fill_item(field_name, official_value, collected_value, row)
 
-            item = QTableWidgetItem(str(official_value))
+        self.tbl_changes_per_parcel.setSortingEnabled(True)
+
+    def fill_item(self, field_name, official_value, collected_value, row):
+        print(field_name, official_value, collected_value)
+        item = QTableWidgetItem(field_name)
+        # item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
+        self.tbl_changes_per_parcel.setItem(row, 0, item)
+
+        if field_name == DICT_PLURAL[COL_PARTY_TABLE]:  # Parties
+            item = self.fill_party_item(official_value)
+            self.tbl_changes_per_parcel.setItem(row, 1, item)
+
+            item = self.fill_party_item(collected_value)
+            self.tbl_changes_per_parcel.setItem(row, 2, item)
+
+            self.tbl_changes_per_parcel.setItem(row, 3, QTableWidgetItem())
+            self.tbl_changes_per_parcel.item(row, 3).setBackground(Qt.green if official_value == collected_value else Qt.red)
+        else:
+            item = QTableWidgetItem(str(official_value) if official_value != NULL else '')
             #item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
             self.tbl_changes_per_parcel.setItem(row, 1, item)
 
-            item = QTableWidgetItem(str(collected_value))
+            item = QTableWidgetItem(str(collected_value) if collected_value != NULL else '')
             # item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
             self.tbl_changes_per_parcel.setItem(row, 2, item)
 
             self.tbl_changes_per_parcel.setItem(row, 3, QTableWidgetItem())
             self.tbl_changes_per_parcel.item(row, 3).setBackground(Qt.green if official_value == collected_value else Qt.red)
 
-        self.tbl_changes_per_parcel.setSortingEnabled(True)
+    def fill_party_item(self, value):
+        # Party's info comes in a list or a list of lists if it's a group party
+        display_value = ''
+
+        if value != NULL:
+            if type(value) is list and value:
+                if type(value[0]) is dict:
+                    display_value = "{} {}".format(len(value),
+                                                   QCoreApplication.translate("DockWidgetChanges", "parties") if len(value)>1 else QCoreApplication.translate("DockWidgetChanges", "party"))
+                elif type(value[0]) is list:
+                    display_value = "{} {}".format(len(value[0]),
+                                                   QCoreApplication.translate("DockWidgetChanges", "parties") if len(value[0])>1 else QCoreApplication.translate("DockWidgetChanges", "party"))
+        #else:
+        #    display_value = QCoreApplication.translate("DockWidgetChanges", "0 parties")
+
+        item = QTableWidgetItem(display_value)
+        item.setData(Qt.UserRole, value)
+        return item
 
     def alphanumeric_query(self):
         """
