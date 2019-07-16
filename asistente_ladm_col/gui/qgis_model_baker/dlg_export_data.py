@@ -51,7 +51,7 @@ from ...utils.qt_utils import (Validators,
                                FileValidator,
                                make_save_file_selector,
                                OverrideCursor)
-from ...resources_rc import *
+
 from ...config.config_db_supported import ConfigDbSupported
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_export_data.ui')
 from ...lib.db.enum_db_action_type import EnumDbActionType

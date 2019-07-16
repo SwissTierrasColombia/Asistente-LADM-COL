@@ -41,7 +41,7 @@ from ..config.table_mapping_config import (TABLE_PROP_ASSOCIATION,
                                            TABLE_PROP_DOMAIN,
                                            TABLE_PROP_STRUCTURE)
 from ..utils import get_ui_class
-from ..resources_rc import *
+
 
 DIALOG_UI = get_ui_class('dlg_load_layers.ui')
 

@@ -912,6 +912,13 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.mainWindow().removeToolBar(self._ladm_col_toolbar)
         del self._ladm_col_toolbar
         del self._dock_widget_queries
+
+        del self._about_dialog
+        del self._dock_widget_change_detection
+        del self.toolbar
+        del self.wiz_address
+        del self._report_menu
+
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
 
     def show_settings(self):

@@ -31,7 +31,7 @@ from ..config.table_mapping_config import (BOUNDARY_TABLE,
                                            PLOT_TABLE,
                                            SURVEY_POINT_TABLE)
 from ..utils import get_ui_class
-from ..resources_rc import *
+
 
 DIALOG_UI = get_ui_class('dlg_topological_edition.ui')
 

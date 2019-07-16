@@ -55,7 +55,7 @@ from ...utils.qt_utils import (Validators,
                                FileValidator,
                                make_file_selector,
                                OverrideCursor)
-from ...resources_rc import *
+
 from ...config.config_db_supported import ConfigDbSupported
 from ...lib.db.enum_db_action_type import EnumDbActionType
 

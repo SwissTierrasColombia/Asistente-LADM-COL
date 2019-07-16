@@ -49,7 +49,7 @@ from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
                                OverrideCursor)
-from ...resources_rc import *
+
 from ...config.config_db_supported import ConfigDbSupported
 from ...lib.db.db_connector import DBConnector
 from ...lib.db.enum_db_action_type import EnumDbActionType

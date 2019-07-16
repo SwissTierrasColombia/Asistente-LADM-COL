@@ -45,7 +45,7 @@ from ..gui.custom_model_dir import CustomModelDirDialog
 from ..lib.db.db_connector import (DBConnector, EnumTestLevel)
 from ..utils import get_ui_class
 from ..utils.qt_utils import OverrideCursor
-from ..resources_rc import *
+
 from ..config.config_db_supported import ConfigDbSupported
 from ..lib.db.enum_db_action_type import EnumDbActionType
 
