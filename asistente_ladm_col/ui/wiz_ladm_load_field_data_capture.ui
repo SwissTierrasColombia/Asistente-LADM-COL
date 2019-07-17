@@ -67,7 +67,7 @@
              </size>
             </property>
             <property name="text">
-             <string>R1</string>
+             <string>Geographical</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -75,10 +75,10 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="txt_file_path_r1"/>
+           <widget class="QLineEdit" name="txt_file_path_geo"/>
           </item>
           <item row="0" column="2">
-           <widget class="QPushButton" name="btn_browse_file_r1">
+           <widget class="QPushButton" name="btn_browse_file_geo">
             <property name="maximumSize">
              <size>
               <width>40</width>
@@ -94,7 +94,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_9">
+           <widget class="QLabel" name="label_7">
             <property name="minimumSize">
              <size>
               <width>65</width>
@@ -102,7 +102,7 @@
              </size>
             </property>
             <property name="text">
-             <string>GDB</string>
+             <string>Alphanumeric</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -110,10 +110,16 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="txt_file_path_gdb"/>
+           <widget class="QLineEdit" name="txt_file_path_alfa"/>
           </item>
           <item row="1" column="2">
-           <widget class="QPushButton" name="btn_browse_file_gdb">
+           <widget class="QPushButton" name="btn_browse_file_alfa">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="maximumSize">
              <size>
               <width>40</width>

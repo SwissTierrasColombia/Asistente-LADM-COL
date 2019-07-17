@@ -210,6 +210,24 @@ FDC_QUALIFICATION_NO_CONVENTIONAL = "calificacion_no_convencional"
 FDC_OID = "oid"
 
 """
+FIELD DATA CAPTURE MAPPING LADM
+"""
+FDC_LADM_CONTROL_POINT = "puntocontrol"
+FDC_LADM_SURVEY_POINT = "puntolevantamiento"
+FDC_LADM_BOUNDARY_POINT = "puntolindero"
+FDC_LADM_RIGHT_OF_WAY = "servidumbrepaso"
+FDC_LADM_PLOT = "terreno"
+FDC_LADM_BUILDING = "construccion"
+FDC_LADM_SPATIAL_SOURCE = "col_fuenteespacial"
+FDC_LADM_EXTFILE = "extarchivo"
+FDC_LADM_EXTFILE_AD = "extarchivo_AD"
+FDC_LADM_COL_PARTY = "col_interesado"
+FDC_LADM_PROPERTY_RECORD_CARD = "predio_ficha"
+FDC_LADM_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL = "calificacion_convencional"
+FDC_LADM_ADMINISTRATIVE_SOURCE = "col_fuenteadministrativa"
+FDC_LADM_RIGHT = "col_derecho"
+
+"""
 PLURAL WORDS, FOR DISPLAY PURPOSES
 """
 DICT_PLURAL = {

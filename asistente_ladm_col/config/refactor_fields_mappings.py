@@ -518,6 +518,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
                 field['expression'] = 'now()'
 
     return mapping
+
 def get_refactor_fields_mapping_field_data_capture_to_ladm(layer_name, qgis_utils):
     if layer_name == FDC_PARCEL:
          mapping = [
@@ -675,5 +676,129 @@ def get_refactor_fields_mapping_field_data_capture_to_ladm(layer_name, qgis_util
         mapping = [
              {'expression': '"Texto"', 'length': 255, 'name': 'nombre_area_direccion', 'precision': -1, 'type': 10}
              ]
+
+    return mapping
+
+def get_refactor_fields_mapping_field_data_capture_from_ladm(layer_name, qgis_utils):
+    if layer_name == FDC_LADM_CONTROL_POINT:
+         mapping = [
+            {'expression': '"nombre_punto"', 'length': 20, 'name': 'nombre_punto', 'precision': -1, 'type': 10}, 
+            {'expression': 'if (exactitud_vertical is null, 1, exactitud_vertical)', 'length': -1, 'name': 'exactitud_vertical', 'precision': 0, 'type': 2}, 
+            {'expression': 'if (exactitud_horizontal is null, 1, exactitud_horizontal)', 'length': -1, 'name': 'exactitud_horizontal', 'precision': 0, 'type': 2}, 
+            {'expression': '"tipo_punto"', 'length': 255, 'name': 'tipo_punto_control', 'precision': -1, 'type': 10}, 
+            {'expression': "if (confiabilidad = 'Confiable', True, False)", 'length': -1, 'name': 'confiabilidad', 'precision': -1, 'type': 1}, 
+            {'expression': '"monumentacion"', 'length': 255, 'name': 'monumentacion', 'precision': -1, 'type': 10}, 
+            {'expression': "'Otro'", 'length': 255, 'name': 'puntotipo', 'precision': -1, 'type': 10}, 
+            {'expression': "'Punto_Control'", 'length': 255, 'name': 'p_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
+        ]
+    elif layer_name == FDC_LADM_SURVEY_POINT:
+        mapping = [
+            {'expression': '"tipo_punto"', 'length': 255, 'name': 'tipo_punto_levantamiento', 'precision': -1, 'type': 10}, 
+            {'expression': "'Bien_Definido'", 'length': 255, 'name': 'definicion_punto', 'precision': -1, 'type': 10}, 
+            {'expression': 'if (exactitud_vertical is null, 1, exactitud_vertical)', 'length': -1, 'name': 'exactitud_vertical', 'precision': 0, 'type': 2}, 
+            {'expression': 'if (exactitud_horizontal is null, 1, exactitud_horizontal)', 'length': -1, 'name': 'exactitud_horizontal', 'precision': 0, 'type': 2}, 
+            {'expression': '"nombre_punto"', 'length': 10, 'name': 'nombre_punto', 'precision': -1, 'type': 10}, 
+            {'expression': '"monumentacion"', 'length': 255, 'name': 'monumentacion', 'precision': -1, 'type': 10}, 
+            {'expression': "'Otro'", 'length': 255, 'name': 'puntotipo', 'precision': -1, 'type': 10}, 
+            {'expression': "'Punto_Levantamiento'", 'length': 255, 'name': 'p_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
+        ]
+    elif layer_name == FDC_LADM_BOUNDARY_POINT:
+        mapping = [
+            {'expression': "if (acuerdo is null, 'Desacuerdo', 'Acuerdo')", 'length': 255, 'name': 'acuerdo', 'precision': -1, 'type': 10}, 
+            {'expression': "'Bien_Definido'", 'length': 255, 'name': 'definicion_punto', 'precision': -1, 'type': 10}, 
+            {'expression': '"descripcion_punto"', 'length': 255, 'name': 'descripcion_punto', 'precision': -1, 'type': 10}, 
+            {'expression': 'if (exactitud_vertical is null, 1, exactitud_vertical)', 'length': -1, 'name': 'exactitud_vertical', 'precision': 0, 'type': 2}, 
+            {'expression': 'if (exactitud_horizontal is null, 1, exactitud_horizontal)', 'length': -1, 'name': 'exactitud_horizontal', 'precision': 0, 'type': 2}, 
+            {'expression': "if (confiabilidad = 'Confiable', True, False)", 'length': -1, 'name': 'confiabilidad', 'precision': -1, 'type': 1}, 
+            {'expression': '"nombre_punto"', 'length': 10, 'name': 'nombre_punto', 'precision': -1, 'type': 10}, 
+            {'expression': '"monumentacion"', 'length': 255, 'name': 'monumentacion', 'precision': -1, 'type': 10}, 
+            {'expression': "'Otro'", 'length': 255, 'name': 'puntotipo', 'precision': -1, 'type': 10}, 
+            {'expression': "'Punto_Lindero'", 'length': 255, 'name': 'p_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
+        ]
+    elif layer_name == FDC_LADM_RIGHT_OF_WAY:
+        mapping = [
+            {'expression': '$id', 'length': 20, 'name': 'identificador', 'precision': -1, 'type': 10}, 
+            {'expression': "'Servidumbre_de_paso'", 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '0', 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
+        ]
+    elif layer_name == FDC_LADM_PLOT:
+        mapping = [
+            {'expression': '"area_poligono"', 'length': 15, 'name': 'area_calculada', 'precision': 1, 'type': 6}, 
+            {'expression': '1', 'length': 16, 'name': 'avaluo_terreno', 'precision': 1, 'type': 6}, 
+            {'expression': "'Terreno'", 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '0', 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
+        ]
+    elif layer_name == FDC_LADM_BUILDING:
+        mapping = [
+            {'expression': '1', 'length': 16, 'name': 'avaluo_construccion', 'precision': 1, 'type': 6}, 
+            {'expression': '"area_poligono"', 'length': 15, 'name': 'area_construccion', 'precision': 1, 'type': 6}, 
+            {'expression': '"tipo_poligono"', 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
+            {'expression': "'Construccion'", 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '0', 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
+        ]
+    elif layer_name == FDC_LADM_SPATIAL_SOURCE:
+        mapping = [
+            {'expression': '"tipo"', 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
+            {'expression': "'Desconocido'", 'length': 255, 'name': 'estado_disponibilidad', 'precision': -1, 'type': 10}, 
+            {'expression': '"fecha"', 'length': -1, 'name': 'fecha_entrega', 'precision': -1, 'type': 16}, 
+            {'expression': "'Fuente_Espacial'", 'length': 255, 'name': 's_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '"T_Id"', 'length': 255, 'name': 's_local_id', 'precision': -1, 'type': 10}
+        ]
+    elif layer_name == FDC_LADM_EXTFILE:
+        mapping = [
+            {'expression': '"soporte_multimedia"', 'length': 255, 'name': 'datos', 'precision': -1, 'type': 10}, 
+            {'expression': "'Ext_Archivo'", 'length': 255, 'name': 's_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '0', 'length': 255, 'name': 's_local_id', 'precision': -1, 'type': 10}, 
+            {'expression': '"col_fuenteespacial_t_id"', 'length': -1, 'name': 'col_fuenteespacial_ext_archivo_id', 'precision': 0, 'type': 4}
+        ]
+    elif layer_name == FDC_LADM_COL_PARTY:
+        mapping = [
+            {'expression': '"documento_identidad"', 'length': 12, 'name': 'documento_identidad', 'precision': -1, 'type': 10}, 
+            {'expression': '"tipo_documento"', 'length': 255, 'name': 'tipo_documento', 'precision': -1, 'type': 10}, 
+            {'expression': '"primer_apellido"', 'length': 100, 'name': 'primer_apellido', 'precision': -1, 'type': 10}, 
+            {'expression': '"primer_nombre"', 'length': 100, 'name': 'primer_nombre', 'precision': -1, 'type': 10}, 
+            {'expression': '"segundo_apellido"', 'length': 100, 'name': 'segundo_apellido', 'precision': -1, 'type': 10}, 
+            {'expression': '"segundo_nombre"', 'length': 100, 'name': 'segundo_nombre', 'precision': -1, 'type': 10}, 
+            {'expression': '"razon_social"', 'length': 250, 'name': 'razon_social', 'precision': -1, 'type': 10}, 
+            {'expression': "'Privado'", 'length': 255, 'name': 'tipo_interesado_juridico', 'precision': -1, 'type': 10}, 
+            {'expression': "concat(primer_nombre,' ', segundo_nombre,' ', primer_apellido,' ', segundo_apellido)", 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10}, {'expression': "'Otro'", 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
+        ]
+    elif layer_name == FDC_LADM_PROPERTY_RECORD_CARD:
+        mapping = [
+
+        ]
+    elif layer_name == FDC_LADM_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL:
+        mapping = [
+            
+        ]
+    elif layer_name == FDC_LADM_ADMINISTRATIVE_SOURCE:
+        mapping = [
+            {'expression': "'Acta'", 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
+            {'expression': '"nombre"', 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10}, 
+            {'expression': "'Disponible'", 'length': 255, 'name': 'estado_disponibilidad', 'precision': -1, 'type': 10}, 
+            {'expression': '"fecha"', 'length': -1, 'name': 'fecha_grabacion', 'precision': -1, 'type': 16}, 
+            {'expression': '"fecha_entrega"', 'length': -1, 'name': 'fecha_entrega', 'precision': -1, 'type': 16}, 
+            {'expression': 'COL_FUENTEADMINISTRATIVA', 'length': 255, 'name': 's_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '"T_Id"', 'length': 255, 'name': 's_local_id', 'precision': -1, 'type': 10}
+        ]
+    elif layer_name == FDC_LADM_RIGHT:
+        mapping = [
+
+        ]
+    elif layer_name == FDC_LADM_EXTFILE_AD:
+        mapping = [
+            {'expression': '"soporte_multimedia"', 'length': 255, 'name': 'datos', 'precision': -1, 'type': 10}, 
+            {'expression': "'Ext_Archivo'", 'length': 255, 'name': 's_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '0', 'length': 255, 'name': 's_local_id', 'precision': -1, 'type': 10}, 
+            {'expression': '"col_fuenteadministrativa_t_id"', 'length': -1, 'name': 'col_fuenteespacial_ext_archivo_id', 'precision': 0, 'type': 4}
+        ]
+        
 
     return mapping

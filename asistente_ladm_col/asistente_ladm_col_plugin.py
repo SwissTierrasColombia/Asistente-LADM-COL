@@ -64,6 +64,7 @@ except ModuleNotFoundError as e:
 
 from .gui.controlled_measurement_dialog import ControlledMeasurementDialog
 from .gui.create_input_load_field_data_capture_dialog import InputLoadFieldDataCaptureDialog
+from .gui.create_ladm_load_field_data_capture_dialog import LadmLoadFieldDataCaptureDialog
 from .gui.create_project_configuration_field_data_capture_dialog import ProjectConfigurationFieldDataCaptureDialog
 from .gui.create_administrative_source_cadastre_wizard import CreateAdministrativeSourceCadastreWizard
 from .gui.create_boundaries_cadastre_wizard import CreateBoundariesCadastreWizard
@@ -249,6 +250,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self._input_load_field_data_capture_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Input Load"), self._field_data_capture_menu)
+        self._ladm_load_field_data_capture_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Ladm Load"), self._field_data_capture_menu)
         self._synchronization_operators_field_data_capture_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Synchronization Operators"), self._field_data_capture_menu)
@@ -258,6 +262,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._field_data_capture_menu.addActions([self._project_configuration_field_data_capture_action,
                                                     self._input_load_field_data_capture_action,
+                                                    self._ladm_load_field_data_capture_action,
                                                     self._synchronization_operators_field_data_capture_action,
                                                     self._synchronization_ladm_col_field_data_capture_action])
 
@@ -266,6 +271,7 @@ class AsistenteLADMCOLPlugin(QObject):
         #connections
         self._project_configuration_field_data_capture_action.triggered.connect(self.show_dialog_project_configuration)
         self._input_load_field_data_capture_action.triggered.connect(self.show_dialog_input_load)
+        self._ladm_load_field_data_capture_action.triggered.connect(self.show_dialog_ladm_load)
 
     def add_cadastre_menu(self):
         self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
@@ -947,6 +953,12 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_dialog_input_load(self):
         dlg = InputLoadFieldDataCaptureDialog(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg.exec_()
+
+    @_qgis_model_baker_required
+    @_db_connection_required
+    def show_dialog_ladm_load(self):
+        dlg = LadmLoadFieldDataCaptureDialog(self.iface, self.get_db_connection(), self.qgis_utils)
         dlg.exec_()
 
     @_qgis_model_baker_required

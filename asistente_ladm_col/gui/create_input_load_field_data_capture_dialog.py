@@ -25,7 +25,11 @@ from qgis.PyQt.QtCore import QVariant
 from asistente_ladm_col.utils.qt_utils import (make_file_selector,
                                                make_folder_selector)
 
-from ..utils.qfield_utils import run_etl_model_input_load_data
+from ..utils.qfield_utils import (run_etl_model_input_load_data,
+                                  join_layers,
+                                  create_column,
+                                  fix_polygon_layers,
+                                  get_directions)
 
 from qgis.core import (QgsProject,
                        QgsField,
@@ -87,7 +91,9 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
+        self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
+        self.progress.setVisible(False)
 
         self.btn_browse_file_r1.clicked.connect(
             make_file_selector(self.txt_file_path_r1, QCoreApplication.translate("DialogImportFromExcel",
@@ -152,175 +158,105 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
         }, load=True)
 
     def mapping_fields_r1(self):
-        arreglo = [ FDC_PARCEL, FDC_PARTY, FDC_RIGHT, FDC_ADMINISTRATIVE_SOURCE, FDC_RRRSOURCE]
-        for name in arreglo:
-            
-            if name == FDC_PARCEL:
-                self.create_column(self.res_layers[FDC_PARCEL], 'Codigo')
-                query = "select * from {} group by NoPredial&nogeometry".format(self.layer_r1.name())
-                input_data = QgsVectorLayer( "?query={}".format(query), "vlayer", "virtual")
-            elif name == FDC_PARTY:
-                self.create_column(self.res_layers[FDC_PARTY], 'Codigo')
-                input_data = self.layer_r1
-            elif name == FDC_RIGHT:
-                self.join_layers(self.res_layers[FDC_PARTY], self.res_layers[FDC_PARCEL], 'Codigo', 'Codigo')
-                input_data = self.res_layers[FDC_PARTY]
-            elif name == FDC_ADMINISTRATIVE_SOURCE:
-                input_data = self.res_layers[FDC_RIGHT]
-            elif name == FDC_RRRSOURCE:
-                input_data = self.res_layers[FDC_ADMINISTRATIVE_SOURCE]
-
-            output_data = self.res_layers[name]
-            run_etl_model_input_load_data(input_data, output_data, name, self.qgis_utils)
+        steps = 5
+        step = 0
+        self.progress.setVisible(True)
+        query = "select * from {} group by NoPredial&nogeometry".format(self.layer_r1.name())
+        input_data = QgsVectorLayer( "?query={}".format(query), "vlayer", "virtual")
+        create_column(self.res_layers[FDC_PARCEL], 'Codigo')
+        run_etl_model_input_load_data(input_data, self.res_layers[FDC_PARCEL], FDC_PARCEL, self.qgis_utils)
+        step += 1
+        self.progress.setValue(step/steps * 100)
+        create_column(self.res_layers[FDC_PARTY], 'Codigo')
+        run_etl_model_input_load_data(self.layer_r1, self.res_layers[FDC_PARTY], FDC_PARTY, self.qgis_utils)
+        step += 1
+        self.progress.setValue(step/steps * 100)
+        join_layers(self.res_layers[FDC_PARTY], self.res_layers[FDC_PARCEL], 'Codigo', 'Codigo')
+        run_etl_model_input_load_data(self.res_layers[FDC_PARTY], self.res_layers[FDC_RIGHT], FDC_RIGHT, self.qgis_utils)
+        step += 1
+        self.progress.setValue(step/steps * 100)
+        run_etl_model_input_load_data(self.res_layers[FDC_RIGHT], self.res_layers[FDC_ADMINISTRATIVE_SOURCE], FDC_ADMINISTRATIVE_SOURCE, self.qgis_utils)
+        step += 1
+        self.progress.setValue(step/steps * 100)
+        run_etl_model_input_load_data(self.res_layers[FDC_ADMINISTRATIVE_SOURCE], self.res_layers[FDC_RRRSOURCE], FDC_RRRSOURCE, self.qgis_utils)
+        step += 1
+        self.progress.setValue(step/steps * 100)
 
     def mapping_fields_gbb(self):
 
-        rterreno = QgsProject.instance().mapLayersByName('R_TERRENO')[0]
-        uterreno = QgsProject.instance().mapLayersByName('U_TERRENO')[0]
-        rsector = QgsProject.instance().mapLayersByName('R_SECTOR')[0]
-        usector = QgsProject.instance().mapLayersByName('U_SECTOR')[0]
-        vereda = QgsProject.instance().mapLayersByName('R_VEREDA')[0]
-        manzana = QgsProject.instance().mapLayersByName('U_MANZANA')[0]
-        barrio = QgsProject.instance().mapLayersByName('U_BARRIO')[0]
-        uconstruccion = QgsProject.instance().mapLayersByName('U_CONSTRUCCION')[0]
-        rconstruccion = QgsProject.instance().mapLayersByName('R_CONSTRUCCION')[0]
+        run_etl_model_input_load_data('R_TERRENO', self.res_layers_gdb[FDC_PLOT], FDC_PLOT, self.qgis_utils)
+        run_etl_model_input_load_data('U_TERRENO', self.res_layers_gdb[FDC_PLOT], FDC_PLOT, self.qgis_utils)
+        run_etl_model_input_load_data('R_SECTOR', self.res_layers_gdb[FDC_SECTOR], FDC_SECTOR, self.qgis_utils)
+        run_etl_model_input_load_data('U_SECTOR', self.res_layers_gdb[FDC_SECTOR], FDC_SECTOR, self.qgis_utils)
+
+        run_etl_model_input_load_data('R_VEREDA', self.res_layers_gdb[FDC_VILLAGE], FDC_VILLAGE, self.qgis_utils)
+        run_etl_model_input_load_data('U_MANZANA', self.res_layers_gdb[FDC_VILLAGE], FDC_BLOCK, self.qgis_utils)
+        run_etl_model_input_load_data('U_BARRIO', self.res_layers_gdb[FDC_NEIGHBOURHOOD], FDC_NEIGHBOURHOOD, self.qgis_utils)
+
+        create_column(self.res_layers_gdb[FDC_BUILDING], 'Codigo')
+        create_column(self.res_layers_gdb[FDC_BUILDING], 'identificador')
+        run_etl_model_input_load_data('R_CONSTRUCCION', self.res_layers_gdb[FDC_BUILDING], FDC_BUILDING, self.qgis_utils)
+        run_etl_model_input_load_data('U_CONSTRUCCION', self.res_layers_gdb[FDC_BUILDING], FDC_BUILDING, self.qgis_utils)
+        create_column(self.res_layers_gdb[FDC_VALUATION_BUILDING], 'Codigo')
+        create_column(self.res_layers_gdb[FDC_VALUATION_BUILDING], 'identificador')
+        run_etl_model_input_load_data('R_CONSTRUCCION', self.res_layers_gdb[FDC_VALUATION_BUILDING], FDC_VALUATION_BUILDING, self.qgis_utils)
+        run_etl_model_input_load_data('U_CONSTRUCCION', self.res_layers_gdb[FDC_VALUATION_BUILDING], FDC_VALUATION_BUILDING, self.qgis_utils)
+
         uunidad = QgsProject.instance().mapLayersByName('U_UNIDAD')[0]
         runidad = QgsProject.instance().mapLayersByName('R_UNIDAD')[0]
+
+        create_column(self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE], 'identificador')
+        join_layers(uunidad, self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
+        join_layers(runidad, self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
+        uunidad_filter = fix_polygon_layers(uunidad)
+        runidad_filter = fix_polygon_layers(runidad)
+        uunidad_filter.setSubsetString("construccion_t_id != 'NULL'")
+        runidad_filter.setSubsetString("construccion_t_id != 'NULL'")
+        run_etl_model_input_load_data(uunidad_filter, self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE], FDC_BUILDING_UNIT_VALUATION_TABLE, self.qgis_utils)
+        run_etl_model_input_load_data(runidad_filter, self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE], FDC_BUILDING_UNIT_VALUATION_TABLE, self.qgis_utils)
+
+        create_column(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 'Codigo')
+        create_column(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 'identificador')
+        join_layers(uunidad, self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
+        join_layers(runidad, self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
+        uunidad_filter = fix_polygon_layers(uunidad)
+        runidad_filter = fix_polygon_layers(runidad)
+        uunidad_filter.setSubsetString("construccion_t_id != 'NULL'")
+        runidad_filter.setSubsetString("construccion_t_id != 'NULL'")
+        run_etl_model_input_load_data(uunidad_filter, self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], FDC_BUILDING_UNIT_CADASTRE_TABLE, self.qgis_utils)
+        run_etl_model_input_load_data(runidad_filter, self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], FDC_BUILDING_UNIT_CADASTRE_TABLE, self.qgis_utils)
+
+        join_layers(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 
+                        self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE], 'identificador', 'identificador')
+        run_etl_model_input_load_data(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], self.res_layers_gdb[FDC_VALUATION_UNIT_BUILDING_CONNECTION],
+                                                                 FDC_VALUATION_UNIT_BUILDING_CONNECTION, self.qgis_utils)                
+        join_layers(self.res_layers_gdb[FDC_BUILDING], 
+                        self.res_layers_gdb[FDC_VALUATION_BUILDING], 'identificador', 'identificador')
+        run_etl_model_input_load_data(self.res_layers_gdb[FDC_BUILDING], self.res_layers_gdb[FDC_VALUATION_BUILDING_CONNECTION],
+                                                                 FDC_VALUATION_BUILDING_CONNECTION, self.qgis_utils) 
+
+        layer_filter = fix_polygon_layers(self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE])
+        layer_filter.setSubsetString("construccion_tipo = 'Convencional'")
+        run_etl_model_input_load_data(layer_filter, self.res_layers_gdb[FDC_QUALIFICATION_CONVENTIONAL], FDC_QUALIFICATION_CONVENTIONAL, self.qgis_utils)
+        layer_filter = fix_polygon_layers(self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE])
+        layer_filter.setSubsetString("construccion_tipo = 'noConvencional'")
+        run_etl_model_input_load_data(layer_filter, self.res_layers_gdb[FDC_QUALIFICATION_NO_CONVENTIONAL], FDC_QUALIFICATION_NO_CONVENTIONAL, self.qgis_utils)
+
         unomen = QgsProject.instance().mapLayersByName('U_NOMENCLATURA_DOMICILIARIA')[0]
         rnomen = QgsProject.instance().mapLayersByName('R_NOMENCLATURA_DOMICILIARIA')[0]
 
-        arreglo = [ FDC_PLOT, FDC_SECTOR, FDC_VILLAGE, FDC_BLOCK, FDC_NEIGHBOURHOOD, FDC_BUILDING, FDC_VALUATION_BUILDING,
-                    FDC_BUILDING_UNIT_VALUATION_TABLE, FDC_BUILDING_UNIT_CADASTRE_TABLE, FDC_VALUATION_UNIT_BUILDING_CONNECTION,
-                    FDC_VALUATION_BUILDING_CONNECTION, FDC_QUALIFICATION_CONVENTIONAL, FDC_QUALIFICATION_NO_CONVENTIONAL, FDC_EXTADDRESS,
-                    FDC_UEBAUNIT_BUILDING, FDC_UEBAUNIT_PLOT, FDC_UEBAUNIT_BUILDING_UNIT]
+        run_etl_model_input_load_data(get_directions(unomen, self.res_layers_gdb[FDC_BUILDING]), self.res_layers_gdb[FDC_EXTADDRESS], FDC_EXTADDRESS, self.qgis_utils)
+        run_etl_model_input_load_data(get_directions(rnomen, self.res_layers_gdb[FDC_PLOT]), self.res_layers_gdb[FDC_EXTADDRESS], FDC_EXTADDRESS, self.qgis_utils)
 
-        for name in arreglo:
-            if name == FDC_PLOT:
-                input_data = [self.fix_polygon_layers(rterreno), self.fix_polygon_layers(uterreno)]
-                output_data = self.res_layers_gdb[FDC_PLOT]
-            elif name == FDC_SECTOR:
-                input_data = [self.fix_polygon_layers(rsector), self.fix_polygon_layers(usector)]
-                output_data = self.res_layers_gdb[FDC_SECTOR]
-            if name == FDC_VILLAGE:
-                input_data = [self.fix_polygon_layers(vereda)]
-                output_data = self.res_layers_gdb[FDC_VILLAGE]
-            if name == FDC_BLOCK:
-                input_data = [self.fix_polygon_layers(manzana)]
-                output_data = self.res_layers_gdb[FDC_VILLAGE]
-            elif name == FDC_NEIGHBOURHOOD:
-                input_data = [self.fix_polygon_layers(barrio)]
-                output_data = self.res_layers_gdb[FDC_NEIGHBOURHOOD]
-            elif name == FDC_BUILDING:
-                self.create_column(self.res_layers_gdb[FDC_BUILDING], 'Codigo')
-                self.create_column(self.res_layers_gdb[FDC_BUILDING], 'identificador')
-                input_data = [self.fix_polygon_layers(uconstruccion), self.fix_polygon_layers(rconstruccion)]
-                output_data = self.res_layers_gdb[FDC_BUILDING]
-            elif name == FDC_VALUATION_BUILDING:
-                self.create_column(self.res_layers_gdb[FDC_VALUATION_BUILDING], 'Codigo')
-                self.create_column(self.res_layers_gdb[FDC_VALUATION_BUILDING], 'identificador')
-                input_data = [self.fix_polygon_layers(rconstruccion), self.fix_polygon_layers(uconstruccion)]
-                output_data = self.res_layers_gdb[FDC_VALUATION_BUILDING]
-            elif name == FDC_BUILDING_UNIT_VALUATION_TABLE:
-                self.create_column(self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE], 'identificador')
-                self.join_layers(uunidad, self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
-                self.join_layers(runidad, self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
-                uunidad_filter = self.fix_polygon_layers(uunidad)
-                runidad_filter = self.fix_polygon_layers(runidad)
-                uunidad_filter.setSubsetString("construccion_t_id != 'NULL'")
-                runidad_filter.setSubsetString("construccion_t_id != 'NULL'")
-                input_data = [uunidad_filter, runidad_filter]
-                output_data = self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE]
-            elif name == FDC_BUILDING_UNIT_CADASTRE_TABLE:
-                self.create_column(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 'Codigo')
-                self.create_column(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 'identificador')
-                self.join_layers(uunidad, self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
-                self.join_layers(runidad, self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
-                uunidad_filter = self.fix_polygon_layers(uunidad)
-                runidad_filter = self.fix_polygon_layers(runidad)
-                uunidad_filter.setSubsetString("construccion_t_id != 'NULL'")
-                runidad_filter.setSubsetString("construccion_t_id != 'NULL'")
-                input_data = [uunidad_filter, runidad_filter]
-                output_data = self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE]
-            elif name == FDC_VALUATION_UNIT_BUILDING_CONNECTION:
-                self.join_layers(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 
-                        self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE], 'identificador', 'identificador')
-                input_data = [self.fix_polygon_layers(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE])]
-                output_data = self.res_layers_gdb[FDC_VALUATION_UNIT_BUILDING_CONNECTION]
-            elif name == FDC_VALUATION_BUILDING_CONNECTION:
-                self.join_layers(self.res_layers_gdb[FDC_BUILDING], 
-                        self.res_layers_gdb[FDC_VALUATION_BUILDING], 'identificador', 'identificador')
-                input_data = [self.fix_polygon_layers(self.res_layers_gdb[FDC_BUILDING])]
-                output_data = self.res_layers_gdb[FDC_VALUATION_BUILDING_CONNECTION]
-            elif name == FDC_QUALIFICATION_CONVENTIONAL:
-                layer_filter = self.fix_polygon_layers(self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE])
-                layer_filter.setSubsetString("construccion_tipo = 'Convencional'")
-                input_data = [layer_filter]
-                output_data = self.res_layers_gdb[FDC_QUALIFICATION_CONVENTIONAL]
-            elif name == FDC_QUALIFICATION_NO_CONVENTIONAL:
-                layer_filter = self.fix_polygon_layers(self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE])
-                layer_filter.setSubsetString("construccion_tipo = 'noConvencional'")
-                input_data = [layer_filter]
-                output_data = self.res_layers_gdb[FDC_QUALIFICATION_NO_CONVENTIONAL]
-            elif name == FDC_EXTADDRESS:
-                input_data = [self.get_directions(unomen, self.res_layers_gdb[FDC_BUILDING]), self.get_directions(rnomen, self.res_layers_gdb[FDC_PLOT])]
-                output_data = self.res_layers_gdb[FDC_EXTADDRESS]
-
-            elif name == FDC_UEBAUNIT_BUILDING:
-                self.join_layers(self.res_layers[FDC_PARCEL], self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
-                vlayer = QgsVectorLayer("?query=SELECT * FROM {}&nogeometry".format(FDC_PARCEL), "vlayer", "virtual" )
-                vlayer.setSubsetString("construccion_t_id != 'NULL'")
-                input_data = [vlayer]
-                output_data = self.res_layers[FDC_UEBAUNIT]
-            elif name == FDC_UEBAUNIT_PLOT:
-                self.join_layers(self.res_layers[FDC_PARCEL], self.res_layers_gdb[FDC_PLOT], 'Codigo', 'etiqueta')
-                vlayer = QgsVectorLayer("?query=SELECT * FROM {}&nogeometry".format(FDC_PARCEL), "vlayer", "virtual" )
-                vlayer.setSubsetString("terreno_t_id != 'NULL'")
-                input_data = [vlayer]
-                output_data = self.res_layers[FDC_UEBAUNIT]
-            elif name == FDC_UEBAUNIT_BUILDING_UNIT:
-                self.join_layers(self.res_layers[FDC_PARCEL], self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 'Codigo', 'Codigo')
-                vlayer = QgsVectorLayer("?query=SELECT * FROM {}&nogeometry".format(FDC_PARCEL), "vlayer", "virtual" )
-                vlayer.setSubsetString("unidadconstruccion_t_id != 'NULL'")
-
-                input_data = [vlayer]
-                output_data = self.res_layers[FDC_UEBAUNIT]
-
-            for data in input_data:
-                run_etl_model_input_load_data(data, output_data, name, self.qgis_utils)
-            
-    def get_directions(self, layer, reference):
-        reference = self.fix_polygon_layers(reference)
-        params = {'INPUT':layer,'ALL_PARTS':False,'OUTPUT':'TEMPORARY_OUTPUT'}
-        centroids = processing.run("native:centroids", params)
-        params = {'INPUT':centroids['OUTPUT'],'REFERENCE_LAYER':reference,'TOLERANCE':10,'BEHAVIOR':0,'OUTPUT':'TEMPORARY_OUTPUT'}
-        direction = processing.run("qgis:snapgeometries", params)
-
-        return direction['OUTPUT']
-
-    def fix_polygon_layers(self, layer):
-        params = {'INPUT': layer, 'OUTPUT':'memory:'}
-        multipart = processing.run("native:multiparttosingleparts", params)
-        params = {'INPUT': multipart['OUTPUT'], 'OUTPUT':'memory:'}
-        fix = processing.run("native:fixgeometries", params)
-
-        return fix['OUTPUT']
-
-    def create_column(self, layer, name):
-        layer.dataProvider().addAttributes([QgsField(name, QVariant.String, "VARCHAR")])
-        layer.updateFields()
-
-    def join_layers(self, initial, target, join_name, target_name):
-        joinObject = QgsVectorLayerJoinInfo()
-        joinObject.setJoinLayerId(target.id())
-        joinObject.setJoinFieldName(target_name)
-        joinObject.setTargetFieldName(join_name)
-        joinObject.setJoinLayer(target)
-        initial.addJoin(joinObject)
-    
-    def filter_virtual_layer(self, name):
-        vlayer = QgsVectorLayer("?query=SELECT * FROM {}".format(name), "vlayer", "virtual" )
-        QgsProject.instance().addMapLayer(vlayer)
-
+        join_layers(self.res_layers[FDC_PARCEL], self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
+        vlayer = QgsVectorLayer("?query=SELECT * FROM {}&nogeometry".format(FDC_PARCEL), "vlayer", "virtual" )
         vlayer.setSubsetString("construccion_t_id != 'NULL'")
-
-        return vlayer
+        run_etl_model_input_load_data(vlayer, self.res_layers[FDC_UEBAUNIT], FDC_UEBAUNIT_BUILDING, self.qgis_utils)
+        join_layers(self.res_layers[FDC_PARCEL], self.res_layers_gdb[FDC_PLOT], 'Codigo', 'etiqueta')
+        vlayer = QgsVectorLayer("?query=SELECT * FROM {}&nogeometry".format(FDC_PARCEL), "vlayer", "virtual" )
+        vlayer.setSubsetString("terreno_t_id != 'NULL'")
+        run_etl_model_input_load_data(vlayer, self.res_layers[FDC_UEBAUNIT], FDC_UEBAUNIT_PLOT, self.qgis_utils)
+        join_layers(self.res_layers[FDC_PARCEL], self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 'Codigo', 'Codigo')
+        vlayer = QgsVectorLayer("?query=SELECT * FROM {}&nogeometry".format(FDC_PARCEL), "vlayer", "virtual" )
+        vlayer.setSubsetString("unidadconstruccion_t_id != 'NULL'")
+        run_etl_model_input_load_data(vlayer, self.res_layers[FDC_UEBAUNIT], FDC_UEBAUNIT_BUILDING_UNIT, self.qgis_utils)
