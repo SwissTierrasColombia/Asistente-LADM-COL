@@ -97,6 +97,7 @@ from .gui.create_physical_zone_valuation_wizard import CreatePhysicalZoneValuati
 from .gui.dialog_load_layers import DialogLoadLayers
 from .gui.dialog_quality import DialogQuality
 from .gui.dialog_import_from_excel import DialogImportFromExcel
+from .gui.dialog_input_load_field_data_capture_dialog import DialogInputLoadFieldDataCapture
 from .gui.dockwidget_queries import DockWidgetQueries
 from .gui.log_quality_dialog import LogQualityDialog
 from .gui.right_of_way import RightOfWay
@@ -575,9 +576,12 @@ class AsistenteLADMCOLPlugin(QObject):
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query all parcels"), self._change_detection_menu)
         self._settings_changes_action = QAction(
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Official data settings"), self._change_detection_menu)
+        self._load_r1_gdb_action = QAction(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load R1 and GDB"), self._change_detection_menu)
 
         self._change_detection_menu.addActions([self._query_changes_per_parcel_action, self._query_changes_all_parcels_action,
-                                                self._change_detection_menu.addSeparator(), self._settings_changes_action])
+                                                self._change_detection_menu.addSeparator(), self._settings_changes_action, 
+                                                self._load_r1_gdb_action])
 
         self._menu.addMenu(self._change_detection_menu)
 
@@ -585,6 +589,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._query_changes_per_parcel_action.triggered.connect(self.query_changes_per_parcel)
         self._query_changes_all_parcels_action.triggered.connect(self.query_changes_all_parcels)
         self._settings_changes_action.triggered.connect(self.show_official_data_settings)
+        self._load_r1_gdb_action.triggered.connect(self.load_r1_gdb)
 
     def refresh_menus(self, db, ladm_col_db):
         """
@@ -1219,6 +1224,12 @@ class AsistenteLADMCOLPlugin(QObject):
     def query_changes_all_parcels(self):
         self.show_change_detection_dockwidget()
         self._dock_widget_change_detection.show_main_panel()
+
+    @_qgis_model_baker_required
+    @_db_connection_required
+    def load_r1_gdb(self):
+        dlg = DialogInputLoadFieldDataCapture(self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg.exec_()
 
     def show_change_detection_dockwidget(self):
         if self._dock_widget_change_detection is not None:
