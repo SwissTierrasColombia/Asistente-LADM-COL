@@ -538,3 +538,162 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
                 field['expression'] = 'now()'
 
     return mapping
+def get_refactor_fields_mapping_r1_gdb_to_ladm(layer_name, qgis_utils):
+    if layer_name == FDC_PARCEL:
+         mapping = [
+            {'expression': '"departamento"', 'length': 2, 'name': 'departamento', 'precision': -1, 'type': 10}, 
+            {'expression': '"municipio"', 'length': 3, 'name': 'municipio', 'precision': -1, 'type': 10}, 
+            {'expression': '$id', 'length': 20, 'name': 'nupre', 'precision': -1, 'type': 10}, 
+            {'expression': 'concat(Departamento, Municipio, NoPredial)', 'length': 30, 'name': 'numero_predial', 'precision': -1, 'type': 10}, 
+            {'expression': 'concat(Departamento, Municipio, NoPredialAnterior)', 'length': 20, 'name': 'numero_predial_anterior', 'precision': -1, 'type': 10}, 
+            {'expression': '"Avaluo ($)"', 'length': 16, 'name': 'avaluo_predio', 'precision': 1, 'type': 6},
+            {'expression': '"Nombre"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10}, 
+            {'expression': "'NPH'", 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
+            {'expression': "'IGAC_Predio'", 'length': 255, 'name': 'u_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
+            {'expression': 'concat(Departamento, Municipio, NoPredial)', 'length': -1, 'name': 'Codigo', 'precision': -1, 'type': 10}
+        ]
+    elif layer_name == FDC_PARTY:
+        mapping = [
+            {'expression': '"NoDocumento"', 'length': 12, 'name': 'documento_identidad', 'precision': -1, 'type': 10}, 
+            {'expression': 'if("TipoDocumento" = \'C\', \'Cedula_Ciudadania\', if("TipoDocumento" = \'N\', \'NIT\', if("TipoDocumento" = \'T\', \'Tarjeta_Identidad\', if("TipoDocumento" = \'X\', \'Cedula_Extranjeria\',\'Pasaporte\'))))', 'length': 255, 'name': 'tipo_documento', 'precision': -1, 'type': 10}, 
+            {'expression': '$id', 'length': 20, 'name': 'organo_emisor', 'precision': -1, 'type': 10}, 
+            {'expression': "string_to_array(Nombre, ' ')[2]", 'length': 100, 'name': 'primer_apellido', 'precision': -1, 'type': 10}, 
+            {'expression': "string_to_array(Nombre, ' ')[0]", 'length': 100, 'name': 'primer_nombre', 'precision': -1, 'type': 10}, 
+            {'expression': "string_to_array(Nombre, ' ')[3]", 'length': 100, 'name': 'segundo_apellido', 'precision': -1, 'type': 10}, 
+            {'expression': "string_to_array(Nombre, ' ')[1]", 'length': 100, 'name': 'segundo_nombre', 'precision': -1, 'type': 10}, 
+            {'expression': 'if("TipoDocumento" = \'N\', "Nombre",\' \')', 'length': 250, 'name': 'razon_social', 'precision': -1, 'type': 10}, 
+            {'expression': '"nombre"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10}, 
+            {'expression': 'if("TipoDocumento" = \'N\', \'Persona_No_Natural\', \'Persona_Natural\')', 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
+            {'expression': "'IGAC_Interesado'", 'length': 255, 'name': 'p_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '0', 'length': 255, 'name': 'p_local_id', 'precision': -1, 'type': 10}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}, 
+            {'expression': 'concat(Departamento, Municipio, NoPredial)', 'length': -1, 'name': 'Codigo', 'precision': -1, 'type': 10}
+        ]
+    elif layer_name == FDC_RIGHT:
+        mapping = [
+            {'expression': "'Dominio'", 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
+            {'expression': "'Col_Derecho_IGAC'", 'length': 255, 'name': 'r_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '0', 'length': 255, 'name': 'r_local_id', 'precision': -1, 'type': 10}, 
+            {'expression': '"t_id"', 'length': -1, 'name': 'interesado_col_interesado', 'precision': 0, 'type': 4}, 
+            {'expression': '"predio_t_id"', 'length': -1, 'name': 'unidad_predio', 'precision': 0, 'type': 4}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
+        ]
+    elif layer_name == FDC_ADMINISTRATIVE_SOURCE:
+        mapping = [
+            {'expression': '"t_id"', 'length': 255, 'name': 'texto', 'precision': -1, 'type': 10}, 
+            {'expression': "'Certificado'", 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
+            {'expression': "'Desconocido'", 'length': 255, 'name': 'estado_disponibilidad', 'precision': -1, 'type': 10}, 
+            {'expression': "'Col_FuenteAdministrativa_IGAC'", 'length': 255, 'name': 's_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '0', 'length': 255, 'name': 's_local_id', 'precision': -1, 'type': 10}
+        ]
+    elif layer_name == FDC_RRRSOURCE:
+        mapping = [
+            {'expression': '"t_id"', 'length': -1, 'name': 'rfuente', 'precision': 0, 'type': 4}, 
+            {'expression': '"texto"', 'length': -1, 'name': 'rrr_col_derecho', 'precision': 0, 'type': 4}
+        ]
+    elif layer_name == FDC_UEBAUNIT_BUILDING:
+        mapping = [
+            {'expression': '"construccion_t_id"', 'length': -1, 'name': 'ue_construccion', 'precision': 0, 'type': 4}, 
+            {'expression': '"t_id"', 'length': -1, 'name': 'baunit_predio', 'precision': 0, 'type': 4}
+        ]
+    elif layer_name == FDC_UEBAUNIT_PLOT:
+        mapping = [
+            {'expression': '"terreno_t_id"', 'length': -1, 'name': 'ue_terreno', 'precision': 0, 'type': 4}, 
+            {'expression': '"t_id"', 'length': -1, 'name': 'baunit_predio', 'precision': 0, 'type': 4}
+        ]
+    elif layer_name == FDC_UEBAUNIT_BUILDING_UNIT:
+        mapping = [
+            {'expression': '"unidadconstruccion_t_id"', 'length': -1, 'name': 'ue_unidadconstruccion', 'precision': 0, 'type': 4}, 
+            {'expression': '"t_id"', 'length': -1, 'name': 'baunit_predio', 'precision': 0, 'type': 4}
+        ]
+    elif layer_name == FDC_PLOT:
+        mapping = [
+            {'expression': '"SHAPE_Area"', 'length': 15, 'name': 'area_calculada', 'precision': 1, 'type': 6}, 
+            {'expression': '0.1', 'length': 16, 'name': 'avaluo_terreno', 'precision': 1, 'type': 6}, 
+            {'expression': '"Codigo"', 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}
+        ]
+    elif layer_name == FDC_SECTOR:
+        mapping = [
+            {'expression': 'substr( Codigo,0,2)', 'length': 2, 'name': 'codigo', 'precision': -1, 'type': 10}, 
+            {'expression': "concat('sector', Codigo)", 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10}
+            ]
+    elif layer_name == FDC_VILLAGE:
+        mapping = [
+            {'expression': 'substr("Codigo",length(Codigo)-3)', 'length': 4, 'name': 'codigo', 'precision': -1, 'type': 10},
+            {'expression': '"Nombre"', 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10}
+            ]
+    elif layer_name == FDC_BLOCK:
+        mapping = [
+            {'expression': 'substr("Codigo",length(Codigo)-3)', 'length': 4, 'name': 'codigo', 'precision': -1, 'type': 10}, 
+            {'expression': 'concat(\'Manzana\' ,\' \', substr("Codigo",length(Codigo)-3))', 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10}
+            ]
+    elif layer_name == FDC_NEIGHBOURHOOD:
+        mapping = [
+            {'expression': 'substr("Codigo",length(Codigo)-1)', 'length': 2, 'name': 'codigo', 'precision': -1, 'type': 10}, 
+            {'expression': '"nombre"', 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10}
+            ]
+    elif layer_name == FDC_BUILDING:
+        mapping = [
+            {'expression': '0.1', 'length': 16, 'name': 'avaluo_construccion', 'precision': 1, 'type': 6}, 
+            {'expression': '"SHAPE_Area"', 'length': 15, 'name': 'area_construccion', 'precision': 1, 'type': 6}, 
+            {'expression': '"Codigo"', 'length': 255, 'name': 'Codigo', 'precision': -1, 'type': 10}, 
+            {'expression': '"etiqueta"', 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}, 
+            {'expression': "'IGAC_Construcción'", 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '0', 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
+            {'expression': '$id', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
+            ]
+    elif layer_name == FDC_VALUATION_BUILDING:
+        mapping = [
+            {'expression': 'if("Numero_Pisos" = 0, 99, "Numero_Pisos")', 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2}, 
+            {'expression': '"Codigo"', 'length': -1, 'name': 'Codigo', 'precision': -1, 'type': 10},
+            {'expression': '$id', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
+            ]
+    elif layer_name == FDC_BUILDING_UNIT_VALUATION_TABLE:
+        mapping = [
+            {'expression': "if (Tipo_Construccion = 'CONVENCIONAL', 'Convencional','noConvencional')", 'length': 255, 'name': 'construccion_tipo', 'precision': -1, 'type': 10}, 
+            {'expression': "'Aulas_Clases'", 'length': 255, 'name': 'uso', 'precision': -1, 'type': 10}, 
+            {'expression': "'Anexo'", 'length': 255, 'name': 'destino_econo', 'precision': -1, 'type': 10}, 
+            {'expression': "'De_Alto_Riesgo'", 'length': 255, 'name': 'tipologia', 'precision': -1, 'type': 10}, 
+            {'expression': '0', 'length': -1, 'name': 'puntuacion', 'precision': 0, 'type': 2}, 
+            {'expression': 'now()', 'length': -1, 'name': 'anio_construction', 'precision': -1, 'type': 14}, 
+            {'expression': "'Bueno'", 'length': 255, 'name': 'estado_conservacion', 'precision': -1, 'type': 10}, 
+            {'expression': '"Codigo"', 'length': 255, 'name': 'material', 'precision': -1, 'type': 10},
+            {'expression': '$id', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
+            ]
+    elif layer_name == FDC_BUILDING_UNIT_CADASTRE_TABLE:
+        mapping = [
+             {'expression': '99', 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2}, 
+             {'expression': '"construccion_t_id"', 'length': -1, 'name': 'construccion', 'precision': 0, 'type': 4}, 
+             {'expression': '"Codigo"', 'length': 255, 'name': 'Codigo', 'precision': -1, 'type': 10}, 
+             {'expression': '"etiqueta"', 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}, 
+             {'expression': "'Unidad_Construcción'", 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+             {'expression': '0', 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10}, 
+             {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
+             {'expression': '$id', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
+             ]
+    elif layer_name == FDC_VALUATION_UNIT_BUILDING_CONNECTION:
+        mapping = [
+             {'expression': '"unidad_construccion_t_id"', 'length': -1, 'name': 'aucons', 'precision': 0, 'type': 4}, 
+             {'expression': '"t_id"', 'length': -1, 'name': 'ucons', 'precision': 0, 'type': 4}
+             ]
+    elif layer_name == FDC_VALUATION_BUILDING_CONNECTION:
+        mapping = [
+             {'expression': '"avaluos_v2_2_1avaluos_construccion_t_id"', 'length': -1, 'name': 'acons', 'precision': 0, 'type': 4}, 
+             {'expression': '"t_id"', 'length': -1, 'name': 'cons', 'precision': 0, 'type': 4}
+             ]
+    elif layer_name == FDC_QUALIFICATION_CONVENTIONAL:
+        mapping = [
+             {'expression': '"t_id"', 'length': -1, 'name': 'unidadconstruccion', 'precision': 0, 'type': 4}
+             ]
+    elif layer_name == FDC_QUALIFICATION_NO_CONVENTIONAL:
+        mapping = [
+             {'expression': '"t_id"', 'length': -1, 'name': 'unidadconstruccion', 'precision': 0, 'type': 4}
+             ]
+    elif layer_name == FDC_EXTADDRESS:
+        mapping = [
+             {'expression': '"Texto"', 'length': 255, 'name': 'nombre_area_direccion', 'precision': -1, 'type': 10}
+             ]
+
+    return mapping
