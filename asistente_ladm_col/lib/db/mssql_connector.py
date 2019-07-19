@@ -314,6 +314,15 @@ class MssqlConnector(DBConnector):
 
         return result
 
+    def get_ladm_layer_name(self, layer, validate_is_ladm=False):
+        name = None
+        if validate_is_ladm:
+            if self.is_ladm_layer(layer):
+                name = layer.dataProvider().uri().table()
+        else:
+            name = layer.dataProvider().uri().table()
+        return name
+
     def get_connection_uri(self, dict_conn, level=1):
         uri = []
 
