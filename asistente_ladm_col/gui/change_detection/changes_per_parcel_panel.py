@@ -38,7 +38,9 @@ from asistente_ladm_col.config.general_config import (OFFICIAL_DB_PREFIX,
                                                       OFFICIAL_DB_SUFFIX,
                                                       PREFIX_LAYER_MODIFIERS,
                                                       SUFFIX_LAYER_MODIFIERS,
-                                                      STYLE_GROUP_LAYER_MODIFIERS)
+                                                      STYLE_GROUP_LAYER_MODIFIERS,
+                                                      OFFICIAL_DB_SOURCE,
+                                                      COLLECTED_DB_SOURCE)
 from asistente_ladm_col.config.table_mapping_config import (PARCEL_NUMBER_FIELD,
                                                             PARCEL_NUMBER_BEFORE_FIELD,
                                                             FMI_FIELD,
@@ -78,6 +80,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.chk_show_all_plots.toggled.connect(self.show_all_plots)
         self.cbo_parcel_fields.currentIndexChanged.connect(self.search_field_updated)
         self.panelAccepted.connect(self.initialize_tools_and_layers)
+        self.tbl_changes_per_parcel.itemDoubleClicked.connect(self.call_party_panel)
 
         self.initialize_field_values_line_edit()
         self.initialize_tools_and_layers()
@@ -85,6 +88,13 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         if parcel_number is not None:  # Do a search!
             self.txt_alphanumeric_query.setValue(parcel_number)
             self.search_data(parcel_number=parcel_number)
+
+    def call_party_panel(self, item):
+        row = item.row()
+        if self.tbl_changes_per_parcel.item(row, 0).text() == DICT_PLURAL[COL_PARTY_TABLE]:
+            data = {OFFICIAL_DB_SOURCE: self.tbl_changes_per_parcel.item(row, 1).data(Qt.UserRole),
+                    COLLECTED_DB_SOURCE: self.tbl_changes_per_parcel.item(row, 2).data(Qt.UserRole)}
+            self.parent.show_party_panel(data)
 
     def search_field_updated(self, index=None):
         self.initialize_field_values_line_edit()
@@ -263,12 +273,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         if value != NULL:
             if type(value) is list and value:
-                if type(value[0]) is dict:
-                    display_value = "{} {}".format(len(value),
-                                                   QCoreApplication.translate("DockWidgetChanges", "parties") if len(value)>1 else QCoreApplication.translate("DockWidgetChanges", "party"))
-                elif type(value[0]) is list:
-                    display_value = "{} {}".format(len(value[0]),
-                                                   QCoreApplication.translate("DockWidgetChanges", "parties") if len(value[0])>1 else QCoreApplication.translate("DockWidgetChanges", "party"))
+                display_value = "{} {}".format(len(value),
+                                               QCoreApplication.translate("DockWidgetChanges", "parties") if len(value)>1 else QCoreApplication.translate("DockWidgetChanges", "party"))
         #else:
         #    display_value = QCoreApplication.translate("DockWidgetChanges", "0 parties")
 

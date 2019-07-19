@@ -28,6 +28,7 @@ from qgis.gui import QgsDockWidget, QgsMapToolIdentifyFeature
 from asistente_ladm_col.gui.change_detection.changes_all_parcels_panel import ChangesAllParcelsPanelWidget
 from asistente_ladm_col.gui.change_detection.changes_per_parcel_panel import ChangesPerParcelPanelWidget
 from asistente_ladm_col.gui.change_detection.parcels_changes_summary_panel import ParcelsChangesSummaryPanelWidget
+from asistente_ladm_col.gui.change_detection.changes_parties_panel import ChangesPartyPanelWidget
 from asistente_ladm_col.utils import get_ui_class
 
 from ...config.symbology import OFFICIAL_STYLE_GROUP
@@ -79,6 +80,9 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.parcel_panel = None
         self.lst_parcel_panels = list()
 
+        self.party_panel = None
+        self.lst_party_panels = list()
+
     def add_layers(self):
         self.utils.add_layers()
 
@@ -121,6 +125,20 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.parcel_panel = ChangesPerParcelPanelWidget(self, self.utils, parcel_number)
         self.widget.showPanel(self.parcel_panel)
         self.lst_parcel_panels.append(self.parcel_panel)
+
+    def show_party_panel(self, data):
+        if self.lst_party_panels:
+            for panel in self.lst_party_panels:
+                try:
+                    self.widget.closePanel(panel)
+                except RuntimeError as e:  # Panel in C++ could be already closed...
+                    pass
+
+            self.lst_party_panels = list()
+
+        self.party_panel = ChangesPartyPanelWidget(self, self.utils, data)
+        self.widget.showPanel(self.party_panel)
+        self.lst_party_panels.append(self.party_panel)
 
     def update_db_connection(self, db, ladm_col_db):
         self.close_dock_widget()  # The user needs to use the menus again, which will start everything from scratch

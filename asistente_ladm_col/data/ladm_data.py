@@ -294,7 +294,7 @@ class LADM_DATA():
             for PARTY_FIELD in PARTY_FIELDS_TO_COMPARE:
                 dict_party[PARTY_FIELD] = party_feature[PARTY_FIELD]
             # Add extra attribute from right table
-            dict_party[RIGHT_TABLE_TYPE_FIELD] = dict_party_right[party_feature[ID_FIELD]][RIGHT_TABLE_TYPE_FIELD]
+            dict_party['derecho'] = dict_party_right[party_feature[ID_FIELD]][RIGHT_TABLE_TYPE_FIELD]
             dict_parties[party_feature[ID_FIELD]] = dict_party
 
         for id_parcel in dict_parcel_parties:
@@ -319,7 +319,7 @@ class LADM_DATA():
                     item[tag_party] = NULL
 
         # =====================  Start add group party info ==================================================
-        dict_parcel_group_parties = dict()
+        dict_parcel_group_parties = dict()  # {id_parcel: [id_group_party1, id_group_party2]}
         for right_feature in right_features:
             if right_feature[RIGHT_TABLE_PARCEL_FIELD] != NULL and right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD] != NULL:
                 if right_feature[RIGHT_TABLE_PARCEL_FIELD] in dict_parcel_group_parties:
@@ -333,7 +333,7 @@ class LADM_DATA():
         expression_members_features = QgsExpression("{} IN ({})".format(MEMBERS_GROUP_PARTY_FIELD, ",".join([str(id) for id in group_party_t_ids])))
         members_features = LADM_DATA.get_features_by_expression(layers[MEMBERS_TABLE]['layer'], expression_members_features, with_attributes=True)
 
-        dict_group_party_parties = dict()
+        dict_group_party_parties = dict()  # {id_group_party: [id_party1, id_party2]}
         for members_feature in members_features:
             if members_feature[MEMBERS_GROUP_PARTY_FIELD] != NULL and members_feature[MEMBERS_PARTY_FIELD] != NULL:
                 if members_feature[MEMBERS_GROUP_PARTY_FIELD] in dict_group_party_parties:
@@ -348,19 +348,21 @@ class LADM_DATA():
         expression_party_features = QgsExpression("{} IN ({})".format(ID_FIELD, ",".join([str(id) for id in party_t_ids])))
         party_features = LADM_DATA.get_features_by_expression(layers[COL_PARTY_TABLE]['layer'], expression_party_features, with_attributes=True)
 
-        dict_parties = dict()
+        dict_parties = dict()  # {id_party: {tipo_documento: CC, documento_identidad: 123456, nombre: Pepito}}
         for party_feature in party_features:
             dict_party = dict()
             for PARTY_FIELD in PARTY_FIELDS_TO_COMPARE:
                 dict_party[PARTY_FIELD] = party_feature[PARTY_FIELD]
             dict_parties[party_feature[ID_FIELD]] = dict_party
 
+        # Reuse the dict to replace id_group_party for party info:
+        #   {id_group_party: [{tipo_documento: CC, documento_identidad: 123456, nombre: Pepito, 'derecho': Dominio}, ..., {}] }
         for id_group_party in dict_group_party_parties:
             party_info = list()
             for id_party in dict_group_party_parties[id_group_party]:
                 if id_party in dict_parties:
                     # Add extra attribute from right table
-                    dict_parties[id_party][RIGHT_TABLE_TYPE_FIELD] = dict_group_party_right[id_group_party][RIGHT_TABLE_TYPE_FIELD]
+                    dict_parties[id_party]['derecho'] = dict_group_party_right[id_group_party][RIGHT_TABLE_TYPE_FIELD]
                     party_info.append(dict_parties[id_party])
             dict_group_party_parties[id_group_party] = party_info
 
@@ -368,7 +370,8 @@ class LADM_DATA():
             group_party_info = list()
             for id_group_party in dict_parcel_group_parties[id_parcel]:
                 if id_group_party in dict_group_party_parties:
-                    group_party_info.append(dict_group_party_parties[id_group_party])
+                    for party_info in dict_group_party_parties[id_group_party]:
+                        group_party_info.append(party_info)
             dict_parcel_group_parties[id_parcel] = group_party_info
 
         # Append group party info
@@ -379,7 +382,8 @@ class LADM_DATA():
                     # Make join
                     if tag_group_party in item:
                         if item[tag_group_party]:
-                            item[tag_group_party].append(dict_parcel_group_parties[item[ID_FIELD]])
+                            for info in dict_parcel_group_parties[item[ID_FIELD]]:
+                                item[tag_group_party].append(info)
                         else:
                             item[tag_group_party] = dict_parcel_group_parties[item[ID_FIELD]]
                     else:
