@@ -24,6 +24,7 @@ from qgis.PyQt.QtCore import pyqtSignal
 from asistente_ladm_col.config.general_config import (CHANGE_DETECTION_NEW_PARCEL,
                                                       CHANGE_DETECTION_MISSING_PARCEL,
                                                       CHANGE_DETECTION_PARCEL_CHANGED,
+                                                      CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
                                                       CHANGE_DETECTION_PARCEL_REMAINS,
                                                       CHANGE_DETECTION_SEVERAL_PARCELS,
                                                       CHANGE_DETECTION_NULL_PARCEL,
@@ -56,6 +57,7 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
         summary = {CHANGE_DETECTION_NEW_PARCEL: {PARCEL_NUMBER_FIELD: list(), ID_FIELD: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
                    CHANGE_DETECTION_MISSING_PARCEL: {PARCEL_NUMBER_FIELD: list(), ID_FIELD: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
                    CHANGE_DETECTION_PARCEL_CHANGED: {PARCEL_NUMBER_FIELD: list(), ID_FIELD: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
+                   CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED: {PARCEL_NUMBER_FIELD: list(), ID_FIELD: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
                    CHANGE_DETECTION_PARCEL_REMAINS: {PARCEL_NUMBER_FIELD: list(), ID_FIELD: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
                    CHANGE_DETECTION_SEVERAL_PARCELS: {PARCEL_NUMBER_FIELD: list(), ID_FIELD: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE},
                    CHANGE_DETECTION_NULL_PARCEL: {PARCEL_NUMBER_FIELD: list(), ID_FIELD: list(), COUNT_KEY: 0, SOURCE_DB: COLLECTED_DB_SOURCE}}
@@ -80,7 +82,8 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.lbl_new_parcels_count.setText(str(summary[CHANGE_DETECTION_NEW_PARCEL][COUNT_KEY]))
         self.lbl_missing_parcels_count.setText(str(summary[CHANGE_DETECTION_MISSING_PARCEL][COUNT_KEY]))
-        self.lbl_parcels_that_changed_count.setText(str(summary[CHANGE_DETECTION_PARCEL_CHANGED][COUNT_KEY]))
+        self.lbl_parcels_with_alphanumeric_changes_count.setText(str(summary[CHANGE_DETECTION_PARCEL_CHANGED][COUNT_KEY]))
+        self.lbl_parcels_with_only_geometry_changes_count.setText(str(summary[CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED][COUNT_KEY]))
         self.lbl_parcels_with_no_changes_count.setText(str(summary[CHANGE_DETECTION_PARCEL_REMAINS][COUNT_KEY]))
         self.lbl_duplicated_parcels_count.setText(str(summary[CHANGE_DETECTION_SEVERAL_PARCELS][COUNT_KEY]))
         self.lbl_null_parcel_numbers_count.setText(str(summary[CHANGE_DETECTION_NULL_PARCEL][COUNT_KEY]))
@@ -89,16 +92,17 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
         # Enable/Disable buttons
         self.btn_new_parcels.setEnabled(summary[CHANGE_DETECTION_NEW_PARCEL][COUNT_KEY])
         self.btn_missing_parcels.setEnabled(summary[CHANGE_DETECTION_MISSING_PARCEL][COUNT_KEY])
-        self.btn_parcels_that_changed.setEnabled(summary[CHANGE_DETECTION_PARCEL_CHANGED][COUNT_KEY])
+        self.btn_parcels_with_alphanumeric_changes.setEnabled(summary[CHANGE_DETECTION_PARCEL_CHANGED][COUNT_KEY])
+        self.btn_parcels_with_only_geometry_changes.setEnabled(summary[CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED][COUNT_KEY])
         self.btn_parcels_with_no_changes.setEnabled(summary[CHANGE_DETECTION_PARCEL_REMAINS][COUNT_KEY])
         self.btn_duplicated_parcels.setEnabled(summary[CHANGE_DETECTION_SEVERAL_PARCELS][COUNT_KEY])
         self.btn_null_parcel_numbers.setEnabled(summary[CHANGE_DETECTION_NULL_PARCEL][COUNT_KEY])
         self.btn_total_parcels.setEnabled(total_count)
 
         # Set button connections
-        for button in [self.btn_new_parcels, self.btn_missing_parcels, self.btn_parcels_that_changed,
-                       self.btn_parcels_with_no_changes, self.btn_duplicated_parcels, self.btn_null_parcel_numbers,
-                       self.btn_total_parcels]:
+        for button in [self.btn_new_parcels, self.btn_missing_parcels, self.btn_parcels_with_alphanumeric_changes,
+                       self.btn_parcels_with_only_geometry_changes, self.btn_parcels_with_no_changes,
+                       self.btn_duplicated_parcels, self.btn_null_parcel_numbers, self.btn_total_parcels]:
             try:
                 button.clicked.disconnect()
             except:
@@ -108,8 +112,10 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
             partial(self.parent.show_all_parcels_panel, summary[CHANGE_DETECTION_NEW_PARCEL]))
         self.btn_missing_parcels.clicked.connect(
             partial(self.parent.show_all_parcels_panel, summary[CHANGE_DETECTION_MISSING_PARCEL]))
-        self.btn_parcels_that_changed.clicked.connect(
+        self.btn_parcels_with_alphanumeric_changes.clicked.connect(
             partial(self.parent.show_all_parcels_panel, summary[CHANGE_DETECTION_PARCEL_CHANGED]))
+        self.btn_parcels_with_only_geometry_changes.clicked.connect(
+            partial(self.parent.show_all_parcels_panel, summary[CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED]))
         self.btn_parcels_with_no_changes.clicked.connect(
             partial(self.parent.show_all_parcels_panel, summary[CHANGE_DETECTION_PARCEL_REMAINS]))
         self.btn_duplicated_parcels.clicked.connect(

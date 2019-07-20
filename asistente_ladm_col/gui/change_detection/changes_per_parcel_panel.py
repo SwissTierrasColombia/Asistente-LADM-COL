@@ -30,6 +30,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsFeatureRequest,
                        QgsExpression,
                        QgsRectangle,
+                       QgsGeometry,
                        NULL)
 
 from qgis.gui import QgsPanelWidget
@@ -40,7 +41,8 @@ from asistente_ladm_col.config.general_config import (OFFICIAL_DB_PREFIX,
                                                       SUFFIX_LAYER_MODIFIERS,
                                                       STYLE_GROUP_LAYER_MODIFIERS,
                                                       OFFICIAL_DB_SOURCE,
-                                                      COLLECTED_DB_SOURCE)
+                                                      COLLECTED_DB_SOURCE,
+                                                      PLOT_GEOMETRY_KEY)
 from asistente_ladm_col.config.table_mapping_config import (PARCEL_NUMBER_FIELD,
                                                             PARCEL_NUMBER_BEFORE_FIELD,
                                                             FMI_FIELD,
@@ -201,7 +203,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         # Once the query is done, activate the checkbox to alternate all plots/only selected plot
         self.chk_show_all_plots.setEnabled(True)
 
-    def fill_table(self, search_criterion):  # Shouldn't handle 'inverse' mode
+    def fill_table(self, search_criterion):  # Shouldn't handle 'inverse' mode as we won't switch table columns at runtime
         dict_collected_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._db, search_criterion)
 
         # Custom layer modifiers
@@ -210,7 +212,6 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
             STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
         }
-
         dict_official_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._official_db, search_criterion, layer_modifiers=layer_modifiers)
 
         # Before filling the table we make sure we get one and only one parcel attrs dict
@@ -231,17 +232,22 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.tbl_changes_per_parcel.setSortingEnabled(False)
 
         field_names = list(collected_attrs.keys()) if collected_attrs else list(official_attrs.keys())
+        field_names.remove(PLOT_GEOMETRY_KEY)  # We'll handle plot geometry separately
 
         for row, field_name in enumerate(field_names):
             official_value = official_attrs[field_name] if field_name in official_attrs else NULL
             collected_value = collected_attrs[field_name] if field_name in collected_attrs else NULL
 
-            self.fill_item(field_name, official_value, collected_value, row)
+            self.fill_row(field_name, official_value, collected_value, row)
+
+        self.fill_geometry_row(PLOT_GEOMETRY_KEY,
+                                official_attrs[PLOT_GEOMETRY_KEY] if PLOT_GEOMETRY_KEY in official_attrs else QgsGeometry(),
+                                collected_attrs[PLOT_GEOMETRY_KEY] if PLOT_GEOMETRY_KEY in collected_attrs else QgsGeometry(),
+                                self.tbl_changes_per_parcel.rowCount()-1)
 
         self.tbl_changes_per_parcel.setSortingEnabled(True)
 
-    def fill_item(self, field_name, official_value, collected_value, row):
-        print(field_name, official_value, collected_value)
+    def fill_row(self, field_name, official_value, collected_value, row):
         item = QTableWidgetItem(field_name)
         # item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
         self.tbl_changes_per_parcel.setItem(row, 0, item)
@@ -281,6 +287,23 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         item = QTableWidgetItem(display_value)
         item.setData(Qt.UserRole, value)
         return item
+
+    def fill_geometry_row(self, field_name, official_geom, collected_geom, row):
+        self.tbl_changes_per_parcel.setItem(row, 0, QTableWidgetItem(QCoreApplication.translate("DockWidgetChanges", "Geometry")))
+        self.tbl_changes_per_parcel.setItem(row, 1, QTableWidgetItem(self.get_geometry_type_name(official_geom)))
+        self.tbl_changes_per_parcel.setItem(row, 2, QTableWidgetItem(self.get_geometry_type_name(collected_geom)))
+
+        self.tbl_changes_per_parcel.setItem(row, 3, QTableWidgetItem())
+        self.tbl_changes_per_parcel.item(row, 3).setBackground(
+            Qt.green if self.utils.compare_features_geometries(collected_geom, official_geom) else Qt.red)
+
+    def get_geometry_type_name(self, geometry):
+        if geometry.type() == QgsWkbTypes.UnknownGeometry:
+            return ''
+        elif geometry.type() == QgsWkbTypes.PolygonGeometry:
+            return QCoreApplication.translate("DockWidgetChanges", "Polygon")
+        else:
+            return "Type: {}".format(geometry.type())
 
     def alphanumeric_query(self):
         """

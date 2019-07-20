@@ -22,6 +22,7 @@ from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsExpression,
                        QgsWkbTypes)
+from ..config.general_config import PLOT_GEOMETRY_KEY
 from ..config.table_mapping_config import (ID_FIELD,
                                            DICT_PLURAL,
                                            PLOT_TABLE,
@@ -71,7 +72,7 @@ PARTY_FIELDS_TO_COMPARE = [COL_PARTY_DOC_TYPE_FIELD,
                            DOCUMENT_ID_FIELD,
                            COL_PARTY_NAME_FIELD]
 
-PLOT_FIELDS_TO_COMPARE = [PLOT_CALCULATED_AREA_FIELD]
+PLOT_FIELDS_TO_COMPARE = [PLOT_CALCULATED_AREA_FIELD]  # Geometry is also used but handled differenlty
 
 PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE = [PROPERTY_RECORD_CARD_SECTOR_FIELD,
                                           PROPERTY_RECORD_CARD_LOCALITY_FIELD,
@@ -254,7 +255,7 @@ class LADM_DATA():
 
         plot_t_ids = [feature[UEBAUNIT_TABLE_PLOT_FIELD] for feature in uebaunit_features if feature[UEBAUNIT_TABLE_PLOT_FIELD] != NULL]
         expression_plot_features = QgsExpression("{} IN ('{}')".format(ID_FIELD, "','".join([str(id) for id in plot_t_ids])))
-        plot_features = LADM_DATA.get_features_by_expression(layers[PLOT_TABLE]['layer'], expression_plot_features, with_attributes=True)
+        plot_features = LADM_DATA.get_features_by_expression(layers[PLOT_TABLE]['layer'], expression_plot_features, with_attributes=True, with_geometry=True)
 
         dict_parcel_plot = {uebaunit_feature[UEBAUNIT_TABLE_PARCEL_FIELD]: uebaunit_feature[UEBAUNIT_TABLE_PLOT_FIELD] for uebaunit_feature in uebaunit_features}
         dict_plot_features = {plot_feature[ID_FIELD]: plot_feature for plot_feature in plot_features}
@@ -269,6 +270,8 @@ class LADM_DATA():
                                 item[PLOT_FIELD] = plot_feature[PLOT_FIELD]
                             else:
                                 item[PLOT_FIELD] = NULL
+
+                            item[PLOT_GEOMETRY_KEY] = plot_feature.geometry()
 
         # ===================== Start add party info ==================================================
         expression_right_features = QgsExpression("{} IN ({})".format(RIGHT_TABLE_PARCEL_FIELD, ",".join([str(id) for id in parcel_t_ids])))
@@ -422,7 +425,7 @@ class LADM_DATA():
 
     @staticmethod
     def get_features_by_expression(layer, expression=None, with_attributes=False, with_geometry=False):
-
+        # TODO: It should be possible to pass a list of attributes to retrieve
         field_idx = layer.fields().indexFromName(ID_FIELD)
 
         if expression is None:

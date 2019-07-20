@@ -84,6 +84,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
                 status = parcel_attrs[PARCEL_STATUS]
                 status_display = parcel_attrs[PARCEL_STATUS_DISPLAY]
                 if filter_parcels:
+                    # If we are on the official DB, "new" parcels are "missing" parcels from the collected db perspective
                     if filter_parcels[SOURCE_DB] == OFFICIAL_DB_SOURCE and parcel_attrs[PARCEL_STATUS_DISPLAY] == CHANGE_DETECTION_NEW_PARCEL:
                         status_display = CHANGE_DETECTION_MISSING_PARCEL
                         status = CHANGE_DETECTION_MISSING_PARCEL
