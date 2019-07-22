@@ -94,8 +94,8 @@ MODULE_HELP_MAPPING = {
     'load_layers': 'load_layers.html#load-layers',
     'col_party': 'cadastre/Party.html#col-party',
     'group_party': 'cadastre/Party.html#group-party',
-    'quality_rules': 'index.html', # TODO: Add this to help sections
-    'settings': 'help.html#settings',
+    'quality_rules': 'cadastre/Quality.html',
+    'settings': 'settings.html',
     'create_property_record_card': 'property_record_card/Property_record_card.html',
     'create_nuclear_family': 'property_record_card/Nuclear_family.html',
     'create_natural_party': 'property_record_card/Natural_party.html',
@@ -145,18 +145,21 @@ PARCEL_STATUS_DISPLAY = ''
 CHANGE_DETECTION_NEW_PARCEL = 'Alta'
 CHANGE_DETECTION_MISSING_PARCEL = 'Baja'
 CHANGE_DETECTION_PARCEL_CHANGED = 'Cambio'
+CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED = 'Cambio Geometría'
 CHANGE_DETECTION_PARCEL_REMAINS = 'OK'
 CHANGE_DETECTION_SEVERAL_PARCELS = 'several'
 CHANGE_DETECTION_NULL_PARCEL = 'null'
 STATUS_COLORS = {CHANGE_DETECTION_NEW_PARCEL: Qt.red,
                  CHANGE_DETECTION_MISSING_PARCEL: Qt.red,
                  CHANGE_DETECTION_PARCEL_CHANGED: Qt.red,
+                 CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED: Qt.red,
                  CHANGE_DETECTION_PARCEL_REMAINS: Qt.green,
                  CHANGE_DETECTION_SEVERAL_PARCELS: Qt.yellow,
                  CHANGE_DETECTION_NULL_PARCEL: Qt.yellow}
 SOURCE_DB = '_SOURCE_'
 OFFICIAL_DB_SOURCE = '_OFFICIAL_'
 COLLECTED_DB_SOURCE = '_COLLECTED_'
+PLOT_GEOMETRY_KEY = 'GEOMETRY_PLOT'
 
 # QGIS Model Baker definitions
 SCHEMA_NAME = 'schemaname'

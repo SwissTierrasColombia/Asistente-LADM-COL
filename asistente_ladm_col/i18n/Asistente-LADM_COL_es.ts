@@ -497,67 +497,67 @@
         <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar a partir de ZIP&quot; desde el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="76"/>
+        <location filename="../utils/decorators.py" line="75"/>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
         <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="89"/>
+        <location filename="../utils/decorators.py" line="88"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, QGIS Model Baker not found.</source>
         <translation>No se pudo ejecutar una funcionalidad, no se encontró QGIS Model Baker.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="104"/>
+        <location filename="../utils/decorators.py" line="103"/>
         <source>The processing plugin has been activated!</source>
         <translation>¡El plugin &apos;Processing&apos; ha sido activado!</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="150"/>
+        <location filename="../utils/decorators.py" line="149"/>
         <source>Check your official database connection, since there was a problem accessing a valid Cadastre-Registry model in the database. Click the button to go to Settings.</source>
         <translation>Revisa tu conexión a la base de datos oficial. Hubo un problema accediendo a un modelo válido de Catastro-Registro en la base de datos. Clic en el botón para ir a Configuración.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="153"/>
+        <location filename="../utils/decorators.py" line="152"/>
         <source> Official Data Settings</source>
         <translation> Configuración de datos oficiales</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="158"/>
+        <location filename="../utils/decorators.py" line="157"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, connection to official DB was not valid.</source>
         <translation>No se pudo abrir/ejecutar un diálogo/herramienta, la conexión a la base de datos oficial no es válida.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="176"/>
+        <location filename="../utils/decorators.py" line="175"/>
         <source>Your &apos;official&apos; database is the same &apos;collected&apos; database!!! Click the proper button to change connection settings.</source>
         <translation>¡¡¡Tu base de datos &apos;oficial&apos; es la misma que la del barrido!!! Clic en el botón correspondiente para cambiar la conexión.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="180"/>
+        <location filename="../utils/decorators.py" line="179"/>
         <source> Change official settings</source>
         <translation> Cambiar conexión oficial</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="185"/>
+        <location filename="../utils/decorators.py" line="184"/>
         <source>Change collected settings</source>
         <translation>Cambiar conexión del barrido</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="191"/>
+        <location filename="../utils/decorators.py" line="190"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, official DB is the same collected DB!</source>
         <translation>No se pudo abrir/ejecutar un diálogo/herramienta, ¡la base de datos oficial es la misma del barrido!</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="212"/>
+        <location filename="../utils/decorators.py" line="211"/>
         <source>The plugin &apos;MapSwipe Tool&apos; version {} is required, but couldn&apos;t be found. Download it &lt;a href=&quot;{}&quot;&gt;from this link&lt;/a&gt; and use &apos;Install from ZIP&apos; in the Plugin Manager.</source>
         <translation>Se requiere el plugin &apos;MapSwipe Tool&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar a partir de ZIP&quot; desde el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="215"/>
+        <location filename="../utils/decorators.py" line="213"/>
         <source>The plugin &apos;MapSwipe Tool&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
         <translation>Se requiere el plugin &apos;MapSwipe Tool&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="225"/>
+        <location filename="../utils/decorators.py" line="223"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, MapSwipe Tool not found.</source>
         <translation>No se pudo abrir/ejecutar un diálogo/herramienta, no se encontró el plugin MapSwipe Tool.</translation>
     </message>
@@ -566,8 +566,8 @@
         <translation type="vanished">Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} (o superior), pero no está instalado. Clic en el botón para mostrar el Administrador de Plugins.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="83"/>
-        <location filename="../utils/decorators.py" line="219"/>
+        <location filename="../utils/decorators.py" line="82"/>
+        <location filename="../utils/decorators.py" line="217"/>
         <source>Plugin Manager</source>
         <translation>Administrador de Plugins</translation>
     </message>
@@ -2558,13 +2558,17 @@ Do you want to replace it?</source>
 <context>
     <name>DialogImportData</name>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="89"/>
         <source>[Name of the XTF to be created]</source>
-        <translation>[Nombre del XTF a ser creado]</translation>
+        <translation type="vanished">[Nombre del XTF a ser importado]</translation>
     </message>
     <message>
         <source>[Name of the Geopackage to be created]</source>
         <translation type="vanished">[Nombre de la base de datos GeoPackage que va a ser creada]</translation>
+    </message>
+    <message>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="89"/>
+        <source>[Name of the XTF to be imported]</source>
+        <translation>[Nombre del XTF a ser importado]</translation>
     </message>
     <message>
         <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="101"/>
@@ -5502,7 +5506,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     </message>
     <message>
         <source>[Leave empty to use standard host: localhost]</source>
-        <translation type="vanished">[Deja vacío para usar el host predeterminado 5432]</translation>
+        <translation type="vanished">[Deja vacío para usar el host predeterminado: localhost]</translation>
     </message>
     <message>
         <source>[Leave empty to use standard port: 5432]</source>

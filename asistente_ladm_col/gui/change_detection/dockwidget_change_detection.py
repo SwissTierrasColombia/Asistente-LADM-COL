@@ -21,12 +21,15 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal, QCoreApplication, QObject)
 from qgis.core import (QgsVectorLayer,
                        QgsWkbTypes,
-                       Qgis)
+                       Qgis,
+                       NULL,
+                       QgsGeometry)
 from qgis.gui import QgsDockWidget, QgsMapToolIdentifyFeature
 
 from asistente_ladm_col.gui.change_detection.changes_all_parcels_panel import ChangesAllParcelsPanelWidget
 from asistente_ladm_col.gui.change_detection.changes_per_parcel_panel import ChangesPerParcelPanelWidget
 from asistente_ladm_col.gui.change_detection.parcels_changes_summary_panel import ParcelsChangesSummaryPanelWidget
+from asistente_ladm_col.gui.change_detection.changes_parties_panel import ChangesPartyPanelWidget
 from asistente_ladm_col.utils import get_ui_class
 
 from ...config.symbology import OFFICIAL_STYLE_GROUP
@@ -39,11 +42,13 @@ from ...config.general_config import (OFFICIAL_DB_PREFIX,
                                       CHANGE_DETECTION_NEW_PARCEL,
                                       CHANGE_DETECTION_MISSING_PARCEL,
                                       CHANGE_DETECTION_PARCEL_CHANGED,
+                                      CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
                                       CHANGE_DETECTION_PARCEL_REMAINS,
                                       CHANGE_DETECTION_SEVERAL_PARCELS,
                                       CHANGE_DETECTION_NULL_PARCEL,
                                       PARCEL_STATUS,
-                                      PARCEL_STATUS_DISPLAY)
+                                      PARCEL_STATUS_DISPLAY,
+                                      PLOT_GEOMETRY_KEY)
 
 from ...config.table_mapping_config import (PLOT_TABLE,
                                             PARCEL_TABLE,
@@ -77,6 +82,9 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
 
         self.parcel_panel = None
         self.lst_parcel_panels = list()
+
+        self.party_panel = None
+        self.lst_party_panels = list()
 
     def add_layers(self):
         self.utils.add_layers()
@@ -120,6 +128,20 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.parcel_panel = ChangesPerParcelPanelWidget(self, self.utils, parcel_number)
         self.widget.showPanel(self.parcel_panel)
         self.lst_parcel_panels.append(self.parcel_panel)
+
+    def show_party_panel(self, data):
+        if self.lst_party_panels:
+            for panel in self.lst_party_panels:
+                try:
+                    self.widget.closePanel(panel)
+                except RuntimeError as e:  # Panel in C++ could be already closed...
+                    pass
+
+            self.lst_party_panels = list()
+
+        self.party_panel = ChangesPartyPanelWidget(self, self.utils, data)
+        self.widget.showPanel(self.party_panel)
+        self.lst_party_panels.append(self.party_panel)
 
     def update_db_connection(self, db, ladm_col_db):
         self.close_dock_widget()  # The user needs to use the menus again, which will start everything from scratch
@@ -231,6 +253,7 @@ class ChangeDetectionUtils(QObject):
                     self._official_layers[layer_name]['layer'].willBeDeleted.connect(self.change_detection_layer_removed)
 
     def get_compared_parcels_data(self, inverse=False):
+        # If it's the first call, get from the DB, else get from a cache
         if inverse:
             if not self._compared_parcels_data_inverse:
                 self._compared_parcels_data_inverse = self._get_compared_parcels_data(inverse)
@@ -257,34 +280,95 @@ class ChangeDetectionUtils(QObject):
         dict_official_parcels = self.ladm_data.get_parcel_data_to_compare_changes(compare_db, None)
 
         dict_compared_parcel_data = dict()
-        for collected_parcel_number, collected_attrs in dict_collected_parcels.items():
+        for collected_parcel_number, collected_features in dict_collected_parcels.items():
             dict_attrs_comparison = dict()
 
             if not collected_parcel_number: # NULL parcel numbers
-                dict_attrs_comparison[PARCEL_NUMBER_FIELD] = 'NULL'
-                dict_attrs_comparison[ID_FIELD] = [attr[ID_FIELD] for attr in collected_attrs]
+                dict_attrs_comparison[PARCEL_NUMBER_FIELD] = NULL
+                dict_attrs_comparison[ID_FIELD] = [feature[ID_FIELD] for feature in collected_features]
                 dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_NULL_PARCEL
-                dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = "({})".format(len(collected_attrs))
+                dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = "({})".format(len(collected_features))
             else:
                 # A parcel number has at least one dict of attributes (i.e., one feature)
                 dict_attrs_comparison[PARCEL_NUMBER_FIELD] = collected_parcel_number
-                dict_attrs_comparison[ID_FIELD] = [attr[ID_FIELD] for attr in collected_attrs]
+                dict_attrs_comparison[ID_FIELD] = [feature[ID_FIELD] for feature in collected_features]
 
-                if len(collected_attrs) > 1:
+                if len(collected_features) > 1:
                     dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_SEVERAL_PARCELS
-                    dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = "({})".format(len(collected_attrs))
-                else:
+                    dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = "({})".format(len(collected_features))
+                else:  # Only one feature, at this point is safe to call the first element ([0]) of the array
                     if not collected_parcel_number in dict_official_parcels:
                         dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_NEW_PARCEL
                         dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = CHANGE_DETECTION_NEW_PARCEL
                     else:
-                        official_attrs = dict_official_parcels[collected_parcel_number]
+                        official_features = dict_official_parcels[collected_parcel_number]
 
-                        del collected_attrs[0][ID_FIELD]
-                        del official_attrs[0][ID_FIELD]
-                        dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_PARCEL_REMAINS if collected_attrs[0] == official_attrs[0] else CHANGE_DETECTION_PARCEL_CHANGED
-                        dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = CHANGE_DETECTION_PARCEL_REMAINS if collected_attrs[0] == official_attrs[0] else CHANGE_DETECTION_PARCEL_CHANGED
+                        del collected_features[0][ID_FIELD]  # We won't compare ID_FIELDS
+                        del official_features[0][ID_FIELD]  # We won't compare ID_FIELDS
 
-            dict_compared_parcel_data[collected_parcel_number or 'NULL'] = dict_attrs_comparison
+                        # Compare all attributes except geometry: a change in feature attrs is enough to mark it as
+                        #   changed in the summary panel
+                        if not self.compare_features_attrs(collected_features[0], official_features[0]):
+                            dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_PARCEL_CHANGED
+                            dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = CHANGE_DETECTION_PARCEL_CHANGED
+                        else:  # Attrs are equal, what about geometries?
+                            collected_geometry = QgsGeometry()
+                            official_geometry = QgsGeometry()
+                            if PLOT_GEOMETRY_KEY in collected_features[0]:
+                                collected_geometry = collected_features[0][PLOT_GEOMETRY_KEY]
+                            if PLOT_GEOMETRY_KEY in official_features[0]:
+                                official_geometry = official_features[0][PLOT_GEOMETRY_KEY]
+
+                            if not self.compare_features_geometries(collected_geometry, official_geometry):
+                                dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED
+                                dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED
+                            else:  # Attrs and geometry are the same!
+                                dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_PARCEL_REMAINS
+                                dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = CHANGE_DETECTION_PARCEL_REMAINS
+
+            dict_compared_parcel_data[collected_parcel_number or NULL] = dict_attrs_comparison
 
         return dict_compared_parcel_data
+
+    def compare_features_attrs(self, collected, official):
+        """
+        Compare all alphanumeric attibutes for two custom feature dicts
+
+        :param collected: Dict with parcel info defined in PARCEL_FIELDS_TO_COMPARE, PARTY_FIELDS_TO_COMPARE,
+                          PLOT_FIELDS_TO_COMPARE, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
+        :param official: Dict with parcel info defined in PARCEL_FIELDS_TO_COMPARE, PARTY_FIELDS_TO_COMPARE,
+                          PLOT_FIELDS_TO_COMPARE, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
+        :return: True means equal, False unequal
+        """
+        if len(collected) != len(official):
+            return False
+
+        for k,v in collected.items():
+            if k != PLOT_GEOMETRY_KEY:
+                if v != official[k]:
+                    return False
+
+        return True
+
+    def compare_features_geometries(self, geometry_a, geometry_b):
+        """
+        Function to compare two plot geometries:
+            First compare bboxes, if equal compare centroids, if equal use QGIS equals() function.
+
+        :param geometry_a: QgsGeometry
+        :param geometry_b: QgsGeometry
+        :return: True means equal, False unequal
+        """
+        if not geometry_a.isGeosValid() and not geometry_b.isGeosValid():
+            return True
+
+        if geometry_a.boundingBox() != geometry_b.boundingBox():
+            return False
+
+        if not geometry_a.centroid().equals(geometry_b.centroid()):
+            return False
+
+        if not geometry_a.equals(geometry_b):
+            return False
+
+        return True

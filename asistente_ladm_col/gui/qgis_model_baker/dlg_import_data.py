@@ -86,7 +86,7 @@ class DialogImportData(QDialog, DIALOG_UI):
                                file_filter=QCoreApplication.translate("DialogImportData",'Transfer File (*.xtf *.itf);;Catalogue File (*.xml *.xls *.xlsx)')))
 
         self.validators = Validators()
-        self.xtf_file_line_edit.setPlaceholderText(QCoreApplication.translate("DialogImportData", "[Name of the XTF to be created]"))
+        self.xtf_file_line_edit.setPlaceholderText(QCoreApplication.translate("DialogImportData", "[Name of the XTF to be imported]"))
         fileValidator = FileValidator(pattern=['*.xtf', '*.itf', '*.xml'])
         self.xtf_file_line_edit.setValidator(fileValidator)
         self.xtf_file_line_edit.textChanged.connect(self.update_import_models)
