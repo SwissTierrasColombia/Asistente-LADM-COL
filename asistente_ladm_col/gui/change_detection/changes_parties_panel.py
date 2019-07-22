@@ -78,11 +78,17 @@ class ChangesPartyPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def fill_table(self):
         self.tbl_changes_parties.clearContents()
-        self.tbl_changes_parties.setRowCount(max(len(self.data[COLLECTED_DB_SOURCE]), len(self.data[OFFICIAL_DB_SOURCE])))  # t_id shouldn't be counted
+        number_of_official_rows = len(self.data[OFFICIAL_DB_SOURCE]) if self.data[OFFICIAL_DB_SOURCE] != NULL else 0
+        self.tbl_changes_parties.setRowCount(max(len(self.data[COLLECTED_DB_SOURCE]) if self.data[COLLECTED_DB_SOURCE] != NULL else 0,
+                                             number_of_official_rows))  # t_id shouldn't be counted
         self.tbl_changes_parties.setSortingEnabled(False)
 
-        sorted_official_parties = sorted(self.data[OFFICIAL_DB_SOURCE], key=lambda item: item[COL_PARTY_DOCUMENT_ID_FIELD])
-        sorted_collected_parties = sorted(self.data[COLLECTED_DB_SOURCE], key=lambda item: item[COL_PARTY_DOCUMENT_ID_FIELD])
+        sorted_official_parties = list()
+        sorted_collected_parties = list()
+        if self.data[OFFICIAL_DB_SOURCE] != NULL:
+            sorted_official_parties = sorted(self.data[OFFICIAL_DB_SOURCE], key=lambda item: item[COL_PARTY_DOCUMENT_ID_FIELD])
+        if self.data[COLLECTED_DB_SOURCE] != NULL:
+            sorted_collected_parties = sorted(self.data[COLLECTED_DB_SOURCE], key=lambda item: item[COL_PARTY_DOCUMENT_ID_FIELD])
 
         for row, official_party in enumerate(sorted_official_parties):
             collected_party_pair = {}
@@ -95,7 +101,7 @@ class ChangesPartyPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.fill_item(official_party, collected_party_pair, row)
 
         for row, collected_party in enumerate(sorted_collected_parties):
-            self.fill_item({}, collected_party, row + self.tbl_changes_parties.rowCount() - 1)
+            self.fill_item({}, collected_party, row + number_of_official_rows)
 
         self.tbl_changes_parties.setSortingEnabled(True)
 

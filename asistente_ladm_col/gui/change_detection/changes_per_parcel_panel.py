@@ -228,7 +228,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             del official_attrs[ID_FIELD]  # Remove this line if ID_FIELD is somehow needed
 
         self.tbl_changes_per_parcel.clearContents()
-        self.tbl_changes_per_parcel.setRowCount(len(collected_attrs) or len(official_attrs))  # t_id shouldn't be counted
+        number_of_rows = len(collected_attrs) or len(official_attrs)
+        self.tbl_changes_per_parcel.setRowCount(number_of_rows)  # t_id shouldn't be counted
         self.tbl_changes_per_parcel.setSortingEnabled(False)
 
         field_names = list(collected_attrs.keys()) if collected_attrs else list(official_attrs.keys())
@@ -241,10 +242,11 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
             self.fill_row(field_name, official_value, collected_value, row)
 
-        self.fill_geometry_row(PLOT_GEOMETRY_KEY,
-                                official_attrs[PLOT_GEOMETRY_KEY] if PLOT_GEOMETRY_KEY in official_attrs else QgsGeometry(),
-                                collected_attrs[PLOT_GEOMETRY_KEY] if PLOT_GEOMETRY_KEY in collected_attrs else QgsGeometry(),
-                                self.tbl_changes_per_parcel.rowCount()-1)
+        if number_of_rows:  # At least one row in the table?
+            self.fill_geometry_row(PLOT_GEOMETRY_KEY,
+                               official_attrs[PLOT_GEOMETRY_KEY] if PLOT_GEOMETRY_KEY in official_attrs else QgsGeometry(),
+                               collected_attrs[PLOT_GEOMETRY_KEY] if PLOT_GEOMETRY_KEY in collected_attrs else QgsGeometry(),
+                               number_of_rows - 1)
 
         self.tbl_changes_per_parcel.setSortingEnabled(True)
 
