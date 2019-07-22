@@ -22,7 +22,8 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.core import (QgsVectorLayer,
                        QgsWkbTypes,
                        Qgis,
-                       NULL)
+                       NULL,
+                       QgsGeometry)
 from qgis.gui import QgsDockWidget, QgsMapToolIdentifyFeature
 
 from asistente_ladm_col.gui.change_detection.changes_all_parcels_panel import ChangesAllParcelsPanelWidget
@@ -310,8 +311,15 @@ class ChangeDetectionUtils(QObject):
                         if not self.compare_features_attrs(collected_features[0], official_features[0]):
                             dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_PARCEL_CHANGED
                             dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = CHANGE_DETECTION_PARCEL_CHANGED
-                        else:  # Atrts are equal, what about geometries?
-                            if not self.compare_features_geometries(collected_features[0][PLOT_GEOMETRY_KEY], official_features[0][PLOT_GEOMETRY_KEY]):
+                        else:  # Attrs are equal, what about geometries?
+                            collected_geometry = QgsGeometry()
+                            official_geometry = QgsGeometry()
+                            if PLOT_GEOMETRY_KEY in collected_features[0]:
+                                collected_geometry = collected_features[0][PLOT_GEOMETRY_KEY]
+                            if PLOT_GEOMETRY_KEY in official_features[0]:
+                                official_geometry = official_features[0][PLOT_GEOMETRY_KEY]
+
+                            if not self.compare_features_geometries(collected_geometry, official_geometry):
                                 dict_attrs_comparison[PARCEL_STATUS] = CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED
                                 dict_attrs_comparison[PARCEL_STATUS_DISPLAY] = CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED
                             else:  # Attrs and geometry are the same!

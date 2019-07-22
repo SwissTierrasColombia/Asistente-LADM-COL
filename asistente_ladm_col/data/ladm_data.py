@@ -68,7 +68,7 @@ PARCEL_FIELDS_TO_COMPARE = [PARCEL_NUMBER_FIELD,
                             #NUPRE_FIELD,
                             PARCEL_TYPE_FIELD]
 
-PARTY_FIELDS_TO_COMPARE = [COL_PARTY_DOC_TYPE_FIELD,
+PARTY_FIELDS_TO_COMPARE = [COL_PARTY_DOC_TYPE_FIELD,  # Right type will also be added to parties
                            DOCUMENT_ID_FIELD,
                            COL_PARTY_NAME_FIELD]
 
@@ -232,7 +232,7 @@ class LADM_DATA():
 
         parcel_features = LADM_DATA.get_features_by_search_criterion(layers[PARCEL_TABLE]['layer'], search_criterion=search_criterion, with_attributes=True)
 
-        # ===================== Start add parcel info ==================================================
+        # ===================== Start adding parcel info ==================================================
         dict_features = dict()
         for feature in parcel_features:
             dict_attrs = dict()
@@ -248,12 +248,12 @@ class LADM_DATA():
             else:
                 dict_features[dict_attrs[PARCEL_NUMBER_FIELD]] = [dict_attrs]
 
-        # =====================  Start add plot info ==================================================
+        # =====================  Start adding plot info ==================================================
         parcel_t_ids = [parcel_feature[ID_FIELD] for parcel_feature in parcel_features]
-        expression_uebaunit_features = QgsExpression("{} IN ({})".format(UEBAUNIT_TABLE_PARCEL_FIELD, ",".join([str(id) for id in parcel_t_ids])))
+        expression_uebaunit_features = QgsExpression("{} IN ({}) AND {} IS NOT NULL".format(UEBAUNIT_TABLE_PARCEL_FIELD, ",".join([str(id) for id in parcel_t_ids]), UEBAUNIT_TABLE_PLOT_FIELD))
         uebaunit_features = LADM_DATA.get_features_by_expression(layers[UEBAUNIT_TABLE]['layer'], expression_uebaunit_features, with_attributes=True)
 
-        plot_t_ids = [feature[UEBAUNIT_TABLE_PLOT_FIELD] for feature in uebaunit_features if feature[UEBAUNIT_TABLE_PLOT_FIELD] != NULL]
+        plot_t_ids = [feature[UEBAUNIT_TABLE_PLOT_FIELD] for feature in uebaunit_features]
         expression_plot_features = QgsExpression("{} IN ('{}')".format(ID_FIELD, "','".join([str(id) for id in plot_t_ids])))
         plot_features = LADM_DATA.get_features_by_expression(layers[PLOT_TABLE]['layer'], expression_plot_features, with_attributes=True, with_geometry=True)
 
@@ -273,7 +273,7 @@ class LADM_DATA():
 
                             item[PLOT_GEOMETRY_KEY] = plot_feature.geometry()
 
-        # ===================== Start add party info ==================================================
+        # ===================== Start adding party info ==================================================
         expression_right_features = QgsExpression("{} IN ({})".format(RIGHT_TABLE_PARCEL_FIELD, ",".join([str(id) for id in parcel_t_ids])))
         right_features = LADM_DATA.get_features_by_expression(layers[RIGHT_TABLE]['layer'], expression_right_features, with_attributes=True)
 

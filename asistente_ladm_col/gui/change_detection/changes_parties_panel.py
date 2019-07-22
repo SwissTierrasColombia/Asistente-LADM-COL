@@ -22,7 +22,7 @@ import qgis
 
 from qgis.PyQt.QtGui import QMouseEvent
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QEvent, QPoint
-from qgis.PyQt.QtWidgets import QTableWidgetItem
+from qgis.PyQt.QtWidgets import QTableWidgetItem, QTextEdit
 from qgis.core import (QgsWkbTypes,
                        Qgis,
                        QgsMessageLog,
@@ -49,7 +49,10 @@ from asistente_ladm_col.config.table_mapping_config import (PARCEL_NUMBER_FIELD,
                                                             PLOT_TABLE,
                                                             UEBAUNIT_TABLE,
                                                             COL_PARTY_TABLE,
-                                                            DICT_PLURAL)
+                                                            DICT_PLURAL,
+                                                            COL_PARTY_DOC_TYPE_FIELD,
+                                                            DOCUMENT_ID_FIELD,
+                                                            COL_PARTY_NAME_FIELD)
 from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_parties_panel_widget.ui')
@@ -81,7 +84,6 @@ class ChangesPartyPanelWidget(QgsPanelWidget, WIDGET_UI):
         sorted_official_parties = sorted(self.data[OFFICIAL_DB_SOURCE], key=lambda item: item[COL_PARTY_DOCUMENT_ID_FIELD])
         sorted_collected_parties = sorted(self.data[COLLECTED_DB_SOURCE], key=lambda item: item[COL_PARTY_DOCUMENT_ID_FIELD])
 
-        print("before", sorted_official_parties, sorted_collected_parties)
         for row, official_party in enumerate(sorted_official_parties):
             collected_party_pair = {}
             for collected_party in sorted_collected_parties:
@@ -92,18 +94,26 @@ class ChangesPartyPanelWidget(QgsPanelWidget, WIDGET_UI):
 
             self.fill_item(official_party, collected_party_pair, row)
 
-        print("after", sorted_official_parties, sorted_collected_parties)
         for row, collected_party in enumerate(sorted_collected_parties):
             self.fill_item({}, collected_party, row + self.tbl_changes_parties.rowCount() - 1)
 
         self.tbl_changes_parties.setSortingEnabled(True)
 
     def fill_item(self, official_party, collected_party, row):
-        item = QTableWidgetItem(str(official_party))
-        self.tbl_changes_parties.setItem(row, 0, item)
-
-        item = QTableWidgetItem(str(collected_party))
-        self.tbl_changes_parties.setItem(row, 1, item)
+        self.tbl_changes_parties.setCellWidget(row, 0, self.get_widget_with_party_info_formatted(official_party))
+        self.tbl_changes_parties.setCellWidget(row, 1, self.get_widget_with_party_info_formatted(collected_party))
 
         self.tbl_changes_parties.setItem(row, 2, QTableWidgetItem())
         self.tbl_changes_parties.item(row, 2).setBackground(Qt.green if official_party == collected_party else Qt.red)
+
+    def get_widget_with_party_info_formatted(self, party_info):
+        widget = QTextEdit()
+
+        if party_info:
+            html = list()
+            html.append("<b>{}</b>".format(party_info[COL_PARTY_NAME_FIELD]))
+            html.append("<i>{}</i>: <b>{}</b>".format(party_info[COL_PARTY_DOC_TYPE_FIELD], party_info[DOCUMENT_ID_FIELD]))
+            html.append("<i>Derecho</i>: <b>{}</b>".format(party_info['derecho']))
+            widget.setHtml("<br>".join(html))
+
+        return widget

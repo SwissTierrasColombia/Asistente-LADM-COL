@@ -232,7 +232,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.tbl_changes_per_parcel.setSortingEnabled(False)
 
         field_names = list(collected_attrs.keys()) if collected_attrs else list(official_attrs.keys())
-        field_names.remove(PLOT_GEOMETRY_KEY)  # We'll handle plot geometry separately
+        if PLOT_GEOMETRY_KEY in field_names:
+            field_names.remove(PLOT_GEOMETRY_KEY)  # We'll handle plot geometry separately
 
         for row, field_name in enumerate(field_names):
             official_value = official_attrs[field_name] if field_name in official_attrs else NULL
