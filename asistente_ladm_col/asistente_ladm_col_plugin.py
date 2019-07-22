@@ -241,7 +241,11 @@ class AsistenteLADMCOLPlugin(QObject):
         # Refresh menus on QGIS start
         db = self.get_db_connection()
         res, msg = db.test_connection()
-        self.refresh_menus(db, res)
+        if res:
+            self.refresh_menus(db, res)
+        else:  # Show by default all model creation tools
+            self.add_property_record_card_menu()
+            self.add_valuation_menu()
 
     def add_data_management_menu(self):
         self._data_management_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data Management"), self._menu)
