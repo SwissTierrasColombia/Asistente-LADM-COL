@@ -98,6 +98,14 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         self.progress.setVisible(False)
         self.restore_settings()
 
+        self.txt_file_path_r2.setDisabled(True)
+        self.txt_file_path_registry.setDisabled(True)
+        self.btn_browse_file_r2.setDisabled(True)
+        self.btn_browse_file_registry.setDisabled(True)
+
+        self.btn_browse_connection.clicked.connect(self.show_settings)
+        self.update_connection_info()
+
         self.btn_browse_file_r1.clicked.connect(
             make_file_selector(self.txt_file_path_r1, QCoreApplication.translate("DialogImportFromExcel",
                         "Select the Excel file with data in the intermediate structure"), 
@@ -119,7 +127,7 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         self.mapping_fields_gbb()
 
     def load_r1(self):
-        self.progress.setVisible(True)
+        #self.progress.setVisible(True)
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading R1 tables..."))
         self.layer_r1 = QgsVectorLayer(self.txt_file_path_r1.text(), 'R1_IGAC', 'ogr')
         QgsProject.instance().addMapLayer(self.layer_r1)
@@ -168,7 +176,7 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
     def mapping_fields_r1(self):
         steps = 29
         step = 0
-        self.progress.setVisible(True)
+
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_PARCEL)))
         query = "select * from {} group by NoPredial&nogeometry".format(self.layer_r1.name())
         input_data = QgsVectorLayer( "?query={}".format(query), "vlayer", "virtual")
@@ -348,3 +356,21 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         settings = QSettings()
         self.txt_file_path_r1.setText(settings.value('Asistente-LADM_COL/input_load_field_data_capture/r1_path', ''))
         self.txt_file_path_gdb.setText(settings.value('Asistente-LADM_COL/input_load_field_data_capture/gdb_path', ''))
+
+    def show_settings(self):
+        dlg = self.qgis_utils.get_official_data_settings_dialog()
+        
+        if dlg.exec_():
+            self._db = dlg.get_db_connection()
+            self.update_connection_info()
+
+    def update_connection_info(self):
+        db_description = self._db.get_description_conn_string()
+        if db_description:
+            self.db_connect_label.setText(db_description)
+            self.db_connect_label.setToolTip(self._db.get_display_conn_string())
+            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+        else:
+            self.db_connect_label.setText(QCoreApplication.translate("DialogImportSchema", "The database is not defined!"))
+            self.db_connect_label.setToolTip('')
+            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)

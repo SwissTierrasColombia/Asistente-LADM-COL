@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>651</width>
-    <height>355</height>
+    <height>356</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,11 +45,81 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="1">
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="groupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Official data settings</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="minimumSize">
+             <size>
+              <width>65</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Database:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="db_connect_label">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_browse_connection">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Browse CSV files</string>
+              </property>
+              <property name="text">
+               <string>Connection settings</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0">
         <widget class="QGroupBox" name="gbx_page_3">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -59,7 +129,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
-           <widget class="QLabel" name="label_10">
+           <widget class="QLabel" name="label_r1">
             <property name="minimumSize">
              <size>
               <width>65</width>
@@ -94,7 +164,39 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_9">
+           <widget class="QLabel" name="label_r2">
+            <property name="minimumSize">
+             <size>
+              <width>65</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>R2</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="txt_file_path_r2"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="btn_browse_file_r2">
+            <property name="maximumSize">
+             <size>
+              <width>40</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_gdb">
             <property name="minimumSize">
              <size>
               <width>65</width>
@@ -109,10 +211,10 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="2" column="1">
            <widget class="QLineEdit" name="txt_file_path_gdb"/>
           </item>
-          <item row="1" column="2">
+          <item row="2" column="2">
            <widget class="QPushButton" name="btn_browse_file_gdb">
             <property name="maximumSize">
              <size>
@@ -125,7 +227,39 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="3">
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_registry">
+            <property name="minimumSize">
+             <size>
+              <width>65</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>REGISTRY</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="txt_file_path_registry"/>
+          </item>
+          <item row="3" column="2">
+           <widget class="QPushButton" name="btn_browse_file_registry">
+            <property name="maximumSize">
+             <size>
+              <width>40</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
            <widget class="QLabel" name="txt_log">
             <property name="text">
              <string/>
@@ -138,10 +272,10 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="3">
+          <item row="5" column="0" colspan="3">
            <widget class="QProgressBar" name="progress">
             <property name="value">
-             <number>1</number>
+             <number>0</number>
             </property>
            </widget>
           </item>
