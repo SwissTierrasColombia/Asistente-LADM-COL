@@ -1,6 +1,6 @@
 import nose2
 
-from qgis.core import QgsWkbTypes
+from qgis.core import QgsWkbTypes, NULL
 from qgis.testing import (start_app,
                           unittest)
 
@@ -123,9 +123,9 @@ class TestLADMData(unittest.TestCase):
         features_test = {
             '253940000000000230097000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230097000000000',
                     'nombre': 'SIN INFO',
@@ -133,10 +133,10 @@ class TestLADMData(unittest.TestCase):
                     't_id': 307
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
-                    'fmi': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
+                    'fmi': NULL,
                     'numero_predial': '253940000000000230097000000000',
                     'nombre': 'Santa Lucía',
                     'tipo': 'NPH',
@@ -145,9 +145,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230098000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230098000000000',
                     'nombre': 'Santa Lucía',
@@ -157,9 +157,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230072000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-24545',
                     'numero_predial': '253940000000000230072000000000',
                     'nombre': 'El Porvenir',
@@ -169,9 +169,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230074000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-1527',
                     'numero_predial': '253940000000000230074000000000',
                     'nombre': 'Tudelita',
@@ -181,9 +181,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230054000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-3652',
                     'numero_predial': '253940000000000230054000000000',
                     'nombre': 'San Pedro',
@@ -193,9 +193,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230257000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-24800',
                     'numero_predial': '253940000000000230257000000000',
                     'nombre': 'Casimiro',
@@ -205,9 +205,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230241000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-8620',
                     'numero_predial': '253940000000000230241000000000',
                     'nombre': 'SIN INFO',
@@ -215,9 +215,9 @@ class TestLADMData(unittest.TestCase):
                     't_id': 315
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-8620',
                     'numero_predial': '253940000000000230241000000000',
                     'nombre': 'SIN INFO',
@@ -225,9 +225,9 @@ class TestLADMData(unittest.TestCase):
                     't_id': 316
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-8620',
                     'numero_predial': '253940000000000230241000000000',
                     'nombre': 'SIN INFO',
@@ -235,9 +235,9 @@ class TestLADMData(unittest.TestCase):
                     't_id': 319
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-8620',
                     'numero_predial': '253940000000000230241000000000',
                     'nombre': 'SIN INFO',
@@ -245,9 +245,9 @@ class TestLADMData(unittest.TestCase):
                     't_id': 320
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-8620',
                     'numero_predial': '253940000000000230241000000000',
                     'nombre': 'SIN INFO',
@@ -255,9 +255,9 @@ class TestLADMData(unittest.TestCase):
                     't_id': 326
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-8620',
                     'numero_predial': '253940000000000230241000000000',
                     'nombre': 'Tudela Juntas',
@@ -265,9 +265,9 @@ class TestLADMData(unittest.TestCase):
                     't_id': 327
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-8620',
                     'numero_predial': '253940000000000230241000000000',
                     'nombre': 'SIN INFO',
@@ -275,9 +275,9 @@ class TestLADMData(unittest.TestCase):
                     't_id': 328
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-8620',
                     'numero_predial': '253940000000000230241000000000',
                     'nombre': 'El Tigre',
@@ -285,9 +285,9 @@ class TestLADMData(unittest.TestCase):
                     't_id': 344
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-8620',
                     'numero_predial': '253940000000000230241000000000',
                     'nombre': 'SIN INFO',
@@ -295,9 +295,9 @@ class TestLADMData(unittest.TestCase):
                     't_id': 345
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-8620',
                     'numero_predial': '253940000000000230241000000000',
                     'nombre': 'Mardoqueo',
@@ -305,9 +305,9 @@ class TestLADMData(unittest.TestCase):
                     't_id': 346
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-8620',
                     'numero_predial': '253940000000000230241000000000',
                     'nombre': 'Angel',
@@ -315,9 +315,9 @@ class TestLADMData(unittest.TestCase):
                     't_id': 347
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230241000000000',
                     'nombre': 'SIN INFO',
@@ -337,9 +337,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230235000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-15137',
                     'numero_predial': '253940000000000230235000000000',
                     'nombre': 'Los Naranjos',
@@ -349,9 +349,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230254000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-18982',
                     'numero_predial': '253940000000000230254000000000',
                     'nombre': 'El Muche',
@@ -361,9 +361,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230242000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-15523',
                     'numero_predial': '253940000000000230242000000000',
                     'nombre': 'El Guamal',
@@ -373,9 +373,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230055000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '103002700241600084',
                     'numero_predial': '253940000000000230055000000000',
                     'nombre': 'El Volador',
@@ -385,9 +385,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230056000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230056000000000',
                     'nombre': 'El Volador',
@@ -395,9 +395,9 @@ class TestLADMData(unittest.TestCase):
                     't_id': 323
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230056000000000',
                     'nombre': 'El Almorzadero',
@@ -407,9 +407,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230057000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-21463',
                     'numero_predial': '253940000000000230057000000000',
                     'nombre': 'SIN INFO',
@@ -419,9 +419,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230234000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-15166',
                     'numero_predial': '253940000000000230234000000000',
                     'nombre': 'SIN INFO',
@@ -429,9 +429,9 @@ class TestLADMData(unittest.TestCase):
                     't_id': 329
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-15166',
                     'numero_predial': '253940000000000230234000000000',
                     'nombre': 'SIN INFO',
@@ -441,9 +441,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230213000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-9028',
                     'numero_predial': '253940000000000230213000000000',
                     'nombre': 'El Volador',
@@ -453,9 +453,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230068000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-8114',
                     'numero_predial': '253940000000000230068000000000',
                     'nombre': 'Tudelita',
@@ -465,9 +465,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230101000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230101000000000',
                     'nombre': 'Santa Lucia',
@@ -477,9 +477,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230100000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230100000000000',
                     'nombre': 'SIN INFO',
@@ -489,9 +489,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230099000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '10302400719A670000',
                     'numero_predial': '253940000000000230099000000000',
                     'nombre': 'Santa Lucia',
@@ -501,9 +501,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230069000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '102042200446620144',
                     'numero_predial': '253940000000000230069000000000',
                     'nombre': 'Las Juntas',
@@ -513,9 +513,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230070000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '201023900285580000',
                     'numero_predial': '253940000000000230070000000000',
                     'nombre': 'Bellavista',
@@ -525,9 +525,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230082000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230082000000000',
                     'nombre': 'Santa Lucia',
@@ -537,9 +537,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230081000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230081000000000',
                     'nombre': 'Santa Lucia',
@@ -549,9 +549,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230080000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230080000000000',
                     'nombre': 'Santa Lucia',
@@ -561,9 +561,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230079000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230079000000000',
                     'nombre': 'Santa Lucia',
@@ -573,9 +573,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230078000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230078000000000',
                     'nombre': 'Santa Lucia',
@@ -585,9 +585,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230077000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230077000000000',
                     'nombre': 'SIN INFO',
@@ -597,9 +597,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000320022000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000320022000000000',
                     'nombre': 'Escuela Alto de Izacar',
@@ -609,9 +609,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230076000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230076000000000',
                     'nombre': 'Santa Lucia',
@@ -619,63 +619,63 @@ class TestLADMData(unittest.TestCase):
                     't_id': 350
                 }
             ],
-            '': [
+            NULL: [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
-                    'numero_predial': '',
+                    'numero_predial': NULL,
                     'nombre': 'Camino',
                     'tipo': 'NPH',
                     't_id': 351
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
-                    'numero_predial': '',
+                    'numero_predial': NULL,
                     'nombre': 'Camino',
                     'tipo': 'NPH',
                     't_id': 352
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
-                    'numero_predial': '',
+                    'numero_predial': NULL,
                     'nombre': 'Vía Interveredal',
                     'tipo': 'NPH',
                     't_id': 353
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
-                    'numero_predial': '',
+                    'numero_predial': NULL,
                     'nombre': 'Bajo',
                     'tipo': 'NPH',
                     't_id': 354
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
-                    'fmi': '',
-                    'numero_predial': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
+                    'fmi': NULL,
+                    'numero_predial': NULL,
                     'nombre': 'Apartamento 101',
                     'tipo': 'PropiedadHorizontal.UnidadPredial',
                     't_id': 356
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
-                    'fmi': '',
-                    'numero_predial': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
+                    'fmi': NULL,
+                    'numero_predial': NULL,
                     'nombre': 'Apartamento 202',
                     'tipo': 'PropiedadHorizontal.UnidadPredial',
                     't_id': 357
@@ -702,9 +702,9 @@ class TestLADMData(unittest.TestCase):
         features_test = {
             '253940000000000230054000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': '167-3652',
                     'numero_predial': '253940000000000230054000000000',
                     'nombre': 'San Pedro',
@@ -720,9 +720,9 @@ class TestLADMData(unittest.TestCase):
         features_test = {
             '253940000000000230097000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230097000000000',
                     'nombre': 'SIN INFO',
@@ -732,9 +732,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230098000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230098000000000',
                     'nombre': 'Santa Lucía',
@@ -744,9 +744,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230241000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230241000000000',
                     'nombre': 'SIN INFO',
@@ -756,9 +756,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230056000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230056000000000',
                     'nombre': 'El Volador',
@@ -766,9 +766,9 @@ class TestLADMData(unittest.TestCase):
                     't_id': 323
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230056000000000',
                     'nombre': 'El Almorzadero',
@@ -778,9 +778,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230101000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230101000000000',
                     'nombre': 'Santa Lucia',
@@ -790,9 +790,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230100000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230100000000000',
                     'nombre': 'SIN INFO',
@@ -802,9 +802,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230082000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230082000000000',
                     'nombre': 'Santa Lucia',
@@ -814,9 +814,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230081000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230081000000000',
                     'nombre': 'Santa Lucia',
@@ -826,9 +826,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230080000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230080000000000',
                     'nombre': 'Santa Lucia',
@@ -838,9 +838,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230079000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230079000000000',
                     'nombre': 'Santa Lucia',
@@ -850,9 +850,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230078000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230078000000000',
                     'nombre': 'Santa Lucia',
@@ -862,9 +862,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230077000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230077000000000',
                     'nombre': 'SIN INFO',
@@ -874,9 +874,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000320022000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000320022000000000',
                     'nombre': 'Escuela Alto de Izacar',
@@ -886,9 +886,9 @@ class TestLADMData(unittest.TestCase):
             ],
             '253940000000000230076000000000': [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
                     'numero_predial': '253940000000000230076000000000',
                     'nombre': 'Santa Lucia',
@@ -896,43 +896,43 @@ class TestLADMData(unittest.TestCase):
                     't_id': 350
                 }
             ],
-            '': [
+            NULL: [
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
-                    'numero_predial': '',
+                    'numero_predial': NULL,
                     'nombre': 'Camino',
                     'tipo': 'NPH',
                     't_id': 351
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
-                    'numero_predial': '',
+                    'numero_predial': NULL,
                     'nombre': 'Camino',
                     'tipo': 'NPH',
                     't_id': 352
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
-                    'numero_predial': '',
+                    'numero_predial': NULL,
                     'nombre': 'Vía Interveredal',
                     'tipo': 'NPH',
                     't_id': 353
                 },
                 {
-                    'departamento': '',
-                    'municipio': '',
-                    'zona': '',
+                    'departamento': NULL,
+                    'municipio': NULL,
+                    'zona': NULL,
                     'fmi': 'SIN INFO',
-                    'numero_predial': '',
+                    'numero_predial': NULL,
                     'nombre': 'Bajo',
                     'tipo': 'NPH',
                     't_id': 354

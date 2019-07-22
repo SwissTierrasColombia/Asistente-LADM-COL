@@ -29,7 +29,9 @@ from qgis.core import (QgsWkbTypes,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsExpression,
-                       QgsRectangle)
+                       QgsRectangle,
+                       QgsGeometry,
+                       NULL)
 
 from qgis.gui import QgsPanelWidget
 from ...config.symbology import OFFICIAL_STYLE_GROUP
@@ -37,11 +39,19 @@ from asistente_ladm_col.config.general_config import (OFFICIAL_DB_PREFIX,
                                                       OFFICIAL_DB_SUFFIX,
                                                       PREFIX_LAYER_MODIFIERS,
                                                       SUFFIX_LAYER_MODIFIERS,
-                                                      STYLE_GROUP_LAYER_MODIFIERS)
+                                                      STYLE_GROUP_LAYER_MODIFIERS,
+                                                      OFFICIAL_DB_SOURCE,
+                                                      COLLECTED_DB_SOURCE,
+                                                      PLOT_GEOMETRY_KEY)
 from asistente_ladm_col.config.table_mapping_config import (PARCEL_NUMBER_FIELD,
                                                             PARCEL_NUMBER_BEFORE_FIELD,
                                                             FMI_FIELD,
-                                                            ID_FIELD, PARCEL_TABLE, PLOT_TABLE, UEBAUNIT_TABLE)
+                                                            ID_FIELD,
+                                                            PARCEL_TABLE,
+                                                            PLOT_TABLE,
+                                                            UEBAUNIT_TABLE,
+                                                            COL_PARTY_TABLE,
+                                                            DICT_PLURAL)
 from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_per_parcel_panel_widget.ui')
@@ -61,6 +71,10 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.utils.add_layers()
         self.fill_combos()
 
+        # Remove selection in plot layers
+        self.utils._layers[PLOT_TABLE]['layer'].removeSelection()
+        self.utils._official_layers[PLOT_TABLE]['layer'].removeSelection()
+
         self.tab_plot_options.setTabEnabled(0, False)
 
         # Set connections
@@ -68,6 +82,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.chk_show_all_plots.toggled.connect(self.show_all_plots)
         self.cbo_parcel_fields.currentIndexChanged.connect(self.search_field_updated)
         self.panelAccepted.connect(self.initialize_tools_and_layers)
+        self.tbl_changes_per_parcel.itemDoubleClicked.connect(self.call_party_panel)
 
         self.initialize_field_values_line_edit()
         self.initialize_tools_and_layers()
@@ -75,6 +90,13 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         if parcel_number is not None:  # Do a search!
             self.txt_alphanumeric_query.setValue(parcel_number)
             self.search_data(parcel_number=parcel_number)
+
+    def call_party_panel(self, item):
+        row = item.row()
+        if self.tbl_changes_per_parcel.item(row, 0).text() == DICT_PLURAL[COL_PARTY_TABLE]:
+            data = {OFFICIAL_DB_SOURCE: self.tbl_changes_per_parcel.item(row, 1).data(Qt.UserRole),
+                    COLLECTED_DB_SOURCE: self.tbl_changes_per_parcel.item(row, 2).data(Qt.UserRole)}
+            self.parent.show_party_panel(data)
 
     def search_field_updated(self, index=None):
         self.initialize_field_values_line_edit()
@@ -181,7 +203,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         # Once the query is done, activate the checkbox to alternate all plots/only selected plot
         self.chk_show_all_plots.setEnabled(True)
 
-    def fill_table(self, search_criterion):  # Shouldn't handle 'inverse' mode
+    def fill_table(self, search_criterion):  # Shouldn't handle 'inverse' mode as we won't switch table columns at runtime
         dict_collected_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._db, search_criterion)
 
         # Custom layer modifiers
@@ -190,7 +212,6 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
             STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
         }
-
         dict_official_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._official_db, search_criterion, layer_modifiers=layer_modifiers)
 
         # Before filling the table we make sure we get one and only one parcel attrs dict
@@ -203,35 +224,89 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         official_attrs = dict()
         if dict_official_parcels:
             official_parcel_number = list(dict_official_parcels.keys())[0]
-            official_attrs = dict_official_parcels[official_parcel_number][0] if dict_official_parcels else []
+            official_attrs = dict_official_parcels[official_parcel_number][0]
             del official_attrs[ID_FIELD]  # Remove this line if ID_FIELD is somehow needed
 
         self.tbl_changes_per_parcel.clearContents()
-        self.tbl_changes_per_parcel.setRowCount(len(collected_attrs) or len(official_attrs))  # t_id shouldn't be counted
+        number_of_rows = len(collected_attrs) or len(official_attrs)
+        self.tbl_changes_per_parcel.setRowCount(number_of_rows)  # t_id shouldn't be counted
         self.tbl_changes_per_parcel.setSortingEnabled(False)
 
         field_names = list(collected_attrs.keys()) if collected_attrs else list(official_attrs.keys())
+        if PLOT_GEOMETRY_KEY in field_names:
+            field_names.remove(PLOT_GEOMETRY_KEY)  # We'll handle plot geometry separately
 
         for row, field_name in enumerate(field_names):
-            item = QTableWidgetItem(field_name)
-            # item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
-            self.tbl_changes_per_parcel.setItem(row, 0, item)
+            official_value = official_attrs[field_name] if field_name in official_attrs else NULL
+            collected_value = collected_attrs[field_name] if field_name in collected_attrs else NULL
 
-            official_value = official_attrs[field_name] if field_name in official_attrs else ''
-            collected_value = collected_attrs[field_name] if field_name in collected_attrs else ''
+            self.fill_row(field_name, official_value, collected_value, row)
 
-            item = QTableWidgetItem(str(official_value))
+        if number_of_rows:  # At least one row in the table?
+            self.fill_geometry_row(PLOT_GEOMETRY_KEY,
+                               official_attrs[PLOT_GEOMETRY_KEY] if PLOT_GEOMETRY_KEY in official_attrs else QgsGeometry(),
+                               collected_attrs[PLOT_GEOMETRY_KEY] if PLOT_GEOMETRY_KEY in collected_attrs else QgsGeometry(),
+                               number_of_rows - 1)
+
+        self.tbl_changes_per_parcel.setSortingEnabled(True)
+
+    def fill_row(self, field_name, official_value, collected_value, row):
+        item = QTableWidgetItem(field_name)
+        # item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
+        self.tbl_changes_per_parcel.setItem(row, 0, item)
+
+        if field_name == DICT_PLURAL[COL_PARTY_TABLE]:  # Parties
+            item = self.fill_party_item(official_value)
+            self.tbl_changes_per_parcel.setItem(row, 1, item)
+
+            item = self.fill_party_item(collected_value)
+            self.tbl_changes_per_parcel.setItem(row, 2, item)
+
+            self.tbl_changes_per_parcel.setItem(row, 3, QTableWidgetItem())
+            self.tbl_changes_per_parcel.item(row, 3).setBackground(Qt.green if official_value == collected_value else Qt.red)
+        else:
+            item = QTableWidgetItem(str(official_value) if official_value != NULL else '')
             #item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
             self.tbl_changes_per_parcel.setItem(row, 1, item)
 
-            item = QTableWidgetItem(str(collected_value))
+            item = QTableWidgetItem(str(collected_value) if collected_value != NULL else '')
             # item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
             self.tbl_changes_per_parcel.setItem(row, 2, item)
 
             self.tbl_changes_per_parcel.setItem(row, 3, QTableWidgetItem())
             self.tbl_changes_per_parcel.item(row, 3).setBackground(Qt.green if official_value == collected_value else Qt.red)
 
-        self.tbl_changes_per_parcel.setSortingEnabled(True)
+    def fill_party_item(self, value):
+        # Party's info comes in a list or a list of lists if it's a group party
+        display_value = ''
+
+        if value != NULL:
+            if type(value) is list and value:
+                display_value = "{} {}".format(len(value),
+                                               QCoreApplication.translate("DockWidgetChanges", "parties") if len(value)>1 else QCoreApplication.translate("DockWidgetChanges", "party"))
+        #else:
+        #    display_value = QCoreApplication.translate("DockWidgetChanges", "0 parties")
+
+        item = QTableWidgetItem(display_value)
+        item.setData(Qt.UserRole, value)
+        return item
+
+    def fill_geometry_row(self, field_name, official_geom, collected_geom, row):
+        self.tbl_changes_per_parcel.setItem(row, 0, QTableWidgetItem(QCoreApplication.translate("DockWidgetChanges", "Geometry")))
+        self.tbl_changes_per_parcel.setItem(row, 1, QTableWidgetItem(self.get_geometry_type_name(official_geom)))
+        self.tbl_changes_per_parcel.setItem(row, 2, QTableWidgetItem(self.get_geometry_type_name(collected_geom)))
+
+        self.tbl_changes_per_parcel.setItem(row, 3, QTableWidgetItem())
+        self.tbl_changes_per_parcel.item(row, 3).setBackground(
+            Qt.green if self.utils.compare_features_geometries(collected_geom, official_geom) else Qt.red)
+
+    def get_geometry_type_name(self, geometry):
+        if geometry.type() == QgsWkbTypes.UnknownGeometry:
+            return ''
+        elif geometry.type() == QgsWkbTypes.PolygonGeometry:
+            return QCoreApplication.translate("DockWidgetChanges", "Polygon")
+        else:
+            return "Type: {}".format(geometry.type())
 
     def alphanumeric_query(self):
         """

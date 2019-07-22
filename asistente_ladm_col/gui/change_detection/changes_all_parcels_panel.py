@@ -19,7 +19,7 @@
 from functools import partial
 
 from qgis.gui import QgsPanelWidget
-from qgis.core import QgsWkbTypes, QgsFeatureRequest, QgsExpression
+from qgis.core import QgsWkbTypes, QgsFeatureRequest, QgsExpression, QgsApplication
 from qgis.PyQt.QtCore import Qt, pyqtSignal, QCoreApplication
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QMenu, QAction
 
@@ -51,9 +51,14 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.tbl_changes_all_parcels.setColumnWidth(0, 270)
 
         self.tbl_changes_all_parcels.itemDoubleClicked.connect(self.call_changes_per_parcel_panel)
+        self.btn_select_all_listed_parcels.clicked.connect(partial(self.select_related_plots_listed, True))
 
         self.tbl_changes_all_parcels.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tbl_changes_all_parcels.customContextMenuRequested.connect(self.show_context_menu)
+
+        # Remove selection in plot layers
+        self.utils._layers[PLOT_TABLE]['layer'].removeSelection()
+        self.utils._official_layers[PLOT_TABLE]['layer'].removeSelection()
 
         self.fill_table(filter_parcels)
 
@@ -61,7 +66,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         if not filter_parcels or (filter_parcels and filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE):
             inverse = False
         else:
-            inverse = True
+            inverse = True  # Take the official db as base db
 
         compared_parcels_data = self.utils.get_compared_parcels_data(inverse)
 
@@ -72,19 +77,20 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         row = 0
         for parcel_number, parcel_attrs in compared_parcels_data.items():
             if not filter_parcels or (filter_parcels and parcel_number in filter_parcels[PARCEL_NUMBER_FIELD]):
-                item = QTableWidgetItem(parcel_number)
-                item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
+                item = QTableWidgetItem(parcel_number) if parcel_number else QTableWidgetItem(QgsApplication.nullRepresentation())
+                item.setData(Qt.UserRole, {ID_FIELD: parcel_attrs[ID_FIELD], 'inverse': inverse})
                 self.tbl_changes_all_parcels.setItem(row, 0, item)
 
                 status = parcel_attrs[PARCEL_STATUS]
                 status_display = parcel_attrs[PARCEL_STATUS_DISPLAY]
                 if filter_parcels:
+                    # If we are on the official DB, "new" parcels are "missing" parcels from the collected db perspective
                     if filter_parcels[SOURCE_DB] == OFFICIAL_DB_SOURCE and parcel_attrs[PARCEL_STATUS_DISPLAY] == CHANGE_DETECTION_NEW_PARCEL:
                         status_display = CHANGE_DETECTION_MISSING_PARCEL
                         status = CHANGE_DETECTION_MISSING_PARCEL
                     
                 item = QTableWidgetItem(status_display)
-                item.setData(Qt.UserRole, parcel_attrs[ID_FIELD])
+                item.setData(Qt.UserRole, {ID_FIELD: parcel_attrs[ID_FIELD], 'inverse': inverse})
                 self.tbl_changes_all_parcels.setItem(row, 1, item)
                 color = STATUS_COLORS[status]
                 self.tbl_changes_all_parcels.item(row, 1).setBackground(color)
@@ -113,18 +119,20 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[PLOT_TABLE]['layer'])
             self.utils.iface.zoomToActiveLayer()
 
+        self.select_related_plots_listed(False)
+
     def show_context_menu(self, point):
         table_widget = self.sender()
         item = table_widget.itemAt(point)
 
         context_menu = QMenu("Context menu")
 
-        parcels_t_ids = item.data(Qt.UserRole)
+        parcels_t_ids = item.data(Qt.UserRole)[ID_FIELD]
 
         if parcels_t_ids is None:
             return
 
-        res_layers=self.utils.qgis_utils.get_layers(self.utils._db, {
+        res_layers = self.utils.qgis_utils.get_layers(self.utils._db, {
             PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
             UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}, load=True)
@@ -149,3 +157,40 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
     def call_changes_per_parcel_panel(self, item):
         parcel_number = self.tbl_changes_all_parcels.item(item.row(), 0).text()
         self.changes_per_parcel_panel_requested.emit(parcel_number)
+
+    def select_related_plots_listed(self, zoom_to_selected=True):
+        parcels_t_ids_collected = list()
+        parcels_t_ids_official = list()
+
+        for row in range(self.tbl_changes_all_parcels.rowCount()):
+            item = self.tbl_changes_all_parcels.item(row, 0)
+            if item.data(Qt.UserRole)['inverse']:
+                parcels_t_ids_official.extend(item.data(Qt.UserRole)[ID_FIELD])
+            else:
+                parcels_t_ids_collected.extend(item.data(Qt.UserRole)[ID_FIELD])
+
+        if parcels_t_ids_collected:
+            self.select_related_plots(parcels_t_ids_collected, False)
+
+        if parcels_t_ids_official:
+            self.select_related_plots(parcels_t_ids_official, True)
+
+        if zoom_to_selected:
+            plot_layer = self.utils._layers[PLOT_TABLE]['layer']
+            if plot_layer.selectedFeatureIds():
+                self.utils.iface.mapCanvas().zoomToFeatureIds(plot_layer, plot_layer.selectedFeatureIds())
+            else:  # Bajas
+                plot_layer = self.utils._official_layers[PLOT_TABLE]['layer']
+                self.utils.iface.mapCanvas().zoomToFeatureIds(plot_layer, plot_layer.selectedFeatureIds())
+
+    def select_related_plots(self, parcels_t_ids, inverse):
+        plot_layer = self.utils._official_layers[PLOT_TABLE]['layer'] if inverse else self.utils._layers[PLOT_TABLE]['layer']
+        uebaunit_table = self.utils._official_layers[UEBAUNIT_TABLE]['layer'] if inverse else self.utils._layers[UEBAUNIT_TABLE]['layer']
+        plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._official_db if inverse else self.utils._db,
+                                                                     parcels_t_ids,
+                                                                     field_name=None,  # Get QGIS ids
+                                                                     plot_layer=plot_layer,
+                                                                     uebaunit_table=uebaunit_table)
+
+        #self.parent.request_zoom_to_features(plot_layer, ids=plot_ids, duration=3000)
+        plot_layer.select(plot_ids)
