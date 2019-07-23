@@ -318,8 +318,10 @@ class PGConnector(DBConnector):
                     "You should first select a database."))
 
         try:
-            self.close_connection()
-            self.create_connection(uri)
+            # this query will fail because the db is no longer connected
+            cur = self.conn.cursor()
+            cur.execute('SELECT 1')
+            cur.close()
         except Exception as e:
             return (False, QCoreApplication.translate("PGConnector",
                     "There was an error connecting to the database: {}").format(e))
@@ -372,16 +374,18 @@ class PGConnector(DBConnector):
 
         return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS database successful!"))
 
-    def create_connection(self, uri):
+    def open_connection(self):
         if self.conn is None or self.conn.closed:
-            self.conn = psycopg2.connect(uri)
-            self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+            self.conn = psycopg2.connect(self._uri)
+            self.log.logMessage("Connection was open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+        else:
+            self.log.logMessage("Connection is already open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
 
     def close_connection(self):
         if self.conn:
             self.conn.close()
+            self.log.logMessage("Connection was closed ({}) !".format(self.conn.closed), PLUGIN_NAME, Qgis.Info)
             self.conn = None
-            self.log.logMessage("Connection was closed!", PLUGIN_NAME, Qgis.Info)
 
     def validate_db(self):
         pass

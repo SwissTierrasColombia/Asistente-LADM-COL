@@ -45,11 +45,13 @@ from ...config.general_config import (DEFAULT_EPSG,
                                       CREATE_IMPORT_TID,
                                       STROKE_ARCS)
 from ...gui.dlg_get_java_path import DialogGetJavaPath
+from ...gui.settings_dialog import SettingsDialog
 from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
                                OverrideCursor)
 
+from ...resources_rc import * # Necessary to show icons
 from ...config.config_db_supported import ConfigDbSupported
 from ...lib.db.db_connector import DBConnector
 from ...lib.db.enum_db_action_type import EnumDbActionType
@@ -60,10 +62,11 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
     models_have_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
 
-    def __init__(self, iface, db, qgis_utils):
+    def __init__(self, iface, qgis_utils, db_utils):
         QDialog.__init__(self)
         self.iface = iface
-        self.db = db
+        self.db_utils = db_utils
+        self.db = self.db_utils.get_db_source()
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
@@ -113,7 +116,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def update_import_models(self):
         for modelname in DEFAULT_MODEL_NAMES_CHECKED:
             item = QListWidgetItem(modelname)
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
             item.setCheckState(DEFAULT_MODEL_NAMES_CHECKED[modelname])
             self.import_models_list_widget.addItem(item)
         self.import_models_list_widget.itemClicked.connect(self.on_item_clicked_import_model)
@@ -145,7 +148,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         return checked_models
 
     def show_settings(self):
-        dlg = self.qgis_utils.get_settings_dialog()
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, db_utils=self.db_utils)
+
+        # Connect signals (DBUtils, QgisUtils)
+        dlg.db_connection_changed.connect(self.db_utils.db_connection_changed)
+        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+        dlg.organization_tools_changed.connect(self.qgis_utils.organization_tools_changed)
+
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
         dlg.set_action_type(EnumDbActionType.SCHEMA_IMPORT)
 

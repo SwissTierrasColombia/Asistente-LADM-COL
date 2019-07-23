@@ -50,7 +50,6 @@ class GPKGConnector(DBConnector):
                     raise Exception("GeoPackage directory file not found.")
             elif not os.path.exists(self._uri):
                 raise Exception("GeoPackage file not found.")
-            self.conn = qgis.utils.spatialite_connect(self._uri)
             # TODO verify EnumTestLevel.LADM
         except Exception as e:
             return (False, QCoreApplication.translate("GPKGConnector",
@@ -101,6 +100,9 @@ class GPKGConnector(DBConnector):
 
     def get_connection_uri(self, dict_conn, level=1):
         return dict_conn['dbfile']
+
+    def open_connection(self):
+        self.conn = qgis.utils.spatialite_connect(self._uri)
 
     def close_connection(self):
         pass  # this connection does not need to be closed

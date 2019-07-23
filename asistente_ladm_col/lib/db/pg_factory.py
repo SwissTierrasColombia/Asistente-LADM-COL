@@ -17,9 +17,8 @@
  ***************************************************************************/
 """
 from .db_factory import DbFactory
-
-from asistente_ladm_col.gui.db_panel.pg_config_panel import PgConfigPanel
-from asistente_ladm_col.lib.db.pg_connector import PGConnector
+from ...gui.db_panel.pg_config_panel import PgConfigPanel
+from ...lib.db.pg_connector import PGConnector
 from QgisModelBaker.libili2db.globals import DbIliMode
 
 
@@ -27,6 +26,7 @@ class PgFactory(DbFactory):
     def __init__(self):
         DbFactory.__init__(self)
         self._mode = "pg"
+        self._parameters_conn = ['database', 'host', 'password', 'port', 'schema', 'username']
 
     def get_name(self):
         return "PostgreSQL / PostGIS"

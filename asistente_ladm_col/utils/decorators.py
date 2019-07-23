@@ -161,6 +161,7 @@ def _official_db_connection_required(func_to_decorate):
 
     return decorated_function
 
+
 def _different_db_connections_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(inst, *args, **kwargs):

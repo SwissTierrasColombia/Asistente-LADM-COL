@@ -17,15 +17,17 @@
  ***************************************************************************/
 """
 from .db_factory import DbFactory
-from asistente_ladm_col.gui.db_panel.gpkg_config_panel import GpkgConfigPanel
-from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
+from ...gui.db_panel.gpkg_config_panel import GpkgConfigPanel
+from ...lib.db.gpkg_connector import GPKGConnector
 from QgisModelBaker.libili2db.globals import DbIliMode
 
 
 class GpkgFactory(DbFactory):
 
     def __init__(self):
+        DbFactory.__init__(self)
         self._mode = "gpkg"
+        self._parameters_conn = ['dbfile']
 
     def get_id(self):
         return 'gpkg'
@@ -45,4 +47,3 @@ class GpkgFactory(DbFactory):
     def set_db_configuration_params(self, params, configuration):
         configuration.tool_name = 'gpkg'
         configuration.dbfile = params['dbfile']
-
