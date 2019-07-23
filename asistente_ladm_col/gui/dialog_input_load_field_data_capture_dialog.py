@@ -69,7 +69,10 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QFileDialog,
                                  QSizePolicy,
                                  QGridLayout,
-                                 QDialogButtonBox)
+                                 QDialogButtonBox,
+                                 QTextEdit,
+                                 QVBoxLayout,
+                                 QRadioButton)
 
 from qgis.core import (Qgis,
                        QgsMapLayerProxyModel,
@@ -119,15 +122,16 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         self.qgis_utils.show_help("create_points")
 
     def accepted(self):
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         self.save_settings()
         self.load_r1()
         self.mapping_fields_r1()
         self.load_gdb()
         self.mapping_fields_gbb()
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+        self.show_log_data()
 
     def load_r1(self):
-        #self.progress.setVisible(True)
+        self.progress.setVisible(True)
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading R1 tables..."))
         self.layer_r1 = QgsVectorLayer(self.txt_file_path_r1.text(), 'R1_IGAC', 'ogr')
         QgsProject.instance().addMapLayer(self.layer_r1)
@@ -374,3 +378,34 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
             self.db_connect_label.setText(QCoreApplication.translate("DialogImportSchema", "The database is not defined!"))
             self.db_connect_label.setToolTip('')
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+
+    def show_log_data(self):
+        self.summary = ""
+        self.label_r1.setVisible(False)
+        self.label_r2.setVisible(False)
+        self.label_gdb.setVisible(False)
+        self.label_registry.setVisible(False)
+        
+        self.txt_file_path_r1.setVisible(False)
+        self.txt_file_path_r2.setVisible(False)
+        self.txt_file_path_gdb.setVisible(False)
+        self.txt_file_path_registry.setVisible(False)
+
+        self.btn_browse_file_r1.setVisible(False)
+        self.btn_browse_file_r2.setVisible(False)
+        self.btn_browse_file_gdb.setVisible(False)
+        self.btn_browse_file_registry.setVisible(False)
+
+        self.progress.setVisible(False)
+
+        layers_name_summary = [FDC_NEIGHBOURHOOD, FDC_BUILDING, FDC_RIGHT, FDC_EXTADDRESS, FDC_ADMINISTRATIVE_SOURCE, FDC_PARTY, 
+                            FDC_VILLAGE, FDC_PARCEL, FDC_PLOT, FDC_BUILDING_UNIT_CADASTRE_TABLE]
+
+        for name in layers_name_summary:
+            layer = QgsProject.instance().mapLayersByName(name)[0]
+            layer.featureCount()
+            self.summary += QCoreApplication.translate("DialogInputLoadFieldDataCapture",
+                        "<b>{count}</b> records loaded into table <b>{table}</b><br/>").format(
+                            count=layer.featureCount(),table=layer.name())
+
+        self.txt_log.setText(self.summary)
