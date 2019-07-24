@@ -33,7 +33,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>5</number>
      </property>
      <widget class="QWidget" name="tab_db_connection">
       <attribute name="title">
@@ -638,14 +638,43 @@
          <property name="title">
           <string>Options for data management</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_6">
-          <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="1" column="1">
+           <widget class="QgsProjectionSelectionWidget" name="crsSelector" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
            <widget class="QCheckBox" name="chk_validate_data_importing_exporting">
             <property name="text">
              <string>Validate data while importing from/exporting to XTF</string>
             </property>
             <property name="checked">
              <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="crs_label">
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Coordinate Reference System</string>
+            </property>
+            <property name="text">
+             <string>CRS</string>
             </property>
            </widget>
           </item>
@@ -678,6 +707,12 @@
    <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgis.gui</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>cbo_db_source</tabstop>
@@ -697,6 +732,8 @@
   <tabstop>txt_service_endpoint</tabstop>
   <tabstop>btn_test_service</tabstop>
  </tabstops>
+ <resources>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

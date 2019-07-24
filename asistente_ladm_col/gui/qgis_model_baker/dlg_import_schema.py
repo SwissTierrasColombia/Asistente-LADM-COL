@@ -223,6 +223,9 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def restore_configuration(self):
         settings = QSettings()
 
+        # CRS
+        self.crs = settings.value('Asistente-LADM_COL/advanced_settings/epsg', int(DEFAULT_EPSG), int)
+
         # Show log
         value_show_log = settings.value('Asistente-LADM_COL/QgisModelBaker/show_log', False, type=bool)
         self.log_config.setCollapsed(not value_show_log)
@@ -241,7 +244,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         # set custom toml file
         configuration.tomlfile = TOML_FILE_DIR
-        configuration.epsg = DEFAULT_EPSG
+        configuration.epsg = self.crs
         configuration.inheritance = DEFAULT_INHERITANCE
         configuration.create_basket_col = CREATE_BASKET_COL
         configuration.create_import_tid = CREATE_IMPORT_TID
