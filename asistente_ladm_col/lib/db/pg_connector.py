@@ -323,8 +323,11 @@ class PGConnector(DBConnector):
             cur.execute('SELECT 1')
             cur.close()
         except Exception as e:
-            return (False, QCoreApplication.translate("PGConnector",
-                    "There was an error connecting to the database: {}").format(e))
+            # reopens the connection if it is closed due to timeout
+            self.open_connection()
+
+            # return (False, QCoreApplication.translate("PGConnector",
+            #         "There was an error connecting to the database: {}").format(e))
 
         # No longer needed, we can connect to empty DBs, so we want to avoid showing this particular message
         # if not self._postgis_exists() and level == 1:
