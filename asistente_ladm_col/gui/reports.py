@@ -45,7 +45,6 @@ from qgis.core import (QgsWkbTypes,
                        QgsApplication)
 
 from ..config.general_config import (ANNEX_17_REPORT,
-                                     ANT_MAP_REPORT,
                                      TEST_SERVER,
                                      PLUGIN_NAME,
                                      REPORTS_REQUIRED_VERSION,
@@ -53,9 +52,10 @@ from ..config.general_config import (ANNEX_17_REPORT,
 from ..config.table_mapping_config import (ID_FIELD,
                                            PLOT_TABLE,
                                            PARCEL_NUMBER_FIELD)
+from ..gui.dlg_get_java_path import DialogGetJavaPath
 from ..utils.qt_utils import (remove_readonly,
                               normalize_local_url)
-from ..utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
+from ..utils.utils import Utils
 
 
 class ReportGenerator(QObject):
@@ -162,17 +162,6 @@ class ReportGenerator(QObject):
         return "{}_{}.{}".format(basename, str(time.time()).replace(".",""), extension)
 
     def generate_report(self, db, report_type):
-
-        # If java path is set in QgisModelBaker
-        # JAVA HOME environment variable is overwrite
-        java_path = get_java_path_from_qgis_model_baker()
-
-        # Get java home
-        java_home = java_path.split("bin/java")[0]
-
-        if java_home:
-            os.environ['JAVA_HOME'] = java_home
-
         # Check if mapfish and Jasper are installed, otherwise show where to
         # download them from and return
         base_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'impresion')
@@ -202,11 +191,16 @@ class ReportGenerator(QObject):
             return
 
         # Check if JAVA_HOME path is set, otherwise use path from QGIS Model Baker
-        if os.name == 'nt':
-            if 'JAVA_HOME' not in os.environ:
+        if not Utils.set_java_home():
+            get_java_path_dlg = DialogGetJavaPath()
+            get_java_path_dlg.setModal(True)
+            get_java_path_dlg.exec_()
+
+            if not Utils.set_java_home():
                 self.msg = QMessageBox()
                 self.msg.setIcon(QMessageBox.Information)
-                self.msg.setText(QCoreApplication.translate("ReportGenerator", "JAVA_HOME environment variable is not defined, please define it as an enviroment variable on Windows and restart QGIS before generating the annex 17."))
+                self.msg.setText(QCoreApplication.translate("ReportGenerator",
+                                                            "JAVA_HOME environment variable is not defined, please define it as an enviroment variable and restart QGIS before generating the annex 17."))
                 self.msg.setWindowTitle(QCoreApplication.translate("ReportGenerator", "JAVA_HOME not defined"))
                 self.msg.setStandardButtons(QMessageBox.Close)
                 self.msg.exec_()
