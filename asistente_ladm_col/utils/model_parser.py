@@ -37,7 +37,7 @@ class ModelParser:
 
         self._db_connector = db_connector
         qgis_model_baker_utils = QgisModelBakerUtils()
-        self._pro_gen_db_connector = qgis_model_baker_utils.get_db_connection(self._db_connector)
+        self._pro_gen_db_connector = qgis_model_baker_utils.get_model_baker_db_connection(self._db_connector)
 
         if self._pro_gen_db_connector:
             model_records = self._get_models()
@@ -57,6 +57,10 @@ class ModelParser:
     def validate_cadastre_model_version(self):
         if self.debug:
             print("Cadastre model:", self.cadastre_model)
+
+        if self._pro_gen_db_connector is None:
+            return (False, QCoreApplication.translate("ModelParser",
+                                                      "The plugin 'QGIS Model Baker' is a prerequisite, but could not be found. Install it before continuing."))
 
         if self.cadastre_model is None:
             if self.cadastre_model_legacy is None:

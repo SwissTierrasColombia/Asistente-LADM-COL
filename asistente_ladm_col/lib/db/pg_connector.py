@@ -348,8 +348,10 @@ class PGConnector(DBConnector):
                     try:
                         if self.model_parser is None:
                             self.model_parser = ModelParser(self)
-                        if not self.model_parser.validate_cadastre_model_version()[0]:
-                            return (False, QCoreApplication.translate("PGConnector", "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
+
+                        res_parser, msg_parser = self.model_parser.validate_cadastre_model_version()
+                        if not res_parser:
+                            return (False, msg_parser)
                     except psycopg2.ProgrammingError as e:
                         # if it is not possible to access the schema due to lack of privileges
                         return (False,
