@@ -80,7 +80,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.custom_models_dir_button.setVisible(False)
 
         # CRS Setting
-        self.crs = QgsCoordinateReferenceSystem()
         self.crsSelector.crsChanged.connect(self.crs_changed)
 
         # Set connections
@@ -323,8 +322,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.chk_ant_tools.setChecked(self.ant_tools_initial_chk_value)
 
         self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', True, bool))
-        self.crs = QgsCoordinateReferenceSystem(settings.value('Asistente-LADM_COL/advanced_settings/epsg', int(DEFAULT_EPSG), int))
-        self.update_crs_info()
+        crs = QgsCoordinateReferenceSystem(settings.value('Asistente-LADM_COL/advanced_settings/epsg', int(DEFAULT_EPSG), int))
+        self.crsSelector.setCrs(crs)
         self.crs_changed()
 
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
@@ -450,9 +449,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         for key, value in self._lst_panel.items():
             value.set_action(action_type)
-
-    def update_crs_info(self):
-        self.crsSelector.setCrs(self.crs)
 
     def crs_changed(self):
         if self.crsSelector.crs().authid()[:5] != 'EPSG:':
