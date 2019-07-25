@@ -55,6 +55,8 @@ from ..config.table_mapping_config import (ID_FIELD,
                                            PARCEL_NUMBER_FIELD)
 from ..utils.qt_utils import (remove_readonly,
                               normalize_local_url)
+from ..utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
+
 
 class ReportGenerator(QObject):
 
@@ -160,6 +162,17 @@ class ReportGenerator(QObject):
         return "{}_{}.{}".format(basename, str(time.time()).replace(".",""), extension)
 
     def generate_report(self, db, report_type):
+
+        # If java path is set in QgisModelBaker
+        # JAVA HOME environment variable is overwrite
+        java_path = get_java_path_from_qgis_model_baker()
+
+        # Get java home
+        java_home = java_path.split("bin/java")[0]
+
+        if java_home:
+            os.environ['JAVA_HOME'] = java_home
+
         # Check if mapfish and Jasper are installed, otherwise show where to
         # download them from and return
         base_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'impresion')
