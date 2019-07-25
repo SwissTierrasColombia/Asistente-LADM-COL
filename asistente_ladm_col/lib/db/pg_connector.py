@@ -322,12 +322,9 @@ class PGConnector(DBConnector):
             cur = self.conn.cursor()
             cur.execute('SELECT 1')
             cur.close()
-        except Exception as e:
+        except psycopg2.OperationalError:
             # reopens the connection if it is closed due to timeout
             self.open_connection()
-
-            # return (False, QCoreApplication.translate("PGConnector",
-            #         "There was an error connecting to the database: {}").format(e))
 
         # No longer needed, we can connect to empty DBs, so we want to avoid showing this particular message
         # if not self._postgis_exists() and level == 1:
@@ -887,7 +884,7 @@ class PGConnector(DBConnector):
                 privileges = {'create': bool(int(schema_privileges[0])),  # 'create'
                               'usage': bool(int(schema_privileges[1]))}  # 'usage'
             else:
-                return (False, QCoreApplication.translate("PGConnector", "No information for schema '{}'.").format(self.schema))
+                return (False, QCoreApplication.translate("PGConnector", "No information for schema '{}'.").format(schema))
             cur.close()
             conn.close()
         except Exception as e:

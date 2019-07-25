@@ -16,18 +16,15 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import (Qt, QCoreApplication,pyqtSignal)
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              pyqtSignal)
 from qgis.PyQt.QtWidgets import (QWidget,
                                  QLabel,
                                  QGridLayout,
-                                 QLineEdit,
-                                 QComboBox,
-                                 QPushButton
-                                 )
+                                 QLineEdit)
 from qgis.core import Qgis
 from .db_schema_db_panel import DbSchemaDbPanel
 from ...lib.db.pg_connector import PGConnector
-
 
 
 class PgConfigPanel(QWidget, DbSchemaDbPanel):
@@ -40,12 +37,12 @@ class PgConfigPanel(QWidget, DbSchemaDbPanel):
 
         self.mode = "pg"
 
-        lbl_host = QLabel(self.tr("Host"))
-        lbl_port = QLabel(self.tr("Port"))
-        lbl_user = QLabel(self.tr("User"))
-        lbl_password = QLabel(self.tr("Password"))
-        lbl_database = QLabel(self.tr("Database"))
-        lbl_schema = QLabel(self.tr("Schema"))
+        lbl_host = QLabel(QCoreApplication.translate("SettingsDialog", "Host"))
+        lbl_port = QLabel(QCoreApplication.translate("SettingsDialog", "Port"))
+        lbl_user = QLabel(QCoreApplication.translate("SettingsDialog", "User"))
+        lbl_password = QLabel(QCoreApplication.translate("SettingsDialog", "Password"))
+        lbl_database = QLabel(QCoreApplication.translate("SettingsDialog", "Database"))
+        lbl_schema = QLabel(QCoreApplication.translate("SettingsDialog", "Schema"))
 
         self.txt_host = QLineEdit()
         self.txt_host.setPlaceholderText(QCoreApplication.translate("SettingsDialog", "[Leave empty to use standard host: localhost]"))

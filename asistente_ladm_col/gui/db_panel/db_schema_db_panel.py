@@ -16,12 +16,11 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtWidgets import (QComboBox, QPushButton)
-from qgis.core import (Qgis)
+from qgis.PyQt.QtWidgets import (QComboBox,
+                                 QPushButton)
+from qgis.core import Qgis
 from qgis.PyQt.QtCore import (Qt,
-                              pyqtSignal,
-                              QCoreApplication,
-                              QTimer)
+                              QCoreApplication)
 from qgis.PyQt.QtGui import QIcon
 
 from .db_config_panel import DbConfigPanel
