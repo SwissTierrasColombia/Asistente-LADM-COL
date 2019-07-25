@@ -1226,7 +1226,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dock_widget_change_detection.show_main_panel()
 
     @_qgis_model_baker_required
-    @_db_connection_required
+    #@_official_db_connection_required
     def load_r1_gdb(self):
         dlg = DialogInputLoadFieldDataCapture(self.iface, self.get_official_db_connection(), self.qgis_utils)
         dlg.exec_()

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>651</width>
-    <height>356</height>
+    <height>360</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -268,12 +268,6 @@
           </item>
           <item row="4" column="0" colspan="3">
            <widget class="QLabel" name="txt_log">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="text">
              <string/>
             </property>

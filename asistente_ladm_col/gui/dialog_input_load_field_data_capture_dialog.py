@@ -20,6 +20,9 @@ import os
 import stat
 import processing
 
+from ..gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
+from ..gui.log_excel_dialog import LogExcelDialog
+
 from qgis.PyQt.QtCore import QVariant
 
 from asistente_ladm_col.utils.qt_utils import (make_file_selector,
@@ -83,6 +86,8 @@ from qgis.gui import QgsMessageBar
 
 from ..config.help_strings import HelpStrings
 
+from ..config.general_config import DEFAULT_MODEL_NAMES_CHECKED
+
 from ..utils import get_ui_class
 
 WIZARD_UI = get_ui_class('dlg_input_load_field_data_capture.ui')
@@ -123,6 +128,7 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
 
     def accepted(self):
         self.save_settings()
+        self.create_model_into_database()
         self.load_r1()
         self.mapping_fields_r1()
         self.load_gdb()
@@ -409,3 +415,19 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
                             count=layer.featureCount(),table=layer.name())
 
         self.txt_log.setText(self.summary)
+
+    def create_model_into_database(self):
+        resultado = None
+        get_import_schema_dialog = DialogImportSchema(self.iface, self._db, self.qgis_utils)
+        for modelname in DEFAULT_MODEL_NAMES_CHECKED:
+            item = get_import_schema_dialog.import_models_list_widget.findItems(modelname, Qt.MatchExactly)
+            item[0].setCheckState(Qt.Checked)
+        
+        get_import_schema_dialog.accepted()
+
+        if get_import_schema_dialog.progress_bar.value() != 100:
+            dlg = LogExcelDialog(self.qgis_utils, get_import_schema_dialog.txtStdout.toHtml())
+            dlg.buttonBox.button(QDialogButtonBox.Save).setVisible(False)
+            dlg.setFixedSize(dlg.size()) 
+            dlg.setWindowTitle(QCoreApplication.translate("DialogInputLoadFieldDataCapture","Log error structure LADM"))
+            dlg.exec_()
