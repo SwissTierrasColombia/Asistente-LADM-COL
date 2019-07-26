@@ -45,7 +45,6 @@ from qgis.core import (QgsWkbTypes,
                        QgsApplication)
 
 from ..config.general_config import (ANNEX_17_REPORT,
-                                     ANT_MAP_REPORT,
                                      TEST_SERVER,
                                      PLUGIN_NAME,
                                      REPORTS_REQUIRED_VERSION,
@@ -53,8 +52,11 @@ from ..config.general_config import (ANNEX_17_REPORT,
 from ..config.table_mapping_config import (ID_FIELD,
                                            PLOT_TABLE,
                                            PARCEL_NUMBER_FIELD)
+from ..gui.dlg_get_java_path import DialogGetJavaPath
 from ..utils.qt_utils import (remove_readonly,
                               normalize_local_url)
+from ..utils.utils import Utils
+
 
 class ReportGenerator(QObject):
 
@@ -189,11 +191,16 @@ class ReportGenerator(QObject):
             return
 
         # Check if JAVA_HOME path is set, otherwise use path from QGIS Model Baker
-        if os.name == 'nt':
-            if 'JAVA_HOME' not in os.environ:
+        if not Utils.set_java_home():
+            get_java_path_dlg = DialogGetJavaPath()
+            get_java_path_dlg.setModal(True)
+            get_java_path_dlg.exec_()
+
+            if not Utils.set_java_home():
                 self.msg = QMessageBox()
                 self.msg.setIcon(QMessageBox.Information)
-                self.msg.setText(QCoreApplication.translate("ReportGenerator", "JAVA_HOME environment variable is not defined, please define it as an enviroment variable on Windows and restart QGIS before generating the annex 17."))
+                self.msg.setText(QCoreApplication.translate("ReportGenerator",
+                                                            "JAVA_HOME environment variable is not defined, please define it as an enviroment variable and restart QGIS before generating the annex 17."))
                 self.msg.setWindowTitle(QCoreApplication.translate("ReportGenerator", "JAVA_HOME not defined"))
                 self.msg.setStandardButtons(QMessageBox.Close)
                 self.msg.exec_()
