@@ -103,6 +103,7 @@ class Utils(QObject):
     def set_java_home():
         java_home = None
         java_name = None
+        pattern_java = "bin{}java".format(os.sep)
 
         # Set name of java program depending on the name of os
         if sys.platform == 'win32':
@@ -123,19 +124,20 @@ class Utils(QObject):
                 (is_valid, java_message) = Utils.java_path_is_valid(java_exe)
 
                 if is_valid:
-                    os.environ['JAVA_HOME'] = java_exe.split("bin/java")[0]
+                    os.environ['JAVA_HOME'] = java_exe.split(pattern_java)[0]
                     return True
             else:
+                os.environ['JAVA_HOME'] = java_exe.split(pattern_java)[0]
                 # JAVA_HOME is valid It not necessary update
                 return True
-        else:
-            # If JAVA_HOME environment variable doesnt exit
-            # We use the value defined in QgisModelBaker
-            java_exe = get_java_path_from_qgis_model_baker()
 
-            (is_valid, java_message) = Utils.java_path_is_valid(java_exe)
-            if is_valid:
-                os.environ['JAVA_HOME'] = java_exe.split("bin/java")[0]
-                return True
+        # If JAVA_HOME environment variable doesnt exit
+        # We use the value defined in QgisModelBaker
+        java_exe = get_java_path_from_qgis_model_baker()
+
+        (is_valid, java_message) = Utils.java_path_is_valid(java_exe)
+        if is_valid:
+            os.environ['JAVA_HOME'] = java_exe.split(pattern_java)[0]
+            return True
 
         return False
