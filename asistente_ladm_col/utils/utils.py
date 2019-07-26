@@ -62,7 +62,7 @@ class Utils(QObject):
     @staticmethod
     def java_path_is_valid(java_path):
         """
-        Check if java path exist
+        Check if java path exists
         :param java_path: (str) java path to validate
         :return: (bool, str)  True if java Path is valid, False in another case
         """
@@ -101,17 +101,22 @@ class Utils(QObject):
 
     @staticmethod
     def set_java_home():
+        """
+        Attempt to set a valid JAVA_HOME only for the current session, which is used by reports (MapFish).
+        First try with the system JAVA_HOME, if not present, try with the Java configured in Model Baker. Otherwise return
+        false.
+        :return: Whether a proper Java could be set or not in the current session's JAVA_HOME
+        """
         java_home = None
         java_name = None
         pattern_java = "bin{}java".format(os.sep)
 
-        # Set name of java program depending on the name of os
         if sys.platform == 'win32':
             java_name = 'java.exe'
         else:
             java_name = 'java'
 
-        # get JAVA_HOME environment variable
+        # Get JAVA_HOME environment variable
         if 'JAVA_HOME' in os.environ:
             java_home = os.environ['JAVA_HOME']
 
@@ -119,7 +124,7 @@ class Utils(QObject):
             (is_valid, java_message) = Utils.java_path_is_valid(java_exe)
 
             if not is_valid:
-                # it apply if JAVA_HOME include bin dir
+                # Another try: does JAVA_HOME include bin dir?
                 java_exe = os.path.join(java_home, java_name)
                 (is_valid, java_message) = Utils.java_path_is_valid(java_exe)
 
@@ -128,10 +133,10 @@ class Utils(QObject):
                     return True
             else:
                 os.environ['JAVA_HOME'] = java_exe.split(pattern_java)[0]
-                # JAVA_HOME is valid It not necessary update
+                # JAVA_HOME is valid, we'll use it as it is!
                 return True
 
-        # If JAVA_HOME environment variable doesnt exit
+        # If JAVA_HOME environment variable doesn't exist
         # We use the value defined in QgisModelBaker
         java_exe = get_java_path_from_qgis_model_baker()
 
