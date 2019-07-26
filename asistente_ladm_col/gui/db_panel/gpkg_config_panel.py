@@ -17,43 +17,29 @@
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import (Qt, QCoreApplication, pyqtSignal)
-from qgis.core import (Qgis)
-from qgis.PyQt.QtWidgets import (QWidget,
-                                 QLabel,
-                                 QGridLayout,
-                                 QLineEdit,
-                                 QToolButton)
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              pyqtSignal)
+from qgis.core import Qgis
+from qgis.PyQt.QtWidgets import QWidget
 from ...lib.db.enum_db_action_type import EnumDbActionType
 from ...utils.qt_utils import (make_save_file_selector,
-                               make_file_selector,
-                               Validators,
-                               FileValidator)
+                               make_file_selector)
 from .db_config_panel import DbConfigPanel
+from ...utils import get_ui_class
+
+WIDGET_UI = get_ui_class('settings_gpkg.ui')
 
 
-class GpkgConfigPanel(QWidget, DbConfigPanel):
+class GpkgConfigPanel(QWidget, WIDGET_UI, DbConfigPanel):
     notify_message_requested = pyqtSignal(str, Qgis.MessageLevel)
 
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
         super(GpkgConfigPanel, self).__init__()
-        lbl_file = QLabel(self.tr("Database File"))
-
-        self.txt_file = QLineEdit()
-
-        self.btn_file_browse = QToolButton()
-        self.btn_file_browse.setText("...")
+        self.setupUi(self)
 
         self.action = None
-
         self.set_action(EnumDbActionType.CONFIG)
-
-        layout = QGridLayout(self)
-        layout.addWidget(lbl_file, 0, 0)
-
-        layout.addWidget(self.txt_file, 0, 1)
-        layout.addWidget(self.btn_file_browse, 0, 2)
 
     def read_connection_parameters(self):
         dict_conn = dict()

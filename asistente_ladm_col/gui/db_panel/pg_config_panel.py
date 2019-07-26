@@ -16,73 +16,25 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import (QCoreApplication,
-                              pyqtSignal)
-from qgis.PyQt.QtWidgets import (QWidget,
-                                 QLabel,
-                                 QGridLayout,
-                                 QLineEdit)
+from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtWidgets import QWidget
 from qgis.core import Qgis
 from .db_schema_db_panel import DbSchemaDbPanel
 from ...lib.db.pg_connector import PGConnector
+from ...utils import get_ui_class
+
+WIDGET_UI = get_ui_class('settings_pg.ui')
 
 
-class PgConfigPanel(QWidget, DbSchemaDbPanel):
+class PgConfigPanel(QWidget, WIDGET_UI, DbSchemaDbPanel):
     notify_message_requested = pyqtSignal(str, Qgis.MessageLevel)
 
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
-
-        DbSchemaDbPanel.__init__(self, PGConnector(''))
-
+        DbSchemaDbPanel.__init__(self)
+        self.setupUi(self)
         self.mode = "pg"
-
-        lbl_host = QLabel(QCoreApplication.translate("SettingsDialog", "Host"))
-        lbl_port = QLabel(QCoreApplication.translate("SettingsDialog", "Port"))
-        lbl_user = QLabel(QCoreApplication.translate("SettingsDialog", "User"))
-        lbl_password = QLabel(QCoreApplication.translate("SettingsDialog", "Password"))
-        lbl_database = QLabel(QCoreApplication.translate("SettingsDialog", "Database"))
-        lbl_schema = QLabel(QCoreApplication.translate("SettingsDialog", "Schema"))
-
-        self.txt_host = QLineEdit()
-        self.txt_host.setPlaceholderText(QCoreApplication.translate("SettingsDialog", "[Leave empty to use standard host: localhost]"))
-
-        self.txt_port = QLineEdit()
-        self.txt_port.setPlaceholderText(
-            QCoreApplication.translate("SettingsDialog", "[Leave empty to use standard port: 5432]"))
-
-        self.txt_user = QLineEdit()
-        self.txt_user.setPlaceholderText(QCoreApplication.translate("SettingsDialog", "Database username"))
-
-        self.txt_password = QLineEdit()
-        self.txt_password.setEchoMode(QLineEdit.Password)
-        self.txt_password.setPlaceholderText(
-            QCoreApplication.translate("SettingsDialog", "[Leave empty to use system password]"))
-
-        self.create_db_button.setToolTip(QCoreApplication.translate("SettingsDialog", "Create database"))
-
-        self.create_schema_button.setToolTip(QCoreApplication.translate("SettingsDialog", "Create schema"))
-
-        layout = QGridLayout(self)
-        layout.addWidget(lbl_host, 0, 0)
-        layout.addWidget(lbl_port, 1, 0)
-        layout.addWidget(lbl_user, 2, 0)
-        layout.addWidget(lbl_password, 3, 0)
-        layout.addWidget(lbl_database, 5, 0)
-        layout.addWidget(lbl_schema, 6, 0)
-
-        layout.addWidget(self.txt_host, 0, 1)
-        layout.addWidget(self.txt_port, 1, 1)
-        layout.addWidget(self.txt_user, 2, 1)
-        layout.addWidget(self.txt_password, 3, 1)
-
-        layout.addWidget(self.refresh_db_button, 4, 0, 1, 2)
-
-        layout.addWidget(self.selected_db_combobox, 5, 1)
-        layout.addWidget(self.selected_schema_combobox, 6, 1)
-
-        layout.addWidget(self.create_db_button, 5, 2)
-        layout.addWidget(self.create_schema_button, 6, 2)
+        self.init_schema()
 
     def showEvent(self, event):
         self._set_controls_enabled(False)
@@ -142,3 +94,7 @@ class PgConfigPanel(QWidget, DbSchemaDbPanel):
                 self.state['password'] != self.txt_password.text().strip())
 
         return result
+
+    def get_connector(self):
+        dict = self.read_connection_parameters()
+        return PGConnector(None, dict['schema'], dict)

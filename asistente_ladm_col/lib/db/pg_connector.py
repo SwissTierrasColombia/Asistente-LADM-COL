@@ -343,31 +343,32 @@ class PGConnector(DBConnector):
             return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
 
-        res, msg = self.get_schema_privileges(uri, self.schema)
-        if res:
-            if msg['create'] and msg['usage']:
-                if test_level & EnumTestLevel._CHECK_LADM:
-                    try:
-                        if self.model_parser is None:
-                            self.model_parser = ModelParser(self)
-                        if not self.model_parser.validate_cadastre_model_version()[0]:
-                            return (False, QCoreApplication.translate("PGConnector", "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
-                    except psycopg2.ProgrammingError as e:
-                        # if it is not possible to access the schema due to lack of privileges
-                        return (False,
-                                QCoreApplication.translate("PGConnector",
-                                                           "User '{}' has not enough permissions over the schema '{}'. Details: {}").format(
-                                                                self._dict_conn_params['username'],
-                                                                self.schema,
-                                                                e))
+        if test_level & EnumTestLevel._CHECK_SCHEMA:
+            res, msg = self.get_schema_privileges(uri, self.schema)
+            if res:
+                if msg['create'] and msg['usage']:
+                    if test_level & EnumTestLevel._CHECK_LADM:
+                        try:
+                            if self.model_parser is None:
+                                self.model_parser = ModelParser(self)
+                            if not self.model_parser.validate_cadastre_model_version()[0]:
+                                return (False, QCoreApplication.translate("PGConnector", "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
+                        except psycopg2.ProgrammingError as e:
+                            # if it is not possible to access the schema due to lack of privileges
+                            return (False,
+                                    QCoreApplication.translate("PGConnector",
+                                                               "User '{}' has not enough permissions over the schema '{}'. Details: {}").format(
+                                                                    self._dict_conn_params['username'],
+                                                                    self.schema,
+                                                                    e))
+                else:
+                    return (False,
+                            QCoreApplication.translate("PGConnector",
+                                                       "User '{}' has not enough permissions over the schema '{}'.").format(
+                                self._dict_conn_params['username'],
+                                self.schema))
             else:
-                return (False,
-                        QCoreApplication.translate("PGConnector",
-                                                   "User '{}' has not enough permissions over the schema '{}'.").format(
-                            self._dict_conn_params['username'],
-                            self.schema))
-        else:
-            return (False, msg)
+                return (False, msg)
 
         if test_level & EnumTestLevel._CHECK_LADM:
             return (True, QCoreApplication.translate("PGConnector", "The schema '{}' has a valid LADM-COL structure!").format(self.schema))

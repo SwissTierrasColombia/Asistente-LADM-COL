@@ -42,7 +42,8 @@ from ..config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANC
                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                      SOURCE_SERVICE_EXPECTED_ID, NATIONAL_LAND_AGENCY)
 from ..gui.custom_model_dir import CustomModelDirDialog
-from ..lib.db.db_connector import (DBConnector, EnumTestLevel)
+from ..lib.db.db_connector import (DBConnector,
+                                   EnumTestLevel)
 from ..utils import get_ui_class
 from ..utils.qt_utils import OverrideCursor
 
@@ -65,6 +66,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None
         self.qgis_utils = qgis_utils
         self.db_source = COLLECTED_DB_SOURCE
+
+        # Force delete instance variables
+        self.setAttribute(Qt.WA_DeleteOnClose, True)
 
         self.ant_tools_initial_chk_value = None
 
