@@ -133,6 +133,17 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_host</tabstop>
+  <tabstop>txt_port</tabstop>
+  <tabstop>txt_user</tabstop>
+  <tabstop>txt_password</tabstop>
+  <tabstop>refresh_db_button</tabstop>
+  <tabstop>selected_db_combobox</tabstop>
+  <tabstop>create_db_button</tabstop>
+  <tabstop>selected_schema_combobox</tabstop>
+  <tabstop>create_schema_button</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
