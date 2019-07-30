@@ -240,7 +240,7 @@
   <customwidget>
    <class>QgsFieldValuesLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>qgsfieldvalueslineedit.h</header>
+   <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
  <resources/>

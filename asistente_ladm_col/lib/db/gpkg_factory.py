@@ -19,8 +19,6 @@
 from .db_factory import DbFactory
 from ...gui.db_panel.gpkg_config_panel import GpkgConfigPanel
 from ...lib.db.gpkg_connector import GPKGConnector
-from QgisModelBaker.libili2db.globals import DbIliMode
-
 
 class GpkgFactory(DbFactory):
 
@@ -36,6 +34,7 @@ class GpkgFactory(DbFactory):
         return 'GeoPackage'
 
     def get_mbaker_db_ili_mode(self):
+        from QgisModelBaker.libili2db.globals import DbIliMode
         return DbIliMode.ili2gpkg
 
     def get_config_panel(self):

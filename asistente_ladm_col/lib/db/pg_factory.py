@@ -19,8 +19,6 @@
 from .db_factory import DbFactory
 from ...gui.db_panel.pg_config_panel import PgConfigPanel
 from ...lib.db.pg_connector import PGConnector
-from QgisModelBaker.libili2db.globals import DbIliMode
-
 
 class PgFactory(DbFactory):
     def __init__(self):
@@ -35,6 +33,7 @@ class PgFactory(DbFactory):
         return "pg"
 
     def get_mbaker_db_ili_mode(self):
+        from QgisModelBaker.libili2db.globals import DbIliMode
         return DbIliMode.ili2pg
 
     def get_config_panel(self):

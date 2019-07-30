@@ -16,9 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
-import re
-import subprocess
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QSettings)
@@ -28,11 +25,11 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
-from ..config.general_config import JAVA_REQUIRED_VERSION
 from ..utils import get_ui_class
 from ..utils.qt_utils import (Validators,
                               FileValidator,
                               make_file_selector)
+from ..utils.utils import Utils
 
 DIALOG_UI = get_ui_class('dlg_get_java_path.ui')
 
@@ -70,7 +67,7 @@ class DialogGetJavaPath(QDialog, DIALOG_UI):
     def accepted(self):
         settings = QSettings()
 
-        (is_valid, java_message) = java_path_is_valid(self.java_path_line_edit.text().strip())
+        (is_valid, java_message) = Utils.java_path_is_valid(self.java_path_line_edit.text().strip())
 
         if is_valid:
             self.java_path_line_edit.setEnabled(False)
@@ -87,42 +84,3 @@ class DialogGetJavaPath(QDialog, DIALOG_UI):
 
     def show_message(self, message, level):
         self.bar.pushMessage("Asistente LADM_COL", message, level, duration=0)
-
-
-def java_path_is_valid(java_path):
-    """
-    Check if java path exist
-    :param java_path: (str) java path to validate
-    :return: (bool, str)  True if java Path is valid, False in another case
-    """
-    try:
-        if os.name == 'nt':
-            java_path = validate_java_path(java_path)
-
-        procs_message = subprocess.check_output([java_path, '-version'], stderr=subprocess.STDOUT).decode('utf8').lower()
-        types_java = ['jre', 'java', 'jdk']
-
-        if procs_message:
-            if any(type_java in procs_message for type_java in types_java):
-                pattern = '\"(\d+\.\d+).*\"'
-                java_version = re.search(pattern, procs_message).groups()[0]
-
-                if java_version:
-                    if float(java_version) == JAVA_REQUIRED_VERSION:
-                        return (True, QCoreApplication.translate("DialogGetJavaPath", "Java path has been configured correctly."))
-                    else:
-                        return (False, QCoreApplication.translate("DialogGetJavaPath", "Java version is not valid. Current version is {}, but must be {}.").format(java_version, JAVA_REQUIRED_VERSION))
-
-                return (False, QCoreApplication.translate("DialogGetJavaPath", "Java exists but it is not possible to know and validate its version."))
-            else:
-                return (False, QCoreApplication.translate("DialogGetJavaPath", "Java path is not valid, please select a valid path..."))
-        else:
-            return (False, QCoreApplication.translate("DialogGetJavaPath", "Java path is not valid, please select a valid path..."))
-    except Exception as e:
-        return (False, QCoreApplication.translate("DialogGetJavaPath", "Java path is not valid, please select a valid path..."))
-
-def validate_java_path(java_path):
-    escape_characters = [('\a', '\\a'), ('\b', '\\b'), ('\f', '\\f'), ('\n', '\\n'), ('\r', '\\r'), ('\t', '\\t'), ('\v', '\\v')]
-    for escape_character in escape_characters:
-        java_path = java_path.replace(escape_character[0], escape_character[1])
-    return java_path
