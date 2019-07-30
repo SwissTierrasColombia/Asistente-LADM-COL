@@ -24,16 +24,16 @@ from enum import IntFlag
 
 
 class EnumTestLevel(IntFlag):
-    SERVER = 1
-    DB = 2
-    DB_SCHEMA = 6
-    DB_FILE = 6
-    LADM = 14
-    CREATE_SCHEMA = 128
-
     _CHECK_DB = 2
     _CHECK_SCHEMA = 4
     _CHECK_LADM = 8
+
+    SERVER = 1
+    DB = _CHECK_DB  # 2
+    DB_SCHEMA = _CHECK_DB|_CHECK_SCHEMA  # 6
+    DB_FILE = _CHECK_DB|_CHECK_SCHEMA  # 6
+    LADM = _CHECK_DB|_CHECK_SCHEMA|_CHECK_LADM  # 14
+    SCHEMA_IMPORT = 128  # For GeoPackage
 
 
 class DBConnector(QObject):

@@ -278,7 +278,9 @@ class PGConnector(DBConnector):
         return bool(cur.fetchone()[0])
 
     def _schema_exists(self, schema=None):
-        schema = schema if schema is not None else self.schema
+        if schema is None:
+            schema = self.schema
+
         if schema:
             cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
             cur.execute("""
@@ -305,82 +307,113 @@ class PGConnector(DBConnector):
 
     def test_connection(self, test_level=EnumTestLevel.LADM):
         """
+        WARNING: We check several levels in order:
+            1. SERVER
+            2. DB
+            3. SCHEMA
+            4. LADM
+          If you need to modify this method, be carfeful and preserve the order.
+
+
         :param test_level: (EnumTestLevel) level of connection with postgres
         """
         uri = self._uri
 
         if test_level & EnumTestLevel.SERVER:
             uri = self.get_connection_uri(self._dict_conn_params, 0)
+            res, msg = self.open_connection()
+            if res:
+                return (True, QCoreApplication.translate("PGConnector",
+                                                         "Connection to server was successful."))
+            else:
+                return (False, QCoreApplication.translate("PGConnector",
+                                                         "Connection to server was not successful."))
+
 
         if test_level & EnumTestLevel.DB:
             if not self._dict_conn_params['database'].strip("'") or self._dict_conn_params['database'] == 'postgres':
                 return (False, QCoreApplication.translate("PGConnector",
                     "You should first select a database."))
 
+        # Client side check
+        if self.conn is None or self.conn.closed:
+            res, msg = self.open_connection()
+            if not res:
+                return (res, msg)
+
         try:
-            # this query will fail because the db is no longer connected
+            # Server side check
             cur = self.conn.cursor()
-            cur.execute('SELECT 1')
+            cur.execute('SELECT 1')  # This query will fail if the db is no longer connected
             cur.close()
         except psycopg2.OperationalError:
-            # reopens the connection if it is closed due to timeout
-            self.open_connection()
+            # Reopen the connection if it is closed due to timeout
+            self.conn.close()
+            res, msg = self.open_connection()
+            if not res:
+                return (res, msg)
 
-        # No longer needed, we can connect to empty DBs, so we want to avoid showing this particular message
-        # if not self._postgis_exists() and level == 1:
-        #     return (False, QCoreApplication.translate("PGConnector",
-        #             "The current database does not have PostGIS installed! Please install it before proceeding."))
+        if test_level & EnumTestLevel.DB:
+            return (True, QCoreApplication.translate("PGConnector",
+                                                     "Connection to the database was successful."))
+
 
         if test_level & EnumTestLevel._CHECK_SCHEMA:
             if not self._dict_conn_params['schema'] or self._dict_conn_params['schema'] == 'public':
                 return (False, QCoreApplication.translate("PGConnector",
                     "You should first select a schema."))
+
             if not self._schema_exists():
                 return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' does not exist in the database!").format(self.schema))
 
-        if test_level & EnumTestLevel._CHECK_LADM and not self._metadata_exists():
-            return (False, QCoreApplication.translate("PGConnector",
-                    "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
-
-        if test_level & EnumTestLevel._CHECK_SCHEMA:
             res, msg = self.get_schema_privileges(uri, self.schema)
-            if res:
-                if msg['create'] and msg['usage']:
-                    if test_level & EnumTestLevel._CHECK_LADM:
-                        try:
-                            if self.model_parser is None:
-                                self.model_parser = ModelParser(self)
-                            if not self.model_parser.validate_cadastre_model_version()[0]:
-                                return (False, QCoreApplication.translate("PGConnector", "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
-                        except psycopg2.ProgrammingError as e:
-                            # if it is not possible to access the schema due to lack of privileges
-                            return (False,
-                                    QCoreApplication.translate("PGConnector",
-                                                               "User '{}' has not enough permissions over the schema '{}'. Details: {}").format(
-                                                                    self._dict_conn_params['username'],
-                                                                    self.schema,
-                                                                    e))
-                else:
-                    return (False,
-                            QCoreApplication.translate("PGConnector",
-                                                       "User '{}' has not enough permissions over the schema '{}'.").format(
-                                self._dict_conn_params['username'],
-                                self.schema))
-            else:
-                return (False, msg)
+            if not res:
+                return (False,
+                        QCoreApplication.translate("PGConnector",
+                                                   "User '{}' has not enough permissions over the schema '{}'.").format(
+                            self._dict_conn_params['username'],
+                            self.schema))
+
+        if test_level & EnumTestLevel.DB_SCHEMA:
+            return (True, QCoreApplication.translate("PGConnector",
+                                                     "Connection to the schema was successful."))
+
 
         if test_level & EnumTestLevel._CHECK_LADM:
+            if not self._metadata_exists():
+                return (False, QCoreApplication.translate("PGConnector",
+                        "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
+
+            if self.model_parser is None:
+                self.model_parser = ModelParser(self)
+
+            if not self.model_parser.validate_cadastre_model_version()[0]:
+                return (False, QCoreApplication.translate("PGConnector", "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
+
+        if test_level & EnumTestLevel.LADM:
             return (True, QCoreApplication.translate("PGConnector", "The schema '{}' has a valid LADM-COL structure!").format(self.schema))
 
-        return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS database successful!"))
 
-    def open_connection(self):
+        return (False, QCoreApplication.translate("PGConnector", "There was a problem checking the connection. Most likely due to invalid or not supported test_level!"))
+
+    def open_connection(self, uri=None):
+        if uri is None:
+            uri = self._uri
+        else:
+            self.conn.close()
+
         if self.conn is None or self.conn.closed:
-            self.conn = psycopg2.connect(self._uri)
+            try:
+                self.conn = psycopg2.connect(uri)
+            except (psycopg2.OperationError, psycopg2.ProgrammingError) as e:
+                return (False, QCoreApplication.translate("PGConnector", "Could not open connection! Details: {}".format(e)))
+
             self.log.logMessage("Connection was open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
         else:
             self.log.logMessage("Connection is already open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+
+        return (True, QCoreApplication.translate("PGConnector", "Connection is open!"))
 
     def close_connection(self):
         if self.conn:
@@ -891,7 +924,11 @@ class PGConnector(DBConnector):
         except Exception as e:
             return (False, QCoreApplication.translate("PGConnector",
                                                "There was an error when obtaining privileges for schema '{}'. Details: {}").format(schema, e))
-        return (True, privileges)
+
+        if privileges['create'] and privileges['usage']:
+            return (True, QCoreApplication.translate("PGConnector", "The user has both Create and Usage priviledges over the schema."))
+        else:
+            return (False, QCoreApplication.translate("PGConnector", "The user has not enough priviledges over the schema."))
 
     def is_ladm_layer(self, layer):
         result = False

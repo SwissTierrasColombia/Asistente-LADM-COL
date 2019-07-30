@@ -181,7 +181,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
             if self._action_type == EnumDbActionType.SCHEMA_IMPORT:
                 # Limit the validation (used in GeoPackage)
-                test_level |= EnumTestLevel.CREATE_SCHEMA
+                test_level |= EnumTestLevel.SCHEMA_IMPORT
 
             res, msg = db.test_connection(test_level=test_level)
 
@@ -351,7 +351,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         test_level = EnumTestLevel.DB_SCHEMA
 
         if self._action_type == EnumDbActionType.SCHEMA_IMPORT:
-            test_level |= EnumTestLevel.CREATE_SCHEMA
+            test_level |= EnumTestLevel.SCHEMA_IMPORT
 
         res, msg = db.test_connection(test_level=test_level)
 

@@ -81,7 +81,7 @@ class ModelParser:
 
         res, msg = self.validate_model_version(latest_update)
         if not res:
-            return (False, QCoreApplication.translate("ModelParser", "The Cadastre model found in the database is not supported!"))
+            return (False, QCoreApplication.translate("ModelParser", "The Cadastre model version found in the database is not supported!"))
 
         return (True, msg)
 

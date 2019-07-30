@@ -43,7 +43,7 @@ class GPKGConnector(DBConnector):
         try:
 
             # file no exist, but directory must exist
-            if test_level & EnumTestLevel.CREATE_SCHEMA:
+            if test_level & EnumTestLevel.SCHEMA_IMPORT:
                 directory = os.path.dirname(self._uri)
 
                 if not os.path.exists(directory):
