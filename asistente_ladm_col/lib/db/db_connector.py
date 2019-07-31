@@ -64,9 +64,10 @@ class DBConnector(QObject):
         return self._dict_conn_params.copy()
 
     @dict_conn_params.setter
-    def dict_conn_params(self, value):
+    def dict_conn_params(self, dict_values):
+        dict_values = {k:v for k,v in dict_values.items() if v}  # To avoid empty values to overwrite default values
         self._dict_conn_params = self._DEFAULT_VALUES.copy()
-        self._dict_conn_params.update(value)
+        self._dict_conn_params.update(dict_values)
         self._uri = self.get_connection_uri(self._dict_conn_params, level=1)
 
     @property
