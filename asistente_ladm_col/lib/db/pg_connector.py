@@ -393,8 +393,9 @@ class PGConnector(DBConnector):
             if self.model_parser is None:
                 self.model_parser = ModelParser(self)
 
-            if not self.model_parser.validate_cadastre_model_version()[0]:
-                return (False, QCoreApplication.translate("PGConnector", "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
+            res_parser, msg_parser = self.model_parser.validate_cadastre_model_version()
+            if not res_parser:
+                return (False, msg_parser)
 
         if test_level == EnumTestLevel.LADM:
             return (True, QCoreApplication.translate("PGConnector", "The schema '{}' has a valid LADM-COL structure!").format(self.schema))
