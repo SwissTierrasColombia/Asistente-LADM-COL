@@ -929,7 +929,7 @@ class AsistenteLADMCOLPlugin(QObject):
         del self.wiz_address
         del self._report_menu
 
-        # close all connection
+        # Close all connections
         self.conn_manager.close_db_connections()
 
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)

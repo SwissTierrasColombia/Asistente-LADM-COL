@@ -33,7 +33,7 @@ class EnumTestLevel(IntFlag):
     DB_SCHEMA = _CHECK_DB|_CHECK_SCHEMA  # 6
     DB_FILE = _CHECK_DB|_CHECK_SCHEMA  # 6
     LADM = _CHECK_DB|_CHECK_SCHEMA|_CHECK_LADM  # 14
-    SCHEMA_IMPORT = 128  # For GeoPackage
+    SCHEMA_IMPORT = 128
 
 
 class DBConnector(QObject):

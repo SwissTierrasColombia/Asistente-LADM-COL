@@ -318,8 +318,8 @@ class PGConnector(DBConnector):
             2. DB
             3. SCHEMA
             4. LADM
-          If you need to modify this method, be carfeful and preserve the order.
-
+            5. SCHEMA_IMPORT
+          If you need to modify this method, be careful and preserve the order!!!
 
         :param test_level: (EnumTestLevel) level of connection with postgres
         """
@@ -388,7 +388,7 @@ class PGConnector(DBConnector):
         if test_level & EnumTestLevel._CHECK_LADM:
             if not self._metadata_exists():
                 return (False, QCoreApplication.translate("PGConnector",
-                        "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
+                        "The schema '{}' is not a valid LADM_COL schema. That is, the schema doesn't have the structure of the LADM_COL model.").format(self.schema))
 
             if self.model_parser is None:
                 self.model_parser = ModelParser(self)

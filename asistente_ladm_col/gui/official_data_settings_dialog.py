@@ -49,9 +49,6 @@ class OfficialDataSettingsDialog(QDialog, DIALOG_UI):
         self.db_source = OFFICIAL_DB_SOURCE
         self.conf_db = ConfigDbSupported()
 
-        # Create official db connection
-        self.conn_manager.update_db_connector_for_source(self.db_source)
-
         # Set connections
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
@@ -86,9 +83,6 @@ class OfficialDataSettingsDialog(QDialog, DIALOG_UI):
     def close_dialog(self):
         self.close()
 
-    def closeEvent(self, event):
-        sip.delete(self)
-
     def showEvent(self, event):
         # It is necessary to reload the variables
         # to load the database and schema name
@@ -118,16 +112,17 @@ class OfficialDataSettingsDialog(QDialog, DIALOG_UI):
             ladm_col_schema = False
 
             db = self._get_db_connector_from_gui()
-
-            test_level = EnumTestLevel.DB_SCHEMA
-
-            res, msg = db.test_connection(test_level=test_level)
+            res, msg = db.test_connection(EnumTestLevel.DB_SCHEMA)
 
             if res:
-                ladm_col_schema, msg = db.test_connection(test_level=EnumTestLevel.LADM)
+                ladm_col_schema, msg = db.test_connection(EnumTestLevel.LADM)
             else:
                 self.show_message(msg, Qgis.Warning)
                 valid_connection = False
+
+            if not ladm_col_schema:
+                self.show_message(msg, Qgis.Warning)
+                return  # Do not close the dialog
 
             if valid_connection:
                 if self._db is not None:

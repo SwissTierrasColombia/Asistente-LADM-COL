@@ -69,9 +69,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.qgis_utils = qgis_utils
         self.db_source = COLLECTED_DB_SOURCE
 
-        # Force delete instance variables
-        self.setAttribute(Qt.WA_DeleteOnClose, True)
-
         self.ant_tools_initial_chk_value = None
 
         self._action_type = None
@@ -123,9 +120,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def close_dialog(self):
         self.close()
-
-    def closeEvent(self, event):
-        sip.delete(self)
 
     def showEvent(self, event):
         # It is necessary to reload the variables
@@ -189,6 +183,11 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
                     # Don't check if it's a LADM schema, we expect it to be after we run the schema import
                     ladm_col_schema, msg = db.test_connection(EnumTestLevel.LADM)
+
+                if not ladm_col_schema and self._action_type != EnumDbActionType.SCHEMA_IMPORT:
+                    self.show_message(msg, Qgis.Warning)
+                    return  # Do not close the dialog
+
             else:
                 self.show_message(msg, Qgis.Warning)
                 valid_connection = False
