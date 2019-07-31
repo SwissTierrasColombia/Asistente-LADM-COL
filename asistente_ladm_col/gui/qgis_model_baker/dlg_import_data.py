@@ -49,13 +49,15 @@ from ...config.general_config import (DEFAULT_EPSG,
                                       CREATE_IMPORT_TID,
                                       STROKE_ARCS)
 from ...gui.dlg_get_java_path import DialogGetJavaPath
+from ...gui.settings_dialog import SettingsDialog
 from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
                                FileValidator,
                                make_file_selector,
                                OverrideCursor)
-from ...resources_rc import *
+
+from ...resources_rc import * # Necessary to show icons
 from ...config.config_db_supported import ConfigDbSupported
 from ...lib.db.enum_db_action_type import EnumDbActionType
 
@@ -64,13 +66,14 @@ DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_data.ui')
 
 class DialogImportData(QDialog, DIALOG_UI):
 
-    def __init__(self, iface, db, qgis_utils):
+    def __init__(self, iface, qgis_utils, conn_manager):
         QDialog.__init__(self)
         self.setupUi(self)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
-        self.db = db
+        self.conn_manager = conn_manager
+        self.db = self.conn_manager.get_db_connector_from_source()
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
 
@@ -187,7 +190,13 @@ class DialogImportData(QDialog, DIALOG_UI):
         return ili_models
 
     def show_settings(self):
-        dlg = self.qgis_utils.get_settings_dialog()
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+
+        # Connect signals (DBUtils, QgisUtils)
+        dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
+        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+        dlg.organization_tools_changed.connect(self.qgis_utils.organization_tools_changed)
+
         dlg.set_action_type(EnumDbActionType.IMPORT)
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
         if dlg.exec_():

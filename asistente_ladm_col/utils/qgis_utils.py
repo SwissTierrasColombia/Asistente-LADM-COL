@@ -28,7 +28,7 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
                               QCoreApplication,
                               QSettings)
-from qgis.PyQt.QtWidgets import (QProgressBar, 
+from qgis.PyQt.QtWidgets import (QProgressBar,
                                  QMessageBox)
 from qgis.core import (Qgis,
                        QgsApplication,
@@ -60,7 +60,6 @@ from .geometry import GeometryUtils
 from .qgis_model_baker_utils import QgisModelBakerUtils
 from .qt_utils import OverrideCursor
 from .symbology import SymbologyUtils
-from ..config.symbology import DEFAULT_STYLE_GROUP
 from ..config.general_config import (DEFAULT_EPSG,
                                      FIELD_MAPPING_PATH,
                                      MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE,
@@ -114,8 +113,6 @@ from ..config.translator import (
     QGIS_LANG,
     PLUGIN_DIR
 )
-from ..gui.official_data_settings_dialog import OfficialDataSettingsDialog
-from ..gui.settings_dialog import SettingsDialog
 from ..lib.db.db_connector import DBConnector
 from ..lib.source_handler import SourceHandler
 
@@ -139,7 +136,6 @@ class QGISUtils(QObject):
     message_with_button_remove_report_dependency_emitted = pyqtSignal(str) # Message
     map_refresh_requested = pyqtSignal()
     map_freeze_requested = pyqtSignal(bool)
-    official_db_connection_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db
     set_node_visibility_requested = pyqtSignal(QgsLayerTreeNode, bool)
     status_bar_message_emitted = pyqtSignal(str, int) # Message, duration
     zoom_full_requested = pyqtSignal()
@@ -152,46 +148,10 @@ class QGISUtils(QObject):
         self.geometry = GeometryUtils()
         self.layer_tree_view = layer_tree_view
 
-        self.__settings_dialog = None
-        self.__official_data_settings_dialog = None
         self._source_handler = None
         self._layers = list()
         self._relations = list()
         self._bags_of_enum = dict()
-
-    def set_db_connection(self, mode, dict_conn):
-        """
-        Set plugin's main DB connection manually
-
-        mode: 'pg' or 'gpkg'
-        dict_conn: key-values (host, port, database, schema, user, password, dbfile)
-        """
-        dlg = self.get_settings_dialog()
-        dlg.set_db_connection(mode, dict_conn)
-
-    def get_settings_dialog(self):
-        if self.__settings_dialog is None:
-            self.__settings_dialog = SettingsDialog(qgis_utils=self)
-            self.__settings_dialog.db_connection_changed.connect(self.cache_layers_and_relations)
-            self.__settings_dialog.db_connection_changed.connect(self.db_connection_changed)
-            self.__settings_dialog.organization_tools_changed.connect(self.organization_tools_changed)
-
-        return self.__settings_dialog
-
-    def get_db_connection(self):
-        self.__settings_dialog = self.get_settings_dialog()
-        return self.__settings_dialog.get_db_connection()
-
-    def get_official_data_settings_dialog(self):
-        if self.__official_data_settings_dialog is None:
-            self.__official_data_settings_dialog = OfficialDataSettingsDialog(self, None)
-            self.__official_data_settings_dialog.official_db_connection_changed.connect(self.official_db_connection_changed)
-
-        return self.__official_data_settings_dialog
-
-    def get_official_db_connection(self):
-        self.__official_data_settings_dialog = self.get_official_data_settings_dialog()
-        return self.__official_data_settings_dialog.get_db_connection()
 
     def get_source_handler(self):
         if self._source_handler is None:

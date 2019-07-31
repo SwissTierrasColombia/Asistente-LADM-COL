@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>441</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="6" column="1">
+    <widget class="QComboBox" name="selected_schema_combobox"/>
+   </item>
+   <item row="6" column="2">
+    <widget class="QPushButton" name="create_schema_button">
+     <property name="toolTip">
+      <string>Create schema</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>:/Asistente-LADM_COL/resources/images/schema.png</normaloff>:/Asistente-LADM_COL/resources/images/schema.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="txt_host">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string>[Leave empty to use standard host: localhost]</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="lbl_port">
+     <property name="text">
+      <string>Port</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLineEdit" name="txt_user">
+     <property name="placeholderText">
+      <string>Database Username</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="lbl_password">
+     <property name="text">
+      <string>Password</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="lbl_host">
+     <property name="text">
+      <string>Host</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QComboBox" name="selected_db_combobox"/>
+   </item>
+   <item row="5" column="2">
+    <widget class="QPushButton" name="create_db_button">
+     <property name="toolTip">
+      <string>Create database</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>:/Asistente-LADM_COL/resources/images/create_db.png</normaloff>:/Asistente-LADM_COL/resources/images/create_db.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="lbl_schema">
+     <property name="text">
+      <string>Schema</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="txt_password">
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="placeholderText">
+      <string>[Leave empty to use system password]</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="lbl_database">
+     <property name="text">
+      <string>Database</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="txt_port">
+     <property name="placeholderText">
+      <string>[Leave empty to use standard port 5432]</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="lbl_user">
+     <property name="text">
+      <string>User</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="3">
+    <widget class="QPushButton" name="refresh_db_button">
+     <property name="text">
+      <string>Refresh databases and schemas</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>txt_host</tabstop>
+  <tabstop>txt_port</tabstop>
+  <tabstop>txt_user</tabstop>
+  <tabstop>txt_password</tabstop>
+  <tabstop>refresh_db_button</tabstop>
+  <tabstop>selected_db_combobox</tabstop>
+  <tabstop>create_db_button</tabstop>
+  <tabstop>selected_schema_combobox</tabstop>
+  <tabstop>create_schema_button</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

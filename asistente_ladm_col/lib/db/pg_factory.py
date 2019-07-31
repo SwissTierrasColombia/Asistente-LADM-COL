@@ -17,9 +17,8 @@
  ***************************************************************************/
 """
 from .db_factory import DbFactory
-
-from asistente_ladm_col.gui.db_panel.pg_config_panel import PgConfigPanel
-from asistente_ladm_col.lib.db.pg_connector import PGConnector
+from ...gui.db_panel.pg_config_panel import PgConfigPanel
+from ...lib.db.pg_connector import PGConnector
 
 class PgFactory(DbFactory):
     def __init__(self):
@@ -39,10 +38,17 @@ class PgFactory(DbFactory):
     def get_config_panel(self):
         return PgConfigPanel()
 
-    def get_db_connector(self, parameters):
-        return PGConnector(None, parameters['schema'], parameters)
+    def get_db_connector(self, parameters=dict()):
+        return PGConnector(None, parameters)
 
     def set_db_configuration_params(self, params, configuration):
+        """
+        ili2db parameters
+
+        :param params:
+        :param configuration:
+        :return:
+        """
         configuration.tool_name = 'pg'
         configuration.dbhost = params['host']
         configuration.dbport = params['port']

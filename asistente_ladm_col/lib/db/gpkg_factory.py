@@ -17,13 +17,13 @@
  ***************************************************************************/
 """
 from .db_factory import DbFactory
-from asistente_ladm_col.gui.db_panel.gpkg_config_panel import GpkgConfigPanel
-from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
-
+from ...gui.db_panel.gpkg_config_panel import GpkgConfigPanel
+from ...lib.db.gpkg_connector import GPKGConnector
 
 class GpkgFactory(DbFactory):
 
     def __init__(self):
+        DbFactory.__init__(self)
         self._mode = "gpkg"
 
     def get_id(self):
@@ -39,10 +39,9 @@ class GpkgFactory(DbFactory):
     def get_config_panel(self):
         return GpkgConfigPanel()
 
-    def get_db_connector(self, parameters):
+    def get_db_connector(self, parameters={}):
         return GPKGConnector(None, conn_dict=parameters)
 
     def set_db_configuration_params(self, params, configuration):
         configuration.tool_name = 'gpkg'
         configuration.dbfile = params['dbfile']
-
