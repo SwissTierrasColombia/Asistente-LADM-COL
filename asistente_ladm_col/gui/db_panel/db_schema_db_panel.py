@@ -26,8 +26,8 @@ from ...lib.db.db_connector import EnumTestLevel
 
 
 class DbSchemaDbPanel(DbConfigPanel):
-    def __init__(self):
-        super(DbSchemaDbPanel, self).__init__()
+    def __init__(self, parent):
+        DbConfigPanel.__init__(self, parent)
 
     def init_schema(self):
         self.create_db_button.clicked.connect(self.show_create_db_dialog)

@@ -39,7 +39,7 @@ from qgis.core import (Qgis,
                        QgsExpressionContext,
                        QgsProcessingModelAlgorithm)
 
-from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
+from .gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from .config.general_config import (ANNEX_17_REPORT,
                                     ANT_MAP_REPORT,
                                     CADASTRE_MENU_OBJECTNAME,
@@ -109,7 +109,7 @@ from .gui.settings_dialog import SettingsDialog
 from .data.ladm_data import LADM_DATA
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
-from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
+from .lib.db.db_connection_manager import ConnectionManager
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
 from .lib.db.enum_db_action_type import EnumDbActionType
@@ -917,22 +917,104 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dlg.exec_()
 
     def unload(self):
+        # Remove toolbars actions
+        toolbars_actions = ['_build_boundary_action',
+                            '_topological_editing_action',
+                            '_fill_point_BFS_action',
+                            '_fill_more_BFS_less_action',
+                            '_fill_right_of_way_relations_action',
+                            '_import_from_intermediate_structure_action']
+        self.delete_variables(toolbars_actions)
+
+        # Remove cadastre actions
+        cadastre_actions = ['_controlled_measurement_action',
+                            '_point_surveying_and_representation_cadastre_action',
+                            '_boundary_surveying_and_representation_cadastre_action',
+                            '_plot_spatial_unit_cadastre_action',
+                            '_building_spatial_unit_cadastre_action',
+                            '_building_unit_spatial_unit_cadastre_action',
+                            '_right_of_way_cadastre_action',
+                            '_extaddress_cadastre_action',
+                            '_parcel_baunit_cadastre_action',
+                            '_col_party_cadastre_action',
+                            '_group_party_cadastre_action',
+                            '_administrative_source_cadastre_action',
+                            '_spatial_source_cadastre_action',
+                            '_upload_source_files_cadastre_action',
+                            '_right_rrr_cadastre_action',
+                            '_restriction_rrr_cadastre_action',
+                            '_responsibility_rrr_cadastre_action',
+                            '_quality_cadastre_action']
+        self.delete_variables(cadastre_actions)
+
+        # Remove property record card actions
+        property_record_card_actions = ['_property_record_card_action',
+                                        '_market_research_property_record_card_action',
+                                        '_nuclear_family_property_record_card_action',
+                                        '_natural_party_property_record_card_action',
+                                        '_legal_party_property_record_card_action']
+        self.delete_variables(property_record_card_actions)
+
+        # Remove valuation actions
+        valuation_actions = ['_parcel_valuation_action',
+                             '_horizontal_property_main_parcel_valuation_action',
+                             '_common_equipment_valuation_action',
+                             '_building_valuation_action',
+                             '_building_unit_valuation_action',
+                             '_building_unit_qualification_valuation_action',
+                             '_geoeconomic_zone_valuation_action',
+                             '_physical_zone_valuation_action']
+        self.delete_variables(valuation_actions)
+
+        # Remove queries action
+        query_actions = ['_queries_action',
+                         '_query_changes_per_parcel_action',
+                         '_query_changes_all_parcels_action']
+        self.delete_variables(query_actions)
+
+        # Remove reports actions
+        reports_actions = ['_annex_17_action',
+                           '_ant_map_action']
+        self.delete_variables(reports_actions)
+
+        # Remove data management actions
+        data_management_actions = ['_import_schema_action',
+                                   '_import_data_action',
+                                   '_export_data_action']
+        self.delete_variables(data_management_actions)
+
+        # Remove other actions
+        actions = ['_load_layers_action',
+                   '_settings_action',
+                   '_settings_changes_action',  # Official database connection settings
+                   '_help_action',
+                   '_about_action']
+        self.delete_variables(actions)
+
+        # Remove menus
+        menus = ['_cadastre_menu',
+                 '_property_record_card_menu',
+                 '_valuation_menu',
+                 '_report_menu',
+                 '_change_detection_menu',
+                 '_data_management_menu',
+                 '_menu']
+        self.delete_variables(menus)
+
         # remove the plugin menu item and icon
         self._menu.deleteLater()
         self.iface.mainWindow().removeToolBar(self._ladm_col_toolbar)
         del self._ladm_col_toolbar
-        del self._dock_widget_queries
-
-        del self._about_dialog
-        del self._dock_widget_change_detection
-        del self.toolbar
-        del self.wiz_address
-        del self._report_menu
 
         # Close all connections
         self.conn_manager.close_db_connections()
-
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
+
+    def delete_variables(self, variables):
+        for name_variable in variables:
+            if hasattr(self, name_variable):
+                variable = getattr(self, name_variable)
+                del variable
 
     def show_settings(self):
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)

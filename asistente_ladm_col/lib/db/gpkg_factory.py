@@ -36,8 +36,8 @@ class GpkgFactory(DbFactory):
         from QgisModelBaker.libili2db.globals import DbIliMode
         return DbIliMode.ili2gpkg
 
-    def get_config_panel(self):
-        return GpkgConfigPanel()
+    def get_config_panel(self, parent):
+        return GpkgConfigPanel(parent)
 
     def get_db_connector(self, parameters={}):
         return GPKGConnector(None, conn_dict=parameters)

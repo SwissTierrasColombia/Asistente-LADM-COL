@@ -20,7 +20,6 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal)
 from qgis.core import Qgis
-from qgis.PyQt.QtWidgets import QWidget
 from ...lib.db.enum_db_action_type import EnumDbActionType
 from ...utils.qt_utils import (make_save_file_selector,
                                make_file_selector)
@@ -30,12 +29,11 @@ from ...utils import get_ui_class
 WIDGET_UI = get_ui_class('settings_gpkg.ui')
 
 
-class GpkgConfigPanel(QWidget, WIDGET_UI, DbConfigPanel):
+class GpkgConfigPanel(DbConfigPanel, WIDGET_UI):
     notify_message_requested = pyqtSignal(str, Qgis.MessageLevel)
 
-    def __init__(self, parent=None):
-        QWidget.__init__(self, parent)
-        super(GpkgConfigPanel, self).__init__()
+    def __init__(self, parent):
+        DbConfigPanel.__init__(self, parent)
         self.setupUi(self)
 
         self.action = None

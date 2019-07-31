@@ -16,11 +16,14 @@
  *                                                                         *
  ***************************************************************************/
 """
+from abc import ABC
 from qgis.PyQt.QtCore import QSettings
-from qgis.PyQt.QtCore import QObject
 
 
-class DbFactory(QObject):
+class DbFactory(ABC):
+    """
+    Abstract class
+    """
 
     def __init__(self):
         self._mode = None
@@ -31,13 +34,13 @@ class DbFactory(QObject):
     def get_name(self):
         raise NotImplementedError
 
-    def get_config_panel(self):
+    def get_config_panel(self, parent):
         raise NotImplementedError
 
     def get_mbaker_db_ili_mode(self):
         raise NotImplementedError
 
-    def get_db_connector(self, parameters={}):
+    def get_db_connector(self, parameters=dict()):
         raise NotImplementedError
 
     def set_db_configuration_params(self, params, configuration):

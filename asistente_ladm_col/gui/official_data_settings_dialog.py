@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-import sip
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               pyqtSignal)
@@ -68,7 +67,7 @@ class OfficialDataSettingsDialog(QDialog, DIALOG_UI):
 
         for key, value in self._lst_db.items():
             self.cbo_db_source.addItem(value.get_name(), key)
-            self._lst_panel[key] = value.get_config_panel()
+            self._lst_panel[key] = value.get_config_panel(self)
             self._lst_panel[key].notify_message_requested.connect(self.show_message)
             self.db_layout.addWidget(self._lst_panel[key])
 
