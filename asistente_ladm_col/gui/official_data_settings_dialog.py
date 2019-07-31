@@ -39,18 +39,18 @@ DIALOG_UI = get_ui_class('official_data_settings_dialog.ui')
 class OfficialDataSettingsDialog(QDialog, DIALOG_UI):
     official_db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
 
-    def __init__(self, qgis_utils=None, db_utils=None, parent=None):
+    def __init__(self, qgis_utils=None, conn_manager=None, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.log = QgsApplication.messageLog()
-        self.db_utils = db_utils
+        self.conn_manager = conn_manager
         self._db = None
         self.qgis_utils = qgis_utils
         self.db_source = OFFICIAL_DB_SOURCE
         self.conf_db = ConfigDbSupported()
 
         # Create official db connection
-        self.db_utils.update_db_source(self.db_source)
+        self.conn_manager.update_db_connector_for_source(self.db_source)
 
         # Set connections
         self.buttonBox.accepted.disconnect()
@@ -136,7 +136,7 @@ class OfficialDataSettingsDialog(QDialog, DIALOG_UI):
                 self._db = db
 
                 # Update db connect with new db conn
-                self.db_utils.set_db_source(self._db, self.db_source)
+                self.conn_manager.set_db_connector_for_source(self._db, self.db_source)
 
                 # Emmit signal when change db source
                 self.official_db_connection_changed.emit(self._db, ladm_col_schema)

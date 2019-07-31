@@ -60,11 +60,11 @@ class SettingsDialog(QDialog, DIALOG_UI):
     db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
     organization_tools_changed = pyqtSignal(str)
 
-    def __init__(self, parent=None, qgis_utils=None, db_utils=None):
+    def __init__(self, parent=None, qgis_utils=None, conn_manager=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.log = QgsApplication.messageLog()
-        self.db_utils = db_utils
+        self.conn_manager = conn_manager
         self._db = None
         self.qgis_utils = qgis_utils
         self.db_source = COLLECTED_DB_SOURCE
@@ -183,12 +183,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 # Limit the validation (used in GeoPackage)
                 test_level |= EnumTestLevel.SCHEMA_IMPORT
 
-            res, msg = db.test_connection(test_level=test_level)
+            res, msg = db.test_connection(test_level)
 
             if res:
                 if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
-                    # Don't check if it's a LADM schema, we expect it to be after the schema import
-                    ladm_col_schema, msg = db.test_connection(test_level=EnumTestLevel.LADM)
+                    # Don't check if it's a LADM schema, we expect it to be after we run the schema import
+                    ladm_col_schema, msg = db.test_connection(EnumTestLevel.LADM)
             else:
                 self.show_message(msg, Qgis.Warning)
                 valid_connection = False
@@ -200,7 +200,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 self._db = db
 
                 # Update db connect with new db conn
-                self.db_utils.set_db_source(self._db, self.db_source)
+                self.conn_manager.set_db_connector_for_source(self._db, self.db_source)
 
                 # Emmit signal when change db source
                 self.db_connection_changed.emit(self._db, ladm_col_schema)
@@ -353,7 +353,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         if self._action_type == EnumDbActionType.SCHEMA_IMPORT:
             test_level |= EnumTestLevel.SCHEMA_IMPORT
 
-        res, msg = db.test_connection(test_level=test_level)
+        res, msg = db.test_connection(test_level)
 
         if db is not None:
             db.close_connection()

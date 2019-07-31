@@ -66,14 +66,14 @@ DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_data.ui')
 
 class DialogImportData(QDialog, DIALOG_UI):
 
-    def __init__(self, iface, qgis_utils, db_utils):
+    def __init__(self, iface, qgis_utils, conn_manager):
         QDialog.__init__(self)
         self.setupUi(self)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
-        self.db_utils = db_utils
-        self.db = self.db_utils.get_db_source()
+        self.conn_manager = conn_manager
+        self.db = self.conn_manager.get_db_connector_from_source()
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
 
@@ -190,10 +190,10 @@ class DialogImportData(QDialog, DIALOG_UI):
         return ili_models
 
     def show_settings(self):
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, db_utils=self.db_utils)
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
 
         # Connect signals (DBUtils, QgisUtils)
-        dlg.db_connection_changed.connect(self.db_utils.db_connection_changed)
+        dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
         dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
         dlg.organization_tools_changed.connect(self.qgis_utils.organization_tools_changed)
 

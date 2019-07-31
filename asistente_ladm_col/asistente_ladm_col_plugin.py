@@ -45,7 +45,6 @@ from .config.general_config import (ANNEX_17_REPORT,
                                     CADASTRE_MENU_OBJECTNAME,
                                     LADM_COL_MENU_OBJECTNAME,
                                     PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
-                                    COLLECTED_DB_SOURCE,
                                     OFFICIAL_DB_SOURCE,
                                     PLUGIN_NAME,
                                     PLUGIN_VERSION,
@@ -110,7 +109,7 @@ from .gui.settings_dialog import SettingsDialog
 from .data.ladm_data import LADM_DATA
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
-from .utils.db_utils import DbUtils
+from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
 from .lib.db.enum_db_action_type import EnumDbActionType
@@ -126,7 +125,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.toolbar = None
         self.wiz_address = None
         self._report_menu = None
-        self.db_utils = DbUtils()
+        self.conn_manager = ConnectionManager()
         self._db = self.get_db_connection()
 
     def initGui(self):
@@ -190,7 +189,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.create_progress_message_bar_emitted.connect(self.create_progress_message_bar)
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
-        self.db_utils.db_connection_changed.connect(self.refresh_menus)
+        self.conn_manager.db_connection_changed.connect(self.refresh_menus)
         self.qgis_utils.organization_tools_changed.connect(self.refresh_organization_tools)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
@@ -931,15 +930,15 @@ class AsistenteLADMCOLPlugin(QObject):
         del self._report_menu
 
         # close all connection
-        self.db_utils.close_db_sources()
+        self.conn_manager.close_db_connections()
 
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
 
     def show_settings(self):
-        dlg = SettingsDialog(qgis_utils=self.qgis_utils, db_utils=self.db_utils)
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
 
         # Connect signals (DBUtils, QgisUtils)
-        dlg.db_connection_changed.connect(self.db_utils.db_connection_changed)
+        dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
         dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
         dlg.organization_tools_changed.connect(self.qgis_utils.organization_tools_changed)
 
@@ -970,33 +969,33 @@ class AsistenteLADMCOLPlugin(QObject):
                                                       self.get_db_connection(),
                                                       self.qgis_utils,
                                                       self.ladm_data)
-        self.db_utils.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
+        self.conn_manager.db_connection_changed.connect(self._dock_widget_queries.update_db_connection)
         self._dock_widget_queries.zoom_to_features_requested.connect(self.zoom_to_features)
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_queries)
 
     def get_db_connection(self):
-        return self.db_utils.get_db_source()
+        return self.conn_manager.get_db_connector_from_source()
 
     def get_official_db_connection(self):
-        return self.db_utils.get_db_source(db_source=OFFICIAL_DB_SOURCE)
+        return self.conn_manager.get_db_connector_from_source(db_source=OFFICIAL_DB_SOURCE)
 
     @_qgis_model_baker_required
     def show_dlg_import_schema(self):
         from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
-        dlg = DialogImportSchema(self.iface, self.qgis_utils, self.db_utils)
+        dlg = DialogImportSchema(self.iface, self.qgis_utils, self.conn_manager)
         dlg.models_have_changed.connect(self.refresh_menus)
         dlg.exec_()
 
     @_qgis_model_baker_required
     def show_dlg_import_data(self):
         from .gui.qgis_model_baker.dlg_import_data import DialogImportData
-        dlg = DialogImportData(self.iface, self.qgis_utils, self.db_utils)
+        dlg = DialogImportData(self.iface, self.qgis_utils, self.conn_manager)
         dlg.exec_()
 
     @_qgis_model_baker_required
     def show_dlg_export_data(self):
         from .gui.qgis_model_baker.dlg_export_data import DialogExportData
-        dlg = DialogExportData(self.iface, self.qgis_utils, self.db_utils)
+        dlg = DialogExportData(self.iface, self.qgis_utils, self.conn_manager)
         dlg.exec_()
 
     @_qgis_model_baker_required
@@ -1263,14 +1262,14 @@ class AsistenteLADMCOLPlugin(QObject):
                                                                        self.get_official_db_connection(),
                                                                        self.qgis_utils,
                                                                        self.ladm_data)
-        self.db_utils.db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
-        self.db_utils.official_db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
+        self.conn_manager.db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
+        self.conn_manager.official_db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
         self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self._dock_widget_change_detection)
 
     def show_official_data_settings(self):
-        dlg = OfficialDataSettingsDialog(qgis_utils=self.qgis_utils, db_utils=self.db_utils)
-        dlg.official_db_connection_changed.connect(self.db_utils.official_db_connection_changed)
+        dlg = OfficialDataSettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+        dlg.official_db_connection_changed.connect(self.conn_manager.official_db_connection_changed)
         dlg.exec_()
 
     def show_official_data_settings_clear_message_bar(self):

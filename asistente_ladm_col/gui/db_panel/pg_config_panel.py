@@ -61,23 +61,23 @@ class PgConfigPanel(QWidget, WIDGET_UI, DbSchemaDbPanel):
     def write_connection_parameters(self, dict_conn):
         self._disconnect_change_signals()
 
-        self.txt_host.setText(dict_conn['host'])
-        self.txt_port.setText(dict_conn['port'])
-        self.txt_user.setText(dict_conn['username'])
-        self.txt_password.setText(dict_conn['password'])
+        self.txt_host.setText(dict_conn['host'] if 'host' in dict_conn else '')
+        self.txt_port.setText(dict_conn['port'] if 'port' in dict_conn else '')
+        self.txt_user.setText(dict_conn['username'] if 'username' in dict_conn else '')
+        self.txt_password.setText(dict_conn['password'] if 'password' in dict_conn else '')
 
-        if not dict_conn['database']:
+        if 'database' in dict_conn and not dict_conn['database']:
             self._connect_change_signals()
             return
 
-        db_name_setting = dict_conn['database']
+        db_name_setting = dict_conn['database'] if 'database' in dict_conn else ''
 
         self.selected_db_combobox.clear()
         self.selected_schema_combobox.clear()
 
         if db_name_setting:
             self.selected_db_combobox.addItem(db_name_setting)
-        if dict_conn['schema']:
+        if 'schema' in dict_conn and dict_conn['schema']:
             self.selected_schema_combobox.addItem(dict_conn['schema'])
 
         self._connect_change_signals()
@@ -89,7 +89,7 @@ class PgConfigPanel(QWidget, WIDGET_UI, DbSchemaDbPanel):
             result = (self.state['host'] != self.txt_host.text().strip() or \
                 self.state['port'] != self.txt_port.text().strip() or \
                 self.state['database'] != self.selected_db_combobox.currentText().strip() or \
-                self.state['schema'] != (self.selected_schema_combobox.currentText().strip() or 'public') or \
+                self.state['schema'] != self.selected_schema_combobox.currentText().strip() or \
                 self.state['username'] != self.txt_user.text().strip() or \
                 self.state['password'] != self.txt_password.text().strip())
 
@@ -97,4 +97,4 @@ class PgConfigPanel(QWidget, WIDGET_UI, DbSchemaDbPanel):
 
     def get_connector(self):
         dict = self.read_connection_parameters()
-        return PGConnector(None, dict['schema'], dict)
+        return PGConnector(None, dict)

@@ -28,8 +28,8 @@ class GPKGConnector(DBConnector):
 
     _PROVIDER_NAME = 'ogr'
 
-    def __init__(self, uri, schema=None, conn_dict={}):
-        DBConnector.__init__(self, uri, schema, conn_dict)
+    def __init__(self, uri, conn_dict={}):
+        DBConnector.__init__(self, uri, conn_dict)
         self.mode = 'gpkg'
         self.conn = None
         self.provider = 'ogr'

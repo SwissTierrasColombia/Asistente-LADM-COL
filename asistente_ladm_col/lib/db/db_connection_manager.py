@@ -23,75 +23,80 @@ from qgis.PyQt.QtCore import (pyqtSignal,
 
 from qgis.core import (QgsApplication,
                        Qgis)
-from ..config.config_db_supported import ConfigDbSupported
-from ..config.general_config import (COLLECTED_DB_SOURCE,
-                                     PLUGIN_NAME,
-                                     OFFICIAL_DB_SOURCE)
+from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
+from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
+                                                      PLUGIN_NAME,
+                                                      OFFICIAL_DB_SOURCE)
 
-from ..lib.db.db_connector import DBConnector
+from asistente_ladm_col.lib.db.db_connector import DBConnector
 
 
-class DbUtils(QObject):
+class ConnectionManager(QObject):
+    """
+    Access point to get and set DB Connectors used by the plugin.
+
+    The plugin uses a DB Connector for Cadastral data collection (barrido) and one for the Official cadastral data.
+    Other connections might be needed (e.g., while retrieving databases for the server in the setting sdialog, but they
+     are not handled by this class).
+    """
     db_connection_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db
     official_db_connection_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db
 
     def __init__(self):
         QObject.__init__(self)
-        self.settings = QSettings()
         self.conf_db = ConfigDbSupported()
         self.log = QgsApplication.messageLog()
 
-        self._db_sources = {
+        self._db_sources = {  # Values are DB Connectors
             COLLECTED_DB_SOURCE: None,
             OFFICIAL_DB_SOURCE: None
         }
 
-        # Init collected db source
-        self.update_db_source()
+        # Initialize collected db source
+        self.update_db_connector_for_source()
 
-    def update_db_source(self, db_source=COLLECTED_DB_SOURCE):
-        db_connection_source = self.settings.value('Asistente-LADM_COL/db/{db_source}/db_connection_source'.format(db_source=db_source))
+    def update_db_connector_for_source(self, db_source=COLLECTED_DB_SOURCE):
+        db_connection_source = QSettings().value('Asistente-LADM_COL/db/{db_source}/db_connection_source'.format(db_source=db_source))
 
         if db_connection_source:
             db_factory = self.conf_db.get_db_items()[db_connection_source]
-            parameters_conn = db_factory.get_parameters_conn(db_source=db_source)
-            db = db_factory.get_db_connector(parameters_conn)
+            dict_conn = db_factory.get_parameters_conn(db_source)
+            db = db_factory.get_db_connector(dict_conn)
             db.open_connection()  # Open db connection
         else:
-            # when the connection parameters are not filling we use empty values
+            # By default, we use PostgreSQL
+            # when the connection parameters are not filled we use empty values
             db_connection_source = "pg"
             db_factory = self.conf_db.get_db_items()[db_connection_source]
-            parameters_conn = {'database': '', 'host': '', 'password': '', 'port': '', 'schema': '', 'username': ''}
-            db = db_factory.get_db_connector(parameters_conn)
+            db = db_factory.get_db_connector()
 
-        self.set_db_source(db, db_source)
+        self.set_db_connector_for_source(db, db_source)
 
-    def get_db_source(self, db_source=COLLECTED_DB_SOURCE):
+    def get_db_connector_from_source(self, db_source=COLLECTED_DB_SOURCE):
         return self._db_sources[db_source]
 
-    def set_db_source(self, db_connector, db_source=COLLECTED_DB_SOURCE):
+    def set_db_connector_for_source(self, db_connector, db_source=COLLECTED_DB_SOURCE):
         try:
             if self._db_sources[db_source]:
                 self._db_sources[db_source].close_connection()
             self._db_sources[db_source] = db_connector
         except:
-            self.log.logMessage(QCoreApplication.translate("DbUtils", "An error occurred while trying to close the connection"),
+            self.log.logMessage(QCoreApplication.translate("ConnectionManager", "An error occurred while trying to close the connection."),
                                 PLUGIN_NAME,
                                 Qgis.Info)
 
-    def close_db_sources(self):
+    def close_db_connections(self):
         for _db_source in self._db_sources:
             if self._db_sources[_db_source]:
                 self._db_sources[_db_source].close_connection()
 
-    def get_db_source_test(self, scope, parameters):
+    def get_db_connector_for_tests(self, scope, parameters):
         """
-        This function was implemented for the tests
+        This function is implemented for tests
         """
         db_connection_source = scope
         db_factory = self.conf_db.get_db_items()[db_connection_source]
-        parameters_conn = parameters
-        db = db_factory.get_db_connector(parameters_conn)
-        db.open_connection()  # Open db connection
+        db = db_factory.get_db_connector(parameters)
+        db.open_connection()
 
         return db

@@ -48,7 +48,7 @@ class GpkgConfigPanel(QWidget, WIDGET_UI, DbConfigPanel):
         return dict_conn
 
     def write_connection_parameters(self, dict_conn):
-        self.txt_file.setText(dict_conn['dbfile'])
+        self.txt_file.setText(dict_conn['dbfile'] if 'dbfile' in dict_conn else '')
 
     def get_keys_connection_parameters(self):
         return list(self.read_connection_parameters().keys())

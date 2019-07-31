@@ -25,7 +25,6 @@ class GpkgFactory(DbFactory):
     def __init__(self):
         DbFactory.__init__(self)
         self._mode = "gpkg"
-        self._parameters_conn = ['dbfile']
 
     def get_id(self):
         return 'gpkg'
@@ -40,7 +39,7 @@ class GpkgFactory(DbFactory):
     def get_config_panel(self):
         return GpkgConfigPanel()
 
-    def get_db_connector(self, parameters):
+    def get_db_connector(self, parameters={}):
         return GPKGConnector(None, conn_dict=parameters)
 
     def set_db_configuration_params(self, params, configuration):

@@ -61,14 +61,20 @@ from ...utils.model_parser import ModelParser
 class PGConnector(DBConnector):
 
     _PROVIDER_NAME = 'postgres'
-    _DEFAULT_HOST = 'localhost'
-    _DEFAULT_PORT = '5432'
+    _DEFAULT_VALUES = {
+        'host': 'localhost',
+        'port': '5432',
+        'database': '',
+        'username': '',
+        'schema': '',
+        'password': ''
+    }
 
-    def __init__(self, uri, schema="public", conn_dict={}):
-        DBConnector.__init__(self, uri, schema, conn_dict)
+    def __init__(self, uri, conn_dict=dict()):
+        DBConnector.__init__(self, uri, conn_dict)
         self.mode = 'pg'
         self.conn = None
-        self.schema = schema
+        self.schema = conn_dict['schema'] if 'schema' in conn_dict else ''
         self.log = QgsApplication.messageLog()
         self.provider = 'postgres'
         self._tables_info = None
@@ -76,27 +82,27 @@ class PGConnector(DBConnector):
         # Logical validations queries
         self.logic_validation_queries = {
             'DEPARTMENT_CODE_VALIDATION': {
-                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=2 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=DEPARTMENT_FIELD),
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=2 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, field=DEPARTMENT_FIELD),
                 'desc_error': 'Department code must have two numerical characters.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
                 'table': PARCEL_TABLE},
             'MUNICIPALITY_CODE_VALIDATION': {
-                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=3 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=MUNICIPALITY_FIELD),
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=3 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, field=MUNICIPALITY_FIELD),
                 'desc_error': 'Municipality code must have three numerical characters.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
                 'table': PARCEL_TABLE},
             'ZONE_CODE_VALIDATION': {
-                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=2 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=ZONE_FIELD),
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=2 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, field=ZONE_FIELD),
                 'desc_error': 'Zone code must have two numerical characters.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
                 'table': PARCEL_TABLE},
             'PARCEL_NUMBER_VALIDATION': {
-                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=30 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=PARCEL_NUMBER_FIELD),
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=30 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, field=PARCEL_NUMBER_FIELD),
                 'desc_error': 'Parcel number must have 30 numerical characters.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
                 'table': PARCEL_TABLE},
             'PARCEL_NUMBER_BEFORE_VALIDATION': {
-                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=20 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=PARCEL_NUMBER_BEFORE_FIELD),
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=20 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, field=PARCEL_NUMBER_BEFORE_FIELD),
                 'desc_error': 'Parcel number before must have 20 numerical characters.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
                 'table': PARCEL_TABLE},
@@ -117,7 +123,7 @@ class PGConnector(DBConnector):
                             p.{col_party_first_name} IS NULL OR 
                             length(trim(p.{col_party_first_name})) > 0 is False OR
                             p.{col_party_doc_type} = 'NIT')
-                """.format(schema=schema, table=COL_PARTY_TABLE, id=ID_FIELD, col_party_type=COL_PARTY_TYPE_FIELD,
+                """.format(schema=self.schema, table=COL_PARTY_TABLE, id=ID_FIELD, col_party_type=COL_PARTY_TYPE_FIELD,
                            business_name=COL_PARTY_BUSINESS_NAME_FIELD,
                            col_party_legal_party=COL_PARTY_LEGAL_PARTY_FIELD, col_party_surname=COL_PARTY_SURNAME_FIELD,
                            col_party_first_name=COL_PARTY_FIRST_NAME_FIELD,
@@ -141,7 +147,7 @@ class PGConnector(DBConnector):
                                 p.{col_party_surname} IS NOT NULL OR
                                 p.{col_party_first_name} IS NOT NULL OR
                                 p.{col_party_doc_type} NOT IN ('NIT', 'Secuencial_IGAC', 'Secuencial_SNR'))
-                        """.format(schema=schema, table=COL_PARTY_TABLE, id=ID_FIELD,
+                        """.format(schema=self.schema, table=COL_PARTY_TABLE, id=ID_FIELD,
                                    col_party_type=COL_PARTY_TYPE_FIELD, business_name=COL_PARTY_BUSINESS_NAME_FIELD,
                                    col_party_legal_party=COL_PARTY_LEGAL_PARTY_FIELD,
                                    col_party_surname=COL_PARTY_SURNAME_FIELD,
@@ -167,7 +173,7 @@ class PGConnector(DBConnector):
                                ({parcel_type} in ('Via', 'ParqueCementerio.UnidadPrivada') AND (sum_t !=1 OR sum_uc > 0 OR sum_c > 0)) OR 
                                ({parcel_type}='PropiedadHorizontal.UnidadPredial' AND (sum_t !=0 OR sum_c != 0 OR sum_uc = 0 )) OR 
                                ({parcel_type}='Mejora' AND (sum_t !=0 OR sum_c != 1 OR sum_uc != 0))
-                """.format(schema=schema, input_table=PARCEL_TABLE, join_table=UEBAUNIT_TABLE, join_field=UEBAUNIT_TABLE_PARCEL_FIELD, id=ID_FIELD, parcel_type=PARCEL_TYPE_FIELD,
+                """.format(schema=self.schema, input_table=PARCEL_TABLE, join_table=UEBAUNIT_TABLE, join_field=UEBAUNIT_TABLE_PARCEL_FIELD, id=ID_FIELD, parcel_type=PARCEL_TYPE_FIELD,
                            ueb_plot=UEBAUNIT_TABLE_PLOT_FIELD, ueb_building=UEBAUNIT_TABLE_BUILDING_FIELD, ueb_building_unit=UEBAUNIT_TABLE_BUILDING_UNIT_FIELD),
                 'desc_error': 'Parcel must have one or more spatial units associated with it.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Errors in relationships between Spatial Units and Parcels"),
@@ -183,7 +189,7 @@ class PGConnector(DBConnector):
                                (substring(p.{parcel_number},22,1) != '5' AND p.{parcel_type}='Mejora') OR
                                (substring(p.{parcel_number},22,1) != '4' AND p.{parcel_type}='Via') OR
                                (substring(p.{parcel_number},22,1) != '3' AND p.{parcel_type}='BienUsoPublico')
-                        )""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, parcel_number=PARCEL_NUMBER_FIELD, parcel_type=PARCEL_TYPE_FIELD),
+                        )""".format(schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, parcel_number=PARCEL_NUMBER_FIELD, parcel_type=PARCEL_TYPE_FIELD),
                 'desc_error': 'The position 22 of the parcel number must correspond to the type of parcel.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
                 'table': PARCEL_TABLE},
@@ -326,8 +332,7 @@ class PGConnector(DBConnector):
                 return (True, QCoreApplication.translate("PGConnector",
                                                          "Connection to server was successful."))
             else:
-                return (False, QCoreApplication.translate("PGConnector",
-                                                         "Connection to server was not successful."))
+                return (False, msg)
 
 
         if test_level & EnumTestLevel.DB:
@@ -353,13 +358,13 @@ class PGConnector(DBConnector):
             if not res:
                 return (res, msg)
 
-        if test_level & EnumTestLevel.DB:
+        if test_level == EnumTestLevel.DB:  # Just in the DB case
             return (True, QCoreApplication.translate("PGConnector",
                                                      "Connection to the database was successful."))
 
 
         if test_level & EnumTestLevel._CHECK_SCHEMA:
-            if not self._dict_conn_params['schema'] or self._dict_conn_params['schema'] == 'public':
+            if not self._dict_conn_params['schema'] or self._dict_conn_params['schema'] == '':
                 return (False, QCoreApplication.translate("PGConnector",
                     "You should first select a schema."))
 
@@ -375,9 +380,9 @@ class PGConnector(DBConnector):
                             self._dict_conn_params['username'],
                             self.schema))
 
-        if test_level & EnumTestLevel.DB_SCHEMA:
+        if test_level == EnumTestLevel.DB_SCHEMA:
             return (True, QCoreApplication.translate("PGConnector",
-                                                     "Connection to the schema was successful."))
+                                                     "Connection to the database schema was successful."))
 
 
         if test_level & EnumTestLevel._CHECK_LADM:
@@ -391,9 +396,11 @@ class PGConnector(DBConnector):
             if not self.model_parser.validate_cadastre_model_version()[0]:
                 return (False, QCoreApplication.translate("PGConnector", "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
 
-        if test_level & EnumTestLevel.LADM:
+        if test_level == EnumTestLevel.LADM:
             return (True, QCoreApplication.translate("PGConnector", "The schema '{}' has a valid LADM-COL structure!").format(self.schema))
 
+        if test_level & EnumTestLevel.SCHEMA_IMPORT:
+            return (True, QCoreApplication.translate("PGConnector", "Connection successful!"))
 
         return (False, QCoreApplication.translate("PGConnector", "There was a problem checking the connection. Most likely due to invalid or not supported test_level!"))
 
@@ -406,7 +413,7 @@ class PGConnector(DBConnector):
         if self.conn is None or self.conn.closed:
             try:
                 self.conn = psycopg2.connect(uri)
-            except (psycopg2.OperationError, psycopg2.ProgrammingError) as e:
+            except (psycopg2.OperationalError, psycopg2.ProgrammingError) as e:
                 return (False, QCoreApplication.translate("PGConnector", "Could not open connection! Details: {}".format(e)))
 
             self.log.logMessage("Connection was open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
@@ -866,6 +873,10 @@ class PGConnector(DBConnector):
         return (True, QCoreApplication.translate("PGConnector", "Schema '{}' was successfully created!".format(schema_name)))
 
     def get_dbnames_list(self, uri):
+        res, msg = self.test_connection(EnumTestLevel.SERVER)
+        if not res:
+            return (False, msg)
+
         dbnames_list = list()
         try:
             conn = psycopg2.connect(uri)
@@ -956,8 +967,8 @@ class PGConnector(DBConnector):
 
     def get_connection_uri(self, dict_conn, level=1):
         uri = []
-        uri += ['host={}'.format(dict_conn['host'] or self._DEFAULT_HOST)]
-        uri += ['port={}'.format(dict_conn['port'] or self._DEFAULT_PORT)]
+        uri += ['host={}'.format(dict_conn['host'])]
+        uri += ['port={}'.format(dict_conn['port'])]
         if dict_conn['username']:
             uri += ['user={}'.format(dict_conn['username'])]
         if dict_conn['password']:

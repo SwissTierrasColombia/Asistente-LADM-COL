@@ -38,18 +38,21 @@ class EnumTestLevel(IntFlag):
 
 class DBConnector(QObject):
     '''SuperClass for all DB connectors.'''
-    def __init__(self, uri, schema=None, conn_dict={}):
+
+    _DEFAULT_VALUES = dict()
+
+    def __init__(self, uri, conn_dict=dict()):
         QObject.__init__(self)
         self.mode = ''
         self.provider = '' # QGIS provider name. e.g., postgres
         self._uri = None
-        self.schema = schema
+        self.schema = None
         self.conn = None
         self._dict_conn_params = None
         
-        if uri:
+        if uri is not None:
             self.uri = uri
-        elif conn_dict:
+        else:
             self.dict_conn_params = conn_dict
 
         self.model_parser = None
@@ -60,8 +63,9 @@ class DBConnector(QObject):
 
     @dict_conn_params.setter
     def dict_conn_params(self, value):
-        self._dict_conn_params = value
-        self._uri = self.get_connection_uri(value, level=1)
+        self._dict_conn_params = self._DEFAULT_VALUES.copy()
+        self._dict_conn_params.update(value)
+        self._uri = self.get_connection_uri(self._dict_conn_params, level=1)
 
     @property
     def uri(self):
