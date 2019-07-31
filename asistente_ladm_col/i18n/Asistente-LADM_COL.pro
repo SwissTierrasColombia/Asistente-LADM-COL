@@ -42,7 +42,9 @@ FORMS = ../ui/dlg_load_layers.ui \
         ../ui/change_detection/dockwidget_change_detection.ui \
         ../ui/change_detection/parcels_changes_summary_panel_widget.ui \
         ../ui/dockwidget_changes.ui \
-        ../ui/official_data_settings_dialog.ui
+        ../ui/official_data_settings_dialog.ui \
+	../ui/settings_gpkg.ui \
+	../ui/settings_pg.ui
 
 SOURCES = ../__init__.py \
           ../asistente_ladm_col_plugin.py \
@@ -99,8 +101,8 @@ SOURCES = ../__init__.py \
           ../gui/qgis_model_baker/dlg_import_schema.py \
           ../gui/qgis_model_baker/dlg_import_data.py \
           ../gui/qgis_model_baker/dlg_export_data.py \
-          ../lib/dbconnector/gpkg_connector.py \
-          ../lib/dbconnector/pg_connector.py \
+          ../lib/db/gpkg_connector.py \
+          ../lib/db/pg_connector.py \
           ../lib/source_handler.py \
           ../config/general_config.py \
           ../config/help_strings.py \
