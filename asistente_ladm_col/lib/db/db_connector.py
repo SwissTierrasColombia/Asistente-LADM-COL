@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-from abc import ABC
 import psycopg2
 
 from qgis.PyQt.QtCore import QObject
@@ -37,9 +36,9 @@ class EnumTestLevel(IntFlag):
     SCHEMA_IMPORT = 128
 
 
-class DBConnector(ABC, QObject):
+class DBConnector(QObject):
     """
-    Superclass (abstract) for all DB connectors.
+    Superclass for all DB connectors.
     """
 
     _DEFAULT_VALUES = dict()
