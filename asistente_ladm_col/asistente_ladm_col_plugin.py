@@ -39,7 +39,7 @@ from qgis.core import (Qgis,
                        QgsExpressionContext,
                        QgsProcessingModelAlgorithm)
 
-from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
+from .gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from .config.general_config import (ANNEX_17_REPORT,
                                     ANT_MAP_REPORT,
                                     CADASTRE_MENU_OBJECTNAME,
@@ -109,7 +109,7 @@ from .gui.settings_dialog import SettingsDialog
 from .data.ladm_data import LADM_DATA
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
-from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
+from .lib.db.db_connection_manager import ConnectionManager
 from .utils.qt_utils import get_plugin_metadata
 from .utils.quality import QualityUtils
 from .lib.db.enum_db_action_type import EnumDbActionType
@@ -917,22 +917,112 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dlg.exec_()
 
     def unload(self):
+        # Remove toolbars actions
+        toolbars_actions = [self._build_boundary_action,
+                            self._topological_editing_action,
+                            self._fill_point_BFS_action,
+                            self._fill_more_BFS_less_action,
+                            self._fill_right_of_way_relations_action,
+                            self._import_from_intermediate_structure_action]
+        self.delete_actions(toolbars_actions)
+
+        # Remove cadastre actions
+        cadastre_actions = [self._controlled_measurement_action,
+                            self._point_surveying_and_representation_cadastre_action,
+                            self._boundary_surveying_and_representation_cadastre_action,
+                            self._plot_spatial_unit_cadastre_action,
+                            self._building_spatial_unit_cadastre_action,
+                            self._building_unit_spatial_unit_cadastre_action,
+                            self._right_of_way_cadastre_action,
+                            self._extaddress_cadastre_action,
+                            self._parcel_baunit_cadastre_action,
+                            self._col_party_cadastre_action,
+                            self._group_party_cadastre_action,
+                            self._administrative_source_cadastre_action,
+                            self._spatial_source_cadastre_action,
+                            self._upload_source_files_cadastre_action,
+                            self._right_rrr_cadastre_action,
+                            self._restriction_rrr_cadastre_action,
+                            self._responsibility_rrr_cadastre_action,
+                            self._quality_cadastre_action]
+        self.delete_actions(cadastre_actions)
+
+        # Remove property record card actions
+        property_record_card_actions = [self._property_record_card_action,
+                                        self._market_research_property_record_card_action,
+                                        self._nuclear_family_property_record_card_action,
+                                        self._natural_party_property_record_card_action,
+                                        self._legal_party_property_record_card_action]
+        self.delete_actions(property_record_card_actions)
+
+        # Remove valuation actions
+        valuation_actions = [self._parcel_valuation_action,
+                             self._horizontal_property_main_parcel_valuation_action,
+                             self._common_equipment_valuation_action,
+                             self._building_valuation_action,
+                             self._building_unit_valuation_action,
+                             self._building_unit_qualification_valuation_action,
+                             self._geoeconomic_zone_valuation_action,
+                             self._physical_zone_valuation_action]
+        self.delete_actions(valuation_actions)
+
+        # Remove queries action
+        query_actions = [self._queries_action,
+                         self._query_changes_per_parcel_action,
+                         self._query_changes_all_parcels_action]
+        self.delete_actions(query_actions)
+
+        # Remove reports actions
+        reports_actions = [self._annex_17_action]
+                           #self._ant_map_action
+        self.delete_actions(reports_actions)
+
+        # Remove data management actions
+        data_management_actions = [self._import_schema_action,
+                                   self._import_data_action,
+                                   self._export_data_action]
+        self.delete_actions(data_management_actions)
+
+        # Remove others actions
+        actions = [self._load_layers_action,
+                   self._settings_action,
+                   self._settings_changes_action,  # Offical database connection settings
+                   self._help_action,
+                   self._about_action]
+        self.delete_actions(actions)
+
+        # Remove menus
+        menus = [self._cadastre_menu,
+                 self._property_record_card_menu,
+                 self._valuation_menu,
+                 self._report_menu,
+                 self._change_detection_menu,
+                 self._data_management_menu,
+                 self._menu]
+
+        for menu in menus:
+            try:
+                menu.clear()
+                del menu
+            except:
+                pass
+
         # remove the plugin menu item and icon
         self._menu.deleteLater()
         self.iface.mainWindow().removeToolBar(self._ladm_col_toolbar)
         del self._ladm_col_toolbar
-        del self._dock_widget_queries
 
-        del self._about_dialog
-        del self._dock_widget_change_detection
-        del self.toolbar
-        del self.wiz_address
-        del self._report_menu
-
-        # Close all connections
+        # close all connection
         self.conn_manager.close_db_connections()
-
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
+
+    @staticmethod
+    def delete_actions(actions):
+        for action in actions:
+            try:
+                del action
+            except:
+                pass
 
     def show_settings(self):
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
