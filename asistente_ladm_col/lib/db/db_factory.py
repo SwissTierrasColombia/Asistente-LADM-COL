@@ -21,6 +21,9 @@ from qgis.PyQt.QtCore import QSettings
 
 
 class DbFactory(ABC):
+    """
+    Abstract class
+    """
 
     def __init__(self):
         self._mode = None
@@ -37,7 +40,7 @@ class DbFactory(ABC):
     def get_mbaker_db_ili_mode(self):
         raise NotImplementedError
 
-    def get_db_connector(self, parameters={}):
+    def get_db_connector(self, parameters=dict()):
         raise NotImplementedError
 
     def set_db_configuration_params(self, params, configuration):

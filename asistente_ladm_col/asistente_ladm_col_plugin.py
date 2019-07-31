@@ -983,10 +983,10 @@ class AsistenteLADMCOLPlugin(QObject):
                                    '_export_data_action']
         self.delete_variables(data_management_actions)
 
-        # Remove others actions
+        # Remove other actions
         actions = ['_load_layers_action',
                    '_settings_action',
-                   '_settings_changes_action',  # Offical database connection settings
+                   '_settings_changes_action',  # Official database connection settings
                    '_help_action',
                    '_about_action']
         self.delete_variables(actions)
@@ -1006,7 +1006,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.mainWindow().removeToolBar(self._ladm_col_toolbar)
         del self._ladm_col_toolbar
 
-        # close all connection
+        # Close all connections
         self.conn_manager.close_db_connections()
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
 

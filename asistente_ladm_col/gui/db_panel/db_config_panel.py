@@ -16,17 +16,17 @@
  *                                                                         *
  ***************************************************************************/
 """
-from abc import ABCMeta
+from abc import ABC
+
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import QWidget
 from qgis.core import Qgis
 
 
-class AbstractQWidgetMeta(ABCMeta, type(QWidget)):
-    pass
-
-
-class DbConfigPanel(QWidget, metaclass=AbstractQWidgetMeta):
+class DbConfigPanel(ABC, QWidget):
+    """
+    Abstract class
+    """
 
     notify_message_requested = pyqtSignal(str, Qgis.MessageLevel)
 
