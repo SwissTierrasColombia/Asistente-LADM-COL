@@ -918,94 +918,88 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def unload(self):
         # Remove toolbars actions
-        toolbars_actions = [self._build_boundary_action,
-                            self._topological_editing_action,
-                            self._fill_point_BFS_action,
-                            self._fill_more_BFS_less_action,
-                            self._fill_right_of_way_relations_action,
-                            self._import_from_intermediate_structure_action]
-        self.delete_actions(toolbars_actions)
+        toolbars_actions = ['_build_boundary_action',
+                            '_topological_editing_action',
+                            '_fill_point_BFS_action',
+                            '_fill_more_BFS_less_action',
+                            '_fill_right_of_way_relations_action',
+                            '_import_from_intermediate_structure_action']
+        self.delete_variables(toolbars_actions)
 
         # Remove cadastre actions
-        cadastre_actions = [self._controlled_measurement_action,
-                            self._point_surveying_and_representation_cadastre_action,
-                            self._boundary_surveying_and_representation_cadastre_action,
-                            self._plot_spatial_unit_cadastre_action,
-                            self._building_spatial_unit_cadastre_action,
-                            self._building_unit_spatial_unit_cadastre_action,
-                            self._right_of_way_cadastre_action,
-                            self._extaddress_cadastre_action,
-                            self._parcel_baunit_cadastre_action,
-                            self._col_party_cadastre_action,
-                            self._group_party_cadastre_action,
-                            self._administrative_source_cadastre_action,
-                            self._spatial_source_cadastre_action,
-                            self._upload_source_files_cadastre_action,
-                            self._right_rrr_cadastre_action,
-                            self._restriction_rrr_cadastre_action,
-                            self._responsibility_rrr_cadastre_action,
-                            self._quality_cadastre_action]
-        self.delete_actions(cadastre_actions)
+        cadastre_actions = ['_controlled_measurement_action',
+                            '_point_surveying_and_representation_cadastre_action',
+                            '_boundary_surveying_and_representation_cadastre_action',
+                            '_plot_spatial_unit_cadastre_action',
+                            '_building_spatial_unit_cadastre_action',
+                            '_building_unit_spatial_unit_cadastre_action',
+                            '_right_of_way_cadastre_action',
+                            '_extaddress_cadastre_action',
+                            '_parcel_baunit_cadastre_action',
+                            '_col_party_cadastre_action',
+                            '_group_party_cadastre_action',
+                            '_administrative_source_cadastre_action',
+                            '_spatial_source_cadastre_action',
+                            '_upload_source_files_cadastre_action',
+                            '_right_rrr_cadastre_action',
+                            '_restriction_rrr_cadastre_action',
+                            '_responsibility_rrr_cadastre_action',
+                            '_quality_cadastre_action']
+        self.delete_variables(cadastre_actions)
 
         # Remove property record card actions
-        property_record_card_actions = [self._property_record_card_action,
-                                        self._market_research_property_record_card_action,
-                                        self._nuclear_family_property_record_card_action,
-                                        self._natural_party_property_record_card_action,
-                                        self._legal_party_property_record_card_action]
-        self.delete_actions(property_record_card_actions)
+        property_record_card_actions = ['_property_record_card_action',
+                                        '_market_research_property_record_card_action',
+                                        '_nuclear_family_property_record_card_action',
+                                        '_natural_party_property_record_card_action',
+                                        '_legal_party_property_record_card_action']
+        self.delete_variables(property_record_card_actions)
 
         # Remove valuation actions
-        valuation_actions = [self._parcel_valuation_action,
-                             self._horizontal_property_main_parcel_valuation_action,
-                             self._common_equipment_valuation_action,
-                             self._building_valuation_action,
-                             self._building_unit_valuation_action,
-                             self._building_unit_qualification_valuation_action,
-                             self._geoeconomic_zone_valuation_action,
-                             self._physical_zone_valuation_action]
-        self.delete_actions(valuation_actions)
+        valuation_actions = ['_parcel_valuation_action',
+                             '_horizontal_property_main_parcel_valuation_action',
+                             '_common_equipment_valuation_action',
+                             '_building_valuation_action',
+                             '_building_unit_valuation_action',
+                             '_building_unit_qualification_valuation_action',
+                             '_geoeconomic_zone_valuation_action',
+                             '_physical_zone_valuation_action']
+        self.delete_variables(valuation_actions)
 
         # Remove queries action
-        query_actions = [self._queries_action,
-                         self._query_changes_per_parcel_action,
-                         self._query_changes_all_parcels_action]
-        self.delete_actions(query_actions)
+        query_actions = ['_queries_action',
+                         '_query_changes_per_parcel_action',
+                         '_query_changes_all_parcels_action']
+        self.delete_variables(query_actions)
 
         # Remove reports actions
-        reports_actions = [self._annex_17_action]
-                           #self._ant_map_action
-        self.delete_actions(reports_actions)
+        reports_actions = ['_annex_17_action',
+                           '_ant_map_action']
+        self.delete_variables(reports_actions)
 
         # Remove data management actions
-        data_management_actions = [self._import_schema_action,
-                                   self._import_data_action,
-                                   self._export_data_action]
-        self.delete_actions(data_management_actions)
+        data_management_actions = ['_import_schema_action',
+                                   '_import_data_action',
+                                   '_export_data_action']
+        self.delete_variables(data_management_actions)
 
         # Remove others actions
-        actions = [self._load_layers_action,
-                   self._settings_action,
-                   self._settings_changes_action,  # Offical database connection settings
-                   self._help_action,
-                   self._about_action]
-        self.delete_actions(actions)
+        actions = ['_load_layers_action',
+                   '_settings_action',
+                   '_settings_changes_action',  # Offical database connection settings
+                   '_help_action',
+                   '_about_action']
+        self.delete_variables(actions)
 
         # Remove menus
-        menus = [self._cadastre_menu,
-                 self._property_record_card_menu,
-                 self._valuation_menu,
-                 self._report_menu,
-                 self._change_detection_menu,
-                 self._data_management_menu,
-                 self._menu]
-
-        for menu in menus:
-            try:
-                menu.clear()
-                del menu
-            except:
-                pass
+        menus = ['_cadastre_menu',
+                 '_property_record_card_menu',
+                 '_valuation_menu',
+                 '_report_menu',
+                 '_change_detection_menu',
+                 '_data_management_menu',
+                 '_menu']
+        self.delete_variables(menus)
 
         # remove the plugin menu item and icon
         self._menu.deleteLater()
@@ -1016,13 +1010,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.conn_manager.close_db_connections()
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
 
-    @staticmethod
-    def delete_actions(actions):
-        for action in actions:
-            try:
-                del action
-            except:
-                pass
+    def delete_variables(self, variables):
+        for name_variable in variables:
+            if hasattr(self, name_variable):
+                variable = getattr(self, name_variable)
+                del variable
 
     def show_settings(self):
         dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
