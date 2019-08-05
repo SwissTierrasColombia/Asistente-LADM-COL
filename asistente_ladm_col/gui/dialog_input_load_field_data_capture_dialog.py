@@ -19,9 +19,11 @@
 import os
 import stat
 import processing
+import psycopg2
 
 from ..gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
 from ..gui.log_excel_dialog import LogExcelDialog
+from ..lib.db.pg_connector import PGConnector
 
 from qgis.PyQt.QtCore import QVariant
 
@@ -33,6 +35,8 @@ from ..utils.qfield_utils import (run_etl_model_input_load_data,
                                   create_column,
                                   fix_polygon_layers,
                                   get_directions)
+
+from ..utils.qt_utils import OverrideCursor
 
 from qgis.core import (QgsProject,
                        QgsField,
@@ -70,6 +74,7 @@ from qgis.PyQt.QtCore import (Qt,
 
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QFileDialog,
+                                 QMessageBox,
                                  QSizePolicy,
                                  QGridLayout,
                                  QDialogButtonBox,
@@ -127,14 +132,22 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         self.qgis_utils.show_help("create_points")
 
     def accepted(self):
+        ladm_test = self.test_database_connections()
         self.save_settings()
-        self.create_model_into_database()
-        self.load_r1()
-        self.mapping_fields_r1()
-        self.load_gdb()
-        self.mapping_fields_gbb()
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
-        self.show_log_data()
+        if ladm_test:
+            reply = QMessageBox.question(self,
+                                     QCoreApplication.translate("DialogImportFromExcel", "Warning"),
+                                     QCoreApplication.translate("DialogImportFromExcel",
+                                                                "The schema <i>{schema}</i> already has a valid LADM_COL structure.<br/><br/>If such schema has any data, loading data into it might cause invalid data.<br/><br/>Do you still want to continue?".format(schema=self._db.schema)),
+                                     QMessageBox.Yes, QMessageBox.No)
+
+            if reply == QMessageBox.Yes:
+                with OverrideCursor(Qt.WaitCursor):
+                    self.manage_process_load_data()
+        else:
+            with OverrideCursor(Qt.WaitCursor):
+                self.create_model_into_database()
+                self.manage_process_load_data()
 
     def load_r1(self):
         self.progress.setVisible(True)
@@ -417,7 +430,6 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         self.txt_log.setText(self.summary)
 
     def create_model_into_database(self):
-        resultado = None
         get_import_schema_dialog = DialogImportSchema(self.iface, self._db, self.qgis_utils)
         for modelname in DEFAULT_MODEL_NAMES_CHECKED:
             item = get_import_schema_dialog.import_models_list_widget.findItems(modelname, Qt.MatchExactly)
@@ -431,3 +443,37 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
             dlg.setFixedSize(dlg.size()) 
             dlg.setWindowTitle(QCoreApplication.translate("DialogInputLoadFieldDataCapture","Log error structure LADM"))
             dlg.exec_()
+            return
+
+    def test_database_connections(self):
+        self._db.conn = psycopg2.connect(self._db._uri)
+        if self._db._metadata_exists():
+            return True
+        else:
+            return False
+
+    def define_stade_gui(self, stade):
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(stade)
+        self.label_r1.setEnabled(stade)
+        self.label_r2.setEnabled(stade)
+        self.label_gdb.setEnabled(stade)
+        self.label_registry.setEnabled(stade)
+        
+        self.txt_file_path_r1.setEnabled(stade)
+        self.txt_file_path_r2.setEnabled(stade)
+        self.txt_file_path_gdb.setEnabled(stade)
+        self.txt_file_path_registry.setEnabled(stade)
+
+        self.btn_browse_file_r1.setEnabled(stade)
+        self.btn_browse_file_r2.setEnabled(stade)
+        self.btn_browse_file_gdb.setEnabled(stade)
+        self.btn_browse_file_registry.setEnabled(stade)
+
+    def manage_process_load_data(self):
+        self.define_stade_gui(False)
+        self.load_r1()
+        self.mapping_fields_r1()
+        self.load_gdb()
+        self.mapping_fields_gbb()
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+        self.show_log_data()
