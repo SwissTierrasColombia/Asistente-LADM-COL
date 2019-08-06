@@ -52,9 +52,6 @@ class ConnectionManager(QObject):
             OFFICIAL_DB_SOURCE: None
         }
 
-        # Initialize collected db source
-        self.update_db_connector_for_source()
-
     def update_db_connector_for_source(self, db_source=COLLECTED_DB_SOURCE):
         db_connection_source = QSettings().value('Asistente-LADM_COL/db/{db_source}/db_connection_source'.format(db_source=db_source))
 
@@ -73,6 +70,9 @@ class ConnectionManager(QObject):
         self.set_db_connector_for_source(db, db_source)
 
     def get_db_connector_from_source(self, db_source=COLLECTED_DB_SOURCE):
+        if self._db_sources[db_source] is None:
+            # obtain the connection of the database on demand
+            self.update_db_connector_for_source(db_source)
         return self._db_sources[db_source]
 
     def set_db_connector_for_source(self, db_connector, db_source=COLLECTED_DB_SOURCE):

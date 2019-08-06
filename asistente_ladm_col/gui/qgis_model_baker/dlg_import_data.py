@@ -180,7 +180,7 @@ class DialogImportData(QDialog, DIALOG_UI):
                 model_tag = str(txt.group(0))
                 name = re.findall('NAME="(.*?)"', model_tag, re.IGNORECASE)
                 models_name.extend(name)
-        return models_name
+        return sorted(models_name)
 
     def get_ili_models(self):
         ili_models = list()
@@ -225,6 +225,26 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
             self.import_models_list_view.setFocus()
+            return
+
+        # Get list models in db and xtf
+        ili_models = set([ili_model for ili_model in self.get_ili_models()])
+
+        db_models = list()
+        for db_model in self.db.get_models():
+            model_name_with_dependencies = db_model['modelname']
+            model_name = model_name_with_dependencies.split('{')[0]
+            db_models.append(model_name)
+        db_models = set(db_models)
+
+        if not ili_models.issubset(db_models):
+            message_error = "The XTF file to import does not have the same models as the target database schema. " \
+                            "Please create a schema also include the following missing schemas:\n\n * {}".format(" \n * ".join(sorted(ili_models.difference(db_models))))
+            self.txtStdout.clear()
+            self.txtStdout.setTextColor(QColor('#000000'))
+            self.txtStdout.setText(QCoreApplication.translate("DialogImportData", message_error))
+            self.show_message(message_error, Qgis.Warning)
+            self.xtf_file_line_edit.setFocus()
             return
 
         with OverrideCursor(Qt.WaitCursor):
