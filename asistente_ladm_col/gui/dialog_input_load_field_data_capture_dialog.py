@@ -65,7 +65,8 @@ from ..config.table_mapping_config import (FDC_PARCEL,
                                            FDC_VALUATION_BUILDING_CONNECTION,
                                            FDC_EXTADDRESS,
                                            FDC_QUALIFICATION_CONVENTIONAL,
-                                           FDC_QUALIFICATION_NO_CONVENTIONAL)
+                                           FDC_QUALIFICATION_NO_CONVENTIONAL,
+                                           CODIGO_R1_GDB)
 
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
@@ -279,8 +280,8 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         runidad = QgsProject.instance().mapLayersByName('R_UNIDAD')[0]
 
         create_column(self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE], 'identificador')
-        join_layers(uunidad, self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
-        join_layers(runidad, self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
+        join_layers(uunidad, self.res_layers_gdb[FDC_BUILDING], CODIGO_R1_GDB, 'Codigo')
+        join_layers(runidad, self.res_layers_gdb[FDC_BUILDING], CODIGO_R1_GDB, 'Codigo')
         uunidad_filter = fix_polygon_layers(uunidad)
         runidad_filter = fix_polygon_layers(runidad)
         uunidad_filter.setSubsetString("construccion_t_id != 'NULL'")
@@ -295,8 +296,8 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
 
         create_column(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 'Codigo')
         create_column(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 'identificador')
-        join_layers(uunidad, self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
-        join_layers(runidad, self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
+        join_layers(uunidad, self.res_layers_gdb[FDC_BUILDING], CODIGO_R1_GDB, 'Codigo')
+        join_layers(runidad, self.res_layers_gdb[FDC_BUILDING], CODIGO_R1_GDB, 'Codigo')
         uunidad_filter = fix_polygon_layers(uunidad)
         runidad_filter = fix_polygon_layers(runidad)
         uunidad_filter.setSubsetString("construccion_t_id != 'NULL'")
@@ -472,7 +473,7 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
     def manage_process_load_data(self):
         self.define_stade_gui(False)
         self.load_r1()
-        self.mapping_fields_r1()
+        #self.mapping_fields_r1()
         self.load_gdb()
         self.mapping_fields_gbb()
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)

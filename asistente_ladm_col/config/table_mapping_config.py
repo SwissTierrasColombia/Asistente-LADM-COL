@@ -213,6 +213,25 @@ FDC_QUALIFICATION_CONVENTIONAL = "calificacion_convencional"
 FDC_QUALIFICATION_NO_CONVENTIONAL = "calificacion_no_convencional"
 
 """
+R1 adn GDB
+"""
+DEPARTAMENTO_R1_GDB = '"Departamento"'
+MUNICIPIO_R1_GDB = '"Municipio"'
+NO_PREDIAL_R1_GDB = '"NoPredial"'
+NO_PREDIAL_ANTERIOR_R1_GDB = '"NoPredialAnterior"'
+AVALUO_R1_GDB = '"Avaluo ($)"'
+NOMBRE_R1_GDB = '"Nombre"'
+NO_DOCUMENTO_R1_GDB = '"NoDocumento"'
+TIPO_DOCUMENTO_R1_GDB = '"TipoDocumento"'
+TEXTO_R1_GDB = '"texto"'
+AREA_R1_GDB = '"SHAPE_Area"'
+CODIGO_R1_GDB = '"Codigo"'
+ETIQUETA_R1_GDB = '"etiqueta"'
+NUM_PISOS_R1_GDB = '"Numero_Pisos"'
+TIPO_CONSTRUCCION_R1_GDB = '"Tipo_Construccion"'
+
+
+"""
 PLURAL WORDS, FOR DISPLAY PURPOSES
 """
 DICT_PLURAL = {
