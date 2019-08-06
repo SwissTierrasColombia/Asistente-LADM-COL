@@ -823,7 +823,7 @@ class PGConnector(DBConnector):
         return result if not isinstance(result, tuple) else None
 
     def get_models(self, schema=None):
-        query = "SELECT modelname FROM {schema}.t_ili2db_model".format(schema=schema if schema else self.schema)
+        query = "SELECT modelname FROM {schema}.t_ili2db_model order by modelname".format(schema=schema if schema else self.schema)
         result = self.execute_sql_query(query)
         return result if not isinstance(result, tuple) else None
 
