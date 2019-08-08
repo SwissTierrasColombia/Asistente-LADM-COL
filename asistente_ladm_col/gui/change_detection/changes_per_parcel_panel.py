@@ -16,16 +16,16 @@
  *                                                                         *
  ***************************************************************************/
 """
-from functools import partial
-
-import qgis
-
-from qgis.PyQt.QtGui import QMouseEvent
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QEvent, QPoint
+from qgis.PyQt.QtGui import (QMouseEvent,
+                             QIcon,
+                             QColor,
+                             QCursor)
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              Qt,
+                              QEvent,
+                              QPoint)
 from qgis.PyQt.QtWidgets import QTableWidgetItem
 from qgis.core import (QgsWkbTypes,
-                       Qgis,
-                       QgsMessageLog,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsExpression,
@@ -33,28 +33,31 @@ from qgis.core import (QgsWkbTypes,
                        QgsGeometry,
                        NULL)
 
-from qgis.gui import QgsPanelWidget
+from qgis.gui import (QgsPanelWidget,
+                      QgsMapToolIdentifyFeature)
 from ...config.symbology import OFFICIAL_STYLE_GROUP
-from asistente_ladm_col.config.general_config import (OFFICIAL_DB_PREFIX,
-                                                      OFFICIAL_DB_SUFFIX,
-                                                      PREFIX_LAYER_MODIFIERS,
-                                                      SUFFIX_LAYER_MODIFIERS,
-                                                      STYLE_GROUP_LAYER_MODIFIERS,
-                                                      OFFICIAL_DB_SOURCE,
-                                                      COLLECTED_DB_SOURCE,
-                                                      PLOT_GEOMETRY_KEY)
-from asistente_ladm_col.config.table_mapping_config import (PARCEL_NUMBER_FIELD,
-                                                            PARCEL_NUMBER_BEFORE_FIELD,
-                                                            FMI_FIELD,
-                                                            ID_FIELD,
-                                                            PARCEL_TABLE,
-                                                            PLOT_TABLE,
-                                                            UEBAUNIT_TABLE,
-                                                            COL_PARTY_TABLE,
-                                                            DICT_PLURAL)
-from asistente_ladm_col.utils import get_ui_class
+from ...config.general_config import (OFFICIAL_DB_PREFIX,
+                                      OFFICIAL_DB_SUFFIX,
+                                      PREFIX_LAYER_MODIFIERS,
+                                      SUFFIX_LAYER_MODIFIERS,
+                                      STYLE_GROUP_LAYER_MODIFIERS,
+                                      OFFICIAL_DB_SOURCE,
+                                      COLLECTED_DB_SOURCE,
+                                      PLOT_GEOMETRY_KEY)
+from ...config.table_mapping_config import (PARCEL_NUMBER_FIELD,
+                                            PARCEL_NUMBER_BEFORE_FIELD,
+                                            FMI_FIELD,
+                                            ID_FIELD,
+                                            PARCEL_TABLE,
+                                            PLOT_TABLE,
+                                            UEBAUNIT_TABLE,
+                                            COL_PARTY_TABLE,
+                                            DICT_PLURAL)
+from ...utils.qt_utils import OverrideCursor
+from ...utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_per_parcel_panel_widget.ui')
+
 
 class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
     def __init__(self, parent, utils, parcel_number=None):
@@ -75,7 +78,15 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.utils._layers[PLOT_TABLE]['layer'].removeSelection()
         self.utils._official_layers[PLOT_TABLE]['layer'].removeSelection()
 
-        self.tab_plot_options.setTabEnabled(0, False)
+        # Map tool before activate map swipe tool
+        self.init_map_tool = self.utils.canvas.mapTool()
+
+        self.active_map_tool_before_custom = None
+        self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/spatial_unit.png"))
+        self.btn_identify_plot.clicked.connect(self.btn_plot_toggled)
+
+        # Create maptool
+        self.maptool_identify = QgsMapToolIdentifyFeature(self.utils.canvas)
 
         # Set connections
         self.btn_alphanumeric_query.clicked.connect(self.alphanumeric_query)
@@ -90,6 +101,65 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         if parcel_number is not None:  # Do a search!
             self.txt_alphanumeric_query.setValue(parcel_number)
             self.search_data(parcel_number=parcel_number)
+
+    def btn_plot_toggled(self):
+        self.tbl_changes_per_parcel.clearContents()
+        self.tbl_changes_per_parcel.setRowCount(0)
+
+        if self.btn_identify_plot.isChecked():
+            self.prepare_identify_plot()
+        else:
+            # The button was toggled and deactivated, go back to the previous tool
+            self.utils.canvas.setMapTool(self.active_map_tool_before_custom)
+
+    def prepare_identify_plot(self):
+        """
+            Custom Identify tool was activated, prepare everything for identifying plots
+        """
+        self.active_map_tool_before_custom = self.utils.canvas.mapTool()
+
+        self.btn_identify_plot.setChecked(True)
+
+        self.utils.canvas.mapToolSet.connect(self.initialize_maptool)
+
+        if self.utils._official_layers[PLOT_TABLE]['layer'] is None:
+            self.utils.add_layers()
+
+        self.maptool_identify.setLayer(self.utils._official_layers[PLOT_TABLE]['layer'])
+        cursor = QCursor()
+        cursor.setShape(Qt.PointingHandCursor)
+        self.maptool_identify.setCursor(cursor)
+        self.utils.canvas.setMapTool(self.maptool_identify)
+
+        try:
+            self.maptool_identify.featureIdentified.disconnect()
+        except TypeError as e:
+            pass
+        self.maptool_identify.featureIdentified.connect(self.get_info_by_plot)
+
+    def get_info_by_plot(self, plot_feature):
+        plot_t_id = plot_feature[ID_FIELD]
+
+        self.utils.canvas.flashFeatureIds(self.utils._official_layers[PLOT_TABLE]['layer'],
+                                    [plot_feature.id()],
+                                    QColor(255, 0, 0, 255),
+                                    QColor(255, 0, 0, 0),
+                                    flashes=1,
+                                    duration=500)
+
+        with OverrideCursor(Qt.WaitCursor):
+            if not self.isVisible():
+                self.show()
+
+            self.spatial_query(plot_t_id)
+            #self.search_data_by_component(plot_t_id=plot_t_id, zoom_and_select=False)
+            self.utils._official_layers[PLOT_TABLE]['layer'].selectByIds([plot_feature.id()])
+
+    def spatial_query(self, plot_id):
+        if plot_id:
+            parcel_number = self.utils.ladm_data.get_parcels_related_to_plots(self.utils._official_db, [plot_id], PARCEL_NUMBER_FIELD)
+            if parcel_number:
+                self.search_data(parcel_number=parcel_number[0])
 
     def call_party_panel(self, item):
         row = item.row()
@@ -333,3 +403,25 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
     def initialize_tools_and_layers(self, panel=None):
         self.parent.deactivate_map_swipe_tool()
         self.show_all_plots(True)
+
+    def initialize_maptool(self, new_tool, old_tool):
+        if self.maptool_identify == old_tool:
+            # custom identify was deactivated
+            try:
+                self.utils.canvas.mapToolSet.disconnect(self.initialize_maptool)
+            except TypeError as e:
+                pass
+
+            self.btn_identify_plot.setChecked(False)
+        else:
+            # custom identify was activated
+            pass
+
+    def close_panel(self):
+        # custom identify was deactivated
+        try:
+            self.utils.canvas.mapToolSet.disconnect(self.initialize_maptool)
+        except TypeError as e:
+            pass
+
+        self.utils.canvas.setMapTool(self.init_map_tool)
