@@ -1062,27 +1062,35 @@ class AsistenteLADMCOLPlugin(QObject):
         return self.conn_manager.get_db_connector_from_source(db_source=OFFICIAL_DB_SOURCE)
 
     @_qgis_model_baker_required
-    def show_dlg_import_schema(self):
+    def show_dlg_import_schema(self, *args, **kwargs):
         from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
-        dlg = DialogImportSchema(self.iface, self.qgis_utils, self.conn_manager)
+
+        selected_models_import_schema = list()
+        for arg in args:
+            if isinstance(arg, list):
+                selected_models_import_schema = arg # Argument send by signal
+
+        dlg = DialogImportSchema(self.iface, self.qgis_utils, self.conn_manager, selected_models_import_schema)
         dlg.models_have_changed.connect(self.refresh_menus)
+        dlg.open_dlg_import_data.connect(self.show_dlg_import_data)
         dlg.exec_()
 
     @_qgis_model_baker_required
-    def show_dlg_import_data(self):
+    def show_dlg_import_data(self, *args, **kwargs):
         from .gui.qgis_model_baker.dlg_import_data import DialogImportData
         dlg = DialogImportData(self.iface, self.qgis_utils, self.conn_manager)
+        dlg.open_dlg_import_schema.connect(self.show_dlg_import_schema)
         dlg.exec_()
 
     @_qgis_model_baker_required
-    def show_dlg_export_data(self):
+    def show_dlg_export_data(self, *args, **kwargs):
         from .gui.qgis_model_baker.dlg_export_data import DialogExportData
         dlg = DialogExportData(self.iface, self.qgis_utils, self.conn_manager)
         dlg.exec_()
 
     @_qgis_model_baker_required
     @_activate_processing_plugin
-    def show_dlg_controlled_measurement(self):
+    def show_dlg_controlled_measurement(self, *args, **kwargs):
         dlg = ControlledMeasurementDialog(self.qgis_utils)
         dlg.exec_()
 
