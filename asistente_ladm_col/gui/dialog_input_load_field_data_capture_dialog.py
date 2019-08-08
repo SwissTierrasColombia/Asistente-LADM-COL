@@ -471,10 +471,22 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         self.btn_browse_file_registry.setEnabled(stade)
 
     def manage_process_load_data(self):
+        """
+        Workflow for loading official data
+        """
+
+        # We need a temporary cache for official relations. Store current cache if any, and build a new cache...
+        cached_layers, cached_relations, cached_bags_of_enum = self.qgis_utils._layers, self.qgis_utils._relations, self.qgis_utils._bags_of_enum
+        self.qgis_utils.cache_layers_and_relations(self._db, True)
+
         self.define_stade_gui(False)
         self.load_r1()
-        #self.mapping_fields_r1()
+        self.mapping_fields_r1()
         self.load_gdb()
         self.mapping_fields_gbb()
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         self.show_log_data()
+
+        # No one else needs the official cache, so go back to initial state
+        self.qgis_utils._layers, self.qgis_utils._relations, self.qgis_utils._bags_of_enum = cached_layers, cached_relations, cached_bags_of_enum
+
