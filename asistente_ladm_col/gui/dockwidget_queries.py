@@ -18,21 +18,27 @@
 """
 from functools import partial
 
-from PyQt5.QtCore import QCoreApplication, Qt, pyqtSignal
-from PyQt5.QtGui import QColor, QIcon, QCursor
-from PyQt5.QtWidgets import QMenu, QAction, QApplication
-from qgis.core import QgsWkbTypes, Qgis, QgsMessageLog, QgsFeature, QgsFeatureRequest, QgsExpression, QgsVectorLayer
-from qgis.gui import QgsDockWidget, QgsMapToolIdentifyFeature
+from PyQt5.QtCore import (QCoreApplication,
+                          Qt,
+                          pyqtSignal)
+from PyQt5.QtGui import (QColor,
+                         QIcon,
+                         QCursor)
+from PyQt5.QtWidgets import (QMenu,
+                             QAction,
+                             QApplication)
+from qgis.core import (QgsWkbTypes,
+                       Qgis,
+                       QgsFeature,
+                       QgsFeatureRequest,
+                       QgsExpression,
+                       QgsVectorLayer)
+from qgis.gui import (QgsDockWidget,
+                      QgsMapToolIdentifyFeature)
 
-from asistente_ladm_col.utils.qt_utils import OverrideCursor
-from ..config.table_mapping_config import (PLOT_TABLE,
-                                           UEBAUNIT_TABLE,
-                                           PARCEL_TABLE,
-                                           ID_FIELD,
-                                           DICT_TABLE_PACKAGE,
+from ..utils.qt_utils import OverrideCursor
+from ..config.table_mapping_config import (DICT_TABLE_PACKAGE,
                                            SPATIAL_UNIT_PACKAGE,
-                                           UEBAUNIT_TABLE_PARCEL_FIELD,
-                                           UEBAUNIT_TABLE_PLOT_FIELD,
                                            PARCEL_NUMBER_FIELD,
                                            PARCEL_NUMBER_BEFORE_FIELD,
                                            FMI_FIELD,
@@ -47,6 +53,7 @@ from ..data.tree_models import TreeModel
 
 DOCKWIDGET_UI = get_ui_class('dockwidget_queries.ui')
 
+
 class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
     zoom_to_features_requested = pyqtSignal(QgsVectorLayer, list, list, int)  # layer, ids, t_ids, duration
@@ -60,7 +67,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
-        self.selection_color = None
         self.active_map_tool_before_custom = None
 
         self.clipboard = QApplication.clipboard()
@@ -201,10 +207,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 self.canvas.mapToolSet.disconnect(self.initialize_tools)
             except TypeError as e:
                 pass
-
-            if self.selection_color is not None:
-                self.canvas.setSelectionColor(self.selection_color) # Original selection color set in QGIS
-
             self.btn_identify_plot.setChecked(False)
         else:
             # custom identify was activated
@@ -222,12 +224,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             Custom Identify tool was activated, prepare everything for identifying plots
         """
         self.active_map_tool_before_custom = self.canvas.mapTool()
-        self.selection_color = self.canvas.selectionColor()  # Probably QColor('#ffff00')
 
         self.btn_identify_plot.setChecked(True)
 
         self.canvas.mapToolSet.connect(self.initialize_tools)
-        self.canvas.setSelectionColor(QColor("red"))
 
         if self._plot_layer is None:
             self.add_layers()
@@ -418,3 +418,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                                     QColor(255, 0, 0, 0),
                                     flashes=1,
                                     duration=500)
+
+    def closeEvent(self, event):
+        try:
+            self.canvas.mapToolSet.disconnect(self.initialize_tools)
+        except TypeError as e:
+            pass
+        self.canvas.setMapTool(self.active_map_tool_before_custom)
