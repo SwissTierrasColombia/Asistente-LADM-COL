@@ -104,7 +104,7 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>Browse CSV files</string>
+               <string/>
               </property>
               <property name="text">
                <string>Connection settings</string>
@@ -181,7 +181,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Browse CSV files</string>
+             <string/>
             </property>
             <property name="text">
              <string>...</string>

@@ -33,7 +33,7 @@ from asistente_ladm_col.utils.qt_utils import (make_file_selector,
 from ..utils.qfield_utils import (run_etl_model_input_load_data,
                                   join_layers,
                                   create_column,
-                                  fix_polygon_layers,
+                                  fix_spatial_layer,
                                   get_directions)
 
 from ..utils.qt_utils import OverrideCursor
@@ -43,29 +43,29 @@ from qgis.core import (QgsProject,
                        QgsVectorLayer,
                        QgsVectorLayerJoinInfo)
 
-from ..config.table_mapping_config import (FDC_PARCEL,
-                                           FDC_PARTY,
-                                           FDC_RIGHT,
-                                           FDC_ADMINISTRATIVE_SOURCE,
-                                           FDC_RRRSOURCE,
-                                           FDC_UEBAUNIT,
-                                           FDC_UEBAUNIT_BUILDING, 
-                                           FDC_UEBAUNIT_PLOT, 
-                                           FDC_UEBAUNIT_BUILDING_UNIT,
-                                           FDC_PLOT, 
+from ..config.table_mapping_config import (PARCEL_TABLE,
+                                           COL_PARTY_TABLE,
+                                           RIGHT_TABLE,
+                                           ADMINISTRATIVE_SOURCE_TABLE,
+                                           RRR_SOURCE_RELATION_TABLE,
+                                           UEBAUNIT_TABLE,
+                                           UEBAUNIT_TABLE_BUILDING_FIELD, 
+                                           UEBAUNIT_TABLE_PLOT_FIELD, 
+                                           UEBAUNIT_TABLE_PLOT_FIELD,
+                                           PLOT_TABLE, 
                                            FDC_SECTOR,
                                            FDC_VILLAGE,
                                            FDC_BLOCK,
                                            FDC_NEIGHBOURHOOD,
-                                           FDC_BUILDING,
-                                           FDC_VALUATION_BUILDING,
-                                           FDC_BUILDING_UNIT_VALUATION_TABLE,
-                                           FDC_BUILDING_UNIT_CADASTRE_TABLE,
-                                           FDC_VALUATION_UNIT_BUILDING_CONNECTION,
+                                           BUILDING_TABLE,
+                                           VALUATION_BUILDING_TABLE,
+                                           VALUATION_BUILDING_UNIT_TABLE,
+                                           BUILDING_UNIT_TABLE,
+                                           AVALUOUNIDADCONSTRUCCION_TABLE,
                                            FDC_VALUATION_BUILDING_CONNECTION,
-                                           FDC_EXTADDRESS,
-                                           FDC_QUALIFICATION_CONVENTIONAL,
-                                           FDC_QUALIFICATION_NO_CONVENTIONAL,
+                                           EXTADDRESS_TABLE,
+                                           VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE,
+                                           VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE,
                                            CODIGO_R1_GDB)
 
 from qgis.PyQt.QtCore import (Qt,
@@ -92,7 +92,14 @@ from qgis.gui import QgsMessageBar
 
 from ..config.help_strings import HelpStrings
 
-from ..config.general_config import DEFAULT_MODEL_NAMES_CHECKED
+from ..config.general_config import (DEFAULT_MODEL_NAMES_CHECKED,
+                                    OFFICIAL_DB_PREFIX,
+                                    OFFICIAL_DB_SUFFIX,
+                                    PREFIX_LAYER_MODIFIERS,
+                                    SUFFIX_LAYER_MODIFIERS,
+                                    STYLE_GROUP_LAYER_MODIFIERS)
+
+from ..config.symbology import OFFICIAL_STYLE_GROUP
 
 from ..utils import get_ui_class
 
@@ -150,22 +157,13 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
                 self.create_model_into_database()
                 self.manage_process_load_data()
 
-    def load_r1(self):
+    def load_data_for_etl(self):
         self.progress.setVisible(True)
+        self.progress.setValue(1)
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading R1 tables..."))
         self.layer_r1 = QgsVectorLayer(self.txt_file_path_r1.text(), 'R1_IGAC', 'ogr')
         QgsProject.instance().addMapLayer(self.layer_r1)
 
-        self.res_layers = self.qgis_utils.get_layers(self._db, {
-            FDC_PARCEL: {'name': FDC_PARCEL, 'geometry': None},
-            FDC_PARTY: {'name': FDC_PARTY, 'geometry': None},
-            FDC_RIGHT: {'name': FDC_RIGHT, 'geometry': None},
-            FDC_ADMINISTRATIVE_SOURCE: {'name': FDC_ADMINISTRATIVE_SOURCE, 'geometry': None},
-            FDC_RRRSOURCE: {'name': FDC_RRRSOURCE, 'geometry': None},
-            FDC_UEBAUNIT: {'name': FDC_UEBAUNIT, 'geometry': None}
-        }, load=True)
-
-    def load_gdb(self):
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading GDB tables..."))
         gdb_path = self.txt_file_path_gdb.text()
         layer = QgsVectorLayer(gdb_path, 'layer name', 'ogr')
@@ -181,193 +179,206 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
             QgsProject.instance().addMapLayer(vlayer, False)
             gdb_group.addLayer(vlayer)
 
-        self.res_layers_gdb = self.qgis_utils.get_layers(self._db, {
-            FDC_PLOT: {'name': FDC_PLOT, 'geometry': QgsWkbTypes.PolygonGeometry},
+        layer_modifiers = {
+                PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
+                SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
+                STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
+            }
+
+        self.res_layers = self.qgis_utils.get_layers(self._db, {
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
+            COL_PARTY_TABLE: {'name': COL_PARTY_TABLE, 'geometry': None},
+            RIGHT_TABLE: {'name': RIGHT_TABLE, 'geometry': None},
+            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None},
+            RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None},
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
             FDC_SECTOR: {'name': FDC_SECTOR, 'geometry': None},
             FDC_VILLAGE: {'name': FDC_VILLAGE, 'geometry': None},
             FDC_NEIGHBOURHOOD: {'name': FDC_NEIGHBOURHOOD, 'geometry': None},
-            FDC_BUILDING: {'name': FDC_BUILDING, 'geometry': QgsWkbTypes.PolygonGeometry},
-            FDC_VALUATION_BUILDING: {'name': FDC_VALUATION_BUILDING, 'geometry': None},
-            FDC_BUILDING_UNIT_VALUATION_TABLE: {'name': FDC_BUILDING_UNIT_VALUATION_TABLE, 'geometry': None},
-            FDC_BUILDING_UNIT_CADASTRE_TABLE: {'name': FDC_BUILDING_UNIT_CADASTRE_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            FDC_VALUATION_UNIT_BUILDING_CONNECTION: {'name': FDC_VALUATION_UNIT_BUILDING_CONNECTION, 'geometry': None},
+            BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            VALUATION_BUILDING_TABLE: {'name': VALUATION_BUILDING_TABLE, 'geometry': None},
+            VALUATION_BUILDING_UNIT_TABLE: {'name': VALUATION_BUILDING_UNIT_TABLE, 'geometry': None},
+            BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
+            AVALUOUNIDADCONSTRUCCION_TABLE: {'name': AVALUOUNIDADCONSTRUCCION_TABLE, 'geometry': None},
             FDC_VALUATION_BUILDING_CONNECTION: {'name': FDC_VALUATION_BUILDING_CONNECTION, 'geometry': None},
-            FDC_QUALIFICATION_CONVENTIONAL: {'name': FDC_QUALIFICATION_CONVENTIONAL, 'geometry': None},
-            FDC_QUALIFICATION_NO_CONVENTIONAL: {'name': FDC_QUALIFICATION_NO_CONVENTIONAL, 'geometry': None},
-            FDC_EXTADDRESS: {'name': FDC_EXTADDRESS, 'geometry': QgsWkbTypes.PointGeometry}
-        }, load=True)
+            VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE: {'name': VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE, 'geometry': None},
+            VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE: {'name': VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE, 'geometry': None},
+            EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry}
+        }, load=True, layer_modifiers=layer_modifiers)
 
     def mapping_fields_r1(self):
         steps = 29
         step = 0
 
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_PARCEL)))
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(PARCEL_TABLE)))
         query = "select * from {} group by NoPredial&nogeometry".format(self.layer_r1.name())
         input_data = QgsVectorLayer( "?query={}".format(query), "vlayer", "virtual")
-        create_column(self.res_layers[FDC_PARCEL], 'Codigo')
-        run_etl_model_input_load_data(input_data, self.res_layers[FDC_PARCEL], FDC_PARCEL, self.qgis_utils)
+        create_column(self.res_layers[PARCEL_TABLE], 'Codigo')
+        run_etl_model_input_load_data(input_data, self.res_layers[PARCEL_TABLE], PARCEL_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_PARTY)))
-        create_column(self.res_layers[FDC_PARTY], 'Codigo')
-        run_etl_model_input_load_data(self.layer_r1, self.res_layers[FDC_PARTY], FDC_PARTY, self.qgis_utils)
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(COL_PARTY_TABLE)))
+        create_column(self.res_layers[COL_PARTY_TABLE], 'Codigo')
+        run_etl_model_input_load_data(self.layer_r1, self.res_layers[COL_PARTY_TABLE], COL_PARTY_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_RIGHT)))
-        join_layers(self.res_layers[FDC_PARTY], self.res_layers[FDC_PARCEL], 'Codigo', 'Codigo')
-        run_etl_model_input_load_data(self.res_layers[FDC_PARTY], self.res_layers[FDC_RIGHT], FDC_RIGHT, self.qgis_utils)
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(RIGHT_TABLE)))
+        join_layers(self.res_layers[COL_PARTY_TABLE], self.res_layers[PARCEL_TABLE], 'Codigo', 'Codigo')
+        run_etl_model_input_load_data(self.res_layers[COL_PARTY_TABLE], self.res_layers[RIGHT_TABLE], RIGHT_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_ADMINISTRATIVE_SOURCE)))
-        run_etl_model_input_load_data(self.res_layers[FDC_RIGHT], self.res_layers[FDC_ADMINISTRATIVE_SOURCE], FDC_ADMINISTRATIVE_SOURCE, self.qgis_utils)
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(ADMINISTRATIVE_SOURCE_TABLE)))
+        run_etl_model_input_load_data(self.res_layers[RIGHT_TABLE], self.res_layers[ADMINISTRATIVE_SOURCE_TABLE], ADMINISTRATIVE_SOURCE_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)        
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_RRRSOURCE)))
-        run_etl_model_input_load_data(self.res_layers[FDC_ADMINISTRATIVE_SOURCE], self.res_layers[FDC_RRRSOURCE], FDC_RRRSOURCE, self.qgis_utils)
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(RRR_SOURCE_RELATION_TABLE)))
+        run_etl_model_input_load_data(self.res_layers[ADMINISTRATIVE_SOURCE_TABLE], self.res_layers[RRR_SOURCE_RELATION_TABLE], RRR_SOURCE_RELATION_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
 
     def mapping_fields_gbb(self):
         steps = 29
         step = 5
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_PLOT)))
-        run_etl_model_input_load_data('R_TERRENO', self.res_layers_gdb[FDC_PLOT], FDC_PLOT, self.qgis_utils)
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(PLOT_TABLE)))
+        run_etl_model_input_load_data('R_TERRENO', self.res_layers[PLOT_TABLE], PLOT_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        run_etl_model_input_load_data('U_TERRENO', self.res_layers_gdb[FDC_PLOT], FDC_PLOT, self.qgis_utils)
+        run_etl_model_input_load_data('U_TERRENO', self.res_layers[PLOT_TABLE], PLOT_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_SECTOR)))
-        run_etl_model_input_load_data('R_SECTOR', self.res_layers_gdb[FDC_SECTOR], FDC_SECTOR, self.qgis_utils)
+        run_etl_model_input_load_data('R_SECTOR', self.res_layers[FDC_SECTOR], FDC_SECTOR, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        run_etl_model_input_load_data('U_SECTOR', self.res_layers_gdb[FDC_SECTOR], FDC_SECTOR, self.qgis_utils)
+        run_etl_model_input_load_data('U_SECTOR', self.res_layers[FDC_SECTOR], FDC_SECTOR, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
 
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_VILLAGE)))
-        run_etl_model_input_load_data('R_VEREDA', self.res_layers_gdb[FDC_VILLAGE], FDC_VILLAGE, self.qgis_utils)
+        run_etl_model_input_load_data('R_VEREDA', self.res_layers[FDC_VILLAGE], FDC_VILLAGE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        run_etl_model_input_load_data('U_MANZANA', self.res_layers_gdb[FDC_VILLAGE], FDC_BLOCK, self.qgis_utils)
+        run_etl_model_input_load_data('U_MANZANA', self.res_layers[FDC_VILLAGE], FDC_BLOCK, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_NEIGHBOURHOOD)))
-        run_etl_model_input_load_data('U_BARRIO', self.res_layers_gdb[FDC_NEIGHBOURHOOD], FDC_NEIGHBOURHOOD, self.qgis_utils)
+        run_etl_model_input_load_data('U_BARRIO', self.res_layers[FDC_NEIGHBOURHOOD], FDC_NEIGHBOURHOOD, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
 
-        create_column(self.res_layers_gdb[FDC_BUILDING], 'Codigo')
-        create_column(self.res_layers_gdb[FDC_BUILDING], 'identificador')
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_BUILDING)))
-        run_etl_model_input_load_data('R_CONSTRUCCION', self.res_layers_gdb[FDC_BUILDING], FDC_BUILDING, self.qgis_utils)
+        create_column(self.res_layers[BUILDING_TABLE], 'Codigo')
+        create_column(self.res_layers[BUILDING_TABLE], 'identificador')
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(BUILDING_TABLE)))
+        run_etl_model_input_load_data('R_CONSTRUCCION', self.res_layers[BUILDING_TABLE], BUILDING_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        run_etl_model_input_load_data('U_CONSTRUCCION', self.res_layers_gdb[FDC_BUILDING], FDC_BUILDING, self.qgis_utils)
+        run_etl_model_input_load_data('U_CONSTRUCCION', self.res_layers[BUILDING_TABLE], BUILDING_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        create_column(self.res_layers_gdb[FDC_VALUATION_BUILDING], 'Codigo')
-        create_column(self.res_layers_gdb[FDC_VALUATION_BUILDING], 'identificador')
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_VALUATION_BUILDING)))
-        run_etl_model_input_load_data('R_CONSTRUCCION', self.res_layers_gdb[FDC_VALUATION_BUILDING], FDC_VALUATION_BUILDING, self.qgis_utils)
+        create_column(self.res_layers[VALUATION_BUILDING_TABLE], 'Codigo')
+        create_column(self.res_layers[VALUATION_BUILDING_TABLE], 'identificador')
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(VALUATION_BUILDING_TABLE)))
+        run_etl_model_input_load_data('R_CONSTRUCCION', self.res_layers[VALUATION_BUILDING_TABLE], VALUATION_BUILDING_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        run_etl_model_input_load_data('U_CONSTRUCCION', self.res_layers_gdb[FDC_VALUATION_BUILDING], FDC_VALUATION_BUILDING, self.qgis_utils)
+        run_etl_model_input_load_data('U_CONSTRUCCION', self.res_layers[VALUATION_BUILDING_TABLE], VALUATION_BUILDING_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
 
         uunidad = QgsProject.instance().mapLayersByName('U_UNIDAD')[0]
         runidad = QgsProject.instance().mapLayersByName('R_UNIDAD')[0]
 
-        create_column(self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE], 'identificador')
-        join_layers(uunidad, self.res_layers_gdb[FDC_BUILDING], CODIGO_R1_GDB, 'Codigo')
-        join_layers(runidad, self.res_layers_gdb[FDC_BUILDING], CODIGO_R1_GDB, 'Codigo')
-        uunidad_filter = fix_polygon_layers(uunidad)
-        runidad_filter = fix_polygon_layers(runidad)
-        uunidad_filter.setSubsetString("construccion_t_id != 'NULL'")
-        runidad_filter.setSubsetString("construccion_t_id != 'NULL'")
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_BUILDING_UNIT_VALUATION_TABLE)))
-        run_etl_model_input_load_data(uunidad_filter, self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE], FDC_BUILDING_UNIT_VALUATION_TABLE, self.qgis_utils)
+        create_column(self.res_layers[VALUATION_BUILDING_UNIT_TABLE], 'identificador')
+        join_layers(uunidad, self.res_layers[BUILDING_TABLE], CODIGO_R1_GDB, 'Codigo')
+        join_layers(runidad, self.res_layers[BUILDING_TABLE], CODIGO_R1_GDB, 'Codigo')
+        uunidad_filter = fix_spatial_layer(uunidad)
+        runidad_filter = fix_spatial_layer(runidad)
+        uunidad_filter.setSubsetString("construccion_oficial_t_id != 'NULL'")
+        runidad_filter.setSubsetString("construccion_oficial_t_id != 'NULL'")
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(VALUATION_BUILDING_UNIT_TABLE)))
+        run_etl_model_input_load_data(uunidad_filter, self.res_layers[VALUATION_BUILDING_UNIT_TABLE], VALUATION_BUILDING_UNIT_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        run_etl_model_input_load_data(runidad_filter, self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE], FDC_BUILDING_UNIT_VALUATION_TABLE, self.qgis_utils)
-        step += 1
-        self.progress.setValue(step/steps * 100)
-
-        create_column(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 'Codigo')
-        create_column(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 'identificador')
-        join_layers(uunidad, self.res_layers_gdb[FDC_BUILDING], CODIGO_R1_GDB, 'Codigo')
-        join_layers(runidad, self.res_layers_gdb[FDC_BUILDING], CODIGO_R1_GDB, 'Codigo')
-        uunidad_filter = fix_polygon_layers(uunidad)
-        runidad_filter = fix_polygon_layers(runidad)
-        uunidad_filter.setSubsetString("construccion_t_id != 'NULL'")
-        runidad_filter.setSubsetString("construccion_t_id != 'NULL'")
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_BUILDING_UNIT_CADASTRE_TABLE)))
-        run_etl_model_input_load_data(uunidad_filter, self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], FDC_BUILDING_UNIT_CADASTRE_TABLE, self.qgis_utils)
-        step += 1
-        self.progress.setValue(step/steps * 100)
-        run_etl_model_input_load_data(runidad_filter, self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], FDC_BUILDING_UNIT_CADASTRE_TABLE, self.qgis_utils)
+        run_etl_model_input_load_data(runidad_filter, self.res_layers[VALUATION_BUILDING_UNIT_TABLE], VALUATION_BUILDING_UNIT_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
 
-        join_layers(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 
-                        self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE], 'identificador', 'identificador')
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_VALUATION_UNIT_BUILDING_CONNECTION)))
-        run_etl_model_input_load_data(self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], self.res_layers_gdb[FDC_VALUATION_UNIT_BUILDING_CONNECTION],
-                                                                 FDC_VALUATION_UNIT_BUILDING_CONNECTION, self.qgis_utils)                
+        create_column(self.res_layers[BUILDING_UNIT_TABLE], 'Codigo')
+        create_column(self.res_layers[BUILDING_UNIT_TABLE], 'identificador')
+        join_layers(uunidad, self.res_layers[BUILDING_TABLE], CODIGO_R1_GDB, 'Codigo')
+        join_layers(runidad, self.res_layers[BUILDING_TABLE], CODIGO_R1_GDB, 'Codigo')
+        uunidad_filter = fix_spatial_layer(uunidad)
+        runidad_filter = fix_spatial_layer(runidad)
+        uunidad_filter.setSubsetString("construccion_oficial_t_id != 'NULL'")
+        runidad_filter.setSubsetString("construccion_oficial_t_id != 'NULL'")
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(BUILDING_UNIT_TABLE)))
+        run_etl_model_input_load_data(uunidad_filter, self.res_layers[BUILDING_UNIT_TABLE], BUILDING_UNIT_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        join_layers(self.res_layers_gdb[FDC_BUILDING], 
-                        self.res_layers_gdb[FDC_VALUATION_BUILDING], 'identificador', 'identificador')
+        run_etl_model_input_load_data(runidad_filter, self.res_layers[BUILDING_UNIT_TABLE], BUILDING_UNIT_TABLE, self.qgis_utils)
+        step += 1
+        self.progress.setValue(step/steps * 100)
+
+        join_layers(self.res_layers[BUILDING_UNIT_TABLE], 
+                        self.res_layers[VALUATION_BUILDING_UNIT_TABLE], 'identificador', 'identificador')
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(AVALUOUNIDADCONSTRUCCION_TABLE)))
+        run_etl_model_input_load_data(self.res_layers[BUILDING_UNIT_TABLE], self.res_layers[AVALUOUNIDADCONSTRUCCION_TABLE],
+                                                                 AVALUOUNIDADCONSTRUCCION_TABLE, self.qgis_utils)                
+        step += 1
+        self.progress.setValue(step/steps * 100)
+        join_layers(self.res_layers[BUILDING_TABLE], 
+                        self.res_layers[VALUATION_BUILDING_TABLE], 'identificador', 'identificador')
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_VALUATION_BUILDING_CONNECTION)))
-        run_etl_model_input_load_data(self.res_layers_gdb[FDC_BUILDING], self.res_layers_gdb[FDC_VALUATION_BUILDING_CONNECTION],
+        run_etl_model_input_load_data(self.res_layers[BUILDING_TABLE], self.res_layers[FDC_VALUATION_BUILDING_CONNECTION],
                                                                  FDC_VALUATION_BUILDING_CONNECTION, self.qgis_utils) 
         step += 1
         self.progress.setValue(step/steps * 100)
 
-        layer_filter = fix_polygon_layers(self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE])
-        layer_filter.setSubsetString("construccion_tipo = 'Convencional'")
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_QUALIFICATION_CONVENTIONAL)))
-        run_etl_model_input_load_data(layer_filter, self.res_layers_gdb[FDC_QUALIFICATION_CONVENTIONAL], FDC_QUALIFICATION_CONVENTIONAL, self.qgis_utils)
+        layer_filter = fix_spatial_layer(self.res_layers[VALUATION_BUILDING_UNIT_TABLE])
+        QgsProject.instance().addMapLayer(layer_filter)
+        layer_filter.setSubsetString("construccion_oficial_tipo = 'Convencional'")
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE)))
+        run_etl_model_input_load_data(layer_filter, self.res_layers[VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE], VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        layer_filter = fix_polygon_layers(self.res_layers_gdb[FDC_BUILDING_UNIT_VALUATION_TABLE])
-        layer_filter.setSubsetString("construccion_tipo = 'noConvencional'")
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_QUALIFICATION_NO_CONVENTIONAL)))
-        run_etl_model_input_load_data(layer_filter, self.res_layers_gdb[FDC_QUALIFICATION_NO_CONVENTIONAL], FDC_QUALIFICATION_NO_CONVENTIONAL, self.qgis_utils)
+        layer_filter = fix_spatial_layer(self.res_layers[VALUATION_BUILDING_UNIT_TABLE])
+        layer_filter.setSubsetString("construccion_oficial_tipo = 'noConvencional'")
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE)))
+        run_etl_model_input_load_data(layer_filter, self.res_layers[VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE], VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
 
         unomen = QgsProject.instance().mapLayersByName('U_NOMENCLATURA_DOMICILIARIA')[0]
         rnomen = QgsProject.instance().mapLayersByName('R_NOMENCLATURA_DOMICILIARIA')[0]
 
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_EXTADDRESS)))
-        run_etl_model_input_load_data(get_directions(unomen, self.res_layers_gdb[FDC_BUILDING]), self.res_layers_gdb[FDC_EXTADDRESS], FDC_EXTADDRESS, self.qgis_utils)
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(EXTADDRESS_TABLE)))
+        run_etl_model_input_load_data(get_directions(unomen, self.res_layers[BUILDING_TABLE]), self.res_layers[EXTADDRESS_TABLE], EXTADDRESS_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        run_etl_model_input_load_data(get_directions(rnomen, self.res_layers_gdb[FDC_PLOT]), self.res_layers_gdb[FDC_EXTADDRESS], FDC_EXTADDRESS, self.qgis_utils)
+        run_etl_model_input_load_data(get_directions(rnomen, self.res_layers[PLOT_TABLE]), self.res_layers[EXTADDRESS_TABLE], EXTADDRESS_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
 
-        join_layers(self.res_layers[FDC_PARCEL], self.res_layers_gdb[FDC_BUILDING], 'Codigo', 'Codigo')
-        vlayer = QgsVectorLayer("?query=SELECT * FROM {}&nogeometry".format(FDC_PARCEL), "vlayer", "virtual" )
-        vlayer.setSubsetString("construccion_t_id != 'NULL'")
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_UEBAUNIT_BUILDING)))
-        run_etl_model_input_load_data(vlayer, self.res_layers[FDC_UEBAUNIT], FDC_UEBAUNIT_BUILDING, self.qgis_utils)
+        join_layers(self.res_layers[PARCEL_TABLE], self.res_layers[BUILDING_TABLE], 'Codigo', 'Codigo')
+        vlayer = QgsVectorLayer("?query=SELECT * FROM {}_{}&nogeometry".format(PARCEL_TABLE, 'oficial'), "vlayer", "virtual" )
+        vlayer.setSubsetString("construccion_oficial_t_id != 'NULL'")
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(UEBAUNIT_TABLE_BUILDING_FIELD)))
+        run_etl_model_input_load_data(vlayer, self.res_layers[UEBAUNIT_TABLE], UEBAUNIT_TABLE_BUILDING_FIELD, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        join_layers(self.res_layers[FDC_PARCEL], self.res_layers_gdb[FDC_PLOT], 'Codigo', 'etiqueta')
-        vlayer = QgsVectorLayer("?query=SELECT * FROM {}&nogeometry".format(FDC_PARCEL), "vlayer", "virtual" )
-        vlayer.setSubsetString("terreno_t_id != 'NULL'")
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_UEBAUNIT_PLOT)))
-        run_etl_model_input_load_data(vlayer, self.res_layers[FDC_UEBAUNIT], FDC_UEBAUNIT_PLOT, self.qgis_utils)
+        join_layers(self.res_layers[PARCEL_TABLE], self.res_layers[PLOT_TABLE], 'Codigo', 'etiqueta')
+        vlayer = QgsVectorLayer("?query=SELECT * FROM {}_{}&nogeometry".format(PARCEL_TABLE, 'oficial'), "vlayer", "virtual" )
+        vlayer.setSubsetString("terreno_oficial_t_id != 'NULL'")
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(UEBAUNIT_TABLE_PLOT_FIELD)))
+        run_etl_model_input_load_data(vlayer, self.res_layers[UEBAUNIT_TABLE], UEBAUNIT_TABLE_PLOT_FIELD, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        join_layers(self.res_layers[FDC_PARCEL], self.res_layers_gdb[FDC_BUILDING_UNIT_CADASTRE_TABLE], 'Codigo', 'Codigo')
-        vlayer = QgsVectorLayer("?query=SELECT * FROM {}&nogeometry".format(FDC_PARCEL), "vlayer", "virtual" )
-        vlayer.setSubsetString("unidadconstruccion_t_id != 'NULL'")
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_UEBAUNIT_BUILDING_UNIT)))
-        run_etl_model_input_load_data(vlayer, self.res_layers[FDC_UEBAUNIT], FDC_UEBAUNIT_BUILDING_UNIT, self.qgis_utils) 
+        join_layers(self.res_layers[PARCEL_TABLE], self.res_layers[BUILDING_UNIT_TABLE], 'Codigo', 'Codigo')
+        vlayer = QgsVectorLayer("?query=SELECT * FROM {}_{}&nogeometry".format(PARCEL_TABLE, 'oficial'), "vlayer", "virtual" )
+        vlayer.setSubsetString("unidadconstruccion_oficial_t_id != 'NULL'")
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(UEBAUNIT_TABLE_PLOT_FIELD)))
+        run_etl_model_input_load_data(vlayer, self.res_layers[UEBAUNIT_TABLE], UEBAUNIT_TABLE_PLOT_FIELD, self.qgis_utils) 
         step += 1
         self.progress.setValue(step/steps * 100)
 
@@ -418,11 +429,11 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
 
         self.progress.setVisible(False)
 
-        layers_name_summary = [FDC_NEIGHBOURHOOD, FDC_BUILDING, FDC_RIGHT, FDC_EXTADDRESS, FDC_ADMINISTRATIVE_SOURCE, FDC_PARTY, 
-                            FDC_VILLAGE, FDC_PARCEL, FDC_PLOT, FDC_BUILDING_UNIT_CADASTRE_TABLE]
+        layers_name_summary = [FDC_NEIGHBOURHOOD, BUILDING_TABLE, RIGHT_TABLE, EXTADDRESS_TABLE, ADMINISTRATIVE_SOURCE_TABLE, COL_PARTY_TABLE, 
+                            FDC_VILLAGE, PARCEL_TABLE, PLOT_TABLE, BUILDING_UNIT_TABLE]
 
         for name in layers_name_summary:
-            layer = QgsProject.instance().mapLayersByName(name)[0]
+            layer = QgsProject.instance().mapLayersByName('{}_oficial'.format(name))[0]
             layer.featureCount()
             self.summary += QCoreApplication.translate("DialogInputLoadFieldDataCapture",
                         "<b>{count}</b> records loaded into table <b>{table}</b><br/>").format(
@@ -470,6 +481,12 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         self.btn_browse_file_gdb.setEnabled(stade)
         self.btn_browse_file_registry.setEnabled(stade)
 
+    def clean_layer_joins(self, layers):
+        for layer in layers:
+            joins_info = layer.vectorJoins()
+            for join_info in joins_info:
+                layer.removeJoin(join_info.joinLayerId())    
+
     def manage_process_load_data(self):
         """
         Workflow for loading official data
@@ -480,12 +497,16 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         self.qgis_utils.cache_layers_and_relations(self._db, True)
 
         self.define_stade_gui(False)
-        self.load_r1()
+        self.load_data_for_etl()
         self.mapping_fields_r1()
-        self.load_gdb()
         self.mapping_fields_gbb()
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         self.show_log_data()
+
+        # When finish the etl process, we need remove all joins in the layers, so we delete all joins in r1, gdb and LADM_COL layers 
+        self.clean_layer_joins(self.gdb_layer)
+        self.clean_layer_joins([self.layer_r1])
+        self.clean_layer_joins(self.res_layers)
 
         # No one else needs the official cache, so go back to initial state
         self.qgis_utils._layers, self.qgis_utils._relations, self.qgis_utils._bags_of_enum = cached_layers, cached_relations, cached_bags_of_enum

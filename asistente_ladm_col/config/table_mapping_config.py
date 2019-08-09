@@ -188,48 +188,29 @@ VALUATION_PHYSICAL_ZONE_TABLE = "zona_homogenea_fisica"
 """
 FIELD DATA CAPTURE MAPPING
 """
-FDC_PARCEL = "predio"
-FDC_PARTY = "col_interesado"
-FDC_RIGHT = "col_derecho"
-FDC_ADMINISTRATIVE_SOURCE = "col_fuenteadministrativa"
-FDC_RRRSOURCE = "rrrfuente"
-FDC_UEBAUNIT = "uebaunit"
-FDC_UEBAUNIT_BUILDING = "uebaunit_construccion"
-FDC_UEBAUNIT_PLOT = "uebaunit_terreno"
-FDC_UEBAUNIT_BUILDING_UNIT = "uebaunit_unidad_construccion"
-FDC_PLOT = "terreno"
+
 FDC_SECTOR = "sectorcatastral"
 FDC_VILLAGE = "manzanavereda"
 FDC_BLOCK = "manzanavereda_FDC"
 FDC_NEIGHBOURHOOD = "barrio"
-FDC_BUILDING = "construccion"
-FDC_VALUATION_BUILDING = "avaluos_v2_2_1avaluos_construccion"
-FDC_BUILDING_UNIT_VALUATION_TABLE = "unidad_construccion"
-FDC_BUILDING_UNIT_CADASTRE_TABLE = "unidadconstruccion"
-FDC_VALUATION_UNIT_BUILDING_CONNECTION = "avaluounidadconstruccion"
 FDC_VALUATION_BUILDING_CONNECTION = "avaluoconstruccion"
-FDC_EXTADDRESS = "extdireccion"
-FDC_QUALIFICATION_CONVENTIONAL = "calificacion_convencional"
-FDC_QUALIFICATION_NO_CONVENTIONAL = "calificacion_no_convencional"
-
 """
-R1 adn GDB
+R1 and GDB
 """
-DEPARTAMENTO_R1_GDB = '"Departamento"'
-MUNICIPIO_R1_GDB = '"Municipio"'
-NO_PREDIAL_R1_GDB = '"NoPredial"'
-NO_PREDIAL_ANTERIOR_R1_GDB = '"NoPredialAnterior"'
-AVALUO_R1_GDB = '"Avaluo ($)"'
-NOMBRE_R1_GDB = '"Nombre"'
-NO_DOCUMENTO_R1_GDB = '"NoDocumento"'
-TIPO_DOCUMENTO_R1_GDB = '"TipoDocumento"'
-TEXTO_R1_GDB = '"texto"'
-AREA_R1_GDB = '"SHAPE_Area"'
-CODIGO_R1_GDB = '"Codigo"'
-ETIQUETA_R1_GDB = '"etiqueta"'
-NUM_PISOS_R1_GDB = '"Numero_Pisos"'
-TIPO_CONSTRUCCION_R1_GDB = '"Tipo_Construccion"'
-
+DEPARTAMENTO_R1_GDB = 'Departamento'
+MUNICIPIO_R1_GDB = 'Municipio'
+NO_PREDIAL_R1_GDB = 'NoPredial'
+NO_PREDIAL_ANTERIOR_R1_GDB = 'NoPredialAnterior'
+AVALUO_R1_GDB = 'Avaluo ($)'
+NOMBRE_R1_GDB = 'Nombre'
+NO_DOCUMENTO_R1_GDB = 'NoDocumento'
+TIPO_DOCUMENTO_R1_GDB = 'TipoDocumento'
+TEXTO_R1_GDB = 'texto'
+AREA_R1_GDB = 'SHAPE_Area'
+CODIGO_R1_GDB = 'Codigo'
+ETIQUETA_R1_GDB = 'etiqueta'
+NUM_PISOS_R1_GDB = 'Numero_Pisos'
+TIPO_CONSTRUCCION_R1_GDB = 'Tipo_Construccion'
 
 """
 PLURAL WORDS, FOR DISPLAY PURPOSES

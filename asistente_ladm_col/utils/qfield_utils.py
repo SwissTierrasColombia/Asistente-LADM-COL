@@ -37,11 +37,11 @@ from qgis.core import (QgsProject,
 from .symbology import SymbologyUtils
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping_r1_gdb_to_ladm
 
-def run_etl_model_input_load_data(input_layer, out_layer, ladm_col_layer_name, qgis_utils):
+def run_etl_model_input_load_data(input_layer, output_layer, ladm_col_layer_name, qgis_utils):
 
     if isinstance(input_layer, str):
         input_layer = QgsProject.instance().mapLayersByName(input_layer)[0]
-        input_layer = fix_polygon_layers(input_layer)
+        input_layer = fix_spatial_layer(input_layer)
 
     model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
 
@@ -50,23 +50,23 @@ def run_etl_model_input_load_data(input_layer, out_layer, ladm_col_layer_name, q
         params = {
             'INPUT': input_layer,
             'mapping': mapping,
-            'output': out_layer
+            'output': output_layer
         }
-        print (input_layer.name())
+
         res = processing.run("model:ETL-model", params)
 
     else:
         return
 
-    return out_layer
+    return output_layer
 
-def fix_polygon_layers(layer):
+def fix_spatial_layer(layer):
     params = {'INPUT': layer, 'OUTPUT':'memory:'}
-    multipart = processing.run("native:multiparttosingleparts", params)
-    params = {'INPUT': multipart['OUTPUT'], 'OUTPUT':'memory:'}
-    fix = processing.run("native:fixgeometries", params)
+    single_parts = processing.run("native:multiparttosingleparts", params)
+    params = {'INPUT': single_parts['OUTPUT'], 'OUTPUT':'memory:'}
+    fixed = processing.run("native:fixgeometries", params)
 
-    return fix['OUTPUT']
+    return fixed['OUTPUT']
 
 def join_layers(initial, target, join_name, target_name):
     joinObject = QgsVectorLayerJoinInfo()
@@ -80,11 +80,11 @@ def create_column(layer, name):
     layer.dataProvider().addAttributes([QgsField(name, QVariant.String, "VARCHAR")])
     layer.updateFields()
 
-def get_directions(layer, reference):
-    reference = fix_polygon_layers(reference)
+def get_directions(layer, reference_layers):
+    reference_layers = fix_spatial_layer(reference_layers)
     params = {'INPUT':layer,'ALL_PARTS':False,'OUTPUT':'TEMPORARY_OUTPUT'}
     centroids = processing.run("native:centroids", params)
-    params = {'INPUT':centroids['OUTPUT'],'REFERENCE_LAYER':reference,'TOLERANCE':10,'BEHAVIOR':0,'OUTPUT':'TEMPORARY_OUTPUT'}
+    params = {'INPUT':centroids['OUTPUT'],'REFERENCE_LAYER':reference_layers,'TOLERANCE':10,'BEHAVIOR':0,'OUTPUT':'TEMPORARY_OUTPUT'}
     direction = processing.run("qgis:snapgeometries", params)
 
     return direction['OUTPUT'] 
