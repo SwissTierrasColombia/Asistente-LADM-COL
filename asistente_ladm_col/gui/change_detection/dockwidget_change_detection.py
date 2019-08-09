@@ -18,19 +18,21 @@
 """
 import qgis
 from qgis.PyQt.QtCore import (Qt,
-                              pyqtSignal, QCoreApplication, QObject)
+                              pyqtSignal,
+                              QCoreApplication,
+                              QObject)
 from qgis.core import (QgsVectorLayer,
                        QgsWkbTypes,
                        Qgis,
                        NULL,
                        QgsGeometry)
-from qgis.gui import QgsDockWidget, QgsMapToolIdentifyFeature
+from qgis.gui import QgsDockWidget
 
-from asistente_ladm_col.gui.change_detection.changes_all_parcels_panel import ChangesAllParcelsPanelWidget
-from asistente_ladm_col.gui.change_detection.changes_per_parcel_panel import ChangesPerParcelPanelWidget
-from asistente_ladm_col.gui.change_detection.parcels_changes_summary_panel import ParcelsChangesSummaryPanelWidget
-from asistente_ladm_col.gui.change_detection.changes_parties_panel import ChangesPartyPanelWidget
-from asistente_ladm_col.utils import get_ui_class
+from ...gui.change_detection.changes_all_parcels_panel import ChangesAllParcelsPanelWidget
+from ...gui.change_detection.changes_per_parcel_panel import ChangesPerParcelPanelWidget
+from ...gui.change_detection.parcels_changes_summary_panel import ParcelsChangesSummaryPanelWidget
+from ...gui.change_detection.changes_parties_panel import ChangesPartyPanelWidget
+from ...utils import get_ui_class
 
 from ...config.symbology import OFFICIAL_STYLE_GROUP
 from ...config.general_config import (OFFICIAL_DB_PREFIX,
@@ -40,7 +42,6 @@ from ...config.general_config import (OFFICIAL_DB_PREFIX,
                                       STYLE_GROUP_LAYER_MODIFIERS,
                                       MAP_SWIPE_TOOL_PLUGIN_NAME,
                                       CHANGE_DETECTION_NEW_PARCEL,
-                                      CHANGE_DETECTION_MISSING_PARCEL,
                                       CHANGE_DETECTION_PARCEL_CHANGED,
                                       CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
                                       CHANGE_DETECTION_PARCEL_REMAINS,
@@ -85,6 +86,13 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
 
         self.party_panel = None
         self.lst_party_panels = list()
+
+    def closeEvent(self, event):
+        # closes open signals on panels
+        if self.parcel_panel:
+            self.parcel_panel.close_panel()
+
+        self.close_dock_widget()
 
     def add_layers(self):
         self.utils.add_layers()
