@@ -370,8 +370,11 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.tbl_changes_per_parcel.item(row, 3).setBackground(
             Qt.green if self.utils.compare_features_geometries(collected_geom, official_geom) else Qt.red)
 
-    def get_geometry_type_name(self, geometry):
-        if geometry.type() == QgsWkbTypes.UnknownGeometry:
+    @staticmethod
+    def get_geometry_type_name(geometry):
+        if geometry is None:
+            return QCoreApplication.translate("DockWidgetChanges", "No associated plot")
+        elif geometry.type() == QgsWkbTypes.UnknownGeometry:
             return ''
         elif geometry.type() == QgsWkbTypes.PolygonGeometry:
             return QCoreApplication.translate("DockWidgetChanges", "Polygon")
