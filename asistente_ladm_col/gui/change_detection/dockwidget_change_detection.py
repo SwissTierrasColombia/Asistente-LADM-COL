@@ -367,11 +367,11 @@ class ChangeDetectionUtils(QObject):
         :param geometry_b: QgsGeometry
         :return: True means equal, False unequal
         """
-        if geometry_a is None or geometry_b is None:  # None when It doesn't have associated plot
-            if geometry_a == geometry_b:
-                return True
-            else:
-                return False
+        if geometry_a is None:  # None for parcels that don't have any associated plot
+            return geometry_b is None or geometry_b.isNull()
+
+        if geometry_b is None:  # None for parcels that don't have any associated plot
+            return geometry_a is None or geometry_a.isNull()
 
         if not geometry_a.isGeosValid() and not geometry_b.isGeosValid():
             return True
