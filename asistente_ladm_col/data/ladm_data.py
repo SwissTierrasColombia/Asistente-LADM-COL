@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsApplication,
                        NULL,
                        QgsFeatureRequest,
@@ -272,6 +272,8 @@ class LADM_DATA():
                                 item[PLOT_FIELD] = NULL
 
                             item[PLOT_GEOMETRY_KEY] = plot_feature.geometry()
+                else:
+                    item[PLOT_GEOMETRY_KEY] = None  # No associated plot
 
         # ===================== Start adding party info ==================================================
         expression_right_features = QgsExpression("{} IN ({})".format(RIGHT_TABLE_PARCEL_FIELD, ",".join([str(id) for id in parcel_t_ids])))
