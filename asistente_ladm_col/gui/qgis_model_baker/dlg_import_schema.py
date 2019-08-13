@@ -24,6 +24,7 @@ from QgisModelBaker.libili2db.ili2dbconfig import (SchemaImportConfiguration,
 from QgisModelBaker.libili2db.ili2dbutils import color_log_text
 from QgisModelBaker.libili2db.ilicache import IliCache
 from QgisModelBaker.libili2db.iliimporter import JavaNotFoundError
+
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QSettings,
@@ -60,12 +61,17 @@ DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_schema.ui')
 
 class DialogImportSchema(QDialog, DIALOG_UI):
 
-    models_have_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
+    models_have_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db
+    open_dlg_import_data = pyqtSignal()
 
-    def __init__(self, iface, qgis_utils, conn_manager):
+    BUTTON_NAME_CREATE_STRUCTURE = QCoreApplication.translate("DialogImportSchema", "Create LADM-COL structure")
+    BUTTON_NAME_GO_TO_IMPORT_DATA =  QCoreApplication.translate("DialogImportData", "Go to Import Data...")
+
+    def __init__(self, iface, qgis_utils, conn_manager, selected_models=list()):
         QDialog.__init__(self)
         self.iface = iface
         self.conn_manager = conn_manager
+        self.selected_models = selected_models
         self.db = self.conn_manager.get_db_connector_from_source()
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
@@ -92,15 +98,23 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
         self.buttonBox.accepted.disconnect()
-        self.buttonBox.accepted.connect(self.accepted)
+        self.buttonBox.clicked.connect(self.accepted_import_schema)
         self.buttonBox.clear()
         self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self._accept_button = self.buttonBox.addButton(QCoreApplication.translate("DialogImportSchema", "Create LADM-COL structure"), QDialogButtonBox.AcceptRole)
+        self._accept_button = self.buttonBox.addButton(self.BUTTON_NAME_CREATE_STRUCTURE, QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
 
         self.update_connection_info()
         self.restore_configuration()
+
+    def accepted_import_schema(self, button):
+        if self.buttonBox.buttonRole(button) == QDialogButtonBox.AcceptRole:
+            if button.text() == self.BUTTON_NAME_CREATE_STRUCTURE:
+                self.accepted()
+            elif button.text() == self.BUTTON_NAME_GO_TO_IMPORT_DATA:
+                self.close()  # Close import schema dialog and open import open dialog
+                self.open_dlg_import_data.emit()
 
     def update_connection_info(self):
         db_description = self.db.get_description_conn_string()
@@ -114,11 +128,12 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self._accept_button.setEnabled(False)
 
     def update_import_models(self):
-        for modelname in DEFAULT_MODEL_NAMES_CHECKED:
+        for modelname, checked in DEFAULT_MODEL_NAMES_CHECKED.items():
             item = QListWidgetItem(modelname)
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-            item.setCheckState(DEFAULT_MODEL_NAMES_CHECKED[modelname])
+            item.setCheckState(Qt.Checked if modelname in self.selected_models or checked == Qt.Checked else Qt.Unchecked)  # From parameter or by default
             self.import_models_list_widget.addItem(item)
+
         self.import_models_list_widget.itemClicked.connect(self.on_item_clicked_import_model)
         self.import_models_list_widget.itemChanged.connect(self.on_itemchanged_import_model)
 
@@ -217,6 +232,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                 return
 
             self.buttonBox.clear()
+
+            self.buttonBox.addButton(self.BUTTON_NAME_GO_TO_IMPORT_DATA,
+                                     QDialogButtonBox.AcceptRole).setStyleSheet("color: #007208;")
+
             self.buttonBox.setEnabled(True)
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
