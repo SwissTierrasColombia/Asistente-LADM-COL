@@ -17,9 +17,9 @@ email                : gkahiu@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt5.QtCore import QAbstractItemModel, Qt, QModelIndex
-from PyQt5.QtGui import QIcon, QBrush, QFont
-from PyQt5.QtWidgets import QTreeWidgetItem
+from qgis.PyQt.QtCore import QAbstractItemModel, Qt, QModelIndex
+from qgis.PyQt.QtGui import QIcon, QBrush, QFont
+from qgis.PyQt.QtWidgets import QTreeWidgetItem
 from ..config.table_mapping_config import PARCEL_RIGHT_FIELD
 
 class QueryTreeViewModel(QAbstractItemModel):
