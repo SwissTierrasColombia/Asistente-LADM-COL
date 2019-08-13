@@ -66,7 +66,10 @@ DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_data.ui')
 
 
 class DialogImportData(QDialog, DIALOG_UI):
+
     open_dlg_import_schema = pyqtSignal(list) # selected models
+    BUTTON_NAME_IMPORT_DATA = QCoreApplication.translate("DialogImportData", "Import data")
+    BUTTON_NAME_GO_TO_CREATE_STRUCTURE = QCoreApplication.translate("DialogImportData",  "Go to Create Structure...")
 
     def __init__(self, iface, qgis_utils, conn_manager):
         QDialog.__init__(self)
@@ -113,7 +116,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.buttonBox.clicked.connect(self.accepted_import_data)
         self.buttonBox.clear()
         self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self._accept_button = self.buttonBox.addButton(QCoreApplication.translate("DialogImportData", "Import data"), QDialogButtonBox.AcceptRole)
+        self._accept_button = self.buttonBox.addButton(self.BUTTON_NAME_IMPORT_DATA, QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
 
@@ -122,12 +125,11 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def accepted_import_data(self, button):
         if self.buttonBox.buttonRole(button) == QDialogButtonBox.AcceptRole:
-            if button.text() == QCoreApplication.translate("DialogImportData",  "Import data"):
+            if button.text() == self.BUTTON_NAME_IMPORT_DATA:
                 self.accepted()
-            elif button.text() == QCoreApplication.translate("DialogImportData",  "Go to create structure..."):
-                self.close()  # Close import data dialog and open import schema dialog
-                # Emmit signal to open import schema dialog
-                self.open_dlg_import_schema.emit(self.get_ili_models())
+            elif button.text() == self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE:
+                self.close()  # Close import data dialog
+                self.open_dlg_import_schema.emit(self.get_ili_models())  # Emit signal to open import schema dialog
 
     def update_connection_info(self):
         db_description = self.db.get_description_conn_string()
@@ -250,7 +252,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         if not ili_models.issubset(db_models):
             message_error = "The XTF file to import does not have the same models as the target database schema. " \
-                            "Please create a schema also include the following missing schemas:\n\n * {}".format(" \n * ".join(sorted(ili_models.difference(db_models))))
+                            "Please create a schema that also includes the following missing modules:\n\n * {}".format(" \n * ".join(sorted(ili_models.difference(db_models))))
             self.txtStdout.clear()
             self.txtStdout.setTextColor(QColor('#000000'))
             self.txtStdout.setText(QCoreApplication.translate("DialogImportData", message_error))
@@ -259,15 +261,15 @@ class DialogImportData(QDialog, DIALOG_UI):
 
             # button is removed to define order in GUI
             for button in self.buttonBox.buttons():
-                if button.text() == QCoreApplication.translate("DialogImportData",  "Import data"):
+                if button.text() == self.BUTTON_NAME_IMPORT_DATA:
                     self.buttonBox.removeButton(button)
 
             # Check if button was previously added
             self.remove_create_structure_button()
 
-            self.buttonBox.addButton(QCoreApplication.translate("DialogImportData",  "Go to create structure..."),
+            self.buttonBox.addButton(self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE,
                                      QDialogButtonBox.AcceptRole).setStyleSheet("color: #aa2222;")
-            self.buttonBox.addButton(QCoreApplication.translate("DialogImportData",  "Import data"),
+            self.buttonBox.addButton(self.BUTTON_NAME_IMPORT_DATA,
                                      QDialogButtonBox.AcceptRole)
 
             return
@@ -329,7 +331,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def remove_create_structure_button(self):
         for button in self.buttonBox.buttons():
-            if button.text() == QCoreApplication.translate("DialogImportData",  "Go to create structure..."):
+            if button.text() == self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE:
                 self.buttonBox.removeButton(button)
 
     def save_configuration(self, configuration):

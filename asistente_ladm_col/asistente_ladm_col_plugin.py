@@ -169,7 +169,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                self._about_action])
 
         # Connections
-        self._import_schema_action.triggered.connect(self.show_dlg_import_schema)
+        self._import_schema_action.triggered.connect(self.call_dlg_import_schema)
         self._import_data_action.triggered.connect(self.show_dlg_import_data)
         self._export_data_action.triggered.connect(self.show_dlg_export_data)
         self._controlled_measurement_action.triggered.connect(self.show_dlg_controlled_measurement)
@@ -1061,14 +1061,21 @@ class AsistenteLADMCOLPlugin(QObject):
     def get_official_db_connection(self):
         return self.conn_manager.get_db_connector_from_source(db_source=OFFICIAL_DB_SOURCE)
 
+    def call_dlg_import_schema(self, state):
+        """
+        Slot triggered by a menu
+        :param state: Checked state
+        :return:
+        """
+        self.show_dlg_import_schema(list())  # Parameter: No other models selected other than default models
+
     @_qgis_model_baker_required
     def show_dlg_import_schema(self, *args, **kwargs):
         from .gui.qgis_model_baker.dlg_import_schema import DialogImportSchema
 
         selected_models_import_schema = list()
-        for arg in args:
-            if isinstance(arg, list):
-                selected_models_import_schema = arg # Argument send by signal
+        if args:
+            selected_models_import_schema = args[0]  # Argument sent by signal
 
         dlg = DialogImportSchema(self.iface, self.qgis_utils, self.conn_manager, selected_models_import_schema)
         dlg.models_have_changed.connect(self.refresh_menus)
