@@ -18,15 +18,15 @@
 """
 from functools import partial
 
-from PyQt5.QtCore import (QCoreApplication,
-                          Qt,
-                          pyqtSignal)
-from PyQt5.QtGui import (QColor,
-                         QIcon,
-                         QCursor)
-from PyQt5.QtWidgets import (QMenu,
-                             QAction,
-                             QApplication)
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              Qt,
+                              pyqtSignal)
+from qgis.PyQt.QtGui import (QColor,
+                             QIcon,
+                             QCursor)
+from qgis.PyQt.QtWidgets import (QMenu,
+                                 QAction,
+                                 QApplication)
 from qgis.core import (QgsWkbTypes,
                        Qgis,
                        QgsFeature,
