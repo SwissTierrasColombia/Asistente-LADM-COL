@@ -817,7 +817,7 @@ class AsistenteLADMCOLPlugin(QObject):
         QCoreApplication.processEvents()
     
     def show_log_quality_dialog(self):
-        dlg = LogQualityDialog(self.qgis_utils, self.quality, self.conn_manager)
+        dlg = LogQualityDialog(self.qgis_utils, self.quality, self.conn_manager.get_db_connector_from_source())
         dlg.exec_()
 
     def show_log_excel_button(self, text):

@@ -27,13 +27,12 @@ from ..utils.qt_utils import save_pdf_format
 LOG_DIALOG_UI = get_ui_class('dlg_log_quality.ui')
 
 class LogQualityDialog(QDialog, LOG_DIALOG_UI):
-    def __init__(self, qgis_utils, quality, conn_manager, parent=None):
+    def __init__(self, qgis_utils, quality, db, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.qgis_utils = qgis_utils
         self.quality = quality
-        self.conn_manager = conn_manager
-        self.db = self.conn_manager.get_db_connector_from_source()
+        self.db = db
 
         # Set connections
         self.buttonBox.accepted.connect(self.save)
@@ -46,8 +45,8 @@ class LogQualityDialog(QDialog, LOG_DIALOG_UI):
         text, total_time = self.quality.get_log_dialog_quality_text()
         title = QCoreApplication.translate(
                 'LogQualityDialog',
-                "<h2 align='center'>Quality Check Results</h2><div style='text-align:center;'>{}<br>Database: {}, Schema: {}<br>Total execution time: {}</div>").format(
-                time.strftime("%d/%m/%y %H:%M:%S"), self.db._dict_conn_params['database'], self.db._dict_conn_params['schema'], 
+                "<h2 align='center'>Quality Check Results</h2><div style='text-align:center;'>{}<br>Database: {}<br>Total execution time: {}</div>").format(
+                time.strftime("%d/%m/%y %H:%M:%S"), self.db.get_description_conn_string(),
                 self.quality.utils.set_time_format(total_time))
 
         save_pdf_format(self.qgis_utils, 'Asistente-LADM_COL/log_quality_dialog/save_path', title, text )
