@@ -551,7 +551,6 @@ def get_refactor_fields_mapping_r1_gdb_to_ladm(layer_name, qgis_utils):
             {'expression': "'NPH'", 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
             {'expression': "'IGAC_Predio'", 'length': 255, 'name': 'u_espacio_de_nombres', 'precision': -1, 'type': 10}, 
             {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': 'concat({}, {}, {})'.format(DEPARTAMENTO_R1_GDB, MUNICIPIO_R1_GDB, NO_PREDIAL_R1_GDB), 'length': -1, 'name': 'Codigo', 'precision': -1, 'type': 10}
         ]
     elif layer_name == COL_PARTY_TABLE:
         mapping = [
@@ -635,20 +634,17 @@ def get_refactor_fields_mapping_r1_gdb_to_ladm(layer_name, qgis_utils):
             ]
     elif layer_name == BUILDING_TABLE:
         mapping = [
-            {'expression': '0.1', 'length': 16, 'name': 'avaluo_construccion', 'precision': 1, 'type': 6}, 
+            {'expression': '$id', 'length': 16, 'name': 'avaluo_construccion', 'precision': 1, 'type': 6}, 
             {'expression': '"{}"'.format(AREA_R1_GDB), 'length': 15, 'name': 'area_construccion', 'precision': 1, 'type': 6}, 
-            {'expression': '"{}"'.format(CODIGO_R1_GDB), 'length': 255, 'name': 'Codigo', 'precision': -1, 'type': 10}, 
             {'expression': '"{}"'.format(ETIQUETA_R1_GDB), 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}, 
             {'expression': "'IGAC_Construcción'", 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10}, 
-            {'expression': '0', 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10}, 
-            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '$id', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
+            {'expression': '"{}"'.format(CODIGO_R1_GDB), 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
             ]
     elif layer_name == VALUATION_BUILDING_TABLE:
         mapping = [
             {'expression': 'if({NumPisos} = 0, 99, {NumPisos})'.format(NumPisos=NUM_PISOS_R1_GDB), 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2}, 
-            {'expression': '"{}"'.format(CODIGO_R1_GDB), 'length': -1, 'name': 'Codigo', 'precision': -1, 'type': 10},
-            {'expression': '$id', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
+            {'expression': '$id', 'length': 0, 'name': 'identificador', 'precision': 0, 'type': 10}
             ]
     elif layer_name == VALUATION_BUILDING_UNIT_TABLE:
         mapping = [
@@ -656,23 +652,21 @@ def get_refactor_fields_mapping_r1_gdb_to_ladm(layer_name, qgis_utils):
             {'expression': "'Aulas_Clases'", 'length': 255, 'name': 'uso', 'precision': -1, 'type': 10}, 
             {'expression': "'Anexo'", 'length': 255, 'name': 'destino_econo', 'precision': -1, 'type': 10}, 
             {'expression': "'De_Alto_Riesgo'", 'length': 255, 'name': 'tipologia', 'precision': -1, 'type': 10}, 
-            {'expression': '0', 'length': -1, 'name': 'puntuacion', 'precision': 0, 'type': 2}, 
+            {'expression': '$id', 'length': -1, 'name': 'puntuacion', 'precision': 0, 'type': 2}, 
             {'expression': 'now()', 'length': -1, 'name': 'anio_construction', 'precision': -1, 'type': 14}, 
             {'expression': "'Bueno'", 'length': 255, 'name': 'estado_conservacion', 'precision': -1, 'type': 10}, 
-            {'expression': '"{}"'.format(CODIGO_R1_GDB), 'length': 255, 'name': 'material', 'precision': -1, 'type': 10},
-            {'expression': '$id', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
+            {'expression': '"{}"'.format(CODIGO_R1_GDB), 'length': 255, 'name': 'material', 'precision': -1, 'type': 10}
             ]
     elif layer_name == BUILDING_UNIT_TABLE:
         mapping = [
-             {'expression': '99', 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2}, 
-             {'expression': '"construccion_oficial_t_id"', 'length': -1, 'name': 'construccion', 'precision': 0, 'type': 4}, 
-             {'expression': '"{}"'.format(CODIGO_R1_GDB), 'length': 255, 'name': 'Codigo', 'precision': -1, 'type': 10}, 
-             {'expression': '"{}"'.format(ETIQUETA_R1_GDB), 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}, 
-             {'expression': "'Unidad_Construcción'", 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10}, 
-             {'expression': '0', 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10}, 
-             {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-             {'expression': '$id', 'length': 255, 'name': 'identificador', 'precision': -1, 'type': 10}
-             ]
+            {'expression': '99', 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2}, 
+            {'expression': '$id', 'length': 15, 'name': 'area_construida', 'precision': 1, 'type': 6}, 
+            {'expression': '"construccion_oficial_t_id"', 'length': -1, 'name': 'construccion', 'precision': 0, 'type': 4}, 
+            {'expression': '"{}"'.format(ETIQUETA_R1_GDB), 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}, 
+            {'expression': "'Unidad_Construcción'", 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10}, 
+            {'expression': '"{}"'.format(CODIGO_R1_GDB), 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10}, 
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16} 
+            ]
     elif layer_name == AVALUOUNIDADCONSTRUCCION_TABLE:
         mapping = [
              {'expression': '"unidad_construccion_oficial_t_id"', 'length': -1, 'name': 'aucons', 'precision': 0, 'type': 4}, 

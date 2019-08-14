@@ -32,9 +32,11 @@ from asistente_ladm_col.utils.qt_utils import (make_file_selector,
 
 from ..utils.qfield_utils import (run_etl_model_input_load_data,
                                   join_layers,
-                                  create_column,
+                                  create_virtual_field,
+                                  delete_virtual_field,
                                   fix_spatial_layer,
-                                  get_directions)
+                                  get_directions,
+                                  extract_by_expresion)
 
 from ..utils.qt_utils import OverrideCursor
 
@@ -214,18 +216,18 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(PARCEL_TABLE)))
         query = "select * from {} group by NoPredial&nogeometry".format(self.layer_r1.name())
         input_data = QgsVectorLayer( "?query={}".format(query), "vlayer", "virtual")
-        create_column(self.res_layers[PARCEL_TABLE], 'Codigo')
         run_etl_model_input_load_data(input_data, self.res_layers[PARCEL_TABLE], PARCEL_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(COL_PARTY_TABLE)))
-        create_column(self.res_layers[COL_PARTY_TABLE], 'Codigo')
+        create_virtual_field(self.res_layers[COL_PARTY_TABLE], 'Codigo')
         run_etl_model_input_load_data(self.layer_r1, self.res_layers[COL_PARTY_TABLE], COL_PARTY_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(RIGHT_TABLE)))
-        join_layers(self.res_layers[COL_PARTY_TABLE], self.res_layers[PARCEL_TABLE], 'Codigo', 'Codigo')
+        join_layers(self.res_layers[COL_PARTY_TABLE], self.res_layers[PARCEL_TABLE], 'Codigo', 'numero_predial')
         run_etl_model_input_load_data(self.res_layers[COL_PARTY_TABLE], self.res_layers[RIGHT_TABLE], RIGHT_TABLE, self.qgis_utils)
+        delete_virtual_field(self.res_layers[COL_PARTY_TABLE], 'Codigo')
         step += 1
         self.progress.setValue(step/steps * 100)
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(ADMINISTRATIVE_SOURCE_TABLE)))
@@ -267,8 +269,6 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         step += 1
         self.progress.setValue(step/steps * 100)
 
-        create_column(self.res_layers[BUILDING_TABLE], 'Codigo')
-        create_column(self.res_layers[BUILDING_TABLE], 'identificador')
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(BUILDING_TABLE)))
         run_etl_model_input_load_data('R_CONSTRUCCION', self.res_layers[BUILDING_TABLE], BUILDING_TABLE, self.qgis_utils)
         step += 1
@@ -276,9 +276,9 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         run_etl_model_input_load_data('U_CONSTRUCCION', self.res_layers[BUILDING_TABLE], BUILDING_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        create_column(self.res_layers[VALUATION_BUILDING_TABLE], 'Codigo')
-        create_column(self.res_layers[VALUATION_BUILDING_TABLE], 'identificador')
+        create_virtual_field(self.res_layers[VALUATION_BUILDING_TABLE], 'identificador')
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(VALUATION_BUILDING_TABLE)))
+
         run_etl_model_input_load_data('R_CONSTRUCCION', self.res_layers[VALUATION_BUILDING_TABLE], VALUATION_BUILDING_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
@@ -289,13 +289,13 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         uunidad = QgsProject.instance().mapLayersByName('U_UNIDAD')[0]
         runidad = QgsProject.instance().mapLayersByName('R_UNIDAD')[0]
 
-        create_column(self.res_layers[VALUATION_BUILDING_UNIT_TABLE], 'identificador')
-        join_layers(uunidad, self.res_layers[BUILDING_TABLE], CODIGO_R1_GDB, 'Codigo')
-        join_layers(runidad, self.res_layers[BUILDING_TABLE], CODIGO_R1_GDB, 'Codigo')
+        join_layers(uunidad, self.res_layers[BUILDING_TABLE], CODIGO_R1_GDB, 'su_local_id')
+        join_layers(runidad, self.res_layers[BUILDING_TABLE], CODIGO_R1_GDB, 'su_local_id')
         uunidad_filter = fix_spatial_layer(uunidad)
         runidad_filter = fix_spatial_layer(runidad)
-        uunidad_filter.setSubsetString("construccion_oficial_t_id != 'NULL'")
-        runidad_filter.setSubsetString("construccion_oficial_t_id != 'NULL'")
+        uunidad_filter = extract_by_expresion(uunidad_filter, "construccion_oficial_t_id != 'NULL'")
+        runidad_filter = extract_by_expresion(runidad_filter, "construccion_oficial_t_id != 'NULL'")
+
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(VALUATION_BUILDING_UNIT_TABLE)))
         run_etl_model_input_load_data(uunidad_filter, self.res_layers[VALUATION_BUILDING_UNIT_TABLE], VALUATION_BUILDING_UNIT_TABLE, self.qgis_utils)
         step += 1
@@ -304,14 +304,6 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         step += 1
         self.progress.setValue(step/steps * 100)
 
-        create_column(self.res_layers[BUILDING_UNIT_TABLE], 'Codigo')
-        create_column(self.res_layers[BUILDING_UNIT_TABLE], 'identificador')
-        join_layers(uunidad, self.res_layers[BUILDING_TABLE], CODIGO_R1_GDB, 'Codigo')
-        join_layers(runidad, self.res_layers[BUILDING_TABLE], CODIGO_R1_GDB, 'Codigo')
-        uunidad_filter = fix_spatial_layer(uunidad)
-        runidad_filter = fix_spatial_layer(runidad)
-        uunidad_filter.setSubsetString("construccion_oficial_t_id != 'NULL'")
-        runidad_filter.setSubsetString("construccion_oficial_t_id != 'NULL'")
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(BUILDING_UNIT_TABLE)))
         run_etl_model_input_load_data(uunidad_filter, self.res_layers[BUILDING_UNIT_TABLE], BUILDING_UNIT_TABLE, self.qgis_utils)
         step += 1
@@ -321,17 +313,18 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         self.progress.setValue(step/steps * 100)
 
         join_layers(self.res_layers[BUILDING_UNIT_TABLE], 
-                        self.res_layers[VALUATION_BUILDING_UNIT_TABLE], 'identificador', 'identificador')
+                        self.res_layers[VALUATION_BUILDING_UNIT_TABLE], 'area_construida', 'puntuacion')
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(AVALUOUNIDADCONSTRUCCION_TABLE)))
         run_etl_model_input_load_data(self.res_layers[BUILDING_UNIT_TABLE], self.res_layers[AVALUOUNIDADCONSTRUCCION_TABLE],
                                                                  AVALUOUNIDADCONSTRUCCION_TABLE, self.qgis_utils)                
         step += 1
         self.progress.setValue(step/steps * 100)
         join_layers(self.res_layers[BUILDING_TABLE], 
-                        self.res_layers[VALUATION_BUILDING_TABLE], 'identificador', 'identificador')
+                        self.res_layers[VALUATION_BUILDING_TABLE], 'avaluo_construccion', 'identificador')
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_VALUATION_BUILDING_CONNECTION)))
         run_etl_model_input_load_data(self.res_layers[BUILDING_TABLE], self.res_layers[FDC_VALUATION_BUILDING_CONNECTION],
                                                                  FDC_VALUATION_BUILDING_CONNECTION, self.qgis_utils) 
+        delete_virtual_field(self.res_layers[VALUATION_BUILDING_TABLE], 'identificador')
         step += 1
         self.progress.setValue(step/steps * 100)
 
@@ -360,23 +353,20 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         step += 1
         self.progress.setValue(step/steps * 100)
 
-        join_layers(self.res_layers[PARCEL_TABLE], self.res_layers[BUILDING_TABLE], 'Codigo', 'Codigo')
-        vlayer = QgsVectorLayer("?query=SELECT * FROM {}_{}&nogeometry".format(PARCEL_TABLE, 'oficial'), "vlayer", "virtual" )
-        vlayer.setSubsetString("construccion_oficial_t_id != 'NULL'")
+        join_layers(self.res_layers[PARCEL_TABLE], self.res_layers[BUILDING_TABLE], 'numero_predial', 'su_local_id')
+        vlayer = extract_by_expresion(self.res_layers[PARCEL_TABLE], "construccion_oficial_t_id != 'NULL'")
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(UEBAUNIT_TABLE_BUILDING_FIELD)))
         run_etl_model_input_load_data(vlayer, self.res_layers[UEBAUNIT_TABLE], UEBAUNIT_TABLE_BUILDING_FIELD, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        join_layers(self.res_layers[PARCEL_TABLE], self.res_layers[PLOT_TABLE], 'Codigo', 'etiqueta')
-        vlayer = QgsVectorLayer("?query=SELECT * FROM {}_{}&nogeometry".format(PARCEL_TABLE, 'oficial'), "vlayer", "virtual" )
-        vlayer.setSubsetString("terreno_oficial_t_id != 'NULL'")
+        join_layers(self.res_layers[PARCEL_TABLE], self.res_layers[PLOT_TABLE], 'numero_predial', 'etiqueta')
+        vlayer = extract_by_expresion(self.res_layers[PARCEL_TABLE], "terreno_oficial_t_id != 'NULL'")
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(UEBAUNIT_TABLE_PLOT_FIELD)))
         run_etl_model_input_load_data(vlayer, self.res_layers[UEBAUNIT_TABLE], UEBAUNIT_TABLE_PLOT_FIELD, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        join_layers(self.res_layers[PARCEL_TABLE], self.res_layers[BUILDING_UNIT_TABLE], 'Codigo', 'Codigo')
-        vlayer = QgsVectorLayer("?query=SELECT * FROM {}_{}&nogeometry".format(PARCEL_TABLE, 'oficial'), "vlayer", "virtual" )
-        vlayer.setSubsetString("unidadconstruccion_oficial_t_id != 'NULL'")
+        join_layers(self.res_layers[PARCEL_TABLE], self.res_layers[BUILDING_UNIT_TABLE], 'numero_predial', 'su_local_id')
+        vlayer = extract_by_expresion(self.res_layers[PARCEL_TABLE], "unidadconstruccion_oficial_t_id != 'NULL'")
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(UEBAUNIT_TABLE_PLOT_FIELD)))
         run_etl_model_input_load_data(vlayer, self.res_layers[UEBAUNIT_TABLE], UEBAUNIT_TABLE_PLOT_FIELD, self.qgis_utils) 
         step += 1
@@ -410,7 +400,19 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
             self.db_connect_label.setToolTip('')
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
-    def show_log_data(self):
+    def ladm_tables_feature_count_before(self):
+        layers_name_summary = [FDC_NEIGHBOURHOOD, BUILDING_TABLE, RIGHT_TABLE, EXTADDRESS_TABLE, ADMINISTRATIVE_SOURCE_TABLE, COL_PARTY_TABLE, 
+                            FDC_VILLAGE, PARCEL_TABLE, PLOT_TABLE, BUILDING_UNIT_TABLE]
+
+        features_count_before = {}
+
+        for layer in layers_name_summary:
+            features_count_before[layer] = self.res_layers[layer].featureCount()
+
+        return features_count_before
+
+
+    def show_log_data(self, ladm_count_before):
         self.summary = ""
         self.label_r1.setVisible(False)
         self.label_r2.setVisible(False)
@@ -437,7 +439,8 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
             layer.featureCount()
             self.summary += QCoreApplication.translate("DialogInputLoadFieldDataCapture",
                         "<b>{count}</b> records loaded into table <b>{table}</b><br/>").format(
-                            count=layer.featureCount(),table=layer.name())
+                            count=layer.featureCount() - ladm_count_before[name],
+                            table=layer.name())
 
         self.txt_log.setText(self.summary)
 
@@ -483,6 +486,8 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
 
     def clean_layer_joins(self, layers):
         for layer in layers:
+            if isinstance(layer, str):
+                layer = layers[layer]
             joins_info = layer.vectorJoins()
             for join_info in joins_info:
                 layer.removeJoin(join_info.joinLayerId())    
@@ -491,17 +496,17 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         """
         Workflow for loading official data
         """
-
         # We need a temporary cache for official relations. Store current cache if any, and build a new cache...
         cached_layers, cached_relations, cached_bags_of_enum = self.qgis_utils._layers, self.qgis_utils._relations, self.qgis_utils._bags_of_enum
         self.qgis_utils.cache_layers_and_relations(self._db, True)
 
         self.define_stade_gui(False)
         self.load_data_for_etl()
+        features_count_before = self.ladm_tables_feature_count_before()
         self.mapping_fields_r1()
         self.mapping_fields_gbb()
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
-        self.show_log_data()
+        self.show_log_data(features_count_before)
 
         # When finish the etl process, we need remove all joins in the layers, so we delete all joins in r1, gdb and LADM_COL layers 
         self.clean_layer_joins(self.gdb_layer)

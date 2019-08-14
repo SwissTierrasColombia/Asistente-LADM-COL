@@ -76,8 +76,15 @@ def join_layers(initial, target, join_name, target_name):
     joinObject.setJoinLayer(target)
     initial.addJoin(joinObject)
 
-def create_column(layer, name):
-    layer.dataProvider().addAttributes([QgsField(name, QVariant.String, "VARCHAR")])
+def create_virtual_field(layer, name):
+    #layer.dataProvider().addAttributes([QgsField(name, QVariant.String, "VARCHAR")])
+    field = QgsField( name, QVariant.String )
+    layer.addExpressionField('', field )
+    layer.updateFields()
+
+def delete_virtual_field(layer, name):
+    idx_tmp_field = layer.dataProvider().fields().indexFromName(name)
+    layer.dataProvider().deleteAttributes([idx_tmp_field])
     layer.updateFields()
 
 def get_directions(layer, reference_layers):
@@ -88,3 +95,9 @@ def get_directions(layer, reference_layers):
     direction = processing.run("qgis:snapgeometries", params)
 
     return direction['OUTPUT'] 
+
+def extract_by_expresion(layer, expresion):
+    params = {'INPUT':layer,'EXPRESSION': expresion,'OUTPUT':'TEMPORARY_OUTPUT'}
+    layer_extracted = processing.run("native:extractbyexpression", params)
+
+    return layer_extracted['OUTPUT']
