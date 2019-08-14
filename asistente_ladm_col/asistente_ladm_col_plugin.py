@@ -815,9 +815,9 @@ class AsistenteLADMCOLPlugin(QObject):
         else:
             self.progressMessageBar.setText(msg)
         QCoreApplication.processEvents()
-
+    
     def show_log_quality_dialog(self):
-        dlg = LogQualityDialog(self.qgis_utils, self.quality)
+        dlg = LogQualityDialog(self.qgis_utils, self.quality, self.conn_manager)
         dlg.exec_()
 
     def show_log_excel_button(self, text):
