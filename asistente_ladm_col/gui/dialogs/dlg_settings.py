@@ -29,21 +29,27 @@ from qgis.PyQt.QtCore import (Qt,
                               QIODevice,
                               QEventLoop)
 from qgis.PyQt.QtWidgets import (QDialog,
-                                 QSizePolicy,
-                                 QGridLayout)
+                                 QSizePolicy)
 from qgis.core import (Qgis,
+                       QgsCoordinateReferenceSystem,
                        QgsApplication)
 from qgis.gui import QgsMessageBar
 
 from ...config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
+                                      DEFAULT_EPSG,
                                       PLUGIN_NAME,
+                                      COLLECTED_DB_SOURCE,
                                       TEST_SERVER,
                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
-                                      SOURCE_SERVICE_EXPECTED_ID)
+                                      SOURCE_SERVICE_EXPECTED_ID,
+                                      NATIONAL_LAND_AGENCY)
 from ...gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
-from ...lib.db.db_connector import (DBConnector, EnumTestLevel)
+from ...lib.db.db_connector import (DBConnector,
+                                    EnumTestLevel)
 from ...utils import get_ui_class
 from ...utils.qt_utils import OverrideCursor
+
+from ...resources_rc import * # Necessary to show icons
 from ...config.config_db_supported import ConfigDbSupported
 from ...lib.db.enum_db_action_type import EnumDbActionType
 
@@ -52,15 +58,18 @@ DIALOG_UI = get_ui_class('dialogs/dlg_settings.ui')
 
 class SettingsDialog(QDialog, DIALOG_UI):
     db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
-    fetcher_task = None
+    organization_tools_changed = pyqtSignal(str)
 
-    def __init__(self, iface=None, parent=None, qgis_utils=None):
+    def __init__(self, parent=None, qgis_utils=None, conn_manager=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.iface = iface
         self.log = QgsApplication.messageLog()
+        self.conn_manager = conn_manager
         self._db = None
         self.qgis_utils = qgis_utils
+        self.db_source = COLLECTED_DB_SOURCE
+
+        self.ant_tools_initial_chk_value = None
 
         self._action_type = None
         self.conf_db = ConfigDbSupported()
@@ -71,6 +80,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.custom_models_dir_button.clicked.connect(self.show_custom_model_dir)
         self.custom_model_directories_line_edit.setVisible(False)
         self.custom_models_dir_button.setVisible(False)
+
+        # CRS Setting
+        self.crsSelector.crsChanged.connect(self.crs_changed)
 
         # Set connections
         self.buttonBox.accepted.disconnect()
@@ -85,7 +97,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.setLayout(QGridLayout())
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
         self.cbo_db_source.clear()
@@ -95,7 +106,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         for key, value in self._lst_db.items():
             self.cbo_db_source.addItem(value.get_name(), key)
-            self._lst_panel[key] = value.get_config_panel()
+            self._lst_panel[key] = value.get_config_panel(self)
             self._lst_panel[key].notify_message_requested.connect(self.show_message)
             self.db_layout.addWidget(self._lst_panel[key])
 
@@ -105,6 +116,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.restore_settings()
 
         self.cbo_db_source.currentIndexChanged.connect(self.db_source_changed)
+        self.rejected.connect(self.close_dialog)
+
+    def close_dialog(self):
+        self.close()
 
     def showEvent(self, event):
         # It is necessary to reload the variables
@@ -126,7 +141,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         current_db = self.cbo_db_source.currentData()
         params = self._lst_panel[current_db].read_connection_parameters()
         db = self._lst_db[current_db].get_db_connector(params)
-
+        db.open_connection() # Open connection using gui parameters
         return db
 
     def get_db_connection(self):
@@ -135,6 +150,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         else:
             self.log.logMessage("Getting new db connection...", PLUGIN_NAME, Qgis.Info)
             self._db = self._get_db_connector_from_gui()
+            self._db.open_connection()
 
         return self._db
 
@@ -143,6 +159,11 @@ class SettingsDialog(QDialog, DIALOG_UI):
         dlg.exec_()
 
     def accepted(self):
+        # Validate EPSG selected
+        if self.crsSelector.crs().authid()[:5] != 'EPSG:':
+            self.show_message(QCoreApplication.translate("SettingsDialog", "Select a valid EPSG!"), Qgis.Warning)
+            return  # Do not close the dialog
+
         current_db = self.cbo_db_source.currentData()
         if self._lst_panel[current_db].state_changed():
             valid_connection = True
@@ -154,14 +175,19 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
             if self._action_type == EnumDbActionType.SCHEMA_IMPORT:
                 # Limit the validation (used in GeoPackage)
-                test_level |= EnumTestLevel.CREATE_SCHEMA
+                test_level |= EnumTestLevel.SCHEMA_IMPORT
 
-            res, msg = db.test_connection(test_level=test_level)
+            res, msg = db.test_connection(test_level)
 
             if res:
                 if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
-                    # Don't check if it's a LADM schema, we expect it to be after the schema import
-                    ladm_col_schema, msg = db.test_connection(test_level=EnumTestLevel.LADM)
+                    # Don't check if it's a LADM schema, we expect it to be after we run the schema import
+                    ladm_col_schema, msg = db.test_connection(EnumTestLevel.LADM)
+
+                if not ladm_col_schema and self._action_type != EnumDbActionType.SCHEMA_IMPORT:
+                    self.show_message(msg, Qgis.Warning)
+                    return  # Do not close the dialog
+
             else:
                 self.show_message(msg, Qgis.Warning)
                 valid_connection = False
@@ -170,21 +196,27 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 if self._db is not None:
                     self._db.close_connection()
 
-                # FIXME is it overwriting itself?
-                self._db = None
-                self._db = self.get_db_connection()
+                self._db = db
 
+                # Update db connect with new db conn
+                self.conn_manager.set_db_connector_for_source(self._db, self.db_source)
+
+                # Emmit signal when change db source
                 self.db_connection_changed.emit(self._db, ladm_col_schema)
 
                 self.save_settings()
-                QDialog.accept(self)  # TODO remove?
+                QDialog.accept(self)
             else:
                 return  # Do not close the dialog
-
         else:
             # Save settings from tabs other than database connection
             self.save_settings()
-            QDialog.accept(self)  # TODO remove?
+            QDialog.accept(self)
+
+        if self.chk_ant_tools.isChecked() != self.ant_tools_initial_chk_value:
+            self.organization_tools_changed.emit(NATIONAL_LAND_AGENCY)
+
+        self.close()
 
     def reject(self):
         self.done(0)
@@ -207,14 +239,11 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/db_connection_source', self.cbo_db_source.currentData())
-
-        # Save QSettings
         current_db = self.cbo_db_source.currentData()
+        settings.setValue('Asistente-LADM_COL/db/{db_source}/db_connection_source'.format(db_source=self.db_source), current_db)
         dict_conn = self._lst_panel[current_db].read_connection_parameters()
 
-        for key, value in dict_conn.items():
-            settings.setValue('Asistente-LADM_COL/' + current_db + '/' + key, value)
+        self._lst_db[current_db].save_parameters_conn(dict_conn=dict_conn, db_source=self.db_source)
 
         settings.setValue('Asistente-LADM_COL/models/custom_model_directories_is_checked', self.offline_models_radio_button.isChecked())
         if self.offline_models_radio_button.isChecked():
@@ -225,6 +254,11 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         settings.setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
         settings.setValue('Asistente-LADM_COL/sources/document_repository', self.connection_box.isChecked())
+
+        settings.setValue('Asistente-LADM_COL/advanced_settings/ant_tools', self.chk_ant_tools.isChecked())
+        settings.setValue('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
+
+        settings.setValue('Asistente-LADM_COL/advanced_settings/epsg', self.epsg)
 
         endpoint = self.txt_service_endpoint.text().strip()
         settings.setValue('Asistente-LADM_COL/sources/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
@@ -246,24 +280,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
             self.qgis_utils.automatic_namespace_local_id_configuration_changed(self._db)
 
-    def _restore_settings_db(self):
-        settings = QSettings()
-        # reload all panels
-        for index_db, item_db in self._lst_panel.items():
-            dict_conn = dict()
-            keys = item_db.get_keys_connection_parameters()
-            for key in keys:
-                dict_conn[key] = settings.value('Asistente-LADM_COL/' + index_db + '/' + key)
-
-            item_db.write_connection_parameters(dict_conn)
-            item_db.save_state()
-
     def restore_settings(self):
         # Restore QSettings
         settings = QSettings()
         default_db = self.conf_db.id_default_db
 
-        index_db = self.cbo_db_source.findData(settings.value('Asistente-LADM_COL/db_connection_source', default_db))
+        index_db = self.cbo_db_source.findData(settings.value('Asistente-LADM_COL/db/{db_source}/db_connection_source'.format(db_source=self.db_source), default_db))
 
         if index_db == -1:
             index_db = self.cbo_db_source.findData(default_db)
@@ -271,7 +293,11 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.cbo_db_source.setCurrentIndex(index_db)
         self.db_source_changed()
 
-        self._restore_settings_db()
+        # restore db settings for all panels
+        for id_db, db_factory in self._lst_db.items():
+            dict_conn = db_factory.get_parameters_conn(self.db_source)
+            self._lst_panel[id_db].write_connection_parameters(dict_conn)
+            self._lst_panel[id_db].save_state()
 
         custom_model_directories_is_checked = settings.value('Asistente-LADM_COL/models/custom_model_directories_is_checked', type=bool)
         if custom_model_directories_is_checked:
@@ -296,6 +322,14 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
 
+        self.ant_tools_initial_chk_value = settings.value('Asistente-LADM_COL/advanced_settings/ant_tools', False, bool)
+        self.chk_ant_tools.setChecked(self.ant_tools_initial_chk_value)
+
+        self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', True, bool))
+        crs = QgsCoordinateReferenceSystem(settings.value('Asistente-LADM_COL/advanced_settings/epsg', int(DEFAULT_EPSG), int))
+        self.crsSelector.setCrs(crs)
+        self.crs_changed()
+
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
 
     def db_source_changed(self):
@@ -313,13 +347,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def test_connection(self):
         db = self._get_db_connector_from_gui()
-
         test_level = EnumTestLevel.DB_SCHEMA
 
         if self._action_type == EnumDbActionType.SCHEMA_IMPORT:
-            test_level |= EnumTestLevel.CREATE_SCHEMA
+            test_level |= EnumTestLevel.SCHEMA_IMPORT
 
-        res, msg = db.test_connection(test_level=test_level)
+        res, msg = db.test_connection(test_level)
 
         if db is not None:
             db.close_connection()
@@ -330,7 +363,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def test_ladm_col_structure(self):
         db = self._get_db_connector_from_gui()
         test_level = EnumTestLevel.LADM
-
         res, msg = db.test_connection(test_level=test_level)
 
         if db is not None:
@@ -419,3 +451,14 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         for key, value in self._lst_panel.items():
             value.set_action(action_type)
+
+    def crs_changed(self):
+        if self.crsSelector.crs().authid()[:5] != 'EPSG:':
+            self.crs_label.setStyleSheet('color: orange')
+            self.crs_label.setToolTip(QCoreApplication.translate("SettingsDialog", 'Please select an EPSG Coordinate Reference System'))
+            self.epsg = int(DEFAULT_EPSG)
+        else:
+            self.crs_label.setStyleSheet('')
+            self.crs_label.setToolTip(QCoreApplication.translate("SettingsDialog", 'Coordinate Reference System'))
+            authid = self.crsSelector.crs().authid()
+            self.epsg = int(authid[5:])

@@ -146,10 +146,10 @@
                  <height>16777215</height>
                 </size>
                </property>
-               <property name="allowEmptyLayer" stdset="0">
+               <property name="allowEmptyLayer">
                 <bool>true</bool>
                </property>
-               <property name="showCrs" stdset="0">
+               <property name="showCrs">
                 <bool>false</bool>
                </property>
               </widget>
@@ -402,7 +402,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>Tipo de predio a crear: </string>
+                <string>Parcel type to be created:</string>
                </property>
               </widget>
              </item>

@@ -22,8 +22,8 @@ from ...lib.db.gpkg_connector import GPKGConnector
 
 
 class GpkgFactory(DbFactory):
-
     def __init__(self):
+        DbFactory.__init__(self)
         self._mode = "gpkg"
 
     def get_id(self):
@@ -32,16 +32,16 @@ class GpkgFactory(DbFactory):
     def get_name(self):
         return 'GeoPackage'
 
-    def get_model_baker_tool_name(self):
-        return "ili2gpkg"
+    def get_mbaker_db_ili_mode(self):
+        from QgisModelBaker.libili2db.globals import DbIliMode
+        return DbIliMode.ili2gpkg
 
-    def get_config_panel(self):
-        return GpkgConfigPanel()
+    def get_config_panel(self, parent):
+        return GpkgConfigPanel(parent)
 
-    def get_db_connector(self, parameters):
+    def get_db_connector(self, parameters={}):
         return GPKGConnector(None, conn_dict=parameters)
 
     def set_db_configuration_params(self, params, configuration):
         configuration.tool_name = 'gpkg'
         configuration.dbfile = params['dbfile']
-

@@ -190,7 +190,7 @@
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap resource="../resources.qrc">:/Asistente-LADM_COL/resources/images/icon_about.png</pixmap>
+      <pixmap>:/Asistente-LADM_COL/resources/images/icon_about.png</pixmap>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

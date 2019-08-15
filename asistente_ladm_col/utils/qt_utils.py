@@ -24,22 +24,15 @@ import sys
 from functools import partial
 
 from qgis.core import Qgis
-import qgis.utils
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
-                              QFile,
-                              QIODevice,
-                              QEventLoop,
-                              QUrl,
                               QSettings)
-from qgis.PyQt.QtPrintSupport import QPrinter                              
+from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtGui import QValidator
-from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QApplication,
                                  QWizard,
                                  QTextEdit)
-from qgis.core import QgsNetworkAccessManager
 
 
 def selectFileName(line_edit_widget, title, file_filter, parent):
@@ -94,16 +87,17 @@ def enable_next_wizard(wizard, with_back=True):
 
 
 def get_plugin_metadata(plugin_name, key):
-    plugin_dir = None
-    if plugin_name in qgis.utils.plugins:
-        plugin_dir = qgis.utils.plugins[plugin_name].plugin_dir
-    else:
-        plugin_dir = os.path.dirname(sys.modules[plugin_name].__file__)
+    plugin_dir = os.path.dirname(sys.modules[plugin_name].__file__)
     file_path = os.path.join(plugin_dir, 'metadata.txt')
     if os.path.isfile(file_path):
         with open(file_path) as metadata:
             for line in metadata:
                 line_array = line.strip().split("=")
+                if line_array[0] == key:
+                    return line_array[1].strip()
+
+                # Some plugins use : instead of =...
+                line_array = line.strip().split(":")
                 if line_array[0] == key:
                     return line_array[1].strip()
     return None

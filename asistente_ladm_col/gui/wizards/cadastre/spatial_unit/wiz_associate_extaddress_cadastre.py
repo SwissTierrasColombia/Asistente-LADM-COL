@@ -285,13 +285,13 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self.rad_to_building_unit.setText(QCoreApplication.translate(self.WIZARD_NAME, "Building unit(s): {count} Feature(s) Selected").format(count=self._layers[BUILDING_UNIT_TABLE][LAYER].selectedFeatureCount()))
 
         if self._current_layer is None:
-            if self.iface.activeLayer().name() == PLOT_TABLE:
+            if self._db.get_ladm_layer_name(self.iface.activeLayer()) == PLOT_TABLE:
                 self.rad_to_plot.setChecked(True)
                 self._current_layer = self._layers[PLOT_TABLE][LAYER]
-            elif self.iface.activeLayer().name() == BUILDING_TABLE:
+            elif self._db.get_ladm_layer_name(self.iface.activeLayer()) == BUILDING_TABLE:
                 self.rad_to_building.setChecked(True)
                 self._current_layer = self._layers[BUILDING_TABLE][LAYER]
-            elif self.iface.activeLayer().name() == BUILDING_UNIT_TABLE:
+            elif self._db.get_ladm_layer_name(self.iface.activeLayer()) == BUILDING_UNIT_TABLE:
                 self.rad_to_building_unit.setChecked(True)
                 self._current_layer = self._layers[BUILDING_UNIT_TABLE][LAYER]
             else:
@@ -424,8 +424,8 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         # Check if layers any layer is in editing mode
         layers_name = list()
         for layer in self._layers:
-            if self._layers[layer]['layer'].isEditable():
-                layers_name.append(self._layers[layer]['layer'].name())
+            if self._layers[layer][LAYER].isEditable():
+                layers_name.append(self._db.get_ladm_layer_name(self._layers[layer][LAYER]))
 
         if layers_name:
             self.qgis_utils.message_emitted.emit(
@@ -483,7 +483,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         else:
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate(self.WIZARD_NAME,
-                                           "First select a {}.").format(self._current_layer.name()),
+                                           "First select a {}.").format(self._db.get_ladm_layer_name(self._current_layer)),
                 Qgis.Warning)
 
     def finish_feature_creation(self, layerId, features):
@@ -579,11 +579,11 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                 fid = feature.id()
 
                 # TODO: Update way to obtain the layer name when master merge with branch "change_detection"
-                if self._current_layer.name() == PLOT_TABLE:
+                if self._db.get_ladm_layer_name(self._current_layer) == PLOT_TABLE:
                     spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(EXTADDRESS_PLOT_FIELD)
-                elif self._current_layer.name() == BUILDING_TABLE:
+                elif self._db.get_ladm_layer_name(self._current_layer) == BUILDING_TABLE:
                     spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(EXTADDRESS_BUILDING_FIELD)
-                elif self._current_layer.name() == BUILDING_UNIT_TABLE:
+                elif self._db.get_ladm_layer_name(self._current_layer) == BUILDING_UNIT_TABLE:
                     spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(EXTADDRESS_BUILDING_UNIT_FIELD)
 
             if spatial_unit_field_idx:

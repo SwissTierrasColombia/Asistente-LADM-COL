@@ -21,19 +21,20 @@ from qgis.PyQt.QtWidgets import QDialog
 from qgis.core import (QgsProject,
                        Qgis)
 from ..config.general_config import LAYER
-from ..gui.dialogs.dlg_topological_edition import LayersForTopologicalEdition
+from ..gui.dialogs.dlg_topological_edition import LayersForTopologicalEditionDialog
 
 
 class ToolBar():
-    def __init__(self, iface, qgis_utils):
+    def __init__(self, iface, qgis_utils, db):
         self.iface = iface
         self.qgis_utils = qgis_utils
+        self.db = db
 
     def enable_topological_editing(self, db):
         # Enable Topological Editing
         QgsProject.instance().setTopologicalEditing(True)
 
-        dlg = LayersForTopologicalEdition()
+        dlg = LayersForTopologicalEditionDialog()
         if dlg.exec_() == QDialog.Accepted:
             # Load layers selected in the dialog
 
@@ -55,5 +56,5 @@ class ToolBar():
 
             self.qgis_utils.message_with_duration_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "You can start moving nodes in layers {} and {}, simultaneously!").format(
-                    ", ".join(layer.name() for layer in list_layers[:-1]), list_layers[-1].name()),
+                    ", ".join(self.db.get_ladm_layer_name(layer) for layer in list_layers[:-1]), self.db.get_ladm_layer_name(list_layers[-1])),
                 Qgis.Info, 30)

@@ -28,8 +28,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QLineEdit,
                                  QTreeWidgetItemIterator,
                                  QComboBox)
-from qgis.core import (QgsWkbTypes,
-                       Qgis)
+from qgis.core import QgsWkbTypes
 
 from ...config.general_config import (TABLE_NAME,
                                       LAYER,
@@ -43,12 +42,11 @@ from ...config.table_mapping_config import (TABLE_PROP_ASSOCIATION,
                                             TABLE_PROP_DOMAIN,
                                             TABLE_PROP_STRUCTURE)
 from ...utils import get_ui_class
-from ...resources_rc import *
 
 DIALOG_UI = get_ui_class('dialogs/dlg_load_layers.ui')
 
 
-class DialogLoadLayers(QDialog, DIALOG_UI):
+class LoadLayersDialog(QDialog, DIALOG_UI):
     def __init__(self, iface, db, qgis_utils, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
@@ -154,10 +152,8 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
                 icon_name = self.icon_names[3 if geometry_type is None else geometry_type]
 
                 # Is the layer already loaded?
-                if self.qgis_utils.get_layer_from_layer_tree(current_table_info[TABLE_NAME],
-                         self._db.schema,
-                         geometry_type) is not None:
-                    table_item.setText(0, table + QCoreApplication.translate("DialogLoadLayers",
+                if self.qgis_utils.get_layer_from_layer_tree(self._db, current_table_info[TABLE_NAME], geometry_type) is not None:
+                    table_item.setText(0, table + QCoreApplication.translate("LoadLayersDialog",
                                                " [already loaded]"))
                     table_item.setData(0, Qt.ForegroundRole, QBrush(Qt.lightGray))
                     table_item.setFlags(Qt.ItemIsEnabled) # Not selectable
@@ -253,9 +249,7 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
             self.selected_items_dict = dict() # Reset
             self.qgis_utils.get_layers(self._db, layers_dict, load=True)
             if not layers_dict:
-                self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                    QCoreApplication.translate("DialogLoadLayers", "Required layer(s) couldn't be found... "),
-                                                    Qgis.Warning)
+                return None
 
     def rejected(self):
         self.selected_items_dict = dict()
@@ -313,13 +307,13 @@ class DialogLoadLayers(QDialog, DIALOG_UI):
     def update_selected_count_label(self):
         selected_count = len(self.selected_items_dict)
         if selected_count == 0:
-            text = QCoreApplication.translate("DialogLoadLayers",
+            text = QCoreApplication.translate("LoadLayersDialog",
                         "There are no selected layers to load")
         elif selected_count == 1:
-            text = QCoreApplication.translate("DialogLoadLayers",
+            text = QCoreApplication.translate("LoadLayersDialog",
                         "There is 1 selected layer ready to be loaded")
         else:
-            text = QCoreApplication.translate("DialogLoadLayers",
+            text = QCoreApplication.translate("LoadLayersDialog",
                         "There are {} selected layers ready to be loaded").format(selected_count)
 
         self.lbl_selected_count.setText(text)

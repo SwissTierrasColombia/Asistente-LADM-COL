@@ -26,11 +26,20 @@ from qgis.core import (QgsWkbTypes,
                        QgsDataSourceUri,
                        QgsApplication)
 
-from .db_connector import (DBConnector, EnumTestLevel)
-from ..queries import basic_query, legal_query, property_record_card_query, physical_query, economic_query
+from .db_connector import (DBConnector,
+                           EnumTestLevel)
+from ..queries.igac import (basic_query,
+                            legal_query,
+                            property_record_card_query,
+                            physical_query,
+                            economic_query)
+from ..queries.ant_report import (ant_map_plot_query,
+                                  ant_map_neighbouring_change_query)
+from ..queries.annex_17_report import (annex17_plot_data_query,
+                                       annex17_building_data_query,
+                                       annex17_point_data_query)
 from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
-                                      PLUGIN_NAME,
-                                      PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO)
+                                      PLUGIN_NAME)
 from ...config.table_mapping_config import (ID_FIELD,
                                             PARCEL_TABLE,
                                             DEPARTMENT_FIELD,
@@ -59,14 +68,20 @@ from ...utils.model_parser import ModelParser
 class PGConnector(DBConnector):
 
     _PROVIDER_NAME = 'postgres'
-    _DEFAULT_HOST = 'localhost'
-    _DEFAULT_PORT = '5432'
+    _DEFAULT_VALUES = {
+        'host': 'localhost',
+        'port': '5432',
+        'database': '',
+        'username': '',
+        'schema': '',
+        'password': ''
+    }
 
-    def __init__(self, uri, schema="public", conn_dict={}):
-        DBConnector.__init__(self, uri, schema, conn_dict)
+    def __init__(self, uri, conn_dict=dict()):
+        DBConnector.__init__(self, uri, conn_dict)
         self.mode = 'pg'
         self.conn = None
-        self.schema = schema
+        self.schema = conn_dict['schema'] if 'schema' in conn_dict else ''
         self.log = QgsApplication.messageLog()
         self.provider = 'postgres'
         self._tables_info = None
@@ -74,27 +89,27 @@ class PGConnector(DBConnector):
         # Logical validations queries
         self.logic_validation_queries = {
             'DEPARTMENT_CODE_VALIDATION': {
-                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=2 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=DEPARTMENT_FIELD),
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=2 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, field=DEPARTMENT_FIELD),
                 'desc_error': 'Department code must have two numerical characters.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
                 'table': PARCEL_TABLE},
             'MUNICIPALITY_CODE_VALIDATION': {
-                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=3 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=MUNICIPALITY_FIELD),
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=3 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, field=MUNICIPALITY_FIELD),
                 'desc_error': 'Municipality code must have three numerical characters.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
                 'table': PARCEL_TABLE},
             'ZONE_CODE_VALIDATION': {
-                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=2 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=ZONE_FIELD),
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=2 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, field=ZONE_FIELD),
                 'desc_error': 'Zone code must have two numerical characters.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
                 'table': PARCEL_TABLE},
             'PARCEL_NUMBER_VALIDATION': {
-                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=30 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=PARCEL_NUMBER_FIELD),
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=30 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, field=PARCEL_NUMBER_FIELD),
                 'desc_error': 'Parcel number must have 30 numerical characters.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
                 'table': PARCEL_TABLE},
             'PARCEL_NUMBER_BEFORE_VALIDATION': {
-                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=20 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, field=PARCEL_NUMBER_BEFORE_FIELD),
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=20 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, field=PARCEL_NUMBER_BEFORE_FIELD),
                 'desc_error': 'Parcel number before must have 20 numerical characters.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
                 'table': PARCEL_TABLE},
@@ -115,7 +130,7 @@ class PGConnector(DBConnector):
                             p.{col_party_first_name} IS NULL OR 
                             length(trim(p.{col_party_first_name})) > 0 is False OR
                             p.{col_party_doc_type} = 'NIT')
-                """.format(schema=schema, table=COL_PARTY_TABLE, id=ID_FIELD, col_party_type=COL_PARTY_TYPE_FIELD,
+                """.format(schema=self.schema, table=COL_PARTY_TABLE, id=ID_FIELD, col_party_type=COL_PARTY_TYPE_FIELD,
                            business_name=COL_PARTY_BUSINESS_NAME_FIELD,
                            col_party_legal_party=COL_PARTY_LEGAL_PARTY_FIELD, col_party_surname=COL_PARTY_SURNAME_FIELD,
                            col_party_first_name=COL_PARTY_FIRST_NAME_FIELD,
@@ -139,7 +154,7 @@ class PGConnector(DBConnector):
                                 p.{col_party_surname} IS NOT NULL OR
                                 p.{col_party_first_name} IS NOT NULL OR
                                 p.{col_party_doc_type} NOT IN ('NIT', 'Secuencial_IGAC', 'Secuencial_SNR'))
-                        """.format(schema=schema, table=COL_PARTY_TABLE, id=ID_FIELD,
+                        """.format(schema=self.schema, table=COL_PARTY_TABLE, id=ID_FIELD,
                                    col_party_type=COL_PARTY_TYPE_FIELD, business_name=COL_PARTY_BUSINESS_NAME_FIELD,
                                    col_party_legal_party=COL_PARTY_LEGAL_PARTY_FIELD,
                                    col_party_surname=COL_PARTY_SURNAME_FIELD,
@@ -165,7 +180,7 @@ class PGConnector(DBConnector):
                                ({parcel_type} in ('Via', 'ParqueCementerio.UnidadPrivada') AND (sum_t !=1 OR sum_uc > 0 OR sum_c > 0)) OR 
                                ({parcel_type}='PropiedadHorizontal.UnidadPredial' AND (sum_t !=0 OR sum_c != 0 OR sum_uc = 0 )) OR 
                                ({parcel_type}='Mejora' AND (sum_t !=0 OR sum_c != 1 OR sum_uc != 0))
-                """.format(schema=schema, input_table=PARCEL_TABLE, join_table=UEBAUNIT_TABLE, join_field=UEBAUNIT_TABLE_PARCEL_FIELD, id=ID_FIELD, parcel_type=PARCEL_TYPE_FIELD,
+                """.format(schema=self.schema, input_table=PARCEL_TABLE, join_table=UEBAUNIT_TABLE, join_field=UEBAUNIT_TABLE_PARCEL_FIELD, id=ID_FIELD, parcel_type=PARCEL_TYPE_FIELD,
                            ueb_plot=UEBAUNIT_TABLE_PLOT_FIELD, ueb_building=UEBAUNIT_TABLE_BUILDING_FIELD, ueb_building_unit=UEBAUNIT_TABLE_BUILDING_UNIT_FIELD),
                 'desc_error': 'Parcel must have one or more spatial units associated with it.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Errors in relationships between Spatial Units and Parcels"),
@@ -181,7 +196,7 @@ class PGConnector(DBConnector):
                                (substring(p.{parcel_number},22,1) != '5' AND p.{parcel_type}='Mejora') OR
                                (substring(p.{parcel_number},22,1) != '4' AND p.{parcel_type}='Via') OR
                                (substring(p.{parcel_number},22,1) != '3' AND p.{parcel_type}='BienUsoPublico')
-                        )""".format(schema=schema, table=PARCEL_TABLE, id=ID_FIELD, parcel_number=PARCEL_NUMBER_FIELD, parcel_type=PARCEL_TYPE_FIELD),
+                        )""".format(schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, parcel_number=PARCEL_NUMBER_FIELD, parcel_type=PARCEL_TYPE_FIELD),
                 'desc_error': 'The position 22 of the parcel number must correspond to the type of parcel.',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=PARCEL_TABLE),
                 'table': PARCEL_TABLE},
@@ -276,7 +291,9 @@ class PGConnector(DBConnector):
         return bool(cur.fetchone()[0])
 
     def _schema_exists(self, schema=None):
-        schema = schema if schema is not None else self.schema
+        if schema is None:
+            schema = self.schema
+
         if schema:
             cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
             cur.execute("""
@@ -303,84 +320,121 @@ class PGConnector(DBConnector):
 
     def test_connection(self, test_level=EnumTestLevel.LADM):
         """
+        WARNING: We check several levels in order:
+            1. SERVER
+            2. DB
+            3. SCHEMA
+            4. LADM
+            5. SCHEMA_IMPORT
+          If you need to modify this method, be careful and preserve the order!!!
+
         :param test_level: (EnumTestLevel) level of connection with postgres
         """
         uri = self._uri
 
         if test_level & EnumTestLevel.SERVER:
             uri = self.get_connection_uri(self._dict_conn_params, 0)
+            res, msg = self.open_connection()
+            if res:
+                return (True, QCoreApplication.translate("PGConnector",
+                                                         "Connection to server was successful."))
+            else:
+                return (False, msg)
+
 
         if test_level & EnumTestLevel.DB:
             if not self._dict_conn_params['database'].strip("'") or self._dict_conn_params['database'] == 'postgres':
                 return (False, QCoreApplication.translate("PGConnector",
                     "You should first select a database."))
 
-        try:
-            self.close_connection()
-            self.conn = psycopg2.connect(uri)
-            self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
-        except Exception as e:
-            return (False, QCoreApplication.translate("PGConnector",
-                    "There was an error connecting to the database: {}").format(e))
+        # Client side check
+        if self.conn is None or self.conn.closed:
+            res, msg = self.open_connection()
+            if not res:
+                return (res, msg)
 
-        # No longer needed, we can connect to empty DBs, so we want to avoid showing this particular message
-        # if not self._postgis_exists() and level == 1:
-        #     return (False, QCoreApplication.translate("PGConnector",
-        #             "The current database does not have PostGIS installed! Please install it before proceeding."))
+        try:
+            # Server side check
+            cur = self.conn.cursor()
+            cur.execute('SELECT 1')  # This query will fail if the db is no longer connected
+            cur.close()
+        except psycopg2.OperationalError:
+            # Reopen the connection if it is closed due to timeout
+            self.conn.close()
+            res, msg = self.open_connection()
+            if not res:
+                return (res, msg)
+
+        if test_level == EnumTestLevel.DB:  # Just in the DB case
+            return (True, QCoreApplication.translate("PGConnector",
+                                                     "Connection to the database was successful."))
+
 
         if test_level & EnumTestLevel._CHECK_SCHEMA:
-            if not self._dict_conn_params['schema'] or self._dict_conn_params['schema'] == 'public':
+            if not self._dict_conn_params['schema'] or self._dict_conn_params['schema'] == '':
                 return (False, QCoreApplication.translate("PGConnector",
                     "You should first select a schema."))
+
             if not self._schema_exists():
                 return (False, QCoreApplication.translate("PGConnector",
                     "The schema '{}' does not exist in the database!").format(self.schema))
 
-        if test_level & EnumTestLevel._CHECK_LADM and not self._metadata_exists():
-            return (False, QCoreApplication.translate("PGConnector",
-                    "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
-
-        res, msg = self.get_schema_privileges(uri, self.schema)
-        if res:
-            if msg['create'] and msg['usage']:
-                if test_level & EnumTestLevel._CHECK_LADM:
-                    try:
-                        if self.model_parser is None:
-                            self.model_parser = ModelParser(self)
-                        if not self.model_parser.validate_cadastre_model_version()[0]:
-                            return (False, QCoreApplication.translate("PGConnector", "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
-                    except psycopg2.ProgrammingError as e:
-                        # if it is not possible to access the schema due to lack of privileges
-                        return (False,
-                                QCoreApplication.translate("PGConnector",
-                                                           "User '{}' has not enough permissions over the schema '{}'. Details: {}").format(
-                                                                self._dict_conn_params['username'],
-                                                                self.schema,
-                                                                e))
-            else:
+            res, msg = self.get_schema_privileges(uri, self.schema)
+            if not res:
                 return (False,
                         QCoreApplication.translate("PGConnector",
                                                    "User '{}' has not enough permissions over the schema '{}'.").format(
                             self._dict_conn_params['username'],
                             self.schema))
-        else:
-            return (False, msg)
+
+        if test_level == EnumTestLevel.DB_SCHEMA:
+            return (True, QCoreApplication.translate("PGConnector",
+                                                     "Connection to the database schema was successful."))
+
 
         if test_level & EnumTestLevel._CHECK_LADM:
+            if not self._metadata_exists():
+                return (False, QCoreApplication.translate("PGConnector",
+                        "The schema '{}' is not a valid LADM_COL schema. That is, the schema doesn't have the structure of the LADM_COL model.").format(self.schema))
+
+            if self.model_parser is None:
+                self.model_parser = ModelParser(self)
+
+            res_parser, msg_parser = self.model_parser.validate_cadastre_model_version()
+            if not res_parser:
+                return (False, msg_parser)
+
+        if test_level == EnumTestLevel.LADM:
             return (True, QCoreApplication.translate("PGConnector", "The schema '{}' has a valid LADM-COL structure!").format(self.schema))
 
-        return (True, QCoreApplication.translate("PGConnector", "Connection to PostGIS database successful!"))
+        if test_level & EnumTestLevel.SCHEMA_IMPORT:
+            return (True, QCoreApplication.translate("PGConnector", "Connection successful!"))
 
-    def save_connection(self):
-        if self.conn is None:
-            self.conn = psycopg2.connect(self._uri)
-            self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+        return (False, QCoreApplication.translate("PGConnector", "There was a problem checking the connection. Most likely due to invalid or not supported test_level!"))
+
+    def open_connection(self, uri=None):
+        if uri is None:
+            uri = self._uri
+        else:
+            self.conn.close()
+
+        if self.conn is None or self.conn.closed:
+            try:
+                self.conn = psycopg2.connect(uri)
+            except (psycopg2.OperationalError, psycopg2.ProgrammingError) as e:
+                return (False, QCoreApplication.translate("PGConnector", "Could not open connection! Details: {}".format(e)))
+
+            self.log.logMessage("Connection was open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+        else:
+            self.log.logMessage("Connection is already open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+
+        return (True, QCoreApplication.translate("PGConnector", "Connection is open!"))
 
     def close_connection(self):
         if self.conn:
             self.conn.close()
+            self.log.logMessage("Connection was closed ({}) !".format(self.conn.closed), PLUGIN_NAME, Qgis.Info)
             self.conn = None
-            self.log.logMessage("Connection was closed!", PLUGIN_NAME, Qgis.Info)
 
     def validate_db(self):
         pass
@@ -427,7 +481,7 @@ class PGConnector(DBConnector):
         return (False, QCoreApplication.translate("PGConnector", "Layer '{}' was not found in the database (schema: {}).").format(layer_name, self.schema))
 
     def get_tables_info(self):
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -486,7 +540,7 @@ class PGConnector(DBConnector):
                              valuation_model=self.valuation_model_exists(),
                              property_record_card_model=self.property_record_card_model_exists())
 
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -494,8 +548,6 @@ class PGConnector(DBConnector):
         cur.execute(query)
         records = cur.fetchall()
         res = [record._asdict() for record in records]
-
-        #print("BASIC QUERY:", query)
 
         return res
 
@@ -523,7 +575,7 @@ class PGConnector(DBConnector):
                              parcel_number=params['parcel_number'],
                              previous_parcel_number=params['previous_parcel_number'])
 
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -561,7 +613,7 @@ class PGConnector(DBConnector):
                                                  previous_parcel_number=params['previous_parcel_number'],
                                                  property_record_card_model=self.property_record_card_model_exists())
 
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -599,7 +651,7 @@ class PGConnector(DBConnector):
                                                        previous_parcel_number=params['previous_parcel_number'],
                                                        valuation_model=self.valuation_model_exists())
 
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -638,7 +690,7 @@ class PGConnector(DBConnector):
                                                        valuation_model=self.valuation_model_exists(),
                                                        property_record_card_model=self.property_record_card_model_exists())
 
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -651,9 +703,8 @@ class PGConnector(DBConnector):
 
         return res
 
-
     def get_annex17_plot_data(self, plot_id, mode='only_id'):
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -664,24 +715,7 @@ class PGConnector(DBConnector):
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-        query = """SELECT array_to_json(array_agg(features)) AS features
-                    FROM (
-                        SELECT f AS features
-                        FROM (
-                            SELECT 'Feature' AS type
-                                ,row_to_json((
-                                    SELECT l
-                                    FROM (
-                                        SELECT left(right(numero_predial,15),6) AS predio
-                                        ) AS l
-                                    )) AS properties
-                                ,ST_AsGeoJSON(poligono_creado)::json AS geometry
-                            FROM {schema}.terreno AS l
-                            LEFT JOIN {schema}.uebaunit ON l.t_id = ue_terreno
-                            LEFT JOIN {schema}.predio ON predio.t_id = baunit_predio
-                            {where_id}
-                            ) AS f
-                        ) AS ff;""".format(schema=self.schema, where_id=where_id)
+        query = annex17_plot_data_query.get_annex17_plot_data_query(self.schema, where_id)
         cur.execute(query)
 
         if mode == 'only_id':
@@ -690,329 +724,68 @@ class PGConnector(DBConnector):
             return cur.fetchall()[0][0]
 
     def get_annex17_building_data(self):
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        query = """SELECT array_to_json(array_agg(features)) AS features
-                    FROM (
-                    	SELECT f AS features
-                    	FROM (
-                    		SELECT 'Feature' AS type
-                    			,ST_AsGeoJSON(poligono_creado)::json AS geometry
-                    			,row_to_json((
-                    					SELECT l
-                    					FROM (
-                    						SELECT t_id AS t_id
-                    						) AS l
-                    					)) AS properties
-                            FROM {schema}.construccion AS c
-                    		) AS f
-                        ) AS ff;""".format(schema=self.schema)
+        query = annex17_building_data_query.get_annex17_building_data_query(self.schema)
         cur.execute(query)
 
         return cur.fetchall()[0][0]
 
     def get_annex17_point_data(self, plot_id):
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        query = """WITH parametros
-                    AS (
-                    	SELECT {id} AS poligono_t_id
-                    		,2 AS criterio_punto_inicial
-                    		,4 AS criterio_observador
-                    		,true AS incluir_tipo_derecho
-                    	)
-                    	,t
-                    AS (
-                    	SELECT t_id
-                    		,ST_ForceRHR(poligono_creado) AS poligono_creado
-                    	FROM {schema}.terreno AS t
-                    		,parametros
-                    	WHERE t.t_id = poligono_t_id
-                    	)
-                    	,a
-                    AS (
-                    	SELECT ST_SetSRID(ST_MakePoint(st_xmin(t.poligono_creado), st_ymax(t.poligono_creado)), ST_SRID(t.poligono_creado)) AS p
-                    	FROM t
-                    	)
-                    	,b
-                    AS (
-                    	SELECT ST_SetSRID(ST_MakePoint(st_xmax(t.poligono_creado), st_ymax(t.poligono_creado)), ST_SRID(t.poligono_creado)) AS p
-                    	FROM t
-                    	)
-                    	,c
-                    AS (
-                    	SELECT ST_SetSRID(ST_MakePoint(st_xmax(t.poligono_creado), st_ymin(t.poligono_creado)), ST_SRID(t.poligono_creado)) AS p
-                    	FROM t
-                    	)
-                    	,d
-                    AS (
-                    	SELECT ST_SetSRID(ST_MakePoint(st_xmin(t.poligono_creado), st_ymin(t.poligono_creado)), ST_SRID(t.poligono_creado)) AS p
-                    	FROM t
-                    	)
-                    	,m
-                    AS (
-                    	SELECT CASE
-                    			WHEN criterio_observador = 1
-                    				THEN (
-                    						SELECT ST_SetSRID(ST_MakePoint(st_x(ST_centroid(t.poligono_creado)), st_y(ST_centroid(t.poligono_creado))), ST_SRID(t.poligono_creado)) AS p
-                    						FROM t
-                    						)
-                    			WHEN criterio_observador = 2
-                    				THEN (
-                    						SELECT ST_SetSRID(ST_MakePoint(st_x(ST_centroid(st_envelope(t.poligono_creado))), st_y(ST_centroid(st_envelope(t.poligono_creado)))), ST_SRID(t.poligono_creado)) AS p
-                    						FROM t
-                    						)
-                    			WHEN criterio_observador = 3
-                    				THEN (
-                    						SELECT ST_SetSRID(ST_PointOnSurface(poligono_creado), ST_SRID(t.poligono_creado)) AS p
-                    						FROM t
-                    						)
-                    			WHEN criterio_observador = 4
-                    				THEN (
-                    						SELECT ST_SetSRID(ST_MakePoint(st_x(ST_ClosestPoint(poligono_creado, ST_centroid(t.poligono_creado))), st_y(ST_ClosestPoint(poligono_creado, ST_centroid(t.poligono_creado)))), ST_SRID(t.poligono_creado)) AS p
-                    						FROM t
-                    						)
-                    			ELSE (
-                    					SELECT ST_SetSRID(ST_MakePoint(st_x(ST_centroid(st_envelope(t.poligono_creado))), st_y(ST_centroid(st_envelope(t.poligono_creado)))), ST_SRID(t.poligono_creado)) AS p
-                    					FROM t
-                    					)
-                    			END AS p
-                    	FROM parametros
-                    	)
-                    	,norte
-                    AS (
-                    	SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [a.p, b.p, m.p, a.p])), ST_SRID(t.poligono_creado)) geom
-                    	FROM t
-                    		,a
-                    		,b
-                    		,m
-                    	)
-                    	,este
-                    AS (
-                    	SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [m.p, b.p, c.p, m.p])), ST_SRID(t.poligono_creado)) geom
-                    	FROM t
-                    		,b
-                    		,c
-                    		,m
-                    	)
-                    	,sur
-                    AS (
-                    	SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [m.p, c.p, d.p, m.p])), ST_SRID(t.poligono_creado)) geom
-                    	FROM t
-                    		,m
-                    		,c
-                    		,d
-                    	)
-                    	,oeste
-                    AS (
-                    	SELECT ST_SetSRID(ST_MakePolygon(ST_MakeLine(ARRAY [a.p, m.p, d.p, a.p])), ST_SRID(t.poligono_creado)) geom
-                    	FROM t
-                    		,a
-                    		,m
-                    		,d
-                    	)
-                    	,limite_poligono
-                    AS (
-                    	SELECT t_id
-                    		,ST_Boundary(poligono_creado) geom
-                    	FROM t
-                    	)
-                    	,limite_vecinos
-                    AS (
-                    	SELECT o.t_id
-                    		,ST_Boundary(o.poligono_creado) geom
-                    	FROM t
-                    		,{schema}.terreno o
-                    	WHERE o.poligono_creado && st_envelope(t.poligono_creado)
-                    		AND t.t_id <> o.t_id
-                    	)
-                    	,pre_colindancias
-                    AS (
-                    	SELECT limite_vecinos.t_id
-                    		,st_intersection(limite_poligono.geom, limite_vecinos.geom) geom
-                    	FROM limite_poligono
-                    		,limite_vecinos
-                    	WHERE st_intersects(limite_poligono.geom, limite_vecinos.geom)
-                    		AND limite_poligono.t_id <> limite_vecinos.t_id
-
-                    	UNION
-
-                    	SELECT NULL AS t_id
-                    		,ST_Difference(limite_poligono.geom, a.geom) geom
-                    	FROM limite_poligono
-                    		,(
-                    			SELECT ST_LineMerge(ST_Union(geom)) geom
-                    			FROM limite_vecinos
-                    			) a
-                    	)
-                    	,tmp_colindantes
-                    AS (
-                    	SELECT t_id
-                    		,ST_LineMerge(ST_Union(geom)) geom
-                    	FROM (
-                    		SELECT SIMPLE.t_id
-                    			,SIMPLE.simple_geom AS geom
-                    			,ST_GeometryType(SIMPLE.simple_geom) AS geom_type
-                    			,ST_AsEWKT(SIMPLE.simple_geom) AS geom_wkt
-                    		FROM (
-                    			SELECT dumped.*
-                    				,(dumped.geom_dump).geom AS simple_geom
-                    				,(dumped.geom_dump).path AS path
-                    			FROM (
-                    				SELECT *
-                    					,ST_Dump(geom) AS geom_dump
-                    				FROM pre_colindancias
-                    				) AS dumped
-                    			) AS SIMPLE
-                    		) a
-                    	GROUP BY t_id
-                    	)
-                    	,lineas_colindancia
-                    AS (
-                    	SELECT *
-                    	FROM (
-                    		SELECT SIMPLE.t_id
-                    			,SIMPLE.simple_geom AS geom
-                    		FROM (
-                    			SELECT dumped.*
-                    				,(dumped.geom_dump).geom AS simple_geom
-                    				,(dumped.geom_dump).path AS path
-                    			FROM (
-                    				SELECT *
-                    					,ST_Dump(geom) AS geom_dump
-                    				FROM (
-                    					SELECT *
-                    					FROM tmp_colindantes
-                    					WHERE ST_GeometryType(geom) = 'ST_MultiLineString'
-                    					) a
-                    				) AS dumped
-                    			) AS SIMPLE
-                    		) a
-
-                    	UNION
-
-                    	SELECT *
-                    	FROM tmp_colindantes
-                    	WHERE ST_GeometryType(geom) <> 'ST_MultiLineString'
-                    	)
-                    	,puntos_terreno
-                    AS (
-                    	SELECT (ST_DumpPoints(poligono_creado)).* AS dp
-                    	FROM t
-                    	)
-                    	,punto_nw
-                    AS (
-                    	SELECT geom
-                    		,st_distance(geom, nw) AS dist
-                    	FROM puntos_terreno
-                    		,(
-                    			SELECT ST_SetSRID(ST_MakePoint(st_xmin(st_envelope(poligono_creado)), st_ymax(st_envelope(poligono_creado))), ST_SRID(poligono_creado)) AS nw
-                    			FROM t
-                    			) a
-                    	ORDER BY dist limit 1
-                    	)
-                    	,punto_inicial_por_lindero_con_punto_nw
-                    AS (
-                    	SELECT st_startpoint(lineas_colindancia.geom) geom
-                    	FROM lineas_colindancia
-                    		,punto_nw
-                    	WHERE st_intersects(lineas_colindancia.geom, punto_nw.geom)
-                    		AND NOT st_intersects(st_endpoint(lineas_colindancia.geom), punto_nw.geom) limit 1
-                    	)
-                    	,punto_inicial_por_lindero_porcentaje_n
-                    AS (
-                    	SELECT round((st_length(st_intersection(lineas_colindancia.geom, norte.geom)) / st_length(lineas_colindancia.geom))::NUMERIC, 2) dist
-                    		,st_startpoint(lineas_colindancia.geom) geom
-                    		,st_distance(lineas_colindancia.geom, nw) distance_to_nw
-                    	FROM lineas_colindancia
-                    		,norte
-                    		,(
-                    			SELECT ST_SetSRID(ST_MakePoint(st_xmin(st_envelope(poligono_creado)), st_ymax(st_envelope(poligono_creado))), ST_SRID(poligono_creado)) AS nw
-                    			FROM t
-                    			) a
-                    	WHERE st_intersects(lineas_colindancia.geom, norte.geom)
-                    	ORDER BY dist DESC
-                    		,distance_to_nw limit 1
-                    	)
-                    	,punto_inicial
-                    AS (
-                    	SELECT CASE
-                    			WHEN criterio_punto_inicial = 1
-                    				THEN (
-                    						SELECT geom
-                    						FROM punto_inicial_por_lindero_con_punto_nw
-                    						)
-                    			WHEN criterio_punto_inicial = 2
-                    				THEN (
-                    						SELECT geom
-                    						FROM punto_inicial_por_lindero_porcentaje_n
-                    						)
-                    			END AS geom
-                    	FROM parametros
-                    	)
-                    	,puntos_ordenados
-                    AS (
-                    	SELECT CASE
-                    			WHEN id - m + 1 <= 0
-                    				THEN total + id - m
-                    			ELSE id - m + 1
-                    			END AS id
-                    		,geom
-                    		,st_x(geom) x
-                    		,st_y(geom) y
-                    	FROM (
-                    		SELECT row_number() OVER (
-                    				ORDER BY path
-                    				) AS id
-                    			,m
-                    			,path
-                    			,geom
-                    			,total
-                    		FROM (
-                    			SELECT (ST_DumpPoints(ST_ForceRHR(poligono_creado))).* AS dp
-                    				,ST_NPoints(poligono_creado) total
-                    				,poligono_creado
-                    			FROM t
-                    			) AS a
-                    			,(
-                    				SELECT row_number() OVER (
-                    						ORDER BY path
-                    						) AS m
-                    					,st_distance(puntos_terreno.geom, punto_inicial.geom) AS dist
-                    				FROM puntos_terreno
-                    					,punto_inicial
-                    				ORDER BY dist limit 1
-                    				) b
-                    		) t
-                    	WHERE id <> total
-                    	ORDER BY id
-                    	)
-                    SELECT array_to_json(array_agg(features)) AS features
-                    FROM (
-                    	SELECT f AS features
-                    	FROM (
-                    		SELECT 'Feature' AS type
-                    			,ST_AsGeoJSON(geom)::json AS geometry
-                    			,row_to_json((
-                    					SELECT l
-                    					FROM (
-                    						SELECT id AS point_number
-                    						) AS l
-                    					)) AS properties
-                    		FROM puntos_ordenados
-                    		) AS f
-                    	) AS ff;""".format(schema=self.schema, id=plot_id)
+        query = annex17_point_data_query.get_annex17_point_data_query(self.schema, plot_id)
         cur.execute(query)
 
         return cur.fetchone()[0]
+
+    def get_ant_map_plot_data(self, plot_id, mode='only_id'):
+        if self.conn is None or self.conn.closed:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
+
+        where_id = ""
+        if mode != 'all':
+            where_id = "WHERE terreno.t_id {} {}".format('=' if mode=='only_id' else '!=', plot_id)
+
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        query = ant_map_plot_query.get_ant_map_query(self.schema, where_id)
+        cur.execute(query)
+
+        if mode == 'only_id':
+            return cur.fetchone()[0]
+        else:
+            return cur.fetchall()[0][0]
+
+    def get_ant_map_neighbouring_change_data(self, plot_id, mode='only_id'):
+        if self.conn is None or self.conn.closed:
+            res, msg = self.test_connection()
+            if not res:
+                return (res, msg)
+
+        where_id = ""
+        if mode != 'all':
+            where_id = "WHERE t.t_id {} {}".format('=' if mode=='only_id' else '!=', plot_id)
+
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        query = ant_map_neighbouring_change_query.get_ant_map_neighbouring_change_query(self.schema, where_id)
+        cur.execute(query)
+
+        if mode == 'only_id':
+            return cur.fetchone()[0]
+        else:
+            return cur.fetchall()[0][0]
 
     def execute_sql_query(self, query):
         """
@@ -1020,7 +793,7 @@ class PGConnector(DBConnector):
         :param query: SQL Statement
         :return: List of RealDictRow
         """
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -1038,7 +811,7 @@ class PGConnector(DBConnector):
         :param query: SQL Statement
         :return: List of DictRow
         """
-        if self.conn is None:
+        if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
             if not res:
                 return (res, msg)
@@ -1057,7 +830,7 @@ class PGConnector(DBConnector):
         return result if not isinstance(result, tuple) else None
 
     def get_models(self, schema=None):
-        query = "SELECT modelname FROM {schema}.t_ili2db_model".format(schema=schema if schema else self.schema)
+        query = "SELECT modelname FROM {schema}.t_ili2db_model order by modelname".format(schema=schema if schema else self.schema)
         result = self.execute_sql_query(query)
         return result if not isinstance(result, tuple) else None
 
@@ -1108,6 +881,10 @@ class PGConnector(DBConnector):
         return (True, QCoreApplication.translate("PGConnector", "Schema '{}' was successfully created!".format(schema_name)))
 
     def get_dbnames_list(self, uri):
+        res, msg = self.test_connection(EnumTestLevel.SERVER)
+        if not res:
+            return (False, msg)
+
         dbnames_list = list()
         try:
             conn = psycopg2.connect(uri)
@@ -1160,13 +937,17 @@ class PGConnector(DBConnector):
                 privileges = {'create': bool(int(schema_privileges[0])),  # 'create'
                               'usage': bool(int(schema_privileges[1]))}  # 'usage'
             else:
-                return (False, QCoreApplication.translate("PGConnector", "No information for schema '{}'.").format(self.schema))
+                return (False, QCoreApplication.translate("PGConnector", "No information for schema '{}'.").format(schema))
             cur.close()
             conn.close()
         except Exception as e:
             return (False, QCoreApplication.translate("PGConnector",
                                                "There was an error when obtaining privileges for schema '{}'. Details: {}").format(schema, e))
-        return (True, privileges)
+
+        if privileges['create'] and privileges['usage']:
+            return (True, QCoreApplication.translate("PGConnector", "The user has both Create and Usage priviledges over the schema."))
+        else:
+            return (False, QCoreApplication.translate("PGConnector", "The user has not enough priviledges over the schema."))
 
     def is_ladm_layer(self, layer):
         result = False
@@ -1183,10 +964,19 @@ class PGConnector(DBConnector):
 
         return result
 
+    def get_ladm_layer_name(self, layer, validate_is_ladm=False):
+        name = None
+        if validate_is_ladm:
+            if self.is_ladm_layer(layer):
+                name = layer.dataProvider().uri().table()
+        else:
+            name = layer.dataProvider().uri().table()
+        return name
+
     def get_connection_uri(self, dict_conn, level=1):
         uri = []
-        uri += ['host={}'.format(dict_conn['host'] or self._DEFAULT_HOST)]
-        uri += ['port={}'.format(dict_conn['port'] or self._DEFAULT_PORT)]
+        uri += ['host={}'.format(dict_conn['host'])]
+        uri += ['port={}'.format(dict_conn['port'])]
         if dict_conn['username']:
             uri += ['user={}'.format(dict_conn['username'])]
         if dict_conn['password']:
@@ -1196,6 +986,6 @@ class PGConnector(DBConnector):
         else:
             # It is necessary to define the database name for listing databases
             # PostgreSQL uses the db 'postgres' by default and it cannot be deleted, so we use it as last resort
-            uri += ["dbname='{}'".format(self._PROVIDER_NAME)]
+            uri += ["dbname={}".format(self._PROVIDER_NAME)]
 
         return ' '.join(uri)

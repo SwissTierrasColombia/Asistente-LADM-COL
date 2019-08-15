@@ -27,7 +27,7 @@ from ....config.general_config import (PLUGIN_NAME,
                                        LAYER)
 from ....config.help_strings import HelpStrings
 from ....config.table_mapping_config import (ID_FIELD,
-                                         VALUATION_HORIZONTAL_PROPERTY_TABLE)
+                                             VALUATION_HORIZONTAL_PROPERTY_TABLE)
 from ....utils import get_ui_class
 
 WIZARD_UI = get_ui_class('wizards/valuation/wiz_create_horizontal_property_valuation.ui')
@@ -138,8 +138,8 @@ class CreateHorizontalPropertyValuationWizard(QWizard, WIZARD_UI):
         # Check if layers any layer is in editing mode
         layers_name = list()
         for layer in self._layers:
-            if self._layers[layer]['layer'].isEditable():
-                layers_name.append(self._layers[layer]['layer'].name())
+            if self._layers[layer][LAYER].isEditable():
+                layers_name.append(self._db.get_ladm_layer_name(self._layers[layer][LAYER]))
 
         if layers_name:
             self.qgis_utils.message_emitted.emit(

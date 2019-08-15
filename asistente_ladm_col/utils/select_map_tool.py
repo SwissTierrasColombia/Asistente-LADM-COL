@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt5.QtGui import (QColor,
-                         QCursor)
+from qgis.PyQt.QtGui import (QColor,
+                             QCursor)
 from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal)
 from qgis.gui import (QgsMapTool,

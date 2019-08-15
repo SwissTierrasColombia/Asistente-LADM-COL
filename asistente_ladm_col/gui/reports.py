@@ -27,13 +27,15 @@ import time
 import zipfile
 
 from qgis.PyQt.QtCore import (Qt,
+                              QObject,
                               QCoreApplication,
                               QSettings,
                               QUrl,
                               QFile,
                               QProcess,
                               QEventLoop,
-                              QIODevice)
+                              QIODevice,
+                              pyqtSignal)
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QMessageBox,
                                  QProgressBar)
@@ -43,17 +45,25 @@ from qgis.core import (QgsWkbTypes,
                        QgsNetworkContentFetcherTask,
                        QgsApplication)
 
-from ..config.general_config import (TEST_SERVER,
+from ..config.general_config import (ANNEX_17_REPORT,
+                                     TEST_SERVER,
                                      PLUGIN_NAME,
                                      REPORTS_REQUIRED_VERSION,
                                      URL_REPORTS_LIBRARIES)
 from ..config.table_mapping_config import (ID_FIELD,
-                                           PLOT_TABLE, PARCEL_NUMBER_FIELD)
+                                           PLOT_TABLE,
+                                           PARCEL_NUMBER_FIELD)
+from ..gui.dialogs.dlg_get_java_path import GetJavaPathDialog
 from ..utils.qt_utils import (remove_readonly,
                               normalize_local_url)
+from ..utils.utils import Utils
 
-class ReportGenerator():
+
+class ReportGenerator(QObject):
+    enable_action_requested = pyqtSignal(str, bool)
+
     def __init__(self, qgis_utils, ladm_data):
+        QObject.__init__(self)
         self.qgis_utils = qgis_utils
         self.ladm_data = ladm_data
         self.encoding = locale.getlocale()[1]
@@ -62,7 +72,7 @@ class ReportGenerator():
             self.encoding = 'UTF8'
 
         self.log = QgsApplication.messageLog()
-        self.LOG_TAB = 'Anexo_17'
+        self.LOG_TAB = 'LADM-COL Reports'
         self._downloading = False
 
     def stderr_ready(self, proc):
@@ -95,19 +105,33 @@ class ReportGenerator():
 
         return new_file_path
 
-    def get_layer_geojson(self, db, layer_name, plot_id):
-        if layer_name == 'terreno':
-            return db.get_annex17_plot_data(plot_id, 'only_id')
-        elif layer_name == 'terrenos':
-            return db.get_annex17_plot_data(plot_id, 'all_but_id')
-        elif layer_name == 'terrenos_all':
-            return db.get_annex17_plot_data(plot_id, 'all')
-        elif layer_name == 'construcciones':
-            return db.get_annex17_building_data()
-        else:
-            return db.get_annex17_point_data(plot_id)
+    def get_layer_geojson(self, db, layer_name, plot_id, report_type):
+        if report_type == ANNEX_17_REPORT:
+            if layer_name == 'terreno':
+                return db.get_annex17_plot_data(plot_id, 'only_id')
+            elif layer_name == 'terrenos':
+                return db.get_annex17_plot_data(plot_id, 'all_but_id')
+            elif layer_name == 'terrenos_all':
+                return db.get_annex17_plot_data(plot_id, 'all')
+            elif layer_name == 'construcciones':
+                return db.get_annex17_building_data()
+            else:
+                return db.get_annex17_point_data(plot_id)
+        else: #report_type == ANT_MAP_REPORT:
+            if layer_name == 'terreno':
+                return db.get_ant_map_plot_data(plot_id, 'only_id')
+            elif layer_name == 'terrenos':
+                return db.get_ant_map_plot_data(plot_id, 'all_but_id')
+            elif layer_name == 'terrenos_all':
+                return db.get_annex17_plot_data(plot_id, 'all')
+            elif layer_name == 'construcciones':
+                return db.get_annex17_building_data()
+            elif layer_name == 'puntoLindero':
+                return db.get_annex17_point_data(plot_id)
+            else: #layer_name == 'cambio_colindancia':
+                return db.get_ant_map_neighbouring_change_data(plot_id)
 
-    def update_json_data(self, db, json_spec_file, plot_id, tmp_dir):
+    def update_json_data(self, db, json_spec_file, plot_id, tmp_dir, report_type):
         json_data = dict()
         with open(json_spec_file) as f:
             json_data = json.load(f)
@@ -116,11 +140,11 @@ class ReportGenerator():
         json_data['attributes']['datasetName'] = db.schema
         layers = json_data['attributes']['map']['layers']
         for layer in layers:
-            layer['geoJson'] = self.get_layer_geojson(db, layer['name'], plot_id)
+            layer['geoJson'] = self.get_layer_geojson(db, layer['name'], plot_id, report_type)
 
         overview_layers = json_data['attributes']['overviewMap']['layers']
         for layer in overview_layers:
-            layer['geoJson'] = self.get_layer_geojson(db, layer['name'], plot_id)
+            layer['geoJson'] = self.get_layer_geojson(db, layer['name'], plot_id, report_type)
 
         new_json_file_path = os.path.join(tmp_dir, self.get_tmp_filename('json_data_{}'.format(plot_id), 'json'))
         with open(new_json_file_path, 'w') as new_json:
@@ -137,7 +161,7 @@ class ReportGenerator():
     def get_tmp_filename(self, basename, extension='gpkg'):
         return "{}_{}.{}".format(basename, str(time.time()).replace(".",""), extension)
 
-    def generate_report(self, db, button):
+    def generate_report(self, db, report_type):
         # Check if mapfish and Jasper are installed, otherwise show where to
         # download them from and return
         base_path = os.path.join(os.path.expanduser('~'), 'Asistente-LADM_COL', 'impresion')
@@ -167,11 +191,16 @@ class ReportGenerator():
             return
 
         # Check if JAVA_HOME path is set, otherwise use path from QGIS Model Baker
-        if os.name == 'nt':
-            if 'JAVA_HOME' not in os.environ:
+        if not Utils.set_java_home():
+            get_java_path_dlg = GetJavaPathDialog()
+            get_java_path_dlg.setModal(True)
+            get_java_path_dlg.exec_()
+
+            if not Utils.set_java_home():
                 self.msg = QMessageBox()
                 self.msg.setIcon(QMessageBox.Information)
-                self.msg.setText(QCoreApplication.translate("ReportGenerator", "JAVA_HOME environment variable is not defined, please define it as an enviroment variable on Windows and restart QGIS before generating the annex 17."))
+                self.msg.setText(QCoreApplication.translate("ReportGenerator",
+                                                            "JAVA_HOME environment variable is not defined, please define it as an enviroment variable and restart QGIS before generating the annex 17."))
                 self.msg.setWindowTitle(QCoreApplication.translate("ReportGenerator", "JAVA_HOME not defined"))
                 self.msg.setStandardButtons(QMessageBox.Close)
                 self.msg.exec_()
@@ -203,7 +232,8 @@ class ReportGenerator():
             return
         QSettings().setValue("Asistente-LADM_COL/reports/save_into_dir", save_into_folder)
 
-        config_path = os.path.join(base_path, 'ANT')
+        config_path = os.path.join(base_path, report_type)
+
         json_spec_file = os.path.join(config_path, 'spec_json_file.json')
 
         script_name = ''
@@ -217,7 +247,7 @@ class ReportGenerator():
             print("### SCRIPT FILE WASN'T FOUND")
             return
 
-        button.setEnabled(False)
+        self.enable_action_requested.emit(report_type, False)
 
         # Update config file
         yaml_config_path = self.update_yaml_config(db, config_path)
@@ -261,7 +291,7 @@ class ReportGenerator():
                 continue
 
             # Generate data file
-            json_file = self.update_json_data(db, json_spec_file, plot_id, tmp_dir)
+            json_file = self.update_json_data(db, json_spec_file, plot_id, tmp_dir, report_type)
             print("JSON FILE:", json_file)
 
             # Run sh/bat passing config and data files
@@ -271,9 +301,9 @@ class ReportGenerator():
             proc.readyReadStandardOutput.connect(
                 functools.partial(self.stdout_ready, proc=proc))
 
+            parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], PARCEL_NUMBER_FIELD) or ['']
+            file_name = '{}_{}_{}.pdf'.format(report_type, plot_id, parcel_number[0])
 
-            parcel_number = self.ladm_data.get_parcels_related_to_plot(db, plot_id, PARCEL_NUMBER_FIELD) or ['']
-            file_name = 'anexo_17_{}_{}.pdf'.format(plot_id, parcel_number[0])
             current_report_path = os.path.join(save_into_folder, file_name)
             proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', current_report_path])
 
@@ -298,7 +328,8 @@ class ReportGenerator():
                 progress.setValue(step * 100 / total)
 
         os.remove(yaml_config_path)
-        button.setEnabled(True)
+
+        self.enable_action_requested.emit(report_type, True)
         self.qgis_utils.clear_message_bar_emitted.emit()
 
         if total == count:
@@ -320,12 +351,12 @@ class ReportGenerator():
                     ", ".join(multi_polygons))
 
             if total == 1:
-                msg = QCoreApplication.translate("ReportGenerator", "The report for plot {} couldn't be generated!{} See QGIS log (tab 'Anexo_17') for details.").format(plot_id, details_msg)
+                msg = QCoreApplication.translate("ReportGenerator", "The report for plot {} couldn't be generated!{} See QGIS log (tab '{}') for details.").format(plot_id, details_msg, self.LOG_TAB)
             else:
                 if count == 0:
-                    msg = QCoreApplication.translate("ReportGenerator", "No report could be generated!{} See QGIS log (tab 'Anexo_17') for details.").format(details_msg)
+                    msg = QCoreApplication.translate("ReportGenerator", "No report could be generated!{} See QGIS log (tab '{}') for details.").format(details_msg, self.LOG_TAB)
                 else:
-                    msg = QCoreApplication.translate("ReportGenerator", "At least one report couldn't be generated!{details_msg} See QGIS log (tab 'Anexo_17') for details. Go to <a href='file:///{path}'>{path}</a> to see the reports that were generated.").format(details_msg=details_msg, path=normalize_local_url(save_into_folder))
+                    msg = QCoreApplication.translate("ReportGenerator", "At least one report couldn't be generated!{details_msg} See QGIS log (tab '{log_tab}') for details. Go to <a href='file:///{path}'>{path}</a> to see the reports that were generated.").format(details_msg=details_msg, path=normalize_local_url(save_into_folder), log_tab=self.LOG_TAB)
 
             self.qgis_utils.message_with_duration_emitted.emit(msg, Qgis.Warning, 0)
 

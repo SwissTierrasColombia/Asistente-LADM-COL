@@ -17,7 +17,6 @@
  ***************************************************************************/
 """
 from .db_factory import DbFactory
-
 from ...gui.db_panel.pg_config_panel import PgConfigPanel
 from ...lib.db.pg_connector import PGConnector
 
@@ -33,16 +32,24 @@ class PgFactory(DbFactory):
     def get_id(self):
         return "pg"
 
-    def get_model_baker_tool_name(self):
-        return "ili2pg"
+    def get_mbaker_db_ili_mode(self):
+        from QgisModelBaker.libili2db.globals import DbIliMode
+        return DbIliMode.ili2pg
 
-    def get_config_panel(self):
-        return PgConfigPanel()
+    def get_config_panel(self, parent):
+        return PgConfigPanel(parent)
 
-    def get_db_connector(self, parameters):
-        return PGConnector(None, parameters['schema'], parameters)
+    def get_db_connector(self, parameters=dict()):
+        return PGConnector(None, parameters)
 
     def set_db_configuration_params(self, params, configuration):
+        """
+        ili2db parameters
+
+        :param params:
+        :param configuration:
+        :return:
+        """
         configuration.tool_name = 'pg'
         configuration.dbhost = params['host']
         configuration.dbport = params['port']

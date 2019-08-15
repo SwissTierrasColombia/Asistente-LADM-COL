@@ -127,18 +127,13 @@ class CreateMarketResearchPRCWizard(QWizard, WIZARD_UI):
         # Load layers
         self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if not self._layers:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate(self.WIZARD_NAME,
-                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
-                    self.WIZARD_TOOL_NAME),
-                Qgis.Warning)
             return False
 
         # Check if layers any layer is in editing mode
         layers_name = list()
         for layer in self._layers:
-            if self._layers[layer]['layer'].isEditable():
-                layers_name.append(self._layers[layer]['layer'].name())
+            if self._layers[layer][LAYER].isEditable():
+                layers_name.append(self._db.get_ladm_layer_name(self._layers[layer][LAYER]))
 
         if layers_name:
             self.qgis_utils.message_emitted.emit(

@@ -174,8 +174,8 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
         # Check if layers any layer is in editing mode
         layers_name = list()
         for layer in self._layers:
-            if self._layers[layer]['layer'].isEditable():
-                layers_name.append(self._layers[layer]['layer'].name())
+            if self._layers[layer][LAYER].isEditable():
+                layers_name.append(self._db.get_ladm_layer_name(self._layers[layer][LAYER]))
 
         if layers_name:
             self.qgis_utils.message_emitted.emit(

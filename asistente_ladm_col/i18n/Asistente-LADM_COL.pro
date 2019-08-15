@@ -36,7 +36,15 @@ FORMS = ../ui/dlg_load_layers.ui \
         ../ui/wiz_create_market_research_prc.ui \
         ../ui/wiz_create_natural_party_prc.ui \
         ../ui/wiz_create_nuclear_family_prc.ui \
-        ../ui/wiz_create_property_record_card_prc.ui
+        ../ui/wiz_create_property_record_card_prc.ui \
+        ../ui/change_detection/changes_all_parcels_panel_widget.ui \
+        ../ui/change_detection/changes_per_parcel_panel_widget.ui \
+        ../ui/change_detection/dockwidget_change_detection.ui \
+        ../ui/change_detection/parcels_changes_summary_panel_widget.ui \
+        ../ui/dockwidget_changes.ui \
+        ../ui/official_data_settings_dialog.ui \
+	../ui/settings_gpkg.ui \
+	../ui/settings_pg.ui
 
 SOURCES = ../__init__.py \
           ../asistente_ladm_col_plugin.py \
@@ -45,6 +53,7 @@ SOURCES = ../__init__.py \
           ../utils/qt_utils.py \
           ../utils/quality.py \
           ../utils/model_parser.py \
+          ../utils/decorators.py \
           ../gui/custom_model_dir.py \
           ../gui/dialog_import_from_excel.py \
           ../gui/dlg_get_db_or_schema_name.py \
@@ -92,11 +101,16 @@ SOURCES = ../__init__.py \
           ../gui/qgis_model_baker/dlg_import_schema.py \
           ../gui/qgis_model_baker/dlg_import_data.py \
           ../gui/qgis_model_baker/dlg_export_data.py \
-          ../lib/dbconnector/gpkg_connector.py \
-          ../lib/dbconnector/pg_connector.py \
+          ../lib/db/gpkg_connector.py \
+          ../lib/db/pg_connector.py \
           ../lib/source_handler.py \
           ../config/general_config.py \
           ../config/help_strings.py \
-          ../data/ladm_data.py
+          ../data/ladm_data.py \
+          ../gui/official_data_settings_dialog.py \
+          ../gui/change_detection/changes_all_parcels_panel.py \
+          ../gui/change_detection/changes_per_parcel_panel.py \
+          ../gui/change_detection/dockwidget_change_detection.py \
+          ../gui/change_detection/parcels_changes_summary_panel.py
 
 TRANSLATIONS = Asistente-LADM_COL_es.ts

@@ -44,12 +44,14 @@ from ...config.general_config import (DEFAULT_EPSG,
                                       CREATE_BASKET_COL,
                                       CREATE_IMPORT_TID,
                                       STROKE_ARCS)
-from ...gui.dialogs.dlg_get_java_path import DialogGetJavaPath
+from ...gui.dialogs.dlg_get_java_path import GetJavaPathDialog
+from ...gui.dialogs.dlg_settings import SettingsDialog
 from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
                                OverrideCursor)
-from ...resources_rc import *
+
+from ...resources_rc import * # Necessary to show icons
 from ...config.config_db_supported import ConfigDbSupported
 from ...lib.db.db_connector import DBConnector
 from ...lib.db.enum_db_action_type import EnumDbActionType
@@ -59,10 +61,11 @@ DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_schema.ui')
 class DialogImportSchema(QDialog, DIALOG_UI):
     models_have_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
 
-    def __init__(self, iface, db, qgis_utils):
+    def __init__(self, iface, qgis_utils, conn_manager):
         QDialog.__init__(self)
         self.iface = iface
-        self.db = db
+        self.conn_manager = conn_manager
+        self.db = self.conn_manager.get_db_connector_from_source()
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
@@ -112,7 +115,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def update_import_models(self):
         for modelname in DEFAULT_MODEL_NAMES_CHECKED:
             item = QListWidgetItem(modelname)
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
             item.setCheckState(DEFAULT_MODEL_NAMES_CHECKED[modelname])
             self.import_models_list_widget.addItem(item)
         self.import_models_list_widget.itemClicked.connect(self.on_item_clicked_import_model)
@@ -144,7 +147,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         return checked_models
 
     def show_settings(self):
-        dlg = self.qgis_utils.get_settings_dialog()
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+
+        # Connect signals (DBUtils, QgisUtils)
+        dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
+        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+        dlg.organization_tools_changed.connect(self.qgis_utils.organization_tools_changed)
+
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
         dlg.set_action_type(EnumDbActionType.SCHEMA_IMPORT)
 
@@ -176,7 +185,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
             item_db = self._conf_db.get_db_items()[self.db.mode]
 
-            importer.tool_name = item_db.get_model_baker_tool_name()
+            importer.tool = item_db.get_mbaker_db_ili_mode()
             importer.configuration = configuration
             importer.stdout.connect(self.print_info)
             importer.stderr.connect(self.on_stderr)
@@ -191,7 +200,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                     return
             except JavaNotFoundError:
                 # Set JAVA PATH
-                get_java_path_dlg = DialogGetJavaPath()
+                get_java_path_dlg = GetJavaPathDialog()
                 get_java_path_dlg.setModal(True)
                 if get_java_path_dlg.exec_():
                     configuration = self.update_configuration()
@@ -240,7 +249,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         # set custom toml file
         configuration.tomlfile = TOML_FILE_DIR
-        configuration.epsg = DEFAULT_EPSG
+        configuration.epsg = QSettings().value('Asistente-LADM_COL/advanced_settings/epsg', int(DEFAULT_EPSG), int)
         configuration.inheritance = DEFAULT_INHERITANCE
         configuration.create_basket_col = CREATE_BASKET_COL
         configuration.create_import_tid = CREATE_IMPORT_TID

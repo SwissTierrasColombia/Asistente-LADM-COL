@@ -33,12 +33,11 @@ from ...config.table_mapping_config import (BOUNDARY_POINT_TABLE,
                                             BUILDING_TABLE,
                                             RIGHT_OF_WAY_TABLE)
 from ...utils import get_ui_class
-from ...resources_rc import *
 
 DIALOG_UI = get_ui_class('dialogs/dlg_quality.ui')
 
 
-class DialogQuality(QDialog, DIALOG_UI):
+class QualityDialog(QDialog, DIALOG_UI):
     def __init__(self, db, qgis_utils, quality, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
@@ -56,7 +55,7 @@ class DialogQuality(QDialog, DIALOG_UI):
         self.btn_clear_selection.clicked.connect(self.clear_selection)
 
         self.items_dict = collections.OrderedDict()
-        self.items_dict[QCoreApplication.translate("DialogQuality", "Rules for Points")] = {
+        self.items_dict[QCoreApplication.translate("QualityDialog", "Rules for Points")] = {
                 'icon': 'points',
                 'rules': [{
                     'id' : 'check_overlaps_in_boundary_points',
@@ -72,7 +71,7 @@ class DialogQuality(QDialog, DIALOG_UI):
                     'text': translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES
                 }]
             }
-        self.items_dict[QCoreApplication.translate("DialogQuality", "Rules for Lines")] = {
+        self.items_dict[QCoreApplication.translate("QualityDialog", "Rules for Lines")] = {
                 'icon' : 'lines',
                 'rules': [{
                     'id': 'check_too_long_boundary_segments',
@@ -94,7 +93,7 @@ class DialogQuality(QDialog, DIALOG_UI):
                     'text': translated_strings.CHECK_DANGLES_IN_BOUNDARIES
                 }]
             }
-        self.items_dict[QCoreApplication.translate("DialogQuality", "Rules for Polygons")] = {
+        self.items_dict[QCoreApplication.translate("QualityDialog", "Rules for Polygons")] = {
                 'icon': 'polygons',
                 'rules': [{
                     'id': 'check_overlaps_in_plots',
@@ -110,7 +109,7 @@ class DialogQuality(QDialog, DIALOG_UI):
                     'text': translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES
                 #}, {
                 #    'id': 'check_missing_survey_points_in_buildings',
-                #    'text': QCoreApplication.translate("DialogQuality", "Buildings nodes should be covered by Survey Points")
+                #    'text': QCoreApplication.translate("QualityDialog", "Buildings nodes should be covered by Survey Points")
                 }, {
                     'id': 'check_right_of_way_overlaps_buildings',
                     'text': translated_strings.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS
@@ -132,7 +131,7 @@ class DialogQuality(QDialog, DIALOG_UI):
                 }]
             }
 
-        self.items_dict[QCoreApplication.translate("DialogQuality", "Logic consistency rules")] = {
+        self.items_dict[QCoreApplication.translate("QualityDialog", "Logic consistency rules")] = {
                 'icon': 'tables',
                 'rules': [{
                     'id': 'check_parcel_right_relationship',

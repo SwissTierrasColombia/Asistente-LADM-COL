@@ -48,14 +48,16 @@ from ...config.general_config import (DEFAULT_EPSG,
                                       CREATE_BASKET_COL,
                                       CREATE_IMPORT_TID,
                                       STROKE_ARCS)
-from ...gui.dialogs.dlg_get_java_path import DialogGetJavaPath
+from ...gui.dialogs.dlg_get_java_path import GetJavaPathDialog
+from ...gui.dialogs.dlg_settings import SettingsDialog
 from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
                                FileValidator,
                                make_file_selector,
                                OverrideCursor)
-from ...resources_rc import *
+
+from ...resources_rc import * # Necessary to show icons
 from ...config.config_db_supported import ConfigDbSupported
 from ...lib.db.enum_db_action_type import EnumDbActionType
 
@@ -64,13 +66,14 @@ DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_data.ui')
 
 class DialogImportData(QDialog, DIALOG_UI):
 
-    def __init__(self, iface, db, qgis_utils):
+    def __init__(self, iface, qgis_utils, conn_manager):
         QDialog.__init__(self)
         self.setupUi(self)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
-        self.db = db
+        self.conn_manager = conn_manager
+        self.db = self.conn_manager.get_db_connector_from_source()
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
 
@@ -86,7 +89,7 @@ class DialogImportData(QDialog, DIALOG_UI):
                                file_filter=QCoreApplication.translate("DialogImportData",'Transfer File (*.xtf *.itf);;Catalogue File (*.xml *.xls *.xlsx)')))
 
         self.validators = Validators()
-        self.xtf_file_line_edit.setPlaceholderText(QCoreApplication.translate("DialogImportData", "[Name of the XTF to be created]"))
+        self.xtf_file_line_edit.setPlaceholderText(QCoreApplication.translate("DialogImportData", "[Name of the XTF to be imported]"))
         fileValidator = FileValidator(pattern=['*.xtf', '*.itf', '*.xml'])
         self.xtf_file_line_edit.setValidator(fileValidator)
         self.xtf_file_line_edit.textChanged.connect(self.update_import_models)
@@ -177,7 +180,7 @@ class DialogImportData(QDialog, DIALOG_UI):
                 model_tag = str(txt.group(0))
                 name = re.findall('NAME="(.*?)"', model_tag, re.IGNORECASE)
                 models_name.extend(name)
-        return models_name
+        return sorted(models_name)
 
     def get_ili_models(self):
         ili_models = list()
@@ -187,7 +190,13 @@ class DialogImportData(QDialog, DIALOG_UI):
         return ili_models
 
     def show_settings(self):
-        dlg = self.qgis_utils.get_settings_dialog()
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+
+        # Connect signals (DBUtils, QgisUtils)
+        dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
+        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+        dlg.organization_tools_changed.connect(self.qgis_utils.organization_tools_changed)
+
         dlg.set_action_type(EnumDbActionType.IMPORT)
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
         if dlg.exec_():
@@ -204,7 +213,6 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.xtf_file_line_edit.setFocus()
             return
 
-
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:
             message_error = 'Please set a valid XTF before importing data.'
             self.txtStdout.setText(QCoreApplication.translate("DialogImportData", message_error))
@@ -219,7 +227,26 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.import_models_list_view.setFocus()
             return
 
-            
+        # Get list models in db and xtf
+        ili_models = set([ili_model for ili_model in self.get_ili_models()])
+
+        db_models = list()
+        for db_model in self.db.get_models():
+            model_name_with_dependencies = db_model['modelname']
+            model_name = model_name_with_dependencies.split('{')[0]
+            db_models.append(model_name)
+        db_models = set(db_models)
+
+        if not ili_models.issubset(db_models):
+            message_error = "The XTF file to import does not have the same models as the target database schema. " \
+                            "Please create a schema also include the following missing schemas:\n\n * {}".format(" \n * ".join(sorted(ili_models.difference(db_models))))
+            self.txtStdout.clear()
+            self.txtStdout.setTextColor(QColor('#000000'))
+            self.txtStdout.setText(QCoreApplication.translate("DialogImportData", message_error))
+            self.show_message(message_error, Qgis.Warning)
+            self.xtf_file_line_edit.setFocus()
+            return
+
         with OverrideCursor(Qt.WaitCursor):
             self.progress_bar.show()
             self.progress_bar.setValue(0)
@@ -232,7 +259,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
             item_db = self._conf_db.get_db_items()[self.db.mode]
 
-            dataImporter.tool_name = item_db.get_model_baker_tool_name()
+            dataImporter.tool = item_db.get_mbaker_db_ili_mode()
             dataImporter.configuration = configuration
 
             self.save_configuration(configuration)
@@ -253,7 +280,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             except JavaNotFoundError:
 
                 # Set JAVA PATH
-                get_java_path_dlg = DialogGetJavaPath()
+                get_java_path_dlg = GetJavaPathDialog()
                 get_java_path_dlg.setModal(True)
                 if get_java_path_dlg.exec_():
                     configuration = self.update_configuration()
@@ -279,7 +306,6 @@ class DialogImportData(QDialog, DIALOG_UI):
         settings = QSettings()
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_import', configuration.xtffile)
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
-
 
     def restore_configuration(self):
         settings = QSettings()
@@ -308,7 +334,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
         configuration.delete_data = False
 
-        configuration.epsg = DEFAULT_EPSG
+        configuration.epsg = QSettings().value('Asistente-LADM_COL/advanced_settings/epsg', int(DEFAULT_EPSG), int)
         configuration.inheritance = DEFAULT_INHERITANCE
         configuration.create_basket_col = CREATE_BASKET_COL
         configuration.create_import_tid = CREATE_IMPORT_TID
@@ -329,6 +355,8 @@ class DialogImportData(QDialog, DIALOG_UI):
         configuration.base_configuration = self.base_configuration
         if self.get_ili_models():
             configuration.ilimodels = ';'.join(self.get_ili_models())
+
+        configuration.disable_validation = not QSettings().value('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', True, bool)
 
         return configuration
 

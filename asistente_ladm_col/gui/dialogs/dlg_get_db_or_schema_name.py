@@ -34,7 +34,7 @@ from ...utils.qt_utils import (Validators,
 DIALOG_UI = get_ui_class('dialogs/dlg_get_db_or_schema_name.ui')
 
 
-class DialogGetDBOrSchemaName(QDialog, DIALOG_UI):
+class GetDBOrSchemaNameDialog(QDialog, DIALOG_UI):
     db_or_schema_created = pyqtSignal(str)
 
     def __init__(self, db_connector, uri, type, parent=None):
@@ -53,13 +53,13 @@ class DialogGetDBOrSchemaName(QDialog, DIALOG_UI):
         self.setupUi(self)
 
         if self.type == 'database':
-            self.message_label.setText(QCoreApplication.translate("DialogGetDBOrSchemaName", "Enter the name of the database:"))
-            self.parameter_line_edit.setPlaceholderText(QCoreApplication.translate("DialogGetDBOrSchemaName", "[Name of the database to be created]"))
+            self.message_label.setText(QCoreApplication.translate("GetDBOrSchemaNameDialog", "Enter the name of the database:"))
+            self.parameter_line_edit.setPlaceholderText(QCoreApplication.translate("GetDBOrSchemaNameDialog", "[Name of the database to be created]"))
         else:
-            self.message_label.setText(QCoreApplication.translate("DialogGetDBOrSchemaName", "Enter the name of the schema:"))
-            self.parameter_line_edit.setPlaceholderText(QCoreApplication.translate("DialogGetDBOrSchemaName", "[Name of the schema to be created]"))
+            self.message_label.setText(QCoreApplication.translate("GetDBOrSchemaNameDialog", "Enter the name of the schema:"))
+            self.parameter_line_edit.setPlaceholderText(QCoreApplication.translate("GetDBOrSchemaNameDialog", "[Name of the schema to be created]"))
 
-        self.setWindowTitle(QCoreApplication.translate("DialogGetDBOrSchemaName", "Create {type}").format(type=self.type))
+        self.setWindowTitle(QCoreApplication.translate("GetDBOrSchemaNameDialog", "Create {type}").format(type=self.type))
         self.validators = Validators()
 
         # schema name mustn't have special characters
@@ -78,15 +78,15 @@ class DialogGetDBOrSchemaName(QDialog, DIALOG_UI):
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.clear()
         self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self.buttonBox.addButton(QCoreApplication.translate("DialogGetDBOrSchemaName", "Create {type}").format(type=self.type), QDialogButtonBox.AcceptRole)
+        self.buttonBox.addButton(QCoreApplication.translate("GetDBOrSchemaNameDialog", "Create {type}").format(type=self.type), QDialogButtonBox.AcceptRole)
 
     def accepted(self):
         parameter_value = self.parameter_line_edit.text().strip()
         if not parameter_value:
             if self.type == 'database':
-                self.show_message(QCoreApplication.translate("DialogGetDBOrSchemaName", "The name of the database cannot be empty."), Qgis.Warning)
+                self.show_message(QCoreApplication.translate("GetDBOrSchemaNameDialog", "The name of the database cannot be empty."), Qgis.Warning)
             else:
-                self.show_message(QCoreApplication.translate("DialogGetDBOrSchemaName", "The name of the schema cannot be empty."), Qgis.Warning)
+                self.show_message(QCoreApplication.translate("GetDBOrSchemaNameDialog", "The name of the schema cannot be empty."), Qgis.Warning)
             return
 
         tmp_db_conn = self.db_connector

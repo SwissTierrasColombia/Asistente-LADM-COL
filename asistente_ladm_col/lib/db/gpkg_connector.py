@@ -21,12 +21,16 @@ import os
 import qgis.utils
 from qgis.PyQt.QtCore import QCoreApplication
 
-from .db_connector import (DBConnector, EnumTestLevel)
+from .db_connector import (DBConnector,
+                           EnumTestLevel)
 
 
 class GPKGConnector(DBConnector):
-    def __init__(self, uri, schema=None, conn_dict={}):
-        DBConnector.__init__(self, uri, schema, conn_dict)
+
+    _PROVIDER_NAME = 'ogr'
+
+    def __init__(self, uri, conn_dict={}):
+        DBConnector.__init__(self, uri, conn_dict)
         self.mode = 'gpkg'
         self.conn = None
         self.provider = 'ogr'
@@ -40,14 +44,13 @@ class GPKGConnector(DBConnector):
         try:
 
             # file no exist, but directory must exist
-            if test_level & EnumTestLevel.CREATE_SCHEMA:
+            if test_level & EnumTestLevel.SCHEMA_IMPORT:
                 directory = os.path.dirname(self._uri)
 
                 if not os.path.exists(directory):
                     raise Exception("GeoPackage directory file not found.")
             elif not os.path.exists(self._uri):
                 raise Exception("GeoPackage file not found.")
-            self.conn = qgis.utils.spatialite_connect(self._uri)
             # TODO verify EnumTestLevel.LADM
         except Exception as e:
             return (False, QCoreApplication.translate("GPKGConnector",
@@ -74,7 +77,21 @@ class GPKGConnector(DBConnector):
         return cursor
 
     def is_ladm_layer(self, layer):
-        return False
+        result = False
+        if layer.dataProvider().name() == GPKGConnector._PROVIDER_NAME:
+            # Dbfile should be equal to _uri
+            dbfile = layer.source().split('|')[0]
+            result = (dbfile == self._uri)
+        return result
+
+    def get_ladm_layer_name(self, layer, validate_is_ladm=False):
+        name = None
+        if validate_is_ladm:
+            if self.is_ladm_layer(layer):
+                name = layer.source().split('|layername=')[1]
+        else:
+            name = layer.source().split('|layername=')[1]
+        return name
 
     def get_description_conn_string(self):
         result = None
@@ -84,6 +101,9 @@ class GPKGConnector(DBConnector):
 
     def get_connection_uri(self, dict_conn, level=1):
         return dict_conn['dbfile']
+
+    def open_connection(self):
+        self.conn = qgis.utils.spatialite_connect(self._uri)
 
     def close_connection(self):
         pass  # this connection does not need to be closed

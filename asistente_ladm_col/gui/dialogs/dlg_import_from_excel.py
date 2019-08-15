@@ -94,7 +94,7 @@ from ...utils import get_ui_class
 DIALOG_UI = get_ui_class('dialogs/dlg_import_from_excel.ui')
 
 
-class DialogImportFromExcel(QDialog, DIALOG_UI):
+class ImportFromExcelDialog(QDialog, DIALOG_UI):
     log_excel_show_message_emitted = pyqtSignal(str)
 
     def __init__(self, iface, db, qgis_utils, parent=None):
@@ -134,11 +134,11 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         self.buttonBox.helpRequested.connect(self.show_help)
         self.btn_browse_file.clicked.connect(
             make_file_selector(self.txt_excel_path,
-                               QCoreApplication.translate("DialogImportFromExcel",
+                               QCoreApplication.translate("ImportFromExcelDialog",
                                                           "Select the Excel file with data in the intermediate structure"),
-                               QCoreApplication.translate("DialogImportFromExcel",
+                               QCoreApplication.translate("ImportFromExcelDialog",
                                                                       'Excel File (*.xlsx *.xls)')))
-        self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("DialogImportFromExcel", "Import"))
+        self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("ImportFromExcelDialog", "Import"))
 
         self.progress.setVisible(False)
         self.restore_settings()
@@ -164,7 +164,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         if not excel_path:
             self.show_message(
-                QCoreApplication.translate("DialogImportFromExcel", "You need to select an Excel file before continuing with the import."),
+                QCoreApplication.translate("ImportFromExcelDialog", "You need to select an Excel file before continuing with the import."),
                 Qgis.Warning)
             self.progress.setVisible(False)
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
@@ -172,14 +172,14 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         if not os.path.exists(excel_path):
             self.show_message(
-                QCoreApplication.translate("DialogImportFromExcel", "The specified Excel file does not exist!"),
+                QCoreApplication.translate("ImportFromExcelDialog", "The specified Excel file does not exist!"),
                 Qgis.Warning)
             self.progress.setVisible(False)
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
             return
 
         self.progress.setVisible(True)
-        self.txt_log.setText(QCoreApplication.translate("DialogImportFromExcel", "Loading tables from the Excel file..."))
+        self.txt_log.setText(QCoreApplication.translate("ImportFromExcelDialog", "Loading tables from the Excel file..."))
 
         # Now that we have the Excel file, build vrts to load its sheets appropriately
         # Also validate each layer against a number of rules
@@ -197,7 +197,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         if not layer_group_party.isValid() or not layer_party.isValid() or not layer_parcel.isValid() or not layer_right.isValid():
             self.show_message(
-                QCoreApplication.translate("DialogImportFromExcel", "One of the sheets of the Excel file couldn't be loaded! Check the format again."),
+                QCoreApplication.translate("ImportFromExcelDialog", "One of the sheets of the Excel file couldn't be loaded! Check the format again."),
                 Qgis.Warning)
             self.progress.setVisible(False)
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
@@ -205,7 +205,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         QgsProject.instance().addMapLayers([layer_group_party, layer_party, layer_parcel, layer_right])
 
-        self.txt_log.setText(QCoreApplication.translate("DialogImportFromExcel", "Loading LADM_COL tables..."))
+        self.txt_log.setText(QCoreApplication.translate("ImportFromExcelDialog", "Loading LADM_COL tables..."))
         step += 1
         self.progress.setValue(step/steps * 100)
 
@@ -238,7 +238,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # Run the ETL
         # 1
-        self.txt_log.setText(QCoreApplication.translate("DialogImportFromExcel", "ETL (step 1): Load col_interesado data..."))
+        self.txt_log.setText(QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 1): Load col_interesado data..."))
         step += 1
         self.progress.setValue(step / steps * 100)
 
@@ -283,7 +283,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 2
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel", "ETL (step 2): Define group parties..."))
+            QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 2): Define group parties..."))
         step += 1
         self.progress.setValue(step / steps * 100)
 
@@ -295,7 +295,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 3
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel", "ETL (step 3): Load group parties..."))
+            QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 3): Load group parties..."))
         step += 1
         self.progress.setValue(step / steps * 100)
 
@@ -315,7 +315,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 4
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel", "ETL (step 4): Join group parties t_id..."))
+            QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 4): Join group parties t_id..."))
         step += 1
         self.progress.setValue(step / steps * 100)
         group_party_tid_layer = processing.run("native:joinattributestable",
@@ -331,7 +331,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 5
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel", "ETL (step 5): Join group parties with parties..."))
+            QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 5): Join group parties with parties..."))
         step += 1
         self.progress.setValue(step / steps * 100)
         group_party_party_tid_layer = processing.run("native:joinattributestable",
@@ -347,7 +347,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 6
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel", "ETL (step 6): Load group party members..."))
+            QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 6): Load group party members..."))
         step += 1
         self.progress.setValue(step / steps * 100)
         processing.run("model:ETL-model",
@@ -361,7 +361,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 7
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel", "ETL (step 7): Load parcels..."))
+            QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 7): Load parcels..."))
         step += 1
         self.progress.setValue(step / steps * 100)
         processing.run("model:ETL-model",
@@ -387,7 +387,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 8
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel", "ETL (step 8): Concatenate Rights and Sources fields..."))
+            QCoreApplication.translate("ImportFromExcelDialog", "ETL (step 8): Concatenate Rights and Sources fields..."))
         step += 1
         self.progress.setValue(step / steps * 100)
         concat_right_source_layer = processing.run("qgis:fieldcalculator",
@@ -402,7 +402,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 9
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel",
+            QCoreApplication.translate("ImportFromExcelDialog",
                                        "ETL (step 9): Load Administrative Sources..."))
         step += 1
         self.progress.setValue(step / steps * 100)
@@ -428,7 +428,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 10
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel",
+            QCoreApplication.translate("ImportFromExcelDialog",
                                        "ETL (step 10): Join concatenate source to administrative source t_id..."))
         step += 1
         self.progress.setValue(step / steps * 100)
@@ -445,7 +445,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 11
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel",
+            QCoreApplication.translate("ImportFromExcelDialog",
                                        "ETL (step 11): Load extarchivo..."))
         step += 1
         self.progress.setValue(step / steps * 100)
@@ -467,7 +467,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 12
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel",
+            QCoreApplication.translate("ImportFromExcelDialog",
                                        "ETL (step 12): Join source and party t_id..."))
         step += 1
         self.progress.setValue(step / steps * 100)
@@ -484,7 +484,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 13
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel",
+            QCoreApplication.translate("ImportFromExcelDialog",
                                        "ETL (step 13): Join source, party, group party t_id..."))
         step += 1
         self.progress.setValue(step / steps * 100)
@@ -501,7 +501,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 14
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel",
+            QCoreApplication.translate("ImportFromExcelDialog",
                                        "ETL (step 14): Join source, party, group party, parcel t_id..."))
         step += 1
         self.progress.setValue(step / steps * 100)
@@ -518,7 +518,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 15
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel",
+            QCoreApplication.translate("ImportFromExcelDialog",
                                        "ETL (step 15): Load Rights..."))
         step += 1
         self.progress.setValue(step / steps * 100)
@@ -544,7 +544,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 16
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel",
+            QCoreApplication.translate("ImportFromExcelDialog",
                                        "ETL (step 16): Join source, party, group party, parcel, right t_id..."))
         step += 1
         self.progress.setValue(step / steps * 100)
@@ -561,7 +561,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # 17
         self.txt_log.setText(
-            QCoreApplication.translate("DialogImportFromExcel",
+            QCoreApplication.translate("ImportFromExcelDialog",
                                        "ETL (step 17): Load rrrfuente..."))
         step += 1
         self.progress.setValue(step / steps * 100)
@@ -580,10 +580,10 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         # Print summary getting feature count in involved LADM_COL tables...
         summary = """<html><head/><body><p>"""
-        summary += QCoreApplication.translate("DialogImportFromExcel", "Import done!!!<br/>")
+        summary += QCoreApplication.translate("ImportFromExcelDialog", "Import done!!!<br/>")
         for table in ladm_tables:
             summary += QCoreApplication.translate(
-                        "DialogImportFromExcel",
+                        "ImportFromExcelDialog",
                         "<br/><b>{count}</b> records loaded into table <b>{table}</b>").format(
                             count=table.featureCount() - ladm_tables_feature_count_before[table.name()],
                             table=table.name())
@@ -602,7 +602,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         error_counter = 0
 
         if layer is None and sheetname != EXCEL_SHEET_NAME_GROUP: # optional sheet
-            self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+            self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                     "The {} sheet has not information or has another name.").format(sheetname))
             error_counter += 1
         else:
@@ -610,107 +610,107 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
         if sheetname == EXCEL_SHEET_NAME_PLOT and layer is not None:
             if not title_validator:
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The title does not match the format in the sheet {}.").format(sheetname))
                 error_counter += 1
             if list(layer.getFeatures('"numero predial nuevo" is Null')):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column numero predial nuevo has empty values in sheet {}.").format(sheetname))
                 error_counter += 1    
             if not self.check_field_numeric_layer(layer, 'departamento'):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column departamento has non-numeric values in sheet {}.").format(sheetname))
                 error_counter += 1
             if not self.check_field_numeric_layer(layer, 'municipio'):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column municipio has non-numeric values in sheet {}.").format(sheetname))
                 error_counter += 1
             if not self.check_field_numeric_layer(layer, 'numero predial nuevo'):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column numero predial nuevo has non-numeric values in sheet {}.").format(sheetname))
                 error_counter += 1
 
         if sheetname == EXCEL_SHEET_NAME_PARTY and layer is not None:
             if not title_validator:
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The title does not match the format in sheet {}.").format(sheetname))
                 error_counter += 1
             if list(layer.getFeatures('"tipo documento" is Null')):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column tipo documento has empty values in sheet {}.").format(sheetname))
                 error_counter += 1
             if list(layer.getFeatures('"numero de documento" is Null')):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column numero de documento has empty values in sheet {}.").format(sheetname))
                 error_counter += 1
             if not self.check_length_attribute_value(layer, 'numero de documento', 12):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column numero de documento has more characters than expected in sheet {}.").format(sheetname))
                 error_counter += 1
             if list(layer.getFeatures('"tipo persona" is Null')):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column tipo persona has empty values in sheet {}.").format(sheetname))
                 error_counter += 1
 
         if sheetname == EXCEL_SHEET_NAME_GROUP and layer is not None:
             if not title_validator:
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The title does not match the format in the sheet {}.").format(sheetname))
                 error_counter += 1
             self.group_parties_exists = True
             if list(layer.getFeatures('"numero predial nuevo" is Null')):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column numero predial nuevo has empty values in sheet {}.").format(sheetname))
                 error_counter += 1
             if list(layer.getFeatures('"tipo documento" is Null')):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column tipo documento has empty values in sheet {}.").format(sheetname))
                 error_counter += 1
             if list(layer.getFeatures('"numero de documento" is Null')):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column numero de documento has empty values in sheet {}.").format(sheetname))
                 error_counter += 1
             if list(layer.getFeatures('"id agrupación" is Null')):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column id agrupación has empty values in sheet {}.").format(sheetname))
                 error_counter += 1
             if not self.check_length_attribute_value(layer, 'numero de documento', 12):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column numero de documento has more characters of the permitted in sheet {}.").format(sheetname))
                 error_counter += 1
 
         if sheetname == EXCEL_SHEET_NAME_RIGHT and layer is not None:
             if not title_validator:
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The title does not match the format in sheet {}.").format(sheetname))
                 error_counter += 1
             if list(layer.getFeatures('"tipo" is Null')):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column tipo has empty values in sheet {}.").format(sheetname))
                 error_counter += 1
             if list(layer.getFeatures('"tipo de fuente" is Null')):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column tipo de fuente has empty values in sheet {}.").format(sheetname))
                 error_counter += 1
             if list(layer.getFeatures('"estado_disponibilidad de la fuente" is Null')):
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column estado_disponibilidad de la fuente has empty values in sheet {}.").format(sheetname))
                 error_counter += 1
             #if list(layer.getFeatures('"Ruta de Almacenamiento de la fuente" is Null')):
-            #    self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel",
+            #    self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
             #            "The column Ruta de Almacenamiento de la fuente has empty values in sheet {}.").format(sheetname))
             #    error_counter += 1
             if len(list(layer.getFeatures('"número documento Interesado" is Null'))) + len(list(layer.getFeatures('"agrupación" is Null'))) != layer.featureCount():
-                self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "Number of non-null parties plus number of non-null group parties is not equal to number of records in sheet {}. There might be rights without party or group party associated.").format(sheetname))
                 error_counter += 1
             if not self.group_parties_exists:
                 if list(layer.getFeatures('"número documento Interesado" is Null')):
-                    self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                    self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                             "The column número documento Interesado has empty values in sheet {}.").format(sheetname))
                     error_counter += 1
                 if len(list(layer.getFeatures('"agrupacion" is Null'))) != layer.featureCount():
-                    self.generate_message_excel_error(QCoreApplication.translate("DialogImportFromExcel", 
+                    self.generate_message_excel_error(QCoreApplication.translate("ImportFromExcelDialog",
                         "The column agrupacion has data but the sheet does not exist in sheet {}.").format(sheetname))
                     error_counter += 1
 
@@ -831,10 +831,10 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
         settings = QSettings()
 
         new_filename, filter = QFileDialog.getSaveFileName(self,
-                                   QCoreApplication.translate("DialogImportFromExcel",
+                                   QCoreApplication.translate("ImportFromExcelDialog",
                                                               "Save File"),
                                    os.path.join(settings.value('Asistente-LADM_COL/import_from_excel_dialog/template_save_path', '.'), filename),
-                                   QCoreApplication.translate("DialogImportFromExcel",
+                                   QCoreApplication.translate("ImportFromExcelDialog",
                                                               "Excel File (*.xlsx *.xls)"))
 
         if new_filename:
@@ -843,7 +843,7 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
             if not template_file.exists():
                 self.log.logMessage("Excel doesn't exist! Probably due to a missing 'make' execution to generate resources...", PLUGIN_NAME, Qgis.Critical)
-                msg = QCoreApplication.translate("DialogImportFromExcel", "Excel file not found. Update your plugin. For details see log.")
+                msg = QCoreApplication.translate("ImportFromExcelDialog", "Excel file not found. Update your plugin. For details see log.")
                 self.show_message(msg, Qgis.Warning)
                 return
 
@@ -854,11 +854,11 @@ class DialogImportFromExcel(QDialog, DIALOG_UI):
 
             if template_file.copy(new_filename):
                 os.chmod(new_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
-                msg = QCoreApplication.translate("DialogImportFromExcel", """The file <a href="file:///{}">{}</a> was successfully saved!""").format(normalize_local_url(new_filename), os.path.basename(new_filename))
+                msg = QCoreApplication.translate("ImportFromExcelDialog", """The file <a href="file:///{}">{}</a> was successfully saved!""").format(normalize_local_url(new_filename), os.path.basename(new_filename))
                 self.show_message(msg, Qgis.Info)
             else:
                 self.log.logMessage('There was an error copying the CSV file {}!'.format(new_filename), PLUGIN_NAME, Qgis.Info)
-                msg = QCoreApplication.translate("DialogImportFromExcel", "The file couldn\'t be saved.")
+                msg = QCoreApplication.translate("ImportFromExcelDialog", "The file couldn\'t be saved.")
                 self.show_message(msg, Qgis.Warning)
 
 

@@ -32,12 +32,11 @@ from ...config.table_mapping_config import (BOUNDARY_TABLE,
                                             PLOT_TABLE,
                                             SURVEY_POINT_TABLE)
 from ...utils import get_ui_class
-from ...resources_rc import *
 
 DIALOG_UI = get_ui_class('dialogs/dlg_topological_edition.ui')
 
 
-class LayersForTopologicalEdition(QDialog, DIALOG_UI):
+class LayersForTopologicalEditionDialog(QDialog, DIALOG_UI):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
