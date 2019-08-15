@@ -67,7 +67,7 @@ def _qgis_model_baker_required(func_to_decorate):
                                                             QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
 
         if plugin_version_right:
-            func_to_decorate(inst)
+            func_to_decorate(inst, *args, **kwargs)
         else:
             if QGIS_MODEL_BAKER_REQUIRED_VERSION_URL:
                 # If we depend on a specific version of QGIS Model Baker (only on that one)
