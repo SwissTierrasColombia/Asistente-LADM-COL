@@ -1784,7 +1784,7 @@ class QualityUtils(QObject):
         # Check if layer is loaded
         layers = group.findLayers()
         for layer in layers:
-            if db.get_ladm_layer_name(layer) == table_name:
+            if layer.name() == table_name:
                 error_layer = layer.layer()
                 error_layer_exist = True
                 break
@@ -1892,7 +1892,7 @@ class QualityUtils(QObject):
         # Check if layer is loaded
         layers = group.findLayers()
         for layer in layers:
-            if db.get_ladm_layer_name(layer) == table_name:
+            if layer.name() == table_name:
                 error_layer = layer.layer()
                 error_layer_exist = True
                 break
@@ -1940,7 +1940,7 @@ class QualityUtils(QObject):
         # Check if layer is loaded
         layers = group.findLayers()
         for layer in layers:
-            if db.get_ladm_layer_name(layer) == table_name:
+            if layer.name() == table_name:
                 error_layer = layer.layer()
                 error_layer_exist = True
                 break
