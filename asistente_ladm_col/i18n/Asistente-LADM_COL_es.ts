@@ -1102,17 +1102,17 @@
         <translation>No se pudo encontrar la tabla Agrupación de Interesados... {}</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1069"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1166"/>
         <source>First enable automatic values for both namespace and local_id fields before creating group parties. Click the button to open the settings dialog.</source>
         <translation>Primero habilita los valores automáticos para los campos &apos;espacio de nombres&apos; y &apos;local_id&apos; antes de crear agrupaciones de interesados. Haz clic en el botón para abrir el diálogo de configuración.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1071"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1168"/>
         <source>Open Settings</source>
         <translation>Abrir Configuración</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1089"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1186"/>
         <location filename="../gui/create_group_party_cadastre.py" line="126"/>
         <location filename="../gui/create_group_party_cadastre.py" line="135"/>
         <location filename="../gui/create_group_party_cadastre.py" line="144"/>
@@ -1467,7 +1467,7 @@
         <translation type="vanished">Por favor selecciona solo un terreno</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/dockwidget_change_detection.py" line="94"/>
+        <location filename="../gui/change_detection/dockwidget_change_detection.py" line="102"/>
         <source>&apos;Change detection&apos; has been closed because you just removed a required layer.</source>
         <translation>La herramienta &apos;Identificación de novedades&apos; ha sido cerrada porque acabas de remover una capa necesaria.</translation>
     </message>
@@ -1796,12 +1796,12 @@
         <translation>¡El nuevo derecho (t_id={}) se creó exitosamente y fue asociado con su fuente administrativa correspondiente (t_id={})!</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1109"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1206"/>
         <source>Administrative Source table couldn&apos;t be found... {}</source>
         <translation>No se pudo encontrar la capa Fuente Administrativa... {}</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1115"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1212"/>
         <source>Close the edit session in table {} before creating rights.</source>
         <translation>Cierra la sesión de edición en la tabla {} antes de continuar creando derechos.</translation>
     </message>
@@ -2570,37 +2570,42 @@ Do you want to replace it?</source>
         <translation type="vanished">[Nombre de la base de datos GeoPackage que va a ser creada]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="92"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="97"/>
         <source>[Name of the XTF to be imported]</source>
         <translation>[Nombre del XTF a ser importado]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="104"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="109"/>
         <source>Show log</source>
         <translation>Mostrar detalles</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="114"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="71"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="128"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="72"/>
+        <source>Go to Create Structure...</source>
+        <translation>Ir a Crear Estructura...</translation>
+    </message>
+    <message>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="141"/>
         <source>The database is not defined!</source>
         <translation>¡La base de datos no está definida!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="157"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="170"/>
         <source>No models were found in the XTF. Is it a valid file?</source>
         <translation>No se encontraron modelos en el archivo XTF. ¿Es un archivo válido?</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="163"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="176"/>
         <source>Please set a valid XTF file</source>
         <translation>Por favor selecciona un archivo XTF válido</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="224"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="237"/>
         <source>The selected XTF file does not have information according to the LADM-COL model to import.</source>
         <translation>El archivo XTF seleccionado no tiene información correspondiente al modelo LADM-COL para importar.</translation>
     </message>
@@ -2609,12 +2614,12 @@ Do you want to replace it?</source>
         <translation type="vanished">Por favor define una base de datos válida antes de crear el proyecto.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="258"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="305"/>
         <source>An error occurred when importing the data. For more information see the log...</source>
         <translation>Ocurrió un error cuando se importaban datos. Para más información revisa los detalles del log...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="269"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="316"/>
         <source>Java could not be found. You can configure the JAVA_HOME environment variable, restart QGIS and try again.</source>
         <translation>No se pudo encontrar Java. Puedes configurar la variable de entorno JAVA_HOME, reiniciar QGIS e intentarlo de nuevo.</translation>
     </message>
@@ -2623,14 +2628,19 @@ Do you want to replace it?</source>
         <translation type="vanished">No se encontró JAVA. Por favor &lt;a href=&quot;https://java.com/en/download/&quot;&gt;instala Java&lt;/a&gt; o &lt;a href=&quot;#configure&quot;&gt;configura una ruta personalizada a Java&lt;/a&gt;. La variable de entorno JAVA_HOME también está soportada.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="283"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="330"/>
         <source>Import of the data was successfully completed</source>
         <translation>Se importaron los datos exitósamente</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="369"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="421"/>
         <source>Error when importing data</source>
         <translation>Error al importar datos</translation>
+    </message>
+    <message>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="68"/>
+        <source>Go to Import Data...</source>
+        <translation>Ir a Importar Datos...</translation>
     </message>
 </context>
 <context>
@@ -2911,7 +2921,7 @@ Do you want to replace it?</source>
         <translation type="vanished">[Nombre del esquema a ser creado]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="85"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="91"/>
         <source>Connection Settings</source>
         <translation>Configurar conexión</translation>
     </message>
@@ -2928,22 +2938,22 @@ Do you want to replace it?</source>
         <translation type="vanished">Base de datos GeoPackage (*.gpkg)</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="88"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="94"/>
         <source>Show log</source>
         <translation>Mostrar detalles</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="98"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="67"/>
         <source>Create LADM-COL structure</source>
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="112"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="126"/>
         <source>The database is not defined!</source>
         <translation>¡La base de datos no está definida!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="169"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="184"/>
         <source>Please set a valid model(s) before creating the LADM-COL structure.</source>
         <translation>Por favor define un(os) modelo(s) válido(s) antes de crear la estructura LADM-COL.</translation>
     </message>
@@ -2952,34 +2962,34 @@ Do you want to replace it?</source>
         <translation type="vanished">Por favor define un esquema válido antes de crear la estructura LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="200"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="215"/>
         <source>An error occurred when creating the LADM-COL structure. For more information see the log...</source>
         <translation>Ocurrió un error cuando se creaba la estructura LADM-COL. Para más información revisa los detalles del log...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="209"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="224"/>
         <source>Java could not be found. You can configure the JAVA_HOME environment variable, restart QGIS and try again.</source>
         <translation>No se pudo encontrar Java. Puedes configurar la variable de entorno JAVA_HOME, reiniciar QGIS e intentarlo de nuevo.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="223"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="242"/>
         <source>
 Done!</source>
         <translation>
 ¡Terminado exitósamente!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="224"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="243"/>
         <source>Creation of the LADM-COL structure was successfully completed</source>
         <translation>La estructura LADM-COL se creó exitósamente</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="293"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="312"/>
         <source>Model(s) successfully imported into the database!</source>
         <translation>¡Se importaron exitósamente los modelos a la base de datos!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="296"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="315"/>
         <source>Finished with errors!</source>
         <translation>¡Terminado con errores!</translation>
     </message>
@@ -3176,47 +3186,52 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>DockWidgetChanges</name>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="112"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="182"/>
         <source>Parcel Number</source>
         <translation>Número Predial</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="113"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="183"/>
         <source>Previous Parcel Number</source>
         <translation>Número Predial Anterior</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="114"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="184"/>
         <source>Folio de Matrícula Inmobiliaria</source>
         <translation>Folio de Matrícula Inmobiliaria</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="286"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="356"/>
         <source>parties</source>
         <translation>interesados</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="286"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="356"/>
         <source>party</source>
         <translation>interesado</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="288"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="358"/>
         <source>0 parties</source>
         <translation>0 interesados</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="295"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="365"/>
         <source>Geometry</source>
         <translation>Geometría</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="307"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="376"/>
+        <source>No associated plot</source>
+        <translation>No hay terreno asociado</translation>
+    </message>
+    <message>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="380"/>
         <source>Polygon</source>
         <translation>Polígono</translation>
     </message>
     <message>
-        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="327"/>
+        <location filename="../gui/change_detection/changes_per_parcel_panel.py" line="400"/>
         <source>First enter a query</source>
         <translation>Primero ingresa una consulta</translation>
     </message>
@@ -3224,32 +3239,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>DockWidgetQueries</name>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="126"/>
+        <location filename="../gui/dockwidget_queries.py" line="132"/>
         <source>Plot layer couldn&apos;t be found... {}</source>
         <translation>No se encontró la capa Terreno... {}</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="141"/>
+        <location filename="../gui/dockwidget_queries.py" line="147"/>
         <source>Parcel layer couldn&apos;t be found... {}</source>
         <translation>No se encontró la capa Predio... {}</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="156"/>
+        <location filename="../gui/dockwidget_queries.py" line="162"/>
         <source>UEBAUnit table couldn&apos;t be found... {}</source>
         <translation>No se encontró la tabla UEBAUNIT... {}</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="193"/>
+        <location filename="../gui/dockwidget_queries.py" line="199"/>
         <source>Parcel Number</source>
         <translation>Número Predial</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="194"/>
+        <location filename="../gui/dockwidget_queries.py" line="200"/>
         <source>Previous Parcel Number</source>
         <translation>Número Predial Anterior</translation>
     </message>
     <message>
-        <location filename="../gui/dockwidget_queries.py" line="195"/>
+        <location filename="../gui/dockwidget_queries.py" line="201"/>
         <source>Folio de Matrícula Inmobiliaria</source>
         <translation>Folio de Matrícula Inmobiliaria</translation>
     </message>
@@ -3316,7 +3331,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../ui/change_detection/changes_all_parcels_panel_widget.ui" line="65"/>
-        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="229"/>
+        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="239"/>
         <source>Estado</source>
         <translation>Estado</translation>
     </message>
@@ -3355,47 +3370,52 @@ p, li { white-space: pre-wrap; }
         <translation>Selecciona un terreno en el mapa</translation>
     </message>
     <message>
-        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="100"/>
+        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="99"/>
+        <source>Select a Plot feature to identify related information:</source>
+        <translation>Selecciona un terreno para traer información relacionada:</translation>
+    </message>
+    <message>
+        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="110"/>
         <source>Alphanumeric query</source>
         <translation>Consulta alfanumérica</translation>
     </message>
     <message>
-        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="108"/>
+        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="118"/>
         <source>In field:</source>
         <translation>En el campo:</translation>
     </message>
     <message>
-        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="129"/>
+        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="139"/>
         <source>Value:</source>
         <translation>Valor:</translation>
     </message>
     <message>
-        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="160"/>
+        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="170"/>
         <source>Query</source>
         <translation>Consultar</translation>
     </message>
     <message>
-        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="179"/>
+        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="189"/>
         <source>Show all plots</source>
         <translation>Mostrar todos los terrenos</translation>
     </message>
     <message>
-        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="192"/>
+        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="202"/>
         <source>Results</source>
         <translation>Resultados</translation>
     </message>
     <message>
-        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="214"/>
+        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="224"/>
         <source>Atributo</source>
         <translation>Atributo</translation>
     </message>
     <message>
-        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="219"/>
+        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="229"/>
         <source>Valor oficial</source>
         <translation>Valor oficial</translation>
     </message>
     <message>
-        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="224"/>
+        <location filename="../ui/change_detection/changes_per_parcel_panel_widget.ui" line="234"/>
         <source>Valor barrido</source>
         <translation>Valor barrido</translation>
     </message>
@@ -4340,7 +4360,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation>¡Se terminaron de revisar las {} reglas de calidad! Haz clic en el botón de la derecha para ver un reporte.</translation>
     </message>
     <message>
-        <location filename="../gui/log_quality_dialog.py" line="39"/>
+        <location filename="../gui/log_quality_dialog.py" line="40"/>
         <source>Export to PDF</source>
         <translation>Exportar a PDF</translation>
     </message>
@@ -4571,27 +4591,27 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>ModelParser</name>
     <message>
-        <location filename="../utils/model_parser.py" line="62"/>
+        <location filename="../utils/model_parser.py" line="65"/>
         <source>The plugin &apos;QGIS Model Baker&apos; is a prerequisite, but could not be found. Install it before continuing.</source>
         <translation>El complemento &apos;QGIS Model Baker&apos; es un prerrequisito pero no se encontró. Instálalo antes de continuar.</translation>
     </message>
     <message>
-        <location filename="../utils/model_parser.py" line="67"/>
+        <location filename="../utils/model_parser.py" line="70"/>
         <source>The Cadastre model couldn&apos;t be found in the database...</source>
         <translation>El modelo de Catastro-Registro no se encontró en la base de datos...</translation>
     </message>
     <message>
-        <location filename="../utils/model_parser.py" line="79"/>
+        <location filename="../utils/model_parser.py" line="81"/>
         <source>Model revision not found</source>
         <translation>No se encontró ninguna revisión (fecha de modificación) del modelo</translation>
     </message>
     <message>
-        <location filename="../utils/model_parser.py" line="84"/>
+        <location filename="../utils/model_parser.py" line="85"/>
         <source>The Cadastre model version found in the database is not supported!</source>
         <translation>¡La versión encontrada del modelo de Catastro-Registro no está soportada!</translation>
     </message>
     <message>
-        <location filename="../utils/model_parser.py" line="97"/>
+        <location filename="../utils/model_parser.py" line="98"/>
         <source>Couldn&apos;t determine versions to compare...</source>
         <translation>No se pudieron determinar las versiones para la comparación...</translation>
     </message>
@@ -5767,42 +5787,42 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">[Deja vacío para usar la contraseña del sistema]</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="164"/>
+        <location filename="../gui/settings_dialog.py" line="163"/>
         <source>Select a valid EPSG!</source>
         <translation>¡Debes seleccionar un Sistema de Referencia con EPSG válido!</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="407"/>
+        <location filename="../gui/settings_dialog.py" line="406"/>
         <source>The tested service is valid to upload files!</source>
         <translation>¡El servicio probado es válido para subir archivos!</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="412"/>
+        <location filename="../gui/settings_dialog.py" line="411"/>
         <source>The tested upload service is not compatible: no valid &apos;id&apos; found in response.</source>
         <translation>El servicio probado no es compatible: no se encontró un &apos;id&apos; válido en la respuesta.</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="416"/>
+        <location filename="../gui/settings_dialog.py" line="415"/>
         <source>Response from the tested service is not compatible: not valid JSON found.</source>
         <translation>La respuesta desde el servicio probado no es compatible: no se encontró un JSON válido.</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="420"/>
+        <location filename="../gui/settings_dialog.py" line="419"/>
         <source>There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL.</source>
         <translation>Hubo un problema conectando al servidor. El servidor podría estar caído o el servicio puede no ser accesible desde la URL especificada.</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="424"/>
+        <location filename="../gui/settings_dialog.py" line="423"/>
         <source>There was a problem connecting to Internet.</source>
         <translation>Hubo un problema con la conexión a Internet.</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="430"/>
+        <location filename="../gui/settings_dialog.py" line="429"/>
         <source>Not valid service URL to test!</source>
         <translation>¡La URL del servicio no es válida!</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.py" line="439"/>
+        <location filename="../gui/settings_dialog.py" line="438"/>
         <source>Missing roads will be marked as errors.</source>
         <translation>Las vías faltantes serán marcadas como errores.</translation>
     </message>
