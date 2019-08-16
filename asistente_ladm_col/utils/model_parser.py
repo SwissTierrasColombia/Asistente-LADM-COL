@@ -18,8 +18,10 @@
 """
 import re
 
-from qgis.core import QgsApplication, Qgis
-from qgis.PyQt.QtCore import QObject, QCoreApplication
+from qgis.core import (QgsApplication,
+                       Qgis)
+from qgis.PyQt.QtCore import (QObject,
+                              QCoreApplication)
 
 from ..config.general_config import (CADASTRE_MODEL_PREFIX,
                                      CADASTRE_MODEL_PREFIX_LEGACY,

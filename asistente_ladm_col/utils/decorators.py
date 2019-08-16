@@ -7,15 +7,19 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.PyQt.QtWidgets import QPushButton
 from qgis.core import (Qgis,
                        QgsApplication)
-from qgis.utils import (isPluginLoaded, loadPlugin, startPlugin)
+from qgis.utils import (isPluginLoaded,
+                        loadPlugin,
+                        startPlugin)
 
 from ..config.general_config import (PLUGIN_NAME,
                                      QGIS_MODEL_BAKER_PLUGIN_NAME,
                                      QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
                                      QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                     QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION, MAP_SWIPE_TOOL_PLUGIN_NAME,
-                                     MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION, MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
-                                     MAP_SWIPE_TOOL_REQUIRED_VERSION_URL, QGIS_MODEL_BAKER_PLUGIN_NAME)
+                                     QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
+                                     MAP_SWIPE_TOOL_PLUGIN_NAME,
+                                     MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
+                                     MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
+                                     MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
 
 from ..config.general_config import (LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
                                      LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE,

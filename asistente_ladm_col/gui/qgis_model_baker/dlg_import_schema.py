@@ -45,8 +45,8 @@ from ...config.general_config import (DEFAULT_EPSG,
                                       CREATE_BASKET_COL,
                                       CREATE_IMPORT_TID,
                                       STROKE_ARCS)
-from ...gui.dlg_get_java_path import DialogGetJavaPath
-from ...gui.settings_dialog import SettingsDialog
+from ...gui.dialogs.dlg_get_java_path import GetJavaPathDialog
+from ...gui.dialogs.dlg_settings import SettingsDialog
 from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
@@ -60,7 +60,6 @@ DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_schema.ui')
 
 
 class DialogImportSchema(QDialog, DIALOG_UI):
-
     models_have_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db
     open_dlg_import_data = pyqtSignal()
 
@@ -216,7 +215,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                     return
             except JavaNotFoundError:
                 # Set JAVA PATH
-                get_java_path_dlg = DialogGetJavaPath()
+                get_java_path_dlg = GetJavaPathDialog()
                 get_java_path_dlg.setModal(True)
                 if get_java_path_dlg.exec_():
                     configuration = self.update_configuration()

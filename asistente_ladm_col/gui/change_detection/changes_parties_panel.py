@@ -16,46 +16,22 @@
  *                                                                         *
  ***************************************************************************/
 """
-from functools import partial
-
-import qgis
-
-from qgis.PyQt.QtGui import QMouseEvent
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QEvent, QPoint
-from qgis.PyQt.QtWidgets import QTableWidgetItem, QTextEdit
-from qgis.core import (QgsWkbTypes,
-                       Qgis,
-                       QgsMessageLog,
-                       QgsFeature,
-                       QgsFeatureRequest,
-                       QgsExpression,
-                       QgsRectangle,
-                       NULL)
-
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import (QTableWidgetItem,
+                                 QTextEdit)
+from qgis.core import NULL
 from qgis.gui import QgsPanelWidget
-from asistente_ladm_col.config.general_config import (OFFICIAL_DB_PREFIX,
-                                                      OFFICIAL_DB_SUFFIX,
-                                                      PREFIX_LAYER_MODIFIERS,
-                                                      SUFFIX_LAYER_MODIFIERS,
-                                                      STYLE_GROUP_LAYER_MODIFIERS,
-                                                      COLLECTED_DB_SOURCE,
-                                                      OFFICIAL_DB_SOURCE)
-from asistente_ladm_col.config.table_mapping_config import (PARCEL_NUMBER_FIELD,
-                                                            PARCEL_NUMBER_BEFORE_FIELD,
-                                                            COL_PARTY_DOCUMENT_ID_FIELD,
-                                                            FMI_FIELD,
-                                                            ID_FIELD,
-                                                            PARCEL_TABLE,
-                                                            PLOT_TABLE,
-                                                            UEBAUNIT_TABLE,
-                                                            COL_PARTY_TABLE,
-                                                            DICT_PLURAL,
-                                                            COL_PARTY_DOC_TYPE_FIELD,
-                                                            DOCUMENT_ID_FIELD,
-                                                            COL_PARTY_NAME_FIELD)
-from asistente_ladm_col.utils import get_ui_class
+
+from ...config.general_config import (COLLECTED_DB_SOURCE,
+                                      OFFICIAL_DB_SOURCE)
+from ...config.table_mapping_config import (COL_PARTY_DOCUMENT_ID_FIELD,
+                                            COL_PARTY_DOC_TYPE_FIELD,
+                                            DOCUMENT_ID_FIELD,
+                                            COL_PARTY_NAME_FIELD)
+from ...utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_parties_panel_widget.ui')
+
 
 class ChangesPartyPanelWidget(QgsPanelWidget, WIDGET_UI):
     def __init__(self, parent, utils, data):

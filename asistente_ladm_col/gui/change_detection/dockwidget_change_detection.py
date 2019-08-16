@@ -47,6 +47,7 @@ from ...config.general_config import (OFFICIAL_DB_PREFIX,
                                       CHANGE_DETECTION_PARCEL_REMAINS,
                                       CHANGE_DETECTION_SEVERAL_PARCELS,
                                       CHANGE_DETECTION_NULL_PARCEL,
+                                      LAYER,
                                       PARCEL_STATUS,
                                       PARCEL_STATUS_DISPLAY,
                                       PLOT_GEOMETRY_KEY)
@@ -177,8 +178,8 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         if self.map_swipe_tool.action.isChecked():
             self.map_swipe_tool.run(False)
 
-        self.utils.qgis_utils.set_layer_visibility(self.utils._official_layers[PLOT_TABLE]['layer'], True)
-        self.utils.qgis_utils.set_layer_visibility(self.utils._layers[PLOT_TABLE]['layer'], True)
+        self.utils.qgis_utils.set_layer_visibility(self.utils._official_layers[PLOT_TABLE][LAYER], True)
+        self.utils.qgis_utils.set_layer_visibility(self.utils._layers[PLOT_TABLE][LAYER], True)
 
 
 class ChangeDetectionUtils(QObject):
@@ -203,15 +204,15 @@ class ChangeDetectionUtils(QObject):
 
     def initialize_layers(self):
         self._layers = {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, 'layer': None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, 'layer': None}
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
         }
 
         self._official_layers = {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, 'layer': None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, 'layer': None}
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
         }
 
     def initialize_data(self):
@@ -220,10 +221,12 @@ class ChangeDetectionUtils(QObject):
 
     def add_layers(self):
         # We can pick any required layer, if it is None, no prior load has been done, otherwise skip...
-        if self._layers[PLOT_TABLE]['layer'] is None:
+        if self._layers[PLOT_TABLE][LAYER] is None:
             self.qgis_utils.map_freeze_requested.emit(True)
 
-            res_layers = self.qgis_utils.get_layers(self._db, self._layers, load=True, emit_map_freeze=False)
+            self.qgis_utils.get_layers(self._db, self._layers, load=True, emit_map_freeze=False)
+            if not self._layers:
+                return None
 
             # Now load official layers
             # Set layer modifiers
@@ -232,33 +235,31 @@ class ChangeDetectionUtils(QObject):
                 SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
                 STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
             }
-            res_official_layers = self.qgis_utils.get_layers(self._official_db,
-                                                          self._official_layers,
-                                                          load=True,
-                                                          emit_map_freeze=False,
-                                                          layer_modifiers=layer_modifiers)
+            self.qgis_utils.get_layers(self._official_db,
+                                       self._official_layers,
+                                       load=True,
+                                       emit_map_freeze=False,
+                                       layer_modifiers=layer_modifiers)
+            if not self._official_layers:
+                return None
 
             self.qgis_utils.map_freeze_requested.emit(False)
 
-
-            if res_layers is None or res_official_layers is None:
-                return
-
             for layer_name in self._layers:
-                if self._layers[layer_name]['layer']: # Layer was found, listen to its removal so that we can react properly
+                if self._layers[layer_name][LAYER]: # Layer was found, listen to its removal so that we can react properly
                     try:
-                        self._layers[layer_name]['layer'].willBeDeleted.disconnect(self.change_detection_layer_removed)
+                        self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.change_detection_layer_removed)
                     except:
                         pass
-                    self._layers[layer_name]['layer'].willBeDeleted.connect(self.change_detection_layer_removed)
+                    self._layers[layer_name][LAYER].willBeDeleted.connect(self.change_detection_layer_removed)
 
             for layer_name in self._official_layers:
-                if self._official_layers[layer_name]['layer']: # Layer was found, listen to its removal so that we can react properly
+                if self._official_layers[layer_name][LAYER]: # Layer was found, listen to its removal so that we can react properly
                     try:
-                        self._official_layers[layer_name]['layer'].willBeDeleted.disconnect(self.change_detection_layer_removed)
+                        self._official_layers[layer_name][LAYER].willBeDeleted.disconnect(self.change_detection_layer_removed)
                     except:
                         pass
-                    self._official_layers[layer_name]['layer'].willBeDeleted.connect(self.change_detection_layer_removed)
+                    self._official_layers[layer_name][LAYER].willBeDeleted.connect(self.change_detection_layer_removed)
 
     def get_compared_parcels_data(self, inverse=False):
         # If it's the first call, get from the DB, else get from a cache

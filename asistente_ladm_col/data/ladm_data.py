@@ -16,13 +16,13 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsApplication,
                        NULL,
                        QgsFeatureRequest,
                        QgsExpression,
                        QgsWkbTypes)
-from ..config.general_config import PLOT_GEOMETRY_KEY
+from ..config.general_config import (LAYER,
+                                     PLOT_GEOMETRY_KEY)
 from ..config.table_mapping_config import (ID_FIELD,
                                            DICT_PLURAL,
                                            PLOT_TABLE,
@@ -79,6 +79,7 @@ PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE = [PROPERTY_RECORD_CARD_SECTOR_FIELD,
                                           PROPERTY_RECORD_CARD_BLOCK_TOWN_FIELD,
                                           PROPERTY_RECORD_CARD_ECONOMIC_DESTINATION_FIELD]
 
+
 class LADM_DATA():
     """
     High-level class to get related information from the LADM-COL database.
@@ -97,8 +98,9 @@ class LADM_DATA():
         :return: list of plot ids related to the parcel
         """
         layers = {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, 'layer': None}}
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
+        }
 
         if plot_layer is not None:
             del layers[PLOT_TABLE]
@@ -106,14 +108,15 @@ class LADM_DATA():
             del layers[UEBAUNIT_TABLE]
 
         if layers:
-            res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-            if res_layers is None:
-                return
+            self.qgis_utils.get_layers(db, layers, load=True)
+            if not layers:
+                return None
 
             if PLOT_TABLE in layers:
-                plot_layer = layers[PLOT_TABLE]['layer']
+                plot_layer = layers[PLOT_TABLE][LAYER]
+
             if UEBAUNIT_TABLE in layers:
-                uebaunit_table = layers[UEBAUNIT_TABLE]['layer']
+                uebaunit_table = layers[UEBAUNIT_TABLE][LAYER]
 
         expression = QgsExpression("{} IN ('{}') AND {} IS NOT NULL".format(
                                                     UEBAUNIT_TABLE_PARCEL_FIELD,
@@ -156,8 +159,9 @@ class LADM_DATA():
         :return: list of parcel ids related to the parcel
         """
         layers = {
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, 'layer': None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, 'layer': None}}
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
+        }
 
         if parcel_table is not None:
             del layers[PARCEL_TABLE]
@@ -165,14 +169,15 @@ class LADM_DATA():
             del layers[UEBAUNIT_TABLE]
 
         if layers:
-            res_layers = self.qgis_utils.get_layers(db, layers, load=True)
-            if res_layers is None:
-                return
+            self.qgis_utils.get_layers(db, layers, load=True)
+            if not layers:
+                return None
 
             if PARCEL_TABLE in layers:
-                parcel_table = layers[PARCEL_TABLE]['layer']
+                parcel_table = layers[PARCEL_TABLE][LAYER]
+
             if UEBAUNIT_TABLE in layers:
-                uebaunit_table = layers[UEBAUNIT_TABLE]['layer']
+                uebaunit_table = layers[UEBAUNIT_TABLE][LAYER]
 
 
         expression = QgsExpression("{} IN ({}) AND {} IS NOT NULL".format(
@@ -214,29 +219,29 @@ class LADM_DATA():
         :return: dict with parcel info for comparisons
         """
         layers = {
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, 'layer': None},
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
-            RIGHT_TABLE: {'name': RIGHT_TABLE, 'geometry': None, 'layer': None},
-            COL_PARTY_TABLE: {'name': COL_PARTY_TABLE, 'geometry': None, 'layer': None},
-            LA_GROUP_PARTY_TABLE: {'name': LA_GROUP_PARTY_TABLE, 'geometry': None, 'layer': None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, 'layer': None},
-            MEMBERS_TABLE: {'name': MEMBERS_TABLE, 'geometry': None, 'layer': None},
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            RIGHT_TABLE: {'name': RIGHT_TABLE, 'geometry': None, LAYER: None},
+            COL_PARTY_TABLE: {'name': COL_PARTY_TABLE, 'geometry': None, LAYER: None},
+            LA_GROUP_PARTY_TABLE: {'name': LA_GROUP_PARTY_TABLE, 'geometry': None, LAYER: None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None},
+            MEMBERS_TABLE: {'name': MEMBERS_TABLE, 'geometry': None, LAYER: None},
         }
 
         if db.property_record_card_model_exists():
-            layers[PROPERTY_RECORD_CARD_TABLE] = {'name': PROPERTY_RECORD_CARD_TABLE, 'geometry': None, 'layer': None}
+            layers[PROPERTY_RECORD_CARD_TABLE] = {'name': PROPERTY_RECORD_CARD_TABLE, 'geometry': None, LAYER: None}
 
-        res_layers = self.qgis_utils.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
-        if res_layers is None:
-            return
+        self.qgis_utils.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
+        if not layers:
+            return None
 
-        parcel_features = LADM_DATA.get_features_by_search_criterion(layers[PARCEL_TABLE]['layer'], search_criterion=search_criterion, with_attributes=True)
+        parcel_features = LADM_DATA.get_features_by_search_criterion(layers[PARCEL_TABLE][LAYER], search_criterion=search_criterion, with_attributes=True)
 
         # ===================== Start adding parcel info ==================================================
         dict_features = dict()
         for feature in parcel_features:
             dict_attrs = dict()
-            for field in layers[PARCEL_TABLE]['layer'].fields():
+            for field in layers[PARCEL_TABLE][LAYER].fields():
                 if field.name() in PARCEL_FIELDS_TO_COMPARE:
                     value = feature.attribute(field.name())
                     dict_attrs[field.name()] = value
@@ -251,11 +256,11 @@ class LADM_DATA():
         # =====================  Start adding plot info ==================================================
         parcel_t_ids = [parcel_feature[ID_FIELD] for parcel_feature in parcel_features]
         expression_uebaunit_features = QgsExpression("{} IN ({}) AND {} IS NOT NULL".format(UEBAUNIT_TABLE_PARCEL_FIELD, ",".join([str(id) for id in parcel_t_ids]), UEBAUNIT_TABLE_PLOT_FIELD))
-        uebaunit_features = LADM_DATA.get_features_by_expression(layers[UEBAUNIT_TABLE]['layer'], expression_uebaunit_features, with_attributes=True)
+        uebaunit_features = LADM_DATA.get_features_by_expression(layers[UEBAUNIT_TABLE][LAYER], expression_uebaunit_features, with_attributes=True)
 
         plot_t_ids = [feature[UEBAUNIT_TABLE_PLOT_FIELD] for feature in uebaunit_features]
         expression_plot_features = QgsExpression("{} IN ('{}')".format(ID_FIELD, "','".join([str(id) for id in plot_t_ids])))
-        plot_features = LADM_DATA.get_features_by_expression(layers[PLOT_TABLE]['layer'], expression_plot_features, with_attributes=True, with_geometry=True)
+        plot_features = LADM_DATA.get_features_by_expression(layers[PLOT_TABLE][LAYER], expression_plot_features, with_attributes=True, with_geometry=True)
 
         dict_parcel_plot = {uebaunit_feature[UEBAUNIT_TABLE_PARCEL_FIELD]: uebaunit_feature[UEBAUNIT_TABLE_PLOT_FIELD] for uebaunit_feature in uebaunit_features}
         dict_plot_features = {plot_feature[ID_FIELD]: plot_feature for plot_feature in plot_features}
@@ -277,12 +282,12 @@ class LADM_DATA():
 
         # ===================== Start adding party info ==================================================
         expression_right_features = QgsExpression("{} IN ({})".format(RIGHT_TABLE_PARCEL_FIELD, ",".join([str(id) for id in parcel_t_ids])))
-        right_features = LADM_DATA.get_features_by_expression(layers[RIGHT_TABLE]['layer'], expression_right_features, with_attributes=True)
+        right_features = LADM_DATA.get_features_by_expression(layers[RIGHT_TABLE][LAYER], expression_right_features, with_attributes=True)
 
         dict_party_right = {right_feature[RIGHT_TABLE_PARTY_FIELD]: right_feature for right_feature in right_features if right_feature[RIGHT_TABLE_PARTY_FIELD] != NULL}
         party_t_ids = [right_feature[RIGHT_TABLE_PARTY_FIELD] for right_feature in right_features if right_feature[RIGHT_TABLE_PARTY_FIELD] != NULL]
         expression_party_features = QgsExpression("{} IN ({})".format(ID_FIELD, ",".join([str(id) for id in party_t_ids])))
-        party_features = LADM_DATA.get_features_by_expression(layers[COL_PARTY_TABLE]['layer'], expression_party_features, with_attributes=True)
+        party_features = LADM_DATA.get_features_by_expression(layers[COL_PARTY_TABLE][LAYER], expression_party_features, with_attributes=True)
 
         dict_parcel_parties = dict()
         for right_feature in right_features:
@@ -336,7 +341,7 @@ class LADM_DATA():
         dict_group_party_right = {right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD]: right_feature for right_feature in right_features if right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD] != NULL}
         group_party_t_ids = [right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD] for right_feature in right_features if right_feature[RIGHT_TABLE_GROUP_PARTY_FIELD] != NULL]
         expression_members_features = QgsExpression("{} IN ({})".format(MEMBERS_GROUP_PARTY_FIELD, ",".join([str(id) for id in group_party_t_ids])))
-        members_features = LADM_DATA.get_features_by_expression(layers[MEMBERS_TABLE]['layer'], expression_members_features, with_attributes=True)
+        members_features = LADM_DATA.get_features_by_expression(layers[MEMBERS_TABLE][LAYER], expression_members_features, with_attributes=True)
 
         dict_group_party_parties = dict()  # {id_group_party: [id_party1, id_party2]}
         for members_feature in members_features:
@@ -351,7 +356,7 @@ class LADM_DATA():
         party_t_ids = list(set(party_t_ids))
 
         expression_party_features = QgsExpression("{} IN ({})".format(ID_FIELD, ",".join([str(id) for id in party_t_ids])))
-        party_features = LADM_DATA.get_features_by_expression(layers[COL_PARTY_TABLE]['layer'], expression_party_features, with_attributes=True)
+        party_features = LADM_DATA.get_features_by_expression(layers[COL_PARTY_TABLE][LAYER], expression_party_features, with_attributes=True)
 
         dict_parties = dict()  # {id_party: {tipo_documento: CC, documento_identidad: 123456, nombre: Pepito}}
         for party_feature in party_features:
@@ -397,7 +402,7 @@ class LADM_DATA():
         # =====================  Start add record card info ==================================================
         if db.property_record_card_model_exists():
             expr_property_record_card_features = QgsExpression("{} IN ({})".format(PROPERTY_RECORD_CARD_PARCEL_ID_FIELD, ",".join([str(id) for id in parcel_t_ids])))
-            property_record_card_features = LADM_DATA.get_features_by_expression(layers[PROPERTY_RECORD_CARD_TABLE]['layer'], expr_property_record_card_features, with_attributes=True)
+            property_record_card_features = LADM_DATA.get_features_by_expression(layers[PROPERTY_RECORD_CARD_TABLE][LAYER], expr_property_record_card_features, with_attributes=True)
 
             dict_property_record_card_features = {property_record_card_feature[PROPERTY_RECORD_CARD_PARCEL_ID_FIELD]: property_record_card_feature for property_record_card_feature in property_record_card_features}
 

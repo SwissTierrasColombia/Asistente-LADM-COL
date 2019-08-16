@@ -20,6 +20,7 @@ from asistente_ladm_col.config.general_config import DEFAULT_EPSG
 import_qgis_model_baker()
 import_processing()
 
+
 class TestCopy(unittest.TestCase):
 
     @classmethod

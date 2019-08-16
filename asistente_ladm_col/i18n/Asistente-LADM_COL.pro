@@ -41,7 +41,6 @@ FORMS = ../ui/dlg_load_layers.ui \
         ../ui/change_detection/changes_per_parcel_panel_widget.ui \
         ../ui/change_detection/dockwidget_change_detection.ui \
         ../ui/change_detection/parcels_changes_summary_panel_widget.ui \
-        ../ui/dockwidget_changes.ui \
         ../ui/official_data_settings_dialog.ui \
 	../ui/settings_gpkg.ui \
 	../ui/settings_pg.ui

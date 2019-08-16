@@ -41,7 +41,6 @@ from ..config.table_mapping_config import (TABLE_PROP_DOMAIN,
                                            TABLE_PROP_STRUCTURE)
 
 
-
 class QgisModelBakerUtils(QObject):
 
     def __init__(self):

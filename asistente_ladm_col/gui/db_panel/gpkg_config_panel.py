@@ -26,7 +26,7 @@ from ...utils.qt_utils import (make_save_file_selector,
 from .db_config_panel import DbConfigPanel
 from ...utils import get_ui_class
 
-WIDGET_UI = get_ui_class('settings_gpkg.ui')
+WIDGET_UI = get_ui_class('dialogs/settings_gpkg.ui')
 
 
 class GpkgConfigPanel(DbConfigPanel, WIDGET_UI):

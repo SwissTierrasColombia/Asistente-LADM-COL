@@ -27,7 +27,8 @@ from qgis.core import (QgsFeatureRenderer,
                        QgsAbstractVectorLayerLabeling,
                        QgsReadWriteContext)
 
-from ..config.translator import QGIS_LANG, DEFAULT_LANGUAGE
+from ..config.translator import (QGIS_LANG,
+                                 DEFAULT_LANGUAGE)
 from ..config.general_config import (STYLES_DIR,
                                      STYLE_GROUP_LAYER_MODIFIERS)
 from ..config.symbology import (DEFAULT_STYLE_GROUP,

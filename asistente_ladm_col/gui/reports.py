@@ -34,7 +34,8 @@ from qgis.PyQt.QtCore import (Qt,
                               QFile,
                               QProcess,
                               QEventLoop,
-                              QIODevice, pyqtSignal)
+                              QIODevice,
+                              pyqtSignal)
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QMessageBox,
                                  QProgressBar)
@@ -52,14 +53,13 @@ from ..config.general_config import (ANNEX_17_REPORT,
 from ..config.table_mapping_config import (ID_FIELD,
                                            PLOT_TABLE,
                                            PARCEL_NUMBER_FIELD)
-from ..gui.dlg_get_java_path import DialogGetJavaPath
+from ..gui.dialogs.dlg_get_java_path import GetJavaPathDialog
 from ..utils.qt_utils import (remove_readonly,
                               normalize_local_url)
 from ..utils.utils import Utils
 
 
 class ReportGenerator(QObject):
-
     enable_action_requested = pyqtSignal(str, bool)
 
     def __init__(self, qgis_utils, ladm_data):
@@ -192,7 +192,7 @@ class ReportGenerator(QObject):
 
         # Check if JAVA_HOME path is set, otherwise use path from QGIS Model Baker
         if not Utils.set_java_home():
-            get_java_path_dlg = DialogGetJavaPath()
+            get_java_path_dlg = GetJavaPathDialog()
             get_java_path_dlg.setModal(True)
             get_java_path_dlg.exec_()
 
@@ -207,11 +207,7 @@ class ReportGenerator(QObject):
                 return
 
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
-        if plot_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ReportGenerator",
-                                           "Layer 'Plot' not found in DB! {}").format(db.get_description()),
-                Qgis.Warning)
+        if not plot_layer:
             return
 
         selected_plots = plot_layer.selectedFeatures()

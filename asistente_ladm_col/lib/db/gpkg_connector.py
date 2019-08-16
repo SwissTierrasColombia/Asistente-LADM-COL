@@ -21,7 +21,8 @@ import os
 import qgis.utils
 from qgis.PyQt.QtCore import QCoreApplication
 
-from .db_connector import (DBConnector, EnumTestLevel)
+from .db_connector import (DBConnector,
+                           EnumTestLevel)
 
 
 class GPKGConnector(DBConnector):

@@ -24,22 +24,15 @@ import sys
 from functools import partial
 
 from qgis.core import Qgis
-import qgis.utils
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
-                              QFile,
-                              QIODevice,
-                              QEventLoop,
-                              QUrl,
                               QSettings)
-from qgis.PyQt.QtPrintSupport import QPrinter                              
+from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtGui import QValidator
-from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QApplication,
                                  QWizard,
                                  QTextEdit)
-from qgis.core import QgsNetworkAccessManager
 
 
 def selectFileName(line_edit_widget, title, file_filter, parent):

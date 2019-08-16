@@ -18,21 +18,31 @@
 """
 from functools import partial
 
+from qgis.PyQt.QtCore import (Qt,
+                              pyqtSignal,
+                              QCoreApplication)
+from qgis.PyQt.QtWidgets import (QTableWidgetItem,
+                                 QMenu,
+                                 QAction)
+from qgis.core import (QgsWkbTypes,
+                       QgsApplication)
 from qgis.gui import QgsPanelWidget
-from qgis.core import QgsWkbTypes, QgsFeatureRequest, QgsExpression, QgsApplication
-from qgis.PyQt.QtCore import Qt, pyqtSignal, QCoreApplication
-from qgis.PyQt.QtWidgets import QTableWidgetItem, QMenu, QAction
 
-from asistente_ladm_col.config.general_config import (PARCEL_STATUS_DISPLAY,
-                                                      PARCEL_STATUS,
-                                                      STATUS_COLORS, SOURCE_DB, COLLECTED_DB_SOURCE,
-                                                      CHANGE_DETECTION_MISSING_PARCEL, CHANGE_DETECTION_NEW_PARCEL,
-                                                      OFFICIAL_DB_SOURCE)
-from asistente_ladm_col.config.table_mapping_config import (PLOT_TABLE,
-                                                            PARCEL_TABLE,
-                                                            UEBAUNIT_TABLE,
-                                                            ID_FIELD, PARCEL_NUMBER_FIELD)
-from asistente_ladm_col.utils import get_ui_class
+from ...config.general_config import (PARCEL_STATUS_DISPLAY,
+                                      PARCEL_STATUS,
+                                      LAYER,
+                                      STATUS_COLORS,
+                                      SOURCE_DB,
+                                      COLLECTED_DB_SOURCE,
+                                      CHANGE_DETECTION_MISSING_PARCEL,
+                                      CHANGE_DETECTION_NEW_PARCEL,
+                                      OFFICIAL_DB_SOURCE)
+from ...config.table_mapping_config import (PLOT_TABLE,
+                                            PARCEL_TABLE,
+                                            UEBAUNIT_TABLE,
+                                            ID_FIELD,
+                                            PARCEL_NUMBER_FIELD)
+from ...utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_all_parcels_panel_widget.ui')
 
@@ -57,8 +67,8 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.tbl_changes_all_parcels.customContextMenuRequested.connect(self.show_context_menu)
 
         # Remove selection in plot layers
-        self.utils._layers[PLOT_TABLE]['layer'].removeSelection()
-        self.utils._official_layers[PLOT_TABLE]['layer'].removeSelection()
+        self.utils._layers[PLOT_TABLE][LAYER].removeSelection()
+        self.utils._official_layers[PLOT_TABLE][LAYER].removeSelection()
 
         self.fill_table(filter_parcels)
 
@@ -103,20 +113,20 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         if filter_parcels:
             plot_layer = None
             if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE:
-                plot_layer = self.utils._layers[PLOT_TABLE]['layer']
+                plot_layer = self.utils._layers[PLOT_TABLE][LAYER]
             else:
-                plot_layer = self.utils._official_layers[PLOT_TABLE]['layer']
+                plot_layer = self.utils._official_layers[PLOT_TABLE][LAYER]
 
             plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE else self.utils._official_db,
                           filter_parcels[ID_FIELD],
                           None, # Get QGIS plot ids
                           plot_layer,
-                          self.utils._layers[UEBAUNIT_TABLE]['layer'] if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE else self.utils._official_layers[UEBAUNIT_TABLE]['layer'])
+                          self.utils._layers[UEBAUNIT_TABLE][LAYER] if filter_parcels[SOURCE_DB] == COLLECTED_DB_SOURCE else self.utils._official_layers[UEBAUNIT_TABLE][LAYER])
             self.parent.request_zoom_to_features(plot_layer, ids=plot_ids, duration=3000)
 
             # plot_layer.select(plot_ids)
         else:
-            self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[PLOT_TABLE]['layer'])
+            self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[PLOT_TABLE][LAYER])
             self.utils.iface.zoomToActiveLayer()
 
         self.select_related_plots_listed(False)
@@ -132,19 +142,21 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         if parcels_t_ids is None:
             return
 
-        res_layers = self.utils.qgis_utils.get_layers(self.utils._db, {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}, load=True)
+        layers = {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}}
 
-        plot_layer = res_layers[PLOT_TABLE]
-        plot_layer.setSubsetString("")
+        self.utils.qgis_utils.get_layers(self.utils._db, layers, load=True)
+        if not layers:
+            return None
 
-        plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db, parcels_t_ids, field_name=None, plot_layer=plot_layer, uebaunit_table=res_layers[UEBAUNIT_TABLE])
+        layers[PLOT_TABLE][LAYER].setSubsetString("")
+        plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db, parcels_t_ids, field_name=None, plot_layer=layers[PLOT_TABLE][LAYER], uebaunit_table=layers[UEBAUNIT_TABLE][LAYER])
 
         if plot_ids:
             action_zoom = QAction(QCoreApplication.translate("ChangesAllParcelsPanelWidget", "Zoom to related plots"))
-            action_zoom.triggered.connect(partial(self.parent.request_zoom_to_features, plot_layer, plot_ids, list()))
+            action_zoom.triggered.connect(partial(self.parent.request_zoom_to_features, layers[PLOT_TABLE][LAYER], plot_ids, list()))
             context_menu.addAction(action_zoom)
 
         action_view_changes = QAction(QCoreApplication.translate("ChangesAllParcelsPanelWidget", "View changes for this parcel number"))
@@ -176,16 +188,16 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.select_related_plots(parcels_t_ids_official, True)
 
         if zoom_to_selected:
-            plot_layer = self.utils._layers[PLOT_TABLE]['layer']
+            plot_layer = self.utils._layers[PLOT_TABLE][LAYER]
             if plot_layer.selectedFeatureIds():
                 self.utils.iface.mapCanvas().zoomToFeatureIds(plot_layer, plot_layer.selectedFeatureIds())
             else:  # Bajas
-                plot_layer = self.utils._official_layers[PLOT_TABLE]['layer']
+                plot_layer = self.utils._official_layers[PLOT_TABLE][LAYER]
                 self.utils.iface.mapCanvas().zoomToFeatureIds(plot_layer, plot_layer.selectedFeatureIds())
 
     def select_related_plots(self, parcels_t_ids, inverse):
-        plot_layer = self.utils._official_layers[PLOT_TABLE]['layer'] if inverse else self.utils._layers[PLOT_TABLE]['layer']
-        uebaunit_table = self.utils._official_layers[UEBAUNIT_TABLE]['layer'] if inverse else self.utils._layers[UEBAUNIT_TABLE]['layer']
+        plot_layer = self.utils._official_layers[PLOT_TABLE][LAYER] if inverse else self.utils._layers[PLOT_TABLE][LAYER]
+        uebaunit_table = self.utils._official_layers[UEBAUNIT_TABLE][LAYER] if inverse else self.utils._layers[UEBAUNIT_TABLE][LAYER]
         plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._official_db if inverse else self.utils._db,
                                                                      parcels_t_ids,
                                                                      field_name=None,  # Get QGIS ids

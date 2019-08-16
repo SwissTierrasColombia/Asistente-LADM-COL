@@ -21,7 +21,7 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication)
 
 from .db_config_panel import DbConfigPanel
-from ..dlg_get_db_or_schema_name import DialogGetDBOrSchemaName
+from ...gui.dialogs.dlg_get_db_or_schema_name import GetDBOrSchemaNameDialog
 from ...lib.db.db_connector import EnumTestLevel
 
 
@@ -133,7 +133,7 @@ class DbSchemaDbPanel(DbConfigPanel):
         res, msg = tmp_db_conn.test_connection(test_level=EnumTestLevel.SERVER)
 
         if res:
-            create_db_dlg = DialogGetDBOrSchemaName(tmp_db_conn, tmp_db_conn.uri, 'database', parent=self)
+            create_db_dlg = GetDBOrSchemaNameDialog(tmp_db_conn, tmp_db_conn.uri, 'database', parent=self)
             create_db_dlg.db_or_schema_created.connect(self.database_created)
             create_db_dlg.setModal(True)
             create_db_dlg.exec_()
@@ -149,7 +149,7 @@ class DbSchemaDbPanel(DbConfigPanel):
         res, msg = tmp_db_conn.test_connection(test_level=EnumTestLevel.DB)
 
         if res:
-            create_db_dlg = DialogGetDBOrSchemaName(tmp_db_conn, tmp_db_conn.uri, 'schema', parent=self)
+            create_db_dlg = GetDBOrSchemaNameDialog(tmp_db_conn, tmp_db_conn.uri, 'schema', parent=self)
             create_db_dlg.db_or_schema_created.connect(self.schema_created)
             create_db_dlg.setModal(True)
             create_db_dlg.exec_()

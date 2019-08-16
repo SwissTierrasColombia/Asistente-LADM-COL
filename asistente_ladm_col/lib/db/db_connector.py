@@ -19,7 +19,7 @@
 import psycopg2
 
 from qgis.PyQt.QtCore import QObject
-from asistente_ladm_col.utils.model_parser import ModelParser
+from ...utils.model_parser import ModelParser
 from enum import IntFlag
 
 

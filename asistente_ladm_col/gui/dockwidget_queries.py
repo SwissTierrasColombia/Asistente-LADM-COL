@@ -28,7 +28,6 @@ from qgis.PyQt.QtWidgets import (QMenu,
                                  QAction,
                                  QApplication)
 from qgis.core import (QgsWkbTypes,
-                       Qgis,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsExpression,
@@ -36,7 +35,7 @@ from qgis.core import (QgsWkbTypes,
 from qgis.gui import (QgsDockWidget,
                       QgsMapToolIdentifyFeature)
 
-from ..utils.qt_utils import OverrideCursor
+from ..config.general_config import LAYER
 from ..config.table_mapping_config import (DICT_TABLE_PACKAGE,
                                            SPATIAL_UNIT_PACKAGE,
                                            PARCEL_NUMBER_FIELD,
@@ -48,10 +47,11 @@ from ..config.table_mapping_config import (DICT_TABLE_PACKAGE,
                                            UEBAUNIT_TABLE)
 
 from ..utils import get_ui_class
+from ..utils.qt_utils import OverrideCursor
 
 from ..data.tree_models import TreeModel
 
-DOCKWIDGET_UI = get_ui_class('dockwidget_queries.ui')
+DOCKWIDGET_UI = get_ui_class('dockwidgets/dockwidget_queries.ui')
 
 
 class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
@@ -72,9 +72,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.clipboard = QApplication.clipboard()
 
         # Required layers
-        self._plot_layer = None
-        self._parcel_layer = None
-        self._uebaunit_table = None
+        self.restart_dict_of_layers()
 
         self._identify_tool = None
 
@@ -100,8 +98,8 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.initialize_field_values_line_edit()
 
     def initialize_field_values_line_edit(self):
-        self.txt_alphanumeric_query.setLayer(self._parcel_layer)
-        idx = self._parcel_layer.fields().indexOf(self.cbo_parcel_fields.currentData())
+        self.txt_alphanumeric_query.setLayer(self._layers[PARCEL_TABLE][LAYER])
+        idx = self._layers[PARCEL_TABLE][LAYER].fields().indexOf(self.cbo_parcel_fields.currentData())
         self.txt_alphanumeric_query.setAttributeIndex(idx)
 
     def _set_context_menus(self):
@@ -120,59 +118,42 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.tree_view_economic.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree_view_economic.customContextMenuRequested.connect(self.show_context_menu)
 
+    def restart_dict_of_layers(self):
+        self._layers = {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
+        }
+
     def add_layers(self):
-        res_layers = self.qgis_utils.get_layers(self._db, {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None}}, load=True)
+        self.qgis_utils.get_layers(self._db, self._layers, load=True)
+        if not self._layers:
+            self.restart_dict_of_layers()  # Let it ready for the next call
+            return None
 
-        self._plot_layer = res_layers[PLOT_TABLE]
-        if self._plot_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("DockWidgetQueries",
-                                                                           "Plot layer couldn't be found... {}").format(
-                                                    self._db.get_description()),
-                                                Qgis.Warning)
-        else:
-            # Layer was found, listen to its removal so that we can deactivate the custom tool when that occurs
-            try:
-                self._plot_layer.willBeDeleted.disconnect(self.layer_removed)
-            except TypeError as e:
-                pass
-            self._plot_layer.willBeDeleted.connect(self.layer_removed)
+        # Layer was found, listen to its removal so that we can deactivate the custom tool when that occurs
+        try:
+            self._layers[PLOT_TABLE][LAYER].willBeDeleted.disconnect(self.layer_removed)
+        except TypeError as e:
+            pass
+        self._layers[PLOT_TABLE][LAYER].willBeDeleted.connect(self.layer_removed)
 
-        self._parcel_layer = res_layers[PARCEL_TABLE]
-        if self._parcel_layer is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("DockWidgetQueries",
-                                                                           "Parcel layer couldn't be found... {}").format(
-                                                    self._db.get_description()),
-                                                Qgis.Warning)
-        else:
-            # Layer was found, listen to its removal so that we can update the variable properly
-            try:
-                self._parcel_layer.willBeDeleted.disconnect(self.parcel_layer_removed)
-            except TypeError as e:
-                pass
-            self._parcel_layer.willBeDeleted.connect(self.parcel_layer_removed)
+        # Layer was found, listen to its removal so that we can update the variable properly
+        try:
+            self._layers[PARCEL_TABLE][LAYER].willBeDeleted.disconnect(self.parcel_layer_removed)
+        except TypeError as e:
+            pass
+        self._layers[PARCEL_TABLE][LAYER].willBeDeleted.connect(self.parcel_layer_removed)
 
-        self._uebaunit_table = res_layers[UEBAUNIT_TABLE]
-        if self._uebaunit_table is None:
-            self.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                                QCoreApplication.translate("DockWidgetQueries",
-                                                                           "UEBAUnit table couldn't be found... {}").format(
-                                                    self._db.get_description()),
-                                                Qgis.Warning)
-        else:
-            # Layer was found, listen to its removal so that we can update the variable properly
-            try:
-                self._uebaunit_table.willBeDeleted.disconnect(self.uebaunit_table_removed)
-            except TypeError as e:
-                pass
-            self._uebaunit_table.willBeDeleted.connect(self.uebaunit_table_removed)
+        # Layer was found, listen to its removal so that we can update the variable properly
+        try:
+            self._layers[UEBAUNIT_TABLE][LAYER].willBeDeleted.disconnect(self.uebaunit_table_removed)
+        except TypeError as e:
+            pass
+        self._layers[UEBAUNIT_TABLE][LAYER].willBeDeleted.connect(self.uebaunit_table_removed)
 
     def initialize_tool(self):
-        self._plot_layer = None
+        self._layers[PLOT_TABLE][LAYER] = None
         self.initialize_tools(new_tool=None, old_tool=self.maptool_identify)
         self.btn_plot_toggled()
 
@@ -188,10 +169,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.initialize_tool()
 
     def parcel_layer_removed(self):
-        self._parcel_layer = None
+        self._layers[PARCEL_TABLE][LAYER] = None
 
     def uebaunit_table_removed(self):
-        self._uebaunit_table = None
+        self._layers[UEBAUNIT_TABLE][LAYER] = None
 
     def fill_combos(self):
         self.cbo_parcel_fields.clear()
@@ -229,10 +210,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         self.canvas.mapToolSet.connect(self.initialize_tools)
 
-        if self._plot_layer is None:
+        if self._layers[PLOT_TABLE][LAYER] is None:
             self.add_layers()
 
-        self.maptool_identify.setLayer(self._plot_layer)
+        self.maptool_identify.setLayer(self._layers[PLOT_TABLE][LAYER])
         cursor = QCursor()
         cursor.setShape(Qt.PointingHandCursor)
         self.maptool_identify.setCursor(cursor)
@@ -246,7 +227,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
     def get_info_by_plot(self, plot_feature):
         plot_t_id = plot_feature[ID_FIELD]
-        self.canvas.flashFeatureIds(self._plot_layer,
+        self.canvas.flashFeatureIds(self._layers[PLOT_TABLE][LAYER],
                                     [plot_feature.id()],
                                     QColor(255, 0, 0, 255),
                                     QColor(255, 0, 0, 0),
@@ -258,10 +239,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 self.show()
 
             self.search_data_by_component(plot_t_id=plot_t_id, zoom_and_select=False)
-            self._plot_layer.selectByIds([plot_feature.id()])
+            self._layers[PLOT_TABLE][LAYER].selectByIds([plot_feature.id()])
 
     def search_data_by_component(self, **kwargs):
-        self._plot_layer.removeSelection()
+        self._layers[PLOT_TABLE][LAYER].removeSelection()
 
         # Read zoom_and_select parameter and remove it from kwargs
         bZoom = False
@@ -277,10 +258,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             # Zoom to resulting plots
             plot_t_ids = self.get_plot_t_ids_from_basic_info(records)
             if plot_t_ids:
-                features = self.ladm_data.get_features_from_t_ids(self._plot_layer, plot_t_ids, True, True)
+                features = self.ladm_data.get_features_from_t_ids(self._layers[PLOT_TABLE][LAYER], plot_t_ids, True, True)
                 plot_ids = [feature.id() for feature in features]
-                self.zoom_to_features_requested.emit(self._plot_layer, plot_ids, list(), 500)
-                self._plot_layer.selectByIds(plot_ids)
+                self.zoom_to_features_requested.emit(self._layers[PLOT_TABLE][LAYER], plot_ids, list(), 500)
+                self._layers[PLOT_TABLE][LAYER].selectByIds(plot_ids)
 
         records = self._db.get_igac_legal_info(**kwargs)
         self.tree_view_legal.setModel(TreeModel(data=records))
@@ -352,9 +333,9 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 geometry_type=QgsWkbTypes.PolygonGeometry
 
             if table_name == PARCEL_TABLE:
-                if self._parcel_layer is None or self._plot_layer is None or self._uebaunit_table is None:
+                if self._layers[PARCEL_TABLE][LAYER] is None or self._layers[PLOT_TABLE][LAYER] is None or self._layers[UEBAUNIT_TABLE][LAYER] is None:
                     self.add_layers()
-                layer = self._parcel_layer
+                layer = self._layers[PARCEL_TABLE][LAYER]
                 self.iface.layerTreeView().setCurrentLayer(layer)
             else:
                 layer = self.qgis_utils.get_layer(self._db, table_name, geometry_type, True)
@@ -367,7 +348,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
                 if table_name == PARCEL_TABLE:
                     # We show a handy option to zoom to related plots
-                    plot_ids = self.ladm_data.get_plots_related_to_parcels(self._db, [t_id], None, self._plot_layer, self._uebaunit_table)
+                    plot_ids = self.ladm_data.get_plots_related_to_parcels(self._db, [t_id], None, self._layers[PLOT_TABLE][LAYER], self._layers[UEBAUNIT_TABLE][LAYER])
                     if plot_ids:
                         action_zoom_to_plots = QAction(QCoreApplication.translate("DockWidgetQueries", "Zoom to related plot(s)"))
                         action_zoom_to_plots.triggered.connect(partial(self.zoom_to_plots, plot_ids))
@@ -411,8 +392,8 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         return None
 
     def zoom_to_plots(self, plot_ids):
-        self.iface.mapCanvas().zoomToFeatureIds(self._plot_layer, plot_ids)
-        self.canvas.flashFeatureIds(self._plot_layer,
+        self.iface.mapCanvas().zoomToFeatureIds(self._layers[PLOT_TABLE][LAYER], plot_ids)
+        self.canvas.flashFeatureIds(self._layers[PLOT_TABLE][LAYER],
                                     plot_ids,
                                     QColor(255, 0, 0, 255),
                                     QColor(255, 0, 0, 0),

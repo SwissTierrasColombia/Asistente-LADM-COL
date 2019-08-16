@@ -21,18 +21,22 @@ from functools import partial
 from qgis.gui import QgsPanelWidget
 from qgis.PyQt.QtCore import pyqtSignal
 
-from asistente_ladm_col.config.general_config import (CHANGE_DETECTION_NEW_PARCEL,
-                                                      CHANGE_DETECTION_MISSING_PARCEL,
-                                                      CHANGE_DETECTION_PARCEL_CHANGED,
-                                                      CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
-                                                      CHANGE_DETECTION_PARCEL_REMAINS,
-                                                      CHANGE_DETECTION_SEVERAL_PARCELS,
-                                                      CHANGE_DETECTION_NULL_PARCEL,
-                                                      PARCEL_STATUS, SOURCE_DB, COLLECTED_DB_SOURCE, OFFICIAL_DB_SOURCE)
-from asistente_ladm_col.config.table_mapping_config import (PARCEL_NUMBER_FIELD,
-                                                            ID_FIELD,
-                                                            PLOT_TABLE)
-from asistente_ladm_col.utils import get_ui_class
+from ...config.general_config import (CHANGE_DETECTION_NEW_PARCEL,
+                                      CHANGE_DETECTION_MISSING_PARCEL,
+                                      CHANGE_DETECTION_PARCEL_CHANGED,
+                                      CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED,
+                                      CHANGE_DETECTION_PARCEL_REMAINS,
+                                      CHANGE_DETECTION_SEVERAL_PARCELS,
+                                      CHANGE_DETECTION_NULL_PARCEL,
+                                      LAYER,
+                                      PARCEL_STATUS,
+                                      SOURCE_DB,
+                                      COLLECTED_DB_SOURCE,
+                                      OFFICIAL_DB_SOURCE)
+from ...config.table_mapping_config import (PARCEL_NUMBER_FIELD,
+                                            ID_FIELD,
+                                            PLOT_TABLE)
+from ...utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/parcels_changes_summary_panel_widget.ui')
 
@@ -126,7 +130,7 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
             partial(self.parent.show_all_parcels_panel, dict()))
 
         # Zoom to plot layer, remove selections
-        self.utils._layers[PLOT_TABLE]['layer'].removeSelection()
-        self.utils._official_layers[PLOT_TABLE]['layer'].removeSelection()
-        self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[PLOT_TABLE]['layer'])
+        self.utils._layers[PLOT_TABLE][LAYER].removeSelection()
+        self.utils._official_layers[PLOT_TABLE][LAYER].removeSelection()
+        self.utils.qgis_utils.activate_layer_requested.emit(self.utils._layers[PLOT_TABLE][LAYER])
         self.utils.iface.zoomToActiveLayer()

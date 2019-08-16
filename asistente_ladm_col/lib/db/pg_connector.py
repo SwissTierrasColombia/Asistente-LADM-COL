@@ -26,13 +26,20 @@ from qgis.core import (QgsWkbTypes,
                        QgsDataSourceUri,
                        QgsApplication)
 
-from .db_connector import (DBConnector, EnumTestLevel)
-from ..queries.igac import basic_query, legal_query, property_record_card_query, physical_query, economic_query
-from ..queries.ant_report import ant_map_plot_query, ant_map_neighbouring_change_query
-from ..queries.annex_17_report import annex17_plot_data_query, annex17_building_data_query, annex17_point_data_query
+from .db_connector import (DBConnector,
+                           EnumTestLevel)
+from ..queries.igac import (basic_query,
+                            legal_query,
+                            property_record_card_query,
+                            physical_query,
+                            economic_query)
+from ..queries.ant_report import (ant_map_plot_query,
+                                  ant_map_neighbouring_change_query)
+from ..queries.annex_17_report import (annex17_plot_data_query,
+                                       annex17_building_data_query,
+                                       annex17_point_data_query)
 from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
-                                      PLUGIN_NAME,
-                                      PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO)
+                                      PLUGIN_NAME)
 from ...config.table_mapping_config import (ID_FIELD,
                                             PARCEL_TABLE,
                                             DEPARTMENT_FIELD,

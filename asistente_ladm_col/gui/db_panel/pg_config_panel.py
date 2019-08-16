@@ -22,7 +22,7 @@ from .db_schema_db_panel import DbSchemaDbPanel
 from ...lib.db.pg_connector import PGConnector
 from ...utils import get_ui_class
 
-WIDGET_UI = get_ui_class('settings_pg.ui')
+WIDGET_UI = get_ui_class('dialogs/settings_pg.ui')
 
 
 class PgConfigPanel(DbSchemaDbPanel, WIDGET_UI):

@@ -20,8 +20,8 @@ from .db_factory import DbFactory
 from ...gui.db_panel.gpkg_config_panel import GpkgConfigPanel
 from ...lib.db.gpkg_connector import GPKGConnector
 
-class GpkgFactory(DbFactory):
 
+class GpkgFactory(DbFactory):
     def __init__(self):
         DbFactory.__init__(self)
         self._mode = "gpkg"

@@ -8,6 +8,7 @@ start_app()  # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.data.ladm_data import LADM_DATA
+from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.config.table_mapping_config import (PLOT_CALCULATED_AREA_FIELD,
                                                             UEBAUNIT_TABLE,
                                                             PLOT_TABLE,
@@ -60,17 +61,17 @@ class TestLADMData(unittest.TestCase):
 
         print("\nINFO: Validating get plots related to parcels (Case: t_id) with preloaded tables...")
 
-        layers = {PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, 'layer': None},
-                  UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, 'layer': None}}
-        res_layers = self.qgis_utils.get_layers(self.db_connection, layers, load=True)
-        self.assertIsNotNone(res_layers, 'An error occurred while trying to get the layers of interest')
+        layers = {PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                  UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}}
+        self.qgis_utils.get_layers(self.db_connection, layers, load=True)
+        self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')
 
         count = 0
         for parcel_ids_test in parcel_ids_tests:
             plot_ids = self.ladm_data.get_plots_related_to_parcels(self.db_connection,
                                                                    parcel_ids_test,
-                                                                   plot_layer=layers[PLOT_TABLE]['layer'],
-                                                                   uebaunit_table=layers[UEBAUNIT_TABLE]['layer'])
+                                                                   plot_layer=layers[PLOT_TABLE][LAYER],
+                                                                   uebaunit_table=layers[UEBAUNIT_TABLE][LAYER])
             self.assertCountEqual(plot_ids, plot_ids_tests[count], "Failure with data set {}".format(count + 1))
             count += 1
 
@@ -102,18 +103,18 @@ class TestLADMData(unittest.TestCase):
         print("\nINFO: Validating get parcels related to plots (Case: t_id) with preloaded tables...")
 
         layers = {
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, 'layer': None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, 'layer': None}
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
         }
-        res_layers = self.qgis_utils.get_layers(self.db_connection, layers, load=True)
-        self.assertIsNotNone(res_layers, 'An error occurred while trying to get the layers of interest')
+        self.qgis_utils.get_layers(self.db_connection, layers, load=True)
+        self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')
 
         count = 0
         for plot_ids_test in plot_ids_tests:
             parcel_ids = self.ladm_data.get_parcels_related_to_plots(self.db_connection,
                                                                      plot_ids_test,
-                                                                     parcel_table=layers[PARCEL_TABLE]['layer'],
-                                                                     uebaunit_table=layers[UEBAUNIT_TABLE]['layer'])
+                                                                     parcel_table=layers[PARCEL_TABLE][LAYER],
+                                                                     uebaunit_table=layers[UEBAUNIT_TABLE][LAYER])
             self.assertCountEqual(parcel_ids, parcel_ids_tests[count], "Failure with data set {}".format(count + 1))
             count += 1
 

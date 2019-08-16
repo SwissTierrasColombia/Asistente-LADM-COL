@@ -49,8 +49,8 @@ from ...config.general_config import (DEFAULT_EPSG,
                                       CREATE_BASKET_COL,
                                       CREATE_IMPORT_TID,
                                       STROKE_ARCS)
-from ...gui.dlg_get_java_path import DialogGetJavaPath
-from ...gui.settings_dialog import SettingsDialog
+from ...gui.dialogs.dlg_get_java_path import GetJavaPathDialog
+from ...gui.dialogs.dlg_settings import SettingsDialog
 from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
@@ -307,7 +307,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             except JavaNotFoundError:
 
                 # Set JAVA PATH
-                get_java_path_dlg = DialogGetJavaPath()
+                get_java_path_dlg = GetJavaPathDialog()
                 get_java_path_dlg.setModal(True)
                 if get_java_path_dlg.exec_():
                     configuration = self.update_configuration()
@@ -341,7 +341,6 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def restore_configuration(self):
         settings = QSettings()
-
         self.xtf_file_line_edit.setText(settings.value('Asistente-LADM_COL/QgisModelBaker/ili2pg/xtffile_import'))
 
         # Show log

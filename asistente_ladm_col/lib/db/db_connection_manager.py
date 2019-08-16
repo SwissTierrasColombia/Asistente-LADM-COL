@@ -20,15 +20,14 @@ from qgis.PyQt.QtCore import (pyqtSignal,
                               QCoreApplication,
                               QObject,
                               QSettings)
-
 from qgis.core import (QgsApplication,
                        Qgis)
-from asistente_ladm_col.config.config_db_supported import ConfigDbSupported
-from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
-                                                      PLUGIN_NAME,
-                                                      OFFICIAL_DB_SOURCE)
 
-from asistente_ladm_col.lib.db.db_connector import DBConnector
+from ...config.config_db_supported import ConfigDbSupported
+from ...config.general_config import (COLLECTED_DB_SOURCE,
+                                      PLUGIN_NAME,
+                                      OFFICIAL_DB_SOURCE)
+from ...lib.db.db_connector import DBConnector
 
 
 class ConnectionManager(QObject):
