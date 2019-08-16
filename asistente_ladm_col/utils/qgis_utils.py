@@ -228,9 +228,11 @@ class QGISUtils(QObject):
     def get_layers(self, db, layers, load=False, emit_map_freeze=True, layer_modifiers=dict()):
         """
         :param db: db connection instance
-        :param layers: {layer_id : {name: ABC, geometry: DEF}}
+        :param layers: {layer_id : {name: ABC, geometry: DEF, 'layer': None}}
         layer_id should match layer_name most of the times, but if the same layer has multiple geometries,
         layer_id should contain the geometry type to make the layer_id unique
+        layer: key to store the QgsVectorLayer object.
+        The whole dict will be None if any of the requested layers is not found. A message will inform which layer wasn't
         :param load: Load layer in the map canvas
         :param emit_map_freeze: False can be used for subsequent calls to get_layers (e.g., from differente dbs), where
         one could be interested in handling the map_freeze from the outside
@@ -378,10 +380,6 @@ class QGISUtils(QObject):
             # Save reference to layer loaded
             if LAYER in layers[layer_name]:
                 layers[layer_name][LAYER] = response_layers[layer_name]
-
-        # response_layers only has data about requested layers. Other layers,
-        # i.e., those loaded as related ones, are not included
-        return response_layers
 
     def get_layer_from_layer_tree(self, db, layer_name, geometry_type=None):
         for k, layer in QgsProject.instance().mapLayers().items():

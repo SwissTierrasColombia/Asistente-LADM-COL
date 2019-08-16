@@ -133,7 +133,7 @@ class CreateLegalPartyPRCWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return False
 
-        # Check if layers any layer is in editing mode
+        # Check if any layer is in editing mode
         layers_name = list()
         for layer in self._layers:
             if self._layers[layer][LAYER].isEditable():

@@ -72,11 +72,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.clipboard = QApplication.clipboard()
 
         # Required layers
-        self._layers = {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
-        }
+        self.restart_dict_of_layers()
 
         self._identify_tool = None
 
@@ -122,17 +118,17 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.tree_view_economic.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree_view_economic.customContextMenuRequested.connect(self.show_context_menu)
 
+    def restart_dict_of_layers(self):
+        self._layers = {
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
+        }
+
     def add_layers(self):
         self.qgis_utils.get_layers(self._db, self._layers, load=True)
         if not self._layers:
-
-            # Restart dictionary It is necessary
-            self._layers = {
-                PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
-                UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
-            }
-
+            self.restart_dict_of_layers()  # Let it ready for the next call
             return None
 
         # Layer was found, listen to its removal so that we can deactivate the custom tool when that occurs
@@ -352,7 +348,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
                 if table_name == PARCEL_TABLE:
                     # We show a handy option to zoom to related plots
-                    plot_ids = self.ladm_data.get_plots_related_to_parcel(self._db, t_id, None, self._layers[PLOT_TABLE][LAYER], self._layers[UEBAUNIT_TABLE][LAYER])
+                    plot_ids = self.ladm_data.get_plots_related_to_parcels(self._db, [t_id], None, self._layers[PLOT_TABLE][LAYER], self._layers[UEBAUNIT_TABLE][LAYER])
                     if plot_ids:
                         action_zoom_to_plots = QAction(QCoreApplication.translate("DockWidgetQueries", "Zoom to related plot(s)"))
                         action_zoom_to_plots.triggered.connect(partial(self.zoom_to_plots, plot_ids))

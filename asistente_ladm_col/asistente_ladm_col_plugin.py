@@ -1167,7 +1167,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         dlg = CreateGroupPartyCadastre(self.iface, self.get_db_connection(), self.qgis_utils)
 
-        # Check if requied layers are available
+        # Check if required layers are available
         if dlg.required_layers_are_available():
             # Load required data, it is necessary in the dlg
             dlg.load_parties_data()
@@ -1358,7 +1358,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._about_dialog.exec_()
 
     def exec_wizard(self, wiz):
-        # Check if requied layers are available
+        # Check if required layers are available
         if wiz.required_layers_are_available():
             wiz.exec_()
         else:

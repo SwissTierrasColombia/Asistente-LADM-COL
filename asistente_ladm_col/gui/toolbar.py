@@ -56,5 +56,5 @@ class ToolBar():
 
             self.qgis_utils.message_with_duration_emitted.emit(
                 QCoreApplication.translate("QGISUtils", "You can start moving nodes in layers {} and {}, simultaneously!").format(
-                    ", ".join(self.db.get_ladm_layer_name(layer) for layer in list_layers[:-1]), self.db.get_ladm_layer_name(list_layers[-1])),
+                    ", ".join(layer.name() for layer in layers[:-1]), layers[-1].name()),
                 Qgis.Info, 30)
