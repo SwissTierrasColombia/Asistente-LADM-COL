@@ -61,7 +61,7 @@ WIDGET_UI = get_ui_class('change_detection/changes_per_parcel_panel_widget.ui')
 
 
 class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
-    def __init__(self, parent, utils, parcel_number=None):
+    def __init__(self, parent, utils, parcel_number=None, parcel_id=None):
         QgsPanelWidget.__init__(self, None)
         self.setupUi(self)
         self.parent = parent
@@ -101,7 +101,10 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         if parcel_number is not None:  # Do a search!
             self.txt_alphanumeric_query.setValue(parcel_number)
-            self.search_data(parcel_number=parcel_number)
+            if parcel_id is not None:
+                self.search_data(parcel_number=parcel_number, parcel_id=parcel_id)
+            else:
+                self.search_data(parcel_number=parcel_number)
 
     def btn_plot_toggled(self):
         self.tbl_changes_per_parcel.clearContents()
@@ -212,8 +215,6 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         elif len(official_parcels) == 0:
             print("No parcel found!", search_field, search_value)
 
-        self.fill_table({search_field: search_value})
-
         official_plot_t_ids = []
         if official_parcels:
             official_plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._official_db,
@@ -228,7 +229,17 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 already_zoomed_in = True
 
         # Now get COLLECTED parcel's t_id and get related plot(s)
-        request = QgsFeatureRequest(QgsExpression("{}='{}'".format(search_field, search_value)))
+        if 'parcel_id' in kwargs and kwargs['parcel_id']:
+            expression = "{}={}".format(ID_FIELD, kwargs['parcel_id'])
+            search_criterion_collected = {ID_FIELD: kwargs['parcel_id']}
+        else:
+            expression = "{}='{}'".format(search_field, search_value)
+            search_criterion_collected = {search_field: search_value}
+
+        search_criterion_official = {search_field: search_value}
+        self.fill_table(search_criterion_collected, search_criterion_official)
+
+        request = QgsFeatureRequest(QgsExpression(expression))
         field_idx = self.utils._layers[PARCEL_TABLE][LAYER].fields().indexFromName(ID_FIELD)
         request.setSubsetOfAttributes([field_idx])
         request.setFlags(QgsFeatureRequest.NoGeometry)
@@ -246,6 +257,10 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 self._current_substring = "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids]))
                 if not already_zoomed_in:
                     self.parent.request_zoom_to_features(self.utils._layers[PLOT_TABLE][LAYER], list(), plot_t_ids)
+
+                # Selected features in collected db
+                exp_select_plots = "{} IN ({})".format(ID_FIELD, ",".join([str(plot_t_id) for plot_t_id in plot_t_ids]))
+                self.utils._layers[PLOT_TABLE][LAYER].selectByExpression(exp_select_plots)
 
                 # Send a custom mouse move on the map to make the map swipe tool's limit appear on the canvas
 
@@ -274,8 +289,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         # Once the query is done, activate the checkbox to alternate all plots/only selected plot
         self.chk_show_all_plots.setEnabled(True)
 
-    def fill_table(self, search_criterion):  # Shouldn't handle 'inverse' mode as we won't switch table columns at runtime
-        dict_collected_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._db, search_criterion)
+    def fill_table(self, search_criterion_collected, search_criterion_official):  # Shouldn't handle 'inverse' mode as we won't switch table columns at runtime
+        dict_collected_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._db, search_criterion_collected)
 
         # Custom layer modifiers
         layer_modifiers = {
@@ -283,7 +298,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
             STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
         }
-        dict_official_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._official_db, search_criterion, layer_modifiers=layer_modifiers)
+        dict_official_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._official_db, search_criterion_official, layer_modifiers=layer_modifiers)
 
         # Before filling the table we make sure we get one and only one parcel attrs dict
         collected_attrs = dict()
