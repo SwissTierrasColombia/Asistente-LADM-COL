@@ -105,7 +105,8 @@ from .data.ladm_data import LADM_DATA
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
 from .lib.db.db_connection_manager import ConnectionManager
-from .utils.qt_utils import get_plugin_metadata
+from .utils.qt_utils import (get_plugin_metadata,
+                             OverrideCursor)
 from .utils.quality import QualityUtils
 from .lib.db.enum_db_action_type import EnumDbActionType
 
@@ -1310,8 +1311,9 @@ class AsistenteLADMCOLPlugin(QObject):
     @_official_db_connection_required
     @_different_db_connections_required
     def query_changes_all_parcels(self):
-        self.show_change_detection_dockwidget()
-        self._dock_widget_change_detection.show_main_panel()
+        with OverrideCursor(Qt.WaitCursor):
+            self.show_change_detection_dockwidget()
+            self._dock_widget_change_detection.show_main_panel()
 
     def show_change_detection_dockwidget(self):
         if self._dock_widget_change_detection is not None:

@@ -33,6 +33,7 @@ from ...gui.change_detection.changes_per_parcel_panel import ChangesPerParcelPan
 from ...gui.change_detection.parcels_changes_summary_panel import ParcelsChangesSummaryPanelWidget
 from ...gui.change_detection.changes_parties_panel import ChangesPartyPanelWidget
 from ...utils import get_ui_class
+from ...utils.qt_utils import OverrideCursor
 
 from ...config.symbology import OFFICIAL_STYLE_GROUP
 from ...config.general_config import (OFFICIAL_DB_PREFIX,
@@ -110,19 +111,20 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.main_panel.fill_data()
 
     def show_all_parcels_panel(self, filter_parcels=dict()):
-        if self.lst_all_parcels_panels:
-            for panel in self.lst_all_parcels_panels:
-                try:
-                    self.widget.closePanel(panel)
-                except RuntimeError as e:  # Panel in C++ could be already closed...
-                    pass
+        with OverrideCursor(Qt.WaitCursor):
+            if self.lst_all_parcels_panels:
+                for panel in self.lst_all_parcels_panels:
+                    try:
+                        self.widget.closePanel(panel)
+                    except RuntimeError as e:  # Panel in C++ could be already closed...
+                        pass
 
-            self.lst_all_parcels_panels = list()
+                self.lst_all_parcels_panels = list()
 
-        self.all_parcels_panel = ChangesAllParcelsPanelWidget(self, self.utils, filter_parcels=filter_parcels)
-        self.all_parcels_panel.changes_per_parcel_panel_requested.connect(self.show_parcel_panel)
-        self.widget.showPanel(self.all_parcels_panel)
-        self.lst_all_parcels_panels.append(self.all_parcels_panel)
+            self.all_parcels_panel = ChangesAllParcelsPanelWidget(self, self.utils, filter_parcels=filter_parcels)
+            self.all_parcels_panel.changes_per_parcel_panel_requested.connect(self.show_parcel_panel)
+            self.widget.showPanel(self.all_parcels_panel)
+            self.lst_all_parcels_panels.append(self.all_parcels_panel)
 
     def show_parcel_panel(self, parcel_number=None, parcel_id=None):
         if self.lst_parcel_panels:

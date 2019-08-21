@@ -259,8 +259,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                     self.parent.request_zoom_to_features(self.utils._layers[PLOT_TABLE][LAYER], list(), plot_t_ids)
 
                 # Selected features in collected db
-                exp_select_plots = "{} IN ({})".format(ID_FIELD, ",".join([str(plot_t_id) for plot_t_id in plot_t_ids]))
-                self.utils._layers[PLOT_TABLE][LAYER].selectByExpression(exp_select_plots)
+                # exp_select_plots = "{} IN ({})".format(ID_FIELD, ",".join([str(plot_t_id) for plot_t_id in plot_t_ids]))
+                # self.utils._layers[PLOT_TABLE][LAYER].selectByExpression(exp_select_plots)
 
                 # Send a custom mouse move on the map to make the map swipe tool's limit appear on the canvas
 

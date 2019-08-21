@@ -46,6 +46,7 @@ from ...config.table_mapping_config import (PLOT_TABLE,
                                             PARCEL_NUMBER_FIELD)
 from .dlg_select_parcel_change_detection import SelectParcelDialog
 from ...utils import get_ui_class
+from ...utils.qt_utils import OverrideCursor
 
 WIDGET_UI = get_ui_class('change_detection/changes_all_parcels_panel_widget.ui')
 
@@ -171,22 +172,23 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             context_menu.exec_(table_widget.mapToGlobal(point))
 
     def call_changes_per_parcel_panel(self, item):
-        parcel_number = self.tbl_changes_all_parcels.item(item.row(), 0).text()
+        with OverrideCursor(Qt.WaitCursor):
+            parcel_number = self.tbl_changes_all_parcels.item(item.row(), 0).text()
 
-        data = dict()
-        if parcel_number == QgsApplication.nullRepresentation():
-            data = self.compared_parcels_data[NULL][ID_FIELD]
-        elif parcel_number in self.compared_parcels_data and self.compared_parcels_data[parcel_number][PARCEL_STATUS] == CHANGE_DETECTION_SEVERAL_PARCELS:
-            data = self.compared_parcels_data[parcel_number][ID_FIELD]
+            data = dict()
+            if parcel_number == QgsApplication.nullRepresentation():
+                data = self.compared_parcels_data[NULL][ID_FIELD]
+            elif parcel_number in self.compared_parcels_data and self.compared_parcels_data[parcel_number][PARCEL_STATUS] == CHANGE_DETECTION_SEVERAL_PARCELS:
+                data = self.compared_parcels_data[parcel_number][ID_FIELD]
 
-        if data:
-            dlg_select_parcel = SelectParcelDialog(self, self.utils, data, self.parent)
-            dlg_select_parcel.exec_()
+            if data:
+                dlg_select_parcel = SelectParcelDialog(self, self.utils, data, self.parent)
+                dlg_select_parcel.exec_()
 
-            if dlg_select_parcel.parcel_id:
-                self.changes_per_parcel_panel_requested.emit(dlg_select_parcel.parcel_number, dlg_select_parcel.parcel_id)
-        else:
-            self.changes_per_parcel_panel_requested.emit(parcel_number, '')
+                if dlg_select_parcel.parcel_id:
+                    self.changes_per_parcel_panel_requested.emit(dlg_select_parcel.parcel_number, dlg_select_parcel.parcel_id)
+            else:
+                self.changes_per_parcel_panel_requested.emit(parcel_number, '')
 
     def select_related_plots_listed(self, zoom_to_selected=True):
         parcels_t_ids_collected = list()
