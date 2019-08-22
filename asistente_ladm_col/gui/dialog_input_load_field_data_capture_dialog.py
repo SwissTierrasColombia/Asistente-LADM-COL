@@ -68,7 +68,10 @@ from ..config.table_mapping_config import (PARCEL_TABLE,
                                            EXTADDRESS_TABLE,
                                            VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE,
                                            VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE,
-                                           CODIGO_R1_GDB)
+                                           CODIGO_R1_GDB,
+                                           DEPARTAMENTO_R1_GDB,
+                                           MUNICIPIO_R1_GDB,
+                                           NO_PREDIAL_R1_GDB)
 
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
@@ -142,9 +145,8 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         self.qgis_utils.show_help("create_points")
 
     def accepted(self):
-        ladm_test = self.test_database_connections()
         self.save_settings()
-        if ladm_test:
+        if self._db.test_connection()[0]:
             reply = QMessageBox.question(self,
                                      QCoreApplication.translate("DialogImportFromExcel", "Warning"),
                                      QCoreApplication.translate("DialogImportFromExcel",
@@ -157,7 +159,8 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         else:
             with OverrideCursor(Qt.WaitCursor):
                 self.create_model_into_database()
-                self.manage_process_load_data()
+                if self._db.test_connection()[0]:
+                    self.manage_process_load_data()
 
     def load_data_for_etl(self):
         self.progress.setVisible(True)
@@ -169,15 +172,15 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading GDB tables..."))
         gdb_path = self.txt_file_path_gdb.text()
         layer = QgsVectorLayer(gdb_path, 'layer name', 'ogr')
-        info = layer.dataProvider().subLayers()
+        sublayers = layer.dataProvider().subLayers()
 
         root = QgsProject.instance().layerTreeRoot()
         gdb_group = root.addGroup("GDB")
-        self.gdb_layer = []
+        self.gdb_layer_list = []
 
-        for data in info:
+        for data in sublayers:
             vlayer = QgsVectorLayer(gdb_path + '|layername=' + data.split('!!::!!')[1], data.split('!!::!!')[1], 'ogr')
-            self.gdb_layer.append(vlayer)
+            self.gdb_layer_list.append(vlayer)
             QgsProject.instance().addMapLayer(vlayer, False)
             gdb_group.addLayer(vlayer)
 
@@ -213,27 +216,36 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         steps = 29
         step = 0
 
+        #This section of code allow import data from R1 in excel to Parcel table in LADM structure.
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(PARCEL_TABLE)))
         query = "select * from {} group by NoPredial&nogeometry".format(self.layer_r1.name())
         input_data = QgsVectorLayer( "?query={}".format(query), "vlayer", "virtual")
         run_etl_model_input_load_data(input_data, self.res_layers[PARCEL_TABLE], PARCEL_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #This section of code allow import data from R1 in excel to Party table in LADM structure.
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(COL_PARTY_TABLE)))
-        create_virtual_field(self.res_layers[COL_PARTY_TABLE], 'Codigo')
         run_etl_model_input_load_data(self.layer_r1, self.res_layers[COL_PARTY_TABLE], COL_PARTY_TABLE, self.qgis_utils)
+        create_virtual_field(self.res_layers[COL_PARTY_TABLE], 'Codigo', 'concat({}, {}, {})'.format(DEPARTAMENTO_R1_GDB, MUNICIPIO_R1_GDB, NO_PREDIAL_R1_GDB))
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #This section of code allow import data from  Party table to Right table in LADM structure.
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(RIGHT_TABLE)))
         join_layers(self.res_layers[COL_PARTY_TABLE], self.res_layers[PARCEL_TABLE], 'Codigo', 'numero_predial')
         run_etl_model_input_load_data(self.res_layers[COL_PARTY_TABLE], self.res_layers[RIGHT_TABLE], RIGHT_TABLE, self.qgis_utils)
         delete_virtual_field(self.res_layers[COL_PARTY_TABLE], 'Codigo')
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #This section of code allow import data from  Right table to Administrative Source table in LADM structure.
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(ADMINISTRATIVE_SOURCE_TABLE)))
         run_etl_model_input_load_data(self.res_layers[RIGHT_TABLE], self.res_layers[ADMINISTRATIVE_SOURCE_TABLE], ADMINISTRATIVE_SOURCE_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)        
+
+        #This section of code allow import data from  Administrative Source table to RRR Source table in LADM structure.
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(RRR_SOURCE_RELATION_TABLE)))
         run_etl_model_input_load_data(self.res_layers[ADMINISTRATIVE_SOURCE_TABLE], self.res_layers[RRR_SOURCE_RELATION_TABLE], RRR_SOURCE_RELATION_TABLE, self.qgis_utils)
         step += 1
@@ -242,101 +254,139 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
     def mapping_fields_gbb(self):
         steps = 29
         step = 5
+
+        #This section of code allow import data R_TERRENO from GDB to Plot table in LADM structure.
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(PLOT_TABLE)))
         run_etl_model_input_load_data('R_TERRENO', self.res_layers[PLOT_TABLE], PLOT_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #This section of code allow import data U_TERRENO from GDB to Plot table in LADM structure.
         run_etl_model_input_load_data('U_TERRENO', self.res_layers[PLOT_TABLE], PLOT_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #This section of code allow import data R_SECTOR from GDB to Sector table in LADM structure.
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_SECTOR)))
         run_etl_model_input_load_data('R_SECTOR', self.res_layers[FDC_SECTOR], FDC_SECTOR, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #This section of code allow import data U_SECTOR from GDB to Sector table in LADM structure.
         run_etl_model_input_load_data('U_SECTOR', self.res_layers[FDC_SECTOR], FDC_SECTOR, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
 
+        #This section of code allow import data R_VEREDA from GDB to village table in LADM structure.
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_VILLAGE)))
         run_etl_model_input_load_data('R_VEREDA', self.res_layers[FDC_VILLAGE], FDC_VILLAGE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #This section of code allow import data U_MANZANA from GDB to village table in LADM structure.
         run_etl_model_input_load_data('U_MANZANA', self.res_layers[FDC_VILLAGE], FDC_BLOCK, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #This section of code allow import data U_BARRIO from GDB to Neighbourhood table in LADM structure.
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_NEIGHBOURHOOD)))
         run_etl_model_input_load_data('U_BARRIO', self.res_layers[FDC_NEIGHBOURHOOD], FDC_NEIGHBOURHOOD, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
 
+        #This section of code allow import data R_CONSTRUCCION from GDB to Building table in LADM structure.
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(BUILDING_TABLE)))
         run_etl_model_input_load_data('R_CONSTRUCCION', self.res_layers[BUILDING_TABLE], BUILDING_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #This section of code allow import data U_CONSTRUCCION from GDB to Building table in LADM structure.
         run_etl_model_input_load_data('U_CONSTRUCCION', self.res_layers[BUILDING_TABLE], BUILDING_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-        create_virtual_field(self.res_layers[VALUATION_BUILDING_TABLE], 'identificador')
-        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(VALUATION_BUILDING_TABLE)))
 
+        #This section of code allow import data R_CONSTRUCCION from GDB to Valuation Building table in LADM structure.
+        self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(VALUATION_BUILDING_TABLE)))
         run_etl_model_input_load_data('R_CONSTRUCCION', self.res_layers[VALUATION_BUILDING_TABLE], VALUATION_BUILDING_TABLE, self.qgis_utils)
+        create_virtual_field(self.res_layers[VALUATION_BUILDING_TABLE], 'identificador', '$id')
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #This section of code allow import data R_CONSTRUCCION from GDB to Valuation Building table in LADM structure.
         run_etl_model_input_load_data('U_CONSTRUCCION', self.res_layers[VALUATION_BUILDING_TABLE], VALUATION_BUILDING_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
 
+        #Select layers to make the join.
         uunidad = QgsProject.instance().mapLayersByName('U_UNIDAD')[0]
         runidad = QgsProject.instance().mapLayersByName('R_UNIDAD')[0]
-
-        join_layers(uunidad, self.res_layers[BUILDING_TABLE], CODIGO_R1_GDB, 'su_local_id')
-        join_layers(runidad, self.res_layers[BUILDING_TABLE], CODIGO_R1_GDB, 'su_local_id')
+        #Generate join between U_Unidad GDB and Building table in LADM structure.
+        join_layers(uunidad, self.res_layers[BUILDING_TABLE], CODIGO_R1_GDB, 'etiqueta')
+        #Generate join between R_Unidad GDB and Building table in LADM structure.
+        join_layers(runidad, self.res_layers[BUILDING_TABLE], CODIGO_R1_GDB, 'etiqueta')
+        #Fix geometries.
         uunidad_filter = fix_spatial_layer(uunidad)
         runidad_filter = fix_spatial_layer(runidad)
+        #Filter by expresion , the result of the process.
         uunidad_filter = extract_by_expresion(uunidad_filter, "construccion_oficial_t_id != 'NULL'")
         runidad_filter = extract_by_expresion(runidad_filter, "construccion_oficial_t_id != 'NULL'")
 
+        #This section of code allow import data uunidad_filter from the previous process to Valuation Building unit table in LADM structure. 
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(VALUATION_BUILDING_UNIT_TABLE)))
         run_etl_model_input_load_data(uunidad_filter, self.res_layers[VALUATION_BUILDING_UNIT_TABLE], VALUATION_BUILDING_UNIT_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #This section of code allow import data runidad_filter from the previous process to Valuation Building unit table in LADM structure. 
         run_etl_model_input_load_data(runidad_filter, self.res_layers[VALUATION_BUILDING_UNIT_TABLE], VALUATION_BUILDING_UNIT_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
 
+        #This section of code allow import data uunidad_filter from the previous process to Building unit table in LADM structure. 
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(BUILDING_UNIT_TABLE)))
         run_etl_model_input_load_data(uunidad_filter, self.res_layers[BUILDING_UNIT_TABLE], BUILDING_UNIT_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #This section of code allow import data runidad_filter from the previous process to Building unit table in LADM structure. 
         run_etl_model_input_load_data(runidad_filter, self.res_layers[BUILDING_UNIT_TABLE], BUILDING_UNIT_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
-
+        
+        #Join between Building unit table and Valuation Building Unit Table in LADM structure.
         join_layers(self.res_layers[BUILDING_UNIT_TABLE], 
                         self.res_layers[VALUATION_BUILDING_UNIT_TABLE], 'area_construida', 'puntuacion')
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(AVALUOUNIDADCONSTRUCCION_TABLE)))
+        #This section of code allow import data Building unit table from LADM structure to Valuation Building unit table in LADM structure.
         run_etl_model_input_load_data(self.res_layers[BUILDING_UNIT_TABLE], self.res_layers[AVALUOUNIDADCONSTRUCCION_TABLE],
                                                                  AVALUOUNIDADCONSTRUCCION_TABLE, self.qgis_utils)                
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #Join between Building unit table and Valuation Building Table in LADM structure.
         join_layers(self.res_layers[BUILDING_TABLE], 
                         self.res_layers[VALUATION_BUILDING_TABLE], 'avaluo_construccion', 'identificador')
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(FDC_VALUATION_BUILDING_CONNECTION)))
+        #This section of code allow import data Building unit table from LADM structure to Valuation Building connection table in LADM structure
         run_etl_model_input_load_data(self.res_layers[BUILDING_TABLE], self.res_layers[FDC_VALUATION_BUILDING_CONNECTION],
                                                                  FDC_VALUATION_BUILDING_CONNECTION, self.qgis_utils) 
         delete_virtual_field(self.res_layers[VALUATION_BUILDING_TABLE], 'identificador')
         step += 1
         self.progress.setValue(step/steps * 100)
 
+        #Fix and  extract by expresion the data who if Convencional type.
         layer_filter = fix_spatial_layer(self.res_layers[VALUATION_BUILDING_UNIT_TABLE])
-        QgsProject.instance().addMapLayer(layer_filter)
-        layer_filter.setSubsetString("construccion_oficial_tipo = 'Convencional'")
+        layer_filter.setSubsetString("construccion_tipo = 'Convencional'")
+        #This section of code allow import data layer_filter from the previous process to Valuation Building unit qualification conventional table in LADM structure.
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE)))
         run_etl_model_input_load_data(layer_filter, self.res_layers[VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE], VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #Fix and  extract by expresion the data who if No Convencional type.
         layer_filter = fix_spatial_layer(self.res_layers[VALUATION_BUILDING_UNIT_TABLE])
-        layer_filter.setSubsetString("construccion_oficial_tipo = 'noConvencional'")
+        layer_filter.setSubsetString("construccion_tipo = 'noConvencional'")
+        #This section of code allow import data layer_filter from the previous process to Valuation Building unit qualification no conventional table in LADM structure.
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE)))
         run_etl_model_input_load_data(layer_filter, self.res_layers[VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE], VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE, self.qgis_utils)
         step += 1
@@ -345,26 +395,34 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         unomen = QgsProject.instance().mapLayersByName('U_NOMENCLATURA_DOMICILIARIA')[0]
         rnomen = QgsProject.instance().mapLayersByName('R_NOMENCLATURA_DOMICILIARIA')[0]
 
+        #This section of code allow import data U_NOMENCLATURA_DOMICILIARIA from GDB to Building table in LADM structure.
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(EXTADDRESS_TABLE)))
         run_etl_model_input_load_data(get_directions(unomen, self.res_layers[BUILDING_TABLE]), self.res_layers[EXTADDRESS_TABLE], EXTADDRESS_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #This section of code allow import data R_NOMENCLATURA_DOMICILIARIA from GDB to Building table in LADM structure.
         run_etl_model_input_load_data(get_directions(rnomen, self.res_layers[PLOT_TABLE]), self.res_layers[EXTADDRESS_TABLE], EXTADDRESS_TABLE, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
 
+        #This section of code allow import join between building table and parcel table to Uebaunit table in LADM structure.
         join_layers(self.res_layers[PARCEL_TABLE], self.res_layers[BUILDING_TABLE], 'numero_predial', 'su_local_id')
         vlayer = extract_by_expresion(self.res_layers[PARCEL_TABLE], "construccion_oficial_t_id != 'NULL'")
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(UEBAUNIT_TABLE_BUILDING_FIELD)))
         run_etl_model_input_load_data(vlayer, self.res_layers[UEBAUNIT_TABLE], UEBAUNIT_TABLE_BUILDING_FIELD, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #This section of code allow import join between plot table and parcel table to Uebaunit table in LADM structure.
         join_layers(self.res_layers[PARCEL_TABLE], self.res_layers[PLOT_TABLE], 'numero_predial', 'etiqueta')
         vlayer = extract_by_expresion(self.res_layers[PARCEL_TABLE], "terreno_oficial_t_id != 'NULL'")
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(UEBAUNIT_TABLE_PLOT_FIELD)))
         run_etl_model_input_load_data(vlayer, self.res_layers[UEBAUNIT_TABLE], UEBAUNIT_TABLE_PLOT_FIELD, self.qgis_utils)
         step += 1
         self.progress.setValue(step/steps * 100)
+
+        #This section of code allow import join between building unit table and parcel table to Uebaunit table in LADM structure.
         join_layers(self.res_layers[PARCEL_TABLE], self.res_layers[BUILDING_UNIT_TABLE], 'numero_predial', 'su_local_id')
         vlayer = extract_by_expresion(self.res_layers[PARCEL_TABLE], "unidadconstruccion_oficial_t_id != 'NULL'")
         self.txt_log.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "Loading data to {} table...".format(UEBAUNIT_TABLE_PLOT_FIELD)))
@@ -396,7 +454,7 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
             self.db_connect_label.setToolTip(self._db.get_display_conn_string())
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
         else:
-            self.db_connect_label.setText(QCoreApplication.translate("DialogImportSchema", "The database is not defined!"))
+            self.db_connect_label.setText(QCoreApplication.translate("DialogInputLoadFieldDataCapture", "The database is not defined!"))
             self.db_connect_label.setToolTip('')
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
@@ -410,7 +468,6 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
             features_count_before[layer] = self.res_layers[layer].featureCount()
 
         return features_count_before
-
 
     def show_log_data(self, ladm_count_before):
         self.summary = ""
@@ -452,7 +509,7 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         
         get_import_schema_dialog.accepted()
 
-        if get_import_schema_dialog.progress_bar.value() != 100:
+        if not self._db.test_connection()[0]:
             dlg = LogExcelDialog(self.qgis_utils, get_import_schema_dialog.txtStdout.toHtml())
             dlg.buttonBox.button(QDialogButtonBox.Save).setVisible(False)
             dlg.setFixedSize(dlg.size()) 
@@ -460,29 +517,22 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
             dlg.exec_()
             return
 
-    def test_database_connections(self):
-        self._db.conn = psycopg2.connect(self._db._uri)
-        if self._db._metadata_exists():
-            return True
-        else:
-            return False
-
-    def define_stade_gui(self, stade):
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(stade)
-        self.label_r1.setEnabled(stade)
-        self.label_r2.setEnabled(stade)
-        self.label_gdb.setEnabled(stade)
-        self.label_registry.setEnabled(stade)
+    def set_gui_enabled(self, enabled):
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enabled)
+        self.label_r1.setEnabled(enabled)
+        self.label_r2.setEnabled(enabled)
+        self.label_gdb.setEnabled(enabled)
+        self.label_registry.setEnabled(enabled)
         
-        self.txt_file_path_r1.setEnabled(stade)
-        self.txt_file_path_r2.setEnabled(stade)
-        self.txt_file_path_gdb.setEnabled(stade)
-        self.txt_file_path_registry.setEnabled(stade)
+        self.txt_file_path_r1.setEnabled(enabled)
+        self.txt_file_path_r2.setEnabled(enabled)
+        self.txt_file_path_gdb.setEnabled(enabled)
+        self.txt_file_path_registry.setEnabled(enabled)
 
-        self.btn_browse_file_r1.setEnabled(stade)
-        self.btn_browse_file_r2.setEnabled(stade)
-        self.btn_browse_file_gdb.setEnabled(stade)
-        self.btn_browse_file_registry.setEnabled(stade)
+        self.btn_browse_file_r1.setEnabled(enabled)
+        self.btn_browse_file_r2.setEnabled(enabled)
+        self.btn_browse_file_gdb.setEnabled(enabled)
+        self.btn_browse_file_registry.setEnabled(enabled)
 
     def clean_layer_joins(self, layers):
         for layer in layers:
@@ -500,7 +550,7 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         cached_layers, cached_relations, cached_bags_of_enum = self.qgis_utils._layers, self.qgis_utils._relations, self.qgis_utils._bags_of_enum
         self.qgis_utils.cache_layers_and_relations(self._db, True)
 
-        self.define_stade_gui(False)
+        self.set_gui_enabled(False)
         self.load_data_for_etl()
         features_count_before = self.ladm_tables_feature_count_before()
         self.mapping_fields_r1()
@@ -509,7 +559,7 @@ class DialogInputLoadFieldDataCapture(QDialog, WIZARD_UI):
         self.show_log_data(features_count_before)
 
         # When finish the etl process, we need remove all joins in the layers, so we delete all joins in r1, gdb and LADM_COL layers 
-        self.clean_layer_joins(self.gdb_layer)
+        self.clean_layer_joins(self.gdb_layer_list)
         self.clean_layer_joins([self.layer_r1])
         self.clean_layer_joins(self.res_layers)
 

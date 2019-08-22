@@ -371,7 +371,8 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == VALUATION_BUILDING_TABLE:
         mapping = [
-            {'expression': '"numero_pisos"', 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2}
+            {'expression': '"numero_pisos"', 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2},
+            {'expression': '$id', 'length': 0, 'name': 'identificador', 'precision': 0, 'type': 10}
         ]
     elif layer_name == VALUATION_BUILDING_UNIT_TABLE:
         mapping = [
@@ -636,15 +637,13 @@ def get_refactor_fields_mapping_r1_gdb_to_ladm(layer_name, qgis_utils):
         mapping = [
             {'expression': '$id', 'length': 16, 'name': 'avaluo_construccion', 'precision': 1, 'type': 6}, 
             {'expression': '"{}"'.format(AREA_R1_GDB), 'length': 15, 'name': 'area_construccion', 'precision': 1, 'type': 6}, 
-            {'expression': '"{}"'.format(ETIQUETA_R1_GDB), 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}, 
+            {'expression': '"{}"'.format(CODIGO_R1_GDB), 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}, 
             {'expression': "'IGAC_Construcción'", 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10}, 
-            {'expression': '"{}"'.format(CODIGO_R1_GDB), 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10}, 
             {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
             ]
     elif layer_name == VALUATION_BUILDING_TABLE:
         mapping = [
-            {'expression': 'if({NumPisos} = 0, 99, {NumPisos})'.format(NumPisos=NUM_PISOS_R1_GDB), 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2}, 
-            {'expression': '$id', 'length': 0, 'name': 'identificador', 'precision': 0, 'type': 10}
+            {'expression': 'if({NumPisos} = 0, 99, {NumPisos})'.format(NumPisos=NUM_PISOS_R1_GDB), 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2}
             ]
     elif layer_name == VALUATION_BUILDING_UNIT_TABLE:
         mapping = [

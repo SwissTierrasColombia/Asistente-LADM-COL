@@ -76,15 +76,15 @@ def join_layers(initial, target, join_name, target_name):
     joinObject.setJoinLayer(target)
     initial.addJoin(joinObject)
 
-def create_virtual_field(layer, name):
+def create_virtual_field(layer, name, expresion):
     #layer.dataProvider().addAttributes([QgsField(name, QVariant.String, "VARCHAR")])
-    field = QgsField( name, QVariant.String )
-    layer.addExpressionField('', field )
+    field = QgsField( name, QVariant.String)
+    layer.addExpressionField(expresion, field )
     layer.updateFields()
 
 def delete_virtual_field(layer, name):
-    idx_tmp_field = layer.dataProvider().fields().indexFromName(name)
-    layer.dataProvider().deleteAttributes([idx_tmp_field])
+    idx_tmp_field = layer.fields().indexFromName(name)
+    layer.deleteAttributes([idx_tmp_field])
     layer.updateFields()
 
 def get_directions(layer, reference_layers):
