@@ -181,14 +181,14 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             elif parcel_number in self.compared_parcels_data and self.compared_parcels_data[parcel_number][PARCEL_STATUS] == CHANGE_DETECTION_SEVERAL_PARCELS:
                 data = self.compared_parcels_data[parcel_number][ID_FIELD]
 
-            if data:
-                dlg_select_parcel = SelectParcelDialog(self, self.utils, data, self.parent)
-                dlg_select_parcel.exec_()
+        if data:
+            dlg_select_parcel = SelectParcelDialog(self, self.utils, data, self.parent)
+            dlg_select_parcel.exec_()
 
-                if dlg_select_parcel.parcel_id:
-                    self.changes_per_parcel_panel_requested.emit(dlg_select_parcel.parcel_number, dlg_select_parcel.parcel_id)
-            else:
-                self.changes_per_parcel_panel_requested.emit(parcel_number, '')
+            if dlg_select_parcel.parcel_id:
+                self.changes_per_parcel_panel_requested.emit(dlg_select_parcel.parcel_number, dlg_select_parcel.parcel_id)
+        else:
+            self.changes_per_parcel_panel_requested.emit(parcel_number, '')
 
     def select_related_plots_listed(self, zoom_to_selected=True):
         parcels_t_ids_collected = list()

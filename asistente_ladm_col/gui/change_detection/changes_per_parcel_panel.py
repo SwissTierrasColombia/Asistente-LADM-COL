@@ -54,6 +54,7 @@ from ...config.table_mapping_config import (PARCEL_NUMBER_FIELD,
                                             UEBAUNIT_TABLE,
                                             COL_PARTY_TABLE,
                                             DICT_PLURAL)
+from .dlg_select_parcel_change_detection import SelectParcelDialog
 from ...utils.qt_utils import OverrideCursor
 from ...utils import get_ui_class
 
@@ -198,6 +199,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.chk_show_all_plots.setChecked(True)
         self.initialize_tools_and_layers()  # Reset any filter on layers
         already_zoomed_in = False
+        parcel_id = None
 
         search_field = self.cbo_parcel_fields.currentData()
         search_value = list(kwargs.values())[0]
@@ -210,7 +212,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         official_parcels = [feature for feature in self.utils._official_layers[PARCEL_TABLE][LAYER].getFeatures(request)]
 
         if len(official_parcels) > 1:
-            # TODO: Show dialog to select only one
+            # We do not expect duplicates in the official source!
             pass
         elif len(official_parcels) == 0:
             print("No parcel found!", search_field, search_value)
@@ -230,6 +232,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         # Now get COLLECTED parcel's t_id and get related plot(s)
         if 'parcel_id' in kwargs and kwargs['parcel_id']:
+            parcel_id = kwargs['parcel_id']
             expression = "{}={}".format(ID_FIELD, kwargs['parcel_id'])
             search_criterion_collected = {ID_FIELD: kwargs['parcel_id']}
         else:
@@ -237,22 +240,30 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             search_criterion_collected = {search_field: search_value}
 
         search_criterion_official = {search_field: search_value}
-        self.fill_table(search_criterion_collected, search_criterion_official)
 
         request = QgsFeatureRequest(QgsExpression(expression))
         field_idx = self.utils._layers[PARCEL_TABLE][LAYER].fields().indexFromName(ID_FIELD)
         request.setSubsetOfAttributes([field_idx])
         request.setFlags(QgsFeatureRequest.NoGeometry)
         parcels = self.utils._layers[PARCEL_TABLE][LAYER].getFeatures(request)
-        parcel = QgsFeature()
-        res = parcels.nextFeature(parcel)
+        parcels_id = [feature[ID_FIELD] for feature in parcels]
 
-        if res:
+        if parcels_id and 'parcel_id' not in kwargs:
+            parcel_id = parcels_id[0]
+            if len(parcels_id) >= 2:
+                dlg_select_parcel = SelectParcelDialog(self, self.utils, parcels_id, self.parent)
+                dlg_select_parcel.exec_()
+
+                parcel_id = dlg_select_parcel.parcel_id
+                search_criterion_collected = {ID_FIELD: dlg_select_parcel.parcel_id}
+
+        self.fill_table(search_criterion_collected, search_criterion_official)
+        if parcel_id:
             plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
-                                                                     [parcel[ID_FIELD]],
-                                                                     field_name=ID_FIELD,
-                                                                     plot_layer=self.utils._layers[PLOT_TABLE][LAYER],
-                                                                     uebaunit_table=self.utils._layers[UEBAUNIT_TABLE][LAYER])
+                                                                           [parcel_id],
+                                                                           field_name=ID_FIELD,
+                                                                           plot_layer=self.utils._layers[PLOT_TABLE][LAYER],
+                                                                           uebaunit_table=self.utils._layers[UEBAUNIT_TABLE][LAYER])
             if plot_t_ids:
                 self._current_substring = "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids]))
                 if not already_zoomed_in:

@@ -50,16 +50,22 @@ class SelectParcelDialog(QDialog, DIALOG_UI):
         self.tbl_changes_parcels.itemClicked.connect(self.zoom_to_parcel)
         self.tbl_changes_parcels.itemDoubleClicked.connect(self.zoom_to_parcel)
 
+        # Remove selection in plot layers
+        self.utils._layers[PLOT_TABLE][LAYER].removeSelection()
+        self.utils._official_layers[PLOT_TABLE][LAYER].removeSelection()
+
+        self.select_button_name = QCoreApplication.translate("SelectParcelDialog", "Select")
+        self.zoom_to_all_button_name = QCoreApplication.translate("SelectParcelDialog", "Zoom to all")
         self.buttonBox.accepted.disconnect()
-        self.buttonBox.accepted.connect(self.accepted)
+        self.buttonBox.clicked.connect(self.button_box_clicked)
         self.buttonBox.clear()
         self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self.buttonBox.addButton(QCoreApplication.translate("SelectParcelDialog", "Select"), QDialogButtonBox.AcceptRole)
+        self.buttonBox.addButton(self.zoom_to_all_button_name, QDialogButtonBox.AcceptRole)
+        self.buttonBox.addButton(self.select_button_name, QDialogButtonBox.AcceptRole)
 
     def fill_table(self):
         self.tbl_changes_parcels.clearContents()
         self.tbl_changes_parcels.setRowCount(len(self.data))
-        self.tbl_changes_parcels.setSortingEnabled(False)
 
         request = QgsFeatureRequest(QgsExpression('"{}" in ({})'.format(ID_FIELD, ",".join(str(t_id) for t_id in self.data))))
         field_idx = self.utils._layers[PARCEL_TABLE][LAYER].fields().indexFromName(ID_FIELD)
@@ -78,8 +84,13 @@ class SelectParcelDialog(QDialog, DIALOG_UI):
 
     def zoom_to_parcel(self, item):
         row = item.row()
+        self.lb_message.setText("")
+        parcels_id = [int(self.tbl_changes_parcels.item(row, 0).text())]  # t_id of parcel
+        self.zoom_to_parcels(parcels_id)
+
+    def zoom_to_parcels(self, parcels_id):
         plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
-                                                                     [int(self.tbl_changes_parcels.item(row, 0).text())], # t_id of parcel
+                                                                     parcels_id,
                                                                      field_name=ID_FIELD,
                                                                      plot_layer=self.utils._layers[PLOT_TABLE][LAYER],
                                                                      uebaunit_table=self.utils._layers[UEBAUNIT_TABLE][LAYER])
@@ -91,10 +102,24 @@ class SelectParcelDialog(QDialog, DIALOG_UI):
 
     def accepted(self):
         if len(self.tbl_changes_parcels.selectedItems()):
+            self.lb_message.setText("")
             selected_row = self.tbl_changes_parcels.currentRow()
             self.parcel_id = self.tbl_changes_parcels.item(selected_row, 0).text()
             self.parcel_number = self.tbl_changes_parcels.item(selected_row, 3).text()
             self.close()
+        else:
+            self.lb_message.setText(QCoreApplication.translate("SelectParcelDialog", "You should select one parcel..."))
+            self.lb_message.setStyleSheet('color:#FF0000')
+
+    def button_box_clicked(self, button):
+        if self.buttonBox.buttonRole(button) == QDialogButtonBox.AcceptRole:
+            if button.text() == self.select_button_name:
+                self.accepted()
+            elif button.text() == self.zoom_to_all_button_name:
+                # Zoom to all plots
+                self.zoom_to_parcels(self.data)
+                self.tbl_changes_parcels.clearSelection()
+                self.lb_message.setText("")
 
     def reject(self):
         self.done(0)
