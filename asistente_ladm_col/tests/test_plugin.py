@@ -4,9 +4,9 @@ import nose2
 from qgis.testing import (start_app,
                           unittest)
 
-from asistente_ladm_col.config.general_config import QGIS_MODEL_BAKER_PLUGIN_NAME, \
-    QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION, QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION
-
+from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NAME,
+                                                      QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
+                                                      QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
 start_app()
 
 from asistente_ladm_col.tests.utils import (get_iface,

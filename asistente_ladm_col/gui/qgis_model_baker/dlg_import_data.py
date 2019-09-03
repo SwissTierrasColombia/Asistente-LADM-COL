@@ -28,6 +28,7 @@ from QgisModelBaker.libili2db.ili2dbutils import color_log_text
 from QgisModelBaker.libili2db.ilicache import IliCache
 from QgisModelBaker.libili2db.iliimporter import JavaNotFoundError
 from qgis.PyQt.QtCore import (Qt,
+                              pyqtSignal,
                               QCoreApplication,
                               QSettings)
 from qgis.PyQt.QtGui import (QColor,
@@ -48,14 +49,16 @@ from ...config.general_config import (DEFAULT_EPSG,
                                       CREATE_BASKET_COL,
                                       CREATE_IMPORT_TID,
                                       STROKE_ARCS)
-from ...gui.dlg_get_java_path import DialogGetJavaPath
+from ...gui.dialogs.dlg_get_java_path import GetJavaPathDialog
+from ...gui.dialogs.dlg_settings import SettingsDialog
 from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
                                FileValidator,
                                make_file_selector,
                                OverrideCursor)
-from ...resources_rc import *
+
+from ...resources_rc import * # Necessary to show icons
 from ...config.config_db_supported import ConfigDbSupported
 from ...lib.db.enum_db_action_type import EnumDbActionType
 
@@ -64,13 +67,18 @@ DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_data.ui')
 
 class DialogImportData(QDialog, DIALOG_UI):
 
-    def __init__(self, iface, db, qgis_utils):
+    open_dlg_import_schema = pyqtSignal(list) # selected models
+    BUTTON_NAME_IMPORT_DATA = QCoreApplication.translate("DialogImportData", "Import data")
+    BUTTON_NAME_GO_TO_CREATE_STRUCTURE = QCoreApplication.translate("DialogImportData",  "Go to Create Structure...")
+
+    def __init__(self, iface, qgis_utils, conn_manager):
         QDialog.__init__(self)
         self.setupUi(self)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
         self.iface = iface
-        self.db = db
+        self.conn_manager = conn_manager
+        self.db = self.conn_manager.get_db_connector_from_source()
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
 
@@ -105,15 +113,23 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
         self.buttonBox.accepted.disconnect()
-        self.buttonBox.accepted.connect(self.accepted)
+        self.buttonBox.clicked.connect(self.accepted_import_data)
         self.buttonBox.clear()
         self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self._accept_button = self.buttonBox.addButton(QCoreApplication.translate("DialogImportData", "Import data"), QDialogButtonBox.AcceptRole)
+        self._accept_button = self.buttonBox.addButton(self.BUTTON_NAME_IMPORT_DATA, QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
 
         self.update_connection_info()
         self.restore_configuration()
+
+    def accepted_import_data(self, button):
+        if self.buttonBox.buttonRole(button) == QDialogButtonBox.AcceptRole:
+            if button.text() == self.BUTTON_NAME_IMPORT_DATA:
+                self.accepted()
+            elif button.text() == self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE:
+                self.close()  # Close import data dialog
+                self.open_dlg_import_schema.emit(self.get_ili_models())  # Emit signal to open import schema dialog
 
     def update_connection_info(self):
         db_description = self.db.get_description_conn_string()
@@ -177,7 +193,7 @@ class DialogImportData(QDialog, DIALOG_UI):
                 model_tag = str(txt.group(0))
                 name = re.findall('NAME="(.*?)"', model_tag, re.IGNORECASE)
                 models_name.extend(name)
-        return models_name
+        return sorted(models_name)
 
     def get_ili_models(self):
         ili_models = list()
@@ -187,7 +203,13 @@ class DialogImportData(QDialog, DIALOG_UI):
         return ili_models
 
     def show_settings(self):
-        dlg = self.qgis_utils.get_settings_dialog()
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+
+        # Connect signals (DBUtils, QgisUtils)
+        dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
+        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+        dlg.organization_tools_changed.connect(self.qgis_utils.organization_tools_changed)
+
         dlg.set_action_type(EnumDbActionType.IMPORT)
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
         if dlg.exec_():
@@ -216,6 +238,40 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
             self.import_models_list_view.setFocus()
+            return
+
+        # Get list models in db and xtf
+        ili_models = set([ili_model for ili_model in self.get_ili_models()])
+
+        db_models = list()
+        for db_model in self.db.get_models():
+            model_name_with_dependencies = db_model['modelname']
+            model_name = model_name_with_dependencies.split('{')[0]
+            db_models.append(model_name)
+        db_models = set(db_models)
+
+        if not ili_models.issubset(db_models):
+            message_error = "The XTF file to import does not have the same models as the target database schema. " \
+                            "Please create a schema that also includes the following missing modules:\n\n * {}".format(" \n * ".join(sorted(ili_models.difference(db_models))))
+            self.txtStdout.clear()
+            self.txtStdout.setTextColor(QColor('#000000'))
+            self.txtStdout.setText(QCoreApplication.translate("DialogImportData", message_error))
+            self.show_message(message_error, Qgis.Warning)
+            self.xtf_file_line_edit.setFocus()
+
+            # button is removed to define order in GUI
+            for button in self.buttonBox.buttons():
+                if button.text() == self.BUTTON_NAME_IMPORT_DATA:
+                    self.buttonBox.removeButton(button)
+
+            # Check if button was previously added
+            self.remove_create_structure_button()
+
+            self.buttonBox.addButton(self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE,
+                                     QDialogButtonBox.AcceptRole).setStyleSheet("color: #aa2222;")
+            self.buttonBox.addButton(self.BUTTON_NAME_IMPORT_DATA,
+                                     QDialogButtonBox.AcceptRole)
+
             return
 
         with OverrideCursor(Qt.WaitCursor):
@@ -251,7 +307,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             except JavaNotFoundError:
 
                 # Set JAVA PATH
-                get_java_path_dlg = DialogGetJavaPath()
+                get_java_path_dlg = GetJavaPathDialog()
                 get_java_path_dlg.setModal(True)
                 if get_java_path_dlg.exec_():
                     configuration = self.update_configuration()
@@ -272,6 +328,11 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
             self.show_message(QCoreApplication.translate("DialogImportData", "Import of the data was successfully completed"), Qgis.Success)
+
+    def remove_create_structure_button(self):
+        for button in self.buttonBox.buttons():
+            if button.text() == self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE:
+                self.buttonBox.removeButton(button)
 
     def save_configuration(self, configuration):
         settings = QSettings()
@@ -305,7 +366,7 @@ class DialogImportData(QDialog, DIALOG_UI):
         configuration.xtffile = self.xtf_file_line_edit.text().strip()
         configuration.delete_data = False
 
-        configuration.epsg = DEFAULT_EPSG
+        configuration.epsg = QSettings().value('Asistente-LADM_COL/advanced_settings/epsg', int(DEFAULT_EPSG), int)
         configuration.inheritance = DEFAULT_INHERITANCE
         configuration.create_basket_col = CREATE_BASKET_COL
         configuration.create_import_tid = CREATE_IMPORT_TID
@@ -392,4 +453,3 @@ class DialogImportData(QDialog, DIALOG_UI):
 
     def show_message(self, message, level):
         self.bar.pushMessage("Asistente LADM_COL", message, level, duration=0)
-

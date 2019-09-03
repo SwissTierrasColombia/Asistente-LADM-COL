@@ -65,6 +65,7 @@ CREATE_BASKET_COL = False
 CREATE_IMPORT_TID = False
 STROKE_ARCS = True
 
+LAYER = 'layer'
 
 # SETTINGS DIALOG TAB INDEXES
 SETTINGS_CONNECTION_TAB_INDEX = 0
@@ -122,7 +123,7 @@ JAVA_REQUIRED_VERSION = 1.8
 
 # Configure QGIS Model Baker Dependency
 QGIS_MODEL_BAKER_PLUGIN_NAME = "QgisModelBaker"
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.3.0"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.3.1"
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
@@ -131,7 +132,7 @@ QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = True
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/opengisch/QgisModelBaker/releases/download/4.3.0-beta/QgisModelBaker.4.3.0-beta.zip' # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip'
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/opengisch/QgisModelBaker/releases/download/4.3.1/QgisModelBaker.4.3.1.zip' # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip'
 
 # Configure Map Swipe Tool Dependency
 MAP_SWIPE_TOOL_PLUGIN_NAME = "mapswipetool_plugin"
@@ -145,18 +146,21 @@ PARCEL_STATUS_DISPLAY = ''
 CHANGE_DETECTION_NEW_PARCEL = 'Alta'
 CHANGE_DETECTION_MISSING_PARCEL = 'Baja'
 CHANGE_DETECTION_PARCEL_CHANGED = 'Cambio'
+CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED = 'Cambio Geometría'
 CHANGE_DETECTION_PARCEL_REMAINS = 'OK'
 CHANGE_DETECTION_SEVERAL_PARCELS = 'several'
 CHANGE_DETECTION_NULL_PARCEL = 'null'
 STATUS_COLORS = {CHANGE_DETECTION_NEW_PARCEL: Qt.red,
                  CHANGE_DETECTION_MISSING_PARCEL: Qt.red,
                  CHANGE_DETECTION_PARCEL_CHANGED: Qt.red,
+                 CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED: Qt.red,
                  CHANGE_DETECTION_PARCEL_REMAINS: Qt.green,
                  CHANGE_DETECTION_SEVERAL_PARCELS: Qt.yellow,
                  CHANGE_DETECTION_NULL_PARCEL: Qt.yellow}
 SOURCE_DB = '_SOURCE_'
 OFFICIAL_DB_SOURCE = '_OFFICIAL_'
 COLLECTED_DB_SOURCE = '_COLLECTED_'
+PLOT_GEOMETRY_KEY = 'GEOMETRY_PLOT'
 
 # QGIS Model Baker definitions
 SCHEMA_NAME = 'schemaname'

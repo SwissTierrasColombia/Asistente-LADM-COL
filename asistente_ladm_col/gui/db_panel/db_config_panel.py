@@ -16,16 +16,17 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import (QObject, pyqtSignal)
+from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtWidgets import QWidget
 from qgis.core import Qgis
 
 
-class DbConfigPanel(QObject):
+class DbConfigPanel(QWidget):
 
     notify_message_requested = pyqtSignal(str, Qgis.MessageLevel)
 
-    def __init__(self):
-        super(DbConfigPanel, self).__init__()
+    def __init__(self, parent: QWidget):
+        QWidget.__init__(self, parent)
         self._mode = None
         self.state = None
 

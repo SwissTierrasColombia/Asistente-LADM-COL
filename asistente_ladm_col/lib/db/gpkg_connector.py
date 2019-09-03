@@ -21,15 +21,16 @@ import os
 import qgis.utils
 from qgis.PyQt.QtCore import QCoreApplication
 
-from .db_connector import (DBConnector, EnumTestLevel)
+from .db_connector import (DBConnector,
+                           EnumTestLevel)
 
 
 class GPKGConnector(DBConnector):
 
     _PROVIDER_NAME = 'ogr'
 
-    def __init__(self, uri, schema=None, conn_dict={}):
-        DBConnector.__init__(self, uri, schema, conn_dict)
+    def __init__(self, uri, conn_dict={}):
+        DBConnector.__init__(self, uri, conn_dict)
         self.mode = 'gpkg'
         self.conn = None
         self.provider = 'ogr'
@@ -43,14 +44,13 @@ class GPKGConnector(DBConnector):
         try:
 
             # file no exist, but directory must exist
-            if test_level & EnumTestLevel.CREATE_SCHEMA:
+            if test_level & EnumTestLevel.SCHEMA_IMPORT:
                 directory = os.path.dirname(self._uri)
 
                 if not os.path.exists(directory):
                     raise Exception("GeoPackage directory file not found.")
             elif not os.path.exists(self._uri):
                 raise Exception("GeoPackage file not found.")
-            self.conn = qgis.utils.spatialite_connect(self._uri)
             # TODO verify EnumTestLevel.LADM
         except Exception as e:
             return (False, QCoreApplication.translate("GPKGConnector",
@@ -101,6 +101,9 @@ class GPKGConnector(DBConnector):
 
     def get_connection_uri(self, dict_conn, level=1):
         return dict_conn['dbfile']
+
+    def open_connection(self):
+        self.conn = qgis.utils.spatialite_connect(self._uri)
 
     def close_connection(self):
         pass  # this connection does not need to be closed

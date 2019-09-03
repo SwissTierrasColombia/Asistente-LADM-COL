@@ -24,6 +24,7 @@ from QgisModelBaker.libili2db.ili2dbconfig import (SchemaImportConfiguration,
 from QgisModelBaker.libili2db.ili2dbutils import color_log_text
 from QgisModelBaker.libili2db.ilicache import IliCache
 from QgisModelBaker.libili2db.iliimporter import JavaNotFoundError
+
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QSettings,
@@ -44,12 +45,14 @@ from ...config.general_config import (DEFAULT_EPSG,
                                       CREATE_BASKET_COL,
                                       CREATE_IMPORT_TID,
                                       STROKE_ARCS)
-from ...gui.dlg_get_java_path import DialogGetJavaPath
+from ...gui.dialogs.dlg_get_java_path import GetJavaPathDialog
+from ...gui.dialogs.dlg_settings import SettingsDialog
 from ...utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
 from ...utils import get_ui_class
 from ...utils.qt_utils import (Validators,
                                OverrideCursor)
-from ...resources_rc import *
+
+from ...resources_rc import * # Necessary to show icons
 from ...config.config_db_supported import ConfigDbSupported
 from ...lib.db.db_connector import DBConnector
 from ...lib.db.enum_db_action_type import EnumDbActionType
@@ -57,13 +60,18 @@ DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_schema.ui')
 
 
 class DialogImportSchema(QDialog, DIALOG_UI):
+    models_have_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db
+    open_dlg_import_data = pyqtSignal()
 
-    models_have_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
+    BUTTON_NAME_CREATE_STRUCTURE = QCoreApplication.translate("DialogImportSchema", "Create LADM-COL structure")
+    BUTTON_NAME_GO_TO_IMPORT_DATA =  QCoreApplication.translate("DialogImportData", "Go to Import Data...")
 
-    def __init__(self, iface, db, qgis_utils):
+    def __init__(self, iface, qgis_utils, conn_manager, selected_models=list(), db_source=None):
         QDialog.__init__(self)
         self.iface = iface
-        self.db = db
+        self.conn_manager = conn_manager
+        self.selected_models = selected_models
+        self.db = self.conn_manager.get_db_connector_from_source(db_source)
         self.qgis_utils = qgis_utils
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
@@ -89,15 +97,23 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
         self.buttonBox.accepted.disconnect()
-        self.buttonBox.accepted.connect(self.accepted)
+        self.buttonBox.clicked.connect(self.accepted_import_schema)
         self.buttonBox.clear()
         self.buttonBox.addButton(QDialogButtonBox.Cancel)
-        self._accept_button = self.buttonBox.addButton(QCoreApplication.translate("DialogImportSchema", "Create LADM-COL structure"), QDialogButtonBox.AcceptRole)
+        self._accept_button = self.buttonBox.addButton(self.BUTTON_NAME_CREATE_STRUCTURE, QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(QDialogButtonBox.Help)
         self.buttonBox.helpRequested.connect(self.show_help)
 
         self.update_connection_info()
         self.restore_configuration()
+
+    def accepted_import_schema(self, button):
+        if self.buttonBox.buttonRole(button) == QDialogButtonBox.AcceptRole:
+            if button.text() == self.BUTTON_NAME_CREATE_STRUCTURE:
+                self.accepted()
+            elif button.text() == self.BUTTON_NAME_GO_TO_IMPORT_DATA:
+                self.close()  # Close import schema dialog and open import open dialog
+                self.open_dlg_import_data.emit()
 
     def update_connection_info(self):
         db_description = self.db.get_description_conn_string()
@@ -111,11 +127,12 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self._accept_button.setEnabled(False)
 
     def update_import_models(self):
-        for modelname in DEFAULT_MODEL_NAMES_CHECKED:
+        for modelname, checked in DEFAULT_MODEL_NAMES_CHECKED.items():
             item = QListWidgetItem(modelname)
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-            item.setCheckState(DEFAULT_MODEL_NAMES_CHECKED[modelname])
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+            item.setCheckState(Qt.Checked if modelname in self.selected_models or checked == Qt.Checked else Qt.Unchecked)  # From parameter or by default
             self.import_models_list_widget.addItem(item)
+
         self.import_models_list_widget.itemClicked.connect(self.on_item_clicked_import_model)
         self.import_models_list_widget.itemChanged.connect(self.on_itemchanged_import_model)
 
@@ -145,7 +162,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         return checked_models
 
     def show_settings(self):
-        dlg = self.qgis_utils.get_settings_dialog()
+        dlg = SettingsDialog(qgis_utils=self.qgis_utils, conn_manager=self.conn_manager)
+
+        # Connect signals (DBUtils, QgisUtils)
+        dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
+        dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
+        dlg.organization_tools_changed.connect(self.qgis_utils.organization_tools_changed)
+
         dlg.tabWidget.setCurrentIndex(SETTINGS_CONNECTION_TAB_INDEX)
         dlg.set_action_type(EnumDbActionType.SCHEMA_IMPORT)
 
@@ -192,7 +215,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                     return
             except JavaNotFoundError:
                 # Set JAVA PATH
-                get_java_path_dlg = DialogGetJavaPath()
+                get_java_path_dlg = GetJavaPathDialog()
                 get_java_path_dlg.setModal(True)
                 if get_java_path_dlg.exec_():
                     configuration = self.update_configuration()
@@ -208,6 +231,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                 return
 
             self.buttonBox.clear()
+
+            self.buttonBox.addButton(self.BUTTON_NAME_GO_TO_IMPORT_DATA,
+                                     QDialogButtonBox.AcceptRole).setStyleSheet("color: #007208;")
+
             self.buttonBox.setEnabled(True)
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
@@ -241,7 +268,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         # set custom toml file
         configuration.tomlfile = TOML_FILE_DIR
-        configuration.epsg = DEFAULT_EPSG
+        configuration.epsg = QSettings().value('Asistente-LADM_COL/advanced_settings/epsg', int(DEFAULT_EPSG), int)
         configuration.inheritance = DEFAULT_INHERITANCE
         configuration.create_basket_col = CREATE_BASKET_COL
         configuration.create_import_tid = CREATE_IMPORT_TID

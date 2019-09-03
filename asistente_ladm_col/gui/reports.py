@@ -34,7 +34,8 @@ from qgis.PyQt.QtCore import (Qt,
                               QFile,
                               QProcess,
                               QEventLoop,
-                              QIODevice, pyqtSignal)
+                              QIODevice,
+                              pyqtSignal)
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QMessageBox,
                                  QProgressBar)
@@ -45,7 +46,6 @@ from qgis.core import (QgsWkbTypes,
                        QgsApplication)
 
 from ..config.general_config import (ANNEX_17_REPORT,
-                                     ANT_MAP_REPORT,
                                      TEST_SERVER,
                                      PLUGIN_NAME,
                                      REPORTS_REQUIRED_VERSION,
@@ -53,11 +53,13 @@ from ..config.general_config import (ANNEX_17_REPORT,
 from ..config.table_mapping_config import (ID_FIELD,
                                            PLOT_TABLE,
                                            PARCEL_NUMBER_FIELD)
+from ..gui.dialogs.dlg_get_java_path import GetJavaPathDialog
 from ..utils.qt_utils import (remove_readonly,
                               normalize_local_url)
+from ..utils.utils import Utils
+
 
 class ReportGenerator(QObject):
-
     enable_action_requested = pyqtSignal(str, bool)
 
     def __init__(self, qgis_utils, ladm_data):
@@ -189,22 +191,23 @@ class ReportGenerator(QObject):
             return
 
         # Check if JAVA_HOME path is set, otherwise use path from QGIS Model Baker
-        if os.name == 'nt':
-            if 'JAVA_HOME' not in os.environ:
+        if not Utils.set_java_home():
+            get_java_path_dlg = GetJavaPathDialog()
+            get_java_path_dlg.setModal(True)
+            get_java_path_dlg.exec_()
+
+            if not Utils.set_java_home():
                 self.msg = QMessageBox()
                 self.msg.setIcon(QMessageBox.Information)
-                self.msg.setText(QCoreApplication.translate("ReportGenerator", "JAVA_HOME environment variable is not defined, please define it as an enviroment variable on Windows and restart QGIS before generating the annex 17."))
+                self.msg.setText(QCoreApplication.translate("ReportGenerator",
+                                                            "JAVA_HOME environment variable is not defined, please define it as an enviroment variable and restart QGIS before generating the annex 17."))
                 self.msg.setWindowTitle(QCoreApplication.translate("ReportGenerator", "JAVA_HOME not defined"))
                 self.msg.setStandardButtons(QMessageBox.Close)
                 self.msg.exec_()
                 return
 
         plot_layer = self.qgis_utils.get_layer(db, PLOT_TABLE, QgsWkbTypes.PolygonGeometry, load=True)
-        if plot_layer is None:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate("ReportGenerator",
-                                           "Layer 'Plot' not found in DB! {}").format(db.get_description()),
-                Qgis.Warning)
+        if not plot_layer:
             return
 
         selected_plots = plot_layer.selectedFeatures()

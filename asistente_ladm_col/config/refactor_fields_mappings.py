@@ -544,7 +544,7 @@ def get_refactor_fields_mapping_r1_gdb_to_ladm(layer_name, qgis_utils):
          mapping = [
             {'expression': '"{}"'.format(DEPARTAMENTO_R1_GDB), 'length': 2, 'name': 'departamento', 'precision': -1, 'type': 10}, 
             {'expression': '"{}"'.format(MUNICIPIO_R1_GDB), 'length': 3, 'name': 'municipio', 'precision': -1, 'type': 10}, 
-            {'expression': '$id', 'length': 20, 'name': 'nupre', 'precision': -1, 'type': 10}, 
+            {'expression': '"id"', 'length': 20, 'name': 'nupre', 'precision': -1, 'type': 10}, 
             {'expression': 'concat({}, {}, {})'.format(DEPARTAMENTO_R1_GDB, MUNICIPIO_R1_GDB, NO_PREDIAL_R1_GDB), 'length': 30, 'name': 'numero_predial', 'precision': -1, 'type': 10}, 
             {'expression': 'concat({}, {}, {})'.format(DEPARTAMENTO_R1_GDB, MUNICIPIO_R1_GDB, NO_PREDIAL_ANTERIOR_R1_GDB), 'length': 20, 'name': 'numero_predial_anterior', 'precision': -1, 'type': 10}, 
             {'expression': '"{}"'.format(AVALUO_R1_GDB), 'length': 16, 'name': 'avaluo_predio', 'precision': 1, 'type': 6},
@@ -557,18 +557,16 @@ def get_refactor_fields_mapping_r1_gdb_to_ladm(layer_name, qgis_utils):
         mapping = [
             {'expression': '"{}"'.format(NO_DOCUMENTO_R1_GDB), 'length': 12, 'name': 'documento_identidad', 'precision': -1, 'type': 10}, 
             {'expression': 'if({TipoDocumento} = \'C\', \'Cedula_Ciudadania\', if({TipoDocumento} = \'N\', \'NIT\', if({TipoDocumento} = \'T\', \'Tarjeta_Identidad\', if({TipoDocumento} = \'X\', \'Cedula_Extranjeria\',\'Pasaporte\'))))'.format(TipoDocumento=TIPO_DOCUMENTO_R1_GDB), 'length': 255, 'name': 'tipo_documento', 'precision': -1, 'type': 10}, 
-            {'expression': '$id', 'length': 20, 'name': 'organo_emisor', 'precision': -1, 'type': 10}, 
+            {'expression': '"id"', 'length': 20, 'name': 'organo_emisor', 'precision': -1, 'type': 10}, 
             {'expression': "string_to_array({}, ' ')[2]".format(NOMBRE_R1_GDB), 'length': 100, 'name': 'primer_apellido', 'precision': -1, 'type': 10}, 
             {'expression': "string_to_array({}, ' ')[0]".format(NOMBRE_R1_GDB), 'length': 100, 'name': 'primer_nombre', 'precision': -1, 'type': 10}, 
             {'expression': "string_to_array({}, ' ')[3]".format(NOMBRE_R1_GDB), 'length': 100, 'name': 'segundo_apellido', 'precision': -1, 'type': 10}, 
             {'expression': "string_to_array({}, ' ')[1]".format(NOMBRE_R1_GDB), 'length': 100, 'name': 'segundo_nombre', 'precision': -1, 'type': 10}, 
             {'expression': 'if({} = \'N\', "Nombre",\' \')'.format(TIPO_DOCUMENTO_R1_GDB), 'length': 250, 'name': 'razon_social', 'precision': -1, 'type': 10}, 
-            {'expression': '"{}"'.format(NOMBRE_R1_GDB), 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10}, 
             {'expression': 'if({} = \'N\', \'Persona_No_Natural\', \'Persona_Natural\')'.format(TIPO_DOCUMENTO_R1_GDB), 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
             {'expression': "'IGAC_Interesado'", 'length': 255, 'name': 'p_espacio_de_nombres', 'precision': -1, 'type': 10}, 
             {'expression': '0', 'length': 255, 'name': 'p_local_id', 'precision': -1, 'type': 10}, 
-            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}, 
-            {'expression': 'concat({}, {}, {})'.format(DEPARTAMENTO_R1_GDB, MUNICIPIO_R1_GDB, NO_PREDIAL_R1_GDB), 'length': -1, 'name': 'Codigo', 'precision': -1, 'type': 10}
+            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
         ]
     elif layer_name == RIGHT_TABLE:
         mapping = [
@@ -576,7 +574,7 @@ def get_refactor_fields_mapping_r1_gdb_to_ladm(layer_name, qgis_utils):
             {'expression': "'Col_Derecho_IGAC'", 'length': 255, 'name': 'r_espacio_de_nombres', 'precision': -1, 'type': 10}, 
             {'expression': '0', 'length': 255, 'name': 'r_local_id', 'precision': -1, 'type': 10}, 
             {'expression': '"t_id"', 'length': -1, 'name': 'interesado_col_interesado', 'precision': 0, 'type': 4}, 
-            {'expression': '"predio_t_id"', 'length': -1, 'name': 'unidad_predio', 'precision': 0, 'type': 4}, 
+            {'expression': '"predio_oficial_t_id"', 'length': -1, 'name': 'unidad_predio', 'precision': 0, 'type': 4}, 
             {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
         ]
     elif layer_name == ADMINISTRATIVE_SOURCE_TABLE:
