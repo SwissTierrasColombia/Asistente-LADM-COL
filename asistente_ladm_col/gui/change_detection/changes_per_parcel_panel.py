@@ -54,7 +54,7 @@ from ...config.table_mapping_config import (PARCEL_NUMBER_FIELD,
                                             UEBAUNIT_TABLE,
                                             COL_PARTY_TABLE,
                                             DICT_PLURAL)
-from .dlg_select_parcel_change_detection import SelectParcelDialog
+from .dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from ...utils.qt_utils import OverrideCursor
 from ...utils import get_ui_class
 
@@ -251,7 +251,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         if parcels_id and 'parcel_id' not in kwargs:
             parcel_id = parcels_id[0]
             if len(parcels_id) >= 2:
-                dlg_select_parcel = SelectParcelDialog(self, self.utils, parcels_id, self.parent)
+                dlg_select_parcel = SelectDuplicateParcelDialog(self.utils, parcels_id, self.parent)
                 dlg_select_parcel.exec_()
 
                 parcel_id = dlg_select_parcel.parcel_id

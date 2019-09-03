@@ -44,7 +44,7 @@ from ...config.table_mapping_config import (PLOT_TABLE,
                                             UEBAUNIT_TABLE,
                                             ID_FIELD,
                                             PARCEL_NUMBER_FIELD)
-from .dlg_select_parcel_change_detection import SelectParcelDialog
+from .dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from ...utils import get_ui_class
 from ...utils.qt_utils import OverrideCursor
 
@@ -175,14 +175,14 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         with OverrideCursor(Qt.WaitCursor):
             parcel_number = self.tbl_changes_all_parcels.item(item.row(), 0).text()
 
-            data = dict()
+            parcels_t_ids = list()
             if parcel_number == QgsApplication.nullRepresentation():
-                data = self.compared_parcels_data[NULL][ID_FIELD]
+                parcels_t_ids = self.compared_parcels_data[NULL][ID_FIELD]
             elif parcel_number in self.compared_parcels_data and self.compared_parcels_data[parcel_number][PARCEL_STATUS] == CHANGE_DETECTION_SEVERAL_PARCELS:
-                data = self.compared_parcels_data[parcel_number][ID_FIELD]
+                parcels_t_ids = self.compared_parcels_data[parcel_number][ID_FIELD]
 
-        if data:
-            dlg_select_parcel = SelectParcelDialog(self, self.utils, data, self.parent)
+        if parcels_t_ids:
+            dlg_select_parcel = SelectDuplicateParcelDialog(self.utils, parcels_t_ids, self.parent)
             dlg_select_parcel.exec_()
 
             if dlg_select_parcel.parcel_id:

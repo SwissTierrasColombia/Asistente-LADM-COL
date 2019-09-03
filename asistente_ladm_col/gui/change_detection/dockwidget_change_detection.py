@@ -136,7 +136,6 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
 
             self.lst_parcel_panels = list()
 
-        # Don't remove previous selection when parcel_id it is not empty empty
         self.parcel_panel = ChangesPerParcelPanelWidget(self, self.utils, parcel_number, parcel_id)
         self.widget.showPanel(self.parcel_panel)
         self.lst_parcel_panels.append(self.parcel_panel)
