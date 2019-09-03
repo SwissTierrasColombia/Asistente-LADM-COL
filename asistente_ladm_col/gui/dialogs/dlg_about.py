@@ -65,9 +65,9 @@ class AboutDialog(QDialog, DIALOG_UI):
         if not file.open(QIODevice.ReadOnly | QIODevice.Text):
             raise Exception(file.errorString())
 
-        codec = QTextCodec.codecForLocale()
         stream = QTextStream(file)
-        stream.setCodec(codec)
+        stream.setCodec("UTF-8")
+
         self.tb_changelog.setHtml(stream.readAll())
 
     def check_local_help(self):
