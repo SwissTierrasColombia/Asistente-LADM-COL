@@ -871,7 +871,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def call_explode_boundaries(self):
-        self.qgis_utils.build_boundary(self.get_db_connection())
+        self.toolbar.build_boundary(self.get_db_connection())
 
     @_qgis_model_baker_required
     @_db_connection_required
@@ -881,12 +881,12 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def call_fill_topology_table_pointbfs(self):
-        self.qgis_utils.fill_topology_table_pointbfs(self.get_db_connection())
+        self.toolbar.fill_topology_table_pointbfs(self.get_db_connection())
 
     @_qgis_model_baker_required
     @_db_connection_required
     def call_fill_topology_tables_morebfs_less(self):
-        self.qgis_utils.fill_topology_tables_morebfs_less(self.get_db_connection())
+        self.toolbar.fill_topology_tables_morebfs_less(self.get_db_connection())
 
     @_qgis_model_baker_required
     @_db_connection_required
