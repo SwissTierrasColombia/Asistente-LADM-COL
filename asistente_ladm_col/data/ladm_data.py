@@ -433,26 +433,27 @@ class LADM_DATA():
     @staticmethod
     def get_features_by_expression(layer, expression=None, with_attributes=False, with_geometry=False):
         # TODO: It should be possible to pass a list of attributes to retrieve
-        field_idx = layer.fields().indexFromName(ID_FIELD)
 
         if expression is None:
             request = QgsFeatureRequest()
         else:
             request = QgsFeatureRequest(expression)
 
-        if not with_attributes:
-            request.setSubsetOfAttributes([field_idx])
         if not with_geometry:
             request.setFlags(QgsFeatureRequest.NoGeometry)
+        if not with_attributes:
+            field_idx = layer.fields().indexFromName(ID_FIELD)
+            request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
 
         return [feature for feature in layer.getFeatures(request)]
 
     def get_features_from_t_ids(self, layer, t_ids, no_attributes=False, no_geometry=False):
-        field_idx = layer.fields().indexFromName(ID_FIELD)
         request = QgsFeatureRequest(QgsExpression("{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in t_ids]))))
-        if no_attributes:
-            request.setSubsetOfAttributes([field_idx])
+
         if no_geometry:
             request.setFlags(QgsFeatureRequest.NoGeometry)
+        if no_attributes:
+            field_idx = layer.fields().indexFromName(ID_FIELD)
+            request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
 
         return [feature for feature in layer.getFeatures(request)]

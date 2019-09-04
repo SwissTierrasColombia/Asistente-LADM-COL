@@ -207,8 +207,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         # Get OFFICIAL parcel's t_id and get related plot(s)
         request = QgsFeatureRequest(QgsExpression("{}='{}'".format(search_field, search_value)))
         field_idx = self.utils._official_layers[PARCEL_TABLE][LAYER].fields().indexFromName(ID_FIELD)
-        request.setSubsetOfAttributes([field_idx])
         request.setFlags(QgsFeatureRequest.NoGeometry)
+        request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
         official_parcels = [feature for feature in self.utils._official_layers[PARCEL_TABLE][LAYER].getFeatures(request)]
 
         if len(official_parcels) > 1:
@@ -243,8 +243,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         request = QgsFeatureRequest(QgsExpression(expression))
         field_idx = self.utils._layers[PARCEL_TABLE][LAYER].fields().indexFromName(ID_FIELD)
-        request.setSubsetOfAttributes([field_idx])
         request.setFlags(QgsFeatureRequest.NoGeometry)
+        request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
         parcels = self.utils._layers[PARCEL_TABLE][LAYER].getFeatures(request)
         parcels_id = [feature[ID_FIELD] for feature in parcels]
 

@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>445</width>
+    <width>468</width>
     <height>303</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Select parcel to change dectection</string>
+   <string>Duplicate parcels</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Select parcel to change detections:</string>
+        <string>Select one parcel to show detailed information</string>
        </property>
       </widget>
      </item>
@@ -54,7 +54,7 @@
        </attribute>
        <column>
         <property name="text">
-         <string>Id</string>
+         <string>T_Id</string>
         </property>
        </column>
        <column>
@@ -83,13 +83,6 @@
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="lbl_message">
-     <property name="text">
-      <string/>
      </property>
     </widget>
    </item>

@@ -76,7 +76,7 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
                                        NUPRE_FIELD,
                                        FMI_FIELD,
                                        PARCEL_NUMBER_FIELD],
-                                      self.utils._layers[PARCEL_TABLE][LAYER].fields())  # NOTE: Sets another flag
+                                      self.utils._layers[PARCEL_TABLE][LAYER].fields())  # NOTE: this adds a new flag
         parcels = self.utils._layers[PARCEL_TABLE][LAYER].getFeatures(request)
 
         if parcels:

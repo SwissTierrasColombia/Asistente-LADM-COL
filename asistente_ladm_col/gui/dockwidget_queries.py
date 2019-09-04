@@ -380,8 +380,9 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
     def get_feature_from_t_id(self, layer, t_id):
         field_idx = layer.fields().indexFromName(ID_FIELD)
-        request = QgsFeatureRequest(QgsExpression("{}={}".format(ID_FIELD, t_id))).setSubsetOfAttributes([field_idx])
+        request = QgsFeatureRequest(QgsExpression("{}={}".format(ID_FIELD, t_id)))
         request.setFlags(QgsFeatureRequest.NoGeometry)
+        request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
 
         iterator = layer.getFeatures(request)
         feature = QgsFeature()
