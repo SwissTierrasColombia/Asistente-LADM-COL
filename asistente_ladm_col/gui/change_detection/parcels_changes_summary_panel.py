@@ -19,7 +19,8 @@
 from functools import partial
 
 from qgis.gui import QgsPanelWidget
-from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtCore import (pyqtSignal,
+                              QCoreApplication)
 
 from ...config.general_config import (CHANGE_DETECTION_NEW_PARCEL,
                                       CHANGE_DETECTION_MISSING_PARCEL,
@@ -52,6 +53,7 @@ class ParcelsChangesSummaryPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.utils = utils
 
         self.setDockMode(True)
+        self.setPanelTitle(QCoreApplication.translate("ParcelsChangesSummaryPanelWidget", "Summary of changes detected"))
 
     def fill_data(self):
         compared_parcels_data = self.utils.get_compared_parcels_data()

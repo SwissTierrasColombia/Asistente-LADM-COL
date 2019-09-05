@@ -66,7 +66,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
 
     zoom_to_features_requested = pyqtSignal(QgsVectorLayer, list, list, int)  # layer, ids, t_ids, duration
 
-    def __init__(self, iface, db, official_db, qgis_utils, ladm_data):
+    def __init__(self, iface, db, official_db, qgis_utils, ladm_data, all_parcels_mode=True):
         super(DockWidgetChangeDetection, self).__init__(None)
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
@@ -77,9 +77,6 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
         self.map_swipe_tool = qgis.utils.plugins[MAP_SWIPE_TOOL_PLUGIN_NAME]
 
         # Configure panels
-        self.main_panel = ParcelsChangesSummaryPanelWidget(self, self.utils)
-        self.widget.setMainPanel(self.main_panel)
-
         self.all_parcels_panel = None
         self.lst_all_parcels_panels = list()
 
@@ -88,6 +85,17 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
 
         self.party_panel = None
         self.lst_party_panels = list()
+
+        if all_parcels_mode:
+            self.main_panel = ParcelsChangesSummaryPanelWidget(self, self.utils)
+            self.widget.setMainPanel(self.main_panel)
+            self.add_layers()
+            self.main_panel.fill_data()
+
+        else:  # Per parcel mode
+            self.parcel_panel = ChangesPerParcelPanelWidget(self, self.utils)
+            self.widget.setMainPanel(self.parcel_panel)
+            self.lst_parcel_panels.append(self.parcel_panel)
 
     def closeEvent(self, event):
         # closes open signals on panels
@@ -101,14 +109,10 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
 
     def layer_removed(self):
         self.utils.iface.messageBar().pushMessage("Asistente LADM_COL",
-                                            QCoreApplication.translate("CreateParcelCadastreWizard",
+                                            QCoreApplication.translate("DockWidgetChangeDetection",
                                                                        "'Change detection' has been closed because you just removed a required layer."),
                                             Qgis.Info)
         self.close_dock_widget()
-
-    def show_main_panel(self):
-        self.add_layers()
-        self.main_panel.fill_data()
 
     def show_all_parcels_panel(self, filter_parcels=dict()):
         with OverrideCursor(Qt.WaitCursor):
@@ -120,6 +124,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
                         pass
 
                 self.lst_all_parcels_panels = list()
+                self.all_parcels_panel = None
 
             self.all_parcels_panel = ChangesAllParcelsPanelWidget(self, self.utils, filter_parcels=filter_parcels)
             self.all_parcels_panel.changes_per_parcel_panel_requested.connect(self.show_parcel_panel)
@@ -127,6 +132,13 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
             self.lst_all_parcels_panels.append(self.all_parcels_panel)
 
     def show_parcel_panel(self, parcel_number=None, parcel_t_id=None):
+        """
+        Only for all_parcels_mode
+
+        :param parcel_number:
+        :param parcel_t_id:
+        :return:
+        """
         if self.lst_parcel_panels:
             for panel in self.lst_parcel_panels:
                 try:
@@ -135,6 +147,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
                     pass
 
             self.lst_parcel_panels = list()
+            self.parcel_panel = None
 
         if parcel_t_id is not None and parcel_t_id != '':
             self.parcel_panel = ChangesPerParcelPanelWidget(self, self.utils, parcel_number, parcel_t_id)
@@ -153,6 +166,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
                     pass
 
             self.lst_party_panels = list()
+            self.party_panel = None
 
         self.party_panel = ChangesPartyPanelWidget(self, self.utils, data)
         self.widget.showPanel(self.party_panel)
