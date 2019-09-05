@@ -25,6 +25,7 @@ from qgis.PyQt.QtWidgets import (QTableWidgetItem,
                                  QMenu,
                                  QAction)
 from qgis.core import (QgsWkbTypes,
+                       NULL,
                        QgsApplication)
 from qgis.gui import QgsPanelWidget
 
@@ -35,6 +36,7 @@ from ...config.general_config import (PARCEL_STATUS_DISPLAY,
                                       SOURCE_DB,
                                       COLLECTED_DB_SOURCE,
                                       CHANGE_DETECTION_MISSING_PARCEL,
+                                      CHANGE_DETECTION_SEVERAL_PARCELS,
                                       CHANGE_DETECTION_NEW_PARCEL,
                                       OFFICIAL_DB_SOURCE)
 from ...config.table_mapping_config import (PLOT_TABLE,
@@ -42,13 +44,15 @@ from ...config.table_mapping_config import (PLOT_TABLE,
                                             UEBAUNIT_TABLE,
                                             ID_FIELD,
                                             PARCEL_NUMBER_FIELD)
+from .dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from ...utils import get_ui_class
+from ...utils.qt_utils import OverrideCursor
 
 WIDGET_UI = get_ui_class('change_detection/changes_all_parcels_panel_widget.ui')
 
 
 class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
-    changes_per_parcel_panel_requested = pyqtSignal(str)
+    changes_per_parcel_panel_requested = pyqtSignal(str, str)  # parcel_number, parcel t_id
 
     def __init__(self, parent, utils, filter_parcels=dict()):
         QgsPanelWidget.__init__(self, parent)
@@ -59,6 +63,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.setDockMode(True)
 
         self.tbl_changes_all_parcels.setColumnWidth(0, 270)
+        self.compared_parcels_data = dict()
 
         self.tbl_changes_all_parcels.itemDoubleClicked.connect(self.call_changes_per_parcel_panel)
         self.btn_select_all_listed_parcels.clicked.connect(partial(self.select_related_plots_listed, True))
@@ -78,14 +83,14 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         else:
             inverse = True  # Take the official db as base db
 
-        compared_parcels_data = self.utils.get_compared_parcels_data(inverse)
+        self.compared_parcels_data = self.utils.get_compared_parcels_data(inverse)
 
         self.tbl_changes_all_parcels.clearContents()
-        self.tbl_changes_all_parcels.setRowCount(len(filter_parcels[PARCEL_NUMBER_FIELD]) if filter_parcels else len(compared_parcels_data))
+        self.tbl_changes_all_parcels.setRowCount(len(filter_parcels[PARCEL_NUMBER_FIELD]) if filter_parcels else len(self.compared_parcels_data))
         self.tbl_changes_all_parcels.setSortingEnabled(False)
 
         row = 0
-        for parcel_number, parcel_attrs in compared_parcels_data.items():
+        for parcel_number, parcel_attrs in self.compared_parcels_data.items():
             if not filter_parcels or (filter_parcels and parcel_number in filter_parcels[PARCEL_NUMBER_FIELD]):
                 item = QTableWidgetItem(parcel_number) if parcel_number else QTableWidgetItem(QgsApplication.nullRepresentation())
                 item.setData(Qt.UserRole, {ID_FIELD: parcel_attrs[ID_FIELD], 'inverse': inverse})
@@ -167,8 +172,24 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             context_menu.exec_(table_widget.mapToGlobal(point))
 
     def call_changes_per_parcel_panel(self, item):
-        parcel_number = self.tbl_changes_all_parcels.item(item.row(), 0).text()
-        self.changes_per_parcel_panel_requested.emit(parcel_number)
+        with OverrideCursor(Qt.WaitCursor):
+            parcel_number = self.tbl_changes_all_parcels.item(item.row(), 0).text()
+
+            # Obtain t_ids from parcels with NULL or duplicated parcel_number, before calling the per_parcel_panel
+            parcels_t_ids = list()
+            if parcel_number == QgsApplication.nullRepresentation():  # TODO: does it make sense if the NULL parcels is only one?
+                parcels_t_ids = self.compared_parcels_data[NULL][ID_FIELD]
+            elif parcel_number in self.compared_parcels_data and self.compared_parcels_data[parcel_number][PARCEL_STATUS] == CHANGE_DETECTION_SEVERAL_PARCELS:
+                parcels_t_ids = self.compared_parcels_data[parcel_number][ID_FIELD]
+
+        if parcels_t_ids:
+            dlg_select_parcel = SelectDuplicateParcelDialog(self.utils, parcels_t_ids, self.parent)
+            dlg_select_parcel.exec_()
+
+            if dlg_select_parcel.parcel_t_id:  # User selected one of the duplicated parcels
+                self.changes_per_parcel_panel_requested.emit(dlg_select_parcel.parcel_number, dlg_select_parcel.parcel_t_id)
+        else:
+            self.changes_per_parcel_panel_requested.emit(parcel_number, '')  # 2nd parameter is mandatory for the signal :)
 
     def select_related_plots_listed(self, zoom_to_selected=True):
         parcels_t_ids_collected = list()
