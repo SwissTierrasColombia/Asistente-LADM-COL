@@ -52,7 +52,7 @@ WIDGET_UI = get_ui_class('change_detection/changes_all_parcels_panel_widget.ui')
 
 
 class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
-    changes_per_parcel_panel_requested = pyqtSignal(str, str) # parcel_number, parcel t_id
+    changes_per_parcel_panel_requested = pyqtSignal(str, str)  # parcel_number, parcel t_id
 
     def __init__(self, parent, utils, filter_parcels=dict()):
         QgsPanelWidget.__init__(self, parent)
@@ -175,8 +175,9 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         with OverrideCursor(Qt.WaitCursor):
             parcel_number = self.tbl_changes_all_parcels.item(item.row(), 0).text()
 
+            # Obtain t_ids from parcels with NULL or duplicated parcel_number, before calling the per_parcel_panel
             parcels_t_ids = list()
-            if parcel_number == QgsApplication.nullRepresentation():
+            if parcel_number == QgsApplication.nullRepresentation():  # TODO: does it make sense if the NULL parcels is only one?
                 parcels_t_ids = self.compared_parcels_data[NULL][ID_FIELD]
             elif parcel_number in self.compared_parcels_data and self.compared_parcels_data[parcel_number][PARCEL_STATUS] == CHANGE_DETECTION_SEVERAL_PARCELS:
                 parcels_t_ids = self.compared_parcels_data[parcel_number][ID_FIELD]
@@ -185,10 +186,10 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             dlg_select_parcel = SelectDuplicateParcelDialog(self.utils, parcels_t_ids, self.parent)
             dlg_select_parcel.exec_()
 
-            if dlg_select_parcel.parcel_id:
-                self.changes_per_parcel_panel_requested.emit(dlg_select_parcel.parcel_number, dlg_select_parcel.parcel_id)
+            if dlg_select_parcel.parcel_t_id:  # User selected one of the duplicated parcels
+                self.changes_per_parcel_panel_requested.emit(dlg_select_parcel.parcel_number, dlg_select_parcel.parcel_t_id)
         else:
-            self.changes_per_parcel_panel_requested.emit(parcel_number, '')
+            self.changes_per_parcel_panel_requested.emit(parcel_number, '')  # 2nd parameter is mandatory for the signal :)
 
     def select_related_plots_listed(self, zoom_to_selected=True):
         parcels_t_ids_collected = list()

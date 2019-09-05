@@ -126,7 +126,7 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
             self.widget.showPanel(self.all_parcels_panel)
             self.lst_all_parcels_panels.append(self.all_parcels_panel)
 
-    def show_parcel_panel(self, parcel_number=None, parcel_id=None):
+    def show_parcel_panel(self, parcel_number=None, parcel_t_id=None):
         if self.lst_parcel_panels:
             for panel in self.lst_parcel_panels:
                 try:
@@ -136,7 +136,11 @@ class DockWidgetChangeDetection(QgsDockWidget, DOCKWIDGET_UI):
 
             self.lst_parcel_panels = list()
 
-        self.parcel_panel = ChangesPerParcelPanelWidget(self, self.utils, parcel_number, parcel_id)
+        if parcel_t_id is not None and parcel_t_id != '':
+            self.parcel_panel = ChangesPerParcelPanelWidget(self, self.utils, parcel_number, parcel_t_id)
+        else:
+            self.parcel_panel = ChangesPerParcelPanelWidget(self, self.utils, parcel_number)
+
         self.widget.showPanel(self.parcel_panel)
         self.lst_parcel_panels.append(self.parcel_panel)
 

@@ -33,7 +33,7 @@ from ...config.table_mapping_config import (PARCEL_NUMBER_FIELD,
 from ...config.general_config import LAYER
 from ...utils import get_ui_class
 
-DIALOG_UI = get_ui_class('change_detection/dlg_select_parcel_change_detection.ui')
+DIALOG_UI = get_ui_class('change_detection/dlg_select_duplicate_parcel_change_detection.ui')
 
 
 class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
@@ -43,7 +43,7 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         self.utils = utils
         self.parcels_t_ids = parcels_t_ids
         self.parent = parent
-        self.parcel_id = None
+        self.parcel_t_id = None
         self.parcel_number = None
 
         self.fill_table()
@@ -82,7 +82,6 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         if parcels:
             row = 0
             for parcel in parcels:
-                print(parcel.attributes())
                 self.tbl_changes_parcels.setItem(row, 0, QTableWidgetItem(str(parcel[ID_FIELD])))
                 self.tbl_changes_parcels.setItem(row, 1, QTableWidgetItem(str(parcel[NUPRE_FIELD])))
                 self.tbl_changes_parcels.setItem(row, 2, QTableWidgetItem(str(parcel[FMI_FIELD])))
@@ -112,7 +111,7 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
 
     def accepted(self):
         selected_row = self.tbl_changes_parcels.currentRow()
-        self.parcel_id = self.tbl_changes_parcels.item(selected_row, 0).text()
+        self.parcel_t_id = self.tbl_changes_parcels.item(selected_row, 0).text()
         self.parcel_number = self.tbl_changes_parcels.item(selected_row, 3).text()
         self.close()
 

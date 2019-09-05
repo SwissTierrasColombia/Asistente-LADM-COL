@@ -81,7 +81,6 @@ class ReportGenerator(QObject):
 
     def stdout_ready(self, proc):
         text = bytes(proc.readAllStandardOutput()).decode(self.encoding)
-        #print("out", text)
         self.log.logMessage(text, self.LOG_TAB, Qgis.Info)
 
     def update_yaml_config(self, db, config_path):
