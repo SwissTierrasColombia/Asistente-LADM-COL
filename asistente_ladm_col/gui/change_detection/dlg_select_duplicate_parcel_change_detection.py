@@ -47,15 +47,14 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         self.parcel_number = None
 
         self.fill_table()
-        self.tbl_changes_parcels.itemClicked.connect(self.zoom_to_parcel)
-        self.tbl_changes_parcels.itemDoubleClicked.connect(self.zoom_to_parcel)
-        self.tbl_changes_parcels.itemSelectionChanged.connect(self.set_controls_enabled)
+
+        self.tbl_changes_parcels.itemSelectionChanged.connect(self.react_after_new_selection)
 
         # Remove selection in plot layers
         self.utils._layers[PLOT_TABLE][LAYER].removeSelection()
         self.utils._official_layers[PLOT_TABLE][LAYER].removeSelection()
 
-        self.select_button_name = QCoreApplication.translate("SelectParcelDialog", "Select")
+        self.select_button_name = QCoreApplication.translate("SelectParcelDialog", "Show details for selected parcel")
         self.zoom_to_all_button_name = QCoreApplication.translate("SelectParcelDialog", "Zoom to all listed parcels")
         self.buttonBox.accepted.disconnect()
         self.buttonBox.clicked.connect(self.button_box_clicked)
@@ -88,10 +87,18 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
                 self.tbl_changes_parcels.setItem(row, 3, QTableWidgetItem(str(parcel[PARCEL_NUMBER_FIELD])))
                 row += 1
 
-    def zoom_to_parcel(self, item):
-        row = item.row()
-        parcels_t_ids = [int(self.tbl_changes_parcels.item(row, 0).text())]  # t_id of parcel
-        self.zoom_to_parcels(parcels_t_ids)
+    def react_after_new_selection(self):
+        """
+        A new selection was made, we will react depending on what the new selection is.
+        """
+        selected_rows = [item.row() for item in self.tbl_changes_parcels.selectedItems()]
+        if len(set(selected_rows)) == 1:  # Single row selected
+            item = self.tbl_changes_parcels.selectedItems()[0]
+            parcel_t_id = int(self.tbl_changes_parcels.item(item.row(), 0).text())  # parcel t_id
+            self.zoom_to_parcels([parcel_t_id])
+
+        self.set_controls_enabled()
+
 
     def zoom_to_parcels(self, parcels_t_ids):
         self.utils._layers[PLOT_TABLE][LAYER].removeSelection()

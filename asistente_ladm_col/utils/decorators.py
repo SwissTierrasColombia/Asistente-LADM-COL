@@ -230,3 +230,12 @@ def _map_swipe_tool_required(func_to_decorate):
             )
 
     return decorated_function
+
+def _with_override_cursor(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+
+        with OverrideCursor(Qt.WaitCursor):
+            func_to_decorate(*args, **kwargs)
+
+    return decorated_function

@@ -24,7 +24,8 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               Qt,
                               QEvent,
                               QPoint)
-from qgis.PyQt.QtWidgets import QTableWidgetItem
+from qgis.PyQt.QtWidgets import (QTableWidgetItem,
+                                 QApplication)
 from qgis.core import (QgsWkbTypes,
                        QgsFeature,
                        QgsFeatureRequest,
@@ -55,7 +56,7 @@ from ...config.table_mapping_config import (PARCEL_NUMBER_FIELD,
                                             COL_PARTY_TABLE,
                                             DICT_PLURAL)
 from .dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
-from ...utils.qt_utils import OverrideCursor
+from ...utils.decorators import _with_override_cursor
 from ...utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_per_parcel_panel_widget.ui')
@@ -108,14 +109,17 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 self.search_data(parcel_number=parcel_number)
 
     def btn_plot_toggled(self):
-        self.tbl_changes_per_parcel.clearContents()
-        self.tbl_changes_per_parcel.setRowCount(0)
+        self.clear_result_table()
 
         if self.btn_identify_plot.isChecked():
             self.prepare_identify_plot()
         else:
             # The button was toggled and deactivated, go back to the previous tool
             self.utils.canvas.setMapTool(self.active_map_tool_before_custom)
+
+    def clear_result_table(self):
+        self.tbl_changes_per_parcel.clearContents()
+        self.tbl_changes_per_parcel.setRowCount(0)
 
     def prepare_identify_plot(self):
         """
@@ -152,18 +156,16 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                                     flashes=1,
                                     duration=500)
 
-        with OverrideCursor(Qt.WaitCursor):
-            if not self.isVisible():
-                self.show()
+        if not self.isVisible():
+            self.show()
 
-            self.spatial_query(plot_t_id)
-            #self.search_data_by_component(plot_t_id=plot_t_id, zoom_and_select=False)
-            self.utils._official_layers[PLOT_TABLE][LAYER].selectByIds([plot_feature.id()])
+        self.spatial_query(plot_t_id)
+        self.utils._official_layers[PLOT_TABLE][LAYER].selectByIds([plot_feature.id()])
 
     def spatial_query(self, plot_id):
         if plot_id:
             parcel_number = self.utils.ladm_data.get_parcels_related_to_plots(self.utils._official_db, [plot_id], PARCEL_NUMBER_FIELD)
-            if parcel_number:
+            if parcel_number:  # Delegate handling of duplicates to search_data() method
                 self.search_data(parcel_number=parcel_number[0])
 
     def call_party_panel(self, item):
@@ -188,6 +190,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Previous Parcel Number"), PARCEL_NUMBER_BEFORE_FIELD)
         self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Folio de Matrícula Inmobiliaria"), FMI_FIELD)
 
+    @_with_override_cursor
     def search_data(self, **kwargs):
         """
         Get plot geometries associated with parcels, both collected and official, zoom to them, activate map swipe tool
@@ -204,9 +207,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.initialize_tools_and_layers()  # Reset any filter on layers
         already_zoomed_in = False
 
-        # Clear results
-        self.tbl_changes_per_parcel.clearContents()
-        self.tbl_changes_per_parcel.setRowCount(0)
+        self.clear_result_table()
 
         search_field = self.cbo_parcel_fields.currentData()
         search_value = list(kwargs.values())[0]
@@ -262,6 +263,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             if collected_parcels_t_ids:
                 collected_parcel_t_id = collected_parcels_t_ids[0]
                 if len(collected_parcels_t_ids) > 1:  # Duplicates in collected source after a search
+                    QApplication.restoreOverrideCursor()  # Make sure cursor is not waiting (it is if on an identify)
+                    QCoreApplication.processEvents()
                     dlg_select_parcel = SelectDuplicateParcelDialog(self.utils, collected_parcels_t_ids, self.parent)
                     dlg_select_parcel.exec_()
 
