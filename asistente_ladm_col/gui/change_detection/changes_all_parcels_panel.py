@@ -61,6 +61,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.utils = utils
 
         self.setDockMode(True)
+        self.setPanelTitle(QCoreApplication.translate("ChangesAllParcelsPanelWidget", "Change detection for a set of parcels"))
 
         self.tbl_changes_all_parcels.setColumnWidth(0, 270)
         self.compared_parcels_data = dict()

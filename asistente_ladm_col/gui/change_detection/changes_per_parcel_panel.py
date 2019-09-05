@@ -70,6 +70,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.utils = utils
 
         self.setDockMode(True)
+        self.setPanelTitle(QCoreApplication.translate("ChangesPerParcelPanelWidget", "Change detection per parcel"))
 
         self._current_official_substring = ""
         self._current_substring = ""
