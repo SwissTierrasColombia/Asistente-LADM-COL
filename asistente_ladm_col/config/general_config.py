@@ -24,7 +24,15 @@ SUFFIX_LAYER_MODIFIERS = 'suffix'
 STYLE_GROUP_LAYER_MODIFIERS = 'style_group'
 VISIBLE_LAYER_MODIFIERS = 'visible'
 
-TOOL_BAR_NAME = QCoreApplication.translate("TranslatableConfigStrings", "LADM COL Toolbar")
+TOOLBAR_NAME = QCoreApplication.translate("TranslatableConfigStrings", "LADM COL Toolbar")
+TOOLBAR_ID = "ladmcoltools"
+TOOLBAR_BUILD_BOUNDARY = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Build boundaries...")
+TOOLBAR_MOVE_NODES = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Move nodes...")
+TOOLBAR_FILL_POINT_BFS = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Point BFS")
+TOOLBAR_FILL_MORE_BFS_LESS = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill More BFS and Less")
+TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Right of Way Relations")
+TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import from intermediate structure")
+TOOLBAR_FINALIZE_GEOMETRY_CREATION = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Finalize geometry creation")
 
 # Constants for reports
 NATIONAL_LAND_AGENCY = "ANT"

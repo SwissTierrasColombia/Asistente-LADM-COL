@@ -16,7 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QObject,
+                              pyqtSignal)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QMessageBox)
 from qgis.core import (Qgis,
@@ -41,9 +43,11 @@ from ..gui.dialogs.dlg_topological_edition import LayersForTopologicalEditionDia
 from ..utils.geometry import GeometryUtils
 
 
-class ToolBar:
+class ToolBar(QObject):
+    wiz_geometry_created_requested = pyqtSignal()
 
     def __init__(self, iface, qgis_utils, db):
+        QObject.__init__(self)
         self.iface = iface
         self.qgis_utils = qgis_utils
         self.db = db

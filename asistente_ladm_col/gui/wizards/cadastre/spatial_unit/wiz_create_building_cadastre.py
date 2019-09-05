@@ -16,16 +16,20 @@
  *                                                                         *
  ***************************************************************************/
 """
-from functools import partial
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
-from qgis.PyQt.QtWidgets import QWizard
+from qgis.PyQt.QtWidgets import (QWizard,
+                                 QToolBar,
+                                 QMessageBox)
 from qgis.core import (QgsProject,
                        QgsApplication,
                        Qgis,
                        QgsMapLayerProxyModel,
                        QgsWkbTypes)
+
 from .....config.general_config import (PLUGIN_NAME,
+                                        TOOLBAR_ID,
+                                        TOOLBAR_FINALIZE_GEOMETRY_CREATION,
                                         LAYER)
 from .....config.help_strings import HelpStrings
 from .....config.table_mapping_config import (BUILDING_TABLE,
@@ -39,25 +43,24 @@ WIZARD_UI = get_ui_class('wizards/cadastre/spatial_unit/wiz_create_building_cada
 class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "CreateBuildingCadastreWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create building")
+    EDITING_LAYER_NAME = ""
 
-    def __init__(self, iface, db, qgis_utils, parent=None):
+    def __init__(self, iface, db, qgis_utils, toolbar, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
         self._db = db
         self.qgis_utils = qgis_utils
+        self.toolbar = toolbar
         self.help_strings = HelpStrings()
-
-        # Necessary to control featureAdded bug (crash QGIS)
-        # https://gis.stackexchange.com/a/229949/120426
-        self.added_features = None
-        self.rollback_changes = False
 
         self._layers = {
             BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
             SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None}
         }
+
+        self.EDITING_LAYER_NAME = BUILDING_TABLE
 
         self.restore_settings()
         self.rad_digitizing.toggled.connect(self.adjust_page_1_controls)
@@ -72,6 +75,8 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
         self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(BUILDING_TABLE))
+
+        self.toolbar.wiz_geometry_created_requested.connect(self.wiz_geometry_created)
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -94,17 +99,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
     def disconnect_signals(self):
         # QGIS APP
         try:
-            self._layers[BUILDING_TABLE][LAYER].featureAdded.disconnect()
-        except:
-            pass
-
-        try:
-            self._layers[BUILDING_TABLE][LAYER].editCommandEnded.disconnect(self.confirm_commit)
-        except:
-            pass
-
-        try:
-            self._layers[BUILDING_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
@@ -139,6 +134,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
                     Qgis.Warning)
 
         elif self.rad_digitizing.isChecked():
+            self.set_enable_finalize_geometry_creation_action(True)
             self.prepare_feature_creation()
 
     def prepare_feature_creation(self):
@@ -207,19 +203,21 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
             self.qgis_utils.message_emitted.emit(message, Qgis.Info)
+
+        self.set_enable_finalize_geometry_creation_action(False)
         self.disconnect_signals()
         self.close()
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[BUILDING_TABLE][LAYER])
-        #self._layers[BUILDING_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
+        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
 
         # Disable transactions groups
         QgsProject.instance().setAutoTransaction(False)
 
         # Activate snapping
         self.qgis_utils.active_snapping_all_layers(tolerance=9)
-        self.open_form(self._layers[BUILDING_TABLE][LAYER])
+        self.open_form()
 
         self.qgis_utils.message_emitted.emit(
             QCoreApplication.translate(self.WIZARD_NAME,
@@ -231,76 +229,52 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()
 
-        if not self._layers[BUILDING_TABLE][LAYER].getFeature(fid).isValid():
+        if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
             message = QCoreApplication.translate(self.WIZARD_NAME,
                                                  "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a building unit. ").format(self.WIZARD_TOOL_NAME, BUILDING_TABLE)
             self.log.logMessage("Feature not found in layer {} ...".format(BUILDING_TABLE), PLUGIN_NAME, Qgis.Warning)
         else:
-            feature_tid = self._layers[BUILDING_TABLE][LAYER].getFeature(fid)[ID_FIELD]
+            feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
             message = QCoreApplication.translate(self.WIZARD_NAME, "The new building unit (t_id={}) was successfully created ").format(feature_tid)
 
-        self._layers[BUILDING_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Building unit's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 
-    def open_form(self, layer):
+    def open_form(self):
+        layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
         if not layer.isEditable():
             layer.startEditing()
 
-        # action add feature
         self.qgis_utils.suppress_form(layer, True)
         self.iface.actionAddFeature().trigger()
 
-        # Shows the form when the feature is created
-        layer.featureAdded.connect(partial(self.exec_form, layer))
-        #layer.editCommandEnded.connect(self.confirm_commit)
+    def exec_form(self):
+        self.set_enable_finalize_geometry_creation_action(False)
 
-    def exec_form(self, layer, f_id):
-        """
-        This method only stores featIds in a class variable. It's required to avoid a bug with SLOTS connected to
-        featureAdded.
-        """
-        self.added_features = f_id
+        layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
 
-        feature = self.qgis_utils.get_new_feature(layer)
+        for id, added_feature in layer.editBuffer().addedFeatures().items():
+            feature = added_feature
+            break
+
         dialog = self.iface.getFeatureForm(layer, feature)
+        dialog.rejected.connect(self.form_rejected)
         dialog.setModal(True)
 
-        message = None
         if dialog.exec_():
-            message = QCoreApplication.translate(self.WIZARD_NAME, "Building was created, but no changes have been saved.")
-            self.rollback_changes = False
-        else:
-            self.rollback_changes = True
-        self.close_wizard(message)
-
-    def confirm_commit(self):
-        layer = self.sender() # Get the layer that has sent the signal
-
-        try:
-            layer.featureAdded.disconnect()
-            self.log.logMessage("Building unit's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
-        except:
-            pass
-
-        if not self.rollback_changes:
             saved = layer.commitChanges()
-
             if not saved:
                 layer.rollBack()
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate(self.WIZARD_NAME,
-                                               "Error while saving changes. Parcel could not be created."),
-                    Qgis.Warning)
-
+                                               "Error while saving changes. Building could not be created."), Qgis.Warning)
                 for e in layer.commitErrors():
                     self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
+
+            self.iface.mapCanvas().refresh()
         else:
             layer.rollBack()
-            self.form_rejected()
-
-        self.iface.mapCanvas().refresh()
-        self.added_features = None
 
     def form_rejected(self):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -322,3 +296,52 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
 
     def show_help(self):
         self.qgis_utils.show_help("create_building")
+
+    def wiz_geometry_created(self):
+        message = None
+        if self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer():
+            if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 1:
+                feature = [value for index, value in self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures().items()][0]
+                if feature.geometry().isGeosValid():
+                    self.exec_form()
+                else:
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry is invalid. Do you want to stop creating building?")
+            else:
+                if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 0:
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry was not created. Do you want to stop creating building?")
+                else:
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "Many geometries were created but one was expected. Do you want to stop creating building?")
+
+        if message:
+            self.show_message_associate_geometry_creation(message)
+
+    def show_message_associate_geometry_creation(self, message):
+        reply = QMessageBox.question(self,
+                                     QCoreApplication.translate(self.WIZARD_NAME, "Stop building creation?"),
+                                     message,
+                                     QMessageBox.Yes, QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            # stop edition in close_wizard crash qgis
+            if self._layers[self.EDITING_LAYER_NAME][LAYER].isEditable():
+                self._layers[self.EDITING_LAYER_NAME][LAYER].rollBack()
+
+            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(
+                self.WIZARD_TOOL_NAME)
+            self.close_wizard(message)
+        else:
+            # Continue creating geometry
+            pass
+
+    def set_enable_finalize_geometry_creation_action(self, enable):
+        finalize_geometry_creation_action = self.get_toolbar_finalize_geometry_creation_action()
+        if finalize_geometry_creation_action:
+            finalize_geometry_creation_action.setEnabled(enable)
+
+    def get_toolbar_finalize_geometry_creation_action(self):
+        for toolbar in self.iface.mainWindow().findChildren(QToolBar, TOOLBAR_ID):
+            for action in toolbar.actions():
+                if not action.isSeparator():
+                    if action.text() == TOOLBAR_FINALIZE_GEOMETRY_CREATION:
+                        return action
+        return None

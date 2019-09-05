@@ -50,8 +50,16 @@ from .config.general_config import (ANNEX_17_REPORT,
                                     RELEASE_URL,
                                     REPORTS_MENU_OBJECTNAME,
                                     URL_REPORTS_LIBRARIES,
-                                    TOOL_BAR_NAME,
-                                    VALUATION_MENU_OBJECTNAME, 
+                                    TOOLBAR_NAME,
+                                    TOOLBAR_ID,
+                                    TOOLBAR_BUILD_BOUNDARY,
+                                    TOOLBAR_MOVE_NODES,
+                                    TOOLBAR_FILL_POINT_BFS,
+                                    TOOLBAR_FILL_MORE_BFS_LESS,
+                                    TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS,
+                                    TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
+                                    TOOLBAR_FINALIZE_GEOMETRY_CREATION,
+                                    VALUATION_MENU_OBJECTNAME,
                                     NATIONAL_LAND_AGENCY)
 from .utils.decorators import (_db_connection_required,
                                _qgis_model_baker_required,
@@ -123,6 +131,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._report_menu = None
         self.conn_manager = ConnectionManager()
         self._db = self.get_db_connection()
+        self.wiz = None
 
     def initGui(self):
         # Set Menus
@@ -203,23 +212,29 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
 
         # Toolbar
-        self._build_boundary_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Build boundaries..."), self.iface.mainWindow())
+        self._finalize_geometry_creation_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/mActionFinalizeGeometryCreation.svg"),
+                                                          TOOLBAR_FINALIZE_GEOMETRY_CREATION,
+                                                          self.iface.mainWindow())
+        self._finalize_geometry_creation_action.triggered.connect(self.finalize_geometry_creation)
+        self._finalize_geometry_creation_action.setEnabled(False)
+
+        self._build_boundary_action = QAction(TOOLBAR_BUILD_BOUNDARY, self.iface.mainWindow())
         self._build_boundary_action.triggered.connect(self.call_explode_boundaries)
-        self._topological_editing_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Move nodes..."), self.iface.mainWindow())
+        self._topological_editing_action = QAction(TOOLBAR_MOVE_NODES, self.iface.mainWindow())
         self._topological_editing_action.triggered.connect(self.call_topological_editing)
-        self._fill_point_BFS_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Point BFS"), self.iface.mainWindow())
+        self._fill_point_BFS_action = QAction(TOOLBAR_FILL_POINT_BFS, self.iface.mainWindow())
         self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
-        self._fill_more_BFS_less_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill More BFS and Less"), self.iface.mainWindow())
+        self._fill_more_BFS_less_action = QAction(TOOLBAR_FILL_MORE_BFS_LESS, self.iface.mainWindow())
         self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
-        self._fill_right_of_way_relations_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Right of Way Relations"), self.iface.mainWindow())
+        self._fill_right_of_way_relations_action = QAction(TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS, self.iface.mainWindow())
         self._fill_right_of_way_relations_action.triggered.connect(self.call_fill_right_of_way_relations)
-        self._import_from_intermediate_structure_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import from intermediate structure"),
-                                      self.iface.mainWindow())
+        self._import_from_intermediate_structure_action = QAction(TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE, self.iface.mainWindow())
         self._import_from_intermediate_structure_action.triggered.connect(self.call_import_from_intermediate_structure)
         self._ladm_col_toolbar = self.iface.addToolBar(QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"))
-        self._ladm_col_toolbar.setObjectName("ladmcoltools")
-        self._ladm_col_toolbar.setToolTip(TOOL_BAR_NAME)
-        self._ladm_col_toolbar.addActions([self._build_boundary_action,
+        self._ladm_col_toolbar.setObjectName(TOOLBAR_ID)
+        self._ladm_col_toolbar.setToolTip(TOOLBAR_NAME)
+        self._ladm_col_toolbar.addActions([self._finalize_geometry_creation_action,
+                                           self._build_boundary_action,
                                            self._topological_editing_action,
                                            self._fill_point_BFS_action,
                                            self._fill_more_BFS_less_action,
@@ -248,6 +263,9 @@ class AsistenteLADMCOLPlugin(QObject):
         else:  # Show by default all model creation tools
             self.add_property_record_card_menu()
             self.add_valuation_menu()
+
+    def finalize_geometry_creation(self):
+        self.toolbar.wiz_geometry_created_requested.emit()
 
     def add_data_management_menu(self):
         self._data_management_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data Management"), self._menu)
@@ -1118,8 +1136,8 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_cad(self):
-        wiz = CreateBuildingCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(wiz)
+        self.wiz = CreateBuildingCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar)
+        self.exec_wizard(self.wiz)
 
     @_qgis_model_baker_required
     @_db_connection_required
