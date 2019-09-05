@@ -19,6 +19,7 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 from qgis.PyQt.QtWidgets import (QWizard,
+                                 QPushButton,
                                  QToolBar,
                                  QMessageBox)
 from qgis.core import (QgsProject,
@@ -305,23 +306,26 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
                 if feature.geometry().isGeosValid():
                     self.exec_form()
                 else:
-                    message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry is invalid. Do you want to stop creating building?")
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry is invalid. Do you want to return to the editing session?")
             else:
                 if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 0:
-                    message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry was not created. Do you want to stop creating building?")
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry was not created. Do you want to return to the editing session?")
                 else:
-                    message = QCoreApplication.translate(self.WIZARD_NAME, "Many geometries were created but one was expected. Do you want to stop creating building?")
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "Many geometries were created but one was expected. Do you want to return to the editing session?")
 
         if message:
             self.show_message_associate_geometry_creation(message)
 
     def show_message_associate_geometry_creation(self, message):
-        reply = QMessageBox.question(self,
-                                     QCoreApplication.translate(self.WIZARD_NAME, "Stop building creation?"),
-                                     message,
-                                     QMessageBox.Yes, QMessageBox.No)
+        msg = QMessageBox(self)
+        msg.setIcon(QMessageBox.Question)
+        msg.setText(message)
+        msg.setWindowTitle(QCoreApplication.translate(self.WIZARD_NAME, "Continue editing?"))
+        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "Yes")), QMessageBox.YesRole)
+        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "Close wizard")), QMessageBox.NoRole)
+        reply = msg.exec_()
 
-        if reply == QMessageBox.Yes:
+        if reply == 1: # 1 close wizard, 0 yes
             # stop edition in close_wizard crash qgis
             if self._layers[self.EDITING_LAYER_NAME][LAYER].isEditable():
                 self._layers[self.EDITING_LAYER_NAME][LAYER].rollBack()
