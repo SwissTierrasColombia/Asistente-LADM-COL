@@ -21,6 +21,7 @@ from functools import partial
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 from qgis.PyQt.QtWidgets import (QWizard,
+                                 QPushButton,
                                  QMessageBox)
 
 from qgis.core import (Qgis,
@@ -58,30 +59,28 @@ WIZARD_UI = get_ui_class('wizards/cadastre/spatial_unit/wiz_associate_extaddress
 class AssociateExtAddressWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "AssociateExtAddressWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create ExtAddress")
+    EDITING_LAYER_NAME = ""
 
-    def __init__(self, plugin, iface, db, qgis_utils, parent=None):
+    def __init__(self, plugin, iface, db, qgis_utils, toolbar, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
         self._db = db
         self.qgis_utils = qgis_utils
+        self.toolbar = toolbar
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
 
         self.plugin = plugin
         self.plugin.is_wizard_open = True
 
-        # Necessary to control featureAdded bug (crash QGIS)
-        # https://gis.stackexchange.com/a/229949/120426
-        self.added_features = None
-        self.rollback_changes = False
-
         self.canvas = self.iface.mapCanvas()
         self.maptool = self.canvas.mapTool()
         self.select_maptool = None
         self._current_layer = None
 
+        self.EDITING_LAYER_NAME = EXTADDRESS_TABLE
         self._layers = {
             EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry, LAYER: None},
             OID_TABLE: {'name': OID_TABLE, 'geometry': None, LAYER: None},
@@ -103,7 +102,9 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(EXTADDRESS_TABLE))
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
+
+        self.toolbar.wiz_geometry_created_requested.connect(self.wiz_geometry_created)
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -112,7 +113,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.cbo_mapping.setEnabled(True)
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(EXTADDRESS_TABLE, True))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, True))
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
         elif self.rad_spatial_unit.isChecked():
@@ -209,17 +210,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             pass
 
         try:
-            self._layers[EXTADDRESS_TABLE][LAYER].featureAdded.disconnect(self.exec_form)
-        except:
-            pass
-
-        try:
-            self._layers[EXTADDRESS_TABLE][LAYER].editCommandEnded.disconnect(self.confirm_commit)
-        except:
-            pass
-
-        try:
-            self._layers[EXTADDRESS_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
@@ -377,22 +368,23 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                 field_mapping = self.cbo_mapping.currentText()
                 res_etl_model = self.qgis_utils.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
-                                                               EXTADDRESS_TABLE,
+                                                               self.EDITING_LAYER_NAME,
                                                                field_mapping=field_mapping)
 
                 if res_etl_model:
                     if field_mapping:
                         self.qgis_utils.delete_old_field_mapping(field_mapping)
 
-                    self.qgis_utils.save_field_mapping(EXTADDRESS_TABLE)
+                    self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
 
             else:
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate(self.WIZARD_NAME,
                                                "Select a source layer to set the field mapping to '{}'.").format(
-                        EXTADDRESS_TABLE),
+                        self.EDITING_LAYER_NAME),
                     Qgis.Warning)
         else:
+            self.toolbar.set_enable_finalize_geometry_creation_action(True)
             self.prepare_feature_creation()
 
     def prepare_feature_creation(self):
@@ -460,7 +452,9 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
             self.qgis_utils.message_emitted.emit(message, Qgis.Info)
+
         self.init_map_tool()
+        self.toolbar.set_enable_finalize_geometry_creation_action(False)
         self.disconnect_signals()
         self.plugin.is_wizard_open = False
         self.close()
@@ -475,10 +469,11 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
     def edit_feature(self):
         if self._current_layer.selectedFeatureCount() == 1:
             # Open Form
-            self.iface.layerTreeView().setCurrentLayer(self._layers[EXTADDRESS_TABLE][LAYER])
-            self._layers[EXTADDRESS_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+            self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
+            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+
             self.qgis_utils.active_snapping_all_layers()
-            self.open_form(self._layers[EXTADDRESS_TABLE][LAYER])
+            self.open_form()
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate(self.WIZARD_NAME,
@@ -501,12 +496,12 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         else:
             fid = features[0].id()
 
-            if not self._layers[EXTADDRESS_TABLE][LAYER].getFeature(fid).isValid():
+            if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
                 message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                     "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a ExtAddress. ").format(self.WIZARD_TOOL_NAME, EXTADDRESS_TABLE)
-                self.log.logMessage("Feature not found in layer {} ...".format(EXTADDRESS_TABLE), PLUGIN_NAME, Qgis.Warning)
+                                                     "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a ExtAddress. ").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME)
+                self.log.logMessage("Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
             else:
-                extaddress_tid = self._layers[EXTADDRESS_TABLE][LAYER].getFeature(fid)[ID_FIELD]
+                extaddress_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
 
                 # Suppress (i.e., hide) feature form
                 self.qgis_utils.suppress_form(self._layers[OID_TABLE][LAYER], True)
@@ -524,50 +519,78 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
                 message = QCoreApplication.translate(self.WIZARD_NAME,
                                                      "The new extaddress (t_id={}) was successfully created ").format(extaddress_tid)
 
-        self._layers[EXTADDRESS_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("ExtAddress's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 
-    def open_form(self, layer):
+    def open_form(self):
+        layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
         if not layer.isEditable():
             layer.startEditing()
 
-        # action add ExtAddress feature
         self.qgis_utils.suppress_form(layer, True)
         self.iface.actionAddFeature().trigger()
 
-        # Shows the form when the feature is created
-        layer.featureAdded.connect(self.exec_form)
-        layer.editCommandEnded.connect(self.confirm_commit)
+    def exec_form(self):
+        self.toolbar.set_enable_finalize_geometry_creation_action(False)
+        layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
 
-    def exec_form(self, f_id):
+        for id, added_feature in layer.editBuffer().addedFeatures().items():
+            feature = added_feature
+            break
 
-        layer = self.sender()  # Get the layer that has sent the signal
-
-        """
-        This method only stores featIds in a class variable.
-        It's required to avoid a bug with SLOTS connected to featureAdded.
-        """
-        self.added_features = f_id
-
-        feature = self.qgis_utils.get_new_feature(layer)
         dialog = self.iface.getFeatureForm(layer, feature)
+        dialog.rejected.connect(self.form_rejected)
         dialog.setModal(True)
 
         if dialog.exec_():
-            self.rollback_changes = False
+
+            for f in layer.editBuffer().addedFeatures():
+                feature = layer.editBuffer().addedFeatures()[f]
+                break
+
+            spatial_unit_field_idx = None
+            if feature:
+
+                # Get t_id of spatial unit to associate
+                feature_id = self._current_layer.selectedFeatures()[0][ID_FIELD]
+                fid = feature.id()
+
+                # TODO: Update way to obtain the layer name when master merge with branch "change_detection"
+                if self._db.get_ladm_layer_name(self._current_layer) == PLOT_TABLE:
+                    spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(EXTADDRESS_PLOT_FIELD)
+                elif self._db.get_ladm_layer_name(self._current_layer) == BUILDING_TABLE:
+                    spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(EXTADDRESS_BUILDING_FIELD)
+                elif self._db.get_ladm_layer_name(self._current_layer) == BUILDING_UNIT_TABLE:
+                    spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(EXTADDRESS_BUILDING_UNIT_FIELD)
+
+            if spatial_unit_field_idx:
+                # assign the relation with the spatial unit
+                layer.changeAttributeValue(fid, spatial_unit_field_idx, feature_id)
+            else:
+                # if the field of the spatial unit does not exist
+                layer.rollBack()
+                message = QCoreApplication.translate(self.WIZARD_NAME,
+                                                     "'{}' tool has been closed because when try to create ExtAddress it was not possible to associate a space unit.").format(
+                    self.WIZARD_TOOL_NAME)
+                self.close_wizard(message)
+
+            saved = layer.commitChanges()
+            if not saved:
+                layer.rollBack()
+                self.qgis_utils.message_emitted.emit(
+                    QCoreApplication.translate(self.WIZARD_NAME,
+                                               "Error while saving changes. Geoeconomic zone valuation could not be created."), Qgis.Warning)
+                for e in layer.commitErrors():
+                    self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
         else:
-            self.rollback_changes = True
+            layer.rollBack()
+        self.iface.mapCanvas().refresh()
 
     def confirm_commit(self):
 
         layer = self.sender() # Get the layer that has sent the signal
 
-        try:
-            layer.featureAdded.disconnect(self.exec_form)
-            self.log.logMessage("ExtAddress's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
-        except:
-            pass
 
         if not self.rollback_changes:
 
@@ -615,9 +638,6 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             layer.rollBack()
             self.form_rejected()
 
-        self.iface.mapCanvas().refresh()
-        self.added_features = None
-
     def form_rejected(self):
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because you just closed the form.").format(self.WIZARD_TOOL_NAME)
@@ -643,3 +663,42 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
 
     def show_help(self):
         self.qgis_utils.show_help("associate_ext_address")
+
+    def wiz_geometry_created(self):
+        message = None
+        if self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer():
+            if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 1:
+                feature = [value for index, value in self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures().items()][0]
+                if feature.geometry().isGeosValid():
+                    self.exec_form()
+                else:
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry is invalid. Do you want to return to the editing session?")
+            else:
+                if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 0:
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry was not created. Do you want to return to the editing session?")
+                else:
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "Many geometries were created but one was expected. Do you want to return to the editing session?")
+
+        if message:
+            self.show_message_associate_geometry_creation(message)
+
+    def show_message_associate_geometry_creation(self, message):
+        msg = QMessageBox(self)
+        msg.setIcon(QMessageBox.Question)
+        msg.setText(message)
+        msg.setWindowTitle(QCoreApplication.translate(self.WIZARD_NAME, "Continue editing?"))
+        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "Yes")), QMessageBox.YesRole)
+        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "Close wizard")), QMessageBox.NoRole)
+        reply = msg.exec_()
+
+        if reply == 1: # 1 close wizard, 0 yes
+            # stop edition in close_wizard crash qgis
+            if self._layers[self.EDITING_LAYER_NAME][LAYER].isEditable():
+                self._layers[self.EDITING_LAYER_NAME][LAYER].rollBack()
+
+            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(
+                self.WIZARD_TOOL_NAME)
+            self.close_wizard(message)
+        else:
+            # Continue creating geometry
+            pass

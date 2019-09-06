@@ -202,6 +202,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
+        self.qgis_utils.message_with_open_table_attributes_button_emitted.connect(self.show_message_with_open_table_attributes_button)
         self.qgis_utils.message_with_button_download_report_dependency_emitted.connect(self.show_message_to_download_report_dependency)
         self.qgis_utils.message_with_button_remove_report_dependency_emitted.connect(self.show_message_to_remove_report_dependency)
         self.qgis_utils.status_bar_message_emitted.connect(self.show_status_bar_message)
@@ -707,6 +708,14 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_message(self, msg, level, duration=5):
         self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level, duration)
 
+    def show_message_with_open_table_attributes_button(self, msg, button_text, level, layer, filter):
+        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        button = QPushButton(widget)
+        button.setText(button_text)
+        button.pressed.connect(partial(self.open_table, layer, filter))
+        widget.layout().addWidget(button)
+        self.iface.messageBar().pushWidget(widget, level, 15)
+
     def show_message_to_load_layer(self, msg, button_text, layer, level):
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
@@ -1142,7 +1151,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_boundaries_cad(self):
-        self.wiz = CreateBoundariesCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateBoundariesCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
@@ -1163,7 +1172,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_unit_cad(self):
-        self.wiz = CreateBuildingUnitCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateBuildingUnitCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
@@ -1171,14 +1180,14 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_activate_processing_plugin
     def show_wiz_right_of_way_cad(self):
-        self.wiz = CreateRightOfWayCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateRightOfWayCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_extaddress_cad(self):
-        self.wiz = AssociateExtAddressWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = AssociateExtAddressWizard(self, self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
@@ -1349,14 +1358,14 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_geoeconomic_zone_valuation(self):
-        self.wiz = CreateGeoeconomicZoneValuationWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateGeoeconomicZoneValuationWizard(self, self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_physical_zone_valuation_action(self):
-        self.wiz = CreatePhysicalZoneValuationWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreatePhysicalZoneValuationWizard(self, self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
@@ -1402,6 +1411,9 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_official_data_settings_clear_message_bar(self):
         self.clear_message_bar()
         self.show_official_data_settings()
+
+    def open_table(self, layer, filter=None):
+        self.iface.showAttributeTable(layer, filter)
 
     def download_report_dependency(self):
         self.report_generator.download_report_dependency()

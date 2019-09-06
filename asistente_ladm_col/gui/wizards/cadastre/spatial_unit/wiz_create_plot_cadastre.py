@@ -50,6 +50,7 @@ WIZARD_UI = get_ui_class('wizards/cadastre/spatial_unit/wiz_create_plot_cadastre
 class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "CreatePlotCadastreWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create plot")
+    EDITING_LAYER_NAME = ""
 
     def __init__(self, plugin, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
@@ -67,9 +68,10 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
         self.maptool = self.canvas.mapTool()
         self.select_maptool = None
 
+        self.EDITING_LAYER_NAME = PLOT_TABLE
         self._layers = {
-            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None},
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None}
         }
 
         self.restore_settings()
@@ -85,7 +87,7 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(PLOT_TABLE))
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -94,7 +96,7 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
             self.cbo_mapping.setEnabled(True)
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(PLOT_TABLE, True))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, True))
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
         elif self.rad_plot_from_boundaries.isChecked():
@@ -223,7 +225,7 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
                 field_mapping = self.cbo_mapping.currentText()
                 res_etl_model = self.qgis_utils.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
-                                                               PLOT_TABLE,
+                                                               self.EDITING_LAYER_NAME,
                                                                QgsWkbTypes.PolygonGeometry,
                                                                field_mapping)
 
@@ -231,12 +233,12 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
                     if field_mapping:
                         self.qgis_utils.delete_old_field_mapping(field_mapping)
 
-                    self.qgis_utils.save_field_mapping(PLOT_TABLE)
+                    self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
             else:
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate(self.WIZARD_NAME,
                                                "Select a source layer to set the field mapping to '{}'.").format(
-                        PLOT_TABLE),
+                        self.EDITING_LAYER_NAME),
                     Qgis.Warning)
 
         elif self.rad_plot_from_boundaries.isChecked():
@@ -322,7 +324,7 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
     def edit_feature(self):
         if self._layers[BOUNDARY_TABLE][LAYER].selectedFeatureCount() > 0:
             # Open Form
-            self.iface.layerTreeView().setCurrentLayer(self._layers[PLOT_TABLE][LAYER])
+            self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
             self.qgis_utils.active_snapping_all_layers()
             self.create_plots_from_boundaries()
         else:
@@ -338,20 +340,20 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
         collection = QgsGeometry().polygonize(boundary_geometries)
         features = list()
         for polygon in collection.asGeometryCollection():
-            feature = QgsVectorLayerUtils().createFeature(self._layers[PLOT_TABLE][LAYER], polygon)
+            feature = QgsVectorLayerUtils().createFeature(self._layers[self.EDITING_LAYER_NAME][LAYER], polygon)
             features.append(feature)
 
         if features:
-            if not self._layers[PLOT_TABLE][LAYER].isEditable():
-                self._layers[PLOT_TABLE][LAYER].startEditing()
+            if not self._layers[self.EDITING_LAYER_NAME][LAYER].isEditable():
+                self._layers[self.EDITING_LAYER_NAME][LAYER].startEditing()
 
-            self._layers[PLOT_TABLE][LAYER].addFeatures(features)
+            self._layers[self.EDITING_LAYER_NAME][LAYER].addFeatures(features)
             self.iface.mapCanvas().refresh()
 
             message = QCoreApplication.translate("QGISUtils", "{} new plot(s) has(have) been created! To finish the creation of the plots, open the attributes table and fill in the obligatory fields.").format(len(features))
             button_text = QCoreApplication.translate("QGISUtils", "Open table of attributes.")
             level = Qgis.Info
-            layer = self._layers[PLOT_TABLE][LAYER]
+            layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
             filter = '"{}" is Null and "{}" is Null'.format(PLOT_REGISTRY_AREA_FIELD, PLOT_CALCULATED_AREA_FIELD)
             self.qgis_utils.message_with_open_table_attributes_button_emitted.emit(message, button_text, level, layer,filter)
             self.close_wizard(show_message=False)

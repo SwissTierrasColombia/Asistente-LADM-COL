@@ -61,6 +61,7 @@ WIZARD_UI = get_ui_class('wizards/cadastre/source/wiz_create_spatial_source_cada
 class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "CreateSpatialSourceCadastreWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create Spatial Source")
+    EDITING_LAYER_NAME = ""
 
     def __init__(self, plugin, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
@@ -78,6 +79,7 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
         self.maptool = self.canvas.mapTool()
         self.select_maptool = None
 
+        self.EDITING_LAYER_NAME = SPATIAL_SOURCE_TABLE
         self._layers = {
             SPATIAL_SOURCE_TABLE: {'name': SPATIAL_SOURCE_TABLE, 'geometry': None, LAYER: None},
             EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None, LAYER: None},
@@ -104,7 +106,7 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(SPATIAL_SOURCE_TABLE))
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -114,7 +116,7 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(SPATIAL_SOURCE_TABLE, False))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, False))
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -182,7 +184,7 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
             pass
 
         try:
-            self._layers[SPATIAL_SOURCE_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
@@ -268,19 +270,19 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
                 field_mapping = self.cbo_mapping.currentText()
                 res_etl_model = self.qgis_utils.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
-                                                               SPATIAL_SOURCE_TABLE,
+                                                               self.EDITING_LAYER_NAME,
                                                                field_mapping=field_mapping)
 
                 if res_etl_model:
                     if field_mapping:
                         self.qgis_utils.delete_old_field_mapping(field_mapping)
 
-                    self.qgis_utils.save_field_mapping(SPATIAL_SOURCE_TABLE)
+                    self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
             else:
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate(self.WIZARD_NAME,
                                                "Select a source layer to set the field mapping to '{}'.").format(
-                        SPATIAL_SOURCE_TABLE),
+                        self.EDITING_LAYER_NAME),
                     Qgis.Warning)
 
         elif self.rad_create_manually.isChecked():
@@ -364,9 +366,9 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
         self.canvas.setMapTool(self.maptool)
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[SPATIAL_SOURCE_TABLE][LAYER])
-        self._layers[SPATIAL_SOURCE_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
-        self.open_form(self._layers[SPATIAL_SOURCE_TABLE][LAYER])
+        self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
+        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
 
     def finish_feature_creation(self, layerId, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -477,7 +479,7 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
                     message = QCoreApplication.translate(self.WIZARD_NAME,
                                                    "The new spatial source (t_id={}) was successfully created and it wasn't associated with a spatial unit").format(spatial_source_id)
 
-        self._layers[SPATIAL_SOURCE_TABLE][LAYER].committedFeaturesAdded.disconnect()
+        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect()
         self.log.logMessage("Spatial Source's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 

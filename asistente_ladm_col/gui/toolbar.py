@@ -20,13 +20,16 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import (QDialog,
+                                 QToolBar,
                                  QMessageBox)
 from qgis.core import (Qgis,
                        QgsProject,
                        QgsVectorLayerUtils,
                        QgsWkbTypes)
 
-from ..config.general_config import LAYER
+from ..config.general_config import (LAYER,
+                                     TOOLBAR_FINALIZE_GEOMETRY_CREATION,
+                                     TOOLBAR_ID)
 from ..config.table_mapping_config import (POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
@@ -348,3 +351,16 @@ class ToolBar(QObject):
     @staticmethod
     def turn_transaction_off():
         QgsProject.instance().setAutoTransaction(False)
+
+    def set_enable_finalize_geometry_creation_action(self, enable):
+        finalize_geometry_creation_action = self.get_toolbar_finalize_geometry_creation_action()
+        if finalize_geometry_creation_action:
+            finalize_geometry_creation_action.setEnabled(enable)
+
+    def get_toolbar_finalize_geometry_creation_action(self):
+        for toolbar in self.iface.mainWindow().findChildren(QToolBar, TOOLBAR_ID):
+            for action in toolbar.actions():
+                if not action.isSeparator():
+                    if action.text() == TOOLBAR_FINALIZE_GEOMETRY_CREATION:
+                        return action
+        return None

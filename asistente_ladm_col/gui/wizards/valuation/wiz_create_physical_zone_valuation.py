@@ -16,14 +16,14 @@
  *                                                                         *
  ***************************************************************************/
 """
-from functools import partial
-
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
-from qgis.PyQt.QtWidgets import QWizard
+from qgis.PyQt.QtWidgets import (QWizard,
+                                 QPushButton,
+                                 QMessageBox)
 from qgis.core import (QgsProject,
-                       Qgis,
                        QgsApplication,
+                       Qgis,
                        QgsMapLayerProxyModel,
                        QgsWkbTypes)
 
@@ -40,24 +40,22 @@ WIZARD_UI = get_ui_class('wizards/valuation/wiz_create_physical_zone_valuation.u
 class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "CreatePhysicalZoneValuationWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create physical zones")
+    EDITING_LAYER_NAME = ""
 
-    def __init__(self, plugin, iface, db, qgis_utils, parent=None):
+    def __init__(self, plugin, iface, db, qgis_utils, toolbar, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
         self._db = db
         self.qgis_utils = qgis_utils
+        self.toolbar = toolbar
         self.help_strings = HelpStrings()
 
         self.plugin = plugin
         self.plugin.is_wizard_open = True
 
-        # Necessary to control featureAdded bug (crash QGIS)
-        # https://gis.stackexchange.com/a/229949/120426
-        self.added_features = None
-        self.rollback_changes = False
-
+        self.EDITING_LAYER_NAME = VALUATION_PHYSICAL_ZONE_TABLE
         self._layers = {
             VALUATION_PHYSICAL_ZONE_TABLE: {'name': VALUATION_PHYSICAL_ZONE_TABLE, 'geometry': None, LAYER: None}
         }
@@ -74,7 +72,9 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(VALUATION_PHYSICAL_ZONE_TABLE))
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
+
+        self.toolbar.wiz_geometry_created_requested.connect(self.wiz_geometry_created)
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -82,7 +82,7 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(VALUATION_PHYSICAL_ZONE_TABLE, True))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, True))
 
         elif self.rad_digitizing.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -97,17 +97,7 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
     def disconnect_signals(self):
         # QGIS APP
         try:
-            self._layers[VALUATION_PHYSICAL_ZONE_TABLE][LAYER].featureAdded.disconnect()
-        except:
-            pass
-
-        try:
-            self._layers[VALUATION_PHYSICAL_ZONE_TABLE][LAYER].editCommandEnded.disconnect(self.confirm_commit)
-        except:
-            pass
-
-        try:
-            self._layers[VALUATION_PHYSICAL_ZONE_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
@@ -125,7 +115,7 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
                 field_mapping = self.cbo_mapping.currentText()
                 res_etl_model = self.qgis_utils.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
-                                                               VALUATION_PHYSICAL_ZONE_TABLE,
+                                                               self.EDITING_LAYER_NAME,
                                                                QgsWkbTypes.PolygonGeometry,
                                                                field_mapping)
 
@@ -133,15 +123,16 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
                     if field_mapping:
                         self.qgis_utils.delete_old_field_mapping(field_mapping)
 
-                    self.qgis_utils.save_field_mapping(VALUATION_PHYSICAL_ZONE_TABLE)
+                    self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
             else:
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate(self.WIZARD_NAME,
                                                "Select a source layer to set the field mapping to '{}'.").format(
-                        VALUATION_PHYSICAL_ZONE_TABLE),
+                        self.EDITING_LAYER_NAME),
                     Qgis.Warning)
 
         elif self.rad_digitizing.isChecked():
+            self.toolbar.set_enable_finalize_geometry_creation_action(True)
             self.prepare_feature_creation()
 
     def prepare_feature_creation(self):
@@ -210,20 +201,22 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
             self.qgis_utils.message_emitted.emit(message, Qgis.Info)
+
+        self.toolbar.set_enable_finalize_geometry_creation_action(False)
         self.disconnect_signals()
         self.plugin.is_wizard_open = False
         self.close()
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[VALUATION_PHYSICAL_ZONE_TABLE][LAYER])
-        #self._layers[VALUATION_PHYSICAL_ZONE_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
+        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
 
         # Disable transactions groups
         QgsProject.instance().setAutoTransaction(False)
 
         # Activate snapping
         self.qgis_utils.active_snapping_all_layers(tolerance=9)
-        self.open_form(self._layers[VALUATION_PHYSICAL_ZONE_TABLE][LAYER])
+        self.open_form()
 
         self.qgis_utils.message_emitted.emit(
             QCoreApplication.translate(self.WIZARD_NAME,
@@ -235,78 +228,52 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()
 
-        if not self._layers[VALUATION_PHYSICAL_ZONE_TABLE][LAYER].getFeature(fid).isValid():
+        if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
             message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a physical zones. ").format(self.WIZARD_TOOL_NAME, VALUATION_PHYSICAL_ZONE_TABLE)
-            self.log.logMessage("Feature not found in layer {} ...".format(VALUATION_PHYSICAL_ZONE_TABLE), PLUGIN_NAME, Qgis.Warning)
+                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a physical zones. ").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME)
+            self.log.logMessage("Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
         else:
-            feature_tid = self._layers[VALUATION_PHYSICAL_ZONE_TABLE][LAYER].getFeature(fid)[ID_FIELD]
+            feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
             message = QCoreApplication.translate(self.WIZARD_NAME, "The new physical zones (t_id={}) was successfully created ").format(feature_tid)
 
-        self._layers[VALUATION_PHYSICAL_ZONE_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Physical zone's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
 
         self.iface.mapCanvas().refresh()
         self.close_wizard(message)
 
-    def open_form(self, layer):
+    def open_form(self):
+        layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
         if not layer.isEditable():
             layer.startEditing()
 
-        # action add feature
         self.qgis_utils.suppress_form(layer, True)
         self.iface.actionAddFeature().trigger()
 
-        # Shows the form when the feature is created
-        layer.featureAdded.connect(partial(self.exec_form, layer))
-        #layer.editCommandEnded.connect(self.confirm_commit)
+    def exec_form(self):
+        self.toolbar.set_enable_finalize_geometry_creation_action(False)
+        layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
 
-    def exec_form(self, layer, f_id):
-        """
-        This method only stores featIds in a class variable. It's required to avoid a bug with SLOTS connected to
-        featureAdded.
-        """
-        self.added_features = f_id
+        for id, added_feature in layer.editBuffer().addedFeatures().items():
+            feature = added_feature
+            break
 
-        feature = self.qgis_utils.get_new_feature(layer)
         dialog = self.iface.getFeatureForm(layer, feature)
+        dialog.rejected.connect(self.form_rejected)
         dialog.setModal(True)
 
-        message = None
         if dialog.exec_():
-            message = QCoreApplication.translate(self.WIZARD_NAME, "Phisical zone was created, but no changes have been saved.")
-            self.rollback_changes = False
-        else:
-            self.rollback_changes = True
-        self.close_wizard(message)
-
-    def confirm_commit(self):
-        layer = self.sender() # Get the layer that has sent the signal
-
-        try:
-            layer.featureAdded.disconnect()
-            self.log.logMessage("Physical zone's featureAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
-        except:
-            pass
-
-        if not self.rollback_changes:
             saved = layer.commitChanges()
-
             if not saved:
                 layer.rollBack()
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate(self.WIZARD_NAME,
-                                               "Error while saving changes. Parcel could not be created."),
-                    Qgis.Warning)
-
+                                               "Error while saving changes. Physical zone valuation could not be created."), Qgis.Warning)
                 for e in layer.commitErrors():
                     self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
         else:
             layer.rollBack()
-            self.form_rejected()
-
         self.iface.mapCanvas().refresh()
-        self.added_features = None
 
     def form_rejected(self):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -328,3 +295,42 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
 
     def show_help(self):
         self.qgis_utils.show_help("create_physical_zone_valuation")
+
+    def wiz_geometry_created(self):
+        message = None
+        if self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer():
+            if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 1:
+                feature = [value for index, value in self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures().items()][0]
+                if feature.geometry().isGeosValid():
+                    self.exec_form()
+                else:
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry is invalid. Do you want to return to the editing session?")
+            else:
+                if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 0:
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry was not created. Do you want to return to the editing session?")
+                else:
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "Many geometries were created but one was expected. Do you want to return to the editing session?")
+
+        if message:
+            self.show_message_associate_geometry_creation(message)
+
+    def show_message_associate_geometry_creation(self, message):
+        msg = QMessageBox(self)
+        msg.setIcon(QMessageBox.Question)
+        msg.setText(message)
+        msg.setWindowTitle(QCoreApplication.translate(self.WIZARD_NAME, "Continue editing?"))
+        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "Yes")), QMessageBox.YesRole)
+        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "Close wizard")), QMessageBox.NoRole)
+        reply = msg.exec_()
+
+        if reply == 1: # 1 close wizard, 0 yes
+            # stop edition in close_wizard crash qgis
+            if self._layers[self.EDITING_LAYER_NAME][LAYER].isEditable():
+                self._layers[self.EDITING_LAYER_NAME][LAYER].rollBack()
+
+            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(
+                self.WIZARD_TOOL_NAME)
+            self.close_wizard(message)
+        else:
+            # Continue creating geometry
+            pass

@@ -20,7 +20,6 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 from qgis.PyQt.QtWidgets import (QWizard,
                                  QPushButton,
-                                 QToolBar,
                                  QMessageBox)
 from qgis.core import (QgsProject,
                        QgsApplication,
@@ -29,8 +28,6 @@ from qgis.core import (QgsProject,
                        QgsWkbTypes)
 
 from .....config.general_config import (PLUGIN_NAME,
-                                        TOOLBAR_ID,
-                                        TOOLBAR_FINALIZE_GEOMETRY_CREATION,
                                         LAYER)
 from .....config.help_strings import HelpStrings
 from .....config.table_mapping_config import (BUILDING_TABLE,
@@ -46,7 +43,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create building")
     EDITING_LAYER_NAME = ""
 
-    def __init__(self, iface, db, qgis_utils, toolbar, parent=None):
+    def __init__(self, plugin, iface, db, qgis_utils, toolbar, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
@@ -56,12 +53,14 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
         self.toolbar = toolbar
         self.help_strings = HelpStrings()
 
+        self.plugin = plugin
+        self.plugin.is_wizard_open = True
+
+        self.EDITING_LAYER_NAME = BUILDING_TABLE
         self._layers = {
             BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
             SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None}
         }
-
-        self.EDITING_LAYER_NAME = BUILDING_TABLE
 
         self.restore_settings()
         self.rad_digitizing.toggled.connect(self.adjust_page_1_controls)
@@ -75,7 +74,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(BUILDING_TABLE))
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
 
         self.toolbar.wiz_geometry_created_requested.connect(self.wiz_geometry_created)
 
@@ -85,7 +84,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(BUILDING_TABLE, True))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, True))
 
         elif self.rad_digitizing.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -118,7 +117,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
                 field_mapping = self.cbo_mapping.currentText()
                 res_etl_model = self.qgis_utils.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
-                                                               BUILDING_TABLE,
+                                                               self.EDITING_LAYER_NAME,
                                                                QgsWkbTypes.PolygonGeometry,
                                                                field_mapping)
 
@@ -126,16 +125,16 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
                     if field_mapping:
                         self.qgis_utils.delete_old_field_mapping(field_mapping)
 
-                    self.qgis_utils.save_field_mapping(BUILDING_TABLE)
+                    self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
             else:
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate(self.WIZARD_NAME,
                                                "Select a source layer to set the field mapping to '{}'.").format(
-                        BUILDING_TABLE),
+                        self.EDITING_LAYER_NAME),
                     Qgis.Warning)
 
         elif self.rad_digitizing.isChecked():
-            self.set_enable_finalize_geometry_creation_action(True)
+            self.toolbar.set_enable_finalize_geometry_creation_action(True)
             self.prepare_feature_creation()
 
     def prepare_feature_creation(self):
@@ -205,8 +204,9 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
         if show_message:
             self.qgis_utils.message_emitted.emit(message, Qgis.Info)
 
-        self.set_enable_finalize_geometry_creation_action(False)
+        self.toolbar.set_enable_finalize_geometry_creation_action(False)
         self.disconnect_signals()
+        self.plugin.is_wizard_open = False
         self.close()
 
     def edit_feature(self):
@@ -232,8 +232,8 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
 
         if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
             message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a building unit. ").format(self.WIZARD_TOOL_NAME, BUILDING_TABLE)
-            self.log.logMessage("Feature not found in layer {} ...".format(BUILDING_TABLE), PLUGIN_NAME, Qgis.Warning)
+                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a building unit. ").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME)
+            self.log.logMessage("Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
         else:
             feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
             message = QCoreApplication.translate(self.WIZARD_NAME, "The new building unit (t_id={}) was successfully created ").format(feature_tid)
@@ -251,7 +251,7 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
         self.iface.actionAddFeature().trigger()
 
     def exec_form(self):
-        self.set_enable_finalize_geometry_creation_action(False)
+        self.toolbar.set_enable_finalize_geometry_creation_action(False)
 
         layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
 
@@ -272,10 +272,9 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
                                                "Error while saving changes. Building could not be created."), Qgis.Warning)
                 for e in layer.commitErrors():
                     self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
-
-            self.iface.mapCanvas().refresh()
         else:
             layer.rollBack()
+        self.iface.mapCanvas().refresh()
 
     def form_rejected(self):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -336,16 +335,3 @@ class CreateBuildingCadastreWizard(QWizard, WIZARD_UI):
         else:
             # Continue creating geometry
             pass
-
-    def set_enable_finalize_geometry_creation_action(self, enable):
-        finalize_geometry_creation_action = self.get_toolbar_finalize_geometry_creation_action()
-        if finalize_geometry_creation_action:
-            finalize_geometry_creation_action.setEnabled(enable)
-
-    def get_toolbar_finalize_geometry_creation_action(self):
-        for toolbar in self.iface.mainWindow().findChildren(QToolBar, TOOLBAR_ID):
-            for action in toolbar.actions():
-                if not action.isSeparator():
-                    if action.text() == TOOLBAR_FINALIZE_GEOMETRY_CREATION:
-                        return action
-        return None
