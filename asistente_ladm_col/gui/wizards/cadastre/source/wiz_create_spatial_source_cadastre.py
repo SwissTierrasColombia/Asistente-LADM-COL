@@ -62,7 +62,7 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "CreateSpatialSourceCadastreWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create Spatial Source")
 
-    def __init__(self, iface, db, qgis_utils, parent=None):
+    def __init__(self, plugin, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
@@ -70,6 +70,9 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
+
+        self.plugin = plugin
+        self.plugin.is_wizard_open = True
 
         self.canvas = self.iface.mapCanvas()
         self.maptool = self.canvas.mapTool()
@@ -350,6 +353,7 @@ class CreateSpatialSourceCadastreWizard(QWizard, WIZARD_UI):
             self.qgis_utils.message_emitted.emit(message, Qgis.Info)
         self.init_map_tool()
         self.disconnect_signals()
+        self.plugin.is_wizard_open = False
         self.close()
 
     def init_map_tool(self):

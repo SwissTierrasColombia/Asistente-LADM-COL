@@ -59,7 +59,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "AssociateExtAddressWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create ExtAddress")
 
-    def __init__(self, iface, db, qgis_utils, parent=None):
+    def __init__(self, plugin, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
@@ -68,6 +68,9 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
+
+        self.plugin = plugin
+        self.plugin.is_wizard_open = True
 
         # Necessary to control featureAdded bug (crash QGIS)
         # https://gis.stackexchange.com/a/229949/120426
@@ -459,6 +462,7 @@ class AssociateExtAddressWizard(QWizard, WIZARD_UI):
             self.qgis_utils.message_emitted.emit(message, Qgis.Info)
         self.init_map_tool()
         self.disconnect_signals()
+        self.plugin.is_wizard_open = False
         self.close()
 
     def init_map_tool(self):

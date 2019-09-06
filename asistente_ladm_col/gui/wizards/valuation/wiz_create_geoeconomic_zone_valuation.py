@@ -41,7 +41,7 @@ class CreateGeoeconomicZoneValuationWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "CreateGeoeconomicZoneValuationWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create geoeconomic zone")
 
-    def __init__(self, iface, db, qgis_utils, parent=None):
+    def __init__(self, plugin, iface, db, qgis_utils, parent=None):
         QWizard.__init__(self, parent)
         self.setupUi(self)
         self.iface = iface
@@ -49,6 +49,9 @@ class CreateGeoeconomicZoneValuationWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
+
+        self.plugin = plugin
+        self.plugin.is_wizard_open = True
 
         # Necessary to control featureAdded bug (crash QGIS)
         # https://gis.stackexchange.com/a/229949/120426
@@ -217,6 +220,7 @@ class CreateGeoeconomicZoneValuationWizard(QWizard, WIZARD_UI):
         if show_message:
             self.qgis_utils.message_emitted.emit(message, Qgis.Info)
         self.disconnect_signals()
+        self.plugin.is_wizard_open = False
         self.close()
 
     def edit_feature(self):

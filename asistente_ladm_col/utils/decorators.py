@@ -230,3 +230,16 @@ def _map_swipe_tool_required(func_to_decorate):
             )
 
     return decorated_function
+
+
+def _validate_if_wizard_is_open(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(inst, *args, **kwargs):
+        if inst.is_wizard_open:
+            inst.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                         "There is a wizard open, you should close it before continuing."),
+                              Qgis.Info)
+        else:
+            func_to_decorate(inst, *args, **kwargs)
+
+    return decorated_function
