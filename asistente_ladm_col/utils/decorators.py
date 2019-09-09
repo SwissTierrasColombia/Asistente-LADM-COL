@@ -241,6 +241,8 @@ def _validate_if_wizard_is_open(func_to_decorate):
         else:
             func_to_decorate(inst, *args, **kwargs)
 
+    return decorated_function
+
 def _with_override_cursor(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
