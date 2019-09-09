@@ -151,13 +151,13 @@ MAP_SWIPE_TOOL_REQUIRED_VERSION_URL = 'https://plugins.qgis.org/plugins/mapswipe
 # Change detection
 PARCEL_STATUS = '_PARCEL_STATUS_'
 PARCEL_STATUS_DISPLAY = ''
-CHANGE_DETECTION_NEW_PARCEL = 'Alta'
-CHANGE_DETECTION_MISSING_PARCEL = 'Baja'
-CHANGE_DETECTION_PARCEL_CHANGED = 'Cambio'
-CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED = 'Cambio Geometría'
-CHANGE_DETECTION_PARCEL_REMAINS = 'OK'
-CHANGE_DETECTION_SEVERAL_PARCELS = 'several'
-CHANGE_DETECTION_NULL_PARCEL = 'null'
+CHANGE_DETECTION_NEW_PARCEL = QCoreApplication.translate("", "New parcel") # alta
+CHANGE_DETECTION_MISSING_PARCEL = QCoreApplication.translate("", "Missing parcel") # Baja
+CHANGE_DETECTION_PARCEL_CHANGED = QCoreApplication.translate("","Parcel changed")
+CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED = QCoreApplication.translate("","Only geometry changed")
+CHANGE_DETECTION_PARCEL_REMAINS = QCoreApplication.translate("",'OK')
+CHANGE_DETECTION_SEVERAL_PARCELS = QCoreApplication.translate("",'Several')
+CHANGE_DETECTION_NULL_PARCEL = QCoreApplication.translate("",'null')
 STATUS_COLORS = {CHANGE_DETECTION_NEW_PARCEL: Qt.red,
                  CHANGE_DETECTION_MISSING_PARCEL: Qt.red,
                  CHANGE_DETECTION_PARCEL_CHANGED: Qt.red,

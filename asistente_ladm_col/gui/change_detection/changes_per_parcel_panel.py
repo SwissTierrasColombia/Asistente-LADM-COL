@@ -24,7 +24,8 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               Qt,
                               QEvent,
                               QPoint)
-from qgis.PyQt.QtWidgets import QTableWidgetItem
+from qgis.PyQt.QtWidgets import (QTableWidgetItem,
+                                 QApplication)
 from qgis.core import (QgsWkbTypes,
                        QgsFeature,
                        QgsFeatureRequest,
@@ -54,20 +55,22 @@ from ...config.table_mapping_config import (PARCEL_NUMBER_FIELD,
                                             UEBAUNIT_TABLE,
                                             COL_PARTY_TABLE,
                                             DICT_PLURAL)
-from ...utils.qt_utils import OverrideCursor
+from .dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
+from ...utils.decorators import _with_override_cursor
 from ...utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_per_parcel_panel_widget.ui')
 
 
 class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
-    def __init__(self, parent, utils, parcel_number=None):
+    def __init__(self, parent, utils, parcel_number=None, collected_parcel_t_id=None):
         QgsPanelWidget.__init__(self, None)
         self.setupUi(self)
         self.parent = parent
         self.utils = utils
 
         self.setDockMode(True)
+        self.setPanelTitle(QCoreApplication.translate("ChangesPerParcelPanelWidget", "Change detection per parcel"))
 
         self._current_official_substring = ""
         self._current_substring = ""
@@ -101,17 +104,23 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         if parcel_number is not None:  # Do a search!
             self.txt_alphanumeric_query.setValue(parcel_number)
-            self.search_data(parcel_number=parcel_number)
+            if collected_parcel_t_id is not None:  # Search data for a duplicated parcel_number, so, take the t_id into account!
+                self.search_data(parcel_number=parcel_number, collected_parcel_t_id=collected_parcel_t_id)
+            else:
+                self.search_data(parcel_number=parcel_number)
 
     def btn_plot_toggled(self):
-        self.tbl_changes_per_parcel.clearContents()
-        self.tbl_changes_per_parcel.setRowCount(0)
+        self.clear_result_table()
 
         if self.btn_identify_plot.isChecked():
             self.prepare_identify_plot()
         else:
             # The button was toggled and deactivated, go back to the previous tool
             self.utils.canvas.setMapTool(self.active_map_tool_before_custom)
+
+    def clear_result_table(self):
+        self.tbl_changes_per_parcel.clearContents()
+        self.tbl_changes_per_parcel.setRowCount(0)
 
     def prepare_identify_plot(self):
         """
@@ -148,18 +157,16 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                                     flashes=1,
                                     duration=500)
 
-        with OverrideCursor(Qt.WaitCursor):
-            if not self.isVisible():
-                self.show()
+        if not self.isVisible():
+            self.show()
 
-            self.spatial_query(plot_t_id)
-            #self.search_data_by_component(plot_t_id=plot_t_id, zoom_and_select=False)
-            self.utils._official_layers[PLOT_TABLE][LAYER].selectByIds([plot_feature.id()])
+        self.spatial_query(plot_t_id)
+        self.utils._official_layers[PLOT_TABLE][LAYER].selectByIds([plot_feature.id()])
 
     def spatial_query(self, plot_id):
         if plot_id:
             parcel_number = self.utils.ladm_data.get_parcels_related_to_plots(self.utils._official_db, [plot_id], PARCEL_NUMBER_FIELD)
-            if parcel_number:
+            if parcel_number:  # Delegate handling of duplicates to search_data() method
                 self.search_data(parcel_number=parcel_number[0])
 
     def call_party_panel(self, item):
@@ -184,35 +191,41 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Previous Parcel Number"), PARCEL_NUMBER_BEFORE_FIELD)
         self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Folio de Matrícula Inmobiliaria"), FMI_FIELD)
 
+    @_with_override_cursor
     def search_data(self, **kwargs):
         """
         Get plot geometries associated with parcels, both collected and official, zoom to them, activate map swipe tool
             and fill comparison table.
 
         :param kwargs: key-value (field name-field value) to search in parcel tables, both collected and official
+                       Normally, keys are parcel_number, old_parcel_number or FMI, but if duplicates are found, an
+                       additional t_id disambiguates only for the collected source. In the Official source we assume
+                       we will not find duplicates, if there are, we will choose the first record found an will not deal
+                       with letting the user choose one of the duplicates by hand (as we do for the collected source).
         """
         self.chk_show_all_plots.setEnabled(False)
         self.chk_show_all_plots.setChecked(True)
         self.initialize_tools_and_layers()  # Reset any filter on layers
         already_zoomed_in = False
 
+        self.clear_result_table()
+
         search_field = self.cbo_parcel_fields.currentData()
         search_value = list(kwargs.values())[0]
 
         # Get OFFICIAL parcel's t_id and get related plot(s)
-        request = QgsFeatureRequest(QgsExpression("{}='{}'".format(search_field, search_value)))
+        expression = QgsExpression("{}='{}'".format(search_field, search_value))
+        request = QgsFeatureRequest(expression)
         field_idx = self.utils._official_layers[PARCEL_TABLE][LAYER].fields().indexFromName(ID_FIELD)
-        request.setSubsetOfAttributes([field_idx])
         request.setFlags(QgsFeatureRequest.NoGeometry)
+        request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
         official_parcels = [feature for feature in self.utils._official_layers[PARCEL_TABLE][LAYER].getFeatures(request)]
 
         if len(official_parcels) > 1:
-            # TODO: Show dialog to select only one
-            pass
+            # We do not expect duplicates in the official source!
+            pass  # We'll choose the first one anyways
         elif len(official_parcels) == 0:
             print("No parcel found!", search_field, search_value)
-
-        self.fill_table({search_field: search_value})
 
         official_plot_t_ids = []
         if official_parcels:
@@ -227,21 +240,51 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
                 self.parent.request_zoom_to_features(self.utils._official_layers[PLOT_TABLE][LAYER], list(), official_plot_t_ids)
                 already_zoomed_in = True
 
-        # Now get COLLECTED parcel's t_id and get related plot(s)
-        request = QgsFeatureRequest(QgsExpression("{}='{}'".format(search_field, search_value)))
-        field_idx = self.utils._layers[PARCEL_TABLE][LAYER].fields().indexFromName(ID_FIELD)
-        request.setSubsetOfAttributes([field_idx])
-        request.setFlags(QgsFeatureRequest.NoGeometry)
-        parcels = self.utils._layers[PARCEL_TABLE][LAYER].getFeatures(request)
-        parcel = QgsFeature()
-        res = parcels.nextFeature(parcel)
 
-        if res:
+        # Now get COLLECTED parcel's t_id and get related plot(s)
+        collected_parcel_t_id = None
+        if 'collected_parcel_t_id' in kwargs:
+            # This is the case when this panel is called and we already know the parcel number is duplicated
+            collected_parcel_t_id = kwargs['collected_parcel_t_id']
+            search_criterion_collected = {ID_FIELD: collected_parcel_t_id}  # As there are duplicates, we need to use t_ids
+        else:
+            # This is the case when:
+            #   + Either this panel was called and we know the parcel number is not duplicated, or
+            #   + This panel was shown without knowing about duplicates (e.g., individual parcel search) and we still
+            #     need to discover whether we have duplicates for this search criterion
+            search_criterion_collected = {search_field: search_value}
+
+            request = QgsFeatureRequest(expression)
+            request.setFlags(QgsFeatureRequest.NoGeometry)
+            request.setSubsetOfAttributes([ID_FIELD],
+                                          self.utils._layers[PARCEL_TABLE][LAYER].fields())  # Note this adds a new flag
+            collected_parcels = self.utils._layers[PARCEL_TABLE][LAYER].getFeatures(request)
+            collected_parcels_t_ids = [feature[ID_FIELD] for feature in collected_parcels]
+
+            if collected_parcels_t_ids:
+                collected_parcel_t_id = collected_parcels_t_ids[0]
+                if len(collected_parcels_t_ids) > 1:  # Duplicates in collected source after a search
+                    QApplication.restoreOverrideCursor()  # Make sure cursor is not waiting (it is if on an identify)
+                    QCoreApplication.processEvents()
+                    dlg_select_parcel = SelectDuplicateParcelDialog(self.utils, collected_parcels_t_ids, self.parent)
+                    dlg_select_parcel.exec_()
+
+                    if dlg_select_parcel.parcel_t_id:  # User selected one of the duplicated parcels
+                        collected_parcel_t_id = dlg_select_parcel.parcel_t_id
+                        search_criterion_collected = {ID_FIELD: collected_parcel_t_id}
+                    else:
+                        return  # User just cancelled the dialog, there is nothing more to do
+
+        search_criterion_official = {search_field: search_value}
+
+        self.fill_table(search_criterion_official, search_criterion_collected)
+
+        if collected_parcel_t_id is not None:
             plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
-                                                                     [parcel[ID_FIELD]],
-                                                                     field_name=ID_FIELD,
-                                                                     plot_layer=self.utils._layers[PLOT_TABLE][LAYER],
-                                                                     uebaunit_table=self.utils._layers[UEBAUNIT_TABLE][LAYER])
+                                                                           [collected_parcel_t_id],
+                                                                           field_name=ID_FIELD,
+                                                                           plot_layer=self.utils._layers[PLOT_TABLE][LAYER],
+                                                                           uebaunit_table=self.utils._layers[UEBAUNIT_TABLE][LAYER])
             if plot_t_ids:
                 self._current_substring = "{} IN ('{}')".format(ID_FIELD, "','".join([str(t_id) for t_id in plot_t_ids]))
                 if not already_zoomed_in:
@@ -274,8 +317,15 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         # Once the query is done, activate the checkbox to alternate all plots/only selected plot
         self.chk_show_all_plots.setEnabled(True)
 
-    def fill_table(self, search_criterion):  # Shouldn't handle 'inverse' mode as we won't switch table columns at runtime
-        dict_collected_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._db, search_criterion)
+    def fill_table(self, search_criterion_official, search_criterion_collected):
+        """
+        Shouldn't handle 'inverse' mode as we won't switch table columns at runtime.
+
+        :param search_criterion_official: key-value pair to build an expression to search data in the official source
+        :param search_criterion_collected: key-value pair to build an expression to search data in the collected source
+        :return:
+        """
+        dict_collected_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._db, search_criterion_collected)
 
         # Custom layer modifiers
         layer_modifiers = {
@@ -283,7 +333,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
             STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
         }
-        dict_official_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._official_db, search_criterion, layer_modifiers=layer_modifiers)
+        dict_official_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._official_db, search_criterion_official, layer_modifiers=layer_modifiers)
 
         # Before filling the table we make sure we get one and only one parcel attrs dict
         collected_attrs = dict()
@@ -298,7 +348,6 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             official_attrs = dict_official_parcels[official_parcel_number][0]
             del official_attrs[ID_FIELD]  # Remove this line if ID_FIELD is somehow needed
 
-        self.tbl_changes_per_parcel.clearContents()
         number_of_rows = len(collected_attrs) or len(official_attrs)
         self.tbl_changes_per_parcel.setRowCount(number_of_rows)  # t_id shouldn't be counted
         self.tbl_changes_per_parcel.setSortingEnabled(False)

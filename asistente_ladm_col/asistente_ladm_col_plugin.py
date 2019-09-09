@@ -114,7 +114,8 @@ from .data.ladm_data import LADM_DATA
 from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from .utils.qgis_utils import QGISUtils
 from .lib.db.db_connection_manager import ConnectionManager
-from .utils.qt_utils import get_plugin_metadata
+from .utils.qt_utils import (get_plugin_metadata,
+                             OverrideCursor)
 from .utils.quality import QualityUtils
 from .lib.db.enum_db_action_type import EnumDbActionType
 
@@ -1375,8 +1376,8 @@ class AsistenteLADMCOLPlugin(QObject):
     @_official_db_connection_required
     @_different_db_connections_required
     def query_changes_per_parcel(self):
-        self.show_change_detection_dockwidget()
-        self._dock_widget_change_detection.show_parcel_panel()
+        with OverrideCursor(Qt.WaitCursor):
+            self.show_change_detection_dockwidget(False)  # all_parcels_mode is False, we want the per_parcel_mode instead
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1385,10 +1386,10 @@ class AsistenteLADMCOLPlugin(QObject):
     @_official_db_connection_required
     @_different_db_connections_required
     def query_changes_all_parcels(self):
-        self.show_change_detection_dockwidget()
-        self._dock_widget_change_detection.show_main_panel()
+        with OverrideCursor(Qt.WaitCursor):
+            self.show_change_detection_dockwidget()
 
-    def show_change_detection_dockwidget(self):
+    def show_change_detection_dockwidget(self, all_parcels_mode=True):
         if self._dock_widget_change_detection is not None:
             self._dock_widget_change_detection.close()
             self._dock_widget_change_detection = None
@@ -1397,7 +1398,8 @@ class AsistenteLADMCOLPlugin(QObject):
                                                                        self.get_db_connection(),
                                                                        self.get_official_db_connection(),
                                                                        self.qgis_utils,
-                                                                       self.ladm_data)
+                                                                       self.ladm_data,
+                                                                       all_parcels_mode)
         self.conn_manager.db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
         self.conn_manager.official_db_connection_changed.connect(self._dock_widget_change_detection.update_db_connection)
         self._dock_widget_change_detection.zoom_to_features_requested.connect(self.zoom_to_features)
