@@ -39,8 +39,8 @@ class CreateBuildingUnitQualificationValuationWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "CreateBuildingUnitQualificationValuationWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create building unit qualification")
 
-    def __init__(self, iface, db, qgis_utils, parent=None):
-        QWizard.__init__(self, parent)
+    def __init__(self, iface, db, qgis_utils):
+        QWizard.__init__(self)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()

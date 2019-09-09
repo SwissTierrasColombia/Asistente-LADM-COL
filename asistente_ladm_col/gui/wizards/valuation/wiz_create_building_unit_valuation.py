@@ -53,8 +53,8 @@ class CreateBuildingUnitValuationWizard(QWizard, WIZARD_UI):
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create building unit valuation")
     EDITING_LAYER_NAME = ""
 
-    def __init__(self, plugin, iface, db, qgis_utils, parent=None):
-        QWizard.__init__(self, parent)
+    def __init__(self, iface, db, qgis_utils, plugin):
+        QWizard.__init__(self)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()

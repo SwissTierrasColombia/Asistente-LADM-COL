@@ -42,8 +42,8 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create physical zones")
     EDITING_LAYER_NAME = ""
 
-    def __init__(self, plugin, iface, db, qgis_utils, toolbar, parent=None):
-        QWizard.__init__(self, parent)
+    def __init__(self, iface, db, qgis_utils, toolbar, plugin):
+        QWizard.__init__(self)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
@@ -216,7 +216,7 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
 
         # Activate snapping
         self.qgis_utils.active_snapping_all_layers(tolerance=9)
-        self.open_form()
+        self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
 
         self.qgis_utils.message_emitted.emit(
             QCoreApplication.translate(self.WIZARD_NAME,
@@ -242,17 +242,15 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
         self.iface.mapCanvas().refresh()
         self.close_wizard(message)
 
-    def open_form(self):
-        layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
+    def open_form(self, layer):
         if not layer.isEditable():
             layer.startEditing()
 
         self.qgis_utils.suppress_form(layer, True)
         self.iface.actionAddFeature().trigger()
 
-    def exec_form(self):
+    def exec_form(self, layer):
         self.toolbar.set_enable_finalize_geometry_creation_action(False)
-        layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
 
         for id, added_feature in layer.editBuffer().addedFeatures().items():
             feature = added_feature
@@ -302,7 +300,7 @@ class CreatePhysicalZoneValuationWizard(QWizard, WIZARD_UI):
             if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 1:
                 feature = [value for index, value in self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures().items()][0]
                 if feature.geometry().isGeosValid():
-                    self.exec_form()
+                    self.exec_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
                 else:
                     message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry is invalid. Do you want to return to the editing session?")
             else:

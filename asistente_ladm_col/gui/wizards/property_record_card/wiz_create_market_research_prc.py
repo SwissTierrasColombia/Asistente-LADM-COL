@@ -35,9 +35,10 @@ WIZARD_UI = get_ui_class('wizards/property_record_card/wiz_create_market_researc
 class CreateMarketResearchPRCWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "CreateMarketResearchWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create market research")
+    EDITING_LAYER_NAME = ""
 
-    def __init__(self, iface, db, qgis_utils, parent=None):
-        QWizard.__init__(self, parent)
+    def __init__(self, iface, db, qgis_utils):
+        QWizard.__init__(self)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
@@ -45,6 +46,7 @@ class CreateMarketResearchPRCWizard(QWizard, WIZARD_UI):
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
 
+        self.EDITING_LAYER_NAME = MARKET_RESEARCH_TABLE
         self._layers = {
             MARKET_RESEARCH_TABLE: {'name': MARKET_RESEARCH_TABLE, 'geometry': None, LAYER: None}
         }
@@ -61,13 +63,13 @@ class CreateMarketResearchPRCWizard(QWizard, WIZARD_UI):
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(MARKET_RESEARCH_TABLE))
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(MARKET_RESEARCH_TABLE, False))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, False))
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
 
@@ -89,20 +91,20 @@ class CreateMarketResearchPRCWizard(QWizard, WIZARD_UI):
                 field_mapping = self.cbo_mapping.currentText()
                 res_etl_model = self.qgis_utils.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
-                                                               MARKET_RESEARCH_TABLE,
+                                                               self.EDITING_LAYER_NAME,
                                                                field_mapping=field_mapping)
 
                 if res_etl_model:
                     if field_mapping:
                         self.qgis_utils.delete_old_field_mapping(field_mapping)
 
-                    self.qgis_utils.save_field_mapping(MARKET_RESEARCH_TABLE)
+                    self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
 
             else:
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate(self.WIZARD_NAME,
                                                "Select a source layer to set the field mapping to '{}'.").format(
-                        MARKET_RESEARCH_TABLE),
+                        self.EDITING_LAYER_NAME),
                     Qgis.Warning)
 
         elif self.rad_create_manually.isChecked():
@@ -156,30 +158,30 @@ class CreateMarketResearchPRCWizard(QWizard, WIZARD_UI):
     def disconnect_signals(self):
         # QGIS APP
         try:
-            self._layers[MARKET_RESEARCH_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[MARKET_RESEARCH_TABLE][LAYER])
-        self._layers[MARKET_RESEARCH_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
-        self.open_form(self._layers[MARKET_RESEARCH_TABLE][LAYER])
+        self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
+        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
 
     def finish_feature_creation(self, layerId, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()
 
-        if not self._layers[MARKET_RESEARCH_TABLE][LAYER].getFeature(fid).isValid():
+        if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
             message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a boundary. ").format(self.WIZARD_TOOL_NAME, MARKET_RESEARCH_TABLE)
-            self.log.logMessage("Feature not found in layer {} ...".format(MARKET_RESEARCH_TABLE), PLUGIN_NAME, Qgis.Warning)
+                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a boundary. ").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME)
+            self.log.logMessage("Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
         else:
-            feature_tid = self._layers[MARKET_RESEARCH_TABLE][LAYER].getFeature(fid)[ID_FIELD]
+            feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
             message = QCoreApplication.translate(self.WIZARD_NAME,
                                                  "The new market research (t_id={}) was successfully created ").format(feature_tid)
 
-        self._layers[MARKET_RESEARCH_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Market research's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 

@@ -54,8 +54,8 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "CreatePointsCadastreWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create Point")
 
-    def __init__(self, iface, db, qgis_utils, parent=None):
-        QWizard.__init__(self, parent)
+    def __init__(self, iface, db, qgis_utils):
+        QWizard.__init__(self)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()

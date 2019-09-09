@@ -51,8 +51,8 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create Right of way")
     EDITING_LAYER_NAME = ""
 
-    def __init__(self, plugin, iface, db, qgis_utils, toolbar, parent=None):
-        QWizard.__init__(self, parent)
+    def __init__(self, iface, db, qgis_utils, toolbar, plugin):
+        QWizard.__init__(self)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
@@ -272,7 +272,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         if layer:
             self.iface.layerTreeView().setCurrentLayer(layer)
             self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
-            self.open_form()
+            self.open_form(layer)
 
             self.qgis_utils.message_emitted.emit(
                 QCoreApplication.translate(self.WIZARD_NAME,
@@ -299,29 +299,21 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
         self.log.logMessage("Right of way's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 
-    def open_form(self):
-        if self.type_geometry_creation == "digitizing_polygon":
-            layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
-        elif self.type_geometry_creation == "digitizing_line":
-            layer = self.temporal_layer
-
+    def open_form(self, layer):
         if not layer.isEditable():
             layer.startEditing()
 
         self.qgis_utils.suppress_form(layer, True)
         self.iface.actionAddFeature().trigger()
 
-    def exec_form(self):
+    def exec_form(self, layer):
         self.toolbar.set_enable_finalize_geometry_creation_action(False)
 
         if self.type_geometry_creation == "digitizing_polygon":
-            layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
             for id, added_feature in layer.editBuffer().addedFeatures().items():
                 feature = added_feature
                 break
         elif self.type_geometry_creation == "digitizing_line":
-            layer = self.temporal_layer
-
             # Get temporal right of way geometry
             feature = self.get_feature_with_buffer_right_of_way(layer)
             layer.commitChanges()
@@ -416,7 +408,7 @@ class CreateRightOfWayCadastreWizard(QWizard, WIZARD_UI):
             if len(layer.editBuffer().addedFeatures()) == 1:
                 feature = [value for index, value in layer.editBuffer().addedFeatures().items()][0]
                 if feature.geometry().isGeosValid():
-                    self.exec_form()
+                    self.exec_form(layer)
                 else:
                     message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry is invalid. Do you want to return to the editing session?")
             else:

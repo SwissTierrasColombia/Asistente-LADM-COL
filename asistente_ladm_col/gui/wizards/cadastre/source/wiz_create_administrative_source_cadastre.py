@@ -37,9 +37,10 @@ WIZARD_UI = get_ui_class('wizards/cadastre/source/wiz_create_administrative_sour
 class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "CreateAdministrativeSourceCadastreWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create Administrative Source")
+    EDITING_LAYER_NAME = ""
 
-    def __init__(self, iface, db, qgis_utils, parent=None):
-        QWizard.__init__(self, parent)
+    def __init__(self, iface, db, qgis_utils):
+        QWizard.__init__(self)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
@@ -47,6 +48,7 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
 
+        self.EDITING_LAYER_NAME = ADMINISTRATIVE_SOURCE_TABLE
         self._layers = {
             ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None, LAYER: None},
             EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None, LAYER: None}
@@ -64,7 +66,7 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(ADMINISTRATIVE_SOURCE_TABLE))
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -72,7 +74,7 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(ADMINISTRATIVE_SOURCE_TABLE, False))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, False))
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
@@ -91,7 +93,7 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
                 field_mapping = self.cbo_mapping.currentText()
                 res_etl_model = self.qgis_utils.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
-                                                               ADMINISTRATIVE_SOURCE_TABLE,
+                                                               self.EDITING_LAYER_NAME,
                                                                field_mapping=field_mapping)
 
                 if res_etl_model: # Features were added?
@@ -100,12 +102,12 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
                     if field_mapping:
                         self.qgis_utils.delete_old_field_mapping(field_mapping)
 
-                    self.qgis_utils.save_field_mapping(ADMINISTRATIVE_SOURCE_TABLE)
+                    self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
             else:
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate(self.WIZARD_NAME,
                                                "Select a source layer to set the field mapping to '{}'.").format(
-                        ADMINISTRATIVE_SOURCE_TABLE),
+                        self.EDITING_LAYER_NAME),
                     Qgis.Warning)
 
         elif self.rad_create_manually.isChecked():
@@ -164,30 +166,30 @@ class CreateAdministrativeSourceCadastreWizard(QWizard, WIZARD_UI):
     def disconnect_signals(self):
         # QGIS APP
         try:
-            self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER])
-        self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
-        self.open_form(self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER])
+        self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
+        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
 
     def finish_feature_creation(self, layerId, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()
 
-        if not self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].getFeature(fid).isValid():
+        if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
             message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a administrative source. ").format(self.WIZARD_TOOL_NAME, ADMINISTRATIVE_SOURCE_TABLE)
-            self.log.logMessage("Feature not found in layer {} ...".format(ADMINISTRATIVE_SOURCE_TABLE), PLUGIN_NAME, Qgis.Warning)
+                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a administrative source. ").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME)
+            self.log.logMessage("Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
         else:
-            feature_tid = self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].getFeature(fid)[ID_FIELD]
+            feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
             message = QCoreApplication.translate(self.WIZARD_NAME,
                                                  "The new administrative source (t_id={}) was successfully created ").format(feature_tid)
 
-        self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Administrative Source's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 

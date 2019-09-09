@@ -36,9 +36,10 @@ WIZARD_UI = get_ui_class('wizards/valuation/wiz_create_horizontal_property_valua
 class CreateHorizontalPropertyValuationWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "CreateHorizontalPropertyValuationWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create horizontal property valuation")
+    EDITING_LAYER_NAME = ""
 
-    def __init__(self, iface, db, qgis_utils, parent=None):
-        QWizard.__init__(self, parent)
+    def __init__(self, iface, db, qgis_utils):
+        QWizard.__init__(self)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
@@ -46,6 +47,7 @@ class CreateHorizontalPropertyValuationWizard(QWizard, WIZARD_UI):
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
 
+        self.EDITING_LAYER_NAME = VALUATION_HORIZONTAL_PROPERTY_TABLE
         self._layers = {
             VALUATION_HORIZONTAL_PROPERTY_TABLE: {'name': VALUATION_HORIZONTAL_PROPERTY_TABLE, 'geometry': None, LAYER: None}
         }
@@ -63,7 +65,7 @@ class CreateHorizontalPropertyValuationWizard(QWizard, WIZARD_UI):
 
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(VALUATION_HORIZONTAL_PROPERTY_TABLE))
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -71,7 +73,7 @@ class CreateHorizontalPropertyValuationWizard(QWizard, WIZARD_UI):
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(VALUATION_HORIZONTAL_PROPERTY_TABLE, False))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, False))
 
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -91,14 +93,14 @@ class CreateHorizontalPropertyValuationWizard(QWizard, WIZARD_UI):
                 field_mapping = self.cbo_mapping.currentText()
                 res_etl_model = self.qgis_utils.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
-                                                               VALUATION_HORIZONTAL_PROPERTY_TABLE,
+                                                               self.EDITING_LAYER_NAME,
                                                                field_mapping=field_mapping)
 
                 if res_etl_model:
                     if field_mapping:
                         self.qgis_utils.delete_old_field_mapping(field_mapping)
 
-                    self.qgis_utils.save_field_mapping(VALUATION_HORIZONTAL_PROPERTY_TABLE)
+                    self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
             else:
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate(self.WIZARD_NAME,
@@ -162,30 +164,30 @@ class CreateHorizontalPropertyValuationWizard(QWizard, WIZARD_UI):
     def disconnect_signals(self):
         # QGIS APP
         try:
-            self._layers[VALUATION_HORIZONTAL_PROPERTY_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[VALUATION_HORIZONTAL_PROPERTY_TABLE][LAYER])
-        self._layers[VALUATION_HORIZONTAL_PROPERTY_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
-        self.open_form(self._layers[VALUATION_HORIZONTAL_PROPERTY_TABLE][LAYER])
+        self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
+        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
 
     def finish_feature_creation(self, layerId, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()
 
-        if not self._layers[VALUATION_HORIZONTAL_PROPERTY_TABLE][LAYER].getFeature(fid).isValid():
+        if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
             message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a boundary. ").format(self.WIZARD_TOOL_NAME, VALUATION_HORIZONTAL_PROPERTY_TABLE)
-            self.log.logMessage("Feature not found in layer {} ...".format(VALUATION_HORIZONTAL_PROPERTY_TABLE), PLUGIN_NAME, Qgis.Warning)
+                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a boundary. ").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME)
+            self.log.logMessage("Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
         else:
-            feature_tid = self._layers[VALUATION_HORIZONTAL_PROPERTY_TABLE][LAYER].getFeature(fid)[ID_FIELD]
+            feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
             message = QCoreApplication.translate(self.WIZARD_NAME,
                                                  "The new horizontal property (t_id={}) was successfully created ").format(feature_tid)
 
-        self._layers[VALUATION_HORIZONTAL_PROPERTY_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Horizontal property's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 

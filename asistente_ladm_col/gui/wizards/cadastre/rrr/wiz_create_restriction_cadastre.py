@@ -46,9 +46,10 @@ WIZARD_UI = get_ui_class('wizards/cadastre/rrr/wiz_create_restriction_cadastre.u
 class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
     WIZARD_NAME = "CreateRestrictionCadastreWizard"
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create Restriction")
+    EDITING_LAYER_NAME = ""
 
-    def __init__(self, iface, db, qgis_utils, parent=None):
-        QWizard.__init__(self, parent)
+    def __init__(self, iface, db, qgis_utils):
+        QWizard.__init__(self)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
@@ -56,6 +57,7 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
 
+        self.EDITING_LAYER_NAME = RESTRICTION_TABLE
         self._layers = {
             RESTRICTION_TABLE: {'name': RESTRICTION_TABLE, 'geometry': None, LAYER: None},
             ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None, LAYER: None},
@@ -75,7 +77,7 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(RESTRICTION_TABLE))
+        self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -85,7 +87,7 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(RESTRICTION_TABLE, False))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, False))
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -97,12 +99,12 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
             self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_1_OPTION_FORM)
 
-        self.wizardPage2.setButtonText(QWizard.FinishButton,finish_button_text)
+        self.wizardPage2.setButtonText(QWizard.FinishButton, finish_button_text)
 
     def adjust_page_2_controls(self):
         self.button(self.FinishButton).setDisabled(True)
-        self.disconnect_signals()
         self.txt_help_page_2.setHtml(self.help_strings.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_2)
+        self.disconnect_signals()
 
         # Load layers
         result = self.prepare_feature_creation_layers()
@@ -137,19 +139,19 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
                 field_mapping = self.cbo_mapping.currentText()
                 res_etl_model = self.qgis_utils.show_etl_model(self._db,
                                                                self.mMapLayerComboBox.currentLayer(),
-                                                               RESTRICTION_TABLE,
+                                                               self.EDITING_LAYER_NAME,
                                                                field_mapping=field_mapping)
 
                 if res_etl_model:
                     if field_mapping:
                         self.qgis_utils.delete_old_field_mapping(field_mapping)
 
-                    self.qgis_utils.save_field_mapping(RESTRICTION_TABLE)
+                    self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
             else:
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate(self.WIZARD_NAME,
                                                "Select a source layer to set the field mapping to '{}'.").format(
-                        RESTRICTION_TABLE),
+                        self.EDITING_LAYER_NAME),
                     Qgis.Warning)
 
         elif self.rad_create_manually.isChecked():
@@ -217,16 +219,16 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
 
         # QGIS APP
         try:
-            self._layers[RESTRICTION_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[RESTRICTION_TABLE][LAYER])
-        self._layers[RESTRICTION_TABLE][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+        self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
+        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
 
         if self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatureCount() >= 1:
-            self.open_form(self._layers[RESTRICTION_TABLE][LAYER])
+            self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
         else:
             message = QCoreApplication.translate(self.WIZARD_NAME, "Please select an Administrative source")
             self.close_wizard(message)
@@ -243,10 +245,10 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
             fid = features[0].id()
             administrative_source_ids = [f['t_id'] for f in self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatures()]
 
-            if not self._layers[RESTRICTION_TABLE][LAYER].getFeature(fid).isValid():
+            if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
                 self.log.logMessage("Feature not found in layer Restriction...", PLUGIN_NAME, Qgis.Warning)
             else:
-                restriction_id = self._layers[RESTRICTION_TABLE][LAYER].getFeature(fid)[ID_FIELD]
+                restriction_id = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
 
                 # Fill rrrfuente table
                 new_features = []
@@ -261,7 +263,7 @@ class CreateRestrictionCadastreWizard(QWizard, WIZARD_UI):
                 message = QCoreApplication.translate(self.WIZARD_NAME,
                                                      "The new restriction (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!").format(restriction_id, ", ".join([str(b) for b in administrative_source_ids]))
 
-        self._layers[RESTRICTION_TABLE][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("Restriction's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 

@@ -1144,35 +1144,35 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_point_cad(self):
-        self.wiz = CreatePointsCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreatePointsCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_boundaries_cad(self):
-        self.wiz = CreateBoundariesCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar)
+        self.wiz = CreateBoundariesCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_plot_cad(self):
-        self.wiz = CreatePlotCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreatePlotCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_cad(self):
-        self.wiz = CreateBuildingCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar)
+        self.wiz = CreateBuildingCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_unit_cad(self):
-        self.wiz = CreateBuildingUnitCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar)
+        self.wiz = CreateBuildingUnitCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
@@ -1180,28 +1180,28 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_activate_processing_plugin
     def show_wiz_right_of_way_cad(self):
-        self.wiz = CreateRightOfWayCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar)
+        self.wiz = CreateRightOfWayCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_extaddress_cad(self):
-        self.wiz = AssociateExtAddressWizard(self, self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar)
+        self.wiz = AssociateExtAddressWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_parcel_cad(self):
-        self.wiz = CreateParcelCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_col_party_cad(self):
-        self.wiz = CreateColPartyCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateColPartyCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
@@ -1218,7 +1218,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                                    Qgis.Info)
             return
 
-        dlg = CreateGroupPartyCadastre(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        dlg = CreateGroupPartyCadastre(self.iface, self.get_db_connection(), self.qgis_utils)
 
         # Check if required layers are available
         if dlg.required_layers_are_available():
@@ -1232,35 +1232,35 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_right_rrr_cad(self):
-        self.wiz = CreateRightCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateRightCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_responsibility_rrr_cad(self):
-        self.wiz = CreateResponsibilityCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateResponsibilityCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_restriction_rrr_cad(self):
-        self.wiz = CreateRestrictionCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateRestrictionCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_administrative_source_cad(self):
-        self.wiz = CreateAdministrativeSourceCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateAdministrativeSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_spatial_source_cad(self):
-        self.wiz = CreateSpatialSourceCadastreWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateSpatialSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
@@ -1281,35 +1281,35 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_property_record_card(self):
-        self.wiz = CreatePropertyRecordCardPRCWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreatePropertyRecordCardPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_market_research_prc(self):
-        self.wiz = CreateMarketResearchPRCWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateMarketResearchPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_nuclear_family_prc(self):
-        self.wiz = CreateNuclearFamilyPRCWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateNuclearFamilyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_natural_party_prc(self):
-        self.wiz = CreateNaturalPartyPRCWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateNaturalPartyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_legal_party_prc(self):
-        self.wiz = CreateLegalPartyPRCWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateLegalPartyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
@@ -1323,49 +1323,49 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_horizontal_property_main_parcel_valuation(self):
-        self.wiz = CreateHorizontalPropertyValuationWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateHorizontalPropertyValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_common_equipment_valuation(self):
-        self.wiz = CreateCommonEquipmentValuationWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateCommonEquipmentValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_valuation(self):
-        self.wiz = CreateBuildingValuationWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateBuildingValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_unit_valuation(self):
-        self.wiz = CreateBuildingUnitValuationWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateBuildingUnitValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils, self)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_building_unit_qualification_valuation(self):
-        self.wiz = CreateBuildingUnitQualificationValuationWizard(self, self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz = CreateBuildingUnitQualificationValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_geoeconomic_zone_valuation(self):
-        self.wiz = CreateGeoeconomicZoneValuationWizard(self, self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar)
+        self.wiz = CreateGeoeconomicZoneValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_physical_zone_valuation_action(self):
-        self.wiz = CreatePhysicalZoneValuationWizard(self, self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar)
+        self.wiz = CreatePhysicalZoneValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
         self.exec_wizard(self.wiz)
 
     @_validate_if_wizard_is_open
@@ -1440,4 +1440,5 @@ class AsistenteLADMCOLPlugin(QObject):
         if wiz.required_layers_are_available():
             wiz.exec_()
         else:
+            self.is_wizard_open = False
             del wiz
