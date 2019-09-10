@@ -219,12 +219,20 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
         root = QgsProject.instance().layerTreeRoot()
         gdb_group = root.addGroup("GDB")
         self.gdb_layer_list = []
+        validating_layers = ['R_TERRENO','U_TERRENO','R_SECTOR','U_SECTOR','R_VEREDA','U_MANZANA','U_BARRIO','R_CONSTRUCCION','U_CONSTRUCCION','U_UNIDAD','R_UNIDAD','U_NOMENCLATURA_DOMICILIARIA','R_NOMENCLATURA_DOMICILIARIA']
 
         for data in sublayers:
+            if data.split('!!::!!')[1] in validating_layers:
+                validating_layers.remove(data.split('!!::!!')[1])
+
             vlayer = QgsVectorLayer(gdb_path + '|layername=' + data.split('!!::!!')[1], data.split('!!::!!')[1], 'ogr')
             self.gdb_layer_list.append(vlayer)
             QgsProject.instance().addMapLayer(vlayer, False)
             gdb_group.addLayer(vlayer)
+
+        if validating_layers != []:
+            self.show_message(QCoreApplication.translate("InputLoadFieldDataCaptureDialog", "The GDB doesn't have all the layers that ETL function needs"), Qgis.Warning)
+            return False
 
         layer_modifiers = {
                 PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
@@ -607,15 +615,15 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
 
         if is_loaded:
             features_count_before = self.ladm_tables_feature_count_before()
-            self.mapping_fields_r1()
-            self.mapping_fields_gbb()
-            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
-            self.show_log_data(features_count_before)
+            #self.mapping_fields_r1()
+            #self.mapping_fields_gbb()
+            #self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+            #self.show_log_data(features_count_before)
 
             # When finish the etl process, we need remove all joins in the layers, so we delete all joins in r1, gdb and LADM_COL layers 
-            self.clean_layer_joins(self.gdb_layer_list)
-            self.clean_layer_joins([self.layer_r1])
-            self.clean_layer_joins(self._layers)
+            #self.clean_layer_joins(self.gdb_layer_list)
+            #self.clean_layer_joins([self.layer_r1])
+            #self.clean_layer_joins(self._layers)
         else:
             self.set_gui_enabled(True)
 
