@@ -203,9 +203,23 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
     def load_data_for_etl(self):
         self.progress.setVisible(True)
         self.progress.setValue(1)
+        validating_layers = ['R_TERRENO','U_TERRENO','R_SECTOR','U_SECTOR','R_VEREDA','U_MANZANA','U_BARRIO','R_CONSTRUCCION','U_CONSTRUCCION','U_UNIDAD','R_UNIDAD','U_NOMENCLATURA_DOMICILIARIA','R_NOMENCLATURA_DOMICILIARIA']
+        validating_fields = ['Departamento', 'Municipio', 'NoPredial', 'NoPredialAnterior', 'Avaluo ($)', 'Nombre', 'NoDocumento', 'TipoDocumento']
+        
         self.txt_log.setText(QCoreApplication.translate("InputLoadFieldDataCaptureDialog", "Loading R1 tables..."))
         self.layer_r1 = QgsVectorLayer(self.txt_file_path_r1.text(), 'R1_IGAC', 'ogr')
         QgsProject.instance().addMapLayer(self.layer_r1)
+
+        for field in self.layer_r1.fields():
+            if field.displayName() in validating_fields:
+                validating_fields.remove(field.displayName())
+
+        if validating_fields != []: 
+            separator = ', '
+            file = os.path.split(self.txt_file_path_r1.text())[1]
+            validating_field_names = ['"{}"'.format(validating_field) for validating_field in validating_fields]
+            self.show_message(QCoreApplication.translate("InputLoadFieldDataCaptureDialog", "Error: The file {} does not contain the following required fields: {}.".format(file, separator.join(validating_field_names))), Qgis.Warning)
+            return False
 
         self.txt_log.setText(QCoreApplication.translate("InputLoadFieldDataCaptureDialog", "Loading GDB tables..."))
         gdb_path = self.txt_file_path_gdb.text()
@@ -219,7 +233,6 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
         root = QgsProject.instance().layerTreeRoot()
         gdb_group = root.addGroup("GDB")
         self.gdb_layer_list = []
-        validating_layers = ['R_TERRENO','U_TERRENO','R_SECTOR','U_SECTOR','R_VEREDA','U_MANZANA','U_BARRIO','R_CONSTRUCCION','U_CONSTRUCCION','U_UNIDAD','R_UNIDAD','U_NOMENCLATURA_DOMICILIARIA','R_NOMENCLATURA_DOMICILIARIA']
 
         for data in sublayers:
             if data.split('!!::!!')[1] in validating_layers:
@@ -231,7 +244,10 @@ class InputLoadFieldDataCaptureDialog(QDialog, WIZARD_UI):
             gdb_group.addLayer(vlayer)
 
         if validating_layers != []:
-            self.show_message(QCoreApplication.translate("InputLoadFieldDataCaptureDialog", "The GDB doesn't have all the layers that ETL function needs"), Qgis.Warning)
+            separator = ', '
+            file = os.path.split(self.txt_file_path_gdb.text())[1]
+            validating_layers_names = ['"{}"'.format(validating_layer) for validating_layer in validating_layers]
+            self.show_message(QCoreApplication.translate("InputLoadFieldDataCaptureDialog", "Error: The file {} does not contain the following required layers: {}.".format(file, separator.join(validating_layers_names))), Qgis.Warning)
             return False
 
         layer_modifiers = {
