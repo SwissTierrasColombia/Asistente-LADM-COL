@@ -17,7 +17,8 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              QSettings)
+                              QSettings,
+                              pyqtSignal)
 from qgis.PyQt.QtWidgets import (QWizard,
                                  QPushButton,
                                  QMessageBox)
@@ -43,18 +44,17 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
     WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create boundary")
     EDITING_LAYER_NAME = ""
 
-    def __init__(self, iface, db, qgis_utils, toolbar, plugin):
+    set_wizard_is_open_emitted = pyqtSignal(bool)
+    set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
+
+    def __init__(self, iface, db, qgis_utils):
         QWizard.__init__(self)
         self.setupUi(self)
         self.iface = iface
         self.log = QgsApplication.messageLog()
         self._db = db
         self.qgis_utils = qgis_utils
-        self.toolbar = toolbar
         self.help_strings = HelpStrings()
-
-        self.plugin = plugin
-        self.plugin.is_wizard_open = True
 
         self.EDITING_LAYER_NAME = BOUNDARY_TABLE
         self._layers = {
@@ -75,8 +75,6 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         self.cbo_mapping.clear()
         self.cbo_mapping.addItem("")
         self.cbo_mapping.addItems(self.qgis_utils.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
-
-        self.toolbar.wiz_geometry_created_requested.connect(self.wiz_geometry_created)
 
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
@@ -135,7 +133,7 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
                     Qgis.Warning)
 
         elif self.rad_digitizing.isChecked():
-            self.toolbar.set_enable_finalize_geometry_creation_action(True)
+            self.set_finalize_geometry_creation_enabled_emitted.emit(True)
             self.prepare_feature_creation()
 
     def prepare_feature_creation(self):
@@ -204,9 +202,9 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         if show_message:
             self.qgis_utils.message_emitted.emit(message, Qgis.Info)
 
-        self.toolbar.set_enable_finalize_geometry_creation_action(False)
+        self.set_finalize_geometry_creation_enabled_emitted.emit(False)
         self.disconnect_signals()
-        self.plugin.is_wizard_open = False
+        self.set_wizard_is_open_emitted.emit(False)
         self.close()
 
     def edit_feature(self):
@@ -251,7 +249,7 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         self.iface.actionAddFeature().trigger()
 
     def exec_form(self, layer):
-        self.toolbar.set_enable_finalize_geometry_creation_action(False)
+        self.set_finalize_geometry_creation_enabled_emitted.emit(False)
 
         for id, added_feature in layer.editBuffer().addedFeatures().items():
             feature = added_feature
@@ -295,7 +293,7 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
     def show_help(self):
         self.qgis_utils.show_help("create_boundaries")
 
-    def wiz_geometry_created(self):
+    def save_created_geometry(self):
         message = None
         if self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer():
             if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 1:
@@ -303,12 +301,12 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
                 if feature.geometry().isGeosValid():
                     self.exec_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
                 else:
-                    message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry is invalid. Do you want to return to the editing session?")
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "The geometry is invalid. Do you want to return to the edit session?")
             else:
                 if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 0:
-                    message = QCoreApplication.translate(self.WIZARD_NAME, "Geometry was not created. Do you want to return to the editing session?")
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "No geometry has been created. Do you want to return to the edit session?")
                 else:
-                    message = QCoreApplication.translate(self.WIZARD_NAME, "Many geometries were created but one was expected. Do you want to return to the editing session?")
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "Several geometries were created but only one was expected. Do you want to return to the edit session?")
 
         if message:
             self.show_message_associate_geometry_creation(message)
@@ -319,7 +317,7 @@ class CreateBoundariesCadastreWizard(QWizard, WIZARD_UI):
         msg.setText(message)
         msg.setWindowTitle(QCoreApplication.translate(self.WIZARD_NAME, "Continue editing?"))
         msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "Yes")), QMessageBox.YesRole)
-        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "Close wizard")), QMessageBox.NoRole)
+        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "No, close the wizard")), QMessageBox.NoRole)
         reply = msg.exec_()
 
         if reply == 1: # 1 close wizard, 0 yes

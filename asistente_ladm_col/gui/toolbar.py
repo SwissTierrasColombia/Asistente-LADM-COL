@@ -20,16 +20,15 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import (QDialog,
-                                 QToolBar,
-                                 QMessageBox)
+                                 QMessageBox,
+                                 QAction)
 from qgis.core import (Qgis,
                        QgsProject,
                        QgsVectorLayerUtils,
                        QgsWkbTypes)
 
 from ..config.general_config import (LAYER,
-                                     TOOLBAR_FINALIZE_GEOMETRY_CREATION,
-                                     TOOLBAR_ID)
+                                     ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME)
 from ..config.table_mapping_config import (POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
@@ -57,7 +56,7 @@ class ToolBar(QObject):
         self.geometry = GeometryUtils()
 
     def build_boundary(self, db):
-        self.turn_transaction_off()
+        QgsProject.instance().setAutoTransaction(False)
         layer = self.qgis_utils.get_layer_from_layer_tree(db, BOUNDARY_TABLE)
         use_selection = True
 
@@ -348,19 +347,8 @@ class ToolBar(QObject):
                     MORE_BOUNDARY_FACE_STRING_TABLE),
                 Qgis.Info)
 
-    @staticmethod
-    def turn_transaction_off():
-        QgsProject.instance().setAutoTransaction(False)
-
     def set_enable_finalize_geometry_creation_action(self, enable):
-        finalize_geometry_creation_action = self.get_toolbar_finalize_geometry_creation_action()
-        if finalize_geometry_creation_action:
-            finalize_geometry_creation_action.setEnabled(enable)
-
-    def get_toolbar_finalize_geometry_creation_action(self):
-        for toolbar in self.iface.mainWindow().findChildren(QToolBar, TOOLBAR_ID):
-            for action in toolbar.actions():
-                if not action.isSeparator():
-                    if action.text() == TOOLBAR_FINALIZE_GEOMETRY_CREATION:
-                        return action
-        return None
+        # TODO: Remove when wizards are refactored
+        action_list = self.iface.mainWindow().findChildren(QAction, ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME)
+        if action_list:
+            action_list[0].setEnabled(enable)  # finalize_geometry_creation_action

@@ -26,7 +26,8 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               QCoreApplication,
-                              QSettings)
+                              QSettings,
+                              pyqtSignal)
 from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import (QAction,
                                  QMenu,
@@ -59,6 +60,7 @@ from .config.general_config import (ANNEX_17_REPORT,
                                     TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS,
                                     TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
                                     TOOLBAR_FINALIZE_GEOMETRY_CREATION,
+                                    ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME,
                                     VALUATION_MENU_OBJECTNAME,
                                     NATIONAL_LAND_AGENCY)
 from .utils.decorators import (_db_connection_required,
@@ -121,6 +123,9 @@ from .lib.db.enum_db_action_type import EnumDbActionType
 
 
 class AsistenteLADMCOLPlugin(QObject):
+
+    wiz_geometry_creation_finished = pyqtSignal()
+
     def __init__(self, iface):
         QObject.__init__(self)
         self.iface = iface
@@ -134,7 +139,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.conn_manager = ConnectionManager()
         self._db = self.get_db_connection()
         self.wiz = None
-        self.is_wizard_open = False # prevents opening multiple wizards or execute others actions
+        self.is_wizard_open = False  # Helps to make the plugin modules aware of open wizards
 
     def initGui(self):
         # Set Menus
@@ -219,7 +224,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self._finalize_geometry_creation_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/mActionFinalizeGeometryCreation.svg"),
                                                           TOOLBAR_FINALIZE_GEOMETRY_CREATION,
                                                           self.iface.mainWindow())
-        self._finalize_geometry_creation_action.triggered.connect(self.finalize_geometry_creation)
+        self._finalize_geometry_creation_action.setObjectName(ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME)
+        self._finalize_geometry_creation_action.triggered.connect(self.wiz_geometry_creation_finished)  # SIGNAL chaining
+
         self._finalize_geometry_creation_action.setEnabled(False)
 
         self._build_boundary_action = QAction(TOOLBAR_BUILD_BOUNDARY, self.iface.mainWindow())
@@ -267,9 +274,6 @@ class AsistenteLADMCOLPlugin(QObject):
         else:  # Show by default all model creation tools
             self.add_property_record_card_menu()
             self.add_valuation_menu()
-
-    def finalize_geometry_creation(self):
-        self.toolbar.wiz_geometry_created_requested.emit()
 
     def add_data_management_menu(self):
         self._data_management_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data Management"), self._menu)
@@ -1152,8 +1156,27 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_boundaries_cad(self):
-        self.wiz = CreateBoundariesCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
+        self.wiz = CreateBoundariesCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
+        self.wiz.set_wizard_is_open_emitted.connect(self.set_wizard_is_open_flag)
+        self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
+        self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
         self.exec_wizard(self.wiz)
+
+    def set_wizard_is_open_flag(self, open):
+        """
+        Slot for wizards to notify when they are open or closed
+
+        :param open: boolean
+        """
+        self.is_wizard_open = open
+
+    def set_enable_finalize_geometry_creation_action(self, enable):
+        """
+        Slot for wizards to notify when the finalize_geometry_creation action should be enabled/disabled
+
+        :param enable: boolean
+        """
+        self._finalize_geometry_creation_action.setEnabled(enable)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1440,6 +1463,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def exec_wizard(self, wiz):
         # Check if required layers are available
         if wiz.required_layers_are_available():
+            self.is_wizard_open = True
             wiz.exec_()
         else:
             self.is_wizard_open = False

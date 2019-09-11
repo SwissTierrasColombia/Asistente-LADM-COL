@@ -350,12 +350,12 @@ class CreatePlotCadastreWizard(QWizard, WIZARD_UI):
             self._layers[self.EDITING_LAYER_NAME][LAYER].addFeatures(features)
             self.iface.mapCanvas().refresh()
 
-            message = QCoreApplication.translate("QGISUtils", "{} new plot(s) has(have) been created! To finish the creation of the plots, open the attributes table and fill in the obligatory fields.").format(len(features))
-            button_text = QCoreApplication.translate("QGISUtils", "Open table of attributes.")
+            message = QCoreApplication.translate("QGISUtils", "{} new plot(s) has(have) been created! To finish the creation of the plots, open its attribute table and fill in the mandatory fields.").format(len(features))
+            button_text = QCoreApplication.translate("QGISUtils", "Open table of attributes")
             level = Qgis.Info
             layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
             filter = '"{}" is Null and "{}" is Null'.format(PLOT_REGISTRY_AREA_FIELD, PLOT_CALCULATED_AREA_FIELD)
-            self.qgis_utils.message_with_open_table_attributes_button_emitted.emit(message, button_text, level, layer,filter)
+            self.qgis_utils.message_with_open_table_attributes_button_emitted.emit(message, button_text, level, layer, filter)
             self.close_wizard(show_message=False)
         else:
             message = QCoreApplication.translate("QGISUtils", "No plot could be created. Make sure selected boundaries are closed!")

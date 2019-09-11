@@ -25,14 +25,15 @@ STYLE_GROUP_LAYER_MODIFIERS = 'style_group'
 VISIBLE_LAYER_MODIFIERS = 'visible'
 
 TOOLBAR_NAME = QCoreApplication.translate("TranslatableConfigStrings", "LADM COL Toolbar")
-TOOLBAR_ID = "ladmcoltools"
-TOOLBAR_BUILD_BOUNDARY = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Build boundaries...")
-TOOLBAR_MOVE_NODES = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Move nodes...")
-TOOLBAR_FILL_POINT_BFS = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Point BFS")
-TOOLBAR_FILL_MORE_BFS_LESS = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill More BFS and Less")
-TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Fill Right of Way Relations")
-TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import from intermediate structure")
-TOOLBAR_FINALIZE_GEOMETRY_CREATION = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Finalize geometry creation")
+TOOLBAR_ID = "ladm_col_tools"
+TOOLBAR_BUILD_BOUNDARY = QCoreApplication.translate("TranslatableConfigStrings", "Build boundaries...")
+TOOLBAR_MOVE_NODES = QCoreApplication.translate("TranslatableConfigStrings", "Move nodes...")
+TOOLBAR_FILL_POINT_BFS = QCoreApplication.translate("TranslatableConfigStrings", "Fill Point BFS")
+TOOLBAR_FILL_MORE_BFS_LESS = QCoreApplication.translate("TranslatableConfigStrings", "Fill More BFS and Less")
+TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS = QCoreApplication.translate("TranslatableConfigStrings", "Fill Right of Way Relations")
+TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE = QCoreApplication.translate("TranslatableConfigStrings", "Import from intermediate structure")
+TOOLBAR_FINALIZE_GEOMETRY_CREATION = QCoreApplication.translate("TranslatableConfigStrings", "Finalize geometry creation")
+ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME = "finalize_geometry_creation"
 
 # Constants for reports
 NATIONAL_LAND_AGENCY = "ANT"
@@ -73,7 +74,7 @@ CREATE_BASKET_COL = False
 CREATE_IMPORT_TID = False
 STROKE_ARCS = True
 
-LAYER = 'layer'
+LAYER = 'layer'  # Used as key that holds a QgsVectorLayer in dictionaries
 
 # SETTINGS DIALOG TAB INDEXES
 SETTINGS_CONNECTION_TAB_INDEX = 0
