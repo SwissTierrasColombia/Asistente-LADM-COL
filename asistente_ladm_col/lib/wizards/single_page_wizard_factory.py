@@ -3,10 +3,18 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2018-03-06
+        begin                : 2019-09-10
         git sha              : :%H$
-        copyright            : (C) 2018 by Sergio Ramírez (Incige SAS)
-        email                : seralra96@gmail.com
+        copyright            : (C) 2017 by Germán Carrillo
+                               (C) 2018 by Sergio Ramírez (Incige SAS)
+                               (C) 2018 by Jorge Useche (Incige SAS)
+                               (C) 2018 by Jhon Galindo
+                               (C) 2019 by Leo Cardona
+        email                : gcarrillo@linuxmail.com
+                               sergio.ramirez@incige.com
+                               naturalmentejorge@gmail.com
+                               jhonsigpjc@gmail.com
+                               leo.cardona.p@gmail.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -15,42 +23,49 @@
  *   published by the Free Software Foundation.                            *
  *                                                                         *
  ***************************************************************************/
-"""
-from qgis.PyQt.QtCore import (QCoreApplication,
-                              QSettings)
+ """
+from qgis.PyQt.QtCore import (QSettings,
+                              QCoreApplication)
 from qgis.PyQt.QtWidgets import QWizard
 from qgis.core import (QgsApplication,
-                       Qgis,
-                       QgsMapLayerProxyModel)
+                       Qgis)
 
-from .....config.general_config import (PLUGIN_NAME,
-                                        LAYER)
-from .....config.help_strings import HelpStrings
-from .....config.table_mapping_config import (ID_FIELD,
-                                              COL_PARTY_TABLE)
-from .....utils import get_ui_class
+from ...config.general_config import (PLUGIN_NAME,
+                                      LAYER)
+from ...config.help_strings import HelpStrings
+from ...config.table_mapping_config import ID_FIELD
+from ...config.wizards_settings import (WIZARD_HELP_SETTING,
+                                        WIZARD_NAME_SETTING,
+                                        WIZARD_FEATURE_NAME_SETTING,
+                                        WIZARD_EDITING_LAYER_NAME_SETTING,
+                                        WIZARD_UI_SETTING,
+                                        WIZARD_MAP_LAYER_PROXY_MODEL,
+                                        WIZARD_LAYERS_SETTING,
+                                        WIZARD_QSETTINGS_SETTING,
+                                        WIZARD_HELP_PAGES_SETTING,
+                                        WIZARD_HELP_PAGE1,
+                                        WIZARD_QSETTINGS_LOAD_DATA_TYPE)
+from ...utils.ui import load_ui
 
-WIZARD_UI = get_ui_class('wizards/cadastre/party/wiz_create_col_party_cadastre.ui')
 
+class SinglePageWizardFactory(QWizard):
 
-class CreateColPartyCadastreWizard(QWizard, WIZARD_UI):
-    WIZARD_NAME = "CreateColPartyCadastreWizard"
-    WIZARD_TOOL_NAME = QCoreApplication.translate(WIZARD_NAME, "Create party")
-    EDITING_LAYER_NAME = ""
-
-    def __init__(self, iface, db, qgis_utils):
-        QWizard.__init__(self)
-        self.setupUi(self)
+    def __init__(self, iface, db, qgis_utils, wizard_settings):
+        super(SinglePageWizardFactory, self).__init__()
         self.iface = iface
         self.log = QgsApplication.messageLog()
         self._db = db
         self.qgis_utils = qgis_utils
+        self.wizard_config = wizard_settings
         self.help_strings = HelpStrings()
 
-        self.EDITING_LAYER_NAME = COL_PARTY_TABLE
-        self._layers = {
-            COL_PARTY_TABLE: {'name': COL_PARTY_TABLE, 'geometry': None, LAYER: None}
-        }
+        load_ui(self.wizard_config[WIZARD_UI_SETTING], self)
+
+        self.WIZARD_NAME = self.wizard_config[WIZARD_NAME_SETTING]
+        self.WIZARD_FEATURE_NAME = self.wizard_config[WIZARD_FEATURE_NAME_SETTING]
+        self.WIZARD_TOOL_NAME = 'Create {}'.format(self.wizard_config[WIZARD_FEATURE_NAME_SETTING])
+        self.EDITING_LAYER_NAME = self.wizard_config[WIZARD_EDITING_LAYER_NAME_SETTING]
+        self._layers = self.wizard_config[WIZARD_LAYERS_SETTING]
 
         self.restore_settings()
         self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
@@ -59,7 +74,7 @@ class CreateColPartyCadastreWizard(QWizard, WIZARD_UI):
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
         self.rejected.connect(self.close_wizard)
-        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.NoGeometry)
+        self.mMapLayerComboBox.setFilters(self.wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL])
 
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
@@ -69,17 +84,17 @@ class CreateColPartyCadastreWizard(QWizard, WIZARD_UI):
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
-            self.lbl_field_mapping.setEnabled(True)
-            self.cbo_mapping.setEnabled(True)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
             self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, False))
+            self.lbl_field_mapping.setEnabled(True)
+            self.cbo_mapping.setEnabled(True)
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
+            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
+            self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES_SETTING][WIZARD_HELP_PAGE1])
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
-            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
-            self.txt_help_page_1.setHtml(self.help_strings.WIZ_CREATE_COL_PARTY_CADASTRE_PAGE_1_OPTION_FORM)
 
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
 
@@ -93,8 +108,9 @@ class CreateColPartyCadastreWizard(QWizard, WIZARD_UI):
                                                                self.mMapLayerComboBox.currentLayer(),
                                                                self.EDITING_LAYER_NAME,
                                                                field_mapping=field_mapping)
-
-                if res_etl_model:
+                if res_etl_model: # Features were added?
+                    # If the result of the etl_model is successful and we used a stored recent mapping, we delete the
+                    # previous mapping used (we give preference to the latest used mapping)
                     if field_mapping:
                         self.qgis_utils.delete_old_field_mapping(field_mapping)
 
@@ -135,7 +151,7 @@ class CreateColPartyCadastreWizard(QWizard, WIZARD_UI):
                 Qgis.Warning)
             return False
 
-        # Check if layers any layer is in editing mode
+        # Check if any layer is in editing mode
         layers_name = list()
         for layer in self._layers:
             if self._layers[layer][LAYER].isEditable():
@@ -160,7 +176,6 @@ class CreateColPartyCadastreWizard(QWizard, WIZARD_UI):
         self.close()
 
     def disconnect_signals(self):
-        # QGIS APP
         try:
             self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
@@ -178,15 +193,15 @@ class CreateColPartyCadastreWizard(QWizard, WIZARD_UI):
 
         if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
             message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a boundary. ").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME)
+                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create it. ").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME)
             self.log.logMessage("Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
         else:
             feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
             message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                 "The new party (t_id={}) was successfully created ").format(feature_tid)
+                                                 "The new {} (t_id={}) was successfully created ").format(self.WIZARD_FEATURE_NAME, feature_tid)
 
         self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
-        self.log.logMessage("Party's committedFeaturesAdded SIGNAL disconnected", PLUGIN_NAME, Qgis.Info)
+        self.log.logMessage("{} committedFeaturesAdded SIGNAL disconnected".format(self.WIZARD_FEATURE_NAME), PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 
     def open_form(self, layer):
@@ -208,15 +223,12 @@ class CreateColPartyCadastreWizard(QWizard, WIZARD_UI):
                 layer.rollBack()
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate(self.WIZARD_NAME,
-                                               "Error while saving changes. Party could not be created."),
-                    Qgis.Warning)
-
+                                               "Error while saving changes. {} could not be created.").format(self.WIZARD_FEATURE_NAME), Qgis.Warning)
                 for e in layer.commitErrors():
                     self.log.logMessage("Commit error: {}".format(e), PLUGIN_NAME, Qgis.Warning)
-
-            self.iface.mapCanvas().refresh()
         else:
             layer.rollBack()
+        self.iface.mapCanvas().refresh()
 
     def form_rejected(self):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -225,16 +237,16 @@ class CreateColPartyCadastreWizard(QWizard, WIZARD_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM_COL/wizards/col_party_load_data_type', 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
+        settings.setValue(self.wizard_config[WIZARD_QSETTINGS_SETTING][WIZARD_QSETTINGS_LOAD_DATA_TYPE], 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
 
     def restore_settings(self):
         settings = QSettings()
 
-        load_data_type = settings.value('Asistente-LADM_COL/wizards/col_party_load_data_type') or 'create_manually'
+        load_data_type = settings.value(self.wizard_config[WIZARD_QSETTINGS_SETTING][WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'create_manually'
         if load_data_type == 'refactor':
             self.rad_refactor.setChecked(True)
         else:
             self.rad_create_manually.setChecked(True)
 
     def show_help(self):
-        self.qgis_utils.show_help("col_party")
+        self.qgis_utils.show_help(self.wizard_config[WIZARD_HELP_SETTING])
