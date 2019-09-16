@@ -106,28 +106,30 @@ from .utils.qt_utils import (get_plugin_metadata,
 from .utils.quality import QualityUtils
 from .lib.db.enum_db_action_type import EnumDbActionType
 
-from .config.wizards_settings import (WIZARDS_SETTINGS,
-                                      WIZARD_CREATE_COL_PARTY_CADASTRAL,
-                                      WIZARD_CREATE_ADMINISTRATIVE_SOURCE_CADASTRE,
-                                      WIZARD_CREATE_BOUNDARY_CADASTRE,
-                                      WIZARD_CREATE_BUILDING_CADASTRE,
-                                      WIZARD_CREATE_BUILDING_UNIT_CADASTRE,
-                                      WIZARD_CREATE_LEGAL_PARTY_PRC,
-                                      WIZARD_CREATE_NATURAL_PARTY_PRC,
-                                      WIZARD_CREATE_NUCLEAR_FAMILY_PRC,
-                                      WIZARD_CREATE_MARKET_RESEARCH_PRC,
-                                      WIZARD_CREATE_PROPERTY_RECORD_CARD_PRC,
-                                      WIZARD_CREATE_HORIZONTAL_PROPERTY_VALUATION,
-                                      WIZARD_CREATE_COMMON_EQUIPMENT_VALUATION,
-                                      WIZARD_CREATE_BUILDING_VALUATION,
-                                      WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION,
-                                      WIZARD_CREATE_PHYSICAL_ZONE_VALUATION,
-                                      WIZARD_CREATE_PARCEL_VALUATION)
-from .lib.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
-from .lib.wizards.single_page_wizard_factory import SinglePageWizardFactory
+from .config.wizards_config import (WIZARDS_SETTINGS,
+                                    SINGLE_PAGE_WIZARD,
+                                    SINGLE_PAGE_SPATIAL_WIZARD,
+                                    WIZARD_CREATE_COL_PARTY_CADASTRAL,
+                                    WIZARD_CREATE_ADMINISTRATIVE_SOURCE_CADASTRE,
+                                    WIZARD_CREATE_BOUNDARY_CADASTRE,
+                                    WIZARD_CREATE_BUILDING_CADASTRE,
+                                    WIZARD_CREATE_BUILDING_UNIT_CADASTRE,
+                                    WIZARD_CREATE_LEGAL_PARTY_PRC,
+                                    WIZARD_CREATE_NATURAL_PARTY_PRC,
+                                    WIZARD_CREATE_NUCLEAR_FAMILY_PRC,
+                                    WIZARD_CREATE_MARKET_RESEARCH_PRC,
+                                    WIZARD_CREATE_PROPERTY_RECORD_CARD_PRC,
+                                    WIZARD_CREATE_HORIZONTAL_PROPERTY_VALUATION,
+                                    WIZARD_CREATE_COMMON_EQUIPMENT_VALUATION,
+                                    WIZARD_CREATE_BUILDING_VALUATION,
+                                    WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION,
+                                    WIZARD_CREATE_PHYSICAL_ZONE_VALUATION,
+                                    WIZARD_CREATE_PARCEL_VALUATION)
+from .gui.wizards.single_page_spatial_wizard import SinglePageSpatialWizard
+from .gui.wizards.single_page_wizard import SinglePageWizard
+
 
 class AsistenteLADMCOLPlugin(QObject):
-
     wiz_geometry_creation_finished = pyqtSignal()
 
     def __init__(self, iface):
@@ -1160,7 +1162,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_boundaries_cad(self):
-        self.show_wizard(WIZARD_CREATE_BOUNDARY_CADASTRE, "SinglePageSpatialWizardFactory")
+        self.show_wizard(WIZARD_CREATE_BOUNDARY_CADASTRE, SINGLE_PAGE_SPATIAL_WIZARD)
 
     def set_wizard_is_open_flag(self, open):
         """
@@ -1186,10 +1188,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.exec_wizard(self.wiz)
 
     def show_wiz_building_cad(self):
-        self.show_wizard(WIZARD_CREATE_BUILDING_CADASTRE, "SinglePageSpatialWizardFactory")
+        self.show_wizard(WIZARD_CREATE_BUILDING_CADASTRE, SINGLE_PAGE_SPATIAL_WIZARD)
 
     def show_wiz_building_unit_cad(self):
-        self.show_wizard(WIZARD_CREATE_BUILDING_UNIT_CADASTRE, "SinglePageSpatialWizardFactory")
+        self.show_wizard(WIZARD_CREATE_BUILDING_UNIT_CADASTRE, SINGLE_PAGE_SPATIAL_WIZARD)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1330,10 +1332,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.exec_wizard(self.wiz)
 
     def show_wiz_geoeconomic_zone_valuation(self):
-        self.show_wizard(WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION, "SinglePageSpatialWizardFactory")
+        self.show_wizard(WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION, SINGLE_PAGE_SPATIAL_WIZARD)
 
     def show_wiz_physical_zone_valuation_action(self):
-        self.show_wizard(WIZARD_CREATE_PHYSICAL_ZONE_VALUATION, "SinglePageSpatialWizardFactory")
+        self.show_wizard(WIZARD_CREATE_PHYSICAL_ZONE_VALUATION, SINGLE_PAGE_SPATIAL_WIZARD)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1414,13 +1416,13 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required2
-    def show_wizard(self, wizard_name, type_wizard="SinglePageWizardFactory", *args, **kwargs):
+    def show_wizard(self, wizard_name, type_wizard=SINGLE_PAGE_WIZARD, *args, **kwargs):
         wiz_settings = WIZARDS_SETTINGS[wizard_name]
 
-        if type_wizard == "SinglePageWizardFactory":
-            self.wiz = SinglePageWizardFactory(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
-        elif type_wizard == "SinglePageSpatialWizardFactory":
-            self.wiz = SinglePageSpatialWizardFactory(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
+        if type_wizard == SINGLE_PAGE_WIZARD:
+            self.wiz = SinglePageWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
+        elif type_wizard == SINGLE_PAGE_SPATIAL_WIZARD:
+            self.wiz = SinglePageSpatialWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
             self.wiz.set_wizard_is_open_emitted.connect(self.set_wizard_is_open_flag)
             self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
             self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)

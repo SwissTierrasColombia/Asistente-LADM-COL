@@ -25,33 +25,39 @@
  ***************************************************************************/
  """
 from qgis.PyQt.QtCore import (QSettings,
-                              QCoreApplication)
-from qgis.PyQt.QtWidgets import QWizard
+                              QCoreApplication,
+                              pyqtSignal)
+from qgis.PyQt.QtWidgets import (QWizard,
+                                 QPushButton,
+                                 QMessageBox)
 from qgis.core import (QgsApplication,
-                       Qgis)
+                       Qgis,
+                       QgsProject)
 
 from ...config.general_config import (PLUGIN_NAME,
                                       LAYER)
 from ...config.help_strings import HelpStrings
 from ...config.table_mapping_config import ID_FIELD
-from ...config.wizards_settings import (WIZARD_HELP_SETTING,
-                                        WIZARD_NAME_SETTING,
-                                        WIZARD_FEATURE_NAME_SETTING,
-                                        WIZARD_EDITING_LAYER_NAME_SETTING,
-                                        WIZARD_UI_SETTING,
-                                        WIZARD_MAP_LAYER_PROXY_MODEL,
-                                        WIZARD_LAYERS_SETTING,
-                                        WIZARD_QSETTINGS_SETTING,
-                                        WIZARD_HELP_PAGES_SETTING,
-                                        WIZARD_HELP_PAGE1,
-                                        WIZARD_QSETTINGS_LOAD_DATA_TYPE)
+from ...config.wizards_config import (WIZARD_HELP_SETTING,
+                                      WIZARD_NAME_SETTING,
+                                      WIZARD_FEATURE_NAME_SETTING,
+                                      WIZARD_EDITING_LAYER_NAME_SETTING,
+                                      WIZARD_UI_SETTING,
+                                      WIZARD_MAP_LAYER_PROXY_MODEL,
+                                      WIZARD_LAYERS_SETTING,
+                                      WIZARD_QSETTINGS_SETTING,
+                                      WIZARD_HELP_PAGES_SETTING,
+                                      WIZARD_HELP_PAGE1,
+                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE)
 from ...utils.ui import load_ui
 
 
-class SinglePageWizardFactory(QWizard):
+class SinglePageSpatialWizard(QWizard):
+    set_wizard_is_open_emitted = pyqtSignal(bool)
+    set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):
-        super(SinglePageWizardFactory, self).__init__()
+        super(SinglePageSpatialWizard, self).__init__()
         self.iface = iface
         self.log = QgsApplication.messageLog()
         self._db = db
@@ -123,6 +129,7 @@ class SinglePageWizardFactory(QWizard):
                     Qgis.Warning)
 
         elif self.rad_create_manually.isChecked():
+            self.set_finalize_geometry_creation_enabled_emitted.emit(True)
             self.prepare_feature_creation()
 
     def prepare_feature_creation(self):
@@ -136,6 +143,9 @@ class SinglePageWizardFactory(QWizard):
         is_loaded = self.required_layers_are_available()
         if not is_loaded:
             return False
+
+        # Add signal to check if a layer was removed
+        self.validate_remove_layers()
 
         # All layers were successfully loaded
         return True
@@ -172,7 +182,10 @@ class SinglePageWizardFactory(QWizard):
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
             self.qgis_utils.message_emitted.emit(message, Qgis.Info)
+
+        self.set_finalize_geometry_creation_enabled_emitted.emit(False)
         self.disconnect_signals()
+        self.set_wizard_is_open_emitted.emit(False)
         self.close()
 
     def disconnect_signals(self):
@@ -181,10 +194,26 @@ class SinglePageWizardFactory(QWizard):
         except:
             pass
 
+        for layer_name in self._layers:
+            try:
+                self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
+            except:
+                pass
+
     def edit_feature(self):
         self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
         self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+
+        # Disable transactions groups
+        QgsProject.instance().setAutoTransaction(False)
+
+        # Activate snapping
+        self.qgis_utils.active_snapping_all_layers(tolerance=9)
         self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
+
+        self.qgis_utils.message_emitted.emit(
+            QCoreApplication.translate(self.WIZARD_NAME,
+                                       "You can now start capturing boundary digitizing on the map..."), Qgis.Info)
 
     def finish_feature_creation(self, layerId, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -208,10 +237,16 @@ class SinglePageWizardFactory(QWizard):
         if not layer.isEditable():
             layer.startEditing()
 
-        self.exec_form(layer)
+        self.qgis_utils.suppress_form(layer, True)
+        self.iface.actionAddFeature().trigger()
 
     def exec_form(self, layer):
-        feature = self.qgis_utils.get_new_feature(layer)
+        self.set_finalize_geometry_creation_enabled_emitted.emit(False)
+
+        for id, added_feature in layer.editBuffer().addedFeatures().items():
+            feature = added_feature
+            break
+
         dialog = self.iface.getFeatureForm(layer, feature)
         dialog.rejected.connect(self.form_rejected)
         dialog.setModal(True)
@@ -250,3 +285,57 @@ class SinglePageWizardFactory(QWizard):
 
     def show_help(self):
         self.qgis_utils.show_help(self.wizard_config[WIZARD_HELP_SETTING])
+
+    def validate_remove_layers(self):
+        for layer_name in self._layers:
+            if self._layers[layer_name][LAYER]:
+                # Layer was found, listen to its removal so that we can update the variable properly
+                try:
+                    self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
+                except:
+                    pass
+                self._layers[layer_name][LAYER].willBeDeleted.connect(self.layer_removed)
+
+    def layer_removed(self):
+        message = QCoreApplication.translate(self.WIZARD_NAME,
+                                             "'{}' tool has been closed because you just removed a required layer.").format(self.WIZARD_TOOL_NAME)
+        self.close_wizard(message)
+
+    def save_created_geometry(self):
+        message = None
+        if self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer():
+            if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 1:
+                feature = [value for index, value in self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures().items()][0]
+                if feature.geometry().isGeosValid():
+                    self.exec_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
+                else:
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "The geometry is invalid. Do you want to return to the edit session?")
+            else:
+                if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 0:
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "No geometry has been created. Do you want to return to the edit session?")
+                else:
+                    message = QCoreApplication.translate(self.WIZARD_NAME, "Several geometries were created but only one was expected. Do you want to return to the edit session?")
+
+        if message:
+            self.show_message_associate_geometry_creation(message)
+
+    def show_message_associate_geometry_creation(self, message):
+        msg = QMessageBox(self)
+        msg.setIcon(QMessageBox.Question)
+        msg.setText(message)
+        msg.setWindowTitle(QCoreApplication.translate(self.WIZARD_NAME, "Continue editing?"))
+        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "Yes")), QMessageBox.YesRole)
+        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "No, close the wizard")), QMessageBox.NoRole)
+        reply = msg.exec_()
+
+        if reply == 1: # 1 close wizard, 0 yes
+            # stop edition in close_wizard crash qgis
+            if self._layers[self.EDITING_LAYER_NAME][LAYER].isEditable():
+                self._layers[self.EDITING_LAYER_NAME][LAYER].rollBack()
+
+            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(
+                self.WIZARD_TOOL_NAME)
+            self.close_wizard(message)
+        else:
+            # Continue creating geometry
+            pass

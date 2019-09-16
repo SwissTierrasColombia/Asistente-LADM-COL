@@ -27,6 +27,9 @@ from qgis.core import (QgsMapLayerProxyModel,
 
 help_strings = HelpStrings()
 
+SINGLE_PAGE_WIZARD = "SinglePageWizard"
+SINGLE_PAGE_SPATIAL_WIZARD = "SinglePageSpatialWizard"
+
 WIZARD_NAME_SETTING = "wizard_name"
 WIZARD_FEATURE_NAME_SETTING = "wizard_tool_name"
 WIZARD_UI_SETTING = "wizard_ui"
