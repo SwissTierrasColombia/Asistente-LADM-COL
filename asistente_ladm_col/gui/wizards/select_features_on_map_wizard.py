@@ -20,16 +20,16 @@
  *                                                                         *
  ***************************************************************************/
  """
-from qgis.PyQt.QtCore import (QObject,
-                              QCoreApplication)
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.core import Qgis
 
-from ...config.general_config import PLUGIN_NAME
+from ...config.general_config import (PLUGIN_NAME,
+                                      LAYER)
 from ...utils.select_map_tool import SelectMapTool
 
 
-class SelectFeatureOnMapWizard(QObject):
+class SelectFeaturesOnMapWizard:
     SELECTION_ON_MAP = True
 
     def __init__(self):
@@ -41,7 +41,7 @@ class SelectFeatureOnMapWizard(QObject):
         self.canvas.mapToolSet.disconnect(self.map_tool_changed)
         reply = QMessageBox.question(self,
                                      QCoreApplication.translate(self.WIZARD_NAME, "Stop {} creation?").format(self.WIZARD_FEATURE_NAME),
-                                     QCoreApplication.translate(self.WIZARD_NAME,"The map tool is about to change. Do you want to stop creating {}}?").format(self.WIZARD_FEATURE_NAME),
+                                     QCoreApplication.translate(self.WIZARD_NAME,"The map tool is about to change. Do you want to stop creating {}?").format(self.WIZARD_FEATURE_NAME),
                                      QMessageBox.Yes, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
@@ -49,7 +49,6 @@ class SelectFeatureOnMapWizard(QObject):
                                                  "'{}' tool has been closed because the map tool change.").format(self.WIZARD_TOOL_NAME)
             self.close_wizard(message)
         else:
-            # Continue creating the Parcel
             self.canvas.setMapTool(old_tool)
             self.canvas.mapToolSet.connect(self.map_tool_changed)
 
@@ -86,3 +85,36 @@ class SelectFeatureOnMapWizard(QObject):
         except:
             pass
         self.canvas.setMapTool(self.maptool)
+
+    def validate_remove_layers(self):
+        for layer_name in self._layers:
+            if self._layers[layer_name][LAYER]:
+                # Layer was found, listen to its removal so that we can update the variable properly
+                try:
+                    self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
+                except:
+                    pass
+                self._layers[layer_name][LAYER].willBeDeleted.connect(self.layer_removed)
+
+    def layer_removed(self):
+        message = QCoreApplication.translate(self.WIZARD_NAME,
+                                             "'{}' tool has been closed because you just removed a required layer.").format(self.WIZARD_TOOL_NAME)
+        self.close_wizard(message)
+
+    def disconnect_signals_select_features_on_map(self):
+
+        self.disconnect_signals_controls_select_features_on_map()
+
+        try:
+            self.canvas.mapToolSet.disconnect(self.map_tool_changed)
+        except:
+            pass
+
+        for layer_name in self._layers:
+            try:
+                self._layers[layer_name][LAYER].willBeDeleted.disconnect(self.layer_removed)
+            except:
+                pass
+
+    def disconnect_signals_controls_select_features_on_map(self):
+        raise NotImplementedError

@@ -18,11 +18,19 @@ from ..config.table_mapping_config import (COL_PARTY_TABLE,
                                            BOUNDARY_TABLE,
                                            BOUNDARY_POINT_TABLE,
                                            EXTFILE_TABLE,
+                                           SPATIAL_SOURCE_TABLE,
+                                           PLOT_TABLE,
+                                           UESOURCE_TABLE,
+                                           CCLSOURCE_TABLE,
+                                           POINTSOURCE_TABLE,
+                                           CONTROL_POINT_TABLE,
                                            VALUATION_HORIZONTAL_PROPERTY_TABLE,
                                            VALUATION_COMMON_EQUIPMENT_TABLE,
                                            VALUATION_BUILDING_TABLE,
                                            VALUATION_GEOECONOMIC_ZONE_TABLE,
                                            VALUATION_PHYSICAL_ZONE_TABLE,
+                                           AVALUOUNIDADCONSTRUCCION_TABLE,
+                                           VALUATION_BUILDING_UNIT_TABLE,
                                            VALUATION_PARCEL_TABLE)
 from ..config.general_config import LAYER
 
@@ -60,6 +68,7 @@ class WizardConfig:
     WIZARD_CREATE_RIGHT_CADASTRE = "wizard_create_right_cadastre"
     WIZARD_CREATE_RESTRICTION_CADASTRE = "wizard_create_restriction_cadastre"
     WIZARD_CREATE_RESPONSIBILITY_CADASTRE = "wizard_create_responsibility_cadastre"
+    WIZARD_CREATE_SPATIAL_SOURCE_CADASTRE = "wizard_create_spatial_source_cadastre"
 
     # Valuation model
     WIZARD_CREATE_PARCEL_VALUATION = "wizard_create_parcel_valuation"
@@ -68,6 +77,7 @@ class WizardConfig:
     WIZARD_CREATE_BUILDING_VALUATION = "wizard_create_building_valuation"
     WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION = "wizard_create_geoeconomic_zone_valuation"
     WIZARD_CREATE_PHYSICAL_ZONE_VALUATION = "wizard_create_physical_zone_valuation"
+    WIZARD_CREATE_BUILDING_UNIT_VALUATION = "wizard_create_building_unit_valuation"
 
     # Property Record Card model
     WIZARD_CREATE_LEGAL_PARTY_PRC = "wizard_create_legal_party_prc"
@@ -232,6 +242,34 @@ class WizardConfig:
             WIZARD_EDITING_LAYER_NAME_SETTING: RESPONSIBILITY_TABLE,
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
+        WIZARD_CREATE_SPATIAL_SOURCE_CADASTRE: {
+            WIZARD_NAME_SETTING: "CreateSpatialSourceCadastreWizard",
+            WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateSpatialSourceCadastreWizard",
+                                                                    "spatial source"),
+            WIZARD_HELP_SETTING: "create_spatial_source",
+            WIZARD_UI_SETTING: "wizards/cadastre/source/wiz_create_spatial_source_cadastre.ui",
+            WIZARD_QSETTINGS_SETTING: {
+                WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/spatial_source_load_data_type"
+            },
+            WIZARD_HELP_PAGES_SETTING: {
+                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_1_OPTION_FORM,
+                WIZARD_HELP_PAGE2: help_strings.WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_2
+            },
+            WIZARD_LAYERS_SETTING: {
+                SPATIAL_SOURCE_TABLE: {'name': SPATIAL_SOURCE_TABLE, 'geometry': None, LAYER: None},
+                EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None, LAYER: None},
+                PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                UESOURCE_TABLE: {'name': UESOURCE_TABLE, 'geometry': None, LAYER: None},
+                BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None},
+                CCLSOURCE_TABLE: {'name': CCLSOURCE_TABLE, 'geometry': None, LAYER: None},
+                POINTSOURCE_TABLE: {'name': POINTSOURCE_TABLE, 'geometry': None, LAYER: None},
+                BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None},
+                SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None},
+                CONTROL_POINT_TABLE: {'name': CONTROL_POINT_TABLE, 'geometry': None, LAYER: None}
+            },
+            WIZARD_EDITING_LAYER_NAME_SETTING: SPATIAL_SOURCE_TABLE,
+            WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
+        },
         # VALUATION MODEL
         WIZARD_CREATE_PARCEL_VALUATION: {
             WIZARD_NAME_SETTING: "CreateParcelValuationWizard",
@@ -340,6 +378,27 @@ class WizardConfig:
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: VALUATION_PHYSICAL_ZONE_TABLE,
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
+        },
+        WIZARD_CREATE_BUILDING_UNIT_VALUATION: {
+            WIZARD_NAME_SETTING: "CreateBuildingUnitValuationWizard",
+            WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateBuildingUnitValuationWizard",
+                                                                    "building unit valuation"),
+            WIZARD_HELP_SETTING: "create_building_unit_valuation",
+            WIZARD_UI_SETTING: "wizards/valuation/wiz_create_building_unit_valuation.ui",
+            WIZARD_QSETTINGS_SETTING: {
+                WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/valuation_building_unit_load_data_type"
+            },
+            WIZARD_HELP_PAGES_SETTING: {
+                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_BUILDING_UNIT_VALUATION_PAGE_1_OPTION_FORM,
+                WIZARD_HELP_PAGE2: help_strings.WIZ_CREATE_BUILDING_UNIT_VALUATION_PAGE_2
+            },
+            WIZARD_LAYERS_SETTING: {
+                VALUATION_BUILDING_UNIT_TABLE: {'name': VALUATION_BUILDING_UNIT_TABLE, 'geometry': None, LAYER: None},
+                BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                AVALUOUNIDADCONSTRUCCION_TABLE: {'name': AVALUOUNIDADCONSTRUCCION_TABLE, 'geometry': None, LAYER: None}
+            },
+            WIZARD_EDITING_LAYER_NAME_SETTING: VALUATION_BUILDING_UNIT_TABLE,
+            WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         # PROPERTY RECORD CARD MODEL
         WIZARD_CREATE_LEGAL_PARTY_PRC: {

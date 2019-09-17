@@ -34,8 +34,9 @@ from ...config.general_config import (PLUGIN_NAME,
                                       LAYER)
 from ...config.help_strings import HelpStrings
 from ...config.wizards_config import WizardConfig
+from ...utils.qt_utils import (enable_next_wizard,
+                               disable_next_wizard)
 from ...utils.ui import load_ui
-from ...utils.qt_utils import (enable_next_wizard, disable_next_wizard)
 
 
 class MultiPageWizard(QWizard):
@@ -96,8 +97,8 @@ class MultiPageWizard(QWizard):
 
     def adjust_page_2_controls(self):
         self.button(self.FinishButton).setDisabled(True)
-        self.disconnect_signals()
         self.txt_help_page_2.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP_PAGE2])
+        self.disconnect_signals()
 
         # Load layers
         result = self.prepare_feature_creation_layers()
@@ -163,6 +164,10 @@ class MultiPageWizard(QWizard):
         if not is_loaded:
             return False
 
+        if hasattr(self, 'SELECTION_ON_MAP'):
+            # Add signal to check if a layer was removed
+            self.validate_remove_layers()
+
         # All layers were successfully loaded
         return True
 
@@ -198,10 +203,21 @@ class MultiPageWizard(QWizard):
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
             self.qgis_utils.message_emitted.emit(message, Qgis.Info)
+
+        if hasattr(self, 'SELECTION_ON_MAP'):
+            self.init_map_tool()
+
         self.disconnect_signals()
         self.close()
 
     def disconnect_signals(self):
+
+        if hasattr(self, 'SELECTION_BY_EXPRESSION'):
+            self.disconnect_signals_select_features_by_expression()
+
+        if hasattr(self, 'SELECTION_ON_MAP'):
+            self.disconnect_signals_select_features_on_map()
+
         try:
             self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:

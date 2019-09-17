@@ -20,8 +20,6 @@
  *                                                                         *
  ***************************************************************************/
  """
-
-from qgis.PyQt.QtCore import QObject
 from qgis.gui import QgsExpressionSelectionDialog
 
 
@@ -34,3 +32,6 @@ class SelectFeatureByExpressionWizard:
         layer.selectionChanged.connect(self.check_selected_features)
         dlg_expression_selection.exec()
         layer.selectionChanged.disconnect(self.check_selected_features)
+
+    def disconnect_signals_select_features_by_expression(self):
+        raise NotImplementedError

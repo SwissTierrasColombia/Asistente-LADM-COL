@@ -21,6 +21,7 @@
  ***************************************************************************/
  """
 from functools import partial
+
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsVectorLayerUtils,
                        Qgis)
@@ -69,7 +70,7 @@ class CreateRRRCadastreWizard(MultiPageWizard, SelectFeatureByExpressionWizard):
             self.log.logMessage("We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)), PLUGIN_NAME, Qgis.Warning)
         else:
             fid = features[0].id()
-            administrative_source_ids = [f['t_id'] for f in self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatures()]
+            administrative_source_ids = [f[ID_FIELD] for f in self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatures()]
 
             if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
                 self.log.logMessage("Feature not found in layer {}...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
@@ -100,3 +101,11 @@ class CreateRRRCadastreWizard(MultiPageWizard, SelectFeatureByExpressionWizard):
 
     def register_select_feature_on_map(self):
         pass
+
+    def disconnect_signals_select_features_by_expression(self):
+        signals = [self.btn_expression.clicked]
+        for signal in signals:
+            try:
+                signal.disconnect()
+            except:
+                pass
