@@ -539,152 +539,23 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
                 field['expression'] = 'now()'
 
     return mapping
-def get_refactor_fields_mapping_r1_gdb_to_ladm(layer_name, qgis_utils):
-    if layer_name == PARCEL_TABLE:
+def get_refactor_fields_mapping_supplies(layer_name, qgis_utils):
+    if layer_name == CM_PARCEL_TABLE:
          mapping = [
-            {'expression': '"{}"'.format(DEPARTAMENTO_R1_GDB), 'length': 2, 'name': 'departamento', 'precision': -1, 'type': 10}, 
-            {'expression': '"{}"'.format(MUNICIPIO_R1_GDB), 'length': 3, 'name': 'municipio', 'precision': -1, 'type': 10}, 
-            {'expression': '"id"', 'length': 20, 'name': 'nupre', 'precision': -1, 'type': 10}, 
-            {'expression': 'concat({}, {}, {})'.format(DEPARTAMENTO_R1_GDB, MUNICIPIO_R1_GDB, NO_PREDIAL_R1_GDB), 'length': 30, 'name': 'numero_predial', 'precision': -1, 'type': 10}, 
-            {'expression': 'concat({}, {}, {})'.format(DEPARTAMENTO_R1_GDB, MUNICIPIO_R1_GDB, NO_PREDIAL_ANTERIOR_R1_GDB), 'length': 20, 'name': 'numero_predial_anterior', 'precision': -1, 'type': 10}, 
-            {'expression': '"{}"'.format(AVALUO_R1_GDB), 'length': 16, 'name': 'avaluo_predio', 'precision': 1, 'type': 6},
-            {'expression': '"{}"'.format(NOMBRE_R1_GDB), 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10}, 
-            {'expression': "'NPH'", 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
-            {'expression': "'IGAC_Predio'", 'length': 255, 'name': 'u_espacio_de_nombres', 'precision': -1, 'type': 10}, 
-            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
+            {'expression': '"UNI-TICA-E2"', 'length': 255, 'name': 'tipo_catastro', 'precision': -1, 'type': 10}, 
+            {'expression': '"num_pre_30"', 'length': 30, 'name': 'numero_predial', 'precision': -1, 'type': 10}, 
+            {'expression': '"num_pre_20"', 'length': 20, 'name': 'numero_predial_anterior', 'precision': -1, 'type': 10}, 
+            {'expression': 'if ("UNI-MATRICULA" is null,\'ND\', if (array_length(string_to_array("UNI-MATRICULA", \'-\')) >=1,\'ND\',string_to_array("UNI-MATRICULA", \'-\')[0]))', 'length': 4, 'name': 'circulo_registral', 'precision': -1, 'type': 10}, 
+            {'expression': 'if ("UNI-MATRICULA" is null,\'ND\',if (array_length(string_to_array("UNI-MATRICULA", \'-\')) >=1,"UNI-MATRICULA",string_to_array("UNI-MATRICULA", \'-\')[1]))', 'length': 80, 'name': 'matricula_inmobiliaria_catastro', 'precision': -1, 'type': 10}, 
+            {'expression': '"UNI-DECO-E2"', 'length': 150, 'name': 'destinacion_economica', 'precision': -1, 'type': 10}, 
+            {'expression': "'Cobol'", 'length': 255, 'name': 'sistema_origen', 'precision': -1, 'type': 10}, 
+            {'expression': 'now()', 'length': -1, 'name': 'fecha_datos', 'precision': -1, 'type': 14}
         ]
-    elif layer_name == COL_PARTY_TABLE:
+    elif layer_name == CM_ADDRESS_TABLE:
         mapping = [
-            {'expression': '"{}"'.format(NO_DOCUMENTO_R1_GDB), 'length': 12, 'name': 'documento_identidad', 'precision': -1, 'type': 10}, 
-            {'expression': 'if({TipoDocumento} = \'C\', \'Cedula_Ciudadania\', if({TipoDocumento} = \'N\', \'NIT\', if({TipoDocumento} = \'T\', \'Tarjeta_Identidad\', if({TipoDocumento} = \'X\', \'Cedula_Extranjeria\',\'Pasaporte\'))))'.format(TipoDocumento=TIPO_DOCUMENTO_R1_GDB), 'length': 255, 'name': 'tipo_documento', 'precision': -1, 'type': 10}, 
-            {'expression': '"id"', 'length': 20, 'name': 'organo_emisor', 'precision': -1, 'type': 10}, 
-            {'expression': "string_to_array({}, ' ')[2]".format(NOMBRE_R1_GDB), 'length': 100, 'name': 'primer_apellido', 'precision': -1, 'type': 10}, 
-            {'expression': "string_to_array({}, ' ')[0]".format(NOMBRE_R1_GDB), 'length': 100, 'name': 'primer_nombre', 'precision': -1, 'type': 10}, 
-            {'expression': "string_to_array({}, ' ')[3]".format(NOMBRE_R1_GDB), 'length': 100, 'name': 'segundo_apellido', 'precision': -1, 'type': 10}, 
-            {'expression': "string_to_array({}, ' ')[1]".format(NOMBRE_R1_GDB), 'length': 100, 'name': 'segundo_nombre', 'precision': -1, 'type': 10}, 
-            {'expression': 'if({} = \'N\', "Nombre",\' \')'.format(TIPO_DOCUMENTO_R1_GDB), 'length': 250, 'name': 'razon_social', 'precision': -1, 'type': 10}, 
-            {'expression': 'if({} = \'N\', \'Persona_No_Natural\', \'Persona_Natural\')'.format(TIPO_DOCUMENTO_R1_GDB), 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
-            {'expression': "'IGAC_Interesado'", 'length': 255, 'name': 'p_espacio_de_nombres', 'precision': -1, 'type': 10}, 
-            {'expression': '0', 'length': 255, 'name': 'p_local_id', 'precision': -1, 'type': 10}, 
-            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
+            {'expression': '"uni-25-269_UNI-DIRECCION"', 'length': 255, 'name': 'valor', 'precision': -1, 'type': 10}, 
+            {'expression': 'True', 'length': -1, 'name': 'principal', 'precision': -1, 'type': 1}, 
+            {'expression': '"gc_predio_catastro_t_id"', 'length': -1, 'name': 'gc_predio_catastro_direcciones', 'precision': 0, 'type': 4}
         ]
-    elif layer_name == RIGHT_TABLE:
-        mapping = [
-            {'expression': "'Dominio'", 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
-            {'expression': "'Col_Derecho_IGAC'", 'length': 255, 'name': 'r_espacio_de_nombres', 'precision': -1, 'type': 10}, 
-            {'expression': '0', 'length': 255, 'name': 'r_local_id', 'precision': -1, 'type': 10}, 
-            {'expression': '"t_id"', 'length': -1, 'name': 'interesado_col_interesado', 'precision': 0, 'type': 4}, 
-            {'expression': '"predio_oficial_t_id"', 'length': -1, 'name': 'unidad_predio', 'precision': 0, 'type': 4}, 
-            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
-        ]
-    elif layer_name == ADMINISTRATIVE_SOURCE_TABLE:
-        mapping = [
-            {'expression': '"t_id"', 'length': 255, 'name': 'texto', 'precision': -1, 'type': 10}, 
-            {'expression': "'Certificado'", 'length': 255, 'name': 'tipo', 'precision': -1, 'type': 10}, 
-            {'expression': "'Desconocido'", 'length': 255, 'name': 'estado_disponibilidad', 'precision': -1, 'type': 10}, 
-            {'expression': "'Col_FuenteAdministrativa_IGAC'", 'length': 255, 'name': 's_espacio_de_nombres', 'precision': -1, 'type': 10}, 
-            {'expression': '0', 'length': 255, 'name': 's_local_id', 'precision': -1, 'type': 10}
-        ]
-    elif layer_name == RRR_SOURCE_RELATION_TABLE:
-        mapping = [
-            {'expression': '"t_id"', 'length': -1, 'name': 'rfuente', 'precision': 0, 'type': 4}, 
-            {'expression': '"{}"'.format(TEXTO_R1_GDB), 'length': -1, 'name': 'rrr_col_derecho', 'precision': 0, 'type': 4}
-        ]
-    elif layer_name == UEBAUNIT_TABLE_BUILDING_FIELD:
-        mapping = [
-            {'expression': '"construccion_oficial_t_id"', 'length': -1, 'name': 'ue_construccion', 'precision': 0, 'type': 4}, 
-            {'expression': '"t_id"', 'length': -1, 'name': 'baunit_predio', 'precision': 0, 'type': 4}
-        ]
-    elif layer_name == UEBAUNIT_TABLE_PLOT_FIELD:
-        mapping = [
-            {'expression': '"terreno_oficial_t_id"', 'length': -1, 'name': 'ue_terreno', 'precision': 0, 'type': 4}, 
-            {'expression': '"t_id"', 'length': -1, 'name': 'baunit_predio', 'precision': 0, 'type': 4}
-        ]
-    elif layer_name == UEBAUNIT_TABLE_PLOT_FIELD:
-        mapping = [
-            {'expression': '"unidadconstruccion_oficial_t_id"', 'length': -1, 'name': 'ue_unidadconstruccion', 'precision': 0, 'type': 4}, 
-            {'expression': '"t_id"', 'length': -1, 'name': 'baunit_predio', 'precision': 0, 'type': 4}
-        ]
-    elif layer_name == PLOT_TABLE:
-        mapping = [
-            {'expression': '"{}"'.format(AREA_R1_GDB), 'length': 15, 'name': 'area_calculada', 'precision': 1, 'type': 6}, 
-            {'expression': '0.1', 'length': 16, 'name': 'avaluo_terreno', 'precision': 1, 'type': 6}, 
-            {'expression': '"{}"'.format(CODIGO_R1_GDB), 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}
-        ]
-    elif layer_name == FDC_SECTOR:
-        mapping = [
-            {'expression': 'substr({},0,2)'.format(CODIGO_R1_GDB), 'length': 2, 'name': 'codigo', 'precision': -1, 'type': 10}, 
-            {'expression': "concat('sector', {})".format(CODIGO_R1_GDB), 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10}
-            ]
-    elif layer_name == FDC_VILLAGE:
-        mapping = [
-            {'expression': 'substr({codigo},length({codigo})-3)'.format(codigo=CODIGO_R1_GDB), 'length': 4, 'name': 'codigo', 'precision': -1, 'type': 10},
-            {'expression': '"{}"'.format(NOMBRE_R1_GDB), 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10}
-            ]
-    elif layer_name == FDC_BLOCK:
-        mapping = [
-            {'expression': 'substr({codigo},length({codigo})-3)'.format(codigo=CODIGO_R1_GDB), 'length': 4, 'name': 'codigo', 'precision': -1, 'type': 10}, 
-            {'expression': 'concat(\'Manzana\' ,\' \', substr({codigo},length({codigo})-3))'.format(codigo=CODIGO_R1_GDB), 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10}
-            ]
-    elif layer_name == FDC_NEIGHBOURHOOD:
-        mapping = [
-            {'expression': 'substr({codigo},length({codigo})-1)'.format(codigo=CODIGO_R1_GDB), 'length': 2, 'name': 'codigo', 'precision': -1, 'type': 10}, 
-            {'expression': '"{}"'.format(NOMBRE_R1_GDB), 'length': 50, 'name': 'nombre', 'precision': -1, 'type': 10}
-            ]
-    elif layer_name == BUILDING_TABLE:
-        mapping = [
-            {'expression': '$id', 'length': 16, 'name': 'avaluo_construccion', 'precision': 1, 'type': 6}, 
-            {'expression': '"{}"'.format(AREA_R1_GDB), 'length': 15, 'name': 'area_construccion', 'precision': 1, 'type': 6}, 
-            {'expression': '"{}"'.format(CODIGO_R1_GDB), 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}, 
-            {'expression': "'IGAC_Construcción'", 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10}, 
-            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16}
-            ]
-    elif layer_name == VALUATION_BUILDING_TABLE:
-        mapping = [
-            {'expression': 'if({NumPisos} = 0, 99, {NumPisos})'.format(NumPisos=NUM_PISOS_R1_GDB), 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2}
-            ]
-    elif layer_name == VALUATION_BUILDING_UNIT_TABLE:
-        mapping = [
-            {'expression': "if ({} = 'CONVENCIONAL', 'Convencional','noConvencional')".format(TIPO_CONSTRUCCION_R1_GDB), 'length': 255, 'name': 'construccion_tipo', 'precision': -1, 'type': 10}, 
-            {'expression': "'Aulas_Clases'", 'length': 255, 'name': 'uso', 'precision': -1, 'type': 10}, 
-            {'expression': "'Anexo'", 'length': 255, 'name': 'destino_econo', 'precision': -1, 'type': 10}, 
-            {'expression': "'De_Alto_Riesgo'", 'length': 255, 'name': 'tipologia', 'precision': -1, 'type': 10}, 
-            {'expression': '$id', 'length': -1, 'name': 'puntuacion', 'precision': 0, 'type': 2}, 
-            {'expression': 'now()', 'length': -1, 'name': 'anio_construction', 'precision': -1, 'type': 14}, 
-            {'expression': "'Bueno'", 'length': 255, 'name': 'estado_conservacion', 'precision': -1, 'type': 10}, 
-            {'expression': '"{}"'.format(CODIGO_R1_GDB), 'length': 255, 'name': 'material', 'precision': -1, 'type': 10}
-            ]
-    elif layer_name == BUILDING_UNIT_TABLE:
-        mapping = [
-            {'expression': '99', 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2}, 
-            {'expression': '$id', 'length': 15, 'name': 'area_construida', 'precision': 1, 'type': 6}, 
-            {'expression': '"construccion_oficial_t_id"', 'length': -1, 'name': 'construccion', 'precision': 0, 'type': 4}, 
-            {'expression': '"{}"'.format(ETIQUETA_R1_GDB), 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10}, 
-            {'expression': "'Unidad_Construcción'", 'length': 255, 'name': 'su_espacio_de_nombres', 'precision': -1, 'type': 10}, 
-            {'expression': '"{}"'.format(CODIGO_R1_GDB), 'length': 255, 'name': 'su_local_id', 'precision': -1, 'type': 10}, 
-            {'expression': 'now()', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16} 
-            ]
-    elif layer_name == AVALUOUNIDADCONSTRUCCION_TABLE:
-        mapping = [
-             {'expression': '"unidad_construccion_oficial_t_id"', 'length': -1, 'name': 'aucons', 'precision': 0, 'type': 4}, 
-             {'expression': '"t_id"', 'length': -1, 'name': 'ucons', 'precision': 0, 'type': 4}
-             ]
-    elif layer_name == FDC_VALUATION_BUILDING_CONNECTION:
-        mapping = [
-             {'expression': '"avaluos_v2_2_1avaluos_construccion_oficial_t_id"', 'length': -1, 'name': 'acons', 'precision': 0, 'type': 4}, 
-             {'expression': '"t_id"', 'length': -1, 'name': 'cons', 'precision': 0, 'type': 4}
-             ]
-    elif layer_name == VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE:
-        mapping = [
-             {'expression': '"t_id"', 'length': -1, 'name': 'unidadconstruccion', 'precision': 0, 'type': 4}
-             ]
-    elif layer_name == VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE:
-        mapping = [
-             {'expression': '"t_id"', 'length': -1, 'name': 'unidadconstruccion', 'precision': 0, 'type': 4}
-             ]
-    elif layer_name == EXTADDRESS_TABLE:
-        mapping = [
-             {'expression': '"{}"'.format(TEXTO_R1_GDB), 'length': 255, 'name': 'nombre_area_direccion', 'precision': -1, 'type': 10}
-             ]
 
     return mapping

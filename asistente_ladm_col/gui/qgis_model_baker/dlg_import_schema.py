@@ -159,6 +159,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             item = self.import_models_list_widget.item(index)
             if item.checkState() == Qt.Checked:
                 checked_models.append(item.text())
+
+        checked_models = ['Datos_Gestor_Catastral_V2_9_4']
         return checked_models
 
     def show_settings(self):

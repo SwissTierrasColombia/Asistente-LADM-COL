@@ -94,7 +94,7 @@ from .gui.wizards.valuation.wiz_create_physical_zone_valuation import CreatePhys
 from .gui.dialogs.dlg_load_layers import LoadLayersDialog
 from .gui.dialogs.dlg_quality import QualityDialog
 from .gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
-from .gui.dialogs.dlg_input_load_field_data_capture import InputLoadFieldDataCaptureDialog
+from .gui.dialogs.dlg_input_operator_data_capture import InputLoadOperatorDataDialog
 from .gui.dockwidget_queries import DockWidgetQueries
 from .gui.dialogs.dlg_log_quality import LogQualityDialog
 from .gui.right_of_way import RightOfWay
@@ -1322,7 +1322,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_activate_processing_plugin
     def show_load_r1_gdb_dialog(self, *args, **kwargs):
-        dlg = InputLoadFieldDataCaptureDialog(self.iface, self.conn_manager, self.qgis_utils)
+        dlg = InputLoadOperatorDataDialog(self.iface, self.conn_manager, self.qgis_utils)
         dlg.exec_()
 
     def show_change_detection_dockwidget(self):

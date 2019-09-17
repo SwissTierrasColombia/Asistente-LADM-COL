@@ -197,22 +197,20 @@ FDC_BLOCK = "manzanavereda_FDC"
 FDC_NEIGHBOURHOOD = "barrio"
 FDC_VALUATION_BUILDING_CONNECTION = "avaluoconstruccion"
 """
-R1 and GDB
+SUPPLIES
 """
-DEPARTAMENTO_R1_GDB = 'Departamento'
-MUNICIPIO_R1_GDB = 'Municipio'
-NO_PREDIAL_R1_GDB = 'NoPredial'
-NO_PREDIAL_ANTERIOR_R1_GDB = 'NoPredialAnterior'
-AVALUO_R1_GDB = 'Avaluo ($)'
-NOMBRE_R1_GDB = 'Nombre'
-NO_DOCUMENTO_R1_GDB = 'NoDocumento'
-TIPO_DOCUMENTO_R1_GDB = 'TipoDocumento'
-TEXTO_R1_GDB = 'texto'
-AREA_R1_GDB = 'SHAPE_Area'
-CODIGO_R1_GDB = 'Codigo'
-ETIQUETA_R1_GDB = 'etiqueta'
-NUM_PISOS_R1_GDB = 'Numero_Pisos'
-TIPO_CONSTRUCCION_R1_GDB = 'Tipo_Construccion'
+
+CM_PARCEL_TABLE = "gc_predio_catastro"
+CM_OWNER_TABLE = "gc_propietario"
+CM_ADDRESS_TABLE = "gc_direccion"
+CM_BUILDING_UNIT_TABLE = "gc_unidad_construccion"
+CM_BUILDING_TABLE = "gc_construccion"
+CM_PLOT_TABLE = "gc_terreno"
+CM_SECTOR_TABLE = "gc_sector"
+CM_VILLAGE_TABLE = "gc_vereda"
+CM_PERIMETER_TABLE = "gc_perimetro"
+CM_BLOCK_TABLE = "gc_manzana"
+CM_NEIGHBOURHOOD_TABLE = "gc_barrio"
 
 """
 PLURAL WORDS, FOR DISPLAY PURPOSES

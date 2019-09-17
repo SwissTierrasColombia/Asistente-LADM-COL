@@ -35,7 +35,7 @@ from qgis.core import (QgsProject,
                        QgsVectorLayerJoinInfo)
 
 from .symbology import SymbologyUtils
-from ..config.refactor_fields_mappings import get_refactor_fields_mapping_r1_gdb_to_ladm
+from ..config.refactor_fields_mappings import get_refactor_fields_mapping_supplies
 
 def run_etl_model_input_load_data(input_layer, output_layer, ladm_col_layer_name, qgis_utils):
 
@@ -46,7 +46,7 @@ def run_etl_model_input_load_data(input_layer, output_layer, ladm_col_layer_name
     model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
 
     if model:
-        mapping = get_refactor_fields_mapping_r1_gdb_to_ladm(ladm_col_layer_name, qgis_utils)
+        mapping = get_refactor_fields_mapping_supplies(ladm_col_layer_name, qgis_utils)
         params = {
             'INPUT': input_layer,
             'mapping': mapping,
@@ -96,8 +96,15 @@ def get_directions(layer, reference_layers):
 
     return direction['OUTPUT'] 
 
-def extract_by_expresion(layer, expresion):
-    params = {'INPUT':layer,'EXPRESSION': expresion,'OUTPUT':'TEMPORARY_OUTPUT'}
+def extract_by_expresion(layer, expresion, name='Matching features'):
+    params = {'INPUT':layer,'EXPRESSION': expresion,'OUTPUT':'memory:{}'.format(name)}
     layer_extracted = processing.run("native:extractbyexpression", params)
 
     return layer_extracted['OUTPUT']
+
+def field_calculator(layer, field_name, formula, name='Matching features'):
+    params = {'INPUT':layer,'FIELD_NAME':field_name,'FIELD_TYPE':2,'FIELD_LENGTH':80,'FIELD_PRECISION':3,'NEW_FIELD':True,'FORMULA':formula,'OUTPUT':'memory:{}'.format(name)}
+    layer_calculator = processing.run("qgis:fieldcalculator", params)
+
+    return layer_calculator['OUTPUT']
+
