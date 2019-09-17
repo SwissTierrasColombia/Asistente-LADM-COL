@@ -80,9 +80,7 @@ from .gui.wizards.cadastre.party.dlg_create_group_party_cadastre import CreateGr
 from .gui.wizards.cadastre.baunit.wiz_create_parcel_cadastre import CreateParcelCadastreWizard
 from .gui.wizards.cadastre.spatial_unit.wiz_create_plot_cadastre import CreatePlotCadastreWizard
 from .gui.wizards.cadastre.surveying.wiz_create_points_cadastre import CreatePointsCadastreWizard
-from .gui.wizards.cadastre.rrr.wiz_create_responsibility_cadastre import CreateResponsibilityCadastreWizard
-from .gui.wizards.cadastre.rrr.wiz_create_restriction_cadastre import CreateRestrictionCadastreWizard
-from .gui.wizards.cadastre.rrr.wiz_create_right_cadastre import CreateRightCadastreWizard
+from .gui.wizards.cadastre.rrr.wiz_create_rrr_cadastre import CreateRRRCadastreWizard
 from .gui.wizards.cadastre.source.wiz_create_spatial_source_cadastre import CreateSpatialSourceCadastreWizard
 from .gui.wizards.valuation.wiz_create_building_unit_valuation import CreateBuildingUnitValuationWizard
 from .gui.wizards.valuation.wiz_create_building_unit_qualification_valuation import CreateBuildingUnitQualificationValuationWizard
@@ -106,25 +104,7 @@ from .utils.qt_utils import (get_plugin_metadata,
 from .utils.quality import QualityUtils
 from .lib.db.enum_db_action_type import EnumDbActionType
 
-from .config.wizards_config import (WIZARDS_SETTINGS,
-                                    SINGLE_PAGE_WIZARD,
-                                    SINGLE_PAGE_SPATIAL_WIZARD,
-                                    WIZARD_CREATE_COL_PARTY_CADASTRAL,
-                                    WIZARD_CREATE_ADMINISTRATIVE_SOURCE_CADASTRE,
-                                    WIZARD_CREATE_BOUNDARY_CADASTRE,
-                                    WIZARD_CREATE_BUILDING_CADASTRE,
-                                    WIZARD_CREATE_BUILDING_UNIT_CADASTRE,
-                                    WIZARD_CREATE_LEGAL_PARTY_PRC,
-                                    WIZARD_CREATE_NATURAL_PARTY_PRC,
-                                    WIZARD_CREATE_NUCLEAR_FAMILY_PRC,
-                                    WIZARD_CREATE_MARKET_RESEARCH_PRC,
-                                    WIZARD_CREATE_PROPERTY_RECORD_CARD_PRC,
-                                    WIZARD_CREATE_HORIZONTAL_PROPERTY_VALUATION,
-                                    WIZARD_CREATE_COMMON_EQUIPMENT_VALUATION,
-                                    WIZARD_CREATE_BUILDING_VALUATION,
-                                    WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION,
-                                    WIZARD_CREATE_PHYSICAL_ZONE_VALUATION,
-                                    WIZARD_CREATE_PARCEL_VALUATION)
+from .config.wizards_config import WizardConfig
 from .gui.wizards.single_page_spatial_wizard import SinglePageSpatialWizard
 from .gui.wizards.single_page_wizard import SinglePageWizard
 
@@ -1162,7 +1142,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_boundaries_cad(self):
-        self.show_wizard(WIZARD_CREATE_BOUNDARY_CADASTRE, SINGLE_PAGE_SPATIAL_WIZARD)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_BOUNDARY_CADASTRE, WizardConfig.SINGLE_PAGE_SPATIAL_WIZARD_TYPE)
 
     def set_wizard_is_open_flag(self, open):
         """
@@ -1188,10 +1168,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.exec_wizard(self.wiz)
 
     def show_wiz_building_cad(self):
-        self.show_wizard(WIZARD_CREATE_BUILDING_CADASTRE, SINGLE_PAGE_SPATIAL_WIZARD)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_BUILDING_CADASTRE, WizardConfig.SINGLE_PAGE_SPATIAL_WIZARD_TYPE)
 
     def show_wiz_building_unit_cad(self):
-        self.show_wizard(WIZARD_CREATE_BUILDING_UNIT_CADASTRE, SINGLE_PAGE_SPATIAL_WIZARD)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_BUILDING_UNIT_CADASTRE, WizardConfig.SINGLE_PAGE_SPATIAL_WIZARD_TYPE)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1216,7 +1196,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.exec_wizard(self.wiz)
 
     def show_wiz_col_party_cad(self):
-        self.show_wizard(WIZARD_CREATE_COL_PARTY_CADASTRAL)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_COL_PARTY_CADASTRAL)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1242,32 +1222,20 @@ class AsistenteLADMCOLPlugin(QObject):
         else:
             del dlg
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
     def show_wiz_right_rrr_cad(self):
-        self.wiz = CreateRightCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_RIGHT_CADASTRE, WizardConfig.RRR_CADASTRE_WIZARD_TYPE)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
     def show_wiz_responsibility_rrr_cad(self):
-        self.wiz = CreateResponsibilityCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_RESPONSIBILITY_CADASTRE, WizardConfig.RRR_CADASTRE_WIZARD_TYPE)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
     def show_wiz_restriction_rrr_cad(self):
-        self.wiz = CreateRestrictionCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_RESTRICTION_CADASTRE, WizardConfig.RRR_CADASTRE_WIZARD_TYPE)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wiz_administrative_source_cad(self):
-        self.show_wizard(WIZARD_CREATE_ADMINISTRATIVE_SOURCE_CADASTRE)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_ADMINISTRATIVE_SOURCE_CADASTRE)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1291,31 +1259,31 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.exec_()
 
     def show_wiz_property_record_card(self):
-        self.show_wizard(WIZARD_CREATE_PROPERTY_RECORD_CARD_PRC)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_PROPERTY_RECORD_CARD_PRC)
 
     def show_wiz_market_research_prc(self):
-        self.show_wizard(WIZARD_CREATE_MARKET_RESEARCH_PRC)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_MARKET_RESEARCH_PRC)
 
     def show_wiz_nuclear_family_prc(self):
-        self.show_wizard(WIZARD_CREATE_NUCLEAR_FAMILY_PRC)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_NUCLEAR_FAMILY_PRC)
 
     def show_wiz_natural_party_prc(self):
-        self.show_wizard(WIZARD_CREATE_NATURAL_PARTY_PRC)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_NATURAL_PARTY_PRC)
 
     def show_wiz_legal_party_prc(self):
-        self.show_wizard(WIZARD_CREATE_LEGAL_PARTY_PRC)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_LEGAL_PARTY_PRC)
 
     def show_wiz_parcel_valuation(self):
-        self.show_wizard(WIZARD_CREATE_PARCEL_VALUATION)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_PARCEL_VALUATION)
 
     def show_wiz_horizontal_property_main_parcel_valuation(self):
-        self.show_wizard(WIZARD_CREATE_HORIZONTAL_PROPERTY_VALUATION)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_HORIZONTAL_PROPERTY_VALUATION)
 
     def show_wiz_common_equipment_valuation(self):
-        self.show_wizard(WIZARD_CREATE_COMMON_EQUIPMENT_VALUATION)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_COMMON_EQUIPMENT_VALUATION)
 
     def show_wiz_building_valuation(self):
-        self.show_wizard(WIZARD_CREATE_BUILDING_VALUATION)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_BUILDING_VALUATION)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1332,10 +1300,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.exec_wizard(self.wiz)
 
     def show_wiz_geoeconomic_zone_valuation(self):
-        self.show_wizard(WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION, SINGLE_PAGE_SPATIAL_WIZARD)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION, WizardConfig.SINGLE_PAGE_SPATIAL_WIZARD_TYPE)
 
     def show_wiz_physical_zone_valuation_action(self):
-        self.show_wizard(WIZARD_CREATE_PHYSICAL_ZONE_VALUATION, SINGLE_PAGE_SPATIAL_WIZARD)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_PHYSICAL_ZONE_VALUATION, WizardConfig.SINGLE_PAGE_SPATIAL_WIZARD_TYPE)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1416,16 +1384,18 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required2
-    def show_wizard(self, wizard_name, type_wizard=SINGLE_PAGE_WIZARD, *args, **kwargs):
-        wiz_settings = WIZARDS_SETTINGS[wizard_name]
+    def show_wizard(self, wizard_name, type_wizard=WizardConfig.SINGLE_PAGE_WIZARD_TYPE, *args, **kwargs):
+        wiz_settings = WizardConfig.WIZARDS_SETTINGS[wizard_name]
 
-        if type_wizard == SINGLE_PAGE_WIZARD:
+        if type_wizard == WizardConfig.SINGLE_PAGE_WIZARD_TYPE:
             self.wiz = SinglePageWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
-        elif type_wizard == SINGLE_PAGE_SPATIAL_WIZARD:
+        elif type_wizard == WizardConfig.SINGLE_PAGE_SPATIAL_WIZARD_TYPE:
             self.wiz = SinglePageSpatialWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
             self.wiz.set_wizard_is_open_emitted.connect(self.set_wizard_is_open_flag)
             self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
             self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
             self.is_wizard_open = True
+        elif type_wizard == WizardConfig.RRR_CADASTRE_WIZARD_TYPE:
+            self.wiz = CreateRRRCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
 
         self.exec_wizard(self.wiz)

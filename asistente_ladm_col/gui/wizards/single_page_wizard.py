@@ -34,17 +34,7 @@ from ...config.general_config import (PLUGIN_NAME,
                                       LAYER)
 from ...config.help_strings import HelpStrings
 from ...config.table_mapping_config import ID_FIELD
-from ...config.wizards_config import (WIZARD_HELP_SETTING,
-                                      WIZARD_NAME_SETTING,
-                                      WIZARD_FEATURE_NAME_SETTING,
-                                      WIZARD_EDITING_LAYER_NAME_SETTING,
-                                      WIZARD_UI_SETTING,
-                                      WIZARD_MAP_LAYER_PROXY_MODEL,
-                                      WIZARD_LAYERS_SETTING,
-                                      WIZARD_QSETTINGS_SETTING,
-                                      WIZARD_HELP_PAGES_SETTING,
-                                      WIZARD_HELP_PAGE1,
-                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE)
+from ...config.wizards_config import WizardConfig
 from ...utils.ui import load_ui
 
 
@@ -59,13 +49,13 @@ class SinglePageWizard(QWizard):
         self.wizard_config = wizard_settings
         self.help_strings = HelpStrings()
 
-        load_ui(self.wizard_config[WIZARD_UI_SETTING], self)
+        load_ui(self.wizard_config[WizardConfig.WIZARD_UI_SETTING], self)
 
-        self.WIZARD_NAME = self.wizard_config[WIZARD_NAME_SETTING]
-        self.WIZARD_FEATURE_NAME = self.wizard_config[WIZARD_FEATURE_NAME_SETTING]
-        self.WIZARD_TOOL_NAME = 'Create {}'.format(self.wizard_config[WIZARD_FEATURE_NAME_SETTING])
-        self.EDITING_LAYER_NAME = self.wizard_config[WIZARD_EDITING_LAYER_NAME_SETTING]
-        self._layers = self.wizard_config[WIZARD_LAYERS_SETTING]
+        self.WIZARD_NAME = self.wizard_config[WizardConfig.WIZARD_NAME_SETTING]
+        self.WIZARD_FEATURE_NAME = self.wizard_config[WizardConfig.WIZARD_FEATURE_NAME_SETTING]
+        self.WIZARD_TOOL_NAME = 'Create {}'.format(self.wizard_config[WizardConfig.WIZARD_FEATURE_NAME_SETTING])
+        self.EDITING_LAYER_NAME = self.wizard_config[WizardConfig.WIZARD_EDITING_LAYER_NAME_SETTING]
+        self._layers = self.wizard_config[WizardConfig.WIZARD_LAYERS_SETTING]
 
         self.restore_settings()
         self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
@@ -74,7 +64,7 @@ class SinglePageWizard(QWizard):
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
         self.rejected.connect(self.close_wizard)
-        self.mMapLayerComboBox.setFilters(self.wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL])
+        self.mMapLayerComboBox.setFilters(self.wizard_config[WizardConfig.WIZARD_MAP_LAYER_PROXY_MODEL])
 
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
@@ -84,17 +74,17 @@ class SinglePageWizard(QWizard):
         if self.rad_refactor.isChecked():
             self.lbl_refactor_source.setEnabled(True)
             self.mMapLayerComboBox.setEnabled(True)
-            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, False))
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
+            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, False))
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
-            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
-            self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES_SETTING][WIZARD_HELP_PAGE1])
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
+            finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
+            self.txt_help_page_1.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP_PAGE1])
 
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
 
@@ -237,16 +227,16 @@ class SinglePageWizard(QWizard):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue(self.wizard_config[WIZARD_QSETTINGS_SETTING][WIZARD_QSETTINGS_LOAD_DATA_TYPE], 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
+        settings.setValue(self.wizard_config[WizardConfig.WIZARD_QSETTINGS_SETTING][WizardConfig.WIZARD_QSETTINGS_LOAD_DATA_TYPE], 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
 
     def restore_settings(self):
         settings = QSettings()
 
-        load_data_type = settings.value(self.wizard_config[WIZARD_QSETTINGS_SETTING][WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'create_manually'
+        load_data_type = settings.value(self.wizard_config[WizardConfig.WIZARD_QSETTINGS_SETTING][WizardConfig.WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'create_manually'
         if load_data_type == 'refactor':
             self.rad_refactor.setChecked(True)
         else:
             self.rad_create_manually.setChecked(True)
 
     def show_help(self):
-        self.qgis_utils.show_help(self.wizard_config[WIZARD_HELP_SETTING])
+        self.qgis_utils.show_help(self.wizard_config[WizardConfig.WIZARD_HELP_SETTING])
