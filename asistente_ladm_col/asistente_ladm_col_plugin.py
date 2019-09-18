@@ -1157,12 +1157,8 @@ class AsistenteLADMCOLPlugin(QObject):
         """
         self._finalize_geometry_creation_action.setEnabled(enable)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
     def show_wiz_plot_cad(self):
-        self.wiz = CreatePlotCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self)
-        self.exec_wizard(self.wiz)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_PLOT_CADASTRE, WizardConfig.MULTI_PAGE_WIZARD_TYPE)
 
     def show_wiz_building_cad(self):
         self.show_wizard(WizardConfig.WIZARD_CREATE_BUILDING_CADASTRE, WizardConfig.SINGLE_PAGE_SPATIAL_WIZARD_TYPE)
@@ -1274,12 +1270,8 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_wiz_building_unit_valuation(self):
         self.show_wizard(WizardConfig.WIZARD_CREATE_BUILDING_UNIT_VALUATION, WizardConfig.MULTI_PAGE_WIZARD_TYPE)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
     def show_wiz_building_unit_qualification_valuation(self):
-        self.wiz = CreateBuildingUnitQualificationValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION, WizardConfig.MULTI_PAGE_WIZARD_TYPE)
 
     def show_wiz_geoeconomic_zone_valuation(self):
         self.show_wizard(WizardConfig.WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION, WizardConfig.SINGLE_PAGE_SPATIAL_WIZARD_TYPE)
@@ -1371,6 +1363,10 @@ class AsistenteLADMCOLPlugin(QObject):
 
         if wizard_name == WizardConfig.WIZARD_CREATE_BUILDING_UNIT_VALUATION:
             self.wiz = CreateBuildingUnitValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
+        elif wizard_name == WizardConfig.WIZARD_CREATE_PLOT_CADASTRE:
+            self.wiz = CreatePlotCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
+        elif wizard_name == WizardConfig.WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION:
+            self.wiz = CreateBuildingUnitQualificationValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
         elif wizard_name == WizardConfig.WIZARD_CREATE_SPATIAL_SOURCE_CADASTRE:
             self.wiz = CreateSpatialSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
         elif wizard_name == WizardConfig.WIZARD_CREATE_PARCEL_CADASTRE:

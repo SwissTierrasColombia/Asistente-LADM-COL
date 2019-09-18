@@ -38,6 +38,10 @@ class CreateParcelCadastreWizard(MultiPageWizard,
         self._spatial_unit_layers = dict()
         self.type_of_parcel_selected = None
 
+    #############################################################################
+    # implement: raise NotImplementedError
+    #############################################################################
+
     def register_select_feature_on_map(self):
         self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[PLOT_TABLE][LAYER]))
         self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_TABLE][LAYER]))
@@ -192,9 +196,9 @@ class CreateParcelCadastreWizard(MultiPageWizard,
             except:
                 pass
 
-
-    # Overide methods
-
+    #############################################################################
+    # Override methods
+    #############################################################################
     def adjust_page_2_controls(self):
         self.button(self.FinishButton).setDisabled(True)
         self.disconnect_signals()
@@ -290,7 +294,9 @@ class CreateParcelCadastreWizard(MultiPageWizard,
 
         self.type_of_parcel_selected = settings.value(self.wizard_config[WizardConfig.WIZARD_QSETTINGS_SETTING][WizardConfig.WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED])
 
+    #############################################################################
     # Custom methods
+    #############################################################################
 
     def validate_type_of_parcel(self, parcel_type):
         # Activate all push buttons

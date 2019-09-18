@@ -63,6 +63,9 @@ class SinglePageSpatialWizard(QWizard):
         self.EDITING_LAYER_NAME = self.wizard_config[WizardConfig.WIZARD_EDITING_LAYER_NAME_SETTING]
         self._layers = self.wizard_config[WizardConfig.WIZARD_LAYERS_SETTING]
 
+        self.init_gui()
+
+    def init_gui(self):
         self.restore_settings()
         self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
         self.adjust_page_1_controls()
