@@ -74,8 +74,7 @@ class CreateBuildingUnitValuationWizard(MultiPageWizard,
         return message
 
     def disconnect_signals_select_features_by_expression(self):
-        signals = [self.btn_map.clicked,
-                   self.btn_expression.clicked]
+        signals = [self.btn_expression.clicked]
 
         for signal in signals:
             try:
@@ -84,4 +83,10 @@ class CreateBuildingUnitValuationWizard(MultiPageWizard,
                 pass
 
     def disconnect_signals_controls_select_features_on_map(self):
-        pass
+        signals = [self.btn_map.clicked]
+
+        for signal in signals:
+            try:
+                signal.disconnect()
+            except:
+                pass

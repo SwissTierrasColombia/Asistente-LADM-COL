@@ -3,6 +3,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 from ..config.help_strings import HelpStrings
 from ..config.table_mapping_config import (COL_PARTY_TABLE,
                                            BUILDING_TABLE,
+                                           PARCEL_TABLE,
+                                           UEBAUNIT_TABLE,
                                            BUILDING_UNIT_TABLE,
                                            SURVEY_POINT_TABLE,
                                            LEGAL_PARTY_TABLE,
@@ -53,6 +55,7 @@ class WizardConfig:
     WIZARD_HELP_PAGES_SETTING = "wizard_help_page"
     WIZARD_QSETTINGS_SETTING = "wizard_qsettings"
     WIZARD_QSETTINGS_LOAD_DATA_TYPE = "wizard_qsettings_load_data_type"
+    WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED = "wizard_qsetting_type_parcel_selected"
     WIZARD_HELP_PAGE1 = "wizard_help_pages_page1"
     WIZARD_HELP_PAGE2 = "wizard_help_pages_page2"
     WIZARD_LAYERS_SETTING = "wizard_layers"
@@ -69,6 +72,7 @@ class WizardConfig:
     WIZARD_CREATE_RESTRICTION_CADASTRE = "wizard_create_restriction_cadastre"
     WIZARD_CREATE_RESPONSIBILITY_CADASTRE = "wizard_create_responsibility_cadastre"
     WIZARD_CREATE_SPATIAL_SOURCE_CADASTRE = "wizard_create_spatial_source_cadastre"
+    WIZARD_CREATE_PARCEL_CADASTRE = "wizard_create_parcel_cadastre"
 
     # Valuation model
     WIZARD_CREATE_PARCEL_VALUATION = "wizard_create_parcel_valuation"
@@ -268,6 +272,29 @@ class WizardConfig:
                 CONTROL_POINT_TABLE: {'name': CONTROL_POINT_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: SPATIAL_SOURCE_TABLE,
+            WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
+        },
+        WIZARD_CREATE_PARCEL_CADASTRE: {
+            WIZARD_NAME_SETTING: "CreateParcelCadastreWizard",
+            WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateParcelCadastreWizard", "parcel"),
+            WIZARD_HELP_SETTING: "create_parcel",
+            WIZARD_UI_SETTING: "wizards/cadastre/baunit/wiz_create_parcel_cadastre.ui",
+            WIZARD_QSETTINGS_SETTING: {
+                WIZARD_QSETTINGS_LOAD_DATA_TYPE: "sistente-LADM_COL/wizards/parcel_load_data_type",
+                WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED: "Asistente-LADM_COL/wizards/type_of_parcel_selected"
+            },
+            WIZARD_HELP_PAGES_SETTING: {
+                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_PARCEL_CADASTRE_PAGE_1_OPTION_EXISTING_PLOT,
+                WIZARD_HELP_PAGE2: help_strings.WIZ_CREATE_PARCEL_CADASTRE_PAGE_2
+            },
+            WIZARD_LAYERS_SETTING: {
+                PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
+                BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
+            },
+            WIZARD_EDITING_LAYER_NAME_SETTING: PARCEL_TABLE,
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         # VALUATION MODEL

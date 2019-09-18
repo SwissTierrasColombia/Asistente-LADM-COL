@@ -1185,12 +1185,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.wiz = AssociateExtAddressWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
         self.exec_wizard(self.wiz)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
     def show_wiz_parcel_cad(self):
-        self.wiz = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self)
-        self.exec_wizard(self.wiz)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_PARCEL_CADASTRE, WizardConfig.MULTI_PAGE_WIZARD_TYPE)
 
     def show_wiz_col_party_cad(self):
         self.show_wizard(WizardConfig.WIZARD_CREATE_COL_PARTY_CADASTRAL, WizardConfig.SINGLE_PAGE_WIZARD_TYPE)
@@ -1377,6 +1373,8 @@ class AsistenteLADMCOLPlugin(QObject):
             self.wiz = CreateBuildingUnitValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
         elif wizard_name == WizardConfig.WIZARD_CREATE_SPATIAL_SOURCE_CADASTRE:
             self.wiz = CreateSpatialSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
+        elif wizard_name == WizardConfig.WIZARD_CREATE_PARCEL_CADASTRE:
+            self.wiz = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
         elif type_wizard == WizardConfig.SINGLE_PAGE_WIZARD_TYPE:
             self.wiz = SinglePageWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
         elif type_wizard == WizardConfig.SINGLE_PAGE_SPATIAL_WIZARD_TYPE:

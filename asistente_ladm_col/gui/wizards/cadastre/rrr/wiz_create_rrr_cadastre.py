@@ -104,6 +104,7 @@ class CreateRRRCadastreWizard(MultiPageWizard, SelectFeatureByExpressionWizard):
 
     def disconnect_signals_select_features_by_expression(self):
         signals = [self.btn_expression.clicked]
+
         for signal in signals:
             try:
                 signal.disconnect()

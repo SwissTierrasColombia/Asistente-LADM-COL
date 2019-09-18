@@ -178,12 +178,12 @@ class CreateSpatialSourceCadastreWizard(MultiPageWizard,
         return message
 
     def disconnect_signals_select_features_by_expression(self):
-        # GUI Wizard
         signals = [self.btn_plot_expression.clicked,
                    self.btn_boundary_expression.clicked,
                    self.btn_boundary_point_expression.clicked,
                    self.btn_survey_point_expression.clicked,
                    self.btn_control_point_expression.clicked]
+
         for signal in signals:
             try:
                 signal.disconnect()
@@ -196,6 +196,7 @@ class CreateSpatialSourceCadastreWizard(MultiPageWizard,
                    self.btn_boundary_point_map.clicked,
                    self.btn_survey_point_map.clicked,
                    self.btn_control_point_map.clicked]
+
         for signal in signals:
             try:
                 signal.disconnect()
