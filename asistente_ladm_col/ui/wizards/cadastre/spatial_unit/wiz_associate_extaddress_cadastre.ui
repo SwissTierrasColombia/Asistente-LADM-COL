@@ -188,7 +188,7 @@
             </spacer>
            </item>
            <item row="1" column="0" colspan="2">
-            <widget class="QRadioButton" name="rad_spatial_unit">
+            <widget class="QRadioButton" name="rad_create_manually">
              <property name="text">
               <string>Entering data manually using a form</string>
              </property>

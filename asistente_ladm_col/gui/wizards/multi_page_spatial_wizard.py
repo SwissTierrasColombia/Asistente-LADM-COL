@@ -32,24 +32,32 @@ from qgis.core import (QgsApplication,
                        Qgis)
 
 from ...config.general_config import (PLUGIN_NAME,
+                                      TranslatableConfigStrings,
                                       LAYER)
 from ...config.help_strings import HelpStrings
-from ...config.table_mapping_config import ID_FIELD
 from ...config.wizards_config import WizardConfig
+from ...gui.wizards.select_features_on_map_wizard import SelectFeaturesOnMapWizard
+from ...utils.qt_utils import (enable_next_wizard,
+                               disable_next_wizard)
 from ...utils.ui import load_ui
 
 
-class SinglePageWizard(QWizard):
+class MultiPageSpatialWizard(QWizard, SelectFeaturesOnMapWizard):
+
     set_wizard_is_open_emitted = pyqtSignal(bool)
+    set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):
-        super(SinglePageWizard, self).__init__()
-        self.iface = iface
+        self.iface = iface  # in another position breaks the constructor
+        QWizard.__init__(self)
+        SelectFeaturesOnMapWizard.__init__(self)
+
         self.log = QgsApplication.messageLog()
         self._db = db
         self.qgis_utils = qgis_utils
         self.wizard_config = wizard_settings
         self.help_strings = HelpStrings()
+        self.translatable_config_strings = TranslatableConfigStrings()
 
         load_ui(self.wizard_config[WizardConfig.WIZARD_UI_SETTING], self)
 
@@ -66,6 +74,7 @@ class SinglePageWizard(QWizard):
         self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
         self.adjust_page_1_controls()
 
+        self.button(QWizard.NextButton).clicked.connect(self.adjust_page_2_controls)
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
         self.rejected.connect(self.close_wizard)
@@ -81,17 +90,53 @@ class SinglePageWizard(QWizard):
             self.mMapLayerComboBox.setEnabled(True)
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
+            disable_next_wizard(self)
+            self.wizardPage1.setFinalPage(True)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, False))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, True))
+            self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
+            self.wizardPage1.setFinalPage(False)
+            enable_next_wizard(self)
+            self.wizardPage1.setFinalPage(False)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
             self.txt_help_page_1.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP_PAGE1])
 
-        self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
+        self.wizardPage2.setButtonText(QWizard.FinishButton, finish_button_text)
+
+    def adjust_page_2_controls(self):
+        self.button(self.FinishButton).setDisabled(True)
+        self.txt_help_page_2.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP_PAGE2])
+        self.disconnect_signals()
+
+        # Load layers
+        result = self.prepare_feature_creation_layers()
+        if result is None:
+            self.close_wizard(show_message=False)
+
+        # Check if a previous features are selected
+        self.check_selected_features()
+
+        # Register select features by expression
+        if hasattr(self, 'SELECTION_BY_EXPRESSION'):
+            self.register_select_features_by_expression()
+
+        # Register select features on map
+        if hasattr(self, 'SELECTION_ON_MAP'):
+            self.register_select_feature_on_map()
+
+    def register_select_features_by_expression(self):
+        raise NotImplementedError
+
+    def register_select_feature_on_map(self):
+        raise NotImplementedError
+
+    def check_selected_features(self):
+        raise NotImplementedError
 
     def finished_dialog(self):
         self.save_settings()
@@ -118,6 +163,7 @@ class SinglePageWizard(QWizard):
                     Qgis.Warning)
 
         elif self.rad_create_manually.isChecked():
+            self.set_finalize_geometry_creation_enabled_emitted.emit(True)
             self.prepare_feature_creation()
 
     def prepare_feature_creation(self):
@@ -131,6 +177,10 @@ class SinglePageWizard(QWizard):
         is_loaded = self.required_layers_are_available()
         if not is_loaded:
             return False
+
+        if hasattr(self, 'SELECTION_ON_MAP'):
+            # Add signal to check if a layer was removed
+            self.validate_remove_layers()
 
         # All layers were successfully loaded
         return True
@@ -167,52 +217,64 @@ class SinglePageWizard(QWizard):
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)
         if show_message:
             self.qgis_utils.message_emitted.emit(message, Qgis.Info)
+
+        if hasattr(self, 'SELECTION_ON_MAP'):
+            self.init_map_tool()
+
+        self.set_finalize_geometry_creation_enabled_emitted.emit(False)
         self.disconnect_signals()
         self.set_wizard_is_open_emitted.emit(False)
         self.close()
 
     def disconnect_signals(self):
+
+        if hasattr(self, 'SELECTION_BY_EXPRESSION'):
+            self.disconnect_signals_select_features_by_expression()
+
+        if hasattr(self, 'SELECTION_ON_MAP'):
+            self.disconnect_signals_select_features_on_map()
+
         try:
             self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
 
+    def disconnect_signals_controls_select_features_on_map(self):
+        raise NotImplementedError
+
     def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
-        self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
-        self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
+        raise NotImplementedError
 
     def finish_feature_creation(self, layerId, features):
-        message = QCoreApplication.translate(self.WIZARD_NAME,
-                                             "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
-        fid = features[0].id()
-
-        if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
-            message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                 "'{}' tool has been closed. Feature not found in layer {}... It's not posible create it. ").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME)
-            self.log.logMessage("Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
-        else:
-            feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
-            message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                 "The new {} (t_id={}) was successfully created ").format(self.WIZARD_FEATURE_NAME, feature_tid)
+        message = self.advance_save(features)
 
         self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("{} committedFeaturesAdded SIGNAL disconnected".format(self.WIZARD_FEATURE_NAME), PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 
+    def advance_save(self, features):
+        raise NotImplementedError
+
     def open_form(self, layer):
         if not layer.isEditable():
             layer.startEditing()
 
-        self.exec_form(layer)
+        self.qgis_utils.suppress_form(layer, True)
+        self.iface.actionAddFeature().trigger()
 
     def exec_form(self, layer):
-        feature = self.qgis_utils.get_new_feature(layer)
+        self.set_finalize_geometry_creation_enabled_emitted.emit(False)
+
+        for id, added_feature in layer.editBuffer().addedFeatures().items():
+            feature = added_feature
+            break
+
         dialog = self.iface.getFeatureForm(layer, feature)
         dialog.rejected.connect(self.form_rejected)
         dialog.setModal(True)
 
         if dialog.exec_():
+            self.exec_form_advance(layer)
             saved = layer.commitChanges()
 
             if not saved:
@@ -225,6 +287,9 @@ class SinglePageWizard(QWizard):
         else:
             layer.rollBack()
         self.iface.mapCanvas().refresh()
+
+    def exec_form_advance(self):
+        raise NotImplementedError
 
     def form_rejected(self):
         message = QCoreApplication.translate(self.WIZARD_NAME,

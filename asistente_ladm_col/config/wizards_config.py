@@ -19,6 +19,8 @@ from ..config.table_mapping_config import (COL_PARTY_TABLE,
                                            RRR_SOURCE_RELATION_TABLE,
                                            BOUNDARY_TABLE,
                                            BOUNDARY_POINT_TABLE,
+                                           EXTADDRESS_TABLE,
+                                           OID_TABLE,
                                            EXTFILE_TABLE,
                                            SPATIAL_SOURCE_TABLE,
                                            PLOT_TABLE,
@@ -48,6 +50,7 @@ class WizardConfig:
     SINGLE_PAGE_WIZARD_TYPE = "SinglePageWizard"
     SINGLE_PAGE_SPATIAL_WIZARD_TYPE = "SinglePageSpatialWizard"
     MULTI_PAGE_WIZARD_TYPE = "MultiPageWizard"
+    MULTI_PAGE_SPATIAL_WIZARD_TYPE = "MultiPageSpatialWizard"
     RRR_CADASTRE_WIZARD_TYPE = "RRRCadastreWizard"
 
     WIZARD_NAME_SETTING = "wizard_name"
@@ -84,6 +87,7 @@ class WizardConfig:
     WIZARD_CREATE_SPATIAL_SOURCE_CADASTRE = "wizard_create_spatial_source_cadastre"
     WIZARD_CREATE_PARCEL_CADASTRE = "wizard_create_parcel_cadastre"
     WIZARD_CREATE_PLOT_CADASTRE = "wizard_create_plot_cadastre"
+    WIZARD_CREATE_EXT_ADDRESS = "wizard_create_ext_address"
 
     # Valuation model
     WIZARD_CREATE_PARCEL_VALUATION = "wizard_create_parcel_valuation"
@@ -326,6 +330,30 @@ class WizardConfig:
                 BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: PLOT_TABLE,
+            WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
+        },
+        WIZARD_CREATE_EXT_ADDRESS: {
+            WIZARD_NAME_SETTING: "CreateExtAddressWizard",
+            WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateExtAddressWizard", "ext address"),
+            WIZARD_HELP_SETTING: "associate_ext_address",
+            WIZARD_UI_SETTING: "wizards/cadastre/spatial_unit/wiz_associate_extaddress_cadastre.ui",
+            WIZARD_QSETTINGS_SETTING: {
+                WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/ext_address_load_data_type"
+            },
+            WIZARD_HELP_PAGES_SETTING: {
+                WIZARD_HELP_PAGE1: help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1,
+                WIZARD_HELP1: help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_1,
+                WIZARD_HELP2: help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_2,
+                WIZARD_HELP3: help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_3
+            },
+            WIZARD_LAYERS_SETTING: {
+                EXTADDRESS_TABLE: {'name': EXTADDRESS_TABLE, 'geometry': QgsWkbTypes.PointGeometry, LAYER: None},
+                OID_TABLE: {'name': OID_TABLE, 'geometry': None, LAYER: None},
+                PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
+            },
+            WIZARD_EDITING_LAYER_NAME_SETTING: EXTADDRESS_TABLE,
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
         # VALUATION MODEL

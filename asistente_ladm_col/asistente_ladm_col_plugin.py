@@ -75,7 +75,7 @@ from .utils.decorators import (_db_connection_required,
 from .gui.dialogs.dlg_about import AboutDialog
 from .gui.dialogs.dlg_controlled_measurement import ControlledMeasurementDialog
 from .gui.wizards.cadastre.spatial_unit.wiz_create_right_of_way_cadastre import CreateRightOfWayCadastreWizard
-from .gui.wizards.cadastre.spatial_unit.wiz_associate_extaddress_cadastre import AssociateExtAddressWizard
+from .gui.wizards.cadastre.spatial_unit.wiz_create_ext_address_cadastre import CreateExtAddressCadastreWizard
 from .gui.wizards.cadastre.party.dlg_create_group_party_cadastre import CreateGroupPartyCadastre
 from .gui.wizards.cadastre.baunit.wiz_create_parcel_cadastre import CreateParcelCadastreWizard
 from .gui.wizards.cadastre.spatial_unit.wiz_create_plot_cadastre import CreatePlotCadastreWizard
@@ -1174,12 +1174,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.wiz = CreateRightOfWayCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
         self.exec_wizard(self.wiz)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
     def show_wiz_extaddress_cad(self):
-        self.wiz = AssociateExtAddressWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
-        self.exec_wizard(self.wiz)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_EXT_ADDRESS, WizardConfig.MULTI_PAGE_SPATIAL_WIZARD_TYPE)
 
     def show_wiz_parcel_cad(self):
         self.show_wizard(WizardConfig.WIZARD_CREATE_PARCEL_CADASTRE, WizardConfig.MULTI_PAGE_WIZARD_TYPE)
@@ -1363,6 +1359,11 @@ class AsistenteLADMCOLPlugin(QObject):
 
         if wizard_name == WizardConfig.WIZARD_CREATE_BUILDING_UNIT_VALUATION:
             self.wiz = CreateBuildingUnitValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
+        elif wizard_name == WizardConfig.WIZARD_CREATE_EXT_ADDRESS:
+            self.wiz = CreateExtAddressCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
+            self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
+            self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
+            self.is_wizard_open = True
         elif wizard_name == WizardConfig.WIZARD_CREATE_PLOT_CADASTRE:
             self.wiz = CreatePlotCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
         elif wizard_name == WizardConfig.WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION:
@@ -1375,11 +1376,11 @@ class AsistenteLADMCOLPlugin(QObject):
             self.wiz = SinglePageWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
         elif type_wizard == WizardConfig.SINGLE_PAGE_SPATIAL_WIZARD_TYPE:
             self.wiz = SinglePageSpatialWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
-            self.wiz.set_wizard_is_open_emitted.connect(self.set_wizard_is_open_flag)
             self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
             self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
             self.is_wizard_open = True
         elif type_wizard == WizardConfig.RRR_CADASTRE_WIZARD_TYPE:
             self.wiz = CreateRRRCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
 
+        self.wiz.set_wizard_is_open_emitted.connect(self.set_wizard_is_open_flag)
         self.exec_wizard(self.wiz)

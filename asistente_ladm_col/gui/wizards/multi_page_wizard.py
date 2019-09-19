@@ -25,8 +25,11 @@
  ***************************************************************************/
  """
 from qgis.PyQt.QtCore import (QSettings,
-                              QCoreApplication)
-from qgis.PyQt.QtWidgets import QWizard
+                              QCoreApplication,
+                              pyqtSignal)
+from qgis.PyQt.QtWidgets import (QWizard,
+                                 QPushButton,
+                                 QMessageBox)
 from qgis.core import (QgsApplication,
                        Qgis)
 
@@ -40,6 +43,7 @@ from ...utils.ui import load_ui
 
 
 class MultiPageWizard(QWizard):
+    set_wizard_is_open_emitted = pyqtSignal(bool)
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):
         super(QWizard, self).__init__()
@@ -211,6 +215,7 @@ class MultiPageWizard(QWizard):
             self.init_map_tool()
 
         self.disconnect_signals()
+        self.set_wizard_is_open_emitted.emit(False)
         self.close()
 
     def disconnect_signals(self):
