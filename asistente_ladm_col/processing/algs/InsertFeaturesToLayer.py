@@ -70,6 +70,7 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         target = self.parameterAsVectorLayer(parameters, self.OUTPUT, context)
+        target.dataProvider().clearErrors()
 
         editable_before = False
         if target.isEditable():
@@ -162,13 +163,10 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
             ))         
         else:
             if target.dataProvider().hasErrors():
-                details = layer.dataProvider().errors()
-                feedback.reportError("\nERROR: The {} features from input layer could not be copied into '{}'. This is likely due to constraints that are not met (such as NOT NULL, LENGTH or MAX-MIN values). Check that your input data meets your target layer constraints.".format(
-                source.featureCount(),
-                target.name()
-            ))
+                feedback.reportError("\nERROR: The data could not be copied! Details: {}.".format(target.dataProvider().errors()[0]))
+            else:
+                feedback.reportError("\nERROR: The data could not be copied! No more details from the provider.")
             
-
         return {self.OUTPUT: target}
 
     def transform_geom(self, geom, drop_coordinates, add_coordinates):
