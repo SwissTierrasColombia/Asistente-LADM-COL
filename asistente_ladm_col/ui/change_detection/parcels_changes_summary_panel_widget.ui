@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>354</width>
+    <width>381</width>
     <height>625</height>
    </rect>
   </property>
@@ -26,36 +26,6 @@
       <string>Summary of changes in parcels</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="4" column="0">
-       <widget class="QLabel" name="lbl_duplicated_parcels">
-        <property name="text">
-         <string>Duplicate parcels</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="2">
-       <widget class="QLabel" name="lbl_total_parcels_count">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>0</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="lbl_total_parcels">
-        <property name="text">
-         <string>TOTAL PARCEL CHANGES</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="lbl_new_parcels">
         <property name="text">
@@ -63,7 +33,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
+      <item row="0" column="1">
        <widget class="QLabel" name="lbl_new_parcels_count">
         <property name="font">
          <font>
@@ -79,7 +49,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
+      <item row="0" column="2">
        <widget class="QPushButton" name="btn_new_parcels">
         <property name="text">
          <string>See parcels</string>
@@ -93,7 +63,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="1" column="1">
        <widget class="QLabel" name="lbl_missing_parcels_count">
         <property name="font">
          <font>
@@ -109,7 +79,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
+      <item row="1" column="2">
        <widget class="QPushButton" name="btn_missing_parcels">
         <property name="text">
          <string>See parcels</string>
@@ -117,14 +87,14 @@
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="lbl_parcels_that_changed">
+       <widget class="QLabel" name="lbl_parcels_with_alphanumeric_changes">
         <property name="text">
-         <string>Parcels that changed</string>
+         <string>Parcels with changes in attrs</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
-       <widget class="QLabel" name="lbl_parcels_that_changed_count">
+      <item row="2" column="1">
+       <widget class="QLabel" name="lbl_parcels_with_alphanumeric_changes_count">
         <property name="font">
          <font>
           <weight>75</weight>
@@ -139,21 +109,51 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
-       <widget class="QPushButton" name="btn_parcels_that_changed">
+      <item row="2" column="2">
+       <widget class="QPushButton" name="btn_parcels_with_alphanumeric_changes">
         <property name="text">
          <string>See parcels</string>
         </property>
        </widget>
       </item>
       <item row="3" column="0">
+       <widget class="QLabel" name="lbl_parcels_with_only_geometry_changes">
+        <property name="text">
+         <string>Parcels with changes only in geometry</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLabel" name="lbl_parcels_with_only_geometry_changes_count">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QPushButton" name="btn_parcels_with_only_geometry_changes">
+        <property name="text">
+         <string>See parcels</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
        <widget class="QLabel" name="lbl_parcels_with_no_changes">
         <property name="text">
          <string>Parcels with no changes</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="2">
+      <item row="4" column="1">
        <widget class="QLabel" name="lbl_parcels_with_no_changes_count">
         <property name="font">
          <font>
@@ -169,58 +169,21 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="3">
+      <item row="4" column="2">
        <widget class="QPushButton" name="btn_parcels_with_no_changes">
         <property name="text">
          <string>See parcels</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="2">
-       <widget class="QLabel" name="lbl_null_parcel_numbers_count">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>0</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
       <item row="5" column="0">
-       <widget class="QLabel" name="lbl_null_parcel_numbers">
+       <widget class="QLabel" name="lbl_duplicated_parcels">
         <property name="text">
-         <string>Null parcel numbers</string>
+         <string>Duplicate parcels</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="3">
-       <widget class="QPushButton" name="btn_duplicated_parcels">
-        <property name="text">
-         <string>See parcels</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="3">
-       <widget class="QPushButton" name="btn_null_parcel_numbers">
-        <property name="text">
-         <string>See parcels</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="3">
-       <widget class="QPushButton" name="btn_total_parcels">
-        <property name="text">
-         <string>See all parcels</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="2">
+      <item row="5" column="1">
        <widget class="QLabel" name="lbl_duplicated_parcels_count">
         <property name="font">
          <font>
@@ -236,10 +199,77 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="0" colspan="4">
+      <item row="5" column="2">
+       <widget class="QPushButton" name="btn_duplicated_parcels">
+        <property name="text">
+         <string>See parcels</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="lbl_null_parcel_numbers">
+        <property name="text">
+         <string>Null parcel numbers</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLabel" name="lbl_null_parcel_numbers_count">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="2">
+       <widget class="QPushButton" name="btn_null_parcel_numbers">
+        <property name="text">
+         <string>See parcels</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0" colspan="3">
        <widget class="Line" name="line">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="lbl_total_parcels">
+        <property name="text">
+         <string>TOTAL PARCEL CHANGES</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QLabel" name="lbl_total_parcels_count">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QPushButton" name="btn_total_parcels">
+        <property name="text">
+         <string>See all parcels</string>
         </property>
        </widget>
       </item>

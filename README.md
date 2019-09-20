@@ -10,6 +10,7 @@ Plugin de [QGIS](http://qgis.org) que ayuda a capturar y mantener datos conforme
 
 Licencia: [GNU General Public License v3.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/LICENSE)
 
+Enlaces de interés: [Documentación](https://agenciaimplementacion.github.io/Asistente-LADM_COL), [Galería](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/blob/master/README.md#galería)
 
 Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
 
@@ -18,7 +19,7 @@ Un proyecto de: [Agencia de Implementación](https://www.proadmintierra.info/) (
 
 ## Funcionalidades
 
-La versión actual ([1.8.0](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.8.0)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v4.2.3](https://github.com/opengisch/QgisModelBaker/releases/download/v4.2.3/QgisModelBaker.v4.2.3.zip) y permite:
+La versión actual ([1.9.1](https://github.com/AgenciaImplementacion/Asistente-LADM_COL/releases/tag/1.9.1)) del Asistente LADM_COL depende del plugin [QGIS Model Baker v4.3.1](https://github.com/opengisch/QgisModelBaker/releases/download/4.3.1/QgisModelBaker.4.3.1.zip) y permite:
 
  - Capturar datos para el modelo `CATASTRO_REGISTRO_NUCLEO v2.2.1`.
  - Capturar datos para el modelo `FICHA_PREDIAL v2.2.1`.
@@ -147,7 +148,8 @@ Para usar el Asistente LADM_COL se requiere:
    - PostGIS 2.4 o superior.
  - Plugins de QGIS:
    - Asistente LADM_COL
-   - QGIS Model Baker v4.2.3
+   - QGIS Model Baker v4.3.1
+   - MapSwipe Tool v1.2
  
 ## Pruebas automatizadas al software
 
@@ -198,3 +200,23 @@ NOTA: El archivo .qm no se versiona, pero hará parte del release del plugin.
       + Regístrate usando tu correo electrónico.
       + Busca por "Asistente LADM_COL" y elige el repositorio `AgenciaImplementacion/Asistente-LADM_COL`.
       + Eso es todo. Después de recibir un correo que te notifique una nueva versión del plugin, pasarán unas horas hasta que el mismo esté disponible en el repositorio oficial de plugins de QGIS.
+      
+      
+## Galería
+
+ + Reglas de Calidad:
+
+  ![Reglas de Calidad](https://s3.amazonaws.com/media-p.slid.es/uploads/308098/images/6343636/quality_rules_25-min.gif)
+
++ Consultas:
+
+  ![Consultas](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290636/query_25.gif)
+
++ Reportes:
+
+  ![Reportes](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290657/report_25.gif)
+
++ Identificación de Novedades:
+
+  ![Identificación de Novedades](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6293473/novedades_short_40_slides.gif)
+      

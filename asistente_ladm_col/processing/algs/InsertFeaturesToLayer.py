@@ -70,6 +70,7 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         target = self.parameterAsVectorLayer(parameters, self.OUTPUT, context)
+        target.dataProvider().clearErrors()
 
         editable_before = False
         if target.isEditable():
@@ -105,6 +106,9 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
             drop_coordinates.append("Z")
 
         new_features = []
+        display_target_geometry = QgsWkbTypes.displayString(target.wkbType())
+        display_source_geometry = QgsWkbTypes.displayString(source.wkbType())
+
         for current, in_feature in enumerate(features):
             if feedback.isCanceled():
                 break
@@ -121,7 +125,11 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
                 if destType != QgsWkbTypes.UnknownGeometry:
                     newGeometry = geom.convertToType(destType, destIsMulti)
                     if newGeometry.isNull():
-                        continue
+                        feedback.reportError("\nERROR: Geometry type from the source layer ('{}') could not be converted to '{}'.".format(
+                            display_source_geometry,
+                            display_target_geometry
+                        ))
+                        return {self.OUTPUT: None}
                     newGeometry = self.transform_geom(newGeometry, drop_coordinates, add_coordinates)
                     geom = newGeometry
 
@@ -135,10 +143,7 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
 
         try:
             # This might print error messages... But, hey! That's what we want!
-            with edit(target):
-                target.beginEditCommand("Inserting features...")
-                res = target.addFeatures(new_features)
-                target.endEditCommand()
+            res = target.dataProvider().addFeatures(new_features)
         except QgsEditError as e:
             if not editable_before:
                 # Let's close the edit session to prepare for a next run
@@ -150,18 +155,18 @@ class InsertFeaturesToLayer(QgsProcessingAlgorithm):
             ))
             return {self.OUTPUT: None}
 
-        if res:
+        if res[0]:
             feedback.pushInfo("\nSUCCESS: {} out of {} features from input layer were successfully copied into '{}'!".format(
-                len(new_features),
-                source.featureCount(),
-                target.name()
-            ))
+                    len(new_features),
+                    source.featureCount(),
+                    target.name()
+            ))         
         else:
-            feedback.reportError("\nERROR: The {} features from input layer could not be copied into '{}'. This is likely due to constraints that are not met (such as NOT NULL, LENGTH or MAX-MIN values). Check that your input data meets your target layer constraints.".format(
-                source.featureCount(),
-                target.name()
-            ))
-
+            if target.dataProvider().hasErrors():
+                feedback.reportError("\nERROR: The data could not be copied! Details: {}.".format(target.dataProvider().errors()[0]))
+            else:
+                feedback.reportError("\nERROR: The data could not be copied! No more details from the provider.")
+            
         return {self.OUTPUT: target}
 
     def transform_geom(self, geom, drop_coordinates, add_coordinates):

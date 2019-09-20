@@ -25,20 +25,8 @@
      <property name="title">
       <string>List of parcels and their changes</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>6</number>
-      </property>
-      <property name="rightMargin">
-       <number>6</number>
-      </property>
-      <property name="bottomMargin">
-       <number>6</number>
-      </property>
-      <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="0">
        <widget class="QTableWidget" name="tbl_changes_all_parcels">
         <property name="sizeAdjustPolicy">
          <enum>QAbstractScrollArea::AdjustIgnored</enum>
@@ -67,21 +55,6 @@
         <attribute name="horizontalHeaderMinimumSectionSize">
          <number>42</number>
         </attribute>
-        <row>
-         <property name="text">
-          <string>1</string>
-         </property>
-        </row>
-        <row>
-         <property name="text">
-          <string>2</string>
-         </property>
-        </row>
-        <row>
-         <property name="text">
-          <string>3</string>
-         </property>
-        </row>
         <column>
          <property name="text">
           <string>Número predial</string>
@@ -92,64 +65,31 @@
           <string>Estado</string>
          </property>
         </column>
-        <item row="0" column="0">
-         <property name="text">
-          <string>705080002000000030057000000000</string>
-         </property>
-        </item>
-        <item row="0" column="1">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="background">
-          <brush brushstyle="SolidPattern">
-           <color alpha="255">
-            <red>255</red>
-            <green>0</green>
-            <blue>0</blue>
-           </color>
-          </brush>
-         </property>
-        </item>
-        <item row="1" column="0">
-         <property name="text">
-          <string>705080002000000030134000000000</string>
-         </property>
-        </item>
-        <item row="1" column="1">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="background">
-          <brush brushstyle="SolidPattern">
-           <color alpha="255">
-            <red>255</red>
-            <green>0</green>
-            <blue>0</blue>
-           </color>
-          </brush>
-         </property>
-        </item>
-        <item row="2" column="0">
-         <property name="text">
-          <string>705080300000000200051000000000</string>
-         </property>
-        </item>
-        <item row="2" column="1">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="background">
-          <brush brushstyle="SolidPattern">
-           <color alpha="255">
-            <red>0</red>
-            <green>170</green>
-            <blue>0</blue>
-           </color>
-          </brush>
-         </property>
-        </item>
        </widget>
+      </item>
+      <item row="2" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn_select_all_listed_parcels">
+          <property name="text">
+           <string>Select listed parcels on the map</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

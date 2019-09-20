@@ -18,16 +18,21 @@
 """
 import re
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import (QgsApplication,
+                       Qgis)
+from qgis.PyQt.QtCore import (QObject,
+                              QCoreApplication)
 
 from ..config.general_config import (CADASTRE_MODEL_PREFIX,
                                      CADASTRE_MODEL_PREFIX_LEGACY,
                                      LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION,
-                                     PROPERTY_RECORD_CARD_MODEL_PREFIX, VALUATION_MODEL_PREFIX)
+                                     PROPERTY_RECORD_CARD_MODEL_PREFIX,
+                                     VALUATION_MODEL_PREFIX,
+                                     PLUGIN_NAME)
 from ..utils.qgis_model_baker_utils import QgisModelBakerUtils
 
 
-class ModelParser:
+class ModelParser(QObject):
     def __init__(self, db_connector):
         self.debug = False
         self.cadastre_model = None
@@ -37,7 +42,7 @@ class ModelParser:
 
         self._db_connector = db_connector
         qgis_model_baker_utils = QgisModelBakerUtils()
-        self._pro_gen_db_connector = qgis_model_baker_utils.get_db_connection(self._db_connector)
+        self._pro_gen_db_connector = qgis_model_baker_utils.get_model_baker_db_connection(self._db_connector)
 
         if self._pro_gen_db_connector:
             model_records = self._get_models()
@@ -58,10 +63,13 @@ class ModelParser:
         if self.debug:
             print("Cadastre model:", self.cadastre_model)
 
+        if self._pro_gen_db_connector is None:
+            return (False, QCoreApplication.translate("ModelParser",
+                                                      "The plugin 'QGIS Model Baker' is a prerequisite, but could not be found. Install it before continuing."))
+
         if self.cadastre_model is None:
             if self.cadastre_model_legacy is None:
-                return (False, QCoreApplication.translate("ModelParser",
-                           "The Cadastre model couldn't be found in the database..."))
+                return (False, QCoreApplication.translate("ModelParser", "The Cadastre model couldn't be found in the database..."))
             else:
                 self.cadastre_model = self.cadastre_model_legacy
 
@@ -71,13 +79,12 @@ class ModelParser:
             print("Current Cadastre model's latest update:", latest_update)
 
         if latest_update is None:
-            # By default we will let the plugin work with the current model
-            return (True, QCoreApplication.translate("ModelParser",
-                "Model revision not found"))
+            # By default we will let the plugin work with the current model if we don't find a revision
+            return (True, QCoreApplication.translate("ModelParser", "Model revision not found"))
 
         res, msg = self.validate_model_version(latest_update)
         if not res:
-            return (False, QCoreApplication.translate("ModelParser", "The Cadastre model found in the database is not supported!"))
+            return (False, QCoreApplication.translate("ModelParser", "The Cadastre model version found in the database is not supported!"))
 
         return (True, msg)
 
@@ -85,13 +92,12 @@ class ModelParser:
         latest_supported = LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION.split('.')
         current_version = current_version_found.split('.')
 
-        if self.debug:
-            print("Latest_supported: {}, Current_version: {}".format(latest_supported, current_version))
+        QgsApplication.messageLog().logMessage("Model version supported: {}. Model version found: {}.".format(latest_supported, current_version),
+            PLUGIN_NAME, Qgis.Info)
 
         if len(latest_supported) != 3 or len(current_version) != 3:
             # By default we will let the plugin work with the current model
-            return (True, QCoreApplication.translate("ModelParser",
-                        "Couldn't determine versions to compare..."))
+            return (True, QCoreApplication.translate("ModelParser", "Couldn't determine versions to compare..."))
 
         # Compare dates in format dd.mm.yyyy
         #Latest_supported: ['17', '07', '2018'] --> 20180717

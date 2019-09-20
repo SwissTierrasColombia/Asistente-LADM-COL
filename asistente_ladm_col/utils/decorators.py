@@ -7,15 +7,19 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.PyQt.QtWidgets import QPushButton
 from qgis.core import (Qgis,
                        QgsApplication)
-from qgis.utils import (isPluginLoaded, loadPlugin, startPlugin)
+from qgis.utils import (isPluginLoaded,
+                        loadPlugin,
+                        startPlugin)
 
 from ..config.general_config import (PLUGIN_NAME,
                                      QGIS_MODEL_BAKER_PLUGIN_NAME,
                                      QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
                                      QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                     QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION, MAP_SWIPE_TOOL_PLUGIN_NAME,
-                                     MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION, MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
-                                     MAP_SWIPE_TOOL_REQUIRED_VERSION_URL, QGIS_MODEL_BAKER_PLUGIN_NAME)
+                                     QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
+                                     MAP_SWIPE_TOOL_PLUGIN_NAME,
+                                     MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
+                                     MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
+                                     MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
 
 from ..config.general_config import (LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
                                      LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE,
@@ -63,27 +67,26 @@ def _qgis_model_baker_required(func_to_decorate):
                                                             QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
 
         if plugin_version_right:
-            func_to_decorate(inst)
+            func_to_decorate(inst, *args, **kwargs)
         else:
             if QGIS_MODEL_BAKER_REQUIRED_VERSION_URL:
                 # If we depend on a specific version of QGIS Model Baker (only on that one)
                 # and it is not the latest version, show a download link
                 msg = QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                 "The plugin 'QGIS Model Baker' version {} is required, but couldn't be found. Download it <a href=\"{}\">from this link</a> and use 'Install from ZIP'.").format(
+                                                 "The plugin 'QGIS Model Baker' version {} is required, but couldn't be found. Download it <a href=\"{}\">from this link</a> and use 'Install from ZIP' in the Plugin Manager.").format(
                     QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION, QGIS_MODEL_BAKER_REQUIRED_VERSION_URL)
-                inst.iface.messageBar().pushMessage("Asistente LADM_COL", msg, Qgis.Warning, 15)
             else:
                 msg = QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                  "The plugin 'QGIS Model Baker' version {} {}is required, but couldn't be found. Click the button to show the Plugin Manager.").format(
                     QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
                     '' if QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION else '(or higher) ')
 
-                widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", msg)
-                button = QPushButton(widget)
-                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
-                button.pressed.connect(inst.show_plugin_manager)
-                widget.layout().addWidget(button)
-                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
+            widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+            button = QPushButton(widget)
+            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
+            button.pressed.connect(inst.show_plugin_manager)
+            widget.layout().addWidget(button)
+            inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
 
             inst.log.logMessage(
                 QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -162,6 +165,39 @@ def _official_db_connection_required(func_to_decorate):
 
     return decorated_function
 
+def _different_db_connections_required(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(inst, *args, **kwargs):
+        db = inst.get_db_connection()
+        official_db = inst.get_official_db_connection()
+        res = db.equals(official_db)
+
+        if not res:
+            func_to_decorate(inst)
+        else:
+            widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
+                         QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                         "Your 'official' database is the same 'collected' database!!! Click the proper button to change connection settings."))
+
+            button1 = QPushButton(widget)
+            button1.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", " Change official settings"))
+            button1.pressed.connect(inst.show_official_data_settings_clear_message_bar)
+            widget.layout().addWidget(button1)
+
+            button2 = QPushButton(widget)
+            button2.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change collected settings"))
+            button2.pressed.connect(inst.show_settings_clear_message_bar)
+            widget.layout().addWidget(button2)
+
+            inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 20)
+            inst.log.logMessage(
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, official DB is the same collected DB!"),
+                PLUGIN_NAME,
+                Qgis.Warning
+            )
+
+    return decorated_function
+
 def _map_swipe_tool_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(inst, *args, **kwargs):
@@ -176,22 +212,42 @@ def _map_swipe_tool_required(func_to_decorate):
             if MAP_SWIPE_TOOL_REQUIRED_VERSION_URL:
                 # If we depend on a specific version of Map Swipe Tool (only on that one)
                 # and it is not the latest version, show a download link
-                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'MapSwipe Tool' version {} is required, but couldn't be found. Download it <a href=\"{}\">from this link</a> and use 'Install from ZIP'.").format(MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION, MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
-                inst.iface.messageBar().pushMessage("Asistente LADM_COL", msg, Qgis.Warning, 15)
+                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'MapSwipe Tool' version {} is required, but couldn't be found. Download it <a href=\"{}\">from this link</a> and use 'Install from ZIP' in the Plugin Manager.").format(MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION, MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
             else:
                 msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "The plugin 'MapSwipe Tool' version {} {}is required, but couldn't be found. Click the button to show the Plugin Manager.").format(MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION, '' if MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION else '(or higher) ')
 
-                widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", msg)
-                button = QPushButton(widget)
-                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
-                button.pressed.connect(inst.show_plugin_manager)
-                widget.layout().addWidget(button)
-                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
+            widget = inst.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+            button = QPushButton(widget)
+            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
+            button.pressed.connect(inst.show_plugin_manager)
+            widget.layout().addWidget(button)
+            inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
 
             inst.log.logMessage(
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "A dialog/tool couldn't be opened/executed, MapSwipe Tool not found."),
                 PLUGIN_NAME,
                 Qgis.Warning
             )
+
+    return decorated_function
+
+def _validate_if_wizard_is_open(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(inst, *args, **kwargs):
+        if inst.is_wizard_open:
+            inst.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                         "There is a wizard open, you need to close it before continuing with another tool."),
+                              Qgis.Info)
+        else:
+            func_to_decorate(inst, *args, **kwargs)
+
+    return decorated_function
+
+def _with_override_cursor(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+
+        with OverrideCursor(Qt.WaitCursor):
+            func_to_decorate(*args, **kwargs)
 
     return decorated_function

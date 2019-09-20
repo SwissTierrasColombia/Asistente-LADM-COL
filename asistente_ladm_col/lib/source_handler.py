@@ -30,21 +30,21 @@ from qgis.PyQt.QtCore import (QEventLoop,
                               QFile,
                               QVariant,
                               QByteArray,
-                              QSettings, Qt)
+                              QSettings,
+                              Qt)
 from qgis.PyQt.QtNetwork import (QNetworkAccessManager,
                                  QHttpMultiPart,
                                  QHttpPart)
 from qgis.core import (QgsProject,
-                       QgsDataSourceUri,
                        Qgis,
                        QgsApplication,
                        NULL)
 
-from asistente_ladm_col.utils.qt_utils import OverrideCursor
+from ..utils.qt_utils import OverrideCursor
 from ..config.general_config import (DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                      PLUGIN_NAME,
                                      SOURCE_SERVICE_UPLOAD_SUFFIX)
-from ..gui.upload_progress_dialog import UploadProgressDialog
+from ..gui.dialogs.dlg_upload_progress import UploadProgressDialog
 
 
 class SourceHandler(QObject):

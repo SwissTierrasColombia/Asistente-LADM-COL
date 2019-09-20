@@ -24,7 +24,16 @@ SUFFIX_LAYER_MODIFIERS = 'suffix'
 STYLE_GROUP_LAYER_MODIFIERS = 'style_group'
 VISIBLE_LAYER_MODIFIERS = 'visible'
 
-TOOL_BAR_NAME = QCoreApplication.translate("TranslatableConfigStrings", "LADM COL Toolbar")
+TOOLBAR_NAME = QCoreApplication.translate("TranslatableConfigStrings", "LADM COL Toolbar")
+TOOLBAR_ID = "ladm_col_tools"
+TOOLBAR_BUILD_BOUNDARY = QCoreApplication.translate("TranslatableConfigStrings", "Build boundaries...")
+TOOLBAR_MOVE_NODES = QCoreApplication.translate("TranslatableConfigStrings", "Move nodes...")
+TOOLBAR_FILL_POINT_BFS = QCoreApplication.translate("TranslatableConfigStrings", "Fill Point BFS")
+TOOLBAR_FILL_MORE_BFS_LESS = QCoreApplication.translate("TranslatableConfigStrings", "Fill More BFS and Less")
+TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS = QCoreApplication.translate("TranslatableConfigStrings", "Fill Right of Way Relations")
+TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE = QCoreApplication.translate("TranslatableConfigStrings", "Import from intermediate structure")
+TOOLBAR_FINALIZE_GEOMETRY_CREATION = QCoreApplication.translate("TranslatableConfigStrings", "Finalize geometry creation")
+ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME = "finalize_geometry_creation"
 
 # Constants for reports
 NATIONAL_LAND_AGENCY = "ANT"
@@ -65,6 +74,7 @@ CREATE_BASKET_COL = False
 CREATE_IMPORT_TID = False
 STROKE_ARCS = True
 
+LAYER = 'layer'  # Used as key that holds a QgsVectorLayer in dictionaries
 
 # SETTINGS DIALOG TAB INDEXES
 SETTINGS_CONNECTION_TAB_INDEX = 0
@@ -94,8 +104,8 @@ MODULE_HELP_MAPPING = {
     'load_layers': 'load_layers.html#load-layers',
     'col_party': 'cadastre/Party.html#col-party',
     'group_party': 'cadastre/Party.html#group-party',
-    'quality_rules': 'index.html', # TODO: Add this to help sections
-    'settings': 'help.html#settings',
+    'quality_rules': 'cadastre/Quality.html',
+    'settings': 'settings.html',
     'create_property_record_card': 'property_record_card/Property_record_card.html',
     'create_nuclear_family': 'property_record_card/Nuclear_family.html',
     'create_natural_party': 'property_record_card/Natural_party.html',
@@ -122,41 +132,44 @@ JAVA_REQUIRED_VERSION = 1.8
 
 # Configure QGIS Model Baker Dependency
 QGIS_MODEL_BAKER_PLUGIN_NAME = "QgisModelBaker"
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.2.3"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.3.1"
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
-QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = False
+QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = True
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = '' # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip'
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/opengisch/QgisModelBaker/releases/download/4.3.1/QgisModelBaker.4.3.1.zip' # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip'
 
 # Configure Map Swipe Tool Dependency
 MAP_SWIPE_TOOL_PLUGIN_NAME = "mapswipetool_plugin"
 MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION = "1.2"
-MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION = False
-MAP_SWIPE_TOOL_REQUIRED_VERSION_URL = '' # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip'
+MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION = True
+MAP_SWIPE_TOOL_REQUIRED_VERSION_URL = 'https://plugins.qgis.org/plugins/mapswipetool_plugin/version/1.2/download/' # ''https://github.com/AgenciaImplementacion/QgisModelBaker/releases/download/v4.1.0.1/QgisModelBaker.zip'
 
 # Change detection
 PARCEL_STATUS = '_PARCEL_STATUS_'
 PARCEL_STATUS_DISPLAY = ''
-CHANGE_DETECTION_NEW_PARCEL = 'Alta'
-CHANGE_DETECTION_MISSING_PARCEL = 'Baja'
-CHANGE_DETECTION_PARCEL_CHANGED = 'Cambio'
-CHANGE_DETECTION_PARCEL_REMAINS = 'OK'
-CHANGE_DETECTION_SEVERAL_PARCELS = 'several'
-CHANGE_DETECTION_NULL_PARCEL = 'null'
+CHANGE_DETECTION_NEW_PARCEL = QCoreApplication.translate("", "New parcel") # alta
+CHANGE_DETECTION_MISSING_PARCEL = QCoreApplication.translate("", "Missing parcel") # Baja
+CHANGE_DETECTION_PARCEL_CHANGED = QCoreApplication.translate("","Parcel changed")
+CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED = QCoreApplication.translate("","Only geometry changed")
+CHANGE_DETECTION_PARCEL_REMAINS = QCoreApplication.translate("",'OK')
+CHANGE_DETECTION_SEVERAL_PARCELS = QCoreApplication.translate("",'Several')
+CHANGE_DETECTION_NULL_PARCEL = QCoreApplication.translate("",'null')
 STATUS_COLORS = {CHANGE_DETECTION_NEW_PARCEL: Qt.red,
                  CHANGE_DETECTION_MISSING_PARCEL: Qt.red,
                  CHANGE_DETECTION_PARCEL_CHANGED: Qt.red,
+                 CHANGE_DETECTION_PARCEL_ONLY_GEOMETRY_CHANGED: Qt.red,
                  CHANGE_DETECTION_PARCEL_REMAINS: Qt.green,
                  CHANGE_DETECTION_SEVERAL_PARCELS: Qt.yellow,
                  CHANGE_DETECTION_NULL_PARCEL: Qt.yellow}
 SOURCE_DB = '_SOURCE_'
 OFFICIAL_DB_SOURCE = '_OFFICIAL_'
 COLLECTED_DB_SOURCE = '_COLLECTED_'
+PLOT_GEOMETRY_KEY = 'GEOMETRY_PLOT'
 
 # QGIS Model Baker definitions
 SCHEMA_NAME = 'schemaname'
@@ -222,7 +235,7 @@ LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE = "</li>"
 LOG_QUALITY_LIST_ITEM_OPEN = "<li style='color:#ffd356;'>"
 LOG_QUALITY_LIST_ITEM_CLOSE = "</li>"
 
-# Excel titles 
+# Excel titles
 EXCEL_SHEET_NAME_PLOT = 'predio'
 EXCEL_SHEET_NAME_PARTY = 'interesado'
 EXCEL_SHEET_NAME_GROUP = 'agrupacion'
@@ -237,8 +250,8 @@ EXCEL_SHEET_TITLE_PLOT_NAME = 'nombre predio'
 EXCEL_SHEET_TITLE_VALUATION = 'avaluo'
 EXCEL_SHEET_TITLE_PLOT_TYPE = 'tipo predio'
 EXCEL_SHEET_TITLE_FIRST_NAME = 'nombre1'
-EXCEL_SHEET_TITLE_MIDDLE = 'nombre2' 
-EXCEL_SHEET_TITLE_FIRST_SURNAME = 'apellido1' 
+EXCEL_SHEET_TITLE_MIDDLE = 'nombre2'
+EXCEL_SHEET_TITLE_FIRST_SURNAME = 'apellido1'
 EXCEL_SHEET_TITLE_SECOND_SURNAME = 'apellido2'
 EXCEL_SHEET_TITLE_BUSINESS_NAME = 'razon social'
 EXCEL_SHEET_TITLE_SEX = 'sexo persona'

@@ -16,10 +16,14 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QObject
+from abc import ABC
+from qgis.PyQt.QtCore import QSettings
 
 
-class DbFactory(QObject):
+class DbFactory(ABC):
+    """
+    Abstract class
+    """
 
     def __init__(self):
         self._mode = None
@@ -30,14 +34,32 @@ class DbFactory(QObject):
     def get_name(self):
         raise NotImplementedError
 
-    def get_config_panel(self):
+    def get_config_panel(self, parent):
         raise NotImplementedError
 
     def get_mbaker_db_ili_mode(self):
         raise NotImplementedError
 
-    def get_db_connector(self, parameters):
+    def get_db_connector(self, parameters=dict()):
         raise NotImplementedError
 
     def set_db_configuration_params(self, params, configuration):
         raise NotImplementedError
+
+    def save_parameters_conn(self, dict_conn, db_source):
+        settings = QSettings()
+        for parameter, value in dict_conn.items():
+                settings.setValue(
+                    'Asistente-LADM_COL/db/{db_source}/{scope}/{parameter}'.format(db_source=db_source,
+                                                                                   scope=self._mode,
+                                                                                   parameter=parameter), value)
+
+    def get_parameters_conn(self, db_source):
+        dict_conn = dict()
+        settings = QSettings()
+        settings.beginGroup('Asistente-LADM_COL/db/{db_source}/{scope}/'.format(db_source=db_source, scope=self._mode))
+        for key in settings.allKeys():
+            dict_conn[key] = settings.value(key)
+
+        settings.endGroup()
+        return dict_conn
