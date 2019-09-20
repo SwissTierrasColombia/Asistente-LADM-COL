@@ -158,3 +158,6 @@ class SelectFeaturesOnMapWizard:
         else:
             # Continue creating geometry
             pass
+
+    def register_select_feature_on_map(self):
+        raise NotImplementedError

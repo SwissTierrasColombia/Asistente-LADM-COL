@@ -35,3 +35,6 @@ class SelectFeatureByExpressionWizard:
 
     def disconnect_signals_select_features_by_expression(self):
         raise NotImplementedError
+
+    def register_select_features_by_expression(self):
+        raise NotImplementedError

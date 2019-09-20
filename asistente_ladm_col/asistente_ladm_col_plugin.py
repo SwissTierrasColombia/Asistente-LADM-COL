@@ -106,7 +106,7 @@ from .lib.db.enum_db_action_type import EnumDbActionType
 
 from .config.wizards_config import WizardConfig
 from .gui.wizards.single_page_spatial_wizard import SinglePageSpatialWizard
-from .gui.wizards.single_page_wizard import SinglePageWizard
+from .gui.wizards.single_page_wizard_factory import SinglePageWizardFactory
 
 
 class AsistenteLADMCOLPlugin(QObject):
@@ -1363,7 +1363,6 @@ class AsistenteLADMCOLPlugin(QObject):
             self.wiz = CreateExtAddressCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
             self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
             self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
-            self.is_wizard_open = True
         elif wizard_name == WizardConfig.WIZARD_CREATE_PLOT_CADASTRE:
             self.wiz = CreatePlotCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
         elif wizard_name == WizardConfig.WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION:
@@ -1373,14 +1372,14 @@ class AsistenteLADMCOLPlugin(QObject):
         elif wizard_name == WizardConfig.WIZARD_CREATE_PARCEL_CADASTRE:
             self.wiz = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
         elif type_wizard == WizardConfig.SINGLE_PAGE_WIZARD_TYPE:
-            self.wiz = SinglePageWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
+            self.wiz = SinglePageWizardFactory(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
         elif type_wizard == WizardConfig.SINGLE_PAGE_SPATIAL_WIZARD_TYPE:
             self.wiz = SinglePageSpatialWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
             self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
             self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
-            self.is_wizard_open = True
         elif type_wizard == WizardConfig.RRR_CADASTRE_WIZARD_TYPE:
             self.wiz = CreateRRRCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
 
+        self.is_wizard_open = True
         self.wiz.set_wizard_is_open_emitted.connect(self.set_wizard_is_open_flag)
         self.exec_wizard(self.wiz)

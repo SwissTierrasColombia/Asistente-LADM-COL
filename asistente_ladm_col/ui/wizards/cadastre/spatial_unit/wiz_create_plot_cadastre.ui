@@ -66,7 +66,7 @@
             </spacer>
            </item>
            <item row="1" column="0" colspan="2">
-            <widget class="QRadioButton" name="rad_plot_from_boundaries">
+            <widget class="QRadioButton" name="rad_create_manually">
              <property name="text">
               <string>Selecting existing boundaries</string>
              </property>

@@ -1,6 +1,7 @@
 from functools import partial
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              pyqtSignal)
 from qgis.PyQt.QtWidgets import QWizard
 from qgis.core import (QgsVectorLayerUtils,
                        QgsGeometry,
@@ -13,32 +14,30 @@ from .....config.table_mapping_config import (BOUNDARY_TABLE,
                                               PLOT_REGISTRY_AREA_FIELD,
                                               PLOT_CALCULATED_AREA_FIELD)
 from .....config.wizards_config import WizardConfig
-from .....gui.wizards.multi_page_wizard import MultiPageWizard
+from .....gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from .....gui.wizards.select_features_by_expression_wizard import SelectFeatureByExpressionWizard
 from .....gui.wizards.select_features_on_map_wizard import SelectFeaturesOnMapWizard
 from .....utils.qt_utils import (enable_next_wizard,
                                  disable_next_wizard)
 
 
-class CreatePlotCadastreWizard(MultiPageWizard,
+class CreatePlotCadastreWizard(MultiPageWizardFactory,
                                SelectFeatureByExpressionWizard,
                                SelectFeaturesOnMapWizard):
+    set_wizard_is_open_emitted = pyqtSignal(bool)
+    set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):
-        MultiPageWizard.__init__(self, iface, db, qgis_utils, wizard_settings)
+        self.iface = iface
+        MultiPageWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
         SelectFeatureByExpressionWizard.__init__(self)
         SelectFeaturesOnMapWizard.__init__(self)
 
-    #############################################################################
-    # implement: raise NotImplementedError
-    #############################################################################
+    def advance_save(self, features):
+        pass
 
-    def register_select_feature_on_map(self):
-        self.btn_map.clicked.connect(partial(self.select_features_on_map, self._layers[BOUNDARY_TABLE][LAYER]))
-
-    def register_select_features_by_expression(self):
-        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BOUNDARY_TABLE][LAYER]))
-        self.btn_select_all.clicked.connect(partial(self.select_all_features, self._layers[BOUNDARY_TABLE][LAYER]))
+    def exec_form_advance(self, layer):
+        pass
 
     def check_selected_features(self):
         self.lb_info.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Boundary(ies)</b>: {count} Feature(s) Selected").format(count=self._layers[BOUNDARY_TABLE][LAYER].selectedFeatureCount()))
@@ -52,9 +51,6 @@ class CreatePlotCadastreWizard(MultiPageWizard,
 
         self.button(self.FinishButton).setEnabled(has_selected_boundaries)
 
-    def advance_save(self, features):
-        pass
-
     def disconnect_signals_select_features_by_expression(self):
         signals = [self.btn_expression.clicked,
                    self.btn_select_all.clicked]
@@ -65,6 +61,10 @@ class CreatePlotCadastreWizard(MultiPageWizard,
             except:
                 pass
 
+    def register_select_features_by_expression(self):
+        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BOUNDARY_TABLE][LAYER]))
+        self.btn_select_all.clicked.connect(partial(self.select_all_features, self._layers[BOUNDARY_TABLE][LAYER]))
+
     def disconnect_signals_controls_select_features_on_map(self):
         signals = [self.btn_map.clicked]
 
@@ -73,6 +73,9 @@ class CreatePlotCadastreWizard(MultiPageWizard,
                 signal.disconnect()
             except:
                 pass
+
+    def register_select_feature_on_map(self):
+        self.btn_map.clicked.connect(partial(self.select_features_on_map, self._layers[BOUNDARY_TABLE][LAYER]))
 
     #############################################################################
     # Override methods
@@ -104,13 +107,6 @@ class CreatePlotCadastreWizard(MultiPageWizard,
             self.txt_help_page_1.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP_PAGE1])
 
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
-
-    def disconnect_signals(self):
-        if hasattr(self, 'SELECTION_BY_EXPRESSION'):
-            self.disconnect_signals_select_features_by_expression()
-
-        if hasattr(self, 'SELECTION_ON_MAP'):
-            self.disconnect_signals_select_features_on_map()
 
     def edit_feature(self):
         if self._layers[BOUNDARY_TABLE][LAYER].selectedFeatureCount() > 0:

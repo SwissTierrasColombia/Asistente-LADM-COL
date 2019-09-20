@@ -22,7 +22,8 @@
  """
 from functools import partial
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              pyqtSignal)
 from qgis.core import (QgsVectorLayerUtils,
                        Qgis)
 
@@ -38,30 +39,19 @@ from .....config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                               RESTRICTION_TABLE,
                                               RESPONSIBILITY_TABLE,
                                               ID_FIELD)
-from .....gui.wizards.multi_page_wizard import MultiPageWizard
+from .....gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from .....gui.wizards.select_features_by_expression_wizard import SelectFeatureByExpressionWizard
 
 
-class CreateRRRCadastreWizard(MultiPageWizard, SelectFeatureByExpressionWizard):
+class CreateRRRCadastreWizard(MultiPageWizardFactory, SelectFeatureByExpressionWizard):
+    set_wizard_is_open_emitted = pyqtSignal(bool)
+    set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):
-        MultiPageWizard.__init__(self, iface, db, qgis_utils, wizard_settings)
+        MultiPageWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
         SelectFeatureByExpressionWizard.__init__(self)
 
-    def register_select_features_by_expression(self):
-        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER]))
-
-    def check_selected_features(self):
-        # Check selected features in administrative source layer
-        if self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatureCount():
-            self.lb_admin_source.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Administrative Source(s)</b>: {count} Feature Selected").format(count=self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatureCount()))
-            self.button(self.FinishButton).setDisabled(False)
-        else:
-            self.lb_admin_source.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Administrative Source(s)</b>: 0 Features Selected"))
-            self.button(self.FinishButton).setDisabled(True)
-
     def advance_save(self, features):
-
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
 
@@ -99,8 +89,17 @@ class CreateRRRCadastreWizard(MultiPageWizard, SelectFeatureByExpressionWizard):
 
         return message
 
-    def register_select_feature_on_map(self):
+    def exec_form_advance(self, layer):
         pass
+
+    def check_selected_features(self):
+        # Check selected features in administrative source layer
+        if self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatureCount():
+            self.lb_admin_source.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Administrative Source(s)</b>: {count} Feature Selected").format(count=self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatureCount()))
+            self.button(self.FinishButton).setDisabled(False)
+        else:
+            self.lb_admin_source.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Administrative Source(s)</b>: 0 Features Selected"))
+            self.button(self.FinishButton).setDisabled(True)
 
     def disconnect_signals_select_features_by_expression(self):
         signals = [self.btn_expression.clicked]
@@ -110,3 +109,6 @@ class CreateRRRCadastreWizard(MultiPageWizard, SelectFeatureByExpressionWizard):
                 signal.disconnect()
             except:
                 pass
+
+    def register_select_features_by_expression(self):
+        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER]))

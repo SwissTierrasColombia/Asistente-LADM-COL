@@ -3,6 +3,7 @@ from functools import partial
 from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal)
 from qgis.core import (Qgis,
+                       QgsProject,
                        QgsVectorLayerUtils)
 from qgis.gui import QgsExpressionSelectionDialog
 
@@ -21,38 +22,22 @@ from .....config.table_mapping_config import (OID_TABLE,
                                               BUILDING_TABLE,
                                               BUILDING_UNIT_TABLE)
 from .....config.wizards_config import WizardConfig
-from .....gui.wizards.multi_page_spatial_wizard import MultiPageSpatialWizard
+
+from .....gui.wizards.multi_page_spatial_wizard_factory import MultiPageSpatialWizardFactory
 from .....gui.wizards.select_features_by_expression_wizard import SelectFeatureByExpressionWizard
 from .....utils.select_map_tool import SelectMapTool
 
 
-class CreateExtAddressCadastreWizard(MultiPageSpatialWizard,
-                                     SelectFeatureByExpressionWizard):
-
+class CreateExtAddressCadastreWizard(MultiPageSpatialWizardFactory, SelectFeatureByExpressionWizard):
     set_wizard_is_open_emitted = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):
-        MultiPageSpatialWizard.__init__(self, iface, db, qgis_utils, wizard_settings)
+        MultiPageSpatialWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
         SelectFeatureByExpressionWizard.__init__(self)
         self._current_layer = None
 
-    #############################################################################
-    # implement: raise NotImplementedError
-    #############################################################################
-
-    def register_select_feature_on_map(self):
-        self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[PLOT_TABLE][LAYER]))
-        self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_TABLE][LAYER]))
-        self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_UNIT_TABLE][LAYER]))
-
-    def register_select_features_by_expression(self):
-        self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[PLOT_TABLE][LAYER]))
-        self.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_TABLE][LAYER]))
-        self.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_UNIT_TABLE][LAYER]))
-
     def check_selected_features(self):
-
         self.rad_to_plot.setText(QCoreApplication.translate(self.WIZARD_NAME, "Plot(s): {count} Feature(s) Selected").format(count=self._layers[PLOT_TABLE][LAYER].selectedFeatureCount()))
         self.rad_to_building.setText(QCoreApplication.translate(self.WIZARD_NAME, "Building(s): {count} Feature(s) Selected").format(count=self._layers[BUILDING_TABLE][LAYER].selectedFeatureCount()))
         self.rad_to_building_unit.setText(QCoreApplication.translate(self.WIZARD_NAME, "Building unit(s): {count} Feature(s) Selected").format(count=self._layers[BUILDING_UNIT_TABLE][LAYER].selectedFeatureCount()))
@@ -171,47 +156,6 @@ class CreateExtAddressCadastreWizard(MultiPageSpatialWizard,
                                                      "The new {} (t_id={}) was successfully created ").format(self.WIZARD_FEATURE_NAME, extaddress_tid)
         return message
 
-    def disconnect_signals_select_features_by_expression(self):
-        signals = [self.btn_plot_expression.clicked,
-                   self.btn_building_expression.clicked,
-                   self.btn_building_unit_expression.clicked]
-
-        for signal in signals:
-            try:
-                signal.disconnect()
-            except:
-                pass
-
-    def disconnect_signals_controls_select_features_on_map(self):
-        signals = [self.btn_plot_map.clicked,
-                   self.btn_building_map.clicked,
-                   self.btn_building_unit_map.clicked]
-
-        for signal in signals:
-            try:
-                signal.disconnect()
-            except:
-                pass
-
-    def edit_feature(self):
-        if self._current_layer.selectedFeatureCount() == 1:
-            # Open Form
-            self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
-            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
-
-            self.qgis_utils.active_snapping_all_layers()
-            self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
-
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate(self.WIZARD_NAME,
-                                           "Now you can click on the map to locate the new address..."),
-                Qgis.Info)
-        else:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate(self.WIZARD_NAME,
-                                           "First select a {}.").format(self._db.get_ladm_layer_name(self._current_layer)),
-                Qgis.Warning)
-
     def exec_form_advance(self, layer):
         for f in layer.editBuffer().addedFeatures():
             feature = layer.editBuffer().addedFeatures()[f]
@@ -219,7 +163,6 @@ class CreateExtAddressCadastreWizard(MultiPageSpatialWizard,
 
         spatial_unit_field_idx = None
         if feature:
-
             # Get t_id of spatial unit to associate
             feature_id = self._current_layer.selectedFeatures()[0][ID_FIELD]
             fid = feature.id()
@@ -240,6 +183,38 @@ class CreateExtAddressCadastreWizard(MultiPageSpatialWizard,
             message = QCoreApplication.translate(self.WIZARD_NAME,
                                                  "'{}' tool has been closed because when try to create {} it was not possible to associate a space unit.").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME)
             self.close_wizard(message)
+
+    def disconnect_signals_controls_select_features_on_map(self):
+        signals = [self.btn_plot_map.clicked,
+                   self.btn_building_map.clicked,
+                   self.btn_building_unit_map.clicked]
+
+        for signal in signals:
+            try:
+                signal.disconnect()
+            except:
+                pass
+
+    def disconnect_signals_select_features_by_expression(self):
+        signals = [self.btn_plot_expression.clicked,
+                   self.btn_building_expression.clicked,
+                   self.btn_building_unit_expression.clicked]
+
+        for signal in signals:
+            try:
+                signal.disconnect()
+            except:
+                pass
+
+    def register_select_features_by_expression(self):
+        self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[PLOT_TABLE][LAYER]))
+        self.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_TABLE][LAYER]))
+        self.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_UNIT_TABLE][LAYER]))
+
+    def register_select_feature_on_map(self):
+        self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[PLOT_TABLE][LAYER]))
+        self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_TABLE][LAYER]))
+        self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_UNIT_TABLE][LAYER]))
 
     #############################################################################
     # Override methods
@@ -269,6 +244,26 @@ class CreateExtAddressCadastreWizard(MultiPageSpatialWizard,
         self.rad_to_building.toggled.connect(self.toggle_spatial_unit)
         self.rad_to_building_unit.toggled.connect(self.toggle_spatial_unit)
         self.toggle_spatial_unit()
+
+    def edit_feature(self):
+        if self._current_layer.selectedFeatureCount() == 1:
+            self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
+            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
+
+            # Disable transactions groups
+            QgsProject.instance().setAutoTransaction(False)
+
+            # Activate snapping
+            self.qgis_utils.active_snapping_all_layers()
+            self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
+
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate(self.WIZARD_NAME,
+                                           "You can now start capturing {} digitizing on the map...").format(self.WIZARD_FEATURE_NAME), Qgis.Info)
+        else:
+            self.qgis_utils.message_emitted.emit(
+                QCoreApplication.translate(self.WIZARD_NAME,
+                                           "First select a {}.").format(self._db.get_ladm_layer_name(self._current_layer)), Qgis.Warning)
 
     def select_features_by_expression(self, layer):
         self._current_layer = layer
