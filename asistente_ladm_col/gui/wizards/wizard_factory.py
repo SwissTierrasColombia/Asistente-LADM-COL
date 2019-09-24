@@ -72,6 +72,30 @@ class WizardFactory(AbsWizardFactory):
         elif self.rad_create_manually.isChecked():
             self.prepare_feature_creation()
 
+    def prepare_feature_creation_layers(self):
+        is_loaded = self.required_layers_are_available()
+        if not is_loaded:
+            return False
+
+        if hasattr(self, 'SELECTION_ON_MAP'):
+            # Add signal to check if a layer was removed
+            self.validate_remove_layers()
+
+        # All layers were successfully loaded
+        return True
+
+    def disconnect_signals(self):
+        if hasattr(self, 'SELECTION_BY_EXPRESSION'):
+            self.disconnect_signals_select_features_by_expression()
+
+        if hasattr(self, 'SELECTION_ON_MAP'):
+            self.disconnect_signals_select_features_on_map()
+
+        try:
+            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        except:
+            pass
+
     def close_wizard(self, message=None, show_message=True):
         if message is None:
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(self.WIZARD_TOOL_NAME)

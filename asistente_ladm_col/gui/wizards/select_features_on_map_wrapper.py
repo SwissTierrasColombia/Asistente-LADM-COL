@@ -30,7 +30,7 @@ from ...config.general_config import (PLUGIN_NAME,
 from ...utils.select_map_tool import SelectMapTool
 
 
-class SelectFeaturesOnMapWizard:
+class SelectFeaturesOnMapWrapper:
     SELECTION_ON_MAP = True
 
     def __init__(self):
@@ -123,45 +123,6 @@ class SelectFeaturesOnMapWizard:
 
     def disconnect_signals_controls_select_features_on_map(self):
         raise NotImplementedError
-
-    def save_created_geometry(self):
-        message = None
-        if self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer():
-            if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 1:
-                feature = [value for index, value in self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures().items()][0]
-                if feature.geometry().isGeosValid():
-                    self.exec_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
-                else:
-                    message = QCoreApplication.translate(self.WIZARD_NAME, "The geometry is invalid. Do you want to return to the edit session?")
-            else:
-                if len(self._layers[self.EDITING_LAYER_NAME][LAYER].editBuffer().addedFeatures()) == 0:
-                    message = QCoreApplication.translate(self.WIZARD_NAME, "No geometry has been created. Do you want to return to the edit session?")
-                else:
-                    message = QCoreApplication.translate(self.WIZARD_NAME, "Several geometries were created but only one was expected. Do you want to return to the edit session?")
-
-        if message:
-            self.show_message_associate_geometry_creation(message)
-
-    def show_message_associate_geometry_creation(self, message):
-        msg = QMessageBox(self)
-        msg.setIcon(QMessageBox.Question)
-        msg.setText(message)
-        msg.setWindowTitle(QCoreApplication.translate(self.WIZARD_NAME, "Continue editing?"))
-        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "Yes")), QMessageBox.YesRole)
-        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "No, close the wizard")), QMessageBox.NoRole)
-        reply = msg.exec_()
-
-        if reply == 1: # 1 close wizard, 0 yes
-            # stop edition in close_wizard crash qgis
-            if self._layers[self.EDITING_LAYER_NAME][LAYER].isEditable():
-                self._layers[self.EDITING_LAYER_NAME][LAYER].rollBack()
-
-            message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed.").format(
-                self.WIZARD_TOOL_NAME)
-            self.close_wizard(message)
-        else:
-            # Continue creating geometry
-            pass
 
     def register_select_feature_on_map(self):
         raise NotImplementedError

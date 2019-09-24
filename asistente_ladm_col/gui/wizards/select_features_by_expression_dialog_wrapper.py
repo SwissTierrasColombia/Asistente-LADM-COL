@@ -23,7 +23,7 @@
 from qgis.gui import QgsExpressionSelectionDialog
 
 
-class SelectFeatureByExpressionWizard:
+class SelectFeatureByExpressionDialogWrapper:
     SELECTION_BY_EXPRESSION = True
 
     def select_features_by_expression(self, layer):

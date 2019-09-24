@@ -23,18 +23,18 @@ from .....config.table_mapping_config import (PLOT_TABLE,
                                               ID_FIELD)
 from .....config.wizards_config import WizardConfig
 from .....gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
-from .....gui.wizards.select_features_by_expression_wizard import SelectFeatureByExpressionWizard
-from .....gui.wizards.select_features_on_map_wizard import SelectFeaturesOnMapWizard
+from .....gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
+from .....gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 
 
 class CreateParcelCadastreWizard(MultiPageWizardFactory,
-                                 SelectFeatureByExpressionWizard,
-                                 SelectFeaturesOnMapWizard):
+                                 SelectFeatureByExpressionDialogWrapper,
+                                 SelectFeaturesOnMapWrapper):
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):
         MultiPageWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
-        SelectFeatureByExpressionWizard.__init__(self)
-        SelectFeaturesOnMapWizard.__init__(self)
+        SelectFeatureByExpressionDialogWrapper.__init__(self)
+        SelectFeaturesOnMapWrapper.__init__(self)
         self._spatial_unit_layers = dict()
         self.type_of_parcel_selected = None
 

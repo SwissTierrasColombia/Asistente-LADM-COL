@@ -24,17 +24,20 @@ from .....config.table_mapping_config import (OID_TABLE,
 from .....config.wizards_config import WizardConfig
 
 from .....gui.wizards.multi_page_spatial_wizard_factory import MultiPageSpatialWizardFactory
-from .....gui.wizards.select_features_by_expression_wizard import SelectFeatureByExpressionWizard
+from .....gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
+from .....gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from .....utils.select_map_tool import SelectMapTool
 
 
-class CreateExtAddressCadastreWizard(MultiPageSpatialWizardFactory, SelectFeatureByExpressionWizard):
+class CreateExtAddressCadastreWizard(MultiPageSpatialWizardFactory,
+                                     SelectFeaturesOnMapWrapper,
+                                     SelectFeatureByExpressionDialogWrapper):
     set_wizard_is_open_emitted = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):
         MultiPageSpatialWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
-        SelectFeatureByExpressionWizard.__init__(self)
+        SelectFeatureByExpressionDialogWrapper.__init__(self)
         self._current_layer = None
 
     def check_selected_features(self):

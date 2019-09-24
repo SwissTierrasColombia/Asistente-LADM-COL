@@ -80,16 +80,7 @@ class AbsWizardFactory(QWizard):
             self.close_wizard(show_message=False)
 
     def prepare_feature_creation_layers(self):
-        is_loaded = self.required_layers_are_available()
-        if not is_loaded:
-            return False
-
-        if hasattr(self, 'SELECTION_ON_MAP'):
-            # Add signal to check if a layer was removed
-            self.validate_remove_layers()
-
-        # All layers were successfully loaded
-        return True
+        raise NotImplementedError
 
     def required_layers_are_available(self):
         # Load layers
@@ -122,16 +113,7 @@ class AbsWizardFactory(QWizard):
         raise NotImplementedError
 
     def disconnect_signals(self):
-        if hasattr(self, 'SELECTION_BY_EXPRESSION'):
-            self.disconnect_signals_select_features_by_expression()
-
-        if hasattr(self, 'SELECTION_ON_MAP'):
-            self.disconnect_signals_select_features_on_map()
-
-        try:
-            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
-        except:
-            pass
+        raise NotImplementedError
 
     def edit_feature(self):
         raise NotImplementedError

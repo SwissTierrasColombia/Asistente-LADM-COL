@@ -15,23 +15,23 @@ from .....config.table_mapping_config import (BOUNDARY_TABLE,
                                               PLOT_CALCULATED_AREA_FIELD)
 from .....config.wizards_config import WizardConfig
 from .....gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
-from .....gui.wizards.select_features_by_expression_wizard import SelectFeatureByExpressionWizard
-from .....gui.wizards.select_features_on_map_wizard import SelectFeaturesOnMapWizard
+from .....gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
+from .....gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from .....utils.qt_utils import (enable_next_wizard,
                                  disable_next_wizard)
 
 
 class CreatePlotCadastreWizard(MultiPageWizardFactory,
-                               SelectFeatureByExpressionWizard,
-                               SelectFeaturesOnMapWizard):
+                               SelectFeatureByExpressionDialogWrapper,
+                               SelectFeaturesOnMapWrapper):
     set_wizard_is_open_emitted = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):
         self.iface = iface
         MultiPageWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
-        SelectFeatureByExpressionWizard.__init__(self)
-        SelectFeaturesOnMapWizard.__init__(self)
+        SelectFeatureByExpressionDialogWrapper.__init__(self)
+        SelectFeaturesOnMapWrapper.__init__(self)
 
     def advance_save(self, features):
         pass

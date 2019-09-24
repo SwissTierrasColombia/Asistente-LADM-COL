@@ -24,17 +24,17 @@ from .....config.table_mapping_config import (PLOT_TABLE,
                                               POINTSOURCE_TABLE_SOURCE_FIELD,
                                               ID_FIELD)
 from .....gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
-from .....gui.wizards.select_features_by_expression_wizard import SelectFeatureByExpressionWizard
-from .....gui.wizards.select_features_on_map_wizard import SelectFeaturesOnMapWizard
+from .....gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
+from .....gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 
 
 class CreateSpatialSourceCadastreWizard(MultiPageWizardFactory,
-                                        SelectFeatureByExpressionWizard,
-                                        SelectFeaturesOnMapWizard):
+                                        SelectFeatureByExpressionDialogWrapper,
+                                        SelectFeaturesOnMapWrapper):
     def __init__(self, iface, db, qgis_utils, wizard_settings):
         MultiPageWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
-        SelectFeatureByExpressionWizard.__init__(self)
-        SelectFeaturesOnMapWizard.__init__(self)
+        SelectFeatureByExpressionDialogWrapper.__init__(self)
+        SelectFeaturesOnMapWrapper.__init__(self)
 
     def advance_save(self, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,

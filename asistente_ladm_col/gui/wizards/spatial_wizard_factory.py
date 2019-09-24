@@ -30,18 +30,18 @@ from qgis.core import (QgsProject,
                        Qgis)
 
 from .abs_wizard_factory import AbsWizardFactory
-from .select_features_on_map_wizard import SelectFeaturesOnMapWizard
+from .map_interaction_expansion import MapInteractionExpansion
 from ...config.general_config import LAYER
 
 
-class SpatialWizardFactory(AbsWizardFactory, SelectFeaturesOnMapWizard):
+class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
     set_wizard_is_open_emitted = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):
         self.iface = iface
         AbsWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
-        SelectFeaturesOnMapWizard.__init__(self)
+        MapInteractionExpansion.__init__(self)
 
     def init_gui(self):
         raise NotImplementedError
@@ -76,6 +76,30 @@ class SpatialWizardFactory(AbsWizardFactory, SelectFeaturesOnMapWizard):
         elif self.rad_create_manually.isChecked():
             self.set_finalize_geometry_creation_enabled_emitted.emit(True)
             self.prepare_feature_creation()
+
+    def prepare_feature_creation_layers(self):
+        is_loaded = self.required_layers_are_available()
+        if not is_loaded:
+            return False
+
+        self.validate_remove_layers()
+
+        # All layers were successfully loaded
+        return True
+
+    def disconnect_signals(self):
+        if hasattr(self, 'SELECTION_BY_EXPRESSION'):
+            self.disconnect_signals_select_features_by_expression()
+
+        if hasattr(self, 'SELECTION_ON_MAP'):
+            self.disconnect_signals_select_features_on_map()
+
+        try:
+            self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
+        except:
+            pass
+
+        self.disconnect_signals_map_interaction_expansion()
 
     def close_wizard(self, message=None, show_message=True):
         if message is None:
@@ -126,10 +150,4 @@ class SpatialWizardFactory(AbsWizardFactory, SelectFeaturesOnMapWizard):
         return feature
 
     def exec_form_advance(self, layer):
-        raise NotImplementedError
-
-    def disconnect_signals_controls_select_features_on_map(self):
-        raise NotImplementedError
-
-    def register_select_feature_on_map(self):
         raise NotImplementedError

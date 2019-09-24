@@ -92,9 +92,3 @@ class SinglePageSpatialWizardFactory(SpatialWizardFactory):
 
     def exec_form_advance(self, layer):
         pass
-
-    def disconnect_signals_controls_select_features_on_map(self):
-        pass
-
-    def register_select_feature_on_map(self):
-        pass

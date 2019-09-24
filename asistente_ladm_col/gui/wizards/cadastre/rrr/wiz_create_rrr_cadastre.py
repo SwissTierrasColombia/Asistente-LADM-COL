@@ -40,16 +40,16 @@ from .....config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                               RESPONSIBILITY_TABLE,
                                               ID_FIELD)
 from .....gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
-from .....gui.wizards.select_features_by_expression_wizard import SelectFeatureByExpressionWizard
+from .....gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 
 
-class CreateRRRCadastreWizard(MultiPageWizardFactory, SelectFeatureByExpressionWizard):
+class CreateRRRCadastreWizard(MultiPageWizardFactory, SelectFeatureByExpressionDialogWrapper):
     set_wizard_is_open_emitted = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):
         MultiPageWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
-        SelectFeatureByExpressionWizard.__init__(self)
+        SelectFeatureByExpressionDialogWrapper.__init__(self)
 
     def advance_save(self, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,

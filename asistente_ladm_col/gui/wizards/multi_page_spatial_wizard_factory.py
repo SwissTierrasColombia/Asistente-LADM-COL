@@ -110,9 +110,3 @@ class MultiPageSpatialWizardFactory(SpatialWizardFactory):
 
     def exec_form_advance(self, layer):
         raise NotImplementedError
-
-    def disconnect_signals_controls_select_features_on_map(self):
-        raise NotImplementedError
-
-    def register_select_feature_on_map(self):
-        raise NotImplementedError
