@@ -31,15 +31,16 @@ from .qt_utils import OverrideCursor
 
 def _db_connection_required(func_to_decorate):
     @wraps(func_to_decorate)
-    def decorated_function(inst, *args, **kwargs):
+    def decorated_function(*args, **kwargs):
         # Check if current connection is valid and disable access if not
+        inst = args[0]
         db = inst.get_db_connection()
         res, msg = db.test_connection()
         if res:
             if not inst.qgis_utils._layers and not inst.qgis_utils._relations:
                 inst.qgis_utils.cache_layers_and_relations(db, ladm_col_db=True)
 
-            func_to_decorate(inst)
+            func_to_decorate(*args, **kwargs)
         else:
             widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
                                                            QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -60,14 +61,15 @@ def _db_connection_required(func_to_decorate):
 
 def _qgis_model_baker_required(func_to_decorate):
     @wraps(func_to_decorate)
-    def decorated_function(inst, *args, **kwargs):
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
         # Check if QGIS Model Baker is installed and active, disable access if not
         plugin_version_right = inst.is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
                                                             QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
                                                             QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
 
         if plugin_version_right:
-            func_to_decorate(inst, *args, **kwargs)
+            func_to_decorate(*args, **kwargs)
         else:
             if QGIS_MODEL_BAKER_REQUIRED_VERSION_URL:
                 # If we depend on a specific version of QGIS Model Baker (only on that one)
@@ -142,7 +144,8 @@ def _log_quality_checks(func_to_decorate):
 
 def _official_db_connection_required(func_to_decorate):
     @wraps(func_to_decorate)
-    def decorated_function(inst, *args, **kwargs):
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
         # Check if current connection is valid and disable access if not
         db = inst.get_official_db_connection()
         res, msg = db.test_connection()
@@ -167,13 +170,14 @@ def _official_db_connection_required(func_to_decorate):
 
 def _different_db_connections_required(func_to_decorate):
     @wraps(func_to_decorate)
-    def decorated_function(inst, *args, **kwargs):
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
         db = inst.get_db_connection()
         official_db = inst.get_official_db_connection()
         res = db.equals(official_db)
 
         if not res:
-            func_to_decorate(inst)
+            func_to_decorate(*args, **kwargs)
         else:
             widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
                          QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -200,14 +204,15 @@ def _different_db_connections_required(func_to_decorate):
 
 def _map_swipe_tool_required(func_to_decorate):
     @wraps(func_to_decorate)
-    def decorated_function(inst, *args, **kwargs):
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
         # Check if Map Swipe Tool is installed and active, disable access if not
         plugin_version_right = inst.is_plugin_version_valid(MAP_SWIPE_TOOL_PLUGIN_NAME,
                                                             MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
                                                             MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION)
 
         if plugin_version_right:
-            func_to_decorate(inst)
+            func_to_decorate(*args, **kwargs)
         else:
             if MAP_SWIPE_TOOL_REQUIRED_VERSION_URL:
                 # If we depend on a specific version of Map Swipe Tool (only on that one)
@@ -233,13 +238,14 @@ def _map_swipe_tool_required(func_to_decorate):
 
 def _validate_if_wizard_is_open(func_to_decorate):
     @wraps(func_to_decorate)
-    def decorated_function(inst, *args, **kwargs):
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
         if inst.is_wizard_open:
             inst.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "There is a wizard open, you need to close it before continuing with another tool."),
                               Qgis.Info)
         else:
-            func_to_decorate(inst, *args, **kwargs)
+             func_to_decorate(*args, **kwargs)
 
     return decorated_function
 

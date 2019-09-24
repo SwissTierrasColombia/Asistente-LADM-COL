@@ -145,7 +145,6 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.setLayout(QGridLayout())
         # self.tabWidget.currentWidget().layout().setContentsMargins(0, 0, 0, 0)
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 

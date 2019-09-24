@@ -122,7 +122,6 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         # Set MessageBar for QWizard
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.setLayout(QGridLayout())
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
     def nextId(self):
