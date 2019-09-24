@@ -6,6 +6,7 @@ from ..config.table_mapping_config import (COL_PARTY_TABLE,
                                            PARCEL_TABLE,
                                            UEBAUNIT_TABLE,
                                            BUILDING_UNIT_TABLE,
+                                           RIGHT_OF_WAY_TABLE,
                                            SURVEY_POINT_TABLE,
                                            LEGAL_PARTY_TABLE,
                                            NATURAL_PARTY_TABLE,
@@ -87,7 +88,8 @@ class WizardConfig:
     WIZARD_CREATE_SPATIAL_SOURCE_CADASTRE = "wizard_create_spatial_source_cadastre"
     WIZARD_CREATE_PARCEL_CADASTRE = "wizard_create_parcel_cadastre"
     WIZARD_CREATE_PLOT_CADASTRE = "wizard_create_plot_cadastre"
-    WIZARD_CREATE_EXT_ADDRESS = "wizard_create_ext_address"
+    WIZARD_CREATE_EXT_ADDRESS_CADASTRE = "wizard_create_ext_address_cadastre"
+    WIZARD_CREATE_RIGHT_OF_WAY_CADASTRE = "wizard_create_right_of_way_cadastre"
 
     # Valuation model
     WIZARD_CREATE_PARCEL_VALUATION = "wizard_create_parcel_valuation"
@@ -332,7 +334,7 @@ class WizardConfig:
             WIZARD_EDITING_LAYER_NAME_SETTING: PLOT_TABLE,
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
-        WIZARD_CREATE_EXT_ADDRESS: {
+        WIZARD_CREATE_EXT_ADDRESS_CADASTRE: {
             WIZARD_NAME_SETTING: "CreateExtAddressWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateExtAddressWizard", "ext address"),
             WIZARD_HELP_SETTING: "associate_ext_address",
@@ -354,6 +356,28 @@ class WizardConfig:
                 BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: EXTADDRESS_TABLE,
+            WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
+        },
+        WIZARD_CREATE_RIGHT_OF_WAY_CADASTRE: {
+            WIZARD_NAME_SETTING: "CreateRightOfWayCadastreWizard",
+            WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateRightOfWayCadastreWizard", "right of way"),
+            WIZARD_HELP_SETTING: "create_right_of_way",
+            WIZARD_UI_SETTING: "wizards/cadastre/spatial_unit/wiz_create_right_of_way_cadastre.ui",
+            WIZARD_QSETTINGS_SETTING: {
+                WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/right_of_way_load_data_type"
+            },
+            WIZARD_HELP_PAGES_SETTING: {
+                WIZARD_HELP1: help_strings.WIZ_CREATE_RIGHT_OF_WAY_CADASTRE_PAGE_1_OPTION_POINTS,
+                WIZARD_HELP2: help_strings.WIZ_CREATE_RIGHT_OF_WAY_CADASTRE_PAGE_1_OPTION2_POINTS,
+                WIZARD_HELP2: help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_2,
+                WIZARD_HELP3: help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_3
+            },
+            WIZARD_LAYERS_SETTING: {
+                RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None}
+            },
+            WIZARD_EDITING_LAYER_NAME_SETTING: RIGHT_OF_WAY_TABLE,
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
         # VALUATION MODEL

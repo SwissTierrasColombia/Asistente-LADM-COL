@@ -1166,16 +1166,11 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_wiz_building_unit_cad(self):
         self.show_wizard(WizardConfig.WIZARD_CREATE_BUILDING_UNIT_CADASTRE, WizardConfig.SINGLE_PAGE_SPATIAL_WIZARD_TYPE)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    @_activate_processing_plugin
     def show_wiz_right_of_way_cad(self):
-        self.wiz = CreateRightOfWayCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
-        self.exec_wizard(self.wiz)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_RIGHT_OF_WAY_CADASTRE, WizardConfig.SINGLE_PAGE_SPATIAL_WIZARD_TYPE)
 
     def show_wiz_extaddress_cad(self):
-        self.show_wizard(WizardConfig.WIZARD_CREATE_EXT_ADDRESS, WizardConfig.MULTI_PAGE_SPATIAL_WIZARD_TYPE)
+        self.show_wizard(WizardConfig.WIZARD_CREATE_EXT_ADDRESS_CADASTRE, WizardConfig.MULTI_PAGE_SPATIAL_WIZARD_TYPE)
 
     def show_wiz_parcel_cad(self):
         self.show_wizard(WizardConfig.WIZARD_CREATE_PARCEL_CADASTRE, WizardConfig.MULTI_PAGE_WIZARD_TYPE)
@@ -1354,12 +1349,17 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required2
+    @_activate_processing_plugin
     def show_wizard(self, wizard_name, type_wizard, *args, **kwargs):
         wiz_settings = WizardConfig.WIZARDS_SETTINGS[wizard_name]
 
-        if wizard_name == WizardConfig.WIZARD_CREATE_BUILDING_UNIT_VALUATION:
+        if wizard_name == WizardConfig.WIZARD_CREATE_RIGHT_OF_WAY_CADASTRE:
+            self.wiz = CreateRightOfWayCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
+            self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
+            self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
+        elif wizard_name == WizardConfig.WIZARD_CREATE_BUILDING_UNIT_VALUATION:
             self.wiz = CreateBuildingUnitValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
-        elif wizard_name == WizardConfig.WIZARD_CREATE_EXT_ADDRESS:
+        elif wizard_name == WizardConfig.WIZARD_CREATE_EXT_ADDRESS_CADASTRE:
             self.wiz = CreateExtAddressCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
             self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
             self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
