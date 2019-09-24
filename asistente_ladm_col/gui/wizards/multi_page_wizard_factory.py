@@ -101,10 +101,10 @@ class MultiPageWizardFactory(WizardFactory):
         if hasattr(self, 'SELECTION_ON_MAP'):
             self.register_select_feature_on_map()
 
-    def advance_save(self, features):
+    def advanced_save(self, features):
         raise NotImplementedError
 
-    def exec_form_advance(self, layer):
+    def exec_form_advanced(self, layer):
         raise NotImplementedError
 
     def check_selected_features(self):

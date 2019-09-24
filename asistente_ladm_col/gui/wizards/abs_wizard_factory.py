@@ -119,13 +119,13 @@ class AbsWizardFactory(QWizard):
         raise NotImplementedError
 
     def finish_feature_creation(self, layerId, features):
-        message = self.advance_save(features)
+        message = self.advanced_save(features)
 
         self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("{} committedFeaturesAdded SIGNAL disconnected".format(self.WIZARD_FEATURE_NAME), PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 
-    def advance_save(self, features):
+    def advanced_save(self, features):
         raise NotImplementedError
 
     def open_form(self, layer):
@@ -138,7 +138,7 @@ class AbsWizardFactory(QWizard):
         dialog.setModal(True)
 
         if dialog.exec_():
-            self.exec_form_advance(layer)
+            self.exec_form_advanced(layer)
             saved = layer.commitChanges()
 
             if not saved:
@@ -155,7 +155,7 @@ class AbsWizardFactory(QWizard):
     def get_feature_exec_form(self, layer):
         raise NotImplementedError
 
-    def exec_form_advance(self, layer):
+    def exec_form_advanced(self, layer):
         raise NotImplementedError
 
     def form_rejected(self):

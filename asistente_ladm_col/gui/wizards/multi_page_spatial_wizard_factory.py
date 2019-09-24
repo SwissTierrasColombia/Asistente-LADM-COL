@@ -105,8 +105,8 @@ class MultiPageSpatialWizardFactory(SpatialWizardFactory):
     def check_selected_features(self):
         raise NotImplementedError
 
-    def advance_save(self, features):
+    def advanced_save(self, features):
         raise NotImplementedError
 
-    def exec_form_advance(self, layer):
+    def exec_form_advanced(self, layer):
         raise NotImplementedError

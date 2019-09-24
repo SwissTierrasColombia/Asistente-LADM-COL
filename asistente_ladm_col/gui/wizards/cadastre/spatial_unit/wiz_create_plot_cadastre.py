@@ -33,10 +33,10 @@ class CreatePlotCadastreWizard(MultiPageWizardFactory,
         SelectFeatureByExpressionDialogWrapper.__init__(self)
         SelectFeaturesOnMapWrapper.__init__(self)
 
-    def advance_save(self, features):
+    def advanced_save(self, features):
         pass
 
-    def exec_form_advance(self, layer):
+    def exec_form_advanced(self, layer):
         pass
 
     def check_selected_features(self):

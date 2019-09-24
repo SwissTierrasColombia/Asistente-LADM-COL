@@ -130,7 +130,7 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
             QCoreApplication.translate(self.WIZARD_NAME,
                                        "You can now start capturing {} digitizing on the map...").format(self.WIZARD_FEATURE_NAME), Qgis.Info)
 
-    def advance_save(self, features):
+    def advanced_save(self, features):
         raise NotImplementedError
 
     def open_form(self, layer):
@@ -149,5 +149,5 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
 
         return feature
 
-    def exec_form_advance(self, layer):
+    def exec_form_advanced(self, layer):
         raise NotImplementedError

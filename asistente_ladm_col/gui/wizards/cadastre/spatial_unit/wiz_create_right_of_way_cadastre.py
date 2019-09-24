@@ -176,7 +176,7 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
                 QCoreApplication.translate(self.WIZARD_NAME,
                                            "You can now start capturing {} digitizing on the map...").format(self.WIZARD_FEATURE_NAME), Qgis.Info)
 
-    def advance_save(self, features):
+    def advanced_save(self, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()
@@ -217,7 +217,7 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
         dialog.setModal(True)
 
         if dialog.exec_():
-            self.exec_form_advance(layer)
+            self.exec_form_advanced(layer)
             saved = layer.commitChanges()
 
             if not saved:

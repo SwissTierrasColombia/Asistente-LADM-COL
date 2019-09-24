@@ -38,7 +38,7 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
         self._spatial_unit_layers = dict()
         self.type_of_parcel_selected = None
 
-    def advance_save(self, features):
+    def advanced_save(self, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         if len(features) != 1:
@@ -129,7 +129,7 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
 
         return message
 
-    def exec_form_advance(self, layer):
+    def exec_form_advanced(self, layer):
         pass
 
     def check_selected_features(self):

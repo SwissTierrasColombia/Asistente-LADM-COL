@@ -114,7 +114,7 @@ class WizardFactory(AbsWizardFactory):
         self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
         self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
 
-    def advance_save(self, features):
+    def advanced_save(self, features):
         raise NotImplementedError
 
     def open_form(self, layer):
@@ -127,5 +127,5 @@ class WizardFactory(AbsWizardFactory):
         feature = self.qgis_utils.get_new_feature(layer)
         return feature
 
-    def exec_form_advance(self, layer):
+    def exec_form_advanced(self, layer):
         raise NotImplementedError
