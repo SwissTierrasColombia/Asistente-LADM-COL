@@ -19,6 +19,7 @@
 from .db_connector import DBConnector
 
 import pyodbc
+from pyodbc import (ProgrammingError, InterfaceError)
 from qgis.PyQt.QtCore import QCoreApplication
 from ...config.general_config import (PLUGIN_NAME, INTERLIS_TEST_METADATA_TABLE_PG, PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO)
 from qgis.core import (Qgis, QgsApplication)
@@ -30,12 +31,22 @@ class MssqlConnector(DBConnector):
 
     _PROVIDER_NAME = 'mssql'
     _DEFAULT_HOST = 'localhost'
+    _DEFAULT_VALUES = {
+        'db_odbc_driver': '',
+        'host': 'localhost',
+        'port': '',
+        'instance': '',
+        'database': '',
+        'username': '',
+        'schema': '',
+        'password': ''
+    }
 
-    def __init__(self, uri, schema=None, conn_dict={}):
-        DBConnector.__init__(self, uri, schema, conn_dict)
+    def __init__(self, uri, conn_dict=dict()):
+        DBConnector.__init__(self, uri, conn_dict)
         self.mode = 'mssql'
         self.conn = None
-        self.schema = schema
+        self.schema = conn_dict['schema'] if 'schema' in conn_dict else ''
         self.log = QgsApplication.messageLog()
         self.provider = 'mssql'
         self._tables_info = None
@@ -132,19 +143,39 @@ class MssqlConnector(DBConnector):
 
         if test_level & EnumTestLevel.SERVER:
             uri = self.get_connection_uri(self._dict_conn_params, 0)
+            res, msg = self.open_connection()
+            if res:
+                return (True, QCoreApplication.translate("MSSQLConnector",
+                                                         "Connection to server was successful."))
+            else:
+                return (False, msg)
 
         if test_level & EnumTestLevel.DB:
             if not self._dict_conn_params['database'] or self._dict_conn_params['database'] == 'master':
                 return (False, QCoreApplication.translate("MSSQLConnector",
                     "You should first select a database."))
 
+        # Client side check
+        if self.conn is None:
+            res, msg = self.open_connection()
+            if not res:
+                return (res, msg)
+
         try:
-            self.close_connection()
-            self.conn = conn = pyodbc.connect(uri)
-            self.log.logMessage("Connection was set! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+            # Server side check
+            cur = self.conn.cursor()
+            cur.execute('SELECT 1')  # This query will fail if the db is no longer connected
+            cur.close()
         except Exception as e:
-            return (False, QCoreApplication.translate("MSSQLConnector",
-                    "There was an error connecting to the database: {}").format(e))
+            # Reopen the connection if it is closed due to timeout
+            self.conn.close()
+            res, msg = self.open_connection()
+            if not res:
+                return (res, msg)
+
+        if test_level == EnumTestLevel.DB:  # Just in the DB case
+            return (True, QCoreApplication.translate("MSSQLConnector",
+                                                     "Connection to the database was successful."))
 
         if test_level & EnumTestLevel._CHECK_SCHEMA:
             # TODO # is 'dbo' database valid?  self._dict_conn_params['schema'] == 'dbo':
@@ -154,22 +185,49 @@ class MssqlConnector(DBConnector):
             if not self._schema_exists():
                 return (False, QCoreApplication.translate("MSSQLConnector",
                     "The schema '{}' does not exist in the database!").format(self.schema))
+            # TODO Test schema permissions (*)
 
-        if test_level & EnumTestLevel._CHECK_LADM and not self._metadata_exists():
-            return (False, QCoreApplication.translate("MSSQLConnector",
-                    "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
+        if test_level == EnumTestLevel.DB_SCHEMA:
+            return (True, QCoreApplication.translate("PGConnector",
+                                                     "Connection to the database schema was successful."))
 
-        # TODO Test schema permissions (*)
         if test_level & EnumTestLevel._CHECK_LADM:
+            if not self._metadata_exists():
+                return (False, QCoreApplication.translate("MSSQLConnector",
+                        "The schema '{}' is not a valid INTERLIS schema. That is, the schema doesn't have some INTERLIS metadata tables.").format(self.schema))
+
             if self.model_parser is None:
                 self.model_parser = ModelParser(self)
-            if not self.model_parser.validate_cadastre_model_version()[0]:
-                return (False, QCoreApplication.translate("MSSQLConnector", "The version of the Cadastre-Registry model in the database is old and is not supported in this version of the plugin. Go to <a href=\"{}\">the QGIS Plugins Repo</a> to download another version of this plugin.").format(PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO))
 
-        if test_level & EnumTestLevel._CHECK_LADM:
+            res_parser, msg_parser = self.model_parser.validate_cadastre_model_version()
+            if not res_parser:
+                return (False, msg_parser)
+
+        if test_level == EnumTestLevel.LADM:
             return (True, QCoreApplication.translate("MSSQLConnector", "The schema '{}' has a valid LADM-COL structure!").format(self.schema))
 
-        return (True, QCoreApplication.translate("MSSQLConnector", "Connection to Mssql successful!"))
+        if test_level & EnumTestLevel.SCHEMA_IMPORT:
+            return (True, QCoreApplication.translate("MSSQLConnector", "Connection successful!"))
+
+        return (False, QCoreApplication.translate("MSSQLConnector", "There was a problem checking the connection. Most likely due to invalid or not supported test_level!"))
+
+    def open_connection(self, uri=None):
+        if uri is None:
+            uri = self._uri
+        else:
+            self.conn.close()
+
+        if self.conn is None:
+            try:
+                self.conn = pyodbc.connect(uri)
+            except (ProgrammingError, InterfaceError, pyodbc.Error, pyodbc.OperationalError) as e:
+                return (False, QCoreApplication.translate("MssqlConnector", "Could not open connection! Details: {}".format(e)))
+
+            self.log.logMessage("Connection was open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+        else:
+            self.log.logMessage("Connection is already open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
+
+        return (True, QCoreApplication.translate("MssqlConnector", "Connection is open!"))
 
     def close_connection(self):
         if self.conn:
@@ -178,6 +236,9 @@ class MssqlConnector(DBConnector):
             self.log.logMessage("Connection was closed!", PLUGIN_NAME, Qgis.Info)
 
     def get_dbnames_list(self, uri):
+        res, msg = self.test_connection(EnumTestLevel.SERVER)
+        if not res:
+            return (False, msg)
         dbnames_list = list()
         try:
             conn = pyodbc.connect(uri)
@@ -327,7 +388,7 @@ class MssqlConnector(DBConnector):
         uri = []
 
         uri += ['DRIVER={{{}}}'.format(dict_conn['db_odbc_driver'])]
-        host = dict_conn['host'] or self._DEFAULT_HOST
+        host = dict_conn['host'] or self._DEFAULT_VALUES['host']
         if dict_conn['instance']:
             host += '\\' + dict_conn['instance']
         if dict_conn['port']:
