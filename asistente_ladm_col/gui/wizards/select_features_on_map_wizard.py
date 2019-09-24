@@ -40,18 +40,22 @@ class SelectFeaturesOnMapWizard:
 
     def map_tool_changed(self, new_tool, old_tool):
         self.canvas.mapToolSet.disconnect(self.map_tool_changed)
-        reply = QMessageBox.question(self,
-                                     QCoreApplication.translate(self.WIZARD_NAME, "Stop {} creation?").format(self.WIZARD_FEATURE_NAME),
-                                     QCoreApplication.translate(self.WIZARD_NAME, "The map tool is about to change. Do you want to stop creating {}?").format(self.WIZARD_FEATURE_NAME),
-                                     QMessageBox.Yes, QMessageBox.No)
 
-        if reply == QMessageBox.Yes:
+        msg = QMessageBox(self)
+        msg.setIcon(QMessageBox.Question)
+        msg.setText(QCoreApplication.translate(self.WIZARD_NAME, "Do you really want to change the map tool?"))
+        msg.setWindowTitle(QCoreApplication.translate(self.WIZARD_NAME, "CHANGING MAP TOOL?"))
+        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "Yes, and close the wizard")), QMessageBox.YesRole)
+        msg.addButton(QPushButton(QCoreApplication.translate(self.WIZARD_NAME, "No, continue editing")), QMessageBox.NoRole)
+        reply = msg.exec_()
+
+        if reply == 1: # 1 continue editing, 0 close wizard
+            self.canvas.setMapTool(old_tool)
+            self.canvas.mapToolSet.connect(self.map_tool_changed)
+        else:
             message = QCoreApplication.translate(self.WIZARD_NAME,
                                                  "'{}' tool has been closed because the map tool change.").format(self.WIZARD_TOOL_NAME)
             self.close_wizard(message)
-        else:
-            self.canvas.setMapTool(old_tool)
-            self.canvas.mapToolSet.connect(self.map_tool_changed)
 
     def select_features_on_map(self, layer):
         self.iface.setActiveLayer(layer)
