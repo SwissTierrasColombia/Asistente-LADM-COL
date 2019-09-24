@@ -105,7 +105,7 @@ from .utils.quality import QualityUtils
 from .lib.db.enum_db_action_type import EnumDbActionType
 
 from .config.wizards_config import WizardConfig
-from .gui.wizards.single_page_spatial_wizard import SinglePageSpatialWizard
+from .gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
 from .gui.wizards.single_page_wizard_factory import SinglePageWizardFactory
 
 
@@ -1374,7 +1374,7 @@ class AsistenteLADMCOLPlugin(QObject):
         elif type_wizard == WizardConfig.SINGLE_PAGE_WIZARD_TYPE:
             self.wiz = SinglePageWizardFactory(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
         elif type_wizard == WizardConfig.SINGLE_PAGE_SPATIAL_WIZARD_TYPE:
-            self.wiz = SinglePageSpatialWizard(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
+            self.wiz = SinglePageSpatialWizardFactory(self.iface, self.get_db_connection(), self.qgis_utils, wiz_settings)
             self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
             self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
         elif type_wizard == WizardConfig.RRR_CADASTRE_WIZARD_TYPE:

@@ -31,18 +31,13 @@ from qgis.PyQt.QtWidgets import QWizard
 from ....config.table_mapping_config import (VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE,
                                              VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE)
 from ....config.wizards_config import WizardConfig
-from ....gui.wizards.single_page_wizard import SinglePageWizard
+from ....gui.wizards.single_page_wizard_factory import SinglePageWizardFactory
 from ....utils.qt_utils import enable_next_wizard
 
 
-class CreateBuildingUnitQualificationValuationWizard(SinglePageWizard):
-
+class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
     def __init__(self, iface, db, qgis_utils, wizard_settings):
-        SinglePageWizard.__init__(self, iface, db, qgis_utils, wizard_settings)
-
-    #############################################################################
-    # implement: raise NotImplementedError
-    #############################################################################
+        SinglePageWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
 
     #############################################################################
     # Override methods

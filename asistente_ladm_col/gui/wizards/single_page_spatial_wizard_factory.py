@@ -27,16 +27,13 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import QWizard
-from qgis.core import (Qgis,
-                       QgsProject)
+from qgis.core import (Qgis)
 
-from .wizard_factory import WizardFactory
+from .spatial_wizard_factory import SpatialWizardFactory
 from ...config.general_config import (PLUGIN_NAME,
                                       LAYER)
 from ...config.table_mapping_config import ID_FIELD
 from ...config.wizards_config import WizardConfig
-from .select_features_on_map_wizard import SelectFeaturesOnMapWizard
-from .spatial_wizard_factory import SpatialWizardFactory
 
 
 class SinglePageSpatialWizardFactory(SpatialWizardFactory):

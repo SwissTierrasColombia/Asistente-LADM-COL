@@ -22,65 +22,21 @@ from .....config.table_mapping_config import (PLOT_TABLE,
                                               UEBAUNIT_TABLE_BUILDING_UNIT_FIELD,
                                               ID_FIELD)
 from .....config.wizards_config import WizardConfig
-from .....gui.wizards.multi_page_wizard import MultiPageWizard
+from .....gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from .....gui.wizards.select_features_by_expression_wizard import SelectFeatureByExpressionWizard
 from .....gui.wizards.select_features_on_map_wizard import SelectFeaturesOnMapWizard
 
 
-class CreateParcelCadastreWizard(MultiPageWizard,
+class CreateParcelCadastreWizard(MultiPageWizardFactory,
                                  SelectFeatureByExpressionWizard,
                                  SelectFeaturesOnMapWizard):
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):
-        MultiPageWizard.__init__(self, iface, db, qgis_utils, wizard_settings)
+        MultiPageWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
         SelectFeatureByExpressionWizard.__init__(self)
         SelectFeaturesOnMapWizard.__init__(self)
         self._spatial_unit_layers = dict()
         self.type_of_parcel_selected = None
-
-    #############################################################################
-    # implement: raise NotImplementedError
-    #############################################################################
-
-    def register_select_feature_on_map(self):
-        self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[PLOT_TABLE][LAYER]))
-        self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_TABLE][LAYER]))
-        self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_UNIT_TABLE][LAYER]))
-
-    def register_select_features_by_expression(self):
-        self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[PLOT_TABLE][LAYER]))
-        self.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_TABLE][LAYER]))
-        self.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_UNIT_TABLE][LAYER]))
-
-    def check_selected_features(self):
-        self.lb_plot.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[PLOT_TABLE][LAYER].selectedFeatureCount()))
-        self.lb_plot.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
-        self.lb_building.setText(QCoreApplication.translate(self.WIZARD_NAME,"<b>Building(s)</b>: {count} Feature(s) Selected").format(count=self._layers[BUILDING_TABLE][LAYER].selectedFeatureCount()))
-        self.lb_building.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
-        self.lb_building_unit.setText(QCoreApplication.translate(self.WIZARD_NAME,"<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=self._layers[BUILDING_UNIT_TABLE][LAYER].selectedFeatureCount()))
-        self.lb_building_unit.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
-
-        parcel_type = self.cb_parcel_type.currentText()
-        for spatial_unit in CONSTRAINT_TYPES_OF_PARCEL[parcel_type]:
-            _layer = self._spatial_unit_layers[spatial_unit]
-
-            _color = CSS_COLOR_OKAY_LABEL
-
-            if CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == 1 and not _layer.selectedFeatureCount() == 1:
-                    _color = CSS_COLOR_ERROR_LABEL
-            elif CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == '+' and _layer.selectedFeatureCount() < 1:
-                    _color = CSS_COLOR_ERROR_LABEL
-            elif CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == None:
-                _color = CSS_COLOR_INACTIVE_LABEL
-
-            if spatial_unit == PLOT_TABLE:
-                self.lb_plot.setStyleSheet(_color)
-            elif spatial_unit == BUILDING_TABLE:
-                self.lb_building.setStyleSheet(_color)
-            elif spatial_unit == BUILDING_UNIT_TABLE:
-                self.lb_building_unit.setStyleSheet(_color)
-
-        self.button(self.FinishButton).setEnabled(self.is_constraint_satisfied(parcel_type))
 
     def advance_save(self, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -173,6 +129,39 @@ class CreateParcelCadastreWizard(MultiPageWizard,
 
         return message
 
+    def exec_form_advance(self, layer):
+        pass
+
+    def check_selected_features(self):
+        self.lb_plot.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[PLOT_TABLE][LAYER].selectedFeatureCount()))
+        self.lb_plot.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
+        self.lb_building.setText(QCoreApplication.translate(self.WIZARD_NAME,"<b>Building(s)</b>: {count} Feature(s) Selected").format(count=self._layers[BUILDING_TABLE][LAYER].selectedFeatureCount()))
+        self.lb_building.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
+        self.lb_building_unit.setText(QCoreApplication.translate(self.WIZARD_NAME,"<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=self._layers[BUILDING_UNIT_TABLE][LAYER].selectedFeatureCount()))
+        self.lb_building_unit.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
+
+        parcel_type = self.cb_parcel_type.currentText()
+        for spatial_unit in CONSTRAINT_TYPES_OF_PARCEL[parcel_type]:
+            _layer = self._spatial_unit_layers[spatial_unit]
+
+            _color = CSS_COLOR_OKAY_LABEL
+
+            if CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == 1 and not _layer.selectedFeatureCount() == 1:
+                    _color = CSS_COLOR_ERROR_LABEL
+            elif CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == '+' and _layer.selectedFeatureCount() < 1:
+                    _color = CSS_COLOR_ERROR_LABEL
+            elif CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == None:
+                _color = CSS_COLOR_INACTIVE_LABEL
+
+            if spatial_unit == PLOT_TABLE:
+                self.lb_plot.setStyleSheet(_color)
+            elif spatial_unit == BUILDING_TABLE:
+                self.lb_building.setStyleSheet(_color)
+            elif spatial_unit == BUILDING_UNIT_TABLE:
+                self.lb_building_unit.setStyleSheet(_color)
+
+        self.button(self.FinishButton).setEnabled(self.is_constraint_satisfied(parcel_type))
+
     def disconnect_signals_select_features_by_expression(self):
         signals = [self.btn_plot_expression.clicked,
                    self.btn_building_expression.clicked,
@@ -185,6 +174,11 @@ class CreateParcelCadastreWizard(MultiPageWizard,
             except:
                 pass
 
+    def register_select_features_by_expression(self):
+        self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[PLOT_TABLE][LAYER]))
+        self.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_TABLE][LAYER]))
+        self.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_UNIT_TABLE][LAYER]))
+
     def disconnect_signals_controls_select_features_on_map(self):
         signals = [self.btn_plot_map.clicked,
                    self.btn_building_map.clicked,
@@ -195,6 +189,11 @@ class CreateParcelCadastreWizard(MultiPageWizard,
                 signal.disconnect()
             except:
                 pass
+
+    def register_select_feature_on_map(self):
+        self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[PLOT_TABLE][LAYER]))
+        self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_TABLE][LAYER]))
+        self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_UNIT_TABLE][LAYER]))
 
     #############################################################################
     # Override methods
@@ -250,7 +249,6 @@ class CreateParcelCadastreWizard(MultiPageWizard,
         # All layers were successfully loaded
         return True
 
-
     def exec_form(self, layer):
         feature = self.qgis_utils.get_new_feature(layer)
         dialog = self.iface.getFeatureForm(layer, feature)
@@ -276,7 +274,6 @@ class CreateParcelCadastreWizard(MultiPageWizard,
         else:
             layer.rollBack()
         self.iface.mapCanvas().refresh()
-
 
     def save_settings(self):
         settings = QSettings()

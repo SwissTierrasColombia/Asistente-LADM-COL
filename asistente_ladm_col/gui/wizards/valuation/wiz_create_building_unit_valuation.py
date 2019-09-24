@@ -13,35 +13,18 @@ from ....config.table_mapping_config import (BUILDING_UNIT_TABLE,
                                              AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_FIELD,
                                              AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_VALUATION_FIELD,
                                              ID_FIELD)
-from ....gui.wizards.multi_page_wizard import MultiPageWizard
+from ....gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from ....gui.wizards.select_features_by_expression_wizard import SelectFeatureByExpressionWizard
 from ....gui.wizards.select_features_on_map_wizard import SelectFeaturesOnMapWizard
 
 
-class CreateBuildingUnitValuationWizard(MultiPageWizard,
+class CreateBuildingUnitValuationWizard(MultiPageWizardFactory,
                                         SelectFeatureByExpressionWizard,
                                         SelectFeaturesOnMapWizard):
-
     def __init__(self, iface, db, qgis_utils, wizard_settings):
-        MultiPageWizard.__init__(self, iface, db, qgis_utils, wizard_settings)
+        MultiPageWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
         SelectFeatureByExpressionWizard.__init__(self)
         SelectFeaturesOnMapWizard.__init__(self)
-
-    def register_select_feature_on_map(self):
-        self.btn_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_UNIT_TABLE][LAYER]))
-
-    def register_select_features_by_expression(self):
-        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_UNIT_TABLE][LAYER]))
-
-    def check_selected_features(self):
-        _count = self._layers[BUILDING_UNIT_TABLE][LAYER].selectedFeatureCount()
-        self.lb_info.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=_count))
-        self.lb_info.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
-
-        if _count != 1:
-            _color = CSS_COLOR_ERROR_LABEL
-            self.lb_info.setStyleSheet(_color)
-        self.button(self.FinishButton).setEnabled(_count == 1)
 
     def advance_save(self, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -73,6 +56,19 @@ class CreateBuildingUnitValuationWizard(MultiPageWizard,
 
         return message
 
+    def exec_form_advance(self, layer):
+        pass
+
+    def check_selected_features(self):
+        _count = self._layers[BUILDING_UNIT_TABLE][LAYER].selectedFeatureCount()
+        self.lb_info.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=_count))
+        self.lb_info.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
+
+        if _count != 1:
+            _color = CSS_COLOR_ERROR_LABEL
+            self.lb_info.setStyleSheet(_color)
+        self.button(self.FinishButton).setEnabled(_count == 1)
+
     def disconnect_signals_select_features_by_expression(self):
         signals = [self.btn_expression.clicked]
 
@@ -82,6 +78,9 @@ class CreateBuildingUnitValuationWizard(MultiPageWizard,
             except:
                 pass
 
+    def register_select_features_by_expression(self):
+        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_UNIT_TABLE][LAYER]))
+
     def disconnect_signals_controls_select_features_on_map(self):
         signals = [self.btn_map.clicked]
 
@@ -90,3 +89,6 @@ class CreateBuildingUnitValuationWizard(MultiPageWizard,
                 signal.disconnect()
             except:
                 pass
+
+    def register_select_feature_on_map(self):
+        self.btn_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_UNIT_TABLE][LAYER]))
