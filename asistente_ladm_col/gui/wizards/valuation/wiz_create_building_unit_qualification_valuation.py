@@ -28,6 +28,7 @@ from qgis.PyQt.QtCore import (QSettings,
                               QCoreApplication)
 from qgis.PyQt.QtWidgets import QWizard
 
+from ....config.general_config import LAYER
 from ....config.table_mapping_config import (VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE,
                                              VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE)
 from ....config.wizards_config import WizardConfig
@@ -71,7 +72,7 @@ class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
             self.lbl_field_mapping.setEnabled(True)
             self.cbo_mapping.setEnabled(True)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
-            self.txt_help_page_2.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, False))
+            self.txt_help_page_2.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME][LAYER]))
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)
             self.mMapLayerComboBox.setEnabled(False)

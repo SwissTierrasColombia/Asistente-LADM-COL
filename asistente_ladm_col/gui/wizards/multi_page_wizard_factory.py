@@ -66,7 +66,7 @@ class MultiPageWizardFactory(WizardFactory):
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, False))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME][LAYER]))
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)

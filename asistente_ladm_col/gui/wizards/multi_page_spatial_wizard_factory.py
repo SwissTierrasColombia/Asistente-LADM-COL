@@ -28,6 +28,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import QWizard
 
+from ...config.general_config import LAYER
 from .spatial_wizard_factory import SpatialWizardFactory
 from ...config.wizards_config import WizardConfig
 from ...utils.qt_utils import (enable_next_wizard,
@@ -65,7 +66,7 @@ class MultiPageSpatialWizardFactory(SpatialWizardFactory):
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self.EDITING_LAYER_NAME, True))
+            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME][LAYER]))
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
         elif self.rad_create_manually.isChecked():
             self.lbl_refactor_source.setEnabled(False)

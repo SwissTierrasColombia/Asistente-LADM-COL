@@ -205,10 +205,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
             disable_next_wizard(self)
             self.wizardPage2.setFinalPage(True)
-            self.txt_help_page_2.setHtml(
-                self.help_strings.get_refactor_help_string(
-                    self.current_point_name(),
-                    True))
+            self.txt_help_page_2.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.current_point_name()][LAYER]))
 
         elif self.rad_csv.isChecked():
             self.lbl_refactor_source.setEnabled(False)
