@@ -16,92 +16,28 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import (Qt, QCoreApplication,pyqtSignal)
-from qgis.PyQt.QtWidgets import (QWidget,
-                                 QLabel,
-                                 QGridLayout,
-                                 QLineEdit,
-                                 QComboBox,
-                                 QPushButton
-                                 )
+from qgis.PyQt.QtCore import pyqtSignal
 from qgis.core import Qgis
 from .db_schema_db_panel import DbSchemaDbPanel
 from ...lib.db.mssql_connector import MssqlConnector
 from QgisModelBaker.utils.mssql_utils import get_odbc_drivers
+from ...utils import get_ui_class
+
+WIDGET_UI = get_ui_class('dialogs/settings_mssql.ui')
 
 
-class MssqlConfigPanel(QWidget, DbSchemaDbPanel):
+class MssqlConfigPanel(DbSchemaDbPanel, WIDGET_UI):
     notify_message_requested = pyqtSignal(str, Qgis.MessageLevel)
 
-    def __init__(self, parent=None):
-        QWidget.__init__(self, parent)
-
-        DbSchemaDbPanel.__init__(self, MssqlConnector(''))
-
+    def __init__(self, parent):
+        DbSchemaDbPanel.__init__(self, parent)
+        self.setupUi(self)
         # FIXME unused code (probably)
         self.mode = "mssql"
-
-        lbl_odbc_driver = QLabel(self.tr("Odbc Driver"))
-        lbl_host = QLabel(self.tr("Host"))
-        lbl_port = QLabel(self.tr("Port"))
-        lbl_database = QLabel(self.tr("Database"))
-        lbl_instance = QLabel(self.tr("Instance"))
-        lbl_user = QLabel(self.tr("User"))
-        lbl_password = QLabel(self.tr("Password"))
-        lbl_schema = QLabel(self.tr("Schema"))
-
-        self.cbx_odbc_driver = QComboBox()
+        self.init_schema()
 
         for item_odbc_driver in get_odbc_drivers():
-            self.cbx_odbc_driver.addItem(item_odbc_driver)
-
-        self.txt_host = QLineEdit()
-        self.txt_host.setPlaceholderText(QCoreApplication.translate("SettingsDialog", "[Leave empty to use standard host: localhost]"))
-
-        self.txt_port = QLineEdit()
-        self.txt_port.setPlaceholderText(
-            QCoreApplication.translate("SettingsDialog", "[Leave empty to use dinamic or standard port 1433]"))
-
-        self.txt_instance = QLineEdit()
-        self.txt_instance.setPlaceholderText(
-            QCoreApplication.translate("SettingsDialog", "[Leave empty to use default instance]"))
-
-        self.txt_user = QLineEdit()
-        self.txt_user.setPlaceholderText(QCoreApplication.translate("SettingsDialog", "Database username"))
-
-        self.txt_password = QLineEdit()
-        self.txt_password.setEchoMode(QLineEdit.Password)
-        self.txt_password.setPlaceholderText(
-            QCoreApplication.translate("SettingsDialog", "[Leave empty to use system password]"))
-
-        self.create_db_button.setToolTip(QCoreApplication.translate("SettingsDialog", "Create database"))
-
-        self.create_schema_button.setToolTip(QCoreApplication.translate("SettingsDialog", "Create schema"))
-
-        layout = QGridLayout(self)
-        layout.addWidget(lbl_odbc_driver, 0, 0)
-        layout.addWidget(lbl_host, 1, 0)
-        layout.addWidget(lbl_port, 2, 0)
-        layout.addWidget(lbl_instance, 3, 0)
-        layout.addWidget(lbl_user, 4, 0)
-        layout.addWidget(lbl_password, 5, 0)
-        layout.addWidget(lbl_database, 7, 0)
-        layout.addWidget(lbl_schema, 8, 0)
-
-        layout.addWidget(self.cbx_odbc_driver, 0, 1)
-        layout.addWidget(self.txt_host, 1, 1)
-        layout.addWidget(self.txt_port, 2, 1)
-        layout.addWidget(self.txt_instance, 3, 1)
-        layout.addWidget(self.txt_user, 4, 1)
-        layout.addWidget(self.txt_password, 5, 1)
-
-        layout.addWidget(self.refresh_db_button, 6, 0, 1, 2)
-
-        layout.addWidget(self.selected_db_combobox, 7, 1)
-        layout.addWidget(self.selected_schema_combobox, 8, 1)
-
-        layout.addWidget(self.create_db_button, 7, 2)
-        layout.addWidget(self.create_schema_button, 8, 2)
+            self.selected_odbc_driver.addItem(item_odbc_driver)
 
     def showEvent(self, event):
         self._set_controls_enabled(False)
@@ -121,7 +57,7 @@ class MssqlConfigPanel(QWidget, DbSchemaDbPanel):
         dict_conn['schema'] = self.selected_schema_combobox.currentText().strip()
         dict_conn['username'] = self.txt_user.text().strip()
         dict_conn['password'] = self.txt_password.text().strip()
-        dict_conn['db_odbc_driver'] = self.cbx_odbc_driver.currentText()
+        dict_conn['db_odbc_driver'] = self.selected_odbc_driver.currentText()
 
         return dict_conn
 
@@ -131,28 +67,29 @@ class MssqlConfigPanel(QWidget, DbSchemaDbPanel):
     def write_connection_parameters(self, dict_conn):
         self._disconnect_change_signals()
 
-        self.txt_host.setText(dict_conn['host'])
-        self.txt_port.setText(dict_conn['port'])
-        self.txt_instance.setText(dict_conn['instance'])
-        self.txt_user.setText(dict_conn['username'])
-        self.txt_password.setText(dict_conn['password'])
+        self.txt_host.setText(dict_conn['host'] if 'host' in dict_conn else '')
+        self.txt_port.setText(dict_conn['port'] if 'port' in dict_conn else '')
+        self.txt_instance.setText(dict_conn['instance'] if 'instance' in dict_conn else '')
+        self.txt_user.setText(dict_conn['username'] if 'username' in dict_conn else '')
+        self.txt_password.setText(dict_conn['password'] if 'password' in dict_conn else '')
 
-        if not dict_conn['database']:
+        if 'database' in dict_conn and not dict_conn['database']:
             self._connect_change_signals()
             return
-        db_name_setting = dict_conn['database'].strip("'")
+        db_name_setting = dict_conn['database'].strip("'") if 'database' in dict_conn else ''
 
         self.selected_db_combobox.clear()
         self.selected_schema_combobox.clear()
 
         if db_name_setting:
             self.selected_db_combobox.addItem(db_name_setting)
-        if dict_conn['schema']:
+        if 'schema' in dict_conn and dict_conn['schema']:
             self.selected_schema_combobox.addItem(dict_conn['schema'])
 
-        index = self.cbx_odbc_driver.findText(dict_conn['db_odbc_driver'])
-        if index != -1:
-            self.cbx_odbc_driver.setCurrentIndex(index)
+        if 'db_odbc_driver' in dict_conn:
+            index = self.selected_odbc_driver.findText(dict_conn['db_odbc_driver'])
+            if index != -1:
+                self.selected_odbc_driver.setCurrentIndex(index)
 
         self._connect_change_signals()
 
@@ -167,6 +104,10 @@ class MssqlConfigPanel(QWidget, DbSchemaDbPanel):
                 self.state['schema'] != self.selected_schema_combobox.currentText().strip() or \
                 self.state['username'] != self.txt_user.text().strip() or \
                 self.state['password'] != self.txt_password.text().strip() or \
-                self.state['db_odbc_driver'] != self.cbx_odbc_driver.currentText().strip())
+                self.state['db_odbc_driver'] != self.selected_odbc_driver.currentText().strip())
 
         return result
+
+    def get_connector(self):
+        dict = self.read_connection_parameters()
+        return MssqlConnector(None, dict)

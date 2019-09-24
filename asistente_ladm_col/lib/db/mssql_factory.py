@@ -20,7 +20,6 @@ from .db_factory import DbFactory
 
 from asistente_ladm_col.gui.db_panel.mssql_config_panel import MssqlConfigPanel
 from .mssql_connector import MssqlConnector
-from QgisModelBaker.libili2db.globals import DbIliMode
 
 
 class MssqlFactory(DbFactory):
@@ -36,13 +35,14 @@ class MssqlFactory(DbFactory):
         return "mssql"
 
     def get_mbaker_db_ili_mode(self):
+        from QgisModelBaker.libili2db.globals import DbIliMode
         return DbIliMode.ili2mssql
 
-    def get_config_panel(self):
-        return MssqlConfigPanel()
+    def get_config_panel(self, parent):
+        return MssqlConfigPanel(parent)
 
-    def get_db_connector(self, parameters):
-        return MssqlConnector(None, parameters['schema'], parameters)
+    def get_db_connector(self, parameters=dict()):
+        return MssqlConnector(None, parameters)
 
     def set_db_configuration_params(self, params, configuration):
         configuration.tool_name = 'mssql'
