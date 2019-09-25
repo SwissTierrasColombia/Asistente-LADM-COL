@@ -31,6 +31,11 @@ from ...utils.select_map_tool import SelectMapTool
 
 
 class SelectFeaturesOnMapWrapper:
+    """
+    Wrapper class that extend support for select features on the map
+    It is not possible create a object of this class, It should
+    be implement by a wizard
+    """
     SELECTION_ON_MAP = True
 
     def __init__(self):

@@ -41,19 +41,21 @@ from ..config.table_mapping_config import (COL_PARTY_TABLE,
                                            VALUATION_PARCEL_TABLE)
 from ..config.general_config import LAYER
 
+from enum import Enum
 from qgis.core import (QgsMapLayerProxyModel,
                        QgsWkbTypes)
 
 help_strings = HelpStrings()
 
 
-class WizardConfig:
-    SINGLE_PAGE_WIZARD_TYPE = "SinglePageWizard"
-    SINGLE_PAGE_SPATIAL_WIZARD_TYPE = "SinglePageSpatialWizard"
-    MULTI_PAGE_WIZARD_TYPE = "MultiPageWizard"
-    MULTI_PAGE_SPATIAL_WIZARD_TYPE = "MultiPageSpatialWizard"
-    RRR_CADASTRE_WIZARD_TYPE = "RRRCadastreWizard"
+class WizardsType(Enum):
+    SINGLE_PAGE_WIZARD_TYPE = 1
+    SINGLE_PAGE_SPATIAL_WIZARD_TYPE = 2
+    MULTI_PAGE_WIZARD_TYPE = 3
+    MULTI_PAGE_SPATIAL_WIZARD_TYPE = 4
 
+
+class WizardConfig:
     WIZARD_NAME_SETTING = "wizard_name"
     WIZARD_FEATURE_NAME_SETTING = "wizard_tool_name"
     WIZARD_UI_SETTING = "wizard_ui"
@@ -71,6 +73,8 @@ class WizardConfig:
     WIZARD_HELP3 = "wizard_help3"
     WIZARD_HELP4 = "wizard_help4"
     WIZARD_HELP5 = "wizard_help5"
+
+    WIZARD_TYPE = "wizard_type"
 
     WIZARD_LAYERS_SETTING = "wizard_layers"
     WIZARD_EDITING_LAYER_NAME_SETTING = "wizard_editing_layer_name"
@@ -111,6 +115,7 @@ class WizardConfig:
     WIZARDS_SETTINGS = {
         # CADASTRAL MODEL
         WIZARD_CREATE_COL_PARTY_CADASTRAL: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateColPartyCadastreWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateColPartyCadastreWizard", "party"),
             WIZARD_HELP_SETTING: "col_party",
@@ -129,6 +134,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_ADMINISTRATIVE_SOURCE_CADASTRE: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateAdministrativeSourceCadastreWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateAdministrativeSourceCadastreWizard", "administrative source"),
             WIZARD_HELP_SETTING: "create_admin_source",
@@ -148,6 +154,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_BOUNDARY_CADASTRE:{
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateBoundaryCadastreWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateBoundaryCadastreWizard", "boundary"),
             WIZARD_HELP_SETTING: "create_boundaries",
@@ -167,6 +174,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.LineLayer
         },
         WIZARD_CREATE_BUILDING_CADASTRE: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateBuildingCadastreWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateBuildingCadastreWizard", "building"),
             WIZARD_HELP_SETTING: "create_building",
@@ -186,6 +194,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
         WIZARD_CREATE_BUILDING_UNIT_CADASTRE: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateBuildingUnitCadastreWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateBuildingUnitCadastreWizard", "building unit"),
             WIZARD_HELP_SETTING: "create_building_unit",
@@ -205,6 +214,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
         WIZARD_CREATE_RIGHT_CADASTRE: {
+            WIZARD_TYPE: WizardsType.MULTI_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateRightCadastreWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateRightCadastreWizard", "right"),
             WIZARD_HELP_SETTING: "create_right",
@@ -225,6 +235,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_RESTRICTION_CADASTRE: {
+            WIZARD_TYPE: WizardsType.MULTI_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateRestrictionCadastreWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateRestrictionCadastreWizard", "restriction"),
             WIZARD_HELP_SETTING: "create_restriction",
@@ -245,6 +256,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_RESPONSIBILITY_CADASTRE: {
+            WIZARD_TYPE: WizardsType.MULTI_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateResponsibilityCadastreWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateResponsibilityCadastreWizard", "responsibility"),
             WIZARD_HELP_SETTING: "create_responsibility",
@@ -265,6 +277,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_SPATIAL_SOURCE_CADASTRE: {
+            WIZARD_TYPE: WizardsType.MULTI_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateSpatialSourceCadastreWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateSpatialSourceCadastreWizard",
                                                                     "spatial source"),
@@ -293,6 +306,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_PARCEL_CADASTRE: {
+            WIZARD_TYPE: WizardsType.MULTI_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateParcelCadastreWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateParcelCadastreWizard", "parcel"),
             WIZARD_HELP_SETTING: "create_parcel",
@@ -316,6 +330,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_PLOT_CADASTRE: {
+            WIZARD_TYPE: WizardsType.MULTI_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreatePlotCadastreWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreatePlotCadastreWizard", "plot"),
             WIZARD_HELP_SETTING: "create_plot",
@@ -335,6 +350,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
         WIZARD_CREATE_EXT_ADDRESS_CADASTRE: {
+            WIZARD_TYPE: WizardsType.MULTI_PAGE_SPATIAL_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateExtAddressWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateExtAddressWizard", "ext address"),
             WIZARD_HELP_SETTING: "associate_ext_address",
@@ -359,6 +375,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
         WIZARD_CREATE_RIGHT_OF_WAY_CADASTRE: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateRightOfWayCadastreWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateRightOfWayCadastreWizard", "right of way"),
             WIZARD_HELP_SETTING: "create_right_of_way",
@@ -382,6 +399,7 @@ class WizardConfig:
         },
         # VALUATION MODEL
         WIZARD_CREATE_PARCEL_VALUATION: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateParcelValuationWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateParcelValuationWizard", "parcel valuation"),
             WIZARD_HELP_SETTING: "create_parcel_valuation",
@@ -400,6 +418,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_HORIZONTAL_PROPERTY_VALUATION: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateHorizontalPropertyValuationWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateHorizontalPropertyValuationWizard", "horizontal property valuation"),
             WIZARD_HELP_SETTING: "create_horizontal_property_valuation",
@@ -418,6 +437,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_COMMON_EQUIPMENT_VALUATION: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateCommonEquipmentValuationWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateCommonEquipmentValuationWizard", "common equipment valuation"),
             WIZARD_HELP_SETTING: "create_common_equipment_valuation",
@@ -436,6 +456,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_BUILDING_VALUATION: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateBuildingValuationWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateBuildingValuationWizard", "building valuation"),
             WIZARD_HELP_SETTING: "create_building_valuation",
@@ -454,6 +475,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateGeoeconomicZoneValuationWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateGeoeconomicZoneValuationWizard", "geoeconomic zone"),
             WIZARD_HELP_SETTING: "create_geoeconomic_zone_valuation",
@@ -472,6 +494,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
         WIZARD_CREATE_PHYSICAL_ZONE_VALUATION: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreatePhysicalZoneValuationWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreatePhysicalZoneValuationWizard", "physical zone"),
             WIZARD_HELP_SETTING: "create_physical_zone_valuation",
@@ -490,6 +513,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
         WIZARD_CREATE_BUILDING_UNIT_VALUATION: {
+            WIZARD_TYPE: WizardsType.MULTI_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateBuildingUnitValuationWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateBuildingUnitValuationWizard",
                                                                     "building unit valuation"),
@@ -511,6 +535,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION: {
+            WIZARD_TYPE: WizardsType.MULTI_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateBuildingUnitQualificationValuationWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateBuildingUnitQualificationValuationWizard",
                                                                     "building unit qualification valuation"),
@@ -538,6 +563,7 @@ class WizardConfig:
         },
         # PROPERTY RECORD CARD MODEL
         WIZARD_CREATE_LEGAL_PARTY_PRC: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateLegalPartyWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateLegalPartyWizard", "legal party card"),
             WIZARD_HELP_SETTING: "create_legal_party",
@@ -557,6 +583,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_NATURAL_PARTY_PRC: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateNaturalPartyPRCWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateNaturalPartyPRCWizard", "natural party"),
             WIZARD_HELP_SETTING: "create_natural_party",
@@ -575,6 +602,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_NUCLEAR_FAMILY_PRC: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateNuclearFamilyPRCWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateNuclearFamilyPRCWizard", "nuclear family"),
             WIZARD_HELP_SETTING: "create_nuclear_family",
@@ -593,6 +621,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_MARKET_RESEARCH_PRC: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreateMarketResearchPRCWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreateMarketResearchPRCWizard", "market research"),
             WIZARD_HELP_SETTING: "create_market_research",
@@ -611,6 +640,7 @@ class WizardConfig:
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_PROPERTY_RECORD_CARD_PRC: {
+            WIZARD_TYPE: WizardsType.SINGLE_PAGE_WIZARD_TYPE,
             WIZARD_NAME_SETTING: "CreatePropertyRecordCardPRCWizard",
             WIZARD_FEATURE_NAME_SETTING: QCoreApplication.translate("CreatePropertyRecordCardPRCWizard", "property record card"),
             WIZARD_HELP_SETTING: "create_property_record_card",

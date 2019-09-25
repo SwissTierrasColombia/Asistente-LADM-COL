@@ -24,6 +24,11 @@ from qgis.gui import QgsExpressionSelectionDialog
 
 
 class SelectFeatureByExpressionDialogWrapper:
+    """
+    Wrapper class that extend support for select by expression
+    It is not possible create a object of this class, It should
+    be implement by a wizard
+    """
     SELECTION_BY_EXPRESSION = True
 
     def select_features_by_expression(self, layer):

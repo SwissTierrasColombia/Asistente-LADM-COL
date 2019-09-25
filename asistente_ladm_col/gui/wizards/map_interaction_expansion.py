@@ -28,6 +28,11 @@ from ...config.general_config import LAYER
 
 
 class MapInteractionExpansion:
+    """
+    Class that extend support for create spatial objects on map
+    It is not possible create a object of this class, It should
+    be implement by a wizard
+    """
 
     def __init__(self):
         self.canvas = self.iface.mapCanvas()
