@@ -16,26 +16,38 @@
  *                                                                         *
  ***************************************************************************/
 """
+import webbrowser
 from functools import partial
 
-from qgis.PyQt.QtCore import (QCoreApplication,
-                              Qt,
-                              pyqtSignal)
-from qgis.PyQt.QtGui import (QColor,
-                             QIcon,
-                             QCursor)
-from qgis.PyQt.QtWidgets import (QMenu,
-                                 QAction,
-                                 QApplication)
+from qgis.PyQt.QtCore import (QCoreApplication, 
+                              Qt, 
+                              pyqtSignal, 
+                              QUrl, 
+                              QEventLoop, 
+                              QTextStream, 
+                              QIODevice)
+from qgis.PyQt.QtGui import (QColor, 
+                             QIcon, 
+                             QCursor, 
+                             QPixmap)
+from qgis.PyQt.QtNetwork import (QNetworkRequest, 
+                                 QNetworkAccessManager)
+from qgis.PyQt.QtWidgets import (QMenu, 
+                                 QAction, 
+                                 QApplication, 
+                                 QLabel)
 from qgis.core import (QgsWkbTypes,
+                       Qgis,
+                       QgsMessageLog,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsExpression,
-                       QgsVectorLayer)
-from qgis.gui import (QgsDockWidget,
+                       QgsVectorLayer,
+                       QgsApplication)
+from qgis.gui import (QgsDockWidget, 
                       QgsMapToolIdentifyFeature)
 
-from ..config.general_config import LAYER
+from asistente_ladm_col.config.general_config import TEST_SERVER, PLUGIN_NAME, LAYER
 from ..config.table_mapping_config import (DICT_TABLE_PACKAGE,
                                            SPATIAL_UNIT_PACKAGE,
                                            PARCEL_NUMBER_FIELD,
@@ -63,6 +75,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.iface = iface
+        self.log = QgsApplication.messageLog()
         self.canvas = iface.mapCanvas()
         self._db = db
         self.qgis_utils = qgis_utils
@@ -251,8 +264,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             del kwargs['zoom_and_select']
 
         records = self._db.get_igac_basic_info(**kwargs)
-        self.tree_view_basic.setModel(TreeModel(data=records))
-        self.tree_view_basic.expandAll()
+        self.setup_tree_view(self.tree_view_basic, records)
 
         if bZoom:
             # Zoom to resulting plots
@@ -264,20 +276,46 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
                 self._layers[PLOT_TABLE][LAYER].selectByIds(plot_ids)
 
         records = self._db.get_igac_legal_info(**kwargs)
-        self.tree_view_legal.setModel(TreeModel(data=records))
-        self.tree_view_legal.expandAll()
+        self.setup_tree_view(self.tree_view_legal, records)
 
         records = self._db.get_igac_property_record_card_info(**kwargs)
-        self.tree_view_property_record_card.setModel(TreeModel(data=records))
-        self.tree_view_property_record_card.expandAll()
+        self.setup_tree_view(self.tree_view_property_record_card, records)
 
         records = self._db.get_igac_physical_info(**kwargs)
-        self.tree_view_physical.setModel(TreeModel(data=records))
-        self.tree_view_physical.expandAll()
+        self.setup_tree_view(self.tree_view_physical, records)
 
         records = self._db.get_igac_economic_info(**kwargs)
-        self.tree_view_economic.setModel(TreeModel(data=records))
-        self.tree_view_economic.expandAll()
+        self.setup_tree_view(self.tree_view_economic, records)
+
+    def setup_tree_view(self, tree_view, records):
+        """
+        Configure result tree views
+
+        :param tree_view:
+        :return:
+        """
+        tree_view.setModel(TreeModel(data=records))
+        tree_view.expandAll()
+        self.add_thumbnails_to_tree_view(tree_view)
+
+    def add_thumbnails_to_tree_view(self, tree_view):
+        """
+        Gets a list of model indexes corresponding to extFiles objects to show a preview
+
+        :param model:
+        :return:
+        """
+        model = tree_view.model()
+        indexes = model.getPixmapIndexList()
+        for idx in indexes:
+            url = model.data(idx, Qt.UserRole)['url']
+            res, image = self.download_image("{}&thumbnail=true".format(url))
+            if res:
+                pixmap = QPixmap()
+                pixmap.loadFromData(image)
+                label = QLabel()
+                label.setPixmap(pixmap)
+                tree_view.setIndexWidget(idx, label)
 
     def get_plot_t_ids_from_basic_info(self, records):
         res = []
@@ -323,6 +361,12 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             context_menu.addAction(action_copy)
             context_menu.addSeparator()
 
+        if "url" in index_data:
+            action_open_url = QAction(QCoreApplication.translate("DockWidgetQueries", "Open URL"))
+            action_open_url.triggered.connect(partial(self.open_url, index_data["url"]))
+            context_menu.addAction(action_open_url)
+            context_menu.addSeparator()
+
         # Configure actions for tables/layers
         if "type" in index_data and "id" in index_data:
             table_name = index_data["type"]
@@ -363,6 +407,9 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
     def copy_value(self, value):
         self.clipboard.setText(str(value))
+
+    def open_url(self, url):
+        webbrowser.open(url)
 
     def zoom_to_feature(self, layer, t_id):
         feature = self.get_feature_from_t_id(layer, t_id)
@@ -407,3 +454,44 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         except TypeError as e:
             pass
         self.canvas.setMapTool(self.active_map_tool_before_custom)
+
+    def download_image(self, url):
+        res = False
+        img = None
+        msg = {'text': '', 'level': Qgis.Warning}
+        if url:
+            self.log.logMessage("Downloading file from {}".format(url), PLUGIN_NAME, Qgis.Info)
+            with OverrideCursor(Qt.WaitCursor):
+                self.qgis_utils.status_bar_message_emitted.emit("Downloading image from document repository (this might take a while)...", 0)
+                QCoreApplication.processEvents()
+                if self.qgis_utils.is_connected(TEST_SERVER):
+
+                    nam = QNetworkAccessManager()
+                    request = QNetworkRequest(QUrl(url))
+                    reply = nam.get(request)
+
+                    loop = QEventLoop()
+                    reply.finished.connect(loop.quit)
+                    loop.exec_()
+
+                    status = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
+                    if status == 200:
+                        res = True
+                        img = reply.readAll()
+                    else:
+                        res = False
+                        msg['text'] = QCoreApplication.translate("SettingsDialog",
+                            "There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL.")
+                else:
+                    res = False
+                    msg['text'] = QCoreApplication.translate("SettingsDialog",
+                        "There was a problem connecting to Internet.")
+
+                self.qgis_utils.clear_status_bar_emitted.emit()
+        else:
+            res = False
+            msg['text'] = QCoreApplication.translate("SettingsDialog", "Not valid URL")
+
+        if not res:
+            self.log.logMessage(msg['text'], PLUGIN_NAME, msg['level'])
+        return (res, img)
