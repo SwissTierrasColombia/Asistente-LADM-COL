@@ -19,6 +19,7 @@
 import ast
 import datetime
 import glob
+import json
 import os
 import socket
 import webbrowser
@@ -27,8 +28,14 @@ from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               pyqtSignal,
                               QCoreApplication,
-                              QSettings)
+                              QSettings,
+                              QEventLoop,
+                              QTextStream,
+                              QIODevice,
+                              QUrl)
 from qgis.PyQt.QtWidgets import QProgressBar
+from qgis.PyQt.QtNetwork import (QNetworkAccessManager,
+                                 QNetworkRequest)
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsEditFormConfig,
@@ -77,7 +84,9 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      VISIBLE_LAYER_MODIFIERS,
                                      PLUGIN_NAME,
                                      HELP_DIR_NAME,
-                                     translated_strings)
+                                     translated_strings,
+                                     DEFAULT_ENDPOINT_SOURCE_SERVICE,
+                                     SOURCE_SERVICE_EXPECTED_ID)
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 from ..config.table_mapping_config import (BUILDING_UNIT_TABLE,
                                            CUSTOM_WIDGET_CONFIGURATION,
@@ -1003,6 +1012,61 @@ class QGISUtils(QObject):
         file_path = os.path.join(FIELD_MAPPING_PATH, "{}.txt".format(field_mapping_name))
         if os.path.exists(file_path):
             os.remove(file_path)
+
+    def is_source_service_valid(self, url=None):
+        res = False
+        msg = {'text': '', 'level': Qgis.Warning}
+        if url is None:
+            url = QSettings().value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE)
+
+        if url:
+            with OverrideCursor(Qt.WaitCursor):
+                self.status_bar_message_emitted.emit("Checking source service availability (this might take a while)...", 0)
+                QCoreApplication.processEvents()
+                if self.is_connected(TEST_SERVER):
+
+                    nam = QNetworkAccessManager()
+                    request = QNetworkRequest(QUrl(url))
+                    reply = nam.get(request)
+
+                    loop = QEventLoop()
+                    reply.finished.connect(loop.quit)
+                    loop.exec_()
+
+                    allData = reply.readAll()
+                    response = QTextStream(allData, QIODevice.ReadOnly)
+                    status = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
+                    if status == 200:
+                        try:
+                            data = json.loads(response.readAll())
+                            if 'id' in data and data['id'] == SOURCE_SERVICE_EXPECTED_ID:
+                                res = True
+                                msg['text'] = QCoreApplication.translate("SettingsDialog",
+                                    "The tested service is valid to upload files!")
+                                msg['level'] = Qgis.Info
+                            else:
+                                res = False
+                                msg['text'] = QCoreApplication.translate("SettingsDialog",
+                                    "The tested upload service is not compatible: no valid 'id' found in response.")
+                        except json.decoder.JSONDecodeError as e:
+                            res = False
+                            msg['text'] = QCoreApplication.translate("SettingsDialog",
+                                "Response from the tested service is not compatible: not valid JSON found.")
+                    else:
+                        res = False
+                        msg['text'] = QCoreApplication.translate("SettingsDialog",
+                            "There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL.")
+                else:
+                    res = False
+                    msg['text'] = QCoreApplication.translate("SettingsDialog",
+                        "There was a problem connecting to Internet.")
+
+                self.clear_status_bar_emitted.emit()
+        else:
+            res = False
+            msg['text'] = QCoreApplication.translate("SettingsDialog", "Not valid service URL to test!")
+
+        return (res, msg)
 
     def upload_source_files(self, db):
         extfile_layer = self.get_layer(db, EXTFILE_TABLE, None, True)

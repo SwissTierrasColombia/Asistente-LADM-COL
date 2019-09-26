@@ -45,8 +45,8 @@ from qgis.PyQt.QtCore import (
     QVariant)
 from qgis.PyQt.QtGui import QColor, QIcon, QBrush, QFont
 
+from asistente_ladm_col.config.general_config import DEFAULT_ENDPOINT_SOURCE_SERVICE
 from ..config.table_mapping_config import DICT_PACKAGE_ICON, DICT_TABLE_PACKAGE, DICT_PLURAL
-
 
 class TreeItem(object):
     def __init__(self, data, parent=None):
@@ -142,6 +142,7 @@ class TreeModel(QAbstractItemModel):
         rootData = ("",) # [header for header in headers]
         self.rootItem = TreeItem(rootData)
         self.setupModelData(data, self.rootItem)
+        self.pixmapIndexList = list()
 
     def columnCount(self, parent=QModelIndex()):
         return self.rootItem.columnCount()
@@ -155,6 +156,29 @@ class TreeModel(QAbstractItemModel):
         else:
             return QVariant()
 
+    def getPixmapIndexList(self, index=QModelIndex()):
+        self.pixmapIndexList = list()
+        return self._getPixmapIndexList(index)
+
+    def _getPixmapIndexList(self, index):
+        """
+        Recursive function to traverse the whole model looking for items pointing to URLs with extFile
+
+        :param index:
+        :return: index list
+        """
+        parent = self.getItem(index)
+        if parent.data(index.column(), Qt.UserRole) is not None and \
+                'url' in parent.data(index.column(), Qt.UserRole) and \
+                'type' in parent.data(index.column(), Qt.UserRole) and \
+                parent.data(index.column(), Qt.UserRole)['type'] == 'img':
+            if index not in self.pixmapIndexList:
+                self.pixmapIndexList.append(index)
+
+        for row in range(parent.childCount()):
+            self._getPixmapIndexList(self.index(row, 0, index))
+
+        return self.pixmapIndexList
 
     def flags(self, index):
         if not index.isValid():
@@ -271,7 +295,6 @@ class TreeModel(QAbstractItemModel):
         if data is None:
             return
 
-        #print(data)
         for record in data:
             self.fill_model(record, parent)
 
@@ -279,11 +302,11 @@ class TreeModel(QAbstractItemModel):
         """
         Fill data in the treeview depending on the structure. It expects JSON data. The JSON data may contain LADM_COL
         object collections in the form:
-            "ladm_col_table_name" : [{"id": 5, "records":{k,v pairs}}, {"id": 5, "records":{k,v pairs}}, ...]
+            "ladm_col_table_name" : [{"id": 5, "records":{k,v pairs}}, {"id": 8, "records":{k,v pairs}}, ...]
         """
         for key, values in record.items():  # either tuple or dict
             if type(values) is list:
-                if not len(values):
+                if not len(values):  # Empty object
                     parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
                     kv_item = parent.child(parent.childCount() - 1)
                     kv_item.setData(0, "{} (0)".format(DICT_PLURAL[key] if key in DICT_PLURAL else key))
@@ -315,9 +338,20 @@ class TreeModel(QAbstractItemModel):
                 parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
                 kv_item = parent.child(parent.childCount() - 1)
                 kv_item.setData(0, "{}: {}".format(key, values))
-                kv_item.setData(0, {"value": values}, Qt.UserRole)
+                value_user_role = {"value": values}
+                if key.startswith("Archivo fuente"):
+                    value_user_role.update({'url': values})
+                kv_item.setData(0, value_user_role, Qt.UserRole)
                 if values is None:
                     kv_item.setData(0, QBrush(Qt.lightGray), Qt.ForegroundRole)
+
+                # Additional item for a file preview
+                if key.startswith("Archivo fuente"):
+                    if values:
+                        if values.startswith(DEFAULT_ENDPOINT_SOURCE_SERVICE):  # We want the thumbnail
+                            kv_item.insertChildren(kv_item.childCount(), 1, self.rootItem.columnCount())
+                            kv_subitem = kv_item.child(kv_item.childCount() - 1)
+                            kv_subitem.setData(0, {'type': 'img', 'url': values}, Qt.UserRole)
 
     def fill_collection(self, key, collection, parent):
         """

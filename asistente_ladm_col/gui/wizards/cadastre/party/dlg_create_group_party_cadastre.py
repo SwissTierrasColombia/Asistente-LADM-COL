@@ -115,7 +115,6 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.setLayout(QGridLayout())
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
         self.rejected.connect(self.close_wizard)
 

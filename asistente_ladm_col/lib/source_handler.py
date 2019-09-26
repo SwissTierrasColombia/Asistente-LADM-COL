@@ -74,13 +74,12 @@ class SourceHandler(QObject):
             return dict()
 
         # Test if we have Internet connection and a valid service
-        dlg = self.qgis_utils.get_settings_dialog()
-        res, msg = dlg.is_source_service_valid()
+        res, msg = self.qgis_utils.is_source_service_valid()
 
         if not res:
             msg['text'] = QCoreApplication.translate("SourceHandler",
                 "No file could be uploaded to the document repository. You can do it later from the 'Upload Pending Source Files' menu. Reason: {}").format(msg['text'])
-            self.message_with_duration_emitted.emit(msg['text'], Qgis.Info, 20) # The data is still saved, so always show Info msg
+            self.message_with_duration_emitted.emit(msg['text'], Qgis.Info, 20)  # The data is still saved, so always show Info msg
             return dict()
 
         file_features = [feature for feature in features if not feature[field_index] == NULL and os.path.isfile(feature[field_index])]

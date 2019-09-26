@@ -374,62 +374,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
     def test_service(self):
         self.setEnabled(False)
         QCoreApplication.processEvents()
-        res, msg = self.is_source_service_valid()
+        res, msg = self.qgis_utils.is_source_service_valid(self.txt_service_endpoint.text().strip())
         self.setEnabled(True)
         self.show_message(msg['text'], msg['level'])
-
-    def is_source_service_valid(self):
-        res = False
-        msg = {'text': '', 'level': Qgis.Warning}
-        url = self.txt_service_endpoint.text().strip()
-        if url:
-            with OverrideCursor(Qt.WaitCursor):
-                self.qgis_utils.status_bar_message_emitted.emit("Checking source service availability (this might take a while)...", 0)
-                QCoreApplication.processEvents()
-                if self.qgis_utils.is_connected(TEST_SERVER):
-
-                    nam = QNetworkAccessManager()
-                    request = QNetworkRequest(QUrl(url))
-                    reply = nam.get(request)
-
-                    loop = QEventLoop()
-                    reply.finished.connect(loop.quit)
-                    loop.exec_()
-
-                    allData = reply.readAll()
-                    response = QTextStream(allData, QIODevice.ReadOnly)
-                    status = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
-                    if status == 200:
-                        try:
-                            data = json.loads(response.readAll())
-                            if 'id' in data and data['id'] == SOURCE_SERVICE_EXPECTED_ID:
-                                res = True
-                                msg['text'] = QCoreApplication.translate("SettingsDialog",
-                                    "The tested service is valid to upload files!")
-                                msg['level'] = Qgis.Info
-                            else:
-                                res = False
-                                msg['text'] = QCoreApplication.translate("SettingsDialog",
-                                    "The tested upload service is not compatible: no valid 'id' found in response.")
-                        except json.decoder.JSONDecodeError as e:
-                            res = False
-                            msg['text'] = QCoreApplication.translate("SettingsDialog",
-                                "Response from the tested service is not compatible: not valid JSON found.")
-                    else:
-                        res = False
-                        msg['text'] = QCoreApplication.translate("SettingsDialog",
-                            "There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL.")
-                else:
-                    res = False
-                    msg['text'] = QCoreApplication.translate("SettingsDialog",
-                        "There was a problem connecting to Internet.")
-
-                self.qgis_utils.clear_status_bar_emitted.emit()
-        else:
-            res = False
-            msg['text'] = QCoreApplication.translate("SettingsDialog", "Not valid service URL to test!")
-
-        return (res, msg)
 
     def show_message(self, message, level):
         self.bar.pushMessage(message, level, 10)
