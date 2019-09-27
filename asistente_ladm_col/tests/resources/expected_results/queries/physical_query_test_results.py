@@ -262,7 +262,7 @@ physical_query_test_results = {
                             "Tipo principal": "Imagen",
                             "Fecha de entrega": "2019-03-21T00:00:00",
                             "Fecha de grabación": "2019-03-12T00:00:00",
-                            "Enlace fuente espacial": "http://portal.proadmintierra.info:18888/filemanager/v1/file/Local?id=default.2019.2.27.10h9m4oDFv"
+                            "Archivo fuente": "http://portal.proadmintierra.info:18888/filemanager/v1/file/Local?id=default.2019.2.27.10h9m4oDFv"
                         }
                     },
                     {
@@ -273,7 +273,7 @@ physical_query_test_results = {
                             "Tipo principal": "Modelo",
                             "Fecha de entrega": "2019-03-06T00:00:00",
                             "Fecha de grabación": "2019-03-04T00:00:00",
-                            "Enlace fuente espacial": "http://portal.proadmintierra.info:18888/filemanager/v1/file/Local?id=default.2019.2.27.10h11mXrcGr"
+                            "Archivo fuente": "http://portal.proadmintierra.info:18888/filemanager/v1/file/Local?id=default.2019.2.27.10h11mXrcGr"
                         }
                     }
                 ]

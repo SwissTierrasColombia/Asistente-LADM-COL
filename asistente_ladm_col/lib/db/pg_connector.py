@@ -28,11 +28,7 @@ from qgis.core import (QgsWkbTypes,
 
 from .db_connector import (DBConnector,
                            EnumTestLevel)
-from ..queries.igac import (basic_query,
-                            legal_query,
-                            property_record_card_query,
-                            physical_query,
-                            economic_query)
+from ...lib.queries.postgresql import basic_query, economic_query, physical_query, legal_query, property_record_card_query
 from ..queries.ant_report import (ant_map_plot_query,
                                   ant_map_neighbouring_change_query)
 from ..queries.annex_17_report import (annex17_plot_data_query,
@@ -533,12 +529,12 @@ class PGConnector(DBConnector):
         params.update(kwargs)
 
         query = basic_query.get_igac_basic_query(schema=self.schema,
-                             plot_t_id=params['plot_t_id'],
-                             parcel_fmi=params['parcel_fmi'],
-                             parcel_number=params['parcel_number'],
-                             previous_parcel_number=params['previous_parcel_number'],
-                             valuation_model=self.valuation_model_exists(),
-                             property_record_card_model=self.property_record_card_model_exists())
+                                                 plot_t_id=params['plot_t_id'],
+                                                 parcel_fmi=params['parcel_fmi'],
+                                                 parcel_number=params['parcel_number'],
+                                                 previous_parcel_number=params['previous_parcel_number'],
+                                                 valuation_model=self.valuation_model_exists(),
+                                                 property_record_card_model=self.property_record_card_model_exists())
 
         if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
@@ -570,10 +566,10 @@ class PGConnector(DBConnector):
         params.update(kwargs)
 
         query = legal_query.get_igac_legal_query(schema=self.schema,
-                             plot_t_id=params['plot_t_id'],
-                             parcel_fmi=params['parcel_fmi'],
-                             parcel_number=params['parcel_number'],
-                             previous_parcel_number=params['previous_parcel_number'])
+                                                 plot_t_id=params['plot_t_id'],
+                                                 parcel_fmi=params['parcel_fmi'],
+                                                 parcel_number=params['parcel_number'],
+                                                 previous_parcel_number=params['previous_parcel_number'])
 
         if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
@@ -607,11 +603,11 @@ class PGConnector(DBConnector):
         params.update(kwargs)
 
         query = property_record_card_query.get_igac_property_record_card_query(schema=self.schema,
-                                                 plot_t_id=params['plot_t_id'],
-                                                 parcel_fmi=params['parcel_fmi'],
-                                                 parcel_number=params['parcel_number'],
-                                                 previous_parcel_number=params['previous_parcel_number'],
-                                                 property_record_card_model=self.property_record_card_model_exists())
+                                                                               plot_t_id=params['plot_t_id'],
+                                                                               parcel_fmi=params['parcel_fmi'],
+                                                                               parcel_number=params['parcel_number'],
+                                                                               previous_parcel_number=params['previous_parcel_number'],
+                                                                               property_record_card_model=self.property_record_card_model_exists())
 
         if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
