@@ -250,7 +250,9 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
         return True
 
     def exec_form(self, layer):
-        feature = self.qgis_utils.get_new_feature(layer)
+        feature = self.get_feature_exec_form(layer)
+        feature[PARCEL_TYPE_FIELD] = self.cb_parcel_type.currentText()
+
         dialog = self.iface.getFeatureForm(layer, feature)
         dialog.rejected.connect(self.form_rejected)
         dialog.setModal(True)

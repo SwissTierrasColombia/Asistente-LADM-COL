@@ -4,6 +4,7 @@ from ..config.help_strings import HelpStrings
 from ..config.table_mapping_config import (COL_PARTY_TABLE,
                                            BUILDING_TABLE,
                                            PARCEL_TABLE,
+                                           PARCEL_TYPE_FIELD,
                                            UEBAUNIT_TABLE,
                                            BUILDING_UNIT_TABLE,
                                            RIGHT_OF_WAY_TABLE,
@@ -79,6 +80,7 @@ class WizardConfig:
     WIZARD_LAYERS_SETTING = "wizard_layers"
     WIZARD_EDITING_LAYER_NAME_SETTING = "wizard_editing_layer_name"
     WIZARD_MAP_LAYER_PROXY_MODEL = "wizard_map_layer_proxy_model"
+    WIZARD_READ_ONLY_FIELDS = "wizard_read_only_fields"
 
     # Cadastral model
     WIZARD_CREATE_COL_PARTY_CADASTRAL = "wizard_create_col_party_cadastral"
@@ -131,6 +133,7 @@ class WizardConfig:
                 COL_PARTY_TABLE: {'name': COL_PARTY_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: COL_PARTY_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_ADMINISTRATIVE_SOURCE_CADASTRE: {
@@ -151,6 +154,7 @@ class WizardConfig:
                 EXTFILE_TABLE: {'name': EXTFILE_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: ADMINISTRATIVE_SOURCE_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_BOUNDARY_CADASTRE:{
@@ -171,6 +175,7 @@ class WizardConfig:
                 BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': QgsWkbTypes.PointGeometry, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: BOUNDARY_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.LineLayer
         },
         WIZARD_CREATE_BUILDING_CADASTRE: {
@@ -191,6 +196,7 @@ class WizardConfig:
                 SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: BUILDING_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
         WIZARD_CREATE_BUILDING_UNIT_CADASTRE: {
@@ -211,6 +217,7 @@ class WizardConfig:
                 SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: BUILDING_UNIT_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
         WIZARD_CREATE_RIGHT_CADASTRE: {
@@ -232,6 +239,7 @@ class WizardConfig:
                 RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: RIGHT_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_RESTRICTION_CADASTRE: {
@@ -253,6 +261,7 @@ class WizardConfig:
                 RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: RESTRICTION_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_RESPONSIBILITY_CADASTRE: {
@@ -274,6 +283,7 @@ class WizardConfig:
                 RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: RESPONSIBILITY_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_SPATIAL_SOURCE_CADASTRE: {
@@ -303,6 +313,7 @@ class WizardConfig:
                 CONTROL_POINT_TABLE: {'name': CONTROL_POINT_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: SPATIAL_SOURCE_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_PARCEL_CADASTRE: {
@@ -327,6 +338,7 @@ class WizardConfig:
                 UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: PARCEL_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [PARCEL_TYPE_FIELD],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_PLOT_CADASTRE: {
@@ -347,6 +359,7 @@ class WizardConfig:
                 BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: PLOT_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
         WIZARD_CREATE_EXT_ADDRESS_CADASTRE: {
@@ -372,6 +385,7 @@ class WizardConfig:
                 BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: EXTADDRESS_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
         WIZARD_CREATE_RIGHT_OF_WAY_CADASTRE: {
@@ -395,6 +409,7 @@ class WizardConfig:
                 SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: RIGHT_OF_WAY_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
         # VALUATION MODEL
@@ -415,6 +430,7 @@ class WizardConfig:
                 VALUATION_PARCEL_TABLE: {'name': VALUATION_PARCEL_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: VALUATION_PARCEL_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_HORIZONTAL_PROPERTY_VALUATION: {
@@ -434,6 +450,7 @@ class WizardConfig:
                 VALUATION_HORIZONTAL_PROPERTY_TABLE: {'name': VALUATION_HORIZONTAL_PROPERTY_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: VALUATION_HORIZONTAL_PROPERTY_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_COMMON_EQUIPMENT_VALUATION: {
@@ -453,6 +470,7 @@ class WizardConfig:
                 VALUATION_COMMON_EQUIPMENT_TABLE: {'name': VALUATION_COMMON_EQUIPMENT_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: VALUATION_COMMON_EQUIPMENT_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_BUILDING_VALUATION: {
@@ -472,6 +490,7 @@ class WizardConfig:
                 VALUATION_BUILDING_TABLE: {'name': VALUATION_BUILDING_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: VALUATION_BUILDING_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION: {
@@ -491,6 +510,7 @@ class WizardConfig:
                 VALUATION_GEOECONOMIC_ZONE_TABLE: {'name': VALUATION_GEOECONOMIC_ZONE_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: VALUATION_GEOECONOMIC_ZONE_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
         WIZARD_CREATE_PHYSICAL_ZONE_VALUATION: {
@@ -510,6 +530,7 @@ class WizardConfig:
                 VALUATION_PHYSICAL_ZONE_TABLE: {'name': VALUATION_PHYSICAL_ZONE_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: VALUATION_PHYSICAL_ZONE_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
         },
         WIZARD_CREATE_BUILDING_UNIT_VALUATION: {
@@ -532,6 +553,7 @@ class WizardConfig:
                 AVALUOUNIDADCONSTRUCCION_TABLE: {'name': AVALUOUNIDADCONSTRUCCION_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: VALUATION_BUILDING_UNIT_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION: {
@@ -559,6 +581,7 @@ class WizardConfig:
                     'name': VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         # PROPERTY RECORD CARD MODEL
@@ -580,6 +603,7 @@ class WizardConfig:
                 COL_PARTY_TABLE: {'name': COL_PARTY_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: LEGAL_PARTY_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_NATURAL_PARTY_PRC: {
@@ -599,6 +623,7 @@ class WizardConfig:
                 NATURAL_PARTY_TABLE: {'name': NATURAL_PARTY_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: NATURAL_PARTY_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_NUCLEAR_FAMILY_PRC: {
@@ -618,6 +643,7 @@ class WizardConfig:
                 NUCLEAR_FAMILY_TABLE: {'name': NUCLEAR_FAMILY_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: NUCLEAR_FAMILY_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_MARKET_RESEARCH_PRC: {
@@ -637,6 +663,7 @@ class WizardConfig:
                 MARKET_RESEARCH_TABLE: {'name': MARKET_RESEARCH_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: MARKET_RESEARCH_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         },
         WIZARD_CREATE_PROPERTY_RECORD_CARD_PRC: {
@@ -656,6 +683,7 @@ class WizardConfig:
                 PROPERTY_RECORD_CARD_TABLE: {'name': PROPERTY_RECORD_CARD_TABLE, 'geometry': None, LAYER: None}
             },
             WIZARD_EDITING_LAYER_NAME_SETTING: PROPERTY_RECORD_CARD_TABLE,
+            WIZARD_READ_ONLY_FIELDS: [],
             WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
         }
     }

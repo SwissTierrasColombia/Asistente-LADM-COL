@@ -75,6 +75,7 @@ class AbsWizardFactory(QWizard):
     def prepare_feature_creation(self):
         result = self.prepare_feature_creation_layers()
         if result:
+            self.set_only_ready_field(True)
             self.edit_feature()
         else:
             self.close_wizard(show_message=False)
@@ -178,3 +179,16 @@ class AbsWizardFactory(QWizard):
 
     def show_help(self):
         self.qgis_utils.show_help(self.wizard_config[WizardConfig.WIZARD_HELP_SETTING])
+
+    def set_only_ready_field(self, only_read):
+        print("Ingrese")
+        for field in self.wizard_config[WizardConfig.WIZARD_READ_ONLY_FIELDS]:
+            print("field", field)
+            field_idx = self._layers[self.EDITING_LAYER_NAME][LAYER].fields().indexFromName(field)
+            print("idx", field_idx)
+            if self._layers[self.EDITING_LAYER_NAME][LAYER].fields().exists(field_idx):
+                print("ingrese edit_form")
+                formConfig = self._layers[self.EDITING_LAYER_NAME][LAYER].editFormConfig()
+                formConfig.setReadOnly(field_idx, only_read)
+                self._layers[self.EDITING_LAYER_NAME][LAYER].setEditFormConfig(formConfig)
+                print("close edit_form")

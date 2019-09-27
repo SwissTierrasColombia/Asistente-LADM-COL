@@ -17,8 +17,7 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              QObject,
-                              pyqtSignal)
+                              QObject)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QMessageBox,
                                  QAction)
@@ -46,7 +45,6 @@ from ..utils.geometry import GeometryUtils
 
 
 class ToolBar(QObject):
-    wiz_geometry_created_requested = pyqtSignal()
 
     def __init__(self, iface, qgis_utils, db):
         QObject.__init__(self)
