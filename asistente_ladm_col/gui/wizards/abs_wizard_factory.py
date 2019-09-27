@@ -31,6 +31,7 @@ from qgis.PyQt.QtWidgets import QWizard
 from qgis.core import (QgsApplication,
                        Qgis)
 
+from ...config.table_mapping_config import CUSTOM_READ_ONLY_FIELDS
 from ...config.general_config import (PLUGIN_NAME,
                                       TranslatableConfigStrings,
                                       LAYER)
@@ -181,14 +182,13 @@ class AbsWizardFactory(QWizard):
         self.qgis_utils.show_help(self.wizard_config[WizardConfig.WIZARD_HELP_SETTING])
 
     def set_only_ready_field(self, only_read):
-        print("Ingrese")
-        for field in self.wizard_config[WizardConfig.WIZARD_READ_ONLY_FIELDS]:
-            print("field", field)
-            field_idx = self._layers[self.EDITING_LAYER_NAME][LAYER].fields().indexFromName(field)
-            print("idx", field_idx)
-            if self._layers[self.EDITING_LAYER_NAME][LAYER].fields().exists(field_idx):
-                print("ingrese edit_form")
-                formConfig = self._layers[self.EDITING_LAYER_NAME][LAYER].editFormConfig()
-                formConfig.setReadOnly(field_idx, only_read)
-                self._layers[self.EDITING_LAYER_NAME][LAYER].setEditFormConfig(formConfig)
-                print("close edit_form")
+        layer_name = self._db.get_ladm_layer_name(self._layers[self.EDITING_LAYER_NAME][LAYER])
+        if layer_name in CUSTOM_READ_ONLY_FIELDS:
+                for field in self.wizard_config[WizardConfig.WIZARD_READ_ONLY_FIELDS]:
+                    # Not validate field that are read only
+                    if field not in CUSTOM_READ_ONLY_FIELDS[layer_name]:
+                        field_idx = self._layers[self.EDITING_LAYER_NAME][LAYER].fields().indexFromName(field)
+                        if self._layers[self.EDITING_LAYER_NAME][LAYER].fields().exists(field_idx):
+                            formConfig = self._layers[self.EDITING_LAYER_NAME][LAYER].editFormConfig()
+                            formConfig.setReadOnly(field_idx, only_read)
+                            self._layers[self.EDITING_LAYER_NAME][LAYER].setEditFormConfig(formConfig)

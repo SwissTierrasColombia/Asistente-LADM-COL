@@ -318,6 +318,11 @@ LAYER_VARIABLES = {
     }
 }
 
+
+CUSTOM_READ_ONLY_FIELDS = {
+    PARCEL_TABLE: []
+}
+
 CUSTOM_WIDGET_CONFIGURATION = {
     EXTFILE_TABLE: {
         'type': 'ExternalResource',

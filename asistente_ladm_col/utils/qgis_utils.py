@@ -90,6 +90,7 @@ from ..config.general_config import (DEFAULT_EPSG,
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
 from ..config.table_mapping_config import (BUILDING_UNIT_TABLE,
                                            CUSTOM_WIDGET_CONFIGURATION,
+                                           CUSTOM_READ_ONLY_FIELDS,
                                            DICT_AUTOMATIC_VALUES,
                                            DICT_DISPLAY_EXPRESSIONS,
                                            EXTFILE_DATA_FIELD,
@@ -410,6 +411,7 @@ class QGISUtils(QObject):
         self.set_display_expressions(db, layer)
         self.set_layer_variables(db, layer)
         self.set_custom_widgets(db, layer)
+        self.set_custom_read_only_fiels(db, layer)
         self.set_custom_events(db, layer)
         self.set_automatic_fields(db, layer)
         self.set_layer_constraints(db, layer)
@@ -568,6 +570,16 @@ class QGISUtils(QObject):
                 index = layer.fields().indexFromName(NUMBER_OF_FLOORS)
 
             layer.setEditorWidgetSetup(index, editor_widget_setup)
+
+    def set_custom_read_only_fiels(self, db, layer):
+        layer_name = db.get_ladm_layer_name(layer)
+        if layer_name in CUSTOM_READ_ONLY_FIELDS:
+            for field in CUSTOM_READ_ONLY_FIELDS[layer_name]:
+                field_idx = layer.fields().indexFromName(field)
+                if layer.fields().exists(field_idx):
+                    formConfig = layer.editFormConfig()
+                    formConfig.setReadOnly(field_idx, True)
+                    layer.setEditFormConfig(formConfig)
 
     def set_custom_events(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
