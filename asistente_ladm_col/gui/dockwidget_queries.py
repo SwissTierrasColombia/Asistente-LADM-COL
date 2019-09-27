@@ -47,7 +47,7 @@ from qgis.core import (QgsWkbTypes,
 from qgis.gui import (QgsDockWidget, 
                       QgsMapToolIdentifyFeature)
 
-from asistente_ladm_col.config.general_config import TEST_SERVER, PLUGIN_NAME, LAYER
+from asistente_ladm_col.config.general_config import TEST_SERVER, PLUGIN_NAME, LAYER, SUFFIX_GET_THUMBNAIL
 from ..config.table_mapping_config import (DICT_TABLE_PACKAGE,
                                            SPATIAL_UNIT_PACKAGE,
                                            PARCEL_NUMBER_FIELD,
@@ -309,7 +309,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         indexes = model.getPixmapIndexList()
         for idx in indexes:
             url = model.data(idx, Qt.UserRole)['url']
-            res, image = self.download_image("{}&thumbnail=true".format(url))
+            res, image = self.download_image("{}{}".format(url, SUFFIX_GET_THUMBNAIL))
             if res:
                 pixmap = QPixmap()
                 pixmap.loadFromData(image)
@@ -429,7 +429,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         field_idx = layer.fields().indexFromName(ID_FIELD)
         request = QgsFeatureRequest(QgsExpression("{}={}".format(ID_FIELD, t_id)))
         request.setFlags(QgsFeatureRequest.NoGeometry)
-        request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
 
         iterator = layer.getFeatures(request)
         feature = QgsFeature()

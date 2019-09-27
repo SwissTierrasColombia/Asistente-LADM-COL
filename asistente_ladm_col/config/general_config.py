@@ -210,6 +210,7 @@ INTERLIS_TEST_METADATA_TABLE_PG = 't_ili2db_table_prop'
 DEFAULT_ENDPOINT_SOURCE_SERVICE = 'http://portal.proadmintierra.info:18888/filemanager'
 SOURCE_SERVICE_UPLOAD_SUFFIX = 'v1/file'
 SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'
+SUFFIX_GET_THUMBNAIL = "&thumbnail=true&size=large"
 
 # UI OBJECTNAMES
 CADASTRE_MENU_OBJECTNAME = "ladm_col_cadastre"
