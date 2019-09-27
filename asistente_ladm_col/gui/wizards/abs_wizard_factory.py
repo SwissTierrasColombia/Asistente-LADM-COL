@@ -31,12 +31,13 @@ from qgis.PyQt.QtWidgets import QWizard
 from qgis.core import (QgsApplication,
                        Qgis)
 
-from ...config.table_mapping_config import CUSTOM_READ_ONLY_FIELDS
 from ...config.general_config import (PLUGIN_NAME,
                                       TranslatableConfigStrings,
                                       LAYER)
 from ...config.help_strings import HelpStrings
+from ...config.table_mapping_config import CUSTOM_READ_ONLY_FIELDS
 from ...config.wizards_config import WizardConfig
+from ...utils.qgis_utils import QGISUtils
 from ...utils.ui import load_ui
 
 
@@ -76,7 +77,7 @@ class AbsWizardFactory(QWizard):
     def prepare_feature_creation(self):
         result = self.prepare_feature_creation_layers()
         if result:
-            self.set_only_ready_field(True)
+            self.set_only_ready_field()
             self.edit_feature()
         else:
             self.close_wizard(show_message=False)
@@ -181,14 +182,13 @@ class AbsWizardFactory(QWizard):
     def show_help(self):
         self.qgis_utils.show_help(self.wizard_config[WizardConfig.WIZARD_HELP_SETTING])
 
-    def set_only_ready_field(self, only_read):
-        layer_name = self._db.get_ladm_layer_name(self._layers[self.EDITING_LAYER_NAME][LAYER])
+    def set_only_ready_field(self, read_only=True):
+        layer_name = None
+        if self._layers[self.EDITING_LAYER_NAME][LAYER]:
+            layer_name = self._db.get_ladm_layer_name(self._layers[self.EDITING_LAYER_NAME][LAYER])
+
         if layer_name in CUSTOM_READ_ONLY_FIELDS:
                 for field in self.wizard_config[WizardConfig.WIZARD_READ_ONLY_FIELDS]:
                     # Not validate field that are read only
                     if field not in CUSTOM_READ_ONLY_FIELDS[layer_name]:
-                        field_idx = self._layers[self.EDITING_LAYER_NAME][LAYER].fields().indexFromName(field)
-                        if self._layers[self.EDITING_LAYER_NAME][LAYER].fields().exists(field_idx):
-                            formConfig = self._layers[self.EDITING_LAYER_NAME][LAYER].editFormConfig()
-                            formConfig.setReadOnly(field_idx, only_read)
-                            self._layers[self.EDITING_LAYER_NAME][LAYER].setEditFormConfig(formConfig)
+                        QGISUtils.set_read_only_field(self._layers[self.EDITING_LAYER_NAME][LAYER], field, read_only)

@@ -106,7 +106,7 @@ class WizardFactory(AbsWizardFactory):
             self.init_map_tool()
 
         self.disconnect_signals()
-        self.set_only_ready_field(False)
+        self.set_only_ready_field(read_only=False)
         self.set_wizard_is_open_emitted.emit(False)
         self.close()
 

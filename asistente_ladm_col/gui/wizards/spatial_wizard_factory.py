@@ -112,7 +112,7 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
 
         self.set_finalize_geometry_creation_enabled_emitted.emit(False)
         self.disconnect_signals()
-        self.set_only_ready_field(False)
+        self.set_only_ready_field(read_only=False)
         self.set_wizard_is_open_emitted.emit(False)
         self.close()
 

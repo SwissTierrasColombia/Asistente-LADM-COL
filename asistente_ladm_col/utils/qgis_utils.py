@@ -571,15 +571,20 @@ class QGISUtils(QObject):
 
             layer.setEditorWidgetSetup(index, editor_widget_setup)
 
-    def set_custom_read_only_fiels(self, db, layer):
+    @staticmethod
+    def set_custom_read_only_fiels(db, layer):
         layer_name = db.get_ladm_layer_name(layer)
         if layer_name in CUSTOM_READ_ONLY_FIELDS:
             for field in CUSTOM_READ_ONLY_FIELDS[layer_name]:
-                field_idx = layer.fields().indexFromName(field)
-                if layer.fields().exists(field_idx):
-                    formConfig = layer.editFormConfig()
-                    formConfig.setReadOnly(field_idx, True)
-                    layer.setEditFormConfig(formConfig)
+                QGISUtils.set_read_only_field(layer, field)
+
+    @staticmethod
+    def set_read_only_field(layer, field, read_only=True):
+        field_idx = layer.fields().indexFromName(field)
+        if layer.fields().exists(field_idx):
+            formConfig = layer.editFormConfig()
+            formConfig.setReadOnly(field_idx, read_only)
+            layer.setEditFormConfig(formConfig)
 
     def set_custom_events(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)

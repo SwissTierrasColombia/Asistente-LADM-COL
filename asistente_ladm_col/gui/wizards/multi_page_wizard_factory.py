@@ -30,6 +30,8 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.PyQt.QtWidgets import QWizard
 
 from .wizard_factory import WizardFactory
+
+from ...config.general_config import LAYER
 from ...config.wizards_config import WizardConfig
 from ...utils.qt_utils import (enable_next_wizard,
                                disable_next_wizard)

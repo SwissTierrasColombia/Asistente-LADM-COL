@@ -18,14 +18,20 @@
 """
 
 import os
-import sys
 import re
 import subprocess
+import sys
+
+import qgis.utils
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
-from ..config.general_config import JAVA_REQUIRED_VERSION
-from ..utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
+from qgis.core import (QgsApplication,
+                       Qgis)
 
+from ..config.general_config import (JAVA_REQUIRED_VERSION,
+                                     PLUGIN_NAME)
+from ..utils.qgis_model_baker_utils import get_java_path_from_qgis_model_baker
+from ..utils.qt_utils import get_plugin_metadata
 
 class Utils(QObject):
     def __init__(self):
@@ -146,3 +152,41 @@ class Utils(QObject):
             return True
 
         return False
+
+    @staticmethod
+    def is_plugin_version_valid(plugin_name, min_required_version, exact_required_version):
+        plugin_found = plugin_name in qgis.utils.plugins
+        if not plugin_found:
+            return False
+        current_version = get_plugin_metadata(plugin_name, 'version')
+        if current_version is None:
+            return False
+
+        current_version_splitted = current_version.split(".")
+        if len(current_version_splitted) < 4: # We could need 4 places for our custom plugin versions
+            current_version_splitted = current_version_splitted + ['0','0','0','0']
+            current_version_splitted = current_version_splitted[:4]
+
+        min_required_version_splitted = min_required_version.split(".")
+        if len(min_required_version_splitted) < 4:
+            min_required_version_splitted = min_required_version_splitted + ['0','0','0','0']
+            min_required_version_splitted = min_required_version_splitted[:4]
+
+        QgsApplication.messageLog().logMessage("[{}] {}equired version: {}, current_version: {}".format(
+                plugin_name,
+                'R' if exact_required_version else 'Min r',
+                min_required_version_splitted,
+                current_version_splitted),
+            PLUGIN_NAME, Qgis.Info)
+
+        if exact_required_version:
+            return min_required_version_splitted == current_version_splitted
+
+        else: # Min version and subsequent versions should work
+            for i in range(len(current_version_splitted)):
+                if int(current_version_splitted[i]) < int(min_required_version_splitted[i]):
+                    return False
+                elif int(current_version_splitted[i]) > int(min_required_version_splitted[i]):
+                    return True
+
+        return True

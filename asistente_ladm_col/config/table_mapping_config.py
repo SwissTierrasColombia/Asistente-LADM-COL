@@ -320,7 +320,7 @@ LAYER_VARIABLES = {
 
 
 CUSTOM_READ_ONLY_FIELDS = {
-    PARCEL_TABLE: []
+    PARCEL_TABLE: []  # list of fields of the layer to block its edition
 }
 
 CUSTOM_WIDGET_CONFIGURATION = {
