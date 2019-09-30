@@ -66,8 +66,6 @@ class WizardConfig:
     WIZARD_QSETTINGS_LOAD_DATA_TYPE = "wizard_qsettings_load_data_type"
     WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE = "wizard_qsettings_load_convention_type"
     WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED = "wizard_qsetting_type_parcel_selected"
-    WIZARD_HELP_PAGE1 = "wizard_help_pages_page1"
-    WIZARD_HELP_PAGE2 = "wizard_help_pages_page2"
 
     WIZARD_HELP1 = "wizard_help1"
     WIZARD_HELP2 = "wizard_help2"
@@ -126,8 +124,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/col_party_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_COL_PARTY_CADASTRE_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_CREATE_COL_PARTY_CADASTRE_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 COL_PARTY_TABLE: {'name': COL_PARTY_TABLE, 'geometry': None, LAYER: None}
@@ -146,8 +144,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/administrative_source_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_ADMINISTRATIVE_SOURCE_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_CREATE_ADMINISTRATIVE_SOURCE_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None, LAYER: None},
@@ -167,8 +165,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/boundary_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_DEFINE_BOUNDARIES_CADASTRE_PAGE_1_OPTION_DIGITIZE,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_DEFINE_BOUNDARIES_CADASTRE_PAGE_1_OPTION_DIGITIZE,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 BOUNDARY_TABLE: {'name': BOUNDARY_TABLE, 'geometry': QgsWkbTypes.LineGeometry, LAYER: None},
@@ -188,8 +186,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/building_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_BUILDING_CADASTRE_PAGE_1_OPTION_POINTS,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_CREATE_BUILDING_CADASTRE_PAGE_1_OPTION_POINTS,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
@@ -209,8 +207,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/building_unit_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_BUILDING_UNIT_CADASTRE_PAGE_1_OPTION_POINTS,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_CREATE_BUILDING_UNIT_CADASTRE_PAGE_1_OPTION_POINTS,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
@@ -230,8 +228,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/right_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_RIGHT_CADASTRE_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: help_strings.WIZ_CREATE_RIGHT_CADASTRE_PAGE_2
+                WIZARD_HELP1: help_strings.WIZ_CREATE_RIGHT_CADASTRE_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: help_strings.WIZ_CREATE_RIGHT_CADASTRE_PAGE_2
             },
             WIZARD_LAYERS_SETTING: {
                 RIGHT_TABLE: {'name': RIGHT_TABLE, 'geometry': None, LAYER: None},
@@ -252,8 +250,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/restriction_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: help_strings.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_2
+                WIZARD_HELP1: help_strings.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: help_strings.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_2
             },
             WIZARD_LAYERS_SETTING: {
                 RESTRICTION_TABLE: {'name': RESTRICTION_TABLE, 'geometry': None, LAYER: None},
@@ -274,8 +272,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/responsibility_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: help_strings.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_2
+                WIZARD_HELP1: help_strings.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: help_strings.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_2
             },
             WIZARD_LAYERS_SETTING: {
                 RESPONSIBILITY_TABLE: {'name': RESPONSIBILITY_TABLE, 'geometry': None, LAYER: None},
@@ -297,8 +295,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/spatial_source_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: help_strings.WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_2
+                WIZARD_HELP1: help_strings.WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: help_strings.WIZ_CREATE_SPATIAL_SOURCE_CADASTRE_PAGE_2
             },
             WIZARD_LAYERS_SETTING: {
                 SPATIAL_SOURCE_TABLE: {'name': SPATIAL_SOURCE_TABLE, 'geometry': None, LAYER: None},
@@ -327,8 +325,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED: "Asistente-LADM_COL/wizards/type_of_parcel_selected"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_PARCEL_CADASTRE_PAGE_1_OPTION_EXISTING_PLOT,
-                WIZARD_HELP_PAGE2: help_strings.WIZ_CREATE_PARCEL_CADASTRE_PAGE_2
+                WIZARD_HELP1: help_strings.WIZ_CREATE_PARCEL_CADASTRE_PAGE_1_OPTION_EXISTING_PLOT,
+                WIZARD_HELP2: help_strings.WIZ_CREATE_PARCEL_CADASTRE_PAGE_2
             },
             WIZARD_LAYERS_SETTING: {
                 PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
@@ -351,8 +349,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/plot_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_PLOT_CADASTRE_PAGE_1_OPTION_BOUNDARIES,
-                WIZARD_HELP_PAGE2: help_strings.WIZ_CREATE_PLOT_CADASTRE_PAGE_2
+                WIZARD_HELP1: help_strings.WIZ_CREATE_PLOT_CADASTRE_PAGE_1_OPTION_BOUNDARIES,
+                WIZARD_HELP2: help_strings.WIZ_CREATE_PLOT_CADASTRE_PAGE_2
             },
             WIZARD_LAYERS_SETTING: {
                 PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
@@ -372,7 +370,7 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/ext_address_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1,
+                WIZARD_HELP1: help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_1,
                 WIZARD_HELP1: help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_1,
                 WIZARD_HELP2: help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_2,
                 WIZARD_HELP3: help_strings.WIZ_ASSOCIATE_EXTADDRESS_CADASTRE_PAGE_2_OPTION_3
@@ -423,8 +421,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/valuation_parcel_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_PARCEL_VALUATION_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_CREATE_PARCEL_VALUATION_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 VALUATION_PARCEL_TABLE: {'name': VALUATION_PARCEL_TABLE, 'geometry': None, LAYER: None}
@@ -443,8 +441,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/valuation_horizontal_property_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_HORIZONTAL_PROPERTY_VALUATION_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_CREATE_HORIZONTAL_PROPERTY_VALUATION_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 VALUATION_HORIZONTAL_PROPERTY_TABLE: {'name': VALUATION_HORIZONTAL_PROPERTY_TABLE, 'geometry': None, LAYER: None}
@@ -463,8 +461,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/valuation_common_equipment_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_COMMON_EQUIPMENT_VALUATION_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_CREATE_COMMON_EQUIPMENT_VALUATION_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 VALUATION_COMMON_EQUIPMENT_TABLE: {'name': VALUATION_COMMON_EQUIPMENT_TABLE, 'geometry': None, LAYER: None}
@@ -483,8 +481,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/valuation_building_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_BUILDING_VALUATION_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_CREATE_BUILDING_VALUATION_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 VALUATION_BUILDING_TABLE: {'name': VALUATION_BUILDING_TABLE, 'geometry': None, LAYER: None}
@@ -503,8 +501,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/geoeconomic_zone_valuation_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_GEOECONOMIC_ZONE_VALUATION_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_CREATE_GEOECONOMIC_ZONE_VALUATION_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 VALUATION_GEOECONOMIC_ZONE_TABLE: {'name': VALUATION_GEOECONOMIC_ZONE_TABLE, 'geometry': None, LAYER: None}
@@ -523,8 +521,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/physical_zone_valuation_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_PHYSICAL_ZONE_VALUATION_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_CREATE_PHYSICAL_ZONE_VALUATION_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 VALUATION_PHYSICAL_ZONE_TABLE: {'name': VALUATION_PHYSICAL_ZONE_TABLE, 'geometry': None, LAYER: None}
@@ -544,8 +542,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/valuation_building_unit_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_BUILDING_UNIT_VALUATION_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: help_strings.WIZ_CREATE_BUILDING_UNIT_VALUATION_PAGE_2
+                WIZARD_HELP1: help_strings.WIZ_CREATE_BUILDING_UNIT_VALUATION_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: help_strings.WIZ_CREATE_BUILDING_UNIT_VALUATION_PAGE_2
             },
             WIZARD_LAYERS_SETTING: {
                 VALUATION_BUILDING_UNIT_TABLE: {'name': VALUATION_BUILDING_UNIT_TABLE, 'geometry': None, LAYER: None},
@@ -595,8 +593,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/legal_party_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_LEGAL_PARTY_PRC_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_CREATE_LEGAL_PARTY_PRC_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 LEGAL_PARTY_TABLE: {'name': LEGAL_PARTY_TABLE, 'geometry': None, LAYER: None},
@@ -616,8 +614,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/natural_party_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_NATURAL_PARTY_PRC_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_CREATE_NATURAL_PARTY_PRC_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 NATURAL_PARTY_TABLE: {'name': NATURAL_PARTY_TABLE, 'geometry': None, LAYER: None}
@@ -636,8 +634,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/nuclear_family_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_NUCLEAR_FAMILY_PRC_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_CREATE_NUCLEAR_FAMILY_PRC_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 NUCLEAR_FAMILY_TABLE: {'name': NUCLEAR_FAMILY_TABLE, 'geometry': None, LAYER: None}
@@ -656,8 +654,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/market_research_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_MARKET_RESEARCH_PRC_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_CREATE_MARKET_RESEARCH_PRC_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 MARKET_RESEARCH_TABLE: {'name': MARKET_RESEARCH_TABLE, 'geometry': None, LAYER: None}
@@ -676,8 +674,8 @@ class WizardConfig:
                 WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/property_record_card_load_data_type"
             },
             WIZARD_HELP_PAGES_SETTING: {
-                WIZARD_HELP_PAGE1: help_strings.WIZ_CREATE_PROPERTY_RECORD_CARD_PRC_PAGE_1_OPTION_FORM,
-                WIZARD_HELP_PAGE2: ""
+                WIZARD_HELP1: help_strings.WIZ_CREATE_PROPERTY_RECORD_CARD_PRC_PAGE_1_OPTION_FORM,
+                WIZARD_HELP2: ""
             },
             WIZARD_LAYERS_SETTING: {
                 PROPERTY_RECORD_CARD_TABLE: {'name': PROPERTY_RECORD_CARD_TABLE, 'geometry': None, LAYER: None}

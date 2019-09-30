@@ -71,7 +71,7 @@ class SinglePageSpatialWizardFactory(SpatialWizardFactory):
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
-            self.txt_help_page_1.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP_PAGE1])
+            self.txt_help_page_1.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP1])
 
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
 

@@ -324,7 +324,7 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
 
     def update_help_message(self, parcel_type):
         msg_parcel_type = self.help_strings.MESSAGE_PARCEL_TYPES[parcel_type]
-        msg_help = self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP_PAGE2].format(msg_parcel_type=msg_parcel_type)
+        msg_help = self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP2].format(msg_parcel_type=msg_parcel_type)
         self.txt_help_page_2.setHtml(msg_help)
 
     def is_constraint_satisfied(self, type):

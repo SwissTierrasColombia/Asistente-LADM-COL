@@ -78,13 +78,13 @@ class MultiPageWizardFactory(WizardFactory):
             enable_next_wizard(self)
             self.wizardPage1.setFinalPage(False)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
-            self.txt_help_page_1.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP_PAGE1])
+            self.txt_help_page_1.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP1])
 
         self.wizardPage2.setButtonText(QWizard.FinishButton, finish_button_text)
 
     def adjust_page_2_controls(self):
         self.button(self.FinishButton).setDisabled(True)
-        self.txt_help_page_2.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP_PAGE2])
+        self.txt_help_page_2.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP2])
         self.disconnect_signals()
 
         # Load layers
