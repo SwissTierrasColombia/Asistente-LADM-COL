@@ -277,8 +277,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         if current_namespace_enabled != self.namespace_collapsible_group_box.isChecked() or \
            current_namespace_prefix != self.txt_namespace.text() or \
            current_local_id_enabled != self.chk_local_id.isChecked():
-
-            self.qgis_utils.automatic_namespace_local_id_configuration_changed(self._db)
+            if self._db is not None:
+                self.qgis_utils.automatic_namespace_local_id_configuration_changed(self._db)
 
     def restore_settings(self):
         # Restore QSettings
