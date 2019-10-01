@@ -5,8 +5,13 @@ from qgis.PyQt.QtCore import QSettings
 from qgis.core import (QgsVectorLayerUtils,
                        Qgis)
 
-from .....config.general_config import (LAYER,
-                                        CSS_COLOR_OKAY_LABEL,
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      WIZARD_HELP_PAGES,
+                                                      WIZARD_QSETTINGS,
+                                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE,
+                                                      WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED,
+                                                      WIZARD_HELP2)
+from .....config.general_config import (CSS_COLOR_OKAY_LABEL,
                                         CSS_COLOR_ERROR_LABEL,
                                         CSS_COLOR_INACTIVE_LABEL,
                                         PLUGIN_NAME)
@@ -21,7 +26,6 @@ from .....config.table_mapping_config import (PLOT_TABLE,
                                               UEBAUNIT_TABLE_BUILDING_FIELD,
                                               UEBAUNIT_TABLE_BUILDING_UNIT_FIELD,
                                               ID_FIELD)
-from .....config.wizards_config import WizardConfig
 from .....gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from .....gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from .....gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
@@ -232,10 +236,6 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
             self.register_select_feature_on_map()
 
     def prepare_feature_creation_layers(self):
-        is_loaded = self.required_layers_are_available()
-        if not is_loaded:
-            return False
-
         if hasattr(self, 'SELECTION_ON_MAP'):
             # Add signal to check if a layer was removed
             self.validate_remove_layers()
@@ -279,19 +279,19 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue(self.wizard_config[WizardConfig.WIZARD_QSETTINGS_SETTING][WizardConfig.WIZARD_QSETTINGS_LOAD_DATA_TYPE], 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
-        settings.setValue(self.wizard_config[WizardConfig.WIZARD_QSETTINGS_SETTING][WizardConfig.WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED], self.cb_parcel_type.currentText())
+        settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE], 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
+        settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED], self.cb_parcel_type.currentText())
 
     def restore_settings(self):
         settings = QSettings()
 
-        load_data_type = settings.value(self.wizard_config[WizardConfig.WIZARD_QSETTINGS_SETTING][WizardConfig.WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'create_manually'
+        load_data_type = settings.value(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'create_manually'
         if load_data_type == 'refactor':
             self.rad_refactor.setChecked(True)
         else:
             self.rad_create_manually.setChecked(True)
 
-        self.type_of_parcel_selected = settings.value(self.wizard_config[WizardConfig.WIZARD_QSETTINGS_SETTING][WizardConfig.WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED])
+        self.type_of_parcel_selected = settings.value(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED])
 
     #############################################################################
     # Custom methods
@@ -324,7 +324,7 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
 
     def update_help_message(self, parcel_type):
         msg_parcel_type = self.help_strings.MESSAGE_PARCEL_TYPES[parcel_type]
-        msg_help = self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP2].format(msg_parcel_type=msg_parcel_type)
+        msg_help = self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2].format(msg_parcel_type=msg_parcel_type)
         self.txt_help_page_2.setHtml(msg_help)
 
     def is_constraint_satisfied(self, type):

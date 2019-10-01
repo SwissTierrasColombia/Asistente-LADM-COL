@@ -29,7 +29,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.core import (QgsProject,
                        Qgis)
 
-from .abs_wizard_factory import AbsWizardFactory
+from asistente_ladm_col.gui.wizards.abs_wizard_factory import AbsWizardFactory
 from .map_interaction_expansion import MapInteractionExpansion
 from ...config.general_config import LAYER
 
@@ -78,10 +78,6 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
             self.prepare_feature_creation()
 
     def prepare_feature_creation_layers(self):
-        is_loaded = self.required_layers_are_available()
-        if not is_loaded:
-            return False
-
         self.validate_remove_layers()
 
         # All layers were successfully loaded
@@ -112,7 +108,7 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
 
         self.set_finalize_geometry_creation_enabled_emitted.emit(False)
         self.disconnect_signals()
-        self.set_only_ready_field(read_only=False)
+        self.set_ready_only_field(read_only=False)
         self.set_wizard_is_open_emitted.emit(False)
         self.close()
 

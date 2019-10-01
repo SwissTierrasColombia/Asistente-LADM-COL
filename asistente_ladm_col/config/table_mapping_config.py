@@ -318,9 +318,12 @@ LAYER_VARIABLES = {
     }
 }
 
-
+# Read only fields might be declared in two scenarios:
+#   1. As soon as the layer is loaded (e.g., DEPARTMENT_FIELD)
+#   2. Only for a wizard (e.g., PARCEL_TYPE)
+# WARNING: Both modes are exclusive, if you list a field in 1, DO NOT do it in 2. and viceversa!
 CUSTOM_READ_ONLY_FIELDS = {
-    PARCEL_TABLE: []  # list of fields of the layer to block its edition
+    PARCEL_TABLE: [DEPARTMENT_FIELD, MUNICIPALITY_FIELD, ZONE_FIELD]  # list of fields of the layer to block its edition
 }
 
 CUSTOM_WIDGET_CONFIGURATION = {

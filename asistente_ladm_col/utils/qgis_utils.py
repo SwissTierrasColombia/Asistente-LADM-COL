@@ -398,6 +398,33 @@ class QGISUtils(QObject):
 
         return ladm_layers
 
+    def required_layers_are_available(self, db, layers, tool_name):
+        # Load layers
+        self.get_layers(db, layers, load=True)
+        if not layers:
+            self.message_emitted.emit(
+                QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
+                    tool_name),
+                Qgis.Warning)
+            return False
+
+        # Check if any layer is in editing mode
+        layers_name = list()
+        for layer in layers:
+            if layers[layer][LAYER].isEditable():
+                layers_name.append(layers[layer][LAYER].name())
+
+        if layers_name:
+            self.message_emitted.emit(
+                QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                           "'{}' cannot be opened until the following layers are not in edit mode '{}'.").format(
+                    '; '.join(layers_name)),
+                Qgis.Warning)
+            return False
+
+        return True
+
     def automatic_namespace_local_id_configuration_changed(self, db):
         layers = self.get_ladm_layers_from_layer_tree(db)
         for layer in layers:

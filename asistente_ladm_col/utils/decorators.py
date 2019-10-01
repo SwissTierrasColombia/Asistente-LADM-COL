@@ -257,32 +257,3 @@ def _with_override_cursor(func_to_decorate):
             func_to_decorate(*args, **kwargs)
 
     return decorated_function
-
-def _db_connection_required2(func_to_decorate):
-    @wraps(func_to_decorate)
-    def decorated_function(inst, *args, **kwargs):
-        # Check if current connection is valid and disable access if not
-        db = inst.get_db_connection()
-        res, msg = db.test_connection()
-        if res:
-            if not inst.qgis_utils._layers and not inst.qgis_utils._relations:
-                inst.qgis_utils.cache_layers_and_relations(db, ladm_col_db=True)
-
-            func_to_decorate(inst, *args, **kwargs)
-        else:
-            widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",
-                                                           QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                      "Check your database connection, since there was a problem accessing a valid Cadastre-Registry model in the database. Click the button to go to Settings."))
-            button = QPushButton(widget)
-            button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
-            button.pressed.connect(inst.show_settings)
-            widget.layout().addWidget(button)
-            inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
-            inst.log.logMessage(
-                QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                           "A dialog/tool couldn't be opened/executed, connection to DB was not valid."),
-                PLUGIN_NAME,
-                Qgis.Warning
-            )
-
-    return decorated_function

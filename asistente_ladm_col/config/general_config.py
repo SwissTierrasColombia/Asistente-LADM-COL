@@ -222,6 +222,66 @@ VALUATION_MENU_OBJECTNAME = "ladm_col_valuation"
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
 
+
+# Wizards
+WIZARD_NAME = "wizard_name"
+WIZARD_CLASS = "wizard_class"
+WIZARD_FEATURE_NAME = "wizard_tool_name"
+WIZARD_UI = "wizard_ui"
+WIZARD_HELP = "wizard_help"
+WIZARD_HELP_PAGES = "wizard_help_page"
+WIZARD_QSETTINGS = "wizard_qsettings"
+WIZARD_QSETTINGS_LOAD_DATA_TYPE = "wizard_qsettings_load_data_type"
+WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE = "wizard_qsettings_load_convention_type"
+WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED = "wizard_qsetting_type_parcel_selected"
+WIZARD_TOOL_NAME = "wizard_tool_name"
+
+WIZARD_HELP1 = "wizard_help1"
+WIZARD_HELP2 = "wizard_help2"
+WIZARD_HELP3 = "wizard_help3"
+WIZARD_HELP4 = "wizard_help4"
+WIZARD_HELP5 = "wizard_help5"
+
+WIZARD_TYPE = "wizard_type"
+
+WIZARD_LAYERS = "wizard_layers"
+WIZARD_EDITING_LAYER_NAME = "wizard_editing_layer_name"
+WIZARD_MAP_LAYER_PROXY_MODEL = "wizard_map_layer_proxy_model"
+WIZARD_READ_ONLY_FIELDS = "wizard_read_only_fields"
+
+# Cadastral model
+WIZARD_CREATE_COL_PARTY_CADASTRAL = "wizard_create_col_party_cadastral"
+WIZARD_CREATE_ADMINISTRATIVE_SOURCE_CADASTRE = "wizard_create_administrative_source_cadastre"
+WIZARD_CREATE_BOUNDARY_CADASTRE = "wizard_create_boundary_cadastre"
+WIZARD_CREATE_BUILDING_CADASTRE = "wizard_create_building_cadastre"
+WIZARD_CREATE_BUILDING_UNIT_CADASTRE = "wizard_create_building_unit_cadastre"
+WIZARD_CREATE_RIGHT_CADASTRE = "wizard_create_right_cadastre"
+WIZARD_CREATE_RESTRICTION_CADASTRE = "wizard_create_restriction_cadastre"
+WIZARD_CREATE_RESPONSIBILITY_CADASTRE = "wizard_create_responsibility_cadastre"
+WIZARD_CREATE_SPATIAL_SOURCE_CADASTRE = "wizard_create_spatial_source_cadastre"
+WIZARD_CREATE_PARCEL_CADASTRE = "wizard_create_parcel_cadastre"
+WIZARD_CREATE_PLOT_CADASTRE = "wizard_create_plot_cadastre"
+WIZARD_CREATE_EXT_ADDRESS_CADASTRE = "wizard_create_ext_address_cadastre"
+WIZARD_CREATE_RIGHT_OF_WAY_CADASTRE = "wizard_create_right_of_way_cadastre"
+
+# Valuation model
+WIZARD_CREATE_PARCEL_VALUATION = "wizard_create_parcel_valuation"
+WIZARD_CREATE_HORIZONTAL_PROPERTY_VALUATION = "wizard_create_horizontal_property_valuation"
+WIZARD_CREATE_COMMON_EQUIPMENT_VALUATION = "wizard_create_common_equipment_valuation"
+WIZARD_CREATE_BUILDING_VALUATION = "wizard_create_building_valuation"
+WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION = "wizard_create_geoeconomic_zone_valuation"
+WIZARD_CREATE_PHYSICAL_ZONE_VALUATION = "wizard_create_physical_zone_valuation"
+WIZARD_CREATE_BUILDING_UNIT_VALUATION = "wizard_create_building_unit_valuation"
+WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION = "wizard_create_building_unit_qualification_valuation"
+
+# Property Record Card model
+WIZARD_CREATE_LEGAL_PARTY_PRC = "wizard_create_legal_party_prc"
+WIZARD_CREATE_NATURAL_PARTY_PRC = "wizard_create_natural_party_prc"
+WIZARD_CREATE_NUCLEAR_FAMILY_PRC = "wizard_create_nuclear_family_prc"
+WIZARD_CREATE_MARKET_RESEARCH_PRC = "wizard_create_market_research_prc"
+WIZARD_CREATE_PROPERTY_RECORD_CARD_PRC = "wizard_create_property_record_card"
+
+
 # Log topology rules
 LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE = "<h4>"
 LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE = "</h4>"

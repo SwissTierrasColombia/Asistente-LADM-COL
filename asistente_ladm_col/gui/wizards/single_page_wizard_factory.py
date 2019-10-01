@@ -28,13 +28,15 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import QWizard
-from qgis.core import Qgis
+from qgis.core import (Qgis, QgsMapLayerProxyModel)
 
-from .wizard_factory import WizardFactory
-from ...config.general_config import (PLUGIN_NAME,
-                                      LAYER)
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      WIZARD_HELP_PAGES,
+                                                      WIZARD_HELP1,
+                                                      WIZARD_MAP_LAYER_PROXY_MODEL)
+from asistente_ladm_col.gui.wizards.wizard_factory import WizardFactory
+from ...config.general_config import (PLUGIN_NAME)
 from ...config.table_mapping_config import ID_FIELD
-from ...config.wizards_config import WizardConfig
 
 
 class SinglePageWizardFactory(WizardFactory):
@@ -52,7 +54,7 @@ class SinglePageWizardFactory(WizardFactory):
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
         self.rejected.connect(self.close_wizard)
-        self.mMapLayerComboBox.setFilters(self.wizard_config[WizardConfig.WIZARD_MAP_LAYER_PROXY_MODEL])
+        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.Filter(self.wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL]))
 
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
@@ -72,7 +74,7 @@ class SinglePageWizardFactory(WizardFactory):
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
-            self.txt_help_page_1.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP1])
+            self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
 
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
 

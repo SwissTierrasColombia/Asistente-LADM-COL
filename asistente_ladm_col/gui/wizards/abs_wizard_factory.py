@@ -31,14 +31,18 @@ from qgis.PyQt.QtWidgets import QWizard
 from qgis.core import (QgsApplication,
                        Qgis)
 
-from ...config.general_config import (PLUGIN_NAME,
-                                      TranslatableConfigStrings,
-                                      LAYER)
-from ...config.help_strings import HelpStrings
-from ...config.table_mapping_config import CUSTOM_READ_ONLY_FIELDS
-from ...config.wizards_config import WizardConfig
-from ...utils.qgis_utils import QGISUtils
-from ...utils.ui import load_ui
+from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
+                                                      TranslatableConfigStrings,
+                                                      LAYER,
+                                                      WIZARD_NAME,
+                                                      WIZARD_FEATURE_NAME, WIZARD_UI,
+                                                      WIZARD_EDITING_LAYER_NAME, WIZARD_LAYERS,
+                                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_QSETTINGS,
+                                                      WIZARD_HELP, WIZARD_READ_ONLY_FIELDS, WIZARD_TOOL_NAME)
+from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.config.table_mapping_config import CUSTOM_READ_ONLY_FIELDS
+from asistente_ladm_col.utils.qgis_utils import QGISUtils
+from asistente_ladm_col.utils.ui import load_ui
 
 
 class AbsWizardFactory(QWizard):
@@ -55,13 +59,13 @@ class AbsWizardFactory(QWizard):
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
 
-        load_ui(self.wizard_config[WizardConfig.WIZARD_UI_SETTING], self)
+        load_ui(self.wizard_config[WIZARD_UI], self)
 
-        self.WIZARD_NAME = self.wizard_config[WizardConfig.WIZARD_NAME_SETTING]
-        self.WIZARD_FEATURE_NAME = self.wizard_config[WizardConfig.WIZARD_FEATURE_NAME_SETTING]
-        self.WIZARD_TOOL_NAME = 'Create {}'.format(self.wizard_config[WizardConfig.WIZARD_FEATURE_NAME_SETTING])
-        self.EDITING_LAYER_NAME = self.wizard_config[WizardConfig.WIZARD_EDITING_LAYER_NAME_SETTING]
-        self._layers = self.wizard_config[WizardConfig.WIZARD_LAYERS_SETTING]
+        self.WIZARD_NAME = self.wizard_config[WIZARD_NAME]
+        self.WIZARD_FEATURE_NAME = self.wizard_config[WIZARD_FEATURE_NAME]
+        self.WIZARD_TOOL_NAME = self.wizard_config[WIZARD_TOOL_NAME]
+        self.EDITING_LAYER_NAME = self.wizard_config[WIZARD_EDITING_LAYER_NAME]
+        self._layers = self.wizard_config[WIZARD_LAYERS]
 
         self.init_gui()
 
@@ -77,40 +81,13 @@ class AbsWizardFactory(QWizard):
     def prepare_feature_creation(self):
         result = self.prepare_feature_creation_layers()
         if result:
-            self.set_only_ready_field()
+            self.set_ready_only_field()
             self.edit_feature()
         else:
             self.close_wizard(show_message=False)
 
     def prepare_feature_creation_layers(self):
         raise NotImplementedError
-
-    def required_layers_are_available(self):
-        # Load layers
-        self.qgis_utils.get_layers(self._db, self._layers, load=True)
-        if not self._layers:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate(self.WIZARD_NAME,
-                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
-                    self.WIZARD_TOOL_NAME),
-                Qgis.Warning)
-            return False
-
-        # Check if any layer is in editing mode
-        layers_name = list()
-        for layer in self._layers:
-            if self._layers[layer][LAYER].isEditable():
-                layers_name.append(self._db.get_ladm_layer_name(self._layers[layer][LAYER]))
-
-        if layers_name:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate(self.WIZARD_NAME,
-                                           "Wizard cannot be opened until the following layers are not in edit mode '{}'.").format(
-                    '; '.join([layer_name for layer_name in layers_name])),
-                Qgis.Warning)
-            return False
-
-        return True
 
     def close_wizard(self, message=None, show_message=True):
         raise NotImplementedError
@@ -168,27 +145,22 @@ class AbsWizardFactory(QWizard):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue(self.wizard_config[WizardConfig.WIZARD_QSETTINGS_SETTING][WizardConfig.WIZARD_QSETTINGS_LOAD_DATA_TYPE], 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
+        settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE], 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
 
     def restore_settings(self):
         settings = QSettings()
 
-        load_data_type = settings.value(self.wizard_config[WizardConfig.WIZARD_QSETTINGS_SETTING][WizardConfig.WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'create_manually'
+        load_data_type = settings.value(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'create_manually'
         if load_data_type == 'refactor':
             self.rad_refactor.setChecked(True)
         else:
             self.rad_create_manually.setChecked(True)
 
     def show_help(self):
-        self.qgis_utils.show_help(self.wizard_config[WizardConfig.WIZARD_HELP_SETTING])
+        self.qgis_utils.show_help(self.wizard_config[WIZARD_HELP])
 
-    def set_only_ready_field(self, read_only=True):
-        layer_name = None
-        if self._layers[self.EDITING_LAYER_NAME][LAYER]:
-            layer_name = self._db.get_ladm_layer_name(self._layers[self.EDITING_LAYER_NAME][LAYER])
-
-        if layer_name in CUSTOM_READ_ONLY_FIELDS:
-                for field in self.wizard_config[WizardConfig.WIZARD_READ_ONLY_FIELDS]:
-                    # Not validate field that are read only
-                    if field not in CUSTOM_READ_ONLY_FIELDS[layer_name]:
-                        QGISUtils.set_read_only_field(self._layers[self.EDITING_LAYER_NAME][LAYER], field, read_only)
+    def set_ready_only_field(self, read_only=True):
+        if self._layers[self.EDITING_LAYER_NAME][LAYER] is not None:
+            for field in self.wizard_config[WIZARD_READ_ONLY_FIELDS]:
+                # Not validate field that are read only
+                QGISUtils.set_read_only_field(self._layers[self.EDITING_LAYER_NAME][LAYER], field, read_only)

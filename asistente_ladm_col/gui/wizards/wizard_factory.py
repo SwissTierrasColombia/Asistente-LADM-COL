@@ -28,8 +28,8 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal)
 from qgis.core import Qgis
 
-from .abs_wizard_factory import AbsWizardFactory
-from ...config.general_config import LAYER
+from asistente_ladm_col.gui.wizards.abs_wizard_factory import AbsWizardFactory
+from asistente_ladm_col.config.general_config import LAYER
 
 
 class WizardFactory(AbsWizardFactory):
@@ -73,10 +73,6 @@ class WizardFactory(AbsWizardFactory):
             self.prepare_feature_creation()
 
     def prepare_feature_creation_layers(self):
-        is_loaded = self.required_layers_are_available()
-        if not is_loaded:
-            return False
-
         if hasattr(self, 'SELECTION_ON_MAP'):
             # Add signal to check if a layer was removed
             self.validate_remove_layers()
@@ -106,7 +102,7 @@ class WizardFactory(AbsWizardFactory):
             self.init_map_tool()
 
         self.disconnect_signals()
-        self.set_only_ready_field(read_only=False)
+        self.set_ready_only_field(read_only=False)
         self.set_wizard_is_open_emitted.emit(False)
         self.close()
 

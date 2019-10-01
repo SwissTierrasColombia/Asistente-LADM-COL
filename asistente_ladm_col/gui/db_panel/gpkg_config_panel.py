@@ -20,7 +20,7 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal)
 from qgis.core import Qgis
-from ...lib.db.enum_db_action_type import EnumDbActionType
+from ...config.enums import EnumDbActionType
 from ...utils.qt_utils import (make_save_file_selector,
                                make_file_selector)
 from .db_config_panel import DbConfigPanel

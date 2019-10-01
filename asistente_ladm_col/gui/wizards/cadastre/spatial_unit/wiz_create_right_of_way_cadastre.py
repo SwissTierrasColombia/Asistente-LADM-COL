@@ -18,6 +18,7 @@
 """
 import secrets
 
+import processing
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 from qgis.PyQt.QtWidgets import (QWizard,
@@ -26,14 +27,19 @@ from qgis.PyQt.QtWidgets import (QWizard,
 from qgis.core import (Qgis,
                        QgsProject,
                        QgsVectorLayer,
-                       QgsVectorLayerUtils)
+                       QgsVectorLayerUtils,
+                       QgsMapLayerProxyModel)
 
-import processing
-from .....config.general_config import (LAYER,
-                                        DEFAULT_EPSG,
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      WIZARD_HELP_PAGES,
+                                                      WIZARD_QSETTINGS,
+                                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE,
+                                                      WIZARD_HELP1,
+                                                      WIZARD_HELP2,
+                                                      WIZARD_MAP_LAYER_PROXY_MODEL)
+from .....config.general_config import (DEFAULT_EPSG,
                                         PLUGIN_NAME)
-from .....config.table_mapping_config import (ID_FIELD)
-from .....config.wizards_config import WizardConfig
+from .....config.table_mapping_config import ID_FIELD
 from .....gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
 
 
@@ -57,7 +63,7 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
         self.width_line_edit.setValue(1.0)
         self.rejected.connect(self.close_wizard)
-        self.mMapLayerComboBox.setFilters(self.wizard_config[WizardConfig.WIZARD_MAP_LAYER_PROXY_MODEL])
+        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.Filter(self.wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL]))
 
     def adjust_page_1_controls(self):
         self.cbo_mapping.clear()
@@ -81,7 +87,7 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
-            self.txt_help_page_1.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP1])
+            self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
         elif self.rad_digitizing_line.isChecked():
             self.width_line_edit.setEnabled(True)
             self.lbl_width.setEnabled(True)
@@ -90,7 +96,7 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
             self.lbl_field_mapping.setEnabled(False)
             self.cbo_mapping.setEnabled(False)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
-            self.txt_help_page_1.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP2])
+            self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
 
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
 
@@ -254,12 +260,12 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
         elif self.rad_digitizing_line.isChecked():
             load_data_type = 'digitizing_line'
 
-        settings.setValue(self.wizard_config[WizardConfig.WIZARD_QSETTINGS_SETTING][WizardConfig.WIZARD_QSETTINGS_LOAD_DATA_TYPE], load_data_type)
+        settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE], load_data_type)
 
     def restore_settings(self):
         settings = QSettings()
 
-        load_data_type = settings.value(self.wizard_config[WizardConfig.WIZARD_QSETTINGS_SETTING][WizardConfig.WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'digitizing_line'
+        load_data_type = settings.value(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'digitizing_line'
         if load_data_type == 'refactor':
             self.rad_refactor.setChecked(True)
         elif load_data_type == 'create_manually':

@@ -27,11 +27,22 @@
 from qgis.PyQt.QtCore import (QSettings,
                               QCoreApplication)
 from qgis.PyQt.QtWidgets import QWizard
+from qgis.core import QgsMapLayerProxyModel
 
-from ....config.general_config import LAYER
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      WIZARD_HELP,
+                                                      WIZARD_HELP_PAGES,
+                                                      WIZARD_QSETTINGS,
+                                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE,
+                                                      WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE,
+                                                      WIZARD_HELP1,
+                                                      WIZARD_HELP2,
+                                                      WIZARD_HELP3,
+                                                      WIZARD_HELP4,
+                                                      WIZARD_HELP5,
+                                                      WIZARD_MAP_LAYER_PROXY_MODEL)
 from ....config.table_mapping_config import (VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE,
                                              VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE)
-from ....config.wizards_config import WizardConfig
 from ....gui.wizards.single_page_wizard_factory import SinglePageWizardFactory
 from ....utils.qt_utils import enable_next_wizard
 
@@ -56,9 +67,9 @@ class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
         self.currentIdChanged.connect(self.current_page_changed)
         self.rejected.connect(self.close_wizard)
-        self.mMapLayerComboBox.setFilters(self.wizard_config[WizardConfig.WIZARD_MAP_LAYER_PROXY_MODEL])
+        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.Filter(self.wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL]))
 
-        self.txt_help_page_2.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP1])
+        self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
         self.wizardPage2.setButtonText(QWizard.FinishButton, QCoreApplication.translate(self.WIZARD_NAME, "Import"))
 
     def adjust_page_1_controls(self):
@@ -81,27 +92,27 @@ class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
 
             if self.EDITING_LAYER_NAME == VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE:
-                self.txt_help_page_2.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP2])
+                self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
             else:
-                self.txt_help_page_2.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP3])
+                self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP3])
 
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue(self.wizard_config[WizardConfig.WIZARD_QSETTINGS_SETTING][WizardConfig.WIZARD_QSETTINGS_LOAD_DATA_TYPE], 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
-        settings.setValue(self.wizard_config[WizardConfig.WIZARD_QSETTINGS_SETTING][WizardConfig.WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE], 'conventional' if self.rad_conventional.isChecked() else 'unconventional')
+        settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE], 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
+        settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE], 'conventional' if self.rad_conventional.isChecked() else 'unconventional')
 
     def restore_settings(self):
         settings = QSettings()
 
-        load_data_type = settings.value(self.wizard_config[WizardConfig.WIZARD_QSETTINGS_SETTING][WizardConfig.WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'create_manually'
+        load_data_type = settings.value(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'create_manually'
         if load_data_type == 'refactor':
             self.rad_refactor.setChecked(True)
         else:
             self.rad_create_manually.setChecked(True)
 
-        load_convention_type = settings.value(self.wizard_config[WizardConfig.WIZARD_QSETTINGS_SETTING][WizardConfig.WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE]) or 'conventional'
+        load_convention_type = settings.value(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_CONVENTION_TYPE]) or 'conventional'
         if load_convention_type == 'conventional':
             self.rad_conventional.setChecked(True)
         else:
@@ -109,7 +120,7 @@ class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
 
     def show_help(self):
         if self.EDITING_LAYER_NAME == VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE:
-            self.qgis_utils.show_help(self.wizard_config[WizardConfig.WIZARD_HELP_SETTING])
+            self.qgis_utils.show_help(self.wizard_config[WIZARD_HELP])
         else:
             self.qgis_utils.show_help("create_building_unit_qualification_valuation_unconventional")
 
@@ -153,10 +164,10 @@ class CreateBuildingUnitQualificationValuationWizard(SinglePageWizardFactory):
             self.EDITING_LAYER_NAME = VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE
             self.gbx_page_2.setTitle(QCoreApplication.translate(self.WIZARD_NAME,
                                                                 "Load data to conventional building unit qualification..."))
-            self.txt_help_page_1.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP4])
+            self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP4])
 
         elif self.rad_unconventional.isChecked():
             self.EDITING_LAYER_NAME = VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE
             self.gbx_page_2.setTitle(QCoreApplication.translate(self.WIZARD_NAME,
                                                                 "Load data to unconventional building unit qualification..."))
-            self.txt_help_page_1.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP5])
+            self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP5])

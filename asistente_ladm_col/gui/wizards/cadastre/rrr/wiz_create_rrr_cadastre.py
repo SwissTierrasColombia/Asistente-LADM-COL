@@ -27,20 +27,20 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.core import (QgsVectorLayerUtils,
                        Qgis)
 
-from .....config.general_config import (LAYER,
-                                        PLUGIN_NAME)
-from .....config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
-                                              RRR_SOURCE_RELATION_TABLE,
-                                              RRR_SOURCE_SOURCE_FIELD,
-                                              RRR_SOURCE_RIGHT_FIELD,
-                                              RRR_SOURCE_RESTRICTION_FIELD,
-                                              RRR_SOURCE_RESPONSIBILITY_FIELD,
-                                              RIGHT_TABLE,
-                                              RESTRICTION_TABLE,
-                                              RESPONSIBILITY_TABLE,
-                                              ID_FIELD)
-from .....gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
-from .....gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      PLUGIN_NAME)
+from asistente_ladm_col.config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
+                                                          RRR_SOURCE_RELATION_TABLE,
+                                                          RRR_SOURCE_SOURCE_FIELD,
+                                                          RRR_SOURCE_RIGHT_FIELD,
+                                                          RRR_SOURCE_RESTRICTION_FIELD,
+                                                          RRR_SOURCE_RESPONSIBILITY_FIELD,
+                                                          RIGHT_TABLE,
+                                                          RESTRICTION_TABLE,
+                                                          RESPONSIBILITY_TABLE,
+                                                          ID_FIELD)
+from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
+from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 
 
 class CreateRRRCadastreWizard(MultiPageWizardFactory, SelectFeatureByExpressionDialogWrapper):

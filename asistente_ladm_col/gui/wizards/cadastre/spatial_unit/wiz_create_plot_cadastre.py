@@ -28,13 +28,14 @@ from qgis.core import (QgsVectorLayerUtils,
                        QgsGeometry,
                        Qgis)
 
-from .....config.general_config import (LAYER,
-                                        CSS_COLOR_OKAY_LABEL,
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      WIZARD_HELP_PAGES,
+                                                      WIZARD_HELP1)
+from .....config.general_config import (CSS_COLOR_OKAY_LABEL,
                                         CSS_COLOR_ERROR_LABEL)
 from .....config.table_mapping_config import (BOUNDARY_TABLE,
                                               PLOT_REGISTRY_AREA_FIELD,
                                               PLOT_CALCULATED_AREA_FIELD)
-from .....config.wizards_config import WizardConfig
 from .....gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from .....gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from .....gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
@@ -125,7 +126,7 @@ class CreatePlotCadastreWizard(MultiPageWizardFactory,
             enable_next_wizard(self)
             self.wizardPage1.setFinalPage(False)
             finish_button_text = QCoreApplication.translate(self.WIZARD_NAME, "Create")
-            self.txt_help_page_1.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP1])
+            self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
 
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
 

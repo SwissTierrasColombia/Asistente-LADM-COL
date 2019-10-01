@@ -7,8 +7,12 @@ from qgis.core import (Qgis,
                        QgsVectorLayerUtils)
 from qgis.gui import QgsExpressionSelectionDialog
 
-from .....config.general_config import (LAYER,
-                                        PLUGIN_NAME,
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      WIZARD_HELP_PAGES,
+                                                      WIZARD_HELP2,
+                                                      WIZARD_HELP3,
+                                                      WIZARD_HELP4)
+from .....config.general_config import (PLUGIN_NAME,
                                         CSS_COLOR_OKAY_LABEL,
                                         CSS_COLOR_ERROR_LABEL,
                                         CSS_COLOR_INACTIVE_LABEL)
@@ -21,11 +25,9 @@ from .....config.table_mapping_config import (OID_TABLE,
                                               PLOT_TABLE,
                                               BUILDING_TABLE,
                                               BUILDING_UNIT_TABLE)
-from .....config.wizards_config import WizardConfig
-
 from .....gui.wizards.multi_page_spatial_wizard_factory import MultiPageSpatialWizardFactory
-from .....gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from .....gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
+from .....gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from .....utils.select_map_tool import SelectMapTool
 
 
@@ -307,21 +309,21 @@ class CreateExtAddressCadastreWizard(MultiPageSpatialWizardFactory,
         self.btn_building_unit_expression.setEnabled(False)
 
         if self.rad_to_plot.isChecked():
-            self.txt_help_page_2.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP2])
+            self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
             self._current_layer = self._layers[PLOT_TABLE][LAYER]
 
             self.btn_plot_map.setEnabled(True)
             self.btn_plot_expression.setEnabled(True)
 
         elif self.rad_to_building.isChecked():
-            self.txt_help_page_2.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP3])
+            self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP3])
             self._current_layer = self._layers[BUILDING_TABLE][LAYER]
 
             self.btn_building_map.setEnabled(True)
             self.btn_building_expression.setEnabled(True)
 
         elif self.rad_to_building_unit.isChecked():
-            self.txt_help_page_2.setHtml(self.wizard_config[WizardConfig.WIZARD_HELP_PAGES_SETTING][WizardConfig.WIZARD_HELP4])
+            self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP4])
             self._current_layer = self._layers[BUILDING_UNIT_TABLE][LAYER]
 
             self.btn_building_unit_map.setEnabled(True)
