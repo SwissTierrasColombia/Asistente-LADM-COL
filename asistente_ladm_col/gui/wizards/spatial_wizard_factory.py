@@ -42,6 +42,7 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
         self.iface = iface
         AbsWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
         MapInteractionExpansion.__init__(self)
+        self.set_disable_digitize_actions()
 
     def init_gui(self):
         raise NotImplementedError
@@ -109,6 +110,7 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
         self.set_finalize_geometry_creation_enabled_emitted.emit(False)
         self.disconnect_signals()
         self.set_ready_only_field(read_only=False)
+        self.set_disable_digitize_actions(visible=True)
         self.set_wizard_is_open_emitted.emit(False)
         self.close()
 
