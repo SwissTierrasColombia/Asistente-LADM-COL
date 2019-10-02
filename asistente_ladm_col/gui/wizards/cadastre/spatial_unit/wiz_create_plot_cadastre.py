@@ -5,8 +5,8 @@
                              --------------------
         begin                : 2019-09-10
         git sha              : :%H$
-        copyright            : (C) 2017 by Germán Carrillo
-                               (C) 2019 by Leo Cardona
+        copyright            : (C) 2017 by Germán Carrillo (BFS Swissphoto)
+                               (C) 2019 by Leo Cardona (BFS Swissphoto)
         email                : gcarrillo@linuxmail.com
                                leo.cardona.p@gmail.com
  ***************************************************************************/

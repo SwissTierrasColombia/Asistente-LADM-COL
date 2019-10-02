@@ -5,11 +5,11 @@
                              --------------------
         begin                : 2019-09-10
         git sha              : :%H$
-        copyright            : (C) 2017 by Germán Carrillo
+        copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
                                (C) 2018 by Sergio Ramírez (Incige SAS)
                                (C) 2018 by Jorge Useche (Incige SAS)
-                               (C) 2018 by Jhon Galindo
-                               (C) 2019 by Leo Cardona
+                               (C) 2018 by Jhon Galindo (Incige SAS)
+                               (C) 2019 by Leo Cardona (BSF Swissphoto)
         email                : gcarrillo@linuxmail.com
                                sergio.ramirez@incige.com
                                naturalmentejorge@gmail.com
