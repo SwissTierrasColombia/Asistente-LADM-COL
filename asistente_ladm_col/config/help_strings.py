@@ -403,7 +403,10 @@ Choose this option if you want to create an <b>Unconventional Building Unit Qual
             PARCEL_TYPE_WAREHOUSE: QCoreApplication.translate("HelpStrings", "")
         }
 
-    def get_refactor_help_string(self, layer_name, layer_is_spatial):
+    def get_refactor_help_string(self, db, layer):
+        layer_name = db.get_ladm_layer_name(layer)
+        layer_is_spatial = layer.isSpatial()
+
         # Abre una ventana que te permite establecer una asignación entre la entrada (fuente) {type} y el tipo {type} <b>{name}</b> de LADM_COL.
         return QCoreApplication.translate("HelpStrings", "\
                Choose this option to open a window that allows you to import data from a source {type} into the LADM_COL <b>{name}</b> {type}. \
@@ -413,5 +416,4 @@ Choose this option if you want to create an <b>Unconventional Building Unit Qual
                You can select previous mappings in the <b>Recent mappings</b> list, which can save you time taking advantage of mappings that you already used.\
                 ").format(
                     name=layer_name,
-                    type=QCoreApplication.translate("HelpStrings", "layer") if layer_is_spatial else QCoreApplication.translate(
-                        "HelpStrings", "table"))
+                    type=QCoreApplication.translate("HelpStrings", "layer") if layer_is_spatial else QCoreApplication.translate("HelpStrings", "table"))

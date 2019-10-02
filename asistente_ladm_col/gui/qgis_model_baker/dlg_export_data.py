@@ -56,7 +56,7 @@ from ...utils.qt_utils import (Validators,
 from ...resources_rc import * # Necessary to show icons
 from ...config.config_db_supported import ConfigDbSupported
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_export_data.ui')
-from ...lib.db.enum_db_action_type import EnumDbActionType
+from ...config.enums import EnumDbActionType
 
 
 class DialogExportData(QDialog, DIALOG_UI):

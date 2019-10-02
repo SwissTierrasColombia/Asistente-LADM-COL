@@ -19,6 +19,7 @@
 import glob
 import os.path
 import shutil
+from copy import deepcopy
 from functools import partial
 
 import qgis.utils
@@ -33,97 +34,97 @@ from qgis.PyQt.QtWidgets import (QAction,
                                  QMenu,
                                  QPushButton,
                                  QProgressBar)
-
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessingModelAlgorithm)
 
-from .gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
-from .config.general_config import (ANNEX_17_REPORT,
-                                    ANT_MAP_REPORT,
-                                    CADASTRE_MENU_OBJECTNAME,
-                                    LADM_COL_MENU_OBJECTNAME,
-                                    PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
-                                    OFFICIAL_DB_SOURCE,
-                                    PLUGIN_NAME,
-                                    PLUGIN_VERSION,
-                                    QUERIES_ACTION_OBJECTNAME,
-                                    RELEASE_URL,
-                                    REPORTS_MENU_OBJECTNAME,
-                                    URL_REPORTS_LIBRARIES,
-                                    TOOLBAR_NAME,
-                                    TOOLBAR_ID,
-                                    TOOLBAR_BUILD_BOUNDARY,
-                                    TOOLBAR_MOVE_NODES,
-                                    TOOLBAR_FILL_POINT_BFS,
-                                    TOOLBAR_FILL_MORE_BFS_LESS,
-                                    TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS,
-                                    TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
-                                    TOOLBAR_FINALIZE_GEOMETRY_CREATION,
-                                    ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME,
-                                    VALUATION_MENU_OBJECTNAME,
-                                    NATIONAL_LAND_AGENCY)
-from .utils.decorators import (_db_connection_required,
-                               _validate_if_wizard_is_open,
-                               _qgis_model_baker_required,
-                               _activate_processing_plugin,
-                               _map_swipe_tool_required,
-                               _official_db_connection_required,
-                               _different_db_connections_required)
-
-from .gui.dialogs.dlg_about import AboutDialog
-from .gui.dialogs.dlg_controlled_measurement import ControlledMeasurementDialog
-from .gui.wizards.cadastre.source.wiz_create_administrative_source_cadastre import CreateAdministrativeSourceCadastreWizard
-from .gui.wizards.cadastre.surveying.wiz_create_boundaries_cadastre import CreateBoundariesCadastreWizard
-from .gui.wizards.cadastre.spatial_unit.wiz_create_building_cadastre import CreateBuildingCadastreWizard
-from .gui.wizards.cadastre.spatial_unit.wiz_create_building_unit_cadastre import CreateBuildingUnitCadastreWizard
-from .gui.wizards.cadastre.spatial_unit.wiz_create_right_of_way_cadastre import CreateRightOfWayCadastreWizard
-from .gui.wizards.cadastre.spatial_unit.wiz_associate_extaddress_cadastre import AssociateExtAddressWizard
-from .gui.wizards.cadastre.party.wiz_create_col_party_cadastre import CreateColPartyCadastreWizard
-from .gui.wizards.cadastre.party.dlg_create_group_party_cadastre import CreateGroupPartyCadastre
-from .gui.wizards.property_record_card.wiz_create_legal_party_prc import CreateLegalPartyPRCWizard
-from .gui.wizards.property_record_card.wiz_create_market_research_prc import CreateMarketResearchPRCWizard
-from .gui.wizards.property_record_card.wiz_create_natural_party_prc import CreateNaturalPartyPRCWizard
-from .gui.wizards.property_record_card.wiz_create_nuclear_family_prc import CreateNuclearFamilyPRCWizard
-from .gui.wizards.cadastre.baunit.wiz_create_parcel_cadastre import CreateParcelCadastreWizard
-from .gui.wizards.cadastre.spatial_unit.wiz_create_plot_cadastre import CreatePlotCadastreWizard
-from .gui.wizards.cadastre.surveying.wiz_create_points_cadastre import CreatePointsCadastreWizard
-from .gui.wizards.property_record_card.wiz_create_property_record_card_prc import CreatePropertyRecordCardPRCWizard
-from .gui.wizards.cadastre.rrr.wiz_create_responsibility_cadastre import CreateResponsibilityCadastreWizard
-from .gui.wizards.cadastre.rrr.wiz_create_restriction_cadastre import CreateRestrictionCadastreWizard
-from .gui.wizards.cadastre.rrr.wiz_create_right_cadastre import CreateRightCadastreWizard
-from .gui.wizards.cadastre.source.wiz_create_spatial_source_cadastre import CreateSpatialSourceCadastreWizard
-from .gui.wizards.valuation.wiz_create_parcel_valuation import CreateParcelValuationWizard
-from .gui.wizards.valuation.wiz_create_horizontal_property_valuation import CreateHorizontalPropertyValuationWizard
-from .gui.wizards.valuation.wiz_create_common_equipment_valuation import CreateCommonEquipmentValuationWizard
-from .gui.wizards.valuation.wiz_create_building_valuation import CreateBuildingValuationWizard
-from .gui.wizards.valuation.wiz_create_building_unit_valuation import CreateBuildingUnitValuationWizard
-from .gui.wizards.valuation.wiz_create_building_unit_qualification_valuation import CreateBuildingUnitQualificationValuationWizard
-from .gui.wizards.valuation.wiz_create_geoeconomic_zone_valuation import CreateGeoeconomicZoneValuationWizard
-from .gui.wizards.valuation.wiz_create_physical_zone_valuation import CreatePhysicalZoneValuationWizard
-from .gui.dialogs.dlg_load_layers import LoadLayersDialog
-from .gui.dialogs.dlg_quality import QualityDialog
-from .gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
-from .gui.dockwidget_queries import DockWidgetQueries
-from .gui.dialogs.dlg_log_quality import LogQualityDialog
-from .gui.right_of_way import RightOfWay
-from .gui.reports import ReportGenerator
-from .gui.toolbar import ToolBar
-from .gui.dialogs.dlg_log_excel import LogExcelDialog
-from .gui.dialogs.dlg_official_data_settings import OfficialDataSettingsDialog
-from .gui.dialogs.dlg_settings import SettingsDialog
-from .data.ladm_data import LADM_DATA
-from .processing.ladm_col_provider import LADMCOLAlgorithmProvider
-from .utils.qgis_utils import QGISUtils
-from .lib.db.db_connection_manager import ConnectionManager
-from .utils.qt_utils import (get_plugin_metadata,
-                             OverrideCursor)
-from .utils.quality import QualityUtils
-from .lib.db.enum_db_action_type import EnumDbActionType
+from asistente_ladm_col.config.enums import EnumDbActionType
+from asistente_ladm_col.config.enums import WizardTypeEnum
+from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
+                                                      ANT_MAP_REPORT,
+                                                      CADASTRE_MENU_OBJECTNAME,
+                                                      LADM_COL_MENU_OBJECTNAME,
+                                                      PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
+                                                      OFFICIAL_DB_SOURCE,
+                                                      PLUGIN_NAME,
+                                                      PLUGIN_VERSION,
+                                                      QUERIES_ACTION_OBJECTNAME,
+                                                      RELEASE_URL,
+                                                      REPORTS_MENU_OBJECTNAME,
+                                                      URL_REPORTS_LIBRARIES,
+                                                      TOOLBAR_NAME,
+                                                      TOOLBAR_ID,
+                                                      TOOLBAR_BUILD_BOUNDARY,
+                                                      TOOLBAR_MOVE_NODES,
+                                                      TOOLBAR_FILL_POINT_BFS,
+                                                      TOOLBAR_FILL_MORE_BFS_LESS,
+                                                      TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS,
+                                                      TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
+                                                      TOOLBAR_FINALIZE_GEOMETRY_CREATION,
+                                                      ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME,
+                                                      VALUATION_MENU_OBJECTNAME,
+                                                      NATIONAL_LAND_AGENCY, WIZARD_TYPE,
+                                                      WIZARD_CLASS,
+                                                      WIZARD_CREATE_COL_PARTY_CADASTRAL,
+                                                      WIZARD_CREATE_ADMINISTRATIVE_SOURCE_CADASTRE,
+                                                      WIZARD_CREATE_BOUNDARY_CADASTRE,
+                                                      WIZARD_CREATE_BUILDING_CADASTRE,
+                                                      WIZARD_CREATE_BUILDING_UNIT_CADASTRE,
+                                                      WIZARD_CREATE_RIGHT_CADASTRE,
+                                                      WIZARD_CREATE_RESTRICTION_CADASTRE,
+                                                      WIZARD_CREATE_RESPONSIBILITY_CADASTRE,
+                                                      WIZARD_CREATE_SPATIAL_SOURCE_CADASTRE,
+                                                      WIZARD_CREATE_PARCEL_CADASTRE,
+                                                      WIZARD_CREATE_PLOT_CADASTRE,
+                                                      WIZARD_CREATE_EXT_ADDRESS_CADASTRE,
+                                                      WIZARD_CREATE_RIGHT_OF_WAY_CADASTRE,
+                                                      WIZARD_CREATE_PARCEL_VALUATION,
+                                                      WIZARD_CREATE_HORIZONTAL_PROPERTY_VALUATION,
+                                                      WIZARD_CREATE_COMMON_EQUIPMENT_VALUATION,
+                                                      WIZARD_CREATE_BUILDING_VALUATION,
+                                                      WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION,
+                                                      WIZARD_CREATE_PHYSICAL_ZONE_VALUATION,
+                                                      WIZARD_CREATE_BUILDING_UNIT_VALUATION,
+                                                      WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION,
+                                                      WIZARD_CREATE_LEGAL_PARTY_PRC,
+                                                      WIZARD_CREATE_NATURAL_PARTY_PRC,
+                                                      WIZARD_CREATE_NUCLEAR_FAMILY_PRC,
+                                                      WIZARD_CREATE_MARKET_RESEARCH_PRC,
+                                                      WIZARD_CREATE_PROPERTY_RECORD_CARD_PRC, WIZARD_LAYERS,
+                                                      WIZARD_TOOL_NAME)
+from asistente_ladm_col.config.wizard_config import WIZARDS_SETTINGS
+from asistente_ladm_col.data.ladm_data import LADM_DATA
+from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
+from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
+from asistente_ladm_col.gui.dialogs.dlg_controlled_measurement import ControlledMeasurementDialog
+from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
+from asistente_ladm_col.gui.dialogs.dlg_load_layers import LoadLayersDialog
+from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
+from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
+from asistente_ladm_col.gui.dialogs.dlg_official_data_settings import OfficialDataSettingsDialog
+from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
+from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.gui.dockwidget_queries import DockWidgetQueries
+from asistente_ladm_col.gui.reports import ReportGenerator
+from asistente_ladm_col.gui.right_of_way import RightOfWay
+from asistente_ladm_col.gui.toolbar import ToolBar
+from asistente_ladm_col.gui.wizards.cadastre.party.dlg_create_group_party_cadastre import CreateGroupPartyCadastre
+from asistente_ladm_col.gui.wizards.cadastre.surveying.wiz_create_points_cadastre import CreatePointsCadastreWizard
+from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
+from asistente_ladm_col.processing.ladm_col_provider import LADMCOLAlgorithmProvider
+from asistente_ladm_col.utils.decorators import (_db_connection_required,
+                                                 _validate_if_wizard_is_open,
+                                                 _qgis_model_baker_required,
+                                                 _activate_processing_plugin,
+                                                 _map_swipe_tool_required,
+                                                 _official_db_connection_required,
+                                                 _different_db_connections_required)
+from asistente_ladm_col.utils.qgis_utils import QGISUtils
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
+from asistente_ladm_col.utils.quality import QualityUtils
 
 
 class AsistenteLADMCOLPlugin(QObject):
-
     wiz_geometry_creation_finished = pyqtSignal()
 
     def __init__(self, iface):
@@ -865,43 +866,6 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = LogExcelDialog(self.qgis_utils, self.text)
         dlg.exec_()
 
-    def is_plugin_version_valid(self, plugin_name, min_required_version, exact_required_version):
-        plugin_found = plugin_name in qgis.utils.plugins
-        if not plugin_found:
-            return False
-        current_version = get_plugin_metadata(plugin_name, 'version')
-        if current_version is None:
-            return False
-
-        current_version_splitted = current_version.split(".")
-        if len(current_version_splitted) < 4: # We could need 4 places for our custom plugin versions
-            current_version_splitted = current_version_splitted + ['0','0','0','0']
-            current_version_splitted = current_version_splitted[:4]
-
-        min_required_version_splitted = min_required_version.split(".")
-        if len(min_required_version_splitted) < 4:
-            min_required_version_splitted = min_required_version_splitted + ['0','0','0','0']
-            min_required_version_splitted = min_required_version_splitted[:4]
-
-        self.log.logMessage("[{}] {}equired version: {}, current_version: {}".format(
-                plugin_name,
-                'R' if exact_required_version else 'Min r',
-                min_required_version_splitted,
-                current_version_splitted),
-            PLUGIN_NAME, Qgis.Info)
-
-        if exact_required_version:
-            return min_required_version_splitted == current_version_splitted
-
-        else: # Min version and subsequent versions should work
-            for i in range(len(current_version_splitted)):
-                if int(current_version_splitted[i]) < int(min_required_version_splitted[i]):
-                    return False
-                elif int(current_version_splitted[i]) > int(min_required_version_splitted[i]):
-                    return True
-
-        return True
-
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
@@ -1152,15 +1116,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.wiz = CreatePointsCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
         self.exec_wizard(self.wiz)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_boundaries_cad(self, *args):
-        self.wiz = CreateBoundariesCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.wiz.set_wizard_is_open_emitted.connect(self.set_wizard_is_open_flag)
-        self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
-        self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
-        self.exec_wizard(self.wiz)
+    def show_wiz_boundaries_cad(self):
+        self.show_wizard(WIZARD_CREATE_BOUNDARY_CADASTRE)
 
     def set_wizard_is_open_flag(self, open):
         """
@@ -1178,55 +1135,26 @@ class AsistenteLADMCOLPlugin(QObject):
         """
         self._finalize_geometry_creation_action.setEnabled(enable)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_plot_cad(self, *args):
-        self.wiz = CreatePlotCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self)
-        self.exec_wizard(self.wiz)
+    def show_wiz_plot_cad(self):
+        self.show_wizard(WIZARD_CREATE_PLOT_CADASTRE)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_building_cad(self, *args):
-        self.wiz = CreateBuildingCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
-        self.exec_wizard(self.wiz)
+    def show_wiz_building_cad(self):
+        self.show_wizard(WIZARD_CREATE_BUILDING_CADASTRE)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_building_unit_cad(self, *args):
-        self.wiz = CreateBuildingUnitCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
-        self.exec_wizard(self.wiz)
+    def show_wiz_building_unit_cad(self):
+        self.show_wizard(WIZARD_CREATE_BUILDING_UNIT_CADASTRE)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    @_activate_processing_plugin
-    def show_wiz_right_of_way_cad(self, *args):
-        self.wiz = CreateRightOfWayCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
-        self.exec_wizard(self.wiz)
+    def show_wiz_right_of_way_cad(self):
+        self.show_wizard(WIZARD_CREATE_RIGHT_OF_WAY_CADASTRE)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_extaddress_cad(self, *args):
-        self.wiz = AssociateExtAddressWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
-        self.exec_wizard(self.wiz)
+    def show_wiz_extaddress_cad(self):
+        self.show_wizard(WIZARD_CREATE_EXT_ADDRESS_CADASTRE)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_parcel_cad(self, *args):
-        self.wiz = CreateParcelCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self)
-        self.exec_wizard(self.wiz)
+    def show_wiz_parcel_cad(self):
+        self.show_wizard(WIZARD_CREATE_PARCEL_CADASTRE)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_col_party_cad(self, *args):
-        self.wiz = CreateColPartyCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+    def show_wiz_col_party_cad(self):
+        self.show_wizard(WIZARD_CREATE_COL_PARTY_CADASTRAL)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1252,40 +1180,20 @@ class AsistenteLADMCOLPlugin(QObject):
         else:
             del dlg
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_right_rrr_cad(self, *args):
-        self.wiz = CreateRightCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+    def show_wiz_right_rrr_cad(self):
+        self.show_wizard(WIZARD_CREATE_RIGHT_CADASTRE)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_responsibility_rrr_cad(self, *args):
-        self.wiz = CreateResponsibilityCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+    def show_wiz_responsibility_rrr_cad(self):
+        self.show_wizard(WIZARD_CREATE_RESPONSIBILITY_CADASTRE)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_restriction_rrr_cad(self, *args):
-        self.wiz = CreateRestrictionCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+    def show_wiz_restriction_rrr_cad(self):
+        self.show_wizard(WIZARD_CREATE_RESTRICTION_CADASTRE)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_administrative_source_cad(self, *args):
-        self.wiz = CreateAdministrativeSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+    def show_wiz_administrative_source_cad(self):
+        self.show_wizard(WIZARD_CREATE_ADMINISTRATIVE_SOURCE_CADASTRE)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_spatial_source_cad(self, *args):
-        self.wiz = CreateSpatialSourceCadastreWizard(self.iface, self.get_db_connection(), self.qgis_utils, self)
-        self.exec_wizard(self.wiz)
+    def show_wiz_spatial_source_cad(self):
+        self.show_wizard(WIZARD_CREATE_SPATIAL_SOURCE_CADASTRE)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1301,96 +1209,44 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg = QualityDialog(self.get_db_connection(), self.qgis_utils, self.quality)
         dlg.exec_()
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_property_record_card(self, *args):
-        self.wiz = CreatePropertyRecordCardPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+    def show_wiz_property_record_card(self):
+        self.show_wizard(WIZARD_CREATE_PROPERTY_RECORD_CARD_PRC)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_market_research_prc(self, *args):
-        self.wiz = CreateMarketResearchPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+    def show_wiz_market_research_prc(self):
+        self.show_wizard(WIZARD_CREATE_MARKET_RESEARCH_PRC)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_nuclear_family_prc(self, *args):
-        self.wiz = CreateNuclearFamilyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+    def show_wiz_nuclear_family_prc(self):
+        self.show_wizard(WIZARD_CREATE_NUCLEAR_FAMILY_PRC)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_natural_party_prc(self, *args):
-        self.wiz = CreateNaturalPartyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+    def show_wiz_natural_party_prc(self):
+        self.show_wizard(WIZARD_CREATE_NATURAL_PARTY_PRC)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_legal_party_prc(self, *args):
-        self.wiz = CreateLegalPartyPRCWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+    def show_wiz_legal_party_prc(self):
+        self.show_wizard(WIZARD_CREATE_LEGAL_PARTY_PRC)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_parcel_valuation(self, *args):
-        self.wiz = CreateParcelValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+    def show_wiz_parcel_valuation(self):
+        self.show_wizard(WIZARD_CREATE_PARCEL_VALUATION)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_horizontal_property_main_parcel_valuation(self, *args):
-        self.wiz = CreateHorizontalPropertyValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+    def show_wiz_horizontal_property_main_parcel_valuation(self):
+        self.show_wizard(WIZARD_CREATE_HORIZONTAL_PROPERTY_VALUATION)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_common_equipment_valuation(self, *args):
-        self.wiz = CreateCommonEquipmentValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+    def show_wiz_common_equipment_valuation(self):
+        self.show_wizard(WIZARD_CREATE_COMMON_EQUIPMENT_VALUATION)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_building_valuation(self, *args):
-        self.wiz = CreateBuildingValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+    def show_wiz_building_valuation(self):
+        self.show_wizard(WIZARD_CREATE_BUILDING_VALUATION)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_building_unit_valuation(self, *args):
-        self.wiz = CreateBuildingUnitValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils, self)
-        self.exec_wizard(self.wiz)
+    def show_wiz_building_unit_valuation(self):
+        self.show_wizard(WIZARD_CREATE_BUILDING_UNIT_VALUATION)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_building_unit_qualification_valuation(self, *args):
-        self.wiz = CreateBuildingUnitQualificationValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils)
-        self.exec_wizard(self.wiz)
+    def show_wiz_building_unit_qualification_valuation(self):
+        self.show_wizard(WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_geoeconomic_zone_valuation(self, *args):
-        self.wiz = CreateGeoeconomicZoneValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
-        self.exec_wizard(self.wiz)
+    def show_wiz_geoeconomic_zone_valuation(self):
+        self.show_wizard(WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION)
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    def show_wiz_physical_zone_valuation_action(self, *args):
-        self.wiz = CreatePhysicalZoneValuationWizard(self.iface, self.get_db_connection(), self.qgis_utils, self.toolbar, self)
-        self.exec_wizard(self.wiz)
+    def show_wiz_physical_zone_valuation_action(self):
+        self.show_wizard(WIZARD_CREATE_PHYSICAL_ZONE_VALUATION)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1463,8 +1319,32 @@ class AsistenteLADMCOLPlugin(QObject):
     def exec_wizard(self, wiz):
         # Check if required layers are available
         if wiz.required_layers_are_available():
-            self.is_wizard_open = True
             wiz.exec_()
         else:
             self.is_wizard_open = False
             del wiz
+
+    @_activate_processing_plugin
+    @_validate_if_wizard_is_open
+    @_qgis_model_baker_required
+    @_db_connection_required
+    def show_wizard(self, wizard_name, *args, **kwargs):
+        wiz_settings = deepcopy(WIZARDS_SETTINGS[wizard_name])
+        self.qgis_utils.required_layers_are_available(self.get_db_connection(),
+                                                      wiz_settings[WIZARD_LAYERS],
+                                                      wiz_settings[WIZARD_TOOL_NAME])
+
+        if wiz_settings[WIZARD_LAYERS] is not None:
+            self.wiz = wiz_settings[WIZARD_CLASS](self.iface, self.get_db_connection(), self.qgis_utils,
+                                                  wiz_settings)
+            if wiz_settings[WIZARD_TYPE] & WizardTypeEnum.SPATIAL_WIZARD:
+                # Required signal for wizard geometry creating
+                self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
+                self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
+
+            # Required signal that allow to know if there is a wizard opened
+            self.is_wizard_open = True
+            self.wiz.set_wizard_is_open_emitted.connect(self.set_wizard_is_open_flag)
+
+            if self.wiz:
+                self.wiz.exec_()

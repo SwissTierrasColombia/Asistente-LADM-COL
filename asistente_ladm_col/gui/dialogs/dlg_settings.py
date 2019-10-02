@@ -51,7 +51,7 @@ from ...utils.qt_utils import OverrideCursor
 
 from ...resources_rc import * # Necessary to show icons
 from ...config.config_db_supported import ConfigDbSupported
-from ...lib.db.enum_db_action_type import EnumDbActionType
+from ...config.enums import EnumDbActionType
 
 DIALOG_UI = get_ui_class('dialogs/dlg_settings.ui')
 

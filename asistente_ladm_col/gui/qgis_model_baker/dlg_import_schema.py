@@ -54,8 +54,8 @@ from ...utils.qt_utils import (Validators,
 
 from ...resources_rc import * # Necessary to show icons
 from ...config.config_db_supported import ConfigDbSupported
+from ...config.enums import EnumDbActionType
 from ...lib.db.db_connector import DBConnector
-from ...lib.db.enum_db_action_type import EnumDbActionType
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_schema.ui')
 
 

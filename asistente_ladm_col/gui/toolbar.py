@@ -17,18 +17,15 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              QObject,
-                              pyqtSignal)
+                              QObject)
 from qgis.PyQt.QtWidgets import (QDialog,
-                                 QMessageBox,
-                                 QAction)
+                                 QMessageBox)
 from qgis.core import (Qgis,
                        QgsProject,
                        QgsVectorLayerUtils,
                        QgsWkbTypes)
 
-from ..config.general_config import (LAYER,
-                                     ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME)
+from ..config.general_config import LAYER
 from ..config.table_mapping_config import (POINT_BFS_TABLE_BOUNDARY_FIELD,
                                            BFS_TABLE_BOUNDARY_POINT_FIELD,
                                            BOUNDARY_POINT_TABLE,
@@ -46,7 +43,6 @@ from ..utils.geometry import GeometryUtils
 
 
 class ToolBar(QObject):
-    wiz_geometry_created_requested = pyqtSignal()
 
     def __init__(self, iface, qgis_utils, db):
         QObject.__init__(self)
@@ -346,9 +342,3 @@ class ToolBar(QObject):
                 QCoreApplication.translate("ToolBar", "No pairs id_boundary-id_plot found for '{}' table.").format(
                     MORE_BOUNDARY_FACE_STRING_TABLE),
                 Qgis.Info)
-
-    def set_enable_finalize_geometry_creation_action(self, enable):
-        # TODO: Remove when wizards are refactored
-        action_list = self.iface.mainWindow().findChildren(QAction, ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME)
-        if action_list:
-            action_list[0].setEnabled(enable)  # finalize_geometry_creation_action

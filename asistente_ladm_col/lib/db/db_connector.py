@@ -20,21 +20,7 @@ import psycopg2
 
 from qgis.PyQt.QtCore import QObject
 from ...utils.model_parser import ModelParser
-from enum import IntFlag
-
-
-class EnumTestLevel(IntFlag):
-    _CHECK_DB = 2
-    _CHECK_SCHEMA = 4
-    _CHECK_LADM = 8
-
-    SERVER = 1
-    DB = _CHECK_DB  # 2
-    DB_SCHEMA = _CHECK_DB|_CHECK_SCHEMA  # 6
-    DB_FILE = _CHECK_DB|_CHECK_SCHEMA  # 6
-    LADM = _CHECK_DB|_CHECK_SCHEMA|_CHECK_LADM  # 14
-    SCHEMA_IMPORT = 128
-
+from ...config.enums import EnumTestLevel
 
 class DBConnector(QObject):
     """

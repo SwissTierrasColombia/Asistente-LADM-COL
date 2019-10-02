@@ -122,6 +122,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         # Set MessageBar for QWizard
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.setLayout(QGridLayout())
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
     def nextId(self):
@@ -204,10 +205,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
             disable_next_wizard(self)
             self.wizardPage2.setFinalPage(True)
-            self.txt_help_page_2.setHtml(
-                self.help_strings.get_refactor_help_string(
-                    self.current_point_name(),
-                    True))
+            self.txt_help_page_2.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.current_point_name()][LAYER]))
 
         elif self.rad_csv.isChecked():
             self.lbl_refactor_source.setEnabled(False)
@@ -306,31 +304,8 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                                              self.detect_decimal_point(csv_path))
 
     def required_layers_are_available(self):
-        # Load layers
-        self.qgis_utils.get_layers(self._db, self._layers, load=True)
-        if not self._layers:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate(self.WIZARD_NAME,
-                                           "'{}' tool has been closed because there was a problem loading the requeries layers.").format(
-                    self.WIZARD_TOOL_NAME),
-                Qgis.Warning)
-            return False
-
-        # Check if layers any layer is in editing mode
-        layers_name = list()
-        for layer in self._layers:
-            if self._layers[layer][LAYER].isEditable():
-                layers_name.append(self._db.get_ladm_layer_name(self._layers[layer][LAYER]))
-
-        if layers_name:
-            self.qgis_utils.message_emitted.emit(
-                QCoreApplication.translate(self.WIZARD_NAME,
-                                           "Wizard cannot be opened until the following layers are not in edit mode '{}'.").format(
-                    '; '.join([layer_name for layer_name in layers_name])),
-                Qgis.Warning)
-            return False
-
-        return True
+        layers_are_available = self.qgis_utils.required_layers_are_available(self._db, self._layers, self.WIZARD_TOOL_NAME)
+        return layers_are_available
 
     def file_path_changed(self):
         self.autodetect_separator()
