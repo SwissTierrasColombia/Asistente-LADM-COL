@@ -98,3 +98,17 @@ class MapInteractionExpansion:
         else:
             # Continue creating geometry
             pass
+
+    def set_disable_digitize_actions(self, visible=False):
+        self.iface.actionToggleEditing().setVisible(visible)
+
+        self.iface.actionSaveActiveLayerEdits().setVisible(visible)
+        self.iface.actionSaveAllEdits().setVisible(visible)
+        self.iface.actionSaveEdits().setVisible(visible)
+
+        self.iface.actionAllEdits().setVisible(visible)
+        self.iface.actionCancelAllEdits().setVisible(visible)
+        self.iface.actionCancelEdits().setVisible(visible)
+
+        self.iface.actionRollbackAllEdits().setVisible(visible)
+        self.iface.actionRollbackEdits().setVisible(visible)
