@@ -35,7 +35,6 @@ class SelectFeaturesOnMapWrapper:
     Wrapper class that extends selecting features on the map.
     It is not possible to create an object of this class. This class should be implemented by a wizard.
     """
-    SELECTION_ON_MAP = True
 
     def __init__(self):
         self.canvas = self.iface.mapCanvas()

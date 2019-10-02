@@ -228,15 +228,15 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
         self.check_selected_features()
 
         # Register select features by expression
-        if hasattr(self, 'SELECTION_BY_EXPRESSION'):
+        if isinstance(self, SelectFeatureByExpressionDialogWrapper):
             self.register_select_features_by_expression()
 
         # Register select features on map
-        if hasattr(self, 'SELECTION_ON_MAP'):
+        if isinstance(self, SelectFeaturesOnMapWrapper):
             self.register_select_feature_on_map()
 
     def prepare_feature_creation_layers(self):
-        if hasattr(self, 'SELECTION_ON_MAP'):
+        if isinstance(self, SelectFeaturesOnMapWrapper):
             # Add signal to check if a layer was removed
             self.connect_on_removing_layers()
 

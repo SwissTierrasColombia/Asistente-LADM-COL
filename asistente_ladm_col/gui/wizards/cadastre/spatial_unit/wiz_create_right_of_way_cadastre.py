@@ -28,6 +28,8 @@ from qgis.core import (Qgis,
                        QgsVectorLayerUtils,
                        QgsMapLayerProxyModel)
 
+from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
+                                                      PLUGIN_NAME)
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_HELP_PAGES,
                                                       WIZARD_QSETTINGS,
@@ -35,11 +37,9 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_HELP1,
                                                       WIZARD_HELP2,
                                                       WIZARD_MAP_LAYER_PROXY_MODEL)
-from .....config.general_config import (DEFAULT_EPSG,
-                                        PLUGIN_NAME)
-from .....config.table_mapping_config import ID_FIELD
-from .....gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
-
+from asistente_ladm_col.config.table_mapping_config import ID_FIELD
+from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
+from asistente_ladm_col.gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
 
 class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
     def __init__(self, iface, db, qgis_utils, wizard_settings):
@@ -139,7 +139,7 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
         if show_message:
             self.qgis_utils.message_emitted.emit(message, Qgis.Info)
 
-        if hasattr(self, 'SELECTION_ON_MAP'):
+        if isinstance(self, SelectFeaturesOnMapWrapper):
             self.init_map_tool()
 
         self.remove_temporal_layer()

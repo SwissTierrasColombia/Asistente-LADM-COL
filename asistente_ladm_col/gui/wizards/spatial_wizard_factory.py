@@ -30,6 +30,8 @@ from qgis.core import (QgsProject,
                        Qgis)
 
 from asistente_ladm_col.gui.wizards.abs_wizard_factory import AbsWizardFactory
+from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
+from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from .map_interaction_expansion import MapInteractionExpansion
 from ...config.general_config import LAYER
 
@@ -85,10 +87,10 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
         return True
 
     def disconnect_signals(self):
-        if hasattr(self, 'SELECTION_BY_EXPRESSION'):
+        if isinstance(self, SelectFeatureByExpressionDialogWrapper):
             self.disconnect_signals_select_features_by_expression()
 
-        if hasattr(self, 'SELECTION_ON_MAP'):
+        if isinstance(self, SelectFeaturesOnMapWrapper):
             self.disconnect_signals_select_features_on_map()
 
         try:
@@ -104,7 +106,7 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
         if show_message:
             self.qgis_utils.message_emitted.emit(message, Qgis.Info)
 
-        if hasattr(self, 'SELECTION_ON_MAP'):
+        if isinstance(self, SelectFeaturesOnMapWrapper):
             self.init_map_tool()
 
         self.set_finalize_geometry_creation_enabled_emitted.emit(False)

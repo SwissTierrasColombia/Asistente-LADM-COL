@@ -28,7 +28,6 @@ class SelectFeatureByExpressionDialogWrapper:
     Wrapper class that extends selecting by expression.
     It is not possible to create an object of this class. This class should be implemented by a wizard.
     """
-    SELECTION_BY_EXPRESSION = True
 
     def select_features_by_expression(self, layer):
         self.iface.setActiveLayer(layer)

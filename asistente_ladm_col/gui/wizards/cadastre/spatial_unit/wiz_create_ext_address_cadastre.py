@@ -238,11 +238,11 @@ class CreateExtAddressCadastreWizard(MultiPageSpatialWizardFactory,
         self.check_selected_features()
 
         # Register select features by expression
-        if hasattr(self, 'SELECTION_BY_EXPRESSION'):
+        if isinstance(self, SelectFeatureByExpressionDialogWrapper):
             self.register_select_features_by_expression()
 
         # Register select features on map
-        if hasattr(self, 'SELECTION_ON_MAP'):
+        if isinstance(self, SelectFeaturesOnMapWrapper):
             self.register_select_feature_on_map()
 
         self.rad_to_plot.toggled.connect(self.toggle_spatial_unit)
