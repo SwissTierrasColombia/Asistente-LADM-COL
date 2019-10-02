@@ -129,7 +129,7 @@ class CreateExtAddressCadastreWizard(MultiPageSpatialWizardFactory,
         else:
             self.button(self.FinishButton).setDisabled(True)
 
-    def advanced_save(self, features):
+    def post_save(self, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         if len(features) != 1:

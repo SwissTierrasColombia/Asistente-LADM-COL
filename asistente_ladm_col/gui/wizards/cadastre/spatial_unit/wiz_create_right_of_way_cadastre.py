@@ -16,8 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-import secrets
-
 import processing
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
@@ -161,7 +159,7 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
             layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
         elif self.type_geometry_creation == "digitizing_line":
             # Add Memory line layer
-            self.temporal_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG), '{}_{}'.format(self.translatable_config_strings.RIGHT_OF_WAY_LINE_LAYER, secrets.randbits(24)), "memory")
+            self.temporal_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG), self.translatable_config_strings.RIGHT_OF_WAY_LINE_LAYER, "memory")
             layer = self.temporal_layer
             QgsProject.instance().addMapLayer(self.temporal_layer, True)
         else:
@@ -182,7 +180,7 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
                 QCoreApplication.translate(self.WIZARD_NAME,
                                            "You can now start capturing {} digitizing on the map...").format(self.WIZARD_FEATURE_NAME), Qgis.Info)
 
-    def advanced_save(self, features):
+    def post_save(self, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()

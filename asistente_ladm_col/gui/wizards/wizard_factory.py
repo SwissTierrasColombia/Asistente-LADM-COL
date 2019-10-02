@@ -75,7 +75,7 @@ class WizardFactory(AbsWizardFactory):
     def prepare_feature_creation_layers(self):
         if hasattr(self, 'SELECTION_ON_MAP'):
             # Add signal to check if a layer was removed
-            self.validate_remove_layers()
+            self.connect_on_removing_layers()
 
         # All layers were successfully loaded
         return True
@@ -111,7 +111,7 @@ class WizardFactory(AbsWizardFactory):
         self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.connect(self.finish_feature_creation)
         self.open_form(self._layers[self.EDITING_LAYER_NAME][LAYER])
 
-    def advanced_save(self, features):
+    def post_save(self, features):
         raise NotImplementedError
 
     def open_form(self, layer):
@@ -121,8 +121,7 @@ class WizardFactory(AbsWizardFactory):
         self.exec_form(layer)
 
     def get_feature_exec_form(self, layer):
-        feature = self.qgis_utils.get_new_feature(layer)
-        return feature
+        return self.qgis_utils.get_new_feature(layer)
 
     def exec_form_advanced(self, layer):
         raise NotImplementedError

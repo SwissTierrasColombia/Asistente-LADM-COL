@@ -29,9 +29,8 @@ from ...config.general_config import LAYER
 
 class MapInteractionExpansion:
     """
-    Class that extend support for create spatial objects on map
-    It is not possible create a object of this class, It should
-    be implement by a wizard
+    Used when creating spatial objects on the map.
+    It is not possible to create an object of this class. This class should be implemented by a wizard.
     """
 
     def __init__(self):
@@ -39,7 +38,7 @@ class MapInteractionExpansion:
         self.maptool = self.canvas.mapTool()
         self.select_maptool = None
 
-    def validate_remove_layers(self):
+    def connect_on_removing_layers(self):
         for layer_name in self._layers:
             if self._layers[layer_name][LAYER]:
                 # Layer was found, listen to its removal so that we can update the variable properly

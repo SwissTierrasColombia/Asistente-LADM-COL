@@ -27,20 +27,20 @@ from .config.general_config import (PLUGIN_NAME,
 
 def classFactory(iface):
     if Qgis.QGIS_VERSION_INT >= QGIS_REQUIRED_VERSION_INT:
-        #try:
-        from .asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
-        # except ImportError as e:
-        #     iface.messageBar().pushMessage("Asistente LADM_COL",
-        #                                    QCoreApplication.translate("__init__",
-        #                                                               "There was a problem loading the plugin {}. See the log for details.").format(
-        #                                        PLUGIN_NAME),
-        #                                    1, 0)
-        #
-        #     QgsApplication.messageLog().logMessage("ERROR while loading the plugin: " + repr(e), PLUGIN_NAME,
-        #                                            Qgis.Critical)
-        #
-        #     from mock import Mock
-        #     return Mock()
+        try:
+            from .asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
+        except ImportError as e:
+            iface.messageBar().pushMessage("Asistente LADM_COL",
+                                           QCoreApplication.translate("__init__",
+                                                                      "There was a problem loading the plugin {}. See the log for details.").format(
+                                               PLUGIN_NAME),
+                                           1, 0)
+
+            QgsApplication.messageLog().logMessage("ERROR while loading the plugin: " + repr(e), PLUGIN_NAME,
+                                                   Qgis.Critical)
+
+            from mock import Mock
+            return Mock()
 
         return AsistenteLADMCOLPlugin(iface)
     else:

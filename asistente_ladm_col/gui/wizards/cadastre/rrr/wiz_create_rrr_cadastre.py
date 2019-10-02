@@ -51,7 +51,7 @@ class CreateRRRCadastreWizard(MultiPageWizardFactory, SelectFeatureByExpressionD
         MultiPageWizardFactory.__init__(self, iface, db, qgis_utils, wizard_settings)
         SelectFeatureByExpressionDialogWrapper.__init__(self)
 
-    def advanced_save(self, features):
+    def post_save(self, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
 

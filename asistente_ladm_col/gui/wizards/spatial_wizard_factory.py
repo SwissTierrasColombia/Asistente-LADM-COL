@@ -78,7 +78,7 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
             self.prepare_feature_creation()
 
     def prepare_feature_creation_layers(self):
-        self.validate_remove_layers()
+        self.connect_on_removing_layers()
 
         # All layers were successfully loaded
         return True
@@ -127,7 +127,7 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
             QCoreApplication.translate(self.WIZARD_NAME,
                                        "You can now start capturing {} digitizing on the map...").format(self.WIZARD_FEATURE_NAME), Qgis.Info)
 
-    def advanced_save(self, features):
+    def post_save(self, features):
         raise NotImplementedError
 
     def open_form(self, layer):

@@ -42,7 +42,7 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
         self._spatial_unit_layers = dict()
         self.type_of_parcel_selected = None
 
-    def advanced_save(self, features):
+    def post_save(self, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         if len(features) != 1:
@@ -224,7 +224,7 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
         self.cb_parcel_type.currentTextChanged.connect(self.validate_type_of_parcel)
         self.cb_parcel_type.currentTextChanged.emit(self.cb_parcel_type.currentText())
 
-        # Check if a previous features are selected
+        # Check if a previous feature is selected
         self.check_selected_features()
 
         # Register select features by expression
@@ -238,7 +238,7 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
     def prepare_feature_creation_layers(self):
         if hasattr(self, 'SELECTION_ON_MAP'):
             # Add signal to check if a layer was removed
-            self.validate_remove_layers()
+            self.connect_on_removing_layers()
 
         self._spatial_unit_layers = {
             PLOT_TABLE: self._layers[PLOT_TABLE][LAYER],

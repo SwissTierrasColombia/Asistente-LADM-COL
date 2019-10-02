@@ -25,9 +25,8 @@ from qgis.gui import QgsExpressionSelectionDialog
 
 class SelectFeatureByExpressionDialogWrapper:
     """
-    Wrapper class that extend support for select by expression
-    It is not possible create a object of this class, It should
-    be implement by a wizard
+    Wrapper class that extends selecting by expression.
+    It is not possible to create an object of this class. This class should be implemented by a wizard.
     """
     SELECTION_BY_EXPRESSION = True
 

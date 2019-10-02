@@ -34,7 +34,7 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_HELP1,
                                                       WIZARD_MAP_LAYER_PROXY_MODEL)
 from asistente_ladm_col.gui.wizards.spatial_wizard_factory import SpatialWizardFactory
-from ...config.general_config import (PLUGIN_NAME)
+from ...config.general_config import PLUGIN_NAME
 from ...config.table_mapping_config import ID_FIELD
 
 
@@ -78,7 +78,7 @@ class SinglePageSpatialWizardFactory(SpatialWizardFactory):
 
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
 
-    def advanced_save(self, features):
+    def post_save(self, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
                                              "'{}' tool has been closed because an error occurred while trying to save the data.").format(self.WIZARD_TOOL_NAME)
         fid = features[0].id()
@@ -90,7 +90,7 @@ class SinglePageSpatialWizardFactory(SpatialWizardFactory):
         else:
             feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
             message = QCoreApplication.translate(self.WIZARD_NAME,
-                                                 "The new {} (t_id={}) was successfully created ").format(self.WIZARD_FEATURE_NAME, feature_tid)
+                                                 "The new {} (t_id={}) was successfully created!").format(self.WIZARD_FEATURE_NAME, feature_tid)
         return message
 
     def exec_form_advanced(self, layer):

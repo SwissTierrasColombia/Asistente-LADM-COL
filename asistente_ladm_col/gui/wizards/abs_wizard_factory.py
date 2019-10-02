@@ -40,7 +40,6 @@ from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
                                                       WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_QSETTINGS,
                                                       WIZARD_HELP, WIZARD_READ_ONLY_FIELDS, WIZARD_TOOL_NAME)
 from asistente_ladm_col.config.help_strings import HelpStrings
-from asistente_ladm_col.config.table_mapping_config import CUSTOM_READ_ONLY_FIELDS
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.ui import load_ui
 
@@ -66,6 +65,7 @@ class AbsWizardFactory(QWizard):
         self.WIZARD_TOOL_NAME = self.wizard_config[WIZARD_TOOL_NAME]
         self.EDITING_LAYER_NAME = self.wizard_config[WIZARD_EDITING_LAYER_NAME]
         self._layers = self.wizard_config[WIZARD_LAYERS]
+        self.set_ready_only_field()
 
         self.init_gui()
 
@@ -81,7 +81,6 @@ class AbsWizardFactory(QWizard):
     def prepare_feature_creation(self):
         result = self.prepare_feature_creation_layers()
         if result:
-            self.set_ready_only_field()
             self.edit_feature()
         else:
             self.close_wizard(show_message=False)
@@ -99,13 +98,13 @@ class AbsWizardFactory(QWizard):
         raise NotImplementedError
 
     def finish_feature_creation(self, layerId, features):
-        message = self.advanced_save(features)
+        message = self.post_save(features)
 
         self._layers[self.EDITING_LAYER_NAME][LAYER].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         self.log.logMessage("{} committedFeaturesAdded SIGNAL disconnected".format(self.WIZARD_FEATURE_NAME), PLUGIN_NAME, Qgis.Info)
         self.close_wizard(message)
 
-    def advanced_save(self, features):
+    def post_save(self, features):
         raise NotImplementedError
 
     def open_form(self, layer):

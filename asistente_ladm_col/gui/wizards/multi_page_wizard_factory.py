@@ -30,10 +30,12 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.PyQt.QtWidgets import QWizard
 from qgis.core import QgsMapLayerProxyModel
 
+from asistente_ladm_col.config.general_config import (WIZARD_MAP_LAYER_PROXY_MODEL,
+                                                      WIZARD_HELP_PAGES,
+                                                      WIZARD_HELP1,
+                                                      WIZARD_HELP2, LAYER)
 from asistente_ladm_col.gui.wizards.wizard_factory import WizardFactory
 
-from asistente_ladm_col.config.general_config import LAYER
-from asistente_ladm_col.config.wizard_config import *
 from asistente_ladm_col.utils.qt_utils import (enable_next_wizard,
                                disable_next_wizard)
 
@@ -104,7 +106,7 @@ class MultiPageWizardFactory(WizardFactory):
         if hasattr(self, 'SELECTION_ON_MAP'):
             self.register_select_feature_on_map()
 
-    def advanced_save(self, features):
+    def post_save(self, features):
         raise NotImplementedError
 
     def exec_form_advanced(self, layer):

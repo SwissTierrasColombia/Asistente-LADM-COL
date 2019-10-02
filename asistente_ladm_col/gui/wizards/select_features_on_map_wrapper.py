@@ -32,9 +32,8 @@ from ...utils.select_map_tool import SelectMapTool
 
 class SelectFeaturesOnMapWrapper:
     """
-    Wrapper class that extend support for select features on the map
-    It is not possible create a object of this class, It should
-    be implement by a wizard
+    Wrapper class that extends selecting features on the map.
+    It is not possible to create an object of this class. This class should be implemented by a wizard.
     """
     SELECTION_ON_MAP = True
 
@@ -96,7 +95,7 @@ class SelectFeaturesOnMapWrapper:
             pass
         self.canvas.setMapTool(self.maptool)
 
-    def validate_remove_layers(self):
+    def connect_on_removing_layers(self):
         for layer_name in self._layers:
             if self._layers[layer_name][LAYER]:
                 # Layer was found, listen to its removal so that we can update the variable properly
@@ -112,7 +111,6 @@ class SelectFeaturesOnMapWrapper:
         self.close_wizard(message)
 
     def disconnect_signals_select_features_on_map(self):
-
         self.disconnect_signals_controls_select_features_on_map()
 
         try:
