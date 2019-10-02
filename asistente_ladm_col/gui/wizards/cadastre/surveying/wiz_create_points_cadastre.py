@@ -257,6 +257,8 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                         output_layer_name),
                     Qgis.Warning)
 
+            self.close_wizard()
+
         elif self.rad_csv.isChecked():
             automatic_fields_definition = self.qgis_utils.check_if_and_disable_automatic_fields(self._db, self.current_point_name())
 

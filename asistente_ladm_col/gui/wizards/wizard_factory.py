@@ -71,6 +71,8 @@ class WizardFactory(AbsWizardFactory):
                         self.EDITING_LAYER_NAME),
                     Qgis.Warning)
 
+            self.close_wizard()
+
         elif self.rad_create_manually.isChecked():
             self.prepare_feature_creation()
 

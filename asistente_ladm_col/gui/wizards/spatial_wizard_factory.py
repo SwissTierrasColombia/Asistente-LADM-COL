@@ -76,6 +76,8 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
                         self.EDITING_LAYER_NAME),
                     Qgis.Warning)
 
+            self.close_wizard()
+
         elif self.rad_create_manually.isChecked():
             self.set_finalize_geometry_creation_enabled_emitted.emit(True)
             self.prepare_feature_creation()
