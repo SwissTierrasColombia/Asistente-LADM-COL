@@ -17,6 +17,7 @@
  ***************************************************************************/
 """
 import copy
+from fractions import Fraction
 from functools import partial
 
 from qgis.PyQt.QtCore import (Qt,
@@ -24,8 +25,7 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QTableWidgetItem,
                                  QListWidgetItem,
-                                 QSizePolicy,
-                                 QGridLayout)
+                                 QSizePolicy)
 from qgis.core import (QgsVectorLayerUtils,
                        QgsExpression,
                        QgsExpressionContext,
@@ -313,7 +313,7 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
                     "There is just one party, you need to add at least two parties to a group."))
 
         there_percents = False
-        fraction = 0
+        fraction = Fraction()
         for t, nd in porcentajes.items():
             if porcentajes[t] != [0,0]:
                 there_percents = True
@@ -330,7 +330,7 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
                             "The denominator cannot be less than the numerator."))
                     break
                 else:
-                    fraction = porcentajes[t][0] / porcentajes[t][1] + fraction
+                    fraction = Fraction(porcentajes[t][0], porcentajes[t][1]) + fraction
             if fraction != 1.0:
                 return (False, QCoreApplication.translate("CreateGroupParty",
                         "The sum of the fractions must be equal to one."))
