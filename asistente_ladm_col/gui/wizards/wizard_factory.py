@@ -105,6 +105,7 @@ class WizardFactory(AbsWizardFactory):
         if isinstance(self, SelectFeaturesOnMapWrapper):
             self.init_map_tool()
 
+        self.rollback_in_layers_with_empty_editing_session()
         self.disconnect_signals()
         self.set_ready_only_field(read_only=False)
         self.set_wizard_is_open_emitted.emit(False)

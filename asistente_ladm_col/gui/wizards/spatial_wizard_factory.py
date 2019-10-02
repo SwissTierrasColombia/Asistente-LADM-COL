@@ -111,6 +111,7 @@ class SpatialWizardFactory(AbsWizardFactory, MapInteractionExpansion):
         if isinstance(self, SelectFeaturesOnMapWrapper):
             self.init_map_tool()
 
+        self.rollback_in_layers_with_empty_editing_session()
         self.set_finalize_geometry_creation_enabled_emitted.emit(False)
         self.disconnect_signals()
         self.set_ready_only_field(read_only=False)

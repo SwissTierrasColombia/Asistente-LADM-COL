@@ -91,6 +91,16 @@ class AbsWizardFactory(QWizard):
     def close_wizard(self, message=None, show_message=True):
         raise NotImplementedError
 
+    def rollback_in_layers_with_empty_editing_session(self):
+        for layer_name in self._layers:
+            try:
+                if self._layers[layer_name][LAYER]:
+                    if self._layers[layer_name][LAYER].isEditable():
+                        if not self._layers[layer_name][LAYER].editBuffer().addedFeatures():
+                            self._layers[layer_name][LAYER].rollBack()
+            except RuntimeError:
+                pass # Layer was removed
+
     def disconnect_signals(self):
         raise NotImplementedError
 
