@@ -16,42 +16,28 @@
  *                                                                         *
  ***************************************************************************/
 """
-import json
 
-from qgis.PyQt.QtNetwork import (QNetworkRequest,
-                                 QNetworkAccessManager)
 from qgis.PyQt.QtCore import (Qt,
                               QSettings,
                               pyqtSignal,
-                              QUrl,
-                              QCoreApplication,
-                              QTextStream,
-                              QIODevice,
-                              QEventLoop)
+                              QCoreApplication)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy)
 from qgis.core import (Qgis,
-                       QgsCoordinateReferenceSystem,
                        QgsApplication)
 from qgis.gui import QgsMessageBar
 
+from ...config.config_db_supported import ConfigDbSupported
 from ...config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
-                                      DEFAULT_EPSG,
                                       PLUGIN_NAME,
                                       COLLECTED_DB_SOURCE,
-                                      TEST_SERVER,
                                       DEFAULT_ENDPOINT_SOURCE_SERVICE,
-                                      SOURCE_SERVICE_EXPECTED_ID,
                                       NATIONAL_LAND_AGENCY)
 from ...gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
 from ...lib.db.db_connector import (DBConnector,
                                     EnumTestLevel)
-from ...utils import get_ui_class
-from ...utils.qt_utils import OverrideCursor
-
-from ...resources_rc import * # Necessary to show icons
-from ...config.config_db_supported import ConfigDbSupported
 from ...config.enums import EnumDbActionType
+from ...utils import get_ui_class
 
 DIALOG_UI = get_ui_class('dialogs/dlg_settings.ui')
 
@@ -80,9 +66,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.custom_models_dir_button.clicked.connect(self.show_custom_model_dir)
         self.custom_model_directories_line_edit.setVisible(False)
         self.custom_models_dir_button.setVisible(False)
-
-        # CRS Setting
-        self.crsSelector.crsChanged.connect(self.crs_changed)
 
         # Set connections
         self.buttonBox.accepted.disconnect()
@@ -159,11 +142,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         dlg.exec_()
 
     def accepted(self):
-        # Validate EPSG selected
-        if self.crsSelector.crs().authid()[:5] != 'EPSG:':
-            self.show_message(QCoreApplication.translate("SettingsDialog", "Select a valid EPSG!"), Qgis.Warning)
-            return  # Do not close the dialog
-
         current_db = self.cbo_db_source.currentData()
         if self._lst_panel[current_db].state_changed():
             valid_connection = True
@@ -258,8 +236,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/advanced_settings/ant_tools', self.chk_ant_tools.isChecked())
         settings.setValue('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
 
-        settings.setValue('Asistente-LADM_COL/advanced_settings/epsg', self.epsg)
-
         endpoint = self.txt_service_endpoint.text().strip()
         settings.setValue('Asistente-LADM_COL/sources/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
 
@@ -326,9 +302,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.chk_ant_tools.setChecked(self.ant_tools_initial_chk_value)
 
         self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', True, bool))
-        crs = QgsCoordinateReferenceSystem(settings.value('Asistente-LADM_COL/advanced_settings/epsg', int(DEFAULT_EPSG), int))
-        self.crsSelector.setCrs(crs)
-        self.crs_changed()
 
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM_COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
 
@@ -398,14 +371,3 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         for key, value in self._lst_panel.items():
             value.set_action(action_type)
-
-    def crs_changed(self):
-        if self.crsSelector.crs().authid()[:5] != 'EPSG:':
-            self.crs_label.setStyleSheet('color: orange')
-            self.crs_label.setToolTip(QCoreApplication.translate("SettingsDialog", 'Please select an EPSG Coordinate Reference System'))
-            self.epsg = int(DEFAULT_EPSG)
-        else:
-            self.crs_label.setStyleSheet('')
-            self.crs_label.setToolTip(QCoreApplication.translate("SettingsDialog", 'Coordinate Reference System'))
-            authid = self.crsSelector.crs().authid()
-            self.epsg = int(authid[5:])
