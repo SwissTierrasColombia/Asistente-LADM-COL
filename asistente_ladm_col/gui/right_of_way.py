@@ -32,8 +32,7 @@ from qgis.core import (Qgis,
                        QgsVectorLayerUtils)
 
 import processing
-from ..config.general_config import (DEFAULT_EPSG,
-                                     LAYER,
+from ..config.general_config import (LAYER,
                                      PLUGIN_NAME)
 from ..config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
                                            COL_RESTRICTION_TYPE_RIGHT_OF_WAY_VALUE,
@@ -98,7 +97,7 @@ class RightOfWay(QObject):
         # Load layers
         self.add_db_required_layers(db)
         # Add Memory line layer
-        self._right_of_way_line_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG),
+        self._right_of_way_line_layer = QgsVectorLayer("MultiLineString?crs={}".format(self._layers[RIGHT_OF_WAY_TABLE][LAYER].sourceCrs().authid()),
                                                        translatable_config_strings.RIGHT_OF_WAY_LINE_LAYER, "memory")
         QgsProject.instance().addMapLayer(self._right_of_way_line_layer, True)
 

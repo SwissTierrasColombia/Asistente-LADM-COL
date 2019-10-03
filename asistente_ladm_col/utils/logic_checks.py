@@ -6,6 +6,8 @@ from qgis.core import (QgsApplication,
                        QgsField,
                        QgsVectorLayerUtils,
                        QgsVectorLayer)
+
+from ..config.general_config import translated_strings
 from ..config.table_mapping_config import (ID_FIELD,
                                            COL_PARTY_BUSINESS_NAME_FIELD,
                                            COL_PARTY_LEGAL_PARTY_FIELD,
@@ -23,12 +25,8 @@ from ..config.table_mapping_config import (ID_FIELD,
                                            PARCEL_TYPE_CEMETERY_PRIVATE_UNIT,
                                            PARCEL_TYPE_ROAD,
                                            PARCEL_TYPE_PUBLIC_USE,
-                                           PARCEL_TYPE_STORE,
-                                           PARCEL_TYPE_PARKING,
-                                           PARCEL_TYPE_WAREHOUSE,
                                            PARCEL_TABLE)
-from ..config.general_config import (DEFAULT_EPSG,
-                                     translated_strings)
+
 
 class LogicChecks(QObject):
 
@@ -49,7 +47,7 @@ class LogicChecks(QObject):
         parcel_duplicated_domain_right_ids = [sublist[0] for sublist in parcels_repeated_domain_right]
 
         if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
+            error_layer = QgsVectorLayer("NoGeometry", table_name, "memory")
             pr = error_layer.dataProvider()
             pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "{table}_id").format(table=table), QVariant.Int),
                               QgsField(QCoreApplication.translate("QGISUtils", "error_type"), QVariant.String)])
@@ -85,7 +83,7 @@ class LogicChecks(QObject):
         query = query.format(schema=db.schema, table=table, fields=", ".join(fields), id=id_field)
 
         if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
+            error_layer = QgsVectorLayer("NoGeometry", table_name, "memory")
             pr = error_layer.dataProvider()
             pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "duplicate_ids"), QVariant.String),
                               QgsField(QCoreApplication.translate("QGISUtils", "count"), QVariant.Int)])
@@ -102,14 +100,13 @@ class LogicChecks(QObject):
 
         return error_layer
 
-
     def get_fractions_which_sum_is_not_one(self, db, error_layer):
         rule = 'GROUP_PARTY_FRACTIONS_SHOULD_SUM_1'
         query = db.logic_validation_queries[rule]['query']
         table_name = db.logic_validation_queries[rule]['table_name']
 
         if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
+            error_layer = QgsVectorLayer("NoGeometry", table_name, "memory")
             pr = error_layer.dataProvider()
             pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "party_group"), QVariant.Int),
                               QgsField(QCoreApplication.translate("QGISUtils", "members"), QVariant.String),
@@ -137,7 +134,7 @@ class LogicChecks(QObject):
         table = db.logic_validation_queries[rule]['table']
 
         if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
+            error_layer = QgsVectorLayer("NoGeometry", table_name, "memory")
             pr = error_layer.dataProvider()
             pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "{table}_id").format(table=table), QVariant.Int),
                               QgsField(QCoreApplication.translate("QGISUtils", "error_type"), QVariant.String)])
@@ -174,7 +171,7 @@ class LogicChecks(QObject):
         table = db.logic_validation_queries[rule]['table']
 
         if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
+            error_layer = QgsVectorLayer("NoGeometry", table_name, "memory")
             pr = error_layer.dataProvider()
             pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "{table}_id").format(table=table), QVariant.Int),
                               QgsField(QCoreApplication.translate("QGISUtils", "error_type"), QVariant.String)])
@@ -211,7 +208,7 @@ class LogicChecks(QObject):
         table = db.logic_validation_queries[rule]['table']
 
         if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
+            error_layer = QgsVectorLayer("NoGeometry", table_name, "memory")
             pr = error_layer.dataProvider()
             pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "{table}_id").format(table=table), QVariant.Int),
                               QgsField(QCoreApplication.translate("QGISUtils", "error_type"), QVariant.String)])
@@ -250,7 +247,7 @@ class LogicChecks(QObject):
         table = db.logic_validation_queries[rule]['table']
 
         if error_layer is None:
-            error_layer = QgsVectorLayer("NoGeometry?crs=EPSG:{}".format(DEFAULT_EPSG), table_name, "memory")
+            error_layer = QgsVectorLayer("NoGeometry", table_name, "memory")
             pr = error_layer.dataProvider()
             pr.addAttributes([QgsField(QCoreApplication.translate("QGISUtils", "{table}_id").format(table=table), QVariant.Int),
                               QgsField(QCoreApplication.translate("QGISUtils", "associated_parcels"), QVariant.Int),

@@ -90,7 +90,7 @@ class ControlledMeasurementDialog(QDialog, DIALOG_UI):
         idx = groups.fields().indexOf(GROUP_ID)
         group_ids = groups.uniqueValues(idx)
 
-        layer = QgsVectorLayer("Point?crs=EPSG:3116", "Average Points", "memory")
+        layer = QgsVectorLayer("Point?crs={}".format(input_layer.sourceCrs().authid()), "Average Points", "memory")
         layer.dataProvider().addAttributes([
             QgsField("group_id", QVariant.Int),
             QgsField("count", QVariant.Int),
