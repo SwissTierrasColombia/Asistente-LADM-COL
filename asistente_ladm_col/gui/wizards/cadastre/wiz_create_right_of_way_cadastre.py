@@ -3,10 +3,18 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 06/09/18
+        begin                : 2019-09-10
         git sha              : :%H$
-        copyright            : (C) 2018 by Sergio Ramírez (Incige SAS)
-        email                : sergio.ramirez@incige.com
+        copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
+                               (C) 2018 by Sergio Ramírez (Incige SAS)
+                               (C) 2018 by Jorge Useche (Incige SAS)
+                               (C) 2018 by Jhon Galindo (Incige SAS)
+                               (C) 2019 by Leo Cardona (BSF Swissphoto)
+        email                : gcarrillo@linuxmail.com
+                               sergio.ramirez@incige.com
+                               naturalmentejorge@gmail.com
+                               jhonsigpjc@gmail.com
+                               leo.cardona.p@gmail.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -39,6 +47,7 @@ from asistente_ladm_col.config.general_config import (LAYER,
 from asistente_ladm_col.config.table_mapping_config import ID_FIELD
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
+
 
 class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
     def __init__(self, iface, db, qgis_utils, wizard_settings):

@@ -1,3 +1,29 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+                              Asistente LADM_COL
+                             --------------------
+        begin                : 2019-09-10
+        git sha              : :%H$
+        copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
+                               (C) 2018 by Sergio Ramírez (Incige SAS)
+                               (C) 2018 by Jorge Useche (Incige SAS)
+                               (C) 2018 by Jhon Galindo (Incige SAS)
+                               (C) 2019 by Leo Cardona (BSF Swissphoto)
+        email                : gcarrillo@linuxmail.com
+                               sergio.ramirez@incige.com
+                               naturalmentejorge@gmail.com
+                               jhonsigpjc@gmail.com
+                               leo.cardona.p@gmail.com
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License v3.0 as          *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ ***************************************************************************/
+ """
 from functools import partial
 
 from qgis.PyQt.QtCore import QCoreApplication
@@ -10,25 +36,25 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_QSETTINGS,
                                                       WIZARD_QSETTINGS_LOAD_DATA_TYPE,
                                                       WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED,
-                                                      WIZARD_HELP2)
-from .....config.general_config import (CSS_COLOR_OKAY_LABEL,
-                                        CSS_COLOR_ERROR_LABEL,
-                                        CSS_COLOR_INACTIVE_LABEL,
-                                        PLUGIN_NAME)
-from .....config.table_mapping_config import (PLOT_TABLE,
-                                              BUILDING_TABLE,
-                                              BUILDING_UNIT_TABLE,
-                                              PARCEL_TYPE_FIELD,
-                                              CONSTRAINT_TYPES_OF_PARCEL,
-                                              UEBAUNIT_TABLE,
-                                              UEBAUNIT_TABLE_PLOT_FIELD,
-                                              UEBAUNIT_TABLE_PARCEL_FIELD,
-                                              UEBAUNIT_TABLE_BUILDING_FIELD,
-                                              UEBAUNIT_TABLE_BUILDING_UNIT_FIELD,
-                                              ID_FIELD)
-from .....gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
-from .....gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
-from .....gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
+                                                      WIZARD_HELP2,
+                                                      CSS_COLOR_OKAY_LABEL,
+                                                      CSS_COLOR_ERROR_LABEL,
+                                                      CSS_COLOR_INACTIVE_LABEL,
+                                                      PLUGIN_NAME)
+from asistente_ladm_col.config.table_mapping_config import (PLOT_TABLE,
+                                                            BUILDING_TABLE,
+                                                            BUILDING_UNIT_TABLE,
+                                                            PARCEL_TYPE_FIELD,
+                                                            CONSTRAINT_TYPES_OF_PARCEL,
+                                                            UEBAUNIT_TABLE,
+                                                            UEBAUNIT_TABLE_PLOT_FIELD,
+                                                            UEBAUNIT_TABLE_PARCEL_FIELD,
+                                                            UEBAUNIT_TABLE_BUILDING_FIELD,
+                                                            UEBAUNIT_TABLE_BUILDING_UNIT_FIELD,
+                                                            ID_FIELD)
+from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
+from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
+from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 
 
 class CreateParcelCadastreWizard(MultiPageWizardFactory,

@@ -30,17 +30,17 @@ from qgis.core import (QgsVectorLayerUtils,
 
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_HELP_PAGES,
-                                                      WIZARD_HELP1)
-from .....config.general_config import (CSS_COLOR_OKAY_LABEL,
-                                        CSS_COLOR_ERROR_LABEL)
-from .....config.table_mapping_config import (BOUNDARY_TABLE,
-                                              PLOT_REGISTRY_AREA_FIELD,
-                                              PLOT_CALCULATED_AREA_FIELD)
-from .....gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
-from .....gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
-from .....gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
-from .....utils.qt_utils import (enable_next_wizard,
-                                 disable_next_wizard)
+                                                      WIZARD_HELP1,
+                                                      CSS_COLOR_OKAY_LABEL,
+                                                      CSS_COLOR_ERROR_LABEL)
+from asistente_ladm_col.config.table_mapping_config import (BOUNDARY_TABLE,
+                                                            PLOT_REGISTRY_AREA_FIELD,
+                                                            PLOT_CALCULATED_AREA_FIELD)
+from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
+from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
+from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
+from asistente_ladm_col.utils.qt_utils import (enable_next_wizard,
+                                               disable_next_wizard)
 
 
 class CreatePlotCadastreWizard(MultiPageWizardFactory,

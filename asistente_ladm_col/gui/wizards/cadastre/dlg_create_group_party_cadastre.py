@@ -34,28 +34,27 @@ from qgis.core import (QgsVectorLayerUtils,
                        QgsApplication)
 from qgis.gui import QgsMessageBar
 
-from .....config.general_config import (PLUGIN_NAME,
-                                        LAYER)
-from .....config.help_strings import HelpStrings
-from .....config.table_mapping_config import (DOMAIN_KEY_FIELD,
-                                              FRACTION_DENOMINATOR_FIELD,
-                                              FRACTION_MEMBER_FIELD,
-                                              FRACTION_NUMERATOR_FIELD,
-                                              FRACTION_TABLE,
-                                              ID_FIELD,
-                                              LA_GROUP_PARTY_NAME_FIELD,
-                                              LA_GROUP_PARTY_GPTYPE_FIELD,
-                                              LA_GROUP_PARTY_TABLE,
-                                              COL_PARTY_TABLE,
-                                              LA_GROUP_PARTY_TYPE_FIELD,
-                                              LA_GROUP_PARTY_TYPE_TABLE,
-                                              LA_GROUP_PARTY_TYPE_VALUE,
-                                              MEMBERS_GROUP_PARTY_FIELD,
-                                              MEMBERS_PARTY_FIELD,
-                                              MEMBERS_TABLE)
-from .....utils import get_ui_class
+from asistente_ladm_col.config.general_config import (PLUGIN_NAME, LAYER)
+from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.config.table_mapping_config import (DOMAIN_KEY_FIELD,
+                                                            FRACTION_DENOMINATOR_FIELD,
+                                                            FRACTION_MEMBER_FIELD,
+                                                            FRACTION_NUMERATOR_FIELD,
+                                                            FRACTION_TABLE,
+                                                            ID_FIELD,
+                                                            LA_GROUP_PARTY_NAME_FIELD,
+                                                            LA_GROUP_PARTY_GPTYPE_FIELD,
+                                                            LA_GROUP_PARTY_TABLE,
+                                                            COL_PARTY_TABLE,
+                                                            LA_GROUP_PARTY_TYPE_FIELD,
+                                                            LA_GROUP_PARTY_TYPE_TABLE,
+                                                            LA_GROUP_PARTY_TYPE_VALUE,
+                                                            MEMBERS_GROUP_PARTY_FIELD,
+                                                            MEMBERS_PARTY_FIELD,
+                                                            MEMBERS_TABLE)
+from asistente_ladm_col.utils import get_ui_class
 
-DIALOG_UI = get_ui_class('wizards/cadastre/party/dlg_group_party.ui')
+DIALOG_UI = get_ui_class('wizards/cadastre/dlg_group_party.ui')
 
 
 class CreateGroupPartyCadastre(QDialog, DIALOG_UI):

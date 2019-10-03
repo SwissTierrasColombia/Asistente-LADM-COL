@@ -30,7 +30,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.core import (QgsWkbTypes,
                        Qgis)
 
-from .....gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
+from asistente_ladm_col.gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
 
 
 class CreateBuildingCadastreWizard(SinglePageSpatialWizardFactory):
