@@ -241,9 +241,11 @@ def _validate_if_wizard_is_open(func_to_decorate):
     def decorated_function(*args, **kwargs):
         inst = args[0]
         if inst.is_wizard_open:
-            inst.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+            inst.show_message_with_close_wizard_button(QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "There is a wizard open, you need to close it before continuing with another tool."),
-                              Qgis.Info)
+                                                       QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                  "Close the open wizard"),
+                                                       Qgis.Info)
         else:
              func_to_decorate(*args, **kwargs)
 

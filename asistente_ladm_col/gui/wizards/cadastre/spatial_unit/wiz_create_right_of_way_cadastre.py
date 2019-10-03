@@ -148,7 +148,7 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
         self.remove_temporal_layer()
         self.set_finalize_geometry_creation_enabled_emitted.emit(False)
         self.disconnect_signals()
-        self.set_wizard_is_open_emitted.emit(False)
+        self.update_wizard_is_open_flag.emit(False)
         self.close()
 
     def remove_temporal_layer(self):

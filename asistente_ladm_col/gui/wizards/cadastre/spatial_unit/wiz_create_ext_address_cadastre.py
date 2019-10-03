@@ -34,7 +34,7 @@ from .....utils.select_map_tool import SelectMapTool
 class CreateExtAddressCadastreWizard(MultiPageSpatialWizardFactory,
                                      SelectFeaturesOnMapWrapper,
                                      SelectFeatureByExpressionDialogWrapper):
-    set_wizard_is_open_emitted = pyqtSignal(bool)
+    update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):

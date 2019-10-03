@@ -45,7 +45,7 @@ from asistente_ladm_col.utils.ui import load_ui
 
 
 class AbsWizardFactory(QWizard):
-    set_wizard_is_open_emitted = pyqtSignal(bool)
+    update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):
