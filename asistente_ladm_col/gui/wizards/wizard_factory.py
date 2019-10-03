@@ -71,6 +71,8 @@ class WizardFactory(AbsWizardFactory):
                         self.EDITING_LAYER_NAME),
                     Qgis.Warning)
 
+            self.close_wizard()
+
         elif self.rad_create_manually.isChecked():
             self.prepare_feature_creation()
 
@@ -103,6 +105,7 @@ class WizardFactory(AbsWizardFactory):
         if isinstance(self, SelectFeaturesOnMapWrapper):
             self.init_map_tool()
 
+        self.rollback_in_layers_with_empty_editing_buffer()
         self.disconnect_signals()
         self.set_ready_only_field(read_only=False)
         self.set_wizard_is_open_emitted.emit(False)
