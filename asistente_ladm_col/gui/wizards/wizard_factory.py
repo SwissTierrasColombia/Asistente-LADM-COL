@@ -35,7 +35,7 @@ from asistente_ladm_col.config.general_config import LAYER
 
 
 class WizardFactory(AbsWizardFactory):
-    set_wizard_is_open_emitted = pyqtSignal(bool)
+    update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):
@@ -108,7 +108,7 @@ class WizardFactory(AbsWizardFactory):
         self.rollback_in_layers_with_empty_editing_buffer()
         self.disconnect_signals()
         self.set_ready_only_field(read_only=False)
-        self.set_wizard_is_open_emitted.emit(False)
+        self.update_wizard_is_open_flag.emit(False)
         self.close()
 
     def edit_feature(self):

@@ -42,7 +42,7 @@ from asistente_ladm_col.utils.qt_utils import (enable_next_wizard, disable_next_
 
 
 class MultiPageWizardFactory(WizardFactory):
-    set_wizard_is_open_emitted = pyqtSignal(bool)
+    update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
     def __init__(self, iface, db, qgis_utils, wizard_settings):

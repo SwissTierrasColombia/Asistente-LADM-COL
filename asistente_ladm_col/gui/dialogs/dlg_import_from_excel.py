@@ -873,6 +873,7 @@ class ImportFromExcelDialog(QDialog, DIALOG_UI):
         self.txt_excel_path.setText(settings.value('Asistente-LADM_COL/import_from_excel_dialog/excel_path', ''))
 
     def show_message(self, message, level):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage(message, level, 10)
 
     def show_help(self):

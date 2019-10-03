@@ -220,6 +220,7 @@ class OfficialDataSettingsDialog(QDialog, DIALOG_UI):
         self.log.logMessage("Test connection!", PLUGIN_NAME, Qgis.Info)
 
     def show_message(self, message, level):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage(message, level, 10)
 
     def show_help(self):

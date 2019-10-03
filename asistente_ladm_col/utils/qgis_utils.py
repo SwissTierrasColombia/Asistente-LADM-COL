@@ -419,6 +419,7 @@ class QGISUtils(QObject):
             self.message_emitted.emit(
                 QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                            "'{}' cannot be opened until the following layers are not in edit mode '{}'.").format(
+                    tool_name,
                     '; '.join(layers_name)),
                 Qgis.Warning)
             return False

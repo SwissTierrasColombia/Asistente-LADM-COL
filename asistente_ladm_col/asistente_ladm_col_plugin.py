@@ -712,9 +712,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.layerTreeView().refreshLayerSymbology(layer_id)
 
     def show_message(self, msg, level, duration=5):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
         self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level, duration)
 
     def show_message_with_open_table_attributes_button(self, msg, button_text, level, layer, filter):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
@@ -723,6 +725,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, level, 15)
 
     def show_message_to_load_layer(self, msg, button_text, layer, level):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
@@ -731,6 +734,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, level, 15)
 
     def show_message_to_load_layers(self, msg, button_text, layers, level):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
@@ -739,6 +743,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, level, 15)
 
     def show_message_to_open_about_dialog(self, msg):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -761,6 +766,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                                       "Download and install dependency"))
             button.pressed.connect(self.download_report_dependency)
             widget.layout().addWidget(button)
+            self.clear_message_bar()  # Remove previous messages before showing a new one
             self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
         else:
             self.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -768,6 +774,7 @@ class AsistenteLADMCOLPlugin(QObject):
                               Qgis.Info)
 
     def show_message_to_remove_report_dependency(self, msg):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -777,10 +784,20 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
 
     def show_message_with_settings_button(self, msg, button_text, level):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
         button.pressed.connect(self.show_settings)
+        widget.layout().addWidget(button)
+        self.iface.messageBar().pushWidget(widget, level, 25)
+
+    def show_message_with_close_wizard_button(self, msg, button_text, level):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
+        widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        button = QPushButton(widget)
+        button.setText(button_text)
+        button.pressed.connect(self.close_wizard_if_opened)
         widget.layout().addWidget(button)
         self.iface.messageBar().pushWidget(widget, level, 25)
 
@@ -1330,21 +1347,25 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     def show_wizard(self, wizard_name, *args, **kwargs):
         wiz_settings = deepcopy(WIZARDS_SETTINGS[wizard_name])
-        self.qgis_utils.required_layers_are_available(self.get_db_connection(),
+        if self.qgis_utils.required_layers_are_available(self.get_db_connection(),
                                                       wiz_settings[WIZARD_LAYERS],
-                                                      wiz_settings[WIZARD_TOOL_NAME])
+                                                      wiz_settings[WIZARD_TOOL_NAME]):
 
-        if wiz_settings[WIZARD_LAYERS] is not None:
-            self.wiz = wiz_settings[WIZARD_CLASS](self.iface, self.get_db_connection(), self.qgis_utils,
-                                                  wiz_settings)
-            if wiz_settings[WIZARD_TYPE] & WizardTypeEnum.SPATIAL_WIZARD:
-                # Required signal for wizard geometry creating
-                self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
-                self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
+            if wiz_settings[WIZARD_LAYERS] is not None:
+                self.wiz = wiz_settings[WIZARD_CLASS](self.iface, self.get_db_connection(), self.qgis_utils,
+                                                      wiz_settings)
+                if wiz_settings[WIZARD_TYPE] & WizardTypeEnum.SPATIAL_WIZARD:
+                    # Required signal for wizard geometry creating
+                    self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
+                    self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
 
-            # Required signal that allow to know if there is a wizard opened
-            self.is_wizard_open = True
-            self.wiz.set_wizard_is_open_emitted.connect(self.set_wizard_is_open_flag)
+                # Required signal that allow to know if there is a wizard opened
+                self.is_wizard_open = True
+                self.wiz.update_wizard_is_open_flag.connect(self.set_wizard_is_open_flag)
 
-            if self.wiz:
-                self.wiz.exec_()
+                if self.wiz:
+                    self.wiz.exec_()
+
+    def close_wizard_if_opened(self):
+        if self.wiz:
+            self.wiz.close_wizard()  # This updates the is_wizard_open flag

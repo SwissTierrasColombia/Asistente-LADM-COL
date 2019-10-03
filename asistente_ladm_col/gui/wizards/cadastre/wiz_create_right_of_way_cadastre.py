@@ -23,7 +23,7 @@
  *   published by the Free Software Foundation.                            *
  *                                                                         *
  ***************************************************************************/
- """
+"""
 import processing
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
@@ -36,9 +36,8 @@ from qgis.core import (Qgis,
                        QgsVectorLayerUtils,
                        QgsMapLayerProxyModel)
 
-from asistente_ladm_col.config.general_config import (DEFAULT_EPSG,
-                                                      PLUGIN_NAME,
-                                                      LAYER,
+from asistente_ladm_col.config.general_config import PLUGIN_NAME
+from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_HELP_PAGES,
                                                       WIZARD_QSETTINGS,
                                                       WIZARD_QSETTINGS_LOAD_DATA_TYPE,
@@ -157,7 +156,7 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
         self.remove_temporal_layer()
         self.set_finalize_geometry_creation_enabled_emitted.emit(False)
         self.disconnect_signals()
-        self.set_wizard_is_open_emitted.emit(False)
+        self.update_wizard_is_open_flag.emit(False)
         self.close()
 
     def remove_temporal_layer(self):
@@ -171,7 +170,7 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
             layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
         elif self.type_geometry_creation == "digitizing_line":
             # Add Memory line layer
-            self.temporal_layer = QgsVectorLayer("MultiLineString?crs=EPSG:{}".format(DEFAULT_EPSG), self.translatable_config_strings.RIGHT_OF_WAY_LINE_LAYER, "memory")
+            self.temporal_layer = QgsVectorLayer("MultiLineString?crs={}".format(self._layers[self.EDITING_LAYER_NAME][LAYER].sourceCrs().authid()), self.translatable_config_strings.RIGHT_OF_WAY_LINE_LAYER, "memory")
             layer = self.temporal_layer
             QgsProject.instance().addMapLayer(self.temporal_layer, True)
         else:
@@ -315,7 +314,6 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
             self.show_message_associate_geometry_creation(message)
 
     def show_message_associate_geometry_creation(self, message):
-
         layer = None
         if self.type_geometry_creation == "digitizing_polygon":
             layer = self._layers[self.EDITING_LAYER_NAME][LAYER]

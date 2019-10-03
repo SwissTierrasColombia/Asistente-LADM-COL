@@ -34,7 +34,8 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QListWidgetItem,
                                  QSizePolicy,
                                  QDialogButtonBox)
-from qgis.core import Qgis
+from qgis.core import (Qgis,
+                       QgsCoordinateReferenceSystem)
 from qgis.gui import QgsMessageBar
 
 from ...config.general_config import (DEFAULT_EPSG,
@@ -88,6 +89,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         self.connection_setting_button.clicked.connect(self.show_settings)
         self.connection_setting_button.setText(QCoreApplication.translate("DialogImportSchema", "Connection Settings"))
+
+        # CRS Setting
+        self.epsg = DEFAULT_EPSG
+        self.crsSelector.crsChanged.connect(self.crs_changed)
 
         # LOG
         self.log_config.setTitle(QCoreApplication.translate("DialogImportSchema", "Show log"))
@@ -246,9 +251,15 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def save_configuration(self, configuration):
         settings = QSettings()
         settings.setValue('Asistente-LADM_COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
+        settings.setValue('Asistente-LADM_COL/QgisModelBaker/epsg', self.epsg)
 
     def restore_configuration(self):
         settings = QSettings()
+
+        # CRS
+        crs = QgsCoordinateReferenceSystem(settings.value('Asistente-LADM_COL/QgisModelBaker/epsg', int(DEFAULT_EPSG), int))
+        self.crsSelector.setCrs(crs)
+        self.crs_changed()
 
         # Show log
         value_show_log = settings.value('Asistente-LADM_COL/QgisModelBaker/show_log', False, type=bool)
@@ -260,6 +271,17 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         if self.use_local_models:
             self.custom_model_directories = settings.value('Asistente-LADM_COL/models/custom_models') if settings.value('Asistente-LADM_COL/models/custom_models') else None
 
+    def crs_changed(self):
+        if self.crsSelector.crs().authid()[:5] != 'EPSG:':
+            self.crs_label.setStyleSheet('color: orange')
+            self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", 'Please select an EPSG Coordinate Reference System'))
+            self.epsg = int(DEFAULT_EPSG)
+        else:
+            self.crs_label.setStyleSheet('')
+            self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", 'Coordinate Reference System'))
+            authid = self.crsSelector.crs().authid()
+            self.epsg = int(authid[5:])
+
     def update_configuration(self):
         item_db = self._conf_db.get_db_items()[self.db.mode]
 
@@ -268,7 +290,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         # set custom toml file
         configuration.tomlfile = TOML_FILE_DIR
-        configuration.epsg = QSettings().value('Asistente-LADM_COL/advanced_settings/epsg', int(DEFAULT_EPSG), int)
+        configuration.epsg = self.epsg
         configuration.inheritance = DEFAULT_INHERITANCE
         configuration.create_basket_col = CREATE_BASKET_COL
         configuration.create_import_tid = CREATE_IMPORT_TID
@@ -342,6 +364,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.buttonBox.setEnabled(True)
 
     def show_message(self, message, level):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage("Asistente LADM_COL", message, level, duration = 0)
 
 

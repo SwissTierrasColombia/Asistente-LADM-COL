@@ -40,8 +40,7 @@ from qgis.core import (Qgis,
                        edit)
 
 import processing
-from ..config.general_config import (DEFAULT_EPSG,
-                                     PLUGIN_NAME)
+from ..config.general_config import PLUGIN_NAME
 from ..config.table_mapping_config import ID_FIELD
 
 
@@ -634,7 +633,7 @@ class GeometryUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         polygons = plot_layer.getSelectedFeatures(request) if use_selection else plot_layer.getFeatures(request)
 
-        layer = QgsVectorLayer("LineString?crs=EPSG:{}".format(DEFAULT_EPSG), "rings", "memory")
+        layer = QgsVectorLayer("LineString?crs={}".format(plot_layer.sourceCrs().authid()), "rings", "memory")
         data_provider = layer.dataProvider()
         data_provider.addAttributes([QgsField(ID_FIELD, QVariant.Int)])
         layer.updateFields()

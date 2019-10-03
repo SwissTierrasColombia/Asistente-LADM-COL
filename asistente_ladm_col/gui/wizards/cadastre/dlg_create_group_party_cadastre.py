@@ -338,6 +338,7 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
                 "Validation passed!"))
 
     def show_message(self, message, level):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage(message, level, 10)
 
     def save_group_party(self, db, params):
