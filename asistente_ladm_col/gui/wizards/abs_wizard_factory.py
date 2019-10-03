@@ -96,7 +96,7 @@ class AbsWizardFactory(QWizard):
             try:
                 if self._layers[layer_name][LAYER]:
                     if self._layers[layer_name][LAYER].isEditable():
-                        if not self._layers[layer_name][LAYER].editBuffer().addedFeatures():
+                        if not self._layers[layer_name][LAYER].editBuffer().isModified():
                             self._layers[layer_name][LAYER].rollBack()
             except RuntimeError:
                 pass # Layer was removed
