@@ -306,7 +306,6 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
             self.show_message_associate_geometry_creation(message)
 
     def show_message_associate_geometry_creation(self, message):
-
         layer = None
         if self.type_geometry_creation == "digitizing_polygon":
             layer = self._layers[self.EDITING_LAYER_NAME][LAYER]

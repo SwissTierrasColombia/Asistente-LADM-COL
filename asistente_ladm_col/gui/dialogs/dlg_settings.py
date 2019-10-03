@@ -379,6 +379,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.show_message(msg['text'], msg['level'])
 
     def show_message(self, message, level):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage(message, level, 10)
 
     def update_images_state(self, checked):

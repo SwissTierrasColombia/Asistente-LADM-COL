@@ -115,4 +115,5 @@ class GetDBOrSchemaNameDialog(QDialog, DIALOG_UI):
             self.parameter_line_edit.setEnabled(True)
 
     def show_message(self, message, level):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage("Asistente LADM_COL", message, level, duration=0)

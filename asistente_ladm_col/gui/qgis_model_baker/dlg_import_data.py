@@ -452,4 +452,5 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.buttonBox.setEnabled(True)
 
     def show_message(self, message, level):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage("Asistente LADM_COL", message, level, duration=0)

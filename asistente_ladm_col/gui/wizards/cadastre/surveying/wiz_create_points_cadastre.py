@@ -479,6 +479,7 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
                 self.show_message(msg, Qgis.Warning)
 
     def show_message(self, message, level):
+        self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage(message, level, 10)
 
     def save_settings(self):

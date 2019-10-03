@@ -712,9 +712,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.layerTreeView().refreshLayerSymbology(layer_id)
 
     def show_message(self, msg, level, duration=5):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
         self.iface.messageBar().pushMessage("Asistente LADM_COL", msg, level, duration)
 
     def show_message_with_open_table_attributes_button(self, msg, button_text, level, layer, filter):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
@@ -723,6 +725,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, level, 15)
 
     def show_message_to_load_layer(self, msg, button_text, layer, level):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
@@ -731,6 +734,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, level, 15)
 
     def show_message_to_load_layers(self, msg, button_text, layers, level):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
@@ -739,6 +743,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, level, 15)
 
     def show_message_to_open_about_dialog(self, msg):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -761,6 +766,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                                       "Download and install dependency"))
             button.pressed.connect(self.download_report_dependency)
             widget.layout().addWidget(button)
+            self.clear_message_bar()  # Remove previous messages before showing a new one
             self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
         else:
             self.show_message(QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -768,6 +774,7 @@ class AsistenteLADMCOLPlugin(QObject):
                               Qgis.Info)
 
     def show_message_to_remove_report_dependency(self, msg):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -777,6 +784,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface.messageBar().pushWidget(widget, Qgis.Info, 60)
 
     def show_message_with_settings_button(self, msg, button_text, level):
+        self.clear_message_bar()  # Remove previous messages before showing a new one
         widget = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
         button = QPushButton(widget)
         button.setText(button_text)
