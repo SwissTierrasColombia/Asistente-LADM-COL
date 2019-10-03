@@ -144,7 +144,7 @@ class TesQualityValidations(unittest.TestCase):
         plot_layer = QgsVectorLayer(uri, 'terreno', 'ogr')
         self.assertEqual(plot_layer.featureCount(), 12)
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
+        error_layer = QgsVectorLayer("Point?crs={}".format(boundary_point_layer.sourceCrs().authid()), 'error layer', "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('id', QVariant.Int)])
         error_layer.updateFields()
@@ -188,7 +188,7 @@ class TesQualityValidations(unittest.TestCase):
         plot_layer = QgsVectorLayer(uri, 'terreno', 'ogr')
         self.assertEqual(plot_layer.featureCount(), 12)
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
+        error_layer = QgsVectorLayer("Point?crs={}".format(plot_layer.sourceCrs().authid()), 'error layer', "memory")
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('id', QVariant.Int)])
         error_layer.updateFields()
@@ -244,7 +244,7 @@ class TesQualityValidations(unittest.TestCase):
         point_bfs_layer = QgsVectorLayer(uri.uri(), 'puntoccl', "postgres")
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
+        error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), 'error layer', "memory")
 
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
@@ -345,7 +345,7 @@ class TesQualityValidations(unittest.TestCase):
         point_bfs_layer = QgsVectorLayer(uri.uri(), 'puntoccl', "postgres")
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        error_layer = QgsVectorLayer("Point?crs=EPSG:3116", 'error layer', "memory")
+        error_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), 'error layer', "memory")
 
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('boundary_point_id', QVariant.Int),
@@ -474,7 +474,7 @@ class TesQualityValidations(unittest.TestCase):
         less_layer = QgsVectorLayer(uri.uri(), 'less', "postgres")
         self.assertEqual(less_layer.featureCount(), 6)
 
-        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:3116", 'error layer', "memory")
+        error_layer = QgsVectorLayer("MultiLineString?crs={}".format(plot_layer.sourceCrs().authid()), 'error layer', "memory")
 
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
@@ -575,7 +575,7 @@ class TesQualityValidations(unittest.TestCase):
         less_layer = QgsVectorLayer(uri.uri(), 'less', "postgres")
         self.assertEqual(less_layer.featureCount(), 6)
 
-        error_layer = QgsVectorLayer("MultiLineString?crs=EPSG:3116", 'error layer', "memory")
+        error_layer = QgsVectorLayer("MultiLineString?crs={}".format(plot_layer.sourceCrs().authid()), 'error layer', "memory")
 
         data_provider = error_layer.dataProvider()
         data_provider.addAttributes([QgsField('plot_id', QVariant.Int),
@@ -954,7 +954,7 @@ class TesQualityValidations(unittest.TestCase):
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
-        point_layer = QgsVectorLayer("MultiPoint?crs=EPSG:{}".format(3116), "Boundary points", "memory")
+        point_layer = QgsVectorLayer("MultiPoint?crs={}".format(boundary_layer.sourceCrs().authid()), "Boundary points", "memory")
 
         boundary_features = [feature for feature in boundary_layer.getFeatures()]
         self.assertEqual(len(boundary_features), 8)
