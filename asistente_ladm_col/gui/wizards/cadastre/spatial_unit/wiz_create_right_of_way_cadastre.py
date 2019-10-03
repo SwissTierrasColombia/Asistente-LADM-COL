@@ -144,7 +144,7 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
         if isinstance(self, SelectFeaturesOnMapWrapper):
             self.init_map_tool()
 
-        self.rollback_in_layers_with_empty_editing_session()
+        self.rollback_in_layers_with_empty_editing_buffer()
         self.remove_temporal_layer()
         self.set_finalize_geometry_creation_enabled_emitted.emit(False)
         self.disconnect_signals()
