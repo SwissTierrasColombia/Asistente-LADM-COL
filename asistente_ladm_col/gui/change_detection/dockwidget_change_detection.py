@@ -260,11 +260,10 @@ class ChangeDetectionUtils(QObject):
                                        load=True,
                                        emit_map_freeze=False,
                                        layer_modifiers=layer_modifiers)
-
             if not self._official_layers:
                 return None
             else:
-                # In some occasions the official and collected plots do not overlap and there are in different extents
+                # In some occasions the official and collected plots might not overlap and have different extents
                 self.iface.setActiveLayer(self._official_layers[PLOT_TABLE][LAYER])
                 self.iface.zoomToActiveLayer()
 
