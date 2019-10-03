@@ -988,13 +988,16 @@ class QGISUtils(QObject):
             }
 
             start_feature_count = output.featureCount()
-            processing.execAlgorithmDialog("model:ETL-model", params)
+            dlg = processing.createAlgorithmDialog("model:ETL-model", params)
+            dlg.setModal(True)
+            res = dlg.exec_()
             finish_feature_count = output.featureCount()
 
             self.check_if_and_enable_automatic_fields(db,
                                                       automatic_fields_definition,
                                                       ladm_col_layer_name)
 
+             #  (res, finish_feature_count - start_feature_count)
             return finish_feature_count > start_feature_count
         else:
             self.message_emitted.emit(
