@@ -997,7 +997,6 @@ class QGISUtils(QObject):
                                                       automatic_fields_definition,
                                                       ladm_col_layer_name)
 
-             #  (res, finish_feature_count - start_feature_count)
             return finish_feature_count > start_feature_count
         else:
             self.message_emitted.emit(
