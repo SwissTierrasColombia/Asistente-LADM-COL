@@ -108,8 +108,8 @@ from asistente_ladm_col.gui.dockwidget_queries import DockWidgetQueries
 from asistente_ladm_col.gui.reports import ReportGenerator
 from asistente_ladm_col.gui.right_of_way import RightOfWay
 from asistente_ladm_col.gui.toolbar import ToolBar
-from asistente_ladm_col.gui.wizards.cadastre.party.dlg_create_group_party_cadastre import CreateGroupPartyCadastre
-from asistente_ladm_col.gui.wizards.cadastre.surveying.wiz_create_points_cadastre import CreatePointsCadastreWizard
+from asistente_ladm_col.gui.wizards.cadastre.dlg_create_group_party_cadastre import CreateGroupPartyCadastre
+from asistente_ladm_col.gui.wizards.cadastre.wiz_create_points_cadastre import CreatePointsCadastreWizard
 from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
 from asistente_ladm_col.processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from asistente_ladm_col.utils.decorators import (_db_connection_required,

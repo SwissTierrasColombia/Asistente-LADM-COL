@@ -4,28 +4,28 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsVectorLayerUtils,
                        Qgis)
 
-from .....config.general_config import (LAYER,
-                                        PLUGIN_NAME)
-from .....config.table_mapping_config import (PLOT_TABLE,
-                                              BOUNDARY_TABLE,
-                                              BOUNDARY_POINT_TABLE,
-                                              SURVEY_POINT_TABLE,
-                                              CONTROL_POINT_TABLE,
-                                              UESOURCE_TABLE,
-                                              UESOURCE_TABLE_PLOT_FIELD,
-                                              UESOURCE_TABLE_SOURCE_FIELD,
-                                              CCLSOURCE_TABLE,
-                                              CCLSOURCE_TABLE_BOUNDARY_FIELD,
-                                              CCLSOURCE_TABLE_SOURCE_FIELD,
-                                              POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
-                                              POINTSOURCE_TABLE_SURVEYPOINT_FIELD,
-                                              POINTSOURCE_TABLE,
-                                              POINTSOURCE_TABLE_CONTROLPOINT_FIELD,
-                                              POINTSOURCE_TABLE_SOURCE_FIELD,
-                                              ID_FIELD)
-from .....gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
-from .....gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
-from .....gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      PLUGIN_NAME)
+from asistente_ladm_col.config.table_mapping_config import (PLOT_TABLE,
+                                                            BOUNDARY_TABLE,
+                                                            BOUNDARY_POINT_TABLE,
+                                                            SURVEY_POINT_TABLE,
+                                                            CONTROL_POINT_TABLE,
+                                                            UESOURCE_TABLE,
+                                                            UESOURCE_TABLE_PLOT_FIELD,
+                                                            UESOURCE_TABLE_SOURCE_FIELD,
+                                                            CCLSOURCE_TABLE,
+                                                            CCLSOURCE_TABLE_BOUNDARY_FIELD,
+                                                            CCLSOURCE_TABLE_SOURCE_FIELD,
+                                                            POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD,
+                                                            POINTSOURCE_TABLE_SURVEYPOINT_FIELD,
+                                                            POINTSOURCE_TABLE,
+                                                            POINTSOURCE_TABLE_CONTROLPOINT_FIELD,
+                                                            POINTSOURCE_TABLE_SOURCE_FIELD,
+                                                            ID_FIELD)
+from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
+from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
+from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 
 
 class CreateSpatialSourceCadastreWizard(MultiPageWizardFactory,

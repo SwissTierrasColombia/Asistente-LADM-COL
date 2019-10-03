@@ -34,20 +34,20 @@ from qgis.core import (Qgis,
                        QgsWkbTypes)
 from qgis.gui import QgsMessageBar
 
-from .....config.general_config import (PLUGIN_NAME,
-                                        LAYER,
-                                        DEFAULT_EPSG)
-from .....config.help_strings import HelpStrings
-from .....config.table_mapping_config import (BOUNDARY_POINT_TABLE,
-                                              SURVEY_POINT_TABLE,
-                                              CONTROL_POINT_TABLE)
-from .....utils import get_ui_class
-from .....utils.qt_utils import (make_file_selector,
-                                 enable_next_wizard,
-                                 disable_next_wizard,
-                                 normalize_local_url)
+from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
+                                                      LAYER,
+                                                      DEFAULT_EPSG)
+from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.config.table_mapping_config import (BOUNDARY_POINT_TABLE,
+                                                            SURVEY_POINT_TABLE,
+                                                            CONTROL_POINT_TABLE)
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.qt_utils import (make_file_selector,
+                                               enable_next_wizard,
+                                               disable_next_wizard,
+                                               normalize_local_url)
 
-WIZARD_UI = get_ui_class('wizards/cadastre/surveying/wiz_create_points_cadastre.ui')
+WIZARD_UI = get_ui_class('wizards/cadastre/wiz_create_points_cadastre.ui')
 
 
 class CreatePointsCadastreWizard(QWizard, WIZARD_UI):

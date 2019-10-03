@@ -1,3 +1,29 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+                              Asistente LADM_COL
+                             --------------------
+        begin                : 2019-09-10
+        git sha              : :%H$
+        copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
+                               (C) 2018 by Sergio Ramírez (Incige SAS)
+                               (C) 2018 by Jorge Useche (Incige SAS)
+                               (C) 2018 by Jhon Galindo (Incige SAS)
+                               (C) 2019 by Leo Cardona (BSF Swissphoto)
+        email                : gcarrillo@linuxmail.com
+                               sergio.ramirez@incige.com
+                               naturalmentejorge@gmail.com
+                               jhonsigpjc@gmail.com
+                               leo.cardona.p@gmail.com
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License v3.0 as          *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ ***************************************************************************/
+ """
 from functools import partial
 
 from qgis.PyQt.QtCore import (QCoreApplication,
@@ -11,24 +37,24 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_HELP_PAGES,
                                                       WIZARD_HELP2,
                                                       WIZARD_HELP3,
-                                                      WIZARD_HELP4)
-from .....config.general_config import (PLUGIN_NAME,
-                                        CSS_COLOR_OKAY_LABEL,
-                                        CSS_COLOR_ERROR_LABEL,
-                                        CSS_COLOR_INACTIVE_LABEL)
-from .....config.table_mapping_config import (OID_TABLE,
-                                              OID_EXTADDRESS_ID_FIELD,
-                                              EXTADDRESS_BUILDING_UNIT_FIELD,
-                                              EXTADDRESS_BUILDING_FIELD,
-                                              EXTADDRESS_PLOT_FIELD,
-                                              ID_FIELD,
-                                              PLOT_TABLE,
-                                              BUILDING_TABLE,
-                                              BUILDING_UNIT_TABLE)
-from .....gui.wizards.multi_page_spatial_wizard_factory import MultiPageSpatialWizardFactory
-from .....gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
-from .....gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
-from .....utils.select_map_tool import SelectMapTool
+                                                      WIZARD_HELP4,
+                                                      PLUGIN_NAME,
+                                                      CSS_COLOR_OKAY_LABEL,
+                                                      CSS_COLOR_ERROR_LABEL,
+                                                      CSS_COLOR_INACTIVE_LABEL)
+from asistente_ladm_col.config.table_mapping_config import (OID_TABLE,
+                                                            OID_EXTADDRESS_ID_FIELD,
+                                                            EXTADDRESS_BUILDING_UNIT_FIELD,
+                                                            EXTADDRESS_BUILDING_FIELD,
+                                                            EXTADDRESS_PLOT_FIELD,
+                                                            ID_FIELD,
+                                                            PLOT_TABLE,
+                                                            BUILDING_TABLE,
+                                                            BUILDING_UNIT_TABLE)
+from asistente_ladm_col.gui.wizards.multi_page_spatial_wizard_factory import MultiPageSpatialWizardFactory
+from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
+from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
+from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 
 
 class CreateExtAddressCadastreWizard(MultiPageSpatialWizardFactory,

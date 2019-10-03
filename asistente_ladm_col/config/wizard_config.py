@@ -1,46 +1,66 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+                              Asistente LADM_COL
+                             --------------------
+        begin                : 2019-09-10
+        git sha              : :%H$
+        copyright            : (C) 2017 by Germán Carrillo (BSF Swissphoto)
+                               (C) 2019 by Leo Cardona (BSF Swissphoto)
+        email                : gcarrillo@linuxmail.com
+                               leo.cardona.p@gmail.com
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License v3.0 as          *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ ***************************************************************************/
+ """
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsMapLayerProxyModel,
                        QgsWkbTypes)
 
 from asistente_ladm_col.config.table_mapping_config import (COL_PARTY_TABLE,
-                                           BUILDING_TABLE,
-                                           PARCEL_TABLE,
-                                           PARCEL_TYPE_FIELD,
-                                           UEBAUNIT_TABLE,
-                                           BUILDING_UNIT_TABLE,
-                                           RIGHT_OF_WAY_TABLE,
-                                           SURVEY_POINT_TABLE,
-                                           LEGAL_PARTY_TABLE,
-                                           NATURAL_PARTY_TABLE,
-                                           NUCLEAR_FAMILY_TABLE,
-                                           MARKET_RESEARCH_TABLE,
-                                           PROPERTY_RECORD_CARD_TABLE,
-                                           ADMINISTRATIVE_SOURCE_TABLE,
-                                           RIGHT_TABLE,
-                                           RESTRICTION_TABLE,
-                                           RESPONSIBILITY_TABLE,
-                                           RRR_SOURCE_RELATION_TABLE,
-                                           BOUNDARY_TABLE,
-                                           BOUNDARY_POINT_TABLE,
-                                           EXTADDRESS_TABLE,
-                                           OID_TABLE,
-                                           EXTFILE_TABLE,
-                                           SPATIAL_SOURCE_TABLE,
-                                           PLOT_TABLE,
-                                           UESOURCE_TABLE,
-                                           CCLSOURCE_TABLE,
-                                           POINTSOURCE_TABLE,
-                                           CONTROL_POINT_TABLE,
-                                           VALUATION_HORIZONTAL_PROPERTY_TABLE,
-                                           VALUATION_COMMON_EQUIPMENT_TABLE,
-                                           VALUATION_BUILDING_TABLE,
-                                           VALUATION_GEOECONOMIC_ZONE_TABLE,
-                                           VALUATION_PHYSICAL_ZONE_TABLE,
-                                           AVALUOUNIDADCONSTRUCCION_TABLE,
-                                           VALUATION_BUILDING_UNIT_TABLE,
-                                           VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE,
-                                           VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE,
-                                           VALUATION_PARCEL_TABLE)
+                                                            BUILDING_TABLE,
+                                                            PARCEL_TABLE,
+                                                            PARCEL_TYPE_FIELD,
+                                                            UEBAUNIT_TABLE,
+                                                            BUILDING_UNIT_TABLE,
+                                                            RIGHT_OF_WAY_TABLE,
+                                                            SURVEY_POINT_TABLE,
+                                                            LEGAL_PARTY_TABLE,
+                                                            NATURAL_PARTY_TABLE,
+                                                            NUCLEAR_FAMILY_TABLE,
+                                                            MARKET_RESEARCH_TABLE,
+                                                            PROPERTY_RECORD_CARD_TABLE,
+                                                            ADMINISTRATIVE_SOURCE_TABLE,
+                                                            RIGHT_TABLE,
+                                                            RESTRICTION_TABLE,
+                                                            RESPONSIBILITY_TABLE,
+                                                            RRR_SOURCE_RELATION_TABLE,
+                                                            BOUNDARY_TABLE,
+                                                            BOUNDARY_POINT_TABLE,
+                                                            EXTADDRESS_TABLE,
+                                                            OID_TABLE,
+                                                            EXTFILE_TABLE,
+                                                            SPATIAL_SOURCE_TABLE,
+                                                            PLOT_TABLE,
+                                                            UESOURCE_TABLE,
+                                                            CCLSOURCE_TABLE,
+                                                            POINTSOURCE_TABLE,
+                                                            CONTROL_POINT_TABLE,
+                                                            VALUATION_HORIZONTAL_PROPERTY_TABLE,
+                                                            VALUATION_COMMON_EQUIPMENT_TABLE,
+                                                            VALUATION_BUILDING_TABLE,
+                                                            VALUATION_GEOECONOMIC_ZONE_TABLE,
+                                                            VALUATION_PHYSICAL_ZONE_TABLE,
+                                                            AVALUOUNIDADCONSTRUCCION_TABLE,
+                                                            VALUATION_BUILDING_UNIT_TABLE,
+                                                            VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE,
+                                                            VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE,
+                                                            VALUATION_PARCEL_TABLE)
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_NAME,
                                                       WIZARD_CLASS,
@@ -89,33 +109,23 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_CREATE_MARKET_RESEARCH_PRC,
                                                       WIZARD_CREATE_PROPERTY_RECORD_CARD_PRC,
                                                       WIZARD_TOOL_NAME)
+
 from asistente_ladm_col.config.enums import WizardTypeEnum
-from asistente_ladm_col.gui.wizards.cadastre.baunit.wiz_create_parcel_cadastre import CreateParcelCadastreWizard
-
-from asistente_ladm_col.gui.wizards.cadastre.rrr.wiz_create_rrr_cadastre import CreateRRRCadastreWizard
-
+from asistente_ladm_col.gui.wizards.cadastre.wiz_create_parcel_cadastre import CreateParcelCadastreWizard
+from asistente_ladm_col.gui.wizards.cadastre.wiz_create_rrr_cadastre import CreateRRRCadastreWizard
 from asistente_ladm_col.config.help_strings import HelpStrings
-from asistente_ladm_col.gui.wizards.cadastre.source.wiz_create_spatial_source_cadastre import \
-    CreateSpatialSourceCadastreWizard
-from asistente_ladm_col.gui.wizards.cadastre.spatial_unit.wiz_create_building_cadastre import \
-    CreateBuildingCadastreWizard
-from asistente_ladm_col.gui.wizards.cadastre.spatial_unit.wiz_create_building_unit_cadastre import \
-    CreateBuildingUnitCadastreWizard
-from asistente_ladm_col.gui.wizards.cadastre.spatial_unit.wiz_create_ext_address_cadastre import \
-    CreateExtAddressCadastreWizard
-from asistente_ladm_col.gui.wizards.cadastre.spatial_unit.wiz_create_plot_cadastre import CreatePlotCadastreWizard
-from asistente_ladm_col.gui.wizards.cadastre.spatial_unit.wiz_create_right_of_way_cadastre import \
-    CreateRightOfWayCadastreWizard
+from asistente_ladm_col.gui.wizards.cadastre.wiz_create_spatial_source_cadastre import CreateSpatialSourceCadastreWizard
+from asistente_ladm_col.gui.wizards.cadastre.wiz_create_building_cadastre import CreateBuildingCadastreWizard
+from asistente_ladm_col.gui.wizards.cadastre.wiz_create_building_unit_cadastre import CreateBuildingUnitCadastreWizard
+from asistente_ladm_col.gui.wizards.cadastre.wiz_create_ext_address_cadastre import CreateExtAddressCadastreWizard
+from asistente_ladm_col.gui.wizards.cadastre.wiz_create_plot_cadastre import CreatePlotCadastreWizard
+from asistente_ladm_col.gui.wizards.cadastre.wiz_create_right_of_way_cadastre import CreateRightOfWayCadastreWizard
 from asistente_ladm_col.gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
 from asistente_ladm_col.gui.wizards.single_page_wizard_factory import SinglePageWizardFactory
-from asistente_ladm_col.gui.wizards.valuation.wiz_create_building_unit_qualification_valuation import \
-    CreateBuildingUnitQualificationValuationWizard
-from asistente_ladm_col.gui.wizards.valuation.wiz_create_building_unit_valuation import \
-    CreateBuildingUnitValuationWizard
-from asistente_ladm_col.gui.wizards.valuation.wiz_create_geoeconomic_zone_valuation import \
-    CreateGeoeconomicZoneValuationWizard
-from asistente_ladm_col.gui.wizards.valuation.wiz_create_physical_zone_valuation import \
-    CreatePhysicalZoneValuationWizard
+from asistente_ladm_col.gui.wizards.valuation.wiz_create_building_unit_qualification_valuation import CreateBuildingUnitQualificationValuationWizard
+from asistente_ladm_col.gui.wizards.valuation.wiz_create_building_unit_valuation import CreateBuildingUnitValuationWizard
+from asistente_ladm_col.gui.wizards.valuation.wiz_create_geoeconomic_zone_valuation import CreateGeoeconomicZoneValuationWizard
+from asistente_ladm_col.gui.wizards.valuation.wiz_create_physical_zone_valuation import CreatePhysicalZoneValuationWizard
 
 help_strings = HelpStrings()
 
@@ -129,7 +139,7 @@ WIZARDS_SETTINGS = {
         WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateColPartyCadastreWizard", "party"),
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreateColPartyCadastreWizard", "Create party"),
         WIZARD_HELP: "col_party",
-        WIZARD_UI: "wizards/cadastre/party/wiz_create_col_party_cadastre.ui",
+        WIZARD_UI: "wizards/cadastre/wiz_create_col_party_cadastre.ui",
         WIZARD_QSETTINGS: {
             WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/col_party_load_data_type"
         },
@@ -153,7 +163,7 @@ WIZARDS_SETTINGS = {
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreateAdministrativeSourceCadastreWizard",
                                                                 "Create administrative source"),
         WIZARD_HELP: "create_admin_source",
-        WIZARD_UI: "wizards/cadastre/source/wiz_create_administrative_source_cadastre.ui",
+        WIZARD_UI: "wizards/cadastre/wiz_create_administrative_source_cadastre.ui",
         WIZARD_QSETTINGS: {
             WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/administrative_source_load_data_type"
         },
@@ -176,7 +186,7 @@ WIZARDS_SETTINGS = {
         WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateBoundaryCadastreWizard", "boundary"),
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreateBoundaryCadastreWizard", "Create boundary"),
         WIZARD_HELP: "create_boundaries",
-        WIZARD_UI: "wizards/cadastre/surveying/wiz_create_boundaries_cadastre.ui",
+        WIZARD_UI: "wizards/cadastre/wiz_create_boundaries_cadastre.ui",
         WIZARD_QSETTINGS: {
             WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/boundary_load_data_type"
         },
@@ -199,7 +209,7 @@ WIZARDS_SETTINGS = {
         WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateBuildingCadastreWizard", "building"),
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreateBuildingCadastreWizard", "Create building"),
         WIZARD_HELP: "create_building",
-        WIZARD_UI: "wizards/cadastre/spatial_unit/wiz_create_building_cadastre.ui",
+        WIZARD_UI: "wizards/cadastre/wiz_create_building_cadastre.ui",
         WIZARD_QSETTINGS: {
             WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/building_load_data_type"
         },
@@ -222,7 +232,7 @@ WIZARDS_SETTINGS = {
         WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateBuildingUnitCadastreWizard", "building unit"),
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreateBuildingUnitCadastreWizard", "Create building unit"),
         WIZARD_HELP: "create_building_unit",
-        WIZARD_UI: "wizards/cadastre/spatial_unit/wiz_create_building_unit_cadastre.ui",
+        WIZARD_UI: "wizards/cadastre/wiz_create_building_unit_cadastre.ui",
         WIZARD_QSETTINGS: {
             WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/building_unit_load_data_type"
         },
@@ -246,7 +256,7 @@ WIZARDS_SETTINGS = {
         WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateRightCadastreWizard", "right"),
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreateRightCadastreWizard", "Create right"),
         WIZARD_HELP: "create_right",
-        WIZARD_UI: "wizards/cadastre/rrr/wiz_create_right_cadastre.ui",
+        WIZARD_UI: "wizards/cadastre/wiz_create_right_cadastre.ui",
         WIZARD_QSETTINGS: {
             WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/right_load_data_type"
         },
@@ -270,7 +280,7 @@ WIZARDS_SETTINGS = {
         WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateRestrictionCadastreWizard", "restriction"),
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreateRestrictionCadastreWizard", "Create restriction"),
         WIZARD_HELP: "create_restriction",
-        WIZARD_UI: "wizards/cadastre/rrr/wiz_create_restriction_cadastre.ui",
+        WIZARD_UI: "wizards/cadastre/wiz_create_restriction_cadastre.ui",
         WIZARD_QSETTINGS: {
             WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/restriction_load_data_type"
         },
@@ -294,7 +304,7 @@ WIZARDS_SETTINGS = {
         WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateResponsibilityCadastreWizard", "responsibility"),
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreateResponsibilityCadastreWizard", "Create responsibility"),
         WIZARD_HELP: "create_responsibility",
-        WIZARD_UI: "wizards/cadastre/rrr/wiz_create_responsibility_cadastre.ui",
+        WIZARD_UI: "wizards/cadastre/wiz_create_responsibility_cadastre.ui",
         WIZARD_QSETTINGS: {
             WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/responsibility_load_data_type"
         },
@@ -320,7 +330,7 @@ WIZARDS_SETTINGS = {
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreateSpatialSourceCadastreWizard",
                                                                         "Create spatial source"),
         WIZARD_HELP: "create_spatial_source",
-        WIZARD_UI: "wizards/cadastre/source/wiz_create_spatial_source_cadastre.ui",
+        WIZARD_UI: "wizards/cadastre/wiz_create_spatial_source_cadastre.ui",
         WIZARD_QSETTINGS: {
             WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/spatial_source_load_data_type"
         },
@@ -351,7 +361,7 @@ WIZARDS_SETTINGS = {
         WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateParcelCadastreWizard", "parcel"),
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreateParcelCadastreWizard", "Create parcel"),
         WIZARD_HELP: "create_parcel",
-        WIZARD_UI: "wizards/cadastre/baunit/wiz_create_parcel_cadastre.ui",
+        WIZARD_UI: "wizards/cadastre/wiz_create_parcel_cadastre.ui",
         WIZARD_QSETTINGS: {
             WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/parcel_load_data_type",
             WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED: "Asistente-LADM_COL/wizards/type_of_parcel_selected"
@@ -378,7 +388,7 @@ WIZARDS_SETTINGS = {
         WIZARD_FEATURE_NAME: QCoreApplication.translate("CreatePlotCadastreWizard", "plot"),
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreatePlotCadastreWizard", "Create plot"),
         WIZARD_HELP: "create_plot",
-        WIZARD_UI: "wizards/cadastre/spatial_unit/wiz_create_plot_cadastre.ui",
+        WIZARD_UI: "wizards/cadastre/wiz_create_plot_cadastre.ui",
         WIZARD_QSETTINGS: {
             WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/plot_load_data_type"
         },
@@ -401,7 +411,7 @@ WIZARDS_SETTINGS = {
         WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateExtAddressCadastreWizard", "ext address"),
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreateExtAddressCadastreWizard", "Create ext address"),
         WIZARD_HELP: "associate_ext_address",
-        WIZARD_UI: "wizards/cadastre/spatial_unit/wiz_associate_extaddress_cadastre.ui",
+        WIZARD_UI: "wizards/cadastre/wiz_associate_extaddress_cadastre.ui",
         WIZARD_QSETTINGS: {
             WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/ext_address_load_data_type"
         },
@@ -429,7 +439,7 @@ WIZARDS_SETTINGS = {
         WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateRightOfWayCadastreWizard", "right of way"),
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreateRightOfWayCadastreWizard", "Create right of way"),
         WIZARD_HELP: "create_right_of_way",
-        WIZARD_UI: "wizards/cadastre/spatial_unit/wiz_create_right_of_way_cadastre.ui",
+        WIZARD_UI: "wizards/cadastre/wiz_create_right_of_way_cadastre.ui",
         WIZARD_QSETTINGS: {
             WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM_COL/wizards/right_of_way_load_data_type"
         },
