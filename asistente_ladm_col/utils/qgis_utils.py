@@ -77,7 +77,6 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      RELATION_NAME,
                                      REFERENCED_LAYER,
                                      REFERENCED_FIELD,
-                                     RELATION_TYPE,
                                      DOMAIN_CLASS_RELATION,
                                      SUFFIX_LAYER_MODIFIERS,
                                      PREFIX_LAYER_MODIFIERS,
@@ -201,11 +200,11 @@ class QGISUtils(QObject):
     def get_related_domains(self, layer_names, already_loaded):
         related_domains = list()
         for relation in self._relations:
-            if relation[RELATION_TYPE] == DOMAIN_CLASS_RELATION:
-                for layer_name in layer_names:
-                    if relation[REFERENCING_LAYER] == layer_name:
-                        if relation[REFERENCED_LAYER] not in already_loaded:
-                            related_domains.append(relation[REFERENCED_LAYER])
+            # if relation[RELATION_TYPE] == DOMAIN_CLASS_RELATION:
+            for layer_name in layer_names:
+                if relation[REFERENCING_LAYER] == layer_name:
+                    if relation[REFERENCED_LAYER] not in already_loaded:
+                        related_domains.append(relation[REFERENCED_LAYER])
 
         return related_domains
 

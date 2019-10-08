@@ -228,7 +228,7 @@ class LADM_DATA():
             MEMBERS_TABLE: {'name': MEMBERS_TABLE, 'geometry': None, LAYER: None},
         }
 
-        if db.property_record_card_model_exists():
+        if db.cadastral_form_model_exists():
             layers[PROPERTY_RECORD_CARD_TABLE] = {'name': PROPERTY_RECORD_CARD_TABLE, 'geometry': None, LAYER: None}
 
         self.qgis_utils.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
@@ -400,7 +400,7 @@ class LADM_DATA():
                         item[tag_group_party] = dict_parcel_group_parties[item[ID_FIELD]]
 
         # =====================  Start add record card info ==================================================
-        if db.property_record_card_model_exists():
+        if db.cadastral_form_model_exists():
             expr_property_record_card_features = QgsExpression("{} IN ({})".format(PROPERTY_RECORD_CARD_PARCEL_ID_FIELD, ",".join([str(id) for id in parcel_t_ids])))
             property_record_card_features = LADM_DATA.get_features_by_expression(layers[PROPERTY_RECORD_CARD_TABLE][LAYER], expr_property_record_card_features, with_attributes=True)
 

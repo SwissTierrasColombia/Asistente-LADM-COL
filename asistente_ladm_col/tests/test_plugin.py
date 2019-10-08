@@ -4,7 +4,7 @@ import nose2
 from qgis.testing import (start_app,
                           unittest)
 
-from asistente_ladm_col.utils.utils import Utils
+from asistente_ladm_col.utils.utils import is_plugin_version_valid
 from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NAME,
                                                       QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
                                                       QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
@@ -24,15 +24,15 @@ class TestPlugin(unittest.TestCase):
         global asistente_ladm_col
 
         unload_qgis_model_baker()
-        valid = Utils.is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                              QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                              QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
+        valid = is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
+                                        QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
+                                        QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
         self.assertFalse(valid)
 
         import_qgis_model_baker()
-        valid = Utils.is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                              QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                              QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
+        valid = is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
+                                        QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
+                                        QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
         self.assertTrue(valid)
 
     def test_02_plugin(self):

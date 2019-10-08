@@ -119,13 +119,13 @@ class DBConnector(QObject):
 
         return self.model_parser.valuation_model_exists()
 
-    def property_record_card_model_exists(self):
+    def cadastral_form_model_exists(self):
         if self.model_parser is None:
             res = self._parse_models()
             if not res:
                 return False
 
-        return self.model_parser.property_record_card_model_exists()
+        return self.model_parser.cadastral_form_model_exists()
 
     def _parse_models(self):
         try:

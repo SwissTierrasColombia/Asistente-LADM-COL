@@ -40,12 +40,11 @@ NATIONAL_LAND_AGENCY = "ANT"
 ANNEX_17_REPORT = "Anexo_17"
 ANT_MAP_REPORT = "Plano_ANT"
 
-CADASTRE_MODEL_PREFIX = "Catastro_Registro_Nucleo_"
-CADASTRE_MODEL_PREFIX_LEGACY = "Catastro_COL_"
-PROPERTY_RECORD_CARD_MODEL_PREFIX = "Ficha_Predial_"
+OPERATION_MODEL_PREFIX = "Operacion_"
+CADASTRAL_FORM_MODEL_PREFIX = "Formulario_Catastro_"
 VALUATION_MODEL_PREFIX = "Avaluos_"
 # From this version on the plugin will work, a message will block prior versions
-LATEST_UPDATE_FOR_SUPPORTED_MODEL_VERSION = "17.07.2018"
+LATEST_OPERATION_MODEL_VERSION_SUPPORTED = "2.9.6"
 
 DEFAULT_MODEL_NAMES_CHECKED = {'Avaluos_V2_2_1': Qt.Unchecked,
                      'Cartografia_Referencia_V2_2_1': Qt.Unchecked,
@@ -69,10 +68,11 @@ HELP_DIR_NAME = 'help'
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'styles')
 TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'hide_fields_LADM.toml')
 
-# Settings for create schema acording with LADM-COL
+# Settings for create schema according to LADM-COL
 CREATE_BASKET_COL = False
 CREATE_IMPORT_TID = False
 STROKE_ARCS = True
+
 
 LAYER = 'layer'  # Used as key that holds a QgsVectorLayer in dictionaries
 
@@ -132,7 +132,7 @@ JAVA_REQUIRED_VERSION = 1.8
 
 # Configure QGIS Model Baker Dependency
 QGIS_MODEL_BAKER_PLUGIN_NAME = "QgisModelBaker"
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.3.1"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "4.3.1.1"
 
 # If Asistente LADM_COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
@@ -186,7 +186,6 @@ REFERENCING_FIELD = 'referencing_column'
 RELATION_NAME = 'constraint_name'
 REFERENCED_LAYER = 'referenced_table'
 REFERENCED_FIELD = 'referenced_column'
-RELATION_TYPE = 'relation_type'
 DOMAIN_CLASS_RELATION = 'domain_class'
 CLASS_CLASS_RELATION = 'class_class'
 

@@ -624,7 +624,7 @@ class AsistenteLADMCOLPlugin(QObject):
         Depending on the models available in the DB, some menus should appear or disappear from the GUI
         """
         if ladm_col_db:
-            if db.property_record_card_model_exists():
+            if db.cadastral_form_model_exists():
                 self.add_property_record_card_menu()
             else:
                 self.remove_property_record_card_menu()
@@ -636,7 +636,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
             self.log.logMessage("Menus refreshed! Valuation: {}; Property Record Card: {}".format(
                     db.valuation_model_exists(),
-                    db.property_record_card_model_exists()),
+                    db.cadastral_form_model_exists()),
                 PLUGIN_NAME,
                 Qgis.Info)
 
