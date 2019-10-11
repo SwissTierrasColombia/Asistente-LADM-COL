@@ -1,15 +1,11 @@
 import nose2
-import qgis
-
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsVectorLayer,
-                       QgsApplication,
                        QgsDataSourceUri,
                        QgsField,
                        QgsWkbTypes)
 from qgis.testing import (unittest,
                           start_app)
-
-from qgis.PyQt.QtCore import QVariant
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
@@ -67,7 +63,8 @@ class TesQualityValidations(unittest.TestCase):
             PLOT_TABLE: [('36,53', 2), ('33,52', 2)],
             BOUNDARY_TABLE: [('30,48', 2), ('25,46', 2), ('24,47', 2)],
             SURVEY_POINT_TABLE: [('10,45', 2), ('9,44', 2)],
-            BOUNDARY_POINT_TABLE: [('20,41', 2), ('13,43', 2), ('14,17', 2), ('19,42', 2), ('12,15', 2), ('11,16', 2)]}
+            BOUNDARY_POINT_TABLE: [('20,41', 2), ('13,43', 2), ('14,17', 2), ('19,42', 2), ('12,15', 2), ('11,16', 2)]
+        }
 
         for table in test_results:
             test_result = test_results[table]

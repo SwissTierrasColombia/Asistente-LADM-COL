@@ -9,21 +9,21 @@ AVAILABILITY_STATE_TABLE = "col_estadodisponibilidadtipo"
 POINT_BFS_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 BFS_TABLE_BOUNDARY_POINT_FIELD = "punto_puntolindero"
 BOUNDARY_POINT_TABLE = "op_puntolindero"
-BOUNDARY_TABLE = "lindero"
-BUILDING_TABLE = "construccion"
+BOUNDARY_TABLE = "op_lindero"
+BUILDING_TABLE = "op_construccion"
 BUILDING_AREA_FIELD = "area_construccion"
 BUILDING_VALUATION_FIELD = "avaluo_construccion"
 BUILDING_UNIT_AREA_FIELD = "area_construida"
 BUILDING_UNIT_PRIVATE_AREA_FIELD = "area_privada_construida"
 BUILDING_UNIT_VALUATION_FIELD = "avaluo_unidad_construccion"
-BUILDING_UNIT_TABLE = "unidadconstruccion"
+BUILDING_UNIT_TABLE = "op_unidadconstruccion"
 USE_BUILDING_UNIT_TABLE_TYPE = "op_usouconstipo"
 BUSINESS_NAME_FIELD = "razon_social"
 CCLSOURCE_TABLE = "cclfuente"
 CCLSOURCE_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 CCLSOURCE_TABLE_SOURCE_FIELD = "lfuente"
 COL_PARTY_DOCUMENT_ID_FIELD = "documento_identidad"
-COL_PARTY_TABLE = "col_interesado"
+COL_PARTY_TABLE = "op_interesado"
 COL_PARTY_TYPE_FIELD = "tipo"
 COL_PARTY_DOC_TYPE_FIELD = "tipo_documento"
 COL_PARTY_FIRST_NAME_FIELD = "primer_nombre"
@@ -143,7 +143,7 @@ SECOND_NAME_FIELD = "segundo_nombre"
 SECOND_SURNAME_FIELD = "segundo_apellido"
 SPATIAL_SOURCE_TABLE = "col_fuenteespacial"
 SPATIAL_SOURCE_TYPE_TABLE = "col_fuenteespacialtipo"
-SURVEY_POINT_TABLE = "puntolevantamiento"
+SURVEY_POINT_TABLE = "op_puntolevantamiento"
 SURVEY_POINT_TYPE_TABLE = "col_puntolevtipo"
 TABLE_PROP_ASSOCIATION = "ASSOCIATION"
 TABLE_PROP_DOMAIN = "ENUM"
@@ -719,22 +719,21 @@ we define the minimum structure of a table to validate that there are no repeate
 LOGIC_CONSISTENCY_TABLES = {
     # Geometric tables
     BOUNDARY_POINT_TABLE: ['acuerdo',
-                           'definicion_punto',
-                           'descripcion_punto',
+                           'fotoidentificacion',
+                           'ubicacion_punto',
                            'exactitud_vertical',
                            'exactitud_horizontal',
-                           'confiabilidad',
-                           'nombre_punto',
                            'posicion_interpolacion',
                            'monumentacion',
+                           'metodoproduccion',
                            'puntotipo',
                            'localizacion_original'],
     SURVEY_POINT_TABLE: ['tipo_punto_levantamiento',
-                         'definicion_punto',
+                         'fotoidentificacion',
                          'exactitud_vertical',
                          'exactitud_horizontal',
-                         'nombre_punto',
                          'posicion_interpolacion',
+                         'metodoproduccion',
                          'monumentacion',
                          'puntotipo',
                          'localizacion_original'],
@@ -750,35 +749,26 @@ LOGIC_CONSISTENCY_TABLES = {
     BOUNDARY_TABLE: [LENGTH_FIELD_BOUNDARY_TABLE,
                      'localizacion_textual',
                      'geometria'],
-    PLOT_TABLE: ['area_registral',
-                 'area_calculada',
+    PLOT_TABLE: ['area_terreno',
                  'avaluo_terreno',
                  'dimension',
                  'etiqueta',
                  'relacion_superficie',
-                 'nivel',
-                 'punto_referencia',
                  'poligono_creado'],
     BUILDING_TABLE: ['avaluo_construccion',
                      'area_construccion',
-                     'tipo',
                      'dimension',
                      'etiqueta',
                      'relacion_superficie',
-                     'nivel',
-                     'punto_referencia',
                      'poligono_creado'],
     BUILDING_UNIT_TABLE: ['avaluo_unidad_construccion',
                           'numero_pisos',
                           'area_construida',
                           'area_privada_construida',
-                          'construccion',
-                          'tipo',
+                          'op_construccion',
                           'dimension',
                           'etiqueta',
                           'relacion_superficie',
-                          'nivel',
-                          'punto_referencia',
                           'poligono_creado'],
     # Alphanumeric tables
     COL_PARTY_TABLE: ['documento_identidad',
