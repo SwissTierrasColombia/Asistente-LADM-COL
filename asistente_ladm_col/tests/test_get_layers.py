@@ -66,7 +66,7 @@ class TestGetLayers(unittest.TestCase):
         # and finishes with a comparison between loaded layers and expected layers.
         for layer in [BOUNDARY_POINT_TABLE, PLOT_TABLE]:
             loaded_table = self.qgis_utils.get_layer(self.db_connection, layer, load=True)
-            self.assertEquals(loaded_table.name(), layer)
+            self.assertEqual(loaded_table.name(), layer)
             loaded_layers_tree_names = [layer.name() for layer in self.qgis_utils.get_ladm_layers_from_layer_tree(self.db_connection)]
             for layer_related in RELATED_TABLES[layer]:
                 print("Check if {} exists in loaded layers {}".format(layer_related, loaded_layers_tree_names))
