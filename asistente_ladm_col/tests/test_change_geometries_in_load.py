@@ -1,6 +1,7 @@
 import nose2
 
 from qgis.core import (QgsVectorLayer,
+                       edit,
                        QgsWkbTypes)
 from qgis.testing import (unittest,
                           start_app)
@@ -161,9 +162,11 @@ class TestGeomsLoad(unittest.TestCase):
         self.delete_features(test_layer)
         self.assertEqual(test_layer.featureCount(), 0)
 
-    def delete_features(self, layer):
-        fids = [f.id() for f in layer.getFeatures()]
-        return layer.dataProvider().deleteFeatures(fids)
+    @staticmethod
+    def delete_features(layer):
+        with edit(layer):
+            list_ids = [feat.id() for feat in layer.getFeatures()]
+            layer.deleteFeatures(list_ids)
 
     @classmethod
     def tearDownClass(self):
