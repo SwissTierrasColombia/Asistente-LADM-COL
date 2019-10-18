@@ -1600,21 +1600,22 @@ ADMINISTRATIVE_SOURCE_TYPE_TABLE = "col_fuenteadministrativatipo"
 AVAILABILITY_STATE_TABLE = "col_estadodisponibilidadtipo"
 POINT_BFS_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 BFS_TABLE_BOUNDARY_POINT_FIELD = "punto_puntolindero"
-BOUNDARY_POINT_TABLE = "puntolindero"
-BOUNDARY_TABLE = "lindero"
-BUILDING_TABLE = "construccion"
+BOUNDARY_POINT_TABLE = "op_puntolindero"
+BOUNDARY_TABLE = "op_lindero"
+BUILDING_TABLE = "op_construccion"
 BUILDING_AREA_FIELD = "area_construccion"
 BUILDING_VALUATION_FIELD = "avaluo_construccion"
 BUILDING_UNIT_AREA_FIELD = "area_construida"
 BUILDING_UNIT_PRIVATE_AREA_FIELD = "area_privada_construida"
 BUILDING_UNIT_VALUATION_FIELD = "avaluo_unidad_construccion"
-BUILDING_UNIT_TABLE = "unidadconstruccion"
+BUILDING_UNIT_TABLE = "op_unidadconstruccion"
+USE_BUILDING_UNIT_TABLE_TYPE = "op_usouconstipo"
 BUSINESS_NAME_FIELD = "razon_social"
 CCLSOURCE_TABLE = "cclfuente"
 CCLSOURCE_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 CCLSOURCE_TABLE_SOURCE_FIELD = "lfuente"
 COL_PARTY_DOCUMENT_ID_FIELD = "documento_identidad"
-COL_PARTY_TABLE = "col_interesado"
+COL_PARTY_TABLE = "op_interesado"
 COL_PARTY_TYPE_FIELD = "tipo"
 COL_PARTY_DOC_TYPE_FIELD = "tipo_documento"
 COL_PARTY_FIRST_NAME_FIELD = "primer_nombre"
@@ -1645,7 +1646,7 @@ FRACTION_MEMBER_FIELD = "miembros_participacion"
 FRACTION_NUMERATOR_FIELD = "numerador"
 GENDER_TYPE_TABLE = "col_generotipo"
 ID_FIELD = "t_id"
-LA_GROUP_PARTY_TABLE = "la_agrupacion_interesados"
+LA_GROUP_PARTY_TABLE = "op_agrupacion_interesados"
 LA_GROUP_PARTY_NAME_FIELD = "nombre"
 LA_GROUP_PARTY_GPTYPE_FIELD = "ai_tipo"
 LA_GROUP_PARTY_TYPE_FIELD = "tipo"
@@ -1668,7 +1669,7 @@ LESS_TABLE_PLOT_FIELD = "eu_terreno"
 LOCAL_ID_FIELD = "_local_id"
 MEMBERS_GROUP_PARTY_FIELD = "agrupacion"
 MEMBERS_PARTY_FIELD = "interesados_col_interesado"
-MEMBERS_TABLE = "miembros"
+MEMBERS_TABLE = "col_miembros"
 MORE_BOUNDARY_FACE_STRING_TABLE = "masccl"
 MOREBFS_TABLE_BOUNDARY_FIELD = "cclp_lindero"
 MOREBFS_TABLE_PLOT_FIELD = "uep_terreno"
@@ -1683,17 +1684,24 @@ OID_TABLE = "oid"
 PARCEL_NAME_FIELD = "nombre"
 PARCEL_NUMBER_FIELD = "numero_predial"
 PARCEL_NUMBER_BEFORE_FIELD = "numero_predial_anterior"
-PARCEL_TABLE = "predio"
+PARCEL_TABLE = "op_predio"
 PARCEL_TYPE_FIELD = "tipo"
 PARCEL_TYPE_PH_OPTION = "PropiedadHorizontal.UnidadPredial"
 PARCEL_VALUATION_FIELD = "avaluo_predio"
 PARTY_DOCUMENT_TYPE_TABLE = "col_interesadodocumentotipo"
 PARTY_TYPE_TABLE = "la_interesadotipo"
-PLOT_TABLE = "terreno"
+PLOT_TABLE = "op_terreno"
+PLOT_AREA_FIELD = "area_terreno"
 PLOT_CALCULATED_AREA_FIELD = "area_calculada"
 PLOT_REGISTRY_AREA_FIELD = "area_registral"
 PLOT_VALUATION_FIELD = "avaluo_terreno"
-POINT_AGREEMENT_TYPE_TABLE = "col_acuerdotipo"
+POINT_AGREEMENT_TYPE_TABLE = "op_acuerdotipo"
+PHOTO_IDENTIFICATION_TYPE_TABLE = "op_fotoidentificaciontipo"
+PRODUCTION_METHOD_TYPE_TABLE = "col_metodoproducciontipo"
+POINT_LOCATION_POINT_TYPE_TABLE = "op_ubicacionpuntotipo"
+POINT_TYPE_TABLE = "op_puntotipo"
+SURFACE_RELATION_TYPE_TABLE = "col_relacionsuperficietipo"
+DIMENSION_TYPE_TABLE = "col_dimensiontipo"
 POINT_BOUNDARY_FACE_STRING_TABLE = "puntoccl"
 POINT_DESCRIPTION_TYPE_TABLE = "col_descripcionpuntotipo"
 POINT_DEFINITION_TYPE_TABLE = "col_defpuntotipo"
@@ -1715,7 +1723,7 @@ RRR_SOURCE_RESPONSIBILITY_FIELD = "rrr_col_responsabilidad"
 RRR_SOURCE_RESTRICTION_FIELD = "rrr_col_restriccion"
 RRR_SOURCE_RIGHT_FIELD = "rrr_col_derecho"
 RRR_SOURCE_SOURCE_FIELD = "rfuente"
-RIGHT_TABLE = "col_derecho"
+RIGHT_TABLE = "op_derecho"
 RIGHT_TABLE_PARCEL_FIELD = "unidad_predio"
 RIGHT_TABLE_PARTY_FIELD = "interesado_col_interesado"
 RIGHT_TABLE_GROUP_PARTY_FIELD = "interesado_la_agrupacion_interesados"
@@ -1728,19 +1736,19 @@ SECOND_NAME_FIELD = "segundo_nombre"
 SECOND_SURNAME_FIELD = "segundo_apellido"
 SPATIAL_SOURCE_TABLE = "col_fuenteespacial"
 SPATIAL_SOURCE_TYPE_TABLE = "col_fuenteespacialtipo"
-SURVEY_POINT_TABLE = "puntolevantamiento"
+SURVEY_POINT_TABLE = "op_puntolevantamiento"
 SURVEY_POINT_TYPE_TABLE = "col_puntolevtipo"
 TABLE_PROP_ASSOCIATION = "ASSOCIATION"
 TABLE_PROP_DOMAIN = "ENUM"
 TABLE_PROP_STRUCTURE = "STRUCTURE"
 TYPE_BUILDING_TYPE_TABLE = "col_tipoconstrucciontipo"
 TYPE_FIELD = "tipo"
-UEBAUNIT_TABLE = "uebaunit"
-UEBAUNIT_TABLE_BUILDING_FIELD = "ue_construccion"
-UEBAUNIT_TABLE_BUILDING_UNIT_FIELD = "ue_unidadconstruccion"
-UEBAUNIT_TABLE_PARCEL_FIELD = "baunit_predio"
-UEBAUNIT_TABLE_PLOT_FIELD = "ue_terreno"
-UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD = "ue_servidumbrepaso"
+UEBAUNIT_TABLE = "col_uebaunit"
+UEBAUNIT_TABLE_BUILDING_FIELD = "ue_op_construccion"
+UEBAUNIT_TABLE_BUILDING_UNIT_FIELD = "ue_op_unidadconstruccion"
+UEBAUNIT_TABLE_PARCEL_FIELD = "baunit"
+UEBAUNIT_TABLE_PLOT_FIELD = "ue_op_terreno"
+UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD = "ue_op_servidumbrepaso"
 UESOURCE_TABLE = "uefuente"
 UESOURCE_TABLE_PLOT_FIELD = "ue_terreno"
 UESOURCE_TABLE_SOURCE_FIELD = "pfuente"
@@ -2306,22 +2314,21 @@ we define the minimum structure of a table to validate that there are no repeate
 LOGIC_CONSISTENCY_TABLES = {
     # Geometric tables
     BOUNDARY_POINT_TABLE: ['acuerdo',
-                           'definicion_punto',
-                           'descripcion_punto',
+                           'fotoidentificacion',
+                           'ubicacion_punto',
                            'exactitud_vertical',
                            'exactitud_horizontal',
-                           'confiabilidad',
-                           'nombre_punto',
                            'posicion_interpolacion',
                            'monumentacion',
+                           'metodoproduccion',
                            'puntotipo',
                            'localizacion_original'],
     SURVEY_POINT_TABLE: ['tipo_punto_levantamiento',
-                         'definicion_punto',
+                         'fotoidentificacion',
                          'exactitud_vertical',
                          'exactitud_horizontal',
-                         'nombre_punto',
                          'posicion_interpolacion',
+                         'metodoproduccion',
                          'monumentacion',
                          'puntotipo',
                          'localizacion_original'],
@@ -2337,35 +2344,26 @@ LOGIC_CONSISTENCY_TABLES = {
     BOUNDARY_TABLE: [LENGTH_FIELD_BOUNDARY_TABLE,
                      'localizacion_textual',
                      'geometria'],
-    PLOT_TABLE: ['area_registral',
-                 'area_calculada',
+    PLOT_TABLE: ['area_terreno',
                  'avaluo_terreno',
                  'dimension',
                  'etiqueta',
                  'relacion_superficie',
-                 'nivel',
-                 'punto_referencia',
                  'poligono_creado'],
     BUILDING_TABLE: ['avaluo_construccion',
                      'area_construccion',
-                     'tipo',
                      'dimension',
                      'etiqueta',
                      'relacion_superficie',
-                     'nivel',
-                     'punto_referencia',
                      'poligono_creado'],
     BUILDING_UNIT_TABLE: ['avaluo_unidad_construccion',
                           'numero_pisos',
                           'area_construida',
                           'area_privada_construida',
-                          'construccion',
-                          'tipo',
+                          'op_construccion',
                           'dimension',
                           'etiqueta',
                           'relacion_superficie',
-                          'nivel',
-                          'punto_referencia',
                           'poligono_creado'],
     # Alphanumeric tables
     COL_PARTY_TABLE: ['documento_identidad',

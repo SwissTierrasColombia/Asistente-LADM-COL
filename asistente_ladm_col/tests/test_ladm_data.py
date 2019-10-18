@@ -9,11 +9,11 @@ start_app()  # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.config.general_config import LAYER
-from asistente_ladm_col.config.table_mapping_config import (PLOT_CALCULATED_AREA_FIELD,
+from asistente_ladm_col.config.table_mapping_config import (PLOT_AREA_FIELD,
                                                             UEBAUNIT_TABLE,
                                                             PLOT_TABLE,
                                                             PARCEL_TABLE,
-                                                            FMI_FIELD)
+                                                            PARCEL_NUMBER_FIELD)
 from asistente_ladm_col.tests.utils import (get_dbconn,
                                             restore_schema)
 
@@ -39,8 +39,8 @@ class TestLADMData(unittest.TestCase):
     def test_get_plots_related_to_parcels(self):
         print("\nINFO: Validating get plots related to parcels (Case: t_id)...")
 
-        parcel_ids_tests = [list(), [313], [320, 313, 318]]
-        plot_ids_tests = [list(), [791], [778, 791, 809]]
+        parcel_ids_tests = [list(), [939], [948, 939, 942]]
+        plot_ids_tests = [list(), [1398], [1391, 1398, 1410]]
 
         count = 0
         for parcel_ids_test in parcel_ids_tests:
@@ -55,7 +55,7 @@ class TestLADMData(unittest.TestCase):
 
         count = 0
         for parcel_ids_test in parcel_ids_tests:
-            plot_custom_field_ids = self.ladm_data.get_plots_related_to_parcels(self.db_connection, parcel_ids_test, field_name=PLOT_CALCULATED_AREA_FIELD)
+            plot_custom_field_ids = self.ladm_data.get_plots_related_to_parcels(self.db_connection, parcel_ids_test, field_name=PLOT_AREA_FIELD)
             self.assertCountEqual(plot_custom_field_ids, plot_custom_field_ids_tests[count], "Failure with data set {}".format(count + 1))
             count += 1
 
@@ -78,8 +78,8 @@ class TestLADMData(unittest.TestCase):
     def test_get_parcels_related_to_plots(self):
         print("\nINFO: Validating get parcels related to plots (Case: t_id)...")
 
-        plot_ids_tests = [list(), [791], [778, 791, 809]]
-        parcel_ids_tests = [list(), [313], [320, 313, 318]]
+        plot_ids_tests = [list(), [1398], [1391, 1398, 1410]]
+        parcel_ids_tests = [list(), [939], [948, 939, 942]]
 
         count = 0
         for plot_ids_test in plot_ids_tests:
@@ -90,12 +90,14 @@ class TestLADMData(unittest.TestCase):
             count += 1
 
         print("\nINFO: Validating get parcels related to plots (Case: custom field)...")
-        parcel_custom_field_ids_tests = [list(), ['167-3652'], ['167-8620', '167-3652', '167-18982']]
+        parcel_custom_field_ids_tests = [list(),
+                                         ['253940000000000230054000000000'],
+                                         ['253940000000000230241000000000', '253940000000000230054000000000', '253940000000000230254000000000']]
 
         count = 0
         for plot_ids_test in plot_ids_tests:
             parcel_custom_field_ids = self.ladm_data.get_parcels_related_to_plots(self.db_connection, plot_ids_test,
-                                                                                  field_name=FMI_FIELD)
+                                                                                  field_name=PARCEL_NUMBER_FIELD)
             self.assertCountEqual(parcel_custom_field_ids, parcel_custom_field_ids_tests[count],
                                   "Failure with data set {}".format(count + 1))
             count += 1

@@ -26,7 +26,7 @@ from ..config.general_config import (LAYER,
 from ..config.table_mapping_config import (ID_FIELD,
                                            DICT_PLURAL,
                                            PLOT_TABLE,
-                                           PLOT_CALCULATED_AREA_FIELD,
+                                           PLOT_AREA_FIELD,
                                            RIGHT_TABLE,
                                            RIGHT_TABLE_PARCEL_FIELD,
                                            RIGHT_TABLE_PARTY_FIELD,
@@ -72,7 +72,7 @@ PARTY_FIELDS_TO_COMPARE = [COL_PARTY_DOC_TYPE_FIELD,  # Right type will also be 
                            DOCUMENT_ID_FIELD,
                            COL_PARTY_NAME_FIELD]
 
-PLOT_FIELDS_TO_COMPARE = [PLOT_CALCULATED_AREA_FIELD]  # Geometry is also used but handled differenlty
+PLOT_FIELDS_TO_COMPARE = [PLOT_AREA_FIELD]  # Geometry is also used but handled differenlty
 
 PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE = [PROPERTY_RECORD_CARD_SECTOR_FIELD,
                                           PROPERTY_RECORD_CARD_LOCALITY_FIELD,

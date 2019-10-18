@@ -11,7 +11,17 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             restore_schema)
 
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
-from asistente_ladm_col.config.table_mapping_config import BOUNDARY_POINT_TABLE, PLOT_TABLE
+from asistente_ladm_col.config.table_mapping_config import (BOUNDARY_POINT_TABLE, PLOT_TABLE,
+                                                            POINT_AGREEMENT_TYPE_TABLE,
+                                                            PHOTO_IDENTIFICATION_TYPE_TABLE,
+                                                            PRODUCTION_METHOD_TYPE_TABLE,
+                                                            POINT_INTERPOLATION_TYPE_TABLE,
+                                                            POINT_TYPE_TABLE,
+                                                            POINT_MONUMENTATION_TYPE_TABLE,
+                                                            POINT_LOCATION_POINT_TYPE_TABLE,
+                                                            SURFACE_RELATION_TYPE_TABLE,
+                                                            DIMENSION_TYPE_TABLE,
+                                                            USE_BUILDING_UNIT_TABLE_TYPE)
 
 import_qgis_model_baker()
 
@@ -31,13 +41,22 @@ class TestGetLayers(unittest.TestCase):
 
     def test_get_layer(self):
         print("\nINFO: Validating get_layer() method...")
-        RELATED_TABLES = {'puntolindero': ["col_acuerdotipo", "col_defpuntotipo",
-                                                   "col_descripcionpuntotipo", "col_interpolaciontipo",
-                                                   "col_monumentaciontipo", "la_puntotipo", "puntolindero"],
-                                  'terreno': ["la_contenidoniveltipo", "la_dimensiontipo", "la_estructuratipo",
-                                              "la_nivel", "la_registrotipo", "la_relacionsuperficietipo",
-                                              "terreno"]
-                                  }
+        RELATED_TABLES = {BOUNDARY_POINT_TABLE: [POINT_AGREEMENT_TYPE_TABLE,
+                                                 PHOTO_IDENTIFICATION_TYPE_TABLE,
+                                                 PRODUCTION_METHOD_TYPE_TABLE,
+                                                 POINT_INTERPOLATION_TYPE_TABLE,
+                                                 POINT_LOCATION_POINT_TYPE_TABLE,
+                                                 POINT_TYPE_TABLE,
+                                                 POINT_MONUMENTATION_TYPE_TABLE,
+                                                 BOUNDARY_POINT_TABLE,
+                                                 PLOT_TABLE,
+                                                 USE_BUILDING_UNIT_TABLE_TYPE,
+                                                 DIMENSION_TYPE_TABLE,
+                                                 SURFACE_RELATION_TYPE_TABLE],
+                          PLOT_TABLE: [SURFACE_RELATION_TYPE_TABLE,
+                                       DIMENSION_TYPE_TABLE,
+                                       PLOT_TABLE]
+                          }
 
         self.qgis_utils.cache_layers_and_relations(self.db_connection, ladm_col_db=True) # Gather information from the database
         QgsProject.instance().clear()
@@ -47,20 +66,18 @@ class TestGetLayers(unittest.TestCase):
         # and finishes with a comparison between loaded layers and expected layers.
         for layer in [BOUNDARY_POINT_TABLE, PLOT_TABLE]:
             loaded_table = self.qgis_utils.get_layer(self.db_connection, layer, load=True)
-            self.assertEquals(loaded_table.name(), layer)
+            self.assertEqual(loaded_table.name(), layer)
             loaded_layers_tree_names = [layer.name() for layer in self.qgis_utils.get_ladm_layers_from_layer_tree(self.db_connection)]
             for layer_related in RELATED_TABLES[layer]:
                 print("Check if {} exists in loaded layers {}".format(layer_related, loaded_layers_tree_names))
                 self.assertIn(layer_related, loaded_layers_tree_names)
             QgsProject.instance().clear()
 
-
-
         print("\nINFO: Validating get_layer() when the project contains some of the related tables...")
 
         print("First for {} layer".format(BOUNDARY_POINT_TABLE))
 
-        for pre_load in ["col_acuerdotipo", "col_monumentaciontipo"]: # preload some layers
+        for pre_load in [POINT_AGREEMENT_TYPE_TABLE, POINT_MONUMENTATION_TYPE_TABLE]: # preload some layers
             self.qgis_utils.get_layer(self.db_connection, pre_load, load=True)
 
         self.qgis_utils.get_layer(self.db_connection, BOUNDARY_POINT_TABLE, load=True)
@@ -71,15 +88,14 @@ class TestGetLayers(unittest.TestCase):
         self.assertEqual(loaded_layers_tree_names, layer_tree_elements, "Number of loaded layers when loading PuntoLindero is not what we expect...")
 
         # Load again preloaded layer to check not duplicate layers in load
-        for pre_load in ["col_acuerdotipo", "col_monumentaciontipo"]:
+        for pre_load in [POINT_AGREEMENT_TYPE_TABLE, POINT_MONUMENTATION_TYPE_TABLE]:
             self.qgis_utils.get_layer(self.db_connection, pre_load, load=True)
         layer_tree_elements = len([layer.name() for layer in self.qgis_utils.get_ladm_layers_from_layer_tree(self.db_connection)])
         self.assertEqual(loaded_layers_tree_names, layer_tree_elements, "Duplicate layers found... This is an error!!!")
         QgsProject.instance().clear()
 
-
         print("Then for {} layer".format(PLOT_TABLE))
-        for pre_load in ["la_nivel", "la_relacionsuperficietipo"]: # preload some layers
+        for pre_load in [SURFACE_RELATION_TYPE_TABLE]: # preload some layers
             self.qgis_utils.get_layer(self.db_connection, pre_load, load=True)
 
         self.qgis_utils.get_layer(self.db_connection, PLOT_TABLE, geometry_type=QgsWkbTypes.PolygonGeometry, load=True)
@@ -90,7 +106,7 @@ class TestGetLayers(unittest.TestCase):
         self.assertEqual(loaded_layers_tree_names, layer_tree_elements, "Number of loaded layers when loading Terreno is not what we expect...")
 
         # Check duplicate layers...
-        for pre_load in ["la_nivel", "la_relacionsuperficietipo"]:
+        for pre_load in [SURFACE_RELATION_TYPE_TABLE]:
             self.qgis_utils.get_layer(self.db_connection, pre_load, load=True)
         layer_tree_elements = len([layer.name() for layer in self.qgis_utils.get_ladm_layers_from_layer_tree(self.db_connection)])
         self.assertEqual(loaded_layers_tree_names, layer_tree_elements, "Duplicate layers found... This is an error!!!")
