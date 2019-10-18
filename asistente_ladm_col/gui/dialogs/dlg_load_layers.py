@@ -37,11 +37,12 @@ from ...config.general_config import (TABLE_NAME,
                                       KIND_SETTINGS,
                                       TABLE_ALIAS,
                                       MODEL)
-from ...config.layer_sets import LAYER_SETS
 from ...config.table_mapping_config import (TABLE_PROP_ASSOCIATION,
                                             TABLE_PROP_DOMAIN,
-                                            TABLE_PROP_STRUCTURE)
+                                            TABLE_PROP_STRUCTURE,
+                                            Names)
 from ...utils import get_ui_class
+
 
 DIALOG_UI = get_ui_class('dialogs/dlg_load_layers.ui')
 
@@ -64,7 +65,8 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         self.cbo_select_predefined_tables.setInsertPolicy(QComboBox.InsertAlphabetically)
         self.cbo_select_predefined_tables.addItem("", []) # By default
 
-        for name, layer_list in LAYER_SETS.items():
+        for name, layer_list in Names().get_layer_sets().items():
+            print(name, layer_list)
             self.cbo_select_predefined_tables.addItem(name, layer_list)
 
         self.cbo_select_predefined_tables.currentIndexChanged.connect(self.select_predefined_changed)

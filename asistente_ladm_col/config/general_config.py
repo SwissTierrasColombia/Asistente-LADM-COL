@@ -75,6 +75,10 @@ STROKE_ARCS = True
 
 
 LAYER = 'layer'  # Used as key that holds a QgsVectorLayer in dictionaries
+TABLE_ILINAME = 'table_iliname'
+TABLE_NAME = 'tablename'
+FIELD_ILINAME = 'field_iliname'
+FIELD_NAME = 'fieldname'
 
 # SETTINGS DIALOG TAB INDEXES
 SETTINGS_CONNECTION_TAB_INDEX = 0

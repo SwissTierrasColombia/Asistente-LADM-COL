@@ -206,3 +206,14 @@ def is_version_valid(current_version, min_required_version, exact_required_versi
                 return True
 
     return True
+
+def normalize_iliname(name):
+    """
+    Removes version from an iliname
+
+    :param name: iliname
+    :return: iliname with no version information
+    """
+    parts = name.split(".")
+    parts[0] = parts[0].split("_V")[0]
+    return ".".join(parts)
