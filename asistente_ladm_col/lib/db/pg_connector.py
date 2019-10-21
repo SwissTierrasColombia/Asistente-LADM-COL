@@ -36,7 +36,11 @@ from ..queries.annex_17_report import (annex17_plot_data_query,
                                        annex17_point_data_query)
 from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
                                       PLUGIN_NAME)
-from ...config.table_mapping_config import (ID_FIELD,
+from ...config.table_mapping_config import (T_ID,
+                                            DESCRIPTION,
+                                            ILICODE,
+                                            DISPLAY_NAME,
+                                            ID_FIELD,
                                             PARCEL_TABLE,
                                             DEPARTMENT_FIELD,
                                             MUNICIPALITY_FIELD,
@@ -465,8 +469,8 @@ class PGConnector(DBConnector):
                         LEFT JOIN {schema}.t_ili2db_attrname ilicol
                           ON a.attname = ilicol.sqlname 
                           AND ilicol.colowner = tbls.tablename
-                        WHERE i.indisprimary AND schemaname ='{schema}' AND a.attnum >= 0 AND ilicol.colowner = tbls.tablename --AND a.attnum >= 0 AND tag = 'ch.ehi.ili2db.tableKind' AND setting = 'CLASS'
-                        ORDER BY tbls.tablename, fieldname;""".format(schema='operacion_01')
+                        WHERE i.indisprimary AND schemaname ='{schema}' AND a.attnum >= 0
+                        ORDER BY tbls.tablename, fieldname;""".format(schema=self.schema)
 
             cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
             cur.execute(sql_query)
@@ -487,6 +491,12 @@ class PGConnector(DBConnector):
                     else:
                         record['field_iliname'] = normalize_iliname(record['field_iliname'])
                         dict_names[record['table_iliname']][record['field_iliname']] = record['fieldname']
+
+            # Add required key-value pairs that do not come from the DB query
+            dict_names[T_ID] = "t_id"
+            dict_names[DISPLAY_NAME] = "dispname"
+            dict_names[ILICODE] = "ilicode"
+            dict_names[DESCRIPTION] = "description"
 
             Names().initialize_table_and_field_names(dict_names)
             self.table_and_fields_names_retrieved = True
@@ -637,8 +647,6 @@ class PGConnector(DBConnector):
         cur.execute(query)
         records = cur.fetchall()
         res = [record._asdict() for record in records]
-
-        #print("LEGAL QUERY:", query)
 
         return res
 
