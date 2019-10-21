@@ -57,7 +57,7 @@ class ModelParser(QObject):
                     if len(parts) > 1:
                         self.current_version_cadastral_form_model = self.parse_version(parts[1])
                 if current_model_name.startswith(VALUATION_MODEL_PREFIX):
-                    parts = current_model_name.split(CADASTRAL_FORM_MODEL_PREFIX)
+                    parts = current_model_name.split(VALUATION_MODEL_PREFIX)
                     if len(parts) > 1:
                         self.current_version_valuation_model = self.parse_version(parts[1])
 
