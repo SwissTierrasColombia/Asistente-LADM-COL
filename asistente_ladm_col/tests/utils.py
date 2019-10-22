@@ -97,7 +97,7 @@ def drop_schema(schema):
     db_connection = get_dbconn(schema)
     print("Testing Connection...", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    query = cur.execute("""DROP SCHEMA '{}' CASCADE;""".format(schema))
+    query = cur.execute("""DROP SCHEMA "{}" CASCADE;""".format(schema))
     db_connection.conn.commit()
     cur.close()
     print("Schema {} removed...".format(schema))

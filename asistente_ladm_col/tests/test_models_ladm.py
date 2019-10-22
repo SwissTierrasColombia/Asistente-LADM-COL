@@ -43,7 +43,7 @@ class TestQueries(unittest.TestCase):
         self.assertTrue(self.schemas_db['test_ladm_cadastral_form_model'].cadastral_form_model_exists())
 
     def tearDownClass():
-        print('tearDown test_queries')
+        print('tearDown test_models_ladm')
 
 
 if __name__ == '__main__':
