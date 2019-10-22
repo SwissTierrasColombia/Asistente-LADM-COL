@@ -37,6 +37,7 @@ class DBConnector(QObject):
         self.schema = None
         self.conn = None
         self._dict_conn_params = None
+        self.table_and_fields_names_retrieved = False
         
         if uri is not None:
             self.uri = uri
@@ -71,6 +72,9 @@ class DBConnector(QObject):
         raise NotImplementedError
 
     def validate_db(self):
+        raise NotImplementedError
+
+    def get_table_and_field_names(self):
         raise NotImplementedError
 
     def close_connection(self):

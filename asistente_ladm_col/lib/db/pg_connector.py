@@ -36,7 +36,11 @@ from ..queries.annex_17_report import (annex17_plot_data_query,
                                        annex17_point_data_query)
 from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
                                       PLUGIN_NAME)
-from ...config.table_mapping_config import (ID_FIELD,
+from ...config.table_mapping_config import (T_ID,
+                                            DESCRIPTION,
+                                            ILICODE,
+                                            DISPLAY_NAME,
+                                            ID_FIELD,
                                             PARCEL_TABLE,
                                             DEPARTMENT_FIELD,
                                             MUNICIPALITY_FIELD,
@@ -57,8 +61,10 @@ from ...config.table_mapping_config import (ID_FIELD,
                                             UEBAUNIT_TABLE_BUILDING_FIELD,
                                             UEBAUNIT_TABLE_BUILDING_UNIT_FIELD,
                                             FRACTION_TABLE,
-                                            MEMBERS_TABLE)
+                                            MEMBERS_TABLE,
+                                            Names)
 from ...utils.model_parser import ModelParser
+from ...utils.utils import normalize_iliname
 
 
 class PGConnector(DBConnector):
@@ -435,6 +441,68 @@ class PGConnector(DBConnector):
     def validate_db(self):
         pass
 
+    def get_table_and_field_names(self):
+        """
+        Get table and field names from the DB. Should only be called once for a single connection, and should be
+        refreshed after a connection changes.
+
+        :return: dict with ilinames as keys and sqlnames as values
+        """
+        if not self.table_and_fields_names_retrieved:
+            sql_query = """SELECT
+                          iliclass.iliname AS table_iliname,
+                          tbls.tablename AS tablename,
+                          ilicol.iliname AS field_iliname,
+                          a.attname AS fieldname      
+                        FROM pg_catalog.pg_tables tbls
+                        LEFT JOIN {schema}.t_ili2db_table_prop tp
+                          ON tp.tablename = tbls.tablename
+                        LEFT JOIN pg_index i
+                          ON i.indrelid = CONCAT(tbls.schemaname, '.', tbls.tablename)::regclass
+                        LEFT JOIN pg_attribute a
+                          ON a.attrelid = i.indrelid
+                        LEFT JOIN public.geometry_columns g
+                          ON g.f_table_schema = tbls.schemaname
+                          AND g.f_table_name = tbls.tablename
+                        LEFT JOIN {schema}.t_ili2db_classname iliclass
+                          ON tbls.tablename = iliclass.sqlname
+                        LEFT JOIN {schema}.t_ili2db_attrname ilicol
+                          ON a.attname = ilicol.sqlname 
+                          AND ilicol.colowner = tbls.tablename
+                        WHERE i.indisprimary AND schemaname ='{schema}' AND a.attnum >= 0
+                        ORDER BY tbls.tablename, fieldname;""".format(schema=self.schema)
+
+            cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            cur.execute(sql_query)
+            records = cur.fetchall()
+
+            dict_names = dict()
+            for record in records:
+                if record['table_iliname'] is None:
+                    record['table_iliname'] = record['tablename']
+                else:
+                    record['table_iliname'] = normalize_iliname(record['table_iliname'])
+                if not record['table_iliname'] in dict_names:
+                    dict_names[record['table_iliname']] = dict()
+                    dict_names[record['table_iliname']]['table_name'] = record['tablename']
+                else:
+                    if record['field_iliname'] is None:
+                        dict_names[record['table_iliname']][record['fieldname']] = record['fieldname']
+                    else:
+                        record['field_iliname'] = normalize_iliname(record['field_iliname'])
+                        dict_names[record['table_iliname']][record['field_iliname']] = record['fieldname']
+
+            # Add required key-value pairs that do not come from the DB query
+            dict_names[T_ID] = "t_id"
+            dict_names[DISPLAY_NAME] = "dispname"
+            dict_names[ILICODE] = "ilicode"
+            dict_names[DESCRIPTION] = "description"
+
+            Names().initialize_table_and_field_names(dict_names)
+            self.table_and_fields_names_retrieved = True
+
+        return True
+
     def get_uri_for_layer(self, layer_name, geometry_type=None):
         res, cur = self.get_tables_info()
         if not res:
@@ -579,8 +647,6 @@ class PGConnector(DBConnector):
         cur.execute(query)
         records = cur.fetchall()
         res = [record._asdict() for record in records]
-
-        #print("LEGAL QUERY:", query)
 
         return res
 

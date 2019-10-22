@@ -108,9 +108,9 @@ class QgisModelBakerUtils(QObject):
 
             layers = generator.get_tables_info_without_ignored_tables()
             relations = [relation for relation in generator.get_relations_info()]
-            # relations = self.filter_relations(relations)
-            print(relations)
-
+            print("ANTES", len(relations))  # TODO: Al logger
+            self.filter_relations(relations)
+            print("DESPUÉS", len(relations))  # TODO: Al logger
             return (layers, relations, {})
         else:
             self.log.logMessage(
@@ -120,21 +120,20 @@ class QgisModelBakerUtils(QObject):
             )
             return (None, None)
 
-    # def filter_relations(self, relations):
-    #     filtered_relations = list()
-    #     for relation in relations:
-    #         if not relation[REFERENCING_FIELD].startswith('uej2_') and \
-    #            not relation[REFERENCING_FIELD].startswith('ue_'):
-    #             new_relation = {
-    #                 RELATION_NAME: relation[RELATION_NAME],
-    #                 REFERENCED_LAYER: relation[REFERENCED_LAYER],
-    #                 REFERENCED_FIELD: relation[REFERENCED_FIELD],
-    #                 REFERENCING_LAYER: relation[REFERENCING_LAYER],
-    #                 REFERENCING_FIELD: relation[REFERENCING_FIELD],
-    #                 RELATION_TYPE: CLASS_CLASS_RELATION
-    #             }
-    #             filtered_relations.append(new_relation)
-    #     return filtered_relations
+    def filter_relations(self, relations):
+        """
+        Modifies the input list of relations, removing elements that meet a condition.
+
+        :param relations: List of a dict of relations.
+        :return: Nothing, changes the input list of relations.
+        """
+        to_delete = list()
+        for relation in relations:
+            if relation[REFERENCING_FIELD].startswith('uej2_') or relation[REFERENCING_FIELD].startswith('ue_'):
+                to_delete.append(relation)
+
+        for idx in to_delete:
+            relations.remove(idx)
 
     def get_tables_info_without_ignored_tables(self, db):
         if 'QgisModelBaker' in qgis.utils.plugins:

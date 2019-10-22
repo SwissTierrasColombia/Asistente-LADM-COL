@@ -411,8 +411,9 @@ class QGISUtils(QObject):
         # Check if any layer is in editing mode
         layers_name = list()
         for layer in layers:
-            if layers[layer][LAYER].isEditable():
-                layers_name.append(layers[layer][LAYER].name())
+            if layers[layer][LAYER] is not None:
+                if layers[layer][LAYER].isEditable():
+                    layers_name.append(layers[layer][LAYER].name())
 
         if layers_name:
             self.message_emitted.emit(
