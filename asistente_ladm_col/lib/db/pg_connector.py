@@ -673,7 +673,7 @@ class PGConnector(DBConnector):
                                                                                parcel_fmi=params['parcel_fmi'],
                                                                                parcel_number=params['parcel_number'],
                                                                                previous_parcel_number=params['previous_parcel_number'],
-                                                                               property_record_card_model=self.cadastral_form_model_exists())
+                                                                               cadastral_form_model=self.cadastral_form_model_exists())
 
         if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()
@@ -750,7 +750,7 @@ class PGConnector(DBConnector):
                                                        parcel_number=params['parcel_number'],
                                                        previous_parcel_number=params['previous_parcel_number'],
                                                        valuation_model=self.valuation_model_exists(),
-                                                       property_record_card_model=self.cadastral_form_model_exists())
+                                                       cadastral_form_model=self.cadastral_form_model_exists())
 
         if self.conn is None or self.conn.closed:
             res, msg = self.test_connection()

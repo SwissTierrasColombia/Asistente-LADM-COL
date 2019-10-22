@@ -12,6 +12,7 @@ from asistente_ladm_col.utils.qgis_utils import QGISUtils
 
 import_qgis_model_baker()
 
+
 class TestTopology(unittest.TestCase):
 
     @classmethod
