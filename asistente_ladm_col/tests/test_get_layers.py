@@ -48,11 +48,7 @@ class TestGetLayers(unittest.TestCase):
                                                  POINT_LOCATION_POINT_TYPE_TABLE,
                                                  POINT_TYPE_TABLE,
                                                  POINT_MONUMENTATION_TYPE_TABLE,
-                                                 BOUNDARY_POINT_TABLE,
-                                                 PLOT_TABLE,
-                                                 USE_BUILDING_UNIT_TABLE_TYPE,
-                                                 DIMENSION_TYPE_TABLE,
-                                                 SURFACE_RELATION_TYPE_TABLE],
+                                                 BOUNDARY_POINT_TABLE],
                           PLOT_TABLE: [SURFACE_RELATION_TYPE_TABLE,
                                        DIMENSION_TYPE_TABLE,
                                        PLOT_TABLE]
