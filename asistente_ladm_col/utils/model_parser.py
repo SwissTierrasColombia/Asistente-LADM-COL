@@ -24,7 +24,7 @@ from ..config.general_config import (OPERATION_MODEL_PREFIX,
                                      CADASTRAL_FORM_MODEL_PREFIX,
                                      VALUATION_MODEL_PREFIX)
 from ..utils.qgis_model_baker_utils import QgisModelBakerUtils
-from ..utils.utils import is_version_valid
+from ..utils.utils import is_version_valid, parse_models_from_db_meta_attrs_list
 
 
 class ModelParser(QObject):
@@ -41,13 +41,12 @@ class ModelParser(QObject):
         self._pro_gen_db_connector = qgis_model_baker_utils.get_model_baker_db_connection(self._db)
 
         if self._pro_gen_db_connector:
-            model_records = self._get_models()
-            if self.debug:
-                print("Models:", model_records)
-            for record in model_records:
-                # Models are stored in the DB in this format: Avaluos_V2_9_6{ Operacion_V2_9_6 LADM_COL_V1_2 ISO19107_PLANAS_V1}
-                current_model_name = record['modelname'].split("{")[0]  # e.g., Avaluos_V2_9_6
+            model_names = parse_models_from_db_meta_attrs_list([record['modelname'] for record in self._get_models()])
 
+            if self.debug:
+                print("Models:", model_names)
+
+            for current_model_name in model_names:
                 if current_model_name.startswith(OPERATION_MODEL_PREFIX):
                     parts = current_model_name.split(OPERATION_MODEL_PREFIX)
                     if len(parts) > 1:
@@ -57,7 +56,7 @@ class ModelParser(QObject):
                     if len(parts) > 1:
                         self.current_version_cadastral_form_model = self.parse_version(parts[1])
                 if current_model_name.startswith(VALUATION_MODEL_PREFIX):
-                    parts = current_model_name.split(CADASTRAL_FORM_MODEL_PREFIX)
+                    parts = current_model_name.split(VALUATION_MODEL_PREFIX)
                     if len(parts) > 1:
                         self.current_version_valuation_model = self.parse_version(parts[1])
 
@@ -71,11 +70,11 @@ class ModelParser(QObject):
 
         if self.current_version_operation_model is None:
             return (False, QCoreApplication.translate("ModelParser",
-                                                      "We couldn't determine the version of the 'Operation' model. Are you sure the database (or schema) has the 'Operation' model structure?"))
+                                                      "INVALID STRUCTURE: We couldn't determine the version of the 'Operation' model. Are you sure the database (or schema) has the 'Operation' model structure?"))
 
         if self._pro_gen_db_connector is None:
             return (False, QCoreApplication.translate("ModelParser",
-                                                      "The plugin 'QGIS Model Baker' is a prerequisite, but could not be found. Install it before continuing."))
+                                                      "MISSING DEPENDENCY: The plugin 'QGIS Model Baker' is a prerequisite, but could not be found. Install it before continuing."))
 
         if self.debug:
             print("Current Operation model's latest version:", self.current_version_cadastral_form_model)
@@ -86,7 +85,7 @@ class ModelParser(QObject):
                 False,  # Exact version required
                 QCoreApplication.translate("ModelParser", "Operation Model"))
         if not res:
-            return (False, QCoreApplication.translate("ModelParser", "The 'Operation' model version found in the database ({}) is not supported (it is lesser than {})!").format(
+            return (False, QCoreApplication.translate("ModelParser", "MODEL VERSION INVALID: The 'Operation' model version found in the database ({}) is not supported (it is lesser than {})!").format(
                 self.current_version_operation_model,
                 LATEST_OPERATION_MODEL_VERSION_SUPPORTED))
 

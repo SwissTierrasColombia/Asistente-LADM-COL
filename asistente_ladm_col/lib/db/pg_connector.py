@@ -894,7 +894,11 @@ class PGConnector(DBConnector):
     def get_models(self, schema=None):
         query = "SELECT modelname FROM {schema}.t_ili2db_model order by modelname".format(schema=schema if schema else self.schema)
         result = self.execute_sql_query(query)
-        return result if not isinstance(result, tuple) else None
+        lst_models = list()
+        if not isinstance(result, tuple):
+            lst_models = [db_model['modelname'] for db_model in result]
+        
+        return lst_models
 
     def create_database(self, uri, db_name):
         """

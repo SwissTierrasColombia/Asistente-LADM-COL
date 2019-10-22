@@ -42,6 +42,7 @@ from qgis.core import Qgis
 from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
+from asistente_ladm_col.utils.utils import parse_models_from_db_meta_attrs_list
 from ...config.general_config import (DEFAULT_EPSG,
                                       DEFAULT_INHERITANCE,
                                       DEFAULT_HIDDEN_MODELS,
@@ -217,6 +218,8 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.update_connection_info()
 
     def accepted(self):
+        self.bar.clearWidgets()
+
         configuration = self.update_configuration()
 
         if not os.path.isfile(self.xtf_file_line_edit.text().strip()):
@@ -240,18 +243,12 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.import_models_list_view.setFocus()
             return
 
-        # Get list models in db and xtf
+        # Get list of models present in the XTF file and in the DB
         ili_models = set([ili_model for ili_model in self.get_ili_models()])
-
-        db_models = list()
-        for db_model in self.db.get_models():
-            model_name_with_dependencies = db_model['modelname']
-            model_name = model_name_with_dependencies.split('{')[0]
-            db_models.append(model_name)
-        db_models = set(db_models)
+        db_models = set(parse_models_from_db_meta_attrs_list(self.db.get_models()))
 
         if not ili_models.issubset(db_models):
-            message_error = "The XTF file to import does not have the same models as the target database schema. " \
+            message_error = "IMPORT ERROR: The XTF file to import does not have the same models as the target database schema. " \
                             "Please create a schema that also includes the following missing modules:\n\n * {}".format(" \n * ".join(sorted(ili_models.difference(db_models))))
             self.txtStdout.clear()
             self.txtStdout.setTextColor(QColor('#000000'))

@@ -46,13 +46,18 @@ VALUATION_MODEL_PREFIX = "Avaluos_"
 # From this version on the plugin will work, a message will block prior versions
 LATEST_OPERATION_MODEL_VERSION_SUPPORTED = "2.9.6"
 
-DEFAULT_MODEL_NAMES_CHECKED = {'Avaluos_V2_2_1': Qt.Unchecked,
-                     'Cartografia_Referencia_V2_2_1': Qt.Unchecked,
-                     'Catastro_Registro_Nucleo_V2_2_1': Qt.Checked,
-                     'Diagnostico_Juridico_V2_2_1': Qt.Unchecked,
-                     'Ficha_Predial_V2_2_1': Qt.Unchecked}
+DEFAULT_MODEL_NAMES_CHECKED = {
+    'ANT_V2_9_6': Qt.Unchecked,
+    'Avaluos_V2_9_6': Qt.Unchecked,
+    'Cartografia_Referencia_V2_9_6': Qt.Unchecked,
+    'Datos_Gestor_Catastral_V2_9_6': Qt.Unchecked,
+    'Datos_Integracion_Insumos_V2_9_6': Qt.Unchecked,
+    'Datos_SNR_V2_9_6': Qt.Unchecked,
+    'Formulario_Catastro_V2_9_6': Qt.Unchecked,
+    'Operacion_V2_9_6': Qt.Checked
+}
 
-DEFAULT_HIDDEN_MODELS = ['LADM_COL_V1_1', 'ISO19107_V1_MAGNABOG']
+DEFAULT_HIDDEN_MODELS = ['LADM_COL_V1_2', 'ISO19107_V1_MAGNABOG', 'ISO19107_PLANAS_V1']
 
 DEFAULT_INHERITANCE ='smart2'
 DEFAULT_EPSG =  "3116"

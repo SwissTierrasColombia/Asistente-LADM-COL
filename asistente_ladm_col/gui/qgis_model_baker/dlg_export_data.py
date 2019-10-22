@@ -42,6 +42,7 @@ from qgis.core import Qgis
 from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
+from asistente_ladm_col.utils.utils import parse_models_from_db_meta_attrs_list
 from ...config.general_config import (DEFAULT_HIDDEN_MODELS,
                                       SETTINGS_CONNECTION_TAB_INDEX)
 from ...gui.dialogs.dlg_get_java_path import GetJavaPathDialog
@@ -133,18 +134,15 @@ class DialogExportData(QDialog, DIALOG_UI):
     def update_model_names(self):
         self.export_models_qmodel = QStandardItemModel()
 
-        db_models = None
-        db_models = self.db.get_models()
+        model_names = parse_models_from_db_meta_attrs_list(self.db.get_models())
 
-        if db_models:
-            for db_model in db_models:
-                regex = re.compile(r'(?:\{[^\}]*\}|\s)')
-                for modelname in regex.split(db_model['modelname']):
-                    if modelname and modelname not in DEFAULT_HIDDEN_MODELS:
-                        item = QStandardItem(modelname.strip())
-                        item.setCheckable(False)
-                        item.setEditable(False)
-                        self.export_models_qmodel.appendRow(item)
+        if model_names:
+            for model_name in model_names:
+                if model_name not in DEFAULT_HIDDEN_MODELS:
+                    item = QStandardItem(model_name)
+                    item.setCheckable(False)
+                    item.setEditable(False)
+                    self.export_models_qmodel.appendRow(item)
 
         self.export_models_list_view.setModel(self.export_models_qmodel)
 
@@ -171,6 +169,8 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.update_connection_info()
 
     def accepted(self):
+        self.bar.clearWidgets()
+
         configuration = self.update_configuration()
 
         if not self.xtf_file_line_edit.validator().validate(configuration.xtffile, 0)[0] == QValidator.Acceptable:

@@ -1475,10 +1475,10 @@ class Names(metaclass=Singleton):
                             setattr(self, field_variable, dict_names[table_key][field_key])
 
             # Required fields mapped in a custom way
-            self.T_ID_F = dict_names[T_ID]
-            self.ILICODE_F = dict_names[ILICODE]
-            self.DESCRIPTION_F = dict_names[DESCRIPTION]
-            self.DISPLAY_NAME_F = dict_names[DISPLAY_NAME]
+            self.T_ID_F = dict_names[T_ID] if T_ID in dict_names else None
+            self.ILICODE_F = dict_names[ILICODE] if ILICODE in dict_names else None
+            self.DESCRIPTION_F = dict_names[DESCRIPTION] if DESCRIPTION in dict_names else None
+            self.DISPLAY_NAME_F = dict_names[DISPLAY_NAME] if DISPLAY_NAME in dict_names else None
 
         return any_update
 

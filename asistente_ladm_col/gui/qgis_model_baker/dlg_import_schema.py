@@ -182,10 +182,12 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.update_connection_info()
 
     def accepted(self):
+        self.bar.clearWidgets()
+
         configuration = self.update_configuration()
 
         if not self.get_checked_models():
-            message_error = QCoreApplication.translate("DialogImportSchema", "Please set a valid model(s) before creating the LADM-COL structure.")
+            message_error = QCoreApplication.translate("DialogImportSchema", "You should select a valid model(s) before creating the LADM-COL structure.")
             self.txtStdout.setText(message_error)
             self.show_message(message_error, Qgis.Warning)
             self.import_models_list_widget.setFocus()
@@ -244,7 +246,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
             self.print_info(QCoreApplication.translate("DialogImportSchema", "\nDone!"), '#004905')
-            self.show_message(QCoreApplication.translate("DialogImportSchema", "Creation of the LADM-COL structure was successfully completed"), Qgis.Success)
+            self.show_message(QCoreApplication.translate("DialogImportSchema", "LADM-COL structure was successfully created!"), Qgis.Success)
 
             self.models_have_changed.emit(self.db, True)
 
@@ -366,5 +368,3 @@ class DialogImportSchema(QDialog, DIALOG_UI):
     def show_message(self, message, level):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage("Asistente LADM_COL", message, level, duration = 0)
-
-

@@ -217,3 +217,34 @@ def normalize_iliname(name):
     parts = name.split(".")
     parts[0] = parts[0].split("_V")[0]
     return ".".join(parts)
+
+def parse_models_from_db_meta_attrs_string(str_models):
+    """
+    Reads a string of models as saved by ili2db and only returns those models at the first level (not dependencies).
+
+    E.g.:
+    INPUT-> "Datos_Gestor_Catastral_V2_9_6{ LADM_COL_V1_2 ISO19107_PLANAS_V1} Datos_SNR_V2_9_6{ LADM_COL_V1_2} Datos_Integracion_Insumos_V2_9_6{ Datos_SNR_V2_9_6 Datos_Gestor_Catastral_V2_9_6}"
+    OUTPUT-> ['Datos_Gestor_Catastral_V2_9_6', '', 'Datos_SNR_V2_9_6', '', 'Datos_Integracion_Insumos_V2_9_6']
+
+    :param str_models: The string stored in the DB meta attrs model table.
+    :return: List of models leaving out dependencies.
+    """
+    regex = re.compile(r'(?:\{[^\}]*\}|\s)')
+    return [name for name in regex.split(str_models) if name]
+
+def parse_models_from_db_meta_attrs_list(lst_models):
+    """
+    Reads a list of models as saved by ili2db and only returns those models at the first level (not dependencies).
+
+    E.g.:
+    INPUT-> ["Datos_Gestor_Catastral_V2_9_6{ LADM_COL_V1_2 ISO19107_PLANAS_V1} Datos_SNR_V2_9_6{ LADM_COL_V1_2} Datos_Integracion_Insumos_V2_9_6{ Datos_SNR_V2_9_6 Datos_Gestor_Catastral_V2_9_6}", "LADM_COL_V1_2"]
+    OUTPUT-> ['Datos_Gestor_Catastral_V2_9_6', '', 'Datos_SNR_V2_9_6', '', 'Datos_Integracion_Insumos_V2_9_6', 'LADM_V1_2']
+
+    :param lst_models: The list of values stored in the DB meta attrs model table (column 'modelname').
+    :return: List of models leaving out dependencies.
+    """
+    model_names = list()
+    for str_model in lst_models:
+        model_names.extend(parse_models_from_db_meta_attrs_string(str_model))
+
+    return model_names
