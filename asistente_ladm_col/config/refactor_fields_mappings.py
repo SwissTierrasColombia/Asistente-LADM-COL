@@ -8,7 +8,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
     # --------------------------------
     # OPERATION MODEL
     # --------------------------------
-    if layer_name == BOUNDARY_POINT_TABLE:
+    if layer_name == names.OP_BOUNDARY_POINT_T:
         mapping = [
             {'expression': '"{}"'.format(names.OP_BOUNDARY_POINT_T_ID_F), 'length': 255, 'name': '{}'.format(names.OP_BOUNDARY_POINT_T_ID_F), 'precision': -1, 'type': 10},
             {'expression': '"{}"'.format(names.OP_BOUNDARY_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.OP_BOUNDARY_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4},
@@ -25,7 +25,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
             {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
         ]
-    elif layer_name == SURVEY_POINT_TABLE:
+    elif layer_name == names.OP_SURVEY_POINT_T:
         mapping = [
             {'expression': '"id_punto_levantamiento"', 'length': 255, 'name': 'id_punto_levantamiento', 'precision': -1, 'type': 10},
             {'expression': '"puntotipo"', 'length': -1, 'name': 'puntotipo', 'precision': 0, 'type': 4},
@@ -41,7 +41,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
             {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
         ]
-    elif layer_name == CONTROL_POINT_TABLE:
+    elif layer_name == names.OP_CONTROL_POINT_T:
         mapping = [
             {'expression': '"id_punto_control"', 'length': 255, 'name': 'id_punto_control', 'precision': -1, 'type': 10},
             {'expression': '"puntotipo"', 'length': -1, 'name': 'puntotipo', 'precision': 0, 'type': 4},
@@ -56,7 +56,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
             {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
         ]
-    elif layer_name == BOUNDARY_TABLE:
+    elif layer_name == names.OP_BOUNDARY_T:
         mapping = [
             {'expression': '"longitud"', 'length': 6, 'name': 'longitud', 'precision': 1, 'type': 6},
             {'expression': '"localizacion_textual"', 'length': 255, 'name': 'localizacion_textual', 'precision': -1, 'type': 10},
@@ -65,7 +65,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
             {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
         ]
-    elif layer_name == PLOT_TABLE:
+    elif layer_name == names.OP_PLOT_T:
         mapping = [
             {'expression': '"area_terreno"', 'length': 15, 'name': 'area_terreno', 'precision': 1, 'type': 6},
             {'expression': '"avaluo_terreno"', 'length': 16, 'name': 'avaluo_terreno', 'precision': 1, 'type': 6},
@@ -77,7 +77,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
             {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
         ]
-    elif layer_name == PARCEL_TABLE:
+    elif layer_name == names.OP_PARCEL_T:
         mapping = [
             {'expression': '"departamento"', 'length': 2, 'name': 'departamento', 'precision': -1, 'type': 10},
             {'expression': '"municipio"', 'length': 3, 'name': 'municipio', 'precision': -1, 'type': 10},
@@ -96,7 +96,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
             {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
         ]
-    elif layer_name == COL_PARTY_TABLE:
+    elif layer_name == names.OP_PARTY_T:
         mapping = [
             {'expression': '"tipo"', 'length': -1, 'name': 'tipo', 'precision': 0, 'type': 4},
             {'expression': '"tipo_documento"', 'length': -1, 'name': 'tipo_documento', 'precision': 0, 'type': 4},
@@ -114,7 +114,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
             {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
         ]
-    elif layer_name == ADMINISTRATIVE_SOURCE_TABLE:
+    elif layer_name == names.OP_ADMINISTRATIVE_SOURCE_T:
         mapping = [
             {'expression': '"tipo"', 'length': -1, 'name': 'tipo', 'precision': 0, 'type': 4},
             {'expression': '"ente_emisor"', 'length': 255, 'name': 'ente_emisor', 'precision': -1, 'type': 10},
@@ -127,7 +127,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"oficialidad"', 'length': -1, 'name': 'oficialidad', 'precision': -1, 'type': 1},
             {'expression': '"fecha_documento_fuente"', 'length': -1, 'name': 'fecha_documento_fuente', 'precision': -1, 'type': 14}
         ]
-    elif layer_name == SPATIAL_SOURCE_TABLE:
+    elif layer_name == names.COL_SPATIAL_SOURCE_T:
         mapping = [
             {'expression': '"tipo"', 'length': -1, 'name': 'tipo', 'precision': 0, 'type': 4},
             {'expression': '"estado_disponibilidad"', 'length': -1, 'name': 'estado_disponibilidad', 'precision': 0, 'type': 4},
@@ -137,7 +137,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"oficialidad"', 'length': -1, 'name': 'oficialidad', 'precision': -1, 'type': 1},
             {'expression': '"fecha_documento_fuente"', 'length': -1, 'name': 'fecha_documento_fuente', 'precision': -1, 'type': 14}
         ]
-    elif layer_name == BUILDING_TABLE:
+    elif layer_name == names.OP_BUILDING_T:
         mapping = [
             {'expression': '"area_construccion"', 'length': 15, 'name': 'area_construccion', 'precision': 1, 'type': 6},
             {'expression': '"numero_pisos"', 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2},
@@ -150,7 +150,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
             {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
         ]
-    elif layer_name == BUILDING_UNIT_TABLE:
+    elif layer_name == names.OP_BUILDING_UNIT_T:
         mapping = [
             {'expression': '"identificador"', 'length': 3, 'name': 'identificador', 'precision': -1, 'type': 10},
             {'expression': '"area_construida"', 'length': 15, 'name': 'area_construida', 'precision': 1, 'type': 6},
@@ -168,7 +168,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
             {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
         ]
-    elif layer_name == RIGHT_TABLE:
+    elif layer_name == names.OP_RIGHT_T:
         mapping = [
             {'expression': '"tipo"', 'length': -1, 'name': 'tipo', 'precision': 0, 'type': 4},
             {'expression': '"descripcion"', 'length': 255, 'name': 'descripcion', 'precision': -1, 'type': 10},
@@ -182,7 +182,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
             {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
         ]
-    elif layer_name == RESTRICTION_TABLE:
+    elif layer_name == names.OP_RESTRICTION_T:
         mapping = [
             {'expression': '"tipo"', 'length': -1, 'name': 'tipo', 'precision': 0, 'type': 4},
             {'expression': '"descripcion"', 'length': 255, 'name': 'descripcion', 'precision': -1, 'type': 10},
@@ -196,7 +196,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
             {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
         ]
-    elif layer_name == RIGHT_OF_WAY_TABLE:
+    elif layer_name == names.OP_RIGHT_OF_WAY_T:
         mapping = [
             {'expression': '"area_servidumbre"', 'length': 15, 'name': 'area_servidumbre', 'precision': 1, 'type': 6},
             {'expression': '"dimension"', 'length': -1, 'name': 'dimension', 'precision': 0, 'type': 4},
