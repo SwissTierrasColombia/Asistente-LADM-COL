@@ -72,25 +72,16 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_CREATE_BUILDING_UNIT_CADASTRE,
                                                       WIZARD_CREATE_RIGHT_CADASTRE,
                                                       WIZARD_CREATE_RESTRICTION_CADASTRE,
-                                                      WIZARD_CREATE_RESPONSIBILITY_CADASTRE,
                                                       WIZARD_CREATE_SPATIAL_SOURCE_CADASTRE,
                                                       WIZARD_CREATE_PARCEL_CADASTRE,
                                                       WIZARD_CREATE_PLOT_CADASTRE,
                                                       WIZARD_CREATE_EXT_ADDRESS_CADASTRE,
                                                       WIZARD_CREATE_RIGHT_OF_WAY_CADASTRE,
-                                                      WIZARD_CREATE_PARCEL_VALUATION,
-                                                      WIZARD_CREATE_HORIZONTAL_PROPERTY_VALUATION,
-                                                      WIZARD_CREATE_COMMON_EQUIPMENT_VALUATION,
-                                                      WIZARD_CREATE_BUILDING_VALUATION,
                                                       WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION,
                                                       WIZARD_CREATE_PHYSICAL_ZONE_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION,
-                                                      WIZARD_CREATE_LEGAL_PARTY_PRC,
-                                                      WIZARD_CREATE_NATURAL_PARTY_PRC,
-                                                      WIZARD_CREATE_NUCLEAR_FAMILY_PRC,
-                                                      WIZARD_CREATE_MARKET_RESEARCH_PRC,
-                                                      WIZARD_CREATE_PROPERTY_RECORD_CARD_PRC, WIZARD_LAYERS,
+                                                      WIZARD_LAYERS,
                                                       WIZARD_TOOL_NAME)
 from asistente_ladm_col.config.wizard_config import WIZARDS_SETTINGS
 from asistente_ladm_col.data.ladm_data import LADM_DATA
@@ -406,13 +397,8 @@ class AsistenteLADMCOLPlugin(QObject):
                 QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Restriction"),
                 self._rrr_cadastre_menu)
-        self._responsibility_rrr_cadastre_action = QAction(
-                QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Responsibility"),
-                self._rrr_cadastre_menu)
         self._rrr_cadastre_menu.addActions([self._right_rrr_cadastre_action,
-                                            self._restriction_rrr_cadastre_action,
-                                            self._responsibility_rrr_cadastre_action])
+                                            self._restriction_rrr_cadastre_action])
 
         self._quality_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check Quality Rules"), self._cadastre_menu)
 
@@ -441,7 +427,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._col_party_cadastre_action.triggered.connect(self.show_wiz_col_party_cad)
         self._group_party_cadastre_action.triggered.connect(self.show_dlg_group_party)
         self._right_rrr_cadastre_action.triggered.connect(self.show_wiz_right_rrr_cad)
-        self._responsibility_rrr_cadastre_action.triggered.connect(self.show_wiz_responsibility_rrr_cad)
         self._restriction_rrr_cadastre_action.triggered.connect(self.show_wiz_restriction_rrr_cad)
         self._administrative_source_cadastre_action.triggered.connect(self.show_wiz_administrative_source_cad)
         self._spatial_source_cadastre_action.triggered.connect(self.show_wiz_spatial_source_cad)
@@ -971,7 +956,6 @@ class AsistenteLADMCOLPlugin(QObject):
                             '_upload_source_files_cadastre_action',
                             '_right_rrr_cadastre_action',
                             '_restriction_rrr_cadastre_action',
-                            '_responsibility_rrr_cadastre_action',
                             '_quality_cadastre_action']
         self.delete_variables(cadastre_actions)
 
@@ -1209,9 +1193,6 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_wiz_right_rrr_cad(self):
         self.show_wizard(WIZARD_CREATE_RIGHT_CADASTRE)
 
-    def show_wiz_responsibility_rrr_cad(self):
-        self.show_wizard(WIZARD_CREATE_RESPONSIBILITY_CADASTRE)
-
     def show_wiz_restriction_rrr_cad(self):
         self.show_wizard(WIZARD_CREATE_RESTRICTION_CADASTRE)
 
@@ -1236,31 +1217,40 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.exec_()
 
     def show_wiz_property_record_card(self):
-        self.show_wizard(WIZARD_CREATE_PROPERTY_RECORD_CARD_PRC)
+        # TODO: Remove
+        pass
 
     def show_wiz_market_research_prc(self):
-        self.show_wizard(WIZARD_CREATE_MARKET_RESEARCH_PRC)
+        # TODO: Remove
+        pass
 
     def show_wiz_nuclear_family_prc(self):
-        self.show_wizard(WIZARD_CREATE_NUCLEAR_FAMILY_PRC)
+        # TODO: Remove
+        pass
 
     def show_wiz_natural_party_prc(self):
-        self.show_wizard(WIZARD_CREATE_NATURAL_PARTY_PRC)
+        # TODO: Remove
+        pass
 
     def show_wiz_legal_party_prc(self):
-        self.show_wizard(WIZARD_CREATE_LEGAL_PARTY_PRC)
+        #TODO: Remove
+        pass
 
     def show_wiz_parcel_valuation(self):
-        self.show_wizard(WIZARD_CREATE_PARCEL_VALUATION)
+        # TODO: Remove
+        pass
 
     def show_wiz_horizontal_property_main_parcel_valuation(self):
-        self.show_wizard(WIZARD_CREATE_HORIZONTAL_PROPERTY_VALUATION)
+        # TODO: Remove
+        pass
 
     def show_wiz_common_equipment_valuation(self):
-        self.show_wizard(WIZARD_CREATE_COMMON_EQUIPMENT_VALUATION)
+        # TODO: Remove
+        pass
 
     def show_wiz_building_valuation(self):
-        self.show_wizard(WIZARD_CREATE_BUILDING_VALUATION)
+        # TODO: Remove
+        pass
 
     def show_wiz_building_unit_valuation(self):
         self.show_wizard(WIZARD_CREATE_BUILDING_UNIT_VALUATION)

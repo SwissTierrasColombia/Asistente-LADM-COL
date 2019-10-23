@@ -10,6 +10,7 @@ from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.config.general_config import LAYER
 from asistente_ladm_col.config.table_mapping_config import (PLOT_AREA_FIELD,
+                                                            FMI_FIELD,
                                                             UEBAUNIT_TABLE,
                                                             PLOT_TABLE,
                                                             PARCEL_TABLE,

@@ -149,7 +149,6 @@ class Names(metaclass=Singleton):
     # "LADM_COL_V1_2.LADM_Nucleo.LA_RelacionNecesariaBAUnits"
     # "LADM_COL_V1_2.LADM_Nucleo.LA_RelacionNecesariaUnidadesEspaciales"
     # "LADM_COL_V1_2.LADM_Nucleo.LA_RelacionSuperficieTipo"
-    LA_RESPONSIBILITY_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.LA_ResponsabilidadTipo"
     LA_RESTRICTION_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.LA_RestriccionTipo"
     # "LADM_COL_V1_2.LADM_Nucleo.LA_TareaInteresadoTipo"
     # "LADM_COL_V1_2.LADM_Nucleo.LA_TareaInteresadoTipo.Tipo"
@@ -1397,7 +1396,6 @@ class Names(metaclass=Singleton):
         "LADM_COL.LADM_Nucleo.LA_InterpolacionTipo": {VARIABLE_NAME: "LA_INTERPOLATION_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.LA_MonumentacionTipo": {VARIABLE_NAME: "LA_MONUMENTATION_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.LA_PuntoTipo": {VARIABLE_NAME: "LA_POINT_TYPE_D", FIELDS_DICT: {}},
-        "LADM_COL.LADM_Nucleo.LA_ResponsabilidadTipo": {VARIABLE_NAME: "LA_RESPONSIBILITY_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.LA_RestriccionTipo": {VARIABLE_NAME: "LA_RESTRICTION_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.masCcl": {VARIABLE_NAME: "MORE_BFS_T", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.menosCcl": {VARIABLE_NAME: "LESS_BFS_T", FIELDS_DICT: {}},
@@ -1595,14 +1593,11 @@ MEMBERS_TABLE = "col_miembros"
 MORE_BOUNDARY_FACE_STRING_TABLE = "masccl"
 MOREBFS_TABLE_BOUNDARY_FIELD = "cclp_lindero"
 MOREBFS_TABLE_PLOT_FIELD = "uep_terreno"
-MORTGAGE_TABLE = "col_hipoteca"
 MUNICIPALITY_FIELD = "municipio"
 NAMESPACE_FIELD = "_espacio_de_nombres"
 NIT_NUMBER_FIELD = "numero_nit"
 NUMBER_OF_FLOORS = "numero_pisos"
 NUPRE_FIELD = "nupre"
-OID_EXTADDRESS_ID_FIELD = "extdireccion_direccion_id"
-OID_TABLE = "oid"
 PARCEL_NAME_FIELD = "nombre"
 PARCEL_NUMBER_FIELD = "numero_predial"
 PARCEL_NUMBER_BEFORE_FIELD = "numero_predial_anterior"
@@ -1634,14 +1629,11 @@ POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD = "punto_puntolindero"
 POINTSOURCE_TABLE_SURVEYPOINT_FIELD = "punto_puntolevantamiento"
 POINTSOURCE_TABLE_CONTROLPOINT_FIELD = "punto_puntocontrol"
 POINTSOURCE_TABLE_SOURCE_FIELD = "pfuente"
-RESPONSIBILITY_TABLE = "col_responsabilidad"
-RESPONSIBILITY_TYPE_TABLE = "col_responsabilidadtipo"
 RESTRICTION_TABLE_DESCRIPTION_FIELD = "descripcion"
 RESTRICTION_TABLE = "col_restriccion"
 RESTRICTION_TABLE_PARCEL_FIELD = "unidad_predio"
 RESTRICTION_TYPE_TABLE = "col_restricciontipo"
 RRR_SOURCE_RELATION_TABLE = "rrrfuente"
-RRR_SOURCE_RESPONSIBILITY_FIELD = "rrr_col_responsabilidad"
 RRR_SOURCE_RESTRICTION_FIELD = "rrr_col_restriccion"
 RRR_SOURCE_RIGHT_FIELD = "rrr_col_derecho"
 RRR_SOURCE_SOURCE_FIELD = "rfuente"
@@ -1677,38 +1669,28 @@ UESOURCE_TABLE_SOURCE_FIELD = "pfuente"
 VIDA_UTIL_FIELD = "comienzo_vida_util_version"
 ZONE_FIELD = "zona"
 
+
 """
-PROPERTY RECORD CARD MAPPING
+UNIQUE CADASTRAL FORM
 """
-PROPERTY_RECORD_CARD_TABLE = "predio_ficha"
-PROPERTY_RECORD_CARD_PARCEL_ID_FIELD = "crpredio"
-PROPERTY_RECORD_CARD_SECTOR_FIELD = "sector"
-PROPERTY_RECORD_CARD_BLOCK_TOWN_FIELD = "manzana_vereda"
-PROPERTY_RECORD_CARD_ECONOMIC_DESTINATION_FIELD = "destinacion_economica"
-PROPERTY_RECORD_CARD_LOCALITY_FIELD = "localidad_comuna"
-PRC_PUBLIC_PARCEL_TYPE_FIELD = "tipo_predio_publico"
-PRC_PARCEL_TYPE_FIELD = "predio_tipo"
-MARKET_RESEARCH_TABLE = "investigacionmercado"
-NUCLEAR_FAMILY_TABLE = "nucleofamiliar"
-NATURAL_PARTY_TABLE = "interesado_natural"
-LEGAL_PARTY_TABLE = "interesado_juridico"
+UNIQUE_CADASTRAL_FORM_TABLE = "fcm_formulario_unico_cm"
+UNIQUE_CADASTRAL_FORM_CONTACT_VISIT_TABLE = "fcm_contacto_visita"
 
 """
 VALUATION MAPPING
 """
-AVALUOUNIDADCONSTRUCCION_TABLE = "avaluounidadconstruccion"
-AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_VALUATION_FIELD = "aucons"
-AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_FIELD = "ucons"
-VALUATION_PARCEL_TABLE = "avaluos_v2_2_1avaluos_predio"
-VALUATION_HORIZONTAL_PROPERTY_TABLE = "predio_matriz_ph"
-VALUATION_COMMON_EQUIPMENT_TABLE = "equipamiento_comunal"
-VALUATION_BUILDING_TABLE = "avaluos_v2_2_1avaluos_construccion"
-VALUATION_BUILDING_UNIT_TABLE = "unidad_construccion"
-VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE = "calificacion_no_convencional"
-VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE = "calificacion_convencional"
+VALUATION_BUILDING_UNIT_TABLE = "av_unidad_construccion"
+VALUATION_COMPONENT_BUILDING = "av_componente_construccion"
+VALUATION_BUILDING_UNIT_QUALIFICATION_NO_CONVENTIONAL_TABLE = "av_calificacion_no_convencional"
+VALUATION_BUILDING_UNIT_QUALIFICATION_CONVENTIONAL_TABLE = "av_calificacion_convencional"
+VALUATION_GROUP_QUALIFICATION = "av_grupo_calificacion"
+VALUATION_BUILDING_OBJECT = "av_objeto_construccion"
 VALUATION_GEOECONOMIC_ZONE_TABLE = "zona_homogenea_geoeconomica"
 VALUATION_PHYSICAL_ZONE_TABLE = "zona_homogenea_fisica"
 
+AVALUOUNIDADCONSTRUCCION_TABLE = "avaluounidadconstruccion"
+AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_VALUATION_FIELD = "aucons"
+AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_FIELD = "ucons"
 
 
 """
@@ -1724,13 +1706,8 @@ DICT_PLURAL = {
     LA_GROUP_PARTY_TABLE: "Agrupación de interesados",
     RIGHT_TABLE: "Derechos",
     RESTRICTION_TABLE: "Restricciones",
-    RESPONSIBILITY_TABLE: "Responsabilidades",
-    MORTGAGE_TABLE: "Hipotecas",
     ADMINISTRATIVE_SOURCE_TABLE: "Fuentes Administrativas",
     SPATIAL_SOURCE_TABLE: "Fuentes Espaciales",
-    NUCLEAR_FAMILY_TABLE: "Núcleo Familiar",
-    MARKET_RESEARCH_TABLE: "Investigaciones de Mercado",
-    PROPERTY_RECORD_CARD_TABLE: "Ficha Predial",
     BOUNDARY_TABLE: "Linderos",
     BOUNDARY_POINT_TABLE: "Puntos de Lindero",
     SURVEY_POINT_TABLE: "Puntos de Levantamiento"
@@ -1769,8 +1746,6 @@ DICT_TABLE_PACKAGE = {
     LA_GROUP_PARTY_TABLE: PARTY_PACKAGE,
     RIGHT_TABLE: RRR_PACKAGE,
     RESTRICTION_TABLE: RRR_PACKAGE,
-    RESPONSIBILITY_TABLE: RRR_PACKAGE,
-    MORTGAGE_TABLE: RRR_PACKAGE,
     ADMINISTRATIVE_SOURCE_TABLE: SOURCE_PACKAGE,
     SPATIAL_SOURCE_TABLE: SOURCE_PACKAGE,
     BOUNDARY_POINT_TABLE: SURVEYING_AND_REPRESENTATION_PACKAGE,
@@ -1791,7 +1766,6 @@ NAMESPACE_PREFIX = {
     LA_GROUP_PARTY_TABLE: 'p',
     PARCEL_TABLE: 'u',
     PLOT_TABLE: 'su',
-    RESPONSIBILITY_TABLE: 'r',
     RESTRICTION_TABLE: 'r',
     RIGHT_OF_WAY_TABLE: 'su',
     RIGHT_TABLE: 'r',
@@ -1810,9 +1784,7 @@ DICT_AUTOMATIC_VALUES = {
         BUSINESS_NAME_FIELD)}],
     PARCEL_TABLE: [{DEPARTMENT_FIELD: 'substr("numero_predial", 0, 2)'},
                    {MUNICIPALITY_FIELD: 'substr("numero_predial", 3, 3)'},
-                   {ZONE_FIELD: 'substr("numero_predial", 6, 2)'}],
-    OID_TABLE: [{"localid": "$id"},
-                {"espaciodenombres": "\'OID\'"}]
+                   {ZONE_FIELD: 'substr("numero_predial", 6, 2)'}]
 }
 
 DICT_DISPLAY_EXPRESSIONS = {
@@ -1874,12 +1846,6 @@ CUSTOM_WIDGET_CONFIGURATION = {
 }
 
 LAYER_CONSTRAINTS = {
-    PROPERTY_RECORD_CARD_TABLE: {
-        PRC_PUBLIC_PARCEL_TYPE_FIELD: {
-            'expression': 'CASE WHEN "{prc_ptf}" IS NOT NULL THEN\n(strpos("{prc_ptf}", \'Privado.\') != 0 AND "{prc_pptf}" IS NULL) OR (strpos("{prc_ptf}", \'Publico.\') != 0 AND "{prc_pptf}" IS NOT NULL)\nELSE True\nEND'.format(prc_ptf=PRC_PARCEL_TYPE_FIELD, prc_pptf=PRC_PUBLIC_PARCEL_TYPE_FIELD),
-            'description': 'Si el tipo de predio es Público, debes elegir un valor de este listado; pero si el tipo de predio es Privado, no debes seleccionar ningún valor de este listado.'
-        }
-    },
     PARCEL_TABLE: {
         PARCEL_TYPE_FIELD: {
             'expression': """
@@ -2116,63 +2082,6 @@ to after attribute.
 Leave before_attr/after_attr empty to add the group at the end of the form.
 """
 FORM_GROUPS = {
-    PROPERTY_RECORD_CARD_TABLE: {
-        'Código Predial Nacional': {
-            'show_label': True,
-            'column_count': 1,
-            'attr_list': ['sector', 'barrio', 'localidad_comuna', 'manzana_vereda', 'terreno', 'condicion_propiedad', 'edificio', 'piso', 'unidad'],
-            'visibility_expression': None,
-            'before_attr': 'estado_nupre',
-            'after_attr': None
-        },
-        'Tipo predio público': {
-            'show_label': False,
-            'column_count':  1,
-            'attr_list':  ['tipo_predio_publico'],
-            'visibility_expression': '"predio_tipo" IS NOT NULL AND strpos("predio_tipo", \'Publico.\') != 0',
-            'before_attr': None,
-            'after_attr': 'predio_tipo'
-        }
-    },
-    VALUATION_PARCEL_TABLE: {
-        ' ': {
-            'show_label': True,
-            'column_count':  1,
-            'attr_list':  ['num_balcones', 'num_terrazas', 'num_mezanines'],
-            'visibility_expression': None,
-            'before_attr': None,
-            'after_attr': None
-        },
-        '  ': {
-            'show_label': True,
-            'column_count':  1,
-            'attr_list':  ['frente', 'fondo'],
-            'visibility_expression': None,
-            'before_attr': None,
-            'after_attr': 'comun_uso_exclusivo'
-        }
-        },
-    VALUATION_HORIZONTAL_PROPERTY_TABLE: {
-        '': {
-            'show_label': True,
-            'column_count': 1,
-            'attr_list': ['tipologia_constructiva_copropiedad', 'anio_construccion_etapa',
-                          'estado_conservacion_copropiedad', 'materiales_construccion_areas_comunes',
-                          'disenio_funcionalidad_copropiedad'],
-            'visibility_expression': None,
-            'before_attr': None,
-            'after_attr': None
-        },
-        ' ': {
-            'show_label': True,
-            'column_count': 1,
-            'attr_list': ['num_etapas', 'num_interiores', 'num_torres', 'num_pisos_por_torre', 'num_unidades_privadas',
-                          'num_sotanos'],
-            'visibility_expression': None,
-            'before_attr': None,
-            'after_attr': None
-        }
-    },
     VALUATION_BUILDING_UNIT_TABLE: {
         '': {
             'show_label': True,
@@ -2321,15 +2230,6 @@ LOGIC_CONSISTENCY_TABLES = {
                         'interesado_col_interesado',
                         'unidad_la_baunit',
                         'unidad_predio'],
-    RESPONSIBILITY_TABLE: ['tipo',
-                           'codigo_registral_responsabilidad',
-                           'descripcion',
-                           'comprobacion_comparte',
-                           'uso_efectivo',
-                           'interesado_la_agrupacion_interesados',
-                           'interesado_col_interesado',
-                           'unidad_la_baunit',
-                           'unidad_predio'],
     ADMINISTRATIVE_SOURCE_TABLE: ['texto',
                                   'tipo',
                                   'codigo_registral_transaccion',

@@ -45,12 +45,6 @@ from ..config.table_mapping_config import (ID_FIELD,
                                            UEBAUNIT_TABLE,
                                            PARCEL_TABLE,
                                            PARCEL_NUMBER_FIELD,
-                                           PROPERTY_RECORD_CARD_TABLE,
-                                           PROPERTY_RECORD_CARD_PARCEL_ID_FIELD,
-                                           PROPERTY_RECORD_CARD_SECTOR_FIELD,
-                                           PROPERTY_RECORD_CARD_BLOCK_TOWN_FIELD,
-                                           PROPERTY_RECORD_CARD_ECONOMIC_DESTINATION_FIELD,
-                                           PROPERTY_RECORD_CARD_LOCALITY_FIELD,
                                            FMI_FIELD,
                                            PARCEL_NAME_FIELD,
                                            DEPARTMENT_FIELD,
@@ -74,10 +68,11 @@ PARTY_FIELDS_TO_COMPARE = [COL_PARTY_DOC_TYPE_FIELD,  # Right type will also be 
 
 PLOT_FIELDS_TO_COMPARE = [PLOT_AREA_FIELD]  # Geometry is also used but handled differenlty
 
-PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE = [PROPERTY_RECORD_CARD_SECTOR_FIELD,
-                                          PROPERTY_RECORD_CARD_LOCALITY_FIELD,
-                                          PROPERTY_RECORD_CARD_BLOCK_TOWN_FIELD,
-                                          PROPERTY_RECORD_CARD_ECONOMIC_DESTINATION_FIELD]
+# TODO: Update with correct field
+# PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE = [PROPERTY_RECORD_CARD_SECTOR_FIELD,
+#                                           PROPERTY_RECORD_CARD_LOCALITY_FIELD,
+#                                           PROPERTY_RECORD_CARD_BLOCK_TOWN_FIELD,
+#                                           PROPERTY_RECORD_CARD_ECONOMIC_DESTINATION_FIELD]
 
 
 class LADM_DATA():
@@ -229,7 +224,9 @@ class LADM_DATA():
         }
 
         if db.cadastral_form_model_exists():
-            layers[PROPERTY_RECORD_CARD_TABLE] = {'name': PROPERTY_RECORD_CARD_TABLE, 'geometry': None, LAYER: None}
+            # TODO: Replace property record card for correct table model
+            # layers[PROPERTY_RECORD_CARD_TABLE] = {'name': PROPERTY_RECORD_CARD_TABLE, 'geometry': None, LAYER: None}
+            pass
 
         self.qgis_utils.get_layers(db, layers, load=True, layer_modifiers=layer_modifiers)
         if not layers:
@@ -400,21 +397,22 @@ class LADM_DATA():
                         item[tag_group_party] = dict_parcel_group_parties[item[ID_FIELD]]
 
         # =====================  Start add record card info ==================================================
-        if db.cadastral_form_model_exists():
-            expr_property_record_card_features = QgsExpression("{} IN ({})".format(PROPERTY_RECORD_CARD_PARCEL_ID_FIELD, ",".join([str(id) for id in parcel_t_ids])))
-            property_record_card_features = LADM_DATA.get_features_by_expression(layers[PROPERTY_RECORD_CARD_TABLE][LAYER], expr_property_record_card_features, with_attributes=True)
-
-            dict_property_record_card_features = {property_record_card_feature[PROPERTY_RECORD_CARD_PARCEL_ID_FIELD]: property_record_card_feature for property_record_card_feature in property_record_card_features}
-
-            for feature in dict_features:
-                for item in dict_features[feature]:
-                    if item[ID_FIELD] in dict_property_record_card_features:
-                        property_record_card_feature = dict_property_record_card_features[item[ID_FIELD]]
-                        for PROPERTY_RECORD_CARD_FIELD in PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE:
-                            if property_record_card_feature[PROPERTY_RECORD_CARD_FIELD] != NULL:
-                                item[PROPERTY_RECORD_CARD_FIELD] = property_record_card_feature[PROPERTY_RECORD_CARD_FIELD]
-                            else:
-                                item[PROPERTY_RECORD_CARD_FIELD] = NULL
+        # TODO: Replace property record card for correct table model
+        # if db.cadastral_form_model_exists():
+        #     expr_property_record_card_features = QgsExpression("{} IN ({})".format(PROPERTY_RECORD_CARD_PARCEL_ID_FIELD, ",".join([str(id) for id in parcel_t_ids])))
+        #     property_record_card_features = LADM_DATA.get_features_by_expression(layers[PROPERTY_RECORD_CARD_TABLE][LAYER], expr_property_record_card_features, with_attributes=True)
+        #
+        #     dict_property_record_card_features = {property_record_card_feature[PROPERTY_RECORD_CARD_PARCEL_ID_FIELD]: property_record_card_feature for property_record_card_feature in property_record_card_features}
+        #
+        #     for feature in dict_features:
+        #         for item in dict_features[feature]:
+        #             if item[ID_FIELD] in dict_property_record_card_features:
+        #                 property_record_card_feature = dict_property_record_card_features[item[ID_FIELD]]
+        #                 for PROPERTY_RECORD_CARD_FIELD in PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE:
+        #                     if property_record_card_feature[PROPERTY_RECORD_CARD_FIELD] != NULL:
+        #                         item[PROPERTY_RECORD_CARD_FIELD] = property_record_card_feature[PROPERTY_RECORD_CARD_FIELD]
+        #                     else:
+        #                         item[PROPERTY_RECORD_CARD_FIELD] = NULL
 
         return dict_features
 
