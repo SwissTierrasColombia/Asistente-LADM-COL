@@ -101,8 +101,6 @@ from asistente_ladm_col.gui.wizards.single_page_spatial_wizard_factory import Si
 from asistente_ladm_col.gui.wizards.single_page_wizard_factory import SinglePageWizardFactory
 from asistente_ladm_col.gui.wizards.valuation.wiz_create_building_unit_qualification_valuation import CreateBuildingUnitQualificationValuationWizard
 from asistente_ladm_col.gui.wizards.valuation.wiz_create_building_unit_valuation import CreateBuildingUnitValuationWizard
-from asistente_ladm_col.gui.wizards.valuation.wiz_create_geoeconomic_zone_valuation import CreateGeoeconomicZoneValuationWizard
-from asistente_ladm_col.gui.wizards.valuation.wiz_create_physical_zone_valuation import CreatePhysicalZoneValuationWizard
 
 help_strings = HelpStrings()
 
@@ -414,7 +412,7 @@ WIZARDS_SETTINGS = {
     WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION: {
         WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
         WIZARD_NAME: "CreateGeoeconomicZoneValuationWizard",
-        WIZARD_CLASS: CreateGeoeconomicZoneValuationWizard,
+        WIZARD_CLASS: SinglePageSpatialWizardFactory,
         WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateGeoeconomicZoneValuationWizard",
                                                                 "geoeconomic zone"),
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreateGeoeconomicZoneValuationWizard",
@@ -438,7 +436,7 @@ WIZARDS_SETTINGS = {
     WIZARD_CREATE_PHYSICAL_ZONE_VALUATION: {
         WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
         WIZARD_NAME: "CreatePhysicalZoneValuationWizard",
-        WIZARD_CLASS: CreatePhysicalZoneValuationWizard,
+        WIZARD_CLASS: SinglePageSpatialWizardFactory,
         WIZARD_FEATURE_NAME: QCoreApplication.translate("CreatePhysicalZoneValuationWizard", "physical zone"),
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreatePhysicalZoneValuationWizard", "Create physical zone"),
         WIZARD_HELP: "create_physical_zone_valuation",
