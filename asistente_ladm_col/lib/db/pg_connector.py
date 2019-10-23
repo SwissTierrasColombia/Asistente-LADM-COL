@@ -498,6 +498,29 @@ class PGConnector(DBConnector):
             dict_names[ILICODE] = "ilicode"
             dict_names[DESCRIPTION] = "description"
 
+            # Map duplicate ilinames (e.g., inheriting an attribute pointing to structure)
+            # Spatial_Unit-->Ext_Address_ID (Ext_Address)
+            # Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
+            # Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
+            sql_query = """SELECT a.iliname, a.sqlname, c.iliname as iliname2
+                FROM {schema}.t_ili2db_attrname a
+                    INNER JOIN {schema}.t_ili2db_classname c ON c.sqlname = a.target
+                    INNER JOIN (SELECT a_s.iliname
+                        FROM operacion_01.t_ili2db_attrname a_s
+                        GROUP BY a_s.iliname
+                        HAVING COUNT(a_s.iliname) > 1 ) s ON a.iliname = s.iliname
+                GROUP BY a.iliname, a.sqlname, c.iliname
+                HAVING COUNT(a.iliname) = 1
+                ORDER BY a.iliname""".format(schema=self.schema)
+            cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            cur.execute(sql_query)
+            records = cur.fetchall()
+            for record in records:
+                composed_key = "{}_{}".format(normalize_iliname(record['iliname']),
+                                              normalize_iliname(record['iliname2']))
+                dict_names[composed_key] = record['sqlname']
+
+
             Names().initialize_table_and_field_names(dict_names)
             self.table_and_fields_names_retrieved = True
 

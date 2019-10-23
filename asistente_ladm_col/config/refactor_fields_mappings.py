@@ -222,10 +222,10 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"sector_predio"', 'length': -1, 'name': 'sector_predio', 'precision': 0, 'type': 4},
             {'expression': '"complemento"', 'length': 255, 'name': 'complemento', 'precision': -1, 'type': 10},
             {'expression': '"nombre_predio"', 'length': 255, 'name': 'nombre_predio', 'precision': -1, 'type': 10},
-            {'expression': '"op_construccion_ext_direccion_id"', 'length': -1, 'name': 'op_construccion_ext_direccion_id', 'precision': 0, 'type': 4},
-            {'expression': '"op_terreno_ext_direccion_id"', 'length': -1, 'name': 'op_terreno_ext_direccion_id', 'precision': 0, 'type': 4},
-            {'expression': '"op_servidumbrepaso_ext_direccion_id"', 'length': -1, 'name': 'op_servidumbrepaso_ext_direccion_id', 'precision': 0, 'type': 4},
-            {'expression': '"op_unidadconstruccion_ext_direccion_id"', 'length': -1, 'name': 'op_unidadconstruccion_ext_direccion_id', 'precision': 0, 'type': 4}
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_T_OP_BUILDING_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_T_OP_BUILDING_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_T_OP_PLOT_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_T_OP_PLOT_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_T_OP_RIGHT_OF_WAY_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_T_OP_RIGHT_OF_WAY_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_T_OP_BUILDING_UNIT_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_T_OP_BUILDING_UNIT_F), 'precision': 0, 'type': 4}
         ]
     # --------------------------------
     # UNIQUE CADASTRAL FORM MODEL

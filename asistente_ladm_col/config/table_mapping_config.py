@@ -174,8 +174,8 @@ class Names(metaclass=Singleton):
     # "LADM_COL_V1_2.LADM_Nucleo.relacionFuente"
     # "LADM_COL_V1_2.LADM_Nucleo.relacionFuenteUespacial"
     # "LADM_COL_V1_2.LADM_Nucleo.responsableFuente"
-    RRR_SOURCE_T = None  # "LADM_COL_V1_2.LADM_Nucleo.rrrFuente"
-    RRR_PARTY_T = None  # "LADM_COL_V1_2.LADM_Nucleo.rrrInteresado"
+    COL_RRR_SOURCE_T = None  # "LADM_COL_V1_2.LADM_Nucleo.rrrFuente"
+    COL_RRR_PARTY_T = None  # "LADM_COL_V1_2.LADM_Nucleo.rrrInteresado"
     # "LADM_COL_V1_2.LADM_Nucleo.topografoFuente"
     UE_BAUNIT_T = None  # "LADM_COL_V1_2.LADM_Nucleo.ueBaunit"
     # "LADM_COL_V1_2.LADM_Nucleo.ueFuente"
@@ -206,7 +206,7 @@ class Names(metaclass=Singleton):
     OP_RIGHT_OF_WAY_T = None  # "Operacion_V2_9_5.Operacion.OP_ServidumbrePaso"
     OP_PLOT_T = None  # "Operacion_V2_9_5.Operacion.OP_Terreno"
     OP_BUILDING_UNIT_T = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion"
-    OP_PHOTO_IDENTIFICTION_TYPE_D = None  # "Operacion_V2_9_5.OP_FotoidentificacionTipo"
+    OP_PHOTO_IDENTIFICATION_TYPE_D = None  # "Operacion_V2_9_5.OP_FotoidentificacionTipo"
     OP_ADMINISTRATIVE_SOURCE_TYPE_D = None  # "Operacion_V2_9_5.OP_FuenteAdministrativaTipo"
     OP_ETHNIC_GROUP_TYPE = None  # "Operacion_V2_9_5.OP_GrupoEtnicoTipo"
     # "Operacion_V2_9_5.OP_InstitucionTipo"
@@ -536,9 +536,9 @@ class Names(metaclass=Singleton):
     # "LADM_COL_V1_2.LADM_Nucleo.responsableFuente.notario"
     # "LADM_COL_V1_2.LADM_Nucleo.rrrFuente.rfuente"
     # "LADM_COL_V1_2.LADM_Nucleo.rrrFuente.rrr"
-    RRR_PARTY_T_PARTY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.rrrInteresado.interesado"
-    RRR_PARTY_T_OP_PARTY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.rrrInteresado.interesado_op_interesado"
-    RRR_PARTY_T_OP_GROUP_PARTY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.rrrInteresado.interesado_op_agrupacion_interesados"
+    COL_RRR_PARTY_T_PARTY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.rrrInteresado.interesado"
+    COL_RRR_PARTY_T_OP_PARTY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.rrrInteresado.interesado_op_interesado"
+    COL_RRR_PARTY_T_OP_GROUP_PARTY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.rrrInteresado.interesado_op_agrupacion_interesados"
     # "LADM_COL_V1_2.LADM_Nucleo.topografoFuente.sfuente"
     # "LADM_COL_V1_2.LADM_Nucleo.topografoFuente.topografo"
     # "LADM_COL_V1_2.LADM_Nucleo.ueBaunit.baunit"
@@ -622,6 +622,133 @@ class Names(metaclass=Singleton):
     OP_BUILDING_UNIT_T_NUMBER_OF_FLOORS_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Numero_Pisos"
     OP_BUILDING_UNIT_T_FLOOR_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Piso_Ubicacion"
     OP_BUILDING_UNIT_T_USE_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Uso"
+
+    # Composed keys (when ilinames are duplicated because their target table is different, we
+    # concatenate in the form "{key}_{target}")
+
+    # "LADM_COL.LADM_Nucleo.baunitComoInteresado.interesado_Operacion.Operacion.OP_Agrupacion_Interesados" --> interesado_op_agrupacion_interesados
+    # "LADM_COL.LADM_Nucleo.baunitComoInteresado.interesado_Operacion.Operacion.OP_Interesado" --> interesado_op_interesado
+    # "LADM_COL.LADM_Nucleo.cclFuente.ccl_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> ccl_crf_estructuralineal
+    # "LADM_COL.LADM_Nucleo.cclFuente.ccl_Operacion.Operacion.OP_Lindero" --> ccl_op_lindero
+    # "LADM_COL.LADM_Nucleo.COL_Fuente.Calidad_Operacion.Operacion.OP_FuenteAdministrativa" --> op_fuenteadministrtiva_calidad
+    # "LADM_COL.LADM_Nucleo.COL_Fuente.Calidad_Operacion.Operacion.OP_FuenteEspacial" --> op_fuenteespacial_calidad
+    # "LADM_COL.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID_Operacion.Operacion.OP_FuenteAdministrativa" --> op_fuenteadministrtiva_ext_archivo_id
+    # "LADM_COL.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID_Operacion.Operacion.OP_FuenteEspacial" --> op_fuenteespacial_ext_archivo_id
+    # "LADM_COL.LADM_Nucleo.COL_Fuente.Procedencia_Operacion.Operacion.OP_FuenteAdministrativa" --> op_fuenteadministrtiva_procedencia
+    # "LADM_COL.LADM_Nucleo.COL_Fuente.Procedencia_Operacion.Operacion.OP_FuenteEspacial" --> op_fuenteespacial_procedencia
+    # "LADM_COL.LADM_Nucleo.COL_Interesado.ext_PID_Operacion.Operacion.OP_Agrupacion_Interesados" --> op_agrupacion_intrsdos_ext_pid
+    # "LADM_COL.LADM_Nucleo.COL_Interesado.ext_PID_Operacion.Operacion.OP_Interesado" --> op_interesado_ext_pid
+    # "LADM_COL.LADM_Nucleo.COL_Interesado.Tarea_Operacion.Operacion.OP_Agrupacion_Interesados" --> op_agrupacion_intrsdos_tarea
+    # "LADM_COL.LADM_Nucleo.COL_Interesado.Tarea_Operacion.Operacion.OP_Interesado" --> op_interesado_tarea
+    # "LADM_COL.LADM_Nucleo.COL_Punto.Transformacion_Y_Resultado_Cartografia_Referencia.Auxiliares.CRF_EstructuraPuntual" --> crf_estructurapuntual_transformacion_y_resultado
+    # "LADM_COL.LADM_Nucleo.COL_Punto.Transformacion_Y_Resultado_Cartografia_Referencia.LimitesPoliticoAdministrativos.CRF_PuntoLimite" --> crf_puntolimite_transformacion_y_resultado
+    # "LADM_COL.LADM_Nucleo.COL_Punto.Transformacion_Y_Resultado_Operacion.Operacion.OP_PuntoControl" --> op_puntocontrol_transformacion_y_resultado
+    # "LADM_COL.LADM_Nucleo.COL_Punto.Transformacion_Y_Resultado_Operacion.Operacion.OP_PuntoLevantamiento" --> op_puntolevantamiento_transformacion_y_resultado
+    # "LADM_COL.LADM_Nucleo.COL_Punto.Transformacion_Y_Resultado_Operacion.Operacion.OP_PuntoLindero" --> op_puntolindero_transformacion_y_resultado
+    # "LADM_COL.LADM_Nucleo.COL_RRR.Compartido_Operacion.Operacion.OP_Derecho" --> op_derecho_compartido
+    # "LADM_COL.LADM_Nucleo.COL_RRR.Compartido_Operacion.Operacion.OP_Restriccion" --> op_restriccion_compartido
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Area_Operacion.Operacion.OP_Construccion" --> op_construccion_area
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Area_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_area
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Area_Operacion.Operacion.OP_Terreno" --> op_terreno_area
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Area_Operacion.Operacion.OP_UnidadConstruccion" --> op_unidadconstruccion_area
+    EXT_ADDRESS_T_OP_BUILDING_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Construccion" --> op_construccion_ext_direccion_id
+    EXT_ADDRESS_T_OP_RIGHT_OF_WAY_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_ext_direccion_id
+    EXT_ADDRESS_T_OP_PLOT_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Terreno" --> op_terreno_ext_direccion_id
+    EXT_ADDRESS_T_OP_BUILDING_UNIT_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_UnidadConstruccion" --> op_unidadconstruccion_ext_direccion_id
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Volumen_Operacion.Operacion.OP_Construccion" --> op_construccion_volumen
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Volumen_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_volumen
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Volumen_Operacion.Operacion.OP_Terreno" --> op_terreno_volumen
+    # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Volumen_Operacion.Operacion.OP_UnidadConstruccion" --> op_unidadconstruccion_volumen
+    # "LADM_COL.LADM_Nucleo.masCcl.ccl_mas_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> ccl_mas_crf_estructuralineal
+    # "LADM_COL.LADM_Nucleo.masCcl.ccl_mas_Operacion.Operacion.OP_Lindero" --> ccl_mas_op_lindero
+    # "LADM_COL.LADM_Nucleo.masCcl.ue_mas_Operacion.Operacion.OP_Construccion" --> ue_mas_op_construccion
+    # "LADM_COL.LADM_Nucleo.masCcl.ue_mas_Operacion.Operacion.OP_ServidumbrePaso" --> ue_mas_op_servidumbrepaso
+    # "LADM_COL.LADM_Nucleo.masCcl.ue_mas_Operacion.Operacion.OP_Terreno" --> ue_mas_op_terreno
+    # "LADM_COL.LADM_Nucleo.masCcl.ue_mas_Operacion.Operacion.OP_UnidadConstruccion" --> ue_mas_op_unidadconstruccion
+    # "LADM_COL.LADM_Nucleo.masCl.ue_mas_Operacion.Operacion.OP_Construccion" --> ue_mas_op_construccion
+    # "LADM_COL.LADM_Nucleo.masCl.ue_mas_Operacion.Operacion.OP_ServidumbrePaso" --> ue_mas_op_servidumbrepaso
+    # "LADM_COL.LADM_Nucleo.masCl.ue_mas_Operacion.Operacion.OP_Terreno" --> ue_mas_op_terreno
+    # "LADM_COL.LADM_Nucleo.masCl.ue_mas_Operacion.Operacion.OP_UnidadConstruccion" --> ue_mas_op_unidadconstruccion
+    # "LADM_COL.LADM_Nucleo.menosCcl.ccl_menos_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> ccl_menos_crf_estructuralineal
+    # "LADM_COL.LADM_Nucleo.menosCcl.ccl_menos_Operacion.Operacion.OP_Lindero" --> ccl_menos_op_lindero
+    # "LADM_COL.LADM_Nucleo.menosCcl.ue_menos_Operacion.Operacion.OP_Construccion" --> ue_menos_op_construccion
+    # "LADM_COL.LADM_Nucleo.menosCcl.ue_menos_Operacion.Operacion.OP_ServidumbrePaso" --> ue_menos_op_servidumbrepaso
+    # "LADM_COL.LADM_Nucleo.menosCcl.ue_menos_Operacion.Operacion.OP_Terreno" --> ue_menos_op_terreno
+    # "LADM_COL.LADM_Nucleo.menosCcl.ue_menos_Operacion.Operacion.OP_UnidadConstruccion" --> ue_menos_op_unidadconstruccion
+    # "LADM_COL.LADM_Nucleo.menosCl.ue_menos_Operacion.Operacion.OP_Construccion" --> ue_menos_op_construccion
+    # "LADM_COL.LADM_Nucleo.menosCl.ue_menos_Operacion.Operacion.OP_ServidumbrePaso" --> ue_menos_op_servidumbrepaso
+    # "LADM_COL.LADM_Nucleo.menosCl.ue_menos_Operacion.Operacion.OP_Terreno" --> ue_menos_op_terreno
+    # "LADM_COL.LADM_Nucleo.menosCl.ue_menos_Operacion.Operacion.OP_UnidadConstruccion" --> ue_menos_op_unidadconstruccion
+    # "LADM_COL.LADM_Nucleo.miembros.interesados_Operacion.Operacion.OP_Agrupacion_Interesados" --> interesados_op_agrupacion_interesados
+    # "LADM_COL.LADM_Nucleo.miembros.interesados_Operacion.Operacion.OP_Interesado" --> interesados_op_interesado
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> crf_estructuralineal_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Cartografia_Referencia.Auxiliares.CRF_EstructuraPuntual" --> crf_estructurapuntual_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Cartografia_Referencia.LimitesPoliticoAdministrativos.CRF_PuntoLimite" --> crf_puntolimite_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Agrupacion_Interesados" --> op_agrupacion_intrsdos_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Construccion" --> op_construccion_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Derecho" --> op_derecho_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Interesado" --> op_interesado_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Lindero" --> op_lindero_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Predio" --> op_predio_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_PuntoControl" --> op_puntocontrol_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_PuntoLevantamiento" --> op_puntolevantamiento_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_PuntoLindero" --> op_puntolindero_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Restriccion" --> op_restriccion_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_Terreno" --> op_terreno_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Calidad_Operacion.Operacion.OP_UnidadConstruccion" --> op_unidadconstruccion_calidad
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> crf_estructuralineal_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Cartografia_Referencia.Auxiliares.CRF_EstructuraPuntual" --> crf_estructurapuntual_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Cartografia_Referencia.LimitesPoliticoAdministrativos.CRF_PuntoLimite" --> crf_puntolimite_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Agrupacion_Interesados" --> op_agrupacion_intrsdos_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Construccion" --> op_construccion_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Derecho" --> op_derecho_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Interesado" --> op_interesado_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Lindero" --> op_lindero_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Predio" --> op_predio_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_PuntoControl" --> op_puntocontrol_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_PuntoLevantamiento" --> op_puntolevantamiento_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_PuntoLindero" --> op_puntolindero_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Restriccion" --> op_restriccion_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_Terreno" --> op_terreno_procedencia
+    # "LADM_COL.LADM_Nucleo.ObjetoVersionado.Procedencia_Operacion.Operacion.OP_UnidadConstruccion" --> op_unidadconstruccion_procedencia
+    # "LADM_COL.LADM_Nucleo.puntoCcl.ccl_Cartografia_Referencia.Auxiliares.CRF_EstructuraLineal" --> ccl_crf_estructuralineal
+    # "LADM_COL.LADM_Nucleo.puntoCcl.ccl_Operacion.Operacion.OP_Lindero" --> ccl_op_lindero
+    # "LADM_COL.LADM_Nucleo.puntoCcl.punto_Cartografia_Referencia.Auxiliares.CRF_EstructuraPuntual" --> punto_crf_estructurapuntual
+    # "LADM_COL.LADM_Nucleo.puntoCcl.punto_Cartografia_Referencia.LimitesPoliticoAdministrativos.CRF_PuntoLimite" --> punto_crf_puntolimite
+    # "LADM_COL.LADM_Nucleo.puntoCcl.punto_Operacion.Operacion.OP_PuntoControl" --> punto_op_puntocontrol
+    # "LADM_COL.LADM_Nucleo.puntoCcl.punto_Operacion.Operacion.OP_PuntoLevantamiento" --> punto_op_puntolevantamiento
+    # "LADM_COL.LADM_Nucleo.puntoCcl.punto_Operacion.Operacion.OP_PuntoLindero" --> punto_op_puntolindero
+    # "LADM_COL.LADM_Nucleo.puntoCl.punto_Cartografia_Referencia.Auxiliares.CRF_EstructuraPuntual" --> punto_crf_estructurapuntual
+    # "LADM_COL.LADM_Nucleo.puntoCl.punto_Cartografia_Referencia.LimitesPoliticoAdministrativos.CRF_PuntoLimite" --> punto_crf_puntolimite
+    # "LADM_COL.LADM_Nucleo.puntoCl.punto_Operacion.Operacion.OP_PuntoControl" --> punto_op_puntocontrol
+    # "LADM_COL.LADM_Nucleo.puntoCl.punto_Operacion.Operacion.OP_PuntoLevantamiento" --> punto_op_puntolevantamiento
+    # "LADM_COL.LADM_Nucleo.puntoCl.punto_Operacion.Operacion.OP_PuntoLindero" --> punto_op_puntolindero
+    # "LADM_COL.LADM_Nucleo.puntoFuente.punto_Cartografia_Referencia.Auxiliares.CRF_EstructuraPuntual" --> punto_crf_estructurapuntual
+    # "LADM_COL.LADM_Nucleo.puntoFuente.punto_Cartografia_Referencia.LimitesPoliticoAdministrativos.CRF_PuntoLimite" --> punto_crf_puntolimite
+    # "LADM_COL.LADM_Nucleo.puntoFuente.punto_Operacion.Operacion.OP_PuntoControl" --> punto_op_puntocontrol
+    # "LADM_COL.LADM_Nucleo.puntoFuente.punto_Operacion.Operacion.OP_PuntoLevantamiento" --> punto_op_puntolevantamiento
+    # "LADM_COL.LADM_Nucleo.puntoFuente.punto_Operacion.Operacion.OP_PuntoLindero" --> punto_op_puntolindero
+    # "LADM_COL.LADM_Nucleo.responsableFuente.notario_Operacion.Operacion.OP_Agrupacion_Interesados" --> notario_op_agrupacion_interesados
+    # "LADM_COL.LADM_Nucleo.responsableFuente.notario_Operacion.Operacion.OP_Interesado" --> notario_op_interesado
+    # "LADM_COL.LADM_Nucleo.rrrFuente.rrr_Operacion.Operacion.OP_Derecho" --> rrr_op_derecho
+    # "LADM_COL.LADM_Nucleo.rrrFuente.rrr_Operacion.Operacion.OP_Restriccion" --> rrr_op_restriccion
+    # "LADM_COL.LADM_Nucleo.topografoFuente.topografo_Operacion.Operacion.OP_Agrupacion_Interesados" --> topografo_op_agrupacion_interesados
+    # "LADM_COL.LADM_Nucleo.topografoFuente.topografo_Operacion.Operacion.OP_Interesado" --> topografo_op_interesado
+    # "LADM_COL.LADM_Nucleo.ueBaunit.ue_Operacion.Operacion.OP_Construccion" --> ue_op_construccion
+    # "LADM_COL.LADM_Nucleo.ueBaunit.ue_Operacion.Operacion.OP_ServidumbrePaso" --> ue_op_servidumbrepaso
+    # "LADM_COL.LADM_Nucleo.ueBaunit.ue_Operacion.Operacion.OP_Terreno" --> ue_op_terreno
+    # "LADM_COL.LADM_Nucleo.ueBaunit.ue_Operacion.Operacion.OP_UnidadConstruccion" --> ue_op_unidadconstruccion
+    # "LADM_COL.LADM_Nucleo.ueFuente.ue_Operacion.Operacion.OP_Construccion" --> ue_op_construccion
+    # "LADM_COL.LADM_Nucleo.ueFuente.ue_Operacion.Operacion.OP_ServidumbrePaso" --> ue_op_servidumbrepaso
+    # "LADM_COL.LADM_Nucleo.ueFuente.ue_Operacion.Operacion.OP_Terreno" --> ue_op_terreno
+    # "LADM_COL.LADM_Nucleo.ueFuente.ue_Operacion.Operacion.OP_UnidadConstruccion" --> ue_op_unidadconstruccion
+    # "LADM_COL.LADM_Nucleo.ueUeGrupo.parte_Operacion.Operacion.OP_Construccion" --> parte_op_construccion
+    # "LADM_COL.LADM_Nucleo.ueUeGrupo.parte_Operacion.Operacion.OP_ServidumbrePaso" --> parte_op_servidumbrepaso
+    # "LADM_COL.LADM_Nucleo.ueUeGrupo.parte_Operacion.Operacion.OP_Terreno" --> parte_op_terreno
+    # "LADM_COL.LADM_Nucleo.ueUeGrupo.parte_Operacion.Operacion.OP_UnidadConstruccion" --> parte_op_unidadconstruccion
+
 
     TABLE_DICT = {
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Barrio": {VARIABLE_NAME: "GC_NEIGHBOURHOOD_T", FIELDS_DICT: {}},
@@ -742,7 +869,11 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.ExtDireccion.Tipo_Direccion": "EXT_ADDRESS_T_ADDRESS_TYPE_F",
             "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Ciudad": "EXT_ADDRESS_T_CITY_SECTOR_F",
             "LADM_COL.LADM_Nucleo.ExtDireccion.Codigo_Postal": "EXT_ADDRESS_T_POSTAL_CODE_F",
-            "LADM_COL.LADM_Nucleo.ExtDireccion.Complemento": "EXT_ADDRESS_T_COMPLEMENT_F"
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Complemento": "EXT_ADDRESS_T_COMPLEMENT_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Construccion": "EXT_ADDRESS_T_OP_BUILDING_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_ServidumbrePaso": "EXT_ADDRESS_T_OP_RIGHT_OF_WAY_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Terreno": "EXT_ADDRESS_T_OP_PLOT_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_UnidadConstruccion": "EXT_ADDRESS_T_OP_BUILDING_UNIT_F"
         }},
         "LADM_COL.LADM_Nucleo.ExtInteresado": {VARIABLE_NAME: "EXT_PARTY_S", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.Fraccion": {VARIABLE_NAME: "FRACTION_S", FIELDS_DICT: {}},
@@ -762,11 +893,11 @@ class Names(metaclass=Singleton):
         "LADM_COL.LADM_Nucleo.menosCcl": {VARIABLE_NAME: "LESS_BFS_T", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.miembros": {VARIABLE_NAME: "MEMBERS_T", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.puntoCcl": {VARIABLE_NAME: "POINT_BFS_T", FIELDS_DICT: {}},
-        "LADM_COL.LADM_Nucleo.rrrFuente": {VARIABLE_NAME: "RRR_SOURCE_T", FIELDS_DICT: {}},
-        "LADM_COL.LADM_Nucleo.rrrInteresado": {VARIABLE_NAME: "RRR_PARTY_T", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.rrrInteresado.interesado": "RRR_PARTY_T_PARTY_F",
-            "LADM_COL.LADM_Nucleo.rrrInteresado.interesado_op_interesado": "RRR_PARTY_T_OP_PARTY_F",
-            "LADM_COL.LADM_Nucleo.rrrInteresado.interesado_op_agrupacion_interesados": "RRR_PARTY_T_OP_GROUP_PARTY_F"
+        "LADM_COL.LADM_Nucleo.rrrFuente": {VARIABLE_NAME: "COL_RRR_SOURCE_T", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.rrrInteresado": {VARIABLE_NAME: "COL_RRR_PARTY_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.rrrInteresado.interesado": "COL_RRR_PARTY_T_PARTY_F",
+            "LADM_COL.LADM_Nucleo.rrrInteresado.interesado_op_interesado": "COL_RRR_PARTY_T_OP_PARTY_F",
+            "LADM_COL.LADM_Nucleo.rrrInteresado.interesado_op_agrupacion_interesados": "COL_RRR_PARTY_T_OP_GROUP_PARTY_F"
         }},
         "LADM_COL.LADM_Nucleo.ueBaunit": {VARIABLE_NAME: "UE_BAUNIT_T", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.ObjetoVersionado": {VARIABLE_NAME: "VERSIONED_OBJECT_T", FIELDS_DICT: {
