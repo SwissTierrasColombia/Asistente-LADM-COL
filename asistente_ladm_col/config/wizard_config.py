@@ -94,7 +94,6 @@ from asistente_ladm_col.gui.wizards.cadastre.wiz_create_parcel_cadastre import C
 from asistente_ladm_col.gui.wizards.cadastre.wiz_create_rrr_cadastre import CreateRRRCadastreWizard
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.wizards.cadastre.wiz_create_spatial_source_cadastre import CreateSpatialSourceCadastreWizard
-from asistente_ladm_col.gui.wizards.cadastre.wiz_create_building_unit_cadastre import CreateBuildingUnitCadastreWizard
 from asistente_ladm_col.gui.wizards.cadastre.wiz_create_ext_address_cadastre import CreateExtAddressCadastreWizard
 from asistente_ladm_col.gui.wizards.cadastre.wiz_create_plot_cadastre import CreatePlotCadastreWizard
 from asistente_ladm_col.gui.wizards.cadastre.wiz_create_right_of_way_cadastre import CreateRightOfWayCadastreWizard
@@ -206,7 +205,7 @@ WIZARDS_SETTINGS = {
     WIZARD_CREATE_BUILDING_UNIT_CADASTRE: {
         WIZARD_TYPE: WizardTypeEnum.SINGLE_PAGE_SPATIAL_WIZARD_TYPE,
         WIZARD_NAME: "CreateBuildingUnitCadastreWizard",
-        WIZARD_CLASS: CreateBuildingUnitCadastreWizard,
+        WIZARD_CLASS: SinglePageSpatialWizardFactory,
         WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateBuildingUnitCadastreWizard", "building unit"),
         WIZARD_TOOL_NAME: QCoreApplication.translate("CreateBuildingUnitCadastreWizard", "Create building unit"),
         WIZARD_HELP: "create_building_unit",
