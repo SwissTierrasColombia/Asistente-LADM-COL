@@ -1336,7 +1336,7 @@ class Names(metaclass=Singleton):
 """
 CADASTRE MAPPING
 """
-ADMINISTRATIVE_SOURCE_TABLE = "col_fuenteadministrativa"
+ADMINISTRATIVE_SOURCE_TABLE = "op_fuenteadministrativa"
 ADMINISTRATIVE_SOURCE_TYPE_TABLE = "col_fuenteadministrativatipo"
 AVAILABILITY_STATE_TABLE = "col_estadodisponibilidadtipo"
 POINT_BFS_TABLE_BOUNDARY_FIELD = "ccl_lindero"
@@ -1352,9 +1352,9 @@ BUILDING_UNIT_VALUATION_FIELD = "avaluo_unidad_construccion"
 BUILDING_UNIT_TABLE = "op_unidadconstruccion"
 USE_BUILDING_UNIT_TABLE_TYPE = "op_usouconstipo"
 BUSINESS_NAME_FIELD = "razon_social"
-CCLSOURCE_TABLE = "cclfuente"
-CCLSOURCE_TABLE_BOUNDARY_FIELD = "ccl_lindero"
-CCLSOURCE_TABLE_SOURCE_FIELD = "lfuente"
+CCLSOURCE_TABLE = "col_cclfuente"
+CCLSOURCE_TABLE_BOUNDARY_FIELD = "ccl"
+CCLSOURCE_TABLE_SOURCE_FIELD = "fuente_espacial"
 COL_PARTY_DOCUMENT_ID_FIELD = "documento_identidad"
 COL_PARTY_TABLE = "op_interesado"
 COL_PARTY_TYPE_FIELD = "tipo"
@@ -1365,7 +1365,7 @@ COL_PARTY_BUSINESS_NAME_FIELD = "razon_social"
 COL_PARTY_LEGAL_PARTY_FIELD = "tipo_interesado_juridico"
 COL_PARTY_NAME_FIELD = "nombre"
 COL_RESTRICTION_TYPE_RIGHT_OF_WAY_VALUE = "Servidumbre"
-CONTROL_POINT_TABLE = "puntocontrol"
+CONTROL_POINT_TABLE = "op_puntocontrol"
 DEPARTMENT_FIELD = "departamento"
 DOCUMENT_ID_FIELD = "documento_identidad"
 DOMAIN_KEY_FIELD = {
@@ -1430,8 +1430,6 @@ PARTY_DOCUMENT_TYPE_TABLE = "col_interesadodocumentotipo"
 PARTY_TYPE_TABLE = "la_interesadotipo"
 PLOT_TABLE = "op_terreno"
 PLOT_AREA_FIELD = "area_terreno"
-PLOT_CALCULATED_AREA_FIELD = "area_calculada"
-PLOT_REGISTRY_AREA_FIELD = "area_registral"
 PLOT_VALUATION_FIELD = "avaluo_terreno"
 POINT_AGREEMENT_TYPE_TABLE = "op_acuerdotipo"
 PHOTO_IDENTIFICATION_TYPE_TABLE = "op_fotoidentificaciontipo"
@@ -1445,31 +1443,31 @@ POINT_DESCRIPTION_TYPE_TABLE = "col_descripcionpuntotipo"
 POINT_DEFINITION_TYPE_TABLE = "col_defpuntotipo"
 POINT_INTERPOLATION_TYPE_TABLE = "col_interpolaciontipo"
 POINT_MONUMENTATION_TYPE_TABLE = "col_monumentaciontipo"
-POINTSOURCE_TABLE = "puntofuente"
-POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD = "punto_puntolindero"
-POINTSOURCE_TABLE_SURVEYPOINT_FIELD = "punto_puntolevantamiento"
-POINTSOURCE_TABLE_CONTROLPOINT_FIELD = "punto_puntocontrol"
-POINTSOURCE_TABLE_SOURCE_FIELD = "pfuente"
+POINTSOURCE_TABLE = "col_puntofuente"
+POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD = "punto_op_puntolindero"
+POINTSOURCE_TABLE_SURVEYPOINT_FIELD = "punto_op_puntolevantamiento"
+POINTSOURCE_TABLE_CONTROLPOINT_FIELD = "punto_op_puntocontrol"
+POINTSOURCE_TABLE_SOURCE_FIELD = "fuente_espacial"
 RESTRICTION_TABLE_DESCRIPTION_FIELD = "descripcion"
-RESTRICTION_TABLE = "col_restriccion"
+RESTRICTION_TABLE = "op_restriccion"
 RESTRICTION_TABLE_PARCEL_FIELD = "unidad_predio"
 RESTRICTION_TYPE_TABLE = "col_restricciontipo"
-RRR_SOURCE_RELATION_TABLE = "rrrfuente"
-RRR_SOURCE_RESTRICTION_FIELD = "rrr_col_restriccion"
-RRR_SOURCE_RIGHT_FIELD = "rrr_col_derecho"
-RRR_SOURCE_SOURCE_FIELD = "rfuente"
+RRR_SOURCE_RELATION_TABLE = "col_rrrfuente"
+RRR_SOURCE_RESTRICTION_FIELD = "rrr_op_restriccion"
+RRR_SOURCE_RIGHT_FIELD = "rrr_op_derecho"
+RRR_SOURCE_SOURCE_FIELD = "fuente_administrativa"
 RIGHT_TABLE = "op_derecho"
 RIGHT_TABLE_PARCEL_FIELD = "unidad_predio"
 RIGHT_TABLE_PARTY_FIELD = "interesado_col_interesado"
 RIGHT_TABLE_GROUP_PARTY_FIELD = "interesado_la_agrupacion_interesados"
 RIGHT_TABLE_TYPE_FIELD = "tipo"
 RIGHT_TYPE_TABLE = "col_derechotipo"
-RIGHT_OF_WAY_TABLE="servidumbrepaso"
+RIGHT_OF_WAY_TABLE="op_servidumbrepaso"
 RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD = "identificador"
 REFERENCE_POINT_FIELD = "punto_referencia"
 SECOND_NAME_FIELD = "segundo_nombre"
 SECOND_SURNAME_FIELD = "segundo_apellido"
-SPATIAL_SOURCE_TABLE = "col_fuenteespacial"
+SPATIAL_SOURCE_TABLE = "op_fuenteespacial"
 SPATIAL_SOURCE_TYPE_TABLE = "col_fuenteespacialtipo"
 SURVEY_POINT_TABLE = "op_puntolevantamiento"
 SURVEY_POINT_TYPE_TABLE = "col_puntolevtipo"
@@ -1484,9 +1482,9 @@ UEBAUNIT_TABLE_BUILDING_UNIT_FIELD = "ue_op_unidadconstruccion"
 UEBAUNIT_TABLE_PARCEL_FIELD = "baunit"
 UEBAUNIT_TABLE_PLOT_FIELD = "ue_op_terreno"
 UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD = "ue_op_servidumbrepaso"
-UESOURCE_TABLE = "uefuente"
-UESOURCE_TABLE_PLOT_FIELD = "ue_terreno"
-UESOURCE_TABLE_SOURCE_FIELD = "pfuente"
+UESOURCE_TABLE = "col_uefuente"
+UESOURCE_TABLE_PLOT_FIELD = "ue_op_terreno"
+UESOURCE_TABLE_SOURCE_FIELD = "fuente_espacial"
 VIDA_UTIL_FIELD = "comienzo_vida_util_version"
 ZONE_FIELD = "zona"
 
@@ -1809,16 +1807,16 @@ LAYER_CONSTRAINTS = {
         }
     },
     PLOT_TABLE: {
-        PLOT_CALCULATED_AREA_FIELD: {
+        PLOT_AREA_FIELD: {
             'expression': """
                             CASE
-                                WHEN  "{plot_calculated_area}" IS NULL THEN
+                                WHEN  "{plot_area_field}" IS NULL THEN
                                     FALSE
-                                WHEN  "{plot_calculated_area}" = 0 THEN
+                                WHEN  "{plot_area_field}" = 0 THEN
                                     FALSE
                                 ELSE
                                     TRUE
-                            END""".format(plot_calculated_area = PLOT_CALCULATED_AREA_FIELD),
+                            END""".format(plot_area_field=PLOT_AREA_FIELD),
             'description': 'El valor debe ser mayor a cero (0).'
         }, PLOT_VALUATION_FIELD: {
             'expression': """

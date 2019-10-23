@@ -34,8 +34,7 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       CSS_COLOR_OKAY_LABEL,
                                                       CSS_COLOR_ERROR_LABEL)
 from asistente_ladm_col.config.table_mapping_config import (BOUNDARY_TABLE,
-                                                            PLOT_REGISTRY_AREA_FIELD,
-                                                            PLOT_CALCULATED_AREA_FIELD)
+                                                            PLOT_AREA_FIELD)
 from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
@@ -139,37 +138,6 @@ class CreatePlotCadastreWizard(MultiPageWizardFactory,
         else:
             self.qgis_utils.message_emitted.emit(QCoreApplication.translate(self.WIZARD_NAME, "First select boundaries!"), Qgis.Warning)
 
-    # TODO: Remove when upgrade to LADM-COL 3
-    def finished_dialog(self):
-        self.save_settings()
-
-        if self.rad_refactor.isChecked():
-            if self.mMapLayerComboBox.currentLayer() is not None:
-                field_mapping = self.cbo_mapping.currentText()
-                res_etl_model = self.qgis_utils.show_etl_model(self._db,
-                                                               self.mMapLayerComboBox.currentLayer(),
-                                                               self.EDITING_LAYER_NAME,
-                                                               QgsWkbTypes.PolygonGeometry,
-                                                               field_mapping=field_mapping)
-                if res_etl_model: # Features were added?
-                    # If the result of the etl_model is successful and we used a stored recent mapping, we delete the
-                    # previous mapping used (we give preference to the latest used mapping)
-                    if field_mapping:
-                        self.qgis_utils.delete_old_field_mapping(field_mapping)
-
-                    self.qgis_utils.save_field_mapping(self.EDITING_LAYER_NAME)
-            else:
-                self.qgis_utils.message_emitted.emit(
-                    QCoreApplication.translate(self.WIZARD_NAME,
-                                               "Select a source layer to set the field mapping to '{}'.").format(
-                        self.EDITING_LAYER_NAME),
-                    Qgis.Warning)
-
-            self.close_wizard()
-
-        elif self.rad_create_manually.isChecked():
-            self.prepare_feature_creation()
-
     #############################################################################
     # Custom methods
     #############################################################################
@@ -199,7 +167,7 @@ class CreatePlotCadastreWizard(MultiPageWizardFactory,
             button_text = QCoreApplication.translate("QGISUtils", "Open table of attributes")
             level = Qgis.Info
             layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
-            filter = '"{}" is Null and "{}" is Null'.format(PLOT_REGISTRY_AREA_FIELD, PLOT_CALCULATED_AREA_FIELD)
+            filter = '"{}" is Null'.format(PLOT_AREA_FIELD)
             self.qgis_utils.message_with_open_table_attributes_button_emitted.emit(message, button_text, level, layer, filter)
             self.close_wizard(show_message=False)
         else:

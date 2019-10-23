@@ -35,9 +35,9 @@ from qgis.gui import QgsExpressionSelectionDialog
 
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_HELP_PAGES,
+                                                      WIZARD_HELP1,
                                                       WIZARD_HELP2,
                                                       WIZARD_HELP3,
-                                                      WIZARD_HELP4,
                                                       PLUGIN_NAME,
                                                       CSS_COLOR_OKAY_LABEL,
                                                       CSS_COLOR_ERROR_LABEL,
@@ -320,21 +320,21 @@ class CreateExtAddressCadastreWizard(MultiPageSpatialWizardFactory,
         self.btn_building_unit_expression.setEnabled(False)
 
         if self.rad_to_plot.isChecked():
-            self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
+            self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
             self._current_layer = self._layers[PLOT_TABLE][LAYER]
 
             self.btn_plot_map.setEnabled(True)
             self.btn_plot_expression.setEnabled(True)
 
         elif self.rad_to_building.isChecked():
-            self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP3])
+            self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
             self._current_layer = self._layers[BUILDING_TABLE][LAYER]
 
             self.btn_building_map.setEnabled(True)
             self.btn_building_expression.setEnabled(True)
 
         elif self.rad_to_building_unit.isChecked():
-            self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP4])
+            self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP3])
             self._current_layer = self._layers[BUILDING_UNIT_TABLE][LAYER]
 
             self.btn_building_unit_map.setEnabled(True)
