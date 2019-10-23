@@ -2,6 +2,7 @@ from qgis.PyQt.QtCore import QSettings
 from .table_mapping_config import *
 
 def get_refactor_fields_mapping(layer_name, qgis_utils):
+    names = Names()
     mapping = []
 
     # --------------------------------
@@ -9,20 +10,20 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
     # --------------------------------
     if layer_name == BOUNDARY_POINT_TABLE:
         mapping = [
-            {'expression': '"id_punto_lindero"', 'length': 255, 'name': 'id_punto_lindero', 'precision': -1, 'type': 10},
-            {'expression': '"puntotipo"', 'length': -1, 'name': 'puntotipo', 'precision': 0, 'type': 4},
-            {'expression': '"acuerdo"', 'length': -1, 'name': 'acuerdo', 'precision': 0, 'type': 4},
-            {'expression': '"fotoidentificacion"', 'length': -1, 'name': 'fotoidentificacion', 'precision': 0, 'type': 4},
-            {'expression': '"ubicacion_punto"', 'length': -1, 'name': 'ubicacion_punto', 'precision': 0, 'type': 4},
-            {'expression': '"exactitud_horizontal"', 'length': -1, 'name': 'exactitud_horizontal', 'precision': 0, 'type': 2},
-            {'expression': '"exactitud_vertical"', 'length': -1, 'name': 'exactitud_vertical', 'precision': 0, 'type': 2},
-            {'expression': '"posicion_interpolacion"', 'length': -1, 'name': 'posicion_interpolacion', 'precision': 0, 'type': 4},
-            {'expression': '"monumentacion"', 'length': -1, 'name': 'monumentacion', 'precision': 0, 'type': 4},
-            {'expression': '"metodoproduccion"', 'length': -1, 'name': 'metodoproduccion', 'precision': 0, 'type': 4},
-            {'expression': '"espacio_de_nombres"', 'length': 255, 'name': 'espacio_de_nombres', 'precision': -1, 'type': 10},
-            {'expression': '"local_id"', 'length': 255, 'name': 'local_id', 'precision': -1, 'type': 10},
-            {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
+            {'expression': '"{}"'.format(names.OP_BOUNDARY_POINT_T_ID_F), 'length': 255, 'name': '{}'.format(names.OP_BOUNDARY_POINT_T_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_BOUNDARY_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.OP_BOUNDARY_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_BOUNDARY_POINT_T_AGREEMENT_F), 'length': -1, 'name': '{}'.format(names.OP_BOUNDARY_POINT_T_AGREEMENT_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_BOUNDARY_POINT_T_PHOTO_IDENTIFICATION_F), 'length': -1, 'name': '{}'.format(names.OP_BOUNDARY_POINT_T_PHOTO_IDENTIFICATION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_BOUNDARY_POINT_T_POINT_LOCATION_F), 'length': -1, 'name': '{}'.format(names.OP_BOUNDARY_POINT_T_POINT_LOCATION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_BOUNDARY_POINT_T_HORIZONTAL_ACCURACY_F), 'length': -1, 'name': '{}'.format(names.OP_BOUNDARY_POINT_T_HORIZONTAL_ACCURACY_F), 'precision': 0, 'type': 2},
+            {'expression': '"{}"'.format(names.OP_BOUNDARY_POINT_T_VERTICAL_ACCURACY_F), 'length': -1, 'name': '{}'.format(names.OP_BOUNDARY_POINT_T_VERTICAL_ACCURACY_F), 'precision': 0, 'type': 2},
+            {'expression': '"{}"'.format(names.COL_POINT_T_INTERPOLATION_POSITION_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_INTERPOLATION_POSITION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_POINT_T_MONUMENTATION_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_MONUMENTATION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_POINT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.COL_POINT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_POINT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_POINT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
         ]
     elif layer_name == SURVEY_POINT_TABLE:
         mapping = [
