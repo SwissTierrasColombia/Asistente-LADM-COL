@@ -210,23 +210,6 @@ should match only one feature. If the expression matches two or more features, t
 the association will not be activated.\
 ")
 
-# Clase de tipo LA_RRR que registra las responsabilidades que las instancias de los interesados tienen sobre los predios.
-        self.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Responsibility</b> based on existing <b>Administrative Source(s)</b>.\
-<br><br>\
-<b>COL_Responsibility</b> is a class of type <i>LA_RRR</i> which stores responsibilities that parties have over parcels.\
-")
-
-        self.WIZ_CREATE_RESPONSIBILITY_CADASTRE_PAGE_2 = QCoreApplication.translate("HelpStrings", "\
-Before creating a <b>Responsibility</b> you must associate with one or more existing <b>Administrative Sources</b>, First you must select the Administrative Source(s) of interest\
-<br><br>\
-You can select an Administrative Source(s) by:\
-<br><br>\
-<b> * Expression</b>: Here you can select using an expression, this has to be valid and \
-the selection should take one feature. If the expression gets zero features or more than one, the button for create \
-the association will not be activated.\
-")
-
 # Restricciones a las que está sometido un predio y que inciden sobre los derechos que pueden ejercerse sobre él.
         self.WIZ_CREATE_RESTRICTION_CADASTRE_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
 Choose this option if you want to create a <b>Restriction</b> based on existing <b>Administrative Source(s)</b>.\
@@ -286,62 +269,8 @@ Choose this option if you want to create a <b>Boundary</b> using QGIS digitizing
 <b>Boundary</b> is a specialization of the <i>LA_CadenaCarasLindero</i> class to store boundaries that define plots. Two boundaries must not cross or overlap.\
 ")
 
-        self.WIZ_CREATE_PROPERTY_RECORD_CARD_PRC_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Property Record Card</b> using a form.\
-<br><br>\
-<b>Property Record Card</b> is created specifically to store the information collected for the parcels.\
-")
-
-        self.WIZ_CREATE_MARKET_RESEARCH_PRC_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Market Research</b> using a form.\
-<br><br>\
-<b>Market Research</b> is information related to the market research carried out, with the objective to obtain the most probable market values, based on real estate transactions carried out.\
-")
-
-        self.WIZ_CREATE_NUCLEAR_FAMILY_PRC_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Nuclear Family</b> using a form.\
-<br><br>\
-<b>Nuclear Family</b> allows to registry the information related to the nuclear families of the cadastral survey for the pilots of the multipurpose cadastre.\
-")
-
-        self.WIZ_CREATE_NATURAL_PARTY_PRC_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Natural Party</b> using a form.\
-<br><br>\
-<b>Natural Party</b> acting as party.\
-")
-
-        self.WIZ_CREATE_LEGAL_PARTY_PRC_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Legal Party</b> using a form.\
-<br><br>\
-<b>Legal Party</b> acting as party.\
-")
-
         self.DLG_IMPORT_FROM_EXCEL = QCoreApplication.translate("HelpStrings", "\
 Use an intermediate Excel structure to import legal (all alphanumeric) data into LADM_COL.<br><br><a href='#template'>Click to download Excel template</a><br><br><a href='#data'>Click to download Excel sample data</a>\
-")
-
-        self.WIZ_CREATE_PARCEL_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Parcel</b> using a form.\
-<br><br>\
-<b>Parcel</b> is a grouping of specific attributes that are needed to appraise the parcel.\
-")
-
-        self.WIZ_CREATE_HORIZONTAL_PROPERTY_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Horizontal Property Valuation</b> using a form.\
-<br><br>\
-<b>Horizontal Property Valuation</b> stores information related to the property, or basic unit of the plot, which serves as a main parcel to a horizontal property element.\
-")
-
-        self.WIZ_CREATE_COMMON_EQUIPMENT_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Common Equipment</b> using a form.\
-<br><br>\
-<b>Common Equipment</b> stores information relative to the common equipment of the horizontal property main parcel.\
-")
-
-        self.WIZ_CREATE_BUILDING_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\
-Choose this option if you want to create a <b>Building</b> using a form.\
-<br><br>\
-<b>Building</b> (valuation model) is a grouping of specific attributes that are needed to appraise the building.\
 ")
 
         self.WIZ_CREATE_BUILDING_UNIT_VALUATION_PAGE_1_OPTION_FORM = QCoreApplication.translate("HelpStrings", "\

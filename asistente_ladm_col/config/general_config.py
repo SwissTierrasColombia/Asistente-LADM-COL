@@ -107,7 +107,6 @@ MODULE_HELP_MAPPING = {
     'create_right_of_way':'cadastre/Spatial_Unit.html#create-right-of-way',
     'associate_ext_address': 'cadastre/Spatial_Unit.html#associate-extaddress',
     'create_right': 'cadastre/RRR.html#right',
-    'create_responsibility': 'cadastre/RRR.html#responsibility',
     'create_restriction': 'cadastre/RRR.html#restriction',
     'create_spatial_source': 'cadastre/Source.html#spatial-source',
     'load_layers': 'load_layers.html#load-layers',
@@ -115,15 +114,6 @@ MODULE_HELP_MAPPING = {
     'group_party': 'cadastre/Party.html#group-party',
     'quality_rules': 'cadastre/Quality.html',
     'settings': 'settings.html',
-    'create_property_record_card': 'property_record_card/Property_record_card.html',
-    'create_nuclear_family': 'property_record_card/Nuclear_family.html',
-    'create_natural_party': 'property_record_card/Natural_party.html',
-    'create_legal_party': 'property_record_card/Legal_party.html',
-    'create_market_research': 'property_record_card/Market_research.html',
-    'create_parcel_valuation': 'valuation/Create_parcel.html',
-    'create_horizontal_property_valuation': 'valuation/Create_Horizontal_property_main_parcel.html',
-    'create_common_equipment_valuation': 'valuation.Create_common_equipment.html',
-    'create_building_valuation': 'valuation/Create_building.html',
     'create_building_unit_valuation': 'valuation/Create_building_unit.html',
     'create_building_unit_qualification_valuation_unconventional': 'valuation/Create_building_unit_qualification_unconventional.html',
     'create_building_unit_qualification_valuation_conventional': 'valuation/Create_building_unit_qualification_conventional.html',
@@ -266,7 +256,6 @@ WIZARD_CREATE_BUILDING_CADASTRE = "wizard_create_building_cadastre"
 WIZARD_CREATE_BUILDING_UNIT_CADASTRE = "wizard_create_building_unit_cadastre"
 WIZARD_CREATE_RIGHT_CADASTRE = "wizard_create_right_cadastre"
 WIZARD_CREATE_RESTRICTION_CADASTRE = "wizard_create_restriction_cadastre"
-WIZARD_CREATE_RESPONSIBILITY_CADASTRE = "wizard_create_responsibility_cadastre"
 WIZARD_CREATE_SPATIAL_SOURCE_CADASTRE = "wizard_create_spatial_source_cadastre"
 WIZARD_CREATE_PARCEL_CADASTRE = "wizard_create_parcel_cadastre"
 WIZARD_CREATE_PLOT_CADASTRE = "wizard_create_plot_cadastre"
@@ -274,22 +263,10 @@ WIZARD_CREATE_EXT_ADDRESS_CADASTRE = "wizard_create_ext_address_cadastre"
 WIZARD_CREATE_RIGHT_OF_WAY_CADASTRE = "wizard_create_right_of_way_cadastre"
 
 # Valuation model
-WIZARD_CREATE_PARCEL_VALUATION = "wizard_create_parcel_valuation"
-WIZARD_CREATE_HORIZONTAL_PROPERTY_VALUATION = "wizard_create_horizontal_property_valuation"
-WIZARD_CREATE_COMMON_EQUIPMENT_VALUATION = "wizard_create_common_equipment_valuation"
-WIZARD_CREATE_BUILDING_VALUATION = "wizard_create_building_valuation"
 WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION = "wizard_create_geoeconomic_zone_valuation"
 WIZARD_CREATE_PHYSICAL_ZONE_VALUATION = "wizard_create_physical_zone_valuation"
 WIZARD_CREATE_BUILDING_UNIT_VALUATION = "wizard_create_building_unit_valuation"
 WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION = "wizard_create_building_unit_qualification_valuation"
-
-# Property Record Card model
-WIZARD_CREATE_LEGAL_PARTY_PRC = "wizard_create_legal_party_prc"
-WIZARD_CREATE_NATURAL_PARTY_PRC = "wizard_create_natural_party_prc"
-WIZARD_CREATE_NUCLEAR_FAMILY_PRC = "wizard_create_nuclear_family_prc"
-WIZARD_CREATE_MARKET_RESEARCH_PRC = "wizard_create_market_research_prc"
-WIZARD_CREATE_PROPERTY_RECORD_CARD_PRC = "wizard_create_property_record_card"
-
 
 # Log topology rules
 LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE = "<h4>"

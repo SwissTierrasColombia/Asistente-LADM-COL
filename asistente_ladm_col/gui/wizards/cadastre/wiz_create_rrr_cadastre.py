@@ -34,10 +34,8 @@ from asistente_ladm_col.config.table_mapping_config import (ADMINISTRATIVE_SOURC
                                                           RRR_SOURCE_SOURCE_FIELD,
                                                           RRR_SOURCE_RIGHT_FIELD,
                                                           RRR_SOURCE_RESTRICTION_FIELD,
-                                                          RRR_SOURCE_RESPONSIBILITY_FIELD,
                                                           RIGHT_TABLE,
                                                           RESTRICTION_TABLE,
-                                                          RESPONSIBILITY_TABLE,
                                                           ID_FIELD)
 from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
@@ -65,7 +63,7 @@ class CreateRRRCadastreWizard(MultiPageWizardFactory, SelectFeatureByExpressionD
             if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
                 self.log.logMessage("Feature not found in layer {}...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
             else:
-                # feature_rrr_id: generic name used for represent id for right, restriction, responsibility
+                # feature_rrr_id: generic name used for represent id for right, restriction
                 feature_rrr_id = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
 
                 # Fill rrrfuente table
@@ -78,8 +76,6 @@ class CreateRRRCadastreWizard(MultiPageWizardFactory, SelectFeatureByExpressionD
                         new_feature.setAttribute(RRR_SOURCE_RIGHT_FIELD, feature_rrr_id)
                     elif self.EDITING_LAYER_NAME == RESTRICTION_TABLE:
                         new_feature.setAttribute(RRR_SOURCE_RESTRICTION_FIELD, feature_rrr_id)
-                    elif self.EDITING_LAYER_NAME == RESPONSIBILITY_TABLE:
-                        new_feature.setAttribute(RRR_SOURCE_RESPONSIBILITY_FIELD, feature_rrr_id)
 
                     self.log.logMessage("Saving Administrative_source-{}: {}-{}".format(self.WIZARD_FEATURE_NAME, administrative_source_id, feature_rrr_id), PLUGIN_NAME, Qgis.Info)
                     new_features.append(new_feature)

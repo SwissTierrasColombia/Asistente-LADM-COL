@@ -42,9 +42,7 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       CSS_COLOR_OKAY_LABEL,
                                                       CSS_COLOR_ERROR_LABEL,
                                                       CSS_COLOR_INACTIVE_LABEL)
-from asistente_ladm_col.config.table_mapping_config import (OID_TABLE,
-                                                            OID_EXTADDRESS_ID_FIELD,
-                                                            EXTADDRESS_BUILDING_UNIT_FIELD,
+from asistente_ladm_col.config.table_mapping_config import (EXTADDRESS_BUILDING_UNIT_FIELD,
                                                             EXTADDRESS_BUILDING_FIELD,
                                                             EXTADDRESS_PLOT_FIELD,
                                                             ID_FIELD,
@@ -170,19 +168,6 @@ class CreateExtAddressCadastreWizard(MultiPageSpatialWizardFactory,
                 self.log.logMessage("Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
             else:
                 extaddress_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
-
-                # Suppress (i.e., hide) feature form
-                self.qgis_utils.suppress_form(self._layers[OID_TABLE][LAYER], True)
-
-                # Add OID record
-                self._layers[OID_TABLE][LAYER].startEditing()
-                feature = QgsVectorLayerUtils().createFeature(self._layers[OID_TABLE][LAYER])
-                feature.setAttribute(OID_EXTADDRESS_ID_FIELD, extaddress_tid)
-                self._layers[OID_TABLE][LAYER].addFeature(feature)
-                self._layers[OID_TABLE][LAYER].commitChanges()
-
-                # Don't suppress (i.e., show) feature form
-                self.qgis_utils.suppress_form(self._layers[OID_TABLE][LAYER], False)
                 message = QCoreApplication.translate(self.WIZARD_NAME,
                                                      "The new {} (t_id={}) was successfully created ").format(self.WIZARD_FEATURE_NAME, extaddress_tid)
         return message

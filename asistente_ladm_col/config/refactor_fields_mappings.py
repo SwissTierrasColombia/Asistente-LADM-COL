@@ -4,6 +4,10 @@ from .table_mapping_config import *
 def get_refactor_fields_mapping(layer_name, qgis_utils):
     names = Names()
     mapping = []
+
+    # --------------------------------
+    # OPERATION MODEL
+    # --------------------------------
     if layer_name == names.OP_BOUNDARY_POINT_T:
         mapping = [
             {'expression': '"{}"'.format(names.OP_BOUNDARY_POINT_T_ID_F), 'length': 255, 'name': '{}'.format(names.OP_BOUNDARY_POINT_T_ID_F), 'precision': -1, 'type': 10},
