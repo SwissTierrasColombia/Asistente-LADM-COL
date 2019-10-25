@@ -44,7 +44,9 @@ from asistente_ladm_col.config.general_config import (LAYER,
 from asistente_ladm_col.config.table_mapping_config import (PLOT_TABLE,
                                                             BUILDING_TABLE,
                                                             BUILDING_UNIT_TABLE,
-                                                            PARCEL_TYPE_FIELD,
+                                                            PARCEL_CONDITION_FIELD,
+                                                            CONDITION_PARCEL_TYPE_TABLE,
+                                                            DISPNAME,
                                                             CONSTRAINT_TYPES_OF_PARCEL,
                                                             UEBAUNIT_TABLE,
                                                             UEBAUNIT_TABLE_PLOT_FIELD,
@@ -66,7 +68,6 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
         SelectFeatureByExpressionDialogWrapper.__init__(self)
         SelectFeaturesOnMapWrapper.__init__(self)
         self._spatial_unit_layers = dict()
-        self.type_of_parcel_selected = None
 
     def post_save(self, features):
         message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -238,8 +239,9 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
             self.close_wizard(show_message=False)
 
         if self.cb_parcel_type.count() == 0:
-            for parcel_type in CONSTRAINT_TYPES_OF_PARCEL:
-                self.cb_parcel_type.addItem(parcel_type)
+            for feature in self._layers[CONDITION_PARCEL_TYPE_TABLE][LAYER].getFeatures():
+                if feature[DISPNAME] in CONSTRAINT_TYPES_OF_PARCEL:
+                    self.cb_parcel_type.addItem(feature[DISPNAME], feature[ID_FIELD])
 
             # Select previous option saved
             if self.type_of_parcel_selected:
@@ -277,7 +279,7 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
 
     def exec_form(self, layer):
         feature = self.get_feature_exec_form(layer)
-        feature[PARCEL_TYPE_FIELD] = self.cb_parcel_type.currentText()
+        feature[PARCEL_CONDITION_FIELD] = self.cb_parcel_type.currentText()
 
         dialog = self.iface.getFeatureForm(layer, feature)
         dialog.rejected.connect(self.form_rejected)
@@ -287,8 +289,8 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
             fid = feature.id()
 
             # assigns the type of parcel before to creating it
-            parcel_type_field_idx = layer.getFeature(fid).fieldNameIndex(PARCEL_TYPE_FIELD)
-            layer.changeAttributeValue(fid, parcel_type_field_idx, self.cb_parcel_type.currentText())
+            parcel_condition_field_idx = layer.getFeature(fid).fieldNameIndex(PARCEL_CONDITION_FIELD)
+            layer.changeAttributeValue(fid, parcel_condition_field_idx, self.cb_parcel_type.itemData(self.cb_parcel_type.currentIndex()))
 
             saved = layer.commitChanges()
 

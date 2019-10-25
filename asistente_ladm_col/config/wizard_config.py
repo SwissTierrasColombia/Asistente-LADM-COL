@@ -26,7 +26,8 @@ from asistente_ladm_col.config.table_mapping_config import (COL_PARTY_TABLE,
                                                             COL_PARTY_NAME_FIELD,
                                                             BUILDING_TABLE,
                                                             PARCEL_TABLE,
-                                                            PARCEL_TYPE_FIELD,
+                                                            CONDITION_PARCEL_TYPE_TABLE,
+                                                            PARCEL_CONDITION_FIELD,
                                                             UEBAUNIT_TABLE,
                                                             BUILDING_UNIT_TABLE,
                                                             RIGHT_OF_WAY_TABLE,
@@ -327,10 +328,11 @@ WIZARDS_SETTINGS = {
             PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
             BUILDING_TABLE: {'name': BUILDING_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
             BUILDING_UNIT_TABLE: {'name': BUILDING_UNIT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
+            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None},
+            CONDITION_PARCEL_TYPE_TABLE: {'name': CONDITION_PARCEL_TYPE_TABLE, 'geometry': None, LAYER: None}
         },
         WIZARD_EDITING_LAYER_NAME: PARCEL_TABLE,
-        WIZARD_READ_ONLY_FIELDS: [PARCEL_TYPE_FIELD],
+        WIZARD_READ_ONLY_FIELDS: [PARCEL_CONDITION_FIELD],
         WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
     },
     WIZARD_CREATE_PLOT_CADASTRE: {

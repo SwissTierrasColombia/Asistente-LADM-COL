@@ -29,8 +29,7 @@ from functools import partial
 from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal)
 from qgis.core import (Qgis,
-                       QgsProject,
-                       QgsVectorLayerUtils)
+                       QgsProject)
 from qgis.gui import QgsExpressionSelectionDialog
 
 from asistente_ladm_col.config.general_config import (LAYER,

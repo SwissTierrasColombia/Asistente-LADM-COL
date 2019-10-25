@@ -9,14 +9,12 @@ from .table_mapping_config import (PLOT_TABLE,
                                    PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
                                    PARCEL_TYPE_CONDOMINIUM_PARENT,
                                    PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT,
-                                   PARCEL_TYPE_MEJORA,
+                                   PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA,
+                                   PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA,
                                    PARCEL_TYPE_CEMETERY_PARENT,
-                                   PARCEL_TYPE_CEMETERY_PRIVATE_UNIT,
+                                   PARCEL_TYPE_CEMETERY_PARCEL_UNIT,
                                    PARCEL_TYPE_ROAD,
-                                   PARCEL_TYPE_PUBLIC_USE,
-                                   PARCEL_TYPE_STORE,
-                                   PARCEL_TYPE_PARKING,
-                                   PARCEL_TYPE_WAREHOUSE)
+                                   PARCEL_TYPE_PUBLIC_USE)
 
 # For this module use multiline "\" instead of triple double quotes
 
@@ -322,14 +320,12 @@ Choose this option if you want to create an <b>Unconventional Building Unit Qual
             PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT: QCoreApplication.translate("HelpStrings", "Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada deber una o más '{building_unit_table}'").format(parcel_type=PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT, building_unit_table=BUILDING_UNIT_TABLE),
             PARCEL_TYPE_CONDOMINIUM_PARENT: QCoreApplication.translate("HelpStrings", "Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o más '{building_table}es'").format(parcel_type=PARCEL_TYPE_CONDOMINIUM_PARENT, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE),
             PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT: QCoreApplication.translate("HelpStrings", "Cuando el tipo de predio es  <b>'{parcel_type}'</b> la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o más '{building_table}es'").format(parcel_type=PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE),
-            PARCEL_TYPE_MEJORA: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada debe ser una '{building_table}' o '{building_unit_table}'").format(parcel_type=PARCEL_TYPE_MEJORA, building_table=BUILDING_TABLE, building_unit_table=BUILDING_UNIT_TABLE),
+            PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA: QCoreApplication.translate("HelpStrings", "Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada debe ser una '{building_table}' o '{building_unit_table}'").format(parcel_type=PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA, building_table=BUILDING_TABLE, building_unit_table=BUILDING_UNIT_TABLE),
+            PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA: QCoreApplication.translate("HelpStrings", "Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada debe ser una '{building_table}' o '{building_unit_table}'").format(parcel_type=PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA, building_table=BUILDING_TABLE, building_unit_table=BUILDING_UNIT_TABLE),
             PARCEL_TYPE_CEMETERY_PARENT: QCoreApplication.translate("HelpStrings", "Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o más '{building_table}es'").format(parcel_type=PARCEL_TYPE_CEMETERY_PARENT, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE),
-            PARCEL_TYPE_CEMETERY_PRIVATE_UNIT: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada la unidad espacial asociada debe ser un '{plot_table}'").format(parcel_type=PARCEL_TYPE_CEMETERY_PRIVATE_UNIT, plot_table=PLOT_TABLE),
+            PARCEL_TYPE_CEMETERY_PARCEL_UNIT: QCoreApplication.translate("HelpStrings", "Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada la unidad espacial asociada debe ser un '{plot_table}'").format(parcel_type=PARCEL_TYPE_CEMETERY_PARCEL_UNIT, plot_table=PLOT_TABLE),
             PARCEL_TYPE_ROAD: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada la unidad espacial asociada debe ser un '{plot_table}'").format(parcel_type=PARCEL_TYPE_ROAD, plot_table=PLOT_TABLE),
-            PARCEL_TYPE_PUBLIC_USE: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o más '{building_table}es'").format(parcel_type=PARCEL_TYPE_PUBLIC_USE, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE),
-            PARCEL_TYPE_STORE: QCoreApplication.translate("HelpStrings", ""),
-            PARCEL_TYPE_PARKING: QCoreApplication.translate("HelpStrings",""),
-            PARCEL_TYPE_WAREHOUSE: QCoreApplication.translate("HelpStrings", "")
+            PARCEL_TYPE_PUBLIC_USE: QCoreApplication.translate("HelpStrings","Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o más '{building_table}es'").format(parcel_type=PARCEL_TYPE_PUBLIC_USE, plot_table=PLOT_TABLE, building_table=BUILDING_TABLE)
         }
 
     def get_refactor_help_string(self, db, layer):
