@@ -1834,16 +1834,16 @@ Constrains for wizard create parcel
 
 # Types of parcels
 PARCEL_TYPE_NO_HORIZONTAL_PROPERTY = "No propiedad horizontal"
-PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT = "PH.Matriz"
-PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT = "PH.Unidad Predial"
-PARCEL_TYPE_CONDOMINIUM_PARENT = "Condominio.Matriz"
-PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT = "Condominio.Unidad Predial"
-PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA = "Mejora.PH"
-PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA = "Mejora.NPH"
-PARCEL_TYPE_CEMETERY_PARENT = "Parque Cementerio.Matriz"
-PARCEL_TYPE_CEMETERY_PARCEL_UNIT = "Parque Cementerio.Unidad Predial"
-PARCEL_TYPE_ROAD = "Via"
-PARCEL_TYPE_PUBLIC_USE = "BienUsoPublico"
+PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT = "(Propiedad horizontal) Matriz"
+PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT = "(Propiedad horizontal) Unidad Predial"
+PARCEL_TYPE_CONDOMINIUM_PARENT = "(Condominio) Matriz"
+PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT = "(Condominio) Unidad predial"
+PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA = "(Mejora) Propiedad horizontal"
+PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA = "(Mejora) No propiedad horizontal"
+PARCEL_TYPE_CEMETERY_PARENT = "(Parque cementerio) Matriz"
+PARCEL_TYPE_CEMETERY_PARCEL_UNIT = "(Parque Cementerio) Unidad predial"
+PARCEL_TYPE_ROAD = "Vía"
+PARCEL_TYPE_PUBLIC_USE = "Bien de uso público"
 
 # Operations:
 # 1 = One and only one feature must be selected
