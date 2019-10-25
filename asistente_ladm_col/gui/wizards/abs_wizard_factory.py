@@ -40,6 +40,7 @@ from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
                                                       WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_QSETTINGS,
                                                       WIZARD_HELP, WIZARD_READ_ONLY_FIELDS, WIZARD_TOOL_NAME)
 from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.utils.ui import load_ui
 
@@ -57,6 +58,7 @@ class AbsWizardFactory(QWizard):
         self.wizard_config = wizard_settings
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
+        self.names = Names()
 
         load_ui(self.wizard_config[WIZARD_UI], self)
 

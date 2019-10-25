@@ -24,7 +24,6 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import QWizard
 from qgis.core import (QgsVectorLayerUtils,
-                       QgsWkbTypes,
                        QgsGeometry,
                        Qgis)
 
@@ -33,8 +32,6 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_HELP1,
                                                       CSS_COLOR_OKAY_LABEL,
                                                       CSS_COLOR_ERROR_LABEL)
-from asistente_ladm_col.config.table_mapping_config import (BOUNDARY_TABLE,
-                                                            PLOT_AREA_FIELD)
 from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
@@ -61,11 +58,11 @@ class CreatePlotCadastreWizard(MultiPageWizardFactory,
         pass
 
     def check_selected_features(self):
-        self.lb_info.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Boundary(ies)</b>: {count} Feature(s) Selected").format(count=self._layers[BOUNDARY_TABLE][LAYER].selectedFeatureCount()))
+        self.lb_info.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Boundary(ies)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount()))
         self.lb_info.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
 
         _color = CSS_COLOR_OKAY_LABEL
-        has_selected_boundaries = self._layers[BOUNDARY_TABLE][LAYER].selectedFeatureCount() > 0
+        has_selected_boundaries = self._layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount() > 0
         if not has_selected_boundaries:
             _color = CSS_COLOR_ERROR_LABEL
         self.lb_info.setStyleSheet(_color)
@@ -83,8 +80,8 @@ class CreatePlotCadastreWizard(MultiPageWizardFactory,
                 pass
 
     def register_select_features_by_expression(self):
-        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BOUNDARY_TABLE][LAYER]))
-        self.btn_select_all.clicked.connect(partial(self.select_all_features, self._layers[BOUNDARY_TABLE][LAYER]))
+        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.OP_BOUNDARY_T][LAYER]))
+        self.btn_select_all.clicked.connect(partial(self.select_all_features, self._layers[self.names.OP_BOUNDARY_T][LAYER]))
 
     def disconnect_signals_controls_select_features_on_map(self):
         signals = [self.btn_map.clicked]
@@ -96,7 +93,7 @@ class CreatePlotCadastreWizard(MultiPageWizardFactory,
                 pass
 
     def register_select_feature_on_map(self):
-        self.btn_map.clicked.connect(partial(self.select_features_on_map, self._layers[BOUNDARY_TABLE][LAYER]))
+        self.btn_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.OP_BOUNDARY_T][LAYER]))
 
     #############################################################################
     # Override methods
@@ -130,7 +127,7 @@ class CreatePlotCadastreWizard(MultiPageWizardFactory,
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
 
     def edit_feature(self):
-        if self._layers[BOUNDARY_TABLE][LAYER].selectedFeatureCount() > 0:
+        if self._layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatureCount() > 0:
             # Open Form
             self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME][LAYER])
             self.qgis_utils.active_snapping_all_layers()
@@ -147,7 +144,7 @@ class CreatePlotCadastreWizard(MultiPageWizardFactory,
         self.check_selected_features()
 
     def create_plots_from_boundaries(self):
-        selected_boundaries = self._layers[BOUNDARY_TABLE][LAYER].selectedFeatures()
+        selected_boundaries = self._layers[self.names.OP_BOUNDARY_T][LAYER].selectedFeatures()
 
         boundary_geometries = [f.geometry() for f in selected_boundaries]
         collection = QgsGeometry().polygonize(boundary_geometries)
@@ -167,7 +164,7 @@ class CreatePlotCadastreWizard(MultiPageWizardFactory,
             button_text = QCoreApplication.translate("QGISUtils", "Open table of attributes")
             level = Qgis.Info
             layer = self._layers[self.EDITING_LAYER_NAME][LAYER]
-            filter = '"{}" is Null'.format(PLOT_AREA_FIELD)
+            filter = '"{}" is Null'.format(self.names.OP_PLOT_T_PLOT_AREA_F)
             self.qgis_utils.message_with_open_table_attributes_button_emitted.emit(message, button_text, level, layer, filter)
             self.close_wizard(show_message=False)
         else:

@@ -23,6 +23,7 @@ from qgis.core import (QgsMapLayerProxyModel,
                        QgsWkbTypes)
 
 from asistente_ladm_col.config.table_mapping_config import (COL_PARTY_TABLE,
+                                                            COL_PARTY_NAME_FIELD,
                                                             BUILDING_TABLE,
                                                             PARCEL_TABLE,
                                                             PARCEL_TYPE_FIELD,
@@ -126,7 +127,7 @@ WIZARDS_SETTINGS = {
             COL_PARTY_TABLE: {'name': COL_PARTY_TABLE, 'geometry': None, LAYER: None}
         },
         WIZARD_EDITING_LAYER_NAME: COL_PARTY_TABLE,
-        WIZARD_READ_ONLY_FIELDS: [],
+        WIZARD_READ_ONLY_FIELDS: [COL_PARTY_NAME_FIELD],
         WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
     },
     WIZARD_CREATE_ADMINISTRATIVE_SOURCE_CADASTRE: {

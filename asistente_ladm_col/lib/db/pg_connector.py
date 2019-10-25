@@ -506,7 +506,7 @@ class PGConnector(DBConnector):
                 FROM {schema}.t_ili2db_attrname a
                     INNER JOIN {schema}.t_ili2db_classname c ON c.sqlname = a.target
                     INNER JOIN (SELECT a_s.iliname
-                        FROM operacion_01.t_ili2db_attrname a_s
+                        FROM {schema}.t_ili2db_attrname a_s
                         GROUP BY a_s.iliname
                         HAVING COUNT(a_s.iliname) > 1 ) s ON a.iliname = s.iliname
                 GROUP BY a.iliname, a.sqlname, c.iliname

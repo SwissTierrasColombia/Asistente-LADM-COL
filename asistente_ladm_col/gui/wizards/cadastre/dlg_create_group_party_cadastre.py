@@ -36,19 +36,17 @@ from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.general_config import (PLUGIN_NAME, LAYER)
 from asistente_ladm_col.config.help_strings import HelpStrings
-from asistente_ladm_col.config.table_mapping_config import (DOMAIN_KEY_FIELD,
-                                                            FRACTION_DENOMINATOR_FIELD,
+from asistente_ladm_col.config.table_mapping_config import (FRACTION_DENOMINATOR_FIELD,
                                                             FRACTION_MEMBER_FIELD,
                                                             FRACTION_NUMERATOR_FIELD,
                                                             FRACTION_TABLE,
                                                             ID_FIELD,
+                                                            DISPNAME,
                                                             LA_GROUP_PARTY_NAME_FIELD,
                                                             LA_GROUP_PARTY_GPTYPE_FIELD,
                                                             LA_GROUP_PARTY_TABLE,
                                                             COL_PARTY_TABLE,
-                                                            LA_GROUP_PARTY_TYPE_FIELD,
                                                             LA_GROUP_PARTY_TYPE_TABLE,
-                                                            LA_GROUP_PARTY_TYPE_VALUE,
                                                             MEMBERS_GROUP_PARTY_FIELD,
                                                             MEMBERS_PARTY_FIELD,
                                                             MEMBERS_TABLE)
@@ -87,10 +85,8 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         if not la_group_party_type_table:
             return
 
-        domain_key_index = la_group_party_type_table.fields().indexOf(DOMAIN_KEY_FIELD[self._db.mode])
-        domain_keys = list(la_group_party_type_table.uniqueValues(domain_key_index))
-        domain_keys.sort()
-        self.cbo_group_type.addItems(domain_keys)
+        for feature in la_group_party_type_table.getFeatures():
+            self.cbo_group_type.addItem(feature[DISPNAME], feature[ID_FIELD])
 
         self.txt_search_party.setText("")
         self.btn_select.setEnabled(False)
@@ -284,7 +280,7 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
              self.parties_to_group[k] = [v_n, v_d]
 
         name = self.txt_group_name.text()
-        group_party_type = self.cbo_group_type.currentText()
+        group_party_type = self.cbo_group_type.itemData(self.cbo_group_type.currentIndex())
         dict_params = {
             LA_GROUP_PARTY_NAME_FIELD: name,
             LA_GROUP_PARTY_GPTYPE_FIELD: group_party_type,
@@ -367,7 +363,10 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
             new_feature = QgsVectorLayerUtils().createFeature(self._layers[LA_GROUP_PARTY_TABLE][LAYER])
             new_feature.setAttribute(LA_GROUP_PARTY_GPTYPE_FIELD, group[LA_GROUP_PARTY_GPTYPE_FIELD])
             new_feature.setAttribute(LA_GROUP_PARTY_NAME_FIELD, group[LA_GROUP_PARTY_NAME_FIELD])
-            new_feature.setAttribute(LA_GROUP_PARTY_TYPE_FIELD, LA_GROUP_PARTY_TYPE_VALUE)
+
+            # TODO: Remove when local id and working space are defined
+            new_feature.setAttribute('local_id', 1)
+            new_feature.setAttribute('espacio_de_nombres', 'op_group_party')
 
             # TODO: Gui should allow users to ented namespace, local_id and date values
             #new_feature.setAttribute("p_espacio_de_nombres", LA_GROUP_PARTY_TABLE)

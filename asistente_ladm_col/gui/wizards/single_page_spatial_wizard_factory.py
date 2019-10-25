@@ -32,10 +32,9 @@ from qgis.core import (Qgis, QgsMapLayerProxyModel)
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       WIZARD_HELP_PAGES,
                                                       WIZARD_HELP1,
+                                                      PLUGIN_NAME,
                                                       WIZARD_MAP_LAYER_PROXY_MODEL)
 from asistente_ladm_col.gui.wizards.spatial_wizard_factory import SpatialWizardFactory
-from ...config.general_config import PLUGIN_NAME
-from ...config.table_mapping_config import ID_FIELD
 
 
 class SinglePageSpatialWizardFactory(SpatialWizardFactory):
@@ -88,7 +87,7 @@ class SinglePageSpatialWizardFactory(SpatialWizardFactory):
                                                  "'{}' tool has been closed. Feature not found in layer {}... It's not posible create it.").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME)
             self.log.logMessage("Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
         else:
-            feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
+            feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[self.names.T_ID_F]
             message = QCoreApplication.translate(self.WIZARD_NAME,
                                                  "The new {} (t_id={}) was successfully created!").format(self.WIZARD_FEATURE_NAME, feature_tid)
         return message
