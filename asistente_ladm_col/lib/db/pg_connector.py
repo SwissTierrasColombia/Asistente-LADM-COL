@@ -494,7 +494,6 @@ class PGConnector(DBConnector):
                 record['field_iliname'] = normalize_iliname(record['field_iliname'])
                 dict_names[record['table_iliname']][record['field_iliname']] = record['fieldname']
 
-            print(dict_names)
             # Add required key-value pairs that do not come from the DB query
             dict_names[T_ID] = "t_id"
             dict_names[DISPLAY_NAME] = "dispname"
@@ -505,7 +504,8 @@ class PGConnector(DBConnector):
             # Spatial_Unit-->Ext_Address_ID (Ext_Address)
             # Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
             # Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
-            sql_query = """SELECT a.iliname, a.sqlname, c.iliname as iliname2
+            sql_query = """SELECT substring(a.iliname from 1 for (length(a.iliname) - position('.' in reverse(a.iliname)))) as table_iliname,
+                a.iliname, a.sqlname, c.iliname as iliname2
                 FROM {schema}.t_ili2db_attrname a
                     INNER JOIN {schema}.t_ili2db_classname c ON c.sqlname = a.target
                     INNER JOIN (SELECT a_s.iliname
@@ -521,8 +521,10 @@ class PGConnector(DBConnector):
             for record in records:
                 composed_key = "{}_{}".format(normalize_iliname(record['iliname']),
                                               normalize_iliname(record['iliname2']))
-                dict_names[composed_key] = record['sqlname']
-
+                record['table_iliname'] = normalize_iliname(record['table_iliname'])
+                if record['table_iliname'] not in dict_names:
+                    continue
+                dict_names[record['table_iliname']][composed_key] = record['sqlname']
 
             Names().initialize_table_and_field_names(dict_names)
             self.table_and_fields_names_retrieved = True
