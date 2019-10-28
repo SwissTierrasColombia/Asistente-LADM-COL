@@ -478,9 +478,8 @@ class PGConnector(DBConnector):
 
             dict_names = dict()
             for record in records:
-                if record['table_iliname'] is None or record['field_iliname'] is None:
-                    # Either t_ili2db_* tables (INTERLIS meta-attrs) [first condition] or
-                    #   fields for domains, like 'description' (we map it in a custom later in this class method)
+                if record['table_iliname'] is None:
+                    # Either t_ili2db_* tables (INTERLIS meta-attrs)
                     continue
 
                 record['table_iliname'] = normalize_iliname(record['table_iliname'])
@@ -488,9 +487,14 @@ class PGConnector(DBConnector):
                     dict_names[record['table_iliname']] = dict()
                     dict_names[record['table_iliname']]['table_name'] = record['tablename']
 
+                if record['field_iliname'] is None:
+                    # Fields for domains, like 'description' (we map it in a custom later in this class method)
+                    continue
+
                 record['field_iliname'] = normalize_iliname(record['field_iliname'])
                 dict_names[record['table_iliname']][record['field_iliname']] = record['fieldname']
 
+            print(dict_names)
             # Add required key-value pairs that do not come from the DB query
             dict_names[T_ID] = "t_id"
             dict_names[DISPLAY_NAME] = "dispname"
