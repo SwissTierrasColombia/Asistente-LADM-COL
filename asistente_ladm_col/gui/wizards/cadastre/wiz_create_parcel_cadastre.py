@@ -41,19 +41,7 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       CSS_COLOR_ERROR_LABEL,
                                                       CSS_COLOR_INACTIVE_LABEL,
                                                       PLUGIN_NAME)
-from asistente_ladm_col.config.table_mapping_config import (PLOT_TABLE,
-                                                            BUILDING_TABLE,
-                                                            BUILDING_UNIT_TABLE,
-                                                            PARCEL_CONDITION_FIELD,
-                                                            CONDITION_PARCEL_TYPE_TABLE,
-                                                            DISPNAME,
-                                                            CONSTRAINT_TYPES_OF_PARCEL,
-                                                            UEBAUNIT_TABLE,
-                                                            UEBAUNIT_TABLE_PLOT_FIELD,
-                                                            UEBAUNIT_TABLE_PARCEL_FIELD,
-                                                            UEBAUNIT_TABLE_BUILDING_FIELD,
-                                                            UEBAUNIT_TABLE_BUILDING_UNIT_FIELD,
-                                                            ID_FIELD)
+from asistente_ladm_col.config.table_mapping_config import CONSTRAINT_TYPES_OF_PARCEL
 from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
@@ -81,57 +69,57 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
             if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
                 self.log.logMessage("Feature not found in layer {}...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
             else:
-                parcel_id = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
+                parcel_id = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[self.names.T_ID_F]
 
                 plot_ids = list()
                 building_ids = list()
                 building_unit_ids = list()
 
                 # Apply restriction to the selection
-                if PLOT_TABLE in CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()]:
-                    if CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()][PLOT_TABLE] is not None:
-                        plot_ids = [f[ID_FIELD] for f in self._layers[PLOT_TABLE][LAYER].selectedFeatures()]
+                if self.names.OP_PLOT_T in CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()]:
+                    if CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()][self.names.OP_PLOT_T] is not None:
+                        plot_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_PLOT_T][LAYER].selectedFeatures()]
                 else:
-                    plot_ids = [f[ID_FIELD] for f in self._layers[PLOT_TABLE][LAYER].selectedFeatures()]
+                    plot_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_PLOT_T][LAYER].selectedFeatures()]
 
-                if BUILDING_TABLE in CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()]:
-                    if CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()][BUILDING_TABLE] is not None:
-                        building_ids = [f[ID_FIELD] for f in self._layers[BUILDING_TABLE][LAYER].selectedFeatures()]
+                if self.names.OP_BUILDING_T in CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()]:
+                    if CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()][self.names.OP_BUILDING_T] is not None:
+                        building_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_BUILDING_T][LAYER].selectedFeatures()]
                 else:
-                    building_ids = [f[ID_FIELD] for f in self._layers[BUILDING_TABLE][LAYER].selectedFeatures()]
+                    building_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_BUILDING_T][LAYER].selectedFeatures()]
 
-                if BUILDING_UNIT_TABLE in CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()]:
-                    if CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()][BUILDING_UNIT_TABLE] is not None:
-                        building_unit_ids = [f[ID_FIELD] for f in
-                                             self._layers[BUILDING_UNIT_TABLE][LAYER].selectedFeatures()]
+                if self.names.OP_BUILDING_UNIT_T in CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()]:
+                    if CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()][self.names.OP_BUILDING_UNIT_T] is not None:
+                        building_unit_ids = [f[self.names.T_ID_F] for f in
+                                             self._layers[self.names.OP_BUILDING_UNIT_T][LAYER].selectedFeatures()]
                 else:
-                    building_unit_ids = [f[ID_FIELD] for f in
-                                         self._layers[BUILDING_UNIT_TABLE][LAYER].selectedFeatures()]
+                    building_unit_ids = [f[self.names.T_ID_F] for f in
+                                         self._layers[self.names.OP_BUILDING_UNIT_T][LAYER].selectedFeatures()]
 
                 # Fill uebaunit table
                 new_features = []
                 for plot_id in plot_ids:
-                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[UEBAUNIT_TABLE][LAYER])
-                    new_feature.setAttribute(UEBAUNIT_TABLE_PLOT_FIELD, plot_id)
-                    new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
+                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.COL_UE_BAUNIT_T][LAYER])
+                    new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_OP_PLOT_F, plot_id)
+                    new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_PARCEL_F, parcel_id)
                     self.log.logMessage("Saving Plot-Parcel: {}-{}".format(plot_id, parcel_id), PLUGIN_NAME, Qgis.Info)
                     new_features.append(new_feature)
 
                 for building_id in building_ids:
-                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[UEBAUNIT_TABLE][LAYER])
-                    new_feature.setAttribute(UEBAUNIT_TABLE_BUILDING_FIELD, building_id)
-                    new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
+                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.COL_UE_BAUNIT_T][LAYER])
+                    new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_OP_BUILDING_F, building_id)
+                    new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_PARCEL_F, parcel_id)
                     self.log.logMessage("Saving Building-Parcel: {}-{}".format(building_id, parcel_id), PLUGIN_NAME, Qgis.Info)
                     new_features.append(new_feature)
 
                 for building_unit_id in building_unit_ids:
-                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[UEBAUNIT_TABLE][LAYER])
-                    new_feature.setAttribute(UEBAUNIT_TABLE_BUILDING_UNIT_FIELD, building_unit_id)
-                    new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, parcel_id)
+                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.COL_UE_BAUNIT_T][LAYER])
+                    new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F, building_unit_id)
+                    new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_PARCEL_F, parcel_id)
                     self.log.logMessage("Saving Building Unit-Parcel: {}-{}".format(building_unit_id, parcel_id), PLUGIN_NAME, Qgis.Info)
                     new_features.append(new_feature)
 
-                self._layers[UEBAUNIT_TABLE][LAYER].dataProvider().addFeatures(new_features)
+                self._layers[self.names.COL_UE_BAUNIT_T][LAYER].dataProvider().addFeatures(new_features)
 
                 if plot_ids and building_ids and building_unit_ids:
                     message = QCoreApplication.translate(self.WIZARD_NAME,
@@ -164,11 +152,11 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
         pass
 
     def check_selected_features(self):
-        self.lb_plot.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[PLOT_TABLE][LAYER].selectedFeatureCount()))
+        self.lb_plot.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount()))
         self.lb_plot.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
-        self.lb_building.setText(QCoreApplication.translate(self.WIZARD_NAME,"<b>Building(s)</b>: {count} Feature(s) Selected").format(count=self._layers[BUILDING_TABLE][LAYER].selectedFeatureCount()))
+        self.lb_building.setText(QCoreApplication.translate(self.WIZARD_NAME,"<b>Building(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BUILDING_T][LAYER].selectedFeatureCount()))
         self.lb_building.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
-        self.lb_building_unit.setText(QCoreApplication.translate(self.WIZARD_NAME,"<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=self._layers[BUILDING_UNIT_TABLE][LAYER].selectedFeatureCount()))
+        self.lb_building_unit.setText(QCoreApplication.translate(self.WIZARD_NAME,"<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BUILDING_UNIT_T][LAYER].selectedFeatureCount()))
         self.lb_building_unit.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
 
         parcel_type = self.cb_parcel_type.currentText()
@@ -184,11 +172,11 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
             elif CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == None:
                 _color = CSS_COLOR_INACTIVE_LABEL
 
-            if spatial_unit == PLOT_TABLE:
+            if spatial_unit == self.names.OP_PLOT_T:
                 self.lb_plot.setStyleSheet(_color)
-            elif spatial_unit == BUILDING_TABLE:
+            elif spatial_unit == self.names.OP_BUILDING_T:
                 self.lb_building.setStyleSheet(_color)
-            elif spatial_unit == BUILDING_UNIT_TABLE:
+            elif spatial_unit == self.names.OP_BUILDING_UNIT_T:
                 self.lb_building_unit.setStyleSheet(_color)
 
         self.button(self.FinishButton).setEnabled(self.is_constraint_satisfied(parcel_type))
@@ -206,9 +194,9 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
                 pass
 
     def register_select_features_by_expression(self):
-        self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[PLOT_TABLE][LAYER]))
-        self.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_TABLE][LAYER]))
-        self.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[BUILDING_UNIT_TABLE][LAYER]))
+        self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.OP_PLOT_T][LAYER]))
+        self.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.OP_BUILDING_T][LAYER]))
+        self.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.OP_BUILDING_UNIT_T][LAYER]))
 
     def disconnect_signals_controls_select_features_on_map(self):
         signals = [self.btn_plot_map.clicked,
@@ -222,9 +210,9 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
                 pass
 
     def register_select_feature_on_map(self):
-        self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[PLOT_TABLE][LAYER]))
-        self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_TABLE][LAYER]))
-        self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[BUILDING_UNIT_TABLE][LAYER]))
+        self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.OP_PLOT_T][LAYER]))
+        self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.OP_BUILDING_T][LAYER]))
+        self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.OP_BUILDING_UNIT_T][LAYER]))
 
     #############################################################################
     # Override methods
@@ -239,9 +227,9 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
             self.close_wizard(show_message=False)
 
         if self.cb_parcel_type.count() == 0:
-            for feature in self._layers[CONDITION_PARCEL_TYPE_TABLE][LAYER].getFeatures():
-                if feature[DISPNAME] in CONSTRAINT_TYPES_OF_PARCEL:
-                    self.cb_parcel_type.addItem(feature[DISPNAME], feature[ID_FIELD])
+            for feature in self._layers[self.names.OP_PARCEL_TYPE_T][LAYER].getFeatures():
+                if feature[self.names.DISPLAY_NAME_F] in CONSTRAINT_TYPES_OF_PARCEL:
+                    self.cb_parcel_type.addItem(feature[self.names.DISPLAY_NAME_F], feature[self.names.T_ID_F])
 
             # Select previous option saved
             if self.type_of_parcel_selected:
@@ -269,9 +257,9 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
             self.connect_on_removing_layers()
 
         self._spatial_unit_layers = {
-            PLOT_TABLE: self._layers[PLOT_TABLE][LAYER],
-            BUILDING_TABLE: self._layers[BUILDING_TABLE][LAYER],
-            BUILDING_UNIT_TABLE: self._layers[BUILDING_UNIT_TABLE][LAYER]
+            self.names.OP_PLOT_T: self._layers[self.names.OP_PLOT_T][LAYER],
+            self.names.OP_BUILDING_T: self._layers[self.names.OP_BUILDING_T][LAYER],
+            self.names.OP_BUILDING_UNIT_T: self._layers[self.names.OP_BUILDING_UNIT_T][LAYER]
         }
 
         # All layers were successfully loaded
@@ -279,7 +267,7 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
 
     def exec_form(self, layer):
         feature = self.get_feature_exec_form(layer)
-        feature[PARCEL_CONDITION_FIELD] = self.cb_parcel_type.currentText()
+        feature[self.names.OP_PARCEL_T_PARCEL_TYPE_F] = self.cb_parcel_type.currentText()
 
         dialog = self.iface.getFeatureForm(layer, feature)
         dialog.rejected.connect(self.form_rejected)
@@ -289,7 +277,7 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
             fid = feature.id()
 
             # assigns the type of parcel before to creating it
-            parcel_condition_field_idx = layer.getFeature(fid).fieldNameIndex(PARCEL_CONDITION_FIELD)
+            parcel_condition_field_idx = layer.getFeature(fid).fieldNameIndex(self.names.OP_PARCEL_T_PARCEL_TYPE_F)
             layer.changeAttributeValue(fid, parcel_condition_field_idx, self.cb_parcel_type.itemData(self.cb_parcel_type.currentIndex()))
 
             saved = layer.commitChanges()
@@ -337,13 +325,13 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
         # Disable labels/controls depending on parcel_type
         for spatial_unit in CONSTRAINT_TYPES_OF_PARCEL[parcel_type]:
             if CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == None:
-                if spatial_unit == PLOT_TABLE:
+                if spatial_unit == self.names.OP_PLOT_T:
                     self.btn_plot_map.setEnabled(False)
                     self.btn_plot_expression.setEnabled(False)
-                elif spatial_unit == BUILDING_TABLE:
+                elif spatial_unit == self.names.OP_BUILDING_T:
                     self.btn_building_map.setEnabled(False)
                     self.btn_building_expression.setEnabled(False)
-                elif spatial_unit == BUILDING_UNIT_TABLE:
+                elif spatial_unit == self.names.OP_BUILDING_UNIT_T:
                     self.btn_building_unit_map.setEnabled(False)
                     self.btn_building_unit_expression.setEnabled(False)
 

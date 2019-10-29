@@ -38,9 +38,7 @@ from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
                                                       LAYER,
                                                       DEFAULT_EPSG)
 from asistente_ladm_col.config.help_strings import HelpStrings
-from asistente_ladm_col.config.table_mapping_config import (BOUNDARY_POINT_TABLE,
-                                                            SURVEY_POINT_TABLE,
-                                                            CONTROL_POINT_TABLE)
+from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import (make_file_selector,
                                                enable_next_wizard,
@@ -62,11 +60,12 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.help_strings = HelpStrings()
+        self.names = Names()
 
         self._layers = {
-            BOUNDARY_POINT_TABLE: {'name': BOUNDARY_POINT_TABLE, 'geometry': None, LAYER: None},
-            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None},
-            CONTROL_POINT_TABLE: {'name': CONTROL_POINT_TABLE, 'geometry': None, LAYER: None}
+            self.names.OP_BOUNDARY_POINT_T: {'name': self.names.OP_BOUNDARY_POINT_T, 'geometry': None, LAYER: None},
+            self.names.OP_SURVEY_POINT_T: {'name': self.names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None},
+            self.names.OP_CONTROL_POINT_T: {'name': self.names.OP_CONTROL_POINT_T, 'geometry': None, LAYER: None}
         }
 
         self.target_layer = None
@@ -277,11 +276,11 @@ class CreatePointsCadastreWizard(QWizard, WIZARD_UI):
 
     def current_point_name(self):
         if self.rad_boundary_point.isChecked():
-            return BOUNDARY_POINT_TABLE
+            return self.names.OP_BOUNDARY_POINT_T
         elif self.rad_survey_point.isChecked():
-            return SURVEY_POINT_TABLE
+            return self.names.OP_SURVEY_POINT_T
         else:
-            return CONTROL_POINT_TABLE
+            return self.names.OP_CONTROL_POINT_T
 
     def prepare_copy_csv_points_to_db(self):
         csv_path = self.txt_file_path.text().strip()

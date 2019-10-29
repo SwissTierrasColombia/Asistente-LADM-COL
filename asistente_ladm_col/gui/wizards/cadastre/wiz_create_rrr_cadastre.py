@@ -29,14 +29,6 @@ from qgis.core import (QgsVectorLayerUtils,
 
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       PLUGIN_NAME)
-from asistente_ladm_col.config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
-                                                          RRR_SOURCE_RELATION_TABLE,
-                                                          RRR_SOURCE_SOURCE_FIELD,
-                                                          RRR_SOURCE_RIGHT_FIELD,
-                                                          RRR_SOURCE_RESTRICTION_FIELD,
-                                                          RIGHT_TABLE,
-                                                          RESTRICTION_TABLE,
-                                                          ID_FIELD)
 from asistente_ladm_col.gui.wizards.multi_page_wizard_factory import MultiPageWizardFactory
 from asistente_ladm_col.gui.wizards.select_features_by_expression_dialog_wrapper import SelectFeatureByExpressionDialogWrapper
 
@@ -58,29 +50,29 @@ class CreateRRRCadastreWizard(MultiPageWizardFactory, SelectFeatureByExpressionD
             self.log.logMessage("We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)), PLUGIN_NAME, Qgis.Warning)
         else:
             fid = features[0].id()
-            administrative_source_ids = [f[ID_FIELD] for f in self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatures()]
+            administrative_source_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER].selectedFeatures()]
 
             if not self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid).isValid():
                 self.log.logMessage("Feature not found in layer {}...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
             else:
                 # feature_rrr_id: generic name used for represent id for right, restriction
-                feature_rrr_id = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
+                feature_rrr_id = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[self.names.T_ID_F]
 
                 # Fill rrrfuente table
                 new_features = []
                 for administrative_source_id in administrative_source_ids:
-                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[RRR_SOURCE_RELATION_TABLE][LAYER])
+                    new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.COL_RRR_SOURCE_T][LAYER])
 
-                    new_feature.setAttribute(RRR_SOURCE_SOURCE_FIELD, administrative_source_id)
-                    if self.EDITING_LAYER_NAME == RIGHT_TABLE:
-                        new_feature.setAttribute(RRR_SOURCE_RIGHT_FIELD, feature_rrr_id)
-                    elif self.EDITING_LAYER_NAME == RESTRICTION_TABLE:
-                        new_feature.setAttribute(RRR_SOURCE_RESTRICTION_FIELD, feature_rrr_id)
+                    new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_SOURCE_FIELD, administrative_source_id)
+                    if self.EDITING_LAYER_NAME == self.names.OP_RIGHT_T:
+                        new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_OP_RIGHT_F, feature_rrr_id)
+                    elif self.EDITING_LAYER_NAME == self.names.OP_RESTRICTION_T:
+                        new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_OP_RESTRICTION_F, feature_rrr_id)
 
                     self.log.logMessage("Saving Administrative_source-{}: {}-{}".format(self.WIZARD_FEATURE_NAME, administrative_source_id, feature_rrr_id), PLUGIN_NAME, Qgis.Info)
                     new_features.append(new_feature)
 
-                self._layers[RRR_SOURCE_RELATION_TABLE][LAYER].dataProvider().addFeatures(new_features)
+                self._layers[self.names.COL_RRR_SOURCE_T][LAYER].dataProvider().addFeatures(new_features)
                 message = QCoreApplication.translate(self.WIZARD_NAME,"The new {} (t_id={}) was successfully created and associated with its corresponding administrative source (t_id={})!").format(self.WIZARD_FEATURE_NAME, feature_rrr_id, ", ".join([str(b) for b in administrative_source_ids]))
 
         return message
@@ -90,8 +82,8 @@ class CreateRRRCadastreWizard(MultiPageWizardFactory, SelectFeatureByExpressionD
 
     def check_selected_features(self):
         # Check selected features in administrative source layer
-        if self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatureCount():
-            self.lb_admin_source.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Administrative Source(s)</b>: {count} Feature Selected").format(count=self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatureCount()))
+        if self._layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER].selectedFeatureCount():
+            self.lb_admin_source.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Administrative Source(s)</b>: {count} Feature Selected").format(count=self._layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER].selectedFeatureCount()))
             self.button(self.FinishButton).setDisabled(False)
         else:
             self.lb_admin_source.setText(QCoreApplication.translate(self.WIZARD_NAME, "<b>Administrative Source(s)</b>: 0 Features Selected"))
@@ -107,4 +99,4 @@ class CreateRRRCadastreWizard(MultiPageWizardFactory, SelectFeatureByExpressionD
                 pass
 
     def register_select_features_by_expression(self):
-        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER]))
+        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER]))
