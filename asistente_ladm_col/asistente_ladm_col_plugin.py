@@ -36,7 +36,8 @@ from qgis.PyQt.QtWidgets import (QAction,
                                  QProgressBar)
 from qgis.core import (Qgis,
                        QgsApplication,
-                       QgsProcessingModelAlgorithm)
+                       QgsProcessingModelAlgorithm,
+                       QgsExpression)
 
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.enums import WizardTypeEnum
@@ -84,6 +85,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_LAYERS,
                                                       WIZARD_TOOL_NAME)
 from asistente_ladm_col.config.wizard_config import WIZARDS_SETTINGS
+from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # Registers it in QgsExpression
 from asistente_ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
@@ -256,6 +258,9 @@ class AsistenteLADMCOLPlugin(QObject):
             self.add_processing_models(None)
         else: # We need to wait until processing is initialized
             QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_models)
+
+    def uninstall_custom_expression_functions(self):
+        res = QgsExpression.unregisterFunction('get_domain_code_from_value')
 
     def call_refresh_menus(self):
         # Refresh menus on QGIS start
@@ -930,6 +935,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dlg.exec_()
 
     def unload(self):
+        self.uninstall_custom_expression_functions()
+
         # Remove toolbars actions
         toolbars_actions = ['_build_boundary_action',
                             '_topological_editing_action',

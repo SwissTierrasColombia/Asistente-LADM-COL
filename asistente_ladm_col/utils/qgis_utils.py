@@ -365,7 +365,7 @@ class QGISUtils(QObject):
             if response_layers[layer_name] is None:
                 self.message_emitted.emit(QCoreApplication.translate("QGISUtils", "{layer_name} layer couldn't be found... {description}").format(
                         layer_name=layer_name,
-                        description=db.get_description()),
+                        description=db.get_display_conn_string()),
                     Qgis.Warning)
 
                 # If it is not possible to obtain the requested layers we make null the variable "layers"

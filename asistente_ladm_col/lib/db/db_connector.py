@@ -97,8 +97,6 @@ class DBConnector(QObject):
         tmp_dict_conn_params = self._dict_conn_params.copy()
         if 'password' in tmp_dict_conn_params:
             del tmp_dict_conn_params['password']
-        if 'schema' in tmp_dict_conn_params:
-            del tmp_dict_conn_params['schema']
 
         return ' '.join(["{}={}".format(k, v) for k, v in tmp_dict_conn_params.items()])
 
