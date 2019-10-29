@@ -451,29 +451,8 @@ class AsistenteLADMCOLPlugin(QObject):
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Property Record Card"),
             self._property_record_card_menu)
-        self._market_research_property_record_card_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Market Research"),
-            self._property_record_card_menu)
-        self._nuclear_family_property_record_card_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Nuclear Family"),
-            self._property_record_card_menu)
-        self._natural_party_property_record_card_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Natural Party"),
-            self._property_record_card_menu)
-        self._legal_party_property_record_card_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Legal Party"),
-            self._property_record_card_menu)
 
         self._property_record_card_menu.addAction(self._property_record_card_action)
-        self._property_record_card_menu.addAction(self._market_research_property_record_card_action)
-        self._property_record_card_menu.addAction(self._nuclear_family_property_record_card_action)
-        self._property_record_card_menu.addSeparator()
-        self._property_record_card_menu.addAction(self._natural_party_property_record_card_action)
-        self._property_record_card_menu.addAction(self._legal_party_property_record_card_action)
 
         if len(self._menu.actions()) > 1:
             self._menu.insertMenu(self._menu.actions()[1], self._property_record_card_menu)
@@ -482,10 +461,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # Connections
         self._property_record_card_action.triggered.connect(self.show_wiz_property_record_card)
-        self._market_research_property_record_card_action.triggered.connect(self.show_wiz_market_research_prc)
-        self._nuclear_family_property_record_card_action.triggered.connect(self.show_wiz_nuclear_family_prc)
-        self._natural_party_property_record_card_action.triggered.connect(self.show_wiz_natural_party_prc)
-        self._legal_party_property_record_card_action.triggered.connect(self.show_wiz_legal_party_prc)
 
     def remove_property_record_card_menu(self):
         menu = self.iface.mainWindow().findChild(QMenu, PROPERTY_RECORD_CARD_MENU_OBJECTNAME)
@@ -494,10 +469,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._property_record_card_menu = None
         self._property_record_card_action = None
-        self._market_research_property_record_card_action = None
-        self._nuclear_family_property_record_card_action = None
-        self._natural_party_property_record_card_action = None
-        self._legal_party_property_record_card_action = None
 
         menu.deleteLater()
 
@@ -513,18 +484,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._parcel_valuation_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Parcel"),
-            self._valuation_menu)
-        self._horizontal_property_main_parcel_valuation_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Horizontal Property main Parcel"),
-            self._valuation_menu)
-        self._common_equipment_valuation_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Common Equipment"),
-            self._valuation_menu)
-        self._building_valuation_action = QAction(
-            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building"),
             self._valuation_menu)
         self._building_unit_valuation_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
@@ -544,9 +503,6 @@ class AsistenteLADMCOLPlugin(QObject):
             self._valuation_menu)
 
         self._valuation_menu.addAction(self._parcel_valuation_action)
-        self._valuation_menu.addAction(self._horizontal_property_main_parcel_valuation_action)
-        self._valuation_menu.addAction(self._common_equipment_valuation_action)
-        self._valuation_menu.addAction(self._building_valuation_action)
         self._valuation_menu.addAction(self._building_unit_valuation_action)
         self._valuation_menu.addAction(self._building_unit_qualification_valuation_action)
         self._valuation_menu.addSeparator()
@@ -563,10 +519,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # Connections
         self._parcel_valuation_action.triggered.connect(self.show_wiz_parcel_valuation)
-        self._horizontal_property_main_parcel_valuation_action.triggered.connect(
-            self.show_wiz_horizontal_property_main_parcel_valuation)
-        self._common_equipment_valuation_action.triggered.connect(self.show_wiz_common_equipment_valuation)
-        self._building_valuation_action.triggered.connect(self.show_wiz_building_valuation)
         self._building_unit_valuation_action.triggered.connect(self.show_wiz_building_unit_valuation)
         self._building_unit_qualification_valuation_action.triggered.connect(
             self.show_wiz_building_unit_qualification_valuation)
@@ -580,9 +532,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._valuation_menu = None
         self._parcel_valuation_action = None
-        self._horizontal_property_main_parcel_valuation_action = None
-        self._common_equipment_valuation_action = None
-        self._building_valuation_action = None
         self._building_unit_valuation_action = None
         self._building_unit_qualification_valuation_action = None
         self._geoeconomic_zone_valuation_action = None
@@ -967,18 +916,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.delete_variables(cadastre_actions)
 
         # Remove property record card actions
-        property_record_card_actions = ['_property_record_card_action',
-                                        '_market_research_property_record_card_action',
-                                        '_nuclear_family_property_record_card_action',
-                                        '_natural_party_property_record_card_action',
-                                        '_legal_party_property_record_card_action']
+        property_record_card_actions = ['_property_record_card_action']
         self.delete_variables(property_record_card_actions)
 
         # Remove valuation actions
         valuation_actions = ['_parcel_valuation_action',
-                             '_horizontal_property_main_parcel_valuation_action',
-                             '_common_equipment_valuation_action',
-                             '_building_valuation_action',
                              '_building_unit_valuation_action',
                              '_building_unit_qualification_valuation_action',
                              '_geoeconomic_zone_valuation_action',
@@ -1227,35 +1169,7 @@ class AsistenteLADMCOLPlugin(QObject):
         # TODO: Remove
         pass
 
-    def show_wiz_market_research_prc(self):
-        # TODO: Remove
-        pass
-
-    def show_wiz_nuclear_family_prc(self):
-        # TODO: Remove
-        pass
-
-    def show_wiz_natural_party_prc(self):
-        # TODO: Remove
-        pass
-
-    def show_wiz_legal_party_prc(self):
-        #TODO: Remove
-        pass
-
     def show_wiz_parcel_valuation(self):
-        # TODO: Remove
-        pass
-
-    def show_wiz_horizontal_property_main_parcel_valuation(self):
-        # TODO: Remove
-        pass
-
-    def show_wiz_common_equipment_valuation(self):
-        # TODO: Remove
-        pass
-
-    def show_wiz_building_valuation(self):
         # TODO: Remove
         pass
 

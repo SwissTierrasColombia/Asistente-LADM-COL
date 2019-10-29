@@ -36,15 +36,14 @@ from qgis.core import (Qgis,
                        QgsVectorLayerUtils,
                        QgsMapLayerProxyModel)
 
-from asistente_ladm_col.config.general_config import PLUGIN_NAME
 from asistente_ladm_col.config.general_config import (LAYER,
+                                                      PLUGIN_NAME,
                                                       WIZARD_HELP_PAGES,
                                                       WIZARD_QSETTINGS,
                                                       WIZARD_QSETTINGS_LOAD_DATA_TYPE,
                                                       WIZARD_HELP1,
                                                       WIZARD_HELP2,
                                                       WIZARD_MAP_LAYER_PROXY_MODEL)
-from asistente_ladm_col.config.table_mapping_config import ID_FIELD
 from asistente_ladm_col.gui.wizards.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
 
@@ -200,7 +199,7 @@ class CreateRightOfWayCadastreWizard(SinglePageSpatialWizardFactory):
             message = QCoreApplication.translate(self.WIZARD_NAME, "'{}' tool has been closed. Feature not found in layer {}... It's not posible create a {}. ").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME, self.WIZARD_FEATURE_NAME)
             self.log.logMessage("Feature not found in layer {} ...".format(self.EDITING_LAYER_NAME), PLUGIN_NAME, Qgis.Warning)
         else:
-            feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[ID_FIELD]
+            feature_tid = self._layers[self.EDITING_LAYER_NAME][LAYER].getFeature(fid)[self.names.T_ID_F]
             message = QCoreApplication.translate(self.WIZARD_NAME, "The new {} (t_id={}) was successfully created ").format(self.WIZARD_FEATURE_NAME, feature_tid)
 
         return message
