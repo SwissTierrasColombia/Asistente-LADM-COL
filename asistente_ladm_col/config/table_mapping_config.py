@@ -1080,6 +1080,24 @@ class Names(metaclass=Singleton):
 
         return any_update
 
+    def test_names(self):
+        """
+        Test whether required table/field names are present.
+
+        :return: Tuple (bool: Names are valid or not, string: Message to indicate what exactly failed)
+        """
+        required_names = [self.T_ID_F,
+                          self.ILICODE_F,
+                          self.DESCRIPTION_F,
+                          self.DISPLAY_NAME_F]
+
+        for required_name in required_names:
+            if required_name is None:
+                return (False, "Name '{}' was not found!".format())
+
+        return (True, "")
+
+
     def get_layer_sets(self):
         """
         Configure layer sets to appear in the load layers dialog

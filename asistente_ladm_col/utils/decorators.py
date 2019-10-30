@@ -40,9 +40,6 @@ def _db_connection_required(func_to_decorate):
             if not inst.qgis_utils._layers and not inst.qgis_utils._relations:
                 inst.qgis_utils.cache_layers_and_relations(db, ladm_col_db=True)
 
-            if not db.table_and_fields_names_retrieved:
-                db.get_table_and_field_names()
-
             func_to_decorate(*args, **kwargs)
         else:
             widget = inst.iface.messageBar().createMessage("Asistente LADM_COL",

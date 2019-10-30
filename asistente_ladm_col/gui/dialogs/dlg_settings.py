@@ -159,7 +159,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
             if res:
                 if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
-                    # Don't check if it's a LADM schema, we expect it to be after we run the schema import
+                    # Only check LADM-schema if we are not in an SCHEMA IMPORT.
+                    # We know in an SCHEMA IMPORT, at this point the schema is still not LADM.
                     ladm_col_schema, msg = db.test_connection(EnumTestLevel.LADM)
 
                 if not ladm_col_schema and self._action_type != EnumDbActionType.SCHEMA_IMPORT:
