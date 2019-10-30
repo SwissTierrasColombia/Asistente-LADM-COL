@@ -27,205 +27,205 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
         ]
     elif layer_name == names.OP_SURVEY_POINT_T:
         mapping = [
-            {'expression': '"id_punto_levantamiento"', 'length': 255, 'name': 'id_punto_levantamiento', 'precision': -1, 'type': 10},
-            {'expression': '"puntotipo"', 'length': -1, 'name': 'puntotipo', 'precision': 0, 'type': 4},
-            {'expression': '"tipo_punto_levantamiento"', 'length': -1, 'name': 'tipo_punto_levantamiento', 'precision': 0, 'type': 4},
-            {'expression': '"fotoidentificacion"', 'length': -1, 'name': 'fotoidentificacion', 'precision': 0, 'type': 4},
-            {'expression': '"exactitud_horizontal"', 'length': -1, 'name': 'exactitud_horizontal', 'precision': 0, 'type': 2},
-            {'expression': '"exactitud_vertical"', 'length': -1, 'name': 'exactitud_vertical', 'precision': 0, 'type': 2},
-            {'expression': '"posicion_interpolacion"', 'length': -1, 'name': 'posicion_interpolacion', 'precision': 0, 'type': 4},
-            {'expression': '"monumentacion"', 'length': -1, 'name': 'monumentacion', 'precision': 0, 'type': 4},
-            {'expression': '"metodoproduccion"', 'length': -1, 'name': 'metodoproduccion', 'precision': 0, 'type': 4},
-            {'expression': '"espacio_de_nombres"', 'length': 255, 'name': 'espacio_de_nombres', 'precision': -1, 'type': 10},
-            {'expression': '"local_id"', 'length': 255, 'name': 'local_id', 'precision': -1, 'type': 10},
-            {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
+            {'expression': '"{}"'.format(names.OP_SURVEY_POINT_T_ID_F), 'length': 255, 'name': '{}'.format(names.OP_SURVEY_POINT_T_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_SURVEY_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.OP_SURVEY_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_SURVEY_POINT_T_SURVEY_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.OP_SURVEY_POINT_T_SURVEY_POINT_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_SURVEY_POINT_T_PHOTO_IDENTIFICATION_F), 'length': -1, 'name': '{}'.format(names.OP_SURVEY_POINT_T_PHOTO_IDENTIFICATION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_SURVEY_POINT_T_HORIZONTAL_ACCURACY_F), 'length': -1, 'name': '{}'.format(names.OP_SURVEY_POINT_T_HORIZONTAL_ACCURACY_F), 'precision': 0, 'type': 2},
+            {'expression': '"{}"'.format(names.OP_SURVEY_POINT_T_VERTICAL_ACCURACY_F), 'length': -1, 'name': '{}'.format(names.OP_SURVEY_POINT_T_VERTICAL_ACCURACY_F), 'precision': 0, 'type': 2},
+            {'expression': '"{}"'.format(names.COL_POINT_T_INTERPOLATION_POSITION_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_INTERPOLATION_POSITION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_POINT_T_MONUMENTATION_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_MONUMENTATION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_POINT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.COL_POINT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_POINT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_POINT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
         ]
     elif layer_name == names.OP_CONTROL_POINT_T:
         mapping = [
-            {'expression': '"id_punto_control"', 'length': 255, 'name': 'id_punto_control', 'precision': -1, 'type': 10},
-            {'expression': '"puntotipo"', 'length': -1, 'name': 'puntotipo', 'precision': 0, 'type': 4},
-            {'expression': '"tipo_punto_control"', 'length': -1, 'name': 'tipo_punto_control', 'precision': 0, 'type': 4},
-            {'expression': '"exactitud_horizontal"', 'length': -1, 'name': 'exactitud_horizontal', 'precision': 0, 'type': 2},
-            {'expression': '"exactitud_vertical"', 'length': -1, 'name': 'exactitud_vertical', 'precision': 0, 'type': 2},
-            {'expression': '"posicion_interpolacion"', 'length': -1, 'name': 'posicion_interpolacion', 'precision': 0, 'type': 4},
-            {'expression': '"monumentacion"', 'length': -1, 'name': 'monumentacion', 'precision': 0, 'type': 4},
-            {'expression': '"metodoproduccion"', 'length': -1, 'name': 'metodoproduccion', 'precision': 0, 'type': 4},
-            {'expression': '"espacio_de_nombres"', 'length': 255, 'name': 'espacio_de_nombres', 'precision': -1, 'type': 10},
-            {'expression': '"local_id"', 'length': 255, 'name': 'local_id', 'precision': -1, 'type': 10},
-            {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
+            {'expression': '"{}"'.format(names.OP_CONTROL_POINT_T_ID_F), 'length': 255, 'name': '{}'.format(names.OP_CONTROL_POINT_T_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_CONTROL_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.OP_CONTROL_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_CONTROL_POINT_T_CONTROL_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.OP_CONTROL_POINT_T_CONTROL_POINT_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_CONTROL_POINT_T_HORIZONTAL_ACCURACY_F), 'length': -1, 'name': '{}'.format(names.OP_CONTROL_POINT_T_HORIZONTAL_ACCURACY_F), 'precision': 0, 'type': 2},
+            {'expression': '"{}"'.format(names.OP_CONTROL_POINT_T_VERTICAL_ACCURACY_F), 'length': -1, 'name': '{}'.format(names.OP_CONTROL_POINT_T_VERTICAL_ACCURACY_F), 'precision': 0, 'type': 2},
+            {'expression': '"{}"'.format(names.COL_POINT_T_INTERPOLATION_POSITION_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_INTERPOLATION_POSITION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_POINT_T_MONUMENTATION_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_MONUMENTATION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_POINT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.COL_POINT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_POINT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_POINT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
         ]
     elif layer_name == names.OP_BOUNDARY_T:
         mapping = [
-            {'expression': '"longitud"', 'length': 6, 'name': 'longitud', 'precision': 1, 'type': 6},
-            {'expression': '"localizacion_textual"', 'length': 255, 'name': 'localizacion_textual', 'precision': -1, 'type': 10},
-            {'expression': '"espacio_de_nombres"', 'length': 255, 'name': 'espacio_de_nombres', 'precision': -1, 'type': 10},
-            {'expression': '"local_id"', 'length': 255, 'name': 'local_id', 'precision': -1, 'type': 10},
-            {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
+            {'expression': '"{}"'.format(names.OP_BOUNDARY_T_LENGTH_F), 'length': 6, 'name': '{}'.format(names.OP_BOUNDARY_T_LENGTH_F), 'precision': 1, 'type': 6},
+            {'expression': '"{}"'.format(names.COL_BFS_T_TEXTUAL_LOCATION_F), 'length': 255, 'name': '{}'.format(names.COL_BFS_T_TEXTUAL_LOCATION_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_POINT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.COL_POINT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_POINT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_POINT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
         ]
     elif layer_name == names.OP_PLOT_T:
         mapping = [
-            {'expression': '"area_terreno"', 'length': 15, 'name': 'area_terreno', 'precision': 1, 'type': 6},
-            {'expression': '"avaluo_terreno"', 'length': 16, 'name': 'avaluo_terreno', 'precision': 1, 'type': 6},
-            {'expression': '"dimension"', 'length': -1, 'name': 'dimension', 'precision': 0, 'type': 4},
-            {'expression': '"etiqueta"', 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10},
-            {'expression': '"relacion_superficie"', 'length': -1, 'name': 'relacion_superficie', 'precision': 0, 'type': 4},
-            {'expression': '"espacio_de_nombres"', 'length': 255, 'name': 'espacio_de_nombres', 'precision': -1, 'type': 10},
-            {'expression': '"local_id"', 'length': 255, 'name': 'local_id', 'precision': -1, 'type': 10},
-            {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
+            {'expression': '{}'.format(names.OP_PLOT_T_PLOT_AREA_F), 'length': 15, 'name': '{}'.format(names.OP_PLOT_T_PLOT_AREA_F), 'precision': 1, 'type': 6},
+            {'expression': '"{}"'.format(names.OP_PLOT_T_PLOT_VALUATION_F), 'length': 16, 'name': '{}'.format(names.OP_PLOT_T_PLOT_VALUATION_F), 'precision': 1, 'type': 6},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
         ]
     elif layer_name == names.OP_PARCEL_T:
         mapping = [
-            {'expression': '"departamento"', 'length': 2, 'name': 'departamento', 'precision': -1, 'type': 10},
-            {'expression': '"municipio"', 'length': 3, 'name': 'municipio', 'precision': -1, 'type': 10},
-            {'expression': '"nupre"', 'length': 11, 'name': 'nupre', 'precision': -1, 'type': 10},
-            {'expression': '"codigo_orip"', 'length': 3, 'name': 'codigo_orip', 'precision': -1, 'type': 10},
-            {'expression': '"matricula_inmobiliaria"', 'length': 80, 'name': 'matricula_inmobiliaria', 'precision': -1, 'type': 10},
-            {'expression': '"numero_predial"', 'length': 30, 'name': 'numero_predial', 'precision': -1, 'type': 10},
-            {'expression': '"numero_predial_anterior"', 'length': 20, 'name': 'numero_predial_anterior', 'precision': -1, 'type': 10},
-            {'expression': '"avaluo_predio"', 'length': 16, 'name': 'avaluo_predio', 'precision': 1, 'type': 6},
-            {'expression': '"condicion_predio"', 'length': -1, 'name': 'condicion_predio', 'precision': 0, 'type': 4},
-            {'expression': '"tipo"', 'length': -1, 'name': 'tipo', 'precision': 0, 'type': 4},
-            {'expression': '"direccion"', 'length': 255, 'name': 'direccion', 'precision': -1, 'type': 10},
-            {'expression': '"nombre"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10},
-            {'expression': '"espacio_de_nombres"', 'length': 255, 'name': 'espacio_de_nombres', 'precision': -1, 'type': 10},
-            {'expression': '"local_id"', 'length': 255, 'name': 'local_id', 'precision': -1, 'type': 10},
-            {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
+            {'expression': '"{}"'.format(names.OP_PARCEL_T_DEPARTMENT_F), 'length': 2, 'name': '{}'.format(names.OP_PARCEL_T_DEPARTMENT_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_PARCEL_T_MUNICIPALITY_F), 'length': 3, 'name': '{}'.format(names.OP_PARCEL_T_MUNICIPALITY_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_PARCEL_T_NUPRE_F), 'length': 11, 'name': '{}'.format(names.OP_PARCEL_T_NUPRE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_PARCEL_T_ORIP_CODE_F), 'length': 3, 'name': '{}'.format(names.OP_PARCEL_T_ORIP_CODE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_PARCEL_T_FMI_F), 'length': 80, 'name': '{}'.format(names.OP_PARCEL_T_FMI_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_PARCEL_T_PARCEL_NUMBER_F), 'length': 30, 'name': '{}'.format(names.OP_PARCEL_T_PARCEL_NUMBER_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F), 'length': 20, 'name': '{}'.format(names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_PARCEL_T_VALUATION_F), 'length': 16, 'name': '{}'.format(names.OP_PARCEL_T_VALUATION_F), 'precision': 1, 'type': 6},
+            {'expression': '"{}"'.format(names.OP_PARCEL_T_PARCEL_TYPE_F), 'length': -1, 'name': '{}'.format(names.OP_PARCEL_T_PARCEL_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_PARCEL_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.OP_PARCEL_T_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_PARCEL_T_ADDRESS_F), 'length': 255, 'name': '{}'.format(names.OP_PARCEL_T_ADDRESS_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_BAUNIT_T_NAME_F), 'length': 255, 'name': '{}'.format(names.COL_BAUNIT_T_NAME_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_BAUNIT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.COL_BAUNIT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_BAUNIT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_BAUNIT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
         ]
     elif layer_name == names.OP_PARTY_T:
         mapping = [
-            {'expression': '"tipo"', 'length': -1, 'name': 'tipo', 'precision': 0, 'type': 4},
-            {'expression': '"tipo_documento"', 'length': -1, 'name': 'tipo_documento', 'precision': 0, 'type': 4},
-            {'expression': '"documento_identidad"', 'length': 50, 'name': 'documento_identidad', 'precision': -1, 'type': 10},
-            {'expression': '"primer_nombre"', 'length': 100, 'name': 'primer_nombre', 'precision': -1, 'type': 10},
-            {'expression': '"segundo_nombre"', 'length': 100, 'name': 'segundo_nombre', 'precision': -1, 'type': 10},
-            {'expression': '"primer_apellido"', 'length': 100, 'name': 'primer_apellido', 'precision': -1, 'type': 10},
-            {'expression': '"segundo_apellido"', 'length': 100, 'name': 'segundo_apellido', 'precision': -1, 'type': 10},
-            {'expression': '"sexo"', 'length': -1, 'name': 'sexo', 'precision': 0, 'type': 4},
-            {'expression': '"grupo_etnico"', 'length': -1, 'name': 'grupo_etnico', 'precision': 0, 'type': 4},
-            {'expression': '"razon_social"', 'length': 255, 'name': 'razon_social', 'precision': -1, 'type': 10},
-            {'expression': '"nombre"', 'length': 255, 'name': 'nombre', 'precision': -1, 'type': 10},
-            {'expression': '"espacio_de_nombres"', 'length': 255, 'name': 'espacio_de_nombres', 'precision': -1, 'type': 10},
-            {'expression': '"local_id"', 'length': 255, 'name': 'local_id', 'precision': -1, 'type': 10},
-            {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
+            {'expression': '"{}"'.format(names.OP_PARTY_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.OP_PARTY_T_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_PARTY_T_DOCUMENT_TYPE_F), 'length': -1, 'name': '{}'.format(names.OP_PARTY_T_DOCUMENT_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_PARTY_T_DOCUMENT_ID_F), 'length': 50, 'name': '{}'.format(names.OP_PARTY_T_DOCUMENT_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_PARTY_T_FIRST_NAME_1_F), 'length': 100, 'name': '{}'.format(names.OP_PARTY_T_FIRST_NAME_1_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_PARTY_T_FIRST_NAME_2_F), 'length': 100, 'name': '{}'.format(names.OP_PARTY_T_FIRST_NAME_2_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_PARTY_T_SURNAME_1_F), 'length': 100, 'name': '{}'.format(names.OP_PARTY_T_SURNAME_1_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_PARTY_T_SURNAME_2_F), 'length': 100, 'name': '{}'.format(names.OP_PARTY_T_SURNAME_2_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_PARTY_T_GENRE_F), 'length': -1, 'name': '{}'.format(names.OP_PARTY_T_GENRE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_PARTY_T_ETHNIC_GROUP_F), 'length': -1, 'name': '{}'.format(names.OP_PARTY_T_ETHNIC_GROUP_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_PARTY_T_BUSINESS_NAME_F), 'length': 255, 'name': '{}'.format(names.OP_PARTY_T_BUSINESS_NAME_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_PARTY_T_NAME_F), 'length': 255, 'name': '{}'.format(names.COL_PARTY_T_NAME_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_PARTY_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.COL_PARTY_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_PARTY_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_PARTY_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
         ]
     elif layer_name == names.OP_ADMINISTRATIVE_SOURCE_T:
         mapping = [
-            {'expression': '"tipo"', 'length': -1, 'name': 'tipo', 'precision': 0, 'type': 4},
-            {'expression': '"ente_emisor"', 'length': 255, 'name': 'ente_emisor', 'precision': -1, 'type': 10},
-            {'expression': '"observacion"', 'length': 255, 'name': 'observacion', 'precision': -1, 'type': 10},
-            {'expression': '"numero_fuente"', 'length': 150, 'name': 'numero_fuente', 'precision': -1, 'type': 10},
-            {'expression': '"estado_disponibilidad"', 'length': -1, 'name': 'estado_disponibilidad', 'precision': 0, 'type': 4},
-            {'expression': '"tipo_principal"', 'length': -1, 'name': 'tipo_principal', 'precision': 0, 'type': 4},
-            {'expression': '"espacio_de_nombres"', 'length': 255, 'name': 'espacio_de_nombres', 'precision': -1, 'type': 10},
-            {'expression': '"local_id"', 'length': 255, 'name': 'local_id', 'precision': -1, 'type': 10},
-            {'expression': '"oficialidad"', 'length': -1, 'name': 'oficialidad', 'precision': -1, 'type': 1},
-            {'expression': '"fecha_documento_fuente"', 'length': -1, 'name': 'fecha_documento_fuente', 'precision': -1, 'type': 14}
+            {'expression': '"{}"'.format(names.OP_ADMINISTRATIVE_SOURCE_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.OP_ADMINISTRATIVE_SOURCE_T_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F), 'length': 255, 'name': '{}'.format(names.OP_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_ADMINISTRATIVE_SOURCE_T_OBSERVATION_F), 'length': 255, 'name': '{}'.format(names.COL_ADMINISTRATIVE_SOURCE_T_OBSERVATION_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_ADMINISTRATIVE_SOURCE_T_SOURCE_NUMBER_F), 'length': 150, 'name': '{}'.format(names.COL_ADMINISTRATIVE_SOURCE_T_SOURCE_NUMBER_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_SOURCE_T_MAIN_TYPE_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_MAIN_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_SOURCE_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.COL_SOURCE_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_SOURCE_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_SOURCE_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_SOURCE_T_OFFICIAL_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_OFFICIAL_F), 'precision': -1, 'type': 1},
+            {'expression': '"{}"'.format(names.COL_SOURCE_T_DATE_DOCUMENT_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_DATE_DOCUMENT_F), 'precision': -1, 'type': 14}
         ]
     elif layer_name == names.COL_SPATIAL_SOURCE_T:
         mapping = [
-            {'expression': '"tipo"', 'length': -1, 'name': 'tipo', 'precision': 0, 'type': 4},
-            {'expression': '"estado_disponibilidad"', 'length': -1, 'name': 'estado_disponibilidad', 'precision': 0, 'type': 4},
-            {'expression': '"tipo_principal"', 'length': -1, 'name': 'tipo_principal', 'precision': 0, 'type': 4},
-            {'expression': '"espacio_de_nombres"', 'length': 255, 'name': 'espacio_de_nombres', 'precision': -1, 'type': 10},
-            {'expression': '"local_id"', 'length': 255, 'name': 'local_id', 'precision': -1, 'type': 10},
-            {'expression': '"oficialidad"', 'length': -1, 'name': 'oficialidad', 'precision': -1, 'type': 1},
-            {'expression': '"fecha_documento_fuente"', 'length': -1, 'name': 'fecha_documento_fuente', 'precision': -1, 'type': 14}
+            {'expression': '"{}"'.format(names.COL_SPATIAL_SOURCE_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_SOURCE_T_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_SOURCE_T_MAIN_TYPE_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_MAIN_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_SOURCE_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.COL_SOURCE_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_SOURCE_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_SOURCE_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_SOURCE_T_OFFICIAL_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_OFFICIAL_F), 'precision': -1, 'type': 1},
+            {'expression': '"{}"'.format(names.COL_SOURCE_T_DATE_DOCUMENT_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_DATE_DOCUMENT_F), 'precision': -1, 'type': 14}
         ]
     elif layer_name == names.OP_BUILDING_T:
         mapping = [
-            {'expression': '"area_construccion"', 'length': 15, 'name': 'area_construccion', 'precision': 1, 'type': 6},
-            {'expression': '"numero_pisos"', 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2},
-            {'expression': '"avaluo_construccion"', 'length': 16, 'name': 'avaluo_construccion', 'precision': 1, 'type': 6},
-            {'expression': '"dimension"', 'length': -1, 'name': 'dimension', 'precision': 0, 'type': 4},
-            {'expression': '"etiqueta"', 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10},
-            {'expression': '"relacion_superficie"', 'length': -1, 'name': 'relacion_superficie', 'precision': 0, 'type': 4},
-            {'expression': '"espacio_de_nombres"', 'length': 255, 'name': 'espacio_de_nombres', 'precision': -1, 'type': 10},
-            {'expression': '"local_id"', 'length': 255, 'name': 'local_id', 'precision': -1, 'type': 10},
-            {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
+            {'expression': '"{}"'.format(names.OP_BUILDING_T_BUILDING_AREA_F), 'length': 15, 'name': '{}'.format(names.OP_BUILDING_T_BUILDING_AREA_F), 'precision': 1, 'type': 6},
+            {'expression': '"{}"'.format(names.OP_BUILDING_T_NUMBER_OF_FLOORS_F), 'length': -1, 'name': '{}'.format(names.OP_BUILDING_T_NUMBER_OF_FLOORS_F), 'precision': 0, 'type': 2},
+            {'expression': '"{}"'.format(names.OP_BUILDING_T_BUILDING_VALUATION_F), 'length': 16, 'name': '{}'.format(names.OP_BUILDING_T_BUILDING_VALUATION_F), 'precision': 1, 'type': 6},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
         ]
     elif layer_name == names.OP_BUILDING_UNIT_T:
         mapping = [
-            {'expression': '"identificador"', 'length': 3, 'name': 'identificador', 'precision': -1, 'type': 10},
-            {'expression': '"area_construida"', 'length': 15, 'name': 'area_construida', 'precision': 1, 'type': 6},
-            {'expression': '"area_privada_construida"', 'length': 15, 'name': 'area_privada_construida', 'precision': 1, 'type': 6},
-            {'expression': '"uso"', 'length': -1, 'name': 'uso', 'precision': 0, 'type': 4},
-            {'expression': '"numero_pisos"', 'length': -1, 'name': 'numero_pisos', 'precision': 0, 'type': 2},
-            {'expression': '"avaluo_unidad_construccion"', 'length': 16, 'name': 'avaluo_unidad_construccion', 'precision': 1, 'type': 6},
-            {'expression': '"piso_ubicacion"', 'length': -1, 'name': 'piso_ubicacion', 'precision': 0, 'type': 2},
-            {'expression': '"op_construccion"', 'length': -1, 'name': 'op_construccion', 'precision': 0, 'type': 4},
-            {'expression': '"dimension"', 'length': -1, 'name': 'dimension', 'precision': 0, 'type': 4},
-            {'expression': '"etiqueta"', 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10},
-            {'expression': '"relacion_superficie"', 'length': -1, 'name': 'relacion_superficie', 'precision': 0, 'type': 4},
-            {'expression': '"espacio_de_nombres"', 'length': 255, 'name': 'espacio_de_nombres', 'precision': -1, 'type': 10},
-            {'expression': '"local_id"', 'length': 255, 'name': 'local_id', 'precision': -1, 'type': 10},
-            {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
+            {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_IDENTIFICATION_F), 'length': 3, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_IDENTIFICATION_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_BUILT_AREA_F), 'length': 15, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_BUILT_AREA_F), 'precision': 1, 'type': 6},
+            {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F), 'length': 15, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F), 'precision': 1, 'type': 6},
+            {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_USE_F), 'length': -1, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_USE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_NUMBER_OF_FLOORS_F), 'length': -1, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_NUMBER_OF_FLOORS_F), 'precision': 0, 'type': 2},
+            {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F), 'length': 16, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F), 'precision': 1, 'type': 6},
+            {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_FLOOR_F), 'length': -1, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_FLOOR_F), 'precision': 0, 'type': 2},
+            {'expression': '"{}"'.format(names.OP_BUILDING_UNIT_T_BUILDING_F), 'length': -1, 'name': '{}'.format(names.OP_BUILDING_UNIT_T_BUILDING_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
         ]
     elif layer_name == names.OP_RIGHT_T:
         mapping = [
-            {'expression': '"tipo"', 'length': -1, 'name': 'tipo', 'precision': 0, 'type': 4},
-            {'expression': '"descripcion"', 'length': 255, 'name': 'descripcion', 'precision': -1, 'type': 10},
-            {'expression': '"comprobacion_comparte"', 'length': -1, 'name': 'comprobacion_comparte', 'precision': -1, 'type': 1},
-            {'expression': '"uso_efectivo"', 'length': 255, 'name': 'uso_efectivo', 'precision': -1, 'type': 10},
-            {'expression': '"espacio_de_nombres"', 'length': 255, 'name': 'espacio_de_nombres', 'precision': -1, 'type': 10},
-            {'expression': '"local_id"', 'length': 255, 'name': 'local_id', 'precision': -1, 'type': 10},
-            {'expression': '"interesado_op_interesado"', 'length': -1, 'name': 'interesado_op_interesado', 'precision': 0, 'type': 4},
-            {'expression': '"interesado_op_agrupacion_interesados"', 'length': -1, 'name': 'interesado_op_agrupacion_interesados', 'precision': 0, 'type': 4},
-            {'expression': '"unidad"', 'length': -1, 'name': 'unidad', 'precision': 0, 'type': 4},
-            {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
+            {'expression': '"{}"'.format(names.OP_RIGHT_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.OP_RIGHT_T_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_RRR_T_DESCRIPTION_F), 'length': 255, 'name': '{}'.format(names.COL_RRR_T_DESCRIPTION_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_RRR_T_SHARE_CHECK_F), 'length': -1, 'name': '{}'.format(names.COL_RRR_T_SHARE_CHECK_F), 'precision': -1, 'type': 1},
+            {'expression': '"{}"'.format(names.COL_RRR_T_EFFECTIVE_USAGE_F), 'length': 255, 'name': '{}'.format(names.COL_RRR_T_EFFECTIVE_USAGE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_RRR_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.COL_RRR_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_RRR_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_RRR_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_RRR_PARTY_T_OP_PARTY_F), 'length': -1, 'name': '{}'.format(names.COL_RRR_PARTY_T_OP_PARTY_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F), 'length': -1, 'name': '{}'.format(names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.BAUNIT_RRR_T_UNIT_F), 'length': -1, 'name': '{}'.format(names.BAUNIT_RRR_T_UNIT_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
         ]
     elif layer_name == names.OP_RESTRICTION_T:
         mapping = [
-            {'expression': '"tipo"', 'length': -1, 'name': 'tipo', 'precision': 0, 'type': 4},
-            {'expression': '"descripcion"', 'length': 255, 'name': 'descripcion', 'precision': -1, 'type': 10},
-            {'expression': '"comprobacion_comparte"', 'length': -1, 'name': 'comprobacion_comparte', 'precision': -1, 'type': 1},
-            {'expression': '"uso_efectivo"', 'length': 255, 'name': 'uso_efectivo', 'precision': -1, 'type': 10},
-            {'expression': '"espacio_de_nombres"', 'length': 255, 'name': 'espacio_de_nombres', 'precision': -1, 'type': 10},
-            {'expression': '"local_id"', 'length': 255, 'name': 'local_id', 'precision': -1, 'type': 10},
-            {'expression': '"interesado_op_interesado"', 'length': -1, 'name': 'interesado_op_interesado', 'precision': 0, 'type': 4},
-            {'expression': '"interesado_op_agrupacion_interesados"', 'length': -1, 'name': 'interesado_op_agrupacion_interesados', 'precision': 0, 'type': 4},
-            {'expression': '"unidad"', 'length': -1, 'name': 'unidad', 'precision': 0, 'type': 4},
-            {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
+            {'expression': '"{}"'.format(names.OP_RESTRICTION_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.OP_RESTRICTION_T_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_RRR_T_DESCRIPTION_F), 'length': 255, 'name': '{}'.format(names.COL_RRR_T_DESCRIPTION_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_RRR_T_SHARE_CHECK_F), 'length': -1, 'name': '{}'.format(names.COL_RRR_T_SHARE_CHECK_F), 'precision': -1, 'type': 1},
+            {'expression': '"{}"'.format(names.COL_RRR_T_EFFECTIVE_USAGE_F), 'length': 255, 'name': '{}'.format(names.COL_RRR_T_EFFECTIVE_USAGE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_RRR_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.COL_RRR_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_RRR_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_RRR_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_RRR_PARTY_T_OP_PARTY_F), 'length': -1, 'name': '{}'.format(names.COL_RRR_PARTY_T_OP_PARTY_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F), 'length': -1, 'name': '{}'.format(names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.BAUNIT_RRR_T_UNIT_F), 'length': -1, 'name': '{}'.format(names.BAUNIT_RRR_T_UNIT_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
         ]
     elif layer_name == names.OP_RIGHT_OF_WAY_T:
         mapping = [
-            {'expression': '"area_servidumbre"', 'length': 15, 'name': 'area_servidumbre', 'precision': 1, 'type': 6},
-            {'expression': '"dimension"', 'length': -1, 'name': 'dimension', 'precision': 0, 'type': 4},
-            {'expression': '"etiqueta"', 'length': 255, 'name': 'etiqueta', 'precision': -1, 'type': 10},
-            {'expression': '"relacion_superficie"', 'length': -1, 'name': 'relacion_superficie', 'precision': 0, 'type': 4},
-            {'expression': '"espacio_de_nombres"', 'length': 255, 'name': 'espacio_de_nombres', 'precision': -1, 'type': 10},
-            {'expression': '"local_id"', 'length': 255, 'name': 'local_id', 'precision': -1, 'type': 10},
-            {'expression': '"comienzo_vida_util_version"', 'length': -1, 'name': 'comienzo_vida_util_version', 'precision': -1, 'type': 16},
-            {'expression': '"fin_vida_util_version"', 'length': -1, 'name': 'fin_vida_util_version', 'precision': -1, 'type': 16}
+            {'expression': '"{}"'.format(names.OP_RIGHT_OF_WAY_T_RIGHT_OF_WAY_AREA_F), 'length': 15, 'name': '{}'.format(names.OP_RIGHT_OF_WAY_T_RIGHT_OF_WAY_AREA_F), 'precision': 1, 'type': 6},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+            {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
         ]
-    elif layer_name == EXTADDRESS_TABLE:
+    elif layer_name == names.EXT_ADDRESS_S:
         mapping = [
-            {'expression': '"tipo_direccion"', 'length': -1, 'name': 'tipo_direccion', 'precision': 0, 'type': 4},
-            {'expression': '"es_direccion_principal"', 'length': -1, 'name': 'es_direccion_principal', 'precision': -1, 'type': 1},
-            {'expression': '"codigo_postal"', 'length': 255, 'name': 'codigo_postal', 'precision': -1, 'type': 10},
-            {'expression': '"clase_via_principal"', 'length': -1, 'name': 'clase_via_principal', 'precision': 0, 'type': 4},
-            {'expression': '"valor_via_principal"', 'length': 100, 'name': 'valor_via_principal', 'precision': -1, 'type': 10},
-            {'expression': '"letra_via_principal"', 'length': 20, 'name': 'letra_via_principal', 'precision': -1, 'type': 10},
-            {'expression': '"sector_ciudad"', 'length': -1, 'name': 'sector_ciudad', 'precision': 0, 'type': 4},
-            {'expression': '"valor_via_generadora"', 'length': 100, 'name': 'valor_via_generadora', 'precision': -1, 'type': 10},
-            {'expression': '"letra_via_generadora"', 'length': 20, 'name': 'letra_via_generadora', 'precision': -1, 'type': 10},
-            {'expression': '"numero_predio"', 'length': 20, 'name': 'numero_predio', 'precision': -1, 'type': 10},
-            {'expression': '"sector_predio"', 'length': -1, 'name': 'sector_predio', 'precision': 0, 'type': 4},
-            {'expression': '"complemento"', 'length': 255, 'name': 'complemento', 'precision': -1, 'type': 10},
-            {'expression': '"nombre_predio"', 'length': 255, 'name': 'nombre_predio', 'precision': -1, 'type': 10},
-            {'expression': '"{}"'.format(names.EXT_ADDRESS_T_OP_BUILDING_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_T_OP_BUILDING_F), 'precision': 0, 'type': 4},
-            {'expression': '"{}"'.format(names.EXT_ADDRESS_T_OP_PLOT_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_T_OP_PLOT_F), 'precision': 0, 'type': 4},
-            {'expression': '"{}"'.format(names.EXT_ADDRESS_T_OP_RIGHT_OF_WAY_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_T_OP_RIGHT_OF_WAY_F), 'precision': 0, 'type': 4},
-            {'expression': '"{}"'.format(names.EXT_ADDRESS_T_OP_BUILDING_UNIT_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_T_OP_BUILDING_UNIT_F), 'precision': 0, 'type': 4}
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_ADDRESS_TYPE_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_S_ADDRESS_TYPE_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_IS_MAIN_ADDRESS_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_S_IS_MAIN_ADDRESS_F), 'precision': -1, 'type': 1},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_POSTAL_CODE_F), 'length': 255, 'name': '{}'.format(names.EXT_ADDRESS_S_POSTAL_CODE_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_MAIN_ROAD_CLASS_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_S_MAIN_ROAD_CLASS_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_VALUE_MAIN_ROAD_F), 'length': 100, 'name': '{}'.format(names.EXT_ADDRESS_S_VALUE_MAIN_ROAD_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_LETTER_MAIN_ROAD_F), 'length': 20, 'name': '{}'.format(names.EXT_ADDRESS_S_LETTER_MAIN_ROAD_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_CITY_SECTOR_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_S_CITY_SECTOR_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_VALUE_GENERATOR_ROAD_F), 'length': 100, 'name': '{}'.format(names.EXT_ADDRESS_S_VALUE_GENERATOR_ROAD_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_LETTER_GENERATOR_ROAD_F), 'length': 20, 'name': '{}'.format(names.EXT_ADDRESS_S_LETTER_GENERATOR_ROAD_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_PARCEL_NUMBER_F), 'length': 20, 'name': '{}'.format(names.EXT_ADDRESS_S_PARCEL_NUMBER_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_PARCEL_SECTOR_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_S_PARCEL_SECTOR_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_COMPLEMENT_F), 'length': 255, 'name': '{}'.format(names.EXT_ADDRESS_S_COMPLEMENT_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_PARCEL_NAME_F), 'length': 255, 'name': '{}'.format(names.EXT_ADDRESS_S_PARCEL_NAME_F), 'precision': -1, 'type': 10},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_OP_BUILDING_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_S_OP_BUILDING_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_OP_PLOT_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_S_OP_PLOT_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_OP_RIGHT_OF_WAY_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_S_OP_RIGHT_OF_WAY_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.EXT_ADDRESS_S_OP_BUILDING_UNIT_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_S_OP_BUILDING_UNIT_F), 'precision': 0, 'type': 4}
         ]
     # --------------------------------
     # UNIQUE CADASTRAL FORM MODEL

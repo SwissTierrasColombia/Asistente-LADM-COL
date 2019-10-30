@@ -20,8 +20,7 @@ from asistente_ladm_col.config.table_mapping_config import (BOUNDARY_POINT_TABLE
                                                             POINT_MONUMENTATION_TYPE_TABLE,
                                                             POINT_LOCATION_POINT_TYPE_TABLE,
                                                             SURFACE_RELATION_TYPE_TABLE,
-                                                            DIMENSION_TYPE_TABLE,
-                                                            USE_BUILDING_UNIT_TABLE_TYPE)
+                                                            DIMENSION_TYPE_TABLE)
 
 import_qgis_model_baker()
 
