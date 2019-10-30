@@ -176,11 +176,11 @@ class CreateExtAddressCadastreWizard(MultiPageSpatialWizardFactory,
             fid = feature.id()
 
             if self._db.get_ladm_layer_name(self._current_layer) == self.names.OP_PLOT_T:
-                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self.names.EXT_ADDRESS_T_OP_PLOT_F)
+                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self.names.EXT_ADDRESS_S_OP_PLOT_F)
             elif self._db.get_ladm_layer_name(self._current_layer) == self.names.OP_BUILDING_T:
-                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self.names.EXT_ADDRESS_T_OP_BUILDING_F)
+                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self.names.EXT_ADDRESS_S_OP_BUILDING_F)
             elif self._db.get_ladm_layer_name(self._current_layer) == self.names.OP_BUILDING_UNIT_T:
-                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self.names.EXT_ADDRESS_T_OP_BUILDING_UNIT_F)
+                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self.names.EXT_ADDRESS_S_OP_BUILDING_UNIT_F)
 
         if spatial_unit_field_idx:
             # assign the relation with the spatial unit

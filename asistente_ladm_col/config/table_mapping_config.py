@@ -411,7 +411,6 @@ class Names(metaclass=Singleton):
     COL_ADMINISTRATIVE_SOURCE_T_OBSERVATION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteAdministrativa.Observacion"
     COL_SOURCE_T_QUALITY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Calidad"
     COL_SPATIAL_SOURCE_T_MEASUREMENTS_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteEspacial.Mediciones"
-    COL_SPATIAL_SOURCE_T_PROCEDURE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteEspacial.Procedimiento"
     COL_SPATIAL_SOURCE_T_TYPE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteEspacial.Tipo"
     COL_SOURCE_T_AVAILABILITY_STATUS_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Estado_Disponibilidad"
     COL_SOURCE_T_EXT_ARCHIVE_ID_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID"
@@ -458,20 +457,20 @@ class Names(metaclass=Singleton):
     EXT_ARCHIVE_S_STORAGE_DATE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.ExtArchivo.Fecha_Grabacion"
     EXT_ARCHIVE_S_NAMESPACE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.ExtArchivo.Espacio_De_Nombres"
     EXT_ARCHIVE_S_LOCAL_ID_F = None  # "LADM_COL_V1_2.LADM_Nucleo.ExtArchivo.Local_Id"
-    EXT_ADDRESS_T_VALUE_MAIN_ROAD_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Valor_Via_Principal"
-    EXT_ADDRESS_T_PARCEL_NUMBER_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Numero_Predio"
-    EXT_ADDRESS_T_LOCALIZATION_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Localizacion"
-    EXT_ADDRESS_T_MAIN_ROAD_CLASS_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Clase_Via_Principal"
-    EXT_ADDRESS_T_PARCEL_SECTOR_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Predio"
-    EXT_ADDRESS_T_PARCEL_NAME_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Nombre_Predio"
-    EXT_ADDRESS_T_IS_MAIN_ADDRESS_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Es_Direccion_Principal"
-    EXT_ADDRESS_T_LETTER_GENERATOR_ROAD_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Letra_Via_Generadora"
-    EXT_ADDRESS_T_VALUE_GENERATOR_ROAD_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Valor_Via_Generadora"
-    EXT_ADDRESS_T_LETTER_MAIN_ROAD_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Letra_Via_Principal"
-    EXT_ADDRESS_T_ADDRESS_TYPE_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Tipo_Direccion"
-    EXT_ADDRESS_T_CITY_SECTOR_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Ciudad"
-    EXT_ADDRESS_T_POSTAL_CODE_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Codigo_Postal"
-    EXT_ADDRESS_T_COMPLEMENT_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Complemento"
+    EXT_ADDRESS_S_VALUE_MAIN_ROAD_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Valor_Via_Principal"
+    EXT_ADDRESS_S_PARCEL_NUMBER_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Numero_Predio"
+    EXT_ADDRESS_S_LOCALIZATION_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Localizacion"
+    EXT_ADDRESS_S_MAIN_ROAD_CLASS_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Clase_Via_Principal"
+    EXT_ADDRESS_S_PARCEL_SECTOR_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Predio"
+    EXT_ADDRESS_S_PARCEL_NAME_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Nombre_Predio"
+    EXT_ADDRESS_S_IS_MAIN_ADDRESS_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Es_Direccion_Principal"
+    EXT_ADDRESS_S_LETTER_GENERATOR_ROAD_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Letra_Via_Generadora"
+    EXT_ADDRESS_S_VALUE_GENERATOR_ROAD_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Valor_Via_Generadora"
+    EXT_ADDRESS_S_LETTER_MAIN_ROAD_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Letra_Via_Principal"
+    EXT_ADDRESS_S_ADDRESS_TYPE_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Tipo_Direccion"
+    EXT_ADDRESS_S_CITY_SECTOR_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Ciudad"
+    EXT_ADDRESS_S_POSTAL_CODE_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Codigo_Postal"
+    EXT_ADDRESS_S_COMPLEMENT_F = None  # "LADM_COL.LADM_Nucleo.ExtDireccion.Complemento"
     # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado.Ext_Direccion_ID"
     # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado.Firma"
     # "LADM_COL_V1_2.LADM_Nucleo.ExtInteresado.Fotografia"
@@ -630,10 +629,10 @@ class Names(metaclass=Singleton):
     # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Area_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_area
     # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Area_Operacion.Operacion.OP_Terreno" --> op_terreno_area
     # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Area_Operacion.Operacion.OP_UnidadConstruccion" --> op_unidadconstruccion_area
-    EXT_ADDRESS_T_OP_BUILDING_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Construccion" --> op_construccion_ext_direccion_id
-    EXT_ADDRESS_T_OP_RIGHT_OF_WAY_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_ext_direccion_id
-    EXT_ADDRESS_T_OP_PLOT_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Terreno" --> op_terreno_ext_direccion_id
-    EXT_ADDRESS_T_OP_BUILDING_UNIT_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_UnidadConstruccion" --> op_unidadconstruccion_ext_direccion_id
+    EXT_ADDRESS_S_OP_BUILDING_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Construccion" --> op_construccion_ext_direccion_id
+    EXT_ADDRESS_S_OP_RIGHT_OF_WAY_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_ext_direccion_id
+    EXT_ADDRESS_S_OP_PLOT_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Terreno" --> op_terreno_ext_direccion_id
+    EXT_ADDRESS_S_OP_BUILDING_UNIT_F = None  # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_UnidadConstruccion" --> op_unidadconstruccion_ext_direccion_id
     # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Volumen_Operacion.Operacion.OP_Construccion" --> op_construccion_volumen
     # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Volumen_Operacion.Operacion.OP_ServidumbrePaso" --> op_servidumbrepaso_volumen
     # "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Volumen_Operacion.Operacion.OP_Terreno" --> op_terreno_volumen
@@ -787,24 +786,22 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.COL_FuenteAdministrativa.Observacion": "COL_ADMINISTRATIVE_SOURCE_T_OBSERVATION_F"
         }},
         "LADM_COL.LADM_Nucleo.COL_FuenteAdministrativaTipo": {VARIABLE_NAME: "COL_ADMINISTRATIVE_SOURCE_TYPE_D", FIELDS_DICT: {}},
-        "LADM_COL.LADM_Nucleo.COL_FuenteEspacial": {VARIABLE_NAME: "COL_SPATIAL_SOURCE_T", FIELDS_DICT: {}},
-        "LADM_COL.LADM_Nucleo.COL_FuenteEspacialTipo": {VARIABLE_NAME: "COL_SPATIAL_SOURCE_TYPE_D", FIELDS_DICT: {
-            "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteEspacial.Mediciones": "COL_SPATIAL_SOURCE_T_MEASUREMENTS_F",
-            "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteEspacial.Procedimiento": "COL_SPATIAL_SOURCE_T_PROCEDURE_F",
-            "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteEspacial.Tipo": "COL_SPATIAL_SOURCE_T_TYPE_F"
+        "LADM_COL.LADM_Nucleo.COL_FuenteEspacial": {VARIABLE_NAME: "COL_SPATIAL_SOURCE_T", FIELDS_DICT: {
+            "LADM_COL.LADM_Nucleo.COL_FuenteEspacial.Mediciones": "COL_SPATIAL_SOURCE_T_MEASUREMENTS_F",
+            "LADM_COL.LADM_Nucleo.COL_FuenteEspacial.Tipo": "COL_SPATIAL_SOURCE_T_TYPE_F"
         }},
+        "LADM_COL.LADM_Nucleo.COL_FuenteEspacialTipo": {VARIABLE_NAME: "COL_SPATIAL_SOURCE_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_GrupoInteresadoTipo": {VARIABLE_NAME: "COL_GROUP_PARTY_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_Interesado": {VARIABLE_NAME: "COL_PARTY_T", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_InterpolacionTipo": {VARIABLE_NAME: "COL_INTERPOLATION_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_MonumentacionTipo": {VARIABLE_NAME: "COL_MONUMENTATION_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_Punto": {VARIABLE_NAME: "COL_POINT_T", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.COL_Punto.Posicion_Interpolacion": "COL_POINT_INTERPOLATION_POSITION_F",
+            "LADM_COL.LADM_Nucleo.COL_Punto.Posicion_Interpolacion": "COL_POINT_T_INTERPOLATION_POSITION_F",
             "LADM_COL.LADM_Nucleo.COL_Punto.Geometria": "COL_POINT_T_ORIGINAL_LOCATION_F",
             "LADM_COL.LADM_Nucleo.COL_Punto.MetodoProduccion": "COL_POINT_T_PRODUCTION_METHOD_F",
             "LADM_COL.LADM_Nucleo.COL_Punto.Monumentacion": "COL_POINT_T_MONUMENTATION_F",
             "LADM_COL.LADM_Nucleo.COL_Punto.Espacio_De_Nombres": "COL_POINT_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.COL_Punto.Local_Id": "COL_POINT_T_LOCAL_ID_F",
-            "LADM_COL.LADM_Nucleo.COL_Punto.Posicion_Interpolacion": "COL_POINT_T_INTERPOLATION_POSITION_F",
             "LADM_COL.LADM_Nucleo.COL_Punto.Transformacion_Y_Resultado": "COL_POINT_T_TRANSFORMATION_AND_RESULT_F"
         }},
         "LADM_COL.LADM_Nucleo.COL_RRR": {VARIABLE_NAME: "COL_RRR_T", FIELDS_DICT:{
@@ -836,24 +833,24 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.ExtArchivo.Local_Id": "EXT_ARCHIVE_S_LOCAL_ID_F"
         }},
         "LADM_COL.LADM_Nucleo.ExtDireccion": {VARIABLE_NAME: "EXT_ADDRESS_S", FIELDS_DICT: {
-            "LADM_COL.LADM_Nucleo.ExtDireccion.Valor_Via_Principal": "EXT_ADDRESS_T_VALUE_MAIN_ROAD_F",
-            "LADM_COL.LADM_Nucleo.ExtDireccion.Numero_Predio": "EXT_ADDRESS_T_PARCEL_NUMBER_F",
-            "LADM_COL.LADM_Nucleo.ExtDireccion.Localizacion": "EXT_ADDRESS_T_LOCALIZATION_F",
-            "LADM_COL.LADM_Nucleo.ExtDireccion.Clase_Via_Principal": "EXT_ADDRESS_T_MAIN_ROAD_CLASS_F",
-            "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Predio": "EXT_ADDRESS_T_PARCEL_SECTOR_F",
-            "LADM_COL.LADM_Nucleo.ExtDireccion.Nombre_Predio": "EXT_ADDRESS_T_PARCEL_NAME_F",
-            "LADM_COL.LADM_Nucleo.ExtDireccion.Es_Direccion_Principal": "EXT_ADDRESS_T_IS_MAIN_ADDRESS_F",
-            "LADM_COL.LADM_Nucleo.ExtDireccion.Letra_Via_Generadora": "EXT_ADDRESS_T_LETTER_GENERATOR_ROAD_F",
-            "LADM_COL.LADM_Nucleo.ExtDireccion.Valor_Via_Generadora": "EXT_ADDRESS_T_VALUE_GENERATOR_ROAD_F",
-            "LADM_COL.LADM_Nucleo.ExtDireccion.Letra_Via_Principal": "EXT_ADDRESS_T_LETTER_MAIN_ROAD_F",
-            "LADM_COL.LADM_Nucleo.ExtDireccion.Tipo_Direccion": "EXT_ADDRESS_T_ADDRESS_TYPE_F",
-            "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Ciudad": "EXT_ADDRESS_T_CITY_SECTOR_F",
-            "LADM_COL.LADM_Nucleo.ExtDireccion.Codigo_Postal": "EXT_ADDRESS_T_POSTAL_CODE_F",
-            "LADM_COL.LADM_Nucleo.ExtDireccion.Complemento": "EXT_ADDRESS_T_COMPLEMENT_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Construccion": "EXT_ADDRESS_T_OP_BUILDING_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_ServidumbrePaso": "EXT_ADDRESS_T_OP_RIGHT_OF_WAY_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Terreno": "EXT_ADDRESS_T_OP_PLOT_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_UnidadConstruccion": "EXT_ADDRESS_T_OP_BUILDING_UNIT_F"
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Valor_Via_Principal": "EXT_ADDRESS_S_VALUE_MAIN_ROAD_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Numero_Predio": "EXT_ADDRESS_S_PARCEL_NUMBER_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Localizacion": "EXT_ADDRESS_S_LOCALIZATION_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Clase_Via_Principal": "EXT_ADDRESS_S_MAIN_ROAD_CLASS_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Predio": "EXT_ADDRESS_S_PARCEL_SECTOR_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Nombre_Predio": "EXT_ADDRESS_S_PARCEL_NAME_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Es_Direccion_Principal": "EXT_ADDRESS_S_IS_MAIN_ADDRESS_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Letra_Via_Generadora": "EXT_ADDRESS_S_LETTER_GENERATOR_ROAD_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Valor_Via_Generadora": "EXT_ADDRESS_S_VALUE_GENERATOR_ROAD_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Letra_Via_Principal": "EXT_ADDRESS_S_LETTER_MAIN_ROAD_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Tipo_Direccion": "EXT_ADDRESS_S_ADDRESS_TYPE_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Ciudad": "EXT_ADDRESS_S_CITY_SECTOR_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Codigo_Postal": "EXT_ADDRESS_S_POSTAL_CODE_F",
+            "LADM_COL.LADM_Nucleo.ExtDireccion.Complemento": "EXT_ADDRESS_S_COMPLEMENT_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Construccion": "EXT_ADDRESS_S_OP_BUILDING_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_ServidumbrePaso": "EXT_ADDRESS_S_OP_RIGHT_OF_WAY_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_Terreno": "EXT_ADDRESS_S_OP_PLOT_F",
+            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID_Operacion.Operacion.OP_UnidadConstruccion": "EXT_ADDRESS_S_OP_BUILDING_UNIT_F"
         }},
         "LADM_COL.LADM_Nucleo.ExtInteresado": {VARIABLE_NAME: "EXT_PARTY_S", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.Fraccion": {VARIABLE_NAME: "FRACTION_S", FIELDS_DICT: {
@@ -872,7 +869,7 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas_Operacion.Operacion.OP_UnidadConstruccion": "MORE_BFS_T_OP_BUILDING_UNIT_F"
         }},
         "LADM_COL.LADM_Nucleo.col_menosCcl": {VARIABLE_NAME: "LESS_BFS_T", FIELDS_DICT: {
-            "LADM_COL_V1_2.LADM_Nucleo.col_menosCcl.ccl_menos": "LESS_BFS_T_OP_BOUNDARY_F_OP",
+            "LADM_COL.LADM_Nucleo.col_menosCcl.ccl_menos": "LESS_BFS_T_OP_BOUNDARY_F_OP",
             "LADM_COL.LADM_Nucleo.col_menosCcl.ccl_menos_Operacion.Operacion.OP_Lindero": "LESS_BFS_T_OP_BOUNDARY_F",
             "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_Construccion": "LESS_BFS_T_OP_BUILDING_F",
             "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos_Operacion.Operacion.OP_ServidumbrePaso": "LESS_BFS_T_OP_RIGHT_OF_WAY_F",
@@ -984,7 +981,7 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.COL_Interesado.Local_Id": "COL_PARTY_T_LOCAL_ID_F"
         }},
         "Operacion.Operacion.OP_Lindero": {VARIABLE_NAME: "OP_BOUNDARY_T", FIELDS_DICT: {
-            "Operacion_.Operacion.OP_Lindero.Longitud": "OP_BOUNDARY_T_LENGTH_F"
+            "Operacion.Operacion.OP_Lindero.Longitud": "OP_BOUNDARY_T_LENGTH_F"
         }},
         "Operacion.Operacion.OP_Predio": {VARIABLE_NAME: "OP_PARCEL_T", FIELDS_DICT: {
             "Operacion.Operacion.OP_Predio.Avaluo_Predio": "OP_PARCEL_T_VALUATION_F",
@@ -1143,8 +1140,6 @@ class Names(metaclass=Singleton):
 CADASTRE MAPPING
 """
 ADMINISTRATIVE_SOURCE_TABLE = "op_fuenteadministrativa"
-ADMINISTRATIVE_SOURCE_TYPE_TABLE = "col_fuenteadministrativatipo"
-AVAILABILITY_STATE_TABLE = "col_estadodisponibilidadtipo"
 POINT_BFS_TABLE_BOUNDARY_FIELD = "ccl_lindero"
 BFS_TABLE_BOUNDARY_POINT_FIELD = "punto_puntolindero"
 BOUNDARY_POINT_TABLE = "op_puntolindero"
@@ -1156,11 +1151,8 @@ BUILDING_UNIT_AREA_FIELD = "area_construida"
 BUILDING_UNIT_PRIVATE_AREA_FIELD = "area_privada_construida"
 BUILDING_UNIT_VALUATION_FIELD = "avaluo_unidad_construccion"
 BUILDING_UNIT_TABLE = "op_unidadconstruccion"
-USE_BUILDING_UNIT_TABLE_TYPE = "op_usouconstipo"
 BUSINESS_NAME_FIELD = "razon_social"
 CCLSOURCE_TABLE = "col_cclfuente"
-CCLSOURCE_TABLE_BOUNDARY_FIELD = "ccl"
-CCLSOURCE_TABLE_SOURCE_FIELD = "fuente_espacial"
 COL_PARTY_DOCUMENT_ID_FIELD = "documento_identidad"
 COL_PARTY_TABLE = "op_interesado"
 COL_PARTY_TYPE_FIELD = "tipo"
@@ -1174,41 +1166,19 @@ COL_RESTRICTION_TYPE_RIGHT_OF_WAY_VALUE = "Servidumbre"
 CONTROL_POINT_TABLE = "op_puntocontrol"
 DEPARTMENT_FIELD = "departamento"
 DOCUMENT_ID_FIELD = "documento_identidad"
-DOMAIN_KEY_FIELD = {
-    "pg": "ilicode",
-    "gpkg": "iliCode"
-}
 EXTADDRESS_TABLE = "extdireccion"
-EXTADDRESS_PLOT_FIELD = "terreno_ext_direccion_id"
-EXTADDRESS_BUILDING_FIELD = "construccion_ext_direccion_id"
-EXTADDRESS_BUILDING_UNIT_FIELD = "unidadconstruccion_ext_direccion_id"
 EXTFILE_TABLE = "extarchivo"
 EXTFILE_DATA_FIELD = "datos"
 FIRST_NAME_FIELD = "primer_nombre"
 FIRST_SURNAME_FIELD = "primer_apellido"
 FMI_FIELD = "fmi"
 FRACTION_TABLE = "fraccion"
-FRACTION_DENOMINATOR_FIELD = "denominador"
-FRACTION_MEMBER_FIELD = "col_miembros_participacion"
-FRACTION_NUMERATOR_FIELD = "numerador"
-GENDER_TYPE_TABLE = "col_generotipo"
 ID_FIELD = "t_id"
 DISPNAME = "dispname"
 LA_GROUP_PARTY_TABLE = "op_agrupacion_interesados"
 LA_GROUP_PARTY_NAME_FIELD = "nombre"
-LA_GROUP_PARTY_GPTYPE_FIELD = "tipo"
-LA_GROUP_PARTY_TYPE_TABLE = "col_grupointeresadotipo"
-LA_GROUP_PARTY_TYPE_VALUE = "Otro"
 LA_BAUNIT_NAME_FIELD = "nombre"
 LA_BAUNIT_TABLE = "la_baunit"
-LA_BAUNIT_TYPE_TABLE = "COL_BAUnitTipo"
-LA_DIMENSION_TYPE_TABLE = "COL_DimensionTipo"
-LA_BUILDING_UNIT_TYPE_TABLE = "la_unidadedificaciontipo"
-LA_INTERPOLATION_TYPE_TABLE = "la_interpolaciontipo"
-LA_MONUMENTATION_TYPE_TABLE = "la_monumentaciontipo"
-LA_POINT_TABLE = "la_punto"
-LA_POINT_TYPE_TABLE = "COL_PuntoTipo"
-LA_SURFACE_RELATION_TYPE_TABLE = "COL_RelacionSuperficieTipo"
 LENGTH_FIELD_BOUNDARY_TABLE = "longitud"
 LESS_TABLE = "menos"
 LESS_TABLE_BOUNDARY_FIELD = "ccl_lindero"
@@ -1222,7 +1192,6 @@ MOREBFS_TABLE_BOUNDARY_FIELD = "cclp_lindero"
 MOREBFS_TABLE_PLOT_FIELD = "uep_terreno"
 MUNICIPALITY_FIELD = "municipio"
 NAMESPACE_FIELD = "_espacio_de_nombres"
-NIT_NUMBER_FIELD = "numero_nit"
 NUMBER_OF_FLOORS = "numero_pisos"
 NUPRE_FIELD = "nupre"
 PARCEL_NAME_FIELD = "nombre"
@@ -1232,9 +1201,7 @@ PARCEL_TABLE = "op_predio"
 PARCEL_TYPE_FIELD = "tipo"
 PARCEL_CONDITION_FIELD = "condicion_predio"
 CONDITION_PARCEL_TYPE_TABLE = "op_condicionprediotipo"
-PARCEL_TYPE_PH_OPTION = "PropiedadHorizontal.UnidadPredial"
 PARCEL_VALUATION_FIELD = "avaluo_predio"
-PARTY_DOCUMENT_TYPE_TABLE = "col_interesadodocumentotipo"
 PARTY_TYPE_TABLE = "la_interesadotipo"
 PLOT_TABLE = "op_terreno"
 PLOT_AREA_FIELD = "area_terreno"
@@ -1247,42 +1214,30 @@ POINT_TYPE_TABLE = "op_puntotipo"
 SURFACE_RELATION_TYPE_TABLE = "col_relacionsuperficietipo"
 DIMENSION_TYPE_TABLE = "col_dimensiontipo"
 POINT_BOUNDARY_FACE_STRING_TABLE = "col_puntoCcl"
-POINT_DESCRIPTION_TYPE_TABLE = "col_descripcionpuntotipo"
-POINT_DEFINITION_TYPE_TABLE = "col_defpuntotipo"
 POINT_INTERPOLATION_TYPE_TABLE = "col_interpolaciontipo"
 POINT_MONUMENTATION_TYPE_TABLE = "col_monumentaciontipo"
 POINTSOURCE_TABLE = "col_puntofuente"
 POINTSOURCE_TABLE_BOUNDARYPOINT_FIELD = "punto_op_puntolindero"
-POINTSOURCE_TABLE_SURVEYPOINT_FIELD = "punto_op_puntolevantamiento"
-POINTSOURCE_TABLE_CONTROLPOINT_FIELD = "punto_op_puntocontrol"
-POINTSOURCE_TABLE_SOURCE_FIELD = "fuente_espacial"
 RESTRICTION_TABLE_DESCRIPTION_FIELD = "descripcion"
 RESTRICTION_TABLE = "op_restriccion"
 RESTRICTION_TABLE_PARCEL_FIELD = "unidad_predio"
-RESTRICTION_TYPE_TABLE = "col_restricciontipo"
 RRR_SOURCE_RELATION_TABLE = "col_rrrfuente"
 RRR_SOURCE_RESTRICTION_FIELD = "rrr_op_restriccion"
-RRR_SOURCE_RIGHT_FIELD = "rrr_op_derecho"
 RRR_SOURCE_SOURCE_FIELD = "fuente_administrativa"
 RIGHT_TABLE = "op_derecho"
 RIGHT_TABLE_PARCEL_FIELD = "unidad_predio"
 RIGHT_TABLE_PARTY_FIELD = "interesado_col_interesado"
 RIGHT_TABLE_GROUP_PARTY_FIELD = "interesado_la_agrupacion_interesados"
 RIGHT_TABLE_TYPE_FIELD = "tipo"
-RIGHT_TYPE_TABLE = "col_derechotipo"
-RIGHT_OF_WAY_TABLE="op_servidumbrepaso"
+RIGHT_OF_WAY_TABLE = "op_servidumbrepaso"
 RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD = "identificador"
-REFERENCE_POINT_FIELD = "punto_referencia"
 SECOND_NAME_FIELD = "segundo_nombre"
 SECOND_SURNAME_FIELD = "segundo_apellido"
 SPATIAL_SOURCE_TABLE = "op_fuenteespacial"
-SPATIAL_SOURCE_TYPE_TABLE = "col_fuenteespacialtipo"
 SURVEY_POINT_TABLE = "op_puntolevantamiento"
-SURVEY_POINT_TYPE_TABLE = "col_puntolevtipo"
 TABLE_PROP_ASSOCIATION = "ASSOCIATION"
 TABLE_PROP_DOMAIN = "ENUM"
 TABLE_PROP_STRUCTURE = "STRUCTURE"
-TYPE_BUILDING_TYPE_TABLE = "col_tipoconstrucciontipo"
 TYPE_FIELD = "tipo"
 UEBAUNIT_TABLE = "col_uebaunit"
 UEBAUNIT_TABLE_BUILDING_FIELD = "ue_op_construccion"
@@ -1291,8 +1246,6 @@ UEBAUNIT_TABLE_PARCEL_FIELD = "baunit"
 UEBAUNIT_TABLE_PLOT_FIELD = "ue_op_terreno"
 UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD = "ue_op_servidumbrepaso"
 UESOURCE_TABLE = "col_uefuente"
-UESOURCE_TABLE_PLOT_FIELD = "ue_op_terreno"
-UESOURCE_TABLE_SOURCE_FIELD = "fuente_espacial"
 VIDA_UTIL_FIELD = "comienzo_vida_util_version"
 ZONE_FIELD = "zona"
 
@@ -1302,13 +1255,6 @@ UNIQUE CADASTRAL FORM
 """
 UNIQUE_CADASTRAL_FORM_TABLE = "fcm_formulario_unico_cm"
 UNIQUE_CADASTRAL_FORM_CONTACT_VISIT_TABLE = "fcm_contacto_visita"
-
-"""
-UNIQUE CADASTRAL FORM
-"""
-UNIQUE_CADASTRAL_FORM_TABLE = "fcm_formulario_unico_cm"
-UNIQUE_CADASTRAL_FORM_CONTACT_VISIT_TABLE = "fcm_contacto_visita"
-
 
 """
 VALUATION MAPPING
@@ -1325,11 +1271,6 @@ VALUATION_PHYSICAL_ZONE_TABLE = "zona_homogenea_fisica"
 AVALUOUNIDADCONSTRUCCION_TABLE = "avaluounidadconstruccion"
 AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_VALUATION_FIELD = "aucons"
 AVALUOUNIDADCONSTRUCCION_TABLE_BUILDING_UNIT_FIELD = "ucons"
-VALUATION_PARCEL_TABLE = "avaluos_v2_2_1avaluos_predio"
-VALUATION_BUILDING_TABLE = "avaluos_v2_2_1avaluos_construccion"
-
-VALUATION_HORIZONTAL_PROPERTY_TABLE = ""
-VALUATION_COMMON_EQUIPMENT_TABLE = ""
 
 
 
