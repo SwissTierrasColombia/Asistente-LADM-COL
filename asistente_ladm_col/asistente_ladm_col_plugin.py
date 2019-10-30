@@ -196,7 +196,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
         self.conn_manager.db_connection_changed.connect(self.refresh_menus)
-        self.conn_manager.db_connection_changed.connect(self.refresh_table_mappings)
         self.qgis_utils.organization_tools_changed.connect(self.refresh_organization_tools)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
@@ -578,15 +577,6 @@ class AsistenteLADMCOLPlugin(QObject):
                     db.cadastral_form_model_exists()),
                 PLUGIN_NAME,
                 Qgis.Info)
-
-    def refresh_table_mappings(self, db, ladm_col_db):
-        """
-        Depending on the DB engine and on schema import parameters, table and field names will probably change
-        """
-        if ladm_col_db:
-            db.get_table_and_field_names()
-
-            self.log.logMessage("DB connection changed, so we just updated table and field names.", PLUGIN_NAME, Qgis.Info)
 
     def refresh_organization_tools(self, organization):
         if organization == NATIONAL_LAND_AGENCY:

@@ -115,30 +115,33 @@ class DBConnector(QObject):
         """
         raise NotImplementedError
 
-    def valuation_model_exists(self):
-        if self.model_parser is None:
-            res = self._parse_models()
-            if not res:
-                return False
+    def operation_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.operation_model_exists()
 
-        return self.model_parser.valuation_model_exists()
+        return False
+
+    def valuation_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.valuation_model_exists()
+
+        return False
 
     def cadastral_form_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.cadastral_form_model_exists()
+
+        return False
+
+    def read_model_parser(self):
         if self.model_parser is None:
-            res = self._parse_models()
-            if not res:
+            try:
+                self.model_parser = ModelParser(self)
+            except psycopg2.ProgrammingError as e:
+                # if it is not possible to access the schema due to lack of privileges
                 return False
 
-        return self.model_parser.cadastral_form_model_exists()
-
-    def _parse_models(self):
-        try:
-            if self.model_parser is None:
-                self.model_parser = ModelParser(self)
-                return True
-        except psycopg2.ProgrammingError as e:
-            # if it is not possible to access the schema due to lack of privileges
-            return False
+        return True
 
     def is_ladm_layer(self, layer):
         raise NotImplementedError

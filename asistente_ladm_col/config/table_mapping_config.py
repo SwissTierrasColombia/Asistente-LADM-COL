@@ -593,7 +593,7 @@ class Names(metaclass=Singleton):
     OP_RIGHT_OF_WAY_T_RIGHT_OF_WAY_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_ServidumbrePaso.Area_Servidumbre"
     OP_PLOT_T_PLOT_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_Terreno.Area_Terreno"
     OP_PLOT_T_PLOT_VALUATION_F = None  # "Operacion_V2_9_5.Operacion.OP_Terreno.Avaluo_Terreno"
-    OP_PLOT_T_GEOMETRY_F = None  # "Operacion_V2_9_5.Operacion.OP_Terreno.poligono_creado"
+    OP_PLOT_T_GEOMETRY_F = None  # "Operacion_V2_9_5.Operacion.OP_Terreno.Geometria"
     OP_BUILDING_UNIT_T_BUILT_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Area_Construida"
     OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Area_Privada_Construida"
     OP_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Avaluo_Unidad_Construccion"
@@ -1034,7 +1034,7 @@ class Names(metaclass=Singleton):
         "Operacion.Operacion.OP_Terreno": {VARIABLE_NAME: "OP_PLOT_T", FIELDS_DICT: {
             "Operacion.Operacion.OP_Terreno.Area_Terreno": "OP_PLOT_T_PLOT_AREA_F",
             "Operacion.Operacion.OP_Terreno.Avaluo_Terreno": "OP_PLOT_T_PLOT_VALUATION_F",
-            "Operacion.Operacion.OP_Terreno.poligono_creado": "OP_PLOT_T_GEOMETRY_F"
+            "Operacion.Operacion.OP_Terreno.Geometria": "OP_PLOT_T_GEOMETRY_F"
         }},
         "Operacion.OP_FuenteAdministrativaTipo": {VARIABLE_NAME: "OP_ADMINISTRATIVE_SOURCE_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_GrupoEtnicoTipo": {VARIABLE_NAME: "OP_ETHNIC_GROUP_TYPE", FIELDS_DICT: {}},
@@ -1080,23 +1080,32 @@ class Names(metaclass=Singleton):
 
         return any_update
 
-    def test_names(self):
+    def test_names(self, models):
         """
         Test whether required table/field names are present.
 
+        :param models: List of model prefixes present in the db
         :return: Tuple (bool: Names are valid or not, string: Message to indicate what exactly failed)
         """
-        required_names = [self.T_ID_F,
-                          self.ILICODE_F,
-                          self.DESCRIPTION_F,
-                          self.DISPLAY_NAME_F]
+        required_names = ["T_ID_F",
+                          "ILICODE_F",
+                          "DESCRIPTION_F",
+                          "DISPLAY_NAME_F"]
+
+        for k, v in self.TABLE_DICT.items():
+            if k.split(".")[0] in models:
+                required_names.append(v[VARIABLE_NAME])
+                for k1, v1 in v[FIELDS_DICT].items():
+                    if k1.split(".")[0] in models:
+                        required_names.append(v1)
+
+        print(required_names)
 
         for required_name in required_names:
-            if required_name is None:
-                return (False, "Name '{}' was not found!".format())
+            if getattr(self, required_name) is None:
+                return (False, "Name '{}' was not found!".format(required_name))
 
         return (True, "")
-
 
     def get_layer_sets(self):
         """

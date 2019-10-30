@@ -35,7 +35,8 @@ from ..queries.annex_17_report import (annex17_plot_data_query,
                                        annex17_building_data_query,
                                        annex17_point_data_query)
 from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
-                                      PLUGIN_NAME)
+                                      PLUGIN_NAME, OPERATION_MODEL_PREFIX, CADASTRAL_FORM_MODEL_PREFIX,
+                                      VALUATION_MODEL_PREFIX, LADM_MODEL_PREFIX)
 from ...config.table_mapping_config import (T_ID,
                                             DESCRIPTION,
                                             ILICODE,
@@ -409,7 +410,16 @@ class PGConnector(DBConnector):
             # Validate table and field names
             if not self.names_read:
                 self._get_table_and_field_names()
-            res, msg = self.names.test_names()
+
+            models = list()
+            if self.operation_model_exists():
+                models.append(OPERATION_MODEL_PREFIX)
+                models.append(LADM_MODEL_PREFIX)
+            if self.cadastral_form_model_exists():
+                models.append(CADASTRAL_FORM_MODEL_PREFIX)
+            if self.valuation_model_exists():
+                models.append(VALUATION_MODEL_PREFIX)
+            res, msg = self.names.test_names(models)
             if not res:
                 return (False, QCoreApplication.translate("PGConnector",
                         "Table/field names from the DB are not correct. Details: {}.").format(msg))
@@ -456,86 +466,85 @@ class PGConnector(DBConnector):
 
         :return: dict with ilinames as keys and sqlnames as values
         """
-        if not self.table_and_fields_names_retrieved:
-            sql_query = """SELECT
-                          iliclass.iliname AS table_iliname,
-                          tbls.tablename AS tablename,
-                          ilicol.iliname AS field_iliname,
-                          a.attname AS fieldname      
-                        FROM pg_catalog.pg_tables tbls
-                        LEFT JOIN {schema}.t_ili2db_table_prop tp
-                          ON tp.tablename = tbls.tablename
-                        LEFT JOIN pg_index i
-                          ON i.indrelid = CONCAT(tbls.schemaname, '.', tbls.tablename)::regclass
-                        LEFT JOIN pg_attribute a
-                          ON a.attrelid = i.indrelid
-                        LEFT JOIN public.geometry_columns g
-                          ON g.f_table_schema = tbls.schemaname
-                          AND g.f_table_name = tbls.tablename
-                        LEFT JOIN {schema}.t_ili2db_classname iliclass
-                          ON tbls.tablename = iliclass.sqlname
-                        LEFT JOIN {schema}.t_ili2db_attrname ilicol
-                          ON a.attname = ilicol.sqlname 
-                          AND ilicol.colowner = tbls.tablename
-                        WHERE i.indisprimary AND schemaname ='{schema}' AND a.attnum >= 0
-                        ORDER BY tbls.tablename, fieldname;""".format(schema=self.schema)
+        sql_query = """SELECT
+                      iliclass.iliname AS table_iliname,
+                      tbls.tablename AS tablename,
+                      ilicol.iliname AS field_iliname,
+                      a.attname AS fieldname      
+                    FROM pg_catalog.pg_tables tbls
+                    LEFT JOIN {schema}.t_ili2db_table_prop tp
+                      ON tp.tablename = tbls.tablename
+                    LEFT JOIN pg_index i
+                      ON i.indrelid = CONCAT(tbls.schemaname, '.', tbls.tablename)::regclass
+                    LEFT JOIN pg_attribute a
+                      ON a.attrelid = i.indrelid
+                    LEFT JOIN public.geometry_columns g
+                      ON g.f_table_schema = tbls.schemaname
+                      AND g.f_table_name = tbls.tablename
+                    LEFT JOIN {schema}.t_ili2db_classname iliclass
+                      ON tbls.tablename = iliclass.sqlname
+                    LEFT JOIN {schema}.t_ili2db_attrname ilicol
+                      ON a.attname = ilicol.sqlname 
+                      AND ilicol.colowner = tbls.tablename
+                    WHERE i.indisprimary AND schemaname ='{schema}' AND a.attnum >= 0
+                    ORDER BY tbls.tablename, fieldname;""".format(schema=self.schema)
 
-            cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-            cur.execute(sql_query)
-            records = cur.fetchall()
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(sql_query)
+        records = cur.fetchall()
 
-            dict_names = dict()
-            for record in records:
-                if record['table_iliname'] is None:
-                    # Either t_ili2db_* tables (INTERLIS meta-attrs)
-                    continue
+        dict_names = dict()
+        for record in records:
+            if record['table_iliname'] is None:
+                # Either t_ili2db_* tables (INTERLIS meta-attrs)
+                continue
 
-                record['table_iliname'] = normalize_iliname(record['table_iliname'])
-                if not record['table_iliname'] in dict_names:
-                    dict_names[record['table_iliname']] = dict()
-                    dict_names[record['table_iliname']]['table_name'] = record['tablename']
+            record['table_iliname'] = normalize_iliname(record['table_iliname'])
+            if not record['table_iliname'] in dict_names:
+                dict_names[record['table_iliname']] = dict()
+                dict_names[record['table_iliname']]['table_name'] = record['tablename']
 
-                if record['field_iliname'] is None:
-                    # Fields for domains, like 'description' (we map it in a custom later in this class method)
-                    continue
+            if record['field_iliname'] is None:
+                # Fields for domains, like 'description' (we map it in a custom later in this class method)
+                continue
 
-                record['field_iliname'] = normalize_iliname(record['field_iliname'])
-                dict_names[record['table_iliname']][record['field_iliname']] = record['fieldname']
+            record['field_iliname'] = normalize_iliname(record['field_iliname'])
+            dict_names[record['table_iliname']][record['field_iliname']] = record['fieldname']
 
-            # Add required key-value pairs that do not come from the DB query
-            dict_names[T_ID] = "t_id"
-            dict_names[DISPLAY_NAME] = "dispname"
-            dict_names[ILICODE] = "ilicode"
-            dict_names[DESCRIPTION] = "description"
+        # Add required key-value pairs that do not come from the DB query
+        dict_names[T_ID] = "t_id"
+        dict_names[DISPLAY_NAME] = "dispname"
+        dict_names[ILICODE] = "ilicode"
+        dict_names[DESCRIPTION] = "description"
 
-            # Map duplicate ilinames (e.g., inheriting an attribute pointing to structure)
-            # Spatial_Unit-->Ext_Address_ID (Ext_Address)
-            # Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
-            # Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
-            sql_query = """SELECT substring(a.iliname from 1 for (length(a.iliname) - position('.' in reverse(a.iliname)))) as table_iliname,
-                a.iliname, a.sqlname, c.iliname as iliname2
-                FROM {schema}.t_ili2db_attrname a
-                    INNER JOIN {schema}.t_ili2db_classname c ON c.sqlname = a.target
-                    INNER JOIN (SELECT a_s.iliname
-                        FROM {schema}.t_ili2db_attrname a_s
-                        GROUP BY a_s.iliname
-                        HAVING COUNT(a_s.iliname) > 1 ) s ON a.iliname = s.iliname
-                GROUP BY a.iliname, a.sqlname, c.iliname
-                HAVING COUNT(a.iliname) = 1
-                ORDER BY a.iliname""".format(schema=self.schema)
-            cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-            cur.execute(sql_query)
-            records = cur.fetchall()
-            for record in records:
-                composed_key = "{}_{}".format(normalize_iliname(record['iliname']),
-                                              normalize_iliname(record['iliname2']))
-                record['table_iliname'] = normalize_iliname(record['table_iliname'])
-                if record['table_iliname'] not in dict_names:
-                    continue
-                dict_names[record['table_iliname']][composed_key] = record['sqlname']
+        # Map duplicate ilinames (e.g., inheriting an attribute pointing to structure)
+        # Spatial_Unit-->Ext_Address_ID (Ext_Address)
+        # Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
+        # Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
+        sql_query = """SELECT substring(a.iliname from 1 for (length(a.iliname) - position('.' in reverse(a.iliname)))) as table_iliname,
+            a.iliname, a.sqlname, c.iliname as iliname2
+            FROM {schema}.t_ili2db_attrname a
+                INNER JOIN {schema}.t_ili2db_classname c ON c.sqlname = a.target
+                INNER JOIN (SELECT a_s.iliname
+                    FROM {schema}.t_ili2db_attrname a_s
+                    GROUP BY a_s.iliname
+                    HAVING COUNT(a_s.iliname) > 1 ) s ON a.iliname = s.iliname
+            GROUP BY a.iliname, a.sqlname, c.iliname
+            HAVING COUNT(a.iliname) = 1
+            ORDER BY a.iliname""".format(schema=self.schema)
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(sql_query)
+        records = cur.fetchall()
+        for record in records:
+            composed_key = "{}_{}".format(normalize_iliname(record['iliname']),
+                                          normalize_iliname(record['iliname2']))
+            record['table_iliname'] = normalize_iliname(record['table_iliname'])
+            if record['table_iliname'] not in dict_names:
+                continue
+            dict_names[record['table_iliname']][composed_key] = record['sqlname']
 
-            self.names.initialize_table_and_field_names(dict_names)
-            self.names_read = True
+        self.names.initialize_table_and_field_names(dict_names)
+        self.names_read = True
 
         return True
 
