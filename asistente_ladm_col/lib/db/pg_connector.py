@@ -406,6 +406,14 @@ class PGConnector(DBConnector):
             if not res_parser:
                 return (False, msg_parser)
 
+            # Validate table and field names
+            if not self.names_read:
+                self._get_table_and_field_names()
+            res, msg = self.names.test_names()
+            if not res:
+                return (False, QCoreApplication.translate("PGConnector",
+                        "Table/field names from the DB are not correct. Details: {}.").format(msg))
+
         if test_level == EnumTestLevel.LADM:
             return (True, QCoreApplication.translate("PGConnector", "The schema '{}' has a valid LADM-COL structure!").format(self.schema))
 
@@ -441,7 +449,7 @@ class PGConnector(DBConnector):
     def validate_db(self):
         pass
 
-    def get_table_and_field_names(self):
+    def _get_table_and_field_names(self):
         """
         Get table and field names from the DB. Should only be called once for a single connection, and should be
         refreshed after a connection changes.
@@ -526,8 +534,8 @@ class PGConnector(DBConnector):
                     continue
                 dict_names[record['table_iliname']][composed_key] = record['sqlname']
 
-            Names().initialize_table_and_field_names(dict_names)
-            self.table_and_fields_names_retrieved = True
+            self.names.initialize_table_and_field_names(dict_names)
+            self.names_read = True
 
         return True
 
