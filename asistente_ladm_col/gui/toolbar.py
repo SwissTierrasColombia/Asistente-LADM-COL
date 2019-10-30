@@ -275,9 +275,9 @@ class ToolBar(QObject):
             (more_bfs_feature[self.names.MORE_BFS_T_OP_PLOT_F], more_bfs_feature[self.names.MORE_BFS_T_BOUNDARY_F]) for
             more_bfs_feature in more_bfs_features]
         existing_more_pairs = set(existing_more_pairs)
-        # Todo: Update LESS_BFS_T_OP_BOUNDARY_F_OP by LESS_BFS_T_OP_BOUNDARY_F.
+        # Todo: Update when ili2db issue is solved.
         # Todo: When an abstract class only implements a concrete class, the name of the attribute is different if two or more classes are implemented.
-        existing_less_pairs = [(less_feature[self.names.LESS_BFS_T_OP_PLOT_F], less_feature[self.names.LESS_BFS_T_OP_BOUNDARY_F_OP]) for
+        existing_less_pairs = [(less_feature[self.names.LESS_BFS_T_OP_PLOT_F], less_feature[self.names.LESS_BFS_T_OP_BOUNDARY_F]) for
                                less_feature in less_features]
         existing_less_pairs = set(existing_less_pairs)
 
@@ -292,9 +292,9 @@ class ToolBar(QObject):
                     # Create feature
                     feature = QgsVectorLayerUtils().createFeature(layers[self.names.LESS_BFS_T][LAYER])
                     feature.setAttribute(self.names.LESS_BFS_T_OP_PLOT_F, id_pair[0])
-                    # Todo: Update LESS_BFS_T_OP_BOUNDARY_F_OP by LESS_BFS_T_OP_BOUNDARY_F.
+                    # Todo: Update LESS_BFS_T_OP_BOUNDARY_F by LESS_BFS_T_OP_BOUNDARY_F.
                     # Todo: When an abstract class only implements a concrete class, the name of the attribute is different if two or more classes are implemented.
-                    feature.setAttribute(self.names.LESS_BFS_T_OP_BOUNDARY_F_OP, id_pair[1])
+                    feature.setAttribute(self.names.LESS_BFS_T_OP_BOUNDARY_F, id_pair[1])
                     features.append(feature)
             layers[self.names.LESS_BFS_T][LAYER].addFeatures(features)
             layers[self.names.LESS_BFS_T][LAYER].commitChanges()

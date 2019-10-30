@@ -466,7 +466,7 @@ class PGConnector(DBConnector):
 
         :return: dict with ilinames as keys and sqlnames as values
         """
-        sql_query = """SELECT
+        sql_query = """SELECT DISTINCT
                       iliclass.iliname AS table_iliname,
                       tbls.tablename AS tablename,
                       ilicol.iliname AS field_iliname,
@@ -487,7 +487,7 @@ class PGConnector(DBConnector):
                       ON a.attname = ilicol.sqlname 
                       AND ilicol.colowner = tbls.tablename
                     WHERE i.indisprimary AND schemaname ='{schema}' AND a.attnum >= 0
-                    ORDER BY tbls.tablename, fieldname;""".format(schema=self.schema)
+                    ORDER BY tbls.tablename, fieldname;""".format(schema=self.schema)  # TODO: Remove DISTINCT when ili2db 4.3.2 is released
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(sql_query)
@@ -522,14 +522,15 @@ class PGConnector(DBConnector):
         # Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
         # Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
         sql_query = """SELECT substring(a.iliname from 1 for (length(a.iliname) - position('.' in reverse(a.iliname)))) as table_iliname,
-            a.iliname, a.sqlname, c.iliname as iliname2
+            a.iliname, a.sqlname, c.iliname as iliname2, o.iliname as colowner
             FROM {schema}.t_ili2db_attrname a
+                INNER JOIN {schema}.t_ili2db_classname o ON o.sqlname = a.colowner
                 INNER JOIN {schema}.t_ili2db_classname c ON c.sqlname = a.target
                 INNER JOIN (SELECT a_s.iliname
                     FROM {schema}.t_ili2db_attrname a_s
                     GROUP BY a_s.iliname
                     HAVING COUNT(a_s.iliname) > 1 ) s ON a.iliname = s.iliname
-            GROUP BY a.iliname, a.sqlname, c.iliname
+            GROUP BY a.iliname, a.sqlname, c.iliname, o.iliname
             HAVING COUNT(a.iliname) = 1
             ORDER BY a.iliname""".format(schema=self.schema)
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -539,9 +540,14 @@ class PGConnector(DBConnector):
             composed_key = "{}_{}".format(normalize_iliname(record['iliname']),
                                           normalize_iliname(record['iliname2']))
             record['table_iliname'] = normalize_iliname(record['table_iliname'])
-            if record['table_iliname'] not in dict_names:
-                continue
-            dict_names[record['table_iliname']][composed_key] = record['sqlname']
+            if record['table_iliname'] in dict_names:
+                dict_names[record['table_iliname']][composed_key] = record['sqlname']
+            else:
+                record['colowner'] = normalize_iliname(record['colowner'])
+                if record['colowner'] in dict_names:
+                    dict_names[record['colowner']][composed_key] = record['sqlname']
+
+        print("Names: ",dict_names)
 
         self.names.initialize_table_and_field_names(dict_names)
         self.names_read = True

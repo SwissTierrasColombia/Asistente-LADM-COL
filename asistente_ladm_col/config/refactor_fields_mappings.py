@@ -178,7 +178,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"{}"'.format(names.COL_RRR_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_RRR_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
             {'expression': '"{}"'.format(names.COL_RRR_PARTY_T_OP_PARTY_F), 'length': -1, 'name': '{}'.format(names.COL_RRR_PARTY_T_OP_PARTY_F), 'precision': 0, 'type': 4},
             {'expression': '"{}"'.format(names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F), 'length': -1, 'name': '{}'.format(names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F), 'precision': 0, 'type': 4},
-            {'expression': '"{}"'.format(names.BAUNIT_RRR_T_UNIT_F), 'length': -1, 'name': '{}'.format(names.BAUNIT_RRR_T_UNIT_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_BAUNIT_RRR_T_UNIT_F), 'length': -1, 'name': '{}'.format(names.COL_BAUNIT_RRR_T_UNIT_F), 'precision': 0, 'type': 4},
             {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
             {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
         ]
@@ -192,7 +192,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
             {'expression': '"{}"'.format(names.COL_RRR_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.COL_RRR_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
             {'expression': '"{}"'.format(names.COL_RRR_PARTY_T_OP_PARTY_F), 'length': -1, 'name': '{}'.format(names.COL_RRR_PARTY_T_OP_PARTY_F), 'precision': 0, 'type': 4},
             {'expression': '"{}"'.format(names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F), 'length': -1, 'name': '{}'.format(names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F), 'precision': 0, 'type': 4},
-            {'expression': '"{}"'.format(names.BAUNIT_RRR_T_UNIT_F), 'length': -1, 'name': '{}'.format(names.BAUNIT_RRR_T_UNIT_F), 'precision': 0, 'type': 4},
+            {'expression': '"{}"'.format(names.COL_BAUNIT_RRR_T_UNIT_F), 'length': -1, 'name': '{}'.format(names.COL_BAUNIT_RRR_T_UNIT_F), 'precision': 0, 'type': 4},
             {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
             {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
         ]
