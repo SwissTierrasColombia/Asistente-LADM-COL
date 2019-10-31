@@ -27,7 +27,7 @@ from qgis.core import QgsApplication
 from qgis.analysis import QgsNativeAlgorithms
 
 from ..config.refactor_fields_mappings import get_refactor_fields_mapping
-from ..config.table_mapping_config import BOUNDARY_POINT_TABLE
+from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 
 QgsApplication.setPrefixPath('/usr', True)
@@ -162,7 +162,7 @@ def unload_qgis_model_baker():
     if plugin_found:
         del(qgis.utils.plugins["QgisModelBaker"])
 
-def run_etl_model(input_layer, out_layer, ladm_col_layer_name=BOUNDARY_POINT_TABLE):
+def run_etl_model(input_layer, out_layer, ladm_col_layer_name=Names().OP_BOUNDARY_POINT_T):
     import_processing()
     model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
 

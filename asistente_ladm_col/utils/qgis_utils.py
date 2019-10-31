@@ -86,25 +86,19 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      translated_strings,
                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                      SOURCE_SERVICE_EXPECTED_ID)
-from ..config.refactor_fields_mappings import get_refactor_fields_mapping
-from ..config.table_mapping_config import (BUILDING_UNIT_TABLE,
-                                           CUSTOM_WIDGET_CONFIGURATION,
-                                           CUSTOM_READ_ONLY_FIELDS,
-                                           DICT_AUTOMATIC_VALUES,
-                                           DICT_DISPLAY_EXPRESSIONS,
-                                           EXTFILE_DATA_FIELD,
-                                           EXTFILE_TABLE,
-                                           FORM_GROUPS,
-                                           ID_FIELD,
-                                           LAYER_CONSTRAINTS,
-                                           LAYER_VARIABLES,
-                                           LOCAL_ID_FIELD,
-                                           NAMESPACE_FIELD,
-                                           NAMESPACE_PREFIX,
-                                           NUMBER_OF_FLOORS,
-                                           VIDA_UTIL_FIELD,
-                                           SURVEY_POINT_TABLE)
-from ..config.translator import (
+from asistente_ladm_col.config.refactor_fields_mappings import get_refactor_fields_mapping
+from asistente_ladm_col.config.table_mapping_config import (CUSTOM_WIDGET_CONFIGURATION,
+                                                            Names,
+                                                            CUSTOM_READ_ONLY_FIELDS,
+                                                            DICT_AUTOMATIC_VALUES,
+                                                            DICT_DISPLAY_EXPRESSIONS,
+                                                            FORM_GROUPS,
+                                                            LAYER_CONSTRAINTS,
+                                                            LAYER_VARIABLES,
+                                                            LOCAL_ID_FIELD,
+                                                            NAMESPACE_FIELD,
+                                                            NAMESPACE_PREFIX)
+from asistente_ladm_col.config.translator import (
     QGIS_LANG,
     PLUGIN_DIR
 )
@@ -143,6 +137,7 @@ class QGISUtils(QObject):
         self.symbology = SymbologyUtils()
         self.geometry = GeometryUtils()
         self.layer_tree_view = layer_tree_view
+        self.names = Names()
 
         self._source_handler = None
         self._layers = list()
@@ -592,10 +587,10 @@ class QGISUtils(QObject):
             editor_widget_setup = QgsEditorWidgetSetup(
                     CUSTOM_WIDGET_CONFIGURATION[layer_name]['type'],
                     CUSTOM_WIDGET_CONFIGURATION[layer_name]['config'])
-            if layer_name == EXTFILE_TABLE:
-                index = layer.fields().indexFromName(EXTFILE_DATA_FIELD)
-            elif layer_name == BUILDING_UNIT_TABLE:
-                index = layer.fields().indexFromName(NUMBER_OF_FLOORS)
+            if layer_name == self.names.EXT_ARCHIVE_S:
+                index = layer.fields().indexFromName(self.names.EXT_ARCHIVE_S_DATA_F)
+            elif layer_name == self.names.OP_BUILDING_UNIT_T:
+                index = layer.fields().indexFromName(self.names.OP_BUILDING_UNIT_T_NUMBER_OF_FLOORS_F)
 
             layer.setEditorWidgetSetup(index, editor_widget_setup)
 
@@ -617,10 +612,10 @@ class QGISUtils(QObject):
     def set_custom_events(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        if layer_name == EXTFILE_TABLE:
+        if layer_name == self.names.EXT_ARCHIVE_S:
             self._source_handler = self.get_source_handler()
             self._source_handler.message_with_duration_emitted.connect(self.message_with_duration_emitted)
-            self._source_handler.handle_source_upload(db, layer, EXTFILE_DATA_FIELD)
+            self._source_handler.handle_source_upload(db, layer, self.names.EXT_ARCHIVE_S_DATA_F)
 
     def set_layer_constraints(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
@@ -731,8 +726,8 @@ class QGISUtils(QObject):
 
         self.set_automatic_fields_namespace_local_id(db, layer)
 
-        if layer.fields().indexFromName(VIDA_UTIL_FIELD) != -1:
-            self.configure_automatic_fields(db, layer, [{VIDA_UTIL_FIELD: "now()"}])
+        if layer.fields().indexFromName(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F) != -1:
+            self.configure_automatic_fields(db, layer, [{self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F: "now()"}])
 
         if layer_name in DICT_AUTOMATIC_VALUES:
             self.configure_automatic_fields(db, layer, DICT_AUTOMATIC_VALUES[layer_name])
@@ -877,7 +872,7 @@ class QGISUtils(QObject):
             return False
 
         # Skip checking point overlaps if layer is Survey points
-        if target_layer_name != SURVEY_POINT_TABLE:
+        if target_layer_name != self.names.OP_SURVEY_POINT_T:
             overlapping = self.geometry.get_overlapping_points(csv_layer) # List of lists of ids
             overlapping = [id for items in overlapping for id in items] # Build a flat list of ids
 
@@ -900,7 +895,7 @@ class QGISUtils(QObject):
         for target_idx in target_point_layer.fields().allAttributesList():
             target_field = target_point_layer.fields().field(target_idx)
             csv_idx = csv_layer.fields().indexOf(target_field.name())
-            if csv_idx != -1 and target_field.name() != ID_FIELD:
+            if csv_idx != -1 and target_field.name() != self.names.T_ID_F:
                 mapping[target_idx] = csv_idx
 
         # Copy and Paste
@@ -1116,11 +1111,11 @@ class QGISUtils(QObject):
         return (res, msg)
 
     def upload_source_files(self, db):
-        extfile_layer = self.get_layer(db, EXTFILE_TABLE, None, True)
+        extfile_layer = self.get_layer(db, self.names.EXT_ARCHIVE_S, None, True)
         if not extfile_layer:
             return
 
-        field_index = extfile_layer.fields().indexFromName(EXTFILE_DATA_FIELD)
+        field_index = extfile_layer.fields().indexFromName(self.names.EXT_ARCHIVE_S_DATA_F)
         features = list()
 
         if extfile_layer.selectedFeatureCount():

@@ -15,7 +15,7 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             clean_table)
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.tests.utils import get_test_copy_path
-from asistente_ladm_col.config.table_mapping_config import BOUNDARY_POINT_TABLE
+from asistente_ladm_col.config.table_mapping_config import Names
 
 import_qgis_model_baker()
 
@@ -30,6 +30,7 @@ class TestGeomsLoad(unittest.TestCase):
     def setUpClass(self):
         print("\nINFO: Setting up copy layer With different Geometries to DB validation...")
         self.qgis_utils = QGISUtils()
+        self.names = Names()
 
         # resore schemas
         restore_schema(SCHEMA_DISTINCT_GEOMS)
@@ -50,11 +51,11 @@ class TestGeomsLoad(unittest.TestCase):
             print('The test connection with  {} db is not working'.format(SCHEMA_LADM_COL_EMPTY))
             return
 
-        clean_table(SCHEMA_LADM_COL_EMPTY, BOUNDARY_POINT_TABLE)
+        clean_table(SCHEMA_LADM_COL_EMPTY, self.names.OP_BOUNDARY_POINT_T)
 
     def test_valid_import_geom_3d_to_db_gpkg(self):
         print('\nINFO: Validating ETL-Model from [ Point, PointZ, PointM, PointZM ] to Point geometries...')
-        test_layer = self.qgis_utils.get_layer(self.db_connection, BOUNDARY_POINT_TABLE, load=True)
+        test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
 
         print("Validating Point to Point")
         uri = self.gpkg_path + '|layername={layername}'.format(layername='points')
@@ -112,7 +113,7 @@ class TestGeomsLoad(unittest.TestCase):
     def test_valid_import_geom_3d_to_db_postgres(self):
         print('\nINFO: Validating ETL-Model from [ Point, PointZ, PointM, PointZM ] to PointZ (Postgres) geometries...')
 
-        test_layer = self.qgis_utils.get_layer(self.db_connection, BOUNDARY_POINT_TABLE, load=True)
+        test_layer = self.qgis_utils.get_layer(self.db_connection, self.names.OP_BOUNDARY_POINT_T, load=True)
 
         print("Validating Point to PointZ")
         point_layer = self.qgis_utils.get_layer(self.db_distinct_geoms, 'points', load=True)

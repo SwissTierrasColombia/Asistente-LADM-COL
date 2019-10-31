@@ -32,27 +32,11 @@ from qgis.core import (Qgis,
                        QgsVectorLayerUtils)
 
 import processing
-from ..config.general_config import (LAYER,
-                                     PLUGIN_NAME)
-from ..config.table_mapping_config import (ADMINISTRATIVE_SOURCE_TABLE,
-                                           COL_RESTRICTION_TYPE_RIGHT_OF_WAY_VALUE,
-                                           ID_FIELD,
-                                           PARCEL_TABLE,
-                                           PLOT_TABLE,
-                                           RESTRICTION_TABLE_PARCEL_FIELD,
-                                           UEBAUNIT_TABLE,
-                                           UEBAUNIT_TABLE_PARCEL_FIELD,
-                                           UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD,
-                                           RESTRICTION_TABLE_DESCRIPTION_FIELD,
-                                           RESTRICTION_TABLE,
-                                           RIGHT_OF_WAY_TABLE,
-                                           RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD,
-                                           RRR_SOURCE_RELATION_TABLE,
-                                           RRR_SOURCE_RESTRICTION_FIELD,
-                                           RRR_SOURCE_SOURCE_FIELD,
-                                           SURVEY_POINT_TABLE,
-                                           TYPE_FIELD,
-                                           UEBAUNIT_TABLE_PLOT_FIELD)
+from asistente_ladm_col.config.general_config import (LAYER,
+                                                      PLUGIN_NAME)
+from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.table_mapping_config import (COL_RESTRICTION_TYPE_RIGHT_OF_WAY_VALUE,
+                                                            RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD)
 
 
 class RightOfWay(QObject):
@@ -61,11 +45,12 @@ class RightOfWay(QObject):
         self.qgis_utils = qgis_utils
         self.iface = iface
         self.log = QgsApplication.messageLog()
+        self.names = Names()
 
         self._layers = {
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None}
+            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.OP_RIGHT_OF_WAY_T: {'name': self.names.OP_RIGHT_OF_WAY_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.OP_SURVEY_POINT_T: {'name': self.names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None}
         }
 
         self._right_of_way_line_layer = None
@@ -79,13 +64,13 @@ class RightOfWay(QObject):
         self.set_layers_settings()
 
         # Don't suppress feature form
-        form_config = self._layers[RIGHT_OF_WAY_TABLE][LAYER].editFormConfig()
+        form_config = self._layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].editFormConfig()
         form_config.setSuppress(QgsEditFormConfig.SuppressOff)
-        self._layers[RIGHT_OF_WAY_TABLE][LAYER].setEditFormConfig(form_config)
+        self._layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].setEditFormConfig(form_config)
 
         # Enable edition mode
-        iface.layerTreeView().setCurrentLayer(self._layers[RIGHT_OF_WAY_TABLE][LAYER])
-        self._layers[RIGHT_OF_WAY_TABLE][LAYER].startEditing()
+        iface.layerTreeView().setCurrentLayer(self._layers[self.names.OP_RIGHT_OF_WAY_T][LAYER])
+        self._layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].startEditing()
         iface.actionAddFeature().trigger()
 
         iface.messageBar().pushMessage('Asistente LADM_COL',
@@ -97,7 +82,7 @@ class RightOfWay(QObject):
         # Load layers
         self.add_db_required_layers(db)
         # Add Memory line layer
-        self._right_of_way_line_layer = QgsVectorLayer("MultiLineString?crs={}".format(self._layers[RIGHT_OF_WAY_TABLE][LAYER].sourceCrs().authid()),
+        self._right_of_way_line_layer = QgsVectorLayer("MultiLineString?crs={}".format(self._layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].sourceCrs().authid()),
                                                        translatable_config_strings.RIGHT_OF_WAY_LINE_LAYER, "memory")
         QgsProject.instance().addMapLayer(self._right_of_way_line_layer, True)
 
@@ -142,9 +127,9 @@ class RightOfWay(QObject):
         if not self._layers:
             return None
 
-        form_config = self._layers[RIGHT_OF_WAY_TABLE][LAYER].editFormConfig()
+        form_config = self._layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].editFormConfig()
         form_config.setSuppress(QgsEditFormConfig.SuppressOff)
-        self._layers[RIGHT_OF_WAY_TABLE][LAYER].setEditFormConfig(form_config)
+        self._layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].setEditFormConfig(form_config)
 
     def store_features_ids(self, featId):
          """
@@ -176,24 +161,24 @@ class RightOfWay(QObject):
         buffered_right_of_way_layer = processing.run("native:buffer", params)['OUTPUT']
 
         buffer_geometry = buffered_right_of_way_layer.getFeature(1).geometry()
-        feature = QgsVectorLayerUtils().createFeature(self._layers[RIGHT_OF_WAY_TABLE][LAYER], buffer_geometry)
+        feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.OP_RIGHT_OF_WAY_T][LAYER], buffer_geometry)
 
         if feature:
-            self._layers[RIGHT_OF_WAY_TABLE][LAYER].startEditing()
-            self._layers[RIGHT_OF_WAY_TABLE][LAYER].addFeature(feature)
-            form = iface.getFeatureForm(self._layers[RIGHT_OF_WAY_TABLE][LAYER], feature)
+            self._layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].startEditing()
+            self._layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].addFeature(feature)
+            form = iface.getFeatureForm(self._layers[self.names.OP_RIGHT_OF_WAY_T][LAYER], feature)
             form.show()
 
     def fill_right_of_way_relations(self, db):
         layers = {
-            ADMINISTRATIVE_SOURCE_TABLE: {'name': ADMINISTRATIVE_SOURCE_TABLE, 'geometry': None, LAYER: None},
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
-            PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            RESTRICTION_TABLE: {'name': RESTRICTION_TABLE, 'geometry': None, LAYER: None},
-            RIGHT_OF_WAY_TABLE: {'name': RIGHT_OF_WAY_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-            RRR_SOURCE_RELATION_TABLE: {'name': RRR_SOURCE_RELATION_TABLE, 'geometry': None, LAYER: None},
-            SURVEY_POINT_TABLE: {'name': SURVEY_POINT_TABLE, 'geometry': None, LAYER: None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
+            self.names.OP_ADMINISTRATIVE_SOURCE_T: {'name': self.names.OP_ADMINISTRATIVE_SOURCE_T, 'geometry': None, LAYER: None},
+            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
+            self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.OP_RESTRICTION_T: {'name': self.names.OP_RESTRICTION_T, 'geometry': None, LAYER: None},
+            self.names.OP_RIGHT_OF_WAY_T: {'name': self.names.OP_RIGHT_OF_WAY_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+            self.names.COL_RRR_SOURCE_T: {'name': self.names.COL_RRR_SOURCE_T, 'geometry': None, LAYER: None},
+            self.names.OP_SURVEY_POINT_T: {'name': self.names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None},
+            self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
         }
 
         # Load layers
@@ -201,13 +186,13 @@ class RightOfWay(QObject):
         if not layers:
             return None
 
-        if layers[PLOT_TABLE][LAYER].selectedFeatureCount() == 0 or layers[RIGHT_OF_WAY_TABLE][LAYER].selectedFeatureCount() == 0 or layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatureCount() == 0:
-            if self.qgis_utils.get_layer_from_layer_tree(db, PLOT_TABLE, geometry_type=QgsWkbTypes.PolygonGeometry) is None:
+        if layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount() == 0 or layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].selectedFeatureCount() == 0 or layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER].selectedFeatureCount() == 0:
+            if self.qgis_utils.get_layer_from_layer_tree(db, self.names.OP_PLOT_T, geometry_type=QgsWkbTypes.PolygonGeometry) is None:
                 self.qgis_utils.message_with_button_load_layer_emitted.emit(
                     QCoreApplication.translate("RightOfWay",
-                                               "First load the layer {} into QGIS and select at least one plot!").format(PLOT_TABLE),
-                    QCoreApplication.translate("RightOfWay", "Load layer {} now").format(PLOT_TABLE),
-                    [PLOT_TABLE, None],
+                                               "First load the layer {} into QGIS and select at least one plot!").format(self.names.OP_PLOT_T),
+                    QCoreApplication.translate("RightOfWay", "Load layer {} now").format(self.names.OP_PLOT_T),
+                    [self.names.OP_PLOT_T, None],
                     Qgis.Warning)
             else:
                 self.qgis_utils.message_emitted.emit(
@@ -215,20 +200,20 @@ class RightOfWay(QObject):
                     Qgis.Warning)
                 return
         else:
-            ue_baunit_features = layers[UEBAUNIT_TABLE][LAYER].getFeatures()
+            ue_baunit_features = layers[self.names.COL_UE_BAUNIT_T][LAYER].getFeatures()
             # Get unique pairs id_right_of_way-id_parcel
-            existing_pairs = [(ue_baunit_feature[UEBAUNIT_TABLE_PARCEL_FIELD], ue_baunit_feature[UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD]) for ue_baunit_feature in ue_baunit_features]
+            existing_pairs = [(ue_baunit_feature[self.names.COL_UE_BAUNIT_T_PARCEL_F], ue_baunit_feature[self.names.COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F]) for ue_baunit_feature in ue_baunit_features]
             existing_pairs = set(existing_pairs)
 
-            plot_ids = [f[ID_FIELD] for f in layers[PLOT_TABLE][LAYER].selectedFeatures()]
+            plot_ids = [f[self.names.T_ID_F] for f in layers[self.names.OP_PLOT_T][LAYER].selectedFeatures()]
 
-            right_of_way_id = layers[RIGHT_OF_WAY_TABLE][LAYER].selectedFeatures()[0].attribute(ID_FIELD)
+            right_of_way_id = layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].selectedFeatures()[0].attribute(self.names.T_ID_F)
             id_pairs = list()
             for plot in plot_ids:
-                exp = "\"{uebaunit}\" = {plot}".format(uebaunit=UEBAUNIT_TABLE_PLOT_FIELD, plot=plot)
-                parcels = layers[UEBAUNIT_TABLE][LAYER].getFeatures(exp)
+                exp = "\"{uebaunit}\" = {plot}".format(uebaunit=self.names.COL_UE_BAUNIT_T_OP_PLOT_F, plot=plot)
+                parcels = layers[self.names.COL_UE_BAUNIT_T][LAYER].getFeatures(exp)
                 for parcel in parcels:
-                    id_pair = (parcel.attribute(UEBAUNIT_TABLE_PARCEL_FIELD), right_of_way_id)
+                    id_pair = (parcel.attribute(self.names.COL_UE_BAUNIT_T_PARCEL_F), right_of_way_id)
                     id_pairs.append(id_pair)
 
             if len(id_pairs) < len(plot_ids):
@@ -243,19 +228,19 @@ class RightOfWay(QObject):
                 for id_pair in id_pairs:
                     if not id_pair in existing_pairs:
                         #Create feature
-                        new_feature = QgsVectorLayerUtils().createFeature(layers[UEBAUNIT_TABLE][LAYER])
-                        new_feature.setAttribute(UEBAUNIT_TABLE_PARCEL_FIELD, id_pair[0])
-                        new_feature.setAttribute(UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD, id_pair[1])
+                        new_feature = QgsVectorLayerUtils().createFeature(layers[self.names.COL_UE_BAUNIT_T][LAYER])
+                        new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_PARCEL_F, id_pair[0])
+                        new_feature.setAttribute(self.names.COL_UE_BAUNIT_T_OP_RIGHT_OF_WAY_F, id_pair[1])
                         self.log.logMessage("Saving RightOfWay-Parcel: {}-{}".format(id_pair[1], id_pair[0]), PLUGIN_NAME, Qgis.Info)
                         new_features.append(new_feature)
 
-                layers[UEBAUNIT_TABLE][LAYER].dataProvider().addFeatures(new_features)
+                layers[self.names.COL_UE_BAUNIT_T][LAYER].dataProvider().addFeatures(new_features)
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate("RightOfWay",
                                        "{} out of {} records were saved into {}! {} out of {} records already existed in the database.").format(
                         len(new_features),
                         len(id_pairs),
-                        UEBAUNIT_TABLE,
+                        self.names.COL_UE_BAUNIT_T,
                         len(id_pairs) - len(new_features),
                         len(id_pairs)
                         ),
@@ -263,26 +248,26 @@ class RightOfWay(QObject):
 
             spatial_join_layer = processing.run("qgis:joinattributesbylocation",
                                                 {
-                                                    'INPUT': layers[PLOT_TABLE][LAYER],
-                                                    'JOIN': QgsProcessingFeatureSourceDefinition(layers[RIGHT_OF_WAY_TABLE][LAYER].id(), True),
+                                                    'INPUT': layers[self.names.OP_PLOT_T][LAYER],
+                                                    'JOIN': QgsProcessingFeatureSourceDefinition(layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].id(), True),
                                                     'PREDICATE': [0],
-                                                    'JOIN_FIELDS': [ID_FIELD, RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD],
+                                                    'JOIN_FIELDS': [self.names.T_ID_F, RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD],
                                                     'METHOD': 0,
                                                     'DISCARD_NONMATCHING': True,
                                                     'PREFIX': '',
                                                     'OUTPUT': 'memory:'})['OUTPUT']
 
-            restriction_features = layers[RESTRICTION_TABLE][LAYER].getFeatures()
-            existing_restriction_pairs = [(restriction_feature[RESTRICTION_TABLE_PARCEL_FIELD], restriction_feature[RESTRICTION_TABLE_DESCRIPTION_FIELD]) for restriction_feature in restriction_features]
+            restriction_features = layers[self.names.OP_RESTRICTION_T][LAYER].getFeatures()
+            existing_restriction_pairs = [(restriction_feature[self.names.BAUNIT_RRR_T_UNIT_F], restriction_feature[self.names.COL_RRR_T_DESCRIPTION_F]) for restriction_feature in restriction_features]
             existing_restriction_pairs = set(existing_restriction_pairs)
             id_pairs_restriction = list()
             plot_ids = spatial_join_layer.getFeatures()
 
             for plot in plot_ids:
-                exp = "\"uebaunit\" = {plot}".format(uebaunit=UEBAUNIT_TABLE_PLOT_FIELD, plot=plot.attribute(ID_FIELD))
-                parcels = layers[UEBAUNIT_TABLE][LAYER].getFeatures(exp)
+                exp = "\"uebaunit\" = {plot}".format(uebaunit=self.names.COL_UE_BAUNIT_T_OP_PLOT_F, plot=plot.attribute(self.names.T_ID_F))
+                parcels = layers[self.names.COL_UE_BAUNIT_T][LAYER].getFeatures(exp)
                 for parcel in parcels:
-                    id_pair_restriction = (parcel.attribute(UEBAUNIT_TABLE_PARCEL_FIELD), "Asociada a la servidumbre {}".format(plot.attribute(RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD)))
+                    id_pair_restriction = (parcel.attribute(self.names.COL_UE_BAUNIT_T_PARCEL_F), "Asociada a la servidumbre {}".format(plot.attribute(RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD)))
                     id_pairs_restriction.append(id_pair_restriction)
 
             new_restriction_features = list()
@@ -290,56 +275,56 @@ class RightOfWay(QObject):
                 for id_pair in id_pairs_restriction:
                     if not id_pair in existing_restriction_pairs:
                         #Create feature
-                        new_feature = QgsVectorLayerUtils().createFeature(layers[RESTRICTION_TABLE][LAYER])
-                        new_feature.setAttribute(RESTRICTION_TABLE_PARCEL_FIELD, id_pair[0])
-                        new_feature.setAttribute(RESTRICTION_TABLE_DESCRIPTION_FIELD, id_pair[1])
-                        new_feature.setAttribute(TYPE_FIELD, COL_RESTRICTION_TYPE_RIGHT_OF_WAY_VALUE)
+                        new_feature = QgsVectorLayerUtils().createFeature(layers[self.names.OP_RESTRICTION_T][LAYER])
+                        new_feature.setAttribute(self.names.BAUNIT_RRR_T_UNIT_F, id_pair[0])
+                        new_feature.setAttribute(self.names.COL_RRR_T_DESCRIPTION_F, id_pair[1])
+                        new_feature.setAttribute(self.names.OP_RESTRICTION_T_TYPE_F, COL_RESTRICTION_TYPE_RIGHT_OF_WAY_VALUE)
                         self.log.logMessage("Saving RightOfWay-Parcel: {}-{}".format(id_pair[1], id_pair[0]), PLUGIN_NAME, Qgis.Info)
                         new_restriction_features.append(new_feature)
 
-                layers[RESTRICTION_TABLE][LAYER].dataProvider().addFeatures(new_restriction_features)
+                layers[self.names.OP_RESTRICTION_T][LAYER].dataProvider().addFeatures(new_restriction_features)
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate("RightOfWay",
                                        "{} out of {} records were saved into {}! {} out of {} records already existed in the database.").format(
                         len(new_restriction_features),
                         len(id_pairs_restriction),
-                        RESTRICTION_TABLE,
+                        self.names.OP_RESTRICTION_T,
                         len(id_pairs_restriction) - len(new_restriction_features),
                         len(id_pairs_restriction)
                         ),
                         Qgis.Info)
 
-            administrative_source_ids = [f[ID_FIELD] for f in layers[ADMINISTRATIVE_SOURCE_TABLE][LAYER].selectedFeatures()]
+            administrative_source_ids = [f[self.names.T_ID_F] for f in layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER].selectedFeatures()]
 
-            source_relation_features = layers[RRR_SOURCE_RELATION_TABLE][LAYER].getFeatures()
+            source_relation_features = layers[self.names.COL_RRR_SOURCE_T][LAYER].getFeatures()
 
-            existing_source_pairs = [(source_relation_feature[RRR_SOURCE_SOURCE_FIELD], source_relation_feature[RRR_SOURCE_RESTRICTION_FIELD]) for source_relation_feature in source_relation_features]
+            existing_source_pairs = [(source_relation_feature[self.names.COL_RRR_SOURCE_T_SOURCE_F], source_relation_feature[self.names.COL_RRR_SOURCE_T_OP_RESTRICTION_F]) for source_relation_feature in source_relation_features]
             existing_source_pairs = set(existing_source_pairs)
 
             rrr_source_relation_pairs = list()
 
             for administrative_source_id in administrative_source_ids:
                 for restriction_feature in new_restriction_features:
-                    rrr_source_relation_pair = (administrative_source_id, restriction_feature.attribute(ID_FIELD))
+                    rrr_source_relation_pair = (administrative_source_id, restriction_feature.attribute(self.names.T_ID_F))
                     rrr_source_relation_pairs.append(rrr_source_relation_pair)
 
             new_rrr_source_relation_features = list()
             if rrr_source_relation_pairs:
                 for id_pair in rrr_source_relation_pairs:
                     if not id_pair in existing_source_pairs:
-                        new_feature = QgsVectorLayerUtils().createFeature(layers[RRR_SOURCE_RELATION_TABLE][LAYER])
-                        new_feature.setAttribute(RRR_SOURCE_SOURCE_FIELD, id_pair[0])
-                        new_feature.setAttribute(RRR_SOURCE_RESTRICTION_FIELD, id_pair[1])
+                        new_feature = QgsVectorLayerUtils().createFeature(layers[self.names.COL_RRR_SOURCE_T][LAYER])
+                        new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_SOURCE_F, id_pair[0])
+                        new_feature.setAttribute(self.names.COL_RRR_SOURCE_T_OP_RESTRICTION_F, id_pair[1])
                         self.log.logMessage("Saving Restriction-Source: {}-{}".format(id_pair[1], id_pair[0]), PLUGIN_NAME, Qgis.Info)
                         new_rrr_source_relation_features.append(new_feature)
 
-                layers[RRR_SOURCE_RELATION_TABLE][LAYER].dataProvider().addFeatures(new_rrr_source_relation_features)
+                layers[self.names.COL_RRR_SOURCE_T][LAYER].dataProvider().addFeatures(new_rrr_source_relation_features)
                 self.qgis_utils.message_emitted.emit(
                     QCoreApplication.translate("RightOfWay",
                                        "{} out of {} records were saved into {}! {} out of {} records already existed in the database.").format(
                         len(new_rrr_source_relation_features),
                         len(rrr_source_relation_pairs),
-                        RRR_SOURCE_RELATION_TABLE,
+                        self.names.COL_RRR_SOURCE_T,
                         len(rrr_source_relation_pairs) - len(new_rrr_source_relation_features),
                         len(rrr_source_relation_pairs)
                         ),
