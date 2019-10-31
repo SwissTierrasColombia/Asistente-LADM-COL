@@ -40,9 +40,10 @@ NATIONAL_LAND_AGENCY = "ANT"
 ANNEX_17_REPORT = "Anexo_17"
 ANT_MAP_REPORT = "Plano_ANT"
 
-OPERATION_MODEL_PREFIX = "Operacion_"
-CADASTRAL_FORM_MODEL_PREFIX = "Formulario_Catastro_"
-VALUATION_MODEL_PREFIX = "Avaluos_"
+OPERATION_MODEL_PREFIX = "Operacion"
+CADASTRAL_FORM_MODEL_PREFIX = "Formulario_Catastro"
+VALUATION_MODEL_PREFIX = "Avaluos"
+LADM_MODEL_PREFIX = "LADM_COL"
 # From this version on the plugin will work, a message will block prior versions
 LATEST_OPERATION_MODEL_VERSION_SUPPORTED = "2.9.6"
 

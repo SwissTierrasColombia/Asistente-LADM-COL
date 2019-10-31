@@ -75,9 +75,9 @@ class CreateSpatialSourceCadastreWizard(MultiPageWizardFactory,
                     for boundary_id in feature_ids_dict[self.names.OP_BOUNDARY_T]:
                         new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.COL_CCL_SOURCE_T][LAYER])
 
-                        # Todo: Update COL_CCL_SOURCE_T_BOUNDARY_F_OP by COL_CCL_SOURCE_T_BOUNDARY_F.
+                        # Todo: Update when ili2db issue is solved.
                         # Todo: When an abstract class only implements a concrete class, the name of the attribute is different if two or more classes are implemented.
-                        new_feature.setAttribute(self.names.COL_CCL_SOURCE_T_BOUNDARY_F_OP, boundary_id)
+                        new_feature.setAttribute(self.names.COL_CCL_SOURCE_T_BOUNDARY_F, boundary_id)
                         new_feature.setAttribute(self.names.COL_CCL_SOURCE_T_SOURCE_F, spatial_source_id)
                         self.log.logMessage("Saving Boundary-SpatialSource: {}-{}".format(boundary_id, spatial_source_id), PLUGIN_NAME, Qgis.Info)
                         new_features.append(new_feature)

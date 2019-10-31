@@ -62,7 +62,7 @@ class ModelParser(QObject):
 
     def parse_version(self, str_version):
         """ E.g., V2_9_6 -> 2.9.6 """
-        return ".".join(str_version.replace("V", "").split("_"))
+        return ".".join(str_version.replace("_V", "").split("_"))
 
     def validate_cadastre_model_version(self):
         if self.debug:
@@ -90,6 +90,9 @@ class ModelParser(QObject):
                 LATEST_OPERATION_MODEL_VERSION_SUPPORTED))
 
         return (True, QCoreApplication.translate("ModelParser", "Supported model version!"))
+
+    def operation_model_exists(self):
+        return self.current_version_operation_model is not None
 
     def cadastral_form_model_exists(self):
         return self.current_version_cadastral_form_model is not None
