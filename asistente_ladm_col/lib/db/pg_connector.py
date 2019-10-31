@@ -28,7 +28,8 @@ from qgis.core import (QgsWkbTypes,
 
 from .db_connector import (DBConnector,
                            EnumTestLevel)
-from ...lib.queries.postgresql import basic_query, economic_query, physical_query, legal_query, property_record_card_query
+from ...lib.queries.postgresql import basic_query, economic_query, physical_query, legal_query, \
+    property_record_card_query
 from ..queries.ant_report import (ant_map_plot_query,
                                   ant_map_neighbouring_change_query)
 from ..queries.annex_17_report import (annex17_plot_data_query,
@@ -37,15 +38,38 @@ from ..queries.annex_17_report import (annex17_plot_data_query,
 from ...config.general_config import (INTERLIS_TEST_METADATA_TABLE_PG,
                                       PLUGIN_NAME, OPERATION_MODEL_PREFIX, CADASTRAL_FORM_MODEL_PREFIX,
                                       VALUATION_MODEL_PREFIX, LADM_MODEL_PREFIX)
-from ...config.table_mapping_config import (ZONE_FIELD,
+from ...config.table_mapping_config import (T_ID,
+                                            DESCRIPTION,
+                                            ILICODE,
+                                            DISPLAY_NAME,
+                                            ID_FIELD,
+                                            PARCEL_TABLE,
+                                            DEPARTMENT_FIELD,
+                                            MUNICIPALITY_FIELD,
+                                            ZONE_FIELD,
+                                            PARCEL_NUMBER_FIELD,
+                                            PARCEL_NUMBER_BEFORE_FIELD,
+                                            PARCEL_TYPE_FIELD,
+                                            COL_PARTY_TABLE,
+                                            COL_PARTY_TYPE_FIELD,
+                                            COL_PARTY_BUSINESS_NAME_FIELD,
                                             COL_PARTY_LEGAL_PARTY_FIELD,
+                                            COL_PARTY_SURNAME_FIELD,
+                                            COL_PARTY_FIRST_NAME_FIELD,
+                                            COL_PARTY_DOC_TYPE_FIELD,
+                                            UEBAUNIT_TABLE,
+                                            UEBAUNIT_TABLE_PARCEL_FIELD,
+                                            UEBAUNIT_TABLE_PLOT_FIELD,
+                                            UEBAUNIT_TABLE_BUILDING_FIELD,
+                                            UEBAUNIT_TABLE_BUILDING_UNIT_FIELD,
+                                            FRACTION_TABLE,
+                                            MEMBERS_TABLE,
                                             Names)
 from ...utils.model_parser import ModelParser
 from ...utils.utils import normalize_iliname
 
 
 class PGConnector(DBConnector):
-
     _PROVIDER_NAME = 'postgres'
     _DEFAULT_VALUES = {
         'host': 'localhost',
@@ -64,35 +88,49 @@ class PGConnector(DBConnector):
         self.log = QgsApplication.messageLog()
         self.provider = 'postgres'
         self._tables_info = None
-        self.names = Names()
 
         # Logical validations queries
         self.logic_validation_queries = {
             'DEPARTMENT_CODE_VALIDATION': {
-                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=2 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=self.schema, table=self.names.OP_PARCEL_T, id=self.names.T_ID_F, field=self.names.OP_PARCEL_T_DEPARTMENT_F),
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=2 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(
+                    schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, field=DEPARTMENT_FIELD),
                 'desc_error': 'Department code must have two numerical characters.',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=self.names.OP_PARCEL_T),
-                'table': self.names.OP_PARCEL_T},
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings",
+                                                         "Logic Consistency Errors in table '{table}'").format(
+                    table=PARCEL_TABLE),
+                'table': PARCEL_TABLE},
             'MUNICIPALITY_CODE_VALIDATION': {
-                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=3 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=self.schema, table=self.names.OP_PARCEL_T, id=self.names.T_ID_F, field=self.names.OP_PARCEL_T_MUNICIPALITY_F),
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=3 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(
+                    schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, field=MUNICIPALITY_FIELD),
                 'desc_error': 'Municipality code must have three numerical characters.',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=self.names.OP_PARCEL_T),
-                'table': self.names.OP_PARCEL_T},
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings",
+                                                         "Logic Consistency Errors in table '{table}'").format(
+                    table=PARCEL_TABLE),
+                'table': PARCEL_TABLE},
             'ZONE_CODE_VALIDATION': {
-                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=2 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=self.schema, table=self.names.OP_PARCEL_T, id=self.names.T_ID_F, field=ZONE_FIELD),
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=2 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(
+                    schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, field=ZONE_FIELD),
                 'desc_error': 'Zone code must have two numerical characters.',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=self.names.OP_PARCEL_T),
-                'table': self.names.OP_PARCEL_T},
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings",
+                                                         "Logic Consistency Errors in table '{table}'").format(
+                    table=PARCEL_TABLE),
+                'table': PARCEL_TABLE},
             'PARCEL_NUMBER_VALIDATION': {
-                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=30 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=self.schema, table=self.names.OP_PARCEL_T, id=self.names.T_ID_F, field=self.names.OP_PARCEL_T_PARCEL_NUMBER_F),
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=30 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(
+                    schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, field=PARCEL_NUMBER_FIELD),
                 'desc_error': 'Parcel number must have 30 numerical characters.',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=self.names.OP_PARCEL_T),
-                'table': self.names.OP_PARCEL_T},
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings",
+                                                         "Logic Consistency Errors in table '{table}'").format(
+                    table=PARCEL_TABLE),
+                'table': PARCEL_TABLE},
             'PARCEL_NUMBER_BEFORE_VALIDATION': {
-                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=20 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(schema=self.schema, table=self.names.OP_PARCEL_T, id=self.names.T_ID_F, field=self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F),
+                'query': """SELECT {id} FROM {schema}.{table} p WHERE (p.{field} IS NOT NULL AND (length(p.{field}) !=20 OR (p.{field}~ '^[0-9]*$') = FALSE))""".format(
+                    schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD, field=PARCEL_NUMBER_BEFORE_FIELD),
                 'desc_error': 'Parcel number before must have 20 numerical characters.',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=self.names.OP_PARCEL_T),
-                'table': self.names.OP_PARCEL_T},
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings",
+                                                         "Logic Consistency Errors in table '{table}'").format(
+                    table=PARCEL_TABLE),
+                'table': PARCEL_TABLE},
             'COL_PARTY_TYPE_NATURAL_VALIDATION': {
                 'query': """
                         SELECT p.{id},
@@ -110,14 +148,16 @@ class PGConnector(DBConnector):
                             p.{col_party_first_name} IS NULL OR 
                             length(trim(p.{col_party_first_name})) > 0 is False OR
                             p.{col_party_doc_type} = 'NIT')
-                """.format(schema=self.schema, table=self.names.OP_PARTY_T, id=self.names.T_ID_F, col_party_type=self.names.OP_PARTY_T_TYPE_F,
-                           business_name=self.names.OP_PARTY_T_BUSINESS_NAME_F,
-                           col_party_legal_party=COL_PARTY_LEGAL_PARTY_FIELD, col_party_surname=self.names.OP_PARTY_T_SURNAME_1_F,
-                           col_party_first_name=self.names.OP_PARTY_T_FIRST_NAME_1_F,
-                           col_party_doc_type=self.names.OP_PARTY_T_DOCUMENT_TYPE_F),
+                """.format(schema=self.schema, table=COL_PARTY_TABLE, id=ID_FIELD, col_party_type=COL_PARTY_TYPE_FIELD,
+                           business_name=COL_PARTY_BUSINESS_NAME_FIELD,
+                           col_party_legal_party=COL_PARTY_LEGAL_PARTY_FIELD, col_party_surname=COL_PARTY_SURNAME_FIELD,
+                           col_party_first_name=COL_PARTY_FIRST_NAME_FIELD,
+                           col_party_doc_type=COL_PARTY_DOC_TYPE_FIELD),
                 'desc_error': 'Party with type \'Persona_Natural\' is invalid.',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=self.names.OP_PARTY_T),
-                'table': self.names.OP_PARTY_T},
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings",
+                                                         "Logic Consistency Errors in table '{table}'").format(
+                    table=COL_PARTY_TABLE),
+                'table': COL_PARTY_TABLE},
             'COL_PARTY_TYPE_NO_NATURAL_VALIDATION': {
                 'query': """
                             SELECT p.t_id,
@@ -134,15 +174,17 @@ class PGConnector(DBConnector):
                                 p.{col_party_surname} IS NOT NULL OR
                                 p.{col_party_first_name} IS NOT NULL OR
                                 p.{col_party_doc_type} NOT IN ('NIT', 'Secuencial_IGAC', 'Secuencial_SNR'))
-                        """.format(schema=self.schema, table=self.names.OP_PARTY_T, id=self.names.T_ID_F,
-                                   col_party_type=self.names.OP_PARTY_T_TYPE_F, business_name=self.names.OP_PARTY_T_BUSINESS_NAME_F,
+                        """.format(schema=self.schema, table=COL_PARTY_TABLE, id=ID_FIELD,
+                                   col_party_type=COL_PARTY_TYPE_FIELD, business_name=COL_PARTY_BUSINESS_NAME_FIELD,
                                    col_party_legal_party=COL_PARTY_LEGAL_PARTY_FIELD,
-                                   col_party_surname=self.names.OP_PARTY_T_SURNAME_1_F,
-                                   col_party_first_name=self.names.OP_PARTY_T_FIRST_NAME_1_F,
-                                   col_party_doc_type=self.names.OP_PARTY_T_DOCUMENT_TYPE_F),
+                                   col_party_surname=COL_PARTY_SURNAME_FIELD,
+                                   col_party_first_name=COL_PARTY_FIRST_NAME_FIELD,
+                                   col_party_doc_type=COL_PARTY_DOC_TYPE_FIELD),
                 'desc_error': 'Party with type \'Persona_No_Natural\' is invalid.',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=self.names.OP_PARTY_T),
-                'table': self.names.OP_PARTY_T},
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings",
+                                                         "Logic Consistency Errors in table '{table}'").format(
+                    table=COL_PARTY_TABLE),
+                'table': COL_PARTY_TABLE},
             'UEBAUNIT_PARCEL_VALIDATION': {
                 'query': """
                     SELECT * FROM (
@@ -160,11 +202,14 @@ class PGConnector(DBConnector):
                                ({parcel_type} in ('Via', 'ParqueCementerio.UnidadPrivada') AND (sum_t !=1 OR sum_uc > 0 OR sum_c > 0)) OR 
                                ({parcel_type}='PropiedadHorizontal.UnidadPredial' AND (sum_t !=0 OR sum_c != 0 OR sum_uc = 0 )) OR 
                                ({parcel_type}='Mejora' AND (sum_t !=0 OR sum_c != 1 OR sum_uc != 0))
-                """.format(schema=self.schema, input_table=self.names.OP_PARCEL_T, join_table=self.names.COL_UE_BAUNIT_T, join_field=self.names.COL_UE_BAUNIT_T_PARCEL_F, id=self.names.T_ID_F, parcel_type=self.names.OP_PARCEL_T_TYPE_F,
-                           ueb_plot=self.names.COL_UE_BAUNIT_T_OP_PLOT_F, ueb_building=self.names.COL_UE_BAUNIT_T_OP_BUILDING_F, ueb_building_unit=self.names.COL_UE_BAUNIT_T_OP_BUILDING_UNIT_F),
+                """.format(schema=self.schema, input_table=PARCEL_TABLE, join_table=UEBAUNIT_TABLE,
+                           join_field=UEBAUNIT_TABLE_PARCEL_FIELD, id=ID_FIELD, parcel_type=PARCEL_TYPE_FIELD,
+                           ueb_plot=UEBAUNIT_TABLE_PLOT_FIELD, ueb_building=UEBAUNIT_TABLE_BUILDING_FIELD,
+                           ueb_building_unit=UEBAUNIT_TABLE_BUILDING_UNIT_FIELD),
                 'desc_error': 'Parcel must have one or more spatial units associated with it.',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Errors in relationships between Spatial Units and Parcels"),
-                'table': self.names.OP_PARCEL_T},
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings",
+                                                         "Errors in relationships between Spatial Units and Parcels"),
+                'table': PARCEL_TABLE},
             'PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER_VALIDATION': {
                 'query': """
                         SELECT p.{id}, p.{parcel_type} FROM {schema}.{table} p
@@ -176,10 +221,13 @@ class PGConnector(DBConnector):
                                (substring(p.{parcel_number},22,1) != '5' AND p.{parcel_type}='Mejora') OR
                                (substring(p.{parcel_number},22,1) != '4' AND p.{parcel_type}='Via') OR
                                (substring(p.{parcel_number},22,1) != '3' AND p.{parcel_type}='BienUsoPublico')
-                        )""".format(schema=self.schema, table=self.names.OP_PARCEL_T, id=self.names.T_ID_F, parcel_number=self.names.OP_PARCEL_T_PARCEL_NUMBER_F, parcel_type=self.names.OP_PARCEL_T_TYPE_F),
+                        )""".format(schema=self.schema, table=PARCEL_TABLE, id=ID_FIELD,
+                                    parcel_number=PARCEL_NUMBER_FIELD, parcel_type=PARCEL_TYPE_FIELD),
                 'desc_error': 'The position 22 of the parcel number must correspond to the type of parcel.',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Logic Consistency Errors in table '{table}'").format(table=self.names.OP_PARCEL_T),
-                'table': self.names.OP_PARCEL_T},
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings",
+                                                         "Logic Consistency Errors in table '{table}'").format(
+                    table=PARCEL_TABLE),
+                'table': PARCEL_TABLE},
             'DUPLICATE_RECORDS_IN_TABLE': {
                 'query': """
                     SELECT array_to_string(duplicate_ids, ',') AS "duplicate_ids", duplicate_total
@@ -211,10 +259,12 @@ class PGConnector(DBConnector):
                     )
                     SELECT sumas.*
                     FROM sumas
-                    WHERE sumas.suma_fracciones != 1""".format(schema=self.schema, fraction=self.names.FRACTION_S, members=self.names.MEMBERS_T),
+                    WHERE sumas.suma_fracciones != 1""".format(schema=self.schema, fraction=FRACTION_TABLE,
+                                                               members=MEMBERS_TABLE),
                 'desc_error': 'Group Party Fractions should sum 1',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Fractions do not sum 1").format(self.names.OP_PARCEL_T),
-                'table': '{fraction}_and_{members}'.format(fraction=self.names.FRACTION_S, members=self.names.MEMBERS_T)},
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Fractions do not sum 1").format(
+                    PARCEL_TABLE),
+                'table': '{fraction}_and_{members}'.format(fraction=FRACTION_TABLE, members=MEMBERS_TABLE)},
             'PARCELS_WITH_NO_RIGHT': {
                 'query': """SELECT p.t_id
                    FROM {schema}.predio p
@@ -222,7 +272,7 @@ class PGConnector(DBConnector):
                         SELECT unidad_predio FROM {schema}.col_derecho)""".format(schema=self.schema),
                 'desc_error': 'Get parcels with no right',
                 'table_name': QCoreApplication.translate("LogicChecksConfigStrings", 'Parcels with no right'),
-                'table': self.names.OP_PARCEL_T},
+                'table': PARCEL_TABLE},
             'PARCELS_WITH_REPEATED_DOMAIN_RIGHT': {
                 'query': """SELECT conteo.unidad_predio
                     FROM {schema}.predio p, (
@@ -233,8 +283,9 @@ class PGConnector(DBConnector):
                     ) as conteo
                     WHERE p.t_id = conteo.unidad_predio and conteo.dominios > 1""".format(schema=self.schema),
                 'desc_error': 'Get parcels with duplicate rights',
-                'table_name': QCoreApplication.translate("LogicChecksConfigStrings", "Parcels with repeated domain right"),
-                'table': self.names.OP_PARCEL_T}
+                'table_name': QCoreApplication.translate("LogicChecksConfigStrings",
+                                                         "Parcels with repeated domain right"),
+                'table': PARCEL_TABLE}
         }
 
     @DBConnector.uri.setter
@@ -254,7 +305,8 @@ class PGConnector(DBConnector):
 
     def get_description_conn_string(self):
         result = None
-        if self._dict_conn_params['database'] and self._dict_conn_params['database'].strip("'") and self._dict_conn_params['schema']:
+        if self._dict_conn_params['database'] and self._dict_conn_params['database'].strip("'") and \
+                self._dict_conn_params['schema']:
             result = self._dict_conn_params['database'] + '.' + self._dict_conn_params['schema']
 
         return result
@@ -321,11 +373,10 @@ class PGConnector(DBConnector):
             else:
                 return (False, msg)
 
-
         if test_level & EnumTestLevel.DB:
             if not self._dict_conn_params['database'].strip("'") or self._dict_conn_params['database'] == 'postgres':
                 return (False, QCoreApplication.translate("PGConnector",
-                    "You should first select a database."))
+                                                          "You should first select a database."))
 
         # Client side check
         if self.conn is None or self.conn.closed:
@@ -349,15 +400,15 @@ class PGConnector(DBConnector):
             return (True, QCoreApplication.translate("PGConnector",
                                                      "Connection to the database was successful."))
 
-
         if test_level & EnumTestLevel._CHECK_SCHEMA:
             if not self._dict_conn_params['schema'] or self._dict_conn_params['schema'] == '':
                 return (False, QCoreApplication.translate("PGConnector",
-                    "You should first select a schema."))
+                                                          "You should first select a schema."))
 
             if not self._schema_exists():
                 return (False, QCoreApplication.translate("PGConnector",
-                    "The schema '{}' does not exist in the database!").format(self.schema))
+                                                          "The schema '{}' does not exist in the database!").format(
+                    self.schema))
 
             res, msg = self.get_schema_privileges(uri, self.schema)
             if not res:
@@ -371,11 +422,11 @@ class PGConnector(DBConnector):
             return (True, QCoreApplication.translate("PGConnector",
                                                      "Connection to the database schema was successful."))
 
-
         if test_level & EnumTestLevel._CHECK_LADM:
             if not self._metadata_exists():
                 return (False, QCoreApplication.translate("PGConnector",
-                        "The schema '{}' is not a valid LADM_COL schema. That is, the schema doesn't have the structure of the LADM_COL model.").format(self.schema))
+                                                          "The schema '{}' is not a valid LADM_COL schema. That is, the schema doesn't have the structure of the LADM_COL model.").format(
+                    self.schema))
 
             if self.model_parser is None:
                 self.model_parser = ModelParser(self)
@@ -399,15 +450,19 @@ class PGConnector(DBConnector):
             res, msg = self.names.test_names(models)
             if not res:
                 return (False, QCoreApplication.translate("PGConnector",
-                        "Table/field names from the DB are not correct. Details: {}.").format(msg))
+                                                          "Table/field names from the DB are not correct. Details: {}.").format(
+                    msg))
 
         if test_level == EnumTestLevel.LADM:
-            return (True, QCoreApplication.translate("PGConnector", "The schema '{}' has a valid LADM-COL structure!").format(self.schema))
+            return (True,
+                    QCoreApplication.translate("PGConnector", "The schema '{}' has a valid LADM-COL structure!").format(
+                        self.schema))
 
         if test_level & EnumTestLevel.SCHEMA_IMPORT:
             return (True, QCoreApplication.translate("PGConnector", "Connection successful!"))
 
-        return (False, QCoreApplication.translate("PGConnector", "There was a problem checking the connection. Most likely due to invalid or not supported test_level!"))
+        return (False, QCoreApplication.translate("PGConnector",
+                                                  "There was a problem checking the connection. Most likely due to invalid or not supported test_level!"))
 
     def open_connection(self, uri=None):
         if uri is None:
@@ -419,7 +474,8 @@ class PGConnector(DBConnector):
             try:
                 self.conn = psycopg2.connect(uri)
             except (psycopg2.OperationalError, psycopg2.ProgrammingError) as e:
-                return (False, QCoreApplication.translate("PGConnector", "Could not open connection! Details: {}".format(e)))
+                return (
+                False, QCoreApplication.translate("PGConnector", "Could not open connection! Details: {}".format(e)))
 
             self.log.logMessage("Connection was open! {}".format(self.conn), PLUGIN_NAME, Qgis.Info)
         else:
@@ -464,69 +520,68 @@ class PGConnector(DBConnector):
                       ON a.attname = ilicol.sqlname 
                       AND ilicol.colowner = tbls.tablename
                     WHERE i.indisprimary AND schemaname ='{schema}' AND a.attnum >= 0
-                    ORDER BY tbls.tablename, fieldname;""".format(schema=self.schema)  # TODO: Remove DISTINCT when ili2db 4.3.2 is released
+                    ORDER BY tbls.tablename, fieldname;""".format(
+            schema=self.schema)  # TODO: Remove DISTINCT when ili2db 4.3.2 is released
 
-==== BASE ====
-            cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-            cur.execute(sql_query)
-            records = cur.fetchall()
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(sql_query)
+        records = cur.fetchall()
 
-            dict_names = dict()
-            for record in records:
-                if record['table_iliname'] is None:
-                    # Either t_ili2db_* tables (INTERLIS meta-attrs)
-                    continue
+        dict_names = dict()
+        for record in records:
+            if record['table_iliname'] is None:
+                # Either t_ili2db_* tables (INTERLIS meta-attrs)
+                continue
 
-                record['table_iliname'] = normalize_iliname(record['table_iliname'])
-                if not record['table_iliname'] in dict_names:
-                    dict_names[record['table_iliname']] = dict()
-                    dict_names[record['table_iliname']]['table_name'] = record['tablename']
+            record['table_iliname'] = normalize_iliname(record['table_iliname'])
+            if not record['table_iliname'] in dict_names:
+                dict_names[record['table_iliname']] = dict()
+                dict_names[record['table_iliname']]['table_name'] = record['tablename']
 
-                if record['field_iliname'] is None:
-                    # Fields for domains, like 'description' (we map it in a custom later in this class method)
-                    continue
+            if record['field_iliname'] is None:
+                # Fields for domains, like 'description' (we map it in a custom later in this class method)
+                continue
 
-                record['field_iliname'] = normalize_iliname(record['field_iliname'])
-                dict_names[record['table_iliname']][record['field_iliname']] = record['fieldname']
+            record['field_iliname'] = normalize_iliname(record['field_iliname'])
+            dict_names[record['table_iliname']][record['field_iliname']] = record['fieldname']
 
-            # Add required key-value pairs that do not come from the DB query
-            dict_names[T_ID] = "t_id"
-            dict_names[DISPLAY_NAME] = "dispname"
-            dict_names[ILICODE] = "ilicode"
-            dict_names[DESCRIPTION] = "description"
+        # Add required key-value pairs that do not come from the DB query
+        dict_names[T_ID] = "t_id"
+        dict_names[DISPLAY_NAME] = "dispname"
+        dict_names[ILICODE] = "ilicode"
+        dict_names[DESCRIPTION] = "description"
 
-            # Map duplicate ilinames (e.g., inheriting an attribute pointing to structure)
-            # Spatial_Unit-->Ext_Address_ID (Ext_Address)
-            # Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
-            # Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
-            sql_query = """SELECT substring(a.iliname from 1 for (length(a.iliname) - position('.' in reverse(a.iliname)))) as table_iliname,
-                a.iliname, a.sqlname, c.iliname as iliname2
-                FROM {schema}.t_ili2db_attrname a
-                    INNER JOIN {schema}.t_ili2db_classname c ON c.sqlname = a.target
-                    INNER JOIN (SELECT a_s.iliname
-                        FROM {schema}.t_ili2db_attrname a_s
-                        GROUP BY a_s.iliname
-                        HAVING COUNT(a_s.iliname) > 1 ) s ON a.iliname = s.iliname
-                GROUP BY a.iliname, a.sqlname, c.iliname
-                HAVING COUNT(a.iliname) = 1
-                ORDER BY a.iliname""".format(schema=self.schema)
-            cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-            cur.execute(sql_query)
-            records = cur.fetchall()
-            for record in records:
-                composed_key = "{}_{}".format(normalize_iliname(record['iliname']),
-                                              normalize_iliname(record['iliname2']))
-                record['table_iliname'] = normalize_iliname(record['table_iliname'])
-                if record['table_iliname'] not in dict_names:
-                    continue
-==== BASE ====
+        # Map duplicate ilinames (e.g., inheriting an attribute pointing to structure)
+        # Spatial_Unit-->Ext_Address_ID (Ext_Address)
+        # Key: "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
+        # Values: op_construccion_ext_direccion_id and  op_terreno_ext_direccion_id
+        sql_query = """SELECT substring(a.iliname from 1 for (length(a.iliname) - position('.' in reverse(a.iliname)))) as table_iliname,
+            a.iliname, a.sqlname, c.iliname as iliname2, o.iliname as colowner
+            FROM {schema}.t_ili2db_attrname a
+                INNER JOIN {schema}.t_ili2db_classname o ON o.sqlname = a.colowner
+                INNER JOIN {schema}.t_ili2db_classname c ON c.sqlname = a.target
+                INNER JOIN (SELECT a_s.iliname
+                    FROM {schema}.t_ili2db_attrname a_s
+                    GROUP BY a_s.iliname
+                    HAVING COUNT(a_s.iliname) > 1 ) s ON a.iliname = s.iliname
+            GROUP BY a.iliname, a.sqlname, c.iliname, o.iliname
+            HAVING COUNT(a.iliname) = 1
+            ORDER BY a.iliname""".format(schema=self.schema)
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(sql_query)
+        records = cur.fetchall()
+        for record in records:
+            composed_key = "{}_{}".format(normalize_iliname(record['iliname']),
+                                          normalize_iliname(record['iliname2']))
+            record['table_iliname'] = normalize_iliname(record['table_iliname'])
+            if record['table_iliname'] in dict_names:
                 dict_names[record['table_iliname']][composed_key] = record['sqlname']
             else:
                 record['colowner'] = normalize_iliname(record['colowner'])
                 if record['colowner'] in dict_names:
                     dict_names[record['colowner']][composed_key] = record['sqlname']
 
-        print("Names: ",dict_names)
+        print("Names: ", dict_names)
 
         self.names.initialize_table_and_field_names(dict_names)
         self.names_read = True
@@ -572,7 +627,9 @@ class PGConnector(DBConnector):
                     )
         if data_source_uri:
             return (True, data_source_uri)
-        return (False, QCoreApplication.translate("PGConnector", "Layer '{}' was not found in the database (schema: {}).").format(layer_name, self.schema))
+        return (False, QCoreApplication.translate("PGConnector",
+                                                  "Layer '{}' was not found in the database (schema: {}).").format(
+            layer_name, self.schema))
 
     def get_tables_info(self):
         if self.conn is None or self.conn.closed:
@@ -702,7 +759,8 @@ class PGConnector(DBConnector):
                                                                                plot_t_id=params['plot_t_id'],
                                                                                parcel_fmi=params['parcel_fmi'],
                                                                                parcel_number=params['parcel_number'],
-                                                                               previous_parcel_number=params['previous_parcel_number'],
+                                                                               previous_parcel_number=params[
+                                                                                   'previous_parcel_number'],
                                                                                cadastral_form_model=self.cadastral_form_model_exists())
 
         if self.conn is None or self.conn.closed:
@@ -714,7 +772,7 @@ class PGConnector(DBConnector):
         records = cur.fetchall()
         res = [record._asdict() for record in records]
 
-        #print("PROPERTY RECORD CARD QUERY:", query)
+        # print("PROPERTY RECORD CARD QUERY:", query)
 
         return res
 
@@ -752,7 +810,7 @@ class PGConnector(DBConnector):
         records = cur.fetchall()
         res = [record._asdict() for record in records]
 
-        #print("PHYSICAL QUERY:", query)
+        # print("PHYSICAL QUERY:", query)
 
         return res
 
@@ -791,7 +849,7 @@ class PGConnector(DBConnector):
         records = cur.fetchall()
         res = [record._asdict() for record in records]
 
-        #print("ECONOMIC QUERY:", query)
+        # print("ECONOMIC QUERY:", query)
 
         return res
 
@@ -803,7 +861,7 @@ class PGConnector(DBConnector):
 
         where_id = ""
         if mode != 'all':
-            where_id = "WHERE l.t_id {} {}".format('=' if mode=='only_id' else '!=', plot_id)
+            where_id = "WHERE l.t_id {} {}".format('=' if mode == 'only_id' else '!=', plot_id)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -847,7 +905,7 @@ class PGConnector(DBConnector):
 
         where_id = ""
         if mode != 'all':
-            where_id = "WHERE terreno.t_id {} {}".format('=' if mode=='only_id' else '!=', plot_id)
+            where_id = "WHERE terreno.t_id {} {}".format('=' if mode == 'only_id' else '!=', plot_id)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -867,7 +925,7 @@ class PGConnector(DBConnector):
 
         where_id = ""
         if mode != 'all':
-            where_id = "WHERE t.t_id {} {}".format('=' if mode=='only_id' else '!=', plot_id)
+            where_id = "WHERE t.t_id {} {}".format('=' if mode == 'only_id' else '!=', plot_id)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -922,12 +980,13 @@ class PGConnector(DBConnector):
         return result if not isinstance(result, tuple) else None
 
     def get_models(self, schema=None):
-        query = "SELECT modelname FROM {schema}.t_ili2db_model order by modelname".format(schema=schema if schema else self.schema)
+        query = "SELECT modelname FROM {schema}.t_ili2db_model order by modelname".format(
+            schema=schema if schema else self.schema)
         result = self.execute_sql_query(query)
         lst_models = list()
         if not isinstance(result, tuple):
             lst_models = [db_model['modelname'] for db_model in result]
-        
+
         return lst_models
 
     def create_database(self, uri, db_name):
@@ -948,10 +1007,13 @@ class PGConnector(DBConnector):
                 cur = conn.cursor()
                 cur.execute(sql)
             except psycopg2.ProgrammingError as e:
-                return (False, QCoreApplication.translate("PGConnector", "An error occurred while trying to create the '{}' database: {}".format(db_name, e)))
+                return (False, QCoreApplication.translate("PGConnector",
+                                                          "An error occurred while trying to create the '{}' database: {}".format(
+                                                              db_name, e)))
         cur.close()
         conn.close()
-        return (True, QCoreApplication.translate("PGConnector", "Database '{}' was successfully created!".format(db_name)))
+        return (
+        True, QCoreApplication.translate("PGConnector", "Database '{}' was successfully created!".format(db_name)))
 
     def create_schema(self, uri, schema_name):
         """
@@ -971,10 +1033,13 @@ class PGConnector(DBConnector):
                 cur = conn.cursor()
                 cur.execute(sql)
             except psycopg2.ProgrammingError as e:
-                return (False, QCoreApplication.translate("PGConnector", "An error occurred while trying to create the '{}' schema: {}".format(schema_name, e)))
+                return (False, QCoreApplication.translate("PGConnector",
+                                                          "An error occurred while trying to create the '{}' schema: {}".format(
+                                                              schema_name, e)))
         cur.close()
         conn.close()
-        return (True, QCoreApplication.translate("PGConnector", "Schema '{}' was successfully created!".format(schema_name)))
+        return (
+        True, QCoreApplication.translate("PGConnector", "Schema '{}' was successfully created!".format(schema_name)))
 
     def get_dbnames_list(self, uri):
         res, msg = self.test_connection(EnumTestLevel.SERVER)
@@ -994,7 +1059,8 @@ class PGConnector(DBConnector):
             conn.close()
         except Exception as e:
             return (False, QCoreApplication.translate("PGConnector",
-                                               "There was an error when obtaining the list of existing databases. : {}").format(e))
+                                                      "There was an error when obtaining the list of existing databases. : {}").format(
+                e))
         return (True, dbnames_list)
 
     def get_dbname_schema_list(self, uri):
@@ -1014,7 +1080,8 @@ class PGConnector(DBConnector):
             conn.close()
         except Exception as e:
             return (False, QCoreApplication.translate("PGConnector",
-                                               "There was an error when obtaining the list of existing schemas: {}").format(e))
+                                                      "There was an error when obtaining the list of existing schemas: {}").format(
+                e))
         return (True, schemas_list)
 
     def get_schema_privileges(self, uri, schema):
@@ -1033,17 +1100,21 @@ class PGConnector(DBConnector):
                 privileges = {'create': bool(int(schema_privileges[0])),  # 'create'
                               'usage': bool(int(schema_privileges[1]))}  # 'usage'
             else:
-                return (False, QCoreApplication.translate("PGConnector", "No information for schema '{}'.").format(schema))
+                return (
+                False, QCoreApplication.translate("PGConnector", "No information for schema '{}'.").format(schema))
             cur.close()
             conn.close()
         except Exception as e:
             return (False, QCoreApplication.translate("PGConnector",
-                                               "There was an error when obtaining privileges for schema '{}'. Details: {}").format(schema, e))
+                                                      "There was an error when obtaining privileges for schema '{}'. Details: {}").format(
+                schema, e))
 
         if privileges['create'] and privileges['usage']:
-            return (True, QCoreApplication.translate("PGConnector", "The user has both Create and Usage priviledges over the schema."))
+            return (True, QCoreApplication.translate("PGConnector",
+                                                     "The user has both Create and Usage priviledges over the schema."))
         else:
-            return (False, QCoreApplication.translate("PGConnector", "The user has not enough priviledges over the schema."))
+            return (
+            False, QCoreApplication.translate("PGConnector", "The user has not enough priviledges over the schema."))
 
     def is_ladm_layer(self, layer):
         result = False
