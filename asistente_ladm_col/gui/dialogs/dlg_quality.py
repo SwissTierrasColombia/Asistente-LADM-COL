@@ -26,13 +26,9 @@ from qgis.PyQt.QtGui import (QBrush,
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QTreeWidgetItem,
                                  QTreeWidgetItemIterator)
-from ...config.general_config import translated_strings
-from ...config.table_mapping_config import (BOUNDARY_POINT_TABLE,
-                                            CONTROL_POINT_TABLE,
-                                            PLOT_TABLE,
-                                            BUILDING_TABLE,
-                                            RIGHT_OF_WAY_TABLE)
-from ...utils import get_ui_class
+from asistente_ladm_col.config.general_config import translated_strings
+from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_UI = get_ui_class('dialogs/dlg_quality.ui')
 
@@ -44,6 +40,7 @@ class QualityDialog(QDialog, DIALOG_UI):
         self._db = db
         self.qgis_utils = qgis_utils
         self.quality = quality
+        self.names = Names()
 
         self.trw_quality_rules.setItemsExpandable(False)
 
@@ -217,9 +214,9 @@ class QualityDialog(QDialog, DIALOG_UI):
                 rule_name = item.text(0)
 
                 if id == 'check_overlaps_in_boundary_points':
-                    self.quality.check_overlapping_points(self._db, point_layer_name=BOUNDARY_POINT_TABLE, rule_name=rule_name)
+                    self.quality.check_overlapping_points(self._db, point_layer_name=self.names.OP_BOUNDARY_POINT_T, rule_name=rule_name)
                 elif id == 'check_overlaps_in_control_points':
-                    self.quality.check_overlapping_points(self._db, point_layer_name=CONTROL_POINT_TABLE, rule_name=rule_name)
+                    self.quality.check_overlapping_points(self._db, point_layer_name=self.names.OP_CONTROL_POINT_T, rule_name=rule_name)
                 elif id == 'check_boundary_points_covered_by_boundary_nodes':
                     self.quality.check_boundary_points_covered_by_boundary_nodes(self._db, rule_name=rule_name)
                 elif id == 'check_boundary_points_covered_by_plot_nodes':
@@ -237,11 +234,11 @@ class QualityDialog(QDialog, DIALOG_UI):
                 elif id == 'check_dangles_in_boundaries':
                     self.quality.check_dangles_in_boundaries(self._db, rule_name=rule_name)
                 elif id == 'check_overlaps_in_plots':
-                    self.quality.check_overlapping_polygons(self._db, polygon_layer_name=PLOT_TABLE, rule_name=rule_name)
+                    self.quality.check_overlapping_polygons(self._db, polygon_layer_name=self.names.OP_PLOT_T, rule_name=rule_name)
                 elif id == 'check_overlaps_in_buildings':
-                    self.quality.check_overlapping_polygons(self._db, polygon_layer_name=BUILDING_TABLE, rule_name=rule_name)
+                    self.quality.check_overlapping_polygons(self._db, polygon_layer_name=self.names.OP_BUILDING_T, rule_name=rule_name)
                 elif id == 'check_overlaps_in_rights_of_way':
-                    self.quality.check_overlapping_polygons(self._db, polygon_layer_name=RIGHT_OF_WAY_TABLE, rule_name=rule_name)
+                    self.quality.check_overlapping_polygons(self._db, polygon_layer_name=self.names.OP_RIGHT_OF_WAY_T, rule_name=rule_name)
                 elif id == 'check_plots_covered_by_boundaries':
                     self.quality.check_plots_covered_by_boundaries(self._db, rule_name=rule_name)
                 #elif id == 'check_missing_survey_points_in_buildings':

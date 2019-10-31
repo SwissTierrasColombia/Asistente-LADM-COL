@@ -9,14 +9,7 @@ from qgis.testing import (unittest,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.table_mapping_config import (ID_FIELD,
-                                                            BOUNDARY_POINT_TABLE,
-                                                            SURVEY_POINT_TABLE,
-                                                            BOUNDARY_TABLE,
-                                                            PLOT_TABLE,
-                                                            BUILDING_TABLE,
-                                                            BUILDING_UNIT_TABLE,
-                                                            COL_PARTY_TABLE,
+from asistente_ladm_col.config.table_mapping_config import (Names,
                                                             LOGIC_CONSISTENCY_TABLES)
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             import_processing,
@@ -51,19 +44,21 @@ class TesQualityValidations(unittest.TestCase):
                 return
             restore_schema(test_connection_db)
 
+        self.names = Names()
+
     def test_find_duplicate_records(self):
         schema_name = 'test_ladm_col_logic_checks'
         self.db_connection = get_dbconn(schema_name)
         db = self.db_connection
 
         test_results = {
-            COL_PARTY_TABLE: [('1,4', 2), ('3,6', 2), ('2,5', 2)],
-            BUILDING_UNIT_TABLE: [('40,49', 2)],
-            BUILDING_TABLE: [('39,50', 2), ('37,51', 2)],
-            PLOT_TABLE: [('36,53', 2), ('33,52', 2)],
-            BOUNDARY_TABLE: [('30,48', 2), ('25,46', 2), ('24,47', 2)],
-            SURVEY_POINT_TABLE: [('10,45', 2), ('9,44', 2)],
-            BOUNDARY_POINT_TABLE: [('20,41', 2), ('13,43', 2), ('14,17', 2), ('19,42', 2), ('12,15', 2), ('11,16', 2)]
+            self.names.OP_PARTY_T: [('1,4', 2), ('3,6', 2), ('2,5', 2)],
+            self.names.OP_BUILDING_UNIT_T: [('40,49', 2)],
+            self.names.OP_BUILDING_T: [('39,50', 2), ('37,51', 2)],
+            self.names.OP_PLOT_T: [('36,53', 2), ('33,52', 2)],
+            self.names.OP_BOUNDARY_T: [('30,48', 2), ('25,46', 2), ('24,47', 2)],
+            self.names.OP_SURVEY_POINT_T: [('10,45', 2), ('9,44', 2)],
+            self.names.OP_BOUNDARY_POINT_T: [('20,41', 2), ('13,43', 2), ('14,17', 2), ('19,42', 2), ('12,15', 2), ('11,16', 2)]
         }
 
         for table in test_results:
@@ -746,10 +741,10 @@ class TesQualityValidations(unittest.TestCase):
                 overlapping[pair].append(geometry)
 
         for point in point_features:
-            insert_into_res([point[ID_FIELD], point[ID_FIELD+'_2']], point.geometry().asWkt())
+            insert_into_res([point[self.names.T_ID_F], point[self.names.T_ID_F+'_2']], point.geometry().asWkt())
 
         for line in line_features:
-            insert_into_res([line[ID_FIELD], line[ID_FIELD+'_2']], line.geometry().asWkt())
+            insert_into_res([line[self.names.T_ID_F], line[self.names.T_ID_F+'_2']], line.geometry().asWkt())
 
         expected_overlaps = {
             '7-15': [
@@ -1037,8 +1032,8 @@ class TesQualityValidations(unittest.TestCase):
         points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer)
 
         for point_selected in points_selected:
-            boundary_point_id = point_selected[ID_FIELD]
-            boundary_id = point_selected['{}_2'.format(ID_FIELD)]
+            boundary_point_id = point_selected[self.names.T_ID_F]
+            boundary_id = point_selected['{}_2'.format(self.names.T_ID_F)]
             key_query = "{}-{}".format(boundary_point_id, boundary_id)
 
             if key_query in dic_points_ccl:
@@ -1067,8 +1062,8 @@ class TesQualityValidations(unittest.TestCase):
         points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer)
 
         for point_selected in points_selected:
-            boundary_point_id = point_selected[ID_FIELD]
-            boundary_id = point_selected['{}_2'.format(ID_FIELD)]
+            boundary_point_id = point_selected[self.names.T_ID_F]
+            boundary_id = point_selected['{}_2'.format(self.names.T_ID_F)]
             key_query = "{}-{}".format(boundary_point_id, boundary_id)
 
             if key_query in dic_points_ccl:
@@ -1118,7 +1113,7 @@ class TesQualityValidations(unittest.TestCase):
         end_points, dangle_ids = self.quality.get_dangle_ids(boundary_layer)
         self.assertEqual(len(dangle_ids), 19)
 
-        boundary_ids = [feature[ID_FIELD] for feature in end_points.getFeatures(dangle_ids)]
+        boundary_ids = [feature[self.names.T_ID_F] for feature in end_points.getFeatures(dangle_ids)]
         boundary_ids.sort()
         expected_boundary_ids = [4, 4, 5, 6, 6, 7, 8, 10, 10, 13, 14, 325, 325, 334, 334, 335, 336, 336, 337]
 

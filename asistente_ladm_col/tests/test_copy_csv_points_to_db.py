@@ -33,7 +33,6 @@ class TestCopy(unittest.TestCase):
         self.qgis_utils = QGISUtils()
         restore_schema(SCHEMA_LADM_COL_EMPTY)
         self.db_connection = get_dbconn(SCHEMA_LADM_COL_EMPTY)
-        self.names = Names()
 
         result = self.db_connection.test_connection()
         print('test_connection', result)
@@ -41,6 +40,7 @@ class TestCopy(unittest.TestCase):
             print('The test connection is not working (test_connection)')
             return
 
+        self.names = Names()
         clean_table(SCHEMA_LADM_COL_EMPTY, self.names.OP_BOUNDARY_POINT_T)
 
     def test_copy_csv_to_db(self):

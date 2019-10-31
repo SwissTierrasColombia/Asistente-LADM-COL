@@ -50,8 +50,7 @@ from qgis.gui import (QgsDockWidget,
 from asistente_ladm_col.config.general_config import TEST_SERVER, PLUGIN_NAME, LAYER, SUFFIX_GET_THUMBNAIL
 from asistente_ladm_col.config.table_mapping_config import (DICT_TABLE_PACKAGE,
                                                             Names,
-                                                            SPATIAL_UNIT_PACKAGE,
-                                                            FMI_FIELD)
+                                                            SPATIAL_UNIT_PACKAGE)
 
 from ..utils import get_ui_class
 from ..utils.qt_utils import OverrideCursor
@@ -188,7 +187,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Parcel Number"), self.names.OP_PARCEL_T_PARCEL_NUMBER_F)
         self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Previous Parcel Number"), self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F)
-        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Folio de Matrícula Inmobiliaria"), FMI_FIELD)
+        self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetQueries", "Folio de Matrícula Inmobiliaria"), self.names.OP_PARCEL_T_FMI_F)
 
     def initialize_tools(self, new_tool, old_tool):
         if self.maptool_identify == old_tool:
@@ -330,7 +329,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         option = self.cbo_parcel_fields.currentData()
         query = self.txt_alphanumeric_query.value()
         if query:
-            if option == FMI_FIELD:
+            if option == self.names.OP_PARCEL_T_FMI_F:
                 self.search_data_by_component(parcel_fmi=query, zoom_and_select=True)
             elif option == self.names.OP_PARCEL_T_PARCEL_NUMBER_F:
                 self.search_data_by_component(parcel_number=query, zoom_and_select=True)

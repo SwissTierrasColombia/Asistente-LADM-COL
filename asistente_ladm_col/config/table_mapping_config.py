@@ -102,7 +102,7 @@ class Names(metaclass=Singleton):
     # "LADM_COL_V1_2.LADM_Nucleo.COL_FuncionInteresadoTipo"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_FuncionInteresadoTipo_"
     COL_INTERPOLATION_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_InterpolacionTipo"
-    # "LADM_COL_V1_2.LADM_Nucleo.COL_MetodoProduccionTipo"
+    COL_PRODUCTION_METHOD = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_MetodoProduccionTipo"
     COL_MONUMENTATION_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_MonumentacionTipo"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_Nivel"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_RedServiciosTipo"
@@ -129,7 +129,7 @@ class Names(metaclass=Singleton):
     # "LADM_COL_V1_2.LADM_Nucleo.COL_RegistroTipo"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_RelacionNecesariaBAUnits"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_RelacionNecesariaUnidadesEspaciales"
-    # "LADM_COL_V1_2.LADM_Nucleo.COL_RelacionSuperficieTipo"
+    COL_SURFACE_RELATION_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_RelacionSuperficieTipo"
     OP_RESTRICTION_TYPE_D = None  # "Operacion_V2_9_6.OP_RestriccionTipo"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_Transformacion"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_VolumenTipo"
@@ -189,7 +189,7 @@ class Names(metaclass=Singleton):
     OP_SURVEY_POINT_TYPE_D = None  # "Operacion_V2_9_5.OP_PuntoLevTipo"
     OP_POINT_TYPE_D = None  # "Operacion_V2_9_5.OP_PuntoTipo"
     OP_GENRE_D = None  # "Operacion_V2_9_5.OP_SexoTipo"
-    # "Operacion_V2_9_5.OP_UbicacionPuntoTipo"
+    OP_LOCATION_POINT_TYPE_D = None  # "Operacion_V2_9_5.OP_UbicacionPuntoTipo"
     # "Operacion_V2_9_5.OP_UsoUConsTipo"
     # "Operacion_V2_9_5.OP_ViaTipo"
 
@@ -749,6 +749,8 @@ class Names(metaclass=Singleton):
         "LADM_COL.LADM_Nucleo.COL_FuenteEspacialTipo": {VARIABLE_NAME: "COL_SPATIAL_SOURCE_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_GrupoInteresadoTipo": {VARIABLE_NAME: "COL_GROUP_PARTY_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_InterpolacionTipo": {VARIABLE_NAME: "COL_INTERPOLATION_TYPE_D", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.COL_MetodoProduccionTipo": {VARIABLE_NAME: "COL_PRODUCTION_METHOD", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.COL_RelacionSuperficieTipo": {VARIABLE_NAME: "COL_SURFACE_RELATION_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_MonumentacionTipo": {VARIABLE_NAME: "COL_MONUMENTATION_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.ExtArchivo": {VARIABLE_NAME: "EXT_ARCHIVE_S", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.ExtArchivo.Datos": "EXT_ARCHIVE_S_DATA_F",
@@ -851,6 +853,7 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.col_cclFuente.ccl": "COL_CCL_SOURCE_T_BOUNDARY_F"
         }},
         "Operacion.OP_AcuerdoTipo": {VARIABLE_NAME: "OP_AGREEMENT_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_UbicacionPuntoTipo": {VARIABLE_NAME: "OP_LOCATION_POINT_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_CondicionPredioTipo": {VARIABLE_NAME: "OP_PARCEL_TYPE_T", FIELDS_DICT: {}},
         "Operacion.OP_DerechoTipo": {VARIABLE_NAME: "OP_RIGHT_TYPE_D", FIELDS_DICT: {}},
         "Operacion.Operacion.OP_Agrupacion_Interesados": {VARIABLE_NAME: "OP_GROUP_PARTY_T", FIELDS_DICT: {

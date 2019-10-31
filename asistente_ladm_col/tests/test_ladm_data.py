@@ -9,12 +9,7 @@ start_app()  # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.utils.qgis_utils import QGISUtils
 from asistente_ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.config.general_config import LAYER
-from asistente_ladm_col.config.table_mapping_config import (PLOT_AREA_FIELD,
-                                                            FMI_FIELD,
-                                                            UEBAUNIT_TABLE,
-                                                            PLOT_TABLE,
-                                                            PARCEL_TABLE,
-                                                            PARCEL_NUMBER_FIELD)
+from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.tests.utils import (get_dbconn,
                                             restore_schema)
 
@@ -36,6 +31,7 @@ class TestLADMData(unittest.TestCase):
 
         self.qgis_utils = QGISUtils()
         self.ladm_data = LADM_DATA(self.qgis_utils)
+        self.names = Names()
 
     def test_get_plots_related_to_parcels(self):
         print("\nINFO: Validating get plots related to parcels (Case: t_id)...")
@@ -56,14 +52,14 @@ class TestLADMData(unittest.TestCase):
 
         count = 0
         for parcel_ids_test in parcel_ids_tests:
-            plot_custom_field_ids = self.ladm_data.get_plots_related_to_parcels(self.db_connection, parcel_ids_test, field_name=PLOT_AREA_FIELD)
+            plot_custom_field_ids = self.ladm_data.get_plots_related_to_parcels(self.db_connection, parcel_ids_test, field_name=self.names.OP_PLOT_T_PLOT_AREA_F)
             self.assertCountEqual(plot_custom_field_ids, plot_custom_field_ids_tests[count], "Failure with data set {}".format(count + 1))
             count += 1
 
         print("\nINFO: Validating get plots related to parcels (Case: t_id) with preloaded tables...")
 
-        layers = {PLOT_TABLE: {'name': PLOT_TABLE, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
-                  UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}}
+        layers = {self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
+                  self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}}
         self.qgis_utils.get_layers(self.db_connection, layers, load=True)
         self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')
 
@@ -71,8 +67,8 @@ class TestLADMData(unittest.TestCase):
         for parcel_ids_test in parcel_ids_tests:
             plot_ids = self.ladm_data.get_plots_related_to_parcels(self.db_connection,
                                                                    parcel_ids_test,
-                                                                   plot_layer=layers[PLOT_TABLE][LAYER],
-                                                                   uebaunit_table=layers[UEBAUNIT_TABLE][LAYER])
+                                                                   plot_layer=layers[self.names.OP_PLOT_T][LAYER],
+                                                                   uebaunit_table=layers[self.names.COL_UE_BAUNIT_T][LAYER])
             self.assertCountEqual(plot_ids, plot_ids_tests[count], "Failure with data set {}".format(count + 1))
             count += 1
 
@@ -98,7 +94,7 @@ class TestLADMData(unittest.TestCase):
         count = 0
         for plot_ids_test in plot_ids_tests:
             parcel_custom_field_ids = self.ladm_data.get_parcels_related_to_plots(self.db_connection, plot_ids_test,
-                                                                                  field_name=PARCEL_NUMBER_FIELD)
+                                                                                  field_name=self.names.OP_PARCEL_T_PARCEL_NUMBER_F)
             self.assertCountEqual(parcel_custom_field_ids, parcel_custom_field_ids_tests[count],
                                   "Failure with data set {}".format(count + 1))
             count += 1
@@ -106,8 +102,8 @@ class TestLADMData(unittest.TestCase):
         print("\nINFO: Validating get parcels related to plots (Case: t_id) with preloaded tables...")
 
         layers = {
-            PARCEL_TABLE: {'name': PARCEL_TABLE, 'geometry': None, LAYER: None},
-            UEBAUNIT_TABLE: {'name': UEBAUNIT_TABLE, 'geometry': None, LAYER: None}
+            self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
+            self.names.COL_UE_BAUNIT_T: {'name': self.names.COL_UE_BAUNIT_T, 'geometry': None, LAYER: None}
         }
         self.qgis_utils.get_layers(self.db_connection, layers, load=True)
         self.assertIsNotNone(layers, 'An error occurred while trying to get the layers of interest')
@@ -116,8 +112,8 @@ class TestLADMData(unittest.TestCase):
         for plot_ids_test in plot_ids_tests:
             parcel_ids = self.ladm_data.get_parcels_related_to_plots(self.db_connection,
                                                                      plot_ids_test,
-                                                                     parcel_table=layers[PARCEL_TABLE][LAYER],
-                                                                     uebaunit_table=layers[UEBAUNIT_TABLE][LAYER])
+                                                                     parcel_table=layers[self.names.OP_PARCEL_T][LAYER],
+                                                                     uebaunit_table=layers[self.names.COL_UE_BAUNIT_T][LAYER])
             self.assertCountEqual(parcel_ids, parcel_ids_tests[count], "Failure with data set {}".format(count + 1))
             count += 1
 
@@ -717,7 +713,7 @@ class TestLADMData(unittest.TestCase):
                 }
             ]
         }
-        search_criterion = {FMI_FIELD: '167-3652'}
+        search_criterion = {self.names.OP_PARCEL_T_FMI_F: '167-3652'}
         features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_connection, search_criterion=search_criterion)
         self.assertCountEqual(features, features_test)
 
@@ -955,10 +951,9 @@ class TestLADMData(unittest.TestCase):
                 }
             ]
         }
-        search_criterion = {FMI_FIELD: 'SIN INFO'}
+        search_criterion = {self.names.OP_PARCEL_T_FMI_F: 'SIN INFO'}
         features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_connection, search_criterion=search_criterion)
         self.assertCountEqual(features, features_test)
-
 
     def tearDownClass():
         print('tearDown test_ladm_data')
