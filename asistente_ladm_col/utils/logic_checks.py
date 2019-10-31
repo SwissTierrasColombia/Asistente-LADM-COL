@@ -10,7 +10,6 @@ from qgis.core import (QgsApplication,
 from ..config.general_config import translated_strings
 from ..config.table_mapping_config import (ID_FIELD,
                                            COL_PARTY_BUSINESS_NAME_FIELD,
-                                           COL_PARTY_LEGAL_PARTY_FIELD,
                                            COL_PARTY_SURNAME_FIELD,
                                            COL_PARTY_FIRST_NAME_FIELD,
                                            COL_PARTY_DOC_TYPE_FIELD,
@@ -148,8 +147,6 @@ class LogicChecks(QObject):
             errors_list = list()
             if record[COL_PARTY_BUSINESS_NAME_FIELD] > 0:
                 errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{business_name} must be NULL").format(business_name=COL_PARTY_BUSINESS_NAME_FIELD))
-            if record[COL_PARTY_LEGAL_PARTY_FIELD] > 0:
-                errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{legal_party} must be NULL").format(legal_party=COL_PARTY_LEGAL_PARTY_FIELD))
             if record[COL_PARTY_SURNAME_FIELD] > 0:
                 errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{surname_party} must not be NULL and It must be filled in").format(surname_party=COL_PARTY_SURNAME_FIELD))
             if record[COL_PARTY_FIRST_NAME_FIELD] > 0:
@@ -185,8 +182,6 @@ class LogicChecks(QObject):
             errors_list = list()
             if record[COL_PARTY_BUSINESS_NAME_FIELD] > 0:
                 errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{business_name} must not be NULL and It must be filled in").format(business_name=COL_PARTY_BUSINESS_NAME_FIELD))
-            if record[COL_PARTY_LEGAL_PARTY_FIELD] > 0:
-                errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{legal_party} must not be NULL and It must be filled in").format(legal_party=COL_PARTY_LEGAL_PARTY_FIELD))
             if record[COL_PARTY_SURNAME_FIELD] > 0:
                 errors_list.append(QCoreApplication.translate("LogicChecksConfigStrings", "{surname_party} must be NULL").format(surname_party=COL_PARTY_SURNAME_FIELD))
             if record[COL_PARTY_FIRST_NAME_FIELD] > 0:

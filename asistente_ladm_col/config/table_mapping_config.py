@@ -1200,7 +1200,6 @@ COL_PARTY_DOC_TYPE_FIELD = "tipo_documento"
 COL_PARTY_FIRST_NAME_FIELD = "primer_nombre"
 COL_PARTY_SURNAME_FIELD = "primer_apellido"
 COL_PARTY_BUSINESS_NAME_FIELD = "razon_social"
-COL_PARTY_LEGAL_PARTY_FIELD = "tipo_interesado_juridico"
 COL_PARTY_NAME_FIELD = "nombre"
 COL_RESTRICTION_TYPE_RIGHT_OF_WAY_VALUE = "Servidumbre"
 CONTROL_POINT_TABLE = "op_puntocontrol"
@@ -1287,7 +1286,6 @@ UEBAUNIT_TABLE_PLOT_FIELD = "ue_op_terreno"
 UEBAUNIT_TABLE_RIGHT_OF_WAY_FIELD = "ue_op_servidumbrepaso"
 UESOURCE_TABLE = "col_uefuente"
 VIDA_UTIL_FIELD = "comienzo_vida_util_version"
-ZONE_FIELD = "zona"
 
 
 """
@@ -1404,8 +1402,7 @@ DICT_AUTOMATIC_VALUES = {
         SECOND_NAME_FIELD,
         BUSINESS_NAME_FIELD)}],
     PARCEL_TABLE: [{DEPARTMENT_FIELD: 'substr("numero_predial", 0, 2)'},
-                   {MUNICIPALITY_FIELD: 'substr("numero_predial", 3, 3)'},
-                   {ZONE_FIELD: 'substr("numero_predial", 6, 2)'}]
+                   {MUNICIPALITY_FIELD: 'substr("numero_predial", 3, 3)'}]
 }
 
 DICT_DISPLAY_EXPRESSIONS = {
@@ -1440,7 +1437,7 @@ LAYER_VARIABLES = {
 #   2. Only for a wizard (e.g., PARCEL_TYPE)
 # WARNING: Both modes are exclusive, if you list a field in 1, DO NOT do it in 2. and viceversa!
 CUSTOM_READ_ONLY_FIELDS = {
-    PARCEL_TABLE: [DEPARTMENT_FIELD, MUNICIPALITY_FIELD, ZONE_FIELD]  # list of fields of the layer to block its edition
+    PARCEL_TABLE: [DEPARTMENT_FIELD, MUNICIPALITY_FIELD]  # list of fields of the layer to block its edition
 }
 
 CUSTOM_WIDGET_CONFIGURATION = {
@@ -1580,18 +1577,6 @@ LAYER_CONSTRAINTS = {
                                 ELSE
                                     TRUE
                             END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_business_name=COL_PARTY_BUSINESS_NAME_FIELD),
-            'description': 'Si el tipo de interesado es "Persona No Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona Natural" este campo debe ser NULL.'
-
-        }, COL_PARTY_LEGAL_PARTY_FIELD:{
-            'expression': """
-                            CASE
-                                WHEN  "{col_party_type}" =  'Persona_No_Natural' THEN
-                                     "{col_party_legal_party}" IS NOT NULL
-                                WHEN  "{col_party_type}" =  'Persona_Natural' THEN
-                                     "{col_party_legal_party}" IS NULL
-                                ELSE
-                                    TRUE
-                            END""".format(col_party_type=COL_PARTY_TYPE_FIELD, col_party_legal_party=COL_PARTY_LEGAL_PARTY_FIELD),
             'description': 'Si el tipo de interesado es "Persona No Natural" este campo se debe diligenciar, si el tipo de interesado es "Persona Natural" este campo debe ser NULL.'
 
         }, COL_PARTY_DOCUMENT_ID_FIELD:{

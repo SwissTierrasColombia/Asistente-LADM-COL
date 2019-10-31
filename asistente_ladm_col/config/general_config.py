@@ -12,7 +12,6 @@ from .table_mapping_config import (MORE_BOUNDARY_FACE_STRING_TABLE,
                                    PARCEL_TABLE,
                                    DEPARTMENT_FIELD,
                                    MUNICIPALITY_FIELD,
-                                   ZONE_FIELD,
                                    PARCEL_NUMBER_FIELD,
                                    PARCEL_NUMBER_BEFORE_FIELD)
 from ..utils.qt_utils import get_plugin_metadata
@@ -350,7 +349,6 @@ class TranslatableConfigStrings(QObject):
 
         self.CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {department} field of the {parcel} table has two numerical characters").format(department=DEPARTMENT_FIELD, parcel=PARCEL_TABLE)
         self.CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {municipality} field of the {parcel} table has three numerical characters").format(municipality=MUNICIPALITY_FIELD, parcel=PARCEL_TABLE)
-        self.CHECK_ZONE_CODE_HAS_TWO_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {zone} field of the {parcel} table has two numerical characters").format(zone=ZONE_FIELD, parcel=PARCEL_TABLE)
         self.CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_number} has 30 numerical characters").format(parcel_number=PARCEL_NUMBER_FIELD)
         self.CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_number_before} has 20 numerical characters").format(parcel_number_before=PARCEL_NUMBER_BEFORE_FIELD)
         self.CHECK_COL_PARTY_NATURAL_TYPE = QCoreApplication.translate("TranslatableConfigStrings", "Check that attributes are appropriate for parties of type natural")

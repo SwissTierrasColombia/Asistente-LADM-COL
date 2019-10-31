@@ -48,7 +48,6 @@ from ..config.table_mapping_config import (ID_FIELD,
                                            FMI_FIELD,
                                            PARCEL_NAME_FIELD,
                                            DEPARTMENT_FIELD,
-                                           ZONE_FIELD,
                                            PARCEL_TYPE_FIELD,
                                            MUNICIPALITY_FIELD)
 
@@ -58,7 +57,6 @@ PARCEL_FIELDS_TO_COMPARE = [PARCEL_NUMBER_FIELD,
                             PARCEL_NAME_FIELD,
                             DEPARTMENT_FIELD,
                             MUNICIPALITY_FIELD,
-                            ZONE_FIELD,
                             #NUPRE_FIELD,
                             PARCEL_TYPE_FIELD]
 

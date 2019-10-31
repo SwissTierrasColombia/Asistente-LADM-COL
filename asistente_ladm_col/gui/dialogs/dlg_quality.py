@@ -149,9 +149,6 @@ class QualityDialog(QDialog, DIALOG_UI):
                     'id': 'check_municipality_code_has_three_numerical_characters',
                     'text': translated_strings.CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS
                 }, {
-                    'id': 'check_zone_code_has_two_numerical_characters',
-                    'text': translated_strings.CHECK_ZONE_CODE_HAS_TWO_NUMERICAL_CHARACTERS
-                }, {
                     'id': 'check_parcel_number_has_30_numerical_characters',
                     'text': translated_strings.CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS
                 }, {
@@ -271,8 +268,6 @@ class QualityDialog(QDialog, DIALOG_UI):
                     self.quality.basic_logic_validations(self._db, rule='DEPARTMENT_CODE_VALIDATION', rule_name=rule_name)
                 elif id == 'check_municipality_code_has_three_numerical_characters':
                     self.quality.basic_logic_validations(self._db, rule='MUNICIPALITY_CODE_VALIDATION', rule_name=rule_name)
-                elif id == 'check_zone_code_has_two_numerical_characters':
-                    self.quality.basic_logic_validations(self._db, rule='ZONE_CODE_VALIDATION', rule_name=rule_name)
                 elif id == 'check_parcel_number_has_30_numerical_characters':
                     self.quality.basic_logic_validations(self._db, rule='PARCEL_NUMBER_VALIDATION', rule_name=rule_name)
                 elif id == 'check_parcel_number_before_has_20_numerical_characters':
