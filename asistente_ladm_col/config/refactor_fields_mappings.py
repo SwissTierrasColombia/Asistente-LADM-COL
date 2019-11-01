@@ -326,7 +326,7 @@ def get_refactor_fields_mapping(layer_name, qgis_utils):
                 if field['name'] == lid_field:
                     field['expression'] = '{}'.format(lid_value)
 
-            if field['name'] == VIDA_UTIL_FIELD:
+            if field['name'] == names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F:
                 field['expression'] = 'now()'
 
     return mapping

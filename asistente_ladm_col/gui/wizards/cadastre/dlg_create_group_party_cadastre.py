@@ -270,7 +270,7 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         group_party_type = self.cbo_group_type.itemData(self.cbo_group_type.currentIndex())
         dict_params = {
             self.names.COL_PARTY_T_NAME_F: name,
-            self.names.OP_GROUP_PARTY_T_TYPE_F: group_party_type,
+            self.names.COL_GROUP_PARTY_T_TYPE_F: group_party_type,
             'porcentajes': self.parties_to_group
         }
 
@@ -284,7 +284,7 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
 
     def validate_group_party(self, params):
         name = params[self.names.COL_PARTY_T_NAME_F]
-        group_party_type = params[self.names.OP_GROUP_PARTY_T_TYPE_F]
+        group_party_type = params[self.names.COL_GROUP_PARTY_T_TYPE_F]
         porcentajes = params['porcentajes']
 
         if not porcentajes:
@@ -332,7 +332,7 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
         params: List of dicts, where each dict is an independent group party:
             {
                 self.names.COL_PARTY_T_NAME_F: '',
-                self.names.OP_GROUP_PARTY_T_TYPE_F: '',
+                self.names.COL_GROUP_PARTY_T_TYPE_F: '',
                 'porcentajes': {
                     't_id_miembro': [20, 100], # numerador/denominador
                     't_id_miembro2': [40, 100]
@@ -348,7 +348,7 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
 
             # First save the group party
             new_feature = QgsVectorLayerUtils().createFeature(self._layers[self.names.OP_GROUP_PARTY_T][LAYER])
-            new_feature.setAttribute(self.names.OP_GROUP_PARTY_T_TYPE_F, group[self.names.OP_GROUP_PARTY_T_TYPE_F])
+            new_feature.setAttribute(self.names.COL_GROUP_PARTY_T_TYPE_F, group[self.names.COL_GROUP_PARTY_T_TYPE_F])
             new_feature.setAttribute(self.names.COL_PARTY_T_NAME_F, group[self.names.COL_PARTY_T_NAME_F])
 
             # TODO: Remove when local id and working space are defined

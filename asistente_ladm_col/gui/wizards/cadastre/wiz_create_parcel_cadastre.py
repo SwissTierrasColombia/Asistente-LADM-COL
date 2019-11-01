@@ -76,20 +76,20 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
                 building_unit_ids = list()
 
                 # Apply restriction to the selection
-                if self.names.OP_PLOT_T in CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()]:
-                    if CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()][self.names.OP_PLOT_T] is not None:
+                if self.names.OP_PLOT_T in CONSTRAINT_TYPES_OF_PARCEL[self.dict_parcel_type[self.cb_parcel_type.currentText()]]:
+                    if CONSTRAINT_TYPES_OF_PARCEL[self.dict_parcel_type[self.cb_parcel_type.currentText()]][self.names.OP_PLOT_T] is not None:
                         plot_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_PLOT_T][LAYER].selectedFeatures()]
                 else:
                     plot_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_PLOT_T][LAYER].selectedFeatures()]
 
-                if self.names.OP_BUILDING_T in CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()]:
-                    if CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()][self.names.OP_BUILDING_T] is not None:
+                if self.names.OP_BUILDING_T in CONSTRAINT_TYPES_OF_PARCEL[self.dict_parcel_type[self.cb_parcel_type.currentText()]]:
+                    if CONSTRAINT_TYPES_OF_PARCEL[self.dict_parcel_type[self.cb_parcel_type.currentText()]][self.names.OP_BUILDING_T] is not None:
                         building_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_BUILDING_T][LAYER].selectedFeatures()]
                 else:
                     building_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.OP_BUILDING_T][LAYER].selectedFeatures()]
 
-                if self.names.OP_BUILDING_UNIT_T in CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()]:
-                    if CONSTRAINT_TYPES_OF_PARCEL[self.cb_parcel_type.currentText()][self.names.OP_BUILDING_UNIT_T] is not None:
+                if self.names.OP_BUILDING_UNIT_T in CONSTRAINT_TYPES_OF_PARCEL[self.dict_parcel_type[self.cb_parcel_type.currentText()]]:
+                    if CONSTRAINT_TYPES_OF_PARCEL[self.dict_parcel_type[self.cb_parcel_type.currentText()]][self.names.OP_BUILDING_UNIT_T] is not None:
                         building_unit_ids = [f[self.names.T_ID_F] for f in
                                              self._layers[self.names.OP_BUILDING_UNIT_T][LAYER].selectedFeatures()]
                 else:
@@ -159,17 +159,17 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
         self.lb_building_unit.setText(QCoreApplication.translate(self.WIZARD_NAME,"<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.OP_BUILDING_UNIT_T][LAYER].selectedFeatureCount()))
         self.lb_building_unit.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
 
-        parcel_type = self.cb_parcel_type.currentText()
+        parcel_type = self.dict_parcel_type[self.cb_parcel_type.currentText()]
         for spatial_unit in CONSTRAINT_TYPES_OF_PARCEL[parcel_type]:
             _layer = self._spatial_unit_layers[spatial_unit]
 
             _color = CSS_COLOR_OKAY_LABEL
 
             if CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == 1 and not _layer.selectedFeatureCount() == 1:
-                    _color = CSS_COLOR_ERROR_LABEL
+                _color = CSS_COLOR_ERROR_LABEL
             elif CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == '+' and _layer.selectedFeatureCount() < 1:
-                    _color = CSS_COLOR_ERROR_LABEL
-            elif CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == None:
+                _color = CSS_COLOR_ERROR_LABEL
+            elif CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] is None:
                 _color = CSS_COLOR_INACTIVE_LABEL
 
             if spatial_unit == self.names.OP_PLOT_T:
@@ -226,9 +226,13 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
         if result is None:
             self.close_wizard(show_message=False)
 
+        self.dict_parcel_type = dict()
+        for feature in self._layers[self.names.OP_PARCEL_TYPE_T][LAYER].getFeatures():
+            self.dict_parcel_type[feature[self.names.DISPLAY_NAME_F]] = feature[self.names.ILICODE_F]
+
         if self.cb_parcel_type.count() == 0:
             for feature in self._layers[self.names.OP_PARCEL_TYPE_T][LAYER].getFeatures():
-                if feature[self.names.DISPLAY_NAME_F] in CONSTRAINT_TYPES_OF_PARCEL:
+                if feature[self.names.ILICODE_F] in CONSTRAINT_TYPES_OF_PARCEL:
                     self.cb_parcel_type.addItem(feature[self.names.DISPLAY_NAME_F], feature[self.names.T_ID_F])
 
             # Select previous option saved
@@ -322,9 +326,11 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
         self.btn_building_unit_map.setEnabled(True)
         self.btn_building_unit_expression.setEnabled(True)
 
+        parcel_type = self.dict_parcel_type[parcel_type]
+
         # Disable labels/controls depending on parcel_type
         for spatial_unit in CONSTRAINT_TYPES_OF_PARCEL[parcel_type]:
-            if CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == None:
+            if CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] is None:
                 if spatial_unit == self.names.OP_PLOT_T:
                     self.btn_plot_map.setEnabled(False)
                     self.btn_plot_expression.setEnabled(False)
@@ -343,14 +349,14 @@ class CreateParcelCadastreWizard(MultiPageWizardFactory,
         msg_help = self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2].format(msg_parcel_type=msg_parcel_type)
         self.txt_help_page_2.setHtml(msg_help)
 
-    def is_constraint_satisfied(self, type):
+    def is_constraint_satisfied(self, parcel_type):
         result = True
-        for spatial_unit in CONSTRAINT_TYPES_OF_PARCEL[type]:
+        for spatial_unit in CONSTRAINT_TYPES_OF_PARCEL[parcel_type]:
             _layer = self._spatial_unit_layers[spatial_unit]
 
-            if CONSTRAINT_TYPES_OF_PARCEL[type][spatial_unit] == 1 and not _layer.selectedFeatureCount() == 1:
+            if CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == 1 and not _layer.selectedFeatureCount() == 1:
                 result = False
-            elif CONSTRAINT_TYPES_OF_PARCEL[type][spatial_unit] == '+' and _layer.selectedFeatureCount() < 1:
+            elif CONSTRAINT_TYPES_OF_PARCEL[parcel_type][spatial_unit] == '+' and _layer.selectedFeatureCount() < 1:
                 result = False
 
         return result

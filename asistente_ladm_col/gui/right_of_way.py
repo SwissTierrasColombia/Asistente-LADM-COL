@@ -35,8 +35,7 @@ import processing
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       PLUGIN_NAME)
 from asistente_ladm_col.config.table_mapping_config import Names
-from asistente_ladm_col.config.table_mapping_config import (COL_RESTRICTION_TYPE_RIGHT_OF_WAY_VALUE,
-                                                            RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD)
+from asistente_ladm_col.config.table_mapping_config import RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD
 
 
 class RightOfWay(QObject):
@@ -175,6 +174,7 @@ class RightOfWay(QObject):
             self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
             self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
             self.names.OP_RESTRICTION_T: {'name': self.names.OP_RESTRICTION_T, 'geometry': None, LAYER: None},
+            self.names.OP_RESTRICTION_TYPE_D: {'name': self.names.OP_RESTRICTION_TYPE_D, 'geometry': None, LAYER: None},
             self.names.OP_RIGHT_OF_WAY_T: {'name': self.names.OP_RIGHT_OF_WAY_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
             self.names.COL_RRR_SOURCE_T: {'name': self.names.COL_RRR_SOURCE_T, 'geometry': None, LAYER: None},
             self.names.OP_SURVEY_POINT_T: {'name': self.names.OP_SURVEY_POINT_T, 'geometry': None, LAYER: None},
@@ -185,6 +185,9 @@ class RightOfWay(QObject):
         self.qgis_utils.get_layers(db, layers, load=True)
         if not layers:
             return None
+
+        exp = "\"{}\" = '{}'".format(self.names.ILICODE_F, self.names.get_restriction_type_d_right_of_way_ilicode_value())
+        restriction_right_of_way_t_id = [feature for feature in layers[self.names.OP_RESTRICTION_TYPE_D][LAYER].getFeatures(exp)][0][self.names.T_ID_F]
 
         if layers[self.names.OP_PLOT_T][LAYER].selectedFeatureCount() == 0 or layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].selectedFeatureCount() == 0 or layers[self.names.OP_ADMINISTRATIVE_SOURCE_T][LAYER].selectedFeatureCount() == 0:
             if self.qgis_utils.get_layer_from_layer_tree(db, self.names.OP_PLOT_T, geometry_type=QgsWkbTypes.PolygonGeometry) is None:
@@ -258,7 +261,7 @@ class RightOfWay(QObject):
                                                     'OUTPUT': 'memory:'})['OUTPUT']
 
             restriction_features = layers[self.names.OP_RESTRICTION_T][LAYER].getFeatures()
-            existing_restriction_pairs = [(restriction_feature[self.names.BAUNIT_RRR_T_UNIT_F], restriction_feature[self.names.COL_RRR_T_DESCRIPTION_F]) for restriction_feature in restriction_features]
+            existing_restriction_pairs = [(restriction_feature[self.names.COL_BAUNIT_RRR_T_UNIT_F], restriction_feature[self.names.COL_RRR_T_DESCRIPTION_F]) for restriction_feature in restriction_features]
             existing_restriction_pairs = set(existing_restriction_pairs)
             id_pairs_restriction = list()
             plot_ids = spatial_join_layer.getFeatures()
@@ -276,9 +279,9 @@ class RightOfWay(QObject):
                     if not id_pair in existing_restriction_pairs:
                         #Create feature
                         new_feature = QgsVectorLayerUtils().createFeature(layers[self.names.OP_RESTRICTION_T][LAYER])
-                        new_feature.setAttribute(self.names.BAUNIT_RRR_T_UNIT_F, id_pair[0])
+                        new_feature.setAttribute(self.names.COL_BAUNIT_RRR_T_UNIT_F, id_pair[0])
                         new_feature.setAttribute(self.names.COL_RRR_T_DESCRIPTION_F, id_pair[1])
-                        new_feature.setAttribute(self.names.OP_RESTRICTION_T_TYPE_F, COL_RESTRICTION_TYPE_RIGHT_OF_WAY_VALUE)
+                        new_feature.setAttribute(self.names.OP_RESTRICTION_T_TYPE_F, restriction_right_of_way_t_id)
                         self.log.logMessage("Saving RightOfWay-Parcel: {}-{}".format(id_pair[1], id_pair[0]), PLUGIN_NAME, Qgis.Info)
                         new_restriction_features.append(new_feature)
 
