@@ -127,6 +127,12 @@ class DBConnector(QObject):
 
         return False
 
+    def supplies_model_exists(self):
+        if self.read_model_parser():
+            return self.model_parser.supplies_model_exists()
+
+        return False
+
     def cadastral_form_model_exists(self):
         if self.read_model_parser():
             return self.model_parser.cadastral_form_model_exists()

@@ -21,6 +21,7 @@ import os.path
 import shutil
 from copy import deepcopy
 from functools import partial
+import processing
 
 import qgis.utils
 from processing.modeler.ModelerUtils import ModelerUtils
@@ -64,6 +65,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       TOOLBAR_FINALIZE_GEOMETRY_CREATION,
                                                       ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME,
                                                       VALUATION_MENU_OBJECTNAME,
+                                                      SUPPLIES_MENU_OBJECTNAME,
                                                       NATIONAL_LAND_AGENCY, WIZARD_TYPE,
                                                       WIZARD_CLASS,
                                                       WIZARD_CREATE_COL_PARTY_CADASTRAL,
@@ -270,6 +272,7 @@ class AsistenteLADMCOLPlugin(QObject):
         else:  # Show by default all model creation tools
             self.add_property_record_card_menu()
             self.add_valuation_menu()
+            self.add_supplies_menu()
 
     def add_data_management_menu(self):
         self._data_management_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data Management"), self._menu)
@@ -557,6 +560,41 @@ class AsistenteLADMCOLPlugin(QObject):
         self._query_changes_all_parcels_action.triggered.connect(self.query_changes_all_parcels)
         self._settings_changes_action.triggered.connect(self.show_official_data_settings)
 
+    def add_supplies_menu(self):
+        menu = self.iface.mainWindow().findChild(QMenu, SUPPLIES_MENU_OBJECTNAME)
+        if menu:
+            return  # Already there!
+
+        self._supplies_menu = QMenu(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Supplies"), self._menu)
+        self._supplies_menu.setObjectName(SUPPLIES_MENU_OBJECTNAME)
+
+        self._etl_cobol_supplies_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "load COBOL data"),
+            self._supplies_menu)
+
+        self._supplies_menu.addAction(self._etl_cobol_supplies_action)
+
+        if len(self._menu.actions()) > 1:
+            if len(self._menu.actions()[2].text()) == 0:
+                self._menu.insertMenu(self._menu.actions()[2], self._supplies_menu)
+            else:
+                self._menu.insertMenu(self._menu.actions()[1], self._supplies_menu)
+        else: # Just in case...
+            self._menu.addMenu(self._supplies_menu)
+
+        # Connections
+        self._etl_cobol_supplies_action.triggered.connect(self.run_etl_cobol)
+
+    def remove_supplies_menu(self):
+        menu = self.iface.mainWindow().findChild(QMenu, SUPPLIES_MENU_OBJECTNAME)
+        if menu is None:
+            return # Nothing to remove...
+
+        self._supplies_menu = None
+        self._etl_cobol_supplies_action = None
+
     def refresh_menus(self, db, ladm_col_db):
         """
         Depending on the models available in the DB, some menus should appear or disappear from the GUI
@@ -572,9 +610,15 @@ class AsistenteLADMCOLPlugin(QObject):
             else:
                 self.remove_valuation_menu()
 
-            self.log.logMessage("Menus refreshed! Valuation: {}; Property Record Card: {}".format(
+            if db.supplies_model_exists():
+                self.add_supplies_menu()
+            else:
+                self.remove_supplies_menu()
+
+            self.log.logMessage("Menus refreshed! Valuation: {}; Property Record Card: {}; Supplies: {}".format(
                     db.valuation_model_exists(),
-                    db.cadastral_form_model_exists()),
+                    db.cadastral_form_model_exists(),
+                    db.supplies_model_exists()),
                 PLUGIN_NAME,
                 Qgis.Info)
 
@@ -648,6 +692,10 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def refresh_layer_symbology(self, layer_id):
         self.iface.layerTreeView().refreshLayerSymbology(layer_id)
+
+    def run_etl_cobol(self):
+        params={}
+        processing.execAlgorithmDialog("model:ETL-model-supplies", params)
 
     def show_message(self, msg, level, duration=5):
         self.clear_message_bar()  # Remove previous messages before showing a new one

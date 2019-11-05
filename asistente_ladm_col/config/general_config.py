@@ -43,6 +43,7 @@ ANT_MAP_REPORT = "Plano_ANT"
 OPERATION_MODEL_PREFIX = "Operacion"
 CADASTRAL_FORM_MODEL_PREFIX = "Formulario_Catastro"
 VALUATION_MODEL_PREFIX = "Avaluos"
+SUPPLIES_MODEL_PREFIX = "Datos_Gestor_Catastral"
 LADM_MODEL_PREFIX = "LADM_COL"
 # From this version on the plugin will work, a message will block prior versions
 LATEST_OPERATION_MODEL_VERSION_SUPPORTED = "2.9.6"
@@ -218,6 +219,7 @@ PROPERTY_RECORD_CARD_MENU_OBJECTNAME = "ladm_col_property_record_card"
 QUERIES_ACTION_OBJECTNAME = "ladm_col_queries"
 REPORTS_MENU_OBJECTNAME = "ladm_col_reports"
 VALUATION_MENU_OBJECTNAME = "ladm_col_valuation"
+SUPPLIES_MENU_OBJECTNAME = "ladm_col_supplies"
 
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/AgenciaImplementacion/Asistente-LADM_COL-docs/releases/download'
