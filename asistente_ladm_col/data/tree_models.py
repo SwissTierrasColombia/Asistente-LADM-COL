@@ -46,7 +46,7 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtGui import QColor, QIcon, QBrush, QFont
 
 from asistente_ladm_col.config.general_config import DEFAULT_ENDPOINT_SOURCE_SERVICE
-from ..config.table_mapping_config import DICT_PACKAGE_ICON, DICT_TABLE_PACKAGE, DICT_PLURAL
+from asistente_ladm_col.config.table_mapping_config import Names
 
 class TreeItem(object):
     def __init__(self, data, parent=None):
@@ -58,6 +58,7 @@ class TreeItem(object):
         self.parentItem = parent
         self.itemData = [{Qt.DisplayRole: ""}]
         self.childItems = []
+        self.names = Names()
 
     def child(self, row):
         return self.childItems[row]
@@ -309,11 +310,11 @@ class TreeModel(QAbstractItemModel):
                 if not len(values):  # Empty object
                     parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
                     kv_item = parent.child(parent.childCount() - 1)
-                    kv_item.setData(0, "{} (0)".format(DICT_PLURAL[key] if key in DICT_PLURAL else key))
+                    kv_item.setData(0, "{} (0)".format(self.names.get_dict_plural()[key] if key in self.names.get_dict_plural() else key))
                     kv_item.setData(0, QBrush(Qt.lightGray), Qt.ForegroundRole)
                     kv_item.setData(0, {"type": key}, Qt.UserRole)
                     kv_item.setData(0, QIcon(
-                        DICT_PACKAGE_ICON[DICT_TABLE_PACKAGE[key]]) if key in DICT_TABLE_PACKAGE else None,
+                        self.names.get_dict_package_icon()[self.names.get_dict_table_package()[key]]) if key in self.names.get_dict_table_package() else None,
                                                     Qt.DecorationRole)
                     continue
 
@@ -359,10 +360,10 @@ class TreeModel(QAbstractItemModel):
         """
         parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
         collection_parent = parent.child(parent.childCount() - 1)
-        collection_parent.setData(0, "{} ({})".format(DICT_PLURAL[key] if key in DICT_PLURAL else key, len(collection)))
+        collection_parent.setData(0, "{} ({})".format(self.names.get_dict_plural()[key] if key in self.names.get_dict_plural() else key, len(collection)))
         collection_parent.setData(0, {"type": key}, Qt.UserRole)
         res = collection_parent.setData(0, QIcon(
-            DICT_PACKAGE_ICON[DICT_TABLE_PACKAGE[key]]) if key in DICT_TABLE_PACKAGE else None, Qt.DecorationRole)
+            self.names.get_dict_package_icon()[self.names.get_dict_table_package()[key]]) if key in self.names.get_dict_table_package() else None, Qt.DecorationRole)
 
         for object in collection:
             # Fill LADM_COL object

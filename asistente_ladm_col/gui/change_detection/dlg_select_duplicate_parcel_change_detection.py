@@ -23,9 +23,9 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem
 from qgis.core import (QgsFeatureRequest,
                        QgsExpression)
 
-from ...config.table_mapping_config import Names
-from ...config.general_config import LAYER
-from ...utils import get_ui_class
+from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.config.general_config import LAYER
+from asistente_ladm_col.utils import get_ui_class
 
 DIALOG_UI = get_ui_class('change_detection/dlg_select_duplicate_parcel_change_detection.ui')
 

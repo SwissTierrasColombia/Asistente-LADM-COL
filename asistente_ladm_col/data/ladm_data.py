@@ -23,8 +23,7 @@ from qgis.core import (QgsApplication,
                        QgsWkbTypes)
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       PLOT_GEOMETRY_KEY)
-from asistente_ladm_col.config.table_mapping_config import (Names,
-                                                            DICT_PLURAL)
+from asistente_ladm_col.config.table_mapping_config import Names
 
 PARCEL_FIELDS_TO_COMPARE = [Names().OP_PARCEL_T_PARCEL_NUMBER_F,
                             Names().OP_PARCEL_T_FMI_F,
@@ -284,7 +283,7 @@ class LADM_DATA():
             dict_parcel_parties[id_parcel] = party_info
 
         # Append party info
-        tag_party = DICT_PLURAL[self.names.OP_PARTY_T]
+        tag_party = self.names.get_dict_plural()[self.names.OP_PARTY_T]
         for feature in dict_features:
             for item in dict_features[feature]:
                 if item[self.names.T_ID_F] in dict_parcel_parties:
@@ -353,7 +352,7 @@ class LADM_DATA():
             dict_parcel_group_parties[id_parcel] = group_party_info
 
         # Append group party info
-        tag_group_party = DICT_PLURAL[self.names.OP_PARTY_T]
+        tag_group_party = self.names.get_dict_plural()[self.names.OP_PARTY_T]
         for feature in dict_features:
             for item in dict_features[feature]:
                 if item[self.names.T_ID_F] in dict_parcel_group_parties:

@@ -87,17 +87,8 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                      SOURCE_SERVICE_EXPECTED_ID)
 from asistente_ladm_col.config.refactor_fields_mappings import get_refactor_fields_mapping
-from asistente_ladm_col.config.table_mapping_config import (CUSTOM_WIDGET_CONFIGURATION,
-                                                            Names,
-                                                            CUSTOM_READ_ONLY_FIELDS,
-                                                            DICT_AUTOMATIC_VALUES,
-                                                            DICT_DISPLAY_EXPRESSIONS,
-                                                            FORM_GROUPS,
-                                                            LAYER_CONSTRAINTS,
-                                                            LAYER_VARIABLES,
-                                                            LOCAL_ID_FIELD,
-                                                            NAMESPACE_FIELD,
-                                                            NAMESPACE_PREFIX)
+from asistente_ladm_col.config.table_mapping_config import (Names,
+                                                            FORM_GROUPS)
 from asistente_ladm_col.config.translator import (
     QGIS_LANG,
     PLUGIN_DIR
@@ -570,23 +561,23 @@ class QGISUtils(QObject):
     def set_display_expressions(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        if layer_name in DICT_DISPLAY_EXPRESSIONS:
-            layer.setDisplayExpression(DICT_DISPLAY_EXPRESSIONS[layer_name])
+        if layer_name in self.names.get_dict_display_expressions():
+            layer.setDisplayExpression(self.names.get_dict_display_expressions()[layer_name])
 
     def set_layer_variables(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        if layer_name in LAYER_VARIABLES:
-            for variable, value in LAYER_VARIABLES[layer_name].items():
+        if layer_name in self.names.get_layer_variables():
+            for variable, value in self.names.get_layer_variables()[layer_name].items():
                 QgsExpressionContextUtils.setLayerVariable(layer, variable, value)
 
     def set_custom_widgets(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        if layer_name in CUSTOM_WIDGET_CONFIGURATION:
+        if layer_name in self.names.get_custom_widget_configuration():
             editor_widget_setup = QgsEditorWidgetSetup(
-                    CUSTOM_WIDGET_CONFIGURATION[layer_name]['type'],
-                    CUSTOM_WIDGET_CONFIGURATION[layer_name]['config'])
+                    self.names.get_custom_widget_configuration()[layer_name]['type'],
+                    self.names.get_custom_widget_configuration()[layer_name]['config'])
             if layer_name == self.names.EXT_ARCHIVE_S:
                 index = layer.fields().indexFromName(self.names.EXT_ARCHIVE_S_DATA_F)
             elif layer_name == self.names.OP_BUILDING_UNIT_T:
@@ -594,12 +585,11 @@ class QGISUtils(QObject):
 
             layer.setEditorWidgetSetup(index, editor_widget_setup)
 
-    @staticmethod
-    def set_custom_read_only_fiels(db, layer):
+    def set_custom_read_only_fiels(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
-        if layer_name in CUSTOM_READ_ONLY_FIELDS:
-            for field in CUSTOM_READ_ONLY_FIELDS[layer_name]:
-                QGISUtils.set_read_only_field(layer, field)
+        if layer_name in self.names.get_custom_read_only_fields():
+            for field in self.names.get_custom_read_only_fields()[layer_name]:
+                self.set_read_only_field(layer, field)
 
     @staticmethod
     def set_read_only_field(layer, field, read_only=True):
@@ -620,8 +610,8 @@ class QGISUtils(QObject):
     def set_layer_constraints(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        if layer_name in LAYER_CONSTRAINTS:
-            for field_name, value in LAYER_CONSTRAINTS[layer_name].items():
+        if layer_name in self.names.get_layer_constraints():
+            for field_name, value in self.names.get_layer_constraints()[layer_name].items():
                 idx = layer.fields().indexOf(field_name)
                 layer.setConstraintExpression(
                     idx,
@@ -729,8 +719,8 @@ class QGISUtils(QObject):
         if layer.fields().indexFromName(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F) != -1:
             self.configure_automatic_fields(db, layer, [{self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F: "now()"}])
 
-        if layer_name in DICT_AUTOMATIC_VALUES:
-            self.configure_automatic_fields(db, layer, DICT_AUTOMATIC_VALUES[layer_name])
+        if layer_name in self.names.get_dict_automatic_values():
+            self.configure_automatic_fields(db, layer, self.names.get_dict_automatic_values()[layer_name])
 
     def set_automatic_fields_namespace_local_id(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
@@ -750,9 +740,7 @@ class QGISUtils(QObject):
 
     def get_namespace_field_and_value(self, layer_name):
         namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
-
-        field_prefix = NAMESPACE_PREFIX[layer_name] if layer_name in NAMESPACE_PREFIX else None
-        namespace_field = field_prefix + NAMESPACE_FIELD if field_prefix else None
+        namespace_field = self.names.COL_SPATIAL_UNIT_T_NAMESPACE_F
 
         if namespace_field is not None:
             namespace = str(QSettings().value('Asistente-LADM_COL/automatic_values/namespace_prefix', ""))
@@ -764,9 +752,7 @@ class QGISUtils(QObject):
 
     def get_local_id_field_and_value(self, layer_name):
         local_id_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
-
-        field_prefix = NAMESPACE_PREFIX[layer_name] if layer_name in NAMESPACE_PREFIX else None
-        local_id_field = field_prefix + LOCAL_ID_FIELD if field_prefix else None
+        local_id_field = self.names.COL_SPATIAL_UNIT_T_LOCAL_ID_F
 
         if local_id_field is not None:
             local_id_value = "$id"

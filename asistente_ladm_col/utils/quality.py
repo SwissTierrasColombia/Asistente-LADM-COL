@@ -49,8 +49,7 @@ from ..config.general_config import (LAYER,
                                      LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE,
                                      LOG_QUALITY_LIST_ITEM_OPEN,
                                      LOG_QUALITY_LIST_ITEM_CLOSE)
-from asistente_ladm_col.config.table_mapping_config import (LOGIC_CONSISTENCY_TABLES,
-                                                            Names)
+from asistente_ladm_col.config.table_mapping_config import Names
 from .utils import Utils
 from .decorators import _log_quality_checks
 
@@ -1841,8 +1840,8 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def find_duplicate_records_in_a_table(self, db, rule_name):
-        for table in LOGIC_CONSISTENCY_TABLES:
-            fields = LOGIC_CONSISTENCY_TABLES[table]
+        for table in self.names.get_logic_consistency_tables():
+            fields = self.names.get_logic_consistency_tables()[table]
 
             error_layer = None
             error_layer = self.logic.get_duplicate_records_in_a_table(db, table, fields, error_layer)

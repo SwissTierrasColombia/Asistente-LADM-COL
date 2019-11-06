@@ -26,7 +26,7 @@ from qgis.core import (Qgis,
                        QgsWkbTypes)
 
 from ..config.general_config import LAYER
-from ..config.table_mapping_config import Names
+from asistente_ladm_col.config.table_mapping_config import Names
 from ..gui.dialogs.dlg_topological_edition import LayersForTopologicalEditionDialog
 from ..utils.geometry import GeometryUtils
 

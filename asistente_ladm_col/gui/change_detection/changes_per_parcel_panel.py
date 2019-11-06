@@ -36,7 +36,7 @@ from qgis.core import (QgsWkbTypes,
 
 from qgis.gui import (QgsPanelWidget,
                       QgsMapToolIdentifyFeature)
-from ...config.symbology import OFFICIAL_STYLE_GROUP
+from asistente_ladm_col.config.symbology import Symbology
 from ...config.general_config import (OFFICIAL_DB_PREFIX,
                                       OFFICIAL_DB_SUFFIX,
                                       PREFIX_LAYER_MODIFIERS,
@@ -46,8 +46,7 @@ from ...config.general_config import (OFFICIAL_DB_PREFIX,
                                       COLLECTED_DB_SOURCE,
                                       LAYER,
                                       PLOT_GEOMETRY_KEY)
-from ...config.table_mapping_config import (Names,
-                                            DICT_PLURAL)
+from asistente_ladm_col.config.table_mapping_config import Names
 from .dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from ...utils.decorators import _with_override_cursor
 from ...utils import get_ui_class
@@ -62,6 +61,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.parent = parent
         self.utils = utils
         self.names = Names()
+        self.symbology = Symbology()
 
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("ChangesPerParcelPanelWidget", "Change detection per parcel"))
@@ -165,7 +165,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def call_party_panel(self, item):
         row = item.row()
-        if self.tbl_changes_per_parcel.item(row, 0).text() == DICT_PLURAL[self.names.OP_PARTY_T]:
+        if self.tbl_changes_per_parcel.item(row, 0).text() == self.names.get_dict_plural()[self.names.OP_PARTY_T]:
             data = {OFFICIAL_DB_SOURCE: self.tbl_changes_per_parcel.item(row, 1).data(Qt.UserRole),
                     COLLECTED_DB_SOURCE: self.tbl_changes_per_parcel.item(row, 2).data(Qt.UserRole)}
             self.parent.show_party_panel(data)
@@ -325,7 +325,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         layer_modifiers = {
             PREFIX_LAYER_MODIFIERS: OFFICIAL_DB_PREFIX,
             SUFFIX_LAYER_MODIFIERS: OFFICIAL_DB_SUFFIX,
-            STYLE_GROUP_LAYER_MODIFIERS: OFFICIAL_STYLE_GROUP
+            STYLE_GROUP_LAYER_MODIFIERS: self.symbology.get_official_style_group()
         }
         dict_official_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._official_db, search_criterion_official, layer_modifiers=layer_modifiers)
 
@@ -369,7 +369,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         # item.setData(Qt.UserRole, parcel_attrs[self.names.T_ID_F])
         self.tbl_changes_per_parcel.setItem(row, 0, item)
 
-        if field_name == DICT_PLURAL[self.names.OP_PARTY_T]:  # Parties
+        if field_name == self.names.get_dict_plural()[self.names.OP_PARTY_T]:  # Parties
             item = self.fill_party_item(official_value)
             self.tbl_changes_per_parcel.setItem(row, 1, item)
 

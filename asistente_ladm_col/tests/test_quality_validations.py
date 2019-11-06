@@ -9,8 +9,7 @@ from qgis.testing import (unittest,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.config.table_mapping_config import (Names,
-                                                            LOGIC_CONSISTENCY_TABLES)
+from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             import_processing,
                                             get_test_copy_path,
@@ -63,7 +62,7 @@ class TesQualityValidations(unittest.TestCase):
 
         for table in test_results:
             test_result = test_results[table]
-            fields = LOGIC_CONSISTENCY_TABLES[table]
+            fields = self.names.get_logic_consistency_tables()[table]
             error_layer = None
             error_layer = self.logic_checks.get_duplicate_records_in_a_table(db, table, fields, error_layer)
             result = [(f['duplicate_ids'],f['count']) for f in error_layer.getFeatures()]

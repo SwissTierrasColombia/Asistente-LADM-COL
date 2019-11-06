@@ -84,7 +84,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION,
                                                       WIZARD_LAYERS,
                                                       WIZARD_TOOL_NAME)
-from asistente_ladm_col.config.wizard_config import WIZARDS_SETTINGS
+from asistente_ladm_col.config.wizard_config import WizardConfig
 from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # Registers it in QgsExpression
 from asistente_ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
@@ -134,6 +134,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._db = self.get_db_connection()
         self.wiz = None
         self.is_wizard_open = False  # Helps to make the plugin modules aware of open wizards
+        self.wizard_config = WizardConfig()
 
     def initGui(self):
         # Set Menus
@@ -1256,7 +1257,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     def show_wizard(self, wizard_name, *args, **kwargs):
-        wiz_settings = deepcopy(WIZARDS_SETTINGS[wizard_name])
+        wiz_settings = deepcopy(self.wizard_config.get_wizard_config(wizard_name))
         if self.qgis_utils.required_layers_are_available(self.get_db_connection(),
                                                       wiz_settings[WIZARD_LAYERS],
                                                       wiz_settings[WIZARD_TOOL_NAME]):

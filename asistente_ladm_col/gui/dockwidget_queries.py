@@ -48,12 +48,10 @@ from qgis.gui import (QgsDockWidget,
                       QgsMapToolIdentifyFeature)
 
 from asistente_ladm_col.config.general_config import TEST_SERVER, PLUGIN_NAME, LAYER, SUFFIX_GET_THUMBNAIL
-from asistente_ladm_col.config.table_mapping_config import (DICT_TABLE_PACKAGE,
-                                                            Names,
-                                                            SPATIAL_UNIT_PACKAGE)
+from asistente_ladm_col.config.table_mapping_config import Names
 
-from ..utils import get_ui_class
-from ..utils.qt_utils import OverrideCursor
+from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
 from ..data.tree_models import TreeModel
 
@@ -367,7 +365,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             table_name = index_data["type"]
             t_id = index_data["id"]
             geometry_type = None
-            if table_name in DICT_TABLE_PACKAGE and DICT_TABLE_PACKAGE[table_name] == SPATIAL_UNIT_PACKAGE:
+            if table_name in self.names.get_dict_table_package() and self.names.get_dict_table_package()[table_name] == self.names.SPATIAL_UNIT_PACKAGE:
                 # Layers in Spatial Unit package have double geometry, we need the polygon one
                 geometry_type=QgsWkbTypes.PolygonGeometry
 

@@ -21,7 +21,7 @@ import psycopg2
 from qgis.PyQt.QtCore import QObject
 from ...utils.model_parser import ModelParser
 from ...config.enums import EnumTestLevel
-from ...config.table_mapping_config import Names
+from asistente_ladm_col.config.table_mapping_config import Names
 
 class DBConnector(QObject):
     """
