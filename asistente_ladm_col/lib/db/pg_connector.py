@@ -547,8 +547,6 @@ class PGConnector(DBConnector):
                 if record['colowner'] in dict_names:
                     dict_names[record['colowner']][composed_key] = record['sqlname']
 
-        print("Names: ",dict_names)
-
         self.names.initialize_table_and_field_names(dict_names)
         self.names_read = True
 

@@ -24,8 +24,6 @@ SUFFIX_LAYER_MODIFIERS = 'suffix'
 STYLE_GROUP_LAYER_MODIFIERS = 'style_group'
 VISIBLE_LAYER_MODIFIERS = 'visible'
 
-TOOLBAR_NAME = QCoreApplication.translate("TranslatableConfigStrings", "LADM COL Toolbar")
-TOOLBAR_ID = "ladm_col_tools"
 TOOLBAR_BUILD_BOUNDARY = QCoreApplication.translate("TranslatableConfigStrings", "Build boundaries...")
 TOOLBAR_MOVE_NODES = QCoreApplication.translate("TranslatableConfigStrings", "Move nodes...")
 TOOLBAR_FILL_POINT_BFS = QCoreApplication.translate("TranslatableConfigStrings", "Fill Point BFS")
@@ -40,10 +38,16 @@ NATIONAL_LAND_AGENCY = "ANT"
 ANNEX_17_REPORT = "Anexo_17"
 ANT_MAP_REPORT = "Plano_ANT"
 
-OPERATION_MODEL_PREFIX = "Operacion"
+ANT_MODEL_PREFIX = "ANT"
 CADASTRAL_FORM_MODEL_PREFIX = "Formulario_Catastro"
-VALUATION_MODEL_PREFIX = "Avaluos"
 LADM_MODEL_PREFIX = "LADM_COL"
+OPERATION_MODEL_PREFIX = "Operacion"
+REFERENCE_CARTOGRAPHY = "Cartografia_Referencia"
+SNR_DATA_MODEL_PREFIX = "Datos_SNR"
+SUPPLIES_INTEGRATION_MODEL_PREFIX = "Datos_Integracion_Insumos"
+SUPPLIES_MODEL_PREFIX = "Insumos"
+VALUATION_MODEL_PREFIX = "Avaluos"
+
 # From this version on the plugin will work, a message will block prior versions
 LATEST_OPERATION_MODEL_VERSION_SUPPORTED = "2.9.6"
 
