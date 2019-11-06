@@ -102,7 +102,7 @@ class Names(metaclass=Singleton):
     # "LADM_COL_V1_2.LADM_Nucleo.COL_FuncionInteresadoTipo"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_FuncionInteresadoTipo_"
     COL_INTERPOLATION_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_InterpolacionTipo"
-    COL_PRODUCTION_METHOD = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_MetodoProduccionTipo"
+    COL_PRODUCTION_METHOD_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_MetodoProduccionTipo"
     COL_MONUMENTATION_TYPE_D = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_MonumentacionTipo"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_Nivel"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_RedServiciosTipo"
@@ -749,7 +749,7 @@ class Names(metaclass=Singleton):
         "LADM_COL.LADM_Nucleo.COL_FuenteEspacialTipo": {VARIABLE_NAME: "COL_SPATIAL_SOURCE_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_GrupoInteresadoTipo": {VARIABLE_NAME: "COL_GROUP_PARTY_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_InterpolacionTipo": {VARIABLE_NAME: "COL_INTERPOLATION_TYPE_D", FIELDS_DICT: {}},
-        "LADM_COL.LADM_Nucleo.COL_MetodoProduccionTipo": {VARIABLE_NAME: "COL_PRODUCTION_METHOD", FIELDS_DICT: {}},
+        "LADM_COL.LADM_Nucleo.COL_MetodoProduccionTipo": {VARIABLE_NAME: "COL_PRODUCTION_METHOD_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_RelacionSuperficieTipo": {VARIABLE_NAME: "COL_SURFACE_RELATION_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.COL_MonumentacionTipo": {VARIABLE_NAME: "COL_MONUMENTATION_TYPE_D", FIELDS_DICT: {}},
         "LADM_COL.LADM_Nucleo.ExtArchivo": {VARIABLE_NAME: "EXT_ARCHIVE_S", FIELDS_DICT: {

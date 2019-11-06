@@ -34,7 +34,7 @@ class TestGetLayers(unittest.TestCase):
         print("\nINFO: Validating get_layer() method...")
         RELATED_TABLES = {self.names.OP_BOUNDARY_POINT_T: [self.names.OP_AGREEMENT_TYPE_D,
                                                  self.names.OP_PHOTO_IDENTIFICATION_TYPE_D,
-                                                 self.names.COL_PRODUCTION_METHOD,
+                                                 self.names.COL_PRODUCTION_METHOD_TYPE_D,
                                                  self.names.COL_INTERPOLATION_TYPE_D,
                                                  self.names.OP_LOCATION_POINT_TYPE_D,
                                                  self.names.OP_POINT_TYPE_D,

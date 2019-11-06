@@ -26,7 +26,7 @@ import qgis.utils
 from qgis.core import QgsApplication
 from qgis.analysis import QgsNativeAlgorithms
 
-from ..config.refactor_fields_mappings import get_refactor_fields_mapping
+from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
 from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 
@@ -50,6 +50,7 @@ DB_PASSWORD = "clave_ladm_col"
 iface = get_iface()
 asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface)
 asistente_ladm_col_plugin.initGui()
+refactor_fields = RefactorFieldsMappings()
 
 
 def get_dbconn(schema):
@@ -169,7 +170,7 @@ def run_etl_model(input_layer, out_layer, ladm_col_layer_name=Names().OP_BOUNDAR
     if model:
         automatic_fields_definition = True
 
-        mapping = get_refactor_fields_mapping(ladm_col_layer_name, asistente_ladm_col_plugin.qgis_utils)
+        mapping = refactor_fields.get_refactor_fields_mapping(ladm_col_layer_name, asistente_ladm_col_plugin.qgis_utils)
         params = {
             'INPUT': input_layer,
             'mapping': mapping,
