@@ -35,7 +35,6 @@ import processing
 from asistente_ladm_col.config.general_config import (LAYER,
                                                       PLUGIN_NAME)
 from asistente_ladm_col.config.table_mapping_config import Names
-from asistente_ladm_col.config.table_mapping_config import RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD
 
 
 class RightOfWay(QObject):
@@ -254,7 +253,7 @@ class RightOfWay(QObject):
                                                     'INPUT': layers[self.names.OP_PLOT_T][LAYER],
                                                     'JOIN': QgsProcessingFeatureSourceDefinition(layers[self.names.OP_RIGHT_OF_WAY_T][LAYER].id(), True),
                                                     'PREDICATE': [0],
-                                                    'JOIN_FIELDS': [self.names.T_ID_F, RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD],
+                                                    'JOIN_FIELDS': [self.names.T_ID_F],
                                                     'METHOD': 0,
                                                     'DISCARD_NONMATCHING': True,
                                                     'PREFIX': '',
@@ -270,7 +269,7 @@ class RightOfWay(QObject):
                 exp = "\"uebaunit\" = {plot}".format(uebaunit=self.names.COL_UE_BAUNIT_T_OP_PLOT_F, plot=plot.attribute(self.names.T_ID_F))
                 parcels = layers[self.names.COL_UE_BAUNIT_T][LAYER].getFeatures(exp)
                 for parcel in parcels:
-                    id_pair_restriction = (parcel.attribute(self.names.COL_UE_BAUNIT_T_PARCEL_F), "Asociada a la servidumbre {}".format(plot.attribute(RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD)))
+                    id_pair_restriction = (parcel.attribute(self.names.COL_UE_BAUNIT_T_PARCEL_F), "Servidumbre de paso")
                     id_pairs_restriction.append(id_pair_restriction)
 
             new_restriction_features = list()

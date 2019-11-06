@@ -1802,7 +1802,6 @@ PARCEL_NUMBER_FIELD = "numero_predial"
 PARCEL_NUMBER_BEFORE_FIELD = "numero_predial_anterior"
 PARCEL_TABLE = "op_predio"
 POINT_BOUNDARY_FACE_STRING_TABLE = "col_puntoCcl"
-RIGHT_OF_WAY_TABLE_IDENTIFICATOR_FIELD = "identificador"
 
 """
 UNIQUE CADASTRAL FORM
