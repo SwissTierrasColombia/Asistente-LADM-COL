@@ -68,10 +68,10 @@ class ToolBar(QObject):
                     return
 
         if use_selection:
-            new_boundary_geoms, boundaries_to_del_ids = self.geometry.fix_selected_boundaries(layer)
+            new_boundary_geoms, boundaries_to_del_ids = self.geometry.fix_selected_boundaries(layer, self.names.T_ID_F)
             num_boundaries = layer.selectedFeatureCount()
         else:
-            new_boundary_geoms, boundaries_to_del_ids = self.geometry.fix_boundaries(layer)
+            new_boundary_geoms, boundaries_to_del_ids = self.geometry.fix_boundaries(layer, self.names.T_ID_F)
             num_boundaries = layer.featureCount()
 
         if len(new_boundary_geoms) > 0:

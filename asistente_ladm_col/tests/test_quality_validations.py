@@ -9,6 +9,7 @@ from qgis.testing import (unittest,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
+from asistente_ladm_col.config.general_config import TranslatableConfigStrings
 from asistente_ladm_col.config.table_mapping_config import Names
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             import_processing,
@@ -30,6 +31,7 @@ class TesQualityValidations(unittest.TestCase):
         self.qgis_utils = QGISUtils()
         self.quality = QualityUtils(self.qgis_utils)
         self.logic_checks = LogicChecks()
+        self.translatable_config_strings = TranslatableConfigStrings()
 
         test_connection_dbs = ['test_ladm_col_validations_against_topology_tables', 'test_ladm_col_logic_checks']
 
@@ -64,7 +66,7 @@ class TesQualityValidations(unittest.TestCase):
             test_result = test_results[table]
             fields = self.names.get_logic_consistency_tables()[table]
             error_layer = None
-            error_layer = self.logic_checks.get_duplicate_records_in_a_table(db, table, fields, error_layer)
+            error_layer = self.logic_checks.get_duplicate_records_in_a_table(db, table, fields, error_layer, self.names.T_ID_F)
             result = [(f['duplicate_ids'],f['count']) for f in error_layer.getFeatures()]
 
             for item in test_result:
@@ -90,7 +92,7 @@ class TesQualityValidations(unittest.TestCase):
             boundary_layer = QgsVectorLayer(uri, 'boundary_layer_{case}'.format(case=i+1), 'ogr')
             test_selected_ids = test_result[i]['selected_ids']
             #boundary_layer.selectByIds(selected_ids)
-            new_geometries, boundaries_to_del_unique_ids = self.qgis_utils.geometry.fix_selected_boundaries(boundary_layer, selected_ids=test_selected_ids)
+            new_geometries, boundaries_to_del_unique_ids = self.qgis_utils.geometry.fix_selected_boundaries(boundary_layer, self.names.T_ID_F, selected_ids=test_selected_ids)
             self.assertEqual(boundaries_to_del_unique_ids, test_result[i]['boundaries_to_del'], 'Boundaries to be deleted are not valid: case {case}'.format(case=i + 1))
 
             for new_geom in new_geometries:
@@ -116,7 +118,7 @@ class TesQualityValidations(unittest.TestCase):
             uri = gpkg_path + '|layername=boundary_case_{case}'.format(case=i+1)
             boundary_layer = QgsVectorLayer(uri, 'boundary_layer_{case}'.format(case=i+1), 'ogr')
             self.assertEqual(boundary_layer.featureCount(), len(test_result[i]['boundaries_to_del']), 'Invalid number of features: case {case}'.format(case=i+1))
-            merge_geoms, boundaries_to_del = self.qgis_utils.geometry.fix_boundaries(boundary_layer)
+            merge_geoms, boundaries_to_del = self.qgis_utils.geometry.fix_boundaries(boundary_layer, self.names.T_ID_F)
             self.assertEqual(boundaries_to_del, test_result[i]['boundaries_to_del'], 'The boundaries to delete are invalid: case {case}'.format(case=i + 1))
 
             for merge_geom in merge_geoms:
@@ -143,7 +145,8 @@ class TesQualityValidations(unittest.TestCase):
         topology_rule = 'boundary_points_covered_by_plot_nodes'
         features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer,
                                                                                                      plot_layer, error_layer,
-                                                                                                     topology_rule)
+                                                                                                     topology_rule,
+                                                                                                     self.names.T_ID_F)
         error_layer.dataProvider().addFeatures(features)
         self.assertEqual(error_layer.featureCount(), 14)
 
@@ -187,7 +190,8 @@ class TesQualityValidations(unittest.TestCase):
         topology_rule = 'plot_nodes_covered_by_boundary_points'
         features = self.quality.get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer,
                                                                                                      plot_layer, error_layer,
-                                                                                                     topology_rule)
+                                                                                                     topology_rule,
+                                                                                                     self.names.T_ID_F)
         error_layer.dataProvider().addFeatures(features)
         self.assertEqual(error_layer.featureCount(), 10)
 
@@ -215,6 +219,7 @@ class TesQualityValidations(unittest.TestCase):
         DB_USER = "usuario_ladm_col"
         DB_PASSWORD = "clave_ladm_col"
         SCHEMA_NAME = 'validaciones'
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
 
         # Read data
         uri = QgsDataSourceUri()
@@ -243,7 +248,7 @@ class TesQualityValidations(unittest.TestCase):
                                      QgsField('error_type', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.quality.get_boundary_nodes_features_not_covered_by_boundary_points(boundary_point_layer, boundary_layer, point_bfs_layer, error_layer)
+        features = self.quality.get_boundary_nodes_features_not_covered_by_boundary_points(boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, translated_strings, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 33)
@@ -317,6 +322,8 @@ class TesQualityValidations(unittest.TestCase):
         DB_PASSWORD = "clave_ladm_col"
         SCHEMA_NAME = 'validaciones'
 
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+
         # Read data
         uri = QgsDataSourceUri()
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
@@ -344,7 +351,7 @@ class TesQualityValidations(unittest.TestCase):
                                      QgsField('error_type', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.quality.get_boundary_points_features_not_covered_by_boundary_nodes(boundary_point_layer, boundary_layer, point_bfs_layer, error_layer)
+        features = self.quality.get_boundary_points_features_not_covered_by_boundary_nodes(boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, translated_strings, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 54)
@@ -440,6 +447,8 @@ class TesQualityValidations(unittest.TestCase):
         DB_PASSWORD = "clave_ladm_col"
         SCHEMA_NAME = 'validaciones'
 
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+
         # Read data
         uri = QgsDataSourceUri()
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
@@ -473,7 +482,7 @@ class TesQualityValidations(unittest.TestCase):
                                      QgsField('error_type', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.quality.get_plot_features_not_covered_by_boundaries(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
+        features = self.quality.get_plot_features_not_covered_by_boundaries(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, translated_strings, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 16)
@@ -541,6 +550,8 @@ class TesQualityValidations(unittest.TestCase):
         DB_PASSWORD = "clave_ladm_col"
         SCHEMA_NAME = 'validaciones'
 
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+
         # Read data
         uri = QgsDataSourceUri()
         uri.setConnection(DB_HOSTNAME, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
@@ -574,7 +585,7 @@ class TesQualityValidations(unittest.TestCase):
                                      QgsField('error_type', QVariant.String)])
         error_layer.updateFields()
 
-        features = self.quality.get_boundary_features_not_covered_by_plots(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer)
+        features = self.quality.get_boundary_features_not_covered_by_plots(plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, translated_strings, self.names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 11)
@@ -830,7 +841,7 @@ class TesQualityValidations(unittest.TestCase):
             geom_polygon = clone_polygons.getFeature(1).geometry()
             init_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
 
-            self.qgis_utils.geometry.add_topological_vertices(clone_polygons, lines_layer)
+            self.qgis_utils.geometry.add_topological_vertices(clone_polygons, lines_layer, self.names.T_ID_F)
 
             geom_polygon = clone_polygons.getFeature(1).geometry()
             adjusted_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
@@ -1028,7 +1039,7 @@ class TesQualityValidations(unittest.TestCase):
         # verify that the relation between point boundary and boundary is registered in the topology table
         missing_topology = list()
         duplicates_topology = list()
-        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer)
+        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer, self.names.T_ID_F)
 
         for point_selected in points_selected:
             boundary_point_id = point_selected[self.names.T_ID_F]
@@ -1058,7 +1069,7 @@ class TesQualityValidations(unittest.TestCase):
         # verify that the relation between point boundary and boundary is registered in the topology table
         missing_topology = list()
         duplicates_topology = list()
-        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer)
+        points_selected = self.qgis_utils.geometry.join_boundary_points_with_boundary_discard_nonmatching(boundary_points_layer, boundary_layer, self.names.T_ID_F)
 
         for point_selected in points_selected:
             boundary_point_id = point_selected[self.names.T_ID_F]

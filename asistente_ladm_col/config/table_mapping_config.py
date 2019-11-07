@@ -1126,6 +1126,7 @@ class Names(metaclass=Singleton):
         self.TABLE_PROP_ASSOCIATION = "ASSOCIATION"
         self.TABLE_PROP_DOMAIN = "ENUM"
         self.TABLE_PROP_STRUCTURE = "STRUCTURE"
+        self.OP_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V = "Dominio"
 
         """
         PARCEL TYPE
@@ -1454,7 +1455,7 @@ class Names(metaclass=Singleton):
 
     def get_custom_read_only_fields(self):
         # Read only fields might be declared in two scenarios:
-        #   1. As soon as the layer is loaded (e.g., DEPARTMENT_FIELD)
+        #   1. As soon as the layer is loaded (e.g., OP_PARCEL_T_DEPARTMENT_F)
         #   2. Only for a wizard (e.g., PARCEL_TYPE)
         # WARNING: Both modes are exclusive, if you list a field in 1, DO NOT do it in 2. and viceversa!
         return {
@@ -1793,15 +1794,6 @@ class Names(metaclass=Singleton):
                 }
             }
         }
-
-DEPARTMENT_FIELD = "departamento"
-LESS_TABLE = "menos"
-MORE_BOUNDARY_FACE_STRING_TABLE = "col_masCcl"
-MUNICIPALITY_FIELD = "municipio"
-PARCEL_NUMBER_FIELD = "numero_predial"
-PARCEL_NUMBER_BEFORE_FIELD = "numero_predial_anterior"
-PARCEL_TABLE = "op_predio"
-POINT_BOUNDARY_FACE_STRING_TABLE = "col_puntoCcl"
 
 """
 UNIQUE CADASTRAL FORM

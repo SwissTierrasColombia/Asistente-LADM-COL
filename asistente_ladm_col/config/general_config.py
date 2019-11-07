@@ -5,16 +5,9 @@ from qgis.PyQt.QtCore import (QSettings,
                               Qt,
                               QCoreApplication)
 
-from .translator import PLUGIN_DIR
-from .table_mapping_config import (MORE_BOUNDARY_FACE_STRING_TABLE,
-                                   POINT_BOUNDARY_FACE_STRING_TABLE,
-                                   LESS_TABLE,
-                                   PARCEL_TABLE,
-                                   DEPARTMENT_FIELD,
-                                   MUNICIPALITY_FIELD,
-                                   PARCEL_NUMBER_FIELD,
-                                   PARCEL_NUMBER_BEFORE_FIELD)
-from ..utils.qt_utils import get_plugin_metadata
+from asistente_ladm_col.config.translator import PLUGIN_DIR
+from asistente_ladm_col.config.table_mapping_config import Names
+from asistente_ladm_col.utils.qt_utils import get_plugin_metadata
 
 OFFICIAL_DB_PREFIX = None
 OFFICIAL_DB_SUFFIX = "_oficial"
@@ -316,65 +309,116 @@ EXCEL_SHEET_TITLE_STATE_SOURCE = 'estado_disponibilidad de la fuente'
 EXCEL_SHEET_TITLE_OFFICIALITY_SOURCE = 'Es oficial la fuente'
 EXCEL_SHEET_TITLE_STORAGE_PATH = 'Ruta de Almacenamiento de la fuente'
 
+ERROR_LAYER_GROUP = "ERROR_LAYER_GROUP"
+CHECK_OVERLAPS_IN_BOUNDARY_POINTS = "CHECK_OVERLAPS_IN_BOUNDARY_POINTS"
+CHECK_OVERLAPS_IN_CONTROL_POINTS = "CHECK_OVERLAPS_IN_CONTROL_POINTS"
+CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES = "CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES"
+RIGHT_OF_WAY_LINE_LAYER = "RIGHT_OF_WAY_LINE_LAYER"
+CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES = "CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES"
+CHECK_TOO_LONG_BOUNDARY_SEGMENTS = "CHECK_TOO_LONG_BOUNDARY_SEGMENTS"
+CHECK_OVERLAPS_IN_BOUNDARIES = "CHECK_OVERLAPS_IN_BOUNDARIES"
+CHECK_BOUNDARIES_ARE_NOT_SPLIT = "CHECK_BOUNDARIES_ARE_NOT_SPLIT"
+CHECK_BOUNDARIES_COVERED_BY_PLOTS = "CHECK_BOUNDARIES_COVERED_BY_PLOTS"
+CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS = "CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS"
+CHECK_DANGLES_IN_BOUNDARIES = "CHECK_DANGLES_IN_BOUNDARIES"
+CHECK_OVERLAPS_IN_PLOTS = "CHECK_OVERLAPS_IN_PLOTS"
+CHECK_OVERLAPS_IN_BUILDINGS = "CHECK_OVERLAPS_IN_BUILDINGS"
+CHECK_OVERLAPS_IN_RIGHTS_OF_WAY = "CHECK_OVERLAPS_IN_RIGHTS_OF_WAY"
+CHECK_PLOTS_COVERED_BY_BOUNDARIES = "CHECK_PLOTS_COVERED_BY_BOUNDARIES"
+CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS = "CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS"
+CHECK_GAPS_IN_PLOTS = "CHECK_GAPS_IN_PLOTS"
+CHECK_MULTIPART_IN_RIGHT_OF_WAY = "CHECK_MULTIPART_IN_RIGHT_OF_WAY"
+CHECK_BUILDING_WITHIN_PLOTS = "CHECK_BUILDING_WITHIN_PLOTS"
+CHECK_BUILDING_UNIT_WITHIN_PLOTS = "CHECK_BUILDING_UNIT_WITHIN_PLOTS"
+
+# Logic consistency checks
+CHECK_PARCEL_RIGHT_RELATIONSHIP = "CHECK_PARCEL_RIGHT_RELATIONSHIP"
+CHECK_FRACTION_SUM_FOR_PARTY_GROUPS = "CHECK_FRACTION_SUM_FOR_PARTY_GROUPS"
+FIND_DUPLICATE_RECORDS_IN_A_TABLE = "FIND_DUPLICATE_RECORDS_IN_A_TABLE"
+CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS = "CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS"
+CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS = "CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS"
+CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS = "CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS"
+CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS = "CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS"
+CHECK_COL_PARTY_NATURAL_TYPE = "CHECK_COL_PARTY_NATURAL_TYPE"
+CHECK_COL_PARTY_LEGAL_TYPE = "CHECK_COL_PARTY_LEGAL_TYPE"
+CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER = "CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER"
+CHECK_UEBAUNIT_PARCEL = "CHECK_UEBAUNIT_PARCEL"
+
+# Logic consistency errors
+ERROR_PARCEL_WITH_NO_RIGHT = "ERROR_PARCEL_WITH_NO_RIGHT"
+ERROR_PARCEL_WITH_REPEATED_DOMAIN_RIGHT = "ERROR_PARCEL_WITH_REPEATED_DOMAIN_RIGHT"
+
+# Specific topology errors
+CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS = "CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS"
+ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY = "ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY"
+ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT = "ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT"
+ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE = "ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE"
+ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE = "ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE"
+ERROR_NO_LESS_TABLE = "ERROR_NO_LESS_TABLE"
+ERROR_DUPLICATE_LESS_TABLE = "ERROR_DUPLICATE_LESS_TABLE"
+ERROR_NO_FOUND_POINT_BFS = "ERROR_NO_FOUND_POINT_BFS"
+ERROR_DUPLICATE_POINT_BFS = "ERROR_DUPLICATE_POINT_BFS"
+ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE = "ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE"
+ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT = "ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT"
+ERROR_BUILDING_IS_NOT_OVER_A_PLOT = "ERROR_BUILDING_IS_NOT_OVER_A_PLOT"
+ERROR_BUILDING_CROSSES_A_PLOT_LIMIT = "ERROR_BUILDING_CROSSES_A_PLOT_LIMIT"
+ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT = "ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT"
+ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT = "ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT"
+
 class TranslatableConfigStrings(QObject):
+
     def __init__(self):
-        self.ERROR_LAYER_GROUP = QCoreApplication.translate("TranslatableConfigStrings", "Validation errors")
-        self.CHECK_OVERLAPS_IN_BOUNDARY_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should not overlap")
-        self.CHECK_OVERLAPS_IN_CONTROL_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Control Points should not overlap")
-        self.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by Boundary nodes")
-        self.RIGHT_OF_WAY_LINE_LAYER = QCoreApplication.translate("TranslatableConfigStrings", "Right of way line")
-        self.CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES = QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by plot nodes")
+        self.names = Names()
 
-        too_long_tolerance = int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE)) # meters
-        self.CHECK_TOO_LONG_BOUNDARY_SEGMENTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundary segments should not be longer than {}m.").format(too_long_tolerance)
-        self.CHECK_OVERLAPS_IN_BOUNDARIES = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not overlap")
-        self.CHECK_BOUNDARIES_ARE_NOT_SPLIT = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not be split")
-        self.CHECK_BOUNDARIES_COVERED_BY_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should be covered by Plots")
-        self.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Boundary nodes should be covered by Boundary Points")
-        self.CHECK_DANGLES_IN_BOUNDARIES = QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not have dangles")
-        self.CHECK_OVERLAPS_IN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Plots should not overlap")
-        self.CHECK_OVERLAPS_IN_BUILDINGS = QCoreApplication.translate("TranslatableConfigStrings", "Buildings should not overlap")
-        self.CHECK_OVERLAPS_IN_RIGHTS_OF_WAY = QCoreApplication.translate("TranslatableConfigStrings", "Rights of Way should not overlap")
-        self.CHECK_PLOTS_COVERED_BY_BOUNDARIES = QCoreApplication.translate("TranslatableConfigStrings", "Plots should be covered by Boundaries")
-        self.CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not overlap Buildings")
-        self.CHECK_GAPS_IN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Plots should not have gaps")
-        self.CHECK_MULTIPART_IN_RIGHT_OF_WAY = QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not have multipart geometries")
-        self.CHECK_BUILDING_WITHIN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Buildings should be within Plots")
-        self.CHECK_BUILDING_UNIT_WITHIN_PLOTS = QCoreApplication.translate("TranslatableConfigStrings", "Building Units should be within Plots")
-
-        # Logic consistency checks
-        self.CHECK_PARCEL_RIGHT_RELATIONSHIP = QCoreApplication.translate("TranslatableConfigStrings", "Parcel should have one and only one Right")
-        self.CHECK_FRACTION_SUM_FOR_PARTY_GROUPS = QCoreApplication.translate("TranslatableConfigStrings", "Group Party Fractions should sum 1")
-        self.FIND_DUPLICATE_RECORDS_IN_A_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Table records should not be repeated")
-
-        self.CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {department} field of the {parcel} table has two numerical characters").format(department=DEPARTMENT_FIELD, parcel=PARCEL_TABLE)
-        self.CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {municipality} field of the {parcel} table has three numerical characters").format(municipality=MUNICIPALITY_FIELD, parcel=PARCEL_TABLE)
-        self.CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_number} has 30 numerical characters").format(parcel_number=PARCEL_NUMBER_FIELD)
-        self.CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS = QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_number_before} has 20 numerical characters").format(parcel_number_before=PARCEL_NUMBER_BEFORE_FIELD)
-        self.CHECK_COL_PARTY_NATURAL_TYPE = QCoreApplication.translate("TranslatableConfigStrings", "Check that attributes are appropriate for parties of type natural")
-        self.CHECK_COL_PARTY_LEGAL_TYPE = QCoreApplication.translate("TranslatableConfigStrings", "Check that attributes are appropriate for parties of type legal")
-        self.CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER = QCoreApplication.translate("TranslatableConfigStrings", "Check that the type of parcel corresponds to position 22 of the {parcel_number}").format(parcel_number=PARCEL_NUMBER_FIELD)
-        self.CHECK_UEBAUNIT_PARCEL = QCoreApplication.translate("TranslatableConfigStrings", "Check that Spatial Units associated with Parcels correspond to the parcel type")
-
-        # Logic consistency errors
-        self.ERROR_PARCEL_WITH_NO_RIGHT = QCoreApplication.translate("TranslatableConfigStrings", "Parcel does not have any Right associated")
-        self.ERROR_PARCEL_WITH_REPEATED_DOMAIN_RIGHT = QCoreApplication.translate("TranslatableConfigStrings", "Parcel has more than one domain right associated")
-
-        # Specific topology errors
-        self.CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS = QCoreApplication.translate("TranslatableConfigStrings", "Plot nodes should be covered by boundary points")
-        self.ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY = QCoreApplication.translate("TranslatableConfigStrings", "Plot is not covered by boundary")
-        self.ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT = QCoreApplication.translate("TranslatableConfigStrings", "Boundary is not covered by plot")
-        self.ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the {} table").format(MORE_BOUNDARY_FACE_STRING_TABLE)
-        self.ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the {} table").format(MORE_BOUNDARY_FACE_STRING_TABLE)
-        self.ERROR_NO_LESS_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the {} table").format(LESS_TABLE)
-        self.ERROR_DUPLICATE_LESS_TABLE = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the {} table").format(LESS_TABLE)
-        self.ERROR_NO_FOUND_POINT_BFS = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary point and boundary is not recorded in the {} table").format(POINT_BOUNDARY_FACE_STRING_TABLE)
-        self.ERROR_DUPLICATE_POINT_BFS = QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary point and boundary is duplicated in the {} table").format(POINT_BOUNDARY_FACE_STRING_TABLE)
-        self.ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE = QCoreApplication.translate("TranslatableConfigStrings", "Boundary point is not covered by boundary node")
-        self.ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT = QCoreApplication.translate("TranslatableConfigStrings", "Boundary node is not covered by boundary point")
-        self.ERROR_BUILDING_IS_NOT_OVER_A_PLOT = QCoreApplication.translate("TranslatableConfigStrings", "Building is not over a plot")
-        self.ERROR_BUILDING_CROSSES_A_PLOT_LIMIT = QCoreApplication.translate("TranslatableConfigStrings", "Building crosses a plot's limit")
-        self.ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT = QCoreApplication.translate("TranslatableConfigStrings", "Building Unit is not over a plot")
-        self.ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT = QCoreApplication.translate("TranslatableConfigStrings", "Building Unit crosses a plot's limit")
-
-translated_strings = TranslatableConfigStrings()
+    def get_translatable_config_strings(self):
+        return {
+            ERROR_LAYER_GROUP: QCoreApplication.translate("TranslatableConfigStrings", "Validation errors"),
+            CHECK_OVERLAPS_IN_BOUNDARY_POINTS: QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should not overlap"),
+            CHECK_OVERLAPS_IN_CONTROL_POINTS: QCoreApplication.translate("TranslatableConfigStrings", "Control Points should not overlap"),
+            CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES: QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by Boundary nodes"),
+            RIGHT_OF_WAY_LINE_LAYER: QCoreApplication.translate("TranslatableConfigStrings", "Right of way line"),
+            CHECK_BOUNDARY_POINTS_COVERED_BY_PLOT_NODES: QCoreApplication.translate("TranslatableConfigStrings", "Boundary Points should be covered by plot nodes"),
+            CHECK_TOO_LONG_BOUNDARY_SEGMENTS: QCoreApplication.translate("TranslatableConfigStrings", "Boundary segments should not be longer than {}m.").format(int(QSettings().value('Asistente-LADM_COL/quality/too_long_tolerance', DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE))),
+            CHECK_OVERLAPS_IN_BOUNDARIES: QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not overlap"),
+            CHECK_BOUNDARIES_ARE_NOT_SPLIT: QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not be split"),
+            CHECK_BOUNDARIES_COVERED_BY_PLOTS: QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should be covered by Plots"),
+            CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS: QCoreApplication.translate("TranslatableConfigStrings", "Boundary nodes should be covered by Boundary Points"),
+            CHECK_DANGLES_IN_BOUNDARIES: QCoreApplication.translate("TranslatableConfigStrings", "Boundaries should not have dangles"),
+            CHECK_OVERLAPS_IN_PLOTS: QCoreApplication.translate("TranslatableConfigStrings", "Plots should not overlap"),
+            CHECK_OVERLAPS_IN_BUILDINGS: QCoreApplication.translate("TranslatableConfigStrings", "Buildings should not overlap"),
+            CHECK_OVERLAPS_IN_RIGHTS_OF_WAY: QCoreApplication.translate("TranslatableConfigStrings", "Rights of Way should not overlap"),
+            CHECK_PLOTS_COVERED_BY_BOUNDARIES: QCoreApplication.translate("TranslatableConfigStrings", "Plots should be covered by Boundaries"),
+            CHECK_RIGHT_OF_WAY_OVERLAPS_BUILDINGS: QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not overlap Buildings"),
+            CHECK_GAPS_IN_PLOTS: QCoreApplication.translate("TranslatableConfigStrings", "Plots should not have gaps"),
+            CHECK_MULTIPART_IN_RIGHT_OF_WAY: QCoreApplication.translate("TranslatableConfigStrings", "Right of Way should not have multipart geometries"),
+            CHECK_BUILDING_WITHIN_PLOTS: QCoreApplication.translate("TranslatableConfigStrings", "Buildings should be within Plots"),
+            CHECK_BUILDING_UNIT_WITHIN_PLOTS: QCoreApplication.translate("TranslatableConfigStrings", "Building Units should be within Plots"),
+            CHECK_PARCEL_RIGHT_RELATIONSHIP: QCoreApplication.translate("TranslatableConfigStrings", "Parcel should have one and only one Right"),
+            CHECK_FRACTION_SUM_FOR_PARTY_GROUPS: QCoreApplication.translate("TranslatableConfigStrings", "Group Party Fractions should sum 1"),
+            FIND_DUPLICATE_RECORDS_IN_A_TABLE: QCoreApplication.translate("TranslatableConfigStrings", "Table records should not be repeated"),
+            CHECK_DEPARMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS: QCoreApplication.translate("TranslatableConfigStrings", "Check that the {department} field of the {parcel} table has two numerical characters").format(department=self.names.OP_PARCEL_T_DEPARTMENT_F, parcel=self.names.OP_PARCEL_T),
+            CHECK_MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS: QCoreApplication.translate("TranslatableConfigStrings", "Check that the {municipality} field of the {parcel} table has three numerical characters").format(municipality=self.names.OP_PARCEL_T_MUNICIPALITY_F, parcel=self.names.OP_PARCEL_T),
+            CHECK_PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS: QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_number} has 30 numerical characters").format(parcel_number=self.names.OP_PARCEL_T_PARCEL_NUMBER_F),
+            CHECK_PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS: QCoreApplication.translate("TranslatableConfigStrings", "Check that the {parcel_number_before} has 20 numerical characters").format(parcel_number_before=self.names.OP_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F),
+            CHECK_COL_PARTY_NATURAL_TYPE: QCoreApplication.translate("TranslatableConfigStrings", "Check that attributes are appropriate for parties of type natural"),
+            CHECK_COL_PARTY_LEGAL_TYPE: QCoreApplication.translate("TranslatableConfigStrings", "Check that attributes are appropriate for parties of type legal"),
+            CHECK_PARCEL_TYPE_AND_22_POSITON_OF_PARCEL_NUMBER: QCoreApplication.translate("TranslatableConfigStrings", "Check that the type of parcel corresponds to position 22 of the {parcel_number}").format(parcel_number=self.names.OP_PARCEL_T_PARCEL_NUMBER_F),
+            CHECK_UEBAUNIT_PARCEL: QCoreApplication.translate("TranslatableConfigStrings", "Check that Spatial Units associated with Parcels correspond to the parcel type"),
+            ERROR_PARCEL_WITH_NO_RIGHT: QCoreApplication.translate("TranslatableConfigStrings", "Parcel does not have any Right associated"),
+            ERROR_PARCEL_WITH_REPEATED_DOMAIN_RIGHT: QCoreApplication.translate("TranslatableConfigStrings", "Parcel has more than one domain right associated"),
+            CHECK_PLOT_NODES_COVERED_BY_BOUNDARY_POINTS: QCoreApplication.translate("TranslatableConfigStrings", "Plot nodes should be covered by boundary points"),
+            ERROR_PLOT_IS_NOT_COVERED_BY_BOUNDARY: QCoreApplication.translate("TranslatableConfigStrings", "Plot is not covered by boundary"),
+            ERROR_BOUNDARY_IS_NOT_COVERED_BY_PLOT: QCoreApplication.translate("TranslatableConfigStrings", "Boundary is not covered by plot"),
+            ERROR_NO_MORE_BOUNDARY_FACE_STRING_TABLE: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the {} table").format(self.names.MORE_BFS_T),
+            ERROR_DUPLICATE_MORE_BOUNDARY_FACE_STRING_TABLE: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the {} table").format(self.names.MORE_BFS_T),
+            ERROR_NO_LESS_TABLE: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is not recorded in the {} table").format(self.names.LESS_BFS_T),
+            ERROR_DUPLICATE_LESS_TABLE: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary and plot is duplicated in the {} table").format(self.names.LESS_BFS_T),
+            ERROR_NO_FOUND_POINT_BFS: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary point and boundary is not recorded in the {} table").format(self.names.POINT_BFS_T),
+            ERROR_DUPLICATE_POINT_BFS: QCoreApplication.translate("TranslatableConfigStrings", "Topological relationship between boundary point and boundary is duplicated in the {} table").format(self.names.POINT_BFS_T),
+            ERROR_BOUNDARY_POINT_IS_NOT_COVERED_BY_BOUNDARY_NODE: QCoreApplication.translate("TranslatableConfigStrings", "Boundary point is not covered by boundary node"),
+            ERROR_BOUNDARY_NODE_IS_NOT_COVERED_BY_BOUNDARY_POINT: QCoreApplication.translate("TranslatableConfigStrings", "Boundary node is not covered by boundary point"),
+            ERROR_BUILDING_IS_NOT_OVER_A_PLOT: QCoreApplication.translate("TranslatableConfigStrings", "Building is not over a plot"),
+            ERROR_BUILDING_CROSSES_A_PLOT_LIMIT: QCoreApplication.translate("TranslatableConfigStrings", "Building crosses a plot's limit"),
+            ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT: QCoreApplication.translate("TranslatableConfigStrings", "Building Unit is not over a plot"),
+            ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT: QCoreApplication.translate("TranslatableConfigStrings", "Building Unit crosses a plot's limit")
+        }

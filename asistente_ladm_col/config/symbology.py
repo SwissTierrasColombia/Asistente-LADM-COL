@@ -1,6 +1,10 @@
 from qgis.core import QgsWkbTypes
 
-from .general_config import translated_strings
+from asistente_ladm_col.config.general_config import (TranslatableConfigStrings,
+                                                      CHECK_BOUNDARIES_COVERED_BY_PLOTS,
+                                                      CHECK_PLOTS_COVERED_BY_BOUNDARIES,
+                                                      CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
+                                                      CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)
 from asistente_ladm_col.config.table_mapping_config import Names
 
 
@@ -9,6 +13,7 @@ class Symbology:
 
     def __init__(self):
         self.names = Names()
+        self.translatable_config_strings = TranslatableConfigStrings()
 
     def get_default_style_group(self):
          return {
@@ -55,20 +60,22 @@ class Symbology:
         }
 
     def get_custom_error_layers(self):
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+
         return {
-            translated_strings.CHECK_BOUNDARIES_COVERED_BY_PLOTS: {
+            translated_strings[CHECK_BOUNDARIES_COVERED_BY_PLOTS]: {
                 'es': 'style_boundary_should_be_covered_by_plot_es',
                 'en': 'style_boundary_should_be_covered_by_plot_en'
             },
-            translated_strings.CHECK_PLOTS_COVERED_BY_BOUNDARIES: {
+            translated_strings[CHECK_PLOTS_COVERED_BY_BOUNDARIES]: {
                 'es': 'style_plot_should_be_covered_by_boundary_es',
                 'en': 'style_plot_should_be_covered_by_boundary_en'
             },
-            translated_strings.CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES: {
+            translated_strings[CHECK_BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES]: {
                 'es': 'style_boundary_points_should_be_covered_by_boundary_nodes_es',
                 'en': 'style_boundary_points_should_be_covered_by_boundary_nodes_en'
             },
-            translated_strings.CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS: {
+            translated_strings[CHECK_BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS]: {
                 'es': 'style_boundary_nodes_should_be_covered_by_boundary_points_es',
                 'en': 'style_boundary_nodes_should_be_covered_by_boundary_points_en'
              }

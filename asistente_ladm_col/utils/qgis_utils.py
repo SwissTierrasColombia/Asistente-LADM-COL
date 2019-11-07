@@ -55,8 +55,7 @@ from qgis.core import (Qgis,
                        QgsSnappingConfig,
                        QgsProperty,
                        QgsRelation,
-                       QgsVectorLayer,
-                       QgsVectorLayerUtils)
+                       QgsVectorLayer)
 
 import processing
 from .decorators import _activate_processing_plugin
@@ -77,13 +76,13 @@ from ..config.general_config import (DEFAULT_EPSG,
                                      RELATION_NAME,
                                      REFERENCED_LAYER,
                                      REFERENCED_FIELD,
-                                     DOMAIN_CLASS_RELATION,
+                                     ERROR_LAYER_GROUP,
                                      SUFFIX_LAYER_MODIFIERS,
                                      PREFIX_LAYER_MODIFIERS,
                                      VISIBLE_LAYER_MODIFIERS,
                                      PLUGIN_NAME,
                                      HELP_DIR_NAME,
-                                     translated_strings,
+                                     TranslatableConfigStrings,
                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                      SOURCE_SERVICE_EXPECTED_ID)
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
@@ -93,8 +92,8 @@ from asistente_ladm_col.config.translator import (
     QGIS_LANG,
     PLUGIN_DIR
 )
-from ..lib.db.db_connector import DBConnector
-from ..lib.source_handler import SourceHandler
+from asistente_ladm_col.lib.db.db_connector import DBConnector
+from asistente_ladm_col.lib.source_handler import SourceHandler
 
 
 class QGISUtils(QObject):
@@ -129,6 +128,7 @@ class QGISUtils(QObject):
         self.geometry = GeometryUtils()
         self.layer_tree_view = layer_tree_view
         self.names = Names()
+        self.translatable_config_strings = TranslatableConfigStrings()
         self.refactor_fields = RefactorFieldsMappings()
 
         self._source_handler = None
@@ -920,9 +920,10 @@ class QGISUtils(QObject):
         position rather than the top, it moves the group to the top.
         """
         root = QgsProject.instance().layerTreeRoot()
-        group = root.findGroup(translated_strings.ERROR_LAYER_GROUP)
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+        group = root.findGroup(translated_strings[ERROR_LAYER_GROUP])
         if group is None:
-            group = root.insertGroup(0, translated_strings.ERROR_LAYER_GROUP)
+            group = root.insertGroup(0, translated_strings[ERROR_LAYER_GROUP])
         elif not self.layer_tree_view.layerTreeModel().node2index(group).row() == 0 or type(group.parent()) is QgsLayerTreeGroup:
             group_clone = group.clone()
             root.insertChildNode(0, group_clone)
@@ -933,7 +934,8 @@ class QGISUtils(QObject):
 
     def error_group_exists(self):
         root = QgsProject.instance().layerTreeRoot()
-        return root.findGroup(translated_strings.ERROR_LAYER_GROUP) is not None
+        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
+        return root.findGroup(translated_strings[ERROR_LAYER_GROUP]) is not None
 
     @_activate_processing_plugin
     def run_etl_model_in_backgroud_mode(self, db, input_layer, ladm_col_layer_name, geometry_type=None):

@@ -437,7 +437,7 @@ class GeometryUtils(QObject):
 
         return self.extract_geoms_by_type(clean_errors, [QgsWkbTypes.PolygonGeometry])
 
-    def add_topological_vertices(self, layer1, layer2, id_field=Names().T_ID_F):
+    def add_topological_vertices(self, layer1, layer2, id_field):
         """
         Modify layer1 adding vertices that are in layer2 and not in layer1
 
@@ -484,7 +484,7 @@ class GeometryUtils(QObject):
         del dict_features_layer2
         gc.collect()
 
-    def difference_plot_boundary(self, plots_as_lines_layer, boundary_layer, id_field=Names().T_ID_F):
+    def difference_plot_boundary(self, plots_as_lines_layer, boundary_layer, id_field):
         """
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
@@ -493,7 +493,7 @@ class GeometryUtils(QObject):
                                            {'INPUT': plots_as_lines_layer,
                                             'OVERLAY': boundary_layer,
                                             'OUTPUT': 'memory:'})['OUTPUT']
-        self.add_topological_vertices(approx_diff_layer, boundary_layer)
+        self.add_topological_vertices(approx_diff_layer, boundary_layer, self.names.T_ID_F)
 
         diff_layer = processing.run("native:difference",
                                     {'INPUT': approx_diff_layer,
@@ -504,7 +504,7 @@ class GeometryUtils(QObject):
 
         return difference_features
 
-    def difference_boundary_plot(self, boundary_layer, plot_as_lines_layer, id_field=Names().T_ID_F):
+    def difference_boundary_plot(self, boundary_layer, plot_as_lines_layer, id_field):
         """
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
@@ -513,7 +513,7 @@ class GeometryUtils(QObject):
                                            {'INPUT': boundary_layer,
                                             'OVERLAY': plot_as_lines_layer,
                                             'OUTPUT': 'memory:'})['OUTPUT']
-        self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer)
+        self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer, self.names.T_ID_F)
 
         diff_layer = processing.run("native:difference",
                                     {'INPUT': approx_diff_layer, 'OVERLAY': plot_as_lines_layer,
@@ -613,7 +613,7 @@ class GeometryUtils(QObject):
 
         return selected_features
 
-    def join_boundary_points_with_boundary_discard_nonmatching(self, boundary_point_layer, boundary_layer, id_field=Names().T_ID_F):
+    def join_boundary_points_with_boundary_discard_nonmatching(self, boundary_point_layer, boundary_layer, id_field):
         spatial_join_layer = processing.run("qgis:joinattributesbylocation",
                                             {
                                                 'INPUT': boundary_point_layer,
@@ -829,7 +829,7 @@ class GeometryUtils(QObject):
             geoms = geoms.combine(feature.geometry())
         return geoms
 
-    def fix_selected_boundaries(self, boundary_layer, selected_ids=list(), id_field=Names().T_ID_F):
+    def fix_selected_boundaries(self, boundary_layer, id_field, selected_ids=list()):
 
         selected_features = list()
         if len(selected_ids) == 0:
@@ -902,7 +902,7 @@ class GeometryUtils(QObject):
 
         return new_geometries, boundaries_to_del_unique_ids
 
-    def fix_boundaries(self, layer, id_field=Names().T_ID_F):
+    def fix_boundaries(self, layer, id_field):
         tmp_segments_layer = processing.run("native:explodelines", {'INPUT': layer, 'OUTPUT': 'memory:'})['OUTPUT']
         # remove duplicate segments (algorithm don't with duplicate geometries)
         segments_layer = processing.run("qgis:deleteduplicategeometries", {'INPUT': tmp_segments_layer, 'OUTPUT': 'memory:'})['OUTPUT']
@@ -935,7 +935,7 @@ class GeometryUtils(QObject):
 
         return merge_geometries, boundaries_to_del
 
-    def get_buildings_out_of_plots(self, building_layer, plot_layer, id_field=Names().T_ID_F):
+    def get_buildings_out_of_plots(self, building_layer, plot_layer, id_field):
         building_within_plots = processing.run("qgis:joinattributesbylocation", {
             'INPUT': building_layer,
             'JOIN': plot_layer,
