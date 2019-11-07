@@ -31,6 +31,10 @@
     <file>resources/images/tables.png</file>
     <file>resources/images/domains.png</file>
     <file>resources/images/search.png</file>
+    <file>resources/images/validation.svg</file>
+    <file>resources/images/move_nodes.svg</file>
+    <file>resources/images/settings.svg</file>
+    <file>resources/images/info.svg</file>
     <file>resources/csv/template_boundary_points.csv</file>
     <file>resources/csv/template_survey_points.csv</file>
     <file>resources/csv/template_control_points.csv</file>

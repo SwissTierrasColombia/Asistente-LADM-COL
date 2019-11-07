@@ -205,7 +205,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.refresh_gui(self.get_db_connection(), None)
 
     def refresh_gui(self, db, res):
-        self.gui_builder.build_gui(db, res)
+        self.gui_builder.build_gui(db, res, OPERATOR_ROLE)
 
     def create_toolbar_actions(self):
         self._finalize_geometry_creation_action = QAction(
@@ -220,7 +220,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self._build_boundary_action = QAction(TOOLBAR_BUILD_BOUNDARY, self.main_window)
         self._build_boundary_action.triggered.connect(self.call_explode_boundaries)
 
-        self._topological_editing_action = QAction(TOOLBAR_MOVE_NODES, self.main_window)
+        self._topological_editing_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/move_nodes.svg"),
+            TOOLBAR_MOVE_NODES, self.main_window)
         self._topological_editing_action.triggered.connect(self.call_topological_editing)
 
         self._fill_point_BFS_action = QAction(TOOLBAR_FILL_POINT_BFS, self.main_window)
@@ -308,7 +309,9 @@ class AsistenteLADMCOLPlugin(QObject):
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Restriction"),
                 self.main_window)
 
-        self._quality_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check Quality Rules"), self.main_window)
+        self._quality_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/validation.svg"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check Quality Rules"), self.main_window)
 
         # Set connections
         self._point_surveying_and_representation_cadastre_action.triggered.connect(self.show_wiz_point_cad)
@@ -407,7 +410,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def create_generic_actions(self):
         self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"),
                                            self.main_window)
-        self._queries_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Queries"),
+        self._queries_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/search.png"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Queries"),
                                        self.main_window)
         self._queries_action.setObjectName(QUERIES_ACTION_OBJECTNAME)
         self._annex_17_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"),
@@ -422,11 +425,12 @@ class AsistenteLADMCOLPlugin(QObject):
                                            self.main_window)
         self._export_data_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"),
                                            self.main_window)
-        self._settings_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
+        self._settings_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/settings.svg"),
+                                        QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
                                         self.main_window)
         self._help_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"),
                                     self.main_window)
-        self._about_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"),
+        self._about_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/info.svg"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"),
                                      self.main_window)
 
         self._import_schema_action.triggered.connect(self.call_dlg_import_schema)
