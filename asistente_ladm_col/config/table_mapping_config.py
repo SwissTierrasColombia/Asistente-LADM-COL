@@ -1,5 +1,7 @@
 from qgis.core import NULL
 
+from asistente_ladm_col.utils.singleton import Singleton
+
 TABLE_NAME = 'table_name'
 VARIABLE_NAME = 'variable'
 FIELDS_DICT = 'fields_dict'
@@ -7,14 +9,6 @@ T_ID = 't_id'
 DESCRIPTION = 'description'
 ILICODE = 'ilicode'
 DISPLAY_NAME = 'display_name'
-
-
-class Singleton(type):
-    _instances = {}
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
 
 
 class Names(metaclass=Singleton):

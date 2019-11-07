@@ -83,7 +83,8 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_TOOL_NAME)
 from asistente_ladm_col.config.wizard_config import WIZARDS_SETTINGS
 from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # Registers it in QgsExpression
-from asistente_ladm_col.config.gui.config_gui import *
+from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.gui.gui_builder import GUI_Builder
 from asistente_ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
