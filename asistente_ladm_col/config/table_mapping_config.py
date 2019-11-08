@@ -30,6 +30,8 @@ class Names(metaclass=Singleton):
     DESCRIPTION_F = None
     DISPLAY_NAME_F = None
 
+    OID_T = None  # "LADM_COL.LADM_Nucleo.Oid"
+
     GC_NEIGHBOURHOOD_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Barrio"
     GC_BUILDING_T = None  # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.GC_Construccion"
     # "Datos_Gestor_Catastral_V2_9_5.Datos_Gestor_Catastral.gc_construccion_predio"
@@ -192,6 +194,11 @@ class Names(metaclass=Singleton):
     OP_LOCATION_POINT_TYPE_D = None  # "Operacion_V2_9_5.OP_UbicacionPuntoTipo"
     # "Operacion_V2_9_5.OP_UsoUConsTipo"
     # "Operacion_V2_9_5.OP_ViaTipo"
+
+    OP_BUILDING_FLOOR_TYPE_D = None  # "Operacion_V2_9_6.OP_ConstruccionPlantaTipo"
+    OP_BUILDING_TYPE_D = None  # "Operacion_V2_9_6.OP_ConstruccionTipo"
+    OP_DOMAIN_BUILDING_TYPE_D = None  # "Operacion_V2_9_6.OP_DominioConstruccionTipo"
+    OP_BUILDING_UNIT_TYPE_D = None  # "Operacion_V2_9_6.OP_UnidadConstruccionTipo"
 
     ############################################ FIELD VARIABLES ###########################################################
 
@@ -391,10 +398,6 @@ class Names(metaclass=Singleton):
     # "LADM_COL_V1_2.LADM_Nucleo.COL_AreaValor.areaSize"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_AreaValor.type"
     COL_BAUNIT_T_NAME_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_BAUnit.Nombre"
-    COL_BAUNIT_T_NAMESPACE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_BAUnit.Espacio_De_Nombres"
-    COL_BAUNIT_T_LOCAL_ID_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_BAUnit.Local_Id"
-    COL_BFS_T_NAMESPACE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_CadenaCarasLimite.Espacio_De_Nombres"
-    COL_BFS_T_LOCAL_ID_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_CadenaCarasLimite.Local_Id"
     COL_BFS_T_GEOMETRY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_CadenaCarasLimite.Geometria"
     COL_BFS_T_TEXTUAL_LOCATION_F = None  # "LADM_COL.LADM_Nucleo.COL_CadenaCarasLimite.Localizacion_Textual"
     COL_ADMINISTRATIVE_SOURCE_T_SOURCE_NUMBER_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_FuenteAdministrativa.Numero_Fuente"
@@ -407,27 +410,19 @@ class Names(metaclass=Singleton):
     COL_SOURCE_T_DATE_DOCUMENT_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Fecha_Documento_Fuente"
     COL_SOURCE_T_OFFICIAL_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Oficialidad"
     # COL_SOURCE_T_PROVENANCE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Procedencia"
-    COL_SOURCE_T_NAMESPACE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Espacio_De_Nombres"
-    COL_SOURCE_T_LOCAL_ID_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Local_Id"
     COL_SOURCE_T_MAIN_TYPE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Fuente.Tipo_Principal"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_FuncionInteresadoTipo_.value"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_Interesado.ext_PID"
     COL_PARTY_T_NAME_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Interesado.Nombre"
-    COL_PARTY_T_NAMESPACE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Interesado.Espacio_De_Nombres"
-    COL_PARTY_T_LOCAL_ID_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Interesado.Local_Id"
     # "LADM_COL_V1_2.LADM_Nucleo.COL_Interesado.Tarea"
     COL_POINT_T_ORIGINAL_LOCATION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Punto.Geometria"
     COL_POINT_T_PRODUCTION_METHOD_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Punto.MetodoProduccion"
     COL_POINT_T_MONUMENTATION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Punto.Monumentacion"
-    COL_POINT_T_NAMESPACE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Punto.Espacio_De_Nombres"
-    COL_POINT_T_LOCAL_ID_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Punto.Local_Id"
     COL_POINT_T_INTERPOLATION_POSITION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Punto.Posicion_Interpolacion"
     # COL_POINT_T_TRANSFORMATION_AND_RESULT_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_Punto.Transformacion_Y_Resultado"
     COL_RRR_T_SHARE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_RRR.Compartido"
     COL_RRR_T_SHARE_CHECK_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_RRR.Comprobacion_Comparte"
     COL_RRR_T_DESCRIPTION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_RRR.Descripcion"
-    COL_RRR_T_NAMESPACE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_RRR.Espacio_De_Nombres"
-    COL_RRR_T_LOCAL_ID_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_RRR.Local_Id"
     COL_RRR_T_EFFECTIVE_USAGE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_RRR.Uso_Efectivo"
 
     # COL_SPATIAL_UNIT_T_AREA_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Area"
@@ -436,8 +431,6 @@ class Names(metaclass=Singleton):
     # COL_SPATIAL_UNIT_T_EXT_ADDRESS_ID_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID"
     COL_SPATIAL_UNIT_T_GEOMETRY_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Geometria"
     COL_SPATIAL_UNIT_T_SURFACE_RELATION_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Relacion_Superficie"
-    COL_SPATIAL_UNIT_T_NAMESPACE_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Espacio_De_Nombres"
-    COL_SPATIAL_UNIT_T_LOCAL_ID_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Local_Id"
     # COL_SPATIAL_UNIT_T_VOLUME_F = None  # "LADM_COL_V1_2.LADM_Nucleo.COL_UnidadEspacial.Volumen"
 
     EXT_ARCHIVE_S_DATA_F = None  # "LADM_COL_V1_2.LADM_Nucleo.ExtArchivo.Datos"
@@ -518,6 +511,13 @@ class Names(metaclass=Singleton):
     # "LADM_COL_V1_2.LADM_Nucleo.col_unidadFuente.unidad"
     #
     #
+    OP_BUILDING_T_BUILDING_CODE_F = None  # "Operacion_V2_9_6.Operacion.OP_Construccion.Codigo_Edificacion"
+    OP_BUILDING_T_IDENTIFIER_F = None  # "Operacion_V2_9_6.Operacion.OP_Construccion.Identificador"
+    OP_BUILDING_T_NUMBER_OF_MEZZANINE_F = None  # "Operacion_V2_9_6.Operacion.OP_Construccion.Numero_Mezanines"
+    OP_BUILDING_T_NUMBER_OF_LOOKOUT_BASEMENT_F = None  # "Operacion_V2_9_6.Operacion.OP_Construccion.Numero_Semisotanos"
+    OP_BUILDING_T_NUMBER_OF_BASEMENT_F = None  # "Operacion_V2_9_6.Operacion.OP_Construccion.Numero_Sotanos"
+    OP_BUILDING_T_BUILDING_TYPE_F = None  # "Operacion_V2_9_6.Operacion.OP_Construccion.Tipo_Construccion"
+    OP_BUILDING_T_DOMAIN_TYPE_F = None  # "Operacion_V2_9_6.Operacion.OP_Construccion.Tipo_Dominio"
     OP_BUILDING_T_BUILDING_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_Construccion.Area_Construccion"
     OP_BUILDING_T_BUILDING_VALUATION_F = None  # "Operacion_V2_9_5.Operacion.OP_Construccion.Avaluo_Construccion"
     OP_BUILDING_T_NUMBER_OF_FLOORS_F = None  # "Operacion_V2_9_5.Operacion.OP_Construccion.Numero_Pisos"
@@ -582,13 +582,24 @@ class Names(metaclass=Singleton):
     OP_PLOT_T_PLOT_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_Terreno.Area_Terreno"
     OP_PLOT_T_PLOT_VALUATION_F = None  # "Operacion_V2_9_5.Operacion.OP_Terreno.Avaluo_Terreno"
     OP_PLOT_T_GEOMETRY_F = None  # "Operacion_V2_9_5.Operacion.OP_Terreno.Geometria"
+    OP_PLOT_T_BLOCK_VILLAGE_CODE_F = None  # "Operacion_V2_9_6.Operacion.OP_Terreno.Manzana_Vereda_Codigo"
+    OP_PLOT_T_NUMBER_OF_UNDERGROUND_ROOMS_F = None  # "Operacion_V2_9_6.Operacion.OP_Terreno.Numero_Subterraneos"
     OP_BUILDING_UNIT_T_BUILT_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Area_Construida"
     OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Area_Privada_Construida"
-    OP_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Avaluo_Unidad_Construccion"
+    OP_BUILDING_UNIT_T_BUILDING_VALUATION_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Avaluo_Construccion"
     OP_BUILDING_UNIT_T_IDENTIFICATION_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Identificador"
-    OP_BUILDING_UNIT_T_NUMBER_OF_FLOORS_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Numero_Pisos"
-    OP_BUILDING_UNIT_T_FLOOR_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Piso_Ubicacion"
+    OP_BUILDING_UNIT_T_FLOOR_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Planta_Ubicacion"
+    OP_BUILDING_UNIT_T_TOTAL_FLOORS_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Total_Pisos"
     OP_BUILDING_UNIT_T_USE_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Uso"
+    OP_BUILDING_UNIT_T_YEAR_OF_BUILDING_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Anio_Construccion"
+    OP_BUILDING_UNIT_T_OBSERVATIONS_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Observaciones"
+    OP_BUILDING_UNIT_T_BUILDING_TYPE_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Tipo_Construccion"
+    OP_BUILDING_UNIT_T_DOMAIN_TYPE_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Tipo_Dominio"
+    OP_BUILDING_UNIT_T_FLOOR_TYPE_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Tipo_Planta"
+    OP_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Tipo_Unidad_Construccion"
+    OP_BUILDING_UNIT_T_TOTAL_BATHROOMS_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Total_Banios"
+    OP_BUILDING_UNIT_T_TOTAL_ROOMS_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Total_Habitaciones"
+    OP_BUILDING_UNIT_T_TOTAL_LOCALS_F = None  # "Operacion_V2_9_6.Operacion.OP_UnidadConstruccion.Total_Locales"
 
     # Composed keys (when ilinames are duplicated because their target table is different, we
     # concatenate in the form "{key}_{target}")
@@ -716,6 +727,8 @@ class Names(metaclass=Singleton):
     # "LADM_COL.LADM_Nucleo.col_ueUeGrupo.parte_Operacion.Operacion.OP_Terreno" --> parte_op_terreno
     # "LADM_COL.LADM_Nucleo.col_ueUeGrupo.parte_Operacion.Operacion.OP_UnidadConstruccion" --> parte_op_unidadconstruccion
 
+    OID_T_NAMESPACE_F = None  # "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres"
+    OID_T_LOCAL_ID_F = None  # "LADM_COL.LADM_Nucleo.Oid.Local_Id"
 
     TABLE_DICT = {
         "Datos_Gestor_Catastral.Datos_Gestor_Catastral.GC_Barrio": {VARIABLE_NAME: "GC_NEIGHBOURHOOD_T", FIELDS_DICT: {}},
@@ -854,31 +867,44 @@ class Names(metaclass=Singleton):
         }},
         "Operacion.OP_AcuerdoTipo": {VARIABLE_NAME: "OP_AGREEMENT_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_UbicacionPuntoTipo": {VARIABLE_NAME: "OP_LOCATION_POINT_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_ConstruccionPlantaTipo": {VARIABLE_NAME: "OP_BUILDING_FLOOR_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_ConstruccionTipo": {VARIABLE_NAME: "OP_BUILDING_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_DominioConstruccionTipo": {VARIABLE_NAME: "OP_DOMAIN_BUILDING_TYPE_D", FIELDS_DICT: {}},
+        "Operacion.OP_UnidadConstruccionTipo": {VARIABLE_NAME: "OP_BUILDING_UNIT_TYPE_D", FIELDS_DICT: {}},
         "Operacion.OP_CondicionPredioTipo": {VARIABLE_NAME: "OP_PARCEL_TYPE_T", FIELDS_DICT: {}},
         "Operacion.OP_DerechoTipo": {VARIABLE_NAME: "OP_RIGHT_TYPE_D", FIELDS_DICT: {}},
         "Operacion.Operacion.OP_Agrupacion_Interesados": {VARIABLE_NAME: "OP_GROUP_PARTY_T", FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.COL_Agrupacion_Interesados.Tipo": "COL_GROUP_PARTY_T_TYPE_F",
             "LADM_COL.LADM_Nucleo.COL_Interesado.Nombre": "COL_PARTY_T_NAME_F",
-            "LADM_COL.LADM_Nucleo.COL_Interesado.Espacio_De_Nombres": "COL_PARTY_T_NAMESPACE_F",
-            "LADM_COL.LADM_Nucleo.COL_Interesado.Local_Id": "COL_PARTY_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
         "Operacion.Operacion.OP_UnidadConstruccion": {VARIABLE_NAME: "OP_BUILDING_UNIT_T", FIELDS_DICT: {
             "Operacion.Operacion.OP_UnidadConstruccion.Area_Construida": "OP_BUILDING_UNIT_T_BUILT_AREA_F",
             "Operacion.Operacion.OP_UnidadConstruccion.Area_Privada_Construida": "OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F",
-            "Operacion.Operacion.OP_UnidadConstruccion.Avaluo_Unidad_Construccion": "OP_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Avaluo_Construccion": "OP_BUILDING_UNIT_T_BUILDING_VALUATION_F",
             "Operacion.Operacion.OP_UnidadConstruccion.Identificador": "OP_BUILDING_UNIT_T_IDENTIFICATION_F",
-            "Operacion.Operacion.OP_UnidadConstruccion.Numero_Pisos": "OP_BUILDING_UNIT_T_NUMBER_OF_FLOORS_F",
-            "Operacion.Operacion.OP_UnidadConstruccion.Piso_Ubicacion": "OP_BUILDING_UNIT_T_FLOOR_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Planta_Ubicacion": "OP_BUILDING_UNIT_T_FLOOR_F",
             "Operacion.Operacion.OP_UnidadConstruccion.Uso": "OP_BUILDING_UNIT_T_USE_F",
             "Operacion.Operacion.op_construccion_unidadconstruccion.op_construccion": "OP_BUILDING_UNIT_T_BUILDING_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Anio_Construccion": "OP_BUILDING_UNIT_T_YEAR_OF_BUILDING_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Observaciones": "OP_BUILDING_UNIT_T_OBSERVATIONS_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Tipo_Construccion": "OP_BUILDING_UNIT_T_BUILDING_TYPE_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Tipo_Dominio": "OP_BUILDING_UNIT_T_DOMAIN_TYPE_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Tipo_Planta": "OP_BUILDING_UNIT_T_FLOOR_TYPE_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Tipo_Unidad_Construccion": "OP_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Total_Banios": "OP_BUILDING_UNIT_T_TOTAL_BATHROOMS_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Total_Habitaciones": "OP_BUILDING_UNIT_T_TOTAL_ROOMS_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Total_Locales": "OP_BUILDING_UNIT_T_TOTAL_LOCALS_F",
+            "Operacion.Operacion.OP_UnidadConstruccion.Total_Pisos": "OP_BUILDING_UNIT_T_TOTAL_FLOORS_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Dimension": "COL_SPATIAL_UNIT_T_DIMENSION_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Etiqueta": "COL_SPATIAL_UNIT_T_LABEL_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Geometria": "COL_SPATIAL_UNIT_T_GEOMETRY_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Relacion_Superficie": "COL_SPATIAL_UNIT_T_SURFACE_RELATION_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Espacio_De_Nombres": "COL_SPATIAL_UNIT_T_NAMESPACE_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Local_Id": "COL_SPATIAL_UNIT_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
@@ -886,12 +912,19 @@ class Names(metaclass=Singleton):
             "Operacion.Operacion.OP_Construccion.Area_Construccion": "OP_BUILDING_T_BUILDING_AREA_F",
             "Operacion.Operacion.OP_Construccion.Avaluo_Construccion": "OP_BUILDING_T_BUILDING_VALUATION_F",
             "Operacion.Operacion.OP_Construccion.Numero_Pisos": "OP_BUILDING_T_NUMBER_OF_FLOORS_F",
+            "Operacion.Operacion.OP_Construccion.Codigo_Edificacion": "OP_BUILDING_T_BUILDING_CODE_F",
+            "Operacion.Operacion.OP_Construccion.Identificador": "OP_BUILDING_T_IDENTIFIER_F",
+            "Operacion.Operacion.OP_Construccion.Numero_Mezanines": "OP_BUILDING_T_NUMBER_OF_MEZZANINE_F",
+            "Operacion.Operacion.OP_Construccion.Numero_Semisotanos": "OP_BUILDING_T_NUMBER_OF_LOOKOUT_BASEMENT_F",
+            "Operacion.Operacion.OP_Construccion.Numero_Sotanos": "OP_BUILDING_T_NUMBER_OF_BASEMENT_F",
+            "Operacion.Operacion.OP_Construccion.Tipo_Construccion": "OP_BUILDING_T_BUILDING_TYPE_F",
+            "Operacion.Operacion.OP_Construccion.Tipo_Dominio": "OP_BUILDING_T_DOMAIN_TYPE_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Dimension": "COL_SPATIAL_UNIT_T_DIMENSION_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Etiqueta": "COL_SPATIAL_UNIT_T_LABEL_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Geometria": "COL_SPATIAL_UNIT_T_GEOMETRY_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Relacion_Superficie": "COL_SPATIAL_UNIT_T_SURFACE_RELATION_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Espacio_De_Nombres": "COL_SPATIAL_UNIT_T_NAMESPACE_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Local_Id": "COL_SPATIAL_UNIT_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
@@ -900,8 +933,8 @@ class Names(metaclass=Singleton):
             "Operacion.Operacion.OP_Derecho.Tipo": "OP_RIGHT_T_TYPE_F",
             "LADM_COL.LADM_Nucleo.COL_RRR.Comprobacion_Comparte": "COL_RRR_T_SHARE_CHECK_F",
             "LADM_COL.LADM_Nucleo.COL_RRR.Descripcion": "COL_RRR_T_DESCRIPTION_F",
-            "LADM_COL.LADM_Nucleo.COL_RRR.Espacio_De_Nombres": "COL_RRR_T_NAMESPACE_F",
-            "LADM_COL.LADM_Nucleo.COL_RRR.Local_Id": "COL_RRR_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.COL_RRR.Uso_Efectivo": "COL_RRR_T_EFFECTIVE_USAGE_F",
             "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Interesado": "COL_RRR_PARTY_T_OP_PARTY_F",
             "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Agrupacion_Interesados": "COL_RRR_PARTY_T_OP_GROUP_PARTY_F",
@@ -917,8 +950,8 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.COL_Fuente.Fecha_Documento_Fuente": "COL_SOURCE_T_DATE_DOCUMENT_F",
             "LADM_COL.LADM_Nucleo.COL_Fuente.Oficialidad": "COL_SOURCE_T_OFFICIAL_F",
             # "LADM_COL.LADM_Nucleo.COL_Fuente.Procedencia": "COL_SOURCE_T_PROVENANCE_F",
-            "LADM_COL.LADM_Nucleo.COL_Fuente.Espacio_De_Nombres": "COL_SOURCE_T_NAMESPACE_F",
-            "LADM_COL.LADM_Nucleo.COL_Fuente.Local_Id": "COL_SOURCE_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.COL_Fuente.Tipo_Principal": "COL_SOURCE_T_MAIN_TYPE_F"
         }},
         "Operacion.Operacion.OP_FuenteEspacial": {VARIABLE_NAME: "OP_SPATIAL_SOURCE_T", FIELDS_DICT: {
@@ -927,8 +960,8 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.COL_Fuente.Fecha_Documento_Fuente": "COL_SOURCE_T_DATE_DOCUMENT_F",
             "LADM_COL.LADM_Nucleo.COL_Fuente.Oficialidad": "COL_SOURCE_T_OFFICIAL_F",
             # "LADM_COL.LADM_Nucleo.COL_Fuente.Procedencia": "COL_SOURCE_T_PROVENANCE_F",
-            "LADM_COL.LADM_Nucleo.COL_Fuente.Espacio_De_Nombres": "COL_SOURCE_T_NAMESPACE_F",
-            "LADM_COL.LADM_Nucleo.COL_Fuente.Local_Id": "COL_SOURCE_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.COL_Fuente.Tipo_Principal": "COL_SOURCE_T_MAIN_TYPE_F"
         }},
         "Operacion.Operacion.OP_Interesado": {VARIABLE_NAME: "OP_PARTY_T", FIELDS_DICT: {
@@ -943,15 +976,15 @@ class Names(metaclass=Singleton):
             "Operacion.Operacion.OP_Interesado.Tipo": "OP_PARTY_T_TYPE_F",
             "Operacion.Operacion.OP_Interesado.Tipo_Documento": "OP_PARTY_T_DOCUMENT_TYPE_F",
             "LADM_COL.LADM_Nucleo.COL_Interesado.Nombre": "COL_PARTY_T_NAME_F",
-            "LADM_COL.LADM_Nucleo.COL_Interesado.Espacio_De_Nombres": "COL_PARTY_T_NAMESPACE_F",
-            "LADM_COL.LADM_Nucleo.COL_Interesado.Local_Id": "COL_PARTY_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
         "Operacion.Operacion.OP_Lindero": {VARIABLE_NAME: "OP_BOUNDARY_T", FIELDS_DICT: {
             "Operacion.Operacion.OP_Lindero.Longitud": "OP_BOUNDARY_T_LENGTH_F",
-            "LADM_COL.LADM_Nucleo.COL_CadenaCarasLimite.Espacio_De_Nombres": "COL_BFS_T_NAMESPACE_F",
-            "LADM_COL.LADM_Nucleo.COL_CadenaCarasLimite.Local_Id": "COL_BFS_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.COL_CadenaCarasLimite.Geometria": "COL_BFS_T_GEOMETRY_F",
             "LADM_COL.LADM_Nucleo.COL_CadenaCarasLimite.Localizacion_Textual": "COL_BFS_T_TEXTUAL_LOCATION_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
@@ -970,8 +1003,8 @@ class Names(metaclass=Singleton):
             "Operacion.Operacion.OP_Predio.NUPRE": "OP_PARCEL_T_NUPRE_F",
             "Operacion.Operacion.OP_Predio.Tipo": "OP_PARCEL_T_TYPE_F",
             "LADM_COL.LADM_Nucleo.COL_BAUnit.Nombre": "COL_BAUNIT_T_NAME_F",
-            "LADM_COL.LADM_Nucleo.COL_BAUnit.Espacio_De_Nombres": "COL_BAUNIT_T_NAMESPACE_F",
-            "LADM_COL.LADM_Nucleo.COL_BAUnit.Local_Id": "COL_BAUNIT_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
@@ -987,8 +1020,8 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.COL_Punto.Geometria": "COL_POINT_T_ORIGINAL_LOCATION_F",
             "LADM_COL.LADM_Nucleo.COL_Punto.MetodoProduccion": "COL_POINT_T_PRODUCTION_METHOD_F",
             "LADM_COL.LADM_Nucleo.COL_Punto.Monumentacion": "COL_POINT_T_MONUMENTATION_F",
-            "LADM_COL.LADM_Nucleo.COL_Punto.Espacio_De_Nombres": "COL_POINT_T_NAMESPACE_F",
-            "LADM_COL.LADM_Nucleo.COL_Punto.Local_Id": "COL_POINT_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
@@ -1003,8 +1036,8 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.COL_Punto.Geometria": "COL_POINT_T_ORIGINAL_LOCATION_F",
             "LADM_COL.LADM_Nucleo.COL_Punto.MetodoProduccion": "COL_POINT_T_PRODUCTION_METHOD_F",
             "LADM_COL.LADM_Nucleo.COL_Punto.Monumentacion": "COL_POINT_T_MONUMENTATION_F",
-            "LADM_COL.LADM_Nucleo.COL_Punto.Espacio_De_Nombres": "COL_POINT_T_NAMESPACE_F",
-            "LADM_COL.LADM_Nucleo.COL_Punto.Local_Id": "COL_POINT_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
@@ -1020,8 +1053,8 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.COL_Punto.Geometria": "COL_POINT_T_ORIGINAL_LOCATION_F",
             "LADM_COL.LADM_Nucleo.COL_Punto.MetodoProduccion": "COL_POINT_T_PRODUCTION_METHOD_F",
             "LADM_COL.LADM_Nucleo.COL_Punto.Monumentacion": "COL_POINT_T_MONUMENTATION_F",
-            "LADM_COL.LADM_Nucleo.COL_Punto.Espacio_De_Nombres": "COL_POINT_T_NAMESPACE_F",
-            "LADM_COL.LADM_Nucleo.COL_Punto.Local_Id": "COL_POINT_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
@@ -1030,8 +1063,8 @@ class Names(metaclass=Singleton):
             "Operacion.Operacion.OP_Restriccion.Tipo": "OP_RESTRICTION_T_TYPE_F",
             "LADM_COL.LADM_Nucleo.COL_RRR.Comprobacion_Comparte": "COL_RRR_T_SHARE_CHECK_F",
             "LADM_COL.LADM_Nucleo.COL_RRR.Descripcion": "COL_RRR_T_DESCRIPTION_F",
-            "LADM_COL.LADM_Nucleo.COL_RRR.Espacio_De_Nombres": "COL_RRR_T_NAMESPACE_F",
-            "LADM_COL.LADM_Nucleo.COL_RRR.Local_Id": "COL_RRR_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.COL_RRR.Uso_Efectivo": "COL_RRR_T_EFFECTIVE_USAGE_F",
             "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Interesado": "COL_RRR_PARTY_T_OP_PARTY_F",
             "LADM_COL.LADM_Nucleo.col_rrrInteresado.interesado_Operacion.Operacion.OP_Agrupacion_Interesados": "COL_RRR_PARTY_T_OP_GROUP_PARTY_F",
@@ -1044,8 +1077,8 @@ class Names(metaclass=Singleton):
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Etiqueta": "COL_SPATIAL_UNIT_T_LABEL_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Geometria": "COL_SPATIAL_UNIT_T_GEOMETRY_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Relacion_Superficie": "COL_SPATIAL_UNIT_T_SURFACE_RELATION_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Espacio_De_Nombres": "COL_SPATIAL_UNIT_T_NAMESPACE_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Local_Id": "COL_SPATIAL_UNIT_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
@@ -1053,11 +1086,13 @@ class Names(metaclass=Singleton):
             "Operacion.Operacion.OP_Terreno.Area_Terreno": "OP_PLOT_T_PLOT_AREA_F",
             "Operacion.Operacion.OP_Terreno.Avaluo_Terreno": "OP_PLOT_T_PLOT_VALUATION_F",
             "Operacion.Operacion.OP_Terreno.Geometria": "OP_PLOT_T_GEOMETRY_F",
+            "Operacion.Operacion.OP_Terreno.Manzana_Vereda_Codigo": "OP_PLOT_T_BLOCK_VILLAGE_CODE_F",
+            "Operacion.Operacion.OP_Terreno.Numero_Subterraneos": "OP_PLOT_T_NUMBER_OF_UNDERGROUND_ROOMS_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Dimension": "COL_SPATIAL_UNIT_T_DIMENSION_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Etiqueta": "COL_SPATIAL_UNIT_T_LABEL_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Relacion_Superficie": "COL_SPATIAL_UNIT_T_SURFACE_RELATION_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Espacio_De_Nombres": "COL_SPATIAL_UNIT_T_NAMESPACE_F",
-            "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Local_Id": "COL_SPATIAL_UNIT_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Local_Id": "OID_T_LOCAL_ID_F",
+            "LADM_COL.LADM_Nucleo.Oid.Espacio_De_Nombres": "OID_T_NAMESPACE_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version": "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F",
             "LADM_COL.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version": "VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F"
         }},
@@ -1383,8 +1418,8 @@ class Names(metaclass=Singleton):
                                  self.COL_SPATIAL_UNIT_T_LABEL_F,
                                  self.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F,
                                  self.COL_SPATIAL_UNIT_T_GEOMETRY_F],
-            self.OP_BUILDING_UNIT_T: [self.OP_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F,
-                                      self.OP_BUILDING_UNIT_T_NUMBER_OF_FLOORS_F,
+            self.OP_BUILDING_UNIT_T: [self.OP_BUILDING_UNIT_T_BUILDING_VALUATION_F,
+                                      self.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F,
                                       self.OP_BUILDING_UNIT_T_BUILT_AREA_F,
                                       self.OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F,
                                       self.OP_BUILDING_UNIT_T_BUILDING_F,
@@ -1408,7 +1443,6 @@ class Names(metaclass=Singleton):
                               self.COL_RRR_T_DESCRIPTION_F,
                               self.COL_RRR_T_SHARE_CHECK_F,
                               self.COL_RRR_T_EFFECTIVE_USAGE_F,
-                              self.COL_RRR_T_NAMESPACE_F,
                               self.COL_RRR_PARTY_T_OP_GROUP_PARTY_F,
                               self.COL_RRR_PARTY_T_OP_PARTY_F,
                               self.COL_BAUNIT_RRR_T_UNIT_F],
@@ -1471,7 +1505,7 @@ class Names(metaclass=Singleton):
             },
             self.OP_BUILDING_UNIT_T: {
                 "qgis_25d_angle": 90,
-                "qgis_25d_height": '"{}" * 2.5'.format(self.OP_BUILDING_UNIT_T_NUMBER_OF_FLOORS_F)
+                "qgis_25d_height": '"{}" * 2.5'.format(self.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F)
             }
         }
 
@@ -1502,7 +1536,7 @@ class Names(metaclass=Singleton):
                 self.OP_PARTY_T_BUSINESS_NAME_F),
             self.OP_PARCEL_T: "concat({}, ' - ', {}, ' - ', {})".format(self.T_ID_F, self.OP_PARCEL_T_PARCEL_NUMBER_F, self.OP_PARCEL_T_FMI_F),
             self.OP_GROUP_PARTY_T: "concat({}, ' - ', {})".format(self.T_ID_F, self.COL_PARTY_T_NAME_F),
-            self.OP_BUILDING_T: '"{}"  || \' \' ||  "{}"'.format(self.COL_SPATIAL_UNIT_T_NAMESPACE_F, self.T_ID_F)
+            self.OP_BUILDING_T: '"{}"  || \' \' ||  "{}"'.format(self.OID_T_NAMESPACE_F, self.T_ID_F)
         }
 
     def get_layer_constraints(self):
@@ -1780,16 +1814,16 @@ class Names(metaclass=Singleton):
                             END""".format(OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F=self.OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F),
                     'description': 'El valor debe ser mayor a cero (0).'
                 },
-                self.OP_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F: {
+                self.OP_BUILDING_UNIT_T_BUILDING_VALUATION_F: {
                     'expression': """
                             CASE
-                                WHEN  "{OP_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F}" IS NULL THEN
+                                WHEN  "{OP_BUILDING_UNIT_T_BUILDING_VALUATION_F}" IS NULL THEN
                                     TRUE
-                                WHEN  "{OP_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F}" = 0 THEN
+                                WHEN  "{OP_BUILDING_UNIT_T_BUILDING_VALUATION_F}" = 0 THEN
                                     FALSE
                                 ELSE
                                     TRUE
-                            END""".format(OP_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F=self.OP_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F),
+                            END""".format(OP_BUILDING_UNIT_T_BUILDING_VALUATION_F=self.OP_BUILDING_UNIT_T_BUILDING_VALUATION_F),
                     'description': 'El valor debe ser mayor a cero (0).'
                 }
             }

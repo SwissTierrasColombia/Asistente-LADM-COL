@@ -365,10 +365,10 @@ class ChangeDetectionUtils(QObject):
         """
         Compare all alphanumeric attibutes for two custom feature dicts
 
-        :param collected: Dict with parcel info defined in PARCEL_FIELDS_TO_COMPARE, PARTY_FIELDS_TO_COMPARE,
-                          PLOT_FIELDS_TO_COMPARE, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
-        :param official: Dict with parcel info defined in PARCEL_FIELDS_TO_COMPARE, PARTY_FIELDS_TO_COMPARE,
-                          PLOT_FIELDS_TO_COMPARE, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
+        :param collected: Dict with parcel info defined in get_parcel_fields_to_compare, get_party_fields_to_compare,
+                          get_plot_field_to_compare, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
+        :param official: Dict with parcel info defined in get_parcel_fields_to_compare, get_party_fields_to_compare,
+                          get_plot_field_to_compare, PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE
         :return: True means equal, False unequal
         """
         if len(collected) != len(official):

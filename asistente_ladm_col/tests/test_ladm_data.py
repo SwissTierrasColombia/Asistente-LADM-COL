@@ -41,7 +41,7 @@ class TestLADMData(unittest.TestCase):
 
         count = 0
         for parcel_ids_test in parcel_ids_tests:
-            plot_ids = self.ladm_data.get_plots_related_to_parcels(self.db_connection, parcel_ids_test)
+            plot_ids = self.ladm_data.get_plots_related_to_parcels(self.db_connection, parcel_ids_test, self.names.T_ID_F)
             # We use assertCountEqual to compare if two lists are the same regardless of the order of their elements.
             # https://docs.python.org/3.2/library/unittest.html#unittest.TestCase.assertCountEqual
             self.assertCountEqual(plot_ids, plot_ids_tests[count], "Failure with data set {}".format(count + 1))
@@ -52,7 +52,7 @@ class TestLADMData(unittest.TestCase):
 
         count = 0
         for parcel_ids_test in parcel_ids_tests:
-            plot_custom_field_ids = self.ladm_data.get_plots_related_to_parcels(self.db_connection, parcel_ids_test, field_name=self.names.OP_PLOT_T_PLOT_AREA_F)
+            plot_custom_field_ids = self.ladm_data.get_plots_related_to_parcels(self.db_connection, parcel_ids_test, self.names.OP_PLOT_T_PLOT_AREA_F)
             self.assertCountEqual(plot_custom_field_ids, plot_custom_field_ids_tests[count], "Failure with data set {}".format(count + 1))
             count += 1
 
@@ -67,6 +67,7 @@ class TestLADMData(unittest.TestCase):
         for parcel_ids_test in parcel_ids_tests:
             plot_ids = self.ladm_data.get_plots_related_to_parcels(self.db_connection,
                                                                    parcel_ids_test,
+                                                                   self.names.T_ID_F,
                                                                    plot_layer=layers[self.names.OP_PLOT_T][LAYER],
                                                                    uebaunit_table=layers[self.names.COL_UE_BAUNIT_T][LAYER])
             self.assertCountEqual(plot_ids, plot_ids_tests[count], "Failure with data set {}".format(count + 1))
@@ -80,7 +81,7 @@ class TestLADMData(unittest.TestCase):
 
         count = 0
         for plot_ids_test in plot_ids_tests:
-            parcel_ids = self.ladm_data.get_parcels_related_to_plots(self.db_connection, plot_ids_test)
+            parcel_ids = self.ladm_data.get_parcels_related_to_plots(self.db_connection, plot_ids_test, self.names.T_ID_F)
             # We use assertCountEqual to compare if two lists are the same regardless of the order of their elements.
             # https://docs.python.org/3.2/library/unittest.html#unittest.TestCase.assertCountEqual
             self.assertCountEqual(parcel_ids, parcel_ids_tests[count], "Failure with data set {}".format(count + 1))
@@ -93,8 +94,9 @@ class TestLADMData(unittest.TestCase):
 
         count = 0
         for plot_ids_test in plot_ids_tests:
-            parcel_custom_field_ids = self.ladm_data.get_parcels_related_to_plots(self.db_connection, plot_ids_test,
-                                                                                  field_name=self.names.OP_PARCEL_T_PARCEL_NUMBER_F)
+            parcel_custom_field_ids = self.ladm_data.get_parcels_related_to_plots(self.db_connection,
+                                                                                  plot_ids_test,
+                                                                                  self.names.OP_PARCEL_T_PARCEL_NUMBER_F)
             self.assertCountEqual(parcel_custom_field_ids, parcel_custom_field_ids_tests[count],
                                   "Failure with data set {}".format(count + 1))
             count += 1
@@ -112,6 +114,7 @@ class TestLADMData(unittest.TestCase):
         for plot_ids_test in plot_ids_tests:
             parcel_ids = self.ladm_data.get_parcels_related_to_plots(self.db_connection,
                                                                      plot_ids_test,
+                                                                     self.names.T_ID_F,
                                                                      parcel_table=layers[self.names.OP_PARCEL_T][LAYER],
                                                                      uebaunit_table=layers[self.names.COL_UE_BAUNIT_T][LAYER])
             self.assertCountEqual(parcel_ids, parcel_ids_tests[count], "Failure with data set {}".format(count + 1))

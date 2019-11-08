@@ -25,18 +25,6 @@ from asistente_ladm_col.config.general_config import (LAYER,
                                                       PLOT_GEOMETRY_KEY)
 from asistente_ladm_col.config.table_mapping_config import Names
 
-PARCEL_FIELDS_TO_COMPARE = [Names().OP_PARCEL_T_PARCEL_NUMBER_F,
-                            Names().OP_PARCEL_T_FMI_F,
-                            Names().COL_BAUNIT_T_NAME_F,
-                            Names().OP_PARCEL_T_DEPARTMENT_F,
-                            Names().OP_PARCEL_T_TYPE_F]
-
-PARTY_FIELDS_TO_COMPARE = [Names().OP_PARTY_T_DOCUMENT_TYPE_F,  # Right type will also be added to parties
-                           Names().OP_PARTY_T_DOCUMENT_ID_F,
-                           Names().COL_PARTY_T_NAME_F]
-
-PLOT_FIELDS_TO_COMPARE = [Names().OP_PLOT_T_PLOT_AREA_F]  # Geometry is also used but handled differenlty
-
 # TODO: Update with correct field
 # PROPERTY_RECORD_CARD_FIELDS_TO_COMPARE = [PROPERTY_RECORD_CARD_SECTOR_FIELD,
 #                                           PROPERTY_RECORD_CARD_LOCALITY_FIELD,
@@ -53,7 +41,7 @@ class LADM_DATA():
         self.log = QgsApplication.messageLog()
         self.names = Names()
 
-    def get_plots_related_to_parcels(self, db, t_ids, field_name=Names().T_ID_F, plot_layer=None, uebaunit_table=None):
+    def get_plots_related_to_parcels(self, db, t_ids, field_name, plot_layer=None, uebaunit_table=None):
         """
         :param db: DB Connector object
         :param t_ids: list of parcel t_ids
@@ -87,7 +75,7 @@ class LADM_DATA():
                                                     self.names.COL_UE_BAUNIT_T_PARCEL_F,
                                                     "','".join([str(t_id) for t_id in t_ids]),
                                                     self.names.COL_UE_BAUNIT_T_OP_PLOT_F))
-        features = LADM_DATA.get_features_by_expression(uebaunit_table, expression, with_attributes=True)
+        features = self.get_features_by_expression(uebaunit_table, expression, with_attributes=True)
 
         plot_t_ids = list()
         for feature in features:
@@ -100,9 +88,9 @@ class LADM_DATA():
         expression = QgsExpression("{} IN ('{}')".format(self.names.T_ID_F, "','".join([str(id) for id in plot_t_ids])))
 
         if field_name is None:
-            features = LADM_DATA.get_features_by_expression(plot_layer, expression)
+            features = self.get_features_by_expression(plot_layer, expression)
         else:
-            features = LADM_DATA.get_features_by_expression(plot_layer, expression, with_attributes=True)
+            features = self.get_features_by_expression(plot_layer, expression, with_attributes=True)
 
         for feature in features:
             if field_name is None: # We are only interested in the QGIS internal id, no need to get other fields
@@ -114,7 +102,7 @@ class LADM_DATA():
 
         return plot_ids
 
-    def get_parcels_related_to_plots(self, db, t_ids, field_name=Names().T_ID_F, parcel_table=None, uebaunit_table=None):
+    def get_parcels_related_to_plots(self, db, t_ids, field_name, parcel_table=None, uebaunit_table=None):
         """
         :param db: DB Connector object
         :param t_ids: list of plot t_ids
@@ -149,7 +137,7 @@ class LADM_DATA():
                                                     self.names.COL_UE_BAUNIT_T_OP_PLOT_F,
                                                     ",".join([str(t_id) for t_id in t_ids]),
                                                     self.names.COL_UE_BAUNIT_T_PARCEL_F))
-        features = LADM_DATA.get_features_by_expression(uebaunit_table, expression, with_attributes=True)
+        features = self.get_features_by_expression(uebaunit_table, expression, with_attributes=True)
 
         parcel_t_ids = list()
         for feature in features:
@@ -163,9 +151,9 @@ class LADM_DATA():
                                                           ",".join([str(id) for id in parcel_t_ids])))
 
         if field_name is None:
-            features = LADM_DATA.get_features_by_expression(parcel_table, expression)
+            features = self.get_features_by_expression(parcel_table, expression)
         else:
-            features = LADM_DATA.get_features_by_expression(parcel_table, expression, with_attributes=True)
+            features = self.get_features_by_expression(parcel_table, expression, with_attributes=True)
 
         for feature in features:
             if field_name is None: # We are only interested in the QGIS internal id, no need to get other fields
@@ -202,14 +190,14 @@ class LADM_DATA():
         if not layers:
             return None
 
-        parcel_features = LADM_DATA.get_features_by_search_criterion(layers[self.names.OP_PARCEL_T][LAYER], search_criterion=search_criterion, with_attributes=True)
+        parcel_features = self.get_features_by_search_criterion(layers[self.names.OP_PARCEL_T][LAYER], search_criterion=search_criterion, with_attributes=True)
 
         # ===================== Start adding parcel info ==================================================
         dict_features = dict()
         for feature in parcel_features:
             dict_attrs = dict()
             for field in layers[self.names.OP_PARCEL_T][LAYER].fields():
-                if field.name() in PARCEL_FIELDS_TO_COMPARE:
+                if field.name() in self.get_parcel_fields_to_compare():
                     value = feature.attribute(field.name())
                     dict_attrs[field.name()] = value
 
@@ -223,11 +211,11 @@ class LADM_DATA():
         # =====================  Start adding plot info ==================================================
         parcel_t_ids = [parcel_feature[self.names.T_ID_F] for parcel_feature in parcel_features]
         expression_uebaunit_features = QgsExpression("{} IN ({}) AND {} IS NOT NULL".format(self.names.COL_UE_BAUNIT_T_PARCEL_F, ",".join([str(id) for id in parcel_t_ids]), self.names.COL_UE_BAUNIT_T_OP_PLOT_F))
-        uebaunit_features = LADM_DATA.get_features_by_expression(layers[self.names.COL_UE_BAUNIT_T][LAYER], expression_uebaunit_features, with_attributes=True)
+        uebaunit_features = self.get_features_by_expression(layers[self.names.COL_UE_BAUNIT_T][LAYER], expression_uebaunit_features, with_attributes=True)
 
         plot_t_ids = [feature[self.names.COL_UE_BAUNIT_T_OP_PLOT_F] for feature in uebaunit_features]
         expression_plot_features = QgsExpression("{} IN ('{}')".format(self.names.T_ID_F, "','".join([str(id) for id in plot_t_ids])))
-        plot_features = LADM_DATA.get_features_by_expression(layers[self.names.OP_PLOT_T][LAYER], expression_plot_features, with_attributes=True, with_geometry=True)
+        plot_features = self.get_features_by_expression(layers[self.names.OP_PLOT_T][LAYER], expression_plot_features, with_attributes=True, with_geometry=True)
 
         dict_parcel_plot = {uebaunit_feature[self.names.COL_UE_BAUNIT_T_PARCEL_F]: uebaunit_feature[self.names.COL_UE_BAUNIT_T_OP_PLOT_F] for uebaunit_feature in uebaunit_features}
         dict_plot_features = {plot_feature[self.names.T_ID_F]: plot_feature for plot_feature in plot_features}
@@ -237,7 +225,7 @@ class LADM_DATA():
                 if item[self.names.T_ID_F] in dict_parcel_plot:
                     if dict_parcel_plot[item[self.names.T_ID_F]] in dict_plot_features:
                         plot_feature = dict_plot_features[dict_parcel_plot[item[self.names.T_ID_F]]]
-                        for PLOT_FIELD in PLOT_FIELDS_TO_COMPARE:
+                        for PLOT_FIELD in self.get_plot_field_to_compare():
                             if plot_feature[PLOT_FIELD] != NULL:
                                 item[PLOT_FIELD] = plot_feature[PLOT_FIELD]
                             else:
@@ -249,12 +237,12 @@ class LADM_DATA():
 
         # ===================== Start adding party info ==================================================
         expression_right_features = QgsExpression("{} IN ({})".format(self.names.COL_BAUNIT_RRR_T_UNIT_F, ",".join([str(id) for id in parcel_t_ids])))
-        right_features = LADM_DATA.get_features_by_expression(layers[self.names.OP_RIGHT_T][LAYER], expression_right_features, with_attributes=True)
+        right_features = self.get_features_by_expression(layers[self.names.OP_RIGHT_T][LAYER], expression_right_features, with_attributes=True)
 
         dict_party_right = {right_feature[self.names.COL_RRR_PARTY_T_OP_PARTY_F]: right_feature for right_feature in right_features if right_feature[self.names.COL_RRR_PARTY_T_OP_PARTY_F] != NULL}
         party_t_ids = [right_feature[self.names.COL_RRR_PARTY_T_OP_PARTY_F] for right_feature in right_features if right_feature[self.names.COL_RRR_PARTY_T_OP_PARTY_F] != NULL]
         expression_party_features = QgsExpression("{} IN ({})".format(self.names.T_ID_F, ",".join([str(id) for id in party_t_ids])))
-        party_features = LADM_DATA.get_features_by_expression(layers[self.names.OP_PARTY_T][LAYER], expression_party_features, with_attributes=True)
+        party_features = self.get_features_by_expression(layers[self.names.OP_PARTY_T][LAYER], expression_party_features, with_attributes=True)
 
         dict_parcel_parties = dict()
         for right_feature in right_features:
@@ -268,7 +256,7 @@ class LADM_DATA():
         dict_parties = dict()
         for party_feature in party_features:
             dict_party = dict()
-            for PARTY_FIELD in PARTY_FIELDS_TO_COMPARE:
+            for PARTY_FIELD in self.get_party_fields_to_compare():
                 dict_party[PARTY_FIELD] = party_feature[PARTY_FIELD]
             # Add extra attribute from right table
             dict_party['derecho'] = dict_party_right[party_feature[self.names.T_ID_F]][self.names.OP_RIGHT_T_TYPE_F]
@@ -308,7 +296,7 @@ class LADM_DATA():
         dict_group_party_right = {right_feature[self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F]: right_feature for right_feature in right_features if right_feature[self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F] != NULL}
         group_party_t_ids = [right_feature[self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F] for right_feature in right_features if right_feature[self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F] != NULL]
         expression_members_features = QgsExpression("{} IN ({})".format(self.names.MEMBERS_T_GROUP_PARTY_F, ",".join([str(id) for id in group_party_t_ids])))
-        members_features = LADM_DATA.get_features_by_expression(layers[self.names.MEMBERS_T][LAYER], expression_members_features, with_attributes=True)
+        members_features = self.get_features_by_expression(layers[self.names.MEMBERS_T][LAYER], expression_members_features, with_attributes=True)
 
         dict_group_party_parties = dict()  # {id_group_party: [id_party1, id_party2]}
         for members_feature in members_features:
@@ -323,12 +311,12 @@ class LADM_DATA():
         party_t_ids = list(set(party_t_ids))
 
         expression_party_features = QgsExpression("{} IN ({})".format(self.names.T_ID_F, ",".join([str(id) for id in party_t_ids])))
-        party_features = LADM_DATA.get_features_by_expression(layers[self.names.OP_PARTY_T][LAYER], expression_party_features, with_attributes=True)
+        party_features = self.get_features_by_expression(layers[self.names.OP_PARTY_T][LAYER], expression_party_features, with_attributes=True)
 
         dict_parties = dict()  # {id_party: {tipo_documento: CC, documento_identidad: 123456, nombre: Pepito}}
         for party_feature in party_features:
             dict_party = dict()
-            for PARTY_FIELD in PARTY_FIELDS_TO_COMPARE:
+            for PARTY_FIELD in self.get_party_fields_to_compare():
                 dict_party[PARTY_FIELD] = party_feature[PARTY_FIELD]
             dict_parties[party_feature[self.names.T_ID_F]] = dict_party
 
@@ -370,7 +358,7 @@ class LADM_DATA():
         # TODO: Replace property record card for correct table model
         # if db.cadastral_form_model_exists():
         #     expr_property_record_card_features = QgsExpression("{} IN ({})".format(PROPERTY_RECORD_CARD_PARCEL_ID_FIELD, ",".join([str(id) for id in parcel_t_ids])))
-        #     property_record_card_features = LADM_DATA.get_features_by_expression(layers[PROPERTY_RECORD_CARD_TABLE][LAYER], expr_property_record_card_features, with_attributes=True)
+        #     property_record_card_features = self.get_features_by_expression(layers[PROPERTY_RECORD_CARD_TABLE][LAYER], expr_property_record_card_features, with_attributes=True)
         #
         #     dict_property_record_card_features = {property_record_card_feature[PROPERTY_RECORD_CARD_PARCEL_ID_FIELD]: property_record_card_feature for property_record_card_feature in property_record_card_features}
         #
@@ -386,20 +374,18 @@ class LADM_DATA():
 
         return dict_features
 
-    @staticmethod
-    def get_features_by_search_criterion(layer, search_criterion=None, with_attributes=False, with_geometry=False):
+    def get_features_by_search_criterion(self, layer, search_criterion=None, with_attributes=False, with_geometry=False):
         if search_criterion is not None:
             field_name = list(search_criterion.keys())[0]
             field_value = list(search_criterion.values())[0]
             expression = QgsExpression("{}='{}'".format(field_name, field_value))
-            features = LADM_DATA.get_features_by_expression(layer, expression=expression, with_attributes=with_attributes, with_geometry=with_geometry)
+            features = self.get_features_by_expression(layer, expression=expression, with_attributes=with_attributes, with_geometry=with_geometry)
         else:
-            features = LADM_DATA.get_features_by_expression(layer, with_attributes=with_attributes, with_geometry=with_geometry)
+            features = self.get_features_by_expression(layer, with_attributes=with_attributes, with_geometry=with_geometry)
 
         return features
 
-    @staticmethod
-    def get_features_by_expression(layer, expression=None, with_attributes=False, with_geometry=False):
+    def get_features_by_expression(self, layer, expression=None, with_attributes=False, with_geometry=False):
         # TODO: It should be possible to pass a list of attributes to retrieve
 
         if expression is None:
@@ -410,7 +396,7 @@ class LADM_DATA():
         if not with_geometry:
             request.setFlags(QgsFeatureRequest.NoGeometry)
         if not with_attributes:
-            field_idx = layer.fields().indexFromName(Names().T_ID_F)
+            field_idx = layer.fields().indexFromName(self.names.T_ID_F)
             request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
 
         return [feature for feature in layer.getFeatures(request)]
@@ -425,3 +411,18 @@ class LADM_DATA():
             request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
 
         return [feature for feature in layer.getFeatures(request)]
+
+    def get_parcel_fields_to_compare(self):
+        return [self.names.OP_PARCEL_T_PARCEL_NUMBER_F,
+                self.names.OP_PARCEL_T_FMI_F,
+                self.names.COL_BAUNIT_T_NAME_F,
+                self.names.OP_PARCEL_T_DEPARTMENT_F,
+                self.names.OP_PARCEL_T_TYPE_F]
+
+    def get_party_fields_to_compare(self):
+        return [self.names.OP_PARTY_T_DOCUMENT_TYPE_F,  # Right type will also be added to parties
+                self.names.OP_PARTY_T_DOCUMENT_ID_F,
+                self.names.COL_PARTY_T_NAME_F]
+
+    def get_plot_field_to_compare(self):
+        return [self.names.OP_PLOT_T_PLOT_AREA_F]  # Geometry is also used but handled differenlty

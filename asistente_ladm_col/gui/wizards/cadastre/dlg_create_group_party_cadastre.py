@@ -352,8 +352,8 @@ class CreateGroupPartyCadastre(QDialog, DIALOG_UI):
             new_feature.setAttribute(self.names.COL_PARTY_T_NAME_F, group[self.names.COL_PARTY_T_NAME_F])
 
             # TODO: Remove when local id and working space are defined
-            new_feature.setAttribute(self.names.COL_PARTY_T_LOCAL_ID_F, 1)
-            new_feature.setAttribute(self.names.COL_PARTY_T_NAMESPACE_F, self.names.OP_GROUP_PARTY_T)
+            new_feature.setAttribute(self.names.OID_T_LOCAL_ID_F, 1)
+            new_feature.setAttribute(self.names.OID_T_NAMESPACE_F, self.names.OP_GROUP_PARTY_T)
 
             # TODO: Gui should allow users to ented namespace, local_id and date values
             #new_feature.setAttribute("p_espacio_de_nombres", self.names.OP_GROUP_PARTY_T)

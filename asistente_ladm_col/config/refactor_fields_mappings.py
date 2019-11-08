@@ -23,8 +23,8 @@ class RefactorFieldsMappings:
                 {'expression': '"{}"'.format(self.names.COL_POINT_T_INTERPOLATION_POSITION_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_INTERPOLATION_POSITION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_POINT_T_MONUMENTATION_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_MONUMENTATION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_POINT_T_PRODUCTION_METHOD_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_PRODUCTION_METHOD_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(self.names.COL_POINT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_POINT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_POINT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_POINT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
@@ -39,8 +39,8 @@ class RefactorFieldsMappings:
                 {'expression': '"{}"'.format(self.names.COL_POINT_T_INTERPOLATION_POSITION_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_INTERPOLATION_POSITION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_POINT_T_MONUMENTATION_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_MONUMENTATION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_POINT_T_PRODUCTION_METHOD_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_PRODUCTION_METHOD_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(self.names.COL_POINT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_POINT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_POINT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_POINT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
@@ -54,8 +54,8 @@ class RefactorFieldsMappings:
                 {'expression': '"{}"'.format(self.names.COL_POINT_T_INTERPOLATION_POSITION_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_INTERPOLATION_POSITION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_POINT_T_MONUMENTATION_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_MONUMENTATION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_POINT_T_PRODUCTION_METHOD_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_PRODUCTION_METHOD_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(self.names.COL_POINT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_POINT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_POINT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_POINT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
@@ -63,22 +63,24 @@ class RefactorFieldsMappings:
             mapping = [
                 {'expression': '"{}"'.format(self.names.OP_BOUNDARY_T_LENGTH_F), 'length': 6, 'name': '{}'.format(self.names.OP_BOUNDARY_T_LENGTH_F), 'precision': 1, 'type': 6},
                 {'expression': '"{}"'.format(self.names.COL_BFS_T_TEXTUAL_LOCATION_F), 'length': 255, 'name': '{}'.format(self.names.COL_BFS_T_TEXTUAL_LOCATION_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_POINT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_POINT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_POINT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_POINT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
         elif layer_name == self.names.OP_PLOT_T:
             mapping = [
-                {'expression': '{}'.format(self.names.OP_PLOT_T_PLOT_AREA_F), 'length': 15, 'name': '{}'.format(self.names.OP_PLOT_T_PLOT_AREA_F), 'precision': 1, 'type': 6},
+                {'expression': '"{}"'.format(self.names.OP_PLOT_T_PLOT_AREA_F), 'length': 15, 'name': '{}'.format(self.names.OP_PLOT_T_PLOT_AREA_F), 'precision': 1, 'type': 6},
                 {'expression': '"{}"'.format(self.names.OP_PLOT_T_PLOT_VALUATION_F), 'length': 16, 'name': '{}'.format(self.names.OP_PLOT_T_PLOT_VALUATION_F), 'precision': 1, 'type': 6},
+                {'expression': '"{}"'.format(self.names.OP_PLOT_T_BLOCK_VILLAGE_CODE_F), 'length': 17, 'name': '{}'.format(self.names.OP_PLOT_T_BLOCK_VILLAGE_CODE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OP_PLOT_T_NUMBER_OF_UNDERGROUND_ROOMS_F), 'length': -1, 'name': '{}'.format(self.names.OP_PLOT_T_NUMBER_OF_UNDERGROUND_ROOMS_F), 'precision': 0, 'type': 2},
                 {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'length': -1, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_LABEL_F), 'length': 255, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_LABEL_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'length': -1, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
-                {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
+                {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10}
             ]
         elif layer_name == self.names.OP_PARCEL_T:
             mapping = [
@@ -94,8 +96,8 @@ class RefactorFieldsMappings:
                 {'expression': '"{}"'.format(self.names.OP_PARCEL_T_TYPE_F), 'length': -1, 'name': '{}'.format(self.names.OP_PARCEL_T_TYPE_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.OP_PARCEL_T_ADDRESS_F), 'length': 255, 'name': '{}'.format(self.names.OP_PARCEL_T_ADDRESS_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.COL_BAUNIT_T_NAME_F), 'length': 255, 'name': '{}'.format(self.names.COL_BAUNIT_T_NAME_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_BAUNIT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_BAUNIT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_BAUNIT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_BAUNIT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
@@ -112,8 +114,8 @@ class RefactorFieldsMappings:
                 {'expression': '"{}"'.format(self.names.OP_PARTY_T_ETHNIC_GROUP_F), 'length': -1, 'name': '{}'.format(self.names.OP_PARTY_T_ETHNIC_GROUP_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.OP_PARTY_T_BUSINESS_NAME_F), 'length': 255, 'name': '{}'.format(self.names.OP_PARTY_T_BUSINESS_NAME_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.COL_PARTY_T_NAME_F), 'length': 255, 'name': '{}'.format(self.names.COL_PARTY_T_NAME_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_PARTY_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_PARTY_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_PARTY_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_PARTY_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
@@ -125,8 +127,8 @@ class RefactorFieldsMappings:
                 {'expression': '"{}"'.format(self.names.COL_ADMINISTRATIVE_SOURCE_T_SOURCE_NUMBER_F), 'length': 150, 'name': '{}'.format(self.names.COL_ADMINISTRATIVE_SOURCE_T_SOURCE_NUMBER_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'length': -1, 'name': '{}'.format(self.names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_SOURCE_T_MAIN_TYPE_F), 'length': -1, 'name': '{}'.format(self.names.COL_SOURCE_T_MAIN_TYPE_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(self.names.COL_SOURCE_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_SOURCE_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_SOURCE_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_SOURCE_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.COL_SOURCE_T_OFFICIAL_F), 'length': -1, 'name': '{}'.format(self.names.COL_SOURCE_T_OFFICIAL_F), 'precision': -1, 'type': 1},
                 {'expression': '"{}"'.format(self.names.COL_SOURCE_T_DATE_DOCUMENT_F), 'length': -1, 'name': '{}'.format(self.names.COL_SOURCE_T_DATE_DOCUMENT_F), 'precision': -1, 'type': 14}
             ]
@@ -135,50 +137,65 @@ class RefactorFieldsMappings:
                 {'expression': '"{}"'.format(self.names.COL_SPATIAL_SOURCE_T_TYPE_F), 'length': -1, 'name': '{}'.format(self.names.COL_SPATIAL_SOURCE_T_TYPE_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'length': -1, 'name': '{}'.format(self.names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_SOURCE_T_MAIN_TYPE_F), 'length': -1, 'name': '{}'.format(self.names.COL_SOURCE_T_MAIN_TYPE_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(self.names.COL_SOURCE_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_SOURCE_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_SOURCE_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_SOURCE_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.COL_SOURCE_T_OFFICIAL_F), 'length': -1, 'name': '{}'.format(self.names.COL_SOURCE_T_OFFICIAL_F), 'precision': -1, 'type': 1},
                 {'expression': '"{}"'.format(self.names.COL_SOURCE_T_DATE_DOCUMENT_F), 'length': -1, 'name': '{}'.format(self.names.COL_SOURCE_T_DATE_DOCUMENT_F), 'precision': -1, 'type': 14}
             ]
         elif layer_name == self.names.OP_BUILDING_T:
             mapping = [
-                {'expression': '"{}"'.format(self.names.OP_BUILDING_T_BUILDING_AREA_F), 'length': 15, 'name': '{}'.format(self.names.OP_BUILDING_T_BUILDING_AREA_F), 'precision': 1, 'type': 6},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_T_IDENTIFIER_F), 'length': 2, 'name': '{}'.format(self.names.OP_BUILDING_T_IDENTIFIER_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.OP_BUILDING_T_NUMBER_OF_FLOORS_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_T_NUMBER_OF_FLOORS_F), 'precision': 0, 'type': 2},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_T_BUILDING_TYPE_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_T_BUILDING_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_T_DOMAIN_TYPE_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_T_DOMAIN_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_T_NUMBER_OF_MEZZANINE_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_T_NUMBER_OF_MEZZANINE_F), 'precision': 0, 'type': 2},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_T_NUMBER_OF_BASEMENT_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_T_NUMBER_OF_BASEMENT_F), 'precision': 0, 'type': 2},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_T_NUMBER_OF_LOOKOUT_BASEMENT_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_T_NUMBER_OF_LOOKOUT_BASEMENT_F), 'precision': 0, 'type': 2},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_T_BUILDING_CODE_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_T_BUILDING_CODE_F), 'precision': 0, 'type': 2},
                 {'expression': '"{}"'.format(self.names.OP_BUILDING_T_BUILDING_VALUATION_F), 'length': 16, 'name': '{}'.format(self.names.OP_BUILDING_T_BUILDING_VALUATION_F), 'precision': 1, 'type': 6},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_T_BUILDING_AREA_F), 'length': 15, 'name': '{}'.format(self.names.OP_BUILDING_T_BUILDING_AREA_F), 'precision': 1, 'type': 6},
                 {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'length': -1, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_LABEL_F), 'length': 255, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_LABEL_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'length': -1, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
-                {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
+                {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10}
             ]
         elif layer_name == self.names.OP_BUILDING_UNIT_T:
             mapping = [
                 {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_IDENTIFICATION_F), 'length': 3, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_IDENTIFICATION_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_DOMAIN_TYPE_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_DOMAIN_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_BUILDING_TYPE_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_BUILDING_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_FLOOR_TYPE_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_FLOOR_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_FLOOR_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_FLOOR_F), 'precision': 0, 'type': 2},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_TOTAL_ROOMS_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_TOTAL_ROOMS_F), 'precision': 0, 'type': 2},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_TOTAL_BATHROOMS_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_TOTAL_BATHROOMS_F), 'precision': 0, 'type': 2},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_TOTAL_LOCALS_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_TOTAL_LOCALS_F), 'precision': 0, 'type': 2},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F), 'precision': 0, 'type': 2},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_USE_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_USE_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_YEAR_OF_BUILDING_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_YEAR_OF_BUILDING), 'precision': 0, 'type': 2},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_BUILDING_VALUATION_F), 'length': 16, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_BUILDING_VALUATION_F), 'precision': 1, 'type': 6},
                 {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_BUILT_AREA_F), 'length': 15, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_BUILT_AREA_F), 'precision': 1, 'type': 6},
                 {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F), 'length': 15, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F), 'precision': 1, 'type': 6},
-                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_USE_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_USE_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_NUMBER_OF_FLOORS_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_NUMBER_OF_FLOORS_F), 'precision': 0, 'type': 2},
-                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F), 'length': 16, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F), 'precision': 1, 'type': 6},
-                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_FLOOR_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_FLOOR_F), 'precision': 0, 'type': 2},
+                {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_OBSERVATIONS_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_OBSERVATIONS_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.OP_BUILDING_UNIT_T_BUILDING_F), 'length': -1, 'name': '{}'.format(self.names.OP_BUILDING_UNIT_T_BUILDING_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'length': -1, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_LABEL_F), 'length': 255, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_LABEL_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'length': -1, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
-                {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
-            ]
+                {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10}]
         elif layer_name == self.names.OP_RIGHT_T:
             mapping = [
                 {'expression': '"{}"'.format(self.names.OP_RIGHT_T_TYPE_F), 'length': -1, 'name': '{}'.format(self.names.OP_RIGHT_T_TYPE_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_RRR_T_DESCRIPTION_F), 'length': 255, 'name': '{}'.format(self.names.COL_RRR_T_DESCRIPTION_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.COL_RRR_T_SHARE_CHECK_F), 'length': -1, 'name': '{}'.format(self.names.COL_RRR_T_SHARE_CHECK_F), 'precision': -1, 'type': 1},
                 {'expression': '"{}"'.format(self.names.COL_RRR_T_EFFECTIVE_USAGE_F), 'length': 255, 'name': '{}'.format(self.names.COL_RRR_T_EFFECTIVE_USAGE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_RRR_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_RRR_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_RRR_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_RRR_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.COL_RRR_PARTY_T_OP_PARTY_F), 'length': -1, 'name': '{}'.format(self.names.COL_RRR_PARTY_T_OP_PARTY_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F), 'length': -1, 'name': '{}'.format(self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_BAUNIT_RRR_T_UNIT_F), 'length': -1, 'name': '{}'.format(self.names.COL_BAUNIT_RRR_T_UNIT_F), 'precision': 0, 'type': 4},
@@ -191,8 +208,8 @@ class RefactorFieldsMappings:
                 {'expression': '"{}"'.format(self.names.COL_RRR_T_DESCRIPTION_F), 'length': 255, 'name': '{}'.format(self.names.COL_RRR_T_DESCRIPTION_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.COL_RRR_T_SHARE_CHECK_F), 'length': -1, 'name': '{}'.format(self.names.COL_RRR_T_SHARE_CHECK_F), 'precision': -1, 'type': 1},
                 {'expression': '"{}"'.format(self.names.COL_RRR_T_EFFECTIVE_USAGE_F), 'length': 255, 'name': '{}'.format(self.names.COL_RRR_T_EFFECTIVE_USAGE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_RRR_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_RRR_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_RRR_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_RRR_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.COL_RRR_PARTY_T_OP_PARTY_F), 'length': -1, 'name': '{}'.format(self.names.COL_RRR_PARTY_T_OP_PARTY_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F), 'length': -1, 'name': '{}'.format(self.names.COL_RRR_PARTY_T_OP_GROUP_PARTY_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_BAUNIT_RRR_T_UNIT_F), 'length': -1, 'name': '{}'.format(self.names.COL_BAUNIT_RRR_T_UNIT_F), 'precision': 0, 'type': 4},
@@ -205,8 +222,8 @@ class RefactorFieldsMappings:
                 {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'length': -1, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_LABEL_F), 'length': 255, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_LABEL_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'length': -1, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_SPATIAL_UNIT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
@@ -321,7 +338,6 @@ class RefactorFieldsMappings:
         return mapping
 
     def get_refactor_fields_mapping_resolve_domains(self, layer_name, qgis_utils):
-        names = Names()
         mapping = []
 
         # --------------------------------
@@ -339,8 +355,8 @@ class RefactorFieldsMappings:
                  {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(self.names.COL_INTERPOLATION_TYPE_D, self.names.COL_POINT_T_INTERPOLATION_POSITION_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_INTERPOLATION_POSITION_F), 'precision': 0, 'type': 4},
                  {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(self.names.COL_MONUMENTATION_TYPE_D, self.names.COL_POINT_T_MONUMENTATION_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_MONUMENTATION_F), 'precision': 0, 'type': 4},
                  {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(self.names.COL_PRODUCTION_METHOD_TYPE_D, self.names.COL_POINT_T_PRODUCTION_METHOD_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_PRODUCTION_METHOD_F), 'precision': 0, 'type': 4},
-                 {'expression': '"{}"'.format(self.names.COL_POINT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_POINT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                 {'expression': '"{}"'.format(self.names.COL_POINT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_POINT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+                 {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                 {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                  {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
                  {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
@@ -355,8 +371,8 @@ class RefactorFieldsMappings:
                 {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(self.names.COL_INTERPOLATION_TYPE_D, self.names.COL_POINT_T_INTERPOLATION_POSITION_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_INTERPOLATION_POSITION_F), 'precision': 0, 'type': 4},
                 {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(self.names.COL_MONUMENTATION_TYPE_D, self.names.COL_POINT_T_MONUMENTATION_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_MONUMENTATION_F), 'precision': 0, 'type': 4},
                 {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(self.names.COL_PRODUCTION_METHOD_TYPE_D, self.names.COL_POINT_T_PRODUCTION_METHOD_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_PRODUCTION_METHOD_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(self.names.COL_POINT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_POINT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_POINT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_POINT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1,'type': 16}
             ]
@@ -370,8 +386,8 @@ class RefactorFieldsMappings:
                 {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(self.names.COL_INTERPOLATION_TYPE_D, self.names.COL_POINT_T_INTERPOLATION_POSITION_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_INTERPOLATION_POSITION_F), 'precision': 0, 'type': 4},
                 {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(self.names.COL_MONUMENTATION_TYPE_D, self.names.COL_POINT_T_MONUMENTATION_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_MONUMENTATION_F), 'precision': 0, 'type': 4},
                 {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(self.names.COL_PRODUCTION_METHOD_TYPE_D, self.names.COL_POINT_T_PRODUCTION_METHOD_F), 'length': -1, 'name': '{}'.format(self.names.COL_POINT_T_PRODUCTION_METHOD_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(self.names.COL_POINT_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.COL_POINT_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(self.names.COL_POINT_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.COL_POINT_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(self.names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(self.names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
                 {'expression': '"{}"'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(self.names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]

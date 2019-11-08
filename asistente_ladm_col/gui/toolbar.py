@@ -86,8 +86,8 @@ class ToolBar(QObject):
                 feature = QgsVectorLayerUtils().createFeature(layer, boundary_geom)
 
                 # TODO: Remove when local id and working space are defined
-                feature.setAttribute(self.names.COL_BFS_T_LOCAL_ID_F, 1)
-                feature.setAttribute(self.names.COL_BFS_T_NAMESPACE_F, self.names.OP_BOUNDARY_T)
+                feature.setAttribute(self.names.OID_T_LOCAL_ID_F, 1)
+                feature.setAttribute(self.names.OID_T_NAMESPACE_F, self.names.OP_BOUNDARY_T)
 
                 new_fix_boundary_features.append(feature)
 
@@ -187,6 +187,7 @@ class ToolBar(QObject):
 
         id_pairs = self.geometry.get_pair_boundary_boundary_point(layers[self.names.OP_BOUNDARY_T][LAYER],
                                                                   layers[self.names.OP_BOUNDARY_POINT_T][LAYER],
+                                                                  self.names.T_ID_F,
                                                                   use_selection=use_selection)
 
         if id_pairs:
@@ -283,6 +284,7 @@ class ToolBar(QObject):
 
         id_more_pairs, id_less_pairs = self.geometry.get_pair_boundary_plot(layers[self.names.OP_BOUNDARY_T][LAYER],
                                                                             layers[self.names.OP_PLOT_T][LAYER],
+                                                                            self.names.T_ID_F,
                                                                             use_selection=use_selection)
         if id_less_pairs:
             layers[self.names.LESS_BFS_T][LAYER].startEditing()

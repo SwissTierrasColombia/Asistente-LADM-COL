@@ -163,7 +163,7 @@ def unload_qgis_model_baker():
     if plugin_found:
         del(qgis.utils.plugins["QgisModelBaker"])
 
-def run_etl_model(input_layer, out_layer, ladm_col_layer_name=Names().OP_BOUNDARY_POINT_T):
+def run_etl_model(input_layer, out_layer, ladm_col_layer_name):
     import_processing()
     model = QgsApplication.processingRegistry().algorithmById("model:ETL-model")
 

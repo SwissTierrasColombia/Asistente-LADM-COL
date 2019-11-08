@@ -155,7 +155,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
             return None
 
         layers[self.names.OP_PLOT_T][LAYER].setSubsetString("")
-        plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db, parcels_t_ids, field_name=None, plot_layer=layers[self.names.OP_PLOT_T][LAYER], uebaunit_table=layers[self.names.COL_UE_BAUNIT_T][LAYER])
+        plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db, parcels_t_ids, None, plot_layer=layers[self.names.OP_PLOT_T][LAYER], uebaunit_table=layers[self.names.COL_UE_BAUNIT_T][LAYER])
 
         if plot_ids:
             action_zoom = QAction(QCoreApplication.translate("ChangesAllParcelsPanelWidget", "Zoom to related plots"))
@@ -219,7 +219,7 @@ class ChangesAllParcelsPanelWidget(QgsPanelWidget, WIDGET_UI):
         uebaunit_table = self.utils._official_layers[self.names.COL_UE_BAUNIT_T][LAYER] if inverse else self.utils._layers[self.names.COL_UE_BAUNIT_T][LAYER]
         plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._official_db if inverse else self.utils._db,
                                                                      parcels_t_ids,
-                                                                     field_name=None,  # Get QGIS ids
+                                                                     None,  # Get QGIS ids
                                                                      plot_layer=plot_layer,
                                                                      uebaunit_table=uebaunit_table)
 

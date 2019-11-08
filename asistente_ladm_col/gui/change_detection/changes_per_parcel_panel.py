@@ -225,9 +225,9 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         if official_parcels:
             official_plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._official_db,
                                               [official_parcels[0][self.names.T_ID_F]],
-                                              field_name = self.names.T_ID_F,
-                                              plot_layer = self.utils._official_layers[self.names.OP_PLOT_T][LAYER],
-                                              uebaunit_table = self.utils._official_layers[self.names.COL_UE_BAUNIT_T][LAYER])
+                                              self.names.T_ID_F,
+                                              plot_layer=self.utils._official_layers[self.names.OP_PLOT_T][LAYER],
+                                              uebaunit_table=self.utils._official_layers[self.names.COL_UE_BAUNIT_T][LAYER])
 
             if official_plot_t_ids:
                 self._current_official_substring = "\"{}\" IN ('{}')".format(self.names.T_ID_F, "','".join([str(t_id) for t_id in official_plot_t_ids]))
@@ -276,7 +276,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         if collected_parcel_t_id is not None:
             plot_t_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
                                                                            [collected_parcel_t_id],
-                                                                           field_name=self.names.T_ID_F,
+                                                                           self.names.T_ID_F,
                                                                            plot_layer=self.utils._layers[self.names.OP_PLOT_T][LAYER],
                                                                            uebaunit_table=self.utils._layers[self.names.COL_UE_BAUNIT_T][LAYER])
             if plot_t_ids:

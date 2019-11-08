@@ -582,7 +582,7 @@ class QGISUtils(QObject):
             if layer_name == self.names.EXT_ARCHIVE_S:
                 index = layer.fields().indexFromName(self.names.EXT_ARCHIVE_S_DATA_F)
             elif layer_name == self.names.OP_BUILDING_UNIT_T:
-                index = layer.fields().indexFromName(self.names.OP_BUILDING_UNIT_T_NUMBER_OF_FLOORS_F)
+                index = layer.fields().indexFromName(self.names.OP_BUILDING_UNIT_T_TOTAL_FLOORS_F)
 
             layer.setEditorWidgetSetup(index, editor_widget_setup)
 
@@ -741,7 +741,7 @@ class QGISUtils(QObject):
 
     def get_namespace_field_and_value(self, layer_name):
         namespace_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool)
-        namespace_field = self.names.COL_SPATIAL_UNIT_T_NAMESPACE_F
+        namespace_field = self.names.OID_T_NAMESPACE_F
 
         if namespace_field is not None:
             namespace = str(QSettings().value('Asistente-LADM_COL/automatic_values/namespace_prefix', ""))
@@ -753,7 +753,7 @@ class QGISUtils(QObject):
 
     def get_local_id_field_and_value(self, layer_name):
         local_id_enabled = QSettings().value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool)
-        local_id_field = self.names.COL_SPATIAL_UNIT_T_LOCAL_ID_F
+        local_id_field = self.names.OID_T_LOCAL_ID_F
 
         if local_id_field is not None:
             # Todo: Update expression to update local_id incrementally

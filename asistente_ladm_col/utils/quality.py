@@ -502,8 +502,7 @@ class QualityUtils(QObject):
                 self.log_message(QCoreApplication.translate("QGISUtils",
                                  "All boundary points are covered by plot nodes!"), Qgis.Success)
 
-    @staticmethod
-    def get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(boundary_point_layer, plot_layer, error_layer, topology_rule, id_field):
+    def get_boundary_points_features_not_covered_by_plot_nodes_and_viceversa(self, boundary_point_layer, plot_layer, error_layer, topology_rule, id_field):
         tmp_plot_nodes_layer = processing.run("native:extractvertices", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
 
         # layer is created with unique vertices
@@ -540,7 +539,7 @@ class QualityUtils(QObject):
                                                    {'INPUT': input_layer,
                                                     'JOIN': join_layer,
                                                     'PREDICATE': [0], # Intersects
-                                                    'JOIN_FIELDS': [Names().T_ID_F],
+                                                    'JOIN_FIELDS': [self.names.T_ID_F],
                                                     'METHOD': 0,
                                                     'DISCARD_NONMATCHING': False,
                                                     'PREFIX': '',
@@ -548,7 +547,7 @@ class QualityUtils(QObject):
         features = list()
 
         for feature in spatial_join_layer.getFeatures():
-            feature_id = feature[Names().T_ID_F]
+            feature_id = feature[self.names.T_ID_F]
             feature_geom = feature.geometry()
             new_feature = QgsVectorLayerUtils().createFeature(error_layer, feature_geom, {0: feature_id})
             features.append(new_feature)
@@ -686,7 +685,7 @@ class QualityUtils(QObject):
         list_less = [{'plot_id': feature[self.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.LESS_BFS_T_OP_BUILDING_F]}
                      for feature in less_layer.getFeatures(exp_less)]
 
-        tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(plot_layer)
+        tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(plot_layer, self.names.T_ID_F)
         inner_rings_layer = processing.run("native:addautoincrementalfield",
                                            {'INPUT': tmp_inner_rings_layer,
                                             'FIELD_NAME': 'AUTO',
@@ -984,7 +983,7 @@ class QualityUtils(QObject):
         list_less = [{'plot_id': feature[self.names.LESS_BFS_T_OP_PLOT_F], 'boundary_id': feature[self.names.LESS_BFS_T_OP_BUILDING_F]}
                      for feature in less_layer.getFeatures(exp_less)]
 
-        tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(plot_layer)
+        tmp_inner_rings_layer = self.qgis_utils.geometry.get_inner_rings_layer(plot_layer, self.names.T_ID_F)
         inner_rings_layer = processing.run("native:addautoincrementalfield",
                                            {'INPUT': tmp_inner_rings_layer,
                                             'FIELD_NAME': 'AUTO',

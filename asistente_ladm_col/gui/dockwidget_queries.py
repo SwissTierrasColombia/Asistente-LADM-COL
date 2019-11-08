@@ -23,9 +23,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               Qt, 
                               pyqtSignal, 
                               QUrl, 
-                              QEventLoop, 
-                              QTextStream, 
-                              QIODevice)
+                              QEventLoop)
 from qgis.PyQt.QtGui import (QColor, 
                              QIcon, 
                              QCursor, 
@@ -38,7 +36,6 @@ from qgis.PyQt.QtWidgets import (QMenu,
                                  QLabel)
 from qgis.core import (QgsWkbTypes,
                        Qgis,
-                       QgsMessageLog,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsExpression,

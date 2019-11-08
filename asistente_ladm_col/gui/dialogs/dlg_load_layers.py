@@ -63,8 +63,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         self.cbo_select_predefined_tables.setInsertPolicy(QComboBox.InsertAlphabetically)
         self.cbo_select_predefined_tables.addItem("", []) # By default
 
-        for name, layer_list in Names().get_layer_sets().items():
-            print(name, layer_list)
+        for name, layer_list in self.names.get_layer_sets().items():
             self.cbo_select_predefined_tables.addItem(name, layer_list)
 
         self.cbo_select_predefined_tables.currentIndexChanged.connect(self.select_predefined_changed)

@@ -51,7 +51,7 @@ class GeometryUtils(QObject):
         self.log = QgsApplication.messageLog()
         self.names = Names()
 
-    def get_pair_boundary_plot(self, boundary_layer, plot_layer, id_field=Names().T_ID_F, use_selection=True):
+    def get_pair_boundary_plot(self, boundary_layer, plot_layer, id_field, use_selection=True):
         id_field_idx = plot_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         polygons = plot_layer.getSelectedFeatures(request) if use_selection else plot_layer.getFeatures(request)
@@ -167,7 +167,7 @@ class GeometryUtils(QObject):
         gc.collect()
         return (intersect_more_pairs, intersect_less_pairs)
 
-    def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer, id_field=Names().T_ID_F, use_selection=True):
+    def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer, id_field, use_selection=True):
         id_field_idx = boundary_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         lines = boundary_layer.getSelectedFeatures(request) if use_selection else boundary_layer.getFeatures(request)
@@ -629,7 +629,7 @@ class GeometryUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         return spatial_join_layer.getFeatures(request)
 
-    def get_inner_rings_layer(self, plot_layer, id_field=Names().T_ID_F, use_selection=False):
+    def get_inner_rings_layer(self, plot_layer, id_field, use_selection=False):
         id_field_idx = plot_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         polygons = plot_layer.getSelectedFeatures(request) if use_selection else plot_layer.getFeatures(request)
