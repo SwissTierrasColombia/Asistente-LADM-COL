@@ -1,9 +1,27 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+                              Asistente LADM_COL
+                             --------------------
+        begin                : 2019-11-07
+        copyright            : (C) 2019 by Germán Carrillo (BSF Swissphoto)
+        email                : gcarrillo@linuxmail.org
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License v3.0 as          *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ ***************************************************************************/
+"""
+
 from copy import deepcopy
 
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 
-from .common_keys import *
+from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.utils.singleton import Singleton
 
 class Role_Registry(metaclass=Singleton):
@@ -85,7 +103,7 @@ class Role_Registry(metaclass=Singleton):
 
         role = ADVANCED_ROLE
         role_dict = {
-            ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Avanzado"),
+            ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Advanced"),
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The advanced role has access to all the functionality."),
             ROLE_ACTIONS: [ALL_ACTIONS],
@@ -275,15 +293,21 @@ class Role_Registry(metaclass=Singleton):
 
     def set_active_role(self, role_key):
         res = False
-        if role_key in self._registered_roles[role_key]:
+        if role_key in self._registered_roles:
             res = True
         else:
             print("Role '{}' was not found, returning default role's decription.".format(role_key))  # TODO: Al logger
             role_key = self._default_role
 
         QSettings().setValue("Asistente-LADM_COL/roles/current_role_key", role_key)
+        print("Role '{}' is now active!".format(role_key))  # TODO: Al logger
 
         return res
+
+    def set_active_default_role(self):
+        QSettings().setValue("Asistente-LADM_COL/roles/current_role_key", self._default_role)
+        print("Default role '{}' is now active!".format(self._default_role))  # TODO: Al logger
+        return True
 
     def get_roles_info(self):
         return {k: v[ROLE_NAME] for k,v in self._registered_roles.items()}

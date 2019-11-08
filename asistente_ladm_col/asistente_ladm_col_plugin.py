@@ -42,15 +42,11 @@ from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.enums import WizardTypeEnum
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       ANT_MAP_REPORT,
-                                                      CADASTRE_MENU_OBJECTNAME,
-                                                      LADM_COL_MENU_OBJECTNAME,
-                                                      PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
                                                       OFFICIAL_DB_SOURCE,
                                                       PLUGIN_NAME,
                                                       PLUGIN_VERSION,
                                                       QUERIES_ACTION_OBJECTNAME,
                                                       RELEASE_URL,
-                                                      REPORTS_MENU_OBJECTNAME,
                                                       URL_REPORTS_LIBRARIES,
                                                       TOOLBAR_BUILD_BOUNDARY,
                                                       TOOLBAR_MOVE_NODES,
@@ -60,8 +56,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
                                                       TOOLBAR_FINALIZE_GEOMETRY_CREATION,
                                                       ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME,
-                                                      VALUATION_MENU_OBJECTNAME,
-                                                      NATIONAL_LAND_AGENCY, WIZARD_TYPE,
+                                                      WIZARD_TYPE,
                                                       WIZARD_CLASS,
                                                       WIZARD_CREATE_COL_PARTY_CADASTRAL,
                                                       WIZARD_CREATE_ADMINISTRATIVE_SOURCE_CADASTRE,
@@ -82,9 +77,8 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_LAYERS,
                                                       WIZARD_TOOL_NAME)
 from asistente_ladm_col.config.wizard_config import WIZARDS_SETTINGS
-from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # Registers it in QgsExpression
 from asistente_ladm_col.config.gui.common_keys import *
-from asistente_ladm_col.config.gui.gui_builder import GUI_Builder
+from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
@@ -95,6 +89,7 @@ from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_official_data_settings import OfficialDataSettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.gui.dialogs.dlg_welcome_screen import WelcomeScreenDialog
 from asistente_ladm_col.gui.dockwidget_queries import DockWidgetQueries
 from asistente_ladm_col.gui.reports import ReportGenerator
 from asistente_ladm_col.gui.right_of_way import RightOfWay
@@ -143,6 +138,10 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self.create_actions()
         self.set_connections()
+
+        # Ask for role name before building the GUI
+        dlg_welcome = WelcomeScreenDialog(self.qgis_utils, self.main_window)
+        dlg_welcome.exec_()
 
         if not qgis.utils.active_plugins:
             self.iface.initializationCompleted.connect(self.call_refresh_gui)
@@ -206,7 +205,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.refresh_gui(self.get_db_connection(), None)
 
     def refresh_gui(self, db, res):
-        self.gui_builder.build_gui(db, res, OPERATOR_ROLE)
+        self.gui_builder.build_gui(db, res)
 
     def create_toolbar_actions(self):
         self._finalize_geometry_creation_action = QAction(

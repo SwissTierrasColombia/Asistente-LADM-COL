@@ -35,6 +35,7 @@
     <file>resources/images/move_nodes.svg</file>
     <file>resources/images/settings.svg</file>
     <file>resources/images/info.svg</file>
+    <file>resources/images/change_detection.svg</file>
     <file>resources/csv/template_boundary_points.csv</file>
     <file>resources/csv/template_survey_points.csv</file>
     <file>resources/csv/template_control_points.csv</file>

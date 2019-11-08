@@ -1,12 +1,30 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+                              Asistente LADM_COL
+                             --------------------
+        begin                : 2019-11-07
+        copyright            : (C) 2019 by Germán Carrillo (BSF Swissphoto)
+        email                : gcarrillo@linuxmail.org
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License v3.0 as          *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ ***************************************************************************/
+"""
+
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QMenu,
                                  QPushButton,
                                  QToolBar)
 
-from .common_keys import *
-from .gui_config import GUI_Config
-from .role_registry import Role_Registry
+from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.gui.gui_config import GUI_Config
+from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
 
 class GUI_Builder():
     """
@@ -26,7 +44,7 @@ class GUI_Builder():
     def register_actions(self, dict_key_action):
         self._registered_actions.update(dict_key_action)
 
-    def build_gui(self, db, test_conn_result, role_key):
+    def build_gui(self, db, test_conn_result):
         """
         Build the plugin gui according to configurations.
         We first check if the DB is LADM, if not, we use a default gui configuration. Otherwise we ask the role_key for
@@ -34,17 +52,13 @@ class GUI_Builder():
 
         :param db: DBConnector object
         :param test_conn_result: Can be True or False if test_connection was called, or None if we should call it now.
-        :param role_key: Role key for whom the GUI will be built.
         :return:
         """
-        print("Before unload")
         self.unload_gui(final_unload=False)  # First clear everything
-        print("After unload")
 
         # Filter menus and actions and get a gui_config with the proper structure ready to build the GUI (e.g., with no
         # empty Menus)
-        gui_config = self._get_filtered_gui_config(db, test_conn_result, role_key)
-        print("After get filtered gui config")
+        gui_config = self._get_filtered_gui_config(db, test_conn_result)
 
         for component, values in gui_config.items():
             if component == MAIN_MENU:
@@ -63,18 +77,18 @@ class GUI_Builder():
 
                     self.toolbars.append(toolbar)
 
-    def _get_filtered_gui_config(self, db, test_conn_result, role_key):
+    def _get_filtered_gui_config(self, db, test_conn_result):
         """
         Rebuilds a gui_config dict removing not allowed actions.
 
         :param db: DB Connector
         :param test_conn_result: True if the DB is LADM; False if not; None if test_connection has not been called yet.
                                  This is mainly to avoid recalling test_connection if we already know its result.
-        :param role_key: Role key for whom the GUI will be built. Normally, it should be the active role.
         :return: Dictionary in the form of a gui_config dict, but with only allowed actions for the role_key passed.
         """
+        role_key = Role_Registry().get_active_role()
         gui_config = self._get_gui_config(db, test_conn_result, role_key)
-        print("gui config dict:", gui_config)
+        # print("gui config dict:", gui_config) TODO: Al logger
         role_actions = self._get_role_actions(role_key)
         model_actions = self._get_model_actions(db)
 
@@ -86,7 +100,7 @@ class GUI_Builder():
         # F  V    F
         # F  F    F
         allowed_actions = role_actions  # It's safe to make use of this list, no need to copy it, as it is a sum of lists
-        print("Allowed actions for role {}".format(role_key), allowed_actions)
+        # print("Allowed actions for role {}".format(role_key), allowed_actions) TODO: Al logger
 
         filtered_gui_config = dict()
         for k,v in gui_config.items():
@@ -155,7 +169,7 @@ class GUI_Builder():
         :param db: DB Connector
         :param test_conn_result: True if the DB is LADM; False if not; None if test_connection has not been called yet.
                                  This is mainly to avoid recalling test_connection if we already know its result.
-        :param role_key: Active role key to whome we will ask for its GUI config. Normally, it should be the active one.
+        :param role_key: Active role key to whom we will ask for its GUI config. Normally, it should be the active one.
         :return: Dictionary in the form of a gui_config dict (still unfiltered).
         """
         gui_type = DEFAULT_GUI  # If test_connection is False, we use a default gui config
@@ -165,12 +179,12 @@ class GUI_Builder():
         if test_conn_result:
             gui_config = Role_Registry().get_role_gui_config(role_key)
             if gui_config:
-                print("GUI CONFIG ROLE")
+                # print("GUI CONFIG ROLE") TODO: Al logger
                 return gui_config  # We'll use the dict specified for the role
             else:
                 gui_type = TEMPLATE_GUI  # If the role has not a gui_dict, we use a template.
 
-        print("GUI CONFIG: {}".format(gui_type))
+        # print("GUI CONFIG: {}".format(gui_type)) TODO: Al logger
 
         return GUI_Config().get_gui_dict(gui_type)
 
@@ -229,7 +243,7 @@ class GUI_Builder():
 
     def _build_menu(self, menu_def):
         menu = self.iface.mainWindow().findChild(QMenu, menu_def[OBJECT_NAME])
-        print("build_menu:",menu is None, menu_def[WIDGET_NAME])
+        # print("build_menu:",menu is None, menu_def[WIDGET_NAME]) TODO: Al logger
         if menu is None:
             menu = QMenu(menu_def[WIDGET_NAME], self.iface.mainWindow().menuBar())
             if ICON in menu_def:

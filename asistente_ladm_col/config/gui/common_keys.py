@@ -23,7 +23,7 @@ ROLE_ACTIONS = 'role_actions'
 ROLE_NAME = 'role_name'
 ROLE_DESCRIPTION = 'role_description'
 ROLE_GUI_CONFIG = 'role_gui_config'
-BASIC_ROLE = 'BASIC_role'
+BASIC_ROLE = 'basic_role'
 OPERATOR_ROLE = 'operator_role'
 MANAGER_ROLE = 'manager_role'
 ADVANCED_ROLE = 'advanced_role'
@@ -84,7 +84,7 @@ RRR_ICON = ":/Asistente-LADM_COL/resources/images/rrr.png"
 PARTY_ICON = ":/Asistente-LADM_COL/resources/images/party.png"
 SOURCE_ICON = ":/Asistente-LADM_COL/resources/images/source.png"
 REPORTS_ICON = ":/Asistente-LADM_COL/resources/images/domains.png"
-CHANGE_DETECTION_ICON = ":/Asistente-LADM_COL/resources/images/surveying.png"
+CHANGE_DETECTION_ICON = ":/Asistente-LADM_COL/resources/images/change_detection.svg"
 
 MODELS_GUI_DICT = {
     OPERATION_MODEL_PREFIX: [
