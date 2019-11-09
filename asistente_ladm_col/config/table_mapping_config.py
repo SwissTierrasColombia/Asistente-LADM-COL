@@ -1,5 +1,7 @@
 from qgis.core import NULL
 
+from asistente_ladm_col.utils.singleton import Singleton
+
 TABLE_NAME = 'table_name'
 VARIABLE_NAME = 'variable'
 FIELDS_DICT = 'fields_dict'
@@ -7,14 +9,6 @@ T_ID = 't_id'
 DESCRIPTION = 'description'
 ILICODE = 'ilicode'
 DISPLAY_NAME = 'display_name'
-
-
-class Singleton(type):
-    _instances = {}
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
 
 
 class Names(metaclass=Singleton):
@@ -1198,6 +1192,7 @@ class Names(metaclass=Singleton):
         :param models: List of model prefixes present in the db
         :return: Tuple (bool: Names are valid or not, string: Message to indicate what exactly failed)
         """
+        debug = False
         required_names = ["T_ID_F",
                           "ILICODE_F",
                           "DESCRIPTION_F",
@@ -1210,13 +1205,15 @@ class Names(metaclass=Singleton):
                     if k1.split(".")[0] in models:
                         required_names.append(v1)
 
-        print(required_names)
+        if debug:
+            print(required_names)
         names_not_found = list()
         for required_name in required_names:
             if getattr(self, required_name) is None:
                 names_not_found.append(required_name)
 
-        print("Names not found:", set(names_not_found))
+        if debug:
+            print("Names not found:", set(names_not_found))
         if names_not_found:
             return (False, "Name '{}' was not found!".format(names_not_found[0]))
 

@@ -22,11 +22,14 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
                               QCoreApplication)
 from qgis.PyQt.QtWidgets import (QDialog,
-                                 QSizePolicy)
+                                 QSizePolicy,
+                                 QVBoxLayout,
+                                 QRadioButton)
 from qgis.core import (Qgis,
                        QgsApplication)
 from qgis.gui import QgsMessageBar
 
+from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
 from ...config.config_db_supported import ConfigDbSupported
 from ...config.general_config import (DEFAULT_TOO_LONG_BOUNDARY_SEGMENTS_TOLERANCE,
                                       PLUGIN_NAME,
@@ -43,8 +46,8 @@ DIALOG_UI = get_ui_class('dialogs/dlg_settings.ui')
 
 
 class SettingsDialog(QDialog, DIALOG_UI):
-    db_connection_changed = pyqtSignal(DBConnector, bool) # dbconn, ladm_col_db
-    organization_tools_changed = pyqtSignal(str)
+    db_connection_changed = pyqtSignal(DBConnector, bool)  # dbconn, ladm_col_db
+    active_role_changed = pyqtSignal()
 
     def __init__(self, parent=None, qgis_utils=None, conn_manager=None):
         QDialog.__init__(self, parent)
@@ -54,8 +57,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self._db = None
         self.qgis_utils = qgis_utils
         self.db_source = COLLECTED_DB_SOURCE
-
-        self.ant_tools_initial_chk_value = None
 
         self._action_type = None
         self.conf_db = ConfigDbSupported()
@@ -98,8 +99,33 @@ class SettingsDialog(QDialog, DIALOG_UI):
         # Trigger some default behaviours
         self.restore_settings()
 
+        self.roles = Role_Registry()
+        self.load_roles()
+
         self.cbo_db_source.currentIndexChanged.connect(self.db_source_changed)
         self.rejected.connect(self.close_dialog)
+
+    def load_roles(self):
+        """
+        Initialize group box for selecting the active role
+        """
+        self.gbx_active_role_layout = QVBoxLayout()
+        dict_roles = self.roles.get_roles_info()
+        checked = False
+
+        # Initialize radio buttons
+        for k, v in dict_roles.items():
+            radio = QRadioButton(v)
+            radio.setToolTip(self.roles.get_role_description(k))
+
+            if not checked:  # Only for the first item
+                if k == self.roles.get_active_role():
+                    radio.setChecked(True)
+                    checked = True
+
+            self.gbx_active_role_layout.addWidget(radio)
+
+        self.gbx_active_role.setLayout(self.gbx_active_role_layout)
 
     def close_dialog(self):
         self.close()
@@ -192,10 +218,29 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.save_settings()
             QDialog.accept(self)
 
-        if self.chk_ant_tools.isChecked() != self.ant_tools_initial_chk_value:
-            self.organization_tools_changed.emit(NATIONAL_LAND_AGENCY)
+        # If active role changed, refresh theg GUI
+        selected_role = self.get_selected_role()
+        if self.roles.get_active_role() != selected_role:
+            self.roles.set_active_role(selected_role)
+            self.active_role_changed.emit()
 
         self.close()
+
+    def get_selected_role(self):
+        selected_role = None
+        radio_checked = None
+        for i in range(self.gbx_active_role_layout.count()):
+            radio = self.gbx_active_role_layout.itemAt(i).widget()
+            if radio.isChecked():
+                radio_checked = radio.text()
+                break
+
+        for k, v in self.roles.get_roles_info().items():
+            if v == radio_checked:
+                selected_role = k
+                break
+
+        return selected_role  # Role key
 
     def reject(self):
         self.done(0)
@@ -234,7 +279,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM_COL/automatic_values/automatic_values_in_batch_mode', self.chk_automatic_values_in_batch_mode.isChecked())
         settings.setValue('Asistente-LADM_COL/sources/document_repository', self.connection_box.isChecked())
 
-        settings.setValue('Asistente-LADM_COL/advanced_settings/ant_tools', self.chk_ant_tools.isChecked())
         settings.setValue('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
 
         endpoint = self.txt_service_endpoint.text().strip()
@@ -298,9 +342,6 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM_COL/automatic_values/namespace_enabled', True, bool))
         self.chk_local_id.setChecked(settings.value('Asistente-LADM_COL/automatic_values/local_id_enabled', True, bool))
         self.txt_namespace.setText(str(settings.value('Asistente-LADM_COL/automatic_values/namespace_prefix', "")))
-
-        self.ant_tools_initial_chk_value = settings.value('Asistente-LADM_COL/advanced_settings/ant_tools', False, bool)
-        self.chk_ant_tools.setChecked(self.ant_tools_initial_chk_value)
 
         self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM_COL/advanced_settings/validate_data_importing_exporting', True, bool))
 

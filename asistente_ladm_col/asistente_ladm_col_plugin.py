@@ -30,7 +30,6 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal)
 from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import (QAction,
-                                 QMenu,
                                  QPushButton,
                                  QProgressBar)
 from qgis.core import (Qgis,
@@ -42,18 +41,12 @@ from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.enums import WizardTypeEnum
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       ANT_MAP_REPORT,
-                                                      CADASTRE_MENU_OBJECTNAME,
-                                                      LADM_COL_MENU_OBJECTNAME,
-                                                      PROPERTY_RECORD_CARD_MENU_OBJECTNAME,
                                                       OFFICIAL_DB_SOURCE,
                                                       PLUGIN_NAME,
                                                       PLUGIN_VERSION,
                                                       QUERIES_ACTION_OBJECTNAME,
                                                       RELEASE_URL,
-                                                      REPORTS_MENU_OBJECTNAME,
                                                       URL_REPORTS_LIBRARIES,
-                                                      TOOLBAR_NAME,
-                                                      TOOLBAR_ID,
                                                       TOOLBAR_BUILD_BOUNDARY,
                                                       TOOLBAR_MOVE_NODES,
                                                       TOOLBAR_FILL_POINT_BFS,
@@ -62,8 +55,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
                                                       TOOLBAR_FINALIZE_GEOMETRY_CREATION,
                                                       ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME,
-                                                      VALUATION_MENU_OBJECTNAME,
-                                                      NATIONAL_LAND_AGENCY, WIZARD_TYPE,
+                                                      WIZARD_TYPE,
                                                       WIZARD_CLASS,
                                                       WIZARD_CREATE_COL_PARTY_CADASTRAL,
                                                       WIZARD_CREATE_ADMINISTRATIVE_SOURCE_CADASTRE,
@@ -84,11 +76,12 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_LAYERS,
                                                       WIZARD_TOOL_NAME)
 from asistente_ladm_col.config.wizard_config import WizardConfig
+from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.gui.gui_builder.gui_builder import GUI_Builder
 from asistente_ladm_col.config.expression_functions import get_domain_code_from_value  # Registers it in QgsExpression
 from asistente_ladm_col.data.ladm_data import LADM_DATA
 from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import DockWidgetChangeDetection
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
-from asistente_ladm_col.gui.dialogs.dlg_controlled_measurement import ControlledMeasurementDialog
 from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
 from asistente_ladm_col.gui.dialogs.dlg_load_layers import LoadLayersDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
@@ -96,6 +89,7 @@ from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_official_data_settings import OfficialDataSettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
+from asistente_ladm_col.gui.dialogs.dlg_welcome_screen import WelcomeScreenDialog
 from asistente_ladm_col.gui.dockwidget_queries import DockWidgetQueries
 from asistente_ladm_col.gui.reports import ReportGenerator
 from asistente_ladm_col.gui.right_of_way import RightOfWay
@@ -122,69 +116,56 @@ class AsistenteLADMCOLPlugin(QObject):
     def __init__(self, iface):
         QObject.__init__(self)
         self.iface = iface
+        self.main_window = self.iface.mainWindow()
         self.log = QgsApplication.messageLog()
         self._about_dialog = None
         self._dock_widget_queries = None
         self._dock_widget_change_detection = None
         self.toolbar = None
         self.wiz_address = None
-        self._report_menu = None
         self.conn_manager = ConnectionManager()
-        self._db = self.get_db_connection()
         self.wiz = None
         self.is_wizard_open = False  # Helps to make the plugin modules aware of open wizards
         self.wizard_config = WizardConfig()
+        self.gui_builder = GUI_Builder(self.iface)
 
     def initGui(self):
-        # Set Menus
-        icon = QIcon(":/Asistente-LADM_COL/resources/images/icon.png")
-        self._menu = QMenu("LAD&M_COL", self.iface.mainWindow().menuBar())
-        self._menu.setObjectName(LADM_COL_MENU_OBJECTNAME)
-        actions = self.iface.mainWindow().menuBar().actions()
-        if len(actions) > 0:
-            last_action = actions[-1]
-            self.iface.mainWindow().menuBar().insertMenu(last_action, self._menu)
-        else:
-            self.iface.mainWindow().menuBar().addMenu(self._menu)
-
         self.qgis_utils = QGISUtils(self.iface.layerTreeView())
         self.right_of_way = RightOfWay(self.iface, self.qgis_utils)
         self.quality = QualityUtils(self.qgis_utils)
-        self.toolbar = ToolBar(self.iface, self.qgis_utils, self._db)
+        self.toolbar = ToolBar(self.iface, self.qgis_utils, self.get_db_connection())
         self.ladm_data = LADM_DATA(self.qgis_utils)
         self.report_generator = ReportGenerator(self.qgis_utils, self.ladm_data)
 
-        # Menus
-        self.add_cadastre_menu()
+        self.create_actions()
+        self.set_connections()
 
-        self._menu.addSeparator()
-        self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"), self.iface.mainWindow())
-        self._queries_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Queries"), self.iface.mainWindow())
-        self._queries_action.setObjectName(QUERIES_ACTION_OBJECTNAME)
-        self._menu.addActions([self._load_layers_action, self._queries_action])
-        self.configure_reports_menu()
-        self._menu.addSeparator()
-        self.add_changes_menu()
-        self._menu.addSeparator()
-        self.add_data_management_menu()
-        self._settings_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"), self.iface.mainWindow())
-        self._help_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"), self.iface.mainWindow())
-        self._about_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"), self.iface.mainWindow())
-        self._menu.addActions([self._settings_action,
-                               self._help_action,
-                               self._about_action])
+        # Ask for role name before building the GUI
+        dlg_welcome = WelcomeScreenDialog(self.qgis_utils, self.main_window)
+        dlg_welcome.exec_()
 
-        # Connections
-        self._import_schema_action.triggered.connect(self.call_dlg_import_schema)
-        self._import_data_action.triggered.connect(self.show_dlg_import_data)
-        self._export_data_action.triggered.connect(self.show_dlg_export_data)
-        self._controlled_measurement_action.triggered.connect(self.show_dlg_controlled_measurement)
-        self._queries_action.triggered.connect(self.show_queries)
-        self._load_layers_action.triggered.connect(self.load_layers_from_qgis_model_baker)
-        self._settings_action.triggered.connect(self.show_settings)
-        self._help_action.triggered.connect(self.show_help)
-        self._about_action.triggered.connect(self.show_about_dialog)
+        if not qgis.utils.active_plugins:
+            self.iface.initializationCompleted.connect(self.call_refresh_gui)
+        else:
+            self.call_refresh_gui()
 
+        # Add LADM_COL provider and models to QGIS
+        self.ladm_col_provider = LADMCOLAlgorithmProvider()
+        QgsApplication.processingRegistry().addProvider(self.ladm_col_provider)
+        if QgsApplication.processingRegistry().providerById('model'):
+            self.add_processing_models(None)
+        else: # We need to wait until processing is initialized
+            QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_models)
+
+    def create_actions(self):
+        self.create_operation_actions()
+        self.create_cadastre_form_actions()
+        self.create_valuation_actions()
+        self.create_change_detection_actions()
+        self.create_toolbar_actions()
+        self.create_generic_actions()
+
+    def set_connections(self):
         self.report_generator.enable_action_requested.connect(self.enable_action)
 
         self.qgis_utils.action_add_feature_requested.connect(self.trigger_add_feature)
@@ -195,15 +176,17 @@ class AsistenteLADMCOLPlugin(QObject):
         self.qgis_utils.create_progress_message_bar_emitted.connect(self.create_progress_message_bar)
         self.qgis_utils.remove_error_group_requested.connect(self.remove_error_group)
         self.qgis_utils.layer_symbology_changed.connect(self.refresh_layer_symbology)
-        self.conn_manager.db_connection_changed.connect(self.refresh_menus)
-        self.qgis_utils.organization_tools_changed.connect(self.refresh_organization_tools)
+        self.conn_manager.db_connection_changed.connect(self.refresh_gui)
         self.qgis_utils.message_emitted.connect(self.show_message)
         self.qgis_utils.message_with_duration_emitted.connect(self.show_message)
         self.qgis_utils.message_with_button_load_layer_emitted.connect(self.show_message_to_load_layer)
         self.qgis_utils.message_with_button_load_layers_emitted.connect(self.show_message_to_load_layers)
-        self.qgis_utils.message_with_open_table_attributes_button_emitted.connect(self.show_message_with_open_table_attributes_button)
-        self.qgis_utils.message_with_button_download_report_dependency_emitted.connect(self.show_message_to_download_report_dependency)
-        self.qgis_utils.message_with_button_remove_report_dependency_emitted.connect(self.show_message_to_remove_report_dependency)
+        self.qgis_utils.message_with_open_table_attributes_button_emitted.connect(
+            self.show_message_with_open_table_attributes_button)
+        self.qgis_utils.message_with_button_download_report_dependency_emitted.connect(
+            self.show_message_to_download_report_dependency)
+        self.qgis_utils.message_with_button_remove_report_dependency_emitted.connect(
+            self.show_message_to_remove_report_dependency)
         self.qgis_utils.status_bar_message_emitted.connect(self.show_status_bar_message)
         self.qgis_utils.map_refresh_requested.connect(self.refresh_map)
         self.qgis_utils.map_freeze_requested.connect(self.freeze_map)
@@ -213,211 +196,126 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
         self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
 
-        # Toolbar
-        self._finalize_geometry_creation_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/mActionFinalizeGeometryCreation.svg"),
-                                                          TOOLBAR_FINALIZE_GEOMETRY_CREATION,
-                                                          self.iface.mainWindow())
-        self._finalize_geometry_creation_action.setObjectName(ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME)
-        self._finalize_geometry_creation_action.triggered.connect(self.wiz_geometry_creation_finished)  # SIGNAL chaining
-
-        self._finalize_geometry_creation_action.setEnabled(False)
-
-        self._build_boundary_action = QAction(TOOLBAR_BUILD_BOUNDARY, self.iface.mainWindow())
-        self._build_boundary_action.triggered.connect(self.call_explode_boundaries)
-        self._topological_editing_action = QAction(TOOLBAR_MOVE_NODES, self.iface.mainWindow())
-        self._topological_editing_action.triggered.connect(self.call_topological_editing)
-        self._fill_point_BFS_action = QAction(TOOLBAR_FILL_POINT_BFS, self.iface.mainWindow())
-        self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
-        self._fill_more_BFS_less_action = QAction(TOOLBAR_FILL_MORE_BFS_LESS, self.iface.mainWindow())
-        self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
-        self._fill_right_of_way_relations_action = QAction(TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS, self.iface.mainWindow())
-        self._fill_right_of_way_relations_action.triggered.connect(self.call_fill_right_of_way_relations)
-        self._import_from_intermediate_structure_action = QAction(TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE, self.iface.mainWindow())
-        self._import_from_intermediate_structure_action.triggered.connect(self.call_import_from_intermediate_structure)
-        self._ladm_col_toolbar = self.iface.addToolBar(QCoreApplication.translate("AsistenteLADMCOLPlugin", "LADM-COL tools"))
-        self._ladm_col_toolbar.setObjectName(TOOLBAR_ID)
-        self._ladm_col_toolbar.setToolTip(TOOLBAR_NAME)
-        self._ladm_col_toolbar.addActions([self._finalize_geometry_creation_action,
-                                           self._build_boundary_action,
-                                           self._topological_editing_action,
-                                           self._fill_point_BFS_action,
-                                           self._fill_more_BFS_less_action,
-                                           self._fill_right_of_way_relations_action,
-                                           self._import_from_intermediate_structure_action])
-
-        if not qgis.utils.active_plugins:
-            self.iface.initializationCompleted.connect(self.call_refresh_menus)
-        else:
-            self.call_refresh_menus()
-
-        # Add LADM_COL provider and models to QGIS
-        self.ladm_col_provider = LADMCOLAlgorithmProvider()
-        QgsApplication.processingRegistry().addProvider(self.ladm_col_provider)
-        if QgsApplication.processingRegistry().providerById('model'):
-            self.add_processing_models(None)
-        else: # We need to wait until processing is initialized
-            QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_models)
+        self.gui_builder.clear_status_bar_emitted.connect(self.clear_status_bar)
+        self.gui_builder.status_bar_message_emitted.connect(self.show_status_bar_message)
 
     def uninstall_custom_expression_functions(self):
         res = QgsExpression.unregisterFunction('get_domain_code_from_value')
 
-    def call_refresh_menus(self):
-        # Refresh menus on QGIS start
-        db = self.get_db_connection()
-        res, msg = db.test_connection()
-        if res:
-            self.refresh_menus(db, res)
-        else:  # Show by default all model creation tools
-            self.add_property_record_card_menu()
-            self.add_valuation_menu()
+    def call_refresh_gui(self):
+        """
+        SLOT. Intermediate step to call refresh gui with proper parameters.
+        """
+        self.refresh_gui(self.get_db_connection(), None)
 
-    def add_data_management_menu(self):
-        self._data_management_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data Management"), self._menu)
-        self._import_schema_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create LADM-COL structure"), self._data_management_menu)
-        self._import_data_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import data"), self._data_management_menu)
-        self._export_data_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"), self._data_management_menu)
-        self._data_management_menu.addActions([self._import_schema_action, self._import_data_action, self._export_data_action])
+    def refresh_gui(self, db, res):
+        self.gui_builder.build_gui(db, res)
 
-        self._menu.addMenu(self._data_management_menu)
+    def create_toolbar_actions(self):
+        self._finalize_geometry_creation_action = QAction(
+            QIcon(":/Asistente-LADM_COL/resources/images/mActionFinalizeGeometryCreation.svg"),
+            TOOLBAR_FINALIZE_GEOMETRY_CREATION,
+            self.main_window)
+        self._finalize_geometry_creation_action.setObjectName(ACTION_FINALIZE_GEOMETRY_CREATION_OBJECT_NAME)
+        self._finalize_geometry_creation_action.triggered.connect(
+            self.wiz_geometry_creation_finished)  # SIGNAL chaining
+        self._finalize_geometry_creation_action.setEnabled(False)
 
-    def configure_reports_menu(self):
-        report_menu_exists = False
-        if self._report_menu:
-            report_menu_exists = True
-            self._report_menu.clear()
-        else:
-            self._report_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Reports"), self._menu)
-            self._report_menu.setObjectName(REPORTS_MENU_OBJECTNAME)
+        self._build_boundary_action = QAction(TOOLBAR_BUILD_BOUNDARY, self.main_window)
+        self._build_boundary_action.triggered.connect(self.call_explode_boundaries)
 
-        self._annex_17_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"), self._report_menu)
-        self._annex_17_action.triggered.connect(self.call_annex_17_report_generation)
-        new_actions = [self._annex_17_action]
+        self._topological_editing_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/move_nodes.svg"),
+            TOOLBAR_MOVE_NODES, self.main_window)
+        self._topological_editing_action.triggered.connect(self.call_topological_editing)
 
-        if QSettings().value('Asistente-LADM_COL/advanced_settings/ant_tools', False, bool):  # ant_tools_enabled
-             self._ant_map_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"), self._report_menu)
-             self._ant_map_action.triggered.connect(self.call_ant_map_report_generation)
-             new_actions.append(self._ant_map_action)
+        self._fill_point_BFS_action = QAction(TOOLBAR_FILL_POINT_BFS, self.main_window)
+        self._fill_point_BFS_action.triggered.connect(self.call_fill_topology_table_pointbfs)
 
-        self._report_menu.addActions(new_actions)
+        self._fill_more_BFS_less_action = QAction(TOOLBAR_FILL_MORE_BFS_LESS, self.main_window)
+        self._fill_more_BFS_less_action.triggered.connect(self.call_fill_topology_tables_morebfs_less)
 
-        if not report_menu_exists:
-            self._menu.addMenu(self._report_menu)
+        self._fill_right_of_way_relations_action = QAction(TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS, self.main_window)
+        self._fill_right_of_way_relations_action.triggered.connect(self.call_fill_right_of_way_relations)
 
-    def add_cadastre_menu(self):
-        self._cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Cadastre"), self._menu)
-        self._cadastre_menu.setObjectName(CADASTRE_MENU_OBJECTNAME)
+        self._import_from_intermediate_structure_action = QAction(TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE,
+                                                                  self.main_window)
+        self._import_from_intermediate_structure_action.triggered.connect(self.call_import_from_intermediate_structure)
 
-        self._preprocessing_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Preprocessing"), self._cadastre_menu)
-        self._controlled_measurement_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Controlled Measurement"), self._preprocessing_menu)
-        self._preprocessing_menu.addActions([self._controlled_measurement_action])
+        self.gui_builder.register_actions({
+            ACTION_FINALIZE_GEOMETRY_CREATION: self._finalize_geometry_creation_action,
+            ACTION_BUILD_BOUNDARY: self._build_boundary_action,
+            ACTION_MOVE_NODES: self._topological_editing_action,
+            ACTION_FILL_BFS: self._fill_point_BFS_action,
+            ACTION_FILL_MORE_BFS_AND_LESS: self._fill_more_BFS_less_action,
+            ACTION_FILL_RIGHT_OF_WAY_RELATIONS: self._fill_right_of_way_relations_action,
+            ACTION_IMPORT_FROM_INTERMEDIATE_STRUCTURE: self._import_from_intermediate_structure_action})
 
-        self._surveying_and_representation_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Surveying and Representation"), self._cadastre_menu)
-        self._surveying_and_representation_cadastre_menu.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/surveying.png"))
+    def create_operation_actions(self):
         self._point_surveying_and_representation_cadastre_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Point"),
-                self._surveying_and_representation_cadastre_menu)
+                self.main_window)
         self._boundary_surveying_and_representation_cadastre_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/lines.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Boundary"),
-                self._surveying_and_representation_cadastre_menu)
-        self._surveying_and_representation_cadastre_menu.addActions([self._point_surveying_and_representation_cadastre_action,
-                                                       self._boundary_surveying_and_representation_cadastre_action])
-
-        self._spatial_unit_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Spatial Unit"), self._cadastre_menu)
-        self._spatial_unit_cadastre_menu.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/spatial_unit.png"))
+                self.main_window)
         self._plot_spatial_unit_cadastre_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Plot"),
-                self._spatial_unit_cadastre_menu)
+                self.main_window)
         self._building_spatial_unit_cadastre_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building"),
-                self._spatial_unit_cadastre_menu)
+                self.main_window)
         self._building_unit_spatial_unit_cadastre_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit"),
-                self._spatial_unit_cadastre_menu)
+                self.main_window)
         self._right_of_way_cadastre_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Right of Way"),
-                self._spatial_unit_cadastre_menu)
+                self.main_window)
         self._extaddress_cadastre_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/points.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Associate Address")
                 )
 
-        self._spatial_unit_cadastre_menu.addActions([self._plot_spatial_unit_cadastre_action,
-                                                     self._building_spatial_unit_cadastre_action,
-                                                     self._building_unit_spatial_unit_cadastre_action,
-                                                     self._right_of_way_cadastre_action])
-        self._spatial_unit_cadastre_menu.addSeparator()
-        self._spatial_unit_cadastre_menu.addAction(self._extaddress_cadastre_action)
-
-        self._baunit_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "BA Unit"), self._cadastre_menu)
-        self._baunit_cadastre_menu.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/ba_unit.png"))
         self._parcel_baunit_cadastre_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Parcel"),
-                self._baunit_cadastre_menu)
-        self._baunit_cadastre_menu.addActions([self._parcel_baunit_cadastre_action])
+                self.main_window)
 
-        self._party_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Party"), self._cadastre_menu)
-        self._party_cadastre_menu.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/party.png"))
         self._col_party_cadastre_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Party"),
-                self._party_cadastre_menu)
+                self.main_window)
         self._group_party_cadastre_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Group Party"),
-                self._party_cadastre_menu)
-        self._party_cadastre_menu.addActions([self._col_party_cadastre_action,
-                                              self._group_party_cadastre_action])
+                self.main_window)
 
-        self._source_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Source"), self._cadastre_menu)
-        self._source_cadastre_menu.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/source.png"))
         self._administrative_source_cadastre_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Administrative Source"),
-                self._source_cadastre_menu)
+                self.main_window)
         self._spatial_source_cadastre_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Spatial Source"),
-                self._source_cadastre_menu)
-        self._upload_source_files_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Upload Pending Source Files"), self._source_cadastre_menu)
-        self._source_cadastre_menu.addActions([self._administrative_source_cadastre_action,
-                                               self._spatial_source_cadastre_action])
-        self._source_cadastre_menu.addSeparator()
-        self._source_cadastre_menu.addAction(self._upload_source_files_cadastre_action)
+                self.main_window)
+        self._upload_source_files_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Upload Pending Source Files"), self.main_window)
 
-        self._rrr_cadastre_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "RRR"), self._cadastre_menu)
-        self._rrr_cadastre_menu.setIcon(QIcon(":/Asistente-LADM_COL/resources/images/rrr.png"))
         self._right_rrr_cadastre_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Right"),
-                self._rrr_cadastre_menu)
+                self.main_window)
         self._restriction_rrr_cadastre_action = QAction(
                 QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
                 QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Restriction"),
-                self._rrr_cadastre_menu)
-        self._rrr_cadastre_menu.addActions([self._right_rrr_cadastre_action,
-                                            self._restriction_rrr_cadastre_action])
+                self.main_window)
 
-        self._quality_cadastre_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check Quality Rules"), self._cadastre_menu)
-
-        self._cadastre_menu.addMenu(self._preprocessing_menu)
-        self._cadastre_menu.addSeparator()
-        self._cadastre_menu.addMenu(self._surveying_and_representation_cadastre_menu)
-        self._cadastre_menu.addMenu(self._spatial_unit_cadastre_menu)
-        self._cadastre_menu.addMenu(self._baunit_cadastre_menu)
-        self._cadastre_menu.addMenu(self._party_cadastre_menu)
-        self._cadastre_menu.addMenu(self._source_cadastre_menu)
-        self._cadastre_menu.addMenu(self._rrr_cadastre_menu)
-        self._cadastre_menu.addSeparator()
-        self._cadastre_menu.addAction(self._quality_cadastre_action)
-
-        self._menu.addMenu(self._cadastre_menu)
+        self._quality_cadastre_action = QAction(
+                QIcon(":/Asistente-LADM_COL/resources/images/validation.svg"),
+                QCoreApplication.translate("AsistenteLADMCOLPlugin", "Check Quality Rules"), self.main_window)
 
         # Set connections
         self._point_surveying_and_representation_cadastre_action.triggered.connect(self.show_wiz_point_cad)
@@ -437,84 +335,54 @@ class AsistenteLADMCOLPlugin(QObject):
         self._upload_source_files_cadastre_action.triggered.connect(self.upload_source_files)
         self._quality_cadastre_action.triggered.connect(self.show_dlg_quality)
 
-    def add_property_record_card_menu(self):
-        menu = self.iface.mainWindow().findChild(QMenu, PROPERTY_RECORD_CARD_MENU_OBJECTNAME)
-        if menu:
-            return # Already there!
+        self.gui_builder.register_actions({
+            ACTION_CREATE_POINT: self._point_surveying_and_representation_cadastre_action,
+            ACTION_CREATE_BOUNDARY: self._boundary_surveying_and_representation_cadastre_action,
+            ACTION_CREATE_PLOT: self._plot_spatial_unit_cadastre_action,
+            ACTION_CREATE_BUILDING: self._building_spatial_unit_cadastre_action,
+            ACTION_CREATE_BUILDING_UNIT: self._building_unit_spatial_unit_cadastre_action,
+            ACTION_CREATE_RIGHT_OF_WAY: self._right_of_way_cadastre_action,
+            ACTION_CREATE_EXT_ADDRESS: self._extaddress_cadastre_action,
+            ACTION_CREATE_PARCEL: self._parcel_baunit_cadastre_action,
+            ACTION_CREATE_PARTY: self._col_party_cadastre_action,
+            ACTION_CREATE_GROUP_PARTY: self._group_party_cadastre_action,
+            ACTION_CREATE_ADMINISTRATIVE_SOURCE: self._administrative_source_cadastre_action,
+            ACTION_CREATE_SPATIAL_SOURCE: self._spatial_source_cadastre_action,
+            ACTION_UPLOAD_PENDING_SOURCE: self._upload_source_files_cadastre_action,
+            ACTION_CREATE_RIGHT: self._right_rrr_cadastre_action,
+            ACTION_CREATE_RESTRICTION: self._restriction_rrr_cadastre_action,
+            ACTION_CHECK_QUALITY_RULES: self._quality_cadastre_action})
 
-        self._property_record_card_menu = QMenu(
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Property record card"), self._menu)
-        self._property_record_card_menu.setObjectName(PROPERTY_RECORD_CARD_MENU_OBJECTNAME)
-
+    def create_cadastre_form_actions(self):
         self._property_record_card_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Property Record Card"),
-            self._property_record_card_menu)
-
-        self._property_record_card_menu.addAction(self._property_record_card_action)
-
-        if len(self._menu.actions()) > 1:
-            self._menu.insertMenu(self._menu.actions()[1], self._property_record_card_menu)
-        else: # Just in case...
-            self._menu.addMenu(self._property_record_card_menu)
+            self.main_window)
 
         # Connections
         self._property_record_card_action.triggered.connect(self.show_wiz_property_record_card)
 
-    def remove_property_record_card_menu(self):
-        menu = self.iface.mainWindow().findChild(QMenu, PROPERTY_RECORD_CARD_MENU_OBJECTNAME)
-        if menu is None:
-            return # Nothing to remove...
-
-        self._property_record_card_menu = None
-        self._property_record_card_action = None
-
-        menu.deleteLater()
-
-    def add_valuation_menu(self):
-        menu = self.iface.mainWindow().findChild(QMenu, VALUATION_MENU_OBJECTNAME)
-        if menu:
-            return  # Already there!
-
-        self._valuation_menu = QMenu(
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Valuation"), self._menu)
-        self._valuation_menu.setObjectName(VALUATION_MENU_OBJECTNAME)
-
+    def create_valuation_actions(self):
         self._parcel_valuation_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Parcel"),
-            self._valuation_menu)
+            self.main_window)
         self._building_unit_valuation_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit"),
-            self._valuation_menu)
+            self.main_window)
         self._building_unit_qualification_valuation_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/tables.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Building Unit Qualification"),
-            self._valuation_menu)
+            self.main_window)
         self._geoeconomic_zone_valuation_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Geoeconomic Zone"),
-            self._valuation_menu)
+            self.main_window)
         self._physical_zone_valuation_action = QAction(
             QIcon(":/Asistente-LADM_COL/resources/images/polygons.png"),
             QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create Physical Zone"),
-            self._valuation_menu)
-
-        self._valuation_menu.addAction(self._parcel_valuation_action)
-        self._valuation_menu.addAction(self._building_unit_valuation_action)
-        self._valuation_menu.addAction(self._building_unit_qualification_valuation_action)
-        self._valuation_menu.addSeparator()
-        self._valuation_menu.addAction(self._geoeconomic_zone_valuation_action)
-        self._valuation_menu.addAction(self._physical_zone_valuation_action)
-
-        if len(self._menu.actions()) > 1:
-            if len(self._menu.actions()[2].text()) == 0:
-                self._menu.insertMenu(self._menu.actions()[2], self._valuation_menu)
-            else:
-                self._menu.insertMenu(self._menu.actions()[1], self._valuation_menu)
-        else: # Just in case...
-            self._menu.addMenu(self._valuation_menu)
+            self.main_window)
 
         # Connections
         self._parcel_valuation_action.triggered.connect(self.show_wiz_parcel_valuation)
@@ -524,63 +392,73 @@ class AsistenteLADMCOLPlugin(QObject):
         self._geoeconomic_zone_valuation_action.triggered.connect(self.show_wiz_geoeconomic_zone_valuation)
         self._physical_zone_valuation_action.triggered.connect(self.show_wiz_physical_zone_valuation_action)
 
-    def remove_valuation_menu(self):
-        menu = self.iface.mainWindow().findChild(QMenu, VALUATION_MENU_OBJECTNAME)
-        if menu is None:
-            return # Nothing to remove...
-
-        self._valuation_menu = None
-        self._parcel_valuation_action = None
-        self._building_unit_valuation_action = None
-        self._building_unit_qualification_valuation_action = None
-        self._geoeconomic_zone_valuation_action = None
-        self._physical_zone_valuation_action = None
-
-        menu.deleteLater()
-
-    def add_changes_menu(self):
-        self._change_detection_menu = QMenu(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Change detection"), self._menu)
+    def create_change_detection_actions(self):
         self._query_changes_per_parcel_action = QAction(
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query per parcel"), self._change_detection_menu)
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query per parcel"), self.main_window)
         self._query_changes_all_parcels_action = QAction(
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query all parcels"), self._change_detection_menu)
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Query all parcels"), self.main_window)
         self._settings_changes_action = QAction(
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Official data settings"), self._change_detection_menu)
-
-        self._change_detection_menu.addActions([self._query_changes_per_parcel_action, self._query_changes_all_parcels_action,
-                                                self._change_detection_menu.addSeparator(), self._settings_changes_action])
-
-        self._menu.addMenu(self._change_detection_menu)
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Official data settings"), self.main_window)
 
         # Set connections
         self._query_changes_per_parcel_action.triggered.connect(self.query_changes_per_parcel)
         self._query_changes_all_parcels_action.triggered.connect(self.query_changes_all_parcels)
         self._settings_changes_action.triggered.connect(self.show_official_data_settings)
 
-    def refresh_menus(self, db, ladm_col_db):
-        """
-        Depending on the models available in the DB, some menus should appear or disappear from the GUI
-        """
-        if ladm_col_db:
-            if db.cadastral_form_model_exists():
-                self.add_property_record_card_menu()
-            else:
-                self.remove_property_record_card_menu()
+        self.gui_builder.register_actions({
+            ACTION_CHANGE_DETECTION_PER_PARCEL: self._query_changes_per_parcel_action,
+            ACTION_CHANGE_DETECTION_ALL_PARCELS: self._query_changes_all_parcels_action,
+            ACTION_OFFICIAL_SETTINGS: self._settings_changes_action
+        })
 
-            if db.valuation_model_exists():
-                self.add_valuation_menu()
-            else:
-                self.remove_valuation_menu()
+    def create_generic_actions(self):
+        self._load_layers_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"),
+                                           self.main_window)
+        self._queries_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/search.png"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Queries"),
+                                       self.main_window)
+        self._queries_action.setObjectName(QUERIES_ACTION_OBJECTNAME)
+        self._annex_17_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Annex 17"),
+                                        self.main_window)
+        self._annex_17_action.triggered.connect(self.call_annex_17_report_generation)
+        self._ant_map_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "ANT Map"),
+                                       self.main_window)
+        self._ant_map_action.triggered.connect(self.call_ant_map_report_generation)
+        self._import_schema_action = QAction(
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Create LADM-COL structure"), self.main_window)
+        self._import_data_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Import data"),
+                                           self.main_window)
+        self._export_data_action = QAction(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"),
+                                           self.main_window)
+        self._settings_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/settings.svg"),
+                                        QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
+                                        self.main_window)
+        self._help_action = QAction(QIcon(), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Help"),
+                                    self.main_window)
+        self._about_action = QAction(QIcon(":/Asistente-LADM_COL/resources/images/info.svg"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "About"),
+                                     self.main_window)
 
-            self.log.logMessage("Menus refreshed! Valuation: {}; Property Record Card: {}".format(
-                    db.valuation_model_exists(),
-                    db.cadastral_form_model_exists()),
-                PLUGIN_NAME,
-                Qgis.Info)
+        self._import_schema_action.triggered.connect(self.call_dlg_import_schema)
+        self._import_data_action.triggered.connect(self.show_dlg_import_data)
+        self._export_data_action.triggered.connect(self.show_dlg_export_data)
+        self._queries_action.triggered.connect(self.show_queries)
+        self._load_layers_action.triggered.connect(self.load_layers_from_qgis_model_baker)
+        self._settings_action.triggered.connect(self.show_settings)
+        self._help_action.triggered.connect(self.show_help)
+        self._about_action.triggered.connect(self.show_about_dialog)
 
-    def refresh_organization_tools(self, organization):
-        if organization == NATIONAL_LAND_AGENCY:
-             self.configure_reports_menu()
+        self.gui_builder.register_actions({
+            ACTION_REPORT_ANNEX_17: self._annex_17_action,
+            ACTION_REPORT_ANT: self._ant_map_action,
+            ACTION_LOAD_LAYERS: self._load_layers_action,
+            ACTION_PARCEL_QUERY: self._queries_action,
+            ACTION_CHECK_QUALITY_RULES: self._quality_cadastre_action,
+            ACTION_SCHEMA_IMPORT: self._import_schema_action,
+            ACTION_IMPORT_DATA: self._import_data_action,
+            ACTION_EXPORT_DATA: self._export_data_action,
+            ACTION_SETTINGS: self._settings_action,
+            ACTION_HELP: self._help_action,
+            ACTION_ABOUT: self._about_action
+        })
 
     def add_processing_models(self, provider_id):
         if not (provider_id == 'model' or provider_id is None):
@@ -876,96 +754,11 @@ class AsistenteLADMCOLPlugin(QObject):
     def unload(self):
         self.uninstall_custom_expression_functions()
 
-        # Remove toolbars actions
-        toolbars_actions = ['_build_boundary_action',
-                            '_topological_editing_action',
-                            '_fill_point_BFS_action',
-                            '_fill_more_BFS_less_action',
-                            '_fill_right_of_way_relations_action',
-                            '_import_from_intermediate_structure_action']
-        self.delete_variables(toolbars_actions)
-
-        # Remove cadastre actions
-        cadastre_actions = ['_controlled_measurement_action',
-                            '_point_surveying_and_representation_cadastre_action',
-                            '_boundary_surveying_and_representation_cadastre_action',
-                            '_plot_spatial_unit_cadastre_action',
-                            '_building_spatial_unit_cadastre_action',
-                            '_building_unit_spatial_unit_cadastre_action',
-                            '_right_of_way_cadastre_action',
-                            '_extaddress_cadastre_action',
-                            '_parcel_baunit_cadastre_action',
-                            '_col_party_cadastre_action',
-                            '_group_party_cadastre_action',
-                            '_administrative_source_cadastre_action',
-                            '_spatial_source_cadastre_action',
-                            '_upload_source_files_cadastre_action',
-                            '_right_rrr_cadastre_action',
-                            '_restriction_rrr_cadastre_action',
-                            '_quality_cadastre_action']
-        self.delete_variables(cadastre_actions)
-
-        # Remove property record card actions
-        property_record_card_actions = ['_property_record_card_action']
-        self.delete_variables(property_record_card_actions)
-
-        # Remove valuation actions
-        valuation_actions = ['_parcel_valuation_action',
-                             '_building_unit_valuation_action',
-                             '_building_unit_qualification_valuation_action',
-                             '_geoeconomic_zone_valuation_action',
-                             '_physical_zone_valuation_action']
-        self.delete_variables(valuation_actions)
-
-        # Remove queries action
-        query_actions = ['_queries_action',
-                         '_query_changes_per_parcel_action',
-                         '_query_changes_all_parcels_action']
-        self.delete_variables(query_actions)
-
-        # Remove reports actions
-        reports_actions = ['_annex_17_action',
-                           '_ant_map_action']
-        self.delete_variables(reports_actions)
-
-        # Remove data management actions
-        data_management_actions = ['_import_schema_action',
-                                   '_import_data_action',
-                                   '_export_data_action']
-        self.delete_variables(data_management_actions)
-
-        # Remove other actions
-        actions = ['_load_layers_action',
-                   '_settings_action',
-                   '_settings_changes_action',  # Official database connection settings
-                   '_help_action',
-                   '_about_action']
-        self.delete_variables(actions)
-
-        # Remove menus
-        menus = ['_cadastre_menu',
-                 '_property_record_card_menu',
-                 '_valuation_menu',
-                 '_report_menu',
-                 '_change_detection_menu',
-                 '_data_management_menu',
-                 '_menu']
-        self.delete_variables(menus)
-
-        # remove the plugin menu item and icon
-        self._menu.deleteLater()
-        self.iface.mainWindow().removeToolBar(self._ladm_col_toolbar)
-        del self._ladm_col_toolbar
+        self.gui_builder.unload_gui()
 
         # Close all connections
         self.conn_manager.close_db_connections()
         QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
-
-    def delete_variables(self, variables):
-        for name_variable in variables:
-            if hasattr(self, name_variable):
-                variable = getattr(self, name_variable)
-                del variable
 
     @_validate_if_wizard_is_open
     def show_settings(self, *args):
@@ -974,7 +767,7 @@ class AsistenteLADMCOLPlugin(QObject):
         # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
         dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
-        dlg.organization_tools_changed.connect(self.qgis_utils.organization_tools_changed)
+        dlg.active_role_changed.connect(self.call_refresh_gui)
 
         dlg.set_action_type(EnumDbActionType.CONFIG)
         dlg.exec_()
@@ -1032,7 +825,7 @@ class AsistenteLADMCOLPlugin(QObject):
             selected_models_import_schema = args[0]  # Argument sent by signal
 
         dlg = DialogImportSchema(self.iface, self.qgis_utils, self.conn_manager, selected_models_import_schema)
-        dlg.models_have_changed.connect(self.refresh_menus)
+        dlg.models_have_changed.connect(self.refresh_gui)
         dlg.open_dlg_import_data.connect(self.show_dlg_import_data)
         dlg.exec_()
 
@@ -1049,13 +842,6 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_dlg_export_data(self, *args):
         from .gui.qgis_model_baker.dlg_export_data import DialogExportData
         dlg = DialogExportData(self.iface, self.qgis_utils, self.conn_manager)
-        dlg.exec_()
-
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_activate_processing_plugin
-    def show_dlg_controlled_measurement(self, *args):
-        dlg = ControlledMeasurementDialog(self.qgis_utils)
         dlg.exec_()
 
     @_validate_if_wizard_is_open
