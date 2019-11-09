@@ -1,30 +1,30 @@
 basic_query_test_results = {
     'query_by_plot_id': [
         {
-            "id": 1377,
+            "id": 8312,
             "attributes": {
                 "Área de terreno [m2]": 4934.3,
                 "extdireccion": [
                     {
-                        "id": 1378,
+                        "id": 8313,
                         "attributes": {
                             "Tipo dirección": "Estructurada",
                             "Código postal": None,
-                            "Dirección": "Transversal 3 C Este 80 C 12 Este Castilla "
+                            "Dirección": "Avenida carrera 94 C Norte 65 G 62 Norte Bogota D.C "
                         }
                     },
                     {
-                        "id": 1379,
+                        "id": 8314,
                         "attributes": {
                             "Tipo dirección": "Estructurada",
                             "Código postal": None,
-                            "Dirección": "Calle 4 D Oeste 15 13 "
+                            "Dirección": "Diagonal 58 I 39 17 Bogota D.C "
                         }
                     }
                 ],
                 "op_predio": [
                     {
-                        "id": 962,
+                        "id": 7897,
                         "attributes": {
                             "Nombre": "El Pomarroso",
                             "Departamento": "25",
@@ -34,54 +34,60 @@ basic_query_test_results = {
                             "Número predial": "253940000000000230073000000000",
                             "Número predial anterior": "25394000000230073000",
                             "Tipo": "Privado",
-                            "Destinación económica": "Agroforestal",
+                            "Destinación económica": None,
                             "op_construccion": [
                                 {
-                                    "id": 601,
+                                    "id": 7536,
                                     "attributes": {
                                         "Área construcción": 25.8,
                                         "extdireccion": [
                                             {
-                                                "id": 602,
+                                                "id": 7537,
                                                 "attributes": {
                                                     "Tipo dirección": "Estructurada",
                                                     "Código postal": None,
-                                                    "Dirección": "Carrera 7 G Sur 89 32 Oeste "
+                                                    "Dirección": "Carrera 18 G Este 23 J 99 Bogota D.C "
                                                 }
                                             },
                                             {
-                                                "id": 603,
+                                                "id": 7538,
                                                 "attributes": {
                                                     "Tipo dirección": "Estructurada",
                                                     "Código postal": None,
-                                                    "Dirección": "Diagonal 9 A Sur 16 32 Norte Los rosales "
+                                                    "Dirección": "Calle 72 E Norte 89 S 82 Oeste Bogota D.C "
                                                 }
                                             }
                                         ],
                                         "op_unidadconstruccion": [
                                             {
-                                                "id": 1479,
+                                                "id": 8414,
                                                 "attributes": {
                                                     "Número de pisos": 2,
+                                                    "Número de habitaciones": 1,
+                                                    "Número de baños": 1,
+                                                    "Número de locales": 4,
+                                                    "Tipo construcción": "Convencional",
+                                                    "Tipo unidad de construcción": "Comercial",
+                                                    "Tipo planta": "Subterráneo",
+                                                    "Tipo dominio": "Privado",
+                                                    "Ubicación en el piso": 4,
                                                     "Área construida [m2]": 25.8,
-                                                    "av_componente_construccion": [],
-                                                    "Uso": "Corrales",
-                                                    "Puntuación": None,
+                                                    "Uso": "Oficinas o consultorios colonial",
                                                     "extdireccion": [
                                                         {
-                                                            "id": 1480,
+                                                            "id": 8415,
                                                             "attributes": {
                                                                 "Tipo dirección": "Estructurada",
                                                                 "Código postal": None,
-                                                                "Dirección": "Diagonal 15 A Norte 32 92 Sur "
+                                                                "Dirección": "Diagonal 99 M Oeste 51 H 94 Bogota D.C "
                                                             }
                                                         },
                                                         {
-                                                            "id": 1481,
+                                                            "id": 8416,
                                                             "attributes": {
                                                                 "Tipo dirección": "Estructurada",
                                                                 "Código postal": None,
-                                                                "Dirección": "Diagonal 8 H Sur 64 B 12 "
+                                                                "Dirección": "Diagonal 68 N Sur 85 D 3 Norte Bogota D.C "
                                                             }
                                                         }
                                                     ]
@@ -91,55 +97,51 @@ basic_query_test_results = {
                                     }
                                 },
                                 {
-                                    "id": 604,
+                                    "id": 7539,
                                     "attributes": {
                                         "Área construcción": 108.0,
                                         "extdireccion": [],
                                         "op_unidadconstruccion": [
                                             {
-                                                "id": 1489,
+                                                "id": 8424,
                                                 "attributes": {
                                                     "Número de pisos": 12,
+                                                    "Número de habitaciones": 4,
+                                                    "Número de baños": 4,
+                                                    "Número de locales": 2,
+                                                    "Tipo construcción": "Convencional",
+                                                    "Tipo unidad de construcción": "Comercial",
+                                                    "Tipo planta": "Semisótano",
+                                                    "Tipo dominio": "Común",
+                                                    "Ubicación en el piso": 0,
                                                     "Área construida [m2]": 19.0,
-                                                    "av_componente_construccion": [
-                                                        {
-                                                            "id": 594,
-                                                            "attributes": {
-                                                                "Tipo componente": "Habitación",
-                                                                "Cantidad": 615
-                                                            }
-                                                        }
-                                                    ],
-                                                    "Uso": "Corrales",
-                                                    "Puntuación": 4,
+                                                    "Uso": "Comercio",
                                                     "extdireccion": [
                                                         {
-                                                            "id": 1490,
+                                                            "id": 8425,
                                                             "attributes": {
                                                                 "Tipo dirección": "Estructurada",
                                                                 "Código postal": None,
-                                                                "Dirección": "Avenida Carrera 10 B 43 C 95 "
+                                                                "Dirección": "Diagonal 29 O Oeste 1 K 67 Bogota D.C "
                                                             }
                                                         }
                                                     ]
                                                 }
                                             },
                                             {
-                                                "id": 1500,
+                                                "id": 8435,
                                                 "attributes": {
                                                     "Número de pisos": 7,
+                                                    "Número de habitaciones": 2,
+                                                    "Número de baños": 4,
+                                                    "Número de locales": 3,
+                                                    "Tipo construcción": "No convencional",
+                                                    "Tipo unidad de construcción": "Anexo",
+                                                    "Tipo planta": "Mezanine",
+                                                    "Tipo dominio": "Privado",
+                                                    "Ubicación en el piso": 5,
                                                     "Área construida [m2]": 108.0,
-                                                    "av_componente_construccion": [
-                                                        {
-                                                            "id": 593,
-                                                            "attributes": {
-                                                                "Tipo componente": "Baño",
-                                                                "Cantidad": 3
-                                                            }
-                                                        }
-                                                    ],
-                                                    "Uso": "Corrales",
-                                                    "Puntuación": 7,
+                                                    "Uso": "Casa de elbas",
                                                     "extdireccion": []
                                                 }
                                             }

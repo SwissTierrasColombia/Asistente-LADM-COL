@@ -138,6 +138,7 @@ class TreeItem(object):
 
 class TreeModel(QAbstractItemModel):
     def __init__(self, headers=None, data=None, parent=None):
+        self.names = Names()
         super(TreeModel, self).__init__(parent)
 
         rootData = ("",) # [header for header in headers]
