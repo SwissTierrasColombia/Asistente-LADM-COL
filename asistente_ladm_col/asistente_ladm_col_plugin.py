@@ -195,6 +195,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality.log_quality_set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
         self.quality.log_quality_set_final_progress_emitted.connect(self.set_log_quality_final_progress)
 
+        self.gui_builder.clear_status_bar_emitted.connect(self.clear_status_bar)
+        self.gui_builder.status_bar_message_emitted.connect(self.show_status_bar_message)
+
     def uninstall_custom_expression_functions(self):
         res = QgsExpression.unregisterFunction('get_domain_code_from_value')
 
@@ -763,7 +766,7 @@ class AsistenteLADMCOLPlugin(QObject):
         # Connect signals (DBUtils, QgisUtils)
         dlg.db_connection_changed.connect(self.conn_manager.db_connection_changed)
         dlg.db_connection_changed.connect(self.qgis_utils.cache_layers_and_relations)
-        dlg.organization_tools_changed.connect(self.qgis_utils.organization_tools_changed)
+        dlg.active_role_changed.connect(self.call_refresh_gui)
 
         dlg.set_action_type(EnumDbActionType.CONFIG)
         dlg.exec_()

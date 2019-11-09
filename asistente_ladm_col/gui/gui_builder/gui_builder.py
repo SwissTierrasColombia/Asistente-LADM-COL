@@ -16,7 +16,10 @@
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              pyqtSignal,
+                              Qt,
+                              QObject)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QMenu,
                                  QPushButton,
@@ -25,12 +28,17 @@ from qgis.PyQt.QtWidgets import (QMenu,
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
 from asistente_ladm_col.gui.gui_builder.role_registry import Role_Registry
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
-class GUI_Builder():
+class GUI_Builder(QObject):
     """
     Build plugin GUI according to roles and LADM_COL models present in the current db connection
     """
+    status_bar_message_emitted = pyqtSignal(str, int)  # Message, duration
+    clear_status_bar_emitted = pyqtSignal()
+
     def __init__(self, iface):
+        QObject.__init__(self)
         self.iface = iface
         self._registered_actions = dict()
 
@@ -54,28 +62,35 @@ class GUI_Builder():
         :param test_conn_result: Can be True or False if test_connection was called, or None if we should call it now.
         :return:
         """
-        self.unload_gui(final_unload=False)  # First clear everything
+        self.status_bar_message_emitted.emit(QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                             "Refreshing GUI for the LADM_COL Assistant..."), 0)
+        QCoreApplication.processEvents()
 
-        # Filter menus and actions and get a gui_config with the proper structure ready to build the GUI (e.g., with no
-        # empty Menus)
-        gui_config = self._get_filtered_gui_config(db, test_conn_result)
+        with OverrideCursor(Qt.WaitCursor):
+            self.unload_gui(final_unload=False)  # First clear everything
 
-        for component, values in gui_config.items():
-            if component == MAIN_MENU:
-                for menu_def in values:
-                    menu = self._build_menu(menu_def)
-                    existent_actions = self.iface.mainWindow().menuBar().actions()
-                    if len(existent_actions) > 0:
-                        last_action = existent_actions[-1]
-                        self.iface.mainWindow().menuBar().insertMenu(last_action, menu)
-                    else:
-                        self.iface.mainWindow().menuBar().addMenu(menu)
-                    self.menus.append(menu)
-            elif component == TOOLBAR:
-                for toolbar_def in values:  # We expect a list of dicts here...
-                    toolbar = self._build_toolbar(toolbar_def)
+            # Filter menus and actions and get a gui_config with the proper structure ready to build the GUI (e.g., with no
+            # empty Menus)
+            gui_config = self._get_filtered_gui_config(db, test_conn_result)
 
-                    self.toolbars.append(toolbar)
+            for component, values in gui_config.items():
+                if component == MAIN_MENU:
+                    for menu_def in values:
+                        menu = self._build_menu(menu_def)
+                        existent_actions = self.iface.mainWindow().menuBar().actions()
+                        if len(existent_actions) > 0:
+                            last_action = existent_actions[-1]
+                            self.iface.mainWindow().menuBar().insertMenu(last_action, menu)
+                        else:
+                            self.iface.mainWindow().menuBar().addMenu(menu)
+                        self.menus.append(menu)
+                elif component == TOOLBAR:
+                    for toolbar_def in values:  # We expect a list of dicts here...
+                        toolbar = self._build_toolbar(toolbar_def)
+
+                        self.toolbars.append(toolbar)
+
+        self.clear_status_bar_emitted.emit()
 
     def _get_filtered_gui_config(self, db, test_conn_result):
         """
