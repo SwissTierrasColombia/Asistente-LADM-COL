@@ -72,34 +72,15 @@ def get_igac_physical_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
             info_uc AS (
                  SELECT op_unidadconstruccion.op_construccion,
                         json_agg(json_build_object('id', op_unidadconstruccion.t_id,
-                                          'attributes', json_build_object('Número de pisos', op_unidadconstruccion.numero_pisos,
+                                          'attributes', json_build_object('Número de pisos', op_unidadconstruccion.total_pisos,
                                                                           'Uso', (SELECT dispname FROM {schema}.op_usouconstipo WHERE t_id = op_unidadconstruccion.uso),
-    """
-    if valuation_model:
-        query += """
-            															  'Puntuación', av_unidad_construccion.puntuacion,
-            															  'Tipo', (SELECT dispname FROM {schema}.av_unidadconstrucciontipo WHERE t_id = av_unidad_construccion.tipo_unidad_construccion),
-        """
-    else:
-        query += """
-            															  'Puntuación', NULL,
-            															  'Tipo', NULL,
-        """
-
-    query += """
+                                                                          'Tipo construcción', (select dispname from {schema}.OP_ConstruccionTipo where t_id = op_unidadconstruccion.tipo_construccion),
+                                                                          'Tipo unidad de construcción', (select dispname from {schema}.OP_UnidadConstruccionTipo where t_id = op_unidadconstruccion.tipo_unidad_construccion),
                                                                           CONCAT('Área privada construida' , (SELECT * FROM unidad_area_privada_construida_uc)), op_unidadconstruccion.area_privada_construida,
                                                                           CONCAT('Área construida' , (SELECT * FROM unidad_area_construida_uc)), op_unidadconstruccion.area_construida,
                                                                           'op_fuenteespacial', COALESCE(uc_fuente_espacial.op_fuenteespacial, '[]')
                                                                          )) ORDER BY op_unidadconstruccion.t_id) FILTER(WHERE op_unidadconstruccion.t_id IS NOT NULL) AS op_unidadconstruccion
                  FROM {schema}.op_unidadconstruccion LEFT JOIN uc_fuente_espacial ON op_unidadconstruccion.t_id = uc_fuente_espacial.ue_op_unidadconstruccion
-    """
-
-    if valuation_model:
-        query += """
-                	 LEFT JOIN {schema}.av_unidad_construccion ON av_unidad_construccion.op_unidad_construccion = op_unidadconstruccion.t_id
-        """
-
-    query += """
                  WHERE op_unidadconstruccion.t_id IN (SELECT * FROM unidadesconstruccion_seleccionadas)
                  GROUP BY op_unidadconstruccion.op_construccion
              ),
@@ -190,9 +171,9 @@ def get_igac_physical_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
                         json_agg(
                             json_build_object('id', op_puntolindero.t_id,
                                                    'attributes', json_build_object('Nombre', op_puntolindero.id_punto_lindero,
-                                                                                   'coordenadas', concat(st_x(op_puntolindero.localizacion_original),
-                                                                                                 ' ', st_y(op_puntolindero.localizacion_original),
-                                                                                                 CASE WHEN st_z(op_puntolindero.localizacion_original) IS NOT NULL THEN concat(' ', st_z(op_puntolindero.localizacion_original)) END))
+                                                                                   'coordenadas', concat(st_x(op_puntolindero.geometria),
+                                                                                                 ' ', st_y(op_puntolindero.geometria),
+                                                                                                 CASE WHEN st_z(op_puntolindero.geometria) IS NOT NULL THEN concat(' ', st_z(op_puntolindero.geometria)) END))
                         ) ORDER BY op_puntolindero.t_id) FILTER(WHERE op_puntolindero.t_id IS NOT NULL) AS op_puntolindero
                 FROM {schema}.op_puntolindero LEFT JOIN punto_lindero_externos_seleccionados ON op_puntolindero.t_id = punto_lindero_externos_seleccionados.t_id
                 WHERE punto_lindero_externos_seleccionados.ue_mas_op_terreno IS NOT NULL
@@ -203,9 +184,9 @@ def get_igac_physical_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
                         json_agg(
                             json_build_object('id', op_puntolindero.t_id,
                                                    'attributes', json_build_object('Nombre', op_puntolindero.id_punto_lindero,
-                                                                                   'coordenadas', concat(st_x(op_puntolindero.localizacion_original),
-                                                                                                 ' ', st_y(op_puntolindero.localizacion_original),
-                                                                                                 CASE WHEN st_z(op_puntolindero.localizacion_original) IS NOT NULL THEN concat(' ', st_z(op_puntolindero.localizacion_original)) END))
+                                                                                   'coordenadas', concat(st_x(op_puntolindero.geometria),
+                                                                                                 ' ', st_y(op_puntolindero.geometria),
+                                                                                                 CASE WHEN st_z(op_puntolindero.geometria) IS NOT NULL THEN concat(' ', st_z(op_puntolindero.geometria)) END))
                         ) ORDER BY op_puntolindero.t_id) FILTER(WHERE op_puntolindero.t_id IS NOT NULL) AS op_puntolindero
                  FROM {schema}.op_puntolindero LEFT JOIN punto_lindero_internos_seleccionados ON op_puntolindero.t_id = punto_lindero_internos_seleccionados.t_id
                  WHERE punto_lindero_internos_seleccionados.ue_menos_op_terreno IS NOT NULL
@@ -215,15 +196,15 @@ def get_igac_physical_query(schema, plot_t_id, parcel_fmi, parcel_number, previo
                 SELECT col_uebaunit.ue_op_terreno,
                         json_agg(
                                 json_build_object('id', puntoslevantamiento_seleccionados.t_id_puntolevantamiento,
-                                                       'attributes', json_build_object('coordenadas', concat(st_x(puntoslevantamiento_seleccionados.localizacion_original),
-                                                                                                 ' ', st_y(puntoslevantamiento_seleccionados.localizacion_original),
-                                                                                                 CASE WHEN st_z(puntoslevantamiento_seleccionados.localizacion_original) IS NOT NULL THEN concat(' ', st_z(puntoslevantamiento_seleccionados.localizacion_original)) END)
+                                                       'attributes', json_build_object('coordenadas', concat(st_x(puntoslevantamiento_seleccionados.geometria),
+                                                                                                 ' ', st_y(puntoslevantamiento_seleccionados.geometria),
+                                                                                                 CASE WHEN st_z(puntoslevantamiento_seleccionados.geometria) IS NOT NULL THEN concat(' ', st_z(puntoslevantamiento_seleccionados.geometria)) END)
                                                                                       ))
                         ORDER BY puntoslevantamiento_seleccionados.t_id_puntolevantamiento) FILTER(WHERE puntoslevantamiento_seleccionados.t_id_puntolevantamiento IS NOT NULL) AS op_puntolevantamiento
                 FROM
                 (
-                    SELECT op_puntolevantamiento.t_id AS t_id_puntolevantamiento, op_puntolevantamiento.localizacion_original, op_construccion.t_id AS t_id_construccion  FROM {schema}.op_construccion, {schema}.op_puntolevantamiento
-                    WHERE ST_Intersects(op_construccion.poligono_creado, op_puntolevantamiento.localizacion_original) = True AND op_construccion.t_id IN (SELECT * from construcciones_seleccionadas)
+                    SELECT op_puntolevantamiento.t_id AS t_id_puntolevantamiento, op_puntolevantamiento.geometria, op_construccion.t_id AS t_id_construccion  FROM {schema}.op_construccion, {schema}.op_puntolevantamiento
+                    WHERE ST_Intersects(op_construccion.geometria, op_puntolevantamiento.geometria) = True AND op_construccion.t_id IN (SELECT * from construcciones_seleccionadas)
                 ) AS puntoslevantamiento_seleccionados
                 LEFT JOIN {schema}.col_uebaunit AS uebaunit_construccion  ON uebaunit_construccion.ue_op_construccion = puntoslevantamiento_seleccionados.t_id_construccion
                 LEFT JOIN {schema}.col_uebaunit AS col_uebaunit ON col_uebaunit.baunit = uebaunit_construccion.baunit
