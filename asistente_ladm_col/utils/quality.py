@@ -1875,8 +1875,9 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def find_duplicate_records_in_a_table(self, db, rule_name):
-        for table in self.names.get_logic_consistency_tables():
-            fields = self.names.get_logic_consistency_tables()[table]
+        logic_consistency_tables = self.names.get_logic_consistency_tables()
+        for table in logic_consistency_tables:
+            fields = logic_consistency_tables[table]
 
             error_layer = None
             error_layer = self.logic.get_duplicate_records_in_a_table(db, table, fields, error_layer, self.names.T_ID_F)
@@ -1893,11 +1894,11 @@ class QualityUtils(QObject):
 
     @_log_quality_checks
     def basic_logic_validations(self, db, rule, rule_name):
-        LOGIC_VALIDATION_QUERIES = db.get_logic_validation_queries()
-        query = LOGIC_VALIDATION_QUERIES[rule]['query']
-        table_name = LOGIC_VALIDATION_QUERIES[rule]['table_name']
-        table = LOGIC_VALIDATION_QUERIES[rule]['table']
-        desc_error = LOGIC_VALIDATION_QUERIES[rule]['desc_error']
+        logic_validation_queries = db.get_logic_validation_queries()
+        query = logic_validation_queries[rule]['query']
+        table_name = logic_validation_queries[rule]['table_name']
+        table = logic_validation_queries[rule]['table']
+        desc_error = logic_validation_queries[rule]['desc_error']
 
         error_layer = None
         error_layer_exist = False
@@ -1940,13 +1941,13 @@ class QualityUtils(QObject):
 
         else:
             self.log_message(QCoreApplication.translate("QGISUtils",
-                             "No errors found when checking '{rule}' for '{table}'!").format(rule=LOGIC_VALIDATION_QUERIES[rule]['desc_error'], table=table), Qgis.Success)
+                             "No errors found when checking '{rule}' for '{table}'!").format(rule=logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
 
     @_log_quality_checks
     def advanced_logic_validations(self, db, rule, rule_name):
-        LOGIC_VALIDATION_QUERIES = db.get_logic_validation_queries()
-        table_name = LOGIC_VALIDATION_QUERIES[rule]['table_name']
-        table = LOGIC_VALIDATION_QUERIES[rule]['table']
+        logic_validation_queries = db.get_logic_validation_queries()
+        table_name = logic_validation_queries[rule]['table_name']
+        table = logic_validation_queries[rule]['table']
 
         error_layer = None
         error_layer_exist = False
@@ -1981,7 +1982,7 @@ class QualityUtils(QObject):
                     error_count=errors_count, table=table))
         else:
             self.log_message(QCoreApplication.translate("QGISUtils",
-                             "No errors found when checking '{rule}' for '{table}'!").format(rule=LOGIC_VALIDATION_QUERIES[rule]['desc_error'], table=table), Qgis.Success)
+                             "No errors found when checking '{rule}' for '{table}'!").format(rule=logic_validation_queries[rule]['desc_error'], table=table), Qgis.Success)
 
     @_log_quality_checks
     def check_building_within_plots(self, db, rule_name, translated_strings):

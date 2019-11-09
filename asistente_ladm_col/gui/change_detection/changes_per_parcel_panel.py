@@ -319,6 +319,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         :param search_criterion_collected: key-value pair to build an expression to search data in the collected source
         :return:
         """
+        plural = self.names.get_dict_plural()
         dict_collected_parcels = self.utils.ladm_data.get_parcel_data_to_compare_changes(self.utils._db, search_criterion_collected)
 
         # Custom layer modifiers
@@ -354,7 +355,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
             official_value = official_attrs[field_name] if field_name in official_attrs else NULL
             collected_value = collected_attrs[field_name] if field_name in collected_attrs else NULL
 
-            self.fill_row(field_name, official_value, collected_value, row)
+            self.fill_row(field_name, official_value, collected_value, row, plural)
 
         if number_of_rows:  # At least one row in the table?
             self.fill_geometry_row(PLOT_GEOMETRY_KEY,
@@ -364,12 +365,12 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.tbl_changes_per_parcel.setSortingEnabled(True)
 
-    def fill_row(self, field_name, official_value, collected_value, row):
+    def fill_row(self, field_name, official_value, collected_value, row, plural):
         item = QTableWidgetItem(field_name)
         # item.setData(Qt.UserRole, parcel_attrs[self.names.T_ID_F])
         self.tbl_changes_per_parcel.setItem(row, 0, item)
 
-        if field_name == self.names.get_dict_plural()[self.names.OP_PARTY_T]:  # Parties
+        if field_name == plural[self.names.OP_PARTY_T]:  # Parties
             item = self.fill_party_item(official_value)
             self.tbl_changes_per_parcel.setItem(row, 1, item)
 

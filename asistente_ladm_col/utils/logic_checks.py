@@ -20,13 +20,13 @@ class LogicChecks(QObject):
         self.names = Names()
 
     def get_parcel_right_relationship_errors(self, db, error_layer, table_name, translated_strings):
-        LOGIC_VALIDATION_QUERIES = db.get_logic_validation_queries()
+        logic_validation_queries = db.get_logic_validation_queries()
 
-        query_parcels_with_no_right = LOGIC_VALIDATION_QUERIES['PARCELS_WITH_NO_RIGHT']['query']
-        table = LOGIC_VALIDATION_QUERIES['PARCELS_WITH_NO_RIGHT']['table']
+        query_parcels_with_no_right = logic_validation_queries['PARCELS_WITH_NO_RIGHT']['query']
+        table = logic_validation_queries['PARCELS_WITH_NO_RIGHT']['table']
         parcels_no_right = db.execute_sql_query_dict_cursor(query_parcels_with_no_right)
 
-        query_parcels_with_repeated_domain_right = LOGIC_VALIDATION_QUERIES['PARCELS_WITH_REPEATED_DOMAIN_RIGHT']['query']
+        query_parcels_with_repeated_domain_right = logic_validation_queries['PARCELS_WITH_REPEATED_DOMAIN_RIGHT']['query']
         parcels_repeated_domain_right = db.execute_sql_query_dict_cursor(query_parcels_with_repeated_domain_right)
 
         parcel_no_right_ids = [sublist[0] for sublist in parcels_no_right]
@@ -61,10 +61,9 @@ class LogicChecks(QObject):
         return len(new_features), error_layer
 
     def get_duplicate_records_in_a_table(self, db, table, fields, error_layer, id_field):
-
-        LOGIC_VALIDATION_QUERIES = db.get_logic_validation_queries()
+        logic_validation_queries = db.get_logic_validation_queries()
         rule = 'DUPLICATE_RECORDS_IN_TABLE'
-        query = LOGIC_VALIDATION_QUERIES[rule]['query']
+        query = logic_validation_queries[rule]['query']
         table_name = QCoreApplication.translate("LogicChecksConfigStrings", "Duplicate records in '{table}'").format(table=table)
 
         # config query
@@ -89,10 +88,10 @@ class LogicChecks(QObject):
         return error_layer
 
     def get_fractions_which_sum_is_not_one(self, db, error_layer):
-        LOGIC_VALIDATION_QUERIES = db.get_logic_validation_queries()
+        logic_validation_queries = db.get_logic_validation_queries()
         rule = 'GROUP_PARTY_FRACTIONS_SHOULD_SUM_1'
-        query = LOGIC_VALIDATION_QUERIES[rule]['query']
-        table_name = LOGIC_VALIDATION_QUERIES[rule]['table_name']
+        query = logic_validation_queries[rule]['query']
+        table_name = logic_validation_queries[rule]['table_name']
 
         if error_layer is None:
             error_layer = QgsVectorLayer("NoGeometry", table_name, "memory")
@@ -118,11 +117,10 @@ class LogicChecks(QObject):
         return error_layer
 
     def col_party_type_natural_validation(self, db, rule, error_layer):
-
-        LOGIC_VALIDATION_QUERIES = db.get_logic_validation_queries()
-        query = LOGIC_VALIDATION_QUERIES[rule]['query']
-        table_name = LOGIC_VALIDATION_QUERIES[rule]['table_name']
-        table = LOGIC_VALIDATION_QUERIES[rule]['table']
+        logic_validation_queries = db.get_logic_validation_queries()
+        query = logic_validation_queries[rule]['query']
+        table_name = logic_validation_queries[rule]['table_name']
+        table = logic_validation_queries[rule]['table']
 
         if error_layer is None:
             error_layer = QgsVectorLayer("NoGeometry", table_name, "memory")
@@ -154,10 +152,10 @@ class LogicChecks(QObject):
         return len(new_features), error_layer
 
     def col_party_type_no_natural_validation(self, db, rule, error_layer):
-        LOGIC_VALIDATION_QUERIES = db.get_logic_validation_queries()
-        query = LOGIC_VALIDATION_QUERIES[rule]['query']
-        table_name = LOGIC_VALIDATION_QUERIES[rule]['table_name']
-        table = LOGIC_VALIDATION_QUERIES[rule]['table']
+        logic_validation_queries = db.get_logic_validation_queries()
+        query = logic_validation_queries[rule]['query']
+        table_name = logic_validation_queries[rule]['table_name']
+        table = logic_validation_queries[rule]['table']
 
         if error_layer is None:
             error_layer = QgsVectorLayer("NoGeometry", table_name, "memory")
@@ -189,10 +187,10 @@ class LogicChecks(QObject):
         return len(new_features), error_layer
 
     def parcel_type_and_22_position_of_parcel_number_validation(self, db, rule, error_layer):
-        LOGIC_VALIDATION_QUERIES = db.get_logic_validation_queries()
-        query = LOGIC_VALIDATION_QUERIES[rule]['query']
-        table_name = LOGIC_VALIDATION_QUERIES[rule]['table_name']
-        table = LOGIC_VALIDATION_QUERIES[rule]['table']
+        logic_validation_queries = db.get_logic_validation_queries()
+        query = logic_validation_queries[rule]['query']
+        table_name = logic_validation_queries[rule]['table_name']
+        table = logic_validation_queries[rule]['table']
 
         if error_layer is None:
             error_layer = QgsVectorLayer("NoGeometry", table_name, "memory")
@@ -231,10 +229,10 @@ class LogicChecks(QObject):
         return len(new_features), error_layer
 
     def uebaunit_parcel_validation(self, db, rule, error_layer):
-        LOGIC_VALIDATION_QUERIES = db.get_logic_validation_queries()
-        query = LOGIC_VALIDATION_QUERIES[rule]['query']
-        table_name = LOGIC_VALIDATION_QUERIES[rule]['table_name']
-        table = LOGIC_VALIDATION_QUERIES[rule]['table']
+        logic_validation_queries = db.get_logic_validation_queries()
+        query = logic_validation_queries[rule]['query']
+        table_name = logic_validation_queries[rule]['table_name']
+        table = logic_validation_queries[rule]['table']
 
         if error_layer is None:
             error_layer = QgsVectorLayer("NoGeometry", table_name, "memory")

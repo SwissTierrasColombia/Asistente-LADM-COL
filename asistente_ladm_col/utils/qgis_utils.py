@@ -419,6 +419,7 @@ class QGISUtils(QObject):
             self.set_automatic_fields_namespace_local_id(db, layer)
 
     def post_load_configurations(self, db, layer, layer_modifiers=dict()):
+        # TODO: Just call this method once after get_layers (IMPORTANT!)
         # Do some post-load work, such as setting styles or
         # setting automatic fields for that layer
         self.configure_missing_relations(db, layer)
@@ -562,23 +563,25 @@ class QGISUtils(QObject):
     def set_display_expressions(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        if layer_name in self.names.get_dict_display_expressions():
-            layer.setDisplayExpression(self.names.get_dict_display_expressions()[layer_name])
+        dict_display_expressions = self.names.get_dict_display_expressions()
+        if layer_name in dict_display_expressions:
+            layer.setDisplayExpression(dict_display_expressions[layer_name])
 
     def set_layer_variables(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        if layer_name in self.names.get_layer_variables():
-            for variable, value in self.names.get_layer_variables()[layer_name].items():
+        layer_variables = self.names.get_layer_variables()
+        if layer_name in layer_variables:
+            for variable, value in layer_variables[layer_name].items():
                 QgsExpressionContextUtils.setLayerVariable(layer, variable, value)
 
     def set_custom_widgets(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        if layer_name in self.names.get_custom_widget_configuration():
-            editor_widget_setup = QgsEditorWidgetSetup(
-                    self.names.get_custom_widget_configuration()[layer_name]['type'],
-                    self.names.get_custom_widget_configuration()[layer_name]['config'])
+        custom_widget_configuration = self.names.get_custom_widget_configuration()
+        if layer_name in custom_widget_configuration:
+            editor_widget_setup = QgsEditorWidgetSetup(custom_widget_configuration[layer_name]['type'],
+                                                       custom_widget_configuration[layer_name]['config'])
             if layer_name == self.names.EXT_ARCHIVE_S:
                 index = layer.fields().indexFromName(self.names.EXT_ARCHIVE_S_DATA_F)
             elif layer_name == self.names.OP_BUILDING_UNIT_T:
@@ -588,8 +591,10 @@ class QGISUtils(QObject):
 
     def set_custom_read_only_fiels(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
-        if layer_name in self.names.get_custom_read_only_fields():
-            for field in self.names.get_custom_read_only_fields()[layer_name]:
+
+        custom_read_only_fields = self.names.get_custom_read_only_fields()
+        if layer_name in custom_read_only_fields:
+            for field in custom_read_only_fields[layer_name]:
                 self.set_read_only_field(layer, field)
 
     @staticmethod
@@ -611,8 +616,9 @@ class QGISUtils(QObject):
     def set_layer_constraints(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
 
-        if layer_name in self.names.get_layer_constraints():
-            for field_name, value in self.names.get_layer_constraints()[layer_name].items():
+        layer_constraints = self.names.get_layer_constraints()
+        if layer_name in layer_constraints:
+            for field_name, value in layer_constraints[layer_name].items():
                 idx = layer.fields().indexOf(field_name)
                 layer.setConstraintExpression(
                     idx,
@@ -720,8 +726,9 @@ class QGISUtils(QObject):
         if layer.fields().indexFromName(self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F) != -1:
             self.configure_automatic_fields(db, layer, [{self.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F: "now()"}])
 
-        if layer_name in self.names.get_dict_automatic_values():
-            self.configure_automatic_fields(db, layer, self.names.get_dict_automatic_values()[layer_name])
+        dict_automatic_values = self.names.get_dict_automatic_values()
+        if layer_name in dict_automatic_values:
+            self.configure_automatic_fields(db, layer, dict_automatic_values[layer_name])
 
     def set_automatic_fields_namespace_local_id(self, db, layer):
         layer_name = db.get_ladm_layer_name(layer)
@@ -756,7 +763,7 @@ class QGISUtils(QObject):
         local_id_field = self.names.OID_T_LOCAL_ID_F
 
         if local_id_field is not None:
-            # Todo: Update expression to update local_id incrementally
+            # TODO: Update expression to update local_id incrementally
             #local_id_value = "to_string(layer_property(@layer_name, 'feature_count') + @row_number)"
             local_id_value = "$id"
         else:
@@ -868,7 +875,7 @@ class QGISUtils(QObject):
         csv_layer = self.csv_to_layer(csv_path, delimiter, longitude, latitude, epsg, target_layer_name, elevation, decimal_point)
         QgsProject.instance().addMapLayer(csv_layer)
 
-        if not csv_layer:
+        if not csv_layer or not csv_layer.isValid():
             return
 
         # Skip checking point overlaps if layer is Survey points

@@ -582,7 +582,7 @@ class Names(metaclass=Singleton):
     OP_PLOT_T_PLOT_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_Terreno.Area_Terreno"
     OP_PLOT_T_PLOT_VALUATION_F = None  # "Operacion_V2_9_5.Operacion.OP_Terreno.Avaluo_Terreno"
     OP_PLOT_T_GEOMETRY_F = None  # "Operacion_V2_9_5.Operacion.OP_Terreno.Geometria"
-    OP_PLOT_T_BLOCK_VILLAGE_CODE_F = None  # "Operacion_V2_9_6.Operacion.OP_Terreno.Manzana_Vereda_Codigo"
+    OP_PLOT_T_BLOCK_RURAL_DIVISION_CODE_F = None  # "Operacion_V2_9_6.Operacion.OP_Terreno.Manzana_Vereda_Codigo"
     OP_PLOT_T_NUMBER_OF_UNDERGROUND_ROOMS_F = None  # "Operacion_V2_9_6.Operacion.OP_Terreno.Numero_Subterraneos"
     OP_BUILDING_UNIT_T_BUILT_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Area_Construida"
     OP_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F = None  # "Operacion_V2_9_5.Operacion.OP_UnidadConstruccion.Area_Privada_Construida"
@@ -1086,7 +1086,7 @@ class Names(metaclass=Singleton):
             "Operacion.Operacion.OP_Terreno.Area_Terreno": "OP_PLOT_T_PLOT_AREA_F",
             "Operacion.Operacion.OP_Terreno.Avaluo_Terreno": "OP_PLOT_T_PLOT_VALUATION_F",
             "Operacion.Operacion.OP_Terreno.Geometria": "OP_PLOT_T_GEOMETRY_F",
-            "Operacion.Operacion.OP_Terreno.Manzana_Vereda_Codigo": "OP_PLOT_T_BLOCK_VILLAGE_CODE_F",
+            "Operacion.Operacion.OP_Terreno.Manzana_Vereda_Codigo": "OP_PLOT_T_BLOCK_RURAL_DIVISION_CODE_F",
             "Operacion.Operacion.OP_Terreno.Numero_Subterraneos": "OP_PLOT_T_NUMBER_OF_UNDERGROUND_ROOMS_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Dimension": "COL_SPATIAL_UNIT_T_DIMENSION_F",
             "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Etiqueta": "COL_SPATIAL_UNIT_T_LABEL_F",
@@ -1155,6 +1155,9 @@ class Names(metaclass=Singleton):
         return any_update
 
     def set_custom_variables(self):
+        """
+        Independent of the DB engine
+        """
         self.OP_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V = "Persona_Natural"
         self.OP_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V = "Persona_Juridica"
         self.OP_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V = "NIT"

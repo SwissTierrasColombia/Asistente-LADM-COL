@@ -150,7 +150,7 @@ class RightOfWay(QObject):
                 exp = "\"uebaunit\" = {plot}".format(uebaunit=self.names.COL_UE_BAUNIT_T_OP_PLOT_F, plot=plot.attribute(self.names.T_ID_F))
                 parcels = layers[self.names.COL_UE_BAUNIT_T][LAYER].getFeatures(exp)
                 for parcel in parcels:
-                    id_pair_restriction = (parcel.attribute(self.names.COL_UE_BAUNIT_T_PARCEL_F), "Servidumbre de paso")
+                    id_pair_restriction = (parcel.attribute(self.names.COL_UE_BAUNIT_T_PARCEL_F), QCoreApplication.translate("RightOfWay", "Right of way"))
                     id_pairs_restriction.append(id_pair_restriction)
 
             new_restriction_features = list()

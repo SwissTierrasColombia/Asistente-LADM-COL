@@ -360,9 +360,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         # Configure actions for tables/layers
         if "type" in index_data and "id" in index_data:
             table_name = index_data["type"]
+            table_package = self.names.get_dict_table_package()
             t_id = index_data["id"]
             geometry_type = None
-            if table_name in self.names.get_dict_table_package() and self.names.get_dict_table_package()[table_name] == self.names.SPATIAL_UNIT_PACKAGE:
+            if table_name in table_package and table_package[table_name] == self.names.SPATIAL_UNIT_PACKAGE:
                 # Layers in Spatial Unit package have double geometry, we need the polygon one
                 geometry_type=QgsWkbTypes.PolygonGeometry
 

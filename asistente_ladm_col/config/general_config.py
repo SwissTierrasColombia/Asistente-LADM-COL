@@ -366,7 +366,6 @@ ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT = "ERROR_BUILDING_UNIT_IS_NOT_OVER_A_PLOT
 ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT = "ERROR_BUILDING_UNIT_CROSSES_A_PLOT_LIMIT"
 
 class TranslatableConfigStrings(QObject):
-
     def __init__(self):
         self.names = Names()
 

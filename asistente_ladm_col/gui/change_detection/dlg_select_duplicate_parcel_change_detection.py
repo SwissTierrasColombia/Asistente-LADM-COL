@@ -98,7 +98,7 @@ class SelectDuplicateParcelDialog(QDialog, DIALOG_UI):
         self.utils._layers[self.names.OP_PLOT_T][LAYER].removeSelection()
         plot_ids = self.utils.ladm_data.get_plots_related_to_parcels(self.utils._db,
                                                                      parcels_t_ids,
-                                                                     None,
+                                                                     field_name=None,
                                                                      plot_layer=self.utils._layers[self.names.OP_PLOT_T][LAYER],
                                                                      uebaunit_table=self.utils._layers[self.names.COL_UE_BAUNIT_T][LAYER])
 

@@ -171,6 +171,9 @@ class LADM_DATA():
         :param search_criterion: FieldName-Value pair to search in parcel layer (None for getting all parcels)
         :return: dict with parcel info for comparisons
         """
+        parcel_fields_to_compare = self.get_parcel_fields_to_compare()
+        party_fields_to_compare = self.get_party_fields_to_compare()
+        plot_fields_to_compare = self.get_plot_fields_to_compare()
         layers = {
             self.names.OP_PARCEL_T: {'name': self.names.OP_PARCEL_T, 'geometry': None, LAYER: None},
             self.names.OP_PLOT_T: {'name': self.names.OP_PLOT_T, 'geometry': QgsWkbTypes.PolygonGeometry, LAYER: None},
@@ -197,7 +200,7 @@ class LADM_DATA():
         for feature in parcel_features:
             dict_attrs = dict()
             for field in layers[self.names.OP_PARCEL_T][LAYER].fields():
-                if field.name() in self.get_parcel_fields_to_compare():
+                if field.name() in parcel_fields_to_compare:
                     value = feature.attribute(field.name())
                     dict_attrs[field.name()] = value
 
@@ -225,7 +228,7 @@ class LADM_DATA():
                 if item[self.names.T_ID_F] in dict_parcel_plot:
                     if dict_parcel_plot[item[self.names.T_ID_F]] in dict_plot_features:
                         plot_feature = dict_plot_features[dict_parcel_plot[item[self.names.T_ID_F]]]
-                        for PLOT_FIELD in self.get_plot_field_to_compare():
+                        for PLOT_FIELD in plot_fields_to_compare:
                             if plot_feature[PLOT_FIELD] != NULL:
                                 item[PLOT_FIELD] = plot_feature[PLOT_FIELD]
                             else:
@@ -256,7 +259,7 @@ class LADM_DATA():
         dict_parties = dict()
         for party_feature in party_features:
             dict_party = dict()
-            for PARTY_FIELD in self.get_party_fields_to_compare():
+            for PARTY_FIELD in party_fields_to_compare:
                 dict_party[PARTY_FIELD] = party_feature[PARTY_FIELD]
             # Add extra attribute from right table
             dict_party['derecho'] = dict_party_right[party_feature[self.names.T_ID_F]][self.names.OP_RIGHT_T_TYPE_F]
@@ -316,7 +319,7 @@ class LADM_DATA():
         dict_parties = dict()  # {id_party: {tipo_documento: CC, documento_identidad: 123456, nombre: Pepito}}
         for party_feature in party_features:
             dict_party = dict()
-            for PARTY_FIELD in self.get_party_fields_to_compare():
+            for PARTY_FIELD in party_fields_to_compare:
                 dict_party[PARTY_FIELD] = party_feature[PARTY_FIELD]
             dict_parties[party_feature[self.names.T_ID_F]] = dict_party
 
@@ -424,5 +427,5 @@ class LADM_DATA():
                 self.names.OP_PARTY_T_DOCUMENT_ID_F,
                 self.names.COL_PARTY_T_NAME_F]
 
-    def get_plot_field_to_compare(self):
+    def get_plot_fields_to_compare(self):
         return [self.names.OP_PLOT_T_PLOT_AREA_F]  # Geometry is also used but handled differenlty

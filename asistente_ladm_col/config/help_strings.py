@@ -318,7 +318,6 @@ Choose this option if you want to create an <b>Unconventional Building Unit Qual
                     type=QCoreApplication.translate("HelpStrings", "layer") if layer_is_spatial else QCoreApplication.translate("HelpStrings", "table"))
 
     def get_message_parcel_type(self, parcel_type):
-
         if parcel_type == self.names.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY:
             return QCoreApplication.translate("HelpStrings",
                                               "Cuando el tipo de predio es <b>'{parcel_type}'</b> la unidad espacial asociada debe ser un '{plot_table}' y opcionalmente una o mas '{building_table}es' y '{building_unit_table}'").format(

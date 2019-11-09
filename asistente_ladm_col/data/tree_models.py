@@ -305,16 +305,18 @@ class TreeModel(QAbstractItemModel):
         object collections in the form:
             "ladm_col_table_name" : [{"id": 5, "records":{k,v pairs}}, {"id": 8, "records":{k,v pairs}}, ...]
         """
+        plural = self.names.get_dict_plural()
+        icons = self.names.get_dict_package_icon()
         for key, values in record.items():  # either tuple or dict
             if type(values) is list:
                 if not len(values):  # Empty object
                     parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
                     kv_item = parent.child(parent.childCount() - 1)
-                    kv_item.setData(0, "{} (0)".format(self.names.get_dict_plural()[key] if key in self.names.get_dict_plural() else key))
+                    kv_item.setData(0, "{} (0)".format(plural[key] if key in plural else key))
                     kv_item.setData(0, QBrush(Qt.lightGray), Qt.ForegroundRole)
                     kv_item.setData(0, {"type": key}, Qt.UserRole)
                     kv_item.setData(0, QIcon(
-                        self.names.get_dict_package_icon()[self.names.get_dict_table_package()[key]]) if key in self.names.get_dict_table_package() else None,
+                        icons[self.names.get_dict_table_package()[key]]) if key in self.names.get_dict_table_package() else None,
                                                     Qt.DecorationRole)
                     continue
 
@@ -322,7 +324,7 @@ class TreeModel(QAbstractItemModel):
                     if type(value) is dict:
                         if len(value) == 2 and 'id' in value and 'attributes' in value:
                             # We have a list of LADM_COL model objects, we deal differently with them...
-                            self.fill_collection(key, values, parent)
+                            self.fill_collection(key, values, parent, plural, icons)
                             break
             elif type(values) is dict:
                 if key == 'attributes':
@@ -354,16 +356,16 @@ class TreeModel(QAbstractItemModel):
                             kv_subitem = kv_item.child(kv_item.childCount() - 1)
                             kv_subitem.setData(0, {'type': 'img', 'url': values}, Qt.UserRole)
 
-    def fill_collection(self, key, collection, parent):
+    def fill_collection(self, key, collection, parent, plural, icons):
         """
         Fill a collection of LADM_COL objects
         """
         parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
         collection_parent = parent.child(parent.childCount() - 1)
-        collection_parent.setData(0, "{} ({})".format(self.names.get_dict_plural()[key] if key in self.names.get_dict_plural() else key, len(collection)))
+        collection_parent.setData(0, "{} ({})".format(plural[key] if key in plural else key, len(collection)))
         collection_parent.setData(0, {"type": key}, Qt.UserRole)
         res = collection_parent.setData(0, QIcon(
-            self.names.get_dict_package_icon()[self.names.get_dict_table_package()[key]]) if key in self.names.get_dict_table_package() else None, Qt.DecorationRole)
+            icons[self.names.get_dict_table_package()[key]]) if key in self.names.get_dict_table_package() else None, Qt.DecorationRole)
 
         for object in collection:
             # Fill LADM_COL object
